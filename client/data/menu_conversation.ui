@@ -1,0 +1,9 @@
+<interface>
+    <menu id="menu_conversation">
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">Contact Details</attribute>
+            </item>
+        </section>
+    </menu>
+</interface>

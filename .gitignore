@@ -1,0 +1,7 @@
+*.o
+build/
+Makefile
+.vscode/
+*.iml
+.idea
+.sqlite3

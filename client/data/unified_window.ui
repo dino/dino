@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk+" version="3.0"/>
+    <template class="DinoUiWindow">
+        <property name="default-width">1200</property>
+        <property name="default-height">700</property>
+        <child type="titlebar">
+            <object class="GtkPaned">
+                <property name="position" bind-source="main_paned" bind-property="position" bind-flags="bidirectional|sync-create"/>
+                <property name="visible">True</property>
+                <style>
+                    <class name="header_bar"/>
+                </style>
+                <child>
+                    <object class="GtkHeaderBar" id="left_toolbar">
+                        <property name="hexpand">False</property>
+                        <property name="visible">True</property>
+                        <style>
+                            <class name="left_toolbar"/>
+                        </style>
+                        <child>
+                            <object class="GtkMenuButton" id="add_button">
+                                <property name="visible">True</property>
+                                <style>
+                                    <class name="image-button"/>
+                                </style>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">list-add-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="resize">False</property>
+                        <property name="shrink">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkHeaderBar" id="right_toolbar">
+                        <property name="title"></property>
+                        <property name="hexpand">True</property>
+                        <property name="show_close_button">True</property>
+                        <property name="visible">True</property>
+                        <style>
+                            <class name="right_toolbar"/>
+                        </style>
+                        <child>
+                            <object class="GtkMenuButton" id="menu_button">
+                                <property name="visible">True</property>
+                                <style>
+                                    <class name="image-button"/>
+                                </style>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">open-menu-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                    </object>
+                                </child>
+                            </object>
+                            <packing>
+                                <property name="pack_type">end</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkMenuButton"  id="encryption_button">
+                                <property name="visible">True</property>
+                                <style>
+                                    <class name="image-button"/>
+                                </style>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-size">1</property>
+                                    </object>
+                                </child>
+                            </object>
+                            <packing>
+                                <property name="pack_type">end</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkMenuButton"  id="groupchat_button">
+                                <property name="visible">True</property>
+                                <style>
+                                    <class name="image-button"/>
+                                </style>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">system-users-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                    </object>
+                                </child>
+                            </object>
+                            <packing>
+                                <property name="pack_type">end</property>
+                            </packing>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="resize">True</property>
+                        <property name="shrink">False</property>
+                    </packing>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="GtkPaned" id="main_paned">
+                <property name="orientation">horizontal</property>
+                <property name="visible">True</property>
+                <child>
+                    <object class="DinoUiRosterWrapper" id="roster_wrapper">
+                        <style>
+                            <class name="roster_wrapper"/>
+                        </style>
+                    </object>
+                    <packing>
+                        <property name="resize">False</property>
+                        <property name="shrink">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkFrame">
+                        <property name="shadow-type">GTK_SHADOW_NONE</property>
+                        <property name="visible">True</property>
+                        <style>
+                            <class name="some_frame"/>
+                        </style>
+                        <child>
+                            <object class="GtkGrid">
+                                <property name="orientation">vertical</property>
+                                <property name="expand">True</property>
+                                <property name="visible">True</property>
+                                <style>
+                                    <class name="conversation_grid"/>
+                                </style>
+                                <child>
+                                    <object class="GtkScrolledWindow" id="conversation_frame_scrolled">
+                                        <property name="visible">True</property>
+                                        <style>
+                                            <class name="scrolled_window"/>
+                                        </style>
+                                        <child>
+                                            <object class="DinoUiConversationFrame" id="conversation_frame">
+                                                <property name="shadow-type">GTK_SHADOW_NONE</property>
+                                                <property name="expand">True</property>
+                                                <property name="visible">True</property>
+                                                <style>
+                                                    <class name="conversation_frame"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkSeparator" />
+                                </child>
+                                <child>
+                                    <object class="DinoUiChatInput" id="chat_input">
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="resize">True</property>
+                        <property name="shrink">False</property>
+                    </packing>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

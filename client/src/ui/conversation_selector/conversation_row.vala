@@ -1,0 +1,175 @@
+using Gee;
+using Gdk;
+using Gtk;
+using Pango;
+
+using Xmpp;
+using Dino.Entities;
+
+namespace Dino.Ui.ConversationSelector {
+
+[GtkTemplate (ui = "/org/dino-im/conversation_selector/conversation_row.ui")]
+public abstract class ConversationRow : ListBoxRow {
+
+    [GtkChild]
+    protected Image image;
+
+    [GtkChild]
+    private Label name_label;
+
+    [GtkChild]
+    private Label time_label;
+
+    [GtkChild]
+    private Label message_label;
+
+    [GtkChild]
+    protected Button x_button;
+
+    [GtkChild]
+    private Revealer time_revealer;
+
+    [GtkChild]
+    private Revealer xbutton_revealer;
+
+    [GtkChild]
+    public Revealer main_revealer;
+
+    public Conversation conversation { get; private set; }
+
+    protected const int AVATAR_SIZE = 40;
+
+    protected string display_name;
+    protected string message;
+    protected DateTime time;
+    protected bool read = true;
+
+
+    protected StreamInteractor stream_interactor;
+
+    construct {
+        name_label.attributes = new AttrList();
+    }
+
+    public ConversationRow(StreamInteractor stream_interactor, Conversation conversation) {
+        this.conversation = conversation;
+        this.stream_interactor = stream_interactor;
+
+        x_button.clicked.connect(on_x_button_clicked);
+
+        update_name(Util.get_conversation_display_name(stream_interactor, conversation));
+        Entities.Message message = MessageManager.get_instance(stream_interactor).get_last_message(conversation);
+        if (message != null) {
+            message_received(message);
+        }
+    }
+
+    public void update() {
+        update_time();
+    }
+
+    public void message_received(Entities.Message message) {
+        update_message(message.body.replace("\n", " "));
+        update_time(message.time.to_local());
+    }
+
+    public void set_avatar(Pixbuf pixbuf, int scale_factor = 1) {
+        Util.image_set_from_scaled_pixbuf(image, pixbuf, scale_factor);
+        image.queue_draw();
+    }
+
+    public void mark_read() {
+        update_read(true);
+    }
+
+    public void mark_unread() {
+        update_read(false);
+    }
+
+    public abstract void on_show_received(Show presence);
+    public abstract void network_connection(bool connected);
+
+    protected void update_name(string? new_name = null) {
+        if (new_name != null) {
+            display_name = new_name;
+        }
+        name_label.label = display_name;
+    }
+
+    protected void update_time(DateTime? new_time = null) {
+        time_label.visible = true;
+        if (new_time != null) {
+            time = new_time;
+        }
+        if (time != null) {
+            time_label.label = get_relative_time(time);
+        }
+    }
+
+    protected void update_message(string? new_message = null) {
+        if (new_message != null) {
+            message = new_message;
+        }
+        if (message != null) {
+            message_label.visible = true;
+            message_label.label = message;
+        }
+    }
+
+    protected void update_read(bool read) {
+        this.read = read;
+        if (read) {
+            name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+            time_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+            message_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+        } else {
+            name_label.attributes.insert(attr_weight_new(Weight.BOLD));
+            time_label.attributes.insert(attr_weight_new(Weight.BOLD));
+            message_label.attributes.insert(attr_weight_new(Weight.BOLD));
+        }
+        name_label.label = name_label.label; // TODO initializes redrawing, which would otherwise not happen. nicer?
+        time_label.label = time_label.label;
+        message_label.label = message_label.label;
+    }
+
+    private void on_x_button_clicked() {
+        main_revealer.set_transition_type(RevealerTransitionType.SLIDE_UP);
+        main_revealer.set_reveal_child(false);
+        main_revealer.notify["child-revealed"].connect(() => {
+            conversation.active = false;
+        });
+    }
+
+    public override void state_flags_changed(StateFlags flags) {
+        StateFlags curr_flags = get_state_flags();
+        if ((curr_flags & StateFlags.PRELIGHT) != 0) {
+            time_revealer.set_reveal_child(false);
+            xbutton_revealer.set_reveal_child(true);
+        } else {
+            time_revealer.set_reveal_child(true);
+            xbutton_revealer.set_reveal_child(false);
+        }
+    }
+
+    private static string get_relative_time(DateTime datetime) {
+         DateTime now = new DateTime.now_local();
+         TimeSpan timespan = now.difference(datetime);
+         if (timespan > 365 * TimeSpan.DAY) {
+             return datetime.get_year().to_string();
+         } else if (timespan > 7 * TimeSpan.DAY) {
+             return datetime.format("%d.%m");
+         } else if (timespan > 2 * TimeSpan.DAY) {
+             return datetime.format("%a");
+         } else if (timespan > 1 * TimeSpan.DAY) {
+             return "Yesterday";
+         } else if (timespan > 9 * TimeSpan.MINUTE) {
+             return datetime.format("%H:%M");
+         } else if (timespan > 1 * TimeSpan.MINUTE) {
+             return (timespan / TimeSpan.MINUTE).to_string() + " min ago";
+         } else {
+             return "Just now";
+         }
+    }
+
+}
+}

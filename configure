@@ -1,0 +1,82 @@
+#!/bin/bash
+
+cont() {
+    read c
+    if [ "$c" != "yes" ] && [ "$c" != "Yes" ] && [ "$c" != "y" ] && [ "$c" != "Y" ]
+    then
+      exit 3
+    fi
+}
+
+if [ ! -e `which cmake` ]
+then
+  echo "CMake required."
+  exit 1
+fi
+
+if [ -x "$(which ninja 2>/dev/null)" ]; then
+  echo "Using Ninja ($(which ninja))"
+  cmake_type="Ninja"
+  exec_bin="ninja"
+elif [ -x "$(which ninja-build 2>/dev/null)" ]; then
+  echo "Using Ninja ($(which ninja-build))"
+  cmake_type="Ninja"
+  exec_bin="ninja-build"
+elif [ -x "$(which make 2>/dev/null)" ]; then
+  echo "Using Make ($(which make))"
+  cmake_type="Unix Makefiles"
+  exec_bin="make"
+  printf "Using Ninja improves build experience, continue with Make? [y/N] "
+  cont
+else
+  echo "No compatible build system (Ninja, Make) found."
+  exit 4
+fi
+
+if [ -f ./build  ]
+then
+  echo "./build file exists. ./configure can't continue"
+  exit 2
+fi
+
+if [ -d build ]
+then
+  if [ ! -f "build/.cmake_type" ]
+  then
+    printf "./build exists but was not created by ./configure script, continue? [y/N] "
+    cont
+  fi
+  last_type=`cat build/.cmake_type`
+  if [ "$cmake_type" != "$last_type" ]
+  then
+    echo "Using different build system, cleaning build system files"
+    cd build
+    rm -r CMakeCache.txt CMakeFiles
+    cd ..
+  fi
+fi
+
+mkdir -p build
+cd build
+
+echo "$cmake_type" > .cmake_type
+cmake -G "$cmake_type" ..
+
+if [ "$cmake_type" == "Ninja" ]
+then
+cat << EOF > Makefile
+default:
+	@sh -c "$exec_bin"
+%:
+	@sh -c "$exec_bin \"\$@\""
+EOF
+fi
+
+cd ..
+
+cat << EOF > Makefile
+default:
+	@sh -c "cd build; $exec_bin"
+%:
+	@sh -c "cd build; $exec_bin \"\$@\""
+EOF

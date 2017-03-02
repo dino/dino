@@ -1,0 +1,15 @@
+<schemalist>
+    <schema id="org.dino-im" path="/org/dino-im/" gettext-domain="dino">
+
+        <key name="send-read" type="b">
+            <default>true</default>
+            <summary>Whether to confirm that a message was received per default</summary>
+        </key>
+
+        <key name="convert-utf8-smileys" type="b">
+            <default>true</default>
+            <summary>Whether to convert common ascii smileys into unicode</summary>
+        </key>
+
+    </schema>
+</schemalist>

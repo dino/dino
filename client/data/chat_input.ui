@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoUiChatInput" parent="GtkGrid"> <!-- TODO -->
+        <property name="hexpand">True</property>
+        <property name="orientation">horizontal</property>
+        <property name="visible">True</property>
+        <property name="margin">5</property>
+        <property name="column-spacing">5</property>
+        <child>
+            <object class="GtkFrame">
+                <child>
+                    <object class="GtkTextView" id="text_input">
+                        <property name="border-width">5</property>
+                        <property name="wrap-mode">GTK_WRAP_WORD_CHAR</property>
+                        <property name="can_focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="visible">True</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

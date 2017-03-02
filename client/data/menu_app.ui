@@ -1,0 +1,20 @@
+<interface>
+    <menu id="menu_app">
+        <section>
+            <item>
+                <attribute name="action">app.accounts</attribute>
+                <attribute name="label">Accounts</attribute>
+            </item>
+            <item>
+                <attribute name="action">app.settings</attribute>
+                <attribute name="label">Settings</attribute>
+            </item>
+        </section>
+        <section>
+            <item>
+                <attribute name="action">app.quit</attribute>
+                <attribute name="label">Quit</attribute>
+            </item>
+        </section>
+    </menu>
+</interface>

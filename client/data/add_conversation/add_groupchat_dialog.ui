@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk+" version="3.0"/>
+    <template class="DinoUiAddConversationConferenceAddGroupchatDialog">
+        <property name="default_width">400</property>
+        <property name="modal">True</property>
+        <child type="titlebar">
+            <object class="GtkHeaderBar">
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkButton" id="cancel_button">
+                        <property name="label">Cancel</property>
+                        <property name="sensitive">True</property>
+                        <property name="visible">True</property>
+                    </object>
+                    <packing>
+                        <property name="pack_type">start</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkButton" id="ok_button">
+                        <property name="can_default">True</property>
+                        <property name="has_default">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="visible">True</property>
+                        <style>
+                            <class name="suggested-action"/>
+                        </style>
+                    </object>
+                    <packing>
+                        <property name="pack_type">end</property>
+                    </packing>
+                </child>
+            </object>
+        </child>
+        <child internal-child="vbox">
+            <object class="GtkBox" id="main">
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkGrid">
+                        <property name="orientation">vertical</property>
+                        <property name="margin">20</property>
+                        <property name="margin_right">40</property>
+                        <property name="margin_left">40</property>
+                        <property name="row-spacing">7</property>
+                        <property name="column-spacing">10</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Account</property>
+                                <property name="xalign">1</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkStack" id="accounts_stack">
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkComboBoxText" id="accounts_comboboxtext">
+                                        <property name="hexpand">True</property>
+                                        <property name="width_request">200</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                    <packing>
+                                        <property name="name">combobox</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="account_label">
+                                        <property name="xalign">0</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                    <packing>
+                                        <property name="name">label</property>
+                                    </packing>
+                                </child>
+                            </object>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">JID</property>
+                                <property name="xalign">1</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkEntry" id="jid_entry">
+                                <property name="activates_default">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="width_request">200</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Nick</property>
+                                <property name="xalign">1</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkEntry" id="nick_entry">
+                                <property name="activates_default">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="width_request">200</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">2</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Password</property>
+                                <property name="xalign">1</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">3</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkEntry" id="password_entry">
+                                <property name="activates_default">True</property>
+                                <property name="visibility">False</property>
+                                <property name="hexpand">True</property>
+                                <property name="width_request">200</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">3</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkCheckButton" id="autojoin_checkbutton">
+                                <property name="active">False</property>
+                                <property name="label">Join on startup</property>
+                                <property name="xalign">0</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">5</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="alias_label">
+                                <property name="label">Alias</property>
+                                <property name="xalign">1</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">6</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkEntry" id="alias_entry">
+                                <property name="activates_default">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="width_request">200</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">6</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <action-widgets>
+            <action-widget response="cancel">cancel_button</action-widget>
+            <action-widget response="ok" default="true">ok_button</action-widget>
+        </action-widgets>
+    </template>
+</interface>

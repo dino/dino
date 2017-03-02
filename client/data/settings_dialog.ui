@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk+" version="3.0"/>
+    <template class="DinoUiSettingsDialog">
+        <property name="modal">True</property>
+        <property name="visible">True</property>
+        <child type="titlebar">
+            <object class="GtkHeaderBar">
+                <property name="title">Preferences</property>
+                <property name="show_close_button">True</property>
+                <property name="visible">True</property>
+            </object>
+        </child>
+        <child internal-child="vbox">
+            <object class="GtkBox">
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkGrid">
+                        <property name="margin">10</property>
+                        <property name="row-spacing">10</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkCheckButton" id="marker_checkbutton">
+                                <property name="label">Send typing notifications and message marker</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkCheckButton" id="emoji_checkbutton">
+                                <property name="label">Convert smileys to emojis</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                                <property name="width">1</property>
+                                <property name="height">1</property>
+                            </packing>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>
