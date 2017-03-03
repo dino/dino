@@ -2,13 +2,13 @@
     <menu id="menu_add">
         <section>
             <item>
-                <attribute name="action">win.add_chat</attribute>
+                <attribute name="action">app.add_chat</attribute>
                 <attribute name="label" translatable="yes">Start Chat</attribute>
             </item>
         </section>
         <section>
             <item>
-                <attribute name="action">win.add_conference</attribute>
+                <attribute name="action">app.add_conference</attribute>
                 <attribute name="label" translatable="yes">Join Conference</attribute>
             </item>
         </section>

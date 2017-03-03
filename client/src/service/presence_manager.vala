@@ -42,7 +42,7 @@ public class PresenceManager : StreamInteractionModule, Object {
     public ArrayList<Jid>? get_full_jids(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            ArrayList<string> resources = Xmpp.Presence.Flag.get_flag(stream).get_resources(jid.bare_jid.to_string());
+            Gee.List<string> resources = Xmpp.Presence.Flag.get_flag(stream).get_resources(jid.bare_jid.to_string());
             if (resources == null) {
                 return null;
             }

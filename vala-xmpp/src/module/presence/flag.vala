@@ -7,14 +7,14 @@ namespace Xmpp.Presence {
 public class Flag : XmppStreamFlag {
     public const string ID = "presence";
 
-    private HashMap<string, ArrayList<string>> resources = new HashMap<string, ArrayList<string>>();
+    private HashMap<string, ConcurrentList<string>> resources = new HashMap<string, ConcurrentList<string>>();
     private HashMap<string, Presence.Stanza> presences = new HashMap<string, Presence.Stanza>();
 
     public Set<string> get_available_jids() {
         return resources.keys;
     }
 
-    public ArrayList<string>? get_resources(string bare_jid) {
+    public Gee.List<string>? get_resources(string bare_jid) {
         return resources[bare_jid];
     }
 
@@ -25,7 +25,7 @@ public class Flag : XmppStreamFlag {
     public void add_presence(Presence.Stanza presence) {
         string bare_jid = get_bare_jid(presence.from);
         if (!resources.has_key(bare_jid)) {
-            resources[bare_jid] = new ArrayList<string>();
+            resources[bare_jid] = new ConcurrentList<string>();
         }
         if (resources[bare_jid].contains(presence.from)) {
             resources[bare_jid].remove(presence.from);

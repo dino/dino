@@ -1,5 +1,5 @@
 #Dino
-![screenshots](http://i.imgur.com/n9caTuJ.png)
+![screenshots](http://i.imgur.com/JSHwxNf.png)
 
 ##Build
     ./configure
