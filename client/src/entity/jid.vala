@@ -4,7 +4,7 @@ public class Dino.Entities.Jid : Object {
     public string? resourcepart { get; set; }
 
     public Jid? bare_jid {
-        owned get { return new Jid(@"$localpart@$domainpart"); }
+        owned get { return localpart != null ? new Jid(@"$localpart@$domainpart") : new Jid(domainpart); }
     }
 
     private string jid { get; private set; }
@@ -19,8 +19,6 @@ public class Dino.Entities.Jid : Object {
 
     public Jid.with_resource(string bare_jid, string resource) {
         Jid? parsed = Jid.parse(bare_jid);
-        print(parsed.localpart + "\n");
-        print(parsed.domainpart + "\n");
         Jid.components(parsed.localpart, parsed.domainpart, resourcepart);
     }
 
