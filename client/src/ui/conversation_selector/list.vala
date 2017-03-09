@@ -95,7 +95,7 @@ public class List : ListBox {
     public void add_conversation(Conversation conversation) {
         ConversationRow row;
         if (!rows.has_key(conversation)) {
-            if (conversation.type_ == Conversation.TYPE_GROUPCHAT) {
+            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
                 row = new GroupchatRow(stream_interactor, conversation);
             } else {
                 row = new ChatRow(stream_interactor, conversation);

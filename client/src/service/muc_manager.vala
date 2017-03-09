@@ -66,7 +66,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     public bool is_groupchat(Jid jid, Account account) {
         Conversation? conversation = ConversationManager.get_instance(stream_interactor).get_conversation(jid, account);
-        return !jid.is_full() && conversation != null && conversation.type_ == Conversation.TYPE_GROUPCHAT;
+        return !jid.is_full() && conversation != null && conversation.type_ == Conversation.Type.GROUPCHAT;
     }
 
     public bool is_groupchat_occupant(Jid jid, Account account) {
@@ -162,7 +162,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void on_pre_message_received(Entities.Message message, Conversation conversation) {
-        if (conversation.type_ != Conversation.TYPE_GROUPCHAT) return;
+        if (conversation.type_ != Conversation.Type.GROUPCHAT) return;
         Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return;
         if (Xep.DelayedDelivery.MessageFlag.get_flag(message.stanza) == null) {

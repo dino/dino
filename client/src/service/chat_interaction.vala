@@ -47,7 +47,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
     public void on_message_entered(Conversation conversation) {
         if (Settings.instance().send_read) {
-            if (!last_input_interaction.has_key(conversation) && conversation.type_ != Conversation.TYPE_GROUPCHAT) {
+            if (!last_input_interaction.has_key(conversation) && conversation.type_ != Conversation.Type.GROUPCHAT) {
                 send_chat_state_notification(conversation, Xep.ChatStateNotifications.STATE_COMPOSING);
             }
         }
@@ -82,7 +82,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     private void check_send_read() {
-        if (selected_conversation == null || selected_conversation.type_ == Conversation.TYPE_GROUPCHAT) return;
+        if (selected_conversation == null || selected_conversation.type_ == Conversation.Type.GROUPCHAT) return;
         Entities.Message? message = MessageManager.get_instance(stream_interactor).get_last_message(selected_conversation);
         if (message != null && message.direction == Entities.Message.DIRECTION_RECEIVED &&
                 message.stanza != null && !message.equals(selected_conversation.read_up_to)) {

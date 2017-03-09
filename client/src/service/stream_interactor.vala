@@ -4,6 +4,7 @@ using Xmpp;
 using Dino.Entities;
 
 namespace Dino {
+
 public class StreamInteractor {
 
     public signal void account_added(Account account);
@@ -65,4 +66,5 @@ public class StreamInteractor {
 public interface StreamInteractionModule : Object {
     internal abstract string get_id();
 }
+
 }

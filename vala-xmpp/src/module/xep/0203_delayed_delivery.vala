@@ -6,16 +6,17 @@ namespace Xmpp.Xep.DelayedDelivery {
     public class Module : XmppStreamModule {
         public const string ID = "0203_delayed_delivery";
 
+        public static void set_message_delay(Message.Stanza message, DateTime datetime) {
+            StanzaNode delay_node = (new StanzaNode.build("delay", NS_URI)).add_self_xmlns();
+            delay_node.put_attribute("stamp", (new DateTimeProfiles.Module()).to_datetime(datetime));
+            message.stanza.put_node(delay_node);
+        }
+
         public static DateTime? get_send_time(Message.Stanza message) {
             StanzaNode? delay_node = message.stanza.get_subnode("delay", NS_URI);
             if (delay_node != null) {
                 string time = delay_node.get_attribute("stamp");
-                return new DateTime.utc(int.parse(time.substring(0, 4)),
-                    int.parse(time.substring(5, 2)),
-                    int.parse(time.substring(8, 2)),
-                    int.parse(time.substring(11, 2)),
-                    int.parse(time.substring(14, 2)),
-                    int.parse(time.substring(17, 2)));
+                return (new DateTimeProfiles.Module()).parse_string(time);
             } else {
                 return null;
             }
@@ -39,24 +40,15 @@ namespace Xmpp.Xep.DelayedDelivery {
         public override string get_id() { return ID; }
 
         private void on_pre_received_message(XmppStream stream, Message.Stanza message) {
-            StanzaNode? delay_node = message.stanza.get_subnode("delay", NS_URI);
-            if (delay_node != null) {
-                string time = delay_node.get_attribute("stamp");
-                DateTime datetime = new DateTime.utc(int.parse(time.substring(0, 4)),
-                    int.parse(time.substring(5, 2)),
-                    int.parse(time.substring(8, 2)),
-                    int.parse(time.substring(11, 2)),
-                    int.parse(time.substring(14, 2)),
-                    int.parse(time.substring(17, 2)));
-                message.add_flag(new MessageFlag(datetime));
-            }
+            DateTime? datetime = get_send_time(message);
+            if (datetime != null) message.add_flag(new MessageFlag(datetime));
         }
     }
 
     public class MessageFlag : Message.MessageFlag {
         public const string ID = "delayed_delivery";
 
-        DateTime datetime;
+        public DateTime datetime { get; private set; }
 
         public MessageFlag(DateTime datetime) {
             this.datetime = datetime;

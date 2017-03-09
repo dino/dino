@@ -11,7 +11,9 @@ public class Dino.Entities.Message : Object {
         NONE,
         RECEIVED,
         READ,
-        ACKNOWLEDGED
+        ACKNOWLEDGED,
+        UNSENT,
+        WONTSEND
     }
 
     public enum Encryption {

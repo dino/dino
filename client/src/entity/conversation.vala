@@ -3,19 +3,23 @@ public class Conversation : Object {
 
     public signal void object_updated(Conversation conversation);
 
-    public const int ENCRYPTION_UNENCRYPTED = 0;
-    public const int ENCRYPTION_PGP = 1;
+    public enum Encryption {
+        UNENCRYPTED,
+        PGP
+    }
 
-    public const int TYPE_CHAT = 0;
-    public const int TYPE_GROUPCHAT = 1;
+    public enum Type {
+        CHAT,
+        GROUPCHAT
+    }
 
     public int id { get; set; }
     public Account account { get; private set; }
     public Jid counterpart { get; private set; }
     public bool active { get; set; }
     public DateTime last_active { get; set; }
-    public int encryption { get; set; }
-    public int? type_ { get; set; }
+    public Encryption encryption { get; set; }
+    public Type? type_ { get; set; }
     public Message read_up_to { get; set; }
 
     public Conversation(Jid jid, Account account) {
@@ -23,7 +27,7 @@ public class Conversation : Object {
         this.account = account;
         this.active = false;
         this.last_active = new DateTime.from_unix_utc(0);
-        this.encryption = ENCRYPTION_UNENCRYPTED;
+        this.encryption = Encryption.UNENCRYPTED;
     }
 
     public Conversation.with_id(Jid jid, Account account, int id) {

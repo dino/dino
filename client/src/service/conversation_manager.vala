@@ -27,6 +27,7 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
         MucManager.get_instance(stream_interactor).groupchat_joined.connect(on_groupchat_joined);
         MessageManager.get_instance(stream_interactor).pre_message_received.connect(on_message_received);
+        MessageManager.get_instance(stream_interactor).message_sent.connect(on_message_sent);
     }
 
     public Conversation? get_conversation(Jid jid, Account account) {
@@ -37,12 +38,12 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     public Conversation get_add_conversation(Jid jid, Account account) {
-        ensure_add_conversation(jid, account, Conversation.TYPE_CHAT);
+        ensure_add_conversation(jid, account, Conversation.Type.CHAT);
         return get_conversation(jid, account);
     }
 
     public void ensure_start_conversation(Jid jid, Account account) {
-        ensure_add_conversation(jid, account, Conversation.TYPE_CHAT);
+        ensure_add_conversation(jid, account, Conversation.Type.CHAT);
         Conversation? conversation = get_conversation(jid, account);
         if (conversation != null) {
             conversation.last_active = new DateTime.now_utc();
@@ -73,12 +74,16 @@ public class ConversationManager : StreamInteractionModule, Object {
         ensure_start_conversation(conversation.counterpart, conversation.account);
     }
 
+    private void on_message_sent(Entities.Message message, Conversation conversation) {
+        conversation.last_active = message.time;
+    }
+
     private void on_groupchat_joined(Account account, Jid jid, string nick) {
-        ensure_add_conversation(jid, account, Conversation.TYPE_GROUPCHAT);
+        ensure_add_conversation(jid, account, Conversation.Type.GROUPCHAT);
         ensure_start_conversation(jid, account);
     }
 
-    private void ensure_add_conversation(Jid jid, Account account, int type) {
+    private void ensure_add_conversation(Jid jid, Account account, Conversation.Type type) {
         if (conversations.has_key(account) && !conversations[account].has_key(jid)) {
             Conversation conversation = new Conversation(jid, account);
             conversation.type_ = type;

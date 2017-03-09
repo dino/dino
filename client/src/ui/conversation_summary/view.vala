@@ -203,7 +203,8 @@ public class View : Box {
         return message_item != null &&
             message_item.from.equals(message.from) &&
             message_item.messages.get(0).encryption == message.encryption &&
-            message.time.difference(message_item.initial_time) < TimeSpan.MINUTE;
+            message.time.difference(message_item.initial_time) < TimeSpan.MINUTE &&
+            (message_item.messages.get(0).marked == Entities.Message.Marked.WONTSEND) == (message.marked == Entities.Message.Marked.WONTSEND);
     }
 
     private void force_alloc_width(Widget widget, int width) {

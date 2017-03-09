@@ -36,11 +36,11 @@ public class Database : Qlite.Database {
     public class MessageTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<string> stanza_id = new Column.Text("stanza_id");
-        public Column<int> account_id = new Column.Integer("account_id");
-        public Column<int> counterpart_id = new Column.Integer("counterpart_id");
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<int> counterpart_id = new Column.Integer("counterpart_id") { not_null = true };
         public Column<string> counterpart_resource = new Column.Text("counterpart_resource");
         public Column<string> our_resource = new Column.Text("our_resource");
-        public Column<bool> direction = new Column.BoolInt("direction");
+        public Column<bool> direction = new Column.BoolInt("direction") { not_null = true };
         public Column<int> type_ = new Column.Integer("type");
         public Column<long> time = new Column.Long("time");
         public Column<long> local_time = new Column.Long("local_time");
@@ -205,24 +205,20 @@ public class Database : Qlite.Database {
     }
 
     public void add_message(Message new_message, Account account) {
-        if (new_message.body == null || new_message.stanza_id == null) {
-            return;
-        }
-
-        new_message.id = (int) message.insert()
-                .value(message.stanza_id, new_message.stanza_id)
-                .value(message.account_id, new_message.account.id)
-                .value(message.counterpart_id, get_jid_id(new_message.counterpart))
-                .value(message.counterpart_resource, new_message.counterpart.resourcepart)
-                .value(message.our_resource, new_message.ourpart.resourcepart)
-                .value(message.direction, new_message.direction)
-                .value(message.type_, new_message.type_)
-                .value(message.time, (long) new_message.time.to_unix())
-                .value(message.local_time, (long) new_message.local_time.to_unix())
-                .value(message.body, new_message.body)
-                .value(message.encryption, new_message.encryption)
-                .value(message.marked, new_message.marked)
-                .perform();
+        InsertBuilder builder = message.insert()
+            .value(message.account_id, new_message.account.id)
+            .value(message.counterpart_id, get_jid_id(new_message.counterpart))
+            .value(message.counterpart_resource, new_message.counterpart.resourcepart)
+            .value(message.our_resource, new_message.ourpart.resourcepart)
+            .value(message.direction, new_message.direction)
+            .value(message.type_, new_message.type_)
+            .value(message.time, (long) new_message.time.to_unix())
+            .value(message.local_time, (long) new_message.local_time.to_unix())
+            .value(message.body, new_message.body)
+            .value(message.encryption, new_message.encryption)
+            .value(message.marked, new_message.marked);
+        if (new_message.stanza_id != null) builder.value(message.stanza_id, new_message.stanza_id);
+        new_message.id = (int) builder.perform();
 
         if (new_message.real_jid != null) {
             real_jid.insert()
@@ -288,6 +284,14 @@ public class Database : Qlite.Database {
         return ret;
     }
 
+    public Gee.List<Message> get_unsend_messages(Account account) {
+        Gee.List<Message> ret = new ArrayList<Message>();
+        foreach (Row row in message.select().with(message.marked, "=", (int) Message.Marked.UNSENT)) {
+            ret.add(get_message_from_row(row));
+        }
+        return ret;
+    }
+
     public bool contains_message(Message query_message, Account account) {
         int jid_id = get_jid_id(query_message.counterpart);
         return message.select()
@@ -295,6 +299,9 @@ public class Database : Qlite.Database {
                 .with(message.stanza_id, "=", query_message.stanza_id)
                 .with(message.counterpart_id, "=", jid_id)
                 .with(message.counterpart_resource, "=", query_message.counterpart.resourcepart)
+                .with(message.body, "=", query_message.body)
+                .with(message.time, "<", (long) query_message.time.add_minutes(1).to_unix())
+                .with(message.time, ">", (long) query_message.time.add_minutes(-1).to_unix())
                 .count() > 0;
     }
 
@@ -332,6 +339,8 @@ public class Database : Qlite.Database {
         new_message.marked = (Message.Marked) row[message.marked];
         new_message.encryption = (Message.Encryption) row[message.encryption];
         new_message.real_jid = get_real_jid_for_message(new_message);
+
+        new_message.notify.connect(on_message_update);
         return new_message;
     }
 
@@ -386,8 +395,8 @@ public class Database : Qlite.Database {
         new_conversation.active = row[conversation.active];
         int64? last_active = row[conversation.last_active];
         if (last_active != null) new_conversation.last_active = new DateTime.from_unix_utc(last_active);
-        new_conversation.type_ = row[conversation.type_];
-        new_conversation.encryption = row[conversation.encryption];
+        new_conversation.type_ = (Conversation.Type) row[conversation.type_];
+        new_conversation.encryption = (Conversation.Encryption) row[conversation.encryption];
         int? read_up_to = row[conversation.read_up_to];
         if (read_up_to != null) new_conversation.read_up_to = get_message_by_id(read_up_to);
 

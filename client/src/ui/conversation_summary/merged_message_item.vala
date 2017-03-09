@@ -68,10 +68,16 @@ public class MergedMessageItem : Grid {
     }
 
     private void update_received() {
+        received_image.visible = true;
         bool all_received = true;
         bool all_read = true;
         foreach (Message message in messages) {
-            if (message.marked != Message.Marked.READ) {
+            if (message.marked == Message.Marked.WONTSEND) {
+                Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
+                Gtk.IconInfo? icon_info = icon_theme.lookup_icon("dialog-warning-symbolic", IconSize.SMALL_TOOLBAR, 0);
+                received_image.set_from_pixbuf(icon_info.load_symbolic({1,0,0,1}));
+                return;
+            } else if (message.marked != Message.Marked.READ) {
                 all_read = false;
                 if (message.marked != Message.Marked.RECEIVED) {
                     all_received = false;

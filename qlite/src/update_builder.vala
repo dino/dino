@@ -123,6 +123,7 @@ public class UpdateBuilder : StatementBuilder {
     }
 
     public void perform() throws DatabaseError {
+        if (fields == null || fields.length == 0) return;
         if (prepare().step() != DONE) {
             throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");
         }

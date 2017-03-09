@@ -41,19 +41,19 @@ public class Dino.Ui.ConversationTitlebar : Gtk.HeaderBar {
         string? pgp_id = PgpManager.get_instance(stream_interactor).get_key_id(conversation.account, conversation.counterpart);
         button_pgp.set_sensitive(pgp_id != null);
         switch (conversation.encryption) {
-            case Conversation.ENCRYPTION_UNENCRYPTED:
+            case Conversation.Encryption.UNENCRYPTED:
                 button_unencrypted.set_active(true);
                 break;
-            case Conversation.ENCRYPTION_PGP:
+            case Conversation.Encryption.PGP:
                 button_pgp.set_active(true);
                 break;
         }
     }
 
     private void update_encryption_menu_icon() {
-        encryption_button.visible = conversation.type_ == Conversation.TYPE_CHAT;
-        if (conversation.type_ == Conversation.TYPE_CHAT) {
-            if (conversation.encryption == Conversation.ENCRYPTION_UNENCRYPTED) {
+        encryption_button.visible = (conversation.type_ == Conversation.Type.CHAT);
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            if (conversation.encryption == Conversation.Encryption.UNENCRYPTED) {
                 encryption_button.set_image(new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON));
             } else {
                 encryption_button.set_image(new Image.from_icon_name("changes-prevent-symbolic", IconSize.BUTTON));
@@ -62,8 +62,8 @@ public class Dino.Ui.ConversationTitlebar : Gtk.HeaderBar {
     }
 
     private void update_groupchat_menu() {
-        groupchat_button.visible = conversation.type_ == Conversation.TYPE_GROUPCHAT;
-        if (conversation.type_ == Conversation.TYPE_GROUPCHAT) {
+        groupchat_button.visible = conversation.type_ == Conversation.Type.GROUPCHAT;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             groupchat_button.set_use_popover(true);
             Popover popover = new Popover(null);
             OccupantList occupant_list = new OccupantList(stream_interactor, conversation);
@@ -80,7 +80,7 @@ public class Dino.Ui.ConversationTitlebar : Gtk.HeaderBar {
     private void update_subtitle(string? subtitle = null) {
         if (subtitle != null) {
             set_subtitle(subtitle);
-        } else if (conversation.type_ == Conversation.TYPE_GROUPCHAT) {
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             string subject = MucManager.get_instance(stream_interactor).get_groupchat_subject(conversation.counterpart, conversation.account);
             set_subtitle(subject != "" ? subject : null);
         } else {
@@ -106,9 +106,9 @@ public class Dino.Ui.ConversationTitlebar : Gtk.HeaderBar {
         button_unencrypted.toggled.connect(() => {
             if (conversation != null) {
                 if (button_unencrypted.get_active()) {
-                    conversation.encryption = Conversation.ENCRYPTION_UNENCRYPTED;
+                    conversation.encryption = Conversation.Encryption.UNENCRYPTED;
                 } else if (button_pgp.get_active()) {
-                    conversation.encryption = Conversation.ENCRYPTION_PGP;
+                    conversation.encryption = Conversation.Encryption.PGP;
                 }
                 update_encryption_menu_icon();
             }

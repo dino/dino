@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class MessageManager : StreamInteractionModule, Object {
-    public const string id = "message_manager";
+    public const string ID = "message_manager";
 
     public signal void pre_message_received(Entities.Message message, Conversation conversation);
     public signal void message_received(Entities.Message message, Conversation conversation);
@@ -25,46 +25,16 @@ public class MessageManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         this.db = db;
         stream_interactor.account_added.connect(on_account_added);
+        stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
+            if (state == ConnectionManager.ConnectionState.CONNECTED) send_unsent_messages(account);
+        });
     }
 
     public void send_message(string text, Conversation conversation) {
-        Entities.Message message = new Entities.Message();
-        message.account = conversation.account;
-        message.body = text;
-        message.time = new DateTime.now_utc();
-        message.local_time = new DateTime.now_utc();
-        message.direction = Entities.Message.DIRECTION_SENT;
-        message.counterpart = conversation.counterpart;
-        message.ourpart = new Jid(conversation.account.bare_jid.to_string() + "/" + conversation.account.resourcepart);
-
-        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
-
-        if (stream != null) {
-            Xmpp.Message.Stanza new_message = new Xmpp.Message.Stanza();
-            new_message.to = message.counterpart.to_string();
-            new_message.body = message.body;
-            if (conversation.type_ == Conversation.TYPE_GROUPCHAT) {
-                new_message.type_ = Xmpp.Message.Stanza.TYPE_GROUPCHAT;
-            } else {
-                new_message.type_ = Xmpp.Message.Stanza.TYPE_CHAT;
-            }
-            if (conversation.encryption == Conversation.ENCRYPTION_PGP) {
-                string? key_id = PgpManager.get_instance(stream_interactor).get_key_id(conversation.account, message.counterpart);
-                if (key_id != null) {
-                    bool encrypted = Xep.Pgp.Module.get_module(stream).encrypt(new_message, key_id);
-                    if (encrypted) message.encryption = Entities.Message.Encryption.PGP;
-                }
-            }
-            Xmpp.Message.Module.get_module(stream).send_message(stream, new_message);
-            message.stanza_id = new_message.id;
-            message.stanza = new_message;
-            db.add_message(message, conversation.account);
-        } else {
-            // save for resend
-        }
-
-        conversation.last_active = message.time;
+        Entities.Message message = create_out_message(text, conversation);
         add_message(message, conversation);
+        db.add_message(message, conversation.account);
+        send_xmpp_message(message, conversation);
         message_sent(message, conversation);
     }
 
@@ -97,17 +67,26 @@ public class MessageManager : StreamInteractionModule, Object {
     }
 
     public string get_id() {
-        return id;
+        return ID;
     }
 
     public static MessageManager? get_instance(StreamInteractor stream_interactor) {
-        return (MessageManager) stream_interactor.get_module(id);
+        return (MessageManager) stream_interactor.get_module(ID);
     }
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.message_modules[account].received_message.connect( (stream, message) => {
             on_message_received(account, message);
         });
+        stream_interactor.stream_negotiated.connect(send_unsent_messages);
+    }
+
+    private void send_unsent_messages(Account account) {
+        Gee.List<Entities.Message> unsend_messages = db.get_unsend_messages(account);
+        foreach (Entities.Message message in unsend_messages) {
+            Conversation conversation = ConversationManager.get_instance(stream_interactor).get_conversation(message.counterpart, account);
+            send_xmpp_message(message, conversation, true);
+        }
     }
 
     private void on_message_received(Account account, Xmpp.Message.Stanza message) {
@@ -128,10 +107,8 @@ public class MessageManager : StreamInteractionModule, Object {
         new_message.body = message.body;
         new_message.stanza = message;
         new_message.set_type_string(message.type_);
-        new_message.time = Xep.DelayedDelivery.Module.get_send_time(message);
-        if (new_message.time == null) {
-            new_message.time = new DateTime.now_utc();
-        }
+        Xep.DelayedDelivery.MessageFlag? deleyed_delivery_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
+        new_message.time = deleyed_delivery_flag != null ? deleyed_delivery_flag.datetime : new DateTime.now_utc();
         new_message.local_time = new DateTime.now_utc();
         if (Xep.Pgp.MessageFlag.get_flag(message) != null) {
             new_message.encryption = Entities.Message.Encryption.PGP;
@@ -160,6 +137,56 @@ public class MessageManager : StreamInteractionModule, Object {
             messages[conversation] = new ArrayList<Entities.Message>(Entities.Message.equals_func);
         }
         messages[conversation].add(message);
+    }
+
+    private Entities.Message create_out_message(string text, Conversation conversation) {
+        Entities.Message message = new Entities.Message();
+        message.stanza_id = UUID.generate_random_unparsed();
+        message.account = conversation.account;
+        message.body = text;
+        message.time = new DateTime.now_utc();
+        message.local_time = new DateTime.now_utc();
+        message.direction = Entities.Message.DIRECTION_SENT;
+        message.counterpart = conversation.counterpart;
+        message.ourpart = new Jid(conversation.account.bare_jid.to_string() + "/" + conversation.account.resourcepart);
+
+        if (conversation.encryption == Conversation.Encryption.PGP) {
+            message.encryption = Entities.Message.Encryption.PGP;
+        }
+        return message;
+    }
+
+    private void send_xmpp_message(Entities.Message message, Conversation conversation, bool delayed = false) {
+        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+        message.marked = Entities.Message.Marked.NONE;
+        if (stream != null) {
+            Xmpp.Message.Stanza new_message = new Xmpp.Message.Stanza(message.stanza_id);
+            new_message.to = message.counterpart.to_string();
+            new_message.body = message.body;
+            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                new_message.type_ = Xmpp.Message.Stanza.TYPE_GROUPCHAT;
+            } else {
+                new_message.type_ = Xmpp.Message.Stanza.TYPE_CHAT;
+            }
+            if (message.encryption == Entities.Message.Encryption.PGP) {
+                string? key_id = PgpManager.get_instance(stream_interactor).get_key_id(conversation.account, message.counterpart);
+                if (key_id != null) {
+                    bool encrypted = Xep.Pgp.Module.get_module(stream).encrypt(new_message, key_id);
+                    if (!encrypted) {
+                        message.marked = Entities.Message.Marked.WONTSEND;
+                        return;
+                    }
+                }
+            }
+            if (delayed) {
+                Xmpp.Xep.DelayedDelivery.Module.get_module(stream).set_message_delay(new_message, message.time);
+            }
+            Xmpp.Message.Module.get_module(stream).send_message(stream, new_message);
+            message.stanza_id = new_message.id;
+            message.stanza = new_message;
+        } else {
+            message.marked = Entities.Message.Marked.UNSENT;
+        }
     }
 }
 

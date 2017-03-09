@@ -54,6 +54,7 @@ SOURCES
     "src/module/xep/0049_private_xml_storage.vala"
     "src/module/xep/0054_vcard/module.vala"
     "src/module/xep/0060_pubsub.vala"
+    "src/module/xep/0082_date_time_profiles.vala"
     "src/module/xep/0084_user_avatars.vala"
     "src/module/xep/0085_chat_state_notifications.vala"
     "src/module/xep/0115_entitiy_capabilities.vala"
