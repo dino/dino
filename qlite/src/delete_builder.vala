@@ -16,8 +16,8 @@ public class DeleteBuilder : StatementBuilder {
         base(db);
     }
 
-    public DeleteBuilder from(Table table) {
-        if (table != null) throw new DatabaseError.ILLEGAL_QUERY("cannot use from() multiple times.");
+    public DeleteBuilder from(Table table) throws DatabaseError {
+        if (this.table != null) throw new DatabaseError.ILLEGAL_QUERY("cannot use from() multiple times.");
         this.table = table;
         this.table_name = table.name;
         return this;
@@ -28,8 +28,8 @@ public class DeleteBuilder : StatementBuilder {
         return this;
     }
 
-    public DeleteBuilder where(string selection, string[]? selection_args = null) {
-        if (selection != null) throw new DatabaseError.ILLEGAL_QUERY("selection was already done, but where() was called.");
+    public DeleteBuilder where(string selection, string[]? selection_args = null) throws DatabaseError {
+        if (this.selection != null) throw new DatabaseError.ILLEGAL_QUERY("selection was already done, but where() was called.");
         this.selection = selection;
         if (selection_args != null) {
             this.selection_args = new StatementBuilder.Field[selection_args.length];
@@ -56,7 +56,7 @@ public class DeleteBuilder : StatementBuilder {
         return this;
     }
 
-    public override Statement prepare() {
+    public override Statement prepare() throws DatabaseError {
         Statement stmt = db.prepare(@"DELETE FROM $table_name $(selection != null ? @"WHERE $selection": "")");
         for (int i = 0; i < selection_args.length; i++) {
             selection_args[i].bind(stmt, i+1);
@@ -64,7 +64,7 @@ public class DeleteBuilder : StatementBuilder {
         return stmt;
     }
 
-    public void perform() {
+    public void perform() throws DatabaseError {
         if (prepare().step() != DONE) {
             throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");
         }

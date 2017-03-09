@@ -29,7 +29,7 @@ public class Row {
     }
 
     public string? get_text(string field) {
-        if (text_map.contains(field)) {
+        if (text_map.has_key(field)) {
             return text_map[field];
         }
         return null;
@@ -40,7 +40,7 @@ public class Row {
     }
 
     public bool has_integer(string field) {
-        return int_map.contains(field);
+        return int_map.has_key(field);
     }
 
     public double get_real(string field) {
@@ -48,7 +48,7 @@ public class Row {
     }
 
     public bool has_real(string field) {
-        return real_map.contains(field) && real_map[field] != null;
+        return real_map.has_key(field) && real_map[field] != null;
     }
 
     public class RowIterator {
@@ -58,7 +58,7 @@ public class Row {
             this.stmt = query.prepare();
         }
 
-        public RowIterator(Database db, string sql, string[]? args = null) {
+        public RowIterator(Database db, string sql, string[]? args = null) throws DatabaseError {
             this.stmt = db.prepare(sql);
             if (args != null) {
                 for (int i = 0; i < args.length; i++) {

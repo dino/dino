@@ -19,9 +19,7 @@ public abstract class Column<T> {
         return false;
     }
 
-    public virtual void bind(Statement stmt, int index, T value) {
-        throw new DatabaseError.NOT_SUPPORTED(@"bind() was not implemented for field $name");
-    }
+    public abstract void bind(Statement stmt, int index, T value);
 
     public string to_string() {
         string res = name;
@@ -156,31 +154,6 @@ public abstract class Column<T> {
 
         public override void bind(Statement stmt, int index, bool value) {
             stmt.bind_int(index, value ? 1 : 0);
-        }
-    }
-
-    public class RowReference : Column<Row?> {
-        private Table table;
-        private Column<int> id_column;
-
-        public RowReference(string name, Table table, Column<int> id_column) throws DatabaseError {
-            base(name, INTEGER);
-            if (!table.is_known_column(id_column.name)) throw new DatabaseError.ILLEGAL_REFERENCE(@"$(id_column.name) is not a column in $(table.name)");
-            if (!id_column.primary_key && !id_column.unique) throw new DatabaseError.NON_UNIQUE(@"$(id_column.name) is not suited to identify a row, but used with RowReference");
-            this.table = table;
-            this.id_column = id_column;
-        }
-
-        public override Row? get(Row row) {
-            return table.row_with(id_column, (int)row.get_integer(name));
-        }
-
-        public override void bind(Statement stmt, int index, Row? value) {
-            if (value != null) {
-                stmt.bind_int(index, id_column.get(value));
-            } else {
-                stmt.bind_null(index);
-            }
         }
     }
 }

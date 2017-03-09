@@ -54,7 +54,7 @@ public class InsertBuilder : StatementBuilder {
         return this;
     }
 
-    public InsertBuilder value_null<T>(Column<T> column) {
+    public InsertBuilder value_null<T>(Column<T> column) throws DatabaseError {
         if (column.not_null) throw new DatabaseError.ILLEGAL_QUERY(@"Can't set non-null column $(column.name) to null");
         if (fields == null) {
             fields = { new NullField<T>(column) };

@@ -6,14 +6,31 @@ public class Table {
     protected Database db;
     public string name { get; private set; }
     protected Column[] columns;
+    private string constraints;
 
     public Table(Database db, string name) {
         this.db = db;
         this.name = name;
     }
 
-    public void init(Column[] columns) {
+    public void init(Column[] columns, string? constraints = null) {
         this.columns = columns;
+        this.constraints = constraints;
+    }
+
+    public void unique(Column[] columns, string? on_conflict = null) {
+        if (constraints == null) constraints = ""; else constraints += ", ";
+        constraints += "UNIQUE (";
+        bool first = true;
+        foreach(Column c in columns) {
+            if (!first) constraints += ", ";
+            constraints += c.name;
+            first = false;
+        }
+        constraints += ")";
+        if (on_conflict != null) {
+            constraints += "ON CONFLICT " + on_conflict;
+        }
     }
 
     private void ensure_init() throws DatabaseError {
@@ -62,6 +79,9 @@ public class Table {
             if (c.min_version <= version && c.max_version >= version) {
                 sql += @"$(i > 0 ? "," : "") $c";
             }
+        }
+        if (constraints != null) {
+            sql += ", " + constraints;
         }
         sql += ")";
         db.exec(sql);

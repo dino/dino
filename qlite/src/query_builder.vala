@@ -3,7 +3,6 @@ using Sqlite;
 namespace Qlite {
 
 public class QueryBuilder : StatementBuilder {
-    private bool finished;
     private bool single_result;
 
     // SELECT [...]
@@ -23,8 +22,6 @@ public class QueryBuilder : StatementBuilder {
 
     // LIMIT [...]
     private int limit_val;
-
-    private Row[] result;
 
     protected QueryBuilder(Database db) {
         base(db);

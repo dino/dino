@@ -48,7 +48,7 @@ public class UpdateBuilder : StatementBuilder {
         return this;
     }
 
-    public UpdateBuilder set_null<T>(Column<T> column) {
+    public UpdateBuilder set_null<T>(Column<T> column) throws DatabaseError {
         if (column.not_null) throw new DatabaseError.ILLEGAL_QUERY(@"Can't set non-null column $(column.name) to null");
         if (fields == null) {
             fields = { new NullField<T>(column) };
@@ -63,8 +63,8 @@ public class UpdateBuilder : StatementBuilder {
         return this;
     }
 
-    public UpdateBuilder where(string selection, string[]? selection_args = null) {
-        if (selection != null) throw new DatabaseError.ILLEGAL_QUERY("selection was already done, but where() was called.");
+    public UpdateBuilder where(string selection, string[]? selection_args = null) throws DatabaseError {
+        if (this.selection != null) throw new DatabaseError.ILLEGAL_QUERY("selection was already done, but where() was called.");
         this.selection = selection;
         if (selection_args != null) {
             this.selection_args = new StatementBuilder.Field[selection_args.length];

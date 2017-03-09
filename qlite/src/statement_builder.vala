@@ -23,8 +23,6 @@ public abstract class StatementBuilder {
         public virtual void bind(Statement stmt, int index) {
             if (column != null) {
                 column.bind(stmt, index, value);
-            } else {
-                throw new DatabaseError.NOT_SUPPORTED("binding was not implemented for this field.");
             }
         }
     }
