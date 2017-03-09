@@ -12,7 +12,11 @@ namespace Xmpp.Iq {
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
         public void send_iq(XmppStream stream, Iq.Stanza iq, ResponseListener? listener = null) {
-            stream.write(iq.stanza);
+            try {
+                stream.write(iq.stanza);
+            } catch (IOStreamError e) {
+                print(@"$(e.message)\n");
+            }
             if (listener != null) {
                 responseListeners.set(iq.id, listener);
             }

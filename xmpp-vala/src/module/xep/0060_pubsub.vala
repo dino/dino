@@ -9,11 +9,11 @@ namespace Xmpp.Xep.Pubsub {
     public class Module : XmppStreamModule {
         public const string ID = "0060_pubsub_module";
 
-        private HashMap<string, EventListener> event_listeners = new HashMap<string, EventListener>();
+        private HashMap<string, EventListenerDelegate> event_listeners = new HashMap<string, EventListenerDelegate>();
 
-        public void add_filtered_notification(XmppStream stream, string node, EventListener listener) {
+        public void add_filtered_notification(XmppStream stream, string node, EventListenerDelegate.ResultFunc on_result, Object? reference = null) {
             ServiceDiscovery.Module.get_module(stream).add_feature_notify(stream, node);
-            event_listeners[node] = listener;
+            event_listeners[node] = new EventListenerDelegate(on_result, reference);
         }
 
         public void request(XmppStream stream, string jid, string node, RequestResponseListener listener) { // TODO multiple nodes gehen auch
@@ -26,12 +26,12 @@ namespace Xmpp.Xep.Pubsub {
             RequestResponseListener response_listener;
             public IqRequestResponseListener(RequestResponseListener response_listener) { this.response_listener = response_listener; }
             public void on_result(XmppStream stream, Iq.Stanza iq) {
-                StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI); if (event_node == null) return;
-                StanzaNode items_node = event_node.get_subnode("items", NS_URI); if (items_node == null) return;
-                StanzaNode item_node = items_node.get_subnode("item", NS_URI); if (item_node == null) return;
-                string node = items_node.get_attribute("node", NS_URI);
-                string id = item_node.get_attribute("id", NS_URI);
-                response_listener.on_result(stream, iq.from, id, item_node.sub_nodes[0]);
+                StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);
+                StanzaNode items_node = event_node != null ? event_node.get_subnode("items", NS_URI) : null;
+                StanzaNode item_node = items_node != null ? items_node.get_subnode("item", NS_URI) : null;
+                string? node = items_node != null ? items_node.get_attribute("node", NS_URI) : null;
+                string? id = item_node != null ? item_node.get_attribute("id", NS_URI) : null;
+                response_listener.on_result(stream, iq.from, id, item_node != null ? item_node.sub_nodes[0] : null);
             }
         }
 
@@ -93,11 +93,18 @@ namespace Xmpp.Xep.Pubsub {
     }
 
     public interface RequestResponseListener : Object {
-        public abstract void on_result(XmppStream stream, string jid, string id, StanzaNode node);
+        public abstract void on_result(XmppStream stream, string jid, string? id, StanzaNode? node);
     }
 
-    public interface EventListener : Object {
-        public abstract void on_result(XmppStream stream, string jid, string id, StanzaNode node);
+    public class EventListenerDelegate {
+        public delegate void ResultFunc(XmppStream stream, string jid, string id, StanzaNode node);
+        public ResultFunc on_result { get; private set; }
+        private Object reference;
+
+        public EventListenerDelegate(ResultFunc on_result, Object? reference = null) {
+            this.on_result = on_result;
+            this.reference = reference;
+        }
     }
 
     public interface PublishResponseListener : Object {

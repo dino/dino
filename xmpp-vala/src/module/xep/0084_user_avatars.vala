@@ -46,29 +46,27 @@ namespace Xmpp.Xep.UserAvatars {
 
         public override void attach(XmppStream stream) {
             Pubsub.Module.require(stream);
-            Pubsub.Module.get_module(stream).add_filtered_notification(stream, NS_URI_METADATA, new PubsubEventListenerImpl(storage));
+            Pubsub.Module.get_module(stream).add_filtered_notification(stream, NS_URI_METADATA, on_event_result, this);
         }
 
         public override void detach(XmppStream stream) { }
 
-        class PubsubEventListenerImpl : Pubsub.EventListener, Object {
-            PixbufStorage storage;
-            public PubsubEventListenerImpl(PixbufStorage storage) { this.storage = storage; }
-            public void on_result(XmppStream stream, string jid, string id, StanzaNode node) {
-                StanzaNode info_node = node.get_subnode("info", NS_URI_METADATA);
-                if (info_node.get_attribute("type") != "image/png") return;
-                if (storage.has_image(id)) {
-                    Module.get_module(stream).received_avatar(stream, jid, id);
-                } else {
-                    Pubsub.Module.get_module(stream).request(stream, jid, NS_URI_DATA, new PubsubRequestResponseListenerImpl(storage));
-                }
+
+        public void on_event_result(XmppStream stream, string jid, string id, StanzaNode node) {
+            StanzaNode info_node = node.get_subnode("info", NS_URI_METADATA);
+            if (info_node.get_attribute("type") != "image/png") return;
+            if (storage.has_image(id)) {
+                Module.get_module(stream).received_avatar(stream, jid, id);
+            } else {
+                Pubsub.Module.get_module(stream).request(stream, jid, NS_URI_DATA, new PubsubRequestResponseListenerImpl(storage));
             }
         }
 
         class PubsubRequestResponseListenerImpl : Pubsub.RequestResponseListener, Object {
             PixbufStorage storage;
             public PubsubRequestResponseListenerImpl(PixbufStorage storage) { this.storage = storage; }
-            public void on_result(XmppStream stream, string jid, string id, StanzaNode node) {
+            public void on_result(XmppStream stream, string jid, string? id, StanzaNode? node) {
+                if (node == null) return;
                 storage.store(id, Base64.decode(node.get_string_content()));
                 Module.get_module(stream).received_avatar(stream, jid, id);
             }

@@ -9,7 +9,7 @@ public abstract class StanzaEntry {
 
     public string encoded_val {
         owned get {
-            return val.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
+            return val != null ? val.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;") : null;
         }
         set {
             string tmp = value.replace("&gt;", ">").replace("&lt;", "<").replace("&apos;","'").replace("&quot;","\"");
@@ -87,6 +87,18 @@ public class StanzaNode : StanzaEntry {
         return null;
     }
 
+    public int get_attribute_int(string name, int def = -1, string? ns_uri = null) {
+        string? res = get_attribute(name, ns_uri);
+        if (res == null) return def;
+        return int.parse(res);
+    }
+
+    public bool get_attribute_bool(string name, bool def = false, string? ns_uri = null) {
+        string? res = get_attribute(name, ns_uri);
+        if (res == null) return def;
+        return res.down() == "true" || res == "1";
+    }
+
     public StanzaAttribute get_attribute_raw(string name, string? ns_uri = null) {
         string _name = name;
         string? _ns_uri = ns_uri;
@@ -136,7 +148,7 @@ public class StanzaNode : StanzaEntry {
         while(true) {
             string? s = l.arg();
             if (s == null) break;
-            node = get_subnode(attribute_name);
+            node = node.get_subnode(attribute_name);
             if (node == null) return null;
             attribute_name = s;
         }
@@ -167,11 +179,21 @@ public class StanzaNode : StanzaEntry {
 
     public ArrayList<StanzaNode> get_subnodes(string name, string? ns_uri = null, bool recurse = false) {
         ArrayList<StanzaNode> ret = new ArrayList<StanzaNode>();
-        if (ns_uri == null) ns_uri = this.ns_uri;
+        string _name = name;
+        string? _ns_uri = ns_uri;
+        if (ns_uri == null) {
+            if (_name.contains(":")) {
+                var lastIndex = _name.last_index_of_char(':');
+                _ns_uri = _name.substring(0, lastIndex);
+                _name = _name.substring(lastIndex + 1);
+            } else {
+                _ns_uri = this.ns_uri;
+            }
+        }
         foreach(var node in sub_nodes) {
-            if (node.ns_uri == ns_uri && node.name == name) ret.add(node);
+            if (node.ns_uri == _ns_uri && node.name == _name) ret.add(node);
             if (recurse) {
-                ret.add_all(node.get_subnodes(name, ns_uri, recurse));
+                ret.add_all(node.get_subnodes(_name, _ns_uri, recurse));
             }
         }
         return ret;
@@ -187,13 +209,42 @@ public class StanzaNode : StanzaEntry {
         while(true) {
             string? s = l.arg();
             if (s == null) break;
-            node = get_subnode(s);
+            node = node.get_subnode(s);
+            if (node == null) return null;
         }
         return node;
     }
 
+    public ArrayList<StanzaNode> get_deep_subnodes(...) {
+        va_list l = va_list();
+        var res = get_deep_subnodes_(va_list.copy(l));
+        if (res != null) return res;
+        return new ArrayList<StanzaNode>();
+    }
+
+    public ArrayList<StanzaNode> get_deep_subnodes_(va_list l) {
+        StanzaNode? node = this;
+        string? subnode_name = l.arg();
+        if (subnode_name == null) return null;
+        while(true) {
+            string? s = l.arg();
+            if (s == null) break;
+            node = node.get_subnode(subnode_name);
+            if (node == null) return null;
+            subnode_name = s;
+        }
+        return node.get_subnodes(subnode_name);
+    }
+
     public ArrayList<StanzaNode> get_all_subnodes() {
         return sub_nodes;
+    }
+
+    public ArrayList<StanzaNode> get_deep_all_subnodes(...) {
+        va_list l = va_list();
+        StanzaNode? node = get_deep_subnode_(va_list.copy(l));
+        if (node != null) return node.get_all_subnodes();
+        return new ArrayList<StanzaNode>();
     }
 
     public void add_attribute(StanzaAttribute attr) {
@@ -203,6 +254,13 @@ public class StanzaNode : StanzaEntry {
     public override unowned string? get_string_content() {
         if (val != null) return val;
         if (sub_nodes.size == 1) return sub_nodes[0].get_string_content();
+        return null;
+    }
+
+    public unowned string? get_deep_string_content(...) {
+        va_list l = va_list();
+        StanzaNode? node = get_deep_subnode_(va_list.copy(l));
+        if (node != null) return node.get_string_content();
         return null;
     }
 

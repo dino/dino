@@ -24,7 +24,9 @@ namespace Xmpp.Tls {
         private void received_nonza(XmppStream stream, StanzaNode node) {
             if (node.ns_uri == NS_URI && node.name == "proceed") {
                 try {
-                    var conn = TlsClientConnection.new(stream.get_stream(), identity);
+                    var io_stream = stream.get_stream();
+                    if (io_stream == null) return;
+                    var conn = TlsClientConnection.new(io_stream, identity);
                     // TODO: Add certificate error handling, that is, allow the
                     // program to handle certificate errors. The certificate
                     // *is checked* by TlsClientConnection, and connection is
