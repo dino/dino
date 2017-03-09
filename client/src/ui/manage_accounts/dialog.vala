@@ -69,8 +69,8 @@ public class Dialog : Gtk.Window {
         add_button.clicked.connect(add_button_clicked);
         no_accounts_add.clicked.connect(add_button_clicked);
         remove_button.clicked.connect(remove_button_clicked);
-        password_entry.key_press_event.connect(on_password_entry_key_press_event);
-        alias_entry.key_press_event.connect(on_alias_entry_key_press_event);
+        password_entry.key_release_event.connect(on_password_key_release_event);
+        alias_entry.key_release_event.connect(on_alias_key_release_event);
         image_button.clicked.connect(on_image_button_clicked);
 
         main_stack.set_visible_child_name("no_accounts");
@@ -188,23 +188,23 @@ public class Dialog : Gtk.Window {
         return false;
     }
 
-    private bool on_password_entry_key_press_event(EventKey event) {
+    private bool on_password_key_release_event(EventKey event) {
         Account account = (account_list.get_selected_row() as AccountRow).account;
+        account.password = password_entry.text;
+        string filler = "";
+        for (int i = 0; i < account.password.length; i++) filler += password_entry.get_invisible_char().to_string();
+        password_label.label = filler;
         if (event.keyval == Key.Return) {
-            account.password = password_entry.text;
-            string filler = "";
-            for (int i = 0; i < account.password.length; i++) filler += password_entry.get_invisible_char().to_string();
-            password_label.label = filler;
             password_stack.set_visible_child_name("label");
         }
         return false;
     }
 
-    private bool on_alias_entry_key_press_event(EventKey event) {
+    private bool on_alias_key_release_event(EventKey event) {
         Account account = (account_list.get_selected_row() as AccountRow).account;
+        account.alias = alias_entry.text;
+        alias_label.label = alias_entry.text;
         if (event.keyval == Key.Return) {
-            account.alias = alias_entry.text;
-            alias_label.label = alias_entry.text;
             alias_stack.set_visible_child_name("label");
         }
         return false;

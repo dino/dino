@@ -59,7 +59,7 @@ public class Dialog : Gtk.Dialog {
         cancel_button.clicked.connect(show_jid_add_view);
         ok_button.label = "Join";
         ok_button.sensitive = details_fragment.done;
-        ok_button.clicked.disconnect(show_conference_details_view);
+        ok_button.clicked.disconnect(on_next_button_clicked);
         ok_button.clicked.connect(on_ok_button_clicked);
         select_fragment.notify["done"].disconnect(set_ok_sensitive_from_select);
         details_fragment.notify["done"].connect(set_ok_sensitive_from_details);
@@ -131,12 +131,13 @@ public class Dialog : Gtk.Dialog {
             ok_button.grab_focus();
         } else if (row != null) {
             details_fragment.jid = row.jid.to_string();
+            details_fragment.set_editable();
         }
         show_conference_details_view();
     }
 
     private void on_ok_button_clicked() {
-        MucManager.get_instance(stream_interactor).join(details_fragment.account, new Jid(details_fragment.jid), details_fragment.nick);
+        MucManager.get_instance(stream_interactor).join(details_fragment.account, new Jid(details_fragment.jid), details_fragment.nick, details_fragment.password);
         close();
     }
 
@@ -151,14 +152,14 @@ public class Dialog : Gtk.Dialog {
         int difference = def_height - curr_height;
         Timer timer = new Timer();
         Timeout.add((int) (stack.transition_duration / 30),
-                () => {
-                    ulong microsec;
-                    timer.elapsed(out microsec);
-                    ulong millisec = microsec / 1000;
-                    double partial = double.min(1, (double) millisec / stack.transition_duration);
-                    resize(curr_width, (int) (curr_height + difference * partial));
-                    return millisec < stack.transition_duration;
-                });
+            () => {
+                ulong microsec;
+                timer.elapsed(out microsec);
+                ulong millisec = microsec / 1000;
+                double partial = double.min(1, (double) millisec / stack.transition_duration);
+                resize(curr_width, (int) (curr_height + difference * partial));
+                return millisec < stack.transition_duration;
+            });
     }
 }
 

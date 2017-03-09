@@ -52,8 +52,8 @@ protected class AddGroupchatDialog : Gtk.Dialog {
 
         cancel_button.clicked.connect(() => { close(); });
         ok_button.clicked.connect(on_ok_button_clicked);
-        jid_entry.key_press_event.connect_after(after_jid_entry_key_press);
-        nick_entry.key_press_event.connect(check_ok);
+        jid_entry.key_release_event.connect(on_jid_key_release);
+        nick_entry.key_release_event.connect(check_ok);
     }
 
     public AddGroupchatDialog.for_conference(StreamInteractor stream_interactor, Account account, Xmpp.Xep.Bookmarks.Conference conference) {
@@ -69,7 +69,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         alias_entry.text = conference.name;
     }
 
-    private bool after_jid_entry_key_press() {
+    private bool on_jid_key_release() {
         check_ok();
         if (!alias_entry_changed) {
             Jid? parsed_jid = Jid.parse(jid_entry.text);

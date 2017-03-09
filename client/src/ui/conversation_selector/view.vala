@@ -22,7 +22,7 @@ public class View : Grid {
     public View(StreamInteractor stream_interactor) {
         conversation_list = new List(stream_interactor);
         scrolled.add(conversation_list);
-        search_entry.key_press_event.connect(search_key_press_event);
+        search_entry.key_release_event.connect(search_key_release_event);
         search_entry.search_changed.connect(search_changed);
     }
 
@@ -41,7 +41,7 @@ public class View : Grid {
         refilter();
     }
 
-    private bool search_key_press_event(EventKey event) {
+    private bool search_key_release_event(EventKey event) {
         conversation_list.select_row(conversation_list.get_row_at_y(0));
         if (event.keyval == Key.Down) {
             ConversationRow? row = (ConversationRow) conversation_list.get_row_at_index(0);

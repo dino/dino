@@ -26,9 +26,9 @@ public class MucManager : StreamInteractionModule, Object {
         MessageManager.get_instance(stream_interactor).pre_message_received.connect(on_pre_message_received);
     }
 
-    public void join(Account account, Jid jid, string nick) {
+    public void join(Account account, Jid jid, string nick, string? password = null) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xep.Muc.Module.get_module(stream).enter(stream, jid.bare_jid.to_string(), nick, null, new MucEnterListenerImpl(this, jid, nick, account));
+        if (stream != null) Xep.Muc.Module.get_module(stream).enter(stream, jid.bare_jid.to_string(), nick, password, new MucEnterListenerImpl(this, jid, nick, account));
     }
 
     public void part(Account account, Jid jid) {

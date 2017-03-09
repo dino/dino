@@ -1,3 +1,4 @@
+using Gdk;
 using Gtk;
 
 using Dino.Entities;
@@ -31,21 +32,21 @@ protected class ConferenceDetailsFragment : Box {
         }
     }
     public string jid {
-        get { return jid_label.label; }
+        get { return jid_entry.text; }
         set {
             jid_label.label = value;
             jid_entry.text = value;
         }
     }
     public string nick {
-        get { return nick_label.label; }
+        get { return nick_entry.text; }
         set {
             nick_label.label = value;
             nick_entry.text = value;
         }
     }
     public string password {
-        get { return password_label.label; }
+        get { return password_entry.text == "" ? null : password_entry.text; }
         set {
             password_label.label = value;
             password_entry.text = value;
@@ -115,13 +116,13 @@ protected class ConferenceDetailsFragment : Box {
         nick_button.clicked.connect(() => { set_active_stack(nick_stack); });
         password_button.clicked.connect(() => { set_active_stack(password_stack); });
 
-        accounts_comboboxtext.changed.connect(() => { accounts_label.label = accounts_comboboxtext.get_active_text(); });
-        jid_entry.key_press_event.connect(() => { jid_label.label = jid_entry.text; return false; });
-        nick_entry.key_press_event.connect(() => { nick_label.label = nick_entry.text; return false; });
-        password_entry.key_press_event.connect(() => { password_label.label = password_entry.text; return false; });
+        accounts_comboboxtext.changed.connect(() => {accounts_label.label = accounts_comboboxtext.get_active_text(); });
+        jid_entry.key_release_event.connect(on_jid_key_release_event);
+        nick_entry.key_release_event.connect(on_nick_key_release_event);
+        password_entry.key_release_event.connect(on_password_key_release_event);
 
-        jid_entry.key_press_event.connect(() => { done = true; return false; }); // just for notifying
-        nick_entry.key_press_event.connect(() => { done = true; return false; });
+        jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
+        nick_entry.key_release_event.connect(() => { done = true; return false; });
 
         foreach (Account account in stream_interactor.get_accounts()) {
             accounts_comboboxtext.append_text(account.bare_jid.to_string());
@@ -129,10 +130,36 @@ protected class ConferenceDetailsFragment : Box {
         accounts_comboboxtext.set_active(0);
     }
 
+    public void set_editable() {
+        accounts_stack.set_visible_child_name("entry");
+        nick_stack.set_visible_child_name("entry");
+        password_stack.set_visible_child_name("entry");
+    }
+
     public void clear() {
         jid = "";
         nick = "";
         password = "";
+    }
+
+    private bool on_jid_key_release_event(EventKey event) {
+        jid_label.label = jid_entry.text;
+        if (event.keyval == Key.Return) jid_stack.set_visible_child_name("label");
+        return false;
+    }
+
+    private bool on_nick_key_release_event(EventKey event) {
+        nick_label.label = nick_entry.text;
+        if (event.keyval == Key.Return) nick_stack.set_visible_child_name("label");
+        return false;
+    }
+
+    private bool on_password_key_release_event(EventKey event) {
+        string filler = "";
+        for (int i = 0; i < password_entry.text.length; i++) filler += password_entry.get_invisible_char().to_string();
+        password_label.label = filler;
+        if (event.keyval == Key.Return) password_stack.set_visible_child_name("label");
+        return false;
     }
 
     private void set_active_stack(Stack stack) {
