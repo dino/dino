@@ -5,6 +5,7 @@ namespace Xmpp.Xep.MessageCarbons {
 
     public class Module : XmppStreamModule {
         public const string ID = "0280_message_carbons_module";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         public void enable(XmppStream stream) {
             Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("enable", NS_URI).add_self_xmlns());
@@ -33,7 +34,7 @@ namespace Xmpp.Xep.MessageCarbons {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

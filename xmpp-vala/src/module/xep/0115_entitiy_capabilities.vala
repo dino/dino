@@ -7,6 +7,7 @@ namespace Xmpp.Xep.EntityCapabilities {
 
     public class Module : XmppStreamModule {
         public const string ID = "0115_entity_capabilities";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         private string own_ver_hash;
         private Storage storage;
@@ -36,7 +37,7 @@ namespace Xmpp.Xep.EntityCapabilities {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

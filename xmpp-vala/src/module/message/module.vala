@@ -7,6 +7,7 @@ namespace Xmpp.Message {
 
     public class Module : XmppStreamModule {
         public const string ID = "message_module";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         public signal void pre_send_message(XmppStream stream, Message.Stanza message);
         public signal void pre_received_message(XmppStream stream, Message.Stanza message);
@@ -27,7 +28,7 @@ namespace Xmpp.Message {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

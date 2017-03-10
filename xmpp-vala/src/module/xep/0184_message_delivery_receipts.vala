@@ -7,6 +7,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
 
     public class Module : XmppStreamModule {
         public const string ID = "0184_message_delivery_receipts";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         public signal void receipt_received(XmppStream stream, string jid, string id);
 
@@ -25,7 +26,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

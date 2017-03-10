@@ -9,6 +9,7 @@ namespace Xmpp.Xep.Pgp {
 
     public class Module : XmppStreamModule {
         public const string ID = "0027_current_pgp_usage";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         public signal void received_jid_key_id(XmppStream stream, string jid, string key_id);
 
@@ -52,7 +53,7 @@ namespace Xmpp.Xep.Pgp {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

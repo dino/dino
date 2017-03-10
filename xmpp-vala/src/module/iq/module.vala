@@ -7,6 +7,7 @@ namespace Xmpp.Iq {
 
     public class Module : XmppStreamNegotiationModule {
         public const string ID = "iq_module";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
@@ -38,7 +39,7 @@ namespace Xmpp.Iq {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

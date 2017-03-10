@@ -9,6 +9,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
 
     public class Module : XmppStreamModule, Iq.Handler {
         public const string ID = "0030_service_discovery_module";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         public ArrayList<Identity> identities = new ArrayList<Identity>();
 
@@ -83,7 +84,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
         public override void detach(XmppStream stream) { }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

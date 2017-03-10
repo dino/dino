@@ -30,6 +30,7 @@ public enum MucEnterError {
 
 public class Module : XmppStreamModule {
     public const string ID = "0045_muc_module";
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
     public signal void received_occupant_affiliation(XmppStream stream, string jid, string? affiliation);
     public signal void received_occupant_jid(XmppStream stream, string jid, string? real_jid);
@@ -97,7 +98,7 @@ public class Module : XmppStreamModule {
     }
 
     public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(NS_URI, ID);
+        return (Module?) stream.get_module(IDENTITY);
     }
 
     public static void require(XmppStream stream) {
