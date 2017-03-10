@@ -18,9 +18,11 @@ endif()
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (VALA_CFLAGS -Wno-deprecated-declarations -Wno-incompatible-pointer-types -Wno-int-conversion)
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+set (VALA_CFLAGS -Wno-deprecated-declarations -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-discarded-qualifiers)
 
 add_subdirectory(gpgme-vala)
 add_subdirectory(qlite)
 add_subdirectory(xmpp-vala)
-add_subdirectory(client)
+add_subdirectory(libdino)
+add_subdirectory(main)

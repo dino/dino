@@ -28,6 +28,7 @@ public class Dino.Ui.Application : Gtk.Application {
         ConversationManager.start(stream_interaction, db);
         ChatInteraction.start(stream_interaction);
 
+        Notify.init("dino");
         notifications = new Notifications(stream_interaction);
         notifications.start();
 

@@ -1,20 +1,19 @@
 find_package(Vala REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(GPGME REQUIRED)
-find_package(LIBUUID REQUIRED)
 include(${VALA_USE_FILE})
 include(GlibCompileResourcesSupport)
 
-set(CLIENT_PACKAGES
+set(LIBDINO_PACKAGES
     gee-0.8
     gio-2.0
     glib-2.0
     gtk+-3.0
+    gmodule-2.0
     libnotify
     sqlite3
 )
 
-pkg_check_modules(CLIENT REQUIRED ${CLIENT_PACKAGES})
+pkg_check_modules(LIBDINO REQUIRED ${LIBDINO_PACKAGES})
 
 set(RESOURCE_LIST
     img/double_tick.svg
@@ -52,8 +51,8 @@ set(RESOURCE_LIST
 )
 
 compile_gresources(
-    CLIENT_GRESOURCES_TARGET
-    CLIENT_GRESOURCES_XML
+    LIBDINO_GRESOURCES_TARGET
+    LIBDINO_GRESOURCES_XML
     TARGET ${CMAKE_BINARY_DIR}/resources/resources.c
     TYPE EMBED_C
     RESOURCES ${RESOURCE_LIST}
@@ -61,9 +60,9 @@ compile_gresources(
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
 )
 
-vala_precompile(CLIENT_VALA_C
+vala_precompile(LIBDINO_VALA_C
 SOURCES
-    src/main.vala
+    src/plugin.vala
 
     src/dbus/login1.vala
     src/dbus/networkmanager.vala
@@ -124,25 +123,31 @@ SOURCES
     src/ui/settings_dialog.vala
     src/ui/unified_window.vala
     src/ui/util.vala
+CUSTOM_VAPIS
+    ${CMAKE_BINARY_DIR}/xmpp-vala/xmpp-vala.vapi
+    ${CMAKE_BINARY_DIR}/qlite/qlite.vapi
 PACKAGES
-    ${CLIENT_PACKAGES}
-    xmpp-vala
-    qlite
+    ${LIBDINO_PACKAGES}
+GENERATE_VAPI
+    dino
+GENERATE_HEADER
+    dino
 GRESOURCES
-    ${CLIENT_GRESOURCES_XML}
+    ${LIBDINO_GRESOURCES_XML}
 OPTIONS
     --target-glib=2.38
     -g
     --thread
-    --vapidir=${CMAKE_BINARY_DIR}/xmpp-vala
-    --vapidir=${CMAKE_BINARY_DIR}/qlite
-    --vapidir=${CMAKE_SOURCE_DIR}/vapi
-
 )
 
-set(CFLAGS ${CLIENT_CFLAGS} -g -I${CMAKE_BINARY_DIR}/xmpp-vala -I${CMAKE_BINARY_DIR}/qlite ${VALA_CFLAGS})
+set(CFLAGS ${VALA_CFLAGS} ${LIBDINO_CFLAGS} -I${CMAKE_BINARY_DIR}/xmpp-vala -I${CMAKE_BINARY_DIR}/qlite)
 add_definitions(${CFLAGS})
-add_executable(dino ${CLIENT_VALA_C} ${CLIENT_GRESOURCES_TARGET})
-add_dependencies(dino xmpp-vala-vapi qlite-vapi)
-target_link_libraries(dino xmpp-vala qlite ${CLIENT_LIBRARIES} -lm)
+add_library(libdino SHARED ${LIBDINO_VALA_C} ${LIBDINO_GRESOURCES_TARGET})
+add_dependencies(libdino xmpp-vala-vapi qlite-vapi)
+target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_LIBRARIES} -lm)
+set_target_properties(libdino PROPERTIES PREFIX "")
 
+add_custom_target(dino-vapi
+DEPENDS
+    ${CMAKE_BINARY_DIR}/libdino/dino.vapi
+)

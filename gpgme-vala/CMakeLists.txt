@@ -28,7 +28,7 @@ OPTIONS
     --thread
 )
 
-set(CFLAGS ${GPGME_VALA_CFLAGS} ${GPGME_CFLAGS} -g ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(CFLAGS ${VALA_CFLAGS} ${GPGME_VALA_CFLAGS} ${GPGME_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_definitions(${CFLAGS})
 add_library(gpgme-vala SHARED ${GPGME_VALA_C} src/fix.c)
 target_link_libraries(gpgme-vala ${GPGME_VALA_LIBRARIES} ${GPGME_LIBRARIES})
