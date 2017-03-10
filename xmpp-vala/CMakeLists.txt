@@ -70,9 +70,9 @@ PACKAGES
     ${ENGINE_PACKAGES}
     gpgme
 GENERATE_VAPI
-    vala-xmpp
+    xmpp-vala
 GENERATE_HEADER
-    vala-xmpp
+    xmpp-vala
 OPTIONS
     --target-glib=2.38
     -g
@@ -82,11 +82,11 @@ OPTIONS
 
 set(CFLAGS ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS} -g ${VALA_CFLAGS})
 add_definitions(${CFLAGS})
-add_library(vala-xmpp SHARED ${ENGINE_VALA_C})
-target_link_libraries(vala-xmpp ${ENGINE_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES})
+add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
+target_link_libraries(xmpp-vala ${ENGINE_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES})
 
-add_custom_target(vala-xmpp-vapi
+add_custom_target(xmpp-vala-vapi
 DEPENDS
-    ${CMAKE_BINARY_DIR}/vala-xmpp/vala-xmpp.vapi
+    ${CMAKE_BINARY_DIR}/xmpp-vala/xmpp-vala.vapi
 )
 

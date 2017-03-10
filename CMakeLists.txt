@@ -21,5 +21,5 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (VALA_CFLAGS -Wno-deprecated-declarations -Wno-incompatible-pointer-types -Wno-int-conversion)
 
 add_subdirectory(qlite)
-add_subdirectory(vala-xmpp)
+add_subdirectory(xmpp-vala)
 add_subdirectory(client)
