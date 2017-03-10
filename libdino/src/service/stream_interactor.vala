@@ -22,7 +22,7 @@ public class StreamInteractor {
     }
 
     public void connect(Account account) {
-        module_manager.add_account(account);
+        module_manager.initialize(account);
         account_added(account);
         connection_manager.connect(account);
     }

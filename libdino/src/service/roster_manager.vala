@@ -58,13 +58,13 @@ namespace Dino {
         }
 
         private void on_account_added(Account account) {
-            stream_interactor.module_manager.roster_modules[account].received_roster.connect( (stream, roster) => {
+            stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).received_roster.connect( (stream, roster) => {
                 on_roster_received(account, roster);
             });
-            stream_interactor.module_manager.roster_modules[account].item_removed.connect( (stream, roster_item) => {
+            stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_removed.connect( (stream, roster_item) => {
                 removed_roster_item(account, new Jid(roster_item.jid), roster_item);
             });
-            stream_interactor.module_manager.roster_modules[account].item_updated.connect( (stream, roster_item) => {
+            stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_updated.connect( (stream, roster_item) => {
                 on_roster_item_updated(account, roster_item);
             });
         }

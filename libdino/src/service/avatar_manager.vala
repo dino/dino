@@ -89,10 +89,10 @@ public class AvatarManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.user_avatars_modules[account].received_avatar.connect((stream, jid, id) =>
+        stream_interactor.module_manager.get_module(account, Xep.UserAvatars.Module.IDENTITY).received_avatar.connect((stream, jid, id) =>
             on_user_avatar_received(account, new Jid(jid), id)
         );
-        stream_interactor.module_manager.vcard_modules[account].received_avatar.connect((stream, jid, id) =>
+        stream_interactor.module_manager.get_module(account, Xep.VCard.Module.IDENTITY).received_avatar.connect((stream, jid, id) =>
             on_vcard_avatar_received(account, new Jid(jid), id)
         );
 

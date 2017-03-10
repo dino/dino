@@ -129,9 +129,7 @@ public class XmppStream {
     public T? get_module<T>(ModuleIdentity<T>? identity) {
         if (identity == null) return null;
         foreach (var module in modules) {
-            if (module.get_ns() == identity.ns && module.get_id() == identity.id) {
-                return module;
-            }
+            if (identity.matches(module)) return identity.cast(module);
         }
         return null;
     }
@@ -243,6 +241,10 @@ public class ModuleIdentity<T> : Object {
 
     public T? cast(XmppStreamModule module) {
         return (T?) module;
+    }
+
+    public bool matches(XmppStreamModule module) {
+        return module.get_ns() == ns && module.get_id() == id;
     }
 }
 
