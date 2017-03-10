@@ -7,6 +7,7 @@ namespace Xmpp.Xep.UserAvatars {
 
     public class Module : XmppStreamModule {
         public const string ID = "0084_user_avatars";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         public signal void received_avatar(XmppStream stream, string jid, string id);
 
@@ -73,7 +74,7 @@ namespace Xmpp.Xep.UserAvatars {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

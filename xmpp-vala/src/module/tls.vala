@@ -5,6 +5,7 @@ namespace Xmpp.Tls {
 
     public class Module : XmppStreamNegotiationModule {
         public const string ID = "tls_module";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         public bool require { get; set; default = true; }
         public bool server_supports_tls = false;
@@ -67,7 +68,7 @@ namespace Xmpp.Tls {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {

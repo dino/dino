@@ -8,6 +8,7 @@ namespace Xmpp.Xep.Pubsub {
 
     public class Module : XmppStreamModule {
         public const string ID = "0060_pubsub_module";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         private HashMap<string, EventListenerDelegate> event_listeners = new HashMap<string, EventListenerDelegate>();
 
@@ -70,7 +71,7 @@ namespace Xmpp.Xep.Pubsub {
         }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

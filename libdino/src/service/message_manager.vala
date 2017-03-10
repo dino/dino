@@ -75,7 +75,7 @@ public class MessageManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.message_modules[account].received_message.connect( (stream, message) => {
+        stream_interactor.module_manager.get_module(account, Xmpp.Message.Module.IDENTITY).received_message.connect( (stream, message) => {
             on_message_received(account, message);
         });
         stream_interactor.stream_negotiated.connect(send_unsent_messages);

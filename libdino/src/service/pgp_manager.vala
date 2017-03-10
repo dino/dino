@@ -1,5 +1,6 @@
 using Gee;
 
+using Xmpp;
 using Dino.Entities;
 
 namespace Dino {
@@ -37,7 +38,7 @@ namespace Dino {
         }
 
         private void on_account_added(Account account) {
-            stream_interactor.module_manager.pgp_modules[account].received_jid_key_id.connect((stream, jid, key_id) => {
+            stream_interactor.module_manager.get_module(account, Xep.Pgp.Module.IDENTITY).received_jid_key_id.connect((stream, jid, key_id) => {
                 on_jid_key_received(account, new Jid(jid), key_id);
             });
         }

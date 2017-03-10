@@ -13,6 +13,7 @@ private const string[] MARKERS = {MARKER_RECEIVED, MARKER_DISPLAYED, MARKER_ACKN
 
 public class Module : XmppStreamModule {
     public const string ID = "0333_chat_markers";
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
     public signal void marker_received(XmppStream stream, string jid, string marker, string id);
 
@@ -45,7 +46,7 @@ public class Module : XmppStreamModule {
     }
 
     public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(NS_URI, ID);
+        return (Module?) stream.get_module(IDENTITY);
     }
 
     public static void require(XmppStream stream) {

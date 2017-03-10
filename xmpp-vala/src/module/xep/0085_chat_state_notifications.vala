@@ -15,6 +15,7 @@ private const string[] STATES = {STATE_ACTIVE, STATE_INACTIVE, STATE_GONE, STATE
 
 public class Module : XmppStreamModule {
     public const string ID = "0085_chat_state_notifications";
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
     public signal void chat_state_received(XmppStream stream, string jid, string state);
 
@@ -42,7 +43,7 @@ public class Module : XmppStreamModule {
     }
 
     public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(NS_URI, ID);
+        return (Module?) stream.get_module(IDENTITY);
     }
 
     public static void require(XmppStream stream) {

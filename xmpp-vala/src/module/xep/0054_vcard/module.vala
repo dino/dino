@@ -6,6 +6,7 @@ private const string NS_URI_UPDATE = NS_URI + ":x:update";
 
 public class Module : XmppStreamModule {
     public const string ID = "0027_current_pgp_usage";
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
     public signal void received_avatar(XmppStream stream, string jid, string id);
 
@@ -26,7 +27,7 @@ public class Module : XmppStreamModule {
     }
 
     public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(NS_URI, ID);
+        return (Module?) stream.get_module(IDENTITY);
     }
 
     public static void require(XmppStream stream) {

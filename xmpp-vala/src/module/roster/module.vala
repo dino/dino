@@ -7,6 +7,7 @@ namespace Xmpp.Roster {
 
     public class Module : XmppStreamModule, Iq.Handler {
         public const string ID = "roster_module";
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
         public signal void received_roster(XmppStream stream, Collection<Item> roster);
         public signal void item_removed(XmppStream stream, Item roster_item);
@@ -72,7 +73,7 @@ namespace Xmpp.Roster {
         public void on_iq_get(XmppStream stream, Iq.Stanza iq) { }
 
         public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(NS_URI, ID);
+            return (Module?) stream.get_module(IDENTITY);
         }
 
         public static void require(XmppStream stream) {

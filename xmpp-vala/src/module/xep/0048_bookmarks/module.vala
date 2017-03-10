@@ -7,6 +7,7 @@ private const string NS_URI = "storage:bookmarks";
 
 public class Module : XmppStreamModule {
     public const string ID = "0048_bookmarks_module";
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
     public signal void conferences_updated(XmppStream stream, ArrayList<Conference> conferences);
 
@@ -110,7 +111,7 @@ public class Module : XmppStreamModule {
     public override void detach(XmppStream stream) { }
 
     public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(NS_URI, ID);
+        return (Module?) stream.get_module(IDENTITY);
     }
 
     public static void require(XmppStream stream) {

@@ -144,10 +144,10 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.muc_modules[account].subject_set.connect( (stream, subject, jid) => {
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).subject_set.connect( (stream, subject, jid) => {
             on_subject_set(account, new Jid(jid), subject);
         });
-        stream_interactor.module_manager.bookmarks_module[account].conferences_updated.connect( (stream, conferences) => {
+        stream_interactor.module_manager.get_module(account, Xep.Bookmarks.Module.IDENTITY).conferences_updated.connect( (stream, conferences) => {
             bookmarks_updated(account, conferences);
         });
     }

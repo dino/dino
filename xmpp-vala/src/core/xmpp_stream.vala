@@ -126,11 +126,10 @@ public class XmppStream {
         foreach (XmppStreamModule module in modules) module.detach(this);
     }
 
-    public XmppStreamModule? get_module(string ns, string id) {
+    public T? get_module<T>(ModuleIdentity<T>? identity) {
+        if (identity == null) return null;
         foreach (var module in modules) {
-            if (module.get_ns() == ns && module.get_id() == id) {
-                return module;
-            }
+            if (identity.matches(module)) return identity.cast(module);
         }
         return null;
     }
@@ -229,6 +228,24 @@ public class XmppStream {
 public abstract class XmppStreamFlag {
     public abstract string get_ns();
     public abstract string get_id();
+}
+
+public class ModuleIdentity<T> : Object {
+    public string ns { get; private set; }
+    public string id { get; private set; }
+
+    public ModuleIdentity(string ns, string id) {
+        this.ns = ns;
+        this.id = id;
+    }
+
+    public T? cast(XmppStreamModule module) {
+        return (T?) module;
+    }
+
+    public bool matches(XmppStreamModule module) {
+        return module.get_ns() == ns && module.get_id() == id;
+    }
 }
 
 public abstract class XmppStreamModule : Object {
