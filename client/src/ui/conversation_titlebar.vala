@@ -2,19 +2,17 @@ using Gtk;
 
 using Dino.Entities;
 
+namespace Dino.Ui {
+
 [GtkTemplate (ui = "/org/dino-im/conversation_titlebar.ui")]
-public class Dino.Ui.ConversationTitlebar : Gtk.HeaderBar {
+public class ConversationTitlebar : Gtk.HeaderBar {
 
-    [GtkChild]
-    private MenuButton menu_button;
+    [GtkChild] private MenuButton menu_button;
+    [GtkChild] private MenuButton encryption_button;
+    [GtkChild] private MenuButton groupchat_button;
 
-    [GtkChild]
-    private MenuButton encryption_button;
     private RadioButton? button_unencrypted;
     private RadioButton? button_pgp;
-
-    [GtkChild]
-    private MenuButton groupchat_button;
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
@@ -122,3 +120,4 @@ public class Dino.Ui.ConversationTitlebar : Gtk.HeaderBar {
     }
 }
 
+}

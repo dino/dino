@@ -4,17 +4,15 @@ using Gtk;
 using Dino.Entities;
 
 namespace Dino.Ui{
+
 [GtkTemplate (ui = "/org/dino-im/occupant_list.ui")]
 public class OccupantList : Box {
 
     public signal void conversation_selected(Conversation? conversation);
     private StreamInteractor stream_interactor;
 
-    [GtkChild]
-    private ListBox list_box;
-
-    [GtkChild]
-    private SearchEntry search_entry;
+    [GtkChild] private ListBox list_box;
+    [GtkChild] private SearchEntry search_entry;
 
     private Conversation? conversation;
     private string[]? filter_values;
@@ -109,4 +107,5 @@ public class OccupantList : Box {
         return 0;
     }
 }
+
 }

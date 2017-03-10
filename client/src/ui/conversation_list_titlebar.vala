@@ -2,16 +2,15 @@ using Gtk;
 
 using Dino.Entities;
 
+namespace Dino.Ui {
+
 [GtkTemplate (ui = "/org/dino-im/conversation_list_titlebar.ui")]
-public class Dino.Ui.ConversationListTitlebar : Gtk.HeaderBar {
+public class ConversationListTitlebar : Gtk.HeaderBar {
 
     public signal void conversation_opened(Conversation conversation);
 
-    [GtkChild]
-    private MenuButton add_button;
-
-    [GtkChild]
-    public ToggleButton search_button;
+    [GtkChild] private MenuButton add_button;
+    [GtkChild] public ToggleButton search_button;
 
     private StreamInteractor stream_interactor;
 
@@ -45,3 +44,4 @@ public class Dino.Ui.ConversationListTitlebar : Gtk.HeaderBar {
     }
 }
 
+}

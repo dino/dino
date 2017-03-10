@@ -6,6 +6,7 @@ using Gtk;
 using Dino.Entities;
 
 namespace Dino.Ui {
+
 public class AvatarGenerator {
 
     private const string COLOR_GREY = "E0E0E0";
@@ -230,4 +231,5 @@ public class AvatarGenerator {
                             hex_color.length > 6 ? (double) hex_color.substring(6, 2).to_long(null, 16) / 255 : 1);
     }
 }
+
 }

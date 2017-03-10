@@ -6,11 +6,11 @@ using Dino.Entities;
 using Xmpp;
 
 namespace Dino.Ui {
+
 [GtkTemplate (ui = "/org/dino-im/chat_input.ui")]
 public class ChatInput : Grid {
 
-    [GtkChild]
-    private TextView text_input;
+    [GtkChild] private TextView text_input;
 
     private Conversation? conversation;
     private StreamInteractor stream_interactor;
@@ -120,4 +120,5 @@ public class ChatInput : Grid {
         return false;
     }
 }
+
 }

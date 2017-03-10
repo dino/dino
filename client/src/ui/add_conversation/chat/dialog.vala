@@ -79,4 +79,5 @@ public class Dialog : Gtk.Dialog {
         close();
     }
 }
+
 }

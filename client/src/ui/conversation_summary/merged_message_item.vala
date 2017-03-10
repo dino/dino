@@ -15,23 +15,12 @@ public class MergedMessageItem : Grid {
     public DateTime initial_time { get; private set; }
     public ArrayList<Message> messages = new ArrayList<Message>(Message.equals_func);
 
-    [GtkChild]
-    private Image image;
-
-    [GtkChild]
-    private Label time_label;
-
-    [GtkChild]
-    private Label name_label;
-
-    [GtkChild]
-    private Image encryption_image;
-
-    [GtkChild]
-    private Image received_image;
-
-    [GtkChild]
-    private TextView message_text_view;
+    [GtkChild] private Image image;
+    [GtkChild] private Label time_label;
+    [GtkChild] private Label name_label;
+    [GtkChild] private Image encryption_image;
+    [GtkChild] private Image received_image;
+    [GtkChild] private TextView message_text_view;
 
     public MergedMessageItem(StreamInteractor stream_interactor, Conversation conversation, Message message) {
         this.conversation = conversation;

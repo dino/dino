@@ -5,11 +5,8 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/org/dino-im/settings_dialog.ui")]
 class SettingsDialog : Dialog {
 
-    [GtkChild]
-    private CheckButton marker_checkbutton;
-
-    [GtkChild]
-    private CheckButton emoji_checkbutton;
+    [GtkChild] private CheckButton marker_checkbutton;
+    [GtkChild] private CheckButton emoji_checkbutton;
 
     Dino.Settings settings = Dino.Settings.instance();
 

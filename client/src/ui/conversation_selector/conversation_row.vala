@@ -11,29 +11,14 @@ namespace Dino.Ui.ConversationSelector {
 [GtkTemplate (ui = "/org/dino-im/conversation_selector/conversation_row.ui")]
 public abstract class ConversationRow : ListBoxRow {
 
-    [GtkChild]
-    protected Image image;
-
-    [GtkChild]
-    private Label name_label;
-
-    [GtkChild]
-    private Label time_label;
-
-    [GtkChild]
-    private Label message_label;
-
-    [GtkChild]
-    protected Button x_button;
-
-    [GtkChild]
-    private Revealer time_revealer;
-
-    [GtkChild]
-    private Revealer xbutton_revealer;
-
-    [GtkChild]
-    public Revealer main_revealer;
+    [GtkChild] protected Image image;
+    [GtkChild] private Label name_label;
+    [GtkChild] private Label time_label;
+    [GtkChild] private Label message_label;
+    [GtkChild] protected Button x_button;
+    [GtkChild] private Revealer time_revealer;
+    [GtkChild] private Revealer xbutton_revealer;
+    [GtkChild] public Revealer main_revealer;
 
     public Conversation conversation { get; private set; }
 
@@ -170,6 +155,6 @@ public abstract class ConversationRow : ListBoxRow {
              return "Just now";
          }
     }
-
 }
+
 }

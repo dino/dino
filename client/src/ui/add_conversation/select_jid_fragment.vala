@@ -17,20 +17,11 @@ public class SelectJidFragment : Gtk.Box {
         }
         private set {} }
 
-    [GtkChild]
-    private Entry entry;
-
-    [GtkChild]
-    private Box box;
-
-    [GtkChild]
-    private Button add_button;
-
-    [GtkChild]
-    private Button edit_button;
-
-    [GtkChild]
-    private Button remove_button;
+    [GtkChild] private Entry entry;
+    [GtkChild] private Box box;
+    [GtkChild] private Button add_button;
+    [GtkChild] private Button edit_button;
+    [GtkChild] private Button remove_button;
 
     private FilterableList filterable_list;
     private ArrayList<AddListRow> added_rows = new ArrayList<AddListRow>();

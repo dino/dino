@@ -6,6 +6,7 @@ using Xmpp;
 using Dino.Entities;
 
 namespace Dino.Ui.ConversationSelector {
+
 public class ChatRow : ConversationRow {
 
     public ChatRow(StreamInteractor stream_interactor, Conversation conversation) {
@@ -85,4 +86,5 @@ public class ChatRow : ConversationRow {
         return main_box;
     }
 }
+
 }

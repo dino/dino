@@ -5,6 +5,7 @@ using Dino.Entities;
 using Xmpp;
 
 namespace Dino.Ui.AddConversation.Chat {
+
 protected class RosterList : FilterableList {
 
     public signal void conversation_selected(Conversation? conversation);
@@ -74,4 +75,5 @@ protected class RosterList : FilterableList {
         return c1.name_label.label.collate(c2.name_label.label);
     }
 }
+
 }

@@ -8,11 +8,8 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/org/dino-im/occupant_list_item.ui")]
 public class OccupantListRow : ListBoxRow {
 
-    [GtkChild]
-    private Image image;
-
-    [GtkChild]
-    public Label name_label;
+    [GtkChild] private Image image;
+    [GtkChild] public Label name_label;
 
     public OccupantListRow(StreamInteractor stream_interactor, Account account, Jid jid) {
         name_label.label = Util.get_display_name(stream_interactor, jid, account);
@@ -24,4 +21,5 @@ public class OccupantListRow : ListBoxRow {
 
     }
 }
+
 }

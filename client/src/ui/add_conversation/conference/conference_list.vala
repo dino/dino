@@ -5,6 +5,7 @@ using Xmpp;
 using Dino.Entities;
 
 namespace Dino.Ui.AddConversation.Conference {
+
 protected class ConferenceList : FilterableList {
 
     public signal void conversation_selected(Conversation? conversation);
@@ -102,4 +103,5 @@ internal class ConferenceListRow : ListRow {
         image.set_from_pixbuf((new AvatarGenerator(35, 35)).set_stateless(true).draw_jid(stream_interactor, jid, account));
     }
 }
+
 }

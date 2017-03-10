@@ -3,7 +3,9 @@ using Gtk;
 using Dino.Entities;
 using Xmpp;
 
-public class Dino.Ui.Util : GLib.Object {
+namespace Dino.Ui {
+
+public class Util : Object {
 
     private const string[] tango_colors_light = {"FCE94F", "FCAF3E", "E9B96E", "8AE234", "729FCF", "AD7FA8", "EF2929"};
     private const string[] tango_colors_medium = {"EDD400", "F57900", "C17D11", "73D216", "3465A4", "75507B", "CC0000"};
@@ -68,4 +70,6 @@ public class Dino.Ui.Util : GLib.Object {
         if (scale == 0) scale = image.get_scale_factor();
         image.set_from_surface(Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window()));
     }
+}
+
 }

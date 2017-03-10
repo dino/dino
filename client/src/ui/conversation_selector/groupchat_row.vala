@@ -1,6 +1,7 @@
 using Dino.Entities;
 
 namespace Dino.Ui.ConversationSelector {
+
 public class GroupchatRow : ConversationRow {
 
     public GroupchatRow(StreamInteractor stream_interactor, Conversation conversation) {
@@ -30,4 +31,5 @@ public class GroupchatRow : ConversationRow {
         MucManager.get_instance(stream_interactor).part(conversation.account, conversation.counterpart);
     }
 }
+
 }

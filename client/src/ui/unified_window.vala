@@ -2,7 +2,9 @@ using Gtk;
 
 using Dino.Entities;
 
-public class Dino.Ui.UnifiedWindow : Window {
+namespace Dino.Ui {
+
+public class UnifiedWindow : Window {
     public ChatInput chat_input;
     public ConversationListTitlebar conversation_list_titlebar;
     public ConversationSelector.View filterable_conversation_list;
@@ -76,3 +78,4 @@ public class Dino.Ui.UnifiedWindow : Window {
     }
 }
 
+}

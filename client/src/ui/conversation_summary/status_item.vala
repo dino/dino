@@ -26,4 +26,5 @@ private class StatusItem : Grid {
         show_all();
     }
 }
+
 }

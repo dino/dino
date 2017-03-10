@@ -8,14 +8,9 @@ namespace Dino.Ui.AddConversation {
 [GtkTemplate (ui = "/org/dino-im/add_conversation/list_row.ui")]
 public class ListRow : ListBoxRow {
 
-    [GtkChild]
-    public Image image;
-
-    [GtkChild]
-    public Label name_label;
-
-    [GtkChild]
-    public Label via_label;
+    [GtkChild] public Image image;
+    [GtkChild] public Label name_label;
+    [GtkChild] public Label via_label;
 
     public Jid? jid;
     public Account? account;
@@ -40,4 +35,5 @@ public class ListRow : ListBoxRow {
         image.set_from_pixbuf((new AvatarGenerator(35, 35)).draw_jid(stream_interactor, jid, account));
     }
 }
+
 }

@@ -8,23 +8,12 @@ namespace Dino.Ui.AddConversation.Chat {
 [GtkTemplate (ui = "/org/dino-im/add_conversation/add_contact_dialog.ui")]
 protected class AddContactDialog : Gtk.Dialog {
 
-    [GtkChild]
-    private ComboBoxText accounts_comboboxtext;
-
-    [GtkChild]
-    private Button ok_button;
-
-    [GtkChild]
-    private Button cancel_button;
-
-    [GtkChild]
-    private Entry jid_entry;
-
-    [GtkChild]
-    private Entry alias_entry;
-
-    [GtkChild]
-    private CheckButton subscribe_checkbutton;
+    [GtkChild] private ComboBoxText accounts_comboboxtext;
+    [GtkChild] private Button ok_button;
+    [GtkChild] private Button cancel_button;
+    [GtkChild] private Entry jid_entry;
+    [GtkChild] private Entry alias_entry;
+    [GtkChild] private CheckButton subscribe_checkbutton;
 
     private StreamInteractor stream_interactor;
 

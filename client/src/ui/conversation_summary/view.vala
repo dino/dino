@@ -13,11 +13,8 @@ public class View : Box {
     public Conversation? conversation { get; private set; }
     public HashMap<Entities.Message, MergedMessageItem> message_items = new HashMap<Entities.Message, MergedMessageItem>(Entities.Message.hash_func, Entities.Message.equals_func);
 
-    [GtkChild]
-    private ScrolledWindow scrolled;
-
-    [GtkChild]
-    private Box main;
+    [GtkChild] private ScrolledWindow scrolled;
+    [GtkChild] private Box main;
 
     private StreamInteractor stream_interactor;
     private MergedMessageItem? last_message_item;
@@ -219,4 +216,5 @@ public class View : Box {
         main.@foreach((widget) => { main.remove(widget); });
     }
 }
+
 }

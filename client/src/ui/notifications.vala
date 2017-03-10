@@ -2,6 +2,7 @@ using Dino.Entities;
 using Xmpp;
 
 namespace Dino.Ui {
+
 public class Notifications : GLib.Object {
 
     private StreamInteractor stream_interactor;
@@ -52,4 +53,5 @@ public class Notifications : GLib.Object {
         } catch (Error error) { }
     }
 }
+
 }

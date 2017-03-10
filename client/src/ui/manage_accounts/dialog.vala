@@ -20,14 +20,17 @@ public class Dialog : Gtk.Window {
     [GtkChild] public Button image_button;
     [GtkChild] public Label jid_label;
     [GtkChild] public Switch active_switch;
+
     [GtkChild] public Stack password_stack;
     [GtkChild] public Label password_label;
     [GtkChild] public Button password_button;
     [GtkChild] public Entry password_entry;
+
     [GtkChild] public Stack alias_stack;
     [GtkChild] public Label alias_label;
     [GtkChild] public Button alias_button;
     [GtkChild] public Entry alias_entry;
+
     [GtkChild] public Stack pgp_stack;
     [GtkChild] public Label pgp_label;
     [GtkChild] public Button pgp_button;
@@ -189,5 +192,6 @@ public class Dialog : Gtk.Window {
         if (stack != pgp_stack) pgp_stack.set_visible_child_name("label");
     }
 }
+
 }
 

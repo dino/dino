@@ -7,11 +7,8 @@ namespace Dino.Ui.ManageAccounts {
 [GtkTemplate (ui = "/org/dino-im/manage_accounts/account_row.ui")]
 public class AccountRow :  Gtk.ListBoxRow {
 
-    [GtkChild]
-    public Image image;
-
-    [GtkChild]
-    public Label jid_label;
+    [GtkChild] public Image image;
+    [GtkChild] public Label jid_label;
 
     public Account account;
 
@@ -21,4 +18,5 @@ public class AccountRow :  Gtk.ListBoxRow {
         jid_label.set_label(account.bare_jid.to_string());
     }
 }
+
 }

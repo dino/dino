@@ -10,20 +10,11 @@ public class AddAccountDialog : Gtk.Dialog {
 
     public signal void added(Account account);
 
-    [GtkChild]
-    private Button cancel_button;
-
-    [GtkChild]
-    private Button ok_button;
-
-    [GtkChild]
-    private Entry alias_entry;
-
-    [GtkChild]
-    private Entry jid_entry;
-
-    [GtkChild]
-    private Entry password_entry;
+    [GtkChild] private Button cancel_button;
+    [GtkChild] private Button ok_button;
+    [GtkChild] private Entry alias_entry;
+    [GtkChild] private Entry jid_entry;
+    [GtkChild] private Entry password_entry;
 
     public AddAccountDialog(StreamInteractor stream_interactor) {
         Object(use_header_bar : 1);
@@ -67,4 +58,5 @@ public class AddAccountDialog : Gtk.Dialog {
         close();
     }
 }
+
 }

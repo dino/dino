@@ -5,6 +5,7 @@ using Xmpp;
 using Dino.Entities;
 
 namespace Dino.Ui.ConversationSelector {
+
 public class List : ListBox {
 
     public signal void conversation_selected(Conversation conversation);
@@ -170,4 +171,5 @@ public class List : ListBox {
         return 0;
     }
 }
+
 }

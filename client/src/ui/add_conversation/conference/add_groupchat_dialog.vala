@@ -8,32 +8,15 @@ namespace Dino.Ui.AddConversation.Conference {
 [GtkTemplate (ui = "/org/dino-im/add_conversation/add_groupchat_dialog.ui")]
 protected class AddGroupchatDialog : Gtk.Dialog {
 
-    [GtkChild]
-    private Stack accounts_stack;
-
-    [GtkChild]
-    private ComboBoxText accounts_comboboxtext;
-
-    [GtkChild]
-    private Label account_label;
-
-    [GtkChild]
-    private Button ok_button;
-
-    [GtkChild]
-    private Button cancel_button;
-
-    [GtkChild]
-    private Entry jid_entry;
-
-    [GtkChild]
-    private Entry alias_entry;
-
-    [GtkChild]
-    private Entry nick_entry;
-
-    [GtkChild]
-    private CheckButton autojoin_checkbutton;
+    [GtkChild] private Stack accounts_stack;
+    [GtkChild] private ComboBoxText accounts_comboboxtext;
+    [GtkChild] private Label account_label;
+    [GtkChild] private Button ok_button;
+    [GtkChild] private Button cancel_button;
+    [GtkChild] private Entry jid_entry;
+    [GtkChild] private Entry alias_entry;
+    [GtkChild] private Entry nick_entry;
+    [GtkChild] private CheckButton autojoin_checkbutton;
 
     private StreamInteractor stream_interactor;
     private Xmpp.Xep.Bookmarks.Conference? edit_confrence = null;
@@ -104,4 +87,5 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         close();
     }
 }
+
 }

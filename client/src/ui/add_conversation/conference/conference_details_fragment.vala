@@ -53,53 +53,25 @@ protected class ConferenceDetailsFragment : Box {
         }
     }
 
-    [GtkChild]
-    private Stack accounts_stack;
+    [GtkChild] private Stack accounts_stack;
+    [GtkChild] private Button accounts_button;
+    [GtkChild] private Label accounts_label;
+    [GtkChild] private ComboBoxText accounts_comboboxtext;
 
-    [GtkChild]
-    private Stack jid_stack;
+    [GtkChild] private Stack jid_stack;
+    [GtkChild] private Button jid_button;
+    [GtkChild] private Label jid_label;
+    [GtkChild] private Entry jid_entry;
 
-    [GtkChild]
-    private Stack nick_stack;
+    [GtkChild] private Stack nick_stack;
+    [GtkChild] private Button nick_button;
+    [GtkChild] private Label nick_label;
+    [GtkChild] private Entry nick_entry;
 
-    [GtkChild]
-    private Stack password_stack;
-
-    [GtkChild]
-    private Button accounts_button;
-
-    [GtkChild]
-    private Button jid_button;
-
-    [GtkChild]
-    private Button nick_button;
-
-    [GtkChild]
-    private Button password_button;
-
-    [GtkChild]
-    private Label accounts_label;
-
-    [GtkChild]
-    private Label jid_label;
-
-    [GtkChild]
-    private Label nick_label;
-
-    [GtkChild]
-    private Label password_label;
-
-    [GtkChild]
-    private ComboBoxText accounts_comboboxtext;
-
-    [GtkChild]
-    private Entry jid_entry;
-
-    [GtkChild]
-    private Entry nick_entry;
-
-    [GtkChild]
-    private Entry password_entry;
+    [GtkChild] private Stack password_stack;
+    [GtkChild] private Button password_button;
+    [GtkChild] private Label password_label;
+    [GtkChild] private Entry password_entry;
 
     private StreamInteractor stream_interactor;
 
