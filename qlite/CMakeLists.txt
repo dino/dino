@@ -34,7 +34,7 @@ OPTIONS
     --vapidir=${CMAKE_SOURCE_DIR}/vapi
 )
 
-set(CFLAGS ${QLITE_CFLAGS} -g ${VALA_CFLAGS})
+set(CFLAGS ${VALA_CFLAGS} ${QLITE_CFLAGS})
 add_definitions(${CFLAGS})
 add_library(qlite SHARED ${QLITE_VALA_C})
 target_link_libraries(qlite ${QLITE_LIBRARIES})

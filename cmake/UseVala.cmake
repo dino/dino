@@ -115,8 +115,10 @@ function(_vala_mkdir_for_file file)
 endfunction()
 
 function(vala_precompile output)
-    cmake_parse_arguments(ARGS "" "DIRECTORY;GENERATE_HEADER;GENERATE_VAPI"
+    cmake_parse_arguments(ARGS "FAST_VAPI" "DIRECTORY;GENERATE_HEADER;GENERATE_VAPI"
         "SOURCES;PACKAGES;OPTIONS;DEFINITIONS;CUSTOM_VAPIS;GRESOURCES" ${ARGN})
+
+    set(ARGS_FAST_VAPI true)
 
     if(ARGS_DIRECTORY)
         get_filename_component(DIRECTORY ${ARGS_DIRECTORY} ABSOLUTE)
@@ -159,7 +161,8 @@ function(vala_precompile output)
     set(vapi_arguments "")
     if(ARGS_GENERATE_VAPI)
         list(APPEND out_extra_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}.vapi")
-        set(vapi_arguments "--vapi=${ARGS_GENERATE_VAPI}.vapi")
+        list(APPEND out_extra_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}-internal.vapi")
+        set(vapi_arguments "--vapi=${ARGS_GENERATE_VAPI}.vapi" "--internal-vapi=${ARGS_GENERATE_VAPI}-internal.vapi")
 
         # Header and internal header is needed to generate internal vapi
         if (NOT ARGS_GENERATE_HEADER)
@@ -175,80 +178,115 @@ function(vala_precompile output)
         list(APPEND header_arguments "--internal-header=${DIRECTORY}/${ARGS_GENERATE_HEADER}_internal.h")
     endif(ARGS_GENERATE_HEADER)
 
-    foreach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
-        set(in_file "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
-        list(APPEND in_files "${in_file}")
-        string(REPLACE ".vala" ".c" src ${src})
-        string(REPLACE ".gs" ".c" src ${src})
-        string(REPLACE ".c" ".vapi" fast_vapi ${src})
-        set(fast_vapi_file "${DIRECTORY}/${fast_vapi}")
-        list(APPEND fast_vapi_files "${fast_vapi_file}")
-        list(APPEND out_files "${DIRECTORY}/${src}")
+    if(ARGS_FAST_VAPI)
+        foreach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
+            set(in_file "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
+            list(APPEND in_files "${in_file}")
+            string(REPLACE ".vala" ".c" src ${src})
+            string(REPLACE ".gs" ".c" src ${src})
+            string(REPLACE ".c" ".vapi" fast_vapi ${src})
+            set(fast_vapi_file "${DIRECTORY}/${fast_vapi}")
+            list(APPEND fast_vapi_files "${fast_vapi_file}")
+            list(APPEND out_files "${DIRECTORY}/${src}")
 
-        _vala_mkdir_for_file("${fast_vapi_file}")
+            _vala_mkdir_for_file("${fast_vapi_file}")
 
-        add_custom_command(OUTPUT ${fast_vapi_file}
+            add_custom_command(OUTPUT ${fast_vapi_file}
+            COMMAND
+                ${VALA_EXECUTABLE}
+            ARGS
+                --fast-vapi ${fast_vapi_file}
+                ${ARGS_OPTIONS}
+                ${in_file}
+            DEPENDS
+                ${in_file}
+            COMMENT
+                "Generating fast VAPI ${fast_vapi}"
+            )
+        endforeach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
+
+        foreach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
+            set(in_file "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
+            string(REPLACE ".vala" ".c" c_code ${src})
+            string(REPLACE ".gs" ".c" c_code ${c_code})
+            string(REPLACE ".c" ".vapi" fast_vapi ${c_code})
+            set(my_fast_vapi_file "${DIRECTORY}/${fast_vapi}")
+            set(c_code_file "${DIRECTORY}/${c_code}")
+            set(fast_vapi_flags "")
+            set(fast_vapi_stamp "")
+            foreach(fast_vapi_file ${fast_vapi_files})
+                if(NOT "${fast_vapi_file}" STREQUAL "${my_fast_vapi_file}")
+                    list(APPEND fast_vapi_flags --use-fast-vapi "${fast_vapi_file}")
+                    list(APPEND fast_vapi_stamp "${fast_vapi_file}")
+                endif()
+            endforeach(fast_vapi_file)
+
+            _vala_mkdir_for_file("${fast_vapi_file}")
+            get_filename_component(dir "${c_code_file}" DIRECTORY)
+
+            add_custom_command(OUTPUT ${c_code_file}
+            COMMAND
+                ${VALA_EXECUTABLE}
+            ARGS
+                "-C"
+                "-d" ${dir}
+                ${vala_pkg_opts}
+                ${vala_define_opts}
+                ${gresources_args}
+                ${ARGS_OPTIONS}
+                ${fast_vapi_flags}
+                ${in_file}
+                ${custom_vapi_arguments}
+            DEPENDS
+                ${fast_vapi_stamp}
+                ${in_file}
+                ${ARGS_CUSTOM_VAPIS}
+                ${ARGS_GRESOURCES}
+            COMMENT
+                "Generating C source ${c_code}"
+            )
+        endforeach(src)
+
+        if(NOT "${out_extra_files}" STREQUAL "")
+            add_custom_command(OUTPUT ${out_extra_files}
+            COMMAND
+                ${VALA_EXECUTABLE}
+            ARGS
+                -C -q --disable-warnings
+                ${header_arguments}
+                ${vapi_arguments}
+                "-b" ${CMAKE_CURRENT_SOURCE_DIR}
+                "-d" ${DIRECTORY}
+                ${vala_pkg_opts}
+                ${vala_define_opts}
+                ${gresources_args}
+                ${ARGS_OPTIONS}
+                ${in_files}
+                ${custom_vapi_arguments}
+            DEPENDS
+                ${in_files}
+                ${ARGS_CUSTOM_VAPIS}
+                ${ARGS_GRESOURCES}
+            COMMENT
+                "Generating VAPI and headers for linking"
+            )
+        endif()
+    else(ARGS_FAST_VAPI)
+        foreach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
+            set(in_file "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
+            list(APPEND in_files "${in_file}")
+            string(REPLACE ".vala" ".c" src ${src})
+            string(REPLACE ".gs" ".c" src ${src})
+            list(APPEND out_files "${DIRECTORY}/${src}")
+
+            _vala_mkdir_for_file("${fast_vapi_file}")
+        endforeach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
+
+        add_custom_command(OUTPUT ${out_files} ${out_extra_files}
         COMMAND
             ${VALA_EXECUTABLE}
         ARGS
-            --fast-vapi ${fast_vapi_file}
-            ${ARGS_OPTIONS}
-            ${in_file}
-        DEPENDS
-            ${in_file}
-        COMMENT
-            "Generating fast VAPI ${fast_vapi}"
-        )
-    endforeach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
-
-    foreach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
-        set(in_file "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
-        string(REPLACE ".vala" ".c" c_code ${src})
-        string(REPLACE ".gs" ".c" c_code ${c_code})
-        string(REPLACE ".c" ".vapi" fast_vapi ${c_code})
-        set(my_fast_vapi_file "${DIRECTORY}/${fast_vapi}")
-        set(c_code_file "${DIRECTORY}/${c_code}")
-        set(fast_vapi_flags "")
-        set(fast_vapi_stamp "")
-        foreach(fast_vapi_file ${fast_vapi_files})
-            if(NOT "${fast_vapi_file}" STREQUAL "${my_fast_vapi_file}")
-                list(APPEND fast_vapi_flags --use-fast-vapi "${fast_vapi_file}")
-                list(APPEND fast_vapi_stamp "${fast_vapi_file}")
-            endif()
-        endforeach(fast_vapi_file)
-
-        _vala_mkdir_for_file("${fast_vapi_file}")
-        get_filename_component(dir "${c_code_file}" DIRECTORY)
-
-        add_custom_command(OUTPUT ${c_code_file}
-        COMMAND
-            ${VALA_EXECUTABLE}
-        ARGS
-            "-C"
-            "-d" ${dir}
-            ${vala_pkg_opts}
-            ${vala_define_opts}
-            ${gresources_args}
-            ${ARGS_OPTIONS}
-            ${fast_vapi_flags}
-            ${in_file}
-            ${custom_vapi_arguments}
-        DEPENDS
-            ${fast_vapi_stamp}
-            ${in_file}
-            ${ARGS_CUSTOM_VAPIS}
-            ${ARGS_GRESOURCES}
-        COMMENT
-            "Generating C source ${c_code}"
-        )
-    endforeach(src)
-
-    if(NOT "${out_extra_files}" STREQUAL "")
-        add_custom_command(OUTPUT ${out_extra_files}
-        COMMAND
-            ${VALA_EXECUTABLE}
-        ARGS
-            -C -q --disable-warnings
+            -C
             ${header_arguments}
             ${vapi_arguments}
             "-b" ${CMAKE_CURRENT_SOURCE_DIR}
@@ -264,8 +302,8 @@ function(vala_precompile output)
             ${ARGS_CUSTOM_VAPIS}
             ${ARGS_GRESOURCES}
         COMMENT
-            "Generating VAPI and headers for linking"
+            "Generating C code for target ${output}"
         )
-    endif()
+    endif(ARGS_FAST_VAPI)
     set(${output} ${out_files} PARENT_SCOPE)
 endfunction(vala_precompile)

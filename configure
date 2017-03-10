@@ -15,27 +15,27 @@ then
 fi
 
 if [ -x "$(which ninja 2>/dev/null)" ]; then
-  echo "Using Ninja ($(which ninja))"
+  echo "-- Found Ninja: $(which ninja)"
   cmake_type="Ninja"
   exec_bin="ninja"
 elif [ -x "$(which ninja-build 2>/dev/null)" ]; then
-  echo "Using Ninja ($(which ninja-build))"
+  echo "-- Found Ninja: $(which ninja-build)"
   cmake_type="Ninja"
   exec_bin="ninja-build"
 elif [ -x "$(which make 2>/dev/null)" ]; then
-  echo "Using Make ($(which make))"
+  echo "-- Found Make: $(which make)"
   cmake_type="Unix Makefiles"
-  exec_bin="make"
-  printf "Using Ninja improves build experience, continue with Make? [y/N] "
+  exec_bin="make -j4"
+  echo "--   Using Ninja might improve build experience."
   cont
 else
-  echo "No compatible build system (Ninja, Make) found."
+  echo "-!- No compatible build system (Ninja, Make) found."
   exit 4
 fi
 
 if [ -f ./build  ]
 then
-  echo "./build file exists. ./configure can't continue"
+  echo "-!- ./build file exists. ./configure can't continue"
   exit 2
 fi
 
@@ -43,13 +43,13 @@ if [ -d build ]
 then
   if [ ! -f "build/.cmake_type" ]
   then
-    printf "./build exists but was not created by ./configure script, continue? [y/N] "
+    printf "-!- ./build exists but was not created by ./configure script, continue? [y/N] "
     cont
   fi
   last_type=`cat build/.cmake_type`
   if [ "$cmake_type" != "$last_type" ]
   then
-    echo "Using different build system, cleaning build system files"
+    echo "-- Using different build system, cleaning build system files"
     cd build
     rm -r CMakeCache.txt CMakeFiles
     cd ..

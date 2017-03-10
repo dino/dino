@@ -9,7 +9,7 @@ set(ENGINE_PACKAGES
     gee-0.8
     gio-2.0
     glib-2.0
-    gtk+-3.0
+    gdk-3.0
 )
 
 pkg_check_modules(ENGINE REQUIRED ${ENGINE_PACKAGES})
@@ -80,10 +80,10 @@ OPTIONS
     --vapidir=${CMAKE_SOURCE_DIR}/vapi
 )
 
-set(CFLAGS ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS} -g ${VALA_CFLAGS} -I${CMAKE_BINARY_DIR}/gpgme-vala)
+set(CFLAGS ${VALA_CFLAGS} ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS} -I${CMAKE_BINARY_DIR}/gpgme-vala)
 add_definitions(${CFLAGS})
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
-add_dependencies(xmpp-vala gpgme-vala gpgme-vapi)
+add_dependencies(xmpp-vala gpgme-vapi)
 target_link_libraries(xmpp-vala gpgme-vala ${ENGINE_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES})
 
 add_custom_target(xmpp-vala-vapi
