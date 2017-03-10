@@ -227,19 +227,19 @@ public class XmppStream {
 }
 
 public abstract class XmppStreamFlag {
-    internal abstract string get_ns();
-    internal abstract string get_id();
+    public abstract string get_ns();
+    public abstract string get_id();
 }
 
 public abstract class XmppStreamModule : Object {
-    internal abstract void attach(XmppStream stream);
-    internal abstract void detach(XmppStream stream);
-    internal abstract string get_ns();
-    internal abstract string get_id();
+    public abstract void attach(XmppStream stream);
+    public abstract void detach(XmppStream stream);
+    public abstract string get_ns();
+    public abstract string get_id();
 }
 
 public abstract class XmppStreamNegotiationModule : XmppStreamModule {
-    internal abstract bool mandatory_outstanding(XmppStream stream);
-    internal abstract bool negotiation_active(XmppStream stream);
+    public abstract bool mandatory_outstanding(XmppStream stream);
+    public abstract bool negotiation_active(XmppStream stream);
 }
 }

@@ -159,7 +159,7 @@ function(vala_precompile output)
     set(vapi_arguments "")
     if(ARGS_GENERATE_VAPI)
         list(APPEND out_extra_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}.vapi")
-        set(vapi_arguments "--internal-vapi=${ARGS_GENERATE_VAPI}.vapi")
+        set(vapi_arguments "--vapi=${ARGS_GENERATE_VAPI}.vapi")
 
         # Header and internal header is needed to generate internal vapi
         if (NOT ARGS_GENERATE_HEADER)

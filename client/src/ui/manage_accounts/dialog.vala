@@ -11,55 +11,28 @@ public class Dialog : Gtk.Window {
     public signal void account_enabled(Account account);
     public signal void account_disabled(Account account);
 
-    [GtkChild]
-    public Stack main_stack;
+    [GtkChild] public Stack main_stack;
+    [GtkChild] public ListBox account_list;
+    [GtkChild] public Button no_accounts_add;
+    [GtkChild] public ToolButton add_button;
+    [GtkChild] public ToolButton remove_button;
+    [GtkChild] public Image image;
+    [GtkChild] public Button image_button;
+    [GtkChild] public Label jid_label;
+    [GtkChild] public Switch active_switch;
+    [GtkChild] public Stack password_stack;
+    [GtkChild] public Label password_label;
+    [GtkChild] public Button password_button;
+    [GtkChild] public Entry password_entry;
+    [GtkChild] public Stack alias_stack;
+    [GtkChild] public Label alias_label;
+    [GtkChild] public Button alias_button;
+    [GtkChild] public Entry alias_entry;
+    [GtkChild] public Stack pgp_stack;
+    [GtkChild] public Label pgp_label;
+    [GtkChild] public Button pgp_button;
+    [GtkChild] public ComboBoxText pgp_combobox;
 
-    [GtkChild]
-    public ListBox account_list;
-
-    [GtkChild]
-    public Button no_accounts_add;
-
-    [GtkChild]
-    public ToolButton add_button;
-
-    [GtkChild]
-    public ToolButton remove_button;
-
-    [GtkChild]
-    public Image image;
-
-    [GtkChild] Button image_button;
-
-    [GtkChild]
-    public Label jid_label;
-
-    [GtkChild]
-    public Switch active_switch;
-
-    [GtkChild]
-    public Stack password_stack;
-
-    [GtkChild]
-    public Label password_label;
-
-    [GtkChild]
-    public Button password_button;
-
-    [GtkChild]
-    public Entry password_entry;
-
-    [GtkChild]
-    public Stack alias_stack;
-
-    [GtkChild]
-    public Label alias_label;
-
-    [GtkChild]
-    public Button alias_button;
-
-    [GtkChild]
-    public Entry alias_entry;
 
     private Database db;
     private StreamInteractor stream_interactor;
@@ -142,22 +115,14 @@ public class Dialog : Gtk.Window {
         for (int i = 0; i < account.password.length; i++) filler += password_entry.get_invisible_char().to_string();
         password_label.label = filler;
         password_stack.set_visible_child_name("label");
-        password_button.clicked.connect(() => {
-            password_stack.set_visible_child_name("entry");
-            alias_stack.set_visible_child_name("label");
-            set_focus(password_entry);
-        });
         password_entry.text = account.password;
 
-        alias_label.label = account.alias;
         alias_stack.set_visible_child_name("label");
-        alias_button.clicked.connect(() => {
-            alias_stack.set_visible_child_name("entry");
-            password_stack.set_visible_child_name("label");
-            set_focus(alias_entry);
-        });
+        alias_label.label = account.alias;
         alias_entry.text = account.alias;
 
+        password_button.clicked.connect(() => { set_active_stack(password_stack); });
+        alias_button.clicked.connect(() => { set_active_stack(alias_stack); });
         active_switch.state_set.connect(on_active_switch_state_changed);
     }
 
@@ -215,6 +180,13 @@ public class Dialog : Gtk.Window {
         if (curr_account.equals(account) && jid.equals(account.bare_jid)) {
             Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(50, 50, image.scale_factor)).draw_account(stream_interactor, account));
         }
+    }
+
+    private void set_active_stack(Stack stack) {
+        stack.set_visible_child_name("entry");
+        if (stack != password_stack) password_stack.set_visible_child_name("label");
+        if (stack != alias_stack) alias_stack.set_visible_child_name("label");
+        if (stack != pgp_stack) pgp_stack.set_visible_child_name("label");
     }
 }
 }

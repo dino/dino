@@ -12,8 +12,6 @@ namespace Xmpp.Xep.Pgp {
 
         public signal void received_jid_key_id(XmppStream stream, string jid, string key_id);
 
-        private static Object mutex = new Object();
-
         private string? signed_status;
         private string? own_key_id;
 
@@ -99,95 +97,48 @@ namespace Xmpp.Xep.Pgp {
         }
 
         private static string? gpg_encrypt(string plain, string[] key_ids) {
-            lock (mutex) {
-                GPG.Context context;
-                GPGError.ErrorCode e = GPG.Context.Context(out context); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                context.set_armor(true);
-
-                Key[] keys = new Key[key_ids.length];
+            GPG.Key[] keys = new GPG.Key[key_ids.length];
+            string encr;
+            try {
                 for (int i = 0; i < key_ids.length; i++) {
-                    Key key;
-                    e = context.get_key(key_ids[i], out key, false); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                    keys[i] = key;
+                    keys[i] = GPGHelper.get_public_key(key_ids[i]);
                 }
-
-                GPG.Data plain_data;
-                e = GPG.Data.create_from_memory(out plain_data, plain.data, false);
-                GPG.Data enc_data;
-                e = GPG.Data.create(out enc_data);
-                e = context.op_encrypt(keys, GPG.EncryptFlags.ALWAYS_TRUST, plain_data, enc_data);
-
-                string encr = get_string_from_data(enc_data);
-                int encryption_start = encr.index_of("\n\n") + 2;
-                return encr.substring(encryption_start, encr.length - "\n-----END PGP MESSAGE-----".length - encryption_start);
+                encr = GPGHelper.encrypt_armor(plain, keys, GPG.EncryptFlags.ALWAYS_TRUST);
+            } catch (Error e) {
+                return null;
             }
+            int encryption_start = encr.index_of("\n\n") + 2;
+            return encr.substring(encryption_start, encr.length - "\n-----END PGP MESSAGE-----".length - encryption_start);
         }
 
         private static string? gpg_decrypt(string enc) {
-            lock (mutex) {
-                string armor = "-----BEGIN PGP MESSAGE-----\n\n" + enc + "\n-----END PGP MESSAGE-----";
-
-                GPG.Data enc_data;
-                GPGError.ErrorCode e = GPG.Data.create_from_memory(out enc_data, armor.data, false); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                GPG.Data dec_data;
-                e = GPG.Data.create(out dec_data); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                GPG.Context context;
-                e = GPG.Context.Context(out context); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                e = context.op_decrypt(enc_data, dec_data); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-
-                string plain = get_string_from_data(dec_data);
-                return plain;
-            }
+            string armor = "-----BEGIN PGP MESSAGE-----\n\n" + enc + "\n-----END PGP MESSAGE-----";
+            string? decr = null;
+            try {
+                decr = GPGHelper.decrypt(armor);
+            } catch (Error e) { }
+            return decr;
         }
 
         private static string? gpg_verify(string sig, string signed_text) {
-            lock (mutex) {
-                string armor = "-----BEGIN PGP MESSAGE-----\n\n" + sig + "\n-----END PGP MESSAGE-----";
-
-                GPG.Data sig_data;
-                GPGError.ErrorCode e = GPG.Data.create_from_memory(out sig_data, armor.data, false); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                GPG.Data plain_data;
-                e = GPG.Data.create(out plain_data); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                GPG.Context context;
-                e = GPG.Context.Context(out context); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                e = context.op_verify(sig_data, null, plain_data); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                GPG.VerifyResult* verify_res = context.op_verify_result();
-                if (verify_res == null || verify_res.signatures == null) return null;
-                return verify_res.signatures.fpr;
-            }
+            string armor = "-----BEGIN PGP MESSAGE-----\n\n" + sig + "\n-----END PGP MESSAGE-----";
+            string? sign_key = null;
+            try {
+                sign_key = GPGHelper.get_sign_key(armor, signed_text);
+            } catch (Error e) { }
+            return sign_key;
         }
 
-        private static string? gpg_sign(string status) {
-            lock (mutex) {
-                GPG.Data status_data;
-                GPGError.ErrorCode e = GPG.Data.create_from_memory(out status_data, status.data, false); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                GPG.Data signed_data;
-                e = GPG.Data.create(out signed_data); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                GPG.Context context;
-                e = GPG.Context.Context(out context); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-                e = context.op_sign(status_data, signed_data, GPG.SigMode.CLEAR); if (e != GPGError.ErrorCode.NO_ERROR) return null;
-
-                string signed = get_string_from_data(signed_data);
-                int signature_start = signed.index_of("-----BEGIN PGP SIGNATURE-----");
-                signature_start = signed.index_of("\n\n", signature_start) + 2;
-                return signed.substring(signature_start, signed.length - "\n-----END PGP SIGNATURE-----".length - signature_start);
+        private static string? gpg_sign(string str) {
+            string signed;
+            try {
+                signed = GPGHelper.sign(str, GPG.SigMode.CLEAR);
+            } catch (Error e) {
+                return null;
             }
-        }
-
-        private static string get_string_from_data(GPG.Data data) {
-            data.seek(0);
-            uint8[] buf = new uint8[256];
-            ssize_t? len = null;
-            string res = "";
-            do {
-                len = data.read(buf);
-                if (len > 0) {
-                    string part = (string) buf;
-                    part = part.substring(0, (long) len);
-                    res += part;
-                }
-            } while (len > 0);
-            return res;
+            int signature_start = signed.index_of("-----BEGIN PGP SIGNATURE-----");
+            signature_start = signed.index_of("\n\n", signature_start) + 2;
+            return signed.substring(signature_start, signed.length - "\n-----END PGP SIGNATURE-----".length - signature_start);
         }
     }
 

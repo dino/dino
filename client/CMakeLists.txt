@@ -1,5 +1,7 @@
 find_package(Vala REQUIRED)
 find_package(PkgConfig REQUIRED)
+find_package(GPGME REQUIRED)
+find_package(LIBUUID REQUIRED)
 include(${VALA_USE_FILE})
 include(GlibCompileResourcesSupport)
 
@@ -138,9 +140,9 @@ OPTIONS
 
 )
 
-set(CFLAGS ${CLIENT_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS} -g -I${CMAKE_BINARY_DIR}/xmpp-vala -I${CMAKE_BINARY_DIR}/qlite ${VALA_CFLAGS})
+set(CFLAGS ${CLIENT_CFLAGS} -g -I${CMAKE_BINARY_DIR}/xmpp-vala -I${CMAKE_BINARY_DIR}/qlite ${VALA_CFLAGS})
 add_definitions(${CFLAGS})
 add_executable(dino ${CLIENT_VALA_C} ${CLIENT_GRESOURCES_TARGET})
 add_dependencies(dino xmpp-vala-vapi qlite-vapi)
-target_link_libraries(dino xmpp-vala qlite ${CLIENT_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES} -lm)
+target_link_libraries(dino xmpp-vala qlite ${CLIENT_LIBRARIES} -lm)
 

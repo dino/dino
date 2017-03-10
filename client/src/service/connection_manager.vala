@@ -92,7 +92,7 @@ public class ConnectionManager {
         foreach (Core.XmppStreamModule module in module_manager.get_modules(account, resource)) {
             stream.add_module(module);
         }
-        stream.debug = true;
+        stream.debug = false;
 
         Connection connection = new Connection(stream, new DateTime.now_local());
         stream_states[account] = connection;

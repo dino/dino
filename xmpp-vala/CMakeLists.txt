@@ -66,9 +66,9 @@ SOURCES
     "src/module/xep/pixbuf_storage.vala"
 CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/vapi/uuid.vapi"
+    "${CMAKE_BINARY_DIR}/gpgme-vala/gpgme.vapi"
 PACKAGES
     ${ENGINE_PACKAGES}
-    gpgme
 GENERATE_VAPI
     xmpp-vala
 GENERATE_HEADER
@@ -80,10 +80,11 @@ OPTIONS
     --vapidir=${CMAKE_SOURCE_DIR}/vapi
 )
 
-set(CFLAGS ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS} -g ${VALA_CFLAGS})
+set(CFLAGS ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS} -g ${VALA_CFLAGS} -I${CMAKE_BINARY_DIR}/gpgme-vala)
 add_definitions(${CFLAGS})
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
-target_link_libraries(xmpp-vala ${ENGINE_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES})
+add_dependencies(xmpp-vala gpgme-vala gpgme-vapi)
+target_link_libraries(xmpp-vala gpgme-vala ${ENGINE_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES})
 
 add_custom_target(xmpp-vala-vapi
 DEPENDS
