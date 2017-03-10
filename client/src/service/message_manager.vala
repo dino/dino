@@ -141,7 +141,7 @@ public class MessageManager : StreamInteractionModule, Object {
 
     private Entities.Message create_out_message(string text, Conversation conversation) {
         Entities.Message message = new Entities.Message();
-        message.stanza_id = UUID.generate_random_unparsed();
+        message.stanza_id = random_uuid();
         message.account = conversation.account;
         message.body = text;
         message.time = new DateTime.now_utc();

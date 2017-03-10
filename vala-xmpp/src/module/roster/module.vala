@@ -95,7 +95,7 @@ namespace Xmpp.Roster {
         internal override string get_id() { return ID; }
 
         private void roster_get(XmppStream stream) {
-            Flag.get_flag(stream).iq_id = UUID.generate_random_unparsed();
+            Flag.get_flag(stream).iq_id = random_uuid();
             StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
             Iq.Stanza iq = new Iq.Stanza.get(query_node, Flag.get_flag(stream).iq_id);
             Iq.Module.get_module(stream).send_iq(stream, iq, new IqResponseListenerImpl());

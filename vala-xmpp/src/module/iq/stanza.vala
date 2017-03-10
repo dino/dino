@@ -10,12 +10,12 @@ public class Stanza : Xmpp.Stanza {
     public const string TYPE_RESULT = "result";
     public const string TYPE_SET = "set";
 
-    private Stanza(string id = UUID.generate_random_unparsed()) {
+    private Stanza(string? id = null) {
         base.outgoing(new StanzaNode.build("iq"));
-        this.id = id;
+        this.id = id ?? random_uuid();
     }
 
-    public Stanza.get(StanzaNode stanza_node, string id = UUID.generate_random_unparsed()) {
+    public Stanza.get(StanzaNode stanza_node, string? id = null) {
         this(id);
         this.type_ = TYPE_GET;
         stanza.put_node(stanza_node);
@@ -29,7 +29,7 @@ public class Stanza : Xmpp.Stanza {
         }
     }
 
-    public Stanza.set(StanzaNode stanza_node, string id = UUID.generate_random_unparsed()) {
+    public Stanza.set(StanzaNode stanza_node, string? id = null) {
         this(id);
         type_ = TYPE_SET;
         stanza.put_node(stanza_node);

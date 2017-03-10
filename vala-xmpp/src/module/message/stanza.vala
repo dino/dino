@@ -33,9 +33,9 @@ public class Stanza : Xmpp.Stanza {
         }
     }
 
-    public Stanza(string id = UUID.generate_random_unparsed()) {
+    public Stanza(string? id = null) {
         base.outgoing(new StanzaNode.build("message"));
-        stanza.set_attribute(ATTRIBUTE_ID, id);
+        stanza.set_attribute(ATTRIBUTE_ID, id ?? random_uuid());
     }
 
     public Stanza.from_stanza(StanzaNode stanza_node, string my_jid) {

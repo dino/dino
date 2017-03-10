@@ -80,9 +80,9 @@ public class Stanza : Xmpp.Stanza {
         set { base.type_ = value; }
     }
 
-    public Stanza(string id = UUID.generate_random_unparsed()) {
+    public Stanza(string? id = null) {
         stanza = new StanzaNode.build("presence");
-        this.id = id;
+        this.id = id ?? random_uuid();
     }
 
     public Stanza.from_stanza(StanzaNode stanza_node, string my_jid) {

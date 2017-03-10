@@ -57,12 +57,4 @@ namespace UUID {
 //    public static time_t time ([CCode (array_length = false)] uint8 uu[16], out Posix.timeval ret_tv);
     public static UUID.Type type ([CCode (array_length = false)] uint8 uu[16]);
     public static UUID.Variant variant ([CCode (array_length = false)] uint8 uu[16]);
-
-    public static string generate_random_unparsed() {
-        uint8[] rand = new uint8[16];
-        char[] str = new char[37];
-        generate_random(rand);
-        unparse_upper(rand, str);
-        return (string) str;
-    }
 }

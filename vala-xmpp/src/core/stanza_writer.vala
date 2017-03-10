@@ -2,8 +2,6 @@ namespace Xmpp.Core {
 public class StanzaWriter {
     private OutputStream output;
 
-    private NamespaceState ns_state = new NamespaceState();
-
     public StanzaWriter.for_stream(OutputStream output) {
         this.output = output;
     }

@@ -136,7 +136,7 @@ public class ConnectionManager {
         print(@"recovering in $wait_sec\n");
         Timeout.add_seconds(wait_sec, () => {
             if (stream_error_flag.resource_rejected) {
-                connect_(account, account.resourcepart + "-" + UUID.generate_random_unparsed());
+                connect_(account, account.resourcepart + "-" + random_uuid());
             } else {
                 connect_(account);
             }

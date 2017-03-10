@@ -1,7 +1,6 @@
 find_package(Vala REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(GPGME REQUIRED)
-find_package(LIBUUID REQUIRED)
 include(${VALA_USE_FILE})
 include(GlibCompileResourcesSupport)
 
@@ -127,7 +126,6 @@ SOURCES
 PACKAGES
     ${CLIENT_PACKAGES}
     gpgme
-    uuid
     vala-xmpp
     qlite
 GRESOURCES

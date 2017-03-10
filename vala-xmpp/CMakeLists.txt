@@ -64,10 +64,11 @@ SOURCES
     "src/module/xep/0280_message_carbons.vala"
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/pixbuf_storage.vala"
+CUSTOM_VAPIS
+    "${CMAKE_CURRENT_SOURCE_DIR}/vapi/uuid.vapi"
 PACKAGES
     ${ENGINE_PACKAGES}
     gpgme
-    uuid
 GENERATE_VAPI
     vala-xmpp
 GENERATE_HEADER
