@@ -29,40 +29,18 @@ namespace Xmpp.Xep.ServiceDiscovery {
             identities.add(new Identity(category, type, name));
         }
 
-        public void request_info(XmppStream stream, string jid, InfoResponseListener response_listener) {
+        [CCode (has_target = false)] public delegate void OnInfoResult(XmppStream stream, InfoResult query_result, Object? store);
+        public void request_info(XmppStream stream, string jid, OnInfoResult listener, Object? store) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
             iq.to = jid;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqInfoResponseListener(response_listener));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_request_info_response, Tuple.create(listener, store));
         }
 
-        private class IqInfoResponseListener : Iq.ResponseListener, Object {
-            InfoResponseListener response_listener;
-            public IqInfoResponseListener(InfoResponseListener response_listener) {
-                this.response_listener = response_listener;
-            }
-            public void on_result(XmppStream stream, Iq.Stanza iq) {
-                InfoResult? result = InfoResult.create_from_iq(iq);
-                if (result != null) {
-                    Flag.get_flag(stream).set_entitiy_features(iq.from, result.features);
-                    response_listener.on_result(stream, result);
-                } else {
-                    response_listener.on_error(stream, iq);
-                }
-            }
-        }
-
-        public void request_items(XmppStream stream, string jid, ItemsResponseListener response_listener) {
+        [CCode (has_target = false)] public delegate void OnItemsResult(XmppStream stream, ItemsResult query_result);
+        public void request_items(XmppStream stream, string jid, OnItemsResult listener, Object? store) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns());
             iq.to = jid;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqItemsResponseListener(response_listener));
-        }
-
-        private class IqItemsResponseListener : Iq.ResponseListener, Object {
-            ItemsResponseListener response_listener;
-            public IqItemsResponseListener(ItemsResponseListener response_listener) { this.response_listener = response_listener; }
-            public void on_result(XmppStream stream, Iq.Stanza iq) {
-                //response_listener.on_result(stream, new ServiceDiscoveryItemsResult.from_iq(iq));
-            }
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
         }
 
         public void on_iq_get(XmppStream stream, Iq.Stanza iq) {
@@ -90,11 +68,21 @@ namespace Xmpp.Xep.ServiceDiscovery {
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return ID; }
 
+        private static void on_request_info_response(XmppStream stream, Iq.Stanza iq, Object o) {
+            Tuple<OnInfoResult, Object> tuple = o as Tuple<OnInfoResult, Object>;
+            OnInfoResult on_result = tuple.a;
+            InfoResult? result = InfoResult.create_from_iq(iq);
+            if (result != null) {
+                Flag.get_flag(stream).set_entitiy_features(iq.from, result.features);
+                on_result(stream, result, tuple.b);
+            }
+        }
+
         private void send_query_result(XmppStream stream, Iq.Stanza iq_request) {
             InfoResult query_result = new ServiceDiscovery.InfoResult(iq_request);
             query_result.features = Flag.get_flag(stream).features;
             query_result.identities = identities;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, query_result.iq, null);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, query_result.iq);
         }
     }
 
@@ -120,15 +108,5 @@ namespace Xmpp.Xep.ServiceDiscovery {
             this.name = name;
             this.node = node;
         }
-    }
-
-    public interface InfoResponseListener : Object {
-        public abstract void on_result(XmppStream stream, InfoResult query_result);
-        public void on_error(XmppStream stream, Iq.Stanza iq) { }
-    }
-
-    public interface ItemsResponseListener : Object {
-        public abstract void on_result(XmppStream stream, ItemsResult query_result);
-        public void on_error(XmppStream stream, Iq.Stanza iq) { }
     }
 }

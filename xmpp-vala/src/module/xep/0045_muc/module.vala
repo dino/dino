@@ -37,7 +37,7 @@ public class Module : XmppStreamModule {
     public signal void received_occupant_role(XmppStream stream, string jid, string? role);
     public signal void subject_set(XmppStream stream, string subject, string jid);
 
-    public void enter(XmppStream stream, string bare_jid, string nick, string? password, MucEnterListener listener) {
+    public void enter(XmppStream stream, string bare_jid, string nick, string? password, ListenerHolder.OnSuccess success_listener, ListenerHolder.OnError error_listener, Object? store) {
         Presence.Stanza presence = new Presence.Stanza();
         presence.to = bare_jid + "/" + nick;
         StanzaNode x_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
@@ -46,7 +46,7 @@ public class Module : XmppStreamModule {
         }
         presence.stanza.put_node(x_node);
 
-        Muc.Flag.get_flag(stream).start_muc_enter(bare_jid, presence.id, listener);
+        Muc.Flag.get_flag(stream).start_muc_enter(bare_jid, presence.id, new ListenerHolder(success_listener, error_listener, store));
 
         stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
@@ -130,20 +130,22 @@ public class Module : XmppStreamModule {
             string bare_jid = get_bare_jid(presence.from);
             ErrorStanza? error_stanza = presence.get_error();
             if (flag.get_enter_id(bare_jid) == error_stanza.original_id) {
-                MucEnterListener listener = flag.get_enter_listener(bare_jid);
+                ListenerHolder listener = flag.get_enter_listener(bare_jid);
+                MucEnterError? error = null;
                 if (error_stanza.condition == ErrorStanza.CONDITION_NOT_AUTHORIZED && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    listener.on_error(MucEnterError.PASSWORD_REQUIRED);
+                    error = MucEnterError.PASSWORD_REQUIRED;
                 } else if (ErrorStanza.CONDITION_REGISTRATION_REQUIRED == error_stanza.condition && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    listener.on_error(MucEnterError.NOT_IN_MEMBER_LIST);
+                    error = MucEnterError.NOT_IN_MEMBER_LIST;
                 } else if (ErrorStanza.CONDITION_FORBIDDEN == error_stanza.condition && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    listener.on_error(MucEnterError.BANNED);
+                    error = MucEnterError.BANNED;
                 } else if (ErrorStanza.CONDITION_CONFLICT == error_stanza.condition && ErrorStanza.TYPE_CANCEL == error_stanza.type_) {
-                    listener.on_error(MucEnterError.NICK_CONFLICT);
+                    error = MucEnterError.NICK_CONFLICT;
                 } else if (ErrorStanza.CONDITION_SERVICE_UNAVAILABLE == error_stanza.condition && ErrorStanza.TYPE_WAIT == error_stanza.type_) {
-                    listener.on_error(MucEnterError.OCCUPANT_LIMIT_REACHED);
+                    error = MucEnterError.OCCUPANT_LIMIT_REACHED;
                 } else if (ErrorStanza.CONDITION_ITEM_NOT_FOUND == error_stanza.condition && ErrorStanza.TYPE_CANCEL == error_stanza.type_) {
-                    listener.on_error(MucEnterError.ROOM_DOESNT_EXIST);
+                    error = MucEnterError.ROOM_DOESNT_EXIST;
                 }
+                if (error == null) listener.on_error(stream, error, listener.reference);
                 flag.finish_muc_enter(bare_jid);
             }
         }
@@ -157,7 +159,8 @@ public class Module : XmppStreamModule {
                 ArrayList<int> status_codes = get_status_codes(x_node);
                 if (status_codes.contains(StatusCode.SELF_PRESENCE)) {
                     string bare_jid = get_bare_jid(presence.from);
-                    flag.get_enter_listener(bare_jid).on_success();
+                    ListenerHolder listener = flag.get_enter_listener(bare_jid);
+                    listener.on_success(stream, listener.reference);
                     flag.finish_muc_enter(bare_jid, get_resource_part(presence.from));
                 }
                 string? affiliation = x_node["item", "affiliation"].val;
@@ -233,9 +236,17 @@ public enum StatusCode {
     REMOVED_SHUTDOWN = 332
 }
 
-public interface MucEnterListener : Object {
-    public abstract void on_success();
-    public abstract void on_error(MucEnterError error);
+public class ListenerHolder {
+    [CCode (has_target = false)] public delegate void OnSuccess(XmppStream stream, Object? store);
+    public OnSuccess on_success { get; private set; }
+    [CCode (has_target = false)] public delegate void OnError(XmppStream stream, MucEnterError error, Object? store);
+    public OnError on_error { get; private set; }
+    public Object? reference { get; private set; }
+
+    public ListenerHolder(OnSuccess on_success, OnError on_error, Object? reference = null) {
+        this.on_success = on_success;
+        this.reference = reference;
+    }
 }
 
 }

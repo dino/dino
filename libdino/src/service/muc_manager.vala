@@ -28,7 +28,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     public void join(Account account, Jid jid, string nick, string? password = null) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick, password, new MucEnterListenerImpl(this, jid, nick, account));
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick, password, on_groupchat_joined, () => {}, Quadruple.create(this, jid, nick, account));
     }
 
     public void part(Account account, Jid jid) {
@@ -73,10 +73,10 @@ public class MucManager : StreamInteractionModule, Object {
         return is_groupchat(jid.bare_jid, account) && jid.is_full();
     }
 
-    public void get_bookmarks(Account account, Xep.Bookmarks.ConferencesRetrieveResponseListener listener) {
+    public void get_bookmarks(Account account, Xep.Bookmarks.Module.OnResult listener, Object? store) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, listener);
+            stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, listener, store);
         }
     }
 
@@ -158,7 +158,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     private void on_stream_negotiated(Account account) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, new BookmarksRetrieveResponseListener(this, account));
+        if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, join_autojoin_conferences, Tuple.create(this, account));
     }
 
     private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
@@ -184,41 +184,26 @@ public class MucManager : StreamInteractionModule, Object {
         }
     }
 
-    private class BookmarksRetrieveResponseListener : Xep.Bookmarks.ConferencesRetrieveResponseListener, Object {
-        MucManager outer = null;
-        Account account = null;
-
-        public BookmarksRetrieveResponseListener(MucManager outer, Account account) {
-            this.outer = outer;
-            this.account = account;
-        }
-
-        public void on_result(Core.XmppStream stream, ArrayList<Xep.Bookmarks.Conference> conferences) {
-            foreach (Xep.Bookmarks.Conference bookmark in conferences) {
-                Jid jid = new Jid(bookmark.jid);
-                outer.conference_bookmarks[jid] = bookmark;
-                if (bookmark.autojoin) {
-                    outer.join(account, jid, bookmark.nick);
-                }
-            }
-        }
+    private static void on_groupchat_joined(Core.XmppStream stream, Object? store) {
+        Quadruple<MucManager, Jid, string, Account> quadruple = store as Quadruple<MucManager, Jid, string, Account>;
+        MucManager outer = quadruple.a;
+        Jid jid = quadruple.b;
+        string nick = quadruple.c;
+        Account account = quadruple.d;
+        outer.groupchat_joined(account, jid, nick);
     }
 
-    private class MucEnterListenerImpl : Xep.Muc.MucEnterListener, Object { // TODO
-        private MucManager outer;
-        private Jid jid;
-        private string nick;
-        private Account account;
-        public MucEnterListenerImpl(MucManager outer, Jid jid, string nick, Account account) {
-            this.outer = outer;
-            this.jid = jid;
-            this.nick = nick;
-            this.account = account;
+    private static void join_autojoin_conferences(Core.XmppStream stream, ArrayList<Xep.Bookmarks.Conference> conferences, Object? o) {
+        Tuple<MucManager, Account> tuple = o as Tuple<MucManager, Account>;
+        MucManager outer = tuple.a;
+        Account account = tuple.b;
+        foreach (Xep.Bookmarks.Conference bookmark in conferences) {
+            Jid jid = new Jid(bookmark.jid);
+            outer.conference_bookmarks[jid] = bookmark;
+            if (bookmark.autojoin) {
+                outer.join(account, jid, bookmark.nick);
+            }
         }
-        public void on_success() {
-            outer.groupchat_joined(account, jid, nick);
-        }
-        public void on_error(Xep.Muc.MucEnterError error) { }
     }
 }
 }

@@ -95,20 +95,18 @@ namespace Xmpp.Roster {
             Flag.get_flag(stream).iq_id = random_uuid();
             StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
             Iq.Stanza iq = new Iq.Stanza.get(query_node, Flag.get_flag(stream).iq_id);
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqResponseListenerImpl());
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_roster_get_received);
         }
 
-        private class IqResponseListenerImpl : Iq.ResponseListener, Object {
-            public void on_result(XmppStream stream, Iq.Stanza iq) {
-                Flag flag = Flag.get_flag(stream);
-                if (iq.id == flag.iq_id) {
-                    StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI);
-                    foreach (StanzaNode item_node in query_node.sub_nodes) {
-                        Item item = new Item.from_stanza_node(item_node);
-                        flag.roster_items[item.jid] = item;
-                    }
-                    stream.get_module(Module.IDENTITY).received_roster(stream, flag.roster_items.values);
+        private static void on_roster_get_received(XmppStream stream, Iq.Stanza iq) {
+            Flag flag = Flag.get_flag(stream);
+            if (iq.id == flag.iq_id) {
+                StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI);
+                foreach (StanzaNode item_node in query_node.sub_nodes) {
+                    Item item = new Item.from_stanza_node(item_node);
+                    flag.roster_items[item.jid] = item;
                 }
+                stream.get_module(Module.IDENTITY).received_roster(stream, flag.roster_items.values);
             }
         }
 
@@ -116,7 +114,7 @@ namespace Xmpp.Roster {
             StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns()
                                     .put_node(roster_item.stanza_node);
             Iq.Stanza iq = new Iq.Stanza.set(query_node);
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
         }
     }
 }

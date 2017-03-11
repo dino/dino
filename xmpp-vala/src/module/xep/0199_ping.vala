@@ -9,20 +9,10 @@ namespace Xmpp.Xep.Ping {
         public const string ID = "0199_ping";
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
 
-        public void send_ping(XmppStream stream, string jid, ResponseListener? listener = null) {
+        public void send_ping(XmppStream stream, string jid, ResponseListener listener) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("ping", NS_URI).add_self_xmlns());
             iq.to = jid;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, listener == null? null : new IqResponseListenerImpl(listener));
-        }
-
-        private class IqResponseListenerImpl : Iq.ResponseListener, Object {
-            ResponseListener listener;
-            public IqResponseListenerImpl(ResponseListener listener) {
-                this.listener = listener;
-            }
-            public void on_result(XmppStream stream, Iq.Stanza iq) {
-                listener.on_result(stream);
-            }
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_ping_response, listener);
         }
 
         public override void attach(XmppStream stream) {
@@ -44,6 +34,11 @@ namespace Xmpp.Xep.Ping {
                 stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
             }
             public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
+        }
+
+        private static void on_ping_response(XmppStream stream, Iq.Stanza iq, Object o) {
+            ResponseListener listener = o as ResponseListener;
+            listener.on_result(stream);
         }
     }
 

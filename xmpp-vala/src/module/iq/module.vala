@@ -12,14 +12,15 @@ namespace Xmpp.Iq {
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
-        public void send_iq(XmppStream stream, Iq.Stanza iq, ResponseListener? listener = null) {
+        [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Iq.Stanza iq, Object reference);
+        public void send_iq(XmppStream stream, Iq.Stanza iq, OnResult? listener = null, Object? reference = null) {
             try {
                 stream.write(iq.stanza);
             } catch (IOStreamError e) {
                 print(@"$(e.message)\n");
             }
             if (listener != null) {
-                responseListeners.set(iq.id, listener);
+                responseListeners[iq.id] = new ResponseListener(listener, reference);
             }
         }
 
@@ -56,7 +57,7 @@ namespace Xmpp.Iq {
                 if (responseListeners.has_key(iq.id)) {
                     ResponseListener? listener = responseListeners.get(iq.id);
                     if (listener != null) {
-                        listener.on_result(stream, iq);
+                        listener.on_result(stream, iq, listener.reference);
                     }
                     responseListeners.unset(iq.id);
                 }
@@ -77,6 +78,16 @@ namespace Xmpp.Iq {
                 }
             }
         }
+
+        private class ResponseListener {
+            public OnResult on_result { get; private set; }
+            public Object? reference { get; private set; }
+
+            public ResponseListener(OnResult on_result, Object? reference = null) {
+                this.on_result = on_result;
+                this.reference = reference;
+            }
+        }
     }
 
     public interface Handler : Object {
@@ -84,7 +95,4 @@ namespace Xmpp.Iq {
         public abstract void on_iq_set(XmppStream stream, Iq.Stanza iq);
     }
 
-    public interface ResponseListener : Object {
-        public abstract void on_result(XmppStream stream, Iq.Stanza iq);
-    }
 }

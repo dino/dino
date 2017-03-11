@@ -29,7 +29,7 @@ protected class ConferenceList : FilterableList {
         });
 
         foreach (Account account in stream_interactor.get_accounts()) {
-            MucManager.get_instance(stream_interactor).get_bookmarks(account, new BookmarksListener(this, stream_interactor, account));
+            MucManager.get_instance(stream_interactor).get_bookmarks(account, on_conference_bookmarks_received, Tuple.create(this, account));
         }
     }
 
@@ -42,18 +42,12 @@ protected class ConferenceList : FilterableList {
         }
     }
 
-    private class BookmarksListener : Xep.Bookmarks.ConferencesRetrieveResponseListener, Object {
-        ConferenceList outer;
-        Account account;
-        public BookmarksListener(ConferenceList outer, StreamInteractor stream_interactor, Account account) {
-            this.outer = outer;
-            this.account = account;
-        }
-
-        public void on_result(Core.XmppStream stream, ArrayList<Xep.Bookmarks.Conference> conferences) {
-            outer.lists[account] = conferences;
-            Idle.add(() => { outer.refresh_conferences(); return false; });
-        }
+    private static void on_conference_bookmarks_received(Core.XmppStream stream, ArrayList<Xep.Bookmarks.Conference> conferences, Object? o) {
+        Tuple<ConferenceList, Account> tuple = o as Tuple<ConferenceList, Account>;
+        ConferenceList list = tuple.a;
+        Account account = tuple.b;
+        list.lists[account] = conferences;
+        Idle.add(() => { list.refresh_conferences(); return false; });
     }
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {

@@ -34,17 +34,6 @@ namespace Xmpp.Xep.UserAvatars {
             stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_METADATA, NS_URI_METADATA, sha1, metadata_node);
         }
 
-        private class PublishResponseListenerImpl : Pubsub.PublishResponseListener, Object {
-            PublishResponseListener listener;
-            PublishResponseListenerImpl other;
-            public PublishResponseListenerImpl(PublishResponseListener listener, PublishResponseListenerImpl other) {
-                this.listener = listener;
-                this.other = other;
-            }
-            public void on_success(XmppStream stream) { listener.on_success(stream); }
-            public void on_error(XmppStream stream) { listener.on_error(stream); }
-        }
-
         public override void attach(XmppStream stream) {
             Pubsub.Module.require(stream);
             stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_event_result, this);
@@ -59,17 +48,7 @@ namespace Xmpp.Xep.UserAvatars {
             if (storage.has_image(id)) {
                 stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
             } else {
-                stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NS_URI_DATA, new PubsubRequestResponseListenerImpl(storage));
-            }
-        }
-
-        class PubsubRequestResponseListenerImpl : Pubsub.RequestResponseListener, Object {
-            PixbufStorage storage;
-            public PubsubRequestResponseListenerImpl(PixbufStorage storage) { this.storage = storage; }
-            public void on_result(XmppStream stream, string jid, string? id, StanzaNode? node) {
-                if (node == null) return;
-                storage.store(id, Base64.decode(node.get_string_content()));
-                stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
+                stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NS_URI_DATA, on_pubsub_data_response, storage);
             }
         }
 
@@ -79,10 +58,12 @@ namespace Xmpp.Xep.UserAvatars {
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return ID; }
-    }
 
-    public interface PublishResponseListener : Object {
-        public abstract void on_success(XmppStream stream);
-        public abstract void on_error(XmppStream stream);
+        private static void on_pubsub_data_response(XmppStream stream, string jid, string? id, StanzaNode? node, Object? o) {
+            if (node == null) return;
+            PixbufStorage storage = o as PixbufStorage;
+            storage.store(id, Base64.decode(node.get_string_content()));
+            stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
+        }
     }
 }

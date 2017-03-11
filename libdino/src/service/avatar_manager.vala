@@ -73,13 +73,6 @@ public class AvatarManager : StreamInteractionModule, Object {
         }
     }
 
-    private class PublishResponseListenerImpl : Object {
-        public void on_success(Core.XmppStream stream) {
-
-        }
-        public void on_error(Core.XmppStream stream) { }
-    }
-
     public static AvatarManager? get_instance(StreamInteractor stream_interaction) {
         return (AvatarManager) stream_interaction.get_module(id);
     }

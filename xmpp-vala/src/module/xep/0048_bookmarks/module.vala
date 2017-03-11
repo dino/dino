@@ -11,9 +11,16 @@ public class Module : XmppStreamModule {
 
     public signal void conferences_updated(XmppStream stream, ArrayList<Conference> conferences);
 
-    public void get_conferences(XmppStream stream, ConferencesRetrieveResponseListener response_listener) {
+    [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, ArrayList<Conference> conferences, Object? reference);
+    public void get_conferences(XmppStream stream, OnResult listener, Object? store) {
         StanzaNode get_node = new StanzaNode.build("storage", NS_URI).add_self_xmlns();
-        stream.get_module(PrivateXmlStorage.Module.IDENTITY).retrieve(stream, get_node, new GetConferences(response_listener));
+        stream.get_module(PrivateXmlStorage.Module.IDENTITY).retrieve(stream, get_node, on_conferences_received, Tuple.create(listener, store));
+    }
+
+    private static void on_conferences_received(XmppStream stream, StanzaNode node, Object? o) {
+        Tuple<OnResult, Object?> tuple = o as Tuple<OnResult, Object?>;
+        OnResult on_result = tuple.a;
+        on_result(stream, get_conferences_from_stanza(node), tuple.b);
     }
 
     public void set_conferences(XmppStream stream, ArrayList<Conference> conferences) {
@@ -21,89 +28,58 @@ public class Module : XmppStreamModule {
         foreach (Conference conference in conferences) {
             storage_node.put_node(conference.stanza_node);
         }
-        stream.get_module(PrivateXmlStorage.Module.IDENTITY).store(stream, storage_node, new StoreResponseListenerImpl(conferences));
+        stream.get_module(PrivateXmlStorage.Module.IDENTITY).store(stream, storage_node, on_set_conferences_response, conferences);
     }
 
-    private class StoreResponseListenerImpl : PrivateXmlStorage.StoreResponseListener, Object {
-        ArrayList<Conference> conferences;
-        public StoreResponseListenerImpl(ArrayList<Conference> conferences) {
-            this.conferences = conferences;
-        }
-        public void on_success(XmppStream stream) {
-            stream.get_module(Module.IDENTITY).conferences_updated(stream, conferences);
-        }
+    private static void on_set_conferences_response(XmppStream stream, Object? o) {
+        ArrayList<Conference> conferences = o as ArrayList<Conference>;
+        stream.get_module(Module.IDENTITY).conferences_updated(stream, conferences);
     }
 
     public void add_conference(XmppStream stream, Conference add) {
-        get_conferences(stream, new AddConference(add));
+        get_conferences(stream, on_add_conference_response, add);
+    }
+
+    private static void on_add_conference_response(XmppStream stream, ArrayList<Conference> conferences, Object? o) {
+        Conference add = o as Conference;
+        conferences.add(add);
+        stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
     }
 
     public void replace_conference(XmppStream stream, Conference was, Conference modified) {
-        get_conferences(stream, new ModifyConference(was, modified));
+        get_conferences(stream, on_replace_conference_response, Tuple.create(was, modified));
+    }
+
+    private static void on_replace_conference_response(XmppStream stream, ArrayList<Conference> conferences, Object? o) {
+        Tuple<Conference, Conference> tuple = o as Tuple<Conference, Conference>;
+        Conference was = tuple.a;
+        Conference modified = tuple.b;
+        foreach (Conference conference in conferences) {
+            if (conference.name == was.name && conference.jid == was.jid && conference.autojoin == was.autojoin) {
+                conference.autojoin = modified.autojoin;
+                conference.name = modified.name;
+                conference.jid = modified.jid;
+            break;
+            }
+        }
+        stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
     }
 
     public void remove_conference(XmppStream stream, Conference conference) {
-        get_conferences(stream, new RemoveConference(conference));
+        get_conferences(stream, on_remove_conference_response, conference);
     }
 
-    private class GetConferences : PrivateXmlStorage.RetrieveResponseListener, Object {
-        ConferencesRetrieveResponseListener response_listener;
-
-        public GetConferences(ConferencesRetrieveResponseListener response_listener) {
-            this.response_listener = response_listener;
-        }
-
-        public void on_result(XmppStream stream, StanzaNode node) {
-            response_listener.on_result(stream, get_conferences_from_stanza(node));
-        }
-    }
-
-    private class AddConference : ConferencesRetrieveResponseListener, Object {
-        private Conference conference;
-        public AddConference(Conference conference) {
-            this.conference = conference;
-        }
-        public void on_result(XmppStream stream, ArrayList<Conference> conferences) {
-            conferences.add(conference);
-            stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
-        }
-    }
-
-    private class ModifyConference : ConferencesRetrieveResponseListener, Object {
-        private Conference was;
-        private Conference modified;
-        public ModifyConference(Conference was, Conference modified) {
-            this.was = was;
-            this.modified = modified;
-        }
-        public void on_result(XmppStream stream, ArrayList<Conference> conferences) {
-            foreach (Conference conference in conferences) {
-                if (conference.name == was.name && conference.jid == was.jid && conference.autojoin == was.autojoin) {
-                    conference.autojoin = modified.autojoin;
-                    conference.name = modified.name;
-                    conference.jid = modified.jid;
-                    break;
-                }
+    private static void on_remove_conference_response(XmppStream stream, ArrayList<Conference> conferences, Object? o) {
+        Conference remove = o as Conference;
+        Conference? rem = null;
+        foreach (Conference conference in conferences) {
+            if (conference.name == remove.name && conference.jid == remove.jid && conference.autojoin == remove.autojoin) {
+                rem = conference;
+                break;
             }
-            stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
         }
-    }
-
-    private class RemoveConference : ConferencesRetrieveResponseListener, Object {
-        private Conference remove;
-        public RemoveConference(Conference remove) {
-            this.remove = remove;
-        }
-        public void on_result(XmppStream stream, ArrayList<Conference> conferences) {
-            Conference? rem = null;
-            foreach (Conference conference in conferences) {
-                if (conference.name == remove.name && conference.jid == remove.jid && conference.autojoin == remove.autojoin) {
-                    rem = conference;
-                }
-            }
-            if (rem != null) conferences.remove(rem);
-            stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
-        }
+        if (rem != null) conferences.remove(rem);
+        stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
     }
 
     public override void attach(XmppStream stream) { }
@@ -125,10 +101,6 @@ public class Module : XmppStreamModule {
         }
         return conferences;
     }
-}
-
-public interface ConferencesRetrieveResponseListener : Object {
-    public abstract void on_result(XmppStream stream, ArrayList<Conference> conferences);
 }
 
 }

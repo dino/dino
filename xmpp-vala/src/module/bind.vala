@@ -33,16 +33,10 @@ namespace Xmpp.Bind {
             var bind = stream.features.get_subnode("bind", NS_URI);
             if (bind != null) {
                 var flag = new Flag();
-                StanzaNode bind_node = new StanzaNode.build("bind", NS_URI).add_self_xmlns()
-                                        .put_node(new StanzaNode.build("resource", NS_URI).put_node(new StanzaNode.text(requested_resource)));
-                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), new IqResponseListenerImpl());
+                StanzaNode bind_node = new StanzaNode.build("bind", NS_URI).add_self_xmlns();
+                bind_node.put_node(new StanzaNode.build("resource", NS_URI).put_node(new StanzaNode.text(requested_resource)));
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), on_bind_response);
                 stream.add_flag(flag);
-            }
-        }
-
-        private class IqResponseListenerImpl : Iq.ResponseListener, Object {
-            public void on_result(XmppStream stream, Iq.Stanza iq) {
-                stream.get_module(Bind.Module.IDENTITY).iq_response_stanza(stream, iq);
             }
         }
 
@@ -69,6 +63,10 @@ namespace Xmpp.Bind {
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return ID; }
+
+        private static void on_bind_response(XmppStream stream, Iq.Stanza iq) {
+            stream.get_module(Bind.Module.IDENTITY).iq_response_stanza(stream, iq);
+        }
     }
 
     public class Flag : XmppStreamFlag {

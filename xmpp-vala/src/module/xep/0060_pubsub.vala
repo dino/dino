@@ -17,23 +17,11 @@ namespace Xmpp.Xep.Pubsub {
             event_listeners[node] = new EventListenerDelegate(on_result, reference);
         }
 
-        public void request(XmppStream stream, string jid, string node, RequestResponseListener listener) { // TODO multiple nodes gehen auch
+        [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, string jid, string? id, StanzaNode? node, Object? storage);
+        public void request(XmppStream stream, string jid, string node, OnResult listener, Object? store) { // TODO multiple nodes gehen auch
             Iq.Stanza a = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
             a.to = jid;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, a, new IqRequestResponseListener(listener));
-        }
-
-        private class IqRequestResponseListener : Iq.ResponseListener, Object {
-            RequestResponseListener response_listener;
-            public IqRequestResponseListener(RequestResponseListener response_listener) { this.response_listener = response_listener; }
-            public void on_result(XmppStream stream, Iq.Stanza iq) {
-                StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);
-                StanzaNode items_node = event_node != null ? event_node.get_subnode("items", NS_URI) : null;
-                StanzaNode item_node = items_node != null ? items_node.get_subnode("item", NS_URI) : null;
-                string? node = items_node != null ? items_node.get_attribute("node", NS_URI) : null;
-                string? id = item_node != null ? item_node.get_attribute("id", NS_URI) : null;
-                response_listener.on_result(stream, iq.from, id, item_node != null ? item_node.sub_nodes[0] : null);
-            }
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, a, on_received_request_response, Tuple.create(listener, store));
         }
 
         public void publish(XmppStream stream, string? jid, string node_id, string node, string item_id, StanzaNode content) {
@@ -45,18 +33,6 @@ namespace Xmpp.Xep.Pubsub {
             publish_node.put_node(items_node);
             Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
-        }
-
-        private class IqPublishResponseListener : Iq.ResponseListener, Object {
-            PublishResponseListener response_listener;
-            public IqPublishResponseListener(PublishResponseListener response_listener) { this.response_listener = response_listener; }
-            public void on_result(XmppStream stream, Iq.Stanza iq) {
-                if (iq.is_error()) {
-                    response_listener.on_error(stream);
-                } else {
-                    response_listener.on_success(stream);
-                }
-            }
         }
 
         public override void attach(XmppStream stream) {
@@ -87,10 +63,16 @@ namespace Xmpp.Xep.Pubsub {
                 event_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0]);
             }
         }
-    }
 
-    public interface RequestResponseListener : Object {
-        public abstract void on_result(XmppStream stream, string jid, string? id, StanzaNode? node);
+        private static void on_received_request_response(XmppStream stream, Iq.Stanza iq, Object o) {
+            Tuple<OnResult, Object?> tuple = o as Tuple<OnResult, Object?>;
+            OnResult on_result = tuple.a;
+            StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);
+            StanzaNode items_node = event_node != null ? event_node.get_subnode("items", NS_URI) : null;
+            StanzaNode item_node = items_node != null ? items_node.get_subnode("item", NS_URI) : null;
+            string? id = item_node != null ? item_node.get_attribute("id", NS_URI) : null;
+            on_result(stream, iq.from, id, item_node != null ? item_node.sub_nodes[0] : null, tuple.b);
+        }
     }
 
     public class EventListenerDelegate {
@@ -102,10 +84,5 @@ namespace Xmpp.Xep.Pubsub {
             this.on_result = on_result;
             this.reference = reference;
         }
-    }
-
-    public interface PublishResponseListener : Object {
-        public abstract void on_success(XmppStream stream);
-        public abstract void on_error(XmppStream stream);
     }
 }

@@ -7,7 +7,7 @@ namespace Xmpp.Xep.Muc {
 public class Flag : XmppStreamFlag {
     public const string ID = "muc";
 
-    private HashMap<string, MucEnterListener> enter_listeners = new HashMap<string, MucEnterListener>();
+    private HashMap<string, ListenerHolder> enter_listeners = new HashMap<string, ListenerHolder>();
     private HashMap<string, string> enter_ids = new HashMap<string, string>();
     private HashMap<string, string> own_nicks = new HashMap<string, string>();
     private HashMap<string, string> subjects = new HashMap<string, string>();
@@ -32,7 +32,7 @@ public class Flag : XmppStreamFlag {
 
     public string? get_enter_id(string bare_jid) { return enter_ids[bare_jid]; }
 
-    public MucEnterListener? get_enter_listener(string bare_jid) { return enter_listeners[bare_jid]; }
+    public ListenerHolder? get_enter_listener(string bare_jid) { return enter_listeners[bare_jid]; }
 
     public bool is_muc(string jid) { return own_nicks[jid] != null; }
 
@@ -51,7 +51,7 @@ public class Flag : XmppStreamFlag {
         subjects_by[bare_jid] = full_jid;
     }
 
-    public void start_muc_enter(string bare_jid, string presence_id, MucEnterListener listener) {
+    public void start_muc_enter(string bare_jid, string presence_id, ListenerHolder listener) {
         enter_listeners[bare_jid] = listener;
         enter_ids[bare_jid] = presence_id;
     }

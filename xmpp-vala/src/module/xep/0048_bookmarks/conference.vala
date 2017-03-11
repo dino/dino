@@ -2,7 +2,7 @@ using Xmpp.Core;
 
 namespace Xmpp.Xep.Bookmarks {
 
-public class Conference {
+public class Conference : Object {
 
     public const string ATTRIBUTE_AUTOJOIN = "autojoin";
     public const string ATTRIBUTE_JID = "jid";

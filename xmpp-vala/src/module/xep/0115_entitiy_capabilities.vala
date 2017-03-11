@@ -58,26 +58,19 @@ namespace Xmpp.Xep.EntityCapabilities {
                 string ver_attribute = c_node.get_attribute("ver", NS_URI);
                 ArrayList<string> capabilities = storage.get_features(ver_attribute);
                 if (capabilities.size == 0) {
-                    stream.get_module(ServiceDiscovery.Module.IDENTITY)
-                        .request_info(stream, presence.from, new ServiceDiscoveryInfoResponseListenerImpl(storage, ver_attribute));
+                    stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, on_received_info_response, Tuple.create(storage, ver_attribute));
                 } else {
                     ServiceDiscovery.Flag.get_flag(stream).set_entitiy_features(presence.from, capabilities);
                 }
             }
         }
 
-        private class ServiceDiscoveryInfoResponseListenerImpl : ServiceDiscovery.InfoResponseListener, Object {
-            private Storage storage;
-            private string entity;
-
-            public ServiceDiscoveryInfoResponseListenerImpl(Storage storage, string entity) {
-                this.storage = storage;
-                this.entity = entity;
-            }
-            public void on_result(XmppStream stream, ServiceDiscovery.InfoResult query_result) {
-                if (compute_hash(query_result.identities, query_result.features) == entity) {
-                    storage.store_features(entity, query_result.features);
-                }
+        private static void on_received_info_response(XmppStream stream, ServiceDiscovery.InfoResult query_result, Object? store) {
+            Tuple<Storage, string> tuple = store as Tuple<Storage, string>;
+            Storage storage = tuple.a;
+            string entity = tuple.b;
+            if (compute_hash(query_result.identities, query_result.features) == entity) {
+                storage.store_features(entity, query_result.features);
             }
         }
 
