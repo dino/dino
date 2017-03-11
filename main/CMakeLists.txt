@@ -17,18 +17,18 @@ vala_precompile(MAIN_VALA_C
 SOURCES
     src/main.vala
 CUSTOM_VAPIS
-    ${CMAKE_BINARY_DIR}/xmpp-vala/xmpp-vala.vapi
-    ${CMAKE_BINARY_DIR}/qlite/qlite.vapi
-    ${CMAKE_BINARY_DIR}/libdino/dino.vapi
+    ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
+    ${CMAKE_BINARY_DIR}/exports/qlite.vapi
+    ${CMAKE_BINARY_DIR}/exports/dino_internal.vapi
 PACKAGES
     ${MAIN_PACKAGES}
 OPTIONS
     --target-glib=2.38
-    -g
+    ${GLOBAL_DEBUG_FLAGS}
     --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${MAIN_CFLAGS} -I${CMAKE_BINARY_DIR}/xmpp-vala -I${CMAKE_BINARY_DIR}/qlite -I${CMAKE_BINARY_DIR}/libdino)
+set(CFLAGS ${VALA_CFLAGS} ${MAIN_CFLAGS})
 add_definitions(${CFLAGS})
 add_executable(dino ${MAIN_VALA_C})
 add_dependencies(dino dino-vapi)

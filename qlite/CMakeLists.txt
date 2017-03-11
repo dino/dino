@@ -29,9 +29,8 @@ GENERATE_VAPI
 GENERATE_HEADER
     qlite
 OPTIONS
-    -g
+    ${GLOBAL_DEBUG_FLAGS}
     --thread
-    --vapidir=${CMAKE_SOURCE_DIR}/vapi
 )
 
 set(CFLAGS ${VALA_CFLAGS} ${QLITE_CFLAGS})
@@ -41,6 +40,6 @@ target_link_libraries(qlite ${QLITE_LIBRARIES})
 
 add_custom_target(qlite-vapi
 DEPENDS
-    ${CMAKE_BINARY_DIR}/qlite/qlite.vapi
+    ${CMAKE_BINARY_DIR}/exports/qlite.vapi
 )
 

@@ -115,7 +115,7 @@ function(_vala_mkdir_for_file file)
 endfunction()
 
 function(vala_precompile output)
-    cmake_parse_arguments(ARGS "FAST_VAPI" "DIRECTORY;GENERATE_HEADER;GENERATE_VAPI"
+    cmake_parse_arguments(ARGS "FAST_VAPI" "DIRECTORY;GENERATE_HEADER;GENERATE_VAPI;EXPORTS_DIR"
         "SOURCES;PACKAGES;OPTIONS;DEFINITIONS;CUSTOM_VAPIS;GRESOURCES" ${ARGN})
 
     set(ARGS_FAST_VAPI true)
@@ -125,7 +125,13 @@ function(vala_precompile output)
     else(ARGS_DIRECTORY)
         set(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     endif(ARGS_DIRECTORY)
-    include_directories(${DIRECTORY})
+    if(ARGS_EXPORTS_DIR)
+        set(ARGS_EXPORTS_DIR ${CMAKE_BINARY_DIR}/${ARGS_EXPORTS_DIR})
+    else(ARGS_EXPORTS_DIR)
+        set(ARGS_EXPORTS_DIR ${CMAKE_BINARY_DIR}/exports)
+    endif(ARGS_EXPORTS_DIR)
+    file(MAKE_DIRECTORY "${ARGS_EXPORTS_DIR}")
+    include_directories(${DIRECTORY} ${ARGS_EXPORTS_DIR})
 
     set(vala_pkg_opts "")
     foreach(pkg ${ARGS_PACKAGES})
@@ -160,9 +166,9 @@ function(vala_precompile output)
 
     set(vapi_arguments "")
     if(ARGS_GENERATE_VAPI)
-        list(APPEND out_extra_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}.vapi")
-        list(APPEND out_extra_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}-internal.vapi")
-        set(vapi_arguments "--vapi=${ARGS_GENERATE_VAPI}.vapi" "--internal-vapi=${ARGS_GENERATE_VAPI}-internal.vapi")
+        list(APPEND out_extra_files "${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}.vapi")
+        list(APPEND out_extra_files "${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}_internal.vapi")
+        set(vapi_arguments "--vapi=${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}.vapi" "--internal-vapi=${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}_internal.vapi")
 
         # Header and internal header is needed to generate internal vapi
         if (NOT ARGS_GENERATE_HEADER)
@@ -172,10 +178,10 @@ function(vala_precompile output)
 
     set(header_arguments "")
     if(ARGS_GENERATE_HEADER)
-        list(APPEND out_extra_files "${DIRECTORY}/${ARGS_GENERATE_HEADER}.h")
-        list(APPEND out_extra_files "${DIRECTORY}/${ARGS_GENERATE_HEADER}_internal.h")
-        list(APPEND header_arguments "--header=${DIRECTORY}/${ARGS_GENERATE_HEADER}.h")
-        list(APPEND header_arguments "--internal-header=${DIRECTORY}/${ARGS_GENERATE_HEADER}_internal.h")
+        list(APPEND out_extra_files "${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_HEADER}.h")
+        list(APPEND out_extra_files "${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_HEADER}_internal.h")
+        list(APPEND header_arguments "--header=${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_HEADER}.h")
+        list(APPEND header_arguments "--internal-header=${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_HEADER}_internal.h")
     endif(ARGS_GENERATE_HEADER)
 
     if(ARGS_FAST_VAPI)

@@ -24,7 +24,7 @@ GENERATE_VAPI
 GENERATE_HEADER
     gpgme-vala
 OPTIONS
-    -g
+    ${GLOBAL_DEBUG_FLAGS}
     --thread
 )
 
@@ -33,16 +33,26 @@ add_definitions(${CFLAGS})
 add_library(gpgme-vala SHARED ${GPGME_VALA_C} src/gpgme_fix.c)
 target_link_libraries(gpgme-vala ${GPGME_VALA_LIBRARIES} ${GPGME_LIBRARIES})
 
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/gpgme-vala/gpgme.vapi
+add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/gpgme_fix.h"
 COMMAND
-    cat "${CMAKE_BINARY_DIR}/gpgme-vala/gpgme-vala.vapi" "${CMAKE_CURRENT_SOURCE_DIR}/vapi/gpgme_public.vapi" > "${CMAKE_BINARY_DIR}/gpgme-vala/gpgme.vapi"
+    cp "${CMAKE_CURRENT_SOURCE_DIR}/src/gpgme_fix.h" "${CMAKE_BINARY_DIR}/exports/gpgme_fix.h"
 DEPENDS
-    ${CMAKE_BINARY_DIR}/gpgme-vala/gpgme-vala.vapi
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/gpgme_fix.h"
+COMMENT
+    Copy header file gpgme_fix.h
+)
+
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/exports/gpgme.vapi
+COMMAND
+    cat "${CMAKE_BINARY_DIR}/exports/gpgme-vala.vapi" "${CMAKE_CURRENT_SOURCE_DIR}/vapi/gpgme_public.vapi" > "${CMAKE_BINARY_DIR}/exports/gpgme.vapi"
+DEPENDS
+    ${CMAKE_BINARY_DIR}/exports/gpgme-vala.vapi
     ${CMAKE_CURRENT_SOURCE_DIR}/vapi/gpgme_public.vapi
 )
 
 add_custom_target(gpgme-vapi
 DEPENDS
-    ${CMAKE_BINARY_DIR}/gpgme-vala/gpgme.vapi
+    ${CMAKE_BINARY_DIR}/exports/gpgme_fix.h
+    ${CMAKE_BINARY_DIR}/exports/gpgme.vapi
 )
 
