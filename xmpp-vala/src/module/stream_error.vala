@@ -18,12 +18,8 @@ namespace Xmpp.StreamError {
             stream.received_nonza.disconnect(on_received_nonstanza);
         }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new StreamError.Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }

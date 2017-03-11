@@ -48,7 +48,7 @@ public class Module : XmppStreamModule {
 
         Muc.Flag.get_flag(stream).start_muc_enter(bare_jid, presence.id, listener);
 
-        Presence.Module.get_module(stream).send_presence(stream, presence);
+        stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
 
     public void exit(XmppStream stream, string jid) {
@@ -56,7 +56,7 @@ public class Module : XmppStreamModule {
         Presence.Stanza presence = new Presence.Stanza();
         presence.to = jid + "/" + nick;
         presence.type_ = Presence.Stanza.TYPE_UNAVAILABLE;
-        Presence.Module.get_module(stream).send_presence(stream, presence);
+        stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
 
     public void change_subject(XmppStream stream, string jid, string subject) {
@@ -64,13 +64,13 @@ public class Module : XmppStreamModule {
         message.to = jid;
         message.type_ = Message.Stanza.TYPE_GROUPCHAT;
         message.stanza.put_node((new StanzaNode.build("subject")).put_node(new StanzaNode.text(subject)));
-        Message.Module.get_module(stream).send_message(stream, message);
+        stream.get_module(Message.Module.IDENTITY).send_message(stream, message);
     }
 
     public void change_nick(XmppStream stream, string jid, string new_nick) {
         Presence.Stanza presence = new Presence.Stanza();
         presence.to = jid + "/" + new_nick;
-        Presence.Module.get_module(stream).send_presence(stream, presence);
+        stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
 
     public void kick(XmppStream stream, string jid, string nick) {
@@ -80,30 +80,26 @@ public class Module : XmppStreamModule {
     public override void attach(XmppStream stream) {
         stream.add_flag(new Muc.Flag());
         Message.Module.require(stream);
-        Message.Module.get_module(stream).received_message.connect(on_received_message);
+        stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
         Presence.Module.require(stream);
-        Presence.Module.get_module(stream).received_presence.connect(on_received_presence);
-        Presence.Module.get_module(stream).received_available.connect(on_received_available);
-        Presence.Module.get_module(stream).received_unavailable.connect(on_received_unavailable);
-        if (ServiceDiscovery.Module.get_module(stream) != null) {
-            ServiceDiscovery.Module.get_module(stream).add_feature(stream, NS_URI);
+        stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
+        stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
+        stream.get_module(Presence.Module.IDENTITY).received_unavailable.connect(on_received_unavailable);
+        if (stream.get_module(ServiceDiscovery.Module.IDENTITY) != null) {
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         }
     }
 
     public override void detach(XmppStream stream) {
-        Message.Module.get_module(stream).received_message.disconnect(on_received_message);
-        Presence.Module.get_module(stream).received_presence.disconnect(on_received_presence);
-        Presence.Module.get_module(stream).received_available.disconnect(on_received_available);
-        Presence.Module.get_module(stream).received_unavailable.disconnect(on_received_unavailable);
-    }
-
-    public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(IDENTITY);
+        stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
+        stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
+        stream.get_module(Presence.Module.IDENTITY).received_available.disconnect(on_received_available);
+        stream.get_module(Presence.Module.IDENTITY).received_unavailable.disconnect(on_received_unavailable);
     }
 
     public static void require(XmppStream stream) {
         Presence.Module.require(stream);
-        if (get_module(stream) == null) stream.add_module(new Muc.Module());
+        if (stream.get_module(IDENTITY) == null) stream.add_module(new Muc.Module());
     }
 
     public override string get_ns() { return NS_URI; }
@@ -114,7 +110,7 @@ public class Module : XmppStreamModule {
         query.put_node(new StanzaNode.build("item", NS_URI_ADMIN).put_attribute("nick", nick, NS_URI_ADMIN).put_attribute("role", new_role, NS_URI_ADMIN));
         Iq.Stanza iq = new Iq.Stanza.set(query);
         iq.to = jid;
-        Iq.Module.get_module(stream).send_iq(stream, iq);
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
     }
 
     private void on_received_message(XmppStream stream, Message.Stanza message) {

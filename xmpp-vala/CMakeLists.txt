@@ -80,7 +80,7 @@ OPTIONS
     --vapidir=${CMAKE_SOURCE_DIR}/vapi
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS} -I${CMAKE_BINARY_DIR}/gpgme-vala)
+set(CFLAGS ${VALA_CFLAGS} ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS} -I${CMAKE_BINARY_DIR}/gpgme-vala -I${CMAKE_SOURCE_DIR}/gpgme-vala/src)
 add_definitions(${CFLAGS})
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
 add_dependencies(xmpp-vala gpgme-vapi)

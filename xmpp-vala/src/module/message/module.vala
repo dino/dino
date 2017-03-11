@@ -27,12 +27,8 @@ namespace Xmpp.Message {
             received_message(stream, message);
         }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Message.Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Message.Module());
         }
 
         public override void attach(XmppStream stream) {

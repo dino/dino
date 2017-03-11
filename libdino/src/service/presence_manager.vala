@@ -57,17 +57,17 @@ public class PresenceManager : StreamInteractionModule, Object {
 
     public void request_subscription(Account account, Jid jid) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xmpp.Presence.Module.get_module(stream).request_subscription(stream, jid.bare_jid.to_string());
+        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).request_subscription(stream, jid.bare_jid.to_string());
     }
 
     public void approve_subscription(Account account, Jid jid) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xmpp.Presence.Module.get_module(stream).approve_subscription(stream, jid.bare_jid.to_string());
+        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).approve_subscription(stream, jid.bare_jid.to_string());
     }
 
     public void deny_subscription(Account account, Jid jid) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xmpp.Presence.Module.get_module(stream).deny_subscription(stream, jid.bare_jid.to_string());
+        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).deny_subscription(stream, jid.bare_jid.to_string());
     }
 
     public static PresenceManager? get_instance(StreamInteractor stream_interactor) {

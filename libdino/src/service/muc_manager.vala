@@ -28,27 +28,27 @@ public class MucManager : StreamInteractionModule, Object {
 
     public void join(Account account, Jid jid, string nick, string? password = null) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xep.Muc.Module.get_module(stream).enter(stream, jid.bare_jid.to_string(), nick, password, new MucEnterListenerImpl(this, jid, nick, account));
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick, password, new MucEnterListenerImpl(this, jid, nick, account));
     }
 
     public void part(Account account, Jid jid) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xep.Muc.Module.get_module(stream).exit(stream, jid.bare_jid.to_string());
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).exit(stream, jid.bare_jid.to_string());
     }
 
     public void change_subject(Account account, Jid jid, string subject) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xep.Muc.Module.get_module(stream).change_subject(stream, jid.bare_jid.to_string(), subject);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_subject(stream, jid.bare_jid.to_string(), subject);
     }
 
     public void change_nick(Account account, Jid jid, string new_nick) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xep.Muc.Module.get_module(stream).change_nick(stream, jid.bare_jid.to_string(), new_nick);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_nick(stream, jid.bare_jid.to_string(), new_nick);
     }
 
     public void kick(Account account, Jid jid, string nick) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xep.Muc.Module.get_module(stream).kick(stream, jid.bare_jid.to_string(), nick);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).kick(stream, jid.bare_jid.to_string(), nick);
     }
 
     public ArrayList<Jid>? get_occupants(Jid jid, Account account) {
@@ -76,28 +76,28 @@ public class MucManager : StreamInteractionModule, Object {
     public void get_bookmarks(Account account, Xep.Bookmarks.ConferencesRetrieveResponseListener listener) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            Xep.Bookmarks.Module.get_module(stream).get_conferences(stream, listener);
+            stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, listener);
         }
     }
 
     public void add_bookmark(Account account, Xep.Bookmarks.Conference conference) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            Xep.Bookmarks.Module.get_module(stream).add_conference(stream, conference);
+            stream.get_module(Xep.Bookmarks.Module.IDENTITY).add_conference(stream, conference);
         }
     }
 
     public void replace_bookmark(Account account, Xep.Bookmarks.Conference was, Xep.Bookmarks.Conference replace) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            Xep.Bookmarks.Module.get_module(stream).replace_conference(stream, was, replace);
+            stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference(stream, was, replace);
         }
     }
 
     public void remove_bookmark(Account account, Xep.Bookmarks.Conference conference) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            Xep.Bookmarks.Module.get_module(stream).remove_conference(stream, conference);
+            stream.get_module(Xep.Bookmarks.Module.IDENTITY).remove_conference(stream, conference);
         }
     }
 
@@ -158,7 +158,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     private void on_stream_negotiated(Account account) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) Xep.Bookmarks.Module.get_module(stream).get_conferences(stream, new BookmarksRetrieveResponseListener(this, account));
+        if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, new BookmarksRetrieveResponseListener(this, account));
     }
 
     private void on_pre_message_received(Entities.Message message, Conversation conversation) {

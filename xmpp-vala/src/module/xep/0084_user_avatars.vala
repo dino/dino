@@ -21,7 +21,7 @@ namespace Xmpp.Xep.UserAvatars {
             string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, image);
             StanzaNode data_node = new StanzaNode.build("data", NS_URI_DATA).add_self_xmlns()
                     .put_node(new StanzaNode.text(Base64.encode(image)));
-            Pubsub.Module.get_module(stream).publish(stream, null, NS_URI_DATA, NS_URI_DATA, sha1, data_node);
+            stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_DATA, NS_URI_DATA, sha1, data_node);
 
             StanzaNode metadata_node = new StanzaNode.build("metadata", NS_URI_METADATA).add_self_xmlns();
             StanzaNode info_node = new StanzaNode.build("info", NS_URI_METADATA)
@@ -31,7 +31,7 @@ namespace Xmpp.Xep.UserAvatars {
                 .put_attribute("height", height.to_string())
                 .put_attribute("type", "image/png");
             metadata_node.put_node(info_node);
-            Pubsub.Module.get_module(stream).publish(stream, null, NS_URI_METADATA, NS_URI_METADATA, sha1, metadata_node);
+            stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_METADATA, NS_URI_METADATA, sha1, metadata_node);
         }
 
         private class PublishResponseListenerImpl : Pubsub.PublishResponseListener, Object {
@@ -47,7 +47,7 @@ namespace Xmpp.Xep.UserAvatars {
 
         public override void attach(XmppStream stream) {
             Pubsub.Module.require(stream);
-            Pubsub.Module.get_module(stream).add_filtered_notification(stream, NS_URI_METADATA, on_event_result, this);
+            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_event_result, this);
         }
 
         public override void detach(XmppStream stream) { }
@@ -57,9 +57,9 @@ namespace Xmpp.Xep.UserAvatars {
             StanzaNode info_node = node.get_subnode("info", NS_URI_METADATA);
             if (info_node.get_attribute("type") != "image/png") return;
             if (storage.has_image(id)) {
-                Module.get_module(stream).received_avatar(stream, jid, id);
+                stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
             } else {
-                Pubsub.Module.get_module(stream).request(stream, jid, NS_URI_DATA, new PubsubRequestResponseListenerImpl(storage));
+                stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NS_URI_DATA, new PubsubRequestResponseListenerImpl(storage));
             }
         }
 
@@ -69,16 +69,12 @@ namespace Xmpp.Xep.UserAvatars {
             public void on_result(XmppStream stream, string jid, string? id, StanzaNode? node) {
                 if (node == null) return;
                 storage.store(id, Base64.decode(node.get_string_content()));
-                Module.get_module(stream).received_avatar(stream, jid, id);
+                stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
             }
         }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stderr.printf("UserAvatarsModule required but not attached!\n");
+            if (stream.get_module(IDENTITY) == null) stderr.printf("UserAvatarsModule required but not attached!\n");
         }
 
         public override string get_ns() { return NS_URI; }

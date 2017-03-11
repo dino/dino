@@ -153,7 +153,7 @@ public class ConnectionManager {
     private void check_reconnect(Account account) {
         PingResponseListenerImpl ping_response_listener = new PingResponseListenerImpl(this, account);
         Core.XmppStream stream = stream_states[account].stream;
-        Xep.Ping.Module.get_module(stream).send_ping(stream, account.domainpart, ping_response_listener);
+        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.domainpart, ping_response_listener);
 
         Timeout.add_seconds(5, () => {
             if (stream_states[account].stream != stream) return false;
@@ -203,7 +203,7 @@ public class ConnectionManager {
                 Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
                 presence.type_ = Xmpp.Presence.Stanza.TYPE_UNAVAILABLE;
                 try {
-                    Presence.Module.get_module(stream_states[account].stream).send_presence(stream_states[account].stream, presence);
+                    stream_states[account].stream.get_module(Presence.Module.IDENTITY).send_presence(stream_states[account].stream, presence);
                     stream_states[account].stream.disconnect();
                 } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
             }

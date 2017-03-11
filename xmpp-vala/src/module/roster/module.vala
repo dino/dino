@@ -72,24 +72,20 @@ namespace Xmpp.Roster {
 
         public void on_iq_get(XmppStream stream, Iq.Stanza iq) { }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override void attach(XmppStream stream) {
             Iq.Module.require(stream);
-            Iq.Module.get_module(stream).register_for_namespace(NS_URI, this);
+            stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, this);
             Presence.Module.require(stream);
-            Presence.Module.get_module(stream).initial_presence_sent.connect(roster_get);
+            stream.get_module(Presence.Module.IDENTITY).initial_presence_sent.connect(roster_get);
             stream.add_flag(new Flag());
         }
 
         public override void detach(XmppStream stream) {
-            Presence.Module.get_module(stream).initial_presence_sent.disconnect(roster_get);
+            stream.get_module(Presence.Module.IDENTITY).initial_presence_sent.disconnect(roster_get);
         }
 
         internal override string get_ns() { return NS_URI; }
@@ -99,7 +95,7 @@ namespace Xmpp.Roster {
             Flag.get_flag(stream).iq_id = random_uuid();
             StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
             Iq.Stanza iq = new Iq.Stanza.get(query_node, Flag.get_flag(stream).iq_id);
-            Iq.Module.get_module(stream).send_iq(stream, iq, new IqResponseListenerImpl());
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqResponseListenerImpl());
         }
 
         private class IqResponseListenerImpl : Iq.ResponseListener, Object {
@@ -111,7 +107,7 @@ namespace Xmpp.Roster {
                         Item item = new Item.from_stanza_node(item_node);
                         flag.roster_items[item.jid] = item;
                     }
-                    Module.get_module(stream).received_roster(stream, flag.roster_items.values);
+                    stream.get_module(Module.IDENTITY).received_roster(stream, flag.roster_items.values);
                 }
             }
         }
@@ -120,7 +116,7 @@ namespace Xmpp.Roster {
             StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns()
                                     .put_node(roster_item.stanza_node);
             Iq.Stanza iq = new Iq.Stanza.set(query_node);
-            Iq.Module.get_module(stream).send_iq(stream, iq, null);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
         }
     }
 }

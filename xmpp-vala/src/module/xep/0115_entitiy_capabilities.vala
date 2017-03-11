@@ -18,7 +18,7 @@ namespace Xmpp.Xep.EntityCapabilities {
 
         private string get_own_hash(XmppStream stream) {
             if (own_ver_hash == null) {
-                own_ver_hash = compute_hash(ServiceDiscovery.Module.get_module(stream).identities, ServiceDiscovery.Flag.get_flag(stream).features);
+                own_ver_hash = compute_hash(stream.get_module(ServiceDiscovery.Module.IDENTITY).identities, ServiceDiscovery.Flag.get_flag(stream).features);
             }
             return own_ver_hash;
         }
@@ -26,22 +26,18 @@ namespace Xmpp.Xep.EntityCapabilities {
         public override void attach(XmppStream stream) {
             ServiceDiscovery.Module.require(stream);
             Presence.Module.require(stream);
-            Presence.Module.get_module(stream).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
-            Presence.Module.get_module(stream).received_presence.connect(on_received_presence);
-            ServiceDiscovery.Module.get_module(stream).add_feature(stream, NS_URI);
+            stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
+            stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         }
 
         public override void detach(XmppStream stream) {
-            Presence.Module.get_module(stream).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
-            Presence.Module.get_module(stream).received_presence.disconnect(on_received_presence);
-        }
-
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
+            stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
+            stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
         }
 
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stderr.printf("EntityCapabilitiesModule required but not attached!\n");
+            if (stream.get_module(IDENTITY) == null) stderr.printf("EntityCapabilitiesModule required but not attached!\n");
         }
 
         public override string get_ns() { return NS_URI; }
@@ -62,7 +58,7 @@ namespace Xmpp.Xep.EntityCapabilities {
                 string ver_attribute = c_node.get_attribute("ver", NS_URI);
                 ArrayList<string> capabilities = storage.get_features(ver_attribute);
                 if (capabilities.size == 0) {
-                    ServiceDiscovery.Module.get_module(stream)
+                    stream.get_module(ServiceDiscovery.Module.IDENTITY)
                         .request_info(stream, presence.from, new ServiceDiscoveryInfoResponseListenerImpl(storage, ver_attribute));
                 } else {
                     ServiceDiscovery.Flag.get_flag(stream).set_entitiy_features(presence.from, capabilities);

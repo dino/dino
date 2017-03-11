@@ -15,22 +15,18 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
             ServiceDiscovery.Module.require(stream);
             Message.Module.require(stream);
 
-            ServiceDiscovery.Module.get_module(stream).add_feature(stream, NS_URI);
-            Message.Module.get_module(stream).received_message.connect(received_message);
-            Message.Module.get_module(stream).pre_send_message.connect(pre_send_message);
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
+            stream.get_module(Message.Module.IDENTITY).received_message.connect(received_message);
+            stream.get_module(Message.Module.IDENTITY).pre_send_message.connect(pre_send_message);
         }
 
         public override void detach(XmppStream stream) {
-            Message.Module.get_module(stream).received_message.disconnect(received_message);
-            Message.Module.get_module(stream).pre_send_message.disconnect(pre_send_message);
-        }
-
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
+            stream.get_module(Message.Module.IDENTITY).received_message.disconnect(received_message);
+            stream.get_module(Message.Module.IDENTITY).pre_send_message.disconnect(pre_send_message);
         }
 
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }
@@ -49,7 +45,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
             Message.Stanza received_message = new Message.Stanza();
             received_message.to = message.from;
             received_message.stanza.put_node(new StanzaNode.build("received", NS_URI).add_self_xmlns().put_attribute("id", message.id));
-            Message.Module.get_module(stream).send_message(stream, received_message);
+            stream.get_module(Message.Module.IDENTITY).send_message(stream, received_message);
         }
 
         private void pre_send_message(XmppStream stream, Message.Stanza message) {

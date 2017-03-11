@@ -38,12 +38,8 @@ namespace Xmpp.Iq {
             stream.received_iq_stanza.disconnect(on_received_iq_stanza);
         }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Iq.Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Iq.Module());
         }
 
         public override bool mandatory_outstanding(XmppStream stream) { return false; }

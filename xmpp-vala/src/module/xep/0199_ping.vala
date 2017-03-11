@@ -12,7 +12,7 @@ namespace Xmpp.Xep.Ping {
         public void send_ping(XmppStream stream, string jid, ResponseListener? listener = null) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("ping", NS_URI).add_self_xmlns());
             iq.to = jid;
-            Iq.Module.get_module(stream).send_iq(stream, iq, listener == null? null : new IqResponseListenerImpl(listener));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, listener == null? null : new IqResponseListenerImpl(listener));
         }
 
         private class IqResponseListenerImpl : Iq.ResponseListener, Object {
@@ -27,17 +27,13 @@ namespace Xmpp.Xep.Ping {
 
         public override void attach(XmppStream stream) {
             Iq.Module.require(stream);
-            Iq.Module.get_module(stream).register_for_namespace(NS_URI, new IqHandlerImpl());
+            stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, new IqHandlerImpl());
         }
 
         public override void detach(XmppStream stream) { }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }
@@ -45,7 +41,7 @@ namespace Xmpp.Xep.Ping {
 
         private class IqHandlerImpl : Iq.Handler, Object {
             public void on_iq_get(XmppStream stream, Iq.Stanza iq) {
-                Iq.Module.get_module(stream).send_iq(stream, new Iq.Stanza.result(iq));
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
             }
             public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
         }

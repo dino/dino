@@ -132,14 +132,14 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private void send_chat_marker(Conversation conversation, Entities.Message message, string marker) {
         Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream != null && Settings.instance().send_read && Xep.ChatMarkers.Module.requests_marking(message.stanza)) {
-            Xep.ChatMarkers.Module.get_module(stream).send_marker(stream, message.stanza.from, message.stanza_id, message.get_type_string(), marker);
+            stream.get_module(Xep.ChatMarkers.Module.IDENTITY).send_marker(stream, message.stanza.from, message.stanza_id, message.get_type_string(), marker);
         }
     }
 
     private void send_chat_state_notification(Conversation conversation, string state) {
         Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream != null && Settings.instance().send_read) {
-            Xep.ChatStateNotifications.Module.get_module(stream).send_state(stream, conversation.counterpart.to_string(), state);
+            stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart.to_string(), state);
         }
     }
 }

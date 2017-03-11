@@ -10,7 +10,7 @@ namespace Xmpp.Xep.PrivateXmlStorage {
         public void store(XmppStream stream, StanzaNode node, StoreResponseListener listener) {
             StanzaNode queryNode = new StanzaNode.build("query", NS_URI).add_self_xmlns().put_node(node);
             Iq.Stanza iq = new Iq.Stanza.set(queryNode);
-            Iq.Module.get_module(stream).send_iq(stream, iq, new IqStoreResponse(listener));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqStoreResponse(listener));
         }
 
         private class IqStoreResponse : Iq.ResponseListener, Object {
@@ -26,7 +26,7 @@ namespace Xmpp.Xep.PrivateXmlStorage {
         public void retrieve(XmppStream stream, StanzaNode node, RetrieveResponseListener responseListener) {
             StanzaNode queryNode = new StanzaNode.build("query", NS_URI).add_self_xmlns().put_node(node);
             Iq.Stanza iq = new Iq.Stanza.get(queryNode);
-            Iq.Module.get_module(stream).send_iq(stream, iq, new IqRetrieveResponse(responseListener));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqRetrieveResponse(responseListener));
         }
 
         private class IqRetrieveResponse : Iq.ResponseListener, Object {
@@ -44,12 +44,8 @@ namespace Xmpp.Xep.PrivateXmlStorage {
 
         public override void detach(XmppStream stream) { }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new PrivateXmlStorage.Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new PrivateXmlStorage.Module());
         }
 
         public override string get_ns() { return NS_URI; }

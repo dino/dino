@@ -19,19 +19,15 @@ public class Module : XmppStreamModule {
     public override void attach(XmppStream stream) {
         Iq.Module.require(stream);
         Presence.Module.require(stream);
-        Presence.Module.get_module(stream).received_presence.connect(on_received_presence);
+        stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
     }
 
     public override void detach(XmppStream stream) {
-        Presence.Module.get_module(stream).received_presence.disconnect(on_received_presence);
-    }
-
-    public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(IDENTITY);
+        stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
     }
 
     public static void require(XmppStream stream) {
-        if (get_module(stream) == null) stderr.printf("VCardModule required but not attached!\n"); ;
+        if (stream.get_module(IDENTITY) == null) stderr.printf("VCardModule required but not attached!\n"); ;
     }
 
     public override string get_ns() { return NS_URI; }
@@ -57,7 +53,7 @@ public class Module : XmppStreamModule {
             } else {
                 iq.to = get_bare_jid(presence.from);
             }
-            Iq.Module.get_module(stream).send_iq(stream, iq, new IqResponseListenerImpl(this, storage, sha1));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqResponseListenerImpl(this, storage, sha1));
         }
     }
 

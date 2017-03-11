@@ -13,7 +13,7 @@ public class Module : XmppStreamModule {
 
     public void get_conferences(XmppStream stream, ConferencesRetrieveResponseListener response_listener) {
         StanzaNode get_node = new StanzaNode.build("storage", NS_URI).add_self_xmlns();
-        PrivateXmlStorage.Module.get_module(stream).retrieve(stream, get_node, new GetConferences(response_listener));
+        stream.get_module(PrivateXmlStorage.Module.IDENTITY).retrieve(stream, get_node, new GetConferences(response_listener));
     }
 
     public void set_conferences(XmppStream stream, ArrayList<Conference> conferences) {
@@ -21,7 +21,7 @@ public class Module : XmppStreamModule {
         foreach (Conference conference in conferences) {
             storage_node.put_node(conference.stanza_node);
         }
-        PrivateXmlStorage.Module.get_module(stream).store(stream, storage_node, new StoreResponseListenerImpl(conferences));
+        stream.get_module(PrivateXmlStorage.Module.IDENTITY).store(stream, storage_node, new StoreResponseListenerImpl(conferences));
     }
 
     private class StoreResponseListenerImpl : PrivateXmlStorage.StoreResponseListener, Object {
@@ -30,7 +30,7 @@ public class Module : XmppStreamModule {
             this.conferences = conferences;
         }
         public void on_success(XmppStream stream) {
-            Module.get_module(stream).conferences_updated(stream, conferences);
+            stream.get_module(Module.IDENTITY).conferences_updated(stream, conferences);
         }
     }
 
@@ -65,7 +65,7 @@ public class Module : XmppStreamModule {
         }
         public void on_result(XmppStream stream, ArrayList<Conference> conferences) {
             conferences.add(conference);
-            Module.get_module(stream).set_conferences(stream, conferences);
+            stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
         }
     }
 
@@ -85,7 +85,7 @@ public class Module : XmppStreamModule {
                     break;
                 }
             }
-            Module.get_module(stream).set_conferences(stream, conferences);
+            stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
         }
     }
 
@@ -102,7 +102,7 @@ public class Module : XmppStreamModule {
                 }
             }
             if (rem != null) conferences.remove(rem);
-            Module.get_module(stream).set_conferences(stream, conferences);
+            stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
         }
     }
 
@@ -110,12 +110,8 @@ public class Module : XmppStreamModule {
 
     public override void detach(XmppStream stream) { }
 
-    public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(IDENTITY);
-    }
-
     public static void require(XmppStream stream) {
-        if (get_module(stream) == null) stderr.printf("");
+        if (stream.get_module(IDENTITY) == null) stderr.printf("");
     }
 
     public override string get_ns() { return NS_URI; }

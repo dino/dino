@@ -67,10 +67,6 @@ namespace Xmpp.Tls {
             }
         }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public override bool mandatory_outstanding(XmppStream stream) {
             return require && (!Flag.has_flag(stream) || !Flag.get_flag(stream).finished);
         }

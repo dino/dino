@@ -39,25 +39,21 @@ namespace Xmpp.Xep.Pgp {
 
         public override void attach(XmppStream stream) {
             Presence.Module.require(stream);
-            Presence.Module.get_module(stream).received_presence.connect(on_received_presence);
-            Presence.Module.get_module(stream).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
+            stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
+            stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
             Message.Module.require(stream);
-            Message.Module.get_module(stream).pre_received_message.connect(on_pre_received_message);
+            stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(on_pre_received_message);
             stream.add_flag(new Flag());
         }
 
         public override void detach(XmppStream stream) {
-            Presence.Module.get_module(stream).received_presence.disconnect(on_received_presence);
-            Presence.Module.get_module(stream).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
-            Message.Module.get_module(stream).pre_received_message.disconnect(on_pre_received_message);
-        }
-
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
+            stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
+            stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
+            stream.get_module(Message.Module.IDENTITY).pre_received_message.disconnect(on_pre_received_message);
         }
 
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }

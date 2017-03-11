@@ -65,7 +65,7 @@ public class AvatarManager : StreamInteractionModule, Object {
             pixbuf.save_to_buffer(out buffer, "png");
             Core.XmppStream stream = stream_interactor.get_stream(account);
             if (stream != null) {
-                Xep.UserAvatars.Module.get_module(stream).publish_png(stream, buffer, pixbuf.width, pixbuf.height);
+                stream.get_module(Xep.UserAvatars.Module.IDENTITY).publish_png(stream, buffer, pixbuf.width, pixbuf.height);
                 on_user_avatar_received(account, account.bare_jid, Base64.encode(buffer));
             }
         } catch (Error e) {

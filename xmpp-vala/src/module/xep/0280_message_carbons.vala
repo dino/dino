@@ -9,12 +9,12 @@ namespace Xmpp.Xep.MessageCarbons {
 
         public void enable(XmppStream stream) {
             Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("enable", NS_URI).add_self_xmlns());
-            Iq.Module.get_module(stream).send_iq(stream, iq);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
         }
 
         public void disable(XmppStream stream) {
             Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("disable", NS_URI).add_self_xmlns());
-            Iq.Module.get_module(stream).send_iq(stream, iq);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
         }
 
         public override void attach(XmppStream stream) {
@@ -24,21 +24,17 @@ namespace Xmpp.Xep.MessageCarbons {
             ServiceDiscovery.Module.require(stream);
 
             stream.stream_negotiated.connect(enable);
-            Message.Module.get_module(stream).pre_received_message.connect(pre_received_message);
-            ServiceDiscovery.Module.get_module(stream).add_feature(stream, NS_URI);
+            stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(pre_received_message);
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         }
 
         public override void detach(XmppStream stream) {
             stream.stream_negotiated.disconnect(enable);
-            Message.Module.get_module(stream).pre_received_message.disconnect(pre_received_message);
-        }
-
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
+            stream.get_module(Message.Module.IDENTITY).pre_received_message.disconnect(pre_received_message);
         }
 
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }

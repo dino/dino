@@ -22,7 +22,7 @@ public class Module : XmppStreamModule {
         received_message.to = jid;
         received_message.type_ = type_;
         received_message.stanza.put_node(new StanzaNode.build(marker, NS_URI).add_self_xmlns().put_attribute("id", message_id));
-        Message.Module.get_module(stream).send_message(stream, received_message);
+        stream.get_module(Message.Module.IDENTITY).send_message(stream, received_message);
     }
 
     public static bool requests_marking(Message.Stanza message) {
@@ -35,22 +35,18 @@ public class Module : XmppStreamModule {
         Message.Module.require(stream);
         ServiceDiscovery.Module.require(stream);
 
-        ServiceDiscovery.Module.get_module(stream).add_feature(stream, NS_URI);
-        Message.Module.get_module(stream).pre_send_message.connect(on_pre_send_message);
-        Message.Module.get_module(stream).received_message.connect(on_received_message);
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
+        stream.get_module(Message.Module.IDENTITY).pre_send_message.connect(on_pre_send_message);
+        stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
     }
 
     public override void detach(XmppStream stream) {
-        Message.Module.get_module(stream).pre_send_message.disconnect(on_pre_send_message);
-        Message.Module.get_module(stream).received_message.disconnect(on_received_message);
-    }
-
-    public static Module? get_module(XmppStream stream) {
-        return (Module?) stream.get_module(IDENTITY);
+        stream.get_module(Message.Module.IDENTITY).pre_send_message.disconnect(on_pre_send_message);
+        stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
     }
 
     public static void require(XmppStream stream) {
-        if (get_module(stream) == null) stream.add_module(new ChatMarkers.Module());
+        if (stream.get_module(IDENTITY) == null) stream.add_module(new ChatMarkers.Module());
     }
 
     public override string get_ns() { return NS_URI; }

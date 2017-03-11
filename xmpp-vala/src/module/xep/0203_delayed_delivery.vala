@@ -24,17 +24,13 @@ namespace Xmpp.Xep.DelayedDelivery {
         }
 
         public override void attach(XmppStream stream) {
-            Message.Module.get_module(stream).pre_received_message.connect(on_pre_received_message);
+            stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(on_pre_received_message);
         }
 
         public override void detach(XmppStream stream) { }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }

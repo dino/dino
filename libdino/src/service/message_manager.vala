@@ -171,7 +171,7 @@ public class MessageManager : StreamInteractionModule, Object {
             if (message.encryption == Entities.Message.Encryption.PGP) {
                 string? key_id = PgpManager.get_instance(stream_interactor).get_key_id(conversation.account, message.counterpart);
                 if (key_id != null) {
-                    bool encrypted = Xep.Pgp.Module.get_module(stream).encrypt(new_message, key_id);
+                    bool encrypted = stream.get_module(Xep.Pgp.Module.IDENTITY).encrypt(new_message, key_id);
                     if (!encrypted) {
                         message.marked = Entities.Message.Marked.WONTSEND;
                         return;
@@ -179,9 +179,9 @@ public class MessageManager : StreamInteractionModule, Object {
                 }
             }
             if (delayed) {
-                Xmpp.Xep.DelayedDelivery.Module.get_module(stream).set_message_delay(new_message, message.time);
+                stream.get_module(Xmpp.Xep.DelayedDelivery.Module.IDENTITY).set_message_delay(new_message, message.time);
             }
-            Xmpp.Message.Module.get_module(stream).send_message(stream, new_message);
+            stream.get_module(Xmpp.Message.Module.IDENTITY).send_message(stream, new_message);
             message.stanza_id = new_message.id;
             message.stanza = new_message;
         } else {

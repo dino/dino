@@ -41,12 +41,12 @@ namespace Dino {
 
         public void remove_jid(Account account, Jid jid) {
             Core.XmppStream? stream = stream_interactor.get_stream(account);
-            if (stream != null) Xmpp.Roster.Module.get_module(stream).remove_jid(stream, jid.bare_jid.to_string());
+            if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).remove_jid(stream, jid.bare_jid.to_string());
         }
 
         public void add_jid(Account account, Jid jid, string? handle) {
             Core.XmppStream? stream = stream_interactor.get_stream(account);
-            if (stream != null) Xmpp.Roster.Module.get_module(stream).add_jid(stream, jid.bare_jid.to_string(), handle);
+            if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).add_jid(stream, jid.bare_jid.to_string(), handle);
         }
 
         public static RosterManager? get_instance(StreamInteractor stream_interactor) {

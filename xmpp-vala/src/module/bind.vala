@@ -35,14 +35,14 @@ namespace Xmpp.Bind {
                 var flag = new Flag();
                 StanzaNode bind_node = new StanzaNode.build("bind", NS_URI).add_self_xmlns()
                                         .put_node(new StanzaNode.build("resource", NS_URI).put_node(new StanzaNode.text(requested_resource)));
-                Iq.Module.get_module(stream).send_iq(stream, new Iq.Stanza.set(bind_node), new IqResponseListenerImpl());
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), new IqResponseListenerImpl());
                 stream.add_flag(flag);
             }
         }
 
         private class IqResponseListenerImpl : Iq.ResponseListener, Object {
             public void on_result(XmppStream stream, Iq.Stanza iq) {
-                Bind.Module.get_module(stream).iq_response_stanza(stream, iq);
+                stream.get_module(Bind.Module.IDENTITY).iq_response_stanza(stream, iq);
             }
         }
 
@@ -55,12 +55,8 @@ namespace Xmpp.Bind {
             stream.received_features_node.disconnect(this.received_features_node);
         }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Bind.Module(""));
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Bind.Module(""));
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {

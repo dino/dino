@@ -68,11 +68,6 @@ public class ChatInput : Grid {
                 case "/nick":
                     MucManager.get_instance(stream_interactor).change_nick(conversation.account, conversation.counterpart, token[1]);
                     break;
-                case "/ping": // TODO remove this
-                    Xep.Ping.Module.get_module(stream_interactor.get_stream(conversation.account))
-                        .send_ping(stream_interactor.get_stream(conversation.account), @"$(conversation.counterpart.bare_jid)/$(token[1])");
-                    Xep.Ping.Module.get_module(stream_interactor.get_stream(conversation.account)).get_id();
-                    break;
                 case "/topic":
                     MucManager.get_instance(stream_interactor).change_subject(conversation.account, conversation.counterpart, token[1]);
                     break;

@@ -32,7 +32,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
         public void request_info(XmppStream stream, string jid, InfoResponseListener response_listener) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
             iq.to = jid;
-            Iq.Module.get_module(stream).send_iq(stream, iq, new IqInfoResponseListener(response_listener));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqInfoResponseListener(response_listener));
         }
 
         private class IqInfoResponseListener : Iq.ResponseListener, Object {
@@ -54,7 +54,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
         public void request_items(XmppStream stream, string jid, ItemsResponseListener response_listener) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns());
             iq.to = jid;
-            Iq.Module.get_module(stream).send_iq(stream, iq, new IqItemsResponseListener(response_listener));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, new IqItemsResponseListener(response_listener));
         }
 
         private class IqItemsResponseListener : Iq.ResponseListener, Object {
@@ -76,19 +76,15 @@ namespace Xmpp.Xep.ServiceDiscovery {
 
         public override void attach(XmppStream stream) {
             Iq.Module.require(stream);
-            Iq.Module.get_module(stream).register_for_namespace(NS_URI_INFO, this);
+            stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI_INFO, this);
             stream.add_flag(new Flag());
             add_feature(stream, NS_URI_INFO);
         }
 
         public override void detach(XmppStream stream) { }
 
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
-        }
-
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new ServiceDiscovery.Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new ServiceDiscovery.Module());
         }
 
         public override string get_ns() { return NS_URI; }
@@ -98,7 +94,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
             InfoResult query_result = new ServiceDiscovery.InfoResult(iq_request);
             query_result.features = Flag.get_flag(stream).features;
             query_result.identities = identities;
-            Iq.Module.get_module(stream).send_iq(stream, query_result.iq, null);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, query_result.iq, null);
         }
     }
 

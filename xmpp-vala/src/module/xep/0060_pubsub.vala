@@ -13,14 +13,14 @@ namespace Xmpp.Xep.Pubsub {
         private HashMap<string, EventListenerDelegate> event_listeners = new HashMap<string, EventListenerDelegate>();
 
         public void add_filtered_notification(XmppStream stream, string node, EventListenerDelegate.ResultFunc on_result, Object? reference = null) {
-            ServiceDiscovery.Module.get_module(stream).add_feature_notify(stream, node);
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature_notify(stream, node);
             event_listeners[node] = new EventListenerDelegate(on_result, reference);
         }
 
         public void request(XmppStream stream, string jid, string node, RequestResponseListener listener) { // TODO multiple nodes gehen auch
             Iq.Stanza a = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
             a.to = jid;
-            Iq.Module.get_module(stream).send_iq(stream, a, new IqRequestResponseListener(listener));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, a, new IqRequestResponseListener(listener));
         }
 
         private class IqRequestResponseListener : Iq.ResponseListener, Object {
@@ -44,7 +44,7 @@ namespace Xmpp.Xep.Pubsub {
             items_node.put_node(content);
             publish_node.put_node(items_node);
             Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
-            Iq.Module.get_module(stream).send_iq(stream, iq, null);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
         }
 
         private class IqPublishResponseListener : Iq.ResponseListener, Object {
@@ -63,19 +63,15 @@ namespace Xmpp.Xep.Pubsub {
             Iq.Module.require(stream);
             Message.Module.require(stream);
             ServiceDiscovery.Module.require(stream);
-            Message.Module.get_module(stream).received_message.connect(on_received_message);
+            stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
         }
 
         public override void detach(XmppStream stream) {
-            Message.Module.get_module(stream).received_message.disconnect(on_received_message);
-        }
-
-        public static Module? get_module(XmppStream stream) {
-            return (Module?) stream.get_module(IDENTITY);
+            stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
         }
 
         public static void require(XmppStream stream) {
-            if (get_module(stream) == null) stream.add_module(new Module());
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }
