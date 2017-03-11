@@ -256,7 +256,7 @@ public class Module : XmppStreamModule {
 
     public void start_session_with(XmppStream stream, string bare_jid, int device_id) {
         print(@"Asking for bundle from $bare_jid/$device_id\n");
-        stream.get_module(Pubsub.Module.IDENTITY).request(stream, bare_jid, @"$NODE_BUNDLES:$device_id", new OtherBundleResponseListener(store, device_id));
+        stream.get_module(Pubsub.Module.IDENTITY).request(stream, bare_jid, @"$NODE_BUNDLES:$device_id", on_other_bundle_result, Tuple.create(store, device_id));
     }
 
     public void ignore_device(string jid, int32 device_id) {
@@ -276,129 +276,116 @@ public class Module : XmppStreamModule {
         }
     }
 
-    private class OtherBundleResponseListener : Pubsub.RequestResponseListener, Object {
-        private Store store;
-        private int device_id;
+    private static void on_other_bundle_result(XmppStream stream, string jid, string? id, StanzaNode? node, Object? storage) {
+        Tuple<Store, int> tuple = (Tuple<Store, int>)storage;
+        Store store = tuple.a;
+        int device_id = tuple.b;
 
-        public OtherBundleResponseListener(Store store, int device_id) {
-            this.store = store;
-            this.device_id = device_id;
-        }
+        bool fail = false;
+        if (node == null) {
+            // Device not registered, shouldn't exist
+            fail = true;
+        } else {
+            Bundle bundle = new Bundle(node);
+            int32 signed_pre_key_id = bundle.signed_pre_key_id;
+            ECPublicKey? signed_pre_key = bundle.signed_pre_key;
+            uint8[] signed_pre_key_signature = bundle.signed_pre_key_signature;
+            ECPublicKey? identity_key = bundle.identity_key;
 
-        public void on_result(XmppStream stream, string jid, string? id, StanzaNode? node) {
-            bool fail = false;
-            if (node == null) {
-                // Device not registered, shouldn't exist
+            ArrayList<Bundle.PreKey> pre_keys = bundle.pre_keys;
+            int pre_key_idx = Random.int_range(0, pre_keys.size);
+            int32 pre_key_id = pre_keys[pre_key_idx].key_id;
+            ECPublicKey? pre_key = pre_keys[pre_key_idx].key;
+
+            if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_key_id < 0 || pre_key == null) {
                 fail = true;
             } else {
-                Bundle bundle = new Bundle(node);
-                int32 signed_pre_key_id = bundle.signed_pre_key_id;
-                ECPublicKey? signed_pre_key = bundle.signed_pre_key;
-                uint8[] signed_pre_key_signature = bundle.signed_pre_key_signature;
-                ECPublicKey? identity_key = bundle.identity_key;
-
-                ArrayList<Bundle.PreKey> pre_keys = bundle.pre_keys;
-                int pre_key_idx = Random.int_range(0, pre_keys.size);
-                int32 pre_key_id = pre_keys[pre_key_idx].key_id;
-                ECPublicKey? pre_key = pre_keys[pre_key_idx].key;
-
-                if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_key_id < 0 || pre_key == null) {
-                    fail = true;
-                } else {
-                    Address address = new Address();
-                    address.name = jid;
-                    address.device_id = device_id;
-                    try {
-                        if (store.contains_session(address)) {
-                            return;
-                        }
-                        SessionBuilder builder = store.create_session_builder(address);
-                        builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
-                    } catch (Error e) {
-                        fail = true;
+                Address address = new Address();
+                address.name = jid;
+                address.device_id = device_id;
+                try {
+                    if (store.contains_session(address)) {
+                        return;
                     }
-                    address.device_id = 0; // TODO: Hack to have address obj live longer
-                    get_module(stream).session_started(jid, device_id);
+                    SessionBuilder builder = store.create_session_builder(address);
+                    builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
+                } catch (Error e) {
+                    fail = true;
                 }
+                address.device_id = 0; // TODO: Hack to have address obj live longer
+                get_module(stream).session_started(jid, device_id);
             }
-            if (fail) {
-                get_module(stream).ignore_device(jid, device_id);
-            }
+        }
+        if (fail) {
+            get_module(stream).ignore_device(jid, device_id);
         }
     }
 
     public void publish_bundles_if_needed(XmppStream stream, string jid) {
-        stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, @"$NODE_BUNDLES:$(store.local_registration_id)", new SelfBundleResponseListener(store));
+        stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, @"$NODE_BUNDLES:$(store.local_registration_id)", on_self_bundle_result, store);
     }
 
-    private class SelfBundleResponseListener : Pubsub.RequestResponseListener, Object {
-        private Store store;
-
-        public SelfBundleResponseListener(Store store) {
-            this.store = store;
+    private static void on_self_bundle_result(XmppStream stream, string jid, string? id, StanzaNode? node, Object? storage) {
+        Store store = (Store)storage;
+        Map<int, ECPublicKey> keys = new HashMap<int, ECPublicKey>();
+        ECPublicKey identity_key = null;
+        IdentityKeyPair identity_key_pair = null;
+        int32 signed_pre_key_id = -1;
+        ECPublicKey signed_pre_key = null;
+        SignedPreKeyRecord signed_pre_key_record = null;
+        bool changed = false;
+        if (node == null) {
+            identity_key = store.identity_key_pair.public;
+            changed = true;
+        } else {
+            Bundle bundle = new Bundle(node);
+            foreach (Bundle.PreKey prekey in bundle.pre_keys) {
+                keys[prekey.key_id] = prekey.key;
+            }
+            identity_key = bundle.identity_key;
+            signed_pre_key_id = bundle.signed_pre_key_id;;
+            signed_pre_key = bundle.signed_pre_key;
         }
 
-        public void on_result(XmppStream stream, string jid, string? id, StanzaNode? node) {
-            Map<int, ECPublicKey> keys = new HashMap<int, ECPublicKey>();
-            ECPublicKey identity_key = null;
-            IdentityKeyPair identity_key_pair = null;
-            int32 signed_pre_key_id = -1;
-            ECPublicKey signed_pre_key = null;
-            SignedPreKeyRecord signed_pre_key_record = null;
-            bool changed = false;
-            if (node == null) {
-                identity_key = store.identity_key_pair.public;
-                changed = true;
-            } else {
-                Bundle bundle = new Bundle(node);
-                foreach (Bundle.PreKey prekey in bundle.pre_keys) {
-                    keys[prekey.key_id] = prekey.key;
-                }
-                identity_key = bundle.identity_key;
-                signed_pre_key_id = bundle.signed_pre_key_id;;
-                signed_pre_key = bundle.signed_pre_key;
-            }
+        // Validate IdentityKey
+        if (store.identity_key_pair.public.compare(identity_key) != 0) {
+            changed = true;
+        }
+        identity_key_pair = store.identity_key_pair;
 
-            // Validate IdentityKey
-            if (store.identity_key_pair.public.compare(identity_key) != 0) {
-                changed = true;
-            }
-            identity_key_pair = store.identity_key_pair;
+        // Validate signedPreKeyRecord + ID
+        if (signed_pre_key_id == -1 || !store.contains_signed_pre_key(signed_pre_key_id) || store.load_signed_pre_key(signed_pre_key_id).key_pair.public.compare(signed_pre_key) != 0) {
+            signed_pre_key_id = Random.int_range(1, int32.MAX); // TODO: No random, use ordered number
+            signed_pre_key_record = context.generate_signed_pre_key(identity_key_pair, signed_pre_key_id);
+            store.store_signed_pre_key(signed_pre_key_record);
+            changed = true;
+        } else {
+            signed_pre_key_record = store.load_signed_pre_key(signed_pre_key_id);
+        }
 
-            // Validate signedPreKeyRecord + ID
-            if (signed_pre_key_id == -1 || !store.contains_signed_pre_key(signed_pre_key_id) || store.load_signed_pre_key(signed_pre_key_id).key_pair.public.compare(signed_pre_key) != 0) {
-                signed_pre_key_id = Random.int_range(1, int32.MAX); // TODO: No random, use ordered number
-                signed_pre_key_record = context.generate_signed_pre_key(identity_key_pair, signed_pre_key_id);
-                store.store_signed_pre_key(signed_pre_key_record);
-                changed = true;
-            } else {
-                signed_pre_key_record = store.load_signed_pre_key(signed_pre_key_id);
-            }
-
-            // Validate PreKeys
-            Set<PreKeyRecord> pre_key_records = new HashSet<PreKeyRecord>();
-            foreach (var entry in keys.entries) {
-                if (store.contains_pre_key(entry.key)) {
-                    PreKeyRecord record = store.load_pre_key(entry.key);
-                    if (record.key_pair.public.compare(entry.value) == 0) {
-                        pre_key_records.add(record);
-                    }
+        // Validate PreKeys
+        Set<PreKeyRecord> pre_key_records = new HashSet<PreKeyRecord>();
+        foreach (var entry in keys.entries) {
+            if (store.contains_pre_key(entry.key)) {
+                PreKeyRecord record = store.load_pre_key(entry.key);
+                if (record.key_pair.public.compare(entry.value) == 0) {
+                    pre_key_records.add(record);
                 }
             }
-            int new_keys = NUM_KEYS_TO_PUBLISH - pre_key_records.size;
-            if (new_keys > 0) {
-                int32 next_id = Random.int_range(1, int32.MAX); // TODO: No random, use ordered number
-                Set<PreKeyRecord> new_records = context.generate_pre_keys((uint)next_id, (uint)new_keys);
-                pre_key_records.add_all(new_records);
-                foreach (PreKeyRecord record in new_records) {
-                    store.store_pre_key(record);
-                }
-                changed = true;
+        }
+        int new_keys = NUM_KEYS_TO_PUBLISH - pre_key_records.size;
+        if (new_keys > 0) {
+            int32 next_id = Random.int_range(1, int32.MAX); // TODO: No random, use ordered number
+            Set<PreKeyRecord> new_records = context.generate_pre_keys((uint)next_id, (uint)new_keys);
+            pre_key_records.add_all(new_records);
+            foreach (PreKeyRecord record in new_records) {
+                store.store_pre_key(record);
             }
+            changed = true;
+        }
 
-            if (changed) {
-                publish_bundles(stream, signed_pre_key_record, identity_key_pair, pre_key_records, (int32) store.local_registration_id);
-            }
+        if (changed) {
+            publish_bundles(stream, signed_pre_key_record, identity_key_pair, pre_key_records, (int32) store.local_registration_id);
         }
     }
 
