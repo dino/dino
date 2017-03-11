@@ -267,7 +267,7 @@ namespace GPG {
 
         public static Context create() throws GLib.Error {
             Context ctx;
-            @new(out ctx);
+            throw_if_error(@new(out ctx));
             return ctx;
         }
 

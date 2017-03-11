@@ -17,7 +17,6 @@ namespace Xmpp.Xep.Pgp {
         private string? own_key_id;
 
         public Module() {
-            GPG.check_version();
             signed_status = gpg_sign("");
             if (signed_status != null) own_key_id = gpg_verify(signed_status, "");
         }

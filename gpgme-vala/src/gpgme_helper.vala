@@ -3,7 +3,11 @@ using GPG;
 
 namespace GPGHelper {
 
+private static bool initialized = false;
+
 public static string encrypt_armor(string plain, Key[] keys, EncryptFlags flags) throws GLib.Error {
+    initialize();
+
     global_mutex.lock();
     Data plain_data = Data.create_from_memory(plain.data, false);
     Context context = Context.create();
@@ -14,6 +18,8 @@ public static string encrypt_armor(string plain, Key[] keys, EncryptFlags flags)
 }
 
 public static string decrypt(string encr) throws GLib.Error {
+    initialize();
+
     global_mutex.lock();
     Data enc_data = Data.create_from_memory(encr.data, false);
     Context context = Context.create();
@@ -23,6 +29,8 @@ public static string decrypt(string encr) throws GLib.Error {
 }
 
 public static string sign(string plain, SigMode mode) throws GLib.Error {
+    initialize();
+
     global_mutex.lock();
     Data plain_data = Data.create_from_memory(plain.data, false);
     Context context = Context.create();
@@ -32,6 +40,8 @@ public static string sign(string plain, SigMode mode) throws GLib.Error {
 }
 
 public static string? get_sign_key(string signature, string? text) throws GLib.Error {
+    initialize();
+
     global_mutex.lock();
     Data sig_data = Data.create_from_memory(signature.data, false);
     Data text_data;
@@ -49,6 +59,8 @@ public static string? get_sign_key(string signature, string? text) throws GLib.E
 }
 
 public static Gee.List<Key> get_keylist(string? pattern = null, bool secret_only = false) throws GLib.Error {
+    initialize();
+
     Gee.List<Key> keys = new ArrayList<Key>();
     Context context = Context.create();
     context.op_keylist_start(pattern, secret_only ? 1 : 0);
@@ -64,6 +76,8 @@ public static Gee.List<Key> get_keylist(string? pattern = null, bool secret_only
 }
 
 public static Key? get_public_key(string sig) throws GLib.Error {
+    initialize();
+
     global_mutex.lock();
     Context context = Context.create();
     Key key = context.get_key(sig, false);
@@ -72,6 +86,8 @@ public static Key? get_public_key(string sig) throws GLib.Error {
 }
 
 private static string get_string_from_data(Data data) {
+    initialize();
+
     data.seek(0);
     uint8[] buf = new uint8[256];
     ssize_t? len = null;
@@ -85,6 +101,13 @@ private static string get_string_from_data(Data data) {
         }
     } while (len > 0);
     return res;
+}
+
+private static void initialize() {
+    if (!initialized) {
+        check_version();
+        initialized = true;
+    }
 }
 
 }
