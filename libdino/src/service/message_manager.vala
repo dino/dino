@@ -154,7 +154,7 @@ public class MessageManager : StreamInteractionModule, Object {
         return message;
     }
 
-    private void send_xmpp_message(Entities.Message message, Conversation conversation, bool delayed = false) {
+    public void send_xmpp_message(Entities.Message message, Conversation conversation, bool delayed = false) {
         lock (messages) {
             Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
             message.marked = Entities.Message.Marked.NONE;

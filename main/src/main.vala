@@ -7,7 +7,7 @@ void main(string[] args) {
     Gtk.init(ref args);
     Dino.Ui.Application app = new Dino.Ui.Application();
     Plugins.Loader loader = new Plugins.Loader();
-    foreach(string plugin in new string[]{}) {
+    foreach(string plugin in new string[]{"omemo"}) {
         try {
             loader.load(plugin, app);
         } catch (Plugins.Error e) {

@@ -46,6 +46,8 @@ if ! [ -x "$exec_bin" ]; then
   exit 4
 fi
 
+git submodule update --init --recursive
+
 if [ -f ./build  ]
 then
   echo "-!- ./build file exists. ./configure can't continue"
