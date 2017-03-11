@@ -43,7 +43,7 @@ namespace Dino {
             }
         }
 
-        [GtkTemplate (ui = "/org/dino-im/manage_accounts/pgp_stack.ui")]
+        [GtkTemplate (ui = "/org/dino-im/pgp_stack.ui")]
         private class AccountSettingsWidget : Gtk.Stack, Plugins.AccountSettingsWidget {
             [GtkChild] private Gtk.Label pgp_label;
             [GtkChild] private Gtk.Button pgp_button;

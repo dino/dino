@@ -5,7 +5,7 @@ namespace Dino {
 
 void main(string[] args) {
     Gtk.init(ref args);
-    Application app = new Application();
+    Dino.Ui.Application app = new Dino.Ui.Application();
     Plugins.Loader loader = new Plugins.Loader();
     foreach(string plugin in new string[]{}) {
         try {

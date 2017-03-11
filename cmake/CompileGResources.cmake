@@ -131,16 +131,16 @@ function(COMPILE_GRESOURCES output xml_out)
                 ("${res}" STREQUAL "TOPIXDATA")))
 
             add_custom_command(
-                OUTPUT "${CMAKE_BINARY_DIR}/resources/${res}"
-                COMMAND ${CMAKE_COMMAND} -E copy "${CG_ARG_SOURCE_DIR}/${res}" "${CMAKE_BINARY_DIR}/resources/${res}"
+                OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/resources/${res}"
+                COMMAND ${CMAKE_COMMAND} -E copy "${CG_ARG_SOURCE_DIR}/${res}" "${CMAKE_CURRENT_BINARY_DIR}/resources/${res}"
                 MAIN_DEPENDENCY "${CG_ARG_SOURCE_DIR}/${res}")
-            list(APPEND CG_RESOURCES_DEPENDENCIES "${CMAKE_BINARY_DIR}/resources/${res}")
+            list(APPEND CG_RESOURCES_DEPENDENCIES "${CMAKE_CURRENT_BINARY_DIR}/resources/${res}")
         endif()
     endforeach()
 
 
     # Construct .gresource.xml path.
-    set(CG_XML_FILE_PATH "${CMAKE_BINARY_DIR}/resources/.gresource.xml")
+    set(CG_XML_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/resources/.gresource.xml")
 
     # Generate gresources XML target.
     list(APPEND CG_CMAKE_SCRIPT_ARGS "-D")
@@ -186,13 +186,13 @@ function(COMPILE_GRESOURCES output xml_out)
                        COMMAND ${CMAKE_COMMAND}
                        ARGS ${CG_CMAKE_SCRIPT_ARGS}
                        DEPENDS ${CG_RESOURCES_DEPENDENCIES}
-                       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                        COMMENT ${CG_XML_CUSTOM_COMMAND_COMMENT})
 
     # Create target manually if not set (to make sure glib-compile-resources
     # doesn't change behaviour with it's naming standards).
     if (NOT CG_ARG_TARGET)
-        set(CG_ARG_TARGET "${CMAKE_BINARY_DIR}/resources")
+        set(CG_ARG_TARGET "${CMAKE_CURRENT_BINARY_DIR}/resources")
         set(CG_ARG_TARGET "${CG_ARG_TARGET}.${CG_TARGET_FILE_ENDING}")
     endif()
 
