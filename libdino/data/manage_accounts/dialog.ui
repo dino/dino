@@ -282,7 +282,7 @@
                                                     </packing>
                                                 </child>
                                                 <child>
-                                                    <object class="GtkComboBoxText" id="pgp_combobox">
+                                                    <object class="GtkComboBox" id="pgp_combobox">
                                                         <property name="hexpand">True</property>
                                                         <property name="width_request">200</property>
                                                         <property name="visible">True</property>

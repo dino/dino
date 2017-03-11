@@ -58,8 +58,7 @@ public static Gee.List<Key> get_keylist(string? pattern = null, bool secret_only
             keys.add(key);
         }
     } catch (Error e) {
-//        if (e.message != GPGError.ErrorCode.EOF.to_string()) throw e;
-        if (e.message != "EOF") throw e;
+        if (e.code != GPGError.ErrorCode.EOF) throw e;
     }
     return keys;
 }

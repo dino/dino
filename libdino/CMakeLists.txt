@@ -128,8 +128,9 @@ SOURCES
     src/ui/unified_window.vala
     src/ui/util.vala
 CUSTOM_VAPIS
-    ${CMAKE_BINARY_DIR}/xmpp-vala/xmpp-vala.vapi
-    ${CMAKE_BINARY_DIR}/qlite/qlite.vapi
+    "${CMAKE_BINARY_DIR}/xmpp-vala/xmpp-vala.vapi"
+    "${CMAKE_BINARY_DIR}/qlite/qlite.vapi"
+    "${CMAKE_BINARY_DIR}/gpgme-vala/gpgme.vapi"
 PACKAGES
     ${LIBDINO_PACKAGES}
 GENERATE_VAPI
@@ -144,11 +145,11 @@ OPTIONS
     --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${LIBDINO_CFLAGS} -I${CMAKE_BINARY_DIR}/xmpp-vala -I${CMAKE_BINARY_DIR}/qlite)
+set(CFLAGS ${VALA_CFLAGS} ${LIBDINO_CFLAGS} -I${CMAKE_BINARY_DIR}/xmpp-vala -I${CMAKE_BINARY_DIR}/qlite -I${CMAKE_BINARY_DIR}/gpgme-vala -I${CMAKE_SOURCE_DIR}/gpgme-vala/src)
 add_definitions(${CFLAGS})
 add_library(libdino SHARED ${LIBDINO_VALA_C} ${LIBDINO_GRESOURCES_TARGET})
-add_dependencies(libdino xmpp-vala-vapi qlite-vapi)
-target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_LIBRARIES} -lm)
+add_dependencies(libdino xmpp-vala-vapi qlite-vapi gpgme-vapi)
+target_link_libraries(libdino xmpp-vala qlite gpgme-vala ${LIBDINO_LIBRARIES} -lm)
 set_target_properties(libdino PROPERTIES PREFIX "")
 
 add_custom_target(dino-vapi

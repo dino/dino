@@ -1,11 +1,11 @@
-[CCode (lower_case_cprefix = "gpgme_", cheader_filename = "gpgme.h")]
+[CCode (lower_case_cprefix = "gpgme_", cheader_filename = "gpgme.h,gpgme_fix.h")]
 namespace GPG {
 
 [CCode (cname = "gpgme_check_version")]
 public unowned string check_version(string? required_version = null);
 
 [Compact]
-[CCode (cname = "struct _gpgme_key", ref_function = "gpgme_key_ref", ref_function_void = true, unref_function = "gpgme_key_unref", free_function = "gpgme_key_release")]
+[CCode (cname = "struct _gpgme_key", ref_function = "gpgme_key_ref_vapi", unref_function = "gpgme_key_unref_vapi", free_function = "gpgme_key_release")]
 public class Key {
     public bool revoked;
     public bool expired;
@@ -14,19 +14,20 @@ public class Key {
     public bool can_encrypt;
     public bool can_sign;
     public bool can_certify;
-    public bool secret;
     public bool can_authenticate;
     public bool is_qualified;
+    public bool secret;
     public Protocol protocol;
     public string issuer_serial;
     public string issuer_name;
-    public string issuer_id;
+    public string chain_id;
     public Validity owner_trust;
     [CCode(array_null_terminated = true)]
     public SubKey[] subkeys;
     [CCode(array_null_terminated = true)]
     public UserID[] uids;
     public KeylistMode keylist_mode;
+    public string fpr;
 }
 
 [CCode (cname = "struct _gpgme_user_id")]

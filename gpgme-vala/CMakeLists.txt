@@ -12,7 +12,7 @@ pkg_check_modules(GPGME_VALA REQUIRED ${GPGME_VALA_PACKAGES})
 
 vala_precompile(GPGME_VALA_C
 SOURCES
-    "src/gpgme-helper.vala"
+    "src/gpgme_helper.vala"
 CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/vapi/gpgme.vapi"
     "${CMAKE_CURRENT_SOURCE_DIR}/vapi/gpgme_public.vapi"
@@ -30,7 +30,7 @@ OPTIONS
 
 set(CFLAGS ${VALA_CFLAGS} ${GPGME_VALA_CFLAGS} ${GPGME_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_definitions(${CFLAGS})
-add_library(gpgme-vala SHARED ${GPGME_VALA_C} src/fix.c)
+add_library(gpgme-vala SHARED ${GPGME_VALA_C} src/gpgme_fix.c)
 target_link_libraries(gpgme-vala ${GPGME_VALA_LIBRARIES} ${GPGME_LIBRARIES})
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/gpgme-vala/gpgme.vapi
