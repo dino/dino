@@ -337,7 +337,7 @@ public class Database : Qlite.Database {
         new_message.body = row[message.body];
         new_message.account = get_account_by_id(row[message.account_id]); // TODO dont have to generate acc new
         new_message.marked = (Message.Marked) row[message.marked];
-        new_message.encryption = (Message.Encryption) row[message.encryption];
+        new_message.encryption = (Encryption) row[message.encryption];
         new_message.real_jid = get_real_jid_for_message(new_message);
 
         new_message.notify.connect(on_message_update);
@@ -396,7 +396,7 @@ public class Database : Qlite.Database {
         int64? last_active = row[conversation.last_active];
         if (last_active != null) new_conversation.last_active = new DateTime.from_unix_utc(last_active);
         new_conversation.type_ = (Conversation.Type) row[conversation.type_];
-        new_conversation.encryption = (Conversation.Encryption) row[conversation.encryption];
+        new_conversation.encryption = (Encryption) row[conversation.encryption];
         int? read_up_to = row[conversation.read_up_to];
         if (read_up_to != null) new_conversation.read_up_to = get_message_by_id(read_up_to);
 

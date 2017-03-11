@@ -1,4 +1,5 @@
 using Gtk;
+using Gee;
 
 using Dino.Entities;
 
@@ -12,7 +13,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
     [GtkChild] private MenuButton groupchat_button;
 
     private RadioButton? button_unencrypted;
-    private RadioButton? button_pgp;
+    private Map<RadioButton, Plugins.EncryptionListEntry> encryption_radios = new HashMap<RadioButton, Plugins.EncryptionListEntry>();
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
@@ -36,22 +37,19 @@ public class ConversationTitlebar : Gtk.HeaderBar {
     }
 
     private void update_encryption_menu_state() {
-        string? pgp_id = PgpManager.get_instance(stream_interactor).get_key_id(conversation.account, conversation.counterpart);
-        button_pgp.set_sensitive(pgp_id != null);
-        switch (conversation.encryption) {
-            case Conversation.Encryption.UNENCRYPTED:
-                button_unencrypted.set_active(true);
-                break;
-            case Conversation.Encryption.PGP:
-                button_pgp.set_active(true);
-                break;
+        foreach (RadioButton e in encryption_radios.keys) {
+            e.set_sensitive(encryption_radios[e].can_encrypt(conversation));
+            if (conversation.encryption == encryption_radios[e].encryption) e.set_active(true);
+        }
+        if (conversation.encryption == Encryption.NONE) {
+            button_unencrypted.set_active(true);
         }
     }
 
     private void update_encryption_menu_icon() {
         encryption_button.visible = (conversation.type_ == Conversation.Type.CHAT);
         if (conversation.type_ == Conversation.Type.CHAT) {
-            if (conversation.encryption == Conversation.Encryption.UNENCRYPTED) {
+            if (conversation.encryption == Encryption.NONE) {
                 encryption_button.set_image(new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON));
             } else {
                 encryption_button.set_image(new Image.from_icon_name("changes-prevent-symbolic", IconSize.BUTTON));
@@ -92,25 +90,35 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         menu_button.set_menu_model(menu);
     }
 
+    private void encryption_changed() {
+        foreach (RadioButton e in encryption_radios.keys) {
+            if (e.get_active()) {
+                conversation.encryption = encryption_radios[e].encryption;
+                update_encryption_menu_icon();
+                return;
+            }
+        }
+        conversation.encryption = Encryption.NONE;
+        update_encryption_menu_icon();
+    }
+
     private void create_encryption_menu() {
         Builder builder = new Builder.from_resource("/org/dino-im/menu_encryption.ui");
         PopoverMenu menu = builder.get_object("menu_encryption") as PopoverMenu;
+        Box encryption_box = builder.get_object("encryption_box") as Box;
         button_unencrypted = builder.get_object("button_unencrypted") as RadioButton;
-        button_pgp = builder.get_object("button_pgp") as RadioButton;
+        button_unencrypted.toggled.connect(encryption_changed);
+        Application app = GLib.Application.get_default() as Application;
+        foreach(var e in app.plugin_registry.encryption_list_entries) {
+            RadioButton btn = new RadioButton.with_label(button_unencrypted.get_group(), e.name);
+            encryption_radios[btn] = e;
+            btn.toggled.connect(encryption_changed);
+            btn.visible = true;
+            encryption_box.pack_end(btn, false);
+        }
         encryption_button.set_use_popover(true);
         encryption_button.set_popover(menu);
         encryption_button.set_image(new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON));
-
-        button_unencrypted.toggled.connect(() => {
-            if (conversation != null) {
-                if (button_unencrypted.get_active()) {
-                    conversation.encryption = Conversation.Encryption.UNENCRYPTED;
-                } else if (button_pgp.get_active()) {
-                    conversation.encryption = Conversation.Encryption.PGP;
-                }
-                update_encryption_menu_icon();
-            }
-        });
     }
 
     private void on_groupchat_subject_set(Account account, Jid jid, string subject) {

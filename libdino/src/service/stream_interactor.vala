@@ -64,7 +64,7 @@ public class StreamInteractor {
 }
 
 public interface StreamInteractionModule : Object {
-    internal abstract string get_id();
+    public abstract string get_id();
 }
 
 }

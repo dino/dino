@@ -1,11 +1,13 @@
 using Gtk;
 
 using Dino.Entities;
+using Dino.Ui;
 
-public class Dino.Ui.Application : Gtk.Application {
+public class Dino.Application : Gtk.Application {
 
-    private Database db;
-    private StreamInteractor stream_interaction;
+    public Database db;
+    public StreamInteractor stream_interaction;
+    public Plugins.Registry plugin_registry = new Plugins.Registry();
 
     private Notifications notifications;
     private UnifiedWindow? window;

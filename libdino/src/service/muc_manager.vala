@@ -161,7 +161,7 @@ public class MucManager : StreamInteractionModule, Object {
         if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, new BookmarksRetrieveResponseListener(this, account));
     }
 
-    private void on_pre_message_received(Entities.Message message, Conversation conversation) {
+    private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
         if (conversation.type_ != Conversation.Type.GROUPCHAT) return;
         Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return;

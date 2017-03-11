@@ -70,7 +70,7 @@ public class ConversationManager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_message_received(Entities.Message message, Conversation conversation) {
+    private void on_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
         ensure_start_conversation(conversation.counterpart, conversation.account);
     }
 

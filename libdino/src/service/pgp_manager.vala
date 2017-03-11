@@ -1,4 +1,5 @@
 using Gee;
+using Xmpp;
 
 using Xmpp;
 using Dino.Entities;
@@ -16,6 +17,27 @@ namespace Dino {
         public static void start(StreamInteractor stream_interactor, Database db) {
             PgpManager m = new PgpManager(stream_interactor, db);
             stream_interactor.add_module(m);
+            (GLib.Application.get_default() as Application).plugin_registry.register_encryption_list_entry(new EncryptionListEntry(m));
+        }
+
+        private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
+            private PgpManager pgp_manager;
+
+            public EncryptionListEntry(PgpManager pgp_manager) {
+                this.pgp_manager = pgp_manager;
+            }
+
+            public Entities.Encryption encryption { get {
+                return Encryption.PGP;
+            }}
+
+            public string name { get {
+                return "OpenPGP";
+            }}
+
+            public bool can_encrypt(Entities.Conversation conversation) {
+                return pgp_manager.pgp_key_ids.has_key(conversation.counterpart);
+            }
         }
 
         private PgpManager(StreamInteractor stream_interactor, Database db) {
@@ -23,6 +45,27 @@ namespace Dino {
             this.db = db;
 
             stream_interactor.account_added.connect(on_account_added);
+            MessageManager.get_instance(stream_interactor).pre_message_received.connect(on_pre_message_received);
+            MessageManager.get_instance(stream_interactor).pre_message_send.connect(on_pre_message_send);
+        }
+
+        private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+            if (Xep.Pgp.MessageFlag.get_flag(message_stanza) != null && Xep.Pgp.MessageFlag.get_flag(message_stanza).decrypted) {
+                message.encryption = Encryption.PGP;
+            }
+        }
+
+        private void on_pre_message_send(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+            if (message.encryption == Encryption.PGP) {
+                string? key_id = get_key_id(conversation.account, message.counterpart);
+                bool encrypted = false;
+                if (key_id != null) {
+                    encrypted = stream_interactor.get_stream(conversation.account).get_module(Xep.Pgp.Module.IDENTITY).encrypt(message_stanza, key_id);
+                }
+                if (!encrypted) {
+                    message.marked = Entities.Message.Marked.WONTSEND;
+                }
+            }
         }
 
         public string? get_key_id(Account account, Jid jid) {

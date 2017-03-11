@@ -33,7 +33,7 @@ public class MergedMessageItem : Grid {
         string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
         name_label.set_markup(@"<span foreground=\"#$(Util.get_name_hex_color(display_name))\">$display_name</span>");
         Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(30, 30, image.scale_factor)).draw_message(stream_interactor, message));
-        if (message.encryption == Entities.Message.Encryption.PGP) {
+        if (message.encryption != Encryption.NONE) {
             encryption_image.visible = true;
             encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.SMALL_TOOLBAR);
         }

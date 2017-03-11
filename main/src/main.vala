@@ -5,16 +5,17 @@ namespace Dino {
 
 void main(string[] args) {
     Gtk.init(ref args);
-    Dino.Ui.Application app = new Dino.Ui.Application();
-    PluginLoader loader = new PluginLoader();
+    Application app = new Application();
+    Plugins.Loader loader = new Plugins.Loader();
     foreach(string plugin in new string[]{}) {
         try {
             loader.load(plugin, app);
-        } catch (Dino.PluginError e) {
+        } catch (Plugins.Error e) {
             print(@"Error loading plugin $plugin: $(e.message)\n");
         }
     }
     app.run(args);
+    loader.shutdown();
 }
 
 }

@@ -62,7 +62,11 @@ compile_gresources(
 
 vala_precompile(LIBDINO_VALA_C
 SOURCES
-    src/plugin.vala
+    src/application.vala
+
+    src/plugin/interfaces.vala
+    src/plugin/loader.vala
+    src/plugin/registry.vala
 
     src/dbus/login1.vala
     src/dbus/networkmanager.vala
@@ -72,6 +76,7 @@ SOURCES
     src/entity/conversation.vala
     src/entity/jid.vala
     src/entity/message.vala
+    src/entity/encryption.vala
 
     src/service/avatar_manager.vala
     src/service/avatar_storage.vala
@@ -101,7 +106,6 @@ SOURCES
     src/ui/add_conversation/list_row.vala
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala
-    src/ui/application.vala
     src/ui/chat_input.vala
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_selector/chat_row.vala

@@ -3,11 +3,6 @@ public class Conversation : Object {
 
     public signal void object_updated(Conversation conversation);
 
-    public enum Encryption {
-        UNENCRYPTED,
-        PGP
-    }
-
     public enum Type {
         CHAT,
         GROUPCHAT
@@ -27,7 +22,7 @@ public class Conversation : Object {
         this.account = account;
         this.active = false;
         this.last_active = new DateTime.from_unix_utc(0);
-        this.encryption = Encryption.UNENCRYPTED;
+        this.encryption = Encryption.NONE;
     }
 
     public Conversation.with_id(Jid jid, Account account, int id) {

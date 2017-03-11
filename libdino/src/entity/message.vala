@@ -16,11 +16,6 @@ public class Dino.Entities.Message : Object {
         WONTSEND
     }
 
-    public enum Encryption {
-        NONE,
-        PGP
-    }
-
     public enum Type {
         ERROR,
         CHAT,
