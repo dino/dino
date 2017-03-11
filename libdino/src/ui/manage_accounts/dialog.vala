@@ -1,4 +1,5 @@
 using Gdk;
+using Gee;
 using Gtk;
 using Markup;
 
@@ -32,20 +33,14 @@ public class Dialog : Gtk.Window {
     [GtkChild] public Button alias_button;
     [GtkChild] public Entry alias_entry;
 
-    [GtkChild] public Stack pgp_stack;
-    [GtkChild] public Label pgp_label;
-    [GtkChild] public Button pgp_button;
-    [GtkChild] public ComboBox pgp_combobox;
+    [GtkChild] public Grid settings_list;
 
+    private ArrayList<Plugins.AccountSettingsWidget> plugin_widgets = new ArrayList<Plugins.AccountSettingsWidget>();
 
     private Database db;
     private StreamInteractor stream_interactor;
 
     construct {
-        CellRendererText renderer = new Gtk.CellRendererText();
-        pgp_combobox.pack_start(renderer, true);
-        pgp_combobox.add_attribute(renderer, "markup", 0);
-
         account_list.row_selected.connect(account_list_row_selected);
         add_button.clicked.connect(add_button_clicked);
         no_accounts_add.clicked.connect(add_button_clicked);
@@ -55,6 +50,25 @@ public class Dialog : Gtk.Window {
         image_button.clicked.connect(on_image_button_clicked);
 
         main_stack.set_visible_child_name("no_accounts");
+
+        int row_index = 4;
+        int16 default_top_padding = new Gtk.Button().get_style_context().get_padding(Gtk.StateFlags.NORMAL).top + 1;
+        Application app = GLib.Application.get_default() as Application;
+        foreach (var e in app.plugin_registry.account_settings_entries) {
+            Plugins.AccountSettingsWidget widget = e.get_widget();
+            plugin_widgets.add(widget);
+            widget.visible = true;
+            widget.activated.connect(child_activated);
+            Label label = new Label(e.name);
+            label.get_style_context().add_class("dim-label");
+            label.set_padding(0, e.label_top_padding == -1 ? default_top_padding : e.label_top_padding);
+            label.yalign = 0;
+            label.xalign = 1;
+            label.visible = true;
+            settings_list.attach(label, 0, row_index);
+            settings_list.attach(widget, 1, row_index, 2);
+            row_index++;
+        }
     }
 
     public Dialog(StreamInteractor stream_interactor, Database db) {
@@ -131,38 +145,13 @@ public class Dialog : Gtk.Window {
 
         password_button.clicked.connect(() => { set_active_stack(password_stack); });
         alias_button.clicked.connect(() => { set_active_stack(alias_stack); });
-        pgp_button.clicked.connect(() => { set_active_stack(pgp_stack); pgp_combobox.popup(); });
         active_switch.state_set.connect(on_active_switch_state_changed);
 
-        populate_pgp_combobox(account);
-    }
-
-    private void populate_pgp_combobox(Account account) {
-
-        Gtk.ListStore list_store = new Gtk.ListStore(2, typeof(string), typeof(string?));
-        Gtk.TreeIter iter;
-
-        pgp_combobox.set_model(list_store);
-
-        list_store.append(out iter);
-        list_store.set(iter, 0, "Disabled", 1, null);
-        Gee.List<GPG.Key> list = GPGHelper.get_keylist(null, true);
-        foreach (GPG.Key key in list) {
-            list_store.append(out iter);
-            list_store.set(iter, 0, @"<span font='11'>$(escape_text(key.uids[0].uid))</span>\n<span font='9'>0x$(escape_text(key.fpr[0:16]))</span>");
-            list_store.set(iter, 1, key.fpr);
+        foreach(Plugins.AccountSettingsWidget widget in plugin_widgets) {
+            widget.set_account(account);
         }
 
-        pgp_combobox.set_active(0);
-
-        pgp_combobox.changed.connect(() => {
-            TreeIter selected;
-            pgp_combobox.get_active_iter(out selected);
-            Value text;
-            list_store.get_value(selected, 0, out text);
-            pgp_label.set_markup((string) text);
-            pgp_stack.set_visible_child_name("label");
-        });
+        child_activated(null);
     }
 
 
@@ -222,11 +211,18 @@ public class Dialog : Gtk.Window {
         }
     }
 
+    private void child_activated(Gtk.Widget? widget) {
+        if (widget != password_stack) password_stack.set_visible_child_name("label");
+        if (widget != alias_stack) alias_stack.set_visible_child_name("label");
+
+        foreach(var w in plugin_widgets) {
+            if (widget != (Gtk.Widget)w) w.deactivate();
+        }
+    }
+
     private void set_active_stack(Stack stack) {
         stack.set_visible_child_name("entry");
-        if (stack != password_stack) password_stack.set_visible_child_name("label");
-        if (stack != alias_stack) alias_stack.set_visible_child_name("label");
-        if (stack != pgp_stack) pgp_stack.set_visible_child_name("label");
+        child_activated(stack);
     }
 }
 

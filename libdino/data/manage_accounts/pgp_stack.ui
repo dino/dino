@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoPgpManagerAccountSettingsWidget">
+        <property name="visible">True</property>
+        <child>
+            <object class="GtkButton" id="pgp_button">
+                <property name="relief">none</property>
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkLabel" id="pgp_label">
+                        <property name="xalign">0</property>
+                        <property name="visible">True</property>
+                    </object>
+                </child>
+            </object>
+            <packing>
+                <property name="name">label</property>
+            </packing>
+        </child>
+        <child>
+            <object class="GtkComboBox" id="pgp_combobox">
+                <property name="hexpand">True</property>
+                <property name="width_request">200</property>
+                <property name="visible">True</property>
+            </object>
+            <packing>
+                <property name="name">entry</property>
+            </packing>
+        </child>
+    </template>
+</interface>

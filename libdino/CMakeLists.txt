@@ -39,6 +39,7 @@ set(RESOURCE_LIST
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
     manage_accounts/dialog.ui
+    manage_accounts/pgp_stack.ui
     menu_add.ui
     menu_app.ui
     menu_conversation.ui
