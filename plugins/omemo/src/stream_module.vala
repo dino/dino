@@ -109,18 +109,19 @@ public class StreamModule : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        if (Plugin.context == null) return;
         Message.Module.require(stream);
         Pubsub.Module.require(stream);
-        stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(on_pre_received_message);
-        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, on_devicelist, this);
+        if (Plugin.context == null) return;
+
         this.store = Plugin.context.create_store();
         store_created(store);
+        stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(on_pre_received_message);
+        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node, obj) => (obj as StreamModule).on_devicelist(stream, jid, id, node), this);
     }
 
     private void on_pre_received_message(XmppStream stream, Message.Stanza message) {
         StanzaNode? encrypted = message.stanza.get_subnode("encrypted", NS_URI);
-        if (encrypted == null) return;
+        if (encrypted == null || MessageFlag.get_flag(message) != null) return;
         MessageFlag flag = new MessageFlag();
         message.add_flag(flag);
         StanzaNode? header = encrypted.get_subnode("header");

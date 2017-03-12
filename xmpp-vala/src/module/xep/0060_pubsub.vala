@@ -60,7 +60,7 @@ namespace Xmpp.Xep.Pubsub {
             string node = items_node.get_attribute("node", NS_URI_EVENT);
             string id = item_node.get_attribute("id", NS_URI_EVENT);
             if (event_listeners.has_key(node)) {
-                event_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0]);
+                event_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0], event_listeners[node].reference);
             }
         }
 
@@ -76,9 +76,10 @@ namespace Xmpp.Xep.Pubsub {
     }
 
     public class EventListenerDelegate {
-        public delegate void ResultFunc(XmppStream stream, string jid, string id, StanzaNode node);
+        [CCode (has_target = false)]
+        public delegate void ResultFunc(XmppStream stream, string jid, string id, StanzaNode node, Object? object);
         public ResultFunc on_result { get; private set; }
-        private Object reference;
+        public Object? reference { get; private set; }
 
         public EventListenerDelegate(ResultFunc on_result, Object? reference = null) {
             this.on_result = on_result;

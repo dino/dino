@@ -36,13 +36,14 @@ namespace Xmpp.Xep.UserAvatars {
 
         public override void attach(XmppStream stream) {
             Pubsub.Module.require(stream);
-            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_event_result, this);
+            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_event_result, storage);
         }
 
         public override void detach(XmppStream stream) { }
 
 
-        public void on_event_result(XmppStream stream, string jid, string id, StanzaNode node) {
+        public static void on_event_result(XmppStream stream, string jid, string id, StanzaNode node, Object? obj) {
+            PixbufStorage? storage = obj as PixbufStorage;
             StanzaNode info_node = node.get_subnode("info", NS_URI_METADATA);
             if (info_node.get_attribute("type") != "image/png") return;
             if (storage.has_image(id)) {
