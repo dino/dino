@@ -5,6 +5,7 @@
         <child>
             <object class="GtkButton" id="button">
                 <property name="relief">none</property>
+                <property name="sensitive">False</property>
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkLabel" id="label">

@@ -66,44 +66,42 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     private void populate_list_store() {
+        if (keys.size == 0) {
+            label.set_markup(build_markup_string("Key publishing disabled", "No keys available. Generate one!"));
+            return;
+        }
+
         TreeIter iter;
         list_store.append(out iter);
-        list_store.set(iter, 0, "Disabled\n<span font='9'>Select key</span>", 1, null);
-        set_label_active(iter, 0);
+        list_store.set(iter, 0, build_markup_string("Key publishing disabled", "Select key"), 1, "");
         for (int i = 0; i < keys.size; i++) {
             list_store.append(out iter);
-            list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font='9'>0x$(Markup.escape_text(keys[i].fpr[0:16]))</span>");
+            list_store.set(iter, 0, build_markup_string(keys[i].uids[0].uid, keys[i].fpr[0:16]));
             list_store.set(iter, 1, keys[i].fpr);
             if (keys[i].fpr == plugin.db.get_account_key(current_account)) {
                 set_label_active(iter, i + 1);
             }
         }
         activate_current_account();
+        button.sensitive = true;
     }
 
     private void fetch_keys() {
+        TreeIter iter;
+        list_store.clear();
+        list_store.append(out iter);
+        label.set_markup(build_markup_string("Loading...", "Querying GnuPG"));
         new Thread<void*> (null, () => { // Querying GnuPG might take some while
-            Idle.add(() => {
-                TreeIter iter;
-                list_store.clear();
-                list_store.append(out iter);
-                button.sensitive = false;
-                label.set_markup("Loading...\n<span font='9'>Querying GnuPG</span>");
-                return false;
-            });
             try {
                 keys = GPGHelper.get_keylist(null, true);
                 Idle.add(() => {
                     list_store.clear();
                     populate_list_store();
-                    button.sensitive = true;
                     return false;
                 });
             } catch (Error e) {
                 Idle.add(() => {
-                    TreeIter iter;
-                    list_store.append(out iter);
-                    list_store.set(iter, 0, @"Disabled\n<span font='9'>Error in GnuPG</span>", 1, null);
+                    label.set_markup(build_markup_string("Key publishing disabled", "Error in GnuPG"));
                     return false;
                 });
             }
@@ -134,6 +132,10 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
             set_label_active(selected);
             deactivate();
         }
+    }
+
+    private string build_markup_string(string primary, string secondary) {
+        return @"$(Markup.escape_text(primary))\n<span font='9'>$(Markup.escape_text(secondary))</span>";
     }
 }
 
