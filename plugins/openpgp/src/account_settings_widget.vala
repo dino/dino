@@ -1,3 +1,4 @@
+using Gee;
 using Gtk;
 
 using Dino.Entities;
@@ -13,6 +14,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
 
     private Plugin plugin;
     private Account current_account;
+    private Gee.List<GPG.Key> keys = null;
     private Gtk.ListStore list_store = new Gtk.ListStore(2, typeof(string), typeof(string?));
 
     public AccountSettingsWidget(Plugin plugin) {
@@ -22,6 +24,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
         renderer.set_padding(0, 0);
         combobox.pack_start(renderer, true);
         combobox.add_attribute(renderer, "markup", 0);
+        combobox.set_model(list_store);
 
         button.clicked.connect(on_button_clicked);
         combobox.changed.connect(key_changed);
@@ -33,7 +36,11 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
 
     public void set_account(Account account) {
         this.current_account = account;
-        populate(account);
+        if (keys == null) {
+            fetch_keys();
+        } else {
+            activate_current_account();
+        }
     }
 
     private void on_button_clicked() {
@@ -42,30 +49,66 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
         combobox.popup();
     }
 
-    private void populate(Account account) {
-        TreeIter iter;
-        combobox.set_model(list_store);
-
-        list_store.clear();
-        try {
-            Gee.List<GPG.Key> keys = GPGHelper.get_keylist(null, true);
-
-            list_store.append(out iter);
-            list_store.set(iter, 0, "Disabled\n<span font='9'>Select key</span>", 1, null);
-            set_label_active(iter, 0);
-            for (int i = 0; i < keys.size; i++) {
-                list_store.append(out iter);
-                string text = @"<span font='11'>$(Markup.escape_text(keys[i].uids[0].uid))</span>\n<span font='9'>0x$(Markup.escape_text(keys[i].fpr[0:16]))</span>";
-                list_store.set(iter, 0, text);
-                list_store.set(iter, 1, keys[i].fpr);
-                if (keys[i].fpr == plugin.db.get_account_key(account)) {
-                    set_label_active(iter, i + 1);
-                }
+    private void activate_current_account() {
+        string? account_key = plugin.db.get_account_key(current_account);
+        int activate_index = 0;
+        for (int i = 0; i < keys.size; i++) {
+            GPG.Key key = keys[i];
+            if (key.fpr == account_key) {
+                activate_index = i + 1;
             }
-        } catch (Error e){
-            list_store.append(out iter);
-            list_store.set(iter, 0, @"Disabled\n<span font='9'>Error: $(Markup.escape_text(e.message))</span>", 1, null);
         }
+        combobox.active = activate_index;
+
+        TreeIter selected;
+        combobox.get_active_iter(out selected);
+        set_label_active(selected);
+    }
+
+    private void populate_list_store() {
+        TreeIter iter;
+        list_store.append(out iter);
+        list_store.set(iter, 0, "Disabled\n<span font='9'>Select key</span>", 1, null);
+        set_label_active(iter, 0);
+        for (int i = 0; i < keys.size; i++) {
+            list_store.append(out iter);
+            list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font='9'>0x$(Markup.escape_text(keys[i].fpr[0:16]))</span>");
+            list_store.set(iter, 1, keys[i].fpr);
+            if (keys[i].fpr == plugin.db.get_account_key(current_account)) {
+                set_label_active(iter, i + 1);
+            }
+        }
+        activate_current_account();
+    }
+
+    private void fetch_keys() {
+        new Thread<void*> (null, () => { // Querying GnuPG might take some while
+            Idle.add(() => {
+                TreeIter iter;
+                list_store.clear();
+                list_store.append(out iter);
+                button.sensitive = false;
+                label.set_markup("Loading...\n<span font='9'>Querying GnuPG</span>");
+                return false;
+            });
+            try {
+                keys = GPGHelper.get_keylist(null, true);
+                Idle.add(() => {
+                    list_store.clear();
+                    populate_list_store();
+                    button.sensitive = true;
+                    return false;
+                });
+            } catch (Error e) {
+                Idle.add(() => {
+                    TreeIter iter;
+                    list_store.append(out iter);
+                    list_store.set(iter, 0, @"Disabled\n<span font='9'>Error in GnuPG</span>", 1, null);
+                    return false;
+                });
+            }
+            return null;
+        });
     }
 
     private void set_label_active(TreeIter iter, int i = -1) {

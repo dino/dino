@@ -20,7 +20,6 @@
         <child>
             <object class="GtkComboBox" id="combobox">
                 <property name="hexpand">True</property>
-                <property name="width_request">200</property>
                 <property name="visible">True</property>
             </object>
             <packing>
