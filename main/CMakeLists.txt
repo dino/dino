@@ -112,5 +112,5 @@ OPTIONS
 set(CFLAGS ${VALA_CFLAGS} ${MAIN_CFLAGS})
 add_definitions(${CFLAGS})
 add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET})
-add_dependencies(dino dino-vapi)
+add_dependencies(dino dino-vapi dino-gsettings-schema-compiled)
 target_link_libraries(dino libdino ${MAIN_LIBRARIES})

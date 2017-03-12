@@ -72,3 +72,15 @@ add_custom_target(dino-vapi
 DEPENDS
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
 )
+
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/gschemas.compiled
+COMMAND
+    glib-compile-schemas --targetdir=${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/data
+DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/data/dino.gschema.xml
+)
+
+add_custom_target(dino-gsettings-schema-compiled
+DEPENDS
+    ${CMAKE_BINARY_DIR}/gschemas.compiled
+)
