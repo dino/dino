@@ -14,16 +14,28 @@ namespace Dino.Plugins.OpenPgp {
 
         public signal void received_jid_key_id(XmppStream stream, string jid, string key_id);
 
-        private string? signed_status;
-        private string? own_key_id;
+        private string? signed_status = null;
+        private Key? own_key = null;
 
-        public Module() {
-            signed_status = gpg_sign("");
-            if (signed_status != null) own_key_id = gpg_verify(signed_status, "");
+        public Module(string? own_key_id = null) {
+            set_private_key_id(own_key_id);
+        }
+
+        public void set_private_key_id(string? own_key_id) {
+            if (own_key_id != null) {
+                try {
+                    own_key = GPGHelper.get_private_key(own_key_id);
+                    if (own_key == null) print("PRIV KEY NULL\n");
+                } catch (Error e) { }
+                if (own_key != null) {
+                    signed_status = gpg_sign("", own_key);
+                    get_sign_key(signed_status, "");
+                }
+            }
         }
 
         public bool encrypt(Message.Stanza message, string key_id) {
-            string? enc_body = gpg_encrypt(message.body, new string[] {key_id, own_key_id});
+            string? enc_body = gpg_encrypt(message.body, new string[] {key_id, own_key.fpr});
             if (enc_body != null) {
                 message.stanza.put_node(new StanzaNode.build("x", NS_URI_ENCRYPTED).add_self_xmlns().put_node(new StanzaNode.text(enc_body)));
                 message.body = "[This message is OpenPGP encrypted (see XEP-0027)]";
@@ -65,7 +77,7 @@ namespace Dino.Plugins.OpenPgp {
                 string? sig = x_node.get_string_content();
                 if (sig != null) {
                     string signed_data = presence.status == null ? "" : presence.status;
-                    string? key_id = gpg_verify(sig, signed_data);
+                    string? key_id = get_sign_key(sig, signed_data);
                     if (key_id != null) {
                         Flag.get_flag(stream).set_key_id(presence.from, key_id);
                         received_jid_key_id(stream, presence.from, key_id);
@@ -117,7 +129,7 @@ namespace Dino.Plugins.OpenPgp {
             return decr;
         }
 
-        private static string? gpg_verify(string sig, string signed_text) {
+        private static string? get_sign_key(string sig, string signed_text) {
             string armor = "-----BEGIN PGP MESSAGE-----\n\n" + sig + "\n-----END PGP MESSAGE-----";
             string? sign_key = null;
             try {
@@ -126,10 +138,10 @@ namespace Dino.Plugins.OpenPgp {
             return sign_key;
         }
 
-        private static string? gpg_sign(string str) {
+        private static string? gpg_sign(string str, Key key) {
             string signed;
             try {
-                signed = GPGHelper.sign(str, GPG.SigMode.CLEAR);
+                signed = GPGHelper.sign(str, GPG.SigMode.CLEAR, key);
             } catch (Error e) {
                 return null;
             }

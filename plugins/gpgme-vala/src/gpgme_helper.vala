@@ -28,12 +28,13 @@ public static string decrypt(string encr) throws GLib.Error {
     return get_string_from_data(dec_data);
 }
 
-public static string sign(string plain, SigMode mode) throws GLib.Error {
+public static string sign(string plain, SigMode mode, Key? key = null) throws GLib.Error {
     initialize();
 
     global_mutex.lock();
     Data plain_data = Data.create_from_memory(plain.data, false);
     Context context = Context.create();
+    if (key != null) context.signers_add(key);
     Data signed_data = context.op_sign(plain_data, mode);
     global_mutex.unlock();
     return get_string_from_data(signed_data);
@@ -76,11 +77,19 @@ public static Gee.List<Key> get_keylist(string? pattern = null, bool secret_only
 }
 
 public static Key? get_public_key(string sig) throws GLib.Error {
+    return get_key(sig, false);
+}
+
+public static Key? get_private_key(string sig) throws GLib.Error {
+    return get_key(sig, true);
+}
+
+private static Key? get_key(string sig, bool priv) throws GLib.Error {
     initialize();
 
     global_mutex.lock();
     Context context = Context.create();
-    Key key = context.get_key(sig, false);
+    Key key = context.get_key(sig, priv);
     global_mutex.unlock();
     return key;
 }

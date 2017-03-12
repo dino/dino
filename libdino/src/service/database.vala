@@ -103,16 +103,6 @@ public class Database : Qlite.Database {
         }
     }
 
-    public class PgpTable : Table {
-        public Column<string> jid = new Column.Text("jid") { primary_key = true };
-        public Column<string> key = new Column.Text("key") { not_null = true };
-
-        protected PgpTable(Database db) {
-            base(db, "pgp");
-            init({jid, key});
-        }
-    }
-
     public class EntityFeatureTable : Table {
         public Column<string> entity = new Column.Text("entity");
         public Column<string> feature = new Column.Text("feature");
@@ -129,7 +119,6 @@ public class Database : Qlite.Database {
     public RealJidTable real_jid { get; private set; }
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
-    public PgpTable pgp { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
 
     public Database(string fileName) {
@@ -140,9 +129,8 @@ public class Database : Qlite.Database {
         real_jid = new RealJidTable(this);
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
-        pgp = new PgpTable(this);
         entity_feature = new EntityFeatureTable(this);
-        init({ account, jid, message, real_jid, conversation, avatar, pgp, entity_feature });
+        init({ account, jid, message, real_jid, conversation, avatar, entity_feature });
     }
 
     public override void migrate(long oldVersion) {
@@ -418,17 +406,6 @@ public class Database : Qlite.Database {
             ret[new Jid(row[avatar.jid])] = row[avatar.hash];
         }
         return ret;
-    }
-
-    public void set_pgp_key(Jid jid, string key) {
-        pgp.insert().or("REPLACE")
-                .value(pgp.jid, jid.to_string())
-                .value(pgp.key, key)
-                .perform();
-    }
-
-    public string? get_pgp_key(Jid jid) {
-        return pgp.select({pgp.key}).with(pgp.jid, "=", jid.to_string())[pgp.key];
     }
 
     public void add_entity_features(string entity, ArrayList<string> features) {

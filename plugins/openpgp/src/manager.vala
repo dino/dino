@@ -49,7 +49,7 @@ namespace Dino.Plugins.OpenPgp {
         }
 
         public string? get_key_id(Account account, Jid jid) {
-            return db.get_pgp_key(jid);
+            return db.get_contact_key(jid);
         }
 
         public static Manager? get_instance(StreamInteractor stream_interactor) {
@@ -69,7 +69,7 @@ namespace Dino.Plugins.OpenPgp {
         private void on_jid_key_received(Account account, Jid jid, string key_id) {
             if (!pgp_key_ids.has_key(jid) || pgp_key_ids[jid] != key_id) {
                 if (!MucManager.get_instance(stream_interactor).is_groupchat_occupant(jid, account)) {
-                    db.set_pgp_key(jid.bare_jid, key_id);
+                    db.set_contact_key(jid.bare_jid, key_id);
                 }
             }
             pgp_key_ids[jid] = key_id;
