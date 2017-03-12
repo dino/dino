@@ -34,10 +34,9 @@ if ! [ -x "$exec_bin" ]; then
   make_bin="$(which make 2>/dev/null)"
   if [ -x "$make_bin" ]; then
     echo "-- Found Make: $make_bin"
-    echo "--   Using Ninja (ninja-build) might improve build experience."
     cmake_type="Unix Makefiles"
     exec_bin="$make_bin"
-    exec_command="$exec_bin -j4"
+    exec_command="$exec_bin"
   fi
 fi
 
@@ -95,3 +94,7 @@ default:
 %:
 	@sh -c "cd build; $exec_command \"\$@\""
 EOF
+
+if [[ "$exec_bin" == "$make_bin" ]]; then
+    echo "--   Running with make. Using Ninja (ninja-build) might improve build experience."
+fi

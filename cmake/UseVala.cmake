@@ -118,7 +118,9 @@ function(vala_precompile output)
     cmake_parse_arguments(ARGS "FAST_VAPI" "DIRECTORY;GENERATE_HEADER;GENERATE_VAPI;EXPORTS_DIR"
         "SOURCES;PACKAGES;OPTIONS;DEFINITIONS;CUSTOM_VAPIS;GRESOURCES" ${ARGN})
 
-    set(ARGS_FAST_VAPI true)
+    if("Ninja" STREQUAL ${CMAKE_GENERATOR})
+        set(ARGS_FAST_VAPI true)
+    endif()
 
     if(ARGS_DIRECTORY)
         get_filename_component(DIRECTORY ${ARGS_DIRECTORY} ABSOLUTE)
@@ -274,7 +276,7 @@ function(vala_precompile output)
                 ${ARGS_CUSTOM_VAPIS}
                 ${ARGS_GRESOURCES}
             COMMENT
-                "Generating VAPI and headers for linking"
+                "Generating VAPI and headers for target ${output}"
             )
         endif()
     else(ARGS_FAST_VAPI)
