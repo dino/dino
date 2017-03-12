@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoPgpManagerAccountSettingsWidget">
+    <template class="DinoPluginsOpenPgpAccountSettingsWidget">
         <property name="visible">True</property>
         <child>
             <object class="GtkButton" id="pgp_button">

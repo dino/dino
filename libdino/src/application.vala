@@ -17,7 +17,6 @@ public class Dino.Application : Gtk.Application {
         CounterpartInteractionManager.start(stream_interaction);
         PresenceManager.start(stream_interaction);
         MucManager.start(stream_interaction);
-        PgpManager.start(stream_interaction, db);
         RosterManager.start(stream_interaction);
         ConversationManager.start(stream_interaction, db);
         ChatInteraction.start(stream_interaction);

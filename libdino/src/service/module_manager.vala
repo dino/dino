@@ -63,7 +63,6 @@ public class ModuleManager {
             module_map[account].add(new Xmpp.Message.Module());
             module_map[account].add(new Xep.MessageCarbons.Module());
             module_map[account].add(new Xep.Muc.Module());
-            module_map[account].add(new Xep.Pgp.Module());
             module_map[account].add(new Xep.Pubsub.Module());
             module_map[account].add(new Xep.EntityCapabilities.Module(entity_capabilities_storage));
             module_map[account].add(new Xep.UserAvatars.Module(avatar_storage));

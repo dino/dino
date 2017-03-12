@@ -1,8 +1,9 @@
 using GPG;
 
+using Xmpp;
 using Xmpp.Core;
 
-namespace Xmpp.Xep.Pgp {
+namespace Dino.Plugins.OpenPgp {
     private const string NS_URI = "jabber:x";
     private const string NS_URI_ENCRYPTED = NS_URI + ":encrypted";
     private const string NS_URI_SIGNED = NS_URI +  ":signed";

@@ -41,8 +41,6 @@ SOURCES
     "src/module/tls.vala"
     "src/module/util.vala"
 
-    "src/module/xep/0027_pgp/flag.vala"
-    "src/module/xep/0027_pgp/module.vala"
     "src/module/xep/0030_service_discovery/flag.vala"
     "src/module/xep/0030_service_discovery/info_result.vala"
     "src/module/xep/0030_service_discovery/items_result.vala"
@@ -66,7 +64,6 @@ SOURCES
     "src/module/xep/pixbuf_storage.vala"
 CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/vapi/uuid.vapi"
-    "${CMAKE_BINARY_DIR}/exports/gpgme.vapi"
 PACKAGES
     ${ENGINE_PACKAGES}
 GENERATE_VAPI
@@ -82,8 +79,7 @@ OPTIONS
 set(CFLAGS ${VALA_CFLAGS} ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS})
 add_definitions(${CFLAGS})
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
-add_dependencies(xmpp-vala gpgme-vapi)
-target_link_libraries(xmpp-vala gpgme-vala ${ENGINE_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES})
+target_link_libraries(xmpp-vala ${ENGINE_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES})
 
 add_custom_target(xmpp-vala-vapi
 DEPENDS

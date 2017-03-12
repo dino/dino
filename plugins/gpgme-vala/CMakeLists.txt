@@ -30,8 +30,9 @@ OPTIONS
 
 set(CFLAGS ${VALA_CFLAGS} ${GPGME_VALA_CFLAGS} ${GPGME_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_definitions(${CFLAGS})
-add_library(gpgme-vala SHARED ${GPGME_VALA_C} src/gpgme_fix.c)
+add_library(gpgme-vala ${GPGME_VALA_C} src/gpgme_fix.c)
 target_link_libraries(gpgme-vala ${GPGME_VALA_LIBRARIES} ${GPGME_LIBRARIES})
+set_property(TARGET gpgme-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/gpgme_fix.h"
 COMMAND

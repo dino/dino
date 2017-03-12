@@ -1,8 +1,9 @@
 using Gee;
 
+using Xmpp;
 using Xmpp.Core;
 
-namespace Xmpp.Xep.Pgp {
+namespace Dino.Plugins.OpenPgp {
 
 public class Flag : XmppStreamFlag {
     public const string ID = "pgp";

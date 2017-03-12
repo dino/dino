@@ -22,7 +22,6 @@ set (GLOBAL_DEBUG_FLAGS -g)
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${GLOBAL_DEBUG_FLAGS}")
 set (VALA_CFLAGS -Wno-deprecated-declarations -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-discarded-qualifiers)
 
-add_subdirectory(gpgme-vala)
 add_subdirectory(qlite)
 add_subdirectory(xmpp-vala)
 add_subdirectory(libdino)
