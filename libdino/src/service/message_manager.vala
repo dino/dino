@@ -115,7 +115,7 @@ public class MessageManager : StreamInteractionModule, Object {
         pre_message_received(new_message, message, conversation);
 
         bool is_uuid = new_message.stanza_id != null && Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", new_message.stanza_id);
-        if ((is_uuid && !db.contains_message_by_stanza_id(new_message.stanza_id)) ||
+        if ((is_uuid && !db.contains_message_by_stanza_id(new_message.stanza_id, conversation.account)) ||
             (!is_uuid && !db.contains_message(new_message, conversation.account))) {
             db.add_message(new_message, conversation.account);
             add_message(new_message, conversation);

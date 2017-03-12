@@ -293,9 +293,10 @@ public class Database : Qlite.Database {
                 .count() > 0;
     }
 
-    public bool contains_message_by_stanza_id(string stanza_id) {
+    public bool contains_message_by_stanza_id(string stanza_id, Account account) {
         return message.select()
                 .with(message.stanza_id, "=", stanza_id)
+                .with(message.account_id, "=", account.id)
                 .count() > 0;
     }
 
