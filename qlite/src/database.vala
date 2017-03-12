@@ -34,7 +34,6 @@ public class Database {
     }
 
     public void init(Table[] tables) throws DatabaseError {
-        print(@"Intializing database at $file_name\n");
         Sqlite.config(Config.SERIALIZED);
         int ec = Sqlite.Database.open_v2(file_name, out db, OPEN_READWRITE | OPEN_CREATE | 0x00010000);
         if (ec != Sqlite.OK) {

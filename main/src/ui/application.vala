@@ -11,10 +11,11 @@ public class Dino.Ui.Application : Dino.Application {
     private ConversationSummary.View? conversation_frame;
     private ChatInput? chat_input;
 
-    public Application() {
+    public Application() throws Error {
         Notify.init("dino");
         notifications = new Notifications(stream_interaction);
         notifications.start();
+        Environment.set_application_name("Dino");
 
         load_css();
     }

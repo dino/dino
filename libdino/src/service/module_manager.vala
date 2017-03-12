@@ -8,7 +8,6 @@ namespace Dino {
 public class ModuleManager {
     private HashMap<Account, ArrayList<Core.XmppStreamModule>> module_map = new HashMap<Account, ArrayList<Core.XmppStreamModule>>();
 
-    private AvatarStorage avatar_storage = new AvatarStorage("./");
     private EntityCapabilitiesStorage entity_capabilities_storage;
 
     public signal void initialize_account_modules(Account account, ArrayList<Core.XmppStreamModule> modules);
@@ -65,8 +64,6 @@ public class ModuleManager {
             module_map[account].add(new Xep.Muc.Module());
             module_map[account].add(new Xep.Pubsub.Module());
             module_map[account].add(new Xep.EntityCapabilities.Module(entity_capabilities_storage));
-            module_map[account].add(new Xep.UserAvatars.Module(avatar_storage));
-            module_map[account].add(new Xep.VCard.Module(avatar_storage));
             module_map[account].add(new Xep.MessageDeliveryReceipts.Module());
             module_map[account].add(new Xep.ChatStateNotifications.Module());
             module_map[account].add(new Xep.ChatMarkers.Module());

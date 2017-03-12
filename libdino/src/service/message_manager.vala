@@ -170,7 +170,7 @@ public class MessageManager : StreamInteractionModule, Object {
                 pre_message_send(message, new_message, conversation);
                 if (message.marked == Entities.Message.Marked.UNSENT || message.marked == Entities.Message.Marked.WONTSEND) return;
                 if (delayed) {
-                    stream.get_module(Xmpp.Xep.DelayedDelivery.Module.IDENTITY).set_message_delay(new_message, message.time);
+                    Xmpp.Xep.DelayedDelivery.Module.set_message_delay(new_message, message.time);
                 }
                 stream.get_module(Xmpp.Message.Module.IDENTITY).send_message(stream, new_message);
                 message.stanza_id = new_message.id;

@@ -20,7 +20,7 @@ public class AvatarManager : StreamInteractionModule, Object {
     private Database db;
     private HashMap<Jid, string> user_avatars = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
     private HashMap<Jid, string> vcard_avatars = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
-    private AvatarStorage avatar_storage = new AvatarStorage("./"); // TODO ihh
+    private AvatarStorage avatar_storage = new AvatarStorage(get_storage_dir());
     private const int MAX_PIXEL = 192;
 
     public static void start(StreamInteractor stream_interactor, Database db) {
@@ -28,10 +28,20 @@ public class AvatarManager : StreamInteractionModule, Object {
         stream_interactor.add_module(m);
     }
 
+    public static string get_storage_dir() {
+        return Path.build_filename(Application.get_storage_dir(), "avatars");
+    }
+
     private AvatarManager(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
         this.db = db;
         stream_interactor.account_added.connect(on_account_added);
+        stream_interactor.module_manager.initialize_account_modules.connect(initialize_avatar_modules);
+    }
+
+    private void initialize_avatar_modules(Account account, ArrayList<Core.XmppStreamModule> modules) {
+        modules.add(new Xep.UserAvatars.Module(avatar_storage));
+        modules.add(new Xep.VCard.Module(avatar_storage));
     }
 
     public Pixbuf? get_avatar(Account account, Jid jid) {

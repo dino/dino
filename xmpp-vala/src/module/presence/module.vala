@@ -56,9 +56,9 @@ namespace Xmpp.Presence {
         }
 
         public override void attach(XmppStream stream) {
+            stream.add_flag(new Flag());
             stream.received_presence_stanza.connect(on_received_presence_stanza);
             stream.stream_negotiated.connect(on_stream_negotiated);
-            stream.add_flag(new Flag());
         }
 
         public override void detach(XmppStream stream) {

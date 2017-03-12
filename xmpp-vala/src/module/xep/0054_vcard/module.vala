@@ -53,21 +53,18 @@ public class Module : XmppStreamModule {
             } else {
                 iq.to = get_bare_jid(presence.from);
             }
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_received_vcard);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_received_vcard, storage);
         }
     }
 
-    private static void on_received_vcard(XmppStream stream, Iq.Stanza iq) {
+    private static void on_received_vcard(XmppStream stream, Iq.Stanza iq, Object? storage_obj) {
+        PixbufStorage? storage = storage_obj as PixbufStorage;
         if (iq.is_error()) return;
-        StanzaNode? vcard_node = iq.stanza.get_subnode("vCard", NS_URI);
-        if (vcard_node == null) return;
-        StanzaNode? photo_node = vcard_node.get_subnode("PHOTO", NS_URI);
-        if (photo_node == null) return;
-        StanzaNode? binary_node = photo_node.get_subnode("BINVAL", NS_URI);
-        if (binary_node == null) return;
-        string? content = binary_node.get_string_content();
-        if (content == null) return;
-        string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, content.data);
+        string? res = iq.stanza.get_deep_string_content(@"$NS_URI:vCard", "PHOTO", "BINVAL");
+        if (res == null) return;
+        uint8[] content = Base64.decode(res);
+        string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, content);
+        storage.store(sha1, content);
         stream.get_module(IDENTITY).received_avatar(stream, iq.from, sha1);
     }
 }

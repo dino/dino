@@ -8,8 +8,17 @@ public class Dino.Application : Gtk.Application {
     public StreamInteractor stream_interaction;
     public Plugins.Registry plugin_registry = new Plugins.Registry();
 
-    public Application() {
-        this.db = new Database("store.sqlite3");
+    public Application() throws Error {
+        if (DirUtils.create_with_parents(get_storage_dir(), 0700) == -1) {
+            throw new Error(-1, 0, @"Could not create storage dir \"$(get_storage_dir())\": $(FileUtils.error_from_errno(errno))");
+        }
+
+        // FIXME: Legacy import
+        if (FileUtils.test("store.sqlite3", FileTest.IS_REGULAR)) {
+            FileUtils.rename("store.sqlite3", Path.build_filename(get_storage_dir(), "dino.db"));
+        }
+
+        this.db = new Database(Path.build_filename(get_storage_dir(), "dino.db"));
         this.stream_interaction = new StreamInteractor(db);
 
         AvatarManager.start(stream_interaction, db);
@@ -20,6 +29,10 @@ public class Dino.Application : Gtk.Application {
         RosterManager.start(stream_interaction);
         ConversationManager.start(stream_interaction, db);
         ChatInteraction.start(stream_interaction);
+    }
+
+    public static string get_storage_dir() {
+        return Path.build_filename(Environment.get_user_data_dir(), "dino");
     }
 }
 

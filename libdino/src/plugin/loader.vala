@@ -14,17 +14,40 @@ public class Loader : Object {
     [CCode (has_target = false)]
     private delegate Type RegisterPluginFunction (Module module);
 
+    private string[] search_paths = new string[0];
     private RootInterface[] plugins = new RootInterface[0];
     private Info[] infos = new Info[0];
+
+    public Loader(string? exec_str = null) {
+        search_paths += Application.get_storage_dir();
+        if (exec_str != null) {
+            string exec_path = exec_str;
+            if (!exec_path.contains(Path.DIR_SEPARATOR_S)) {
+                exec_path = Environment.find_program_in_path(exec_str);
+            }
+            if (exec_path[0:5] != "/usr") {
+                search_paths += Path.get_dirname(exec_path);
+            }
+        }
+        foreach (string dir in Environment.get_system_data_dirs()) {
+            search_paths += Path.build_filename(dir, "dino");
+        }
+    }
 
     public RootInterface load(string name, Dino.Application app) throws Error {
         if (Module.supported () == false) {
             throw new Error (-1, 0, "Plugins are not supported");
         }
 
-        Module module = Module.open ("plugins/" + name, ModuleFlags.BIND_LAZY);
+        Module module = null;
+        string path = "";
+        foreach (string prefix in search_paths) {
+            path = Path.build_filename(prefix, "plugins", name);
+            module = Module.open (path, ModuleFlags.BIND_LAZY);
+            if (module != null) break;
+        }
         if (module == null) {
-            throw new Error (-1, 1, Module.error ());
+            throw new Error (-1, 1, Module.error ().replace(path, name));
         }
 
         void* function;
