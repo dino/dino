@@ -1,6 +1,5 @@
 find_package(Vala REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(LIBUUID REQUIRED)
 include(GlibCompileResourcesSupport)
 include(${VALA_USE_FILE})
 
@@ -61,8 +60,6 @@ SOURCES
     "src/module/xep/0280_message_carbons.vala"
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/pixbuf_storage.vala"
-CUSTOM_VAPIS
-    "${CMAKE_CURRENT_SOURCE_DIR}/vapi/uuid.vapi"
 PACKAGES
     ${ENGINE_PACKAGES}
 GENERATE_VAPI
@@ -75,10 +72,10 @@ OPTIONS
     --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${ENGINE_CFLAGS} ${GPGME_CFLAGS} ${LIBUUID_CFLAGS})
+set(CFLAGS ${VALA_CFLAGS} ${ENGINE_CFLAGS})
 add_definitions(${CFLAGS})
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
-target_link_libraries(xmpp-vala ${ENGINE_LIBRARIES} ${GPGME_LIBRARIES} ${LIBUUID_LIBRARIES})
+target_link_libraries(xmpp-vala ${ENGINE_LIBRARIES})
 
 add_custom_target(xmpp-vala-vapi
 DEPENDS

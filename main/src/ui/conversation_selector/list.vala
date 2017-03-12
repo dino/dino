@@ -23,10 +23,10 @@ public class List : ListBox {
         set_sort_func(sort);
 
         ChatInteraction.get_instance(stream_interactor).conversation_read.connect((conversation) => {
-            Idle.add(() => {rows[conversation].mark_read(); return false;});
+            Idle.add(() => {if (rows.has_key(conversation)) rows[conversation].mark_read(); return false;});
         });
         ChatInteraction.get_instance(stream_interactor).conversation_unread.connect((conversation) => {
-            Idle.add(() => {rows[conversation].mark_unread(); return false;});
+            Idle.add(() => {if (rows.has_key(conversation)) rows[conversation].mark_unread(); return false;});
         });
         ConversationManager.get_instance(stream_interactor).conversation_activated.connect((conversation) => {
             Idle.add(() => {add_conversation(conversation); return false;});

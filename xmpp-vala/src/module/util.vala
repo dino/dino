@@ -12,11 +12,13 @@ namespace Xmpp {
     }
 
     public string random_uuid() {
-        uint8[] rand = new uint8[16];
-        char[] str = new char[37];
-        UUID.generate_random(rand);
-        UUID.unparse_upper(rand, str);
-        return (string) str;
+        uint32 b1 = Random.next_int();
+        uint16 b2 = (uint16)Random.next_int();
+        uint16 b3 = (uint16)(Random.next_int() | 0x4000u) & ~0xb000u;
+        uint16 b4 = (uint16)(Random.next_int() | 0x8000u) & ~0x4000u;
+        uint16 b5_1 = (uint16)Random.next_int();
+        uint32 b5_2 = Random.next_int();
+        return "%08x-%04x-%04x-%04x-%04x%08x".printf(b1, b2, b3, b4, b5_1, b5_2);
     }
 
     public class Tuple<A,B> : Object {
