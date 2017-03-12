@@ -50,29 +50,46 @@ public class Row {
     public bool has_real(string field) {
         return real_map.has_key(field) && real_map[field] != null;
     }
+}
 
-    public class RowIterator {
-        private Statement stmt;
+public class RowIterator {
+    private Statement stmt;
 
-        public RowIterator.from_query_builder(QueryBuilder query) throws DatabaseError {
-            this.stmt = query.prepare();
-        }
+    public RowIterator.from_query_builder(QueryBuilder query) throws DatabaseError {
+        this.stmt = query.prepare();
+    }
 
-        public RowIterator(Database db, string sql, string[]? args = null) throws DatabaseError {
-            this.stmt = db.prepare(sql);
-            if (args != null) {
-                for (int i = 0; i < args.length; i++) {
-                    stmt.bind_text(i, sql, sql.length);
-                }
+    public RowIterator(Database db, string sql, string[]? args = null) throws DatabaseError {
+        this.stmt = db.prepare(sql);
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                stmt.bind_text(i, sql, sql.length);
             }
         }
+    }
 
-        public Row? next_value() {
-            if (stmt.step() == Sqlite.ROW) {
-                return new Row(stmt);
-            }
-            return null;
+    public Row? next_value() {
+        if (stmt.step() == Sqlite.ROW) {
+            return new Row(stmt);
         }
+        return null;
+    }
+}
+
+public class RowOption {
+    public Row? inner { get; private set; }
+
+    public RowOption(Row? row) {
+        this.inner = row;
+    }
+
+    public bool is_present() {
+        return inner != null;
+    }
+
+    public T get<T>(Column<T> field, T def = null) {
+        if (inner == null || field.is_null(inner)) return def;
+        return field[inner];
     }
 }
 

@@ -30,7 +30,7 @@ public class AccountSettingWidget : Plugins.AccountSettingsWidget, Box {
     public void set_account(Account account) {
         this.account = account;
         try {
-            Qlite.Row? row = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id);
+            Qlite.Row? row = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id).inner;
             if (row == null) {
                 fingerprint.set_markup(@"Own fingerprint\n<span font='8'>Will be generated on first connect</span>");
             } else {

@@ -131,20 +131,20 @@ public class QueryBuilder : StatementBuilder {
     public int64 count() throws DatabaseError {
         this.column_selector = @"COUNT($column_selector) AS count";
         this.single_result = true;
-        return row().get_integer("count");
+        return row_().get_integer("count");
     }
 
-    public Row? row() throws DatabaseError {
+    private Row? row_() throws DatabaseError {
         if (!single_result) throw new DatabaseError.NON_UNIQUE("query is not suited to return a single row, but row() was called.");
         return iterator().next_value();
     }
 
+    public RowOption row() throws DatabaseError {
+        return new RowOption(row_());
+    }
+
     public T get<T>(Column<T> field) throws DatabaseError {
-        Row row = row();
-        if (row != null) {
-            return row[field];
-        }
-        return null;
+        return row()[field];
     }
 
     public override Statement prepare() throws DatabaseError {
@@ -155,8 +155,8 @@ public class QueryBuilder : StatementBuilder {
         return stmt;
     }
 
-    public Row.RowIterator iterator() throws DatabaseError {
-        return new Row.RowIterator.from_query_builder(this);
+    public RowIterator iterator() throws DatabaseError {
+        return new RowIterator.from_query_builder(this);
     }
 
     class OrderingTerm {

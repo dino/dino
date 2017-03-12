@@ -121,7 +121,7 @@ public class Database : Qlite.Database {
     public AvatarTable avatar { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
 
-    public Database(string fileName) {
+    public Database(string fileName) throws DatabaseError {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);
@@ -174,7 +174,7 @@ public class Database : Qlite.Database {
     }
 
     private Account? get_account_by_id(int id) {
-        Row? row = account.row_with(account.id, id);
+        Row? row = account.row_with(account.id, id).inner;
         if (row != null) {
             return get_account_from_row(row);
         }
@@ -300,7 +300,7 @@ public class Database : Qlite.Database {
     }
 
     public Message? get_message_by_id(int id) {
-        Row? row = message.row_with(message.id, id);
+        Row? row = message.row_with(message.id, id).inner;
         if (row != null) {
             return get_message_from_row(row);
         }
@@ -427,7 +427,7 @@ public class Database : Qlite.Database {
 
 
     private int get_jid_id(Jid jid_obj) {
-        Row? row = jid.row_with(jid.bare_jid, jid_obj.bare_jid.to_string());
+        Row? row = jid.row_with(jid.bare_jid, jid_obj.bare_jid.to_string()).inner;
         return row != null ? row[jid.id] : add_jid(jid_obj);
     }
 

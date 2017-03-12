@@ -51,15 +51,19 @@ public class Database {
         meta_table.create_table_at_version(expected_version);
         long old_version = 0;
         try {
-            Row? row = meta_table.row_with(meta_name, "version");
-            old_version = row == null ? -1 : (long) row[meta_int_val];
+            old_version = meta_table.row_with(meta_name, "version")[meta_int_val, -1];
         } catch (DatabaseError e) {
             old_version = -1;
         }
-        foreach (Table t in tables) {
-            t.create_table_at_version(old_version);
-        }
-        if (expected_version != old_version) {
+        if (old_version == -1) {
+            foreach (Table t in tables) {
+                t.create_table_at_version(expected_version);
+            }
+            meta_table.insert().value(meta_name, "version").value(meta_int_val, expected_version).perform();
+        } else if (expected_version != old_version) {
+            foreach (Table t in tables) {
+                t.create_table_at_version(old_version);
+            }
             foreach (Table t in tables) {
                 t.add_columns_for_version(old_version, expected_version);
             }
@@ -117,9 +121,9 @@ public class Database {
         return new DeleteBuilder(this);
     }
 
-    public Row.RowIterator query_sql(string sql, string[]? args = null) throws DatabaseError {
+    public RowIterator query_sql(string sql, string[]? args = null) throws DatabaseError {
         ensure_init();
-        return new Row.RowIterator(this, sql, args);
+        return new RowIterator(this, sql, args);
     }
 
     public Statement prepare(string sql) throws DatabaseError {

@@ -99,7 +99,7 @@ public class Manager : StreamInteractionModule, Object {
     private void on_store_created(Account account, Store store) {
         Qlite.Row? row = null;
         try {
-            row = db.identity.row_with(db.identity.account_id, account.id);
+            row = db.identity.row_with(db.identity.account_id, account.id).inner;
         } catch (Error e) {
             // Ignore error
         }

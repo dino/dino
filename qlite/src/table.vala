@@ -22,7 +22,7 @@ public class Table {
         if (constraints == null) constraints = ""; else constraints += ", ";
         constraints += "UNIQUE (";
         bool first = true;
-        foreach(Column c in columns) {
+        foreach (Column c in columns) {
             if (!first) constraints += ", ";
             constraints += c.name;
             first = false;
@@ -57,7 +57,7 @@ public class Table {
         return db.delete().from(this);
     }
 
-    public Row? row_with<T>(Column<T> column, T value) throws DatabaseError {
+    public RowOption row_with<T>(Column<T> column, T value) throws DatabaseError {
         ensure_init();
         if (!column.unique && !column.primary_key) throw new DatabaseError.NON_UNIQUE(@"$(column.name) is not suited to identify a row, but used with row_with()");
         return select().with(column, "=", value).row();
@@ -74,7 +74,7 @@ public class Table {
     public void create_table_at_version(long version) throws DatabaseError {
         ensure_init();
         string sql = @"CREATE TABLE IF NOT EXISTS $name (";
-        for(int i = 0; i < columns.length; i++) {
+        for (int i = 0; i < columns.length; i++) {
             Column c = columns[i];
             if (c.min_version <= version && c.max_version >= version) {
                 sql += @"$(i > 0 ? "," : "") $c";
@@ -97,7 +97,26 @@ public class Table {
     }
 
     public void delete_columns_for_version(long old_version, long new_version) throws DatabaseError {
-        // TODO: Rename old table, create table at new_version, transfer data
+        bool column_deletion_required = false;
+        string column_list = null;
+        foreach (Column c in columns) {
+            if (c.min_version <= new_version && c.max_version >= new_version) {
+                if (column_list == null) {
+                    column_list = c.name;
+                } else {
+                    column_list += ", " + c.name;
+                }
+            }
+            if (!(c.min_version <= new_version && c.max_version >= new_version) && c.min_version <= old_version && c.max_version >= old_version) {
+                column_deletion_required = true;
+            }
+        }
+        if (column_deletion_required) {
+            db.exec(@"ALTER TABLE $name RENAME TO _$(name)_$old_version");
+            create_table_at_version(new_version);
+            db.exec(@"INSERT INTO $name ($column_list) SELECT $column_list FROM _$(name)_$old_version");
+            db.exec(@"DROP TABLE _$(name)_$old_version");
+        }
     }
 }
 
