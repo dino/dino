@@ -4,7 +4,6 @@ include(${VALA_USE_FILE})
 
 set(LIBDINO_PACKAGES
     gee-0.8
-    gio-2.0
     glib-2.0
     gtk+-3.0
     gmodule-2.0

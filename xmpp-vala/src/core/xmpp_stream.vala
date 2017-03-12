@@ -93,7 +93,7 @@ public class XmppStream {
         }
     }
 
-    public IOStream? get_stream() {
+    internal IOStream? get_stream() {
         return stream;
     }
 

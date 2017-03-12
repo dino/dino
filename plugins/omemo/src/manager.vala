@@ -4,7 +4,7 @@ using Qlite;
 using Xmpp;
 using Gee;
 
-namespace Dino.Omemo {
+namespace Dino.Plugins.Omemo {
 
 public class Manager : StreamInteractionModule, Object {
     public const string id = "omemo_manager";
@@ -31,7 +31,7 @@ public class Manager : StreamInteractionModule, Object {
 
     private void on_pre_message_send(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
         if (message.encryption == Encryption.OMEMO) {
-            Module module = Module.get_module(stream_interactor.get_stream(conversation.account));
+            StreamModule module = stream_interactor.get_stream(conversation.account).get_module(StreamModule.IDENTITY);
             EncryptStatus status = module.encrypt(message_stanza, conversation.account.bare_jid.to_string());
             if (status.other_failure > 0 || (status.other_lost == status.other_devices && status.other_devices > 0)) {
                 message.marked = Entities.Message.Marked.WONTSEND;
@@ -63,9 +63,9 @@ public class Manager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, Module.IDENTITY).store_created.connect((context, store) => on_store_created(account, context, store));
-        stream_interactor.module_manager.get_module(account, Module.IDENTITY).device_list_loaded.connect(() => on_device_list_loaded(account));
-        stream_interactor.module_manager.get_module(account, Module.IDENTITY).session_started.connect((jid, device_id) => on_session_started(account, jid));
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created(account, store));
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect(() => on_device_list_loaded(account));
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).session_started.connect((jid, device_id) => on_session_started(account, jid));
     }
 
     private void on_session_started(Account account, string jid) {
@@ -96,7 +96,7 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_store_created(Account account, Context context, Store store) {
+    private void on_store_created(Account account, Store store) {
         Qlite.Row? row = null;
         try {
             row = db.identity.row_with(db.identity.account_id, account.id);
@@ -107,19 +107,19 @@ public class Manager : StreamInteractionModule, Object {
 
         if (row == null) {
             // OMEMO not yet initialized, starting with empty base
-            store.identity_key_store.local_registration_id = Random.int_range(1, int32.MAX);
-
-            Signal.ECKeyPair key_pair = context.generate_key_pair();
-            store.identity_key_store.identity_key_private = key_pair.private.serialize();
-            store.identity_key_store.identity_key_public = key_pair.public.serialize();
-
             try {
+                store.identity_key_store.local_registration_id = Random.int_range(1, int32.MAX);
+
+                Signal.ECKeyPair key_pair = Plugin.context.generate_key_pair();
+                store.identity_key_store.identity_key_private = key_pair.private.serialize();
+                store.identity_key_store.identity_key_public = key_pair.public.serialize();
+
                 identity_id = (int) db.identity.insert().or("REPLACE")
-                .value(db.identity.account_id, account.id)
-                .value(db.identity.device_id, (int) store.local_registration_id)
-                .value(db.identity.identity_key_private_base64, Base64.encode(store.identity_key_store.identity_key_private))
-                .value(db.identity.identity_key_public_base64, Base64.encode(store.identity_key_store.identity_key_public))
-                .perform();
+                        .value(db.identity.account_id, account.id)
+                        .value(db.identity.device_id, (int) store.local_registration_id)
+                        .value(db.identity.identity_key_private_base64, Base64.encode(store.identity_key_store.identity_key_private))
+                        .value(db.identity.identity_key_public_base64, Base64.encode(store.identity_key_store.identity_key_public))
+                        .perform();
             } catch (Error e) {
                 // Ignore error
             }
@@ -139,118 +139,9 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private class BackedSignedPreKeyStore : SimpleSignedPreKeyStore {
-        private Database db;
-        private int identity_id;
 
-        public BackedSignedPreKeyStore(Database db, int identity_id) {
-            this.db = db;
-            this.identity_id = identity_id;
-            init();
-        }
-
-        private void init() {
-            foreach (Row row in db.signed_pre_key.select().with(db.signed_pre_key.identity_id, "=", identity_id)) {
-                store_signed_pre_key(row[db.signed_pre_key.signed_pre_key_id], Base64.decode(row[db.signed_pre_key.record_base64]));
-            }
-
-            signed_pre_key_stored.connect(on_signed_pre_key_stored);
-            signed_pre_key_deleted.connect(on_signed_pre_key_deleted);
-        }
-
-        public void on_signed_pre_key_stored(SignedPreKeyStore.Key key) {
-            db.signed_pre_key.insert().or("REPLACE")
-                .value(db.signed_pre_key.identity_id, identity_id)
-                .value(db.signed_pre_key.signed_pre_key_id, (int) key.key_id)
-                .value(db.signed_pre_key.record_base64, Base64.encode(key.record))
-                .perform();
-        }
-
-        public void on_signed_pre_key_deleted(SignedPreKeyStore.Key key) {
-            db.signed_pre_key.delete()
-                .with(db.signed_pre_key.identity_id, "=", identity_id)
-                .with(db.signed_pre_key.signed_pre_key_id, "=", (int) key.key_id)
-                .perform();
-        }
-    }
-
-    private class BackedPreKeyStore : SimplePreKeyStore {
-        private Database db;
-        private int identity_id;
-
-        public BackedPreKeyStore(Database db, int identity_id) {
-            this.db = db;
-            this.identity_id = identity_id;
-            init();
-        }
-
-        private void init() {
-            foreach (Row row in db.pre_key.select().with(db.pre_key.identity_id, "=", identity_id)) {
-                store_pre_key(row[db.pre_key.pre_key_id], Base64.decode(row[db.pre_key.record_base64]));
-            }
-
-            pre_key_stored.connect(on_pre_key_stored);
-            pre_key_deleted.connect(on_pre_key_deleted);
-        }
-
-        public void on_pre_key_stored(PreKeyStore.Key key) {
-            db.pre_key.insert().or("REPLACE")
-                .value(db.pre_key.identity_id, identity_id)
-                .value(db.pre_key.pre_key_id, (int) key.key_id)
-                .value(db.pre_key.record_base64, Base64.encode(key.record))
-                .perform();
-        }
-
-        public void on_pre_key_deleted(PreKeyStore.Key key) {
-            db.pre_key.delete()
-                .with(db.pre_key.identity_id, "=", identity_id)
-                .with(db.pre_key.pre_key_id, "=", (int) key.key_id)
-                .perform();
-        }
-    }
-
-    private class BackedSessionStore : SimpleSessionStore {
-        private Database db;
-        private int identity_id;
-
-        public BackedSessionStore(Database db, int identity_id) {
-            this.db = db;
-            this.identity_id = identity_id;
-            init();
-        }
-
-        private void init() {
-            Address addr = new Address();
-            foreach (Row row in db.session.select().with(db.session.identity_id, "=", identity_id)) {
-                addr.name = row[db.session.address_name];
-                addr.device_id = row[db.session.device_id];
-                store_session(addr, Base64.decode(row[db.session.record_base64]));
-            }
-
-            session_stored.connect(on_session_stored);
-            session_removed.connect(on_session_deleted);
-        }
-
-        public void on_session_stored(SessionStore.Session session) {
-            db.session.insert().or("REPLACE")
-                .value(db.session.identity_id, identity_id)
-                .value(db.session.address_name, session.name)
-                .value(db.session.device_id, session.device_id)
-                .value(db.session.record_base64, Base64.encode(session.record))
-                .perform();
-        }
-
-        public void on_session_deleted(SessionStore.Session session) {
-            db.session.delete()
-                .with(db.session.identity_id, "=", identity_id)
-                .with(db.session.address_name, "=", session.name)
-                .with(db.session.device_id, "=", session.device_id)
-                .perform();
-        }
-    }
-
-    public bool con_encrypt(Entities.Conversation conversation) {
-        return true; // TODO
+    public bool can_encrypt(Entities.Conversation conversation) {
+        return stream_interactor.get_stream(conversation.account).get_module(StreamModule.IDENTITY).is_known_address(conversation.counterpart.bare_jid.to_string());
     }
 
     internal string get_id() {

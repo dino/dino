@@ -1,6 +1,5 @@
 find_package(Vala REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(GPGME REQUIRED)
 find_package(LIBUUID REQUIRED)
 include(GlibCompileResourcesSupport)
 include(${VALA_USE_FILE})

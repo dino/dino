@@ -1,12 +1,5 @@
 namespace Dino.Plugins {
 
-public errordomain Error {
-	NOT_SUPPORTED,
-	UNEXPECTED_TYPE,
-	NO_REGISTRATION_FUNCTION,
-	FAILED
-}
-
 private class Info : Object {
     public Module module;
     public Type gtype;
@@ -26,24 +19,24 @@ public class Loader : Object {
 
     public RootInterface load(string name, Dino.Application app) throws Error {
         if (Module.supported () == false) {
-            throw new Error.NOT_SUPPORTED ("Plugins are not supported");
+            throw new Error (-1, 0, "Plugins are not supported");
         }
 
         Module module = Module.open ("plugins/" + name, ModuleFlags.BIND_LAZY);
         if (module == null) {
-            throw new Error.FAILED (Module.error ());
+            throw new Error (-1, 1, Module.error ());
         }
 
         void* function;
         module.symbol ("register_plugin", out function);
         if (function == null) {
-            throw new Error.NO_REGISTRATION_FUNCTION ("register_plugin () not found");
+            throw new Error (-1, 2, "register_plugin () not found");
         }
 
         RegisterPluginFunction register_plugin = (RegisterPluginFunction) function;
         Type type = register_plugin (module);
         if (type.is_a (typeof (RootInterface)) == false) {
-            throw new Error.UNEXPECTED_TYPE ("Unexpected type");
+            throw new Error (-1, 3, "Unexpected type");
         }
 
         Info info = new Plugins.Info (type, (owned) module);

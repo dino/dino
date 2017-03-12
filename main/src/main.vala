@@ -10,7 +10,7 @@ void main(string[] args) {
     foreach(string plugin in new string[]{"omemo", "openpgp"}) {
         try {
             loader.load(plugin, app);
-        } catch (Plugins.Error e) {
+        } catch (Error e) {
             print(@"Error loading plugin $plugin: $(e.message)\n");
         }
     }

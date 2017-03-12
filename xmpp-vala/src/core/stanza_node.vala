@@ -99,7 +99,7 @@ public class StanzaNode : StanzaEntry {
         return res.down() == "true" || res == "1";
     }
 
-    public StanzaAttribute get_attribute_raw(string name, string? ns_uri = null) {
+    public StanzaAttribute? get_attribute_raw(string name, string? ns_uri = null) {
         string _name = name;
         string? _ns_uri = ns_uri;
         if (_ns_uri == null) {
@@ -225,12 +225,12 @@ public class StanzaNode : StanzaEntry {
     public ArrayList<StanzaNode> get_deep_subnodes_(va_list l) {
         StanzaNode? node = this;
         string? subnode_name = l.arg();
-        if (subnode_name == null) return null;
+        if (subnode_name == null) return new ArrayList<StanzaNode>();
         while(true) {
             string? s = l.arg();
             if (s == null) break;
             node = node.get_subnode(subnode_name);
-            if (node == null) return null;
+            if (node == null) return new ArrayList<StanzaNode>();
             subnode_name = s;
         }
         return node.get_subnodes(subnode_name);

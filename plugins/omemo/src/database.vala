@@ -4,7 +4,7 @@ using Qlite;
 
 using Dino.Entities;
 
-namespace Dino.Omemo {
+namespace Dino.Plugins.Omemo {
 
 public class Database : Qlite.Database {
     private const int VERSION = 0;
@@ -63,7 +63,7 @@ public class Database : Qlite.Database {
     public PreKeyTable pre_key { get; private set; }
     public SessionTable session { get; private set; }
 
-    public Database(string fileName) {
+    public Database(string fileName) throws DatabaseError {
         base(fileName, VERSION);
         identity = new IdentityTable(this);
         signed_pre_key = new SignedPreKeyTable(this);

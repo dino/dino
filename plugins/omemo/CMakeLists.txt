@@ -14,10 +14,20 @@ pkg_check_modules(OMEMO REQUIRED ${OMEMO_PACKAGES})
 
 vala_precompile(OMEMO_VALA_C
 SOURCES
-    src/plugin.vala
-    src/module.vala
-    src/manager.vala
+    src/account_settings_entry.vala
+    src/account_settings_widget.vala
+    src/bundle.vala
     src/database.vala
+    src/encrypt_status.vala
+    src/encryption_list_entry.vala
+    src/manager.vala
+    src/message_flag.vala
+    src/plugin.vala
+    src/pre_key_store.vala
+    src/register_plugin.vala
+    src/session_store.vala
+    src/signed_pre_key_store.vala
+    src/stream_module.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/signal-protocol.vapi
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi

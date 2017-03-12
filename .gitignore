@@ -5,3 +5,4 @@ Makefile
 *.iml
 .idea
 .sqlite3
+gschemas.compiled
