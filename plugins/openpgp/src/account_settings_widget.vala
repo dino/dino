@@ -50,6 +50,8 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     private void activate_current_account() {
+        combobox.changed.disconnect(key_changed);
+
         string? account_key = plugin.db.get_account_key(current_account);
         int activate_index = 0;
         for (int i = 0; i < keys.size; i++) {
@@ -63,6 +65,8 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
         TreeIter selected;
         combobox.get_active_iter(out selected);
         set_label_active(selected);
+
+        combobox.changed.connect(key_changed);
     }
 
     private void populate_list_store() {

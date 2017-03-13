@@ -27,7 +27,8 @@ public class Key {
     [CCode(array_null_terminated = true)]
     public UserID[] uids;
     public KeylistMode keylist_mode;
-    public string fpr;
+    // public string fpr; // requires gpgme >= 1.7.0
+    public string fpr { get { return subkeys[0].fpr; } }
 }
 
 [CCode (cname = "struct _gpgme_user_id")]
