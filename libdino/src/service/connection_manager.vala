@@ -74,12 +74,12 @@ public class ConnectionManager {
 
     public void disconnect(Account account) {
         change_connection_state(account, ConnectionState.DISCONNECTED);
+        connection_todo.remove(account);
         if (stream_states.has_key(account)) {
             try {
                 stream_states[account].stream.disconnect();
             } catch (Error e) { }
         }
-        connection_todo.remove(account);
     }
 
     private Core.XmppStream? connect_(Account account, string? resource = null) {
@@ -106,8 +106,12 @@ public class ConnectionManager {
             } catch (Error e) {
                 stderr.printf("Stream Error: %s\n", e.message);
                 change_connection_state(account, ConnectionState.DISCONNECTED);
-                interpret_reconnect_flags(account, StreamError.Flag.get_flag(stream) ??
-                    new StreamError.Flag() { reconnection_recomendation = StreamError.Flag.Reconnect.NOW });
+                if (!connection_todo.contains(account)) {
+                    stream_states.unset(account);
+                } else {
+                    interpret_reconnect_flags(account, StreamError.Flag.get_flag(stream) ??
+                        new StreamError.Flag() { reconnection_recomendation = StreamError.Flag.Reconnect.NOW });
+                }
             }
             return null;
         });
@@ -117,7 +121,6 @@ public class ConnectionManager {
     }
 
     private void interpret_reconnect_flags(Account account, StreamError.Flag stream_error_flag) {
-        if (!connection_todo.contains(account)) return;
         int wait_sec = 10;
         if (network_manager != null && network_manager.State != NetworkManager.CONNECTED_GLOBAL) {
             wait_sec = 60;
