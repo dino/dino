@@ -44,7 +44,6 @@ set(RESOURCE_LIST
     menu_encryption.ui
     occupant_list.ui
     occupant_list_item.ui
-    style.css
     settings_dialog.ui
     unified_window.ui
 )

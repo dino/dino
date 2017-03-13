@@ -27,7 +27,6 @@ public class View : Box {
     bool reloading = false;
 
     public View(StreamInteractor stream_interactor) {
-        Object(homogeneous : false, spacing : 0);
         this.stream_interactor = stream_interactor;
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
         scrolled.vadjustment.notify["value"].connect(on_value_notify);
@@ -50,6 +49,23 @@ public class View : Box {
             }
             return true;
         });
+
+        update_background_color();
+        this.style_updated.connect(style_changed);
+    }
+
+    private void update_background_color() {
+        TextView tmp = new TextView();
+        this.override_background_color(0, tmp.get_style_context().get_background_color(0));
+        main.override_background_color(0, tmp.get_style_context().get_background_color(0));
+    }
+
+    private void style_changed() {
+        lock (main) {
+            this.style_updated.disconnect(style_changed);
+            update_background_color();
+            this.style_updated.connect(style_changed);
+        }
     }
 
     public void initialize_for_conversation(Conversation? conversation) {
@@ -129,7 +145,7 @@ public class View : Box {
         if (was_upper == null || scrolled.vadjustment.value >  was_upper - was_page_size - 1 ||
                 scrolled.vadjustment.value >  was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
             scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size; // scroll down
-        } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1){
+        } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1) {
             scrolled.vadjustment.value = scrolled.vadjustment.upper - was_upper + scrolled.vadjustment.value; // stay at same content
         }
         was_upper = scrolled.vadjustment.upper;

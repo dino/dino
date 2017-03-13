@@ -16,8 +16,6 @@ public class Dino.Ui.Application : Dino.Application {
         notifications = new Notifications(stream_interaction);
         notifications.start();
         Environment.set_application_name("Dino");
-
-        load_css();
     }
 
     public override void activate() {
@@ -82,17 +80,6 @@ public class Dino.Ui.Application : Dino.Application {
 
     private void remove_connection(Account account) {
         stream_interaction.disconnect(account);
-    }
-
-    private void load_css() {
-        var css_provider = new Gtk.CssProvider ();
-        try {
-            var file = File.new_for_uri("resource:///org/dino-im/style.css");
-            css_provider.load_from_file (file);
-        } catch (GLib.Error e) {
-            warning ("loading css: %s", e.message);
-        }
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default(), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 }
 

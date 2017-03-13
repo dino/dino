@@ -47,9 +47,10 @@ public class PresenceManager : StreamInteractionModule, Object {
                 return null;
             }
             ArrayList<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
-            foreach (string resource in resources) {
+            resources.foreach((resource) => {
                 ret.add(new Jid(resource));
-            }
+                return true;
+            });
             return ret;
         }
         return null;

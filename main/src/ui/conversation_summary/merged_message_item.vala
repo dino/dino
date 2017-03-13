@@ -22,21 +22,50 @@ public class MergedMessageItem : Grid {
     [GtkChild] private Image received_image;
     [GtkChild] private TextView message_text_view;
 
+    private StreamInteractor stream_interactor;
+    private TextTag link_tag;
+
     public MergedMessageItem(StreamInteractor stream_interactor, Conversation conversation, Message message) {
         this.conversation = conversation;
         this.from = message.from;
         this.initial_time = message.time;
+        this.stream_interactor = stream_interactor;
         setup_tags();
         add_message(message);
 
         time_label.label = get_relative_time(initial_time.to_local());
-        string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
-        name_label.set_markup(@"<span foreground=\"#$(Util.get_name_hex_color(display_name))\">$display_name</span>");
         Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(30, 30, image.scale_factor)).draw_message(stream_interactor, message));
         if (message.encryption != Encryption.NONE) {
             encryption_image.visible = true;
             encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.SMALL_TOOLBAR);
         }
+        name_label.label = Util.get_message_display_name(stream_interactor, message, conversation.account);
+
+        update_display_style();
+        message_text_view.style_updated.connect(style_changed);
+    }
+
+    private void style_changed() {
+        lock(message_text_view) {
+            message_text_view.style_updated.disconnect(style_changed);
+            update_display_style();
+            message_text_view.style_updated.connect(style_changed);
+        }
+    }
+
+    private void update_display_style() {
+        TextView tmp = new TextView();
+        RGBA bg = tmp.get_style_context().get_background_color(StateFlags.NORMAL);
+        bool dark_theme = (bg.red < 0.5 && bg.green < 0.5 && bg.blue < 0.5);
+
+        string display_name = Util.get_message_display_name(stream_interactor, messages[0], conversation.account);
+        name_label.set_markup(@"<span foreground=\"#$(Util.get_name_hex_color(display_name, dark_theme))\">$display_name</span>");
+
+        LinkButton lnk = new LinkButton("http://example.com");
+        RGBA link_color = lnk.get_style_context().get_color(StateFlags.LINK);
+        link_tag.foreground_rgba = link_color;
+
+        message_text_view.override_background_color(0, {0,0,0,0});
     }
 
     public void update() {
@@ -104,7 +133,7 @@ public class MergedMessageItem : Grid {
     }
 
     private void setup_tags() {
-        message_text_view.buffer.create_tag("url", underline: Pango.Underline.SINGLE, foreground: "blue");
+        link_tag = message_text_view.buffer.create_tag("url", underline: Pango.Underline.SINGLE, foreground: "blue");
         message_text_view.button_release_event.connect(open_url);
         message_text_view.motion_notify_event.connect(change_cursor_over_url);
     }
