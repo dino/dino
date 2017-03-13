@@ -85,8 +85,10 @@ public class MessageManager : StreamInteractionModule, Object {
     private void send_unsent_messages(Account account) {
         Gee.List<Entities.Message> unsend_messages = db.get_unsend_messages(account);
         foreach (Entities.Message message in unsend_messages) {
-            Conversation conversation = ConversationManager.get_instance(stream_interactor).get_conversation(message.counterpart, account);
-            send_xmpp_message(message, conversation, true);
+            Conversation? conversation = ConversationManager.get_instance(stream_interactor).get_conversation(message.counterpart, account);
+            if (conversation != null) {
+                send_xmpp_message(message, conversation, true);
+            }
         }
     }
 

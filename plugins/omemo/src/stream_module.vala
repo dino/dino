@@ -176,8 +176,17 @@ public class StreamModule : XmppStreamModule {
         return (string)rarr;
     }
 
-    public void on_devicelist(XmppStream stream, string jid, string id, StanzaNode node) {
+    public void request_user_devicelist(XmppStream stream, string jid) {
+        stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node, obj) => (obj as StreamModule).on_devicelist(stream, jid, id ?? "", node), this);
+    }
+
+    public void on_devicelist(XmppStream stream, string jid, string id, StanzaNode? node_) {
+        StanzaNode? node = node_;
         if (jid == get_bare_jid(Bind.Flag.get_flag(stream).my_jid) && store.local_registration_id != 0) {
+            if (node == null) {
+                node = new StanzaNode.build("list", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("device", NS_URI));
+            }
+
             lock (device_list_loading) {
                 if (!device_list_loading) {
                     device_list_loading = true;

@@ -11,13 +11,14 @@ public class Manager : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private ArrayList<Entities.Message> to_send_after_devicelist = new ArrayList<Entities.Message>();
-    private ArrayList<Entities.Message> to_send_after_session = new ArrayList<Entities.Message>();
+    private ConcurrentList<Entities.Message> to_send_after_devicelist = new ConcurrentList<Entities.Message>();
+    private ConcurrentList<Entities.Message> to_send_after_session = new ConcurrentList<Entities.Message>();
 
     private Manager(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
         this.db = db;
 
+        stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.account_added.connect(on_account_added);
         MessageManager.get_instance(stream_interactor).pre_message_received.connect(on_pre_message_received);
         MessageManager.get_instance(stream_interactor).pre_message_send.connect(on_pre_message_send);
@@ -66,6 +67,11 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created(account, store));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect(() => on_device_list_loaded(account));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).session_started.connect((jid, device_id) => on_session_started(account, jid));
+    }
+
+    private void on_stream_negotiated(Account account) {
+        Core.XmppStream stream = stream_interactor.get_stream(account);
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist(stream, account.bare_jid.to_string());
     }
 
     private void on_session_started(Account account, string jid) {
