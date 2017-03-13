@@ -42,20 +42,12 @@ public class MergedMessageItem : Grid {
         name_label.label = Util.get_message_display_name(stream_interactor, message, conversation.account);
 
         update_display_style();
-        message_text_view.style_updated.connect(style_changed);
-    }
-
-    private void style_changed() {
-        lock(message_text_view) {
-            message_text_view.style_updated.disconnect(style_changed);
-            update_display_style();
-            message_text_view.style_updated.connect(style_changed);
-        }
+        Util.force_base_background(message_text_view, "textview, text:not(:selected)");
+        message_text_view.style_updated.connect(update_display_style);
     }
 
     private void update_display_style() {
-        TextView tmp = new TextView();
-        RGBA bg = tmp.get_style_context().get_background_color(StateFlags.NORMAL);
+        RGBA bg = get_style_context().get_background_color(StateFlags.NORMAL);
         bool dark_theme = (bg.red < 0.5 && bg.green < 0.5 && bg.blue < 0.5);
 
         string display_name = Util.get_message_display_name(stream_interactor, messages[0], conversation.account);
@@ -64,8 +56,6 @@ public class MergedMessageItem : Grid {
         LinkButton lnk = new LinkButton("http://example.com");
         RGBA link_color = lnk.get_style_context().get_color(StateFlags.LINK);
         link_tag.foreground_rgba = link_color;
-
-        message_text_view.override_background_color(0, {0,0,0,0});
     }
 
     public void update() {

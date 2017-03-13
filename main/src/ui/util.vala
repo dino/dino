@@ -74,6 +74,22 @@ public class Util : Object {
         if (scale == 0) scale = image.get_scale_factor();
         image.set_from_surface(Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window()));
     }
+
+    private const string force_background_css = "%s { background-color: %s; }";
+
+    public static void force_background(Gtk.Widget widget, string color, string selector = "*") {
+        var p = new Gtk.CssProvider();
+        try {
+            p.load_from_data(force_background_css.printf(selector, color));
+            widget.get_style_context().add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        } catch (GLib.Error err) {
+            // handle err
+        }
+    }
+
+    public static void force_base_background(Gtk.Widget widget, string selector = "*") {
+        force_background(widget, "@theme_base_color", selector);
+    }
 }
 
 }

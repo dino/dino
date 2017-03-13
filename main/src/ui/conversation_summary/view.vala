@@ -50,22 +50,7 @@ public class View : Box {
             return true;
         });
 
-        update_background_color();
-        this.style_updated.connect(style_changed);
-    }
-
-    private void update_background_color() {
-        TextView tmp = new TextView();
-        this.override_background_color(0, tmp.get_style_context().get_background_color(0));
-        main.override_background_color(0, tmp.get_style_context().get_background_color(0));
-    }
-
-    private void style_changed() {
-        lock (main) {
-            this.style_updated.disconnect(style_changed);
-            update_background_color();
-            this.style_updated.connect(style_changed);
-        }
+        Util.force_base_background(this);
     }
 
     public void initialize_for_conversation(Conversation? conversation) {
