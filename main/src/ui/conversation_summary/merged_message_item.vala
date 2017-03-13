@@ -47,7 +47,7 @@ public class MergedMessageItem : Grid {
     }
 
     private void update_display_style() {
-        RGBA bg = get_style_context().get_background_color(StateFlags.NORMAL);
+        RGBA bg = message_text_view.get_style_context().get_background_color(StateFlags.NORMAL);
         bool dark_theme = (bg.red < 0.5 && bg.green < 0.5 && bg.blue < 0.5);
 
         string display_name = Util.get_message_display_name(stream_interactor, messages[0], conversation.account);
@@ -114,6 +114,8 @@ public class MergedMessageItem : Grid {
             int start;
             int end;
             match_info.fetch_pos(0, out start, out end);
+            start = text[0:start].char_count();
+            end = text[0:end].char_count();
             TextIter start_iter;
             TextIter end_iter;
             message_text_view.buffer.get_iter_at_offset(out start_iter, absolute_start + start);
