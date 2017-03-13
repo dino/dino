@@ -80,11 +80,15 @@ int signal_vala_random_generator(uint8_t *data, size_t len, void *user_data)
 
 int signal_vala_hmac_sha256_init(void **hmac_context, const uint8_t *key, size_t key_len, void *user_data)
 {
+#if OPENSSL_VERSION_NUMBER >= 0x10100001L
+    HMAC_CTX *ctx = HMAC_CTX_new();
+#else
     HMAC_CTX *ctx = malloc(sizeof(HMAC_CTX));
     if(!ctx) {
         return SG_ERR_NOMEM;
     }
     HMAC_CTX_init(ctx);
+#endif
     *hmac_context = ctx;
 
     if(HMAC_Init_ex(ctx, key, key_len, EVP_sha256(), 0) != 1) {
@@ -129,8 +133,12 @@ void signal_vala_hmac_sha256_cleanup(void *hmac_context, void *user_data)
 {
     if(hmac_context) {
         HMAC_CTX *ctx = hmac_context;
+#if OPENSSL_VERSION_NUMBER >= 0x10100001L
+        HMAC_CTX_free(ctx);
+#else
         HMAC_CTX_cleanup(ctx);
         free(ctx);
+#endif
     }
 }
 
@@ -281,8 +289,7 @@ int signal_vala_encrypt(signal_buffer **output,
         return SG_ERR_UNKNOWN;
     }
 
-    EVP_CIPHER_CTX ctx;
-    EVP_CIPHER_CTX_init(&ctx);
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
 
     int buf_extra = 0;
 
@@ -290,28 +297,28 @@ int signal_vala_encrypt(signal_buffer **output,
         // In GCM mode we use the last 16 bytes as auth tag
         buf_extra += 16;
 
-        result = EVP_EncryptInit_ex(&ctx, evp_cipher, NULL, NULL, NULL);
+        result = EVP_EncryptInit_ex(ctx, evp_cipher, NULL, NULL, NULL);
         if(!result) {
             fprintf(stderr, "cannot initialize cipher\n");
             result = SG_ERR_UNKNOWN;
             goto complete;
         }
 
-        result = EVP_CIPHER_CTX_ctrl(&ctx, EVP_CTRL_GCM_SET_IVLEN, 16, NULL);
+        result = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 16, NULL);
         if(!result) {
             fprintf(stderr, "cannot set iv size\n");
             result = SG_ERR_UNKNOWN;
             goto complete;
         }
 
-        result = EVP_EncryptInit_ex(&ctx, NULL, NULL, key, iv);
+        result = EVP_EncryptInit_ex(ctx, NULL, NULL, key, iv);
         if(!result) {
             fprintf(stderr, "cannot set key/iv\n");
             result = SG_ERR_UNKNOWN;
             goto complete;
         }
     } else {
-        result = EVP_EncryptInit_ex(&ctx, evp_cipher, 0, key, iv);
+        result = EVP_EncryptInit_ex(ctx, evp_cipher, 0, key, iv);
         if(!result) {
             fprintf(stderr, "cannot initialize cipher\n");
             result = SG_ERR_UNKNOWN;
@@ -320,7 +327,7 @@ int signal_vala_encrypt(signal_buffer **output,
     }
 
     if(cipher == SG_CIPHER_AES_CTR_NOPADDING || cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        result = EVP_CIPHER_CTX_set_padding(&ctx, 0);
+        result = EVP_CIPHER_CTX_set_padding(ctx, 0);
         if(!result) {
             fprintf(stderr, "cannot set padding\n");
             result = SG_ERR_UNKNOWN;
@@ -336,7 +343,7 @@ int signal_vala_encrypt(signal_buffer **output,
     }
 
     int out_len = 0;
-    result = EVP_EncryptUpdate(&ctx,
+    result = EVP_EncryptUpdate(ctx,
         out_buf, &out_len, plaintext, plaintext_len);
     if(!result) {
         fprintf(stderr, "cannot encrypt plaintext\n");
@@ -345,7 +352,7 @@ int signal_vala_encrypt(signal_buffer **output,
     }
 
     int final_len = 0;
-    result = EVP_EncryptFinal_ex(&ctx, out_buf + out_len, &final_len);
+    result = EVP_EncryptFinal_ex(ctx, out_buf + out_len, &final_len);
     if(!result) {
         fprintf(stderr, "cannot finish encrypting plaintext\n");
         result = SG_ERR_UNKNOWN;
@@ -353,7 +360,7 @@ int signal_vala_encrypt(signal_buffer **output,
     }
 
     if(cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        result = EVP_CIPHER_CTX_ctrl(&ctx, EVP_CTRL_GCM_GET_TAG, 16, out_buf + (out_len + final_len));
+        result = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, out_buf + (out_len + final_len));
         if(!result) {
             fprintf(stderr, "cannot get tag\n");
             result = SG_ERR_UNKNOWN;
@@ -364,7 +371,7 @@ int signal_vala_encrypt(signal_buffer **output,
     *output = signal_buffer_create(out_buf, out_len + final_len + buf_extra);
 
 complete:
-    EVP_CIPHER_CTX_cleanup(&ctx);
+    EVP_CIPHER_CTX_free(ctx);
     if(out_buf) {
         free(out_buf);
     }
@@ -397,35 +404,34 @@ int signal_vala_decrypt(signal_buffer **output,
         return SG_ERR_UNKNOWN;
     }
 
-    EVP_CIPHER_CTX ctx;
-    EVP_CIPHER_CTX_init(&ctx);
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
 
     if(cipher == SG_CIPHER_AES_GCM_NOPADDING) {
         // In GCM mode we use the last 16 bytes as auth tag
         ciphertext_len -= 16;
 
-        result = EVP_DecryptInit_ex(&ctx, evp_cipher, NULL, NULL, NULL);
+        result = EVP_DecryptInit_ex(ctx, evp_cipher, NULL, NULL, NULL);
         if(!result) {
             fprintf(stderr, "cannot initialize cipher\n");
             result = SG_ERR_UNKNOWN;
             goto complete;
         }
 
-        result = EVP_CIPHER_CTX_ctrl(&ctx, EVP_CTRL_GCM_SET_IVLEN, 16, NULL);
+        result = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 16, NULL);
         if(!result) {
             fprintf(stderr, "cannot set iv size\n");
             result = SG_ERR_UNKNOWN;
             goto complete;
         }
 
-        result = EVP_DecryptInit_ex(&ctx, NULL, NULL, key, iv);
+        result = EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv);
         if(!result) {
             fprintf(stderr, "cannot set key/iv\n");
             result = SG_ERR_UNKNOWN;
             goto complete;
         }
     } else {
-        result = EVP_DecryptInit_ex(&ctx, evp_cipher, 0, key, iv);
+        result = EVP_DecryptInit_ex(ctx, evp_cipher, 0, key, iv);
         if(!result) {
             fprintf(stderr, "cannot initialize cipher\n");
             result = SG_ERR_UNKNOWN;
@@ -434,7 +440,7 @@ int signal_vala_decrypt(signal_buffer **output,
     }
 
     if(cipher == SG_CIPHER_AES_CTR_NOPADDING || cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        result = EVP_CIPHER_CTX_set_padding(&ctx, 0);
+        result = EVP_CIPHER_CTX_set_padding(ctx, 0);
         if(!result) {
             fprintf(stderr, "cannot set padding\n");
             result = SG_ERR_UNKNOWN;
@@ -450,7 +456,7 @@ int signal_vala_decrypt(signal_buffer **output,
     }
 
     int out_len = 0;
-    result = EVP_DecryptUpdate(&ctx,
+    result = EVP_DecryptUpdate(ctx,
         out_buf, &out_len, ciphertext, ciphertext_len);
     if(!result) {
         fprintf(stderr, "cannot decrypt ciphertext\n");
@@ -459,7 +465,7 @@ int signal_vala_decrypt(signal_buffer **output,
     }
 
     if(cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        result = EVP_CIPHER_CTX_ctrl(&ctx, EVP_CTRL_GCM_SET_TAG, 16, (uint8_t*)ciphertext + ciphertext_len);
+        result = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, 16, (uint8_t*)ciphertext + ciphertext_len);
         if(!result) {
             fprintf(stderr, "cannot set tag\n");
             result = SG_ERR_UNKNOWN;
@@ -468,7 +474,7 @@ int signal_vala_decrypt(signal_buffer **output,
     }
 
     int final_len = 0;
-    result = EVP_DecryptFinal_ex(&ctx, out_buf + out_len, &final_len);
+    result = EVP_DecryptFinal_ex(ctx, out_buf + out_len, &final_len);
     if(!result) {
         fprintf(stderr, "cannot finish decrypting ciphertexts\n");
         result = SG_ERR_UNKNOWN;
@@ -478,7 +484,7 @@ int signal_vala_decrypt(signal_buffer **output,
     *output = signal_buffer_create(out_buf, out_len + final_len);
 
 complete:
-    EVP_CIPHER_CTX_cleanup(&ctx);
+    EVP_CIPHER_CTX_free(ctx);
     if(out_buf) {
         free(out_buf);
     }
