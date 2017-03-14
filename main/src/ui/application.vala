@@ -16,6 +16,7 @@ public class Dino.Ui.Application : Dino.Application {
         notifications = new Notifications(stream_interaction);
         notifications.start();
         Environment.set_application_name("Dino");
+        IconTheme.get_default().add_resource_path("/org/dino-im/icons");
     }
 
     public override void activate() {

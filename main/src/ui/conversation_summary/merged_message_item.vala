@@ -94,10 +94,10 @@ public class MergedMessageItem : Grid {
         }
         if (all_read) {
             received_image.visible = true;
-            received_image.set_from_resource("/org/dino-im/img/double_tick.svg");
+            received_image.set_from_icon_name("dino-double-tick-symbolic", IconSize.SMALL_TOOLBAR);
         } else if (all_received) {
             received_image.visible = true;
-            received_image.set_from_resource("/org/dino-im/img/tick.svg");
+            received_image.set_from_icon_name("dino-tick-symbolic", IconSize.SMALL_TOOLBAR);
         } else if (received_image.visible) {
             received_image.set_from_icon_name("image-loading-symbolic", IconSize.SMALL_TOOLBAR);
         }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26.458mm" height="26.458mm" version="1.1" viewBox="0 0 93.750737 93.750737" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-62.86 -684.33)">
+  <circle cx="109.74" cy="731.2" r="46.875" style="fill-rule:evenodd;fill:#81c784;stroke-width:.93751"/>
+  <path d="m83.485 740.58c13.874 23.704 39.908 24.288 52.5 0" style="fill-rule:evenodd;fill:#81c784;stroke-linecap:round;stroke-width:11.25;stroke:#fff"/>
+  <ellipse cx="88.641" cy="713.86" rx="5.3125" ry="5.3125" style="fill-rule:evenodd;fill:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:5.3125;stroke:#fff"/>
+  <ellipse cx="130.83" cy="713.86" rx="5.3125" ry="5.3125" style="fill-rule:evenodd;fill:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:5.3125;stroke:#fff"/>
+ </g>
+</svg>

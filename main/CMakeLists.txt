@@ -15,12 +15,12 @@ set(MAIN_PACKAGES
 pkg_check_modules(MAIN REQUIRED ${MAIN_PACKAGES})
 
 set(RESOURCE_LIST
-    img/double_tick.svg
-    img/status_away.svg
-    img/status_chat.svg
-    img/status_dnd.svg
-    img/status_online.svg
-    img/tick.svg
+    icons/dino-double-tick-symbolic.svg
+    icons/dino-status-away.svg
+    icons/dino-status-chat.svg
+    icons/dino-status-dnd.svg
+    icons/dino-status-online.svg
+    icons/dino-tick-symbolic.svg
 
     add_conversation/add_contact_dialog.ui
     add_conversation/add_groupchat_dialog.ui

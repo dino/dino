@@ -61,18 +61,15 @@ public class ChatRow : ConversationRow {
 
                 Show show = PresenceManager.get_instance(stream_interactor).get_last_show(full_jids[i], conversation.account);
                 Image image = new Image();
-                Pixbuf pixbuf;
-                int icon_size = 13 * image.scale_factor;
                 if (show.as == Show.AWAY) {
-                    pixbuf = new Pixbuf.from_resource_at_scale("/org/dino-im/img/status_away.svg", icon_size, icon_size, true);
+                    image.set_from_icon_name("dino-status-away", IconSize.SMALL_TOOLBAR);
                 } else if (show.as == Show.XA || show.as == Show.DND) {
-                    pixbuf = new Pixbuf.from_resource_at_scale("/org/dino-im/img/status_dnd.svg", icon_size, icon_size, true);
+                    image.set_from_icon_name("dino-status-dnd", IconSize.SMALL_TOOLBAR);
                 } else if (show.as == Show.CHAT) {
-                    pixbuf = new Pixbuf.from_resource_at_scale("/org/dino-im/img/status_chat.svg", icon_size, icon_size, true);
+                    image.set_from_icon_name("dino-status-chat", IconSize.SMALL_TOOLBAR);
                 } else {
-                    pixbuf = new Pixbuf.from_resource_at_scale("/org/dino-im/img/status_online.svg", icon_size, icon_size, true);
+                    image.set_from_icon_name("dino-status-online", IconSize.SMALL_TOOLBAR);
                 }
-                Util.image_set_from_scaled_pixbuf(image, pixbuf);
                 box.add(image);
 
                 Label resource = new Label(full_jids[i].resourcepart);
