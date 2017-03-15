@@ -71,7 +71,9 @@ public class MergedMessageItem : Grid {
         message_text_view.buffer.insert(ref end, message.body, -1);
         format_suffix_urls(message.body);
         messages.add(message);
-        message.notify["marked"].connect_after(update_received); // TODO other thread? not main? css error? gtk main?
+        message.notify["marked"].connect_after(() => {
+            Idle.add(() => { update_received(); return false; });
+        });
         update_received();
     }
 
@@ -81,9 +83,10 @@ public class MergedMessageItem : Grid {
         foreach (Message message in messages) {
             if (message.marked == Message.Marked.WONTSEND) {
                 received_image.visible = true;
-                Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-                Gtk.IconInfo? icon_info = icon_theme.lookup_icon("dialog-warning-symbolic", IconSize.SMALL_TOOLBAR, 0);
-                received_image.set_from_pixbuf(icon_info.load_symbolic({1,0,0,1}));
+                received_image.set_from_icon_name("dialog-warning-symbolic", IconSize.SMALL_TOOLBAR);
+                Util.force_error_color(received_image);
+                Util.force_error_color(encryption_image);
+                Util.force_error_color(time_label);
                 return;
             } else if (message.marked != Message.Marked.READ) {
                 all_read = false;

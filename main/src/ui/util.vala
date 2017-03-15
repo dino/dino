@@ -77,19 +77,33 @@ public class Util : Object {
     }
 
     private const string force_background_css = "%s { background-color: %s; }";
+    private const string force_color_css = "%s { color: %s; }";
 
-    public static void force_background(Gtk.Widget widget, string color, string selector = "*") {
+
+    private static void force_css(Gtk.Widget widget, string css) {
         var p = new Gtk.CssProvider();
         try {
-            p.load_from_data(force_background_css.printf(selector, color));
+            p.load_from_data(css);
             widget.get_style_context().add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         } catch (GLib.Error err) {
             // handle err
         }
     }
 
+    public static void force_background(Gtk.Widget widget, string color, string selector = "*") {
+        force_css(widget, force_background_css.printf(selector, color));
+    }
+
     public static void force_base_background(Gtk.Widget widget, string selector = "*") {
         force_background(widget, "@theme_base_color", selector);
+    }
+
+    public static void force_color(Gtk.Widget widget, string color, string selector = "*") {
+        force_css(widget, force_color_css.printf(selector, color));
+    }
+
+    public static void force_error_color(Gtk.Widget widget, string selector = "*") {
+        force_color(widget, "@error_color", selector);
     }
 }
 
