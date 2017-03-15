@@ -105,6 +105,11 @@ public class Util : Object {
     public static void force_error_color(Gtk.Widget widget, string selector = "*") {
         force_color(widget, "@error_color", selector);
     }
+
+    public static bool is_dark_theme(Gtk.Widget widget) {
+        Gdk.RGBA bg = widget.get_style_context().get_background_color(StateFlags.NORMAL);
+        return (bg.red < 0.5 && bg.green < 0.5 && bg.blue < 0.5);
+    }
 }
 
 }

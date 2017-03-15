@@ -22,7 +22,7 @@ private class StatusItem : Grid {
         attach(image, 0, 0, 1, 1);
         attach(label, 1, 0, 1, 1);
         string display_name = Util.get_display_name(stream_interactor, conversation.counterpart, conversation.account);
-        label.set_markup(@"<span foreground=\"#B1B1B1\"> $(escape_text(display_name)) $text </span>");
+        label.set_markup(@"<span foreground=\"#B1B1B1\">$(escape_text(display_name)) $text</span>");
         show_all();
     }
 }

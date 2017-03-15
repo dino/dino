@@ -80,8 +80,11 @@ SOURCES
     src/ui/conversation_selector/groupchat_row.vala
     src/ui/conversation_selector/list.vala
     src/ui/conversation_selector/view.vala
+    src/ui/conversation_summary/conversation_item.vala
     src/ui/conversation_summary/merged_message_item.vala
-    src/ui/conversation_summary/merged_status_item.vala
+    src/ui/conversation_summary/message_item.vala
+    src/ui/conversation_summary/message_textview.vala
+    src/ui/conversation_summary/slashme_item.vala
     src/ui/conversation_summary/status_item.vala
     src/ui/conversation_summary/view.vala
     src/ui/conversation_titlebar.vala

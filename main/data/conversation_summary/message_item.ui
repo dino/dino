@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiConversationSummaryMergedMessageItem">
+    <template class="DinoUiConversationSummaryMessageItem">
         <property name="hexpand">True</property>
         <property name="column-spacing">7</property>
         <property name="orientation">horizontal</property>
@@ -22,22 +22,9 @@
             </packing>
         </child>
         <child>
-            <object class="GtkLabel" id="name_label">
-                <property name="xalign">0</property>
-                <property name="visible">True</property>
-            </object>
-            <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
-            </packing>
-        </child>
-        <child>
             <object class="GtkLabel" id="time_label">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="yalign">0</property>
                 <style>
                     <class name="dim-label"/>
                 </style>
@@ -76,20 +63,6 @@
                 <property name="left_attach">4</property>
                 <property name="top_attach">0</property>
                 <property name="width">1</property>
-                <property name="height">1</property>
-            </packing>
-        </child>
-        <child>
-            <object class="GtkTextView" id="message_text_view">
-                <property name="editable">False</property>
-                <property name="hexpand">True</property>
-                <property name="wrap-mode">GTK_WRAP_WORD_CHAR</property>
-                <property name="visible">True</property>
-            </object>
-            <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
-                <property name="width">2</property>
                 <property name="height">1</property>
             </packing>
         </child>

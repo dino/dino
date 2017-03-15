@@ -11,13 +11,13 @@ namespace Dino.Ui.ConversationSummary {
 public class View : Box {
 
     public Conversation? conversation { get; private set; }
-    public HashMap<Entities.Message, MergedMessageItem> message_items = new HashMap<Entities.Message, MergedMessageItem>(Entities.Message.hash_func, Entities.Message.equals_func);
+    public HashMap<Entities.Message, ConversationItem> conversation_items = new HashMap<Entities.Message, ConversationItem>(Entities.Message.hash_func, Entities.Message.equals_func);
 
     [GtkChild] private ScrolledWindow scrolled;
     [GtkChild] private Box main;
 
     private StreamInteractor stream_interactor;
-    private MergedMessageItem? last_message_item;
+    private ConversationItem? last_conversation_item;
     private StatusItem typing_status;
     private Entities.Message? earliest_message;
     double? was_value;
@@ -44,8 +44,9 @@ public class View : Box {
             Idle.add(() => { on_show_received(show, jid, account); return false; });
         });
         Timeout.add_seconds(60, () => {
-            foreach (MergedMessageItem message_item in message_items.values) {
-                message_item.update();
+            foreach (ConversationItem conversation_item in conversation_items.values) {
+                MessageItem message_item = conversation_item as MessageItem;
+                if (message_item != null) message_item.update();
             }
             return true;
         });
@@ -56,10 +57,10 @@ public class View : Box {
     public void initialize_for_conversation(Conversation? conversation) {
         this.conversation = conversation;
         clear();
-        message_items.clear();
+        conversation_items.clear();
         was_upper = null;
         was_page_size = null;
-        last_message_item = null;
+        last_conversation_item = null;
 
         ArrayList<Object> objects = new ArrayList<Object>();
         Gee.List<Entities.Message>? messages = MessageManager.get_instance(stream_interactor).get_messages(conversation);
@@ -158,13 +159,11 @@ public class View : Box {
             MergedMessageItem? current_item = null;
             int items_added = 0;
             for (int i = 0; i < messages.size; i++) {
-                if (current_item != null && should_merge_message(current_item, messages[i])) {
-                    current_item.add_message(messages[i]);
-                } else {
+                if (current_item == null || !current_item.merge(messages[i])) {
                     current_item = new MergedMessageItem(stream_interactor, conversation, messages[i]);
                     force_alloc_width(current_item, main.get_allocated_width());
                     main.add(current_item);
-                    message_items[messages[i]] = current_item;
+                    conversation_items[messages[i]] = current_item;
                     main.reorder_child(current_item, items_added);
                     items_added++;
                 }
@@ -176,33 +175,23 @@ public class View : Box {
 
     private void show_message(Entities.Message message, Conversation conversation, bool animate = false) {
         if (this.conversation != null && this.conversation.equals(conversation)) {
-            if (should_merge_message(last_message_item, message)) {
-                last_message_item.add_message(message);
-            } else {
-                MergedMessageItem message_item = new MergedMessageItem(stream_interactor, conversation, message);
+            if (last_conversation_item == null || !last_conversation_item.merge(message)) {
+                ConversationItem conversation_item = ConversationItem.create_for_message(stream_interactor, conversation, message);
                 if (animate) {
                     Revealer revealer = new Revealer() {transition_duration = 200, transition_type = RevealerTransitionType.SLIDE_UP, visible = true};
-                    revealer.add(message_item);
+                    revealer.add(conversation_item);
                     force_alloc_width(revealer, main.get_allocated_width());
                     main.add(revealer);
                     revealer.set_reveal_child(true);
                 } else {
-                    force_alloc_width(message_item, main.get_allocated_width());
-                    main.add(message_item);
+                    force_alloc_width(conversation_item, main.get_allocated_width());
+                    main.add(conversation_item);
                 }
-                last_message_item = message_item;
+                last_conversation_item = conversation_item;
             }
-            message_items[message] = last_message_item;
+            conversation_items[message] = last_conversation_item;
             update_chat_state();
         }
-    }
-
-    private bool should_merge_message(MergedMessageItem? message_item, Entities.Message message) {
-        return message_item != null &&
-            message_item.from.equals(message.from) &&
-            message_item.messages.get(0).encryption == message.encryption &&
-            message.time.difference(message_item.initial_time) < TimeSpan.MINUTE &&
-            (message_item.messages.get(0).marked == Entities.Message.Marked.WONTSEND) == (message.marked == Entities.Message.Marked.WONTSEND);
     }
 
     private void force_alloc_width(Widget widget, int width) {
