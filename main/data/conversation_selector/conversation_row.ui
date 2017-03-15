@@ -2,9 +2,6 @@
 <interface>
     <template class="DinoUiConversationSelectorConversationRow">
         <property name="visible">True</property>
-        <style>
-            <class name="no_padding"/>
-        </style>
         <child>
             <object class="GtkRevealer" id="main_revealer">
                 <property name="transition-type">slide-down</property>

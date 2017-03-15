@@ -35,7 +35,7 @@ public class MessageTextView : TextView {
     }
 
     private void format_suffix_urls(string text) {
-        int absolute_start = buffer.text.length - text.length;
+        int absolute_start = buffer.text.char_count() - text.char_count();
 
         Regex url_regex = new Regex("""(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))""");
         MatchInfo match_info;

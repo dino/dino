@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino.Ui.ConversationSelector {
 
 [GtkTemplate (ui = "/org/dino-im/conversation_selector/view.ui")]
-public class View : Grid {
+public class View : Box {
     public List conversation_list;
 
     [GtkChild] public SearchEntry search_entry;

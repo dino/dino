@@ -21,12 +21,11 @@
                         <property name="visible">True</property>
                         <child>
                             <object class="GtkLabel" id="name_label">
+                                <property name="max_width_chars">1</property>
+                                <property name="ellipsize">end</property>
                                 <property name="expand">True</property>
                                 <property name="xalign">0</property>
                                 <property name="visible">True</property>
-                                <style>
-                                    <class name="name"/>
-                                </style>
                             </object>
                             <packing>
                                 <property name="left_attach">0</property>

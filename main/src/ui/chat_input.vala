@@ -8,14 +8,16 @@ using Xmpp;
 namespace Dino.Ui {
 
 [GtkTemplate (ui = "/org/dino-im/chat_input.ui")]
-public class ChatInput : Grid {
+public class ChatInput : Box {
 
+    [GtkChild] private ScrolledWindow scrolled;
     [GtkChild] private TextView text_input;
 
     private Conversation? conversation;
     private StreamInteractor stream_interactor;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
     private static HashMap<string, string> smiley_translations = new HashMap<string, string>();
+    private int vscrollbar_min_height;
 
     static construct {
         smiley_translations[":)"] = "🙂";
@@ -34,6 +36,8 @@ public class ChatInput : Grid {
 
     public ChatInput(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
+        scrolled.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
+        scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
     }
 
     public void initialize_for_conversation(Conversation conversation) {
@@ -91,6 +95,13 @@ public class ChatInput : Grid {
             return true;
         }
         return false;
+    }
+
+    private void on_upper_notify() {
+        scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size;
+
+        // hack for vscrollbar not requiring space and making textview higher //TODO doesn't resize immediately
+        scrolled.get_vscrollbar().visible = (scrolled.vadjustment.upper > scrolled.max_content_height - 2 * vscrollbar_min_height);
     }
 
     private void check_convert_smiley() {

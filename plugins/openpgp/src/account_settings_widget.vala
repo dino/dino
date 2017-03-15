@@ -80,7 +80,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
         list_store.set(iter, 0, build_markup_string("Key publishing disabled", "Select key"), 1, "");
         for (int i = 0; i < keys.size; i++) {
             list_store.append(out iter);
-            list_store.set(iter, 0, build_markup_string(keys[i].uids[0].uid, keys[i].fpr[0:16]));
+            list_store.set(iter, 0, build_markup_string(keys[i].uids[0].uid, "0x" + keys[i].fpr[0:16]));
             list_store.set(iter, 1, keys[i].fpr);
             if (keys[i].fpr == plugin.db.get_account_key(current_account)) {
                 set_label_active(iter, i + 1);
