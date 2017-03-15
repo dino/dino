@@ -18,7 +18,7 @@ SOURCES
     src/account_settings_widget.vala
     src/bundle.vala
     src/database.vala
-    src/encrypt_status.vala
+    src/encrypt_state.vala
     src/encryption_list_entry.vala
     src/manager.vala
     src/message_flag.vala

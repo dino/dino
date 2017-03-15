@@ -116,6 +116,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
             btn.visible = true;
             encryption_box.pack_end(btn, false);
         }
+        encryption_button.clicked.connect(update_encryption_menu_state);
         encryption_button.set_use_popover(true);
         encryption_button.set_popover(menu);
         encryption_button.set_image(new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON));

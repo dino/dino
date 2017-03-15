@@ -130,7 +130,8 @@ public class MucManager : StreamInteractionModule, Object {
     public string? get_nick(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            return Xep.Muc.Flag.get_flag(stream).get_muc_nick(jid.bare_jid.to_string());
+            Xep.Muc.Flag? flag = Xep.Muc.Flag.get_flag(stream);
+            if (flag != null) return flag.get_muc_nick(jid.bare_jid.to_string());
         }
         return null;
     }

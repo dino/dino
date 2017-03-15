@@ -18,24 +18,28 @@ public class StreamModule : XmppStreamModule {
     public static ModuleIdentity<StreamModule> IDENTITY = new ModuleIdentity<StreamModule>(NS_URI, ID);
 
     private Store store;
-    private bool device_list_loading = false;
-    private bool device_list_modified = false;
+    private ConcurrentSet<string> active_bundle_requests = new ConcurrentSet<string>();
+    private ConcurrentSet<string> active_devicelist_requests = new ConcurrentSet<string>();
     private Map<string, ArrayList<int32>> device_lists = new HashMap<string, ArrayList<int32>>();
     private Map<string, ArrayList<int32>> ignored_devices = new HashMap<string, ArrayList<int32>>();
 
     public signal void store_created(Store store);
-    public signal void device_list_loaded();
+    public signal void device_list_loaded(string jid);
     public signal void session_started(string jid, int device_id);
+    public signal void session_start_failed(string jid, int device_id);
 
-    public EncryptStatus encrypt(Message.Stanza message, string self_bare_jid) {
-        EncryptStatus status = new EncryptStatus();
+    public EncryptState encrypt(Message.Stanza message, string self_bare_jid) {
+        EncryptState status = new EncryptState();
         if (Plugin.context == null) return status;
         try {
             string name = get_bare_jid(message.to);
-            if (device_lists.get(name) == null || device_lists.get(self_bare_jid) == null) return status;
-            status.other_devices = device_lists.get(name).size;
+            if (device_lists.get(self_bare_jid) == null) return status;
+            status.own_list = true;
             status.own_devices = device_lists.get(self_bare_jid).size;
-            if (status.other_devices == 0) return status;
+            if (device_lists.get(name) == null) return status;
+            status.other_list = true;
+            status.other_devices = device_lists.get(name).size;
+            if (status.own_devices == 0 || status.other_devices == 0) return status;
 
             uint8[] key = new uint8[16];
             Plugin.context.randomize(key);
@@ -93,7 +97,7 @@ public class StreamModule : XmppStreamModule {
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;
         } catch (Error e) {
-            print(@"Signal error while encrypting message: $(e.message)\n");
+            if (Plugin.DEBUG) print(@"OMEMO: Signal error while encrypting message: $(e.message)\n");
         }
         return status;
     }
@@ -163,7 +167,7 @@ public class StreamModule : XmppStreamModule {
                         flag.decrypted = true;
                     }
                 } catch (Error e) {
-                    print(@"Signal error while decrypting message: $(e.message)\n");
+                    if (Plugin.DEBUG) print(@"OMEMO: Signal error while decrypting message: $(e.message)\n");
                 }
             }
         }
@@ -177,7 +181,10 @@ public class StreamModule : XmppStreamModule {
     }
 
     public void request_user_devicelist(XmppStream stream, string jid) {
-        stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node, obj) => (obj as StreamModule).on_devicelist(stream, jid, id ?? "", node), this);
+        if (active_devicelist_requests.add(jid)) {
+            if (Plugin.DEBUG) print(@"OMEMO: requesting device list for $jid\n");
+            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node, obj) => (obj as StreamModule).on_devicelist(stream, jid, id ?? "", node), this);
+        }
     }
 
     public void on_devicelist(XmppStream stream, string jid, string id, StanzaNode? node_) {
@@ -185,28 +192,6 @@ public class StreamModule : XmppStreamModule {
         if (jid == get_bare_jid(Bind.Flag.get_flag(stream).my_jid) && store.local_registration_id != 0) {
             if (node == null) {
                 node = new StanzaNode.build("list", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("device", NS_URI));
-            }
-
-            lock (device_list_loading) {
-                if (!device_list_loading) {
-                    device_list_loading = true;
-                    GLib.Timeout.add_seconds(3, () => {
-                        bool cont = false;
-                        lock (device_lists) {
-                            if (device_list_modified) {
-                                cont = true;
-                                device_list_modified = false;
-                            }
-                        }
-                        if (!cont) {
-                            lock (device_list_loading) {
-                                device_list_loading = false;
-                                device_list_loaded();
-                            }
-                        }
-                        return cont;
-                    });
-                }
             }
 
             bool am_on_devicelist = false;
@@ -217,7 +202,7 @@ public class StreamModule : XmppStreamModule {
                 }
             }
             if (!am_on_devicelist) {
-                print(@"Not on device list, adding id\n");
+                if (Plugin.DEBUG) print(@"OMEMO: Not on device list, adding id\n");
                 node.put_node(new StanzaNode.build("device", NS_URI).put_attribute("id", store.local_registration_id.to_string()));
                 stream.get_module(Pubsub.Module.IDENTITY).publish(stream, jid, NODE_DEVICELIST, NODE_DEVICELIST, id, node);
             } else {
@@ -225,12 +210,13 @@ public class StreamModule : XmppStreamModule {
             }
         }
         lock(device_lists) {
-            device_list_modified = true;
             device_lists[jid] = new ArrayList<int32>();
             foreach (StanzaNode device_node in node.get_subnodes("device")) {
                 device_lists[jid].add(device_node.get_attribute_int("id"));
             }
         }
+        active_devicelist_requests.remove(jid);
+        device_list_loaded(jid);
     }
 
     public void start_sessions_with(XmppStream stream, string bare_jid) {
@@ -256,8 +242,10 @@ public class StreamModule : XmppStreamModule {
     }
 
     public void start_session_with(XmppStream stream, string bare_jid, int device_id) {
-        print(@"Asking for bundle from $bare_jid/$device_id\n");
-        stream.get_module(Pubsub.Module.IDENTITY).request(stream, bare_jid, @"$NODE_BUNDLES:$device_id", on_other_bundle_result, Tuple.create(store, device_id));
+        if (active_bundle_requests.add(bare_jid + @":$device_id")) {
+            if (Plugin.DEBUG) print(@"OMEMO: Asking for bundle from $bare_jid:$device_id\n");
+            stream.get_module(Pubsub.Module.IDENTITY).request(stream, bare_jid, @"$NODE_BUNDLES:$device_id", on_other_bundle_result, Tuple.create(store, device_id));
+        }
     }
 
     public bool is_known_address(string name) {
@@ -272,6 +260,7 @@ public class StreamModule : XmppStreamModule {
             }
             ignored_devices[jid].add(device_id);
         }
+        session_start_failed(jid, device_id);
     }
 
     public bool is_ignored_device(string jid, int32 device_id) {
@@ -314,20 +303,23 @@ public class StreamModule : XmppStreamModule {
                     }
                     SessionBuilder builder = store.create_session_builder(address);
                     builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
+                    stream.get_module(IDENTITY).session_started(jid, device_id);
                 } catch (Error e) {
                     fail = true;
                 }
                 address.device_id = 0; // TODO: Hack to have address obj live longer
-                stream.get_module(IDENTITY).session_started(jid, device_id);
             }
         }
         if (fail) {
             stream.get_module(IDENTITY).ignore_device(jid, device_id);
         }
+        stream.get_module(IDENTITY).active_bundle_requests.remove(jid + @":$device_id");
     }
 
     public void publish_bundles_if_needed(XmppStream stream, string jid) {
-        stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, @"$NODE_BUNDLES:$(store.local_registration_id)", on_self_bundle_result, store);
+        if (active_bundle_requests.add(jid + @":$(store.local_registration_id)")) {
+            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, @"$NODE_BUNDLES:$(store.local_registration_id)", on_self_bundle_result, store);
+        }
     }
 
     private static void on_self_bundle_result(XmppStream stream, string jid, string? id, StanzaNode? node, Object? storage) {
@@ -394,8 +386,9 @@ public class StreamModule : XmppStreamModule {
                 publish_bundles(stream, signed_pre_key_record, identity_key_pair, pre_key_records, (int32) store.local_registration_id);
             }
         } catch (Error e) {
-            print(@"Unexpected error while publishing bundle: $(e.message)\n");
+            if (Plugin.DEBUG) print(@"Unexpected error while publishing bundle: $(e.message)\n");
         }
+        stream.get_module(IDENTITY).active_bundle_requests.remove(jid + @":$(store.local_registration_id)");
     }
 
     public static void publish_bundles(XmppStream stream, SignedPreKeyRecord signed_pre_key_record, IdentityKeyPair identity_key_pair, Set<PreKeyRecord> pre_key_records, int32 device_id) throws Error {

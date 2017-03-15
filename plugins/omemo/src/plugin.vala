@@ -1,6 +1,7 @@
 namespace Dino.Plugins.Omemo {
 
 public class Plugin : RootInterface, Object {
+    public const bool DEBUG = false;
     public static Signal.Context context;
 
     public Dino.Application app;
@@ -15,7 +16,7 @@ public class Plugin : RootInterface, Object {
         }
 
         try {
-            context = new Signal.Context(false);
+            context = new Signal.Context(DEBUG);
             this.app = app;
             this.db = new Database(Path.build_filename(Application.get_storage_dir(), "omemo.db"));
             this.list_entry = new EncryptionListEntry(this);
