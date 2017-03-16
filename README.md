@@ -1,25 +1,33 @@
-#Dino
+Dino
+====
+
 ![screenshots](http://i.imgur.com/xIKPEFF.png)
 
-##Install
+Install
+-------
 
-###Dependencies
-    glib2
-    gtk3 (≥ 3.22)
-    gpgme (For the OpenPGP plugin)
-    libgee-0.8 (≥ 0.10)
-    libnotify
-    openssl (For the OMEMO plugin)
-    sqlite3
+**Dependencies**
+
+* GLib (≥ 2.38)
+* GTK (≥ 3.22)
+* GPGME (For the OpenPGP plugin)
+* libgee-0.8 (≥ 0.10)
+* libnotify
+* OpenSSL (For the OMEMO plugin)
+* SQLite3
+
+Build
+-----
 
 **Build-time dependencies**
 
-    cmake
-    gcc
-    ninja(-build) (recommend)
-    valac (≥ 0.30)
+* CMake
+* C compiler
+* ninja(-build) (recommend)
+* valac (≥ 0.30)
 
-###Build
+**Instructions**
+
     ./configure
     make
     build/dino
