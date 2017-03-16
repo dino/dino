@@ -38,23 +38,21 @@ public class ChatInput : Box {
         this.stream_interactor = stream_interactor;
         scrolled.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
+        text_input.key_press_event.connect(on_text_input_key_press);
+        text_input.buffer.changed.connect(on_text_input_changed);
     }
 
     public void initialize_for_conversation(Conversation conversation) {
-        if (this.conversation != null) {
-            if (text_input.buffer.text != "") {
-                entry_cache[this.conversation] = text_input.buffer.text;
-            } else {
-                entry_cache.unset(this.conversation);
-            }
-        }
+        if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
         this.conversation = conversation;
+
+        text_input.buffer.changed.disconnect(on_text_input_changed);
         text_input.buffer.text = "";
         if (entry_cache.has_key(conversation)) {
             text_input.buffer.text = entry_cache[conversation];
         }
-        text_input.key_press_event.connect(on_text_input_key_press);
-        text_input.key_release_event.connect(on_text_input_key_release);
+        text_input.buffer.changed.connect(on_text_input_changed);
+
         text_input.grab_focus();
     }
 
@@ -117,13 +115,12 @@ public class ChatInput : Box {
         }
     }
 
-    private bool on_text_input_key_release(EventKey event) {
+    private void on_text_input_changed() {
         if (text_input.buffer.text != "") {
             ChatInteraction.get_instance(stream_interactor).on_message_entered(conversation);
         } else {
             ChatInteraction.get_instance(stream_interactor).on_message_cleared(conversation);
         }
-        return false;
     }
 }
 

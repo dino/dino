@@ -67,12 +67,14 @@ namespace Dino.Plugins.OpenPgp {
         }
 
         private void on_jid_key_received(Account account, Jid jid, string key_id) {
-            if (!pgp_key_ids.has_key(jid) || pgp_key_ids[jid] != key_id) {
-                if (!MucManager.get_instance(stream_interactor).is_groupchat_occupant(jid, account)) {
-                    db.set_contact_key(jid.bare_jid, key_id);
+            lock (pgp_key_ids) {
+                if (!pgp_key_ids.has_key(jid) || pgp_key_ids[jid] != key_id) {
+                    if (!MucManager.get_instance(stream_interactor).is_groupchat_occupant(jid, account)) {
+                        db.set_contact_key(jid.bare_jid, key_id);
+                    }
                 }
+                pgp_key_ids[jid] = key_id;
             }
-            pgp_key_ids[jid] = key_id;
         }
     }
 }

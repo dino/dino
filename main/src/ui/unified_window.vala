@@ -68,12 +68,12 @@ public class UnifiedWindow : Window {
     }
 
     private bool on_focus_in_event() {
-        ChatInteraction.get_instance(stream_interactor).window_focus_in(conversation);
+        ChatInteraction.get_instance(stream_interactor).on_window_focus_in(conversation);
         return false;
     }
 
     private bool on_focus_out_event() {
-        ChatInteraction.get_instance(stream_interactor).window_focus_out(conversation);
+        ChatInteraction.get_instance(stream_interactor).on_window_focus_out(conversation);
         return false;
     }
 }
