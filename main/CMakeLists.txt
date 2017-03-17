@@ -20,6 +20,7 @@ set(RESOURCE_LIST
     icons/dino-status-chat.svg
     icons/dino-status-dnd.svg
     icons/dino-status-online.svg
+    icons/dino-symbolic.svg
     icons/dino-tick-symbolic.svg
 
     add_conversation/add_contact_dialog.ui
