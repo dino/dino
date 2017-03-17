@@ -8,6 +8,7 @@ namespace Dino {
 public class StreamInteractor {
 
     public signal void account_added(Account account);
+    public signal void account_removed(Account account);
     public signal void stream_negotiated(Account account);
 
     public ModuleManager module_manager;
@@ -29,6 +30,7 @@ public class StreamInteractor {
 
     public void disconnect(Account account) {
         connection_manager.disconnect(account);
+        account_removed(account);
     }
 
     public ArrayList<Account> get_accounts() {

@@ -46,7 +46,7 @@ set(RESOURCE_LIST
     occupant_list.ui
     occupant_list_item.ui
     settings_dialog.ui
-    unified_window.ui
+    unified_window_placeholder.ui
 )
 
 compile_gresources(

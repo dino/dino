@@ -5,11 +5,7 @@ using Dino.Ui;
 
 public class Dino.Ui.Application : Dino.Application {
     private Notifications notifications;
-    private UnifiedWindow? window;
-    private ConversationSelector.View? filterable_conversation_list;
-    private ConversationSelector.List? conversation_list;
-    private ConversationSummary.View? conversation_frame;
-    private ChatInput? chat_input;
+    private UnifiedWindow window;
 
     public Application() throws Error {
         Notify.init("dino");
@@ -21,18 +17,9 @@ public class Dino.Ui.Application : Dino.Application {
 
     public override void activate() {
         create_set_app_menu();
-        create_window();
+        window = new UnifiedWindow(this, stream_interaction);
         window.show_all();
         restore();
-    }
-
-    private void create_window() {
-        window = new UnifiedWindow(this, stream_interaction);
-
-        filterable_conversation_list = window.filterable_conversation_list;
-        conversation_list = window.filterable_conversation_list.conversation_list;
-        conversation_frame = window.conversation_frame;
-        chat_input = window.chat_input;
     }
 
     private void show_accounts_window() {
