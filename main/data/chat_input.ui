@@ -11,12 +11,16 @@
                 <property name="max_content_height">300</property>
                 <property name="propagate_natural_height">True</property>
                 <child>
-                    <object class="GtkTextView" id="text_input">
-                        <property name="wrap-mode">GTK_WRAP_WORD_CHAR</property>
-                        <property name="border-width">5</property>
-                        <property name="can_focus">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="visible">True</property>
+                    <object class="GtkFrame">
+                        <child>
+                            <object class="GtkTextView" id="text_input">
+                                <property name="wrap-mode">GTK_WRAP_WORD_CHAR</property>
+                                <property name="border-width">5</property>
+                                <property name="can_focus">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="visible">True</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>

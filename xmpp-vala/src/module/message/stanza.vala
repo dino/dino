@@ -33,6 +33,13 @@ public class Stanza : Xmpp.Stanza {
         }
     }
 
+    public override string? type_ {
+        get {
+            return base.type_ ?? TYPE_NORMAL;
+        }
+        set { base.type_ = value; }
+    }
+
     public Stanza(string? id = null) {
         base.outgoing(new StanzaNode.build("message"));
         stanza.set_attribute(ATTRIBUTE_ID, id ?? random_uuid());

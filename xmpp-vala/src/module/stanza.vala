@@ -43,7 +43,7 @@ namespace Xmpp {
             set { stanza.set_attribute(ATTRIBUTE_TO, value); }
         }
 
-        public virtual string type_ {
+        public virtual string? type_ {
             get { return stanza.get_attribute(ATTRIBUTE_TYPE); }
             set { stanza.set_attribute(ATTRIBUTE_TYPE, value); }
         }

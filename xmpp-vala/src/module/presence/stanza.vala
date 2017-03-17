@@ -73,9 +73,9 @@ public class Stanza : Xmpp.Stanza {
         }
     }
 
-    public override string type_ {
+    public override string? type_ {
         get {
-            return base.type_ != null ? base.type_ : TYPE_AVAILABLE;
+            return base.type_ ?? TYPE_AVAILABLE;
         }
         set { base.type_ = value; }
     }

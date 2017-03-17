@@ -282,15 +282,19 @@ public class Database : Qlite.Database {
 
     public bool contains_message(Message query_message, Account account) {
         int jid_id = get_jid_id(query_message.counterpart);
-        return message.select()
+        QueryBuilder builder = message.select()
                 .with(message.account_id, "=", account.id)
-                .with(message.stanza_id, "=", query_message.stanza_id)
                 .with(message.counterpart_id, "=", jid_id)
                 .with(message.counterpart_resource, "=", query_message.counterpart.resourcepart)
                 .with(message.body, "=", query_message.body)
                 .with(message.time, "<", (long) query_message.time.add_minutes(1).to_unix())
-                .with(message.time, ">", (long) query_message.time.add_minutes(-1).to_unix())
-                .count() > 0;
+                .with(message.time, ">", (long) query_message.time.add_minutes(-1).to_unix());
+        if (query_message.stanza_id != null) {
+            builder.with(message.stanza_id, "=", query_message.stanza_id);
+        } else {
+            builder.with_null(message.stanza_id);
+        }
+        return builder.count() > 0;
     }
 
     public bool contains_message_by_stanza_id(string stanza_id, Account account) {
@@ -347,8 +351,6 @@ public class Database : Qlite.Database {
                 .value(conversation.active, new_conversation.active);
         if (new_conversation.last_active != null) {
             insert.value(conversation.last_active, (long) new_conversation.last_active.to_unix());
-        } else {
-            insert.value_null(conversation.last_active);
         }
         new_conversation.id = (int) insert.perform();
         new_conversation.notify.connect(on_conversation_update);
