@@ -85,7 +85,7 @@ public class ChatInput : Box {
             check_convert_smiley();
         }
         if (event.keyval == Key.Return) {
-            if (event.state == ModifierType.SHIFT_MASK) {
+            if ((event.state & ModifierType.SHIFT_MASK) > 0) {
                 text_input.buffer.insert_at_cursor("\n", 1);
             } else if (text_input.buffer.text != ""){
                 send_text();

@@ -32,10 +32,10 @@ public class List : ListBox {
             Idle.add(() => {add_conversation(conversation); return false;});
         });
         MessageManager.get_instance(stream_interactor).message_received.connect((message, conversation) => {
-            Idle.add(() => {message_received(message, conversation); return false;});
+            Idle.add(() => {on_message_received(message, conversation); return false;});
         });
         MessageManager.get_instance(stream_interactor).message_sent.connect((message, conversation) => {
-            Idle.add(() => {message_received(message, conversation); return false;});
+            Idle.add(() => {on_message_received(message, conversation); return false;});
         });
         PresenceManager.get_instance(stream_interactor).show_received.connect((show, jid, account) => {
             Idle.add(() => {
@@ -93,7 +93,21 @@ public class List : ListBox {
         invalidate_filter();
     }
 
-    public void add_conversation(Conversation conversation) {
+    public void on_conversation_selected(Conversation conversation) {
+        if (!rows.has_key(conversation)) {
+            add_conversation(conversation);
+        }
+        this.select_row(rows[conversation]);
+    }
+
+    private void on_message_received(Entities.Message message, Conversation conversation) {
+        if (rows.has_key(conversation)) {
+            rows[conversation].message_received(message);
+            invalidate_sort();
+        }
+    }
+
+    private void add_conversation(Conversation conversation) {
         ConversationRow row;
         if (!rows.has_key(conversation)) {
             if (conversation.type_ == Conversation.Type.GROUPCHAT) {
@@ -103,33 +117,35 @@ public class List : ListBox {
             }
             rows[conversation] = row;
             add(row);
+            row.closed.connect(() => { on_conversation_closed(conversation); });
+            row.disappeared.connect(() => { on_conversation_disappeared(conversation); });
             row.main_revealer.set_reveal_child(true);
-            conversation.notify["active"].connect((s, p) => {
-                if (rows.has_key(conversation) && !conversation.active) {
-                    remove_conversation(conversation);
-                }
-            });
         }
         invalidate_sort();
         queue_draw();
     }
 
-    public void remove_conversation(Conversation conversation) {
-        remove(rows[conversation]);
-        rows.unset(conversation);
-    }
-
-    public void on_conversation_selected(Conversation conversation) {
-        if (!rows.has_key(conversation)) {
-            add_conversation(conversation);
+    private void on_conversation_closed(Conversation conversation) {
+        if (get_selected_row() == rows[conversation]) {
+            int index = rows[conversation].get_index();
+            ListBoxRow? index_p1 = get_row_at_index(index + 1);
+            if (index_p1 != null) {
+                select_row(index_p1);
+                row_activated(index_p1);
+            } else if (index > 0) {
+                ListBoxRow? index_m1 = get_row_at_index(index - 1);
+                if (index_m1 != null) {
+                    select_row(index_m1);
+                    row_activated(index_p1);
+                }
+            }
         }
-        this.select_row(rows[conversation]);
     }
 
-    private void message_received(Entities.Message message, Conversation conversation) {
-        if (rows.has_key(conversation)) {
-            rows[conversation].message_received(message);
-            invalidate_sort();
+    private void on_conversation_disappeared(Conversation conversation) {
+        if (rows.has_key(conversation) && !conversation.active) {
+            remove(rows[conversation]);
+            rows.unset(conversation);
         }
     }
 

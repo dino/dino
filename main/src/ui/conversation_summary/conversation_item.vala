@@ -22,10 +22,8 @@ public interface ConversationItem : Gtk.Widget {
         switch (get_message_kind(message)) {
             case MessageKind.TEXT:
                 return new MergedMessageItem(stream_interactor, conversation, message);
-                break;
             case MessageKind.ME_COMMAND:
                 return new SlashMeItem(stream_interactor, conversation, message);
-                break;
         }
         return null;
     }

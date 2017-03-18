@@ -11,6 +11,9 @@ namespace Dino.Ui.ConversationSelector {
 [GtkTemplate (ui = "/org/dino-im/conversation_selector/conversation_row.ui")]
 public abstract class ConversationRow : ListBoxRow {
 
+    public signal void closed();
+    public signal void disappeared();
+
     [GtkChild] protected Image image;
     [GtkChild] private Label name_label;
     [GtkChild] private Label time_label;
@@ -120,8 +123,10 @@ public abstract class ConversationRow : ListBoxRow {
     private void on_x_button_clicked() {
         main_revealer.set_transition_type(RevealerTransitionType.SLIDE_UP);
         main_revealer.set_reveal_child(false);
+        closed();
         main_revealer.notify["child-revealed"].connect(() => {
             conversation.active = false;
+            disappeared();
         });
     }
 

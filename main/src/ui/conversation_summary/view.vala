@@ -15,6 +15,7 @@ public class View : Box {
 
     [GtkChild] private ScrolledWindow scrolled;
     [GtkChild] private Box main;
+    [GtkChild] private Stack stack;
 
     private StreamInteractor stream_interactor;
     private ConversationItem? last_conversation_item;
@@ -56,6 +57,7 @@ public class View : Box {
 
     public void initialize_for_conversation(Conversation? conversation) {
         this.conversation = conversation;
+        stack.set_visible_child_name("void");
         clear();
         conversation_items.clear();
         was_upper = null;
@@ -95,6 +97,7 @@ public class View : Box {
             }
         }
         update_chat_state();
+        stack.set_visible_child_name("main");
     }
 
     private void on_received_state(Account account, Jid jid, string state) {

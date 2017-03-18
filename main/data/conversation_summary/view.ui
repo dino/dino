@@ -6,27 +6,44 @@
         <property name="homogeneous">False</property>
         <property name="spacing">0</property>
         <child>
-            <object class="GtkScrolledWindow" id="scrolled">
+            <object class="GtkStack" id="stack">
+                <property name="transition_type">crossfade</property>
                 <property name="visible">True</property>
                 <child>
-                    <object class="GtkBox">
-                        <property name="margin">15</property>
-                        <property name="orientation">vertical</property>
+                    <object class="GtkScrolledWindow" id="scrolled">
+                        <property name="visible">True</property>
                         <child>
-                            <object class="GtkBox" id="main">
-                                <property name="expand">False</property>
+                            <object class="GtkBox">
+                                <property name="margin">15</property>
                                 <property name="orientation">vertical</property>
-                                <property name="spacing">15</property>
-                                <property name="visible">True</property>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkBox" id="filler">
-                                <property name="expand">True</property>
-                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkBox" id="main">
+                                        <property name="expand">False</property>
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">15</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkBox" id="filler">
+                                        <property name="expand">True</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>
+                    <packing>
+                        <property name="name">main</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="visible">True</property>
+                    </object>
+                    <packing>
+                        <property name="name">void</property>
+                    </packing>
                 </child>
             </object>
         </child>
