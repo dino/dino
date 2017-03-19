@@ -40,7 +40,7 @@ public class ChatRow : ConversationRow {
     }
 
     public void update_avatar() {
-        ArrayList<Jid> full_jids = PresenceManager.get_instance(stream_interactor).get_full_jids(conversation.counterpart, conversation.account);
+        ArrayList<Jid> full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
         set_avatar((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor))
             .set_greyscale(full_jids == null)
             .draw_conversation(stream_interactor, conversation), image.scale_factor);
@@ -54,12 +54,12 @@ public class ChatRow : ConversationRow {
 
         jid_label.label = conversation.counterpart.to_string();
 
-        ArrayList<Jid>? full_jids = PresenceManager.get_instance(stream_interactor).get_full_jids(conversation.counterpart, conversation.account);
+        ArrayList<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
         if (full_jids != null) {
             for (int i = 0; i < full_jids.size; i++) {
                 Box box = new Box(Orientation.HORIZONTAL, 5);
 
-                Show show = PresenceManager.get_instance(stream_interactor).get_last_show(full_jids[i], conversation.account);
+                Show show = stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jids[i], conversation.account);
                 Image image = new Image();
                 if (show.as == Show.AWAY) {
                     image.set_from_icon_name("dino-status-away", IconSize.SMALL_TOOLBAR);

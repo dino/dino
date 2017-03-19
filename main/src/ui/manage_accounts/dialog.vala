@@ -78,7 +78,7 @@ public class Dialog : Gtk.Window {
             add_account(account);
         }
 
-        AvatarManager.get_instance(stream_interactor).received_avatar.connect((pixbuf, jid, account) => {
+        stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect((pixbuf, jid, account) => {
         Idle.add(() => {
             on_received_avatar(pixbuf, jid, account);
             return false;
@@ -166,7 +166,7 @@ public class Dialog : Gtk.Window {
         if (chooser.run() == Gtk.ResponseType.ACCEPT) {
             string uri = chooser.get_filename();
             Account account = (account_list.get_selected_row() as AccountRow).account;
-            AvatarManager.get_instance(stream_interactor).publish(account, uri);
+            stream_interactor.get_module(AvatarManager.IDENTITY).publish(account, uri);
         }
         chooser.close();
     }

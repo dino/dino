@@ -7,8 +7,7 @@ namespace Xmpp.StreamError {
     private const string NS_ERROR = "urn:ietf:params:xml:ns:xmpp-streams";
 
     public class Module : XmppStreamModule {
-        public const string ID = "stream_error_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "stream_error_module");
 
         public override void attach(XmppStream stream) {
             stream.received_nonza.connect(on_received_nonstanza);
@@ -23,7 +22,7 @@ namespace Xmpp.StreamError {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private void on_received_nonstanza(XmppStream stream, StanzaNode node) {
             if (node.name == "error" && node.ns_uri == "http://etherx.jabber.org/streams") {
@@ -89,7 +88,7 @@ namespace Xmpp.StreamError {
     }
 
     public class Flag : XmppStreamFlag {
-        public const string ID = "stream_error";
+        public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "stream_error");
 
         public enum Reconnect {
             UNKNOWN,
@@ -102,15 +101,7 @@ namespace Xmpp.StreamError {
         public Reconnect reconnection_recomendation = Reconnect.UNKNOWN;
         public bool resource_rejected = false;
 
-        public static Flag? get_flag(XmppStream stream) {
-            return (Flag?) stream.get_flag(NS_URI, ID);
-        }
-
-        public static bool has_flag(XmppStream stream) {
-            return get_flag(stream) != null;
-        }
-
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
     }
 }

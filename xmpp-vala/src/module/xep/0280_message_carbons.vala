@@ -4,8 +4,7 @@ namespace Xmpp.Xep.MessageCarbons {
     private const string NS_URI = "urn:xmpp:carbons:2";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0280_message_carbons_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0280_message_carbons_module");
 
         public void enable(XmppStream stream) {
             Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("enable", NS_URI).add_self_xmlns());
@@ -38,7 +37,7 @@ namespace Xmpp.Xep.MessageCarbons {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private void pre_received_message(XmppStream stream, Message.Stanza message) {
             StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);
@@ -51,7 +50,7 @@ namespace Xmpp.Xep.MessageCarbons {
                     string? from_attribute = message_node.get_attribute("from", Message.NS_URI);
                     // The security model assumed by this document is that all of the resources for a single user are in the same trust boundary.
                     // Any forwarded copies received by a Carbons-enabled client MUST be from that user's bare JID; any copies that do not meet this requirement MUST be ignored.
-                    if (from_attribute != null && from_attribute == get_bare_jid(Bind.Flag.get_flag(stream).my_jid)) {
+                    if (from_attribute != null && from_attribute == get_bare_jid(stream.get_flag(Bind.Flag.IDENTITY).my_jid)) {
                         if (received_node != null) {
                             message.add_flag(new MessageFlag(MessageFlag.TYPE_RECEIVED));
                         } else if (sent_node != null) {
@@ -68,7 +67,7 @@ namespace Xmpp.Xep.MessageCarbons {
     }
 
     public class MessageFlag : Message.MessageFlag {
-        public const string id = "message_carbons";
+        public const string ID = "message_carbons";
 
         public const string TYPE_RECEIVED = "received";
         public const string TYPE_SENT = "sent";
@@ -79,10 +78,10 @@ namespace Xmpp.Xep.MessageCarbons {
         }
 
         public static MessageFlag? get_flag(Message.Stanza message) {
-            return (MessageFlag) message.get_flag(NS_URI, id);
+            return (MessageFlag) message.get_flag(NS_URI, ID);
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return id; }
+        public override string get_id() { return ID; }
     }
 }

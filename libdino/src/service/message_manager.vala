@@ -6,7 +6,8 @@ using Dino.Entities;
 namespace Dino {
 
 public class MessageManager : StreamInteractionModule, Object {
-    public const string ID = "message_manager";
+    public static ModuleIdentity<MessageManager> IDENTITY = new ModuleIdentity<MessageManager>("message_manager");
+    public string id { get { return IDENTITY.id; } }
 
     public signal void pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
     public signal void message_received(Entities.Message message, Conversation conversation);
@@ -68,14 +69,6 @@ public class MessageManager : StreamInteractionModule, Object {
         return db_messages;
     }
 
-    public string get_id() {
-        return ID;
-    }
-
-    public static MessageManager? get_instance(StreamInteractor stream_interactor) {
-        return (MessageManager) stream_interactor.get_module(ID);
-    }
-
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xmpp.Message.Module.IDENTITY).received_message.connect( (stream, message) => {
             on_message_received(account, message);
@@ -85,7 +78,7 @@ public class MessageManager : StreamInteractionModule, Object {
     private void send_unsent_messages(Account account) {
         Gee.List<Entities.Message> unsend_messages = db.get_unsend_messages(account);
         foreach (Entities.Message message in unsend_messages) {
-            Conversation? conversation = ConversationManager.get_instance(stream_interactor).get_conversation(message.counterpart, account);
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart, account);
             if (conversation != null) {
                 send_xmpp_message(message, conversation, true);
             }
@@ -100,7 +93,7 @@ public class MessageManager : StreamInteractionModule, Object {
         new_message.stanza_id = message.id;
         Jid from_jid = new Jid(message.from);
         if (!account.bare_jid.equals_bare(from_jid) ||
-                MucManager.get_instance(stream_interactor).get_nick(from_jid.bare_jid, account) == from_jid.resourcepart) {
+                stream_interactor.get_module(MucManager.IDENTITY).get_nick(from_jid.bare_jid, account) == from_jid.resourcepart) {
             new_message.direction = Entities.Message.DIRECTION_RECEIVED;
         } else {
             new_message.direction = Entities.Message.DIRECTION_SENT;
@@ -113,7 +106,7 @@ public class MessageManager : StreamInteractionModule, Object {
         Xep.DelayedDelivery.MessageFlag? deleyed_delivery_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
         new_message.time = deleyed_delivery_flag != null ? deleyed_delivery_flag.datetime : new DateTime.now_utc();
         new_message.local_time = new DateTime.now_utc();
-        Conversation conversation = ConversationManager.get_instance(stream_interactor).get_add_conversation(new_message.counterpart, account);
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_add_conversation(new_message.counterpart, account);
         pre_message_received(new_message, message, conversation);
 
         bool is_uuid = new_message.stanza_id != null && Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", new_message.stanza_id);

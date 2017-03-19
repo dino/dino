@@ -5,7 +5,8 @@ using Dino.Entities;
 
 namespace Dino {
 public class MucManager : StreamInteractionModule, Object {
-    public const string id = "muc_manager";
+    public static ModuleIdentity<MucManager> IDENTITY = new ModuleIdentity<MucManager>("muc_manager");
+    public string id { get { return IDENTITY.id; } }
 
     public signal void groupchat_joined(Account account, Jid jid, string nick);
     public signal void groupchat_subject_set(Account account, Jid jid, string subject);
@@ -23,7 +24,7 @@ public class MucManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
-        MessageManager.get_instance(stream_interactor).pre_message_received.connect(on_pre_message_received);
+        stream_interactor.get_module(MessageManager.IDENTITY).pre_message_received.connect(on_pre_message_received);
     }
 
     public void join(Account account, Jid jid, string nick, string? password = null) {
@@ -52,7 +53,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public ArrayList<Jid>? get_occupants(Jid jid, Account account) {
-        return PresenceManager.get_instance(stream_interactor).get_full_jids(jid, account);
+        return stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(jid, account);
     }
 
     public ArrayList<Jid>? get_other_occupants(Jid jid, Account account) {
@@ -65,7 +66,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public bool is_groupchat(Jid jid, Account account) {
-        Conversation? conversation = ConversationManager.get_instance(stream_interactor).get_conversation(jid, account);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
         return !jid.is_full() && conversation != null && conversation.type_ == Conversation.Type.GROUPCHAT;
     }
 
@@ -104,7 +105,7 @@ public class MucManager : StreamInteractionModule, Object {
     public string? get_groupchat_subject(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            return Xep.Muc.Flag.get_flag(stream).get_muc_subject(jid.bare_jid.to_string());
+            return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_subject(jid.bare_jid.to_string());
         }
         return null;
     }
@@ -112,7 +113,7 @@ public class MucManager : StreamInteractionModule, Object {
     public Jid? get_real_jid(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            string? real_jid = Xep.Muc.Flag.get_flag(stream).get_real_jid(jid.to_string());
+            string? real_jid = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_real_jid(jid.to_string());
             if (real_jid != null) {
                 return new Jid(real_jid);
             }
@@ -130,18 +131,10 @@ public class MucManager : StreamInteractionModule, Object {
     public string? get_nick(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            Xep.Muc.Flag? flag = Xep.Muc.Flag.get_flag(stream);
+            Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
             if (flag != null) return flag.get_muc_nick(jid.bare_jid.to_string());
         }
         return null;
-    }
-
-    public static MucManager? get_instance(StreamInteractor stream_interactor) {
-        return (MucManager) stream_interactor.get_module(id);
-    }
-
-    internal string get_id() {
-        return id;
     }
 
     private void on_account_added(Account account) {
@@ -167,14 +160,14 @@ public class MucManager : StreamInteractionModule, Object {
         Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return;
         if (Xep.DelayedDelivery.MessageFlag.get_flag(message.stanza) == null) {
-            string? real_jid = Xep.Muc.Flag.get_flag(stream).get_real_jid(message.counterpart.to_string());
+            string? real_jid = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_real_jid(message.counterpart.to_string());
             if (real_jid != null && real_jid != message.counterpart.to_string()) {
                 message.real_jid = real_jid;
             }
         }
-        string muc_nick = Xep.Muc.Flag.get_flag(stream).get_muc_nick(conversation.counterpart.bare_jid.to_string());
+        string muc_nick = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_nick(conversation.counterpart.bare_jid.to_string());
         if (message.from.equals(new Jid(@"$(message.from.bare_jid)/$muc_nick"))) { // TODO better from own
-            Gee.List<Entities.Message>? messages = MessageManager.get_instance(stream_interactor).get_messages(conversation);
+            Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageManager.IDENTITY).get_messages(conversation);
             if (messages != null) { // TODO not here
                 foreach (Entities.Message m in messages) {
                     if (m.equals(message)) {
@@ -207,4 +200,5 @@ public class MucManager : StreamInteractionModule, Object {
         }
     }
 }
+
 }

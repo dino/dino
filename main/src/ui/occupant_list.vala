@@ -25,17 +25,17 @@ public class OccupantList : Box {
         list_box.set_filter_func(filter);
         search_entry.search_changed.connect(search_changed);
 
-        PresenceManager.get_instance(stream_interactor).show_received.connect((show, jid, account) => {
+        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
             Idle.add(() => { on_show_received(show, jid, account); return false; });
         });
-        RosterManager.get_instance(stream_interactor).updated_roster_item.connect(on_updated_roster_item);
+        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_updated_roster_item);
 
         initialize_for_conversation(conversation);
     }
 
     public void initialize_for_conversation(Conversation conversation) {
         this.conversation = conversation;
-        ArrayList<Jid>? occupants = MucManager.get_instance(stream_interactor).get_occupants(conversation.counterpart, conversation.account);
+        ArrayList<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
         if (occupants != null) {
             foreach (Jid occupant in occupants) {
                 add_occupant(occupant);

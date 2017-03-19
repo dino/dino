@@ -4,8 +4,7 @@ namespace Xmpp.Presence {
     private const string NS_URI = "jabber:client";
 
     public class Module : XmppStreamModule {
-        public const string ID = "presence_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "presence_module");
 
         public signal void received_presence(XmppStream stream, Presence.Stanza presence);
         public signal void pre_send_presence_stanza(XmppStream stream, Presence.Stanza presence);
@@ -67,16 +66,16 @@ namespace Xmpp.Presence {
         }
 
         private void on_received_presence_stanza(XmppStream stream, StanzaNode node) {
-            Presence.Stanza presence = new Presence.Stanza.from_stanza(node, Bind.Flag.get_flag(stream).my_jid);
+            Presence.Stanza presence = new Presence.Stanza.from_stanza(node, stream.get_flag(Bind.Flag.IDENTITY).my_jid);
             received_presence(stream, presence);
             switch (presence.type_) {
                 case Presence.Stanza.TYPE_AVAILABLE:
-                    Flag.get_flag(stream).add_presence(presence);
+                    stream.get_flag(Flag.IDENTITY).add_presence(presence);
                     received_available(stream, presence);
                     received_available_show(stream, presence.from, presence.show);
                     break;
                 case Presence.Stanza.TYPE_UNAVAILABLE:
-                    Flag.get_flag(stream).remove_presence(presence.from);
+                    stream.get_flag(Flag.IDENTITY).remove_presence(presence.from);
                     received_unavailable(stream, presence.from);
                     break;
                 case Presence.Stanza.TYPE_SUBSCRIBE:
@@ -101,7 +100,7 @@ namespace Xmpp.Presence {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
     }
 
 }

@@ -6,8 +6,7 @@ namespace Xmpp.Roster {
     private const string NS_URI = "jabber:iq:roster";
 
     public class Module : XmppStreamModule, Iq.Handler {
-        public const string ID = "roster_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "roster_module");
 
         public signal void received_roster(XmppStream stream, Collection<Item> roster);
         public signal void item_removed(XmppStream stream, Item roster_item);
@@ -56,7 +55,7 @@ namespace Xmpp.Roster {
             StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI);
             if (query_node == null) return;
 
-            Flag flag = Flag.get_flag(stream);
+            Flag flag = stream.get_flag(Flag.IDENTITY);
             Item item = new Item.from_stanza_node(query_node.get_subnode("item", NS_URI));
             switch (item.subscription) {
                 case Item.SUBSCRIPTION_REMOVE:
@@ -89,17 +88,17 @@ namespace Xmpp.Roster {
         }
 
         internal override string get_ns() { return NS_URI; }
-        internal override string get_id() { return ID; }
+        internal override string get_id() { return IDENTITY.id; }
 
         private void roster_get(XmppStream stream) {
-            Flag.get_flag(stream).iq_id = random_uuid();
+            stream.get_flag(Flag.IDENTITY).iq_id = random_uuid();
             StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
-            Iq.Stanza iq = new Iq.Stanza.get(query_node, Flag.get_flag(stream).iq_id);
+            Iq.Stanza iq = new Iq.Stanza.get(query_node, stream.get_flag(Flag.IDENTITY).iq_id);
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_roster_get_received);
         }
 
         private static void on_roster_get_received(XmppStream stream, Iq.Stanza iq) {
-            Flag flag = Flag.get_flag(stream);
+            Flag flag = stream.get_flag(Flag.IDENTITY);
             if (iq.id == flag.iq_id) {
                 StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI);
                 foreach (StanzaNode item_node in query_node.sub_nodes) {

@@ -6,8 +6,7 @@ namespace Xmpp.Xep.PrivateXmlStorage {
     private const string NS_URI = "jabber:iq:private";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0049_private_xml_storage";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0049_private_xml_storage");
 
         [CCode (has_target = false)] public delegate void OnSuccess(XmppStream stream, Object? reference);
         public void store(XmppStream stream, StanzaNode node, OnSuccess listener, Object? reference) {
@@ -34,7 +33,7 @@ namespace Xmpp.Xep.PrivateXmlStorage {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private static void on_store_response(XmppStream stream, Iq.Stanza iq, Object o) {
             Tuple<OnSuccess, Object> tuple = o as Tuple<OnSuccess, Object>;

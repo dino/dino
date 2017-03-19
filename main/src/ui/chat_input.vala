@@ -62,20 +62,20 @@ public class ChatInput : Box {
             string[] token = text.split(" ", 2);
             switch(token[0]) {
                 case "/kick":
-                    MucManager.get_instance(stream_interactor).kick(conversation.account, conversation.counterpart, token[1]);
+                    stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, token[1]);
                     break;
                 case "/me":
-                    MessageManager.get_instance(stream_interactor).send_message(text, conversation);
+                    stream_interactor.get_module(MessageManager.IDENTITY).send_message(text, conversation);
                     break;
                 case "/nick":
-                    MucManager.get_instance(stream_interactor).change_nick(conversation.account, conversation.counterpart, token[1]);
+                    stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
                     break;
                 case "/topic":
-                    MucManager.get_instance(stream_interactor).change_subject(conversation.account, conversation.counterpart, token[1]);
+                    stream_interactor.get_module(MucManager.IDENTITY).change_subject(conversation.account, conversation.counterpart, token[1]);
                     break;
             }
         } else {
-            MessageManager.get_instance(stream_interactor).send_message(text, conversation);
+            stream_interactor.get_module(MessageManager.IDENTITY).send_message(text, conversation);
         }
         text_input.buffer.text = "";
     }
@@ -117,9 +117,9 @@ public class ChatInput : Box {
 
     private void on_text_input_changed() {
         if (text_input.buffer.text != "") {
-            ChatInteraction.get_instance(stream_interactor).on_message_entered(conversation);
+            stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
         } else {
-            ChatInteraction.get_instance(stream_interactor).on_message_cleared(conversation);
+            stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation);
         }
     }
 }

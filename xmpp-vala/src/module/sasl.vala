@@ -4,8 +4,7 @@ namespace Xmpp.PlainSasl {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-sasl";
 
     public class Module : XmppStreamNegotiationModule {
-        public const string ID = "plain_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "plain_module");
         private const string MECHANISM = "PLAIN";
 
         private string name;
@@ -33,18 +32,18 @@ namespace Xmpp.PlainSasl {
             if (node.ns_uri == NS_URI) {
                 if (node.name == "success") {
                     stream.require_setup();
-                    Flag.get_flag(stream).finished = true;
+                    stream.get_flag(Flag.IDENTITY).finished = true;
                 } else if (node.name == "failure") {
-                    stream.remove_flag(Flag.get_flag(stream));
+                    stream.remove_flag(stream.get_flag(Flag.IDENTITY));
                     received_auth_failure(stream, node);
                 }
             }
         }
 
         public void received_features_node(XmppStream stream) {
-            if (Flag.has_flag(stream)) return;
+            if (stream.has_flag(Flag.IDENTITY)) return;
             if (stream.is_setup_needed()) return;
-            if (!Tls.Flag.has_flag(stream) || !Tls.Flag.get_flag(stream).finished) return;
+            if (!stream.has_flag(Tls.Flag.IDENTITY) || !stream.get_flag(Tls.Flag.IDENTITY).finished) return;
 
             var mechanisms = stream.features.get_subnode("mechanisms", NS_URI);
             if (mechanisms != null) {
@@ -105,32 +104,24 @@ namespace Xmpp.PlainSasl {
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {
-            return !Flag.has_flag(stream) || !Flag.get_flag(stream).finished;
+            return !stream.has_flag(Flag.IDENTITY) || !stream.get_flag(Flag.IDENTITY).finished;
         }
 
         public override bool negotiation_active(XmppStream stream) {
-            return Flag.has_flag(stream) && !Flag.get_flag(stream).finished;
+            return stream.has_flag(Flag.IDENTITY) && !stream.get_flag(Flag.IDENTITY).finished;
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
     }
 
     public class Flag : XmppStreamFlag {
-        public const string ID = "sasl";
+        public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "sasl");
         public string mechanism;
         public string name;
         public bool finished = false;
 
-        public static Flag? get_flag(XmppStream stream) {
-            return (Flag?) stream.get_flag(NS_URI, ID);
-        }
-
-        public static bool has_flag(XmppStream stream) {
-            return get_flag(stream) != null;
-        }
-
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
     }
 }

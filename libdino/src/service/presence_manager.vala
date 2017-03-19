@@ -5,7 +5,8 @@ using Dino.Entities;
 
 namespace Dino {
 public class PresenceManager : StreamInteractionModule, Object {
-    public const string id = "presence_manager";
+    public static ModuleIdentity<PresenceManager> IDENTITY = new ModuleIdentity<PresenceManager>("presence_manager");
+    public string id { get { return IDENTITY.id; } }
 
     public signal void show_received(Show show, Jid jid, Account account);
     public signal void received_subscription_request(Jid jid, Account account);
@@ -27,7 +28,7 @@ public class PresenceManager : StreamInteractionModule, Object {
     public Show get_last_show(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            Xmpp.Presence.Stanza? presence = Xmpp.Presence.Flag.get_flag(stream).get_presence(jid.to_string());
+            Xmpp.Presence.Stanza? presence = stream.get_flag(Presence.Flag.IDENTITY).get_presence(jid.to_string());
             if (presence != null) {
                 return new Show(jid, presence.show, new DateTime.now_local());
             }
@@ -42,7 +43,7 @@ public class PresenceManager : StreamInteractionModule, Object {
     public ArrayList<Jid>? get_full_jids(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            Xmpp.Presence.Flag flag = Xmpp.Presence.Flag.get_flag(stream);
+            Xmpp.Presence.Flag flag = stream.get_flag(Presence.Flag.IDENTITY);
             if (flag == null) return null;
             Gee.List<string> resources = flag.get_resources(jid.bare_jid.to_string());
             if (resources == null) {
@@ -71,14 +72,6 @@ public class PresenceManager : StreamInteractionModule, Object {
     public void deny_subscription(Account account, Jid jid) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).deny_subscription(stream, jid.bare_jid.to_string());
-    }
-
-    public static PresenceManager? get_instance(StreamInteractor stream_interactor) {
-        return (PresenceManager) stream_interactor.get_module(id);
-    }
-
-    internal string get_id() {
-        return id;
     }
 
     private void on_account_added(Account account) {

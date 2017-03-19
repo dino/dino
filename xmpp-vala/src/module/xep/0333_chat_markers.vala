@@ -12,8 +12,7 @@ public const string MARKER_ACKNOWLEDGED = "acknowledged";
 private const string[] MARKERS = {MARKER_RECEIVED, MARKER_DISPLAYED, MARKER_ACKNOWLEDGED};
 
 public class Module : XmppStreamModule {
-    public const string ID = "0333_chat_markers";
-    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0333_chat_markers");
 
     public signal void marker_received(XmppStream stream, string jid, string marker, string id);
 
@@ -50,7 +49,7 @@ public class Module : XmppStreamModule {
     }
 
     public override string get_ns() { return NS_URI; }
-    public override string get_id() { return ID; }
+    public override string get_id() { return IDENTITY.id; }
 
     private void on_received_message(XmppStream stream, Message.Stanza message) {
         if (message.type_ != Message.Stanza.TYPE_CHAT) return;

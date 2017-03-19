@@ -7,7 +7,8 @@ using Dino.Entities;
 namespace Dino.Plugins.OpenPgp {
 
     public class Manager : StreamInteractionModule, Object {
-        public const string id = "pgp_manager";
+        public static ModuleIdentity<Manager> IDENTITY = new ModuleIdentity<Manager>("pgp_manager");
+        public string id { get { return IDENTITY.id; } }
 
         public const string MESSAGE_ENCRYPTED = "pgp";
 
@@ -25,8 +26,8 @@ namespace Dino.Plugins.OpenPgp {
             this.db = db;
 
             stream_interactor.account_added.connect(on_account_added);
-            MessageManager.get_instance(stream_interactor).pre_message_received.connect(on_pre_message_received);
-            MessageManager.get_instance(stream_interactor).pre_message_send.connect(on_pre_message_send);
+            stream_interactor.get_module(MessageManager.IDENTITY).pre_message_received.connect(on_pre_message_received);
+            stream_interactor.get_module(MessageManager.IDENTITY).pre_message_send.connect(on_pre_message_send);
         }
 
         private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
@@ -40,7 +41,8 @@ namespace Dino.Plugins.OpenPgp {
                 string? key_id = get_key_id(conversation.account, message.counterpart);
                 bool encrypted = false;
                 if (key_id != null) {
-                    encrypted = stream_interactor.get_stream(conversation.account).get_module(Module.IDENTITY).encrypt(message_stanza, key_id);
+                    Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                    if (stream != null) encrypted = stream.get_module(Module.IDENTITY).encrypt(message_stanza, key_id);
                 }
                 if (!encrypted) {
                     message.marked = Entities.Message.Marked.WONTSEND;
@@ -52,14 +54,6 @@ namespace Dino.Plugins.OpenPgp {
             return db.get_contact_key(jid);
         }
 
-        public static Manager? get_instance(StreamInteractor stream_interactor) {
-            return (Manager) stream_interactor.get_module(id);
-        }
-
-        internal string get_id() {
-            return id;
-        }
-
         private void on_account_added(Account account) {
             stream_interactor.module_manager.get_module(account, Module.IDENTITY).received_jid_key_id.connect((stream, jid, key_id) => {
                 on_jid_key_received(account, new Jid(jid), key_id);
@@ -69,7 +63,7 @@ namespace Dino.Plugins.OpenPgp {
         private void on_jid_key_received(Account account, Jid jid, string key_id) {
             lock (pgp_key_ids) {
                 if (!pgp_key_ids.has_key(jid) || pgp_key_ids[jid] != key_id) {
-                    if (!MucManager.get_instance(stream_interactor).is_groupchat_occupant(jid, account)) {
+                    if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
                         db.set_contact_key(jid.bare_jid, key_id);
                     }
                 }

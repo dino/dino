@@ -20,7 +20,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
 
     public ConversationTitlebar(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-        MucManager.get_instance(stream_interactor).groupchat_subject_set.connect((account, jid, subject) => {
+        stream_interactor.get_module(MucManager.IDENTITY).groupchat_subject_set.connect((account, jid, subject) => {
             Idle.add(() => { on_groupchat_subject_set(account, jid, subject); return false; });
         });
         create_conversation_menu();
@@ -77,7 +77,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         if (subtitle != null) {
             set_subtitle(subtitle);
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            string subject = MucManager.get_instance(stream_interactor).get_groupchat_subject(conversation.counterpart, conversation.account);
+            string subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
             set_subtitle(subject != "" ? subject : null);
         } else {
             set_subtitle(null);

@@ -4,8 +4,7 @@ namespace Xmpp.Tls {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-tls";
 
     public class Module : XmppStreamNegotiationModule {
-        public const string ID = "tls_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "tls_module");
 
         public bool require { get; set; default = true; }
         public bool server_supports_tls = false;
@@ -34,7 +33,7 @@ namespace Xmpp.Tls {
                     // not allowed to continue in case that there is an error.
                     stream.reset_stream(conn);
 
-                    var flag = Flag.get_flag(stream);
+                    var flag = stream.get_flag(Flag.IDENTITY);
                     flag.peer_certificate = conn.get_peer_certificate();
                     flag.finished = true;
                 } catch (Error e) {
@@ -44,7 +43,7 @@ namespace Xmpp.Tls {
         }
 
         private void received_features_node(XmppStream stream) {
-            if (Flag.has_flag(stream)) return;
+            if (stream.has_flag(Flag.IDENTITY)) return;
             if (stream.is_setup_needed()) return;
 
             var starttls = stream.features.get_subnode("starttls", NS_URI);
@@ -68,31 +67,23 @@ namespace Xmpp.Tls {
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {
-            return require && (!Flag.has_flag(stream) || !Flag.get_flag(stream).finished);
+            return require && (!stream.has_flag(Flag.IDENTITY) || !stream.get_flag(Flag.IDENTITY).finished);
         }
 
         public override bool negotiation_active(XmppStream stream) {
-            return Flag.has_flag(stream) && !Flag.get_flag(stream).finished;
+            return stream.has_flag(Flag.IDENTITY) && !stream.get_flag(Flag.IDENTITY).finished;
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
     }
 
     public class Flag : XmppStreamFlag {
-        public const string ID = "tls_flag";
+        public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "tls");
         public TlsCertificate? peer_certificate;
         public bool finished = false;
 
-        public static Flag? get_flag(XmppStream stream) {
-            return (Flag?) stream.get_flag(NS_URI, ID);
-        }
-
-        public static bool has_flag(XmppStream stream) {
-            return get_flag(stream) != null;
-        }
-
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
     }
 }

@@ -7,7 +7,8 @@ using Gee;
 namespace Dino.Plugins.Omemo {
 
 public class Manager : StreamInteractionModule, Object {
-    public const string id = "omemo_manager";
+    public static ModuleIdentity<Manager> IDENTITY = new ModuleIdentity<Manager>("omemo_manager");
+    public string id { get { return IDENTITY.id; } }
 
     private StreamInteractor stream_interactor;
     private Database db;
@@ -64,8 +65,8 @@ public class Manager : StreamInteractionModule, Object {
 
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.account_added.connect(on_account_added);
-        MessageManager.get_instance(stream_interactor).pre_message_received.connect(on_pre_message_received);
-        MessageManager.get_instance(stream_interactor).pre_message_send.connect(on_pre_message_send);
+        stream_interactor.get_module(MessageManager.IDENTITY).pre_message_received.connect(on_pre_message_received);
+        stream_interactor.get_module(MessageManager.IDENTITY).pre_message_send.connect(on_pre_message_send);
     }
 
     private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
@@ -143,8 +144,8 @@ public class Manager : StreamInteractionModule, Object {
             }
         }
         foreach (Entities.Message msg in send_now) {
-            Entities.Conversation conv = ConversationManager.get_instance(stream_interactor).get_conversation(msg.counterpart, account);
-            MessageManager.get_instance(stream_interactor).send_xmpp_message(msg, conv, true);
+            Entities.Conversation conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(msg.counterpart, account);
+            stream_interactor.get_module(MessageManager.IDENTITY).send_xmpp_message(msg, conv, true);
         }
     }
 
@@ -167,8 +168,8 @@ public class Manager : StreamInteractionModule, Object {
             }
         }
         foreach (Entities.Message msg in send_now) {
-            Entities.Conversation conv = ConversationManager.get_instance(stream_interactor).get_conversation(msg.counterpart, account);
-            MessageManager.get_instance(stream_interactor).send_xmpp_message(msg, conv, true);
+            Entities.Conversation conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(msg.counterpart, account);
+            stream_interactor.get_module(MessageManager.IDENTITY).send_xmpp_message(msg, conv, true);
         }
     }
 
@@ -222,17 +223,9 @@ public class Manager : StreamInteractionModule, Object {
         return stream.get_module(StreamModule.IDENTITY).is_known_address(conversation.counterpart.bare_jid.to_string());
     }
 
-    internal string get_id() {
-        return id;
-    }
-
     public static void start(StreamInteractor stream_interactor, Database db) {
         Manager m = new Manager(stream_interactor, db);
         stream_interactor.add_module(m);
-    }
-
-    public static Manager? get_instance(StreamInteractor stream_interactor) {
-        return (Manager) stream_interactor.get_module(id);
     }
 }
 

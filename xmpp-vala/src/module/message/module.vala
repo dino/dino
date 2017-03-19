@@ -6,8 +6,7 @@ namespace Xmpp.Message {
     private const string NS_URI = "jabber:client";
 
     public class Module : XmppStreamModule {
-        public const string ID = "message_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "message_module");
 
         public signal void pre_send_message(XmppStream stream, Message.Stanza message);
         public signal void pre_received_message(XmppStream stream, Message.Stanza message);
@@ -19,7 +18,7 @@ namespace Xmpp.Message {
         }
 
         public void received_message_stanza(XmppStream stream, StanzaNode node) {
-            Message.Stanza message = new Message.Stanza.from_stanza(node, Bind.Flag.get_flag(stream).my_jid);
+            Message.Stanza message = new Message.Stanza.from_stanza(node, stream.get_flag(Bind.Flag.IDENTITY).my_jid);
             do {
                 message.rerun_parsing = false;
                 pre_received_message(stream, message);
@@ -41,7 +40,7 @@ namespace Xmpp.Message {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
     }
 
 }

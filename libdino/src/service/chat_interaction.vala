@@ -6,7 +6,8 @@ using Dino.Entities;
 namespace Dino {
 
 public class ChatInteraction : StreamInteractionModule, Object {
-    private const string id = "chat_interaction";
+    public static ModuleIdentity<ChatInteraction> IDENTITY = new ModuleIdentity<ChatInteraction>("chat_interaction");
+    public string id { get { return IDENTITY.id; } }
 
     public signal void conversation_read(Conversation conversation);
     public signal void conversation_unread(Conversation conversation);
@@ -26,8 +27,8 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private ChatInteraction(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         Timeout.add_seconds(30, update_interactions);
-        MessageManager.get_instance(stream_interactor).message_received.connect(on_message_received);
-        MessageManager.get_instance(stream_interactor).message_sent.connect(on_message_sent);
+        stream_interactor.get_module(MessageManager.IDENTITY).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect(on_message_sent);
     }
 
     public bool is_active_focus(Conversation? conversation = null) {
@@ -67,14 +68,6 @@ public class ChatInteraction : StreamInteractionModule, Object {
         on_conversation_focused(conversation);
     }
 
-    internal string get_id() {
-        return id;
-    }
-
-    public static ChatInteraction? get_instance(StreamInteractor stream_interactor) {
-        return (ChatInteraction) stream_interactor.get_module(id);
-    }
-
     private void on_message_sent(Entities.Message message, Conversation conversation) {
         last_input_interaction.unset(conversation);
         last_interface_interaction.unset(conversation);
@@ -86,7 +79,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
         if (conversation == null) return;
         conversation_read(selected_conversation);
         check_send_read();
-        selected_conversation.read_up_to = MessageManager.get_instance(stream_interactor).get_last_message(conversation);
+        selected_conversation.read_up_to = stream_interactor.get_module(MessageManager.IDENTITY).get_last_message(conversation);
     }
 
     private void on_conversation_unfocused(Conversation? conversation) {
@@ -100,7 +93,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
     private void check_send_read() {
         if (selected_conversation == null || selected_conversation.type_ == Conversation.Type.GROUPCHAT) return;
-        Entities.Message? message = MessageManager.get_instance(stream_interactor).get_last_message(selected_conversation);
+        Entities.Message? message = stream_interactor.get_module(MessageManager.IDENTITY).get_last_message(selected_conversation);
         if (message != null && message.direction == Entities.Message.DIRECTION_RECEIVED &&
                 message.stanza != null && !message.equals(selected_conversation.read_up_to)) {
             selected_conversation.read_up_to = message;

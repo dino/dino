@@ -6,8 +6,7 @@ namespace Xmpp.Xep.Bookmarks {
 private const string NS_URI = "storage:bookmarks";
 
 public class Module : XmppStreamModule {
-    public const string ID = "0048_bookmarks_module";
-    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0048_bookmarks_module");
 
     public signal void conferences_updated(XmppStream stream, ArrayList<Conference> conferences);
 
@@ -91,7 +90,7 @@ public class Module : XmppStreamModule {
     }
 
     public override string get_ns() { return NS_URI; }
-    public override string get_id() { return ID; }
+    public override string get_id() { return IDENTITY.id; }
 
     private static ArrayList<Conference> get_conferences_from_stanza(StanzaNode node) {
         ArrayList<Conference> conferences = new ArrayList<Conference>();

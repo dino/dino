@@ -20,13 +20,13 @@ protected class RosterList : FilterableList {
         set_header_func(header);
         set_sort_func(sort);
 
-        RosterManager.get_instance(stream_interactor).removed_roster_item.connect( (account, jid, roster_item) => {
+        stream_interactor.get_module(RosterManager.IDENTITY).removed_roster_item.connect( (account, jid, roster_item) => {
             Idle.add(() => { on_removed_roster_item(account, jid, roster_item); return false;});});
-        RosterManager.get_instance(stream_interactor).updated_roster_item.connect( (account, jid, roster_item) => {
+        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect( (account, jid, roster_item) => {
             Idle.add(() => { on_updated_roster_item(account, jid, roster_item); return false;});});
 
         foreach (Account account in stream_interactor.get_accounts()) {
-            foreach (Roster.Item roster_item in RosterManager.get_instance(stream_interactor).get_roster(account)) {
+            foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
                 on_updated_roster_item(account, new Jid(roster_item.jid), roster_item);
             }
         }

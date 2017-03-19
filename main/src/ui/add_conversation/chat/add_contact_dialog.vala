@@ -41,9 +41,9 @@ protected class AddContactDialog : Gtk.Dialog {
                 account = account2;
             }
         }
-        RosterManager.get_instance(stream_interactor).add_jid(account, jid, alias);
+        stream_interactor.get_module(RosterManager.IDENTITY).add_jid(account, jid, alias);
         if (subscribe_checkbutton.active) {
-            PresenceManager.get_instance(stream_interactor).request_subscription(account, jid);
+            stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(account, jid);
         }
         close();
     }

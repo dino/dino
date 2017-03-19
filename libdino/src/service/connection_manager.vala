@@ -109,7 +109,7 @@ public class ConnectionManager {
                 if (!connection_todo.contains(account)) {
                     stream_states.unset(account);
                 } else {
-                    interpret_reconnect_flags(account, StreamError.Flag.get_flag(stream) ??
+                    interpret_reconnect_flags(account, stream.get_flag(StreamError.Flag.IDENTITY) ??
                         new StreamError.Flag() { reconnection_recomendation = StreamError.Flag.Reconnect.NOW });
                 }
             }

@@ -6,8 +6,7 @@ namespace Xmpp.Xep.EntityCapabilities {
     private const string NS_URI = "http://jabber.org/protocol/caps";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0115_entity_capabilities";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0115_entity_capabilities");
 
         private string own_ver_hash;
         private Storage storage;
@@ -18,7 +17,7 @@ namespace Xmpp.Xep.EntityCapabilities {
 
         private string get_own_hash(XmppStream stream) {
             if (own_ver_hash == null) {
-                own_ver_hash = compute_hash(stream.get_module(ServiceDiscovery.Module.IDENTITY).identities, ServiceDiscovery.Flag.get_flag(stream).features);
+                own_ver_hash = compute_hash(stream.get_module(ServiceDiscovery.Module.IDENTITY).identities, stream.get_flag(ServiceDiscovery.Flag.IDENTITY).features);
             }
             return own_ver_hash;
         }
@@ -41,7 +40,7 @@ namespace Xmpp.Xep.EntityCapabilities {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private void on_pre_send_presence_stanza(XmppStream stream, Presence.Stanza presence) {
             if (presence.type_ == Presence.Stanza.TYPE_AVAILABLE) {
@@ -60,7 +59,7 @@ namespace Xmpp.Xep.EntityCapabilities {
                 if (capabilities.size == 0) {
                     stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, on_received_info_response, Tuple.create(storage, ver_attribute));
                 } else {
-                    ServiceDiscovery.Flag.get_flag(stream).set_entitiy_features(presence.from, capabilities);
+                    stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entitiy_features(presence.from, capabilities);
                 }
             }
         }

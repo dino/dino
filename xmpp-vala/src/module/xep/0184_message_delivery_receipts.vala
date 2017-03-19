@@ -6,8 +6,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
     private const string NS_URI = "urn:xmpp:receipts";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0184_message_delivery_receipts";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0184_message_delivery_receipts");
 
         public signal void receipt_received(XmppStream stream, string jid, string id);
 
@@ -30,7 +29,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private void received_message(XmppStream stream, Message.Stanza message) {
             StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);

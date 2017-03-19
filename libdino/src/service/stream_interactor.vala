@@ -13,7 +13,7 @@ public class StreamInteractor {
 
     public ModuleManager module_manager;
     public ConnectionManager connection_manager;
-    private ArrayList<StreamInteractionModule> interaction_modules = new ArrayList<StreamInteractionModule>();
+    private ArrayList<StreamInteractionModule> modules = new ArrayList<StreamInteractionModule>();
 
     public StreamInteractor(Database db) {
         module_manager = new ModuleManager(db);
@@ -46,14 +46,13 @@ public class StreamInteractor {
     }
 
     public void add_module(StreamInteractionModule module) {
-        interaction_modules.add(module);
+        modules.add(module);
     }
 
-    public StreamInteractionModule? get_module(string id) {
-        foreach (StreamInteractionModule module in interaction_modules) {
-            if (module.get_id() == id) {
-                return module;
-            }
+    public T? get_module<T>(ModuleIdentity<T>? identity) {
+        if (identity == null) return null;
+        foreach (StreamInteractionModule module in modules) {
+            if (identity.matches(module)) return identity.cast(module);
         }
         return null;
     }
@@ -65,8 +64,24 @@ public class StreamInteractor {
     }
 }
 
+public class ModuleIdentity<T> : Object {
+    public string id { get; private set; }
+
+    public ModuleIdentity(string id) {
+        this.id = id;
+    }
+
+    public T? cast(StreamInteractionModule module) {
+        return (T?) module;
+    }
+
+    public bool matches(StreamInteractionModule module) {
+        return module.id== id;
+    }
+}
+
 public interface StreamInteractionModule : Object {
-    public abstract string get_id();
+    public abstract string id { get; }
 }
 
 }

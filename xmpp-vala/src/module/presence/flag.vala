@@ -5,7 +5,7 @@ using Xmpp.Core;
 namespace Xmpp.Presence {
 
 public class Flag : XmppStreamFlag {
-    public const string ID = "presence";
+    public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "presence");
 
     private HashMap<string, ConcurrentList<string>> resources = new HashMap<string, ConcurrentList<string>>();
     private HashMap<string, Presence.Stanza> presences = new HashMap<string, Presence.Stanza>();
@@ -52,13 +52,9 @@ public class Flag : XmppStreamFlag {
         }
     }
 
-    public static Flag? get_flag(XmppStream stream) { return (Flag?) stream.get_flag(NS_URI, ID); }
-
-    public static bool has_flag(XmppStream stream) { return get_flag(stream) != null; }
-
     public override string get_ns() { return NS_URI; }
 
-    public override string get_id() { return ID; }
+    public override string get_id() { return IDENTITY.id; }
 }
 
 }

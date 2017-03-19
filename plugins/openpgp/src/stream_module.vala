@@ -9,8 +9,7 @@ namespace Dino.Plugins.OpenPgp {
     private const string NS_URI_SIGNED = NS_URI +  ":signed";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0027_current_pgp_usage";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static Core.ModuleIdentity<Module> IDENTITY = new Core.ModuleIdentity<Module>(NS_URI, "0027_current_pgp_usage");
 
         public signal void received_jid_key_id(XmppStream stream, string jid, string key_id);
 
@@ -69,7 +68,7 @@ namespace Dino.Plugins.OpenPgp {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
             StanzaNode x_node = presence.stanza.get_subnode("x", NS_URI_SIGNED);
@@ -79,7 +78,7 @@ namespace Dino.Plugins.OpenPgp {
                     string signed_data = presence.status == null ? "" : presence.status;
                     string? key_id = get_sign_key(sig, signed_data);
                     if (key_id != null) {
-                        Flag.get_flag(stream).set_key_id(presence.from, key_id);
+                        stream.get_flag(Flag.IDENTITY).set_key_id(presence.from, key_id);
                         received_jid_key_id(stream, presence.from, key_id);
                     }
                 }

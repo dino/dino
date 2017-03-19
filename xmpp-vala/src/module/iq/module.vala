@@ -6,8 +6,7 @@ namespace Xmpp.Iq {
     private const string NS_URI = "jabber:client";
 
     public class Module : XmppStreamNegotiationModule {
-        public const string ID = "iq_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "iq_module");
 
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
@@ -48,10 +47,10 @@ namespace Xmpp.Iq {
         public override bool negotiation_active(XmppStream stream) { return false; }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private void on_received_iq_stanza(XmppStream stream, StanzaNode node) {
-            Iq.Stanza iq = new Iq.Stanza.from_stanza(node, Bind.Flag.has_flag(stream) ? Bind.Flag.get_flag(stream).my_jid : null);
+            Iq.Stanza iq = new Iq.Stanza.from_stanza(node, stream.has_flag(Bind.Flag.IDENTITY) ? stream.get_flag(Bind.Flag.IDENTITY).my_jid : null);
 
             if (iq.type_ == Iq.Stanza.TYPE_RESULT || iq.is_error()) {
                 if (responseListeners.has_key(iq.id)) {

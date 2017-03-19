@@ -14,8 +14,7 @@ private const string NODE_VERIFICATION = NS_URI + ".verification";
 private const int NUM_KEYS_TO_PUBLISH = 100;
 
 public class StreamModule : XmppStreamModule {
-    private const string ID = "omemo_module";
-    public static ModuleIdentity<StreamModule> IDENTITY = new ModuleIdentity<StreamModule>(NS_URI, ID);
+    public static Core.ModuleIdentity<StreamModule> IDENTITY = new Core.ModuleIdentity<StreamModule>(NS_URI, "omemo_module");
 
     private Store store;
     private ConcurrentSet<string> active_bundle_requests = new ConcurrentSet<string>();
@@ -189,7 +188,7 @@ public class StreamModule : XmppStreamModule {
 
     public void on_devicelist(XmppStream stream, string jid, string id, StanzaNode? node_) {
         StanzaNode? node = node_;
-        if (jid == get_bare_jid(Bind.Flag.get_flag(stream).my_jid) && store.local_registration_id != 0) {
+        if (jid == get_bare_jid(stream.get_flag(Bind.Flag.IDENTITY).my_jid) && store.local_registration_id != 0) {
             if (node == null) {
                 node = new StanzaNode.build("list", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("device", NS_URI));
             }
@@ -422,7 +421,7 @@ public class StreamModule : XmppStreamModule {
     }
 
     public override string get_id() {
-        return ID;
+        return IDENTITY.id;
     }
 }
 

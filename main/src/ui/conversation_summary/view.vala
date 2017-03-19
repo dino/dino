@@ -32,16 +32,16 @@ public class View : Box {
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
         scrolled.vadjustment.notify["value"].connect(on_value_notify);
 
-        CounterpartInteractionManager.get_instance(stream_interactor).received_state.connect((account, jid, state) => {
+        stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).received_state.connect((account, jid, state) => {
             Idle.add(() => { on_received_state(account, jid, state); return false; });
         });
-        MessageManager.get_instance(stream_interactor).message_received.connect((message, conversation) => {
+        stream_interactor.get_module(MessageManager.IDENTITY).message_received.connect((message, conversation) => {
             Idle.add(() => { show_message(message, conversation, true); return false; });
         });
-        MessageManager.get_instance(stream_interactor).message_sent.connect((message, conversation) => {
+        stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect((message, conversation) => {
             Idle.add(() => { show_message(message, conversation, true); return false; });
         });
-        PresenceManager.get_instance(stream_interactor).show_received.connect((show, jid, account) => {
+        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
             Idle.add(() => { on_show_received(show, jid, account); return false; });
         });
         Timeout.add_seconds(60, () => {
@@ -65,12 +65,12 @@ public class View : Box {
         last_conversation_item = null;
 
         ArrayList<Object> objects = new ArrayList<Object>();
-        Gee.List<Entities.Message>? messages = MessageManager.get_instance(stream_interactor).get_messages(conversation);
+        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageManager.IDENTITY).get_messages(conversation);
         if (messages != null && messages.size > 0) {
             earliest_message = messages[0];
             objects.add_all(messages);
         }
-        HashMap<Jid, ArrayList<Show>>? shows = PresenceManager.get_instance(stream_interactor).get_shows(conversation.counterpart, conversation.account);
+        HashMap<Jid, ArrayList<Show>>? shows = stream_interactor.get_module(PresenceManager.IDENTITY).get_shows(conversation.counterpart, conversation.account);
         if (shows != null) {
             foreach (Jid jid in shows.keys) objects.add_all(shows[jid]);
         }
@@ -109,7 +109,7 @@ public class View : Box {
     private void update_chat_state(string? state = null) {
         string? state_ = state;
         if (state_ == null) {
-            state_ = CounterpartInteractionManager.get_instance(stream_interactor).get_chat_state(conversation.account, conversation.counterpart);
+            state_ = stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).get_chat_state(conversation.account, conversation.counterpart);
         }
         if (typing_status != null) {
             main.remove(typing_status);
@@ -156,7 +156,7 @@ public class View : Box {
             if(reloading) return;
             reloading = true;
         }
-        Gee.List<Entities.Message>? messages = MessageManager.get_instance(stream_interactor).get_messages_before(conversation, earliest_message);
+        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageManager.IDENTITY).get_messages_before(conversation, earliest_message);
         if (messages != null && messages.size > 0) {
             earliest_message = messages[0];
             MergedMessageItem? current_item = null;

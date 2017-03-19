@@ -19,7 +19,7 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
     }}
 
     public bool can_encrypt(Entities.Conversation conversation) {
-        return Manager.get_instance(stream_interactor).get_key_id(conversation.account, conversation.counterpart) != null;
+        return stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart) != null;
     }
 }
 

@@ -20,7 +20,7 @@ protected class ConferenceList : FilterableList {
         set_header_func(header);
         set_sort_func(sort);
 
-        MucManager.get_instance(stream_interactor).bookmarks_updated.connect((account, conferences) => {
+        stream_interactor.get_module(MucManager.IDENTITY).bookmarks_updated.connect((account, conferences) => {
             Idle.add(() => {
                 lists[account] = conferences;
                 refresh_conferences();
@@ -29,7 +29,7 @@ protected class ConferenceList : FilterableList {
         });
 
         foreach (Account account in stream_interactor.get_accounts()) {
-            MucManager.get_instance(stream_interactor).get_bookmarks(account, on_conference_bookmarks_received, Tuple.create(this, account));
+            stream_interactor.get_module(MucManager.IDENTITY).get_bookmarks(account, on_conference_bookmarks_received, Tuple.create(this, account));
         }
     }
 

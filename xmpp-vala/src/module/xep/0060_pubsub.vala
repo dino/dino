@@ -7,8 +7,7 @@ namespace Xmpp.Xep.Pubsub {
     private const string NS_URI_EVENT = NS_URI + "#event";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0060_pubsub_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0060_pubsub_module");
 
         private HashMap<string, EventListenerDelegate> event_listeners = new HashMap<string, EventListenerDelegate>();
 
@@ -51,7 +50,7 @@ namespace Xmpp.Xep.Pubsub {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private void on_received_message(XmppStream stream, Message.Stanza message) {
             StanzaNode event_node = message.stanza.get_subnode("event", NS_URI_EVENT); if (event_node == null) return;

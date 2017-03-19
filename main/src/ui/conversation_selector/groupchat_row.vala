@@ -23,12 +23,12 @@ public class GroupchatRow : ConversationRow {
     public override void network_connection(bool connected) {
         set_avatar((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor))
             .set_greyscale(!connected ||
-                    MucManager.get_instance(stream_interactor).get_nick(conversation.counterpart, conversation.account) == null) // TODO better currently joined
+                    stream_interactor.get_module(MucManager.IDENTITY).get_nick(conversation.counterpart, conversation.account) == null) // TODO better currently joined
             .draw_conversation(stream_interactor, conversation), image.scale_factor);
     }
 
     private void on_x_button_clicked() {
-        MucManager.get_instance(stream_interactor).part(conversation.account, conversation.counterpart);
+        stream_interactor.get_module(MucManager.IDENTITY).part(conversation.account, conversation.counterpart);
     }
 }
 

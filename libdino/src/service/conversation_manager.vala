@@ -5,8 +5,8 @@ using Dino.Entities;
 
 namespace Dino {
 public class ConversationManager : StreamInteractionModule, Object {
-
-    public const string id = "conversation_manager";
+    public static ModuleIdentity<ConversationManager> IDENTITY = new ModuleIdentity<ConversationManager>("conversation_manager");
+    public string id { get { return IDENTITY.id; } }
 
     public signal void conversation_activated(Conversation conversation);
 
@@ -25,9 +25,9 @@ public class ConversationManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
-        MucManager.get_instance(stream_interactor).groupchat_joined.connect(on_groupchat_joined);
-        MessageManager.get_instance(stream_interactor).pre_message_received.connect(on_message_received);
-        MessageManager.get_instance(stream_interactor).message_sent.connect(on_message_sent);
+        stream_interactor.get_module(MucManager.IDENTITY).groupchat_joined.connect(on_groupchat_joined);
+        stream_interactor.get_module(MessageManager.IDENTITY).pre_message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect(on_message_sent);
     }
 
     public Conversation? get_conversation(Jid jid, Account account) {
@@ -53,14 +53,6 @@ public class ConversationManager : StreamInteractionModule, Object {
             }
         }
 
-    }
-
-    public string get_id() {
-        return id;
-    }
-
-    public static ConversationManager? get_instance(StreamInteractor stream_interaction) {
-        return (ConversationManager) stream_interaction.get_module(id);
     }
 
     private void on_account_added(Account account) {

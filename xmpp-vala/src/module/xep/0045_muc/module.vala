@@ -29,8 +29,7 @@ public enum MucEnterError {
 }
 
 public class Module : XmppStreamModule {
-    public const string ID = "0045_muc_module";
-    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0045_muc_module");
 
     public signal void received_occupant_affiliation(XmppStream stream, string jid, string? affiliation);
     public signal void received_occupant_jid(XmppStream stream, string jid, string? real_jid);
@@ -46,13 +45,13 @@ public class Module : XmppStreamModule {
         }
         presence.stanza.put_node(x_node);
 
-        Muc.Flag.get_flag(stream).start_muc_enter(bare_jid, presence.id, new ListenerHolder(success_listener, error_listener, store));
+        stream.get_flag(Flag.IDENTITY).start_muc_enter(bare_jid, presence.id, new ListenerHolder(success_listener, error_listener, store));
 
         stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
 
     public void exit(XmppStream stream, string jid) {
-        string nick = Flag.get_flag(stream).get_muc_nick(jid);
+        string nick = stream.get_flag(Flag.IDENTITY).get_muc_nick(jid);
         Presence.Stanza presence = new Presence.Stanza();
         presence.to = jid + "/" + nick;
         presence.type_ = Presence.Stanza.TYPE_UNAVAILABLE;
@@ -103,7 +102,7 @@ public class Module : XmppStreamModule {
     }
 
     public override string get_ns() { return NS_URI; }
-    public override string get_id() { return ID; }
+    public override string get_id() { return IDENTITY.id; }
 
     private void change_role(XmppStream stream, string jid, string nick, string new_role) {
         StanzaNode query = new StanzaNode.build("query", NS_URI_ADMIN).add_self_xmlns();
@@ -118,14 +117,14 @@ public class Module : XmppStreamModule {
             StanzaNode? subject_node = message.stanza.get_subnode("subject");
             if (subject_node != null) {
                 string subject = subject_node.get_string_content();
-                Muc.Flag.get_flag(stream).set_muc_subject(message.from, subject);
+                stream.get_flag(Flag.IDENTITY).set_muc_subject(message.from, subject);
                 subject_set(stream, subject, message.from);
             }
         }
     }
 
     private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
-        Flag flag = Flag.get_flag(stream);
+        Flag flag = stream.get_flag(Flag.IDENTITY);
         if (presence.is_error() && flag.is_muc_enter_outstanding() && flag.is_occupant(presence.from)) {
             string bare_jid = get_bare_jid(presence.from);
             ErrorStanza? error_stanza = presence.get_error();
@@ -152,7 +151,7 @@ public class Module : XmppStreamModule {
     }
 
     private void on_received_available(XmppStream stream, Presence.Stanza presence) {
-        Flag flag = Flag.get_flag(stream);
+        Flag flag = stream.get_flag(Flag.IDENTITY);
         if (flag.is_occupant(presence.from)) {
             StanzaNode? x_node = presence.stanza.get_subnode("x", NS_URI_USER);
             if (x_node != null) {
@@ -181,7 +180,7 @@ public class Module : XmppStreamModule {
     }
 
     private void on_received_unavailable(XmppStream stream, string jid) {
-        Flag flag = Flag.get_flag(stream);
+        Flag flag = stream.get_flag(Flag.IDENTITY);
         if (flag.is_occupant(jid)) {
             flag.remove_occupant_info(jid);
         }

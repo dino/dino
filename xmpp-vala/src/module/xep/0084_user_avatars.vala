@@ -6,8 +6,7 @@ namespace Xmpp.Xep.UserAvatars {
     private const string NS_URI_METADATA = NS_URI + ":metadata";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0084_user_avatars";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0084_user_avatars");
 
         public signal void received_avatar(XmppStream stream, string jid, string id);
 
@@ -58,7 +57,7 @@ namespace Xmpp.Xep.UserAvatars {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private static void on_pubsub_data_response(XmppStream stream, string jid, string? id, StanzaNode? node, Object? o) {
             if (node == null) return;

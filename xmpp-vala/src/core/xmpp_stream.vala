@@ -101,11 +101,14 @@ public class XmppStream {
         flags.add(flag);
     }
 
-    public XmppStreamFlag? get_flag(string ns, string id) {
+    public bool has_flag<T>(FlagIdentity<T>? identity) {
+        return get_flag(identity) != null;
+    }
+
+    public T? get_flag<T>(FlagIdentity<T>? identity) {
+        if (identity == null) return null;
         foreach (var flag in flags) {
-            if (flag.get_ns() == ns && flag.get_id() == id) {
-                return flag;
-            }
+            if (identity.matches(flag)) return identity.cast(flag);
         }
         return null;
     }
@@ -222,6 +225,24 @@ public class XmppStream {
         } catch (XmlError e) {
             throw new IOStreamError.READ(e.message);
         }
+    }
+}
+
+public class FlagIdentity<T> : Object {
+    public string ns { get; private set; }
+    public string id { get; private set; }
+
+    public FlagIdentity(string ns, string id) {
+        this.ns = ns;
+        this.id = id;
+    }
+
+    public T? cast(XmppStreamFlag module) {
+        return (T?) module;
+    }
+
+    public bool matches(XmppStreamFlag module) {
+        return module.get_ns() == ns && module.get_id() == id;
     }
 }
 

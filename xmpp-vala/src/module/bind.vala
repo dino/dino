@@ -5,8 +5,7 @@ namespace Xmpp.Bind {
 
     /** The parties to a stream MUST consider resource binding as mandatory-to-negotiate. (RFC6120 7.3.1) */
     public class Module : XmppStreamNegotiationModule {
-        public const string ID = "bind_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "bind_module");
 
         private string requested_resource;
 
@@ -17,7 +16,7 @@ namespace Xmpp.Bind {
         }
 
         public void iq_response_stanza(XmppStream stream, Iq.Stanza iq) {
-            var flag = Flag.get_flag(stream);
+            var flag = stream.get_flag(Flag.IDENTITY);
             if (flag == null || flag.finished) return;
 
             if (iq.type_ == Iq.Stanza.TYPE_RESULT) {
@@ -54,15 +53,15 @@ namespace Xmpp.Bind {
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {
-            return !Flag.has_flag(stream) || !Flag.get_flag(stream).finished;
+            return !stream.has_flag(Flag.IDENTITY) || !stream.get_flag(Flag.IDENTITY).finished;
         }
 
         public override bool negotiation_active(XmppStream stream) {
-            return Flag.has_flag(stream) && !Flag.get_flag(stream).finished;
+            return stream.has_flag(Flag.IDENTITY) && !stream.get_flag(Flag.IDENTITY).finished;
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private static void on_bind_response(XmppStream stream, Iq.Stanza iq) {
             stream.get_module(Bind.Module.IDENTITY).iq_response_stanza(stream, iq);
@@ -70,19 +69,11 @@ namespace Xmpp.Bind {
     }
 
     public class Flag : XmppStreamFlag {
-        public const string ID = "bind";
+        public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "bind");
         public string? my_jid;
         public bool finished = false;
 
-        public static Flag? get_flag(XmppStream stream) {
-            return (Flag?) stream.get_flag(NS_URI, ID);
-        }
-
-        public static bool has_flag(XmppStream stream) {
-            return get_flag(stream) != null;
-        }
-
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
     }
 }

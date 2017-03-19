@@ -8,8 +8,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
     public const string NS_URI_ITEMS = NS_URI + "#items";
 
     public class Module : XmppStreamModule, Iq.Handler {
-        public const string ID = "0030_service_discovery_module";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0030_service_discovery_module");
 
         public ArrayList<Identity> identities = new ArrayList<Identity>();
 
@@ -18,7 +17,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
         }
 
         public void add_feature(XmppStream stream, string feature) {
-            Flag.get_flag(stream).add_own_feature(feature);
+            stream.get_flag(Flag.IDENTITY).add_own_feature(feature);
         }
 
         public void add_feature_notify(XmppStream stream, string feature) {
@@ -66,21 +65,21 @@ namespace Xmpp.Xep.ServiceDiscovery {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private static void on_request_info_response(XmppStream stream, Iq.Stanza iq, Object o) {
             Tuple<OnInfoResult, Object> tuple = o as Tuple<OnInfoResult, Object>;
             OnInfoResult on_result = tuple.a;
             InfoResult? result = InfoResult.create_from_iq(iq);
             if (result != null) {
-                Flag.get_flag(stream).set_entitiy_features(iq.from, result.features);
+                stream.get_flag(Flag.IDENTITY).set_entitiy_features(iq.from, result.features);
                 on_result(stream, result, tuple.b);
             }
         }
 
         private void send_query_result(XmppStream stream, Iq.Stanza iq_request) {
             InfoResult query_result = new ServiceDiscovery.InfoResult(iq_request);
-            query_result.features = Flag.get_flag(stream).features;
+            query_result.features = stream.get_flag(Flag.IDENTITY).features;
             query_result.identities = identities;
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, query_result.iq);
         }

@@ -31,7 +31,7 @@ public class AvatarGenerator {
     }
 
     public Pixbuf draw_message(StreamInteractor stream_interactor, Message message) {
-        Jid? real_jid = MucManager.get_instance(stream_interactor).get_message_real_jid(message);
+        Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_message_real_jid(message);
         return draw_jid(stream_interactor, real_jid != null ? real_jid : message.from, message.account);
     }
 
@@ -73,7 +73,7 @@ public class AvatarGenerator {
     }
 
     private Pixbuf draw_tile(Jid jid, Account account, int width, int height) {
-        if (MucManager.get_instance(stream_interactor).is_groupchat(jid, account)) {
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
             return draw_groupchat_tile(jid, account, width, height);
         } else {
             return draw_chat_tile(jid, account, width, height);
@@ -81,13 +81,13 @@ public class AvatarGenerator {
     }
 
     private Pixbuf draw_chat_tile(Jid jid, Account account, int width, int height) {
-        if (MucManager.get_instance(stream_interactor).is_groupchat_occupant(jid, account)) {
-            Jid? real_jid = MucManager.get_instance(stream_interactor).get_real_jid(jid, account);
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
+            Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, account);
             if (real_jid != null) {
                 return draw_tile(real_jid, account, width, height);
             }
         }
-        Pixbuf? avatar = AvatarManager.get_instance(stream_interactor).get_avatar(account, jid);
+        Pixbuf? avatar = stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, jid);
         if (avatar != null) {
             double desired_ratio = (double) width / height;
             double avatar_ratio = (double) avatar.width / avatar.height;
@@ -109,7 +109,7 @@ public class AvatarGenerator {
     }
 
     private Pixbuf draw_groupchat_tile(Jid jid, Account account, int width, int height) {
-        ArrayList<Jid>? occupants = MucManager.get_instance(stream_interactor).get_other_occupants(jid, account);
+        ArrayList<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(jid, account);
         if (stateless || occupants == null || occupants.size == 0) {
             return draw_chat_tile(jid, account, width, height);
         }

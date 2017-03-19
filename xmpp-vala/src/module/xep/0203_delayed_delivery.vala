@@ -4,8 +4,7 @@ namespace Xmpp.Xep.DelayedDelivery {
     private const string NS_URI = "urn:xmpp:delay";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0203_delayed_delivery";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0203_delayed_delivery");
 
         public static void set_message_delay(Message.Stanza message, DateTime datetime) {
             StanzaNode delay_node = (new StanzaNode.build("delay", NS_URI)).add_self_xmlns();
@@ -34,7 +33,7 @@ namespace Xmpp.Xep.DelayedDelivery {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private void on_pre_received_message(XmppStream stream, Message.Stanza message) {
             DateTime? datetime = get_send_time(message);

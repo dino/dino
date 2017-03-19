@@ -44,7 +44,7 @@ public class Util : Object {
     }
 
     public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
-        if (MucManager.get_instance(stream_interactor).is_groupchat_occupant(jid, account)) {
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
             return jid.resourcepart;
         } else {
             if (jid.bare_jid.equals(account.bare_jid.bare_jid)) {
@@ -54,7 +54,7 @@ public class Util : Object {
                     return account.alias;
                 }
             }
-            Roster.Item roster_item = RosterManager.get_instance(stream_interactor).get_roster_item(account, jid);
+            Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
             if (roster_item != null && roster_item.name != null) {
                 return roster_item.name;
             }
@@ -63,7 +63,7 @@ public class Util : Object {
     }
 
     public static string get_message_display_name(StreamInteractor stream_interactor, Entities.Message message, Account account) {
-        Jid? real_jid = MucManager.get_instance(stream_interactor).get_message_real_jid(message);
+        Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_message_real_jid(message);
         if (real_jid != null) {
             return get_display_name(stream_interactor, real_jid, account);
         } else {

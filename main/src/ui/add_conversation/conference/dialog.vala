@@ -102,7 +102,7 @@ public class Dialog : Gtk.Dialog {
         });
         select_fragment.remove_jid.connect((row) => {
             ConferenceListRow conference_row = row as ConferenceListRow;
-            MucManager.get_instance(stream_interactor).remove_bookmark(conference_row.account, conference_row.bookmark);
+            stream_interactor.get_module(MucManager.IDENTITY).remove_bookmark(conference_row.account, conference_row.bookmark);
         });
         stack.add_named(select_fragment, "select");
     }
@@ -137,7 +137,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void on_ok_button_clicked() {
-        MucManager.get_instance(stream_interactor).join(details_fragment.account, new Jid(details_fragment.jid), details_fragment.nick, details_fragment.password);
+        stream_interactor.get_module(MucManager.IDENTITY).join(details_fragment.account, new Jid(details_fragment.jid), details_fragment.nick, details_fragment.password);
         close();
     }
 

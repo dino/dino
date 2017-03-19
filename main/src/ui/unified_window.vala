@@ -99,7 +99,7 @@ public class UnifiedWindow : Window {
 
     private void on_conversation_selected(Conversation conversation) {
         this.conversation = conversation;
-        ChatInteraction.get_instance(stream_interactor).on_conversation_selected(conversation);
+        stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
         conversation.active = true; // only for conversation_selected
         filterable_conversation_list.conversation_list.on_conversation_selected(conversation); // only for conversation_opened
 
@@ -109,12 +109,12 @@ public class UnifiedWindow : Window {
     }
 
     private bool on_focus_in_event() {
-        ChatInteraction.get_instance(stream_interactor).on_window_focus_in(conversation);
+        stream_interactor.get_module(ChatInteraction.IDENTITY).on_window_focus_in(conversation);
         return false;
     }
 
     private bool on_focus_out_event() {
-        ChatInteraction.get_instance(stream_interactor).on_window_focus_out(conversation);
+        stream_interactor.get_module(ChatInteraction.IDENTITY).on_window_focus_out(conversation);
         return false;
     }
 }

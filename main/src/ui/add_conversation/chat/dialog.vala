@@ -60,7 +60,7 @@ public class Dialog : Gtk.Dialog {
         });
         select_jid_fragment.remove_jid.connect((row) => {
             ListRow list_row = roster_list.get_selected_row() as ListRow;
-            RosterManager.get_instance(stream_interactor).remove_jid(list_row.account, list_row.jid);
+            stream_interactor.get_module(RosterManager.IDENTITY).remove_jid(list_row.account, list_row.jid);
         });
         select_jid_fragment.notify["done"].connect(() => {
             ok_button.sensitive = select_jid_fragment.done;
@@ -72,8 +72,8 @@ public class Dialog : Gtk.Dialog {
         ListRow? selected_row = roster_list.get_selected_row() as ListRow;
         if (selected_row != null) {
             // TODO move in list to front immediately
-            ConversationManager.get_instance(stream_interactor).ensure_start_conversation(selected_row.jid, selected_row.account);
-            Conversation conversation = ConversationManager.get_instance(stream_interactor).get_conversation(selected_row.jid, selected_row.account);
+            stream_interactor.get_module(ConversationManager.IDENTITY).ensure_start_conversation(selected_row.jid, selected_row.account);
+            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(selected_row.jid, selected_row.account);
             conversation_opened(conversation);
         }
         close();

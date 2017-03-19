@@ -5,7 +5,8 @@ using Dino.Entities;
 
 namespace Dino {
 public class CounterpartInteractionManager : StreamInteractionModule, Object {
-    public const string id = "counterpart_interaction_manager";
+    public static ModuleIdentity<CounterpartInteractionManager> IDENTITY = new ModuleIdentity<CounterpartInteractionManager>("counterpart_interaction_manager");
+    public string id { get { return IDENTITY.id; } }
 
     public signal void received_state(Account account, Jid jid, string state);
     public signal void received_marker(Account account, Jid jid, Entities.Message message, string marker);
@@ -24,7 +25,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     private CounterpartInteractionManager(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         stream_interactor.account_added.connect(on_account_added);
-        MessageManager.get_instance(stream_interactor).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageManager.IDENTITY).message_received.connect(on_message_received);
     }
 
     public string? get_chat_state(Account account, Jid jid) {
@@ -33,14 +34,6 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
 
     public Entities.Message? get_last_read(Account account, Jid jid) {
         return last_read[jid];
-    }
-
-    public static CounterpartInteractionManager? get_instance(StreamInteractor stream_interactor) {
-        return (CounterpartInteractionManager) stream_interactor.get_module(id);
-    }
-
-    internal string get_id() {
-        return id;
     }
 
     private void on_account_added(Account account) {
@@ -61,9 +54,9 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     }
 
     private void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id) {
-        Conversation? conversation = ConversationManager.get_instance(stream_interactor).get_conversation(jid, account);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
         if (conversation != null) {
-            Gee.List<Entities.Message>? messages = MessageManager.get_instance(stream_interactor).get_messages(conversation);
+            Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageManager.IDENTITY).get_messages(conversation);
             if (messages != null) { // TODO not here
                 foreach (Entities.Message message in messages) {
                     if (message.stanza_id == stanza_id) {

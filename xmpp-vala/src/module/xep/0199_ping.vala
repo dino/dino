@@ -6,8 +6,7 @@ namespace Xmpp.Xep.Ping {
     private const string NS_URI = "urn:xmpp:ping";
 
     public class Module : XmppStreamModule {
-        public const string ID = "0199_ping";
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0199_ping");
 
         public void send_ping(XmppStream stream, string jid, ResponseListener listener) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("ping", NS_URI).add_self_xmlns());
@@ -27,7 +26,7 @@ namespace Xmpp.Xep.Ping {
         }
 
         public override string get_ns() { return NS_URI; }
-        public override string get_id() { return ID; }
+        public override string get_id() { return IDENTITY.id; }
 
         private class IqHandlerImpl : Iq.Handler, Object {
             public void on_iq_get(XmppStream stream, Iq.Stanza iq) {

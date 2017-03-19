@@ -80,9 +80,9 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         conference.name = alias_entry.text;
         conference.autojoin = autojoin_checkbutton.active;
         if (edit_confrence == null) {
-            MucManager.get_instance(stream_interactor).add_bookmark(account, conference);
+            stream_interactor.get_module(MucManager.IDENTITY).add_bookmark(account, conference);
         } else {
-            MucManager.get_instance(stream_interactor).replace_bookmark(account, edit_confrence, conference);
+            stream_interactor.get_module(MucManager.IDENTITY).replace_bookmark(account, edit_confrence, conference);
         }
         close();
     }

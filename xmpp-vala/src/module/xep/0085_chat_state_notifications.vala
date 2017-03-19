@@ -14,8 +14,7 @@ public const string STATE_PAUSED = "paused";
 private const string[] STATES = {STATE_ACTIVE, STATE_INACTIVE, STATE_GONE, STATE_COMPOSING, STATE_PAUSED};
 
 public class Module : XmppStreamModule {
-    public const string ID = "0085_chat_state_notifications";
-    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, ID);
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0085_chat_state_notifications");
 
     public signal void chat_state_received(XmppStream stream, string jid, string state);
 
@@ -47,7 +46,7 @@ public class Module : XmppStreamModule {
     }
 
     public override string get_ns() { return NS_URI; }
-    public override string get_id() { return ID; }
+    public override string get_id() { return IDENTITY.id; }
 
     private void on_pre_send_message(XmppStream stream, Message.Stanza message) {
         if (message.body == null) return;

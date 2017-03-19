@@ -5,7 +5,7 @@ using Xmpp.Core;
 namespace Xmpp.Xep.Muc {
 
 public class Flag : XmppStreamFlag {
-    public const string ID = "muc";
+    public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "muc");
 
     private HashMap<string, ListenerHolder> enter_listeners = new HashMap<string, ListenerHolder>();
     private HashMap<string, string> enter_ids = new HashMap<string, string>();
@@ -68,13 +68,9 @@ public class Flag : XmppStreamFlag {
         occupant_role.unset(full_jid);
     }
 
-    public static Flag? get_flag(XmppStream stream) { return (Flag?) stream.get_flag(NS_URI, ID); }
-
-    public static bool has_flag(XmppStream stream) { return get_flag(stream) != null; }
-
     public override string get_ns() { return NS_URI; }
 
-    public override string get_id() { return ID; }
+    public override string get_id() { return IDENTITY.id; }
 }
 
 }

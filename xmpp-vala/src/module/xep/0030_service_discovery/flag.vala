@@ -5,7 +5,7 @@ using Xmpp.Core;
 namespace Xmpp.Xep.ServiceDiscovery {
 
 public class Flag : XmppStreamFlag {
-    public const string ID = "service_discovery";
+    public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "service_discovery");
 
     private HashMap<string, ArrayList<string>> entity_features = new HashMap<string, ArrayList<string>>();
     public ArrayList<string> features = new ArrayList<string>();
@@ -21,13 +21,9 @@ public class Flag : XmppStreamFlag {
 
     public void add_own_feature(string feature) { features.add(feature); }
 
-    public static Flag? get_flag(XmppStream stream) { return (Flag?) stream.get_flag(NS_URI, ID); }
-
-    public static bool has_flag(XmppStream stream) { return get_flag(stream) != null; }
-
     public override string get_ns() { return NS_URI; }
 
-    public override string get_id() { return ID; }
+    public override string get_id() { return IDENTITY.id; }
 }
 
 }

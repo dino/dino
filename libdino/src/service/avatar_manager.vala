@@ -7,7 +7,8 @@ using Dino.Entities;
 namespace Dino {
 
 public class AvatarManager : StreamInteractionModule, Object {
-    public const string id = "avatar_manager";
+    public static ModuleIdentity<AvatarManager> IDENTITY = new ModuleIdentity<AvatarManager>("avatar_manager");
+    public string id { get { return IDENTITY.id; } }
 
     public signal void received_avatar(Pixbuf avatar, Jid jid, Account account);
 
@@ -46,7 +47,7 @@ public class AvatarManager : StreamInteractionModule, Object {
 
     public Pixbuf? get_avatar(Account account, Jid jid) {
         Jid jid_ = jid;
-        if (!MucManager.get_instance(stream_interactor).is_groupchat_occupant(jid, account)) {
+        if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
             jid_ = jid.bare_jid;
         }
         string? user_avatars_id = user_avatars[jid_];
@@ -61,7 +62,6 @@ public class AvatarManager : StreamInteractionModule, Object {
     }
 
     public void publish(Account account, string file) {
-        print(file + "\n");
         try {
             Pixbuf pixbuf = new Pixbuf.from_file(file);
             if (pixbuf.width >= pixbuf.height && pixbuf.width > MAX_PIXEL) {
@@ -81,14 +81,6 @@ public class AvatarManager : StreamInteractionModule, Object {
         } catch (Error e) {
             print("error " + e.message + "\n");
         }
-    }
-
-    public static AvatarManager? get_instance(StreamInteractor stream_interaction) {
-        return (AvatarManager) stream_interaction.get_module(id);
-    }
-
-    internal string get_id() {
-        return id;
     }
 
     private void on_account_added(Account account) {
