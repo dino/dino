@@ -2,9 +2,9 @@
 <interface>
     <template class="DinoUiConversationSummaryView">
         <property name="expand">True</property>
-        <property name="visible">True</property>
         <property name="homogeneous">False</property>
         <property name="spacing">0</property>
+        <property name="visible">True</property>
         <child>
             <object class="GtkStack" id="stack">
                 <property name="transition_type">crossfade</property>
@@ -16,6 +16,7 @@
                             <object class="GtkBox">
                                 <property name="margin">15</property>
                                 <property name="orientation">vertical</property>
+                                <property name="visible">True</property>
                                 <child>
                                     <object class="GtkBox" id="main">
                                         <property name="expand">False</property>

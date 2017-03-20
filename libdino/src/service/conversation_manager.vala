@@ -9,6 +9,7 @@ public class ConversationManager : StreamInteractionModule, Object {
     public string id { get { return IDENTITY.id; } }
 
     public signal void conversation_activated(Conversation conversation);
+    public signal void conversation_deactivated(Conversation conversation);
 
     private StreamInteractor stream_interactor;
     private Database db;
@@ -37,6 +38,16 @@ public class ConversationManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public Gee.List<Conversation> get_active_conversations() {
+        ArrayList<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
+        foreach (Account account in conversations.keys) {
+            foreach (Conversation conversation in conversations[account].values) {
+                if(conversation.active) ret.add(conversation);
+            }
+        }
+        return ret;
+    }
+
     public Conversation get_add_conversation(Jid jid, Account account) {
         ensure_add_conversation(jid, account, Conversation.Type.CHAT);
         return get_conversation(jid, account);
@@ -52,7 +63,11 @@ public class ConversationManager : StreamInteractionModule, Object {
                 conversation_activated(conversation);
             }
         }
+    }
 
+    public void close_conversation(Conversation conversation) {
+        conversation.active = false;
+        conversation_deactivated(conversation);
     }
 
     private void on_account_added(Account account) {

@@ -13,13 +13,12 @@ public class Dino.Ui.Application : Dino.Application {
         notifications.start();
         Environment.set_application_name("Dino");
         IconTheme.get_default().add_resource_path("/org/dino-im/icons");
-    }
 
-    public override void activate() {
-        create_set_app_menu();
-        window = new UnifiedWindow(this, stream_interaction);
-        window.show_all();
-        restore();
+        activate.connect(() => {
+            create_set_app_menu();
+            window = new UnifiedWindow(this, stream_interaction);
+            window.show();
+        });
     }
 
     private void show_accounts_window() {
@@ -54,20 +53,6 @@ public class Dino.Ui.Application : Dino.Application {
         MenuModel menu = builder.get_object("menu_app") as MenuModel;
 
         set_app_menu(menu);
-    }
-
-    private void restore() {
-        foreach (Account account in db.get_accounts()) {
-            if (account.enabled) add_connection(account);
-        }
-    }
-
-    private void add_connection(Account account) {
-        stream_interaction.connect(account);
-    }
-
-    private void remove_connection(Account account) {
-        stream_interaction.disconnect(account);
     }
 }
 

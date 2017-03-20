@@ -53,6 +53,7 @@ public class Row {
 }
 
 public class RowIterator {
+    private Database db;
     private Statement stmt;
 
     public RowIterator.from_query_builder(QueryBuilder query) throws DatabaseError {
@@ -60,6 +61,7 @@ public class RowIterator {
     }
 
     public RowIterator(Database db, string sql, string[]? args = null) throws DatabaseError {
+        this.db = db;
         this.stmt = db.prepare(sql);
         if (args != null) {
             for (int i = 0; i < args.length; i++) {
@@ -68,11 +70,11 @@ public class RowIterator {
         }
     }
 
-    public Row? next_value() {
-        if (stmt.step() == Sqlite.ROW) {
-            return new Row(stmt);
-        }
-        return null;
+    public Row? next_value() throws DatabaseError {
+        int r = stmt.step();
+        if (r == Sqlite.ROW) return new Row(stmt);
+        if (r == Sqlite.DONE) return null;
+        throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");
     }
 }
 

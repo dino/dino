@@ -29,10 +29,28 @@ public class Dino.Application : Gtk.Application {
         RosterManager.start(stream_interaction);
         ConversationManager.start(stream_interaction, db);
         ChatInteraction.start(stream_interaction);
+
+        activate.connect(() => {
+            restore();
+        });
     }
 
     public static string get_storage_dir() {
         return Path.build_filename(Environment.get_user_data_dir(), "dino");
+    }
+
+    protected void add_connection(Account account) {
+        stream_interaction.connect(account);
+    }
+
+    protected void remove_connection(Account account) {
+        stream_interaction.disconnect(account);
+    }
+
+    private void restore() {
+        foreach (Account account in db.get_accounts()) {
+            if (account.enabled) add_connection(account);
+        }
     }
 }
 

@@ -125,7 +125,7 @@ public abstract class ConversationRow : ListBoxRow {
         main_revealer.set_reveal_child(false);
         closed();
         main_revealer.notify["child-revealed"].connect(() => {
-            conversation.active = false;
+            stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
             disappeared();
         });
     }

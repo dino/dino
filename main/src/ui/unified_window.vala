@@ -7,16 +7,17 @@ namespace Dino.Ui {
 
 public class UnifiedWindow : Window {
 
-    private UnifiedWindowPlaceholder main_placeholder = new UnifiedWindowPlaceholder();
+    private NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
+    private NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
     private ChatInput chat_input;
     private ConversationListTitlebar conversation_list_titlebar;
     private ConversationSelector.View filterable_conversation_list;
     private ConversationSummary.View conversation_frame;
     private ConversationTitlebar conversation_titlebar;
-    private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL);
-    private Paned paned = new Paned(Orientation.HORIZONTAL);
-    private Stack headerbar_stack = new Stack();
-    private Stack stack = new Stack();
+    private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
+    private Paned paned = new Paned(Orientation.HORIZONTAL) { visible=true };
+    private Stack headerbar_stack = new Stack() { visible=true };
+    private Stack stack = new Stack() { visible=true };
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
@@ -27,7 +28,7 @@ public class UnifiedWindow : Window {
 
         setup_headerbar();
         setup_unified();
-        setup_stacks();
+        setup_stack();
 
         conversation_list_titlebar.search_button.bind_property("active", filterable_conversation_list.search_bar, "search-mode-enabled",
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -38,7 +39,11 @@ public class UnifiedWindow : Window {
 
         stream_interactor.account_added.connect((account) => { check_stack(true); });
         stream_interactor.account_removed.connect((account) => { check_stack(); });
-        main_placeholder.no_accounts_add.clicked.connect(() => { get_application().activate_action("accounts", null); });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect((conversation) => { check_stack(); });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect((conversation) => { check_stack(); });
+        accounts_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("accounts", null); });
+        conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
+        conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });
         filterable_conversation_list.conversation_list.conversation_selected.connect(on_conversation_selected);
         conversation_list_titlebar.conversation_opened.connect(on_conversation_selected);
 
@@ -46,54 +51,49 @@ public class UnifiedWindow : Window {
     }
 
     private void setup_unified() {
-        chat_input = new ChatInput(stream_interactor);
-        conversation_frame = new ConversationSummary.View(stream_interactor);
-        filterable_conversation_list = new ConversationSelector.View(stream_interactor);
+        chat_input = new ChatInput(stream_interactor) { visible=true };
+        conversation_frame = new ConversationSummary.View(stream_interactor) { visible=true };
+        filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
 
-        Grid grid = new Grid() { orientation=Orientation.VERTICAL };
+        Grid grid = new Grid() { orientation=Orientation.VERTICAL, visible=true };
         grid.add(conversation_frame);
-        grid.add(new Separator(Orientation.HORIZONTAL));
+        grid.add(new Separator(Orientation.HORIZONTAL) { visible=true });
         grid.add(chat_input);
 
         paned.set_position(300);
         paned.add1(filterable_conversation_list);
         paned.add2(grid);
-
-        conversation_frame.show_all();
     }
 
     private void setup_headerbar() {
-        conversation_titlebar = new ConversationTitlebar(stream_interactor);
-        conversation_list_titlebar = new ConversationListTitlebar(this, stream_interactor);
+        conversation_titlebar = new ConversationTitlebar(stream_interactor) { visible=true };
+        conversation_list_titlebar = new ConversationListTitlebar(this, stream_interactor) { visible=true };
         headerbar_paned.add1(conversation_list_titlebar);
         headerbar_paned.add2(conversation_titlebar);
     }
 
-    private void setup_stacks() {
+    private void setup_stack() {
         stack.add_named(paned, "main");
-        stack.add_named(main_placeholder, "placeholder");
+        stack.add_named(accounts_placeholder, "accounts_placeholder");
+        stack.add_named(conversations_placeholder, "conversations_placeholder");
         add(stack);
 
         headerbar_stack.add_named(headerbar_paned, "main");
-        headerbar_stack.add_named(new HeaderBar() { title="Dino", show_close_button=true, visible=true}, "placeholder");
+        headerbar_stack.add_named(new HeaderBar() { title="Dino", show_close_button=true, visible=true }, "placeholder");
         set_titlebar(headerbar_stack);
     }
 
     private void check_stack(bool know_exists = false) {
         ArrayList<Account> accounts = stream_interactor.get_accounts();
-        bool exists_active = know_exists;
-        foreach (Account account in accounts) {
-            if (account.enabled) {
-                exists_active = true;
-                break;
-            }
-        }
-        if (exists_active) {
+        if (!know_exists && accounts.size == 0) {
+            stack.set_visible_child_name("accounts_placeholder");
+            headerbar_stack.set_visible_child_name("placeholder");
+        } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
+            stack.set_visible_child_name("conversations_placeholder");
+            headerbar_stack.set_visible_child_name("placeholder");
+        } else {
             stack.set_visible_child_name("main");
             headerbar_stack.set_visible_child_name("main");
-        } else {
-            stack.set_visible_child_name("placeholder");
-            headerbar_stack.set_visible_child_name("placeholder");
         }
     }
 
@@ -119,9 +119,28 @@ public class UnifiedWindow : Window {
     }
 }
 
+public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
+    public NoAccountsPlaceholder() {
+        label.label = "No accounts active";
+        primary_button.label = "Manage accounts";
+        secondary_button.visible = false;
+    }
+}
+
+public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
+    public NoConversationsPlaceholder() {
+        label.label = "No conversation active";
+        primary_button.label = "Add Chat";
+        secondary_button.label = "Join Conference";
+        secondary_button.visible = true;
+    }
+}
+
 [GtkTemplate (ui = "/org/dino-im/unified_window_placeholder.ui")]
 public class UnifiedWindowPlaceholder : Box {
-    [GtkChild] public Button no_accounts_add;
+    [GtkChild] public Label label;
+    [GtkChild] public Button primary_button;
+    [GtkChild] public Button secondary_button;
 }
 
 }

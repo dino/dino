@@ -15,7 +15,7 @@ public class View : Box {
     [GtkChild] private ScrolledWindow scrolled;
 
     public View(StreamInteractor stream_interactor) {
-        conversation_list = new List(stream_interactor);
+        conversation_list = new List(stream_interactor) { visible=true };
         scrolled.add(conversation_list);
         search_entry.key_release_event.connect(search_key_release_event);
         search_entry.search_changed.connect(search_changed);

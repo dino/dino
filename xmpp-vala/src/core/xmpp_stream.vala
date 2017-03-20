@@ -237,8 +237,8 @@ public class FlagIdentity<T> : Object {
         this.id = id;
     }
 
-    public T? cast(XmppStreamFlag module) {
-        return (T?) module;
+    public T? cast(XmppStreamFlag flag) {
+        return flag.get_type().is_a(typeof(T)) ? (T?) flag : null;
     }
 
     public bool matches(XmppStreamFlag module) {
@@ -246,7 +246,7 @@ public class FlagIdentity<T> : Object {
     }
 }
 
-public abstract class XmppStreamFlag {
+public abstract class XmppStreamFlag : Object {
     public abstract string get_ns();
     public abstract string get_id();
 }
@@ -261,7 +261,7 @@ public class ModuleIdentity<T> : Object {
     }
 
     public T? cast(XmppStreamModule module) {
-        return (T?) module;
+        return module.get_type().is_a(typeof(T)) ? (T?) module : null;
     }
 
     public bool matches(XmppStreamModule module) {

@@ -76,6 +76,17 @@ public class List : ListBox {
             foreach (ConversationRow row in rows.values) row.update();
             return true;
         });
+
+        foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations()) {
+            add_conversation(conversation);
+        }
+        realize.connect(() => {
+            ListBoxRow? first_row = get_row_at_index(0);
+            if (first_row != null) {
+                select_row(first_row);
+                row_activated(first_row);
+            }
+        });
     }
 
     public override void row_activated(ListBoxRow r) {
@@ -117,15 +128,14 @@ public class List : ListBox {
             }
             rows[conversation] = row;
             add(row);
-            row.closed.connect(() => { on_conversation_closed(conversation); });
-            row.disappeared.connect(() => { on_conversation_disappeared(conversation); });
+            row.closed.connect(() => { select_next_conversation(conversation); });
+            row.disappeared.connect(() => { remove_conversation(conversation); });
             row.main_revealer.set_reveal_child(true);
         }
         invalidate_sort();
-        queue_draw();
     }
 
-    private void on_conversation_closed(Conversation conversation) {
+    private void select_next_conversation(Conversation conversation) {
         if (get_selected_row() == rows[conversation]) {
             int index = rows[conversation].get_index();
             ListBoxRow? index_p1 = get_row_at_index(index + 1);
@@ -142,7 +152,7 @@ public class List : ListBox {
         }
     }
 
-    private void on_conversation_disappeared(Conversation conversation) {
+    private void remove_conversation(Conversation conversation) {
         if (rows.has_key(conversation) && !conversation.active) {
             remove(rows[conversation]);
             rows.unset(conversation);

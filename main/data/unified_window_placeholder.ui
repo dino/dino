@@ -4,7 +4,7 @@
         <property name="valign">center</property>
         <property name="visible">True</property>
         <child>
-            <object class="GtkBox">
+            <object class="GtkBox" id="box">
                 <property name="orientation">vertical</property>
                 <property name="spacing">10</property>
                 <property name="valign">center</property>
@@ -23,8 +23,7 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkLabel">
-                        <property name="label">No accounts active</property>
+                    <object class="GtkLabel" id="label">
                         <property name="xalign">0.5</property>
                         <property name="yalign">0.5</property>
                         <property name="visible">True</property>
@@ -34,13 +33,21 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkButton" id="no_accounts_add">
-                        <property name="label">Manage accounts</property>
+                    <object class="GtkButton" id="primary_button">
                         <property name="halign">center</property>
                         <property name="visible">True</property>
                         <style>
                             <class name="text-button"/>
                             <class name="suggested-action"/>
+                        </style>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkButton" id="secondary_button">
+                        <property name="halign">center</property>
+                        <property name="no_show_all">True</property>
+                        <style>
+                            <class name="text-button"/>
                         </style>
                     </object>
                 </child>

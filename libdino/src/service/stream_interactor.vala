@@ -72,7 +72,7 @@ public class ModuleIdentity<T> : Object {
     }
 
     public T? cast(StreamInteractionModule module) {
-        return (T?) module;
+        return module.get_type().is_a(typeof(T)) ? (T?) module : null;
     }
 
     public bool matches(StreamInteractionModule module) {
