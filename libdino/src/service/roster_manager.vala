@@ -35,10 +35,10 @@ public class RosterManager : StreamInteractionModule, Object {
 
     public Roster.Item? get_roster_item(Account account, Jid jid) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            return stream.get_flag(Roster.Flag.IDENTITY).get_item(jid.bare_jid.to_string());
-        }
-        return null;
+        if (stream == null) return null;
+        Xmpp.Roster.Flag? flag = stream.get_flag(Xmpp.Roster.Flag.IDENTITY);
+        if (flag == null) return null;
+        return flag.get_item(jid.bare_jid.to_string());
     }
 
     public void remove_jid(Account account, Jid jid) {

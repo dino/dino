@@ -1,5 +1,4 @@
 using Gee;
-using Sqlite;
 using Qlite;
 
 using Dino.Entities;
@@ -16,7 +15,7 @@ public class Database : Qlite.Database {
         public Column<string> identity_key_private_base64 = new Column.Text("identity_key_private_base64") { not_null = true };
         public Column<string> identity_key_public_base64 = new Column.Text("identity_key_public_base64") { not_null = true };
 
-        protected IdentityTable(Database db) {
+        internal IdentityTable(Database db) {
             base(db, "identity");
             init({id, account_id, device_id, identity_key_private_base64, identity_key_public_base64});
         }
@@ -27,7 +26,7 @@ public class Database : Qlite.Database {
         public Column<int> signed_pre_key_id = new Column.Integer("signed_pre_key_id") { not_null = true };
         public Column<string> record_base64 = new Column.Text("record_base64") { not_null = true };
 
-        protected SignedPreKeyTable(Database db) {
+        internal SignedPreKeyTable(Database db) {
             base(db, "signed_pre_key");
             init({identity_id, signed_pre_key_id, record_base64});
             unique({identity_id, signed_pre_key_id});
@@ -39,7 +38,7 @@ public class Database : Qlite.Database {
         public Column<int> pre_key_id = new Column.Integer("pre_key_id") { not_null = true };
         public Column<string> record_base64 = new Column.Text("record_base64") { not_null = true };
 
-        protected PreKeyTable(Database db) {
+        internal PreKeyTable(Database db) {
             base(db, "pre_key");
             init({identity_id, pre_key_id, record_base64});
             unique({identity_id, pre_key_id});
@@ -52,7 +51,7 @@ public class Database : Qlite.Database {
         public Column<int> device_id = new Column.Integer("device_id") { not_null = true };
         public Column<string> record_base64 = new Column.Text("record_base64") { not_null = true };
 
-        protected SessionTable(Database db) {
+        internal SessionTable(Database db) {
             base(db, "session");
             init({identity_id, address_name, device_id, record_base64});
             unique({identity_id, address_name, device_id});

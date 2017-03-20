@@ -12,7 +12,7 @@ public class DeleteBuilder : StatementBuilder {
     private string selection;
     private StatementBuilder.Field[] selection_args;
 
-    protected DeleteBuilder(Database db) {
+    internal DeleteBuilder(Database db) {
         base(db);
     }
 
@@ -56,7 +56,7 @@ public class DeleteBuilder : StatementBuilder {
         return this;
     }
 
-    public override Statement prepare() throws DatabaseError {
+    internal override Statement prepare() throws DatabaseError {
         Statement stmt = db.prepare(@"DELETE FROM $table_name $(selection != null ? @"WHERE $selection": "")");
         for (int i = 0; i < selection_args.length; i++) {
             selection_args[i].bind(stmt, i+1);

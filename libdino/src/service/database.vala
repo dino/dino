@@ -1,5 +1,4 @@
 using Gee;
-using Sqlite;
 using Qlite;
 
 using Dino.Entities;
@@ -17,7 +16,7 @@ public class Database : Qlite.Database {
         public Column<string> alias = new Column.Text("alias");
         public Column<bool> enabled = new Column.BoolInt("enabled");
 
-        protected AccountTable(Database db) {
+        internal AccountTable(Database db) {
             base(db, "account");
             init({id, bare_jid, resourcepart, password, alias, enabled});
         }
@@ -27,7 +26,7 @@ public class Database : Qlite.Database {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<string> bare_jid = new Column.Text("bare_jid") { unique = true, not_null = true };
 
-        protected JidTable(Database db) {
+        internal JidTable(Database db) {
             base(db, "jid");
             init({id, bare_jid});
         }
@@ -48,7 +47,7 @@ public class Database : Qlite.Database {
         public Column<int> encryption = new Column.Integer("encryption");
         public Column<int> marked = new Column.Integer("marked");
 
-        protected MessageTable(Database db) {
+        internal MessageTable(Database db) {
             base(db, "message");
             init({id, stanza_id, account_id, counterpart_id, our_resource, counterpart_resource, direction,
                 type_, time, local_time, body, encryption, marked});
@@ -59,7 +58,7 @@ public class Database : Qlite.Database {
         public Column<int> message_id = new Column.Integer("message_id") { primary_key = true };
         public Column<string> real_jid = new Column.Text("real_jid");
 
-        protected RealJidTable(Database db) {
+        internal RealJidTable(Database db) {
             base(db, "real_jid");
             init({message_id, real_jid});
         }
@@ -70,7 +69,7 @@ public class Database : Qlite.Database {
         public Column<int> type_ = new Column.Integer("type");
         public Column<string> data = new Column.Text("data");
 
-        protected UndecryptedTable(Database db) {
+        internal UndecryptedTable(Database db) {
             base(db, "undecrypted");
             init({message_id, type_, data});
         }
@@ -86,7 +85,7 @@ public class Database : Qlite.Database {
         public Column<int> encryption = new Column.Integer("encryption");
         public Column<int> read_up_to = new Column.Integer("read_up_to");
 
-        protected ConversationTable(Database db) {
+        internal ConversationTable(Database db) {
             base(db, "conversation");
             init({id, account_id, jid_id, active, last_active, type_, encryption, read_up_to});
         }
@@ -97,7 +96,7 @@ public class Database : Qlite.Database {
         public Column<string> hash = new Column.Text("hash");
         public Column<int> type_ = new Column.Integer("type");
 
-        protected AvatarTable(Database db) {
+        internal AvatarTable(Database db) {
             base(db, "avatar");
             init({jid, hash, type_});
         }
@@ -107,7 +106,7 @@ public class Database : Qlite.Database {
         public Column<string> entity = new Column.Text("entity");
         public Column<string> feature = new Column.Text("feature");
 
-        protected EntityFeatureTable(Database db) {
+        internal EntityFeatureTable(Database db) {
             base(db, "entity_feature");
             init({entity, feature});
         }

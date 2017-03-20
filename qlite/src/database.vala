@@ -126,7 +126,7 @@ public class Database {
         return new RowIterator(this, sql, args);
     }
 
-    public Statement prepare(string sql) throws DatabaseError {
+    internal Statement prepare(string sql) throws DatabaseError {
         ensure_init();
         if (debug) print(@"prepare: $sql\n");
         Sqlite.Statement statement;
@@ -136,7 +136,7 @@ public class Database {
         return statement;
     }
 
-    public void exec(string sql) throws DatabaseError {
+    internal void exec(string sql) throws DatabaseError {
         ensure_init();
         if (db.exec(sql) != OK) {
             throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");

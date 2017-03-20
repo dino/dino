@@ -23,7 +23,7 @@ public class QueryBuilder : StatementBuilder {
     // LIMIT [...]
     private int limit_val;
 
-    protected QueryBuilder(Database db) {
+    internal QueryBuilder(Database db) {
         base(db);
     }
 
@@ -147,7 +147,7 @@ public class QueryBuilder : StatementBuilder {
         return row()[field];
     }
 
-    public override Statement prepare() throws DatabaseError {
+    internal override Statement prepare() throws DatabaseError {
         Statement stmt = db.prepare(@"SELECT $column_selector FROM $table_name $(selection != null ? @"WHERE $selection" : "") $(order_by_terms != null ? OrderingTerm.all_to_string(order_by_terms) : "") $(limit_val > 0 ? @" LIMIT $limit_val" : "")");
         for (int i = 0; i < selection_args.length; i++) {
             selection_args[i].bind(stmt, i+1);

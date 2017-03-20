@@ -15,7 +15,7 @@ public class InsertBuilder : StatementBuilder {
     // VALUES [...]
     private StatementBuilder.Field[] fields;
 
-    protected InsertBuilder(Database db) {
+    internal InsertBuilder(Database db) {
         base(db);
     }
 
@@ -69,7 +69,7 @@ public class InsertBuilder : StatementBuilder {
         return this;
     }
 
-    public override Statement prepare() throws DatabaseError {
+    internal override Statement prepare() throws DatabaseError {
         string fields_text = "";
         string value_qs = "";
         for (int i = 0; i < fields.length; i++) {

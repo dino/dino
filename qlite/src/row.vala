@@ -8,7 +8,7 @@ public class Row {
     private Map<string, long> int_map = new HashMap<string, long>();
     private Map<string, double?> real_map = new HashMap<string, double?>();
 
-    public Row(Statement stmt) {
+    internal Row(Statement stmt) {
         for (int i = 0; i < stmt.column_count(); i++) {
             switch(stmt.column_type(i)) {
                 case TEXT:

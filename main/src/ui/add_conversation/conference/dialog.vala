@@ -41,7 +41,7 @@ public class Dialog : Gtk.Dialog {
         if (cancel_image.get_parent() != null) cancel_button.remove(cancel_image);
         cancel_button.add(cancel_label);
         cancel_button.clicked.disconnect(show_jid_add_view);
-        cancel_button.clicked.connect(close);
+        cancel_button.clicked.connect(on_cancel);
         ok_button.label = "Next";
         ok_button.sensitive = select_fragment.done;
         ok_button.clicked.disconnect(on_ok_button_clicked);
@@ -55,7 +55,7 @@ public class Dialog : Gtk.Dialog {
     private void show_conference_details_view() {
         if (cancel_label.get_parent() != null) cancel_button.remove(cancel_label);
         cancel_button.add(cancel_image);
-        cancel_button.clicked.disconnect(close);
+        cancel_button.clicked.disconnect(on_cancel);
         cancel_button.clicked.connect(show_jid_add_view);
         ok_button.label = "Join";
         ok_button.sensitive = details_fragment.done;
@@ -143,8 +143,8 @@ public class Dialog : Gtk.Dialog {
         close();
     }
 
-    private void close() {
-        base.close();
+    private void on_cancel() {
+        close();
     }
 
     private void animate_window_resize() {

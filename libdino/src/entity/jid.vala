@@ -14,12 +14,12 @@ public class Dino.Entities.Jid : Object {
         string? localpart = parsed != null ? parsed.localpart : null;
         string domainpart = parsed != null ? parsed.domainpart : jid;
         string? resourcepart = parsed != null ? parsed.resourcepart : null;
-        Jid.components(localpart, domainpart, resourcepart);
+        this.components(localpart, domainpart, resourcepart);
     }
 
     public Jid.with_resource(string bare_jid, string resource) {
         Jid? parsed = Jid.parse(bare_jid);
-        Jid.components(parsed.localpart, parsed.domainpart, resourcepart);
+        this.components(parsed.localpart, parsed.domainpart, resourcepart);
     }
 
     public Jid.components(string? localpart, string domainpart, string? resourcepart) {

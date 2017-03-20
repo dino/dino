@@ -18,7 +18,7 @@ public class UpdateBuilder : StatementBuilder {
     private string selection;
     private StatementBuilder.Field[] selection_args;
 
-    protected UpdateBuilder(Database db, Table table) {
+    internal UpdateBuilder(Database db, Table table) {
         base(db);
         this.table = table;
         this.table_name = table.name;
@@ -101,7 +101,7 @@ public class UpdateBuilder : StatementBuilder {
         return this;
     }
 
-    public override Statement prepare() throws DatabaseError {
+    internal override Statement prepare() throws DatabaseError {
         string sql = "UPDATE";
         if (or_val != null) sql += @" OR $or_val";
         sql += @" $table_name SET ";

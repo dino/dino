@@ -11,7 +11,7 @@ public class Database : Qlite.Database {
         public Column<int> account_id = new Column.Integer("account_id") { primary_key = true };
         public Column<string> key = new Column.Text("key") { not_null = true };
 
-        protected AccountSetting(Database db) {
+        internal AccountSetting(Database db) {
             base(db, "account_setting");
             init({account_id, key});
         }
@@ -21,7 +21,7 @@ public class Database : Qlite.Database {
         public Column<string> jid = new Column.Text("jid") { primary_key = true };
         public Column<string> key = new Column.Text("key") { not_null = true };
 
-        protected ContactKey(Database db) {
+        internal ContactKey(Database db) {
             base(db, "contact_key");
             init({jid, key});
         }

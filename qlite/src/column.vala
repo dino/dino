@@ -19,7 +19,7 @@ public abstract class Column<T> {
         return false;
     }
 
-    public abstract void bind(Statement stmt, int index, T value);
+    internal abstract void bind(Statement stmt, int index, T value);
 
     public string to_string() {
         string res = name;
@@ -66,7 +66,7 @@ public abstract class Column<T> {
             return !row.has_integer(name);
         }
 
-        public override void bind(Statement stmt, int index, int value) {
+        internal override void bind(Statement stmt, int index, int value) {
             stmt.bind_int(index, value);
         }
     }
@@ -84,7 +84,7 @@ public abstract class Column<T> {
             return !row.has_integer(name);
         }
 
-        public override void bind(Statement stmt, int index, long value) {
+        internal override void bind(Statement stmt, int index, long value) {
             stmt.bind_int64(index, value);
         }
     }
@@ -102,7 +102,7 @@ public abstract class Column<T> {
             return !row.has_real(name);
         }
 
-        public override void bind(Statement stmt, int index, double value) {
+        internal override void bind(Statement stmt, int index, double value) {
             stmt.bind_double(index, value);
         }
     }
@@ -120,7 +120,7 @@ public abstract class Column<T> {
             return get(row) == null;
         }
 
-        public override void bind(Statement stmt, int index, string? value) {
+        internal override void bind(Statement stmt, int index, string? value) {
             if (value != null) {
                 stmt.bind_text(index, value);
             } else {
@@ -138,7 +138,7 @@ public abstract class Column<T> {
             return row.get_text(name) == "1";
         }
 
-        public override void bind(Statement stmt, int index, bool value) {
+        internal override void bind(Statement stmt, int index, bool value) {
             stmt.bind_text(index, value ? "1" : "0");
         }
     }
@@ -152,7 +152,7 @@ public abstract class Column<T> {
             return row.get_integer(name) == 1;
         }
 
-        public override void bind(Statement stmt, int index, bool value) {
+        internal override void bind(Statement stmt, int index, bool value) {
             stmt.bind_int(index, value ? 1 : 0);
         }
     }

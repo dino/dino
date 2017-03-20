@@ -43,8 +43,8 @@ namespace Xmpp.Xep.UserAvatars {
 
         public static void on_event_result(XmppStream stream, string jid, string id, StanzaNode node, Object? obj) {
             PixbufStorage? storage = obj as PixbufStorage;
-            StanzaNode info_node = node.get_subnode("info", NS_URI_METADATA);
-            if (info_node.get_attribute("type") != "image/png") return;
+            StanzaNode? info_node = node.get_subnode("info", NS_URI_METADATA);
+            if (info_node == null || info_node.get_attribute("type") != "image/png") return;
             if (storage.has_image(id)) {
                 stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
             } else {

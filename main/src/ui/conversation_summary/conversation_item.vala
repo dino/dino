@@ -25,7 +25,7 @@ public interface ConversationItem : Gtk.Widget {
             case MessageKind.ME_COMMAND:
                 return new SlashMeItem(stream_interactor, conversation, message);
         }
-        return null;
+        assert_not_reached();
     }
 }
 
