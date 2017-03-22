@@ -156,7 +156,7 @@ public class QueryBuilder : StatementBuilder {
     }
 
     public RowIterator iterator() throws DatabaseError {
-        return new RowIterator.from_query_builder(this);
+        return new RowIterator.from_query_builder(db, this);
     }
 
     class OrderingTerm {

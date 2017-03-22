@@ -38,7 +38,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void show_jid_add_view() {
-        cancel_button.remove(cancel_image);
+        if (cancel_image.get_parent() != null) cancel_button.remove(cancel_image);
         cancel_button.add(cancel_label);
         cancel_button.clicked.disconnect(show_jid_add_view);
         cancel_button.clicked.connect(close);
@@ -53,7 +53,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void show_conference_details_view() {
-        cancel_button.remove(cancel_label);
+        if (cancel_label.get_parent() != null) cancel_button.remove(cancel_label);
         cancel_button.add(cancel_image);
         cancel_button.clicked.disconnect(close);
         cancel_button.clicked.connect(show_jid_add_view);
@@ -125,11 +125,13 @@ public class Dialog : Gtk.Dialog {
         ListRow? row = conference_list.get_selected_row() as ListRow;
         ConferenceListRow? conference_row = conference_list.get_selected_row() as ConferenceListRow;
         if (conference_row != null) {
+            details_fragment.account = conference_row.account;
             details_fragment.jid = conference_row.bookmark.jid;
             details_fragment.nick = conference_row.bookmark.nick;
             if (conference_row.bookmark.password != null) details_fragment.password = conference_row.bookmark.password;
             ok_button.grab_focus();
         } else if (row != null) {
+            details_fragment.account = row.account;
             details_fragment.jid = row.jid.to_string();
             details_fragment.set_editable();
         }

@@ -18,17 +18,10 @@ protected class ConferenceDetailsFragment : Box {
     }
 
     public Account account {
-        owned get {
-            foreach (Account account in stream_interactor.get_accounts()) {
-                if (accounts_comboboxtext.get_active_text() == account.bare_jid.to_string()) {
-                    return account;
-                }
-            }
-            return null;
-        }
+        owned get { return account_combobox.selected; }
         set {
             accounts_label.label = value.bare_jid.to_string();
-            accounts_comboboxtext.set_active_id(value.bare_jid.to_string());
+            account_combobox.selected = value;
         }
     }
     public string jid {
@@ -56,7 +49,7 @@ protected class ConferenceDetailsFragment : Box {
     [GtkChild] private Stack accounts_stack;
     [GtkChild] private Button accounts_button;
     [GtkChild] private Label accounts_label;
-    [GtkChild] private ComboBoxText accounts_comboboxtext;
+    [GtkChild] private AccountComboBox account_combobox;
 
     [GtkChild] private Stack jid_stack;
     [GtkChild] private Button jid_button;
@@ -77,6 +70,7 @@ protected class ConferenceDetailsFragment : Box {
 
     public ConferenceDetailsFragment(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
+        account_combobox.initialize(stream_interactor);
 
         accounts_stack.set_visible_child_name("label");
         jid_stack.set_visible_child_name("label");
@@ -88,30 +82,32 @@ protected class ConferenceDetailsFragment : Box {
         nick_button.clicked.connect(() => { set_active_stack(nick_stack); });
         password_button.clicked.connect(() => { set_active_stack(password_stack); });
 
-        accounts_comboboxtext.changed.connect(() => {accounts_label.label = accounts_comboboxtext.get_active_text(); });
+        account_combobox.changed.connect(() => { accounts_label.label = account_combobox.selected.bare_jid.to_string(); });
         jid_entry.key_release_event.connect(on_jid_key_release_event);
         nick_entry.key_release_event.connect(on_nick_key_release_event);
         password_entry.key_release_event.connect(on_password_key_release_event);
 
         jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
         nick_entry.key_release_event.connect(() => { done = true; return false; });
-
-        foreach (Account account in stream_interactor.get_accounts()) {
-            accounts_comboboxtext.append_text(account.bare_jid.to_string());
-        }
-        accounts_comboboxtext.set_active(0);
     }
 
     public void set_editable() {
-        accounts_stack.set_visible_child_name("entry");
         nick_stack.set_visible_child_name("entry");
         password_stack.set_visible_child_name("entry");
+    }
+
+    public void reset_editable() {
+        jid_stack.set_visible_child_name("label");
+        accounts_stack.set_visible_child_name("label");
+        nick_stack.set_visible_child_name("label");
+        password_stack.set_visible_child_name("label");
     }
 
     public void clear() {
         jid = "";
         nick = "";
         password = "";
+        reset_editable();
     }
 
     private bool on_jid_key_release_event(EventKey event) {

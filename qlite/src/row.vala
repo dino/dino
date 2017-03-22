@@ -56,7 +56,8 @@ public class RowIterator {
     private Database db;
     private Statement stmt;
 
-    public RowIterator.from_query_builder(QueryBuilder query) throws DatabaseError {
+    public RowIterator.from_query_builder(Database db, QueryBuilder query) throws DatabaseError {
+        this.db = db;
         this.stmt = query.prepare();
     }
 

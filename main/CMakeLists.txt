@@ -71,6 +71,7 @@ SOURCES
     src/ui/add_conversation/conference/conference_details_fragment.vala
     src/ui/add_conversation/conference/conference_list.vala
     src/ui/add_conversation/conference/dialog.vala
+    src/ui/add_conversation/accounts_combo_box.vala
     src/ui/add_conversation/list_row.vala
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala

@@ -3,7 +3,7 @@ using Xmpp;
 
 namespace Dino.Ui {
 
-public class Notifications : GLib.Object {
+public class Notifications : Object {
 
     private StreamInteractor stream_interactor;
     private Notify.Notification notification = new Notify.Notification("", null, null);
@@ -38,6 +38,13 @@ public class Notifications : GLib.Object {
         notification.set_image_from_pixbuf((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, jid, account));
         notification.add_action("accept", "Accept", () => {
             stream_interactor.get_module(PresenceManager.IDENTITY).approve_subscription(account, jid);
+
+            if (stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid) == null) {
+                AddConversation.Chat.AddContactDialog dialog = new AddConversation.Chat.AddContactDialog(stream_interactor);
+                dialog.jid = jid.bare_jid.to_string();
+                dialog.account = account;
+                dialog.show();
+            }
             try {
                 notification.close();
             } catch (Error error) { }

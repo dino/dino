@@ -9,7 +9,7 @@ namespace Dino.Ui.AddConversation.Conference {
 protected class AddGroupchatDialog : Gtk.Dialog {
 
     [GtkChild] private Stack accounts_stack;
-    [GtkChild] private ComboBoxText accounts_comboboxtext;
+    [GtkChild] private AccountComboBox account_combobox;
     [GtkChild] private Label account_label;
     [GtkChild] private Button ok_button;
     [GtkChild] private Button cancel_button;
@@ -28,10 +28,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         ok_button.label = "Add";
         ok_button.get_style_context().add_class("suggested-action"); // TODO why doesn't it work in XML
         accounts_stack.set_visible_child_name("combobox");
-        foreach (Account account in stream_interactor.get_accounts()) {
-            accounts_comboboxtext.append_text(account.bare_jid.to_string());
-        }
-        accounts_comboboxtext.set_active(0);
+        account_combobox.initialize(stream_interactor);
 
         cancel_button.clicked.connect(() => { close(); });
         ok_button.clicked.connect(on_ok_button_clicked);
@@ -69,20 +66,14 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     }
 
     private void on_ok_button_clicked() {
-        Account? account = null;
-        foreach (Account account2 in stream_interactor.get_accounts()) {
-            if (accounts_comboboxtext.get_active_text() == account2.bare_jid.to_string()) {
-                account = account2;
-            }
-        }
         Xmpp.Xep.Bookmarks.Conference conference = new Xmpp.Xep.Bookmarks.Conference(jid_entry.text);
         conference.nick = nick_entry.text;
         conference.name = alias_entry.text;
         conference.autojoin = autojoin_checkbutton.active;
         if (edit_confrence == null) {
-            stream_interactor.get_module(MucManager.IDENTITY).add_bookmark(account, conference);
+            stream_interactor.get_module(MucManager.IDENTITY).add_bookmark(account_combobox.selected, conference);
         } else {
-            stream_interactor.get_module(MucManager.IDENTITY).replace_bookmark(account, edit_confrence, conference);
+            stream_interactor.get_module(MucManager.IDENTITY).replace_bookmark(account_combobox.selected, edit_confrence, conference);
         }
         close();
     }
