@@ -36,7 +36,7 @@ public class MessageManager : StreamInteractionModule, Object {
     public void send_message(string text, Conversation conversation) {
         Entities.Message message = create_out_message(text, conversation);
         add_message(message, conversation);
-        db.add_message(message, conversation.account);
+        message.persist(db);
         send_xmpp_message(message, conversation);
         message_sent(message, conversation);
     }
@@ -88,7 +88,8 @@ public class MessageManager : StreamInteractionModule, Object {
     private void on_message_received(Account account, Xmpp.Message.Stanza message) {
         if (message.body == null) return;
 
-        Entities.Message new_message = new Entities.Message();
+        Entities.Message.Type type_ = message.type_ == Xmpp.Message.Stanza.TYPE_GROUPCHAT ? Entities.Message.Type.GROUPCHAT : Entities.Message.Type.CHAT;
+        Entities.Message new_message = new Entities.Message(message.body, type_);
         new_message.account = account;
         new_message.stanza_id = message.id;
         Jid from_jid = new Jid(message.from);
@@ -100,9 +101,7 @@ public class MessageManager : StreamInteractionModule, Object {
         }
         new_message.counterpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.to) : new Jid(message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.from) : new Jid(message.to);
-        new_message.body = message.body;
         new_message.stanza = message;
-        new_message.set_type_string(message.type_);
         Xep.DelayedDelivery.MessageFlag? deleyed_delivery_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
         new_message.time = deleyed_delivery_flag != null ? deleyed_delivery_flag.datetime : new DateTime.now_utc();
         new_message.local_time = new DateTime.now_utc();
@@ -112,7 +111,7 @@ public class MessageManager : StreamInteractionModule, Object {
         bool is_uuid = new_message.stanza_id != null && Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", new_message.stanza_id);
         if ((is_uuid && !db.contains_message_by_stanza_id(new_message.stanza_id, conversation.account)) ||
             (!is_uuid && !db.contains_message(new_message, conversation.account))) {
-            db.add_message(new_message, conversation.account);
+            new_message.persist(db);
             add_message(new_message, conversation);
             if (new_message.time.difference(conversation.last_active) > 0) {
                 conversation.last_active = new_message.time;
@@ -133,7 +132,8 @@ public class MessageManager : StreamInteractionModule, Object {
     }
 
     private Entities.Message create_out_message(string text, Conversation conversation) {
-        Entities.Message message = new Entities.Message();
+        Entities.Message.Type type_ = conversation.type_ == Conversation.Type.GROUPCHAT ? Entities.Message.Type.GROUPCHAT : Entities.Message.Type.CHAT;
+        Entities.Message message = new Entities.Message(text, type_);
         message.stanza_id = random_uuid();
         message.account = conversation.account;
         message.body = text;

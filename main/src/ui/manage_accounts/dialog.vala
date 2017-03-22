@@ -98,7 +98,7 @@ public class Dialog : Gtk.Window {
         AddAccountDialog add_account_dialog = new AddAccountDialog(stream_interactor);
         add_account_dialog.set_transient_for(this);
         add_account_dialog.added.connect((account) => {
-            db.add_account(account);
+            account.persist(db);
             AccountRow account_item = add_account(account);
             account_list.select_row(account_item);
             account_list.queue_draw();
@@ -112,7 +112,7 @@ public class Dialog : Gtk.Window {
             account_list.remove(account_item);
             account_list.queue_draw();
             if (account_item.account.enabled) account_disabled(account_item.account);
-            db.remove_account(account_item.account);
+            account_item.account.remove();
             if (account_list.get_row_at_index(0) != null) {
                 account_list.select_row(account_list.get_row_at_index(0));
             } else {

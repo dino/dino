@@ -49,11 +49,10 @@ public class AddAccountDialog : Gtk.Dialog {
     }
 
     private void on_ok_button_clicked() {
-        Account account = new Account.from_bare_jid(jid_entry.get_text());
-        account.resourcepart = "dino";
-        account.alias = alias_entry.get_text();
-        account.enabled = false;
-        account.password = password_entry.get_text();
+        Jid jid = new Jid(jid_entry.get_text());
+        string password = password_entry.get_text();
+        string alias = alias_entry.get_text();
+        Account account = new Account(jid, null, password, alias);
         added(account);
         close();
     }

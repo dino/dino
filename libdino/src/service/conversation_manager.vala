@@ -92,10 +92,9 @@ public class ConversationManager : StreamInteractionModule, Object {
 
     private void ensure_add_conversation(Jid jid, Account account, Conversation.Type type) {
         if (conversations.has_key(account) && !conversations[account].has_key(jid)) {
-            Conversation conversation = new Conversation(jid, account);
-            conversation.type_ = type;
+            Conversation conversation = new Conversation(jid, account, type);
             add_conversation(conversation);
-            db.add_conversation(conversation);
+            conversation.persist(db);
         }
     }
 
