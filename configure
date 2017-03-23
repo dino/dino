@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OPTS=`getopt -o "h" --long prefix:,enable-plugin:,disable-plugin:,valac:,valac-flags:,lib-suffix:,help,disable-fast-vapi,no-debug -n './configure' -- "$@"`
+OPTS=`getopt -o "h" --long prefix:,enable-plugin:,disable-plugin:,valac:,valac-flags:,lib-suffix:,help,disable-fast-vapi,no-debug,fetch-only -n './configure' -- "$@"`
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
 eval set -- "$OPTS"
@@ -13,6 +13,7 @@ VALAC_FLAGS=
 DISABLE_FAST_VAPI=
 LIB_SUFFIX=
 NO_DEBUG=
+FETCH_ONLY=
 
 help() {
     cat << EOF
@@ -32,82 +33,115 @@ Options:
   --valac-flags=FLAGS        Use FLAGS when invoking the vala compiler
   --disable-fast-vapi        Disable the usage of Vala compilers fast-vapi feature.
 
+  --fetch-only               Only fetch the files required to run ./configure without
+                             network access later and exit
 EOF
 }
 
 while true; do
-  case "$1" in
-    --prefix ) PREFIX="$2"; shift; shift ;;
-    --enable-plugin ) if [ "$ENABLED_PLUGINS" == "" ]; then ENABLED_PLUGINS="$2"; else ENABLED_PLUGINS="ENABLED_PLUGINS;$2"; fi; shift; shift ;;
-    --disable-plugin ) if [ "$DISABLED_PLUGINS" == "" ]; then DISABLED_PLUGINS="$2"; else DISABLED_PLUGINS="DISABLED_PLUGINS;$2"; fi; shift; shift ;;
-    --valac ) VALA_EXECUTABLE="$2"; shift; shift ;;
-    --valac-flags ) VALAC_FLAGS="$2"; shift; shift ;;
-    --lib-suffix ) LIB_SUFFIX="$2"; shift; shift ;;
-    --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;
-    --no-debug ) NO_DEBUG=yes; shift ;;
-    -h | --help ) help; exit 0 ;;
-    -- ) shift; break ;;
-    * ) break ;;
-  esac
+    case "$1" in
+        --prefix ) PREFIX="$2"; shift; shift ;;
+        --enable-plugin ) if [ "$ENABLED_PLUGINS" == "" ]; then ENABLED_PLUGINS="$2"; else ENABLED_PLUGINS="ENABLED_PLUGINS;$2"; fi; shift; shift ;;
+        --disable-plugin ) if [ "$DISABLED_PLUGINS" == "" ]; then DISABLED_PLUGINS="$2"; else DISABLED_PLUGINS="DISABLED_PLUGINS;$2"; fi; shift; shift ;;
+        --valac ) VALA_EXECUTABLE="$2"; shift; shift ;;
+        --valac-flags ) VALAC_FLAGS="$2"; shift; shift ;;
+        --lib-suffix ) LIB_SUFFIX="$2"; shift; shift ;;
+        --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;
+        --no-debug ) NO_DEBUG=yes; shift ;;
+        --fetch-only ) FETCH_ONLY=yes; shift ;;
+        -h | --help ) help; exit 0 ;;
+        -- ) shift; break ;;
+        * ) break ;;
+    esac
 done
+
+if [ -d ".git" ]; then
+    git submodule update --init 2>/dev/null
+elif [ -x $(which git) ]; then
+    tmp=0
+    for i in $(cat .gitmodules | grep -n submodule | awk -F ':' '{print $1}') $(wc -l .gitmodules | awk '{print $1}'); do
+        if ! [ $tmp -eq 0 ]; then
+            name=$(cat .gitmodules | head -n $tmp | tail -n 1 | awk -F '"' '{print $2}')
+            def=$(cat .gitmodules | head -n $i | tail -n $(($i-$tmp)) | awk -F ' ' '{print $1 $2 $3}')
+            path=$(echo "$def" | grep '^path=' | awk -F '=' '{print $2}')
+            url=$(echo "$def" | grep '^url=' | awk -F '=' '{print $2}')
+            branch=$(echo "$def" | grep '^branch=' | awk -F '=' '{print $2}')
+
+            if ! ls "$path"/* >/dev/null 2>/dev/null; then
+                if ! [ -x $(which git) ]; then
+                    echo "Failed retrieving missing files"
+                    exit 5
+                fi
+                git clone "$url" "$path" 2>/dev/null
+                if [[ "$branch" != "" ]]; then
+                    pushd "$path" > /dev/null
+                    git checkout "$branch" 2>/dev/null
+                    popd > /dev/null
+                fi
+                echo "Submodule path '$path': checked out '$branch' (via git clone)"
+            fi
+        fi
+        tmp=$i
+    done
+fi
+
+if [[ "$FETCH_ONLY" == "yes" ]]; then exit 0; fi
 
 if [ ! -x "$(which cmake 2>/dev/null)" ]
 then
-  echo "-!- CMake required."
-  exit 1
+    echo "-!- CMake required."
+    exit 1
 fi
 
 ninja_bin="$(which ninja-build 2>/dev/null)"
 if ! [ -x "$ninja_bin" ]; then
-  ninja_bin="$(which ninja 2>/dev/null)"
+    ninja_bin="$(which ninja 2>/dev/null)"
 fi
 if [ -x "$ninja_bin" ]; then
-  ninja_version=$($ninja_bin --version 2>/dev/null)
-  if [ $? -eq 0 ]; then
-    echo "-- Found Ninja: $ninja_bin (found version \"$ninja_version\")"
-    cmake_type="Ninja"
-    exec_bin="$ninja_bin"
-    exec_command="$exec_bin"
-  elif [[ "/usr/sbin/ninja" == "$ninja_bin" ]]; then
-    echo "-- Ninja at $ninja_bin is not usable. Did you install 'ninja' instead of 'ninja-build'?"
-  fi
+    ninja_version=$($ninja_bin --version 2>/dev/null)
+    if [ $? -eq 0 ]; then
+        echo "-- Found Ninja: $ninja_bin (found version \"$ninja_version\")"
+        cmake_type="Ninja"
+        exec_bin="$ninja_bin"
+        exec_command="$exec_bin"
+    elif [[ "/usr/sbin/ninja" == "$ninja_bin" ]]; then
+        echo "-- Ninja at $ninja_bin is not usable. Did you install 'ninja' instead of 'ninja-build'?"
+    fi
 fi
 
 if ! [ -x "$exec_bin" ]; then
-  make_bin="$(which make 2>/dev/null)"
-  if [ -x "$make_bin" ]; then
-    echo "-- Found Make: $make_bin"
-    cmake_type="Unix Makefiles"
-    exec_bin="$make_bin"
-    exec_command="$exec_bin"
-    echo "--   Running with make. Using Ninja (ninja-build) might improve build experience."
-  fi
+    make_bin="$(which make 2>/dev/null)"
+    if [ -x "$make_bin" ]; then
+        echo "-- Found Make: $make_bin"
+        cmake_type="Unix Makefiles"
+        exec_bin="$make_bin"
+        exec_command="$exec_bin"
+        echo "--   Running with make. Using Ninja (ninja-build) might improve build experience."
+    fi
 fi
 
 if ! [ -x "$exec_bin" ]; then
-  echo "-!- No compatible build system (Ninja, Make) found."
-  exit 4
+    echo "-!- No compatible build system (Ninja, Make) found."
+    exit 4
 fi
 
-# TODO don't use git submodule
-git submodule update --init --recursive
 
-if [ -f ./build  ]
+if [ -f ./build ]
 then
-  echo "-!- ./build file exists. ./configure can't continue"
-  exit 2
+    echo "-!- ./build file exists. ./configure can't continue"
+    exit 2
 fi
 
 if [ -d build ]
 then
-  last_type=`cat build/.cmake_type`
-  if [ "$cmake_type" != "$last_type" ]
-  then
-    echo "-- Using different build system, cleaning build system files"
-    cd build
-    rm -r CMakeCache.txt CMakeFiles
-    cd ..
-  fi
+    last_type=`cat build/.cmake_type`
+    if [ "$cmake_type" != "$last_type" ]
+    then
+        echo "-- Using different build system, cleaning build system files"
+        cd build
+        rm -r CMakeCache.txt CMakeFiles
+        cd ..
+    fi
 fi
 
 mkdir -p build
