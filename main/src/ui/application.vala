@@ -17,6 +17,7 @@ public class Dino.Ui.Application : Dino.Application {
         activate.connect(() => {
             create_set_app_menu();
             window = new UnifiedWindow(this, stream_interaction);
+            notifications.conversation_selected.connect(window.on_conversation_selected);
             window.show();
         });
     }

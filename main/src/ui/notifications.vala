@@ -1,3 +1,5 @@
+using Gee;
+
 using Dino.Entities;
 using Xmpp;
 
@@ -5,8 +7,17 @@ namespace Dino.Ui {
 
 public class Notifications : Object {
 
+    public signal void conversation_selected(Conversation conversation);
+
     private StreamInteractor stream_interactor;
-    private Notify.Notification notification = new Notify.Notification("", null, null);
+    private HashMap<Conversation, Notify.Notification> notifications = new HashMap<Conversation, Notify.Notification>(Conversation.hash_func, Conversation.equals_func);
+
+    private enum ClosedReason { // org.freedesktop.Notifications.NotificationClosed
+        EXPIRED = 1,
+        USER_DISMISSED = 2,
+        CLOSE_NOTIFICATION = 3,
+        UNDEFINED = 4
+    }
 
     public Notifications(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -18,17 +29,28 @@ public class Notifications : Object {
     }
 
     private void on_message_received(Entities.Message message, Conversation conversation) {
+        if (!notifications.has_key(conversation)) {
+            notifications[conversation] = new Notify.Notification("", null, null);
+            notifications[conversation].set_hint("transient", true);
+            notifications[conversation].closed.connect(() => {
+                if (notifications[conversation].closed_reason == ClosedReason.USER_DISMISSED) {
+                    // USER_DISMISSED + transient = very probably clicked on
+                    conversation_selected(conversation);
+                }
+            });
+        }
         if (!stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus()) {
             string display_name = Util.get_conversation_display_name(stream_interactor, conversation);
+            string text = message.body;
             if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(conversation.counterpart, conversation.account)) {
                 string muc_occupant = Util.get_display_name(stream_interactor, message.from, conversation.account);
-                display_name = muc_occupant + " in " + display_name;
+                text = @"<b>$muc_occupant</b> $text";
             }
-            notification.update(display_name, message.body, null);
-            notification.set_image_from_pixbuf((new AvatarGenerator(40, 40)).draw_conversation(stream_interactor, conversation));
-            notification.set_timeout(3);
+            notifications[conversation].update(display_name, text, null);
+            notifications[conversation].set_image_from_pixbuf((new AvatarGenerator(40, 40)).draw_conversation(stream_interactor, conversation));
+            notifications[conversation].set_timeout(3);
             try {
-                notification.show();
+                notifications[conversation].show();
             } catch (Error error) { }
         }
     }
