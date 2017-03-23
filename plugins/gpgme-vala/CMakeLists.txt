@@ -1,14 +1,9 @@
-find_package(Vala REQUIRED)
-find_package(PkgConfig REQUIRED)
 find_package(GPGME REQUIRED)
-include(${VALA_USE_FILE})
-
-set(GPGME_VALA_PACKAGES
-    gee-0.8
-    glib-2.0
+find_packages(GPGME_VALA_PACKAGES REQUIRED
+    Gee
+    GLib
+    GObject
 )
-
-pkg_check_modules(GPGME_VALA REQUIRED ${GPGME_VALA_PACKAGES})
 
 vala_precompile(GPGME_VALA_C
 SOURCES
@@ -23,15 +18,12 @@ GENERATE_VAPI
     gpgme-vala
 GENERATE_HEADER
     gpgme-vala
-OPTIONS
-    ${GLOBAL_DEBUG_FLAGS}
-    --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${GPGME_VALA_CFLAGS} ${GPGME_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_definitions(${CFLAGS})
 add_library(gpgme-vala ${GPGME_VALA_C} src/gpgme_fix.c)
-target_link_libraries(gpgme-vala ${GPGME_VALA_LIBRARIES} ${GPGME_LIBRARIES})
+target_link_libraries(gpgme-vala ${GPGME_VALA_PACKAGES} gpgme)
 set_property(TARGET gpgme-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/gpgme_fix.h"

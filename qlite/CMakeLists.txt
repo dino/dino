@@ -1,14 +1,9 @@
-find_package(Vala REQUIRED)
-find_package(PkgConfig REQUIRED)
-include(${VALA_USE_FILE})
-
-set(QLITE_PACKAGES
-    gee-0.8
-    glib-2.0
-    sqlite3
+find_packages(QLITE_PACKAGES REQUIRED
+    Gee
+    GLib
+    GObject
+    SQLite3
 )
-
-pkg_check_modules(QLITE REQUIRED ${QLITE_PACKAGES})
 
 vala_precompile(QLITE_VALA_C
 SOURCES
@@ -28,18 +23,18 @@ GENERATE_VAPI
     qlite
 GENERATE_HEADER
     qlite
-OPTIONS
-    ${GLOBAL_DEBUG_FLAGS}
-    --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${QLITE_CFLAGS})
-add_definitions(${CFLAGS})
+add_definitions(${VALA_CFLAGS})
 add_library(qlite SHARED ${QLITE_VALA_C})
-target_link_libraries(qlite ${QLITE_LIBRARIES})
+target_link_libraries(qlite ${QLITE_PACKAGES})
 
 add_custom_target(qlite-vapi
 DEPENDS
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
+    ${CMAKE_BINARY_DIR}/exports/qlite.deps
 )
 
+install(TARGETS qlite ${TARGET_INSTALL})
+install(FILES ${CMAKE_BINARY_DIR}/exports/qlite.vapi ${CMAKE_BINARY_DIR}/exports/qlite.deps DESTINATION ${VAPI_INSTALL_DIR})
+install(FILES ${CMAKE_BINARY_DIR}/exports/qlite.h DESTINATION ${INCLUDE_INSTALL_DIR})

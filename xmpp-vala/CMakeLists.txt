@@ -1,16 +1,10 @@
-find_package(Vala REQUIRED)
-find_package(PkgConfig REQUIRED)
-include(GlibCompileResourcesSupport)
-include(${VALA_USE_FILE})
-
-set(ENGINE_PACKAGES
-    gee-0.8
-    gio-2.0
-    glib-2.0
-    gdk-3.0
+find_packages(ENGINE_PACKAGES REQUIRED
+    GDKPixbuf2
+    Gee
+    GIO
+    GLib
+    GObject
 )
-
-pkg_check_modules(ENGINE REQUIRED ${ENGINE_PACKAGES})
 
 vala_precompile(ENGINE_VALA_C
 SOURCES
@@ -66,19 +60,18 @@ GENERATE_VAPI
     xmpp-vala
 GENERATE_HEADER
     xmpp-vala
-OPTIONS
-    --target-glib=2.38
-    ${GLOBAL_DEBUG_FLAGS}
-    --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${ENGINE_CFLAGS})
-add_definitions(${CFLAGS})
+add_definitions(${VALA_CFLAGS})
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
-target_link_libraries(xmpp-vala ${ENGINE_LIBRARIES})
+target_link_libraries(xmpp-vala ${ENGINE_PACKAGES})
 
 add_custom_target(xmpp-vala-vapi
 DEPENDS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
+    ${CMAKE_BINARY_DIR}/exports/xmpp-vala.deps
 )
 
+install(TARGETS xmpp-vala ${TARGET_INSTALL})
+install(FILES ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi ${CMAKE_BINARY_DIR}/exports/xmpp-vala.deps DESTINATION ${VAPI_INSTALL_DIR})
+install(FILES ${CMAKE_BINARY_DIR}/exports/xmpp-vala.h DESTINATION ${INCLUDE_INSTALL_DIR})

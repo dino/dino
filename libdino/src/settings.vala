@@ -20,7 +20,7 @@ public class Settings {
 
     public static Settings instance() {
         SettingsSchemaSource sss = SettingsSchemaSource.get_default();
-        SettingsSchema schema = sss.lookup("org.dino-im", false);
+        SettingsSchema? schema = sss.lookup("org.dino-im", true);
         return new Settings(new GLib.Settings.full(schema, null, null));
     }
 }

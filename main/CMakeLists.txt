@@ -1,18 +1,11 @@
-find_package(Vala REQUIRED)
-find_package(PkgConfig REQUIRED)
-include(${VALA_USE_FILE})
-include(GlibCompileResourcesSupport)
-
-set(MAIN_PACKAGES
-    gee-0.8
-    glib-2.0
-    gtk+-3.0
-    gmodule-2.0
-    libnotify
-    sqlite3
+find_packages(MAIN_PACKAGES REQUIRED
+    Gee
+    GLib>=2.38
+    GModule
+    GObject
+    GTK3>=3.22
+    Libnotify
 )
-
-pkg_check_modules(MAIN REQUIRED ${MAIN_PACKAGES})
 
 set(RESOURCE_LIST
     icons/dino-double-tick-symbolic.svg
@@ -107,14 +100,29 @@ PACKAGES
     ${MAIN_PACKAGES}
 GRESOURCES
     ${MAIN_GRESOURCES_XML}
-OPTIONS
-    --target-glib=2.38
-    ${GLOBAL_DEBUG_FLAGS}
-    --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${MAIN_CFLAGS})
-add_definitions(${CFLAGS})
+add_definitions(${VALA_CFLAGS})
 add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET})
 add_dependencies(dino dino-vapi dino-gsettings-schema-compiled)
-target_link_libraries(dino libdino ${MAIN_LIBRARIES})
+target_link_libraries(dino libdino ${MAIN_PACKAGES})
+
+if(WIN32)
+    target_link_libraries(dino -mwindows)
+endif(WIN32)
+
+install(TARGETS dino ${TARGET_INSTALL})
+install(FILES data/dino.desktop DESTINATION ${APPLICATION_INSTALL_DIR})
+install(FILES data/icons/dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
+install(FILES data/icons/dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
+install(FILES
+    data/icons/dino-status-away.svg
+    data/icons/dino-status-chat.svg
+    data/icons/dino-status-dnd.svg
+    data/icons/dino-status-online.svg
+
+    data/icons/dino-double-tick-symbolic.svg
+    data/icons/dino-tick-symbolic.svg
+DESTINATION
+    ${ICON_INSTALL_DIR}/hicolor/scalable/status
+)

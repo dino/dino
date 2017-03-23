@@ -1,20 +1,14 @@
-add_subdirectory(libsignal-protocol-c)
+add_subdirectory(libsignal-protocol-c EXCLUDE_FROM_ALL)
 set_property(TARGET curve25519 PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET protobuf-c PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET signal-protocol-c PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-find_package(Vala REQUIRED)
-find_package(PkgConfig REQUIRED)
 find_package(OpenSSL REQUIRED)
-include(${VALA_USE_FILE})
-
-set(SIGNAL_PROTOCOL_PACKAGES
-    glib-2.0
-    gee-0.8
-    gobject-2.0
+find_packages(SIGNAL_PROTOCOL_PACKAGES REQUIRED
+    Gee
+    GLib
+    GObject
 )
-
-pkg_check_modules(SIGNAL_PROTOCOL REQUIRED ${SIGNAL_PROTOCOL_PACKAGES})
 
 vala_precompile(SIGNAL_PROTOCOL_VALA_C
 SOURCES
@@ -34,16 +28,13 @@ GENERATE_VAPI
     signal-protocol-vala
 GENERATE_HEADER
     signal-protocol-vala
-OPTIONS
-    ${GLOBAL_DEBUG_FLAGS}
-    --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${SIGNAL_PROTOCOL_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src -I${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_definitions(${CFLAGS})
 add_library(signal-protocol-vala ${SIGNAL_PROTOCOL_VALA_C} ${CMAKE_CURRENT_SOURCE_DIR}/src/signal_helper.c)
 add_dependencies(signal-protocol-vala signal-protocol-c)
-target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} signal-protocol-c -lm)
+target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} ${OPENSSL_CRYPTO_LIBRARY} signal-protocol-c -lm)
 set_property(TARGET signal-protocol-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(SIGNAL_PROTOCOL_C_HEADERS
@@ -126,13 +117,10 @@ if(BUILD_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/vapi/signal-protocol-native.vapi
     PACKAGES
         ${SIGNAL_PROTOCOL_PACKAGES}
-    OPTIONS
-        ${GLOBAL_DEBUG_FLAGS}
-        --thread
     )
 
-    set(CFLAGS ${VALA_CFLAGS} ${SIGNAL_PROTOCOL_CFLAGS} -I${CMAKE_CURRENT_BINARY_DIR}/signal-protocol)
+    set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_BINARY_DIR}/signal-protocol)
     add_executable(signal-protocol-vala-test ${SIGNAL_TEST_VALA_C})
     add_dependencies(signal-protocol-vala-test signal-protocol-vala signal-protocol-vapi)
-    target_link_libraries(signal-protocol-vala-test signal-protocol-vala)
+    target_link_libraries(signal-protocol-vala-test signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES})
 endif(BUILD_TESTING)

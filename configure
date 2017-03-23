@@ -1,12 +1,55 @@
 #!/bin/bash
 
-cont() {
-    read c
-    if [ "$c" != "yes" ] && [ "$c" != "Yes" ] && [ "$c" != "y" ] && [ "$c" != "Y" ]
-    then
-      exit 3
-    fi
+OPTS=`getopt -o "h" --long prefix:,enable-plugin:,disable-plugin:,valac:,valac-flags:,lib-suffix:,help,disable-fast-vapi,no-debug -n './configure' -- "$@"`
+if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+
+eval set -- "$OPTS"
+
+PREFIX=${PREFIX:-/usr/local}
+VALA_EXECUTABLE=${VALA_EXECUTABLE:-$(which valac)}
+ENABLED_PLUGINS=
+DISABLED_PLUGINS=
+VALAC_FLAGS=
+DISABLE_FAST_VAPI=
+LIB_SUFFIX=
+NO_DEBUG=
+
+help() {
+    cat << EOF
+Usage:
+  ./configure [OPTIONS]...
+
+Options:
+  -h, --help                 Print this help and exit
+  --prefix=PREFIX            Prepend PREFIX to program installation paths. [$PREFIX]
+  --lib-suffix=SUFFIX        Append SUFFIX to the directory name for libraries
+  --no-debug                 Build without debug symbols
+
+  --enable-plugin=PLUGIN     Enable compilation of plugin PLUGIN.
+  --disable-plugin=PLUGIN    Disable compilation of plugin PLUGIN.
+
+  --valac=VALAC              Use VALAC as Vala pre-compiler. [$VALA_EXECUTABLE]
+  --valac-flags=FLAGS        Use FLAGS when invoking the vala compiler
+  --disable-fast-vapi        Disable the usage of Vala compilers fast-vapi feature.
+
+EOF
 }
+
+while true; do
+  case "$1" in
+    --prefix ) PREFIX="$2"; shift; shift ;;
+    --enable-plugin ) if [ "$ENABLED_PLUGINS" == "" ]; then ENABLED_PLUGINS="$2"; else ENABLED_PLUGINS="ENABLED_PLUGINS;$2"; fi; shift; shift ;;
+    --disable-plugin ) if [ "$DISABLED_PLUGINS" == "" ]; then DISABLED_PLUGINS="$2"; else DISABLED_PLUGINS="DISABLED_PLUGINS;$2"; fi; shift; shift ;;
+    --valac ) VALA_EXECUTABLE="$2"; shift; shift ;;
+    --valac-flags ) VALAC_FLAGS="$2"; shift; shift ;;
+    --lib-suffix ) LIB_SUFFIX="$2"; shift; shift ;;
+    --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;
+    --no-debug ) NO_DEBUG=yes; shift ;;
+    -h | --help ) help; exit 0 ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
 
 if [ ! -x "$(which cmake 2>/dev/null)" ]
 then
@@ -37,6 +80,7 @@ if ! [ -x "$exec_bin" ]; then
     cmake_type="Unix Makefiles"
     exec_bin="$make_bin"
     exec_command="$exec_bin"
+    echo "--   Running with make. Using Ninja (ninja-build) might improve build experience."
   fi
 fi
 
@@ -45,6 +89,7 @@ if ! [ -x "$exec_bin" ]; then
   exit 4
 fi
 
+# TODO don't use git submodule
 git submodule update --init --recursive
 
 if [ -f ./build  ]
@@ -55,11 +100,6 @@ fi
 
 if [ -d build ]
 then
-  if [ ! -f "build/.cmake_type" ]
-  then
-    printf "-!- ./build exists but was not created by ./configure script, continue? [y/N] "
-    cont
-  fi
   last_type=`cat build/.cmake_type`
   if [ "$cmake_type" != "$last_type" ]
   then
@@ -74,7 +114,7 @@ mkdir -p build
 cd build
 
 echo "$cmake_type" > .cmake_type
-cmake -G "$cmake_type" ..
+cmake -G "$cmake_type" -DCMAKE_INSTALL_PREFIX="$PREFIX" -DENABLED_PLUGINS="$ENABLED_PLUGINS" -DDISABLED_PLUGINS="$DISABLED_PLUGINS" -DVALA_EXECUTABLE="$VALA_EXECUTABLE" -DCMAKE_VALA_FLAGS="$VALAC_FLAGS" -DDISABLE_FAST_VAPI="$DISABLE_FAST_VAPI" -DLIB_SUFFIX="$LIB_SUFFIX" -DNO_DEBUG="$NO_DEBUG" ..
 
 if [ "$cmake_type" == "Ninja" ]
 then
@@ -95,6 +135,4 @@ default:
 	@sh -c "cd build; $exec_command \"\$@\""
 EOF
 
-if [[ "$exec_bin" == "$make_bin" ]]; then
-    echo "--   Running with make. Using Ninja (ninja-build) might improve build experience."
-fi
+echo "-- Configured. Type 'make' to build, 'make install' to install."

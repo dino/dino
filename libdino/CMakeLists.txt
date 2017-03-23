@@ -1,16 +1,10 @@
-find_package(Vala REQUIRED)
-find_package(PkgConfig REQUIRED)
-include(${VALA_USE_FILE})
-
-set(LIBDINO_PACKAGES
-    gee-0.8
-    glib-2.0
-    gtk+-3.0
-    gmodule-2.0
-    sqlite3
+find_packages(LIBDINO_PACKAGES REQUIRED
+    Gee
+    GLib
+    GModule
+    GObject
+    GTK3
 )
-
-pkg_check_modules(LIBDINO REQUIRED ${LIBDINO_PACKAGES})
 
 vala_precompile(LIBDINO_VALA_C
 SOURCES
@@ -49,28 +43,27 @@ SOURCES
 CUSTOM_VAPIS
     "${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi"
     "${CMAKE_BINARY_DIR}/exports/qlite.vapi"
+CUSTOM_DEPS
+    xmpp-vala
+    qlite
 PACKAGES
     ${LIBDINO_PACKAGES}
 GENERATE_VAPI
     dino
 GENERATE_HEADER
     dino
-OPTIONS
-    --target-glib=2.38
-    ${GLOBAL_DEBUG_FLAGS}
-    --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${LIBDINO_CFLAGS})
-add_definitions(${CFLAGS})
+add_definitions(${VALA_CFLAGS})
 add_library(libdino SHARED ${LIBDINO_VALA_C})
 add_dependencies(libdino xmpp-vala-vapi qlite-vapi)
-target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_LIBRARIES} -lm)
+target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} -lm)
 set_target_properties(libdino PROPERTIES PREFIX "")
 
 add_custom_target(dino-vapi
 DEPENDS
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
+    ${CMAKE_BINARY_DIR}/exports/dino.deps
 )
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/gschemas.compiled
@@ -84,3 +77,8 @@ add_custom_target(dino-gsettings-schema-compiled
 DEPENDS
     ${CMAKE_BINARY_DIR}/gschemas.compiled
 )
+
+install(TARGETS libdino ${TARGET_INSTALL})
+install(FILES ${CMAKE_BINARY_DIR}/exports/dino.vapi ${CMAKE_BINARY_DIR}/exports/dino.deps DESTINATION ${VAPI_INSTALL_DIR})
+install(FILES ${CMAKE_BINARY_DIR}/exports/dino.h DESTINATION ${INCLUDE_INSTALL_DIR})
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/dino.gschema.xml DESTINATION ${SHARE_INSTALL_PREFIX}/glib-2.0/schemas/)

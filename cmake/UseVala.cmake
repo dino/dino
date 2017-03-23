@@ -116,9 +116,9 @@ endfunction()
 
 function(vala_precompile output)
     cmake_parse_arguments(ARGS "FAST_VAPI" "DIRECTORY;GENERATE_HEADER;GENERATE_VAPI;EXPORTS_DIR"
-        "SOURCES;PACKAGES;OPTIONS;DEFINITIONS;CUSTOM_VAPIS;GRESOURCES" ${ARGN})
+        "SOURCES;PACKAGES;OPTIONS;DEFINITIONS;CUSTOM_VAPIS;CUSTOM_DEPS;GRESOURCES" ${ARGN})
 
-    if("Ninja" STREQUAL ${CMAKE_GENERATOR})
+    if("Ninja" STREQUAL ${CMAKE_GENERATOR} AND NOT DISABLE_FAST_VAPI)
         set(ARGS_FAST_VAPI true)
     endif()
 
@@ -165,6 +165,7 @@ function(vala_precompile output)
     set(fast_vapi_files "")
     set(out_files "")
     set(out_extra_files "")
+    set(out_deps_files "")
 
     set(vapi_arguments "")
     if(ARGS_GENERATE_VAPI)
@@ -176,6 +177,11 @@ function(vala_precompile output)
         if (NOT ARGS_GENERATE_HEADER)
             set(ARGS_GENERATE_HEADER ${ARGS_GENERATE_VAPI})
         endif(NOT ARGS_GENERATE_HEADER)
+
+        if(ARGS_PACKAGES)
+            string(REPLACE ";" "\\n" pkgs "${ARGS_PACKAGES};${ARGS_CUSTOM_DEPS}")
+            add_custom_command(OUTPUT "${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}.deps" COMMAND echo -e "\"${pkgs}\"" > "${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}.deps" COMMENT "Generating ${ARGS_GENERATE_VAPI}.deps")
+        endif(ARGS_PACKAGES)
     endif(ARGS_GENERATE_VAPI)
 
     set(header_arguments "")
@@ -185,6 +191,8 @@ function(vala_precompile output)
         list(APPEND header_arguments "--header=${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_HEADER}.h")
         list(APPEND header_arguments "--internal-header=${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_HEADER}_internal.h")
     endif(ARGS_GENERATE_HEADER)
+
+    string(REPLACE " " ";" VALAC_FLAGS ${CMAKE_VALA_FLAGS})
 
     if(ARGS_FAST_VAPI)
         foreach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
@@ -205,6 +213,7 @@ function(vala_precompile output)
             ARGS
                 --fast-vapi ${fast_vapi_file}
                 ${ARGS_OPTIONS}
+                ${VALAC_FLAGS}
                 ${in_file}
             DEPENDS
                 ${in_file}
@@ -242,6 +251,7 @@ function(vala_precompile output)
                 ${vala_define_opts}
                 ${gresources_args}
                 ${ARGS_OPTIONS}
+                ${VALAC_FLAGS}
                 ${fast_vapi_flags}
                 ${in_file}
                 ${custom_vapi_arguments}
@@ -269,6 +279,7 @@ function(vala_precompile output)
                 ${vala_define_opts}
                 ${gresources_args}
                 ${ARGS_OPTIONS}
+                ${VALAC_FLAGS}
                 ${in_files}
                 ${custom_vapi_arguments}
             DEPENDS
@@ -303,6 +314,7 @@ function(vala_precompile output)
             ${vala_define_opts}
             ${gresources_args}
             ${ARGS_OPTIONS}
+            ${VALAC_FLAGS}
             ${in_files}
             ${custom_vapi_arguments}
         DEPENDS

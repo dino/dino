@@ -1,9 +1,9 @@
-if(NOT WITHOUT_OPENPGP)
+if(PLUGIN_ENABLED_openpgp)
   add_subdirectory(gpgme-vala)
   add_subdirectory(openpgp)
-endif(NOT WITHOUT_OPENPGP)
+endif(PLUGIN_ENABLED_openpgp)
 
-if(NOT WITHOUT_OMEMO)
+if(PLUGIN_ENABLED_omemo)
   add_subdirectory(omemo)
   add_subdirectory(signal-protocol)
-endif(NOT WITHOUT_OMEMO)
+endif(PLUGIN_ENABLED_omemo)

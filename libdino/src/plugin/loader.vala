@@ -20,17 +20,29 @@ public class Loader : Object {
 
     public Loader(string? exec_str = null) {
         search_paths += Application.get_storage_dir();
-        if (exec_str != null) {
-            string exec_path = exec_str;
+        string? exec_path = exec_str;
+        if (exec_path != null) {
             if (!exec_path.contains(Path.DIR_SEPARATOR_S)) {
                 exec_path = Environment.find_program_in_path(exec_str);
             }
-            if (exec_path[0:5] != "/usr") {
+            // TODO: more robust is detection if installed
+            if (!exec_path.has_prefix("/usr/")) {
                 search_paths += Path.get_dirname(exec_path);
             }
         }
         foreach (string dir in Environment.get_system_data_dirs()) {
             search_paths += Path.build_filename(dir, "dino");
+        }
+        if (exec_path != null) {
+            if (Path.get_basename(Path.get_dirname(exec_path)) == "bin") {
+                search_paths += Path.build_filename(Path.get_dirname(Path.get_dirname(exec_path)), "share", "dino");
+            }
+        }
+    }
+
+    public void print_search_paths() {
+        foreach (string prefix in search_paths) {
+            print(@"$prefix/plugins\n");
         }
     }
 

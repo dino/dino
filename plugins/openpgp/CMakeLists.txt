@@ -1,17 +1,10 @@
-find_package(Vala REQUIRED)
-find_package(PkgConfig REQUIRED)
-include(${VALA_USE_FILE})
-include(GlibCompileResourcesSupport)
-
-set(OPENPGP_PACKAGES
-    gee-0.8
-    glib-2.0
-    gtk+-3.0
-    gmodule-2.0
-    sqlite3
+find_packages(OPENPGP_PACKAGES REQUIRED
+    Gee
+    GLib>=2.38
+    GModule
+    GObject
+    GTK3
 )
-
-pkg_check_modules(OPENPGP REQUIRED ${OPENPGP_PACKAGES})
 
 set(RESOURCE_LIST
     account_settings_item.ui
@@ -47,16 +40,13 @@ PACKAGES
     ${OPENPGP_PACKAGES}
 GRESOURCES
     ${OPENPGP_GRESOURCES_XML}
-OPTIONS
-    --target-glib=2.38
-    ${GLOBAL_DEBUG_FLAGS}
-    --thread
 )
 
-set(CFLAGS ${VALA_CFLAGS} ${OPENPGP_CFLAGS})
-add_definitions(${CFLAGS})
+add_definitions(${VALA_CFLAGS})
 add_library(openpgp SHARED ${OPENPGP_VALA_C} ${OPENPGP_GRESOURCES_TARGET})
 add_dependencies(openpgp dino-vapi gpgme-vapi)
-target_link_libraries(openpgp libdino gpgme-vala)
+target_link_libraries(openpgp libdino gpgme-vala ${OPENPGP_PACKAGES})
 set_target_properties(openpgp PROPERTIES PREFIX "")
 set_target_properties(openpgp PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
+
+install(TARGETS openpgp ${PLUGIN_INSTALL})
