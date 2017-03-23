@@ -32,6 +32,8 @@ Options:
   --valac=VALAC              Use VALAC as Vala pre-compiler. [$VALA_EXECUTABLE]
   --valac-flags=FLAGS        Use FLAGS when invoking the vala compiler
   --disable-fast-vapi        Disable the usage of Vala compilers fast-vapi feature.
+                             fast-vapi mode is slower when doing clean builds, but
+                             faster when doing incremental builds (during development)
 
   --fetch-only               Only fetch the files required to run ./configure without
                              network access later and exit

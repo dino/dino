@@ -67,6 +67,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 find_package(Vala 0.30 REQUIRED)
+if(VALA_VERSION VERSION_EQUAL "0.36.0")
+    # Due to a bug on 0.36.0, we need to disable FAST_VAPI
+    set(DISABLE_FAST_VAPI yes)
+endif()
+
 include(${VALA_USE_FILE})
 include(MultiFind)
 include(GlibCompileResourcesSupport)
