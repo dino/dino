@@ -9,7 +9,7 @@ public class UnifiedWindow : Window {
 
     private NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     private NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
-    private ChatInput chat_input;
+    private ChatInput.View chat_input;
     private ConversationListTitlebar conversation_list_titlebar;
     private ConversationSelector.View filterable_conversation_list;
     private ConversationSummary.View conversation_frame;
@@ -62,7 +62,7 @@ public class UnifiedWindow : Window {
     }
 
     private void setup_unified() {
-        chat_input = new ChatInput(stream_interactor) { visible=true };
+        chat_input = new ChatInput.View(stream_interactor) { visible=true };
         conversation_frame = new ConversationSummary.View(stream_interactor) { visible=true };
         filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
 

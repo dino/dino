@@ -41,13 +41,13 @@ public class MessageManager : StreamInteractionModule, Object {
         message_sent(message, conversation);
     }
 
-    public Gee.List<Entities.Message>? get_messages(Conversation conversation) {
+    public Gee.List<Entities.Message>? get_messages(Conversation conversation, int count = 50) {
         if (messages.has_key(conversation) && messages[conversation].size > 0) {
-            Gee.List<Entities.Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, 50, messages[conversation][0]);
+            Gee.List<Entities.Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, count, messages[conversation][0]);
             db_messages.add_all(messages[conversation]);
             return db_messages;
         } else {
-            Gee.List<Entities.Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, 50, null);
+            Gee.List<Entities.Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, count, null);
             return db_messages;
         }
     }

@@ -68,7 +68,9 @@ SOURCES
     src/ui/add_conversation/list_row.vala
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala
-    src/ui/chat_input.vala
+    src/ui/chat_input/occupants_tab_completer.vala
+    src/ui/chat_input/smiley_converter.vala
+    src/ui/chat_input/view.vala
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_selector/chat_row.vala
     src/ui/conversation_selector/conversation_row.vala

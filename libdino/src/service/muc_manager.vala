@@ -53,7 +53,10 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public ArrayList<Jid>? get_occupants(Jid jid, Account account) {
-        return stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(jid, account);
+        if (is_groupchat(jid, account)) {
+            return stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(jid, account);
+        }
+        return null;
     }
 
     public ArrayList<Jid>? get_other_occupants(Jid jid, Account account) {
