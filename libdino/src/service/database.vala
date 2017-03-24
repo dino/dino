@@ -120,6 +120,10 @@ public class Database : Qlite.Database {
     public AvatarTable avatar { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
 
+    public Map<int, string> jid_table_cache = new HashMap<int, string>();
+    public Map<string, int> jid_table_reverse = new HashMap<string, int>();
+    public Map<int, Account> account_table_cache = new HashMap<int, Account>();
+
     public Database(string fileName) throws DatabaseError {
         base(fileName, VERSION);
         account = new AccountTable(this);
@@ -141,21 +145,26 @@ public class Database : Qlite.Database {
         foreach(Row row in account.select()) {
             Account account = new Account.from_row(this, row);
             ret.add(account);
+            account_table_cache[account.id] = account;
         }
         return ret;
     }
 
     public Account? get_account_by_id(int id) {
-        Row? row = account.row_with(account.id, id).inner;
-        if (row != null) {
-            return new Account.from_row(this, row);
+        if (account_table_cache.has_key(id)) {
+            return account_table_cache[id];
+        } else {
+            Row? row = account.row_with(account.id, id).inner;
+            if (row != null) {
+                Account a = new Account.from_row(this, row);
+                account_table_cache[a.id] = a;
+                return a;
+            }
+            return null;
         }
-        return null;
     }
 
     public Gee.List<Message> get_messages(Jid jid, Account account, int count, Message? before) {
-        string jid_id = get_jid_id(jid).to_string();
-
         QueryBuilder select = message.select()
                 .with(message.counterpart_id, "=", get_jid_id(jid))
                 .with(message.account_id, "=", account.id)
@@ -181,10 +190,9 @@ public class Database : Qlite.Database {
     }
 
     public bool contains_message(Message query_message, Account account) {
-        int jid_id = get_jid_id(query_message.counterpart);
         QueryBuilder builder = message.select()
                 .with(message.account_id, "=", account.id)
-                .with(message.counterpart_id, "=", jid_id)
+                .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
                 .with(message.counterpart_resource, "=", query_message.counterpart.resourcepart)
                 .with(message.body, "=", query_message.body)
                 .with(message.time, "<", (long) query_message.time.add_minutes(1).to_unix())
@@ -255,16 +263,41 @@ public class Database : Qlite.Database {
 
 
     public int get_jid_id(Jid jid_obj) {
-        Row? row = jid.row_with(jid.bare_jid, jid_obj.bare_jid.to_string()).inner;
-        return row != null ? row[jid.id] : add_jid(jid_obj);
+        string bare_jid = jid_obj.bare_jid.to_string();
+        if (jid_table_reverse.has_key(bare_jid)) {
+            return jid_table_reverse[bare_jid];
+        } else {
+            Row? row = jid.row_with(jid.bare_jid, jid_obj.bare_jid.to_string()).inner;
+            if (row != null) {
+                int id = row[jid.id];
+                jid_table_cache[id] = bare_jid;
+                jid_table_reverse[bare_jid] = id;
+                return id;
+            } else {
+                return add_jid(jid_obj);
+            }
+        }
     }
 
     public string? get_jid_by_id(int id) {
-        return jid.select({jid.bare_jid}).with(jid.id, "=", id)[jid.bare_jid];
+        if (jid_table_cache.has_key(id)) {
+            return jid_table_cache[id];
+        } else {
+            string? bare_jid = jid.select({jid.bare_jid}).with(jid.id, "=", id)[jid.bare_jid];
+            if (bare_jid != null) {
+                jid_table_cache[id] = bare_jid;
+                jid_table_reverse[bare_jid] = id;
+            }
+            return bare_jid;
+        }
     }
 
     private int add_jid(Jid jid_obj) {
-        return (int) jid.insert().value(jid.bare_jid, jid_obj.bare_jid.to_string()).perform();
+        string bare_jid = jid_obj.bare_jid.to_string();
+        int id = (int) jid.insert().value(jid.bare_jid, bare_jid).perform();
+        jid_table_cache[id] = bare_jid;
+        jid_table_reverse[bare_jid] = id;
+        return id;
     }
 }
 

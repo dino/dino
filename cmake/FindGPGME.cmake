@@ -20,14 +20,14 @@ if(GPGME_CONFIG_EXECUTABLE)
                     OUTPUT_VARIABLE GPGME_LDFLAGS
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-    string(REGEX REPLACE "^(.* |)-l([^ ]*)$( .*|)" "\\2" GPGME_LIBRARY "${GPGME_LDFLAGS}")
-    string(REGEX REPLACE "^(.* |)-L([^ ]*)$( .*|)" "\\2" GPGME_LIBRARY_DIRS "${GPGME_LDFLAGS}")
+    string(REGEX REPLACE "^(.* |)-l([^ ]*gpgme[^ ]*)( .*|)$" "\\2" GPGME_LIBRARY "${GPGME_LDFLAGS}")
+    string(REGEX REPLACE "^(.* |)-L([^ ]*)( .*|)$" "\\2" GPGME_LIBRARY_DIRS "${GPGME_LDFLAGS}")
     find_library(LIB_NAME_GPGME ${GPGME_LIBRARY} HINTS ${GPGME_LIBRARY_DIRS})
     set(GPGME_LIBRARY ${LIB_NAME_GPGME})
 
     if(NOT TARGET gpgme)
-        add_library(gpgme SHARED IMPORTED)
-        set_property(TARGET gpgme PROPERTY IMPORTED_LOCATION "${GPGME_LIBRARY}")
+        add_library(gpgme INTERFACE IMPORTED)
+        set_property(TARGET gpgme PROPERTY INTERFACE_LINK_LIBRARIES "${GPGME_LDFLAGS}")
         set_property(TARGET gpgme PROPERTY INTERFACE_COMPILE_OPTIONS "${GPGME_CFLAGS}")
     endif(NOT TARGET gpgme)
 endif(GPGME_CONFIG_EXECUTABLE)

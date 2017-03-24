@@ -22,6 +22,7 @@ public class AvatarManager : StreamInteractionModule, Object {
     private HashMap<Jid, string> user_avatars = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
     private HashMap<Jid, string> vcard_avatars = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
     private AvatarStorage avatar_storage = new AvatarStorage(get_storage_dir());
+    private HashMap<string, Pixbuf> cached_pixbuf = new HashMap<string, Pixbuf>();
     private const int MAX_PIXEL = 192;
 
     public static void start(StreamInteractor stream_interactor, Database db) {
@@ -45,6 +46,17 @@ public class AvatarManager : StreamInteractionModule, Object {
         modules.add(new Xep.VCard.Module(avatar_storage));
     }
 
+    private Pixbuf? get_avatar_by_hash(string hash) {
+        if (cached_pixbuf.has_key(hash)) {
+            return cached_pixbuf[hash];
+        }
+        Pixbuf? image = avatar_storage.get_image(hash);
+        if (image != null) {
+            cached_pixbuf[hash] = image;
+        }
+        return image;
+    }
+
     public Pixbuf? get_avatar(Account account, Jid jid) {
         Jid jid_ = jid;
         if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
@@ -52,11 +64,11 @@ public class AvatarManager : StreamInteractionModule, Object {
         }
         string? user_avatars_id = user_avatars[jid_];
         if (user_avatars_id != null) {
-            return avatar_storage.get_image(user_avatars_id);
+            return get_avatar_by_hash(user_avatars_id);
         }
         string? vcard_avatars_id = vcard_avatars[jid_];
         if (vcard_avatars_id != null) {
-            return avatar_storage.get_image(vcard_avatars_id);
+            return get_avatar_by_hash(vcard_avatars_id);
         }
         return null;
     }

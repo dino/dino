@@ -140,7 +140,7 @@ public class Message : Object {
 
     private void on_update(Object o, ParamSpec sp) {
         Qlite.UpdateBuilder update_builder = db.message.update().with(db.message.id, "=", id);
-    switch (sp.get_name()) {
+        switch (sp.name) {
             case "stanza_id":
                 update_builder.set(db.message.stanza_id, stanza_id); break;
             case "counterpart":
@@ -166,7 +166,7 @@ public class Message : Object {
         update_builder.perform();
 
         if (sp.get_name() == "real_jid") {
-            db.real_jid.insert()
+            db.real_jid.insert().or("REPLACE")
                 .value(db.real_jid.message_id, id)
                 .value(db.real_jid.real_jid, real_jid)
                 .perform();

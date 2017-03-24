@@ -74,15 +74,23 @@ public class Conversation : Object {
 
     private void on_update(Object o, ParamSpec sp) {
         var update = db.conversation.update().with(db.conversation.jid_id, "=", db.get_jid_id(counterpart))
-                .with(db.conversation.account_id, "=", account.id)
-                .set(db.conversation.type_, type_)
-                .set(db.conversation.encryption, encryption)
-                //.set(conversation.read_up_to, changed_conversation.read_up_to)
-                .set(db.conversation.active, active);
-        if (last_active != null) {
-            update.set(db.conversation.last_active, (long) last_active.to_unix());
-        } else {
-            update.set_null(db.conversation.last_active);
+                .with(db.conversation.account_id, "=", account.id);
+        switch (sp.name) {
+            case "type_":
+                update.set(db.conversation.type_, type_); break;
+            case "encryption":
+                update.set(db.conversation.encryption, encryption); break;
+            case "read_up_to":
+                update.set(db.conversation.read_up_to, read_up_to.id); break;
+            case "active":
+                update.set(db.conversation.active, active); break;
+            case "last_active":
+                if (last_active != null) {
+                    update.set(db.conversation.last_active, (long) last_active.to_unix());
+                } else {
+                    update.set_null(db.conversation.last_active);
+                }
+                break;
         }
         update.perform();
     }
