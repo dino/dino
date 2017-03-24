@@ -13,7 +13,16 @@ public class Conversation : Object {
     public Account account { get; private set; }
     public Jid counterpart { get; private set; }
     public bool active { get; set; default = false; }
-    public DateTime? last_active { get; set; }
+    private DateTime? _last_active;
+    public DateTime? last_active {
+        get { return _last_active; }
+        set {
+            if (_last_active == null ||
+                    (value != null && value.difference(_last_active) > 0)) {
+                _last_active = value;
+            }
+        }
+    }
     public Encryption encryption { get; set; default = Encryption.NONE; }
     public Type type_ { get; set; }
     public Message read_up_to { get; set; }
@@ -34,7 +43,7 @@ public class Conversation : Object {
         account = db.get_account_by_id(row[db.conversation.account_id]);
         active = row[db.conversation.active];
         int64? last_active = row[db.conversation.last_active];
-        if (last_active != null) this.last_active = new DateTime.from_unix_utc(last_active);
+        if (last_active != null) this.last_active = new DateTime.from_unix_local(last_active);
         type_ = (Conversation.Type) row[db.conversation.type_];
         encryption = (Encryption) row[db.conversation.encryption];
         int? read_up_to = row[db.conversation.read_up_to];
@@ -76,15 +85,15 @@ public class Conversation : Object {
         var update = db.conversation.update().with(db.conversation.jid_id, "=", db.get_jid_id(counterpart))
                 .with(db.conversation.account_id, "=", account.id);
         switch (sp.name) {
-            case "type_":
+            case "type-":
                 update.set(db.conversation.type_, type_); break;
             case "encryption":
                 update.set(db.conversation.encryption, encryption); break;
-            case "read_up_to":
+            case "read-up-to":
                 update.set(db.conversation.read_up_to, read_up_to.id); break;
             case "active":
                 update.set(db.conversation.active, active); break;
-            case "last_active":
+            case "last-active":
                 if (last_active != null) {
                     update.set(db.conversation.last_active, (long) last_active.to_unix());
                 } else {

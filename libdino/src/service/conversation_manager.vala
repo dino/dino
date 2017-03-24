@@ -31,6 +31,18 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect(on_message_sent);
     }
 
+    public Conversation create_conversation(Jid jid, Account account, Conversation.Type type) {
+        assert(conversations.has_key(account));
+        if (conversations[account].has_key(jid)) {
+            return conversations[account][jid];
+        } else {
+            Conversation conversation = new Conversation(jid, account, type);
+            add_conversation(conversation);
+            conversation.persist(db);
+            return conversation;
+        }
+    }
+
     public Conversation? get_conversation(Jid jid, Account account) {
         if (conversations.has_key(account)) {
             return conversations[account][jid];
@@ -48,20 +60,14 @@ public class ConversationManager : StreamInteractionModule, Object {
         return ret;
     }
 
-    public Conversation get_add_conversation(Jid jid, Account account) {
-        ensure_add_conversation(jid, account, Conversation.Type.CHAT);
-        return get_conversation(jid, account);
-    }
-
-    public void ensure_start_conversation(Jid jid, Account account) {
-        ensure_add_conversation(jid, account, Conversation.Type.CHAT);
-        Conversation? conversation = get_conversation(jid, account);
-        if (conversation != null) {
-            conversation.last_active = new DateTime.now_utc();
-            if (!conversation.active) {
-                conversation.active = true;
-                conversation_activated(conversation);
-            }
+    public void start_conversation(Conversation conversation, bool push_front = false) {
+        if (push_front) {
+            conversation.last_active = new DateTime.now_local();
+            if (conversation.active) conversation_activated(conversation);
+        }
+        if (!conversation.active) {
+            conversation.active = true;
+            conversation_activated(conversation);
         }
     }
 
@@ -78,7 +84,8 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     private void on_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
-        ensure_start_conversation(conversation.counterpart, conversation.account);
+        conversation.last_active = message.time;
+        start_conversation(conversation);
     }
 
     private void on_message_sent(Entities.Message message, Conversation conversation) {
@@ -86,16 +93,8 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     private void on_groupchat_joined(Account account, Jid jid, string nick) {
-        ensure_add_conversation(jid, account, Conversation.Type.GROUPCHAT);
-        ensure_start_conversation(jid, account);
-    }
-
-    private void ensure_add_conversation(Jid jid, Account account, Conversation.Type type) {
-        if (conversations.has_key(account) && !conversations[account].has_key(jid)) {
-            Conversation conversation = new Conversation(jid, account, type);
-            add_conversation(conversation);
-            conversation.persist(db);
-        }
+        Conversation conversation = create_conversation(jid, account, Conversation.Type.GROUPCHAT);
+        start_conversation(conversation);
     }
 
     private void add_conversation(Conversation conversation) {

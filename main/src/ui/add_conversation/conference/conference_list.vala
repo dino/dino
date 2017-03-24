@@ -43,11 +43,13 @@ protected class ConferenceList : FilterableList {
     }
 
     private static void on_conference_bookmarks_received(Core.XmppStream stream, ArrayList<Xep.Bookmarks.Conference> conferences, Object? o) {
-        Tuple<ConferenceList, Account> tuple = o as Tuple<ConferenceList, Account>;
-        ConferenceList list = tuple.a;
-        Account account = tuple.b;
-        list.lists[account] = conferences;
-        Idle.add(() => { list.refresh_conferences(); return false; });
+        Idle.add(() => {
+            Tuple<ConferenceList, Account> tuple = o as Tuple<ConferenceList, Account>;
+            ConferenceList list = tuple.a;
+            Account account = tuple.b;
+            list.lists[account] = conferences;
+            list.refresh_conferences(); return false;
+        });
     }
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {

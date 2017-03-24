@@ -71,13 +71,20 @@ public class Account : Object {
     }
 
     private void on_update(Object o, ParamSpec sp) {
-        db.account.update().with(db.account.id, "=", id)
-                .set(db.account.bare_jid, bare_jid.to_string())
-                .set(db.account.resourcepart, resourcepart)
-                .set(db.account.password, password)
-                .set(db.account.alias, alias)
-                .set(db.account.enabled, enabled)
-                .perform();
+        var update = db.account.update().with(db.account.id, "=", id);
+        switch (sp.name) {
+            case "bare-jid":
+                update.set(db.account.bare_jid, bare_jid.to_string()); break;
+            case "resourcepart":
+                update.set(db.account.resourcepart, resourcepart); break;
+            case "password":
+                update.set(db.account.password, password); break;
+            case "alias":
+                update.set(db.account.alias, alias); break;
+            case "enabled":
+                update.set(db.account.enabled, enabled); break;
+        }
+        update.perform();
     }
 }
 

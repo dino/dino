@@ -51,14 +51,16 @@ public class UnifiedWindow : Window {
     }
 
     public void on_conversation_selected(Conversation conversation) {
-        this.conversation = conversation;
-        stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
-        conversation.active = true; // only for conversation_selected
-        filterable_conversation_list.conversation_list.on_conversation_selected(conversation); // only for conversation_opened
+        if (this.conversation == null || !this.conversation.equals(conversation)) {
+            this.conversation = conversation;
+            stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
+            conversation.active = true; // only for conversation_selected
+            filterable_conversation_list.conversation_list.on_conversation_selected(conversation); // only for conversation_opened
 
-        chat_input.initialize_for_conversation(conversation);
-        conversation_frame.initialize_for_conversation(conversation);
-        conversation_titlebar.initialize_for_conversation(conversation);
+            chat_input.initialize_for_conversation(conversation);
+            conversation_frame.initialize_for_conversation(conversation);
+            conversation_titlebar.initialize_for_conversation(conversation);
+        }
     }
 
     private void setup_unified() {

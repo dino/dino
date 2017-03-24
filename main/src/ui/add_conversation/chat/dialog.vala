@@ -71,9 +71,8 @@ public class Dialog : Gtk.Dialog {
     protected void on_ok_button_clicked() {
         ListRow? selected_row = roster_list.get_selected_row() as ListRow;
         if (selected_row != null) {
-            // TODO move in list to front immediately
-            stream_interactor.get_module(ConversationManager.IDENTITY).ensure_start_conversation(selected_row.jid, selected_row.account);
-            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(selected_row.jid, selected_row.account);
+            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(selected_row.jid, selected_row.account, Conversation.Type.CHAT);
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
             conversation_opened(conversation);
         }
         close();

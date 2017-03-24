@@ -40,6 +40,7 @@ public class Message : Object {
     public string? body { get; set; }
     public string? stanza_id { get; set; }
     public DateTime? time { get; set; }
+    /** UTC **/
     public DateTime? local_time { get; set; }
     public Encryption encryption { get; set; default = Encryption.NONE; }
     public Marked marked { get; set; default = Marked.NONE; }
@@ -63,7 +64,8 @@ public class Message : Object {
         counterpart = from_resource != null ? new Jid(from + "/" + from_resource) : new Jid(from);
         direction = row[db.message.direction];
         type_ = (Message.Type) row[db.message.type_];
-        time = new DateTime.from_unix_utc(row[db.message.time]);
+        time = new DateTime.from_unix_local(row[db.message.time]);
+        local_time = new DateTime.from_unix_local(row[db.message.time]);
         body = row[db.message.body];
         account = db.get_account_by_id(row[db.message.account_id]); // TODO dont have to generate acc new
         marked = (Message.Marked) row[db.message.marked];
@@ -141,7 +143,7 @@ public class Message : Object {
     private void on_update(Object o, ParamSpec sp) {
         Qlite.UpdateBuilder update_builder = db.message.update().with(db.message.id, "=", id);
         switch (sp.name) {
-            case "stanza_id":
+            case "stanza-id":
                 update_builder.set(db.message.stanza_id, stanza_id); break;
             case "counterpart":
                 update_builder.set(db.message.counterpart_id, db.get_jid_id(counterpart));
@@ -150,11 +152,11 @@ public class Message : Object {
                 update_builder.set(db.message.our_resource, ourpart.resourcepart); break;
             case "direction":
                 update_builder.set(db.message.direction, direction); break;
-            case "type_":
+            case "type-":
                 update_builder.set(db.message.type_, type_); break;
             case "time":
                 update_builder.set(db.message.time, (long) time.to_unix()); break;
-            case "local_time":
+            case "local-time":
                 update_builder.set(db.message.local_time, (long) local_time.to_unix()); break;
             case "body":
                 update_builder.set(db.message.body, body); break;
@@ -165,7 +167,7 @@ public class Message : Object {
         }
         update_builder.perform();
 
-        if (sp.get_name() == "real_jid") {
+        if (sp.get_name() == "real-jid") {
             db.real_jid.insert().or("REPLACE")
                 .value(db.real_jid.message_id, id)
                 .value(db.real_jid.real_jid, real_jid)

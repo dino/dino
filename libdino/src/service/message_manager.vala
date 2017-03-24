@@ -103,9 +103,9 @@ public class MessageManager : StreamInteractionModule, Object {
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.from) : new Jid(message.to);
         new_message.stanza = message;
         Xep.DelayedDelivery.MessageFlag? deleyed_delivery_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
-        new_message.time = deleyed_delivery_flag != null ? deleyed_delivery_flag.datetime : new DateTime.now_utc();
-        new_message.local_time = new DateTime.now_utc();
-        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_add_conversation(new_message.counterpart, account);
+        new_message.time = deleyed_delivery_flag != null ? deleyed_delivery_flag.datetime : new DateTime.now_local();
+        new_message.local_time = new DateTime.now_local();
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(new_message.counterpart, account, Conversation.Type.CHAT);
         pre_message_received(new_message, message, conversation);
 
         bool is_uuid = new_message.stanza_id != null && Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", new_message.stanza_id);
@@ -113,9 +113,6 @@ public class MessageManager : StreamInteractionModule, Object {
             (!is_uuid && !db.contains_message(new_message, conversation.account))) {
             new_message.persist(db);
             add_message(new_message, conversation);
-            if (new_message.time.difference(conversation.last_active) > 0) {
-                conversation.last_active = new_message.time;
-            }
             if (new_message.direction == Entities.Message.DIRECTION_SENT) {
                 message_sent(new_message, conversation);
             } else {
@@ -137,8 +134,8 @@ public class MessageManager : StreamInteractionModule, Object {
         message.stanza_id = random_uuid();
         message.account = conversation.account;
         message.body = text;
-        message.time = new DateTime.now_utc();
-        message.local_time = new DateTime.now_utc();
+        message.time = new DateTime.now_local();
+        message.local_time = new DateTime.now_local();
         message.direction = Entities.Message.DIRECTION_SENT;
         message.counterpart = conversation.counterpart;
         message.ourpart = new Jid(conversation.account.bare_jid.to_string() + "/" + conversation.account.resourcepart);
