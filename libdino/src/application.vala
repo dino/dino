@@ -10,7 +10,7 @@ public class Dino.Application : Gtk.Application {
 
     public Application() throws Error {
         if (DirUtils.create_with_parents(get_storage_dir(), 0700) == -1) {
-            throw new Error(-1, 0, @"Could not create storage dir \"$(get_storage_dir())\": $(FileUtils.error_from_errno(errno))");
+            throw new Error(-1, 0, "Could not create storage dir \"%s\": %s", get_storage_dir(), FileUtils.error_from_errno(errno).to_string());
         }
 
         // FIXME: Legacy import

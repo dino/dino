@@ -59,7 +59,7 @@ public class Loader : Object {
             if (module != null) break;
         }
         if (module == null) {
-            throw new Error (-1, 1, Module.error ().replace(path, name));
+            throw new Error (-1, 1, "%s", Module.error ().replace(path, name));
         }
 
         void* function;

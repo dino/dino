@@ -38,7 +38,7 @@ namespace Signal {
     [CCode (cname = "signal_throw_gerror_by_code_", cheader_filename = "signal_protocol.h")]
     private int throw_by_code(int code, string? message = null) throws GLib.Error {
         if (code < 0 && code > MIN_ERROR_CODE) {
-            throw new GLib.Error(-1, code, @"$(message ?? "Signal error"): $((ErrorCode)code)");
+            throw new GLib.Error(-1, code, "%s: %s", message ?? "Signal error", ((ErrorCode)code).to_string());
         }
         return code;
     }

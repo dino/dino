@@ -151,13 +151,17 @@ else
                     exit 5
                 fi
                 res=$(git clone "$url" "$path" 2>&1)
-                if ! [ $? -eq 0 ] || ! [ -x $git ]; then
+                if ! [ $? -eq 0 ] || ! [ -d $path ]; then
                     echo "Failed retrieving missing files: $res"
                     exit 5
                 fi
                 if [[ "$branch" != "" ]]; then
                     pushd "$path" > /dev/null
-                    git checkout "$branch" 2>/dev/null
+                    res=$(git checkout "$branch" 2>&1)
+                    if ! [ $? -eq 0 ]; then
+                        echo "Failed retrieving missing files: $res"
+                        exit 5
+                    fi
                     popd > /dev/null
                 fi
                 echo "Submodule path '$path': checked out '$branch' (via git clone)"

@@ -506,7 +506,7 @@ namespace GPG {
 
     private void throw_if_error(GPGError.Error error) throws GLib.Error {
         if (error.code != GPGError.ErrorCode.NO_ERROR) {
-            throw new GLib.Error(-1, error.code, error.to_string());
+            throw new GLib.Error(-1, error.code, "%s", error.to_string());
         }
     }
 }
