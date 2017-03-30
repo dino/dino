@@ -1,42 +1,99 @@
 #!/bin/bash
 
-OPTS=`getopt -o "h" --long prefix:,enable-plugin:,disable-plugin:,valac:,valac-flags:,lib-suffix:,help,disable-fast-vapi,no-debug,fetch-only -n './configure' -- "$@"`
+OPTS=`getopt -o "h" --long \
+help,fetch-only,no-debug,disable-fast-vapi,\
+enable-plugin:,disable-plugin:,\
+prefix:,program-prefix:,exec-prefix:,lib-suffix:,\
+bindir:,libdir:,includedir:,datadir:,\
+host:,build:,\
+sbindir:,sysconfdir:,libexecdir:,localstatedir:,sharedstatedir:,mandir:,infodir:,\
+enable-dependency-tracking,disable-dependency-tracking\
+ -n './configure' -- "$@"`
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
 eval set -- "$OPTS"
 
 PREFIX=${PREFIX:-/usr/local}
-VALA_EXECUTABLE=${VALA_EXECUTABLE:-$(which valac)}
 ENABLED_PLUGINS=
 DISABLED_PLUGINS=
-VALAC_FLAGS=
 DISABLE_FAST_VAPI=
 LIB_SUFFIX=
 NO_DEBUG=
 FETCH_ONLY=
 
+EXEC_PREFIX=
+BINDIR=
+SBINDIR=n
+SYSCONFDIR=
+DATADIR=
+INCLUDEDIR=
+LIBDIR=
+LIBEXECDIR=
+LOCALSTATEDIR=
+SHAREDSTATEDIR=
+MANDIR=
+INFODIR=
+
 help() {
     cat << EOF
 Usage:
-  ./configure [OPTIONS]...
+  ./configure [OPTION]...
 
-Options:
+Defaults for the options (based on current environment) are specified in
+brackets.
+
+Configuration:
   -h, --help                 Print this help and exit
-  --prefix=PREFIX            Prepend PREFIX to program installation paths. [$PREFIX]
-  --lib-suffix=SUFFIX        Append SUFFIX to the directory name for libraries
+  --fetch-only               Only fetch the files required to run ./configure
+                             without network access later and exit
   --no-debug                 Build without debug symbols
+  --disable-fast-vapi        Disable the usage of Vala compilers fast-vapi
+                             feature. fast-vapi mode is slower when doing
+                             clean builds, but faster when doing incremental
+                             builds (during development).
 
+Plugin configuration:
   --enable-plugin=PLUGIN     Enable compilation of plugin PLUGIN.
   --disable-plugin=PLUGIN    Disable compilation of plugin PLUGIN.
 
-  --valac=VALAC              Use VALAC as Vala pre-compiler. [$VALA_EXECUTABLE]
-  --valac-flags=FLAGS        Use FLAGS when invoking the vala compiler
-  --disable-fast-vapi        Disable the usage of Vala compilers fast-vapi feature.
-                             fast-vapi mode is slower when doing clean builds, but
-                             faster when doing incremental builds (during development)
+Installation directories:
+  --prefix=PREFIX            Install architecture-independent files in PREFIX
+                             [$PREFIX]
+  --program-prefix=PREFIX    Same as --prefix
+  --exec-prefix=             Install architecture-dependent files in EPREFIX
+                             [PREFIX]
+  --lib-suffix=SUFFIX        Append SUFFIX to the directory name for libraries
 
-  --fetch-only               Only fetch the files required to run ./configure without
-                             network access later and exit
+By default, \`make install' will install all the files in
+\`/usr/local/bin', \`/usr/local/lib' etc.  You can specify
+an installation prefix other than \`/usr/local' using \`--prefix',
+for instance \`--prefix=\$HOME'.
+
+For better control, use the options below.
+
+Fine tuning of the installation directories:
+  --bindir=DIR               user executables [EPREFIX/bin]
+  --libdir=DIR               object code libraries [EPREFIX/lib]
+  --includedir=DIR           C header files [PREFIX/include]
+  --datadir=DIR              read-only data [PREFIX/share]
+
+For compatibility with autotools, these options will be silently ignored:
+--host, --build, --sbindir, --sysconfdir, --libexecdir, --sharedstatedir,
+--localstatedir, --mandir, --infodir, --enable-dependency-tracking,
+--disable-dependency-tracking
+
+Some influential environment variables:
+  CC                         C compiler command
+  CFLAGS                     C compiler flags
+  PKG_CONFIG_PATH            directories to add to pkg-config's search path
+  PKG_CONFIG_LIBDIR          path overriding pkg-config's built-in search path
+  USE_CCACHE                 decide to use ccache when compiling C objects
+  VALAC                      Vala compiler command
+  VALACFLAGS                 Vala compiler flags
+
+Use these variables to override the choices made by \`configure' or to help
+it to find libraries and programs with nonstandard names/locations.
+
 EOF
 }
 
@@ -51,6 +108,24 @@ while true; do
         --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;
         --no-debug ) NO_DEBUG=yes; shift ;;
         --fetch-only ) FETCH_ONLY=yes; shift ;;
+        # Autotools paths
+        --program-prefix ) PREFIX="$2"; shift; shift ;;
+        --exec-prefix ) EXEC_PREFIX="$2"; shift; shift ;;
+        --bindir ) BINDIR="$2"; shift; shift ;;
+        --datadir ) DATADIR="$2"; shift; shift ;;
+        --includedir ) INCLUDEDIR="$2"; shift; shift ;;
+        --libdir ) LIBDIR="$2"; shift; shift ;;
+        # Autotools paths not used
+        --sbindir ) SBINDIR="$2"; shift; shift ;;
+        --sysconfdir ) SYSCONFDIR="$2"; shift; shift ;;
+        --libexecdir ) LIBEXECDIR="$2"; shift; shift ;;
+        --localstatedir ) LOCALSTATEDIR="$2"; shift; shift ;;
+        --sharedstatedir ) SHAREDSTATEDIR="$2"; shift; shift ;;
+        --mandir ) MANDIR="$2"; shift; shift ;;
+        --infodir ) INFODIR="$2"; shift; shift ;;
+        # Ignore for autotools compat
+        --host | --build ) shift; shift ;;
+        --disable-dependency-tracking | --enable-dependency-tracking ) shift ;;
         -h | --help ) help; exit 0 ;;
         -- ) shift; break ;;
         * ) break ;;
@@ -75,7 +150,11 @@ else
                     echo "Failed retrieving missing files"
                     exit 5
                 fi
-                git clone "$url" "$path" 2>/dev/null
+                res=$(git clone "$url" "$path" 2>&1)
+                if ! [ $? -eq 0 ] || ! [ -x $git ]; then
+                    echo "Failed retrieving missing files: $res"
+                    exit 5
+                fi
                 if [[ "$branch" != "" ]]; then
                     pushd "$path" > /dev/null
                     git checkout "$branch" 2>/dev/null
@@ -151,7 +230,21 @@ mkdir -p build
 cd build
 
 echo "$cmake_type" > .cmake_type
-cmake -G "$cmake_type" -DCMAKE_INSTALL_PREFIX="$PREFIX" -DENABLED_PLUGINS="$ENABLED_PLUGINS" -DDISABLED_PLUGINS="$DISABLED_PLUGINS" -DVALA_EXECUTABLE="$VALA_EXECUTABLE" -DCMAKE_VALA_FLAGS="$VALAC_FLAGS" -DDISABLE_FAST_VAPI="$DISABLE_FAST_VAPI" -DLIB_SUFFIX="$LIB_SUFFIX" -DNO_DEBUG="$NO_DEBUG" .. || exit 9
+cmake -G "$cmake_type" \
+    -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+    -DENABLED_PLUGINS="$ENABLED_PLUGINS" \
+    -DDISABLED_PLUGINS="$DISABLED_PLUGINS" \
+    -DVALA_EXECUTABLE="$VALAC" \
+    -DCMAKE_VALA_FLAGS="$VALACFLAGS" \
+    -DDISABLE_FAST_VAPI="$DISABLE_FAST_VAPI" \
+    -DLIB_SUFFIX="$LIB_SUFFIX" \
+    -DNO_DEBUG="$NO_DEBUG" \
+    -DEXEC_INSTALL_PREFIX="$EXEC_PREFIX" \
+    -DSHARE_INSTALL_PREFIX="$DATADIR" \
+    -DBIN_INSTALL_DIR="$BINDIR" \
+    -DINCLUDE_INSTALL_DIR="$INCLUDEDIR" \
+    -DLIB_INSTALL_DIR="$LIBDIR" \
+    .. || exit 9
 
 if [ "$cmake_type" == "Ninja" ]
 then

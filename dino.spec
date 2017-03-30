@@ -69,11 +69,11 @@ developing plugins for %{name}.
 #%setup -n "dino-%{commit}"
 
 %build
-./configure --prefix="%{buildroot}%{_prefix}" --valac="%{_bindir}/valac%{?vala_version_suffix}" --lib-suffix="%{_lib}"
+%configure
 make
 
 %install
-make install
+make install DESTDIR="%{buildroot}"
 desktop-file-validate %{buildroot}%{_datadir}/applications/dino.desktop
 
 %post

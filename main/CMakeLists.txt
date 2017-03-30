@@ -114,7 +114,7 @@ if(WIN32)
 endif(WIN32)
 
 install(TARGETS dino ${TARGET_INSTALL})
-install(FILES data/dino.desktop DESTINATION ${APPLICATION_INSTALL_DIR})
+install(FILES data/dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
 install(FILES data/icons/dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
 install(FILES data/icons/dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
 install(FILES
