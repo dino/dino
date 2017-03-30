@@ -120,6 +120,29 @@ public abstract class ConversationRow : ListBoxRow {
         message_label.label = message_label.label;
     }
 
+    protected Box get_fulljid_box(Jid full_jid) {
+        Box box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
+
+        Show show = stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, conversation.account);
+        Image image = new Image() { visible=true };
+        if (show.as == Show.AWAY) {
+            image.set_from_icon_name("dino-status-away", IconSize.SMALL_TOOLBAR);
+        } else if (show.as == Show.XA || show.as == Show.DND) {
+            image.set_from_icon_name("dino-status-dnd", IconSize.SMALL_TOOLBAR);
+        } else if (show.as == Show.CHAT) {
+            image.set_from_icon_name("dino-status-chat", IconSize.SMALL_TOOLBAR);
+        } else {
+            image.set_from_icon_name("dino-status-online", IconSize.SMALL_TOOLBAR);
+        }
+        box.add(image);
+
+        Label resource = new Label(full_jid.resourcepart) { visible=true };
+        resource.xalign = 0;
+        box.add(resource);
+        box.show_all();
+        return box;
+    }
+
     private void on_x_button_clicked() {
         main_revealer.set_transition_type(RevealerTransitionType.SLIDE_UP);
         main_revealer.set_reveal_child(false);

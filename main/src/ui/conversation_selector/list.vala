@@ -39,8 +39,9 @@ public class List : ListBox {
         });
         stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
             Idle.add(() => {
-                Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
-                if (conversation != null && rows.has_key(conversation)) rows[conversation].on_show_received(show);
+                foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations_for_presence(show, account)) {
+                    if (rows.has_key(conversation)) rows[conversation].on_show_received(show);
+                }
                 return false;
             });
         });
@@ -123,6 +124,8 @@ public class List : ListBox {
         if (!rows.has_key(conversation)) {
             if (conversation.type_ == Conversation.Type.GROUPCHAT) {
                 row = new GroupchatRow(stream_interactor, conversation);
+            } else if (conversation.type_ == Conversation.Type.GROUPCHAT_PM){
+                row = new GroupchatPmRow(stream_interactor, conversation);
             } else {
                 row = new ChatRow(stream_interactor, conversation);
             }
@@ -186,6 +189,8 @@ public class List : ListBox {
         if (cr1 != null && cr2 != null) {
             Conversation c1 = cr1.conversation;
             Conversation c2 = cr2.conversation;
+            if (c1.last_active == null) return -1;
+            if (c2.last_active == null) return 1;
             int comp = c2.last_active.compare(c1.last_active);
             if (comp == 0) {
                 return Util.get_conversation_display_name(stream_interactor, c1)

@@ -79,6 +79,7 @@ public class Database : Qlite.Database {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
         public Column<int> jid_id = new Column.Integer("jid_id") { not_null = true };
+        public Column<string> resource = new Column.Text("resource");
         public Column<bool> active = new Column.BoolInt("active");
         public Column<long> last_active = new Column.Long("last_active");
         public Column<int> type_ = new Column.Integer("type");
@@ -87,7 +88,7 @@ public class Database : Qlite.Database {
 
         internal ConversationTable(Database db) {
             base(db, "conversation");
-            init({id, account_id, jid_id, active, last_active, type_, encryption, read_up_to});
+            init({id, account_id, jid_id, resource, active, last_active, type_, encryption, read_up_to});
         }
     }
 
@@ -164,12 +165,18 @@ public class Database : Qlite.Database {
         }
     }
 
-    public Gee.List<Message> get_messages(Jid jid, Account account, int count, Message? before) {
+    public Gee.List<Message> get_messages(Jid jid, Account account, Message.Type? type, int count, Message? before) {
         QueryBuilder select = message.select()
                 .with(message.counterpart_id, "=", get_jid_id(jid))
                 .with(message.account_id, "=", account.id)
                 .order_by(message.id, "DESC")
                 .limit(count);
+        if (jid.resourcepart != null) {
+            select.with(message.counterpart_resource, "=", jid.resourcepart);
+        }
+        if (type != null) {
+            select.with(message.type_, "=", (int) type);
+        }
         if (before != null) {
             select.with(message.time, "<", (long) before.time.to_unix());
         }

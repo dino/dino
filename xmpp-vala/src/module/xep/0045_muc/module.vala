@@ -129,7 +129,7 @@ public class Module : XmppStreamModule {
             string bare_jid = get_bare_jid(presence.from);
             ErrorStanza? error_stanza = presence.get_error();
             if (flag.get_enter_id(bare_jid) == error_stanza.original_id) {
-                ListenerHolder listener = flag.get_enter_listener(bare_jid);
+                ListenerHolder? listener = flag.get_enter_listener(bare_jid);
                 MucEnterError? error = null;
                 if (error_stanza.condition == ErrorStanza.CONDITION_NOT_AUTHORIZED && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
                     error = MucEnterError.PASSWORD_REQUIRED;
@@ -144,7 +144,7 @@ public class Module : XmppStreamModule {
                 } else if (ErrorStanza.CONDITION_ITEM_NOT_FOUND == error_stanza.condition && ErrorStanza.TYPE_CANCEL == error_stanza.type_) {
                     error = MucEnterError.ROOM_DOESNT_EXIST;
                 }
-                if (error == null) listener.on_error(stream, error, listener.reference);
+                if (error != null && listener != null) listener.on_error(stream, error, listener.reference);
                 flag.finish_muc_enter(bare_jid);
             }
         }

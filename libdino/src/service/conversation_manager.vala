@@ -31,7 +31,7 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect(on_message_sent);
     }
 
-    public Conversation create_conversation(Jid jid, Account account, Conversation.Type type) {
+    public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
         assert(conversations.has_key(account));
         if (conversations[account].has_key(jid)) {
             return conversations[account][jid];
@@ -41,6 +41,26 @@ public class ConversationManager : StreamInteractionModule, Object {
             conversation.persist(db);
             return conversation;
         }
+    }
+
+    public Conversation? get_conversation_for_message(Entities.Message message) {
+        if (message.type_ == Entities.Message.Type.CHAT) {
+            return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.CHAT);
+        } else if (message.type_ == Entities.Message.Type.GROUPCHAT) {
+            return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.GROUPCHAT);
+        } else if (message.type_ == Entities.Message.Type.GROUPCHAT_PM) {
+            return create_conversation(message.counterpart, message.account, Conversation.Type.GROUPCHAT_PM);
+        }
+        return null;
+    }
+
+    public Gee.List<Conversation> get_conversations_for_presence(Show show, Account account) {
+        Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
+        Conversation? bare_conversation = get_conversation(show.jid, account);
+        if (bare_conversation != null) ret.add(bare_conversation);
+        Conversation? full_conversation = get_conversation(show.jid.bare_jid, account);
+        if (full_conversation != null) ret.add(full_conversation);
+        return ret;
     }
 
     public Conversation? get_conversation(Jid jid, Account account) {
@@ -77,7 +97,7 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        conversations[account] = new HashMap<Jid, Conversation>(Jid.hash_bare_func, Jid.equals_bare_func);
+        conversations[account] = new HashMap<Jid, Conversation>(Jid.hash_func, Jid.equals_func);
         foreach (Conversation conversation in db.get_conversations(account)) {
             add_conversation(conversation);
         }

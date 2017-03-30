@@ -40,6 +40,9 @@ public class Util : Object {
     }
 
     public static string get_conversation_display_name(StreamInteractor stream_interactor, Conversation conversation) {
+        if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
+            return conversation.counterpart.resourcepart + " from " + get_display_name(stream_interactor, conversation.counterpart.bare_jid, conversation.account);
+        }
         return get_display_name(stream_interactor, conversation.counterpart, conversation.account);
     }
 

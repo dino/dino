@@ -20,8 +20,8 @@ public class Message : Object {
         ERROR,
         CHAT,
         GROUPCHAT,
-        HEADLINE,
-        NORMAL
+        GROUPCHAT_PM,
+        UNKNOWN
     }
 
     public int? id { get; set; }
@@ -36,7 +36,7 @@ public class Message : Object {
     }
     public bool direction { get; set; }
     public string? real_jid { get; set; }
-    public Type type_ { get; set; }
+    public Type type_ { get; set; default = Type.UNKNOWN; }
     public string? body { get; set; }
     public string? stanza_id { get; set; }
     public DateTime? time { get; set; }
@@ -48,10 +48,9 @@ public class Message : Object {
 
     private Database? db;
 
-    public Message(string? body, Type type) {
+    public Message(string? body) {
         this.id = -1;
         this.body = body;
-        this.type_ = type;
     }
 
     public Message.from_row(Database db, Qlite.Row row) {
@@ -107,8 +106,6 @@ public class Message : Object {
                 type_ = Type.CHAT; break;
             case Xmpp.Message.Stanza.TYPE_GROUPCHAT:
                 type_ = Type.GROUPCHAT; break;
-            default:
-                type_ = Type.NORMAL; break;
         }
     }
 

@@ -19,7 +19,7 @@ public class Dino.Entities.Jid : Object {
 
     public Jid.with_resource(string bare_jid, string resource) {
         Jid? parsed = Jid.parse(bare_jid);
-        this.components(parsed.localpart, parsed.domainpart, resourcepart);
+        this.components(parsed.localpart, parsed.domainpart, resource);
     }
 
     public Jid.components(string? localpart, string domainpart, string? resourcepart) {

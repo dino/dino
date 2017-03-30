@@ -6,7 +6,8 @@ public class Conversation : Object {
 
     public enum Type {
         CHAT,
-        GROUPCHAT
+        GROUPCHAT,
+        GROUPCHAT_PM
     }
 
     public int id { get; set; }
@@ -30,8 +31,8 @@ public class Conversation : Object {
     private Database? db;
 
     public Conversation(Jid jid, Account account, Type type) {
-        this.counterpart = jid;
         this.account = account;
+        this.counterpart = jid;
         this.type_ = type;
     }
 
@@ -39,8 +40,10 @@ public class Conversation : Object {
         this.db = db;
 
         id = row[db.conversation.id];
-        counterpart = new Jid(db.get_jid_by_id(row[db.conversation.jid_id]));
         account = db.get_account_by_id(row[db.conversation.account_id]);
+        string? resource = row[db.conversation.resource];
+        string jid = db.get_jid_by_id(row[db.conversation.jid_id]);
+        counterpart = resource != null ? new Jid.with_resource(jid, resource) : new Jid(jid);
         active = row[db.conversation.active];
         int64? last_active = row[db.conversation.last_active];
         if (last_active != null) this.last_active = new DateTime.from_unix_local(last_active);
@@ -55,12 +58,15 @@ public class Conversation : Object {
     public void persist(Database db) {
         this.db = db;
         var insert = db.conversation.insert()
-                .value(db.conversation.jid_id, db.get_jid_id(counterpart))
                 .value(db.conversation.account_id, account.id)
+                .value(db.conversation.jid_id, db.get_jid_id(counterpart))
                 .value(db.conversation.type_, type_)
                 .value(db.conversation.encryption, encryption)
                 //.value(conversation.read_up_to, new_conversation.read_up_to)
                 .value(db.conversation.active, active);
+        if (counterpart.is_full()) {
+            insert.value(db.conversation.resource, counterpart.resourcepart);
+        }
         if (last_active != null) {
             insert.value(db.conversation.last_active, (long) last_active.to_unix());
         }
@@ -90,7 +96,12 @@ public class Conversation : Object {
             case "encryption":
                 update.set(db.conversation.encryption, encryption); break;
             case "read-up-to":
-                update.set(db.conversation.read_up_to, read_up_to.id); break;
+                if (read_up_to != null) {
+                    update.set(db.conversation.read_up_to, read_up_to.id);
+                } else {
+                    update.set_null(db.conversation.read_up_to);
+                }
+                break;
             case "active":
                 update.set(db.conversation.active, active); break;
             case "last-active":

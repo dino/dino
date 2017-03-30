@@ -59,12 +59,13 @@ namespace Xmpp.Xep.EntityCapabilities {
                 if (capabilities.size == 0) {
                     stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, on_received_info_response, Tuple.create(storage, ver_attribute));
                 } else {
-                    stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entitiy_features(presence.from, capabilities);
+                    stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(presence.from, capabilities);
                 }
             }
         }
 
-        private static void on_received_info_response(XmppStream stream, ServiceDiscovery.InfoResult query_result, Object? store) {
+        private static void on_received_info_response(XmppStream stream, ServiceDiscovery.InfoResult? query_result, Object? store) {
+            if (query_result == null) return;
             Tuple<Storage, string> tuple = store as Tuple<Storage, string>;
             Storage storage = tuple.a;
             string entity = tuple.b;

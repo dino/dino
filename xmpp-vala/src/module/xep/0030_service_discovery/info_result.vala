@@ -39,6 +39,27 @@ public class InfoResult {
         }
     }
 
+    public InfoResult(Iq.Stanza iq_request) {
+        iq = new Iq.Stanza.result(iq_request);
+        iq.to = iq_request.from;
+        iq.stanza.put_node(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
+    }
+
+    private InfoResult.from_iq(Iq.Stanza iq) {
+        this.iq = iq;
+    }
+
+    public static InfoResult? create_from_iq(Iq.Stanza iq) {
+        if (iq.is_error()) return null;
+        StanzaNode query_node = iq.stanza.get_subnode("query", NS_URI_INFO);
+        if (query_node == null) return null;
+        StanzaNode feature_node = query_node.get_subnode("feature", NS_URI_INFO);
+        if (feature_node == null) return null;
+        StanzaNode identity_node = query_node.get_subnode("identity", NS_URI_INFO);
+        if (identity_node == null) return null;
+        return new ServiceDiscovery.InfoResult.from_iq(iq);
+    }
+
     public void add_feature(string feature) {
         iq.stanza.get_subnode("query", NS_URI_INFO).put_node(new StanzaNode.build("feature", NS_URI_INFO).put_attribute("var", feature));
     }
@@ -51,27 +72,6 @@ public class InfoResult {
             identity_node.put_attribute("name", identity.name);
         }
         iq.stanza.get_subnode("query", NS_URI_INFO).put_node(identity_node);
-    }
-
-    private InfoResult.from_iq(Iq.Stanza iq) {
-        this.iq = iq;
-    }
-
-    public InfoResult(Iq.Stanza iq_request) {
-        iq = new Iq.Stanza.result(iq_request);
-        iq.to = iq_request.from;
-        iq.stanza.put_node(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
-    }
-
-    public static InfoResult? create_from_iq(Iq.Stanza iq) {
-        if (iq.is_error()) return null;
-        StanzaNode query_node = iq.stanza.get_subnode("query", NS_URI_INFO);
-        if (query_node == null) return null;
-        StanzaNode feature_node = query_node.get_subnode("feature", NS_URI_INFO);
-        if (feature_node == null) return null;
-        StanzaNode identity_node = query_node.get_subnode("identity", NS_URI_INFO);
-        if (identity_node == null) return null;
-        return new ServiceDiscovery.InfoResult.from_iq(iq);
     }
 }
 

@@ -74,6 +74,7 @@ SOURCES
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_selector/chat_row.vala
     src/ui/conversation_selector/conversation_row.vala
+    src/ui/conversation_selector/groupchat_pm_row.vala
     src/ui/conversation_selector/groupchat_row.vala
     src/ui/conversation_selector/list.vala
     src/ui/conversation_selector/view.vala

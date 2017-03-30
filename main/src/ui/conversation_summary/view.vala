@@ -151,6 +151,8 @@ public class View : Box {
     }
 
     private void load_earlier_messages() {
+        if (earliest_message == null) return;
+
         was_value = scrolled.vadjustment.value;
         lock(reloading_lock) {
             if(reloading) return;
