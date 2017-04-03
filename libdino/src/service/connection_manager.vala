@@ -21,6 +21,7 @@ public class ConnectionManager {
     private NetworkManager? network_manager;
     private Login1Manager? login1;
     private ModuleManager module_manager;
+    public string? log_options;
 
     private class Connection {
         public Core.XmppStream stream { get; set; }
@@ -92,7 +93,7 @@ public class ConnectionManager {
         foreach (Core.XmppStreamModule module in module_manager.get_modules(account, resource)) {
             stream.add_module(module);
         }
-        stream.debug = false;
+        stream.log = new Core.XmppLog(account.bare_jid.to_string(), log_options);
 
         Connection connection = new Connection(stream, new DateTime.now_local());
         stream_states[account] = connection;

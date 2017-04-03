@@ -1,5 +1,3 @@
-using Gdk;
-
 using Xmpp.Core;
 
 namespace Xmpp.Xep.MessageDeliveryReceipts {

@@ -10,11 +10,6 @@ public class Plugin : RootInterface, Object {
     public AccountSettingsEntry settings_entry;
 
     public void registered(Dino.Application app) {
-        // FIXME: Legacy import
-        if (FileUtils.test("omemo.db", FileTest.IS_REGULAR)) {
-            FileUtils.rename("omemo.db", Path.build_filename(Application.get_storage_dir(), "omemo.db"));
-        }
-
         try {
             context = new Signal.Context(DEBUG);
             this.app = app;
