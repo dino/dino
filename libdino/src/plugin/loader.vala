@@ -1,5 +1,8 @@
 namespace Dino.Plugins {
 
+private extern const string SYSTEM_LIBDIR_NAME;
+private extern const string SYSTEM_PLUGIN_DIR;
+
 private class Info : Object {
     public Module module;
     public Type gtype;
@@ -19,30 +22,28 @@ public class Loader : Object {
     private Info[] infos = new Info[0];
 
     public Loader(string? exec_str = null) {
-        search_paths += Application.get_storage_dir();
+        if (Environment.get_variable("DINO_PLUGIN_DIR") != null) {
+            search_paths += Environment.get_variable("DINO_PLUGIN_DIR");
+        }
+        search_paths += Path.build_filename(Environment.get_home_dir(), ".local", "lib", "dino", "plugins");
         string? exec_path = exec_str;
         if (exec_path != null) {
             if (!exec_path.contains(Path.DIR_SEPARATOR_S)) {
                 exec_path = Environment.find_program_in_path(exec_str);
             }
-            // TODO: more robust is detection if installed
-            if (!exec_path.has_prefix("/usr/")) {
-                search_paths += Path.get_dirname(exec_path);
+            if (Path.get_dirname(exec_path).contains("dino") || Path.get_dirname(exec_path) == "." || Path.get_dirname(exec_path).contains("build")) {
+                search_paths += Path.build_filename(Path.get_dirname(exec_path), "plugins");
             }
-        }
-        foreach (string dir in Environment.get_system_data_dirs()) {
-            search_paths += Path.build_filename(dir, "dino");
-        }
-        if (exec_path != null) {
             if (Path.get_basename(Path.get_dirname(exec_path)) == "bin") {
-                search_paths += Path.build_filename(Path.get_dirname(Path.get_dirname(exec_path)), "share", "dino");
+                search_paths += Path.build_filename(Path.get_dirname(Path.get_dirname(exec_path)), SYSTEM_LIBDIR_NAME, "dino", "plugins");
             }
         }
+        search_paths += SYSTEM_PLUGIN_DIR;
     }
 
     public void print_search_paths() {
         foreach (string prefix in search_paths) {
-            print(@"$prefix/plugins\n");
+            print(@"$prefix\n");
         }
     }
 
@@ -54,7 +55,7 @@ public class Loader : Object {
         Module module = null;
         string path = "";
         foreach (string prefix in search_paths) {
-            path = Path.build_filename(prefix, "plugins", name);
+            path = Path.build_filename(prefix, name);
             module = Module.open (path, ModuleFlags.BIND_LAZY);
             if (module != null) break;
         }

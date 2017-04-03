@@ -36,7 +36,7 @@ set_path(DESKTOP_FILE_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/applications" "Instal
 set_path(ICON_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/icons" "Installation directory for icons")
 set_path(INCLUDE_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/include" "Installation directory for C header files")
 set_path(LIB_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/${LIBDIR_NAME}" "Installation directory for object code libraries")
-set_path(PLUGIN_INSTALL_DIR "${DATA_INSTALL_DIR}/plugins" "Installation directory for dino plugin object code files")
+set_path(PLUGIN_INSTALL_DIR "${LIB_INSTALL_DIR}/dino/plugins" "Installation directory for dino plugin object code files")
 set_path(VAPI_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/vala/vapi" "Installation directory for Vala API files")
 
 set(TARGET_INSTALL LIBRARY DESTINATION ${LIB_INSTALL_DIR} RUNTIME DESTINATION ${BIN_INSTALL_DIR} PUBLIC_HEADER DESTINATION ${INCLUDE_INSTALL_DIR} ARCHIVE DESTINATION ${LIB_INSTALL_DIR})

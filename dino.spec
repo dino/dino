@@ -22,9 +22,9 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:		dino
-Version:	0
-Release:	0%{?dist}
-#Release:	0.git.%{shortcommit}%{?dist}
+Version:	0.0
+Release:	1%{?dist}
+#Release:	1.git.%{shortcommit}%{?dist}
 Summary:	Modern Jabber/XMPP Client using GTK+/Vala
 License:	GPLv3
 URL:		https://github.com/dino/dino
@@ -45,7 +45,11 @@ BuildRequires:	pkgconfig(libnotify)
 BuildRequires:	pkgconfig(sqlite3)
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	gpgme-devel
-Requires:	hicolor-icon-theme
+Requires:	    hicolor-icon-theme
+Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+# Technically these aren't requirements, we just want them always installed...
+Requires:       %{name}-plugin-omemo%{?_isa} = %{version}-%{release}
+Requires:       %{name}-plugin-openpgp%{?_isa} = %{version}-%{release}
 
 %description
 Dino is an instant messaging client for the Jabber/XMPP network,
@@ -56,13 +60,35 @@ for XMPP's latest encryption features. Future versions will provide
 a plug-in API, so that developers can easily add new optional
 features.
 
-%package        devel
-Summary:        Development files for %{name}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+%package        libs
+Summary:        Libraries for %{name}
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%package        libs-devel
+Summary:        Development files for %{name}
+Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+
+%package        plugin-omemo
+Summary:        OMEMO plugin for %{name}
+Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+
+%package        plugin-openpgp
+Summary:        OMEMO plugin for %{name}
+Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+
+%description    libs
+The %{name}-libs package contains libraries used and provided by %{name}.
+
+%description    libs-devel
+The %{name}-libs-devel package contains libraries and header files for
 developing plugins for %{name}.
+
+%description    plugin-omemo
+The %{name}-plugin-omemo package contains a plugin that adds support for
+OMEMO encryption to Dino.
+
+%description    plugin-openpgp
+The %{name}-plugin-openpgp package contains a plugin that adds support for
+OpenPGP encryption to Dino.
 
 %prep
 %setup -n "dino-v%{version}"
@@ -85,31 +111,62 @@ update-desktop-database &> /dev/null || :
 if [ $1 -eq 0 ] ; then
   touch --no-create %{_datadir}/icons/hicolor &>/dev/null
   gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor &>/dev/null || :
-  glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 fi
 
 %posttrans
 gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor &>/dev/null || :
+
+%post libs
+/sbin/ldconfig
+if [ $1 -eq 0 ] ; then
+  glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+fi
+
+%postun libs
+/sbin/ldconfig
+
+%posttrans libs
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %files
 %license LICENSE
 %doc README.md
 %{_bindir}/dino
-%{_libdir}/libdino.so
-%{_libdir}/libqlite.so
-%{_libdir}/libxmpp-vala.so
-%{_datadir}/dino
 %{_datadir}/applications/dino.desktop
-%{_datadir}/glib-2.0/schemas/dino.gschema.xml
 %{_datadir}/icons/hicolor/*/apps/dino.*
 %{_datadir}/icons/hicolor/*/apps/dino-*
 %{_datadir}/icons/hicolor/*/status/dino-*
 
-%files devel
+%files libs
+%license LICENSE
+%doc README.md
+%{_datadir}/glib-2.0/schemas/dino.gschema.xml
+%{_libdir}/libdino.so.*
+%{_libdir}/libqlite.so.*
+%{_libdir}/libxmpp-vala.so.*
+
+%files libs-devel
+%license LICENSE
+%doc README.md
 %{_includedir}/*
+%{_libdir}/libdino.so
+%{_libdir}/libqlite.so
+%{_libdir}/libxmpp-vala.so
 %{_datadir}/vala/vapi
 
+%files plugin-omemo
+%license LICENSE
+%doc README.md
+%{_libdir}/dino/plugins/omemo.so
+
+%files plugin-openpgp
+%license LICENSE
+%doc README.md
+%{_libdir}/dino/plugins/openpgp.so
+
 %changelog
-* Fri Mar 24 2017 - 0.0
+* Mon Apr 3 2017 - 0.0-1
+- Split packages
+
+* Fri Mar 24 2017 - 0.0-0
 - Initial version

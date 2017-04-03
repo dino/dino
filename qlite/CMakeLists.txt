@@ -28,6 +28,7 @@ GENERATE_HEADER
 add_definitions(${VALA_CFLAGS})
 add_library(qlite SHARED ${QLITE_VALA_C})
 target_link_libraries(qlite ${QLITE_PACKAGES})
+set_target_properties(qlite PROPERTIES VERSION 0.1 SOVERSION 0)
 
 add_custom_target(qlite-vapi
 DEPENDS

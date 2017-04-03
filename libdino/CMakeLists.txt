@@ -54,11 +54,11 @@ GENERATE_HEADER
     dino
 )
 
-add_definitions(${VALA_CFLAGS})
+add_definitions(${VALA_CFLAGS} -DDINO_PLUGINS_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_PLUGINS_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}")
 add_library(libdino SHARED ${LIBDINO_VALA_C})
 add_dependencies(libdino xmpp-vala-vapi qlite-vapi)
-target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} -lm)
-set_target_properties(libdino PROPERTIES PREFIX "")
+target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} m)
+set_target_properties(libdino PROPERTIES PREFIX "" VERSION 0.0 SOVERSION 0)
 
 add_custom_target(dino-vapi
 DEPENDS

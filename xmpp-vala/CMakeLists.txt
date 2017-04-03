@@ -67,6 +67,7 @@ GENERATE_HEADER
 add_definitions(${VALA_CFLAGS})
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
 target_link_libraries(xmpp-vala ${ENGINE_PACKAGES})
+set_target_properties(xmpp-vala PROPERTIES VERSION 0.1 SOVERSION 0)
 
 add_custom_target(xmpp-vala-vapi
 DEPENDS

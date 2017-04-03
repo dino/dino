@@ -16,10 +16,10 @@ void main(string[] args) {
         Gtk.init(ref args);
         Dino.Ui.Application app = new Dino.Ui.Application();
 
-        app.add_main_option("show-plugin-paths", 0, 0, OptionArg.NONE, "Display plugin search paths and exit", null);
+        app.add_main_option("plugin-paths", 0, 0, OptionArg.NONE, "Display plugin search paths and exit", null);
         app.handle_local_options.connect((options) => {
-            Variant v = options.lookup_value("show-plugin-paths", VariantType.BOOLEAN);
-            if (v != null && v.get_type() == VariantType.BOOLEAN && v.get_boolean()) {
+            Variant v = options.lookup_value("plugin-paths", VariantType.BOOLEAN);
+            if (v != null && v.get_boolean()) {
                 loader.print_search_paths();
                 return 0;
             }
