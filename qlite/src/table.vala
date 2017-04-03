@@ -90,7 +90,7 @@ public class Table {
     public void add_columns_for_version(long old_version, long new_version) throws DatabaseError {
         ensure_init();
         foreach (Column c in columns) {
-            if (c.min_version <= new_version && c.max_version >= new_version && c.min_version > old_version && c.max_version < old_version) {
+            if (c.min_version <= new_version && c.max_version >= new_version && c.min_version > old_version) {
                 db.exec(@"ALTER TABLE $name ADD COLUMN $c");
             }
         }

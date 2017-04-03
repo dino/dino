@@ -3,22 +3,22 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui{
+namespace Dino.Ui.OccupantMenu{
 
 [GtkTemplate (ui = "/org/dino-im/occupant_list.ui")]
-public class OccupantList : Box {
+public class List : Box {
 
     public signal void conversation_selected(Conversation? conversation);
     private StreamInteractor stream_interactor;
 
-    [GtkChild] private ListBox list_box;
+    [GtkChild] public ListBox list_box;
     [GtkChild] private SearchEntry search_entry;
 
     private Conversation? conversation;
     private string[]? filter_values;
-    private HashMap<Jid, OccupantListRow> rows = new HashMap<Jid, OccupantListRow>(Jid.hash_func, Jid.equals_func);
+    private HashMap<Jid, ListRow> rows = new HashMap<Jid, ListRow>(Jid.hash_func, Jid.equals_func);
 
-    public OccupantList(StreamInteractor stream_interactor, Conversation conversation) {
+    public List(StreamInteractor stream_interactor, Conversation conversation) {
         this.stream_interactor = stream_interactor;
         list_box.set_header_func(header);
         list_box.set_sort_func(sort);
@@ -57,7 +57,7 @@ public class OccupantList : Box {
     }
 
     public void add_occupant(Jid jid) {
-        rows[jid] = new OccupantListRow(stream_interactor, conversation.account, jid);
+        rows[jid] = new ListRow(stream_interactor, conversation.account, jid);
         list_box.add(rows[jid]);
         list_box.invalidate_filter();
         list_box.invalidate_sort();
@@ -89,8 +89,8 @@ public class OccupantList : Box {
     }
 
     private bool filter(ListBoxRow r) {
-        if (r.get_type().is_a(typeof(OccupantListRow))) {
-            OccupantListRow row = r as OccupantListRow;
+        if (r.get_type().is_a(typeof(ListRow))) {
+            ListRow row = r as ListRow;
             foreach (string filter in filter_values) {
                 return row.name_label.label.down().contains(filter.down());
             }
@@ -99,9 +99,9 @@ public class OccupantList : Box {
     }
 
     private int sort(ListBoxRow row1, ListBoxRow row2) {
-        if (row1.get_type().is_a(typeof(OccupantListRow)) && row2.get_type().is_a(typeof(OccupantListRow))) {
-            OccupantListRow c1 = row1 as OccupantListRow;
-            OccupantListRow c2 = row2 as OccupantListRow;
+        if (row1.get_type().is_a(typeof(ListRow)) && row2.get_type().is_a(typeof(ListRow))) {
+            ListRow c1 = row1 as ListRow;
+            ListRow c2 = row2 as ListRow;
             return c1.name_label.label.collate(c2.name_label.label);
         }
         return 0;

@@ -61,11 +61,8 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         groupchat_button.visible = conversation.type_ == Conversation.Type.GROUPCHAT;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             groupchat_button.set_use_popover(true);
-            Popover popover = new Popover(null);
-            OccupantList occupant_list = new OccupantList(stream_interactor, conversation);
-            popover.add(occupant_list);
-            occupant_list.show_all();
-            groupchat_button.set_popover(popover);
+            OccupantMenu.View menu = new OccupantMenu.View(stream_interactor, conversation);
+            groupchat_button.set_popover(menu);
         }
     }
 

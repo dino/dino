@@ -90,8 +90,9 @@ SOURCES
     src/ui/manage_accounts/add_account_dialog.vala
     src/ui/manage_accounts/dialog.vala
     src/ui/notifications.vala
-    src/ui/occupant_list.vala
-    src/ui/occupant_list_row.vala
+    src/ui/occupant_menu/list.vala
+    src/ui/occupant_menu/list_row.vala
+    src/ui/occupant_menu/view.vala
     src/ui/settings_dialog.vala
     src/ui/unified_window.vala
     src/ui/util.vala
