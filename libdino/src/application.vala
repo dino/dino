@@ -24,7 +24,8 @@ public class Dino.Application : Gtk.Application {
         this.stream_interaction = new StreamInteractor(db);
 
         AvatarManager.start(stream_interaction, db);
-        MessageManager.start(stream_interaction, db);
+        MessageProcessor.start(stream_interaction, db);
+        MessageStorage.start(stream_interaction, db);
         CounterpartInteractionManager.start(stream_interaction);
         PresenceManager.start(stream_interaction);
         MucManager.start(stream_interaction);

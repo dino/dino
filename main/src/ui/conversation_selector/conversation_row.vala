@@ -46,7 +46,7 @@ public abstract class ConversationRow : ListBoxRow {
         x_button.clicked.connect(on_x_button_clicked);
 
         update_name(Util.get_conversation_display_name(stream_interactor, conversation));
-        Entities.Message message = stream_interactor.get_module(MessageManager.IDENTITY).get_last_message(conversation);
+        Entities.Message message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
         if (message != null) {
             message_received(message);
         }

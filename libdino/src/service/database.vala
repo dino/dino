@@ -190,7 +190,10 @@ public class Database : Qlite.Database {
 
     public Gee.List<Message> get_unsend_messages(Account account) {
         Gee.List<Message> ret = new ArrayList<Message>();
-        foreach (Row row in message.select().with(message.marked, "=", (int) Message.Marked.UNSENT)) {
+        var select = message.select()
+            .with(message.account_id, "=", account.id)
+            .with(message.marked, "=", (int) Message.Marked.UNSENT);
+        foreach (Row row in select) {
             ret.add(new Message.from_row(this, row));
         }
         return ret;

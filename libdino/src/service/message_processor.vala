@@ -5,8 +5,8 @@ using Dino.Entities;
 
 namespace Dino {
 
-public class MessageManager : StreamInteractionModule, Object {
-    public static ModuleIdentity<MessageManager> IDENTITY = new ModuleIdentity<MessageManager>("message_manager");
+public class MessageProcessor : StreamInteractionModule, Object {
+    public static ModuleIdentity<MessageProcessor> IDENTITY = new ModuleIdentity<MessageProcessor>("message_manager");
     public string id { get { return IDENTITY.id; } }
 
     public signal void pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
@@ -17,14 +17,14 @@ public class MessageManager : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private HashMap<Conversation, ArrayList<Entities.Message>> messages = new HashMap<Conversation, ArrayList<Entities.Message>>(Conversation.hash_func, Conversation.equals_func);
+    private Object lock_send_unsent;
 
     public static void start(StreamInteractor stream_interactor, Database db) {
-        MessageManager m = new MessageManager(stream_interactor, db);
+        MessageProcessor m = new MessageProcessor(stream_interactor, db);
         stream_interactor.add_module(m);
     }
 
-    private MessageManager(StreamInteractor stream_interactor, Database db) {
+    private MessageProcessor(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
         this.db = db;
         stream_interactor.account_added.connect(on_account_added);
@@ -35,50 +35,10 @@ public class MessageManager : StreamInteractionModule, Object {
 
     public void send_message(string text, Conversation conversation) {
         Entities.Message message = create_out_message(text, conversation);
-        add_message(message, conversation);
+        stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
         message.persist(db);
         send_xmpp_message(message, conversation);
         message_sent(message, conversation);
-    }
-
-    public Gee.List<Entities.Message>? get_messages(Conversation conversation, int count = 50) {
-        if (messages.has_key(conversation) && messages[conversation].size > 0) {
-            Gee.List<Entities.Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, get_message_type_for_conversation(conversation), count, messages[conversation][0]);
-            db_messages.add_all(messages[conversation]);
-            return db_messages;
-        } else {
-            Gee.List<Entities.Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, get_message_type_for_conversation(conversation), count, null);
-            return db_messages;
-        }
-    }
-
-    public Entities.Message? get_last_message(Conversation conversation) {
-        if (messages.has_key(conversation) && messages[conversation].size > 0) {
-            return messages[conversation][messages[conversation].size - 1];
-        } else {
-            Gee.List<Entities.Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, get_message_type_for_conversation(conversation), 1, null);
-            if (db_messages.size >= 1) {
-                return db_messages[0];
-            }
-        }
-        return null;
-    }
-
-    public Gee.List<Entities.Message>? get_messages_before(Conversation? conversation, Entities.Message before) {
-        Gee.List<Entities.Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, get_message_type_for_conversation(conversation), 20, before);
-        return db_messages;
-    }
-
-    private Entities.Message.Type get_message_type_for_conversation(Conversation conversation) {
-        switch (conversation.type_) {
-            case Conversation.Type.CHAT:
-                return Entities.Message.Type.CHAT;
-            case Conversation.Type.GROUPCHAT:
-                return Entities.Message.Type.GROUPCHAT;
-            case Conversation.Type.GROUPCHAT_PM:
-                return Entities.Message.Type.GROUPCHAT_PM;
-        }
-        assert_not_reached();
     }
 
     private void on_account_added(Account account) {
@@ -135,8 +95,7 @@ public class MessageManager : StreamInteractionModule, Object {
             bool is_uuid = new_message.stanza_id != null && Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", new_message.stanza_id);
             if ((is_uuid && !db.contains_message_by_stanza_id(new_message.stanza_id, conversation.account)) ||
                     (!is_uuid && !db.contains_message(new_message, conversation.account))) {
-                new_message.persist(db);
-                add_message(new_message, conversation);
+                stream_interactor.get_module(MessageStorage.IDENTITY).add_message(new_message, conversation);
                 if (new_message.direction == Entities.Message.DIRECTION_SENT) {
                     message_sent(new_message, conversation);
                 } else {
@@ -161,7 +120,7 @@ public class MessageManager : StreamInteractionModule, Object {
             } else {
                 Core.XmppStream stream = stream_interactor.get_stream(account);
                 if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid.to_string(), (stream, identities, store) => {
-                    Triple<MessageManager, Entities.Message, Xmpp.Message.Stanza> triple = store as Triple<MessageManager, Entities.Message, Xmpp.Message.Stanza>;
+                    Triple<MessageProcessor, Entities.Message, Xmpp.Message.Stanza> triple = store as Triple<MessageProcessor, Entities.Message, Xmpp.Message.Stanza>;
                     Entities.Message m = triple.b;
                     if (identities == null) {
                         m.type_ = Entities.Message.Type.CHAT;
@@ -181,16 +140,9 @@ public class MessageManager : StreamInteractionModule, Object {
         }
     }
 
-    private void add_message(Entities.Message message, Conversation conversation) {
-        if (!messages.has_key(conversation)) {
-            messages[conversation] = new ArrayList<Entities.Message>(Entities.Message.equals_func);
-        }
-        messages[conversation].add(message);
-    }
-
     private Entities.Message create_out_message(string text, Conversation conversation) {
         Entities.Message message = new Entities.Message(text);
-        message.type_ = get_message_type_for_conversation(conversation);
+        message.type_ = Util.get_message_type_for_conversation(conversation);
         message.stanza_id = random_uuid();
         message.account = conversation.account;
         message.body = text;
@@ -207,7 +159,7 @@ public class MessageManager : StreamInteractionModule, Object {
     }
 
     public void send_xmpp_message(Entities.Message message, Conversation conversation, bool delayed = false) {
-        lock (messages) {
+        lock (lock_send_unsent) {
             Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
             message.marked = Entities.Message.Marked.NONE;
             if (stream != null) {

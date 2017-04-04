@@ -31,10 +31,10 @@ public class List : ListBox {
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect((conversation) => {
             Idle.add(() => {add_conversation(conversation); return false;});
         });
-        stream_interactor.get_module(MessageManager.IDENTITY).message_received.connect((message, conversation) => {
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
             Idle.add(() => {on_message_received(message, conversation); return false;});
         });
-        stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect((message, conversation) => {
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
             Idle.add(() => {on_message_received(message, conversation); return false;});
         });
         stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {

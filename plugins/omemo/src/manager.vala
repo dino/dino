@@ -65,8 +65,8 @@ public class Manager : StreamInteractionModule, Object {
 
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.get_module(MessageManager.IDENTITY).pre_message_received.connect(on_pre_message_received);
-        stream_interactor.get_module(MessageManager.IDENTITY).pre_message_send.connect(on_pre_message_send);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_pre_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
     }
 
     private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
@@ -145,7 +145,7 @@ public class Manager : StreamInteractionModule, Object {
         }
         foreach (Entities.Message msg in send_now) {
             Entities.Conversation conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(msg.counterpart, account);
-            stream_interactor.get_module(MessageManager.IDENTITY).send_xmpp_message(msg, conv, true);
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(msg, conv, true);
         }
     }
 
@@ -169,7 +169,7 @@ public class Manager : StreamInteractionModule, Object {
         }
         foreach (Entities.Message msg in send_now) {
             Entities.Conversation conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(msg.counterpart, account);
-            stream_interactor.get_module(MessageManager.IDENTITY).send_xmpp_message(msg, conv, true);
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(msg, conv, true);
         }
     }
 

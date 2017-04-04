@@ -32,12 +32,14 @@ SOURCES
     src/service/counterpart_interaction_manager.vala
     src/service/database.vala
     src/service/entity_capabilities_storage.vala
-    src/service/message_manager.vala
+    src/service/message_processor.vala
+    src/service/message_storage.vala
     src/service/module_manager.vala
     src/service/muc_manager.vala
     src/service/presence_manager.vala
     src/service/roster_manager.vala
     src/service/stream_interactor.vala
+    src/service/util.vala
 
     src/settings.vala
 CUSTOM_VAPIS

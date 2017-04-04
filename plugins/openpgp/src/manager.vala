@@ -26,8 +26,8 @@ namespace Dino.Plugins.OpenPgp {
             this.db = db;
 
             stream_interactor.account_added.connect(on_account_added);
-            stream_interactor.get_module(MessageManager.IDENTITY).pre_message_received.connect(on_pre_message_received);
-            stream_interactor.get_module(MessageManager.IDENTITY).pre_message_send.connect(on_pre_message_send);
+            stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_pre_message_received);
+            stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
         }
 
         private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {

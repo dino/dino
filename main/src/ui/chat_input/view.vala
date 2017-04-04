@@ -56,7 +56,7 @@ public class View : Box {
                     stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, token[1]);
                     break;
                 case "/me":
-                    stream_interactor.get_module(MessageManager.IDENTITY).send_message(text, conversation);
+                    stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(text, conversation);
                     break;
                 case "/nick":
                     stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
@@ -66,7 +66,7 @@ public class View : Box {
                     break;
             }
         } else {
-            stream_interactor.get_module(MessageManager.IDENTITY).send_message(text, conversation);
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(text, conversation);
         }
         text_input.buffer.text = "";
     }

@@ -35,10 +35,10 @@ public class View : Box {
         stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).received_state.connect((account, jid, state) => {
             Idle.add(() => { on_received_state(account, jid, state); return false; });
         });
-        stream_interactor.get_module(MessageManager.IDENTITY).message_received.connect((message, conversation) => {
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
             Idle.add(() => { show_message(message, conversation, true); return false; });
         });
-        stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect((message, conversation) => {
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
             Idle.add(() => { show_message(message, conversation, true); return false; });
         });
         stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
@@ -65,8 +65,8 @@ public class View : Box {
         last_conversation_item = null;
 
         ArrayList<Object> objects = new ArrayList<Object>();
-        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageManager.IDENTITY).get_messages(conversation);
-        if (messages != null && messages.size > 0) {
+        Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
+        if (messages.size > 0) {
             earliest_message = messages[0];
             objects.add_all(messages);
         }
@@ -158,7 +158,7 @@ public class View : Box {
             if(reloading) return;
             reloading = true;
         }
-        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageManager.IDENTITY).get_messages_before(conversation, earliest_message);
+        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_before(conversation, earliest_message);
         if (messages != null && messages.size > 0) {
             earliest_message = messages[0];
             MergedMessageItem? current_item = null;

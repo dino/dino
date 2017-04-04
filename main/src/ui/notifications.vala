@@ -24,7 +24,7 @@ public class Notifications : Object {
     }
 
     public void start() {
-        stream_interactor.get_module(MessageManager.IDENTITY).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
         stream_interactor.get_module(PresenceManager.IDENTITY).received_subscription_request.connect(on_received_subscription_request);
     }
 

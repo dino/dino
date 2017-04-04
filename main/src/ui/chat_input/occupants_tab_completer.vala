@@ -87,14 +87,12 @@ class OccupantsTabCompletor {
 
     private Gee.List<string> generate_completions_from_messages() {
         Gee.List<string> ret = new ArrayList<string>();
-        Gee.List<Message>? messages = stream_interactor.get_module(MessageManager.IDENTITY).get_messages(conversation, 10);
-        if (messages != null) {
-            for (int i = messages.size - 1; i > 0; i--) {
-                string resourcepart = messages[i].from.resourcepart;
-                string own_nick = stream_interactor.get_module(MucManager.IDENTITY).get_nick(conversation.counterpart, conversation.account);
-                if (resourcepart != null && resourcepart != "" && resourcepart != own_nick && !ret.contains(resourcepart)) {
-                    ret.add(resourcepart);
-                }
+        Gee.List<Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation, 10);
+        for (int i = messages.size - 1; i > 0; i--) {
+            string resourcepart = messages[i].from.resourcepart;
+            string own_nick = stream_interactor.get_module(MucManager.IDENTITY).get_nick(conversation.counterpart, conversation.account);
+            if (resourcepart != null && resourcepart != "" && resourcepart != own_nick && !ret.contains(resourcepart)) {
+                ret.add(resourcepart);
             }
         }
         return ret;

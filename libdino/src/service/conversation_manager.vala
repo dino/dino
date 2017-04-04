@@ -27,8 +27,8 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MucManager.IDENTITY).groupchat_joined.connect(on_groupchat_joined);
-        stream_interactor.get_module(MessageManager.IDENTITY).pre_message_received.connect(on_message_received);
-        stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect(on_message_sent);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
     }
 
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
@@ -55,10 +55,14 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     public Gee.List<Conversation> get_conversations_for_presence(Show show, Account account) {
+        return get_conversations(show.jid, account);
+    }
+
+    public Gee.List<Conversation> get_conversations(Jid jid, Account account) {
         Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
-        Conversation? bare_conversation = get_conversation(show.jid, account);
+        Conversation? bare_conversation = get_conversation(jid, account);
         if (bare_conversation != null) ret.add(bare_conversation);
-        Conversation? full_conversation = get_conversation(show.jid.bare_jid, account);
+        Conversation? full_conversation = get_conversation(jid.bare_jid, account);
         if (full_conversation != null) ret.add(full_conversation);
         return ret;
     }

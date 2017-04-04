@@ -24,7 +24,7 @@ public class MucManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
-        stream_interactor.get_module(MessageManager.IDENTITY).pre_message_received.connect(on_pre_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_pre_message_received);
     }
 
     public void join(Account account, Jid jid, string nick, string? password = null) {
@@ -170,12 +170,10 @@ public class MucManager : StreamInteractionModule, Object {
         }
         string? muc_nick = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_nick(conversation.counterpart.bare_jid.to_string());
         if (muc_nick != null && message.from.equals(new Jid(@"$(message.from.bare_jid)/$muc_nick"))) { // TODO better from own
-            Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageManager.IDENTITY).get_messages(conversation);
-            if (messages != null) { // TODO not here
-                foreach (Entities.Message m in messages) {
-                    if (m.equals(message)) {
-                        m.marked = Entities.Message.Marked.RECEIVED;
-                    }
+            Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
+            foreach (Entities.Message m in messages) { // TODO not here
+                if (m.equals(message)) {
+                    m.marked = Entities.Message.Marked.RECEIVED;
                 }
             }
         }

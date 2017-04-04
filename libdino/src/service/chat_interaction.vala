@@ -27,8 +27,8 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private ChatInteraction(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         Timeout.add_seconds(30, update_interactions);
-        stream_interactor.get_module(MessageManager.IDENTITY).message_received.connect(on_message_received);
-        stream_interactor.get_module(MessageManager.IDENTITY).message_sent.connect(on_message_sent);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
     }
 
     public bool is_active_focus(Conversation? conversation = null) {
@@ -79,7 +79,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
         if (conversation == null) return;
         conversation_read(selected_conversation);
         check_send_read();
-        selected_conversation.read_up_to = stream_interactor.get_module(MessageManager.IDENTITY).get_last_message(conversation);
+        selected_conversation.read_up_to = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
     }
 
     private void on_conversation_unfocused(Conversation? conversation) {
@@ -93,7 +93,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
     private void check_send_read() {
         if (selected_conversation == null || selected_conversation.type_ == Conversation.Type.GROUPCHAT) return;
-        Entities.Message? message = stream_interactor.get_module(MessageManager.IDENTITY).get_last_message(selected_conversation);
+        Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(selected_conversation);
         if (message != null && message.direction == Entities.Message.DIRECTION_RECEIVED &&
                 message.stanza != null && !message.equals(selected_conversation.read_up_to)) {
             selected_conversation.read_up_to = message;
