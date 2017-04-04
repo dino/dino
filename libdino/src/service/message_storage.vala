@@ -34,7 +34,7 @@ public class MessageStorage : StreamInteractionModule, Object {
         if (messages[conversation].size > 0) {
             return messages[conversation][int.max(messages[conversation].size - count - 1, 0) : messages[conversation].size];
         }
-        return new ArrayList<Conversation>();
+        return new ArrayList<Message>();
     }
 
     public Message? get_last_message(Conversation conversation) {
