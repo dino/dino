@@ -14,9 +14,9 @@ public class UnifiedWindow : Window {
     private ConversationSelector.View filterable_conversation_list;
     private ConversationSummary.View conversation_frame;
     private ConversationTitlebar conversation_titlebar;
+    private HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
     private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
     private Paned paned = new Paned(Orientation.HORIZONTAL) { visible=true };
-    private Stack headerbar_stack = new Stack() { visible=true };
     private Stack stack = new Stack() { visible=true };
 
     private StreamInteractor stream_interactor;
@@ -83,6 +83,19 @@ public class UnifiedWindow : Window {
         conversation_list_titlebar = new ConversationListTitlebar(this, stream_interactor) { visible=true };
         headerbar_paned.add1(conversation_list_titlebar);
         headerbar_paned.add2(conversation_titlebar);
+
+        // Distribute start/end decoration_layout buttons to left/right headerbar. Ensure app menu fallback.
+        Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
+        if (gtk_settings != null) {
+            if (!gtk_settings.gtk_decoration_layout.contains("menu")) {
+                gtk_settings.gtk_decoration_layout = "menu:" + gtk_settings.gtk_decoration_layout;
+            }
+            string[] decoration_layout = gtk_settings.gtk_decoration_layout.split(":");
+            if (decoration_layout.length == 2) {
+                conversation_list_titlebar.decoration_layout = decoration_layout[0] + ":";
+                conversation_titlebar.decoration_layout = ":" + decoration_layout[1];
+            }
+        }
     }
 
     private void setup_stack() {
@@ -90,23 +103,19 @@ public class UnifiedWindow : Window {
         stack.add_named(accounts_placeholder, "accounts_placeholder");
         stack.add_named(conversations_placeholder, "conversations_placeholder");
         add(stack);
-
-        headerbar_stack.add_named(headerbar_paned, "main");
-        headerbar_stack.add_named(new HeaderBar() { title="Dino", show_close_button=true, visible=true }, "placeholder");
-        set_titlebar(headerbar_stack);
     }
 
     private void check_stack(bool know_exists = false) {
         ArrayList<Account> accounts = stream_interactor.get_accounts();
         if (!know_exists && accounts.size == 0) {
             stack.set_visible_child_name("accounts_placeholder");
-            headerbar_stack.set_visible_child_name("placeholder");
+            set_titlebar(placeholder_headerbar);
         } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
             stack.set_visible_child_name("conversations_placeholder");
-            headerbar_stack.set_visible_child_name("placeholder");
+            set_titlebar(placeholder_headerbar);
         } else {
             stack.set_visible_child_name("main");
-            headerbar_stack.set_visible_child_name("main");
+            set_titlebar(headerbar_paned);
         }
     }
 

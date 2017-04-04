@@ -24,7 +24,7 @@ public class Message : Object {
         UNKNOWN
     }
 
-    public int? id { get; set; }
+    public int id { get; set; default = -1; }
     public Account account { get; set; }
     public Jid? counterpart { get; set; }
     public Jid? ourpart { get; set; }
@@ -49,7 +49,6 @@ public class Message : Object {
     private Database? db;
 
     public Message(string? body) {
-        this.id = -1;
         this.body = body;
     }
 
@@ -75,6 +74,8 @@ public class Message : Object {
     }
 
     public void persist(Database db) {
+        if (id != -1) return;
+
         this.db = db;
         Qlite.InsertBuilder builder = db.message.insert()
             .value(db.message.account_id, account.id)

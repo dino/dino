@@ -36,7 +36,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
     public void send_message(string text, Conversation conversation) {
         Entities.Message message = create_out_message(text, conversation);
         stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
-        message.persist(db);
         send_xmpp_message(message, conversation);
         message_sent(message, conversation);
     }

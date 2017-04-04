@@ -12,6 +12,7 @@ public class Dino.Ui.Application : Dino.Application {
         notifications = new Notifications(stream_interaction);
         notifications.start();
         Environment.set_application_name("Dino");
+        Gtk.Window.set_default_icon_name("dino");
         IconTheme.get_default().add_resource_path("/org/dino-im/icons");
 
         activate.connect(() => {

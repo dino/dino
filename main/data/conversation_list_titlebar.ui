@@ -2,6 +2,7 @@
 <interface>
     <template class="DinoUiConversationListTitlebar" parent="GtkHeaderBar">
         <property name="hexpand">False</property>
+        <property name="show_close_button">True</property>
         <property name="visible">True</property>
         <style>
             <class name="left_toolbar"/>
