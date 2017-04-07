@@ -147,9 +147,9 @@ public class Dialog : Gtk.Window {
 
     private void on_image_button_clicked() {
         FileChooserDialog chooser = new FileChooserDialog (
-				"Select avatar", this, FileChooserAction.OPEN,
-				"Cancel", ResponseType.CANCEL,
-				"Select", ResponseType.ACCEPT);
+				_("Select avatar"), this, FileChooserAction.OPEN,
+				_("Cancel"), ResponseType.CANCEL,
+				_("Select"), ResponseType.ACCEPT);
         FileFilter filter = new FileFilter();
         filter.add_mime_type("image/*");
         chooser.set_filter(filter);
@@ -248,11 +248,11 @@ public class Dialog : Gtk.Window {
             ConnectionManager.ConnectionState state = stream_interactor.connection_manager.get_state(account);
             switch (state) {
                 case ConnectionManager.ConnectionState.CONNECTING:
-                    state_label.label = "Connecting..."; break;
+                    state_label.label = _("Connecting..."); break;
                 case ConnectionManager.ConnectionState.CONNECTED:
-                    state_label.label = "Connected"; break;
+                    state_label.label = _("Connected"); break;
                 case ConnectionManager.ConnectionState.DISCONNECTED:
-                    state_label.label = "Disconnected"; break;
+                    state_label.label = _("Disconnected"); break;
             }
             state_label.get_style_context().remove_class("is_error");
         }
@@ -275,12 +275,12 @@ public class Dialog : Gtk.Window {
     private string get_connection_error_description(ConnectionManager.ConnectionError error) {
         switch (error.source) {
             case ConnectionManager.ConnectionError.Source.SASL:
-                return "Wrong password";
+                return _("Wrong password");
         }
         if (error.identifier != null) {
-            return "Error" + ": " + error.identifier;
+            return _("Error") + ": " + error.identifier;
         } else {
-            return "Error";
+            return _("Error");
         }
     }
 }

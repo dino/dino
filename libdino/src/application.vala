@@ -7,6 +7,7 @@ public class Dino.Application : Gtk.Application {
     public Database db;
     public StreamInteractor stream_interaction;
     public Plugins.Registry plugin_registry = new Plugins.Registry();
+    public SearchPathGenerator? search_path_generator { get; set; }
 
     static string print_xmpp;
 

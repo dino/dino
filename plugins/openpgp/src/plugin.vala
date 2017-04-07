@@ -2,6 +2,9 @@ using Gee;
 
 using Dino.Entities;
 
+extern const string GETTEXT_PACKAGE;
+extern const string LOCALE_INSTALL_DIR;
+
 namespace Dino.Plugins.OpenPgp {
 
     public class Plugin : Plugins.RootInterface, Object {
@@ -23,6 +26,8 @@ namespace Dino.Plugins.OpenPgp {
             app.stream_interaction.module_manager.initialize_account_modules.connect(on_initialize_account_modules);
 
             Manager.start(app.stream_interaction, db);
+
+            internationalize(GETTEXT_PACKAGE, app.search_path_generator.get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR));
         }
 
         public void shutdown() { }

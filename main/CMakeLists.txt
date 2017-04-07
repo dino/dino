@@ -1,3 +1,8 @@
+set(GETTEXT_PACKAGE "dino")
+find_package(Gettext)
+include(${GETTEXT_USE_FILE})
+gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
+
 find_packages(MAIN_PACKAGES REQUIRED
     Gee
     GLib>=2.38
@@ -106,9 +111,9 @@ GRESOURCES
     ${MAIN_GRESOURCES_XML}
 )
 
-add_definitions(${VALA_CFLAGS})
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET})
-add_dependencies(dino dino-vapi dino-gsettings-schema-compiled)
+add_dependencies(dino dino-vapi dino-gsettings-schema-compiled ${GETTEXT_PACKAGE}-translations)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})
 
 if(WIN32)

@@ -1,3 +1,9 @@
+set(GETTEXT_PACKAGE "dino-openpgp")
+find_package(Gettext)
+include(${GETTEXT_USE_FILE})
+gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
+
+
 find_packages(OPENPGP_PACKAGES REQUIRED
     Gee
     GLib>=2.38
@@ -42,9 +48,9 @@ GRESOURCES
     ${OPENPGP_GRESOURCES_XML}
 )
 
-add_definitions(${VALA_CFLAGS})
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_library(openpgp SHARED ${OPENPGP_VALA_C} ${OPENPGP_GRESOURCES_TARGET})
-add_dependencies(openpgp dino-vapi gpgme-vapi)
+add_dependencies(openpgp dino-vapi gpgme-vapi ${GETTEXT_PACKAGE}-translations)
 target_link_libraries(openpgp libdino gpgme-vala ${OPENPGP_PACKAGES})
 set_target_properties(openpgp PROPERTIES PREFIX "")
 set_target_properties(openpgp PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)

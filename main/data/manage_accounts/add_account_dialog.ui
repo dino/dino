@@ -18,7 +18,7 @@
                 <child>
                     <object class="GtkButton" id="ok_button">
                         <property name="can_default">True</property>
-                        <property name="label">Save</property>
+                        <property name="label" translatable="yes">Save</property>
                         <property name="sensitive">False</property>
                         <property name="visible">True</property>
                         <style>
@@ -70,7 +70,7 @@
                         </child>
                         <child>
                             <object class="GtkLabel">
-                                <property name="label">Password</property>
+                                <property name="label" translatable="yes">Password</property>
                                 <property name="xalign">1</property>
                                 <property name="visible">True</property>
                             </object>
@@ -99,7 +99,7 @@
                         </child>
                         <child>
                             <object class="GtkLabel">
-                                <property name="label">Local alias</property>
+                                <property name="label" translatable="yes">Local alias</property>
                                 <property name="xalign">1</property>
                                 <property name="visible">True</property>
                             </object>

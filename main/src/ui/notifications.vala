@@ -56,9 +56,9 @@ public class Notifications : Object {
     }
 
     private void on_received_subscription_request(Jid jid, Account account) {
-        Notify.Notification notification = new Notify.Notification("Subscription request", jid.bare_jid.to_string(), null);
+        Notify.Notification notification = new Notify.Notification(_("Subscription request"), jid.bare_jid.to_string(), null);
         notification.set_image_from_pixbuf((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, jid, account));
-        notification.add_action("accept", "Accept", () => {
+        notification.add_action("accept", _("Accept"), () => {
             stream_interactor.get_module(PresenceManager.IDENTITY).approve_subscription(account, jid);
 
             if (stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid) == null) {
@@ -71,7 +71,7 @@ public class Notifications : Object {
                 notification.close();
             } catch (Error error) { }
         });
-        notification.add_action("deny", "Deny", () => {
+        notification.add_action("deny", _("Deny"), () => {
             stream_interactor.get_module(PresenceManager.IDENTITY).deny_subscription(account, jid);
             try {
                 notification.close();

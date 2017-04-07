@@ -8,7 +8,7 @@
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkButton" id="cancel_button">
-                        <property name="label">Cancel</property>
+                        <property name="label" translatable="yes">Cancel</property>
                         <property name="sensitive">True</property>
                         <property name="visible">True</property>
                     </object>
@@ -46,7 +46,7 @@
                         <property name="visible">True</property>
                         <child>
                             <object class="GtkLabel">
-                                <property name="label">Account</property>
+                                <property name="label" translatable="yes">Account</property>
                                 <property name="xalign">1</property>
                                 <property name="visible">True</property>
                             </object>
@@ -117,7 +117,7 @@
                         </child>
                         <child>
                             <object class="GtkLabel">
-                                <property name="label">Nick</property>
+                                <property name="label" translatable="yes">Nick</property>
                                 <property name="xalign">1</property>
                                 <property name="visible">True</property>
                             </object>
@@ -144,7 +144,7 @@
                         </child>
                         <child>
                             <object class="GtkLabel">
-                                <property name="label">Password</property>
+                                <property name="label" translatable="yes">Password</property>
                                 <property name="xalign">1</property>
                                 <property name="visible">True</property>
                             </object>
@@ -173,7 +173,7 @@
                         <child>
                             <object class="GtkCheckButton" id="autojoin_checkbutton">
                                 <property name="active">False</property>
-                                <property name="label">Join on startup</property>
+                                <property name="label" translatable="yes">Join on startup</property>
                                 <property name="xalign">0</property>
                                 <property name="visible">True</property>
                             </object>
@@ -186,7 +186,7 @@
                         </child>
                         <child>
                             <object class="GtkLabel" id="alias_label">
-                                <property name="label">Alias</property>
+                                <property name="label" translatable="yes">Alias</property>
                                 <property name="xalign">1</property>
                                 <property name="visible">True</property>
                             </object>

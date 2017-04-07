@@ -18,7 +18,7 @@ public class Dialog : Gtk.Dialog {
 
     public Dialog(StreamInteractor stream_interactor) {
         Object(use_header_bar : 1);
-        this.title = "Start Chat";
+        this.title = _("Start Chat");
         this.modal = true;
         this.stream_interactor = stream_interactor;
 
@@ -31,13 +31,13 @@ public class Dialog : Gtk.Dialog {
         header_bar.show_close_button = false;
 
         Button cancel_button = new Button();
-        cancel_button.set_label("Cancel");
+        cancel_button.set_label(_("Cancel"));
         cancel_button.visible = true;
         header_bar.pack_start(cancel_button);
 
         ok_button = new Button();
         ok_button.get_style_context().add_class("suggested-action");
-        ok_button.label = "Start";
+        ok_button.label = _("Start");
         ok_button.sensitive = false;
         ok_button.visible = true;
         header_bar.pack_end(ok_button);

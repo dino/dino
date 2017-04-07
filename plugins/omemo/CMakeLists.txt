@@ -1,3 +1,8 @@
+set(GETTEXT_PACKAGE "dino-omemo")
+find_package(Gettext)
+include(${GETTEXT_USE_FILE})
+gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
+
 find_packages(OMEMO_PACKAGES REQUIRED
     Gee
     GLib
@@ -31,9 +36,9 @@ PACKAGES
     ${OMEMO_PACKAGES}
 )
 
-add_definitions(${VALA_CFLAGS})
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_library(omemo SHARED ${OMEMO_VALA_C})
-add_dependencies(omemo dino-vapi signal-protocol-vapi)
+add_dependencies(omemo dino-vapi signal-protocol-vapi ${GETTEXT_PACKAGE}-translations)
 target_link_libraries(omemo libdino signal-protocol-vala ${OMEMO_PACKAGES})
 set_target_properties(omemo PROPERTIES PREFIX "")
 set_target_properties(omemo PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)

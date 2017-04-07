@@ -1,3 +1,6 @@
+extern const string GETTEXT_PACKAGE;
+extern const string LOCALE_INSTALL_DIR;
+
 namespace Dino.Plugins.Omemo {
 
 public class Plugin : RootInterface, Object {
@@ -22,6 +25,8 @@ public class Plugin : RootInterface, Object {
                 list.add(new StreamModule());
             });
             Manager.start(this.app.stream_interaction, db);
+
+            internationalize(GETTEXT_PACKAGE, app.search_path_generator.get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR));
         } catch (Error e) {
             print(@"Error initializing OMEMO: $(e.message)\n");
         }

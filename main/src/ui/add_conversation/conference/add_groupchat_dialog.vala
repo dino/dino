@@ -25,7 +25,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     public AddGroupchatDialog(StreamInteractor stream_interactor) {
         Object(use_header_bar : 1);
         this.stream_interactor = stream_interactor;
-        ok_button.label = "Add";
+        ok_button.label = _("Add");
         ok_button.get_style_context().add_class("suggested-action"); // TODO why doesn't it work in XML
         accounts_stack.set_visible_child_name("combobox");
         account_combobox.initialize(stream_interactor);
@@ -39,7 +39,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     public AddGroupchatDialog.for_conference(StreamInteractor stream_interactor, Account account, Xmpp.Xep.Bookmarks.Conference conference) {
         this(stream_interactor);
         edit_confrence = conference;
-        ok_button.label = "Save";
+        ok_button.label = _("Save");
         ok_button.sensitive = true;
         accounts_stack.set_visible_child_name("label");
         account_label.label = account.bare_jid.to_string();

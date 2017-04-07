@@ -71,13 +71,13 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
 
     private void populate_list_store() {
         if (keys.size == 0) {
-            label.set_markup(build_markup_string("Key publishing disabled", "No keys available. Generate one!"));
+            label.set_markup(build_markup_string(_("Key publishing disabled"), _("No keys available. Generate one!")));
             return;
         }
 
         TreeIter iter;
         list_store.append(out iter);
-        list_store.set(iter, 0, build_markup_string("Key publishing disabled", "Select key"), 1, "");
+        list_store.set(iter, 0, build_markup_string(_("Key publishing disabled"), _("Select key")), 1, "");
         for (int i = 0; i < keys.size; i++) {
             list_store.append(out iter);
             list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font_family='monospace' font='8'>0x$(Markup.escape_text(keys[i].fpr[0:16]))</span>");
@@ -94,7 +94,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
         TreeIter iter;
         list_store.clear();
         list_store.append(out iter);
-        label.set_markup(build_markup_string("Loading...", "Querying GnuPG"));
+        label.set_markup(build_markup_string(_("Loading..."), _("Querying GnuPG")));
         new Thread<void*> (null, () => { // Querying GnuPG might take some time
             try {
                 keys = GPGHelper.get_keylist(null, true);
@@ -105,7 +105,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
                 });
             } catch (Error e) {
                 Idle.add(() => {
-                    label.set_markup(build_markup_string("Key publishing disabled", "Error in GnuPG"));
+                    label.set_markup(build_markup_string(_("Key publishing disabled"), _("Error in GnuPG")));
                     return false;
                 });
             }
@@ -139,7 +139,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     private string build_markup_string(string primary, string secondary) {
-        return @"$(Markup.escape_text(primary))\n<span font='9'>$(Markup.escape_text(secondary))</span>";
+        return @"$(Markup.escape_text(primary))\n<span font='8'>$(Markup.escape_text(secondary))</span>";
     }
 }
 

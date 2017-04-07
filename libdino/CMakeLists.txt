@@ -42,6 +42,7 @@ SOURCES
     src/service/util.vala
 
     src/settings.vala
+    src/util.vala
 CUSTOM_VAPIS
     "${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi"
     "${CMAKE_BINARY_DIR}/exports/qlite.vapi"
@@ -56,8 +57,17 @@ GENERATE_HEADER
     dino
 )
 
+add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/dino_i18n.h"
+COMMAND
+    cp "${CMAKE_CURRENT_SOURCE_DIR}/src/dino_i18n.h" "${CMAKE_BINARY_DIR}/exports/dino_i18n.h"
+DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/dino_i18n.h"
+COMMENT
+    Copy header file dino_i18n.h
+)
+
 add_definitions(${VALA_CFLAGS} -DDINO_PLUGINS_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_PLUGINS_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}")
-add_library(libdino SHARED ${LIBDINO_VALA_C})
+add_library(libdino SHARED ${LIBDINO_VALA_C} ${CMAKE_BINARY_DIR}/exports/dino_i18n.h)
 add_dependencies(libdino xmpp-vala-vapi qlite-vapi)
 target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} m)
 set_target_properties(libdino PROPERTIES PREFIX "" VERSION 0.0 SOVERSION 0)

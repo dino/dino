@@ -3,17 +3,17 @@
         <section>
             <item>
                 <attribute name="action">app.accounts</attribute>
-                <attribute name="label">Accounts</attribute>
+                <attribute name="label" translatable="yes">Accounts</attribute>
             </item>
             <item>
                 <attribute name="action">app.settings</attribute>
-                <attribute name="label">Settings</attribute>
+                <attribute name="label" translatable="yes">Settings</attribute>
             </item>
         </section>
         <section>
             <item>
                 <attribute name="action">app.quit</attribute>
-                <attribute name="label">Quit</attribute>
+                <attribute name="label" translatable="yes">Quit</attribute>
             </item>
         </section>
     </menu>

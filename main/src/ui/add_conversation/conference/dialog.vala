@@ -12,7 +12,7 @@ public class Dialog : Gtk.Dialog {
     private Stack stack = new Stack();
     private Button cancel_button;
     private Button ok_button;
-    private Label cancel_label = new Label("Cancel") {visible=true};
+    private Label cancel_label = new Label(_("Cancel")) {visible=true};
     private Image cancel_image = new Image.from_icon_name("go-previous-symbolic", IconSize.MENU) {visible=true};
 
     private SelectJidFragment select_fragment;
@@ -23,7 +23,7 @@ public class Dialog : Gtk.Dialog {
 
     public Dialog(StreamInteractor stream_interactor) {
         Object(use_header_bar : 1);
-        this.title = "Join Conference";
+        this.title = _("Join Conference");
         this.modal = true;
         this.stream_interactor = stream_interactor;
 
@@ -42,7 +42,7 @@ public class Dialog : Gtk.Dialog {
         cancel_button.add(cancel_label);
         cancel_button.clicked.disconnect(show_jid_add_view);
         cancel_button.clicked.connect(on_cancel);
-        ok_button.label = "Next";
+        ok_button.label = _("Next");
         ok_button.sensitive = select_fragment.done;
         ok_button.clicked.disconnect(on_ok_button_clicked);
         ok_button.clicked.connect(on_next_button_clicked);
@@ -57,7 +57,7 @@ public class Dialog : Gtk.Dialog {
         cancel_button.add(cancel_image);
         cancel_button.clicked.disconnect(on_cancel);
         cancel_button.clicked.connect(show_jid_add_view);
-        ok_button.label = "Join";
+        ok_button.label = _("Join");
         ok_button.sensitive = details_fragment.done;
         ok_button.clicked.disconnect(on_next_button_clicked);
         ok_button.clicked.connect(on_ok_button_clicked);

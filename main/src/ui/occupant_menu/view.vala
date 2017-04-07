@@ -45,7 +45,7 @@ public class View : Popover {
         Button header_button = new Button() { relief=ReliefStyle.NONE, visible=true };
         header_button.add(header_box);
 
-        ModelButton private_button = new ModelButton()  { active=true, text="Start private conversation", visible=true };
+        ModelButton private_button = new ModelButton()  { active=true, text=_("Start private conversation"), visible=true };
 
         Box outer_box = new Box(Orientation.VERTICAL, 5) { margin=10, visible=true };
         outer_box.add(header_button);

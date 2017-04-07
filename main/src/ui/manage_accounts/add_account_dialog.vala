@@ -18,7 +18,7 @@ public class AddAccountDialog : Gtk.Dialog {
 
     public AddAccountDialog(StreamInteractor stream_interactor) {
         Object(use_header_bar : 1);
-        this.title = "Add Account";
+        this.title = _("Add Account");
 
         cancel_button.clicked.connect(() => { close(); });
         ok_button.clicked.connect(on_ok_button_clicked);

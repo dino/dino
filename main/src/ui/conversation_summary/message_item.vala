@@ -104,7 +104,7 @@ public class MessageItem : Grid, ConversationItem {
         } else if (timespan > TimeSpan.MINUTE) {
             return (timespan / TimeSpan.MINUTE).to_string() + " min ago";
         } else {
-            return "Just now";
+            return _("Just now");
         }
     }
 }

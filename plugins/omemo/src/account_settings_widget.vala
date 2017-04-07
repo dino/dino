@@ -32,7 +32,7 @@ public class AccountSettingWidget : Plugins.AccountSettingsWidget, Box {
         try {
             Qlite.Row? row = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id).inner;
             if (row == null) {
-                fingerprint.set_markup(@"Own fingerprint\n<span font='8'>Will be generated on first connect</span>");
+                fingerprint.set_markup("%s\n<span font='8'>%s</span>".printf(_("Own fingerprint"), _("Will be generated on first connect")));
             } else {
                 uint8[] arr = Base64.decode(row[plugin.db.identity.identity_key_public_base64]);
                 arr = arr[1:arr.length];
@@ -49,10 +49,10 @@ public class AccountSettingWidget : Plugins.AccountSettingsWidget, Box {
                         }
                     }
                 }
-                fingerprint.set_markup(@"Own fingerprint\n<span font_family='monospace' font='8'>$res</span>");
+                fingerprint.set_markup("%s\n<span font_family='monospace' font='8'>%s</span>".printf(_("Own fingerprint"), res));
             }
         } catch (Qlite.DatabaseError e) {
-            fingerprint.set_markup(@"Own fingerprint\n<span font='8'>Database error</span>");
+            fingerprint.set_markup("%s\n<span font='8'>%s</span>".printf(_("Own fingerprint"), _("Database error")));
         }
     }
 
