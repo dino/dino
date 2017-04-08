@@ -21,6 +21,7 @@ public class Dialog : Gtk.Window {
     [GtkChild] public Image image;
     [GtkChild] public Button image_button;
     [GtkChild] public Label jid_label;
+    [GtkChild] public Label state_label;
     [GtkChild] public Switch active_switch;
 
     [GtkChild] public Stack password_stack;
@@ -39,12 +40,14 @@ public class Dialog : Gtk.Window {
 
     private Database db;
     private StreamInteractor stream_interactor;
+    private Account? selected_account;
 
     construct {
-        account_list.row_selected.connect(account_list_row_selected);
-        add_button.clicked.connect(add_button_clicked);
-        no_accounts_add.clicked.connect(add_button_clicked);
-        remove_button.clicked.connect(remove_button_clicked);
+        Util.force_error_color(state_label, ".is_error");
+        account_list.row_selected.connect(on_account_list_row_selected);
+        add_button.clicked.connect(on_add_button_clicked);
+        no_accounts_add.clicked.connect(on_add_button_clicked);
+        remove_button.clicked.connect(on_remove_button_clicked);
         password_entry.key_release_event.connect(on_password_key_release_event);
         alias_entry.key_release_event.connect(on_alias_key_release_event);
         image_button.clicked.connect(on_image_button_clicked);
@@ -79,10 +82,23 @@ public class Dialog : Gtk.Window {
         }
 
         stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect((pixbuf, jid, account) => {
-        Idle.add(() => {
-            on_received_avatar(pixbuf, jid, account);
-            return false;
-        });});
+            Idle.add(() => {
+                on_received_avatar(pixbuf, jid, account);
+                return false;
+            });
+        });
+        stream_interactor.connection_manager.connection_error.connect((account, error) => {
+            Idle.add(() => {
+                if (account.equals(selected_account)) update_status_label(account);
+                return false;
+            });
+        });
+        stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
+            Idle.add(() => {
+                if (account.equals(selected_account)) update_status_label(account);
+                return false;
+            });
+        });
 
         if (account_list.get_row_at_index(0) != null) account_list.select_row(account_list.get_row_at_index(0));
     }
@@ -94,7 +110,7 @@ public class Dialog : Gtk.Window {
         return account_item;
     }
 
-    private void add_button_clicked() {
+    private void on_add_button_clicked() {
         AddAccountDialog add_account_dialog = new AddAccountDialog(stream_interactor);
         add_account_dialog.set_transient_for(this);
         add_account_dialog.added.connect((account) => {
@@ -106,7 +122,7 @@ public class Dialog : Gtk.Window {
         add_account_dialog.show();
     }
 
-    private void remove_button_clicked() {
+    private void on_remove_button_clicked() {
         AccountRow account_item = account_list.get_selected_row() as AccountRow;
         if (account_item != null) {
             account_list.remove(account_item);
@@ -121,39 +137,13 @@ public class Dialog : Gtk.Window {
         }
     }
 
-    private void account_list_row_selected(ListBoxRow? row) {
+    private void on_account_list_row_selected(ListBoxRow? row) {
         AccountRow? account_item = row as AccountRow;
-        if (account_item != null) populate_grid_data(account_item.account);
-    }
-
-    private void populate_grid_data(Account account) {
-        active_switch.state_set.disconnect(on_active_switch_state_changed);
-
-        Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(50, 50, image.scale_factor)).draw_account(stream_interactor, account));
-        active_switch.set_active(account.enabled);
-        jid_label.label = account.bare_jid.to_string();
-
-        string filler = "";
-        for (int i = 0; i < account.password.length; i++) filler += password_entry.get_invisible_char().to_string();
-        password_label.label = filler;
-        password_stack.set_visible_child_name("label");
-        password_entry.text = account.password;
-
-        alias_stack.set_visible_child_name("label");
-        alias_label.label = account.alias;
-        alias_entry.text = account.alias;
-
-        password_button.clicked.connect(() => { set_active_stack(password_stack); });
-        alias_button.clicked.connect(() => { set_active_stack(alias_stack); });
-        active_switch.state_set.connect(on_active_switch_state_changed);
-
-        foreach(Plugins.AccountSettingsWidget widget in plugin_widgets) {
-            widget.set_account(account);
+        if (account_item != null) {
+            selected_account = account_item.account;
+            populate_grid_data(account_item.account);
         }
-
-        child_activated(null);
     }
-
 
     private void on_image_button_clicked() {
         FileChooserDialog chooser = new FileChooserDialog (
@@ -175,6 +165,7 @@ public class Dialog : Gtk.Window {
         Account account = (account_list.get_selected_row() as AccountRow).account;
         account.enabled = state;
         if (state) {
+            if (account.enabled) account_disabled(account);
             account_enabled(account);
         } else {
             account_disabled(account);
@@ -211,6 +202,62 @@ public class Dialog : Gtk.Window {
         }
     }
 
+    private void populate_grid_data(Account account) {
+        active_switch.state_set.disconnect(on_active_switch_state_changed);
+
+        Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(50, 50, image.scale_factor)).draw_account(stream_interactor, account));
+        active_switch.set_active(account.enabled);
+        jid_label.label = account.bare_jid.to_string();
+
+        string filler = "";
+        for (int i = 0; i < account.password.length; i++) filler += password_entry.get_invisible_char().to_string();
+        password_label.label = filler;
+        password_stack.set_visible_child_name("label");
+        password_entry.text = account.password;
+
+        alias_stack.set_visible_child_name("label");
+        alias_label.label = account.alias;
+        alias_entry.text = account.alias;
+
+        update_status_label(account);
+
+        password_button.clicked.connect(() => { set_active_stack(password_stack); });
+        alias_button.clicked.connect(() => { set_active_stack(alias_stack); });
+        active_switch.state_set.connect(on_active_switch_state_changed);
+
+        foreach(Plugins.AccountSettingsWidget widget in plugin_widgets) {
+            widget.set_account(account);
+        }
+
+        child_activated(null);
+    }
+
+    private void update_status_label(Account account) {
+        state_label.label = "";
+        ConnectionManager.ConnectionError? error = stream_interactor.connection_manager.get_error(account);
+        if (error != null) {
+            state_label.label = get_connection_error_description(error);
+            state_label.get_style_context().add_class("is_error");
+
+            if (error.source == ConnectionManager.ConnectionError.Source.SASL ||
+                    (error.flag != null && error.flag.reconnection_recomendation == Xmpp.StreamError.Flag.Reconnect.NEVER)) {
+                active_switch.active = false;
+            }
+
+        } else {
+            ConnectionManager.ConnectionState state = stream_interactor.connection_manager.get_state(account);
+            switch (state) {
+                case ConnectionManager.ConnectionState.CONNECTING:
+                    state_label.label = "Connecting..."; break;
+                case ConnectionManager.ConnectionState.CONNECTED:
+                    state_label.label = "Connected"; break;
+                case ConnectionManager.ConnectionState.DISCONNECTED:
+                    state_label.label = "Disconnected"; break;
+            }
+            state_label.get_style_context().remove_class("is_error");
+        }
+    }
+
     private void child_activated(Gtk.Widget? widget) {
         if (widget != password_stack) password_stack.set_visible_child_name("label");
         if (widget != alias_stack) alias_stack.set_visible_child_name("label");
@@ -223,6 +270,18 @@ public class Dialog : Gtk.Window {
     private void set_active_stack(Stack stack) {
         stack.set_visible_child_name("entry");
         child_activated(stack);
+    }
+
+    private string get_connection_error_description(ConnectionManager.ConnectionError error) {
+        switch (error.source) {
+            case ConnectionManager.ConnectionError.Source.SASL:
+                return "Wrong password";
+        }
+        if (error.identifier != null) {
+            return "Error" + ": " + error.identifier;
+        } else {
+            return "Error";
+        }
     }
 }
 

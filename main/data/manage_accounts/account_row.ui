@@ -23,6 +23,11 @@
                         <property name="visible">True</property>
                     </object>
                 </child>
+                <child>
+                    <object class="GtkImage" id="icon">
+                        <property name="icon-name">dialog-warning-symbolic</property>
+                    </object>
+                </child>
             </object>
         </child>
     </template>

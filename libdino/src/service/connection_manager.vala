@@ -9,6 +9,7 @@ public class ConnectionManager {
 
     public signal void stream_opened(Account account, Core.XmppStream stream);
     public signal void connection_state_changed(Account account, ConnectionState state);
+    public signal void connection_error(Account account, ConnectionError error);
 
     public enum ConnectionState {
         CONNECTED,
@@ -17,11 +18,31 @@ public class ConnectionManager {
     }
 
     private ArrayList<Account> connection_todo = new ArrayList<Account>(Account.equals_func);
-    private HashMap<Account, Connection> stream_states = new HashMap<Account, Connection>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, Connection> connections = new HashMap<Account, Connection>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, ConnectionError> connection_errors = new HashMap<Account, ConnectionError>(Account.hash_func, Account.equals_func);
+
     private NetworkManager? network_manager;
     private Login1Manager? login1;
     private ModuleManager module_manager;
     public string? log_options;
+
+    public class ConnectionError {
+
+        public enum Source {
+            CONNECTION,
+            SASL,
+            STREAM_ERROR
+        }
+
+        public Source source;
+        public string? identifier;
+        public StreamError.Flag? flag;
+
+        public ConnectionError(Source source, string? identifier) {
+            this.source = source;
+            this.identifier = identifier;
+        }
+    }
 
     private class Connection {
         public Core.XmppStream stream { get; set; }
@@ -46,17 +67,24 @@ public class ConnectionManager {
     }
 
     public Core.XmppStream? get_stream(Account account) {
-        if (get_connection_state(account) == ConnectionState.CONNECTED) {
-            return stream_states[account].stream;
+        if (get_state(account) == ConnectionState.CONNECTED) {
+            return connections[account].stream;
         }
         return null;
     }
 
-    public ConnectionState get_connection_state(Account account) {
-        if (stream_states.has_key(account)){
-            return stream_states[account].connection_state;
+    public ConnectionState get_state(Account account) {
+        if (connections.has_key(account)){
+            return connections[account].connection_state;
         }
         return ConnectionState.DISCONNECTED;
+    }
+
+    public ConnectionError? get_error(Account account) {
+        if (connection_errors.has_key(account)) {
+            return connection_errors[account];
+        }
+        return null;
     }
 
     public ArrayList<Account> get_managed_accounts() {
@@ -65,7 +93,7 @@ public class ConnectionManager {
 
     public Core.XmppStream? connect(Account account) {
         if (!connection_todo.contains(account)) connection_todo.add(account);
-        if (!stream_states.has_key(account)) {
+        if (!connections.has_key(account)) {
             return connect_(account);
         } else {
             check_reconnect(account);
@@ -76,18 +104,18 @@ public class ConnectionManager {
     public void disconnect(Account account) {
         change_connection_state(account, ConnectionState.DISCONNECTED);
         connection_todo.remove(account);
-        if (stream_states.has_key(account)) {
+        if (connections.has_key(account)) {
             try {
-                stream_states[account].stream.disconnect();
+                connections[account].stream.disconnect();
+                connections.unset(account);
             } catch (Error e) { }
         }
     }
 
     private Core.XmppStream? connect_(Account account, string? resource = null) {
+        if (connections.has_key(account)) connections[account].stream.remove_modules();
+        connection_errors.unset(account);
         if (resource == null) resource = account.resourcepart;
-        if (stream_states.has_key(account)) {
-            stream_states[account].stream.remove_modules();
-        }
 
         Core.XmppStream stream = new Core.XmppStream();
         foreach (Core.XmppStreamModule module in module_manager.get_modules(account, resource)) {
@@ -96,10 +124,14 @@ public class ConnectionManager {
         stream.log = new Core.XmppLog(account.bare_jid.to_string(), log_options);
 
         Connection connection = new Connection(stream, new DateTime.now_local());
-        stream_states[account] = connection;
+        connections[account] = connection;
         change_connection_state(account, ConnectionState.CONNECTING);
         stream.stream_negotiated.connect((stream) => {
             change_connection_state(account, ConnectionState.CONNECTED);
+        });
+        stream.get_module(PlainSasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
+            set_connection_error(account, ConnectionError.Source.SASL, null);
+            change_connection_state(account, ConnectionState.DISCONNECTED);
         });
         new Thread<void*> (null, () => {
             try {
@@ -108,10 +140,13 @@ public class ConnectionManager {
                 stderr.printf("Stream Error: %s\n", e.message);
                 change_connection_state(account, ConnectionState.DISCONNECTED);
                 if (!connection_todo.contains(account)) {
-                    stream_states.unset(account);
+                    connections.unset(account);
                 } else {
-                    interpret_reconnect_flags(account, stream.get_flag(StreamError.Flag.IDENTITY) ??
-                        new StreamError.Flag() { reconnection_recomendation = StreamError.Flag.Reconnect.NOW });
+                    StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
+                    if (flag != null) {
+                        set_connection_error(account, ConnectionError.Source.STREAM_ERROR, flag.error_type);
+                    }
+                    interpret_connection_error(account);
                 }
             }
             return null;
@@ -121,29 +156,33 @@ public class ConnectionManager {
         return stream;
     }
 
-    private void interpret_reconnect_flags(Account account, StreamError.Flag stream_error_flag) {
-        int wait_sec = 10;
+    private void interpret_connection_error(Account account) {
+        ConnectionError? error = connection_errors[account];
+        int wait_sec = 5;
+        if (error == null) {
+            wait_sec = 3;
+        } else if (error.source == ConnectionError.Source.STREAM_ERROR && error.flag != null) {
+            if (error.flag.resource_rejected) {
+                connect_(account, account.resourcepart + "-" + random_uuid());
+                return;
+            }
+            switch (error.flag.reconnection_recomendation) {
+                case StreamError.Flag.Reconnect.NOW:
+                    wait_sec = 5; break;
+                case StreamError.Flag.Reconnect.LATER:
+                    wait_sec = 60; break;
+                case StreamError.Flag.Reconnect.NEVER:
+                    return;
+            }
+        } else if (error.source == ConnectionError.Source.SASL) {
+            return;
+        }
         if (network_manager != null && network_manager.State != NetworkManager.CONNECTED_GLOBAL) {
             wait_sec = 60;
         }
-        switch (stream_error_flag.reconnection_recomendation) {
-            case StreamError.Flag.Reconnect.NOW:
-                wait_sec = 10;
-                break;
-            case StreamError.Flag.Reconnect.LATER:
-            case StreamError.Flag.Reconnect.UNKNOWN:
-                wait_sec = 60;
-                break;
-            case StreamError.Flag.Reconnect.NEVER:
-                return;
-        }
         print(@"recovering in $wait_sec\n");
         Timeout.add_seconds(wait_sec, () => {
-            if (stream_error_flag.resource_rejected) {
-                connect_(account, account.resourcepart + "-" + random_uuid());
-            } else {
-                connect_(account);
-            }
+            connect_(account);
             return false;
         });
     }
@@ -156,16 +195,16 @@ public class ConnectionManager {
 
     private void check_reconnect(Account account) {
         PingResponseListenerImpl ping_response_listener = new PingResponseListenerImpl(this, account);
-        Core.XmppStream stream = stream_states[account].stream;
+        Core.XmppStream stream = connections[account].stream;
         stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.domainpart, ping_response_listener);
 
         Timeout.add_seconds(5, () => {
-            if (stream_states[account].stream != stream) return false;
+            if (connections[account].stream != stream) return false;
             if (ping_response_listener.acked) return false;
 
             change_connection_state(account, ConnectionState.DISCONNECTED);
             try {
-                stream_states[account].stream.disconnect();
+                connections[account].stream.disconnect();
             } catch (Error e) { }
             return false;
         });
@@ -207,8 +246,8 @@ public class ConnectionManager {
                 Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
                 presence.type_ = Xmpp.Presence.Stanza.TYPE_UNAVAILABLE;
                 try {
-                    stream_states[account].stream.get_module(Presence.Module.IDENTITY).send_presence(stream_states[account].stream, presence);
-                    stream_states[account].stream.disconnect();
+                    connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
+                    connections[account].stream.disconnect();
                 } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
             }
         } else {
@@ -218,8 +257,16 @@ public class ConnectionManager {
     }
 
     private void change_connection_state(Account account, ConnectionState state) {
-        stream_states[account].connection_state = state;
-        connection_state_changed(account, state);
+        if (connections.has_key(account)) {
+            connections[account].connection_state = state;
+            connection_state_changed(account, state);
+        }
+    }
+
+    private void set_connection_error(Account account, ConnectionError.Source source, string? id) {
+        ConnectionError error = new ConnectionError(source, id);
+        connection_errors[account] = error;
+        connection_error(account, error);
     }
 }
 
