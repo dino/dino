@@ -27,6 +27,7 @@ Build
 
 * CMake
 * C compiler
+* gettext
 * ninja(-build) (recommend)
 * valac (≥ 0.30)
 
