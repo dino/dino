@@ -113,7 +113,7 @@ msgstr "Invia notifiche di digitazione e stato dei messaggi"
 
 #: data/settings_dialog.ui:35
 msgid "Convert smileys to emojis"
-msgstr "Converte smileys ad emojis"
+msgstr "Converte smileys in emojis"
 
 #: src/ui/add_conversation/conference/dialog.vala:45
 msgid "Next"
@@ -170,7 +170,7 @@ msgstr "Errore"
 
 #: src/ui/occupant_menu/view.vala:48
 msgid "Start private conversation"
-msgstr "Inizia conversazione privata"
+msgstr "Inizia una conversazione privata"
 
 #: src/ui/notifications.vala:59
 msgid "Subscription request"
