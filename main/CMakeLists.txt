@@ -107,6 +107,7 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/dino_internal.vapi
 PACKAGES
     ${MAIN_PACKAGES}
+    gdk-x11-3.0
 GRESOURCES
     ${MAIN_GRESOURCES_XML}
 )
