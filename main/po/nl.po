@@ -93,11 +93,11 @@ msgstr "Instellingen"
 
 #: data/menu_app.ui:16
 msgid "Quit"
-msgstr "Sluiten"
+msgstr "Afsluiten"
 
 #: data/menu_conversation.ui:5
 msgid "Contact Details"
-msgstr "Contactgegevens"
+msgstr "Over Contact"
 
 #: data/menu_encryption.ui:14
 msgid "Unencrypted"

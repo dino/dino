@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: it_IT\n"
+"Language: nl_NL\n"
 
 #: src/account_settings_widget.vala:35 src/account_settings_widget.vala:52
 #: src/account_settings_widget.vala:55
