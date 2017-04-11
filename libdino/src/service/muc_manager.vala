@@ -8,8 +8,9 @@ public class MucManager : StreamInteractionModule, Object {
     public static ModuleIdentity<MucManager> IDENTITY = new ModuleIdentity<MucManager>("muc_manager");
     public string id { get { return IDENTITY.id; } }
 
-    public signal void groupchat_joined(Account account, Jid jid, string nick);
-    public signal void groupchat_subject_set(Account account, Jid jid, string subject);
+    public signal void joined(Account account, Jid jid, string nick);
+    public signal void left(Account account, Jid jid);
+    public signal void subject_set(Account account, Jid jid, string? subject);
     public signal void bookmarks_updated(Account account, ArrayList<Xep.Bookmarks.Conference> conferences);
 
     private StreamInteractor stream_interactor;
@@ -29,7 +30,8 @@ public class MucManager : StreamInteractionModule, Object {
 
     public void join(Account account, Jid jid, string nick, string? password = null) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick, password, on_groupchat_joined, () => {}, Quadruple.create(this, jid, nick, account));
+        if (stream == null) return;
+        stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick, password);
     }
 
     public void part(Account account, Jid jid) {
@@ -140,22 +142,39 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public bool is_joined(Jid jid, Account account) {
+        return get_nick(jid, account) != null;
+    }
+
     private void on_account_added(Account account) {
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_entered.connect( (stream, jid, nick) => {
+            joined(account, new Jid(jid), nick);
+        });
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).self_removed_from_room.connect( (stream, jid, code) => {
+            left(account, new Jid(jid));
+        });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).subject_set.connect( (stream, subject, jid) => {
-            on_subject_set(account, new Jid(jid), subject);
+            subject_set(account, new Jid(jid), subject);
         });
         stream_interactor.module_manager.get_module(account, Xep.Bookmarks.Module.IDENTITY).conferences_updated.connect( (stream, conferences) => {
             bookmarks_updated(account, conferences);
         });
     }
 
-    private void on_subject_set(Account account, Jid sender_jid, string subject) {
-        groupchat_subject_set(account, sender_jid, subject);
-    }
-
     private void on_stream_negotiated(Account account) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, join_autojoin_conferences, Tuple.create(this, account));
+        if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences, o) => {
+            Tuple<MucManager, Account> tuple = o as Tuple<MucManager, Account>;
+            MucManager outer_ = tuple.a;
+            Account account_ = tuple.b;
+            foreach (Xep.Bookmarks.Conference bookmark in conferences) {
+                Jid jid = new Jid(bookmark.jid);
+                outer_.conference_bookmarks[jid] = bookmark;
+                if (bookmark.autojoin) {
+                    outer_.join(account_, jid, bookmark.nick);
+                }
+            }
+        }, Tuple.create(this, account));
     }
 
     private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
@@ -175,28 +194,6 @@ public class MucManager : StreamInteractionModule, Object {
                 if (m.equals(message)) {
                     m.marked = Entities.Message.Marked.RECEIVED;
                 }
-            }
-        }
-    }
-
-    private static void on_groupchat_joined(Core.XmppStream stream, Object? store) {
-        Quadruple<MucManager, Jid, string, Account> quadruple = store as Quadruple<MucManager, Jid, string, Account>;
-        MucManager outer = quadruple.a;
-        Jid jid = quadruple.b;
-        string nick = quadruple.c;
-        Account account = quadruple.d;
-        outer.groupchat_joined(account, jid, nick);
-    }
-
-    private static void join_autojoin_conferences(Core.XmppStream stream, ArrayList<Xep.Bookmarks.Conference> conferences, Object? o) {
-        Tuple<MucManager, Account> tuple = o as Tuple<MucManager, Account>;
-        MucManager outer = tuple.a;
-        Account account = tuple.b;
-        foreach (Xep.Bookmarks.Conference bookmark in conferences) {
-            Jid jid = new Jid(bookmark.jid);
-            outer.conference_bookmarks[jid] = bookmark;
-            if (bookmark.autojoin) {
-                outer.join(account, jid, bookmark.nick);
             }
         }
     }

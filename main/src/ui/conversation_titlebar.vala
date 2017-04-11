@@ -20,11 +20,17 @@ public class ConversationTitlebar : Gtk.HeaderBar {
 
     public ConversationTitlebar(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-        stream_interactor.get_module(MucManager.IDENTITY).groupchat_subject_set.connect((account, jid, subject) => {
-            Idle.add(() => { on_groupchat_subject_set(account, jid, subject); return false; });
-        });
         create_conversation_menu();
         create_encryption_menu();
+
+        stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
+            Idle.add(() => {
+                if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
+                    update_subtitle(subject);
+                }
+                return false;
+            });
+        });
     }
 
     public void initialize_for_conversation(Conversation conversation) {
@@ -117,12 +123,6 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         encryption_button.set_use_popover(true);
         encryption_button.set_popover(menu);
         encryption_button.set_image(new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON));
-    }
-
-    private void on_groupchat_subject_set(Account account, Jid jid, string subject) {
-        if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-            update_subtitle(subject);
-        }
     }
 }
 

@@ -26,7 +26,7 @@ public class ConversationManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.get_module(MucManager.IDENTITY).groupchat_joined.connect(on_groupchat_joined);
+        stream_interactor.get_module(MucManager.IDENTITY).joined.connect(on_groupchat_joined);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_message_received);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
     }

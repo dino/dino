@@ -41,6 +41,7 @@ SOURCES
     "src/module/xep/0030_service_discovery/module.vala"
     "src/module/xep/0045_muc/flag.vala"
     "src/module/xep/0045_muc/module.vala"
+    "src/module/xep/0045_muc/status_code.vala"
     "src/module/xep/0048_bookmarks/module.vala"
     "src/module/xep/0048_bookmarks/conference.vala"
     "src/module/xep/0049_private_xml_storage.vala"

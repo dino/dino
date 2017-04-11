@@ -35,8 +35,14 @@ public class Module : XmppStreamModule {
     public signal void received_occupant_jid(XmppStream stream, string jid, string? real_jid);
     public signal void received_occupant_role(XmppStream stream, string jid, string? role);
     public signal void subject_set(XmppStream stream, string subject, string jid);
+    public signal void room_configuration_changed(XmppStream stream, string jid, StatusCode code);
 
-    public void enter(XmppStream stream, string bare_jid, string nick, string? password, ListenerHolder.OnSuccess success_listener, ListenerHolder.OnError error_listener, Object? store) {
+    public signal void room_entered(XmppStream stream, string jid, string nick);
+    public signal void room_enter_error(XmppStream stream, string jid, MucEnterError error);
+    public signal void self_removed_from_room(XmppStream stream, string jid, StatusCode code);
+    public signal void removed_from_room(XmppStream stream, string jid, StatusCode? code);
+
+    public void enter(XmppStream stream, string bare_jid, string nick, string? password) {
         Presence.Stanza presence = new Presence.Stanza();
         presence.to = bare_jid + "/" + nick;
         StanzaNode x_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
@@ -45,8 +51,7 @@ public class Module : XmppStreamModule {
         }
         presence.stanza.put_node(x_node);
 
-        stream.get_flag(Flag.IDENTITY).start_muc_enter(bare_jid, presence.id, new ListenerHolder(success_listener, error_listener, store));
-
+        stream.get_flag(Flag.IDENTITY).start_muc_enter(bare_jid, presence.id);
         stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
 
@@ -129,7 +134,6 @@ public class Module : XmppStreamModule {
             string bare_jid = get_bare_jid(presence.from);
             ErrorStanza? error_stanza = presence.get_error();
             if (flag.get_enter_id(bare_jid) == error_stanza.original_id) {
-                ListenerHolder? listener = flag.get_enter_listener(bare_jid);
                 MucEnterError? error = null;
                 if (error_stanza.condition == ErrorStanza.CONDITION_NOT_AUTHORIZED && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
                     error = MucEnterError.PASSWORD_REQUIRED;
@@ -144,7 +148,7 @@ public class Module : XmppStreamModule {
                 } else if (ErrorStanza.CONDITION_ITEM_NOT_FOUND == error_stanza.condition && ErrorStanza.TYPE_CANCEL == error_stanza.type_) {
                     error = MucEnterError.ROOM_DOESNT_EXIST;
                 }
-                if (error != null && listener != null) listener.on_error(stream, error, listener.reference);
+                if (error != null) room_enter_error(stream, bare_jid, error);
                 flag.finish_muc_enter(bare_jid);
             }
         }
@@ -158,9 +162,10 @@ public class Module : XmppStreamModule {
                 ArrayList<int> status_codes = get_status_codes(x_node);
                 if (status_codes.contains(StatusCode.SELF_PRESENCE)) {
                     string bare_jid = get_bare_jid(presence.from);
-                    ListenerHolder listener = flag.get_enter_listener(bare_jid);
-                    listener.on_success(stream, listener.reference);
-                    flag.finish_muc_enter(bare_jid, get_resource_part(presence.from));
+                    if (flag.get_enter_id(bare_jid) != null) {
+                        room_entered(stream, bare_jid, get_resource_part(presence.from));
+                        flag.finish_muc_enter(bare_jid, get_resource_part(presence.from));
+                    }
                 }
                 string? affiliation = x_node["item", "affiliation"].val;
                 if (affiliation != null) {
@@ -179,10 +184,30 @@ public class Module : XmppStreamModule {
         }
     }
 
-    private void on_received_unavailable(XmppStream stream, string jid) {
+    private void on_received_unavailable(XmppStream stream, Presence.Stanza presence) {
         Flag flag = stream.get_flag(Flag.IDENTITY);
-        if (flag.is_occupant(jid)) {
-            flag.remove_occupant_info(jid);
+        if (!flag.is_occupant(presence.from)) return;
+
+        StanzaNode? x_node = presence.stanza.get_subnode("x", NS_URI_USER);
+        if (x_node == null) return;
+
+        ArrayList<int> status_codes = get_status_codes(x_node);
+
+        if (StatusCode.SELF_PRESENCE in status_codes) {
+            flag.remove_occupant_info(presence.from);
+        }
+
+        foreach (StatusCode code in USER_REMOVED_CODES) {
+            if (code in status_codes) {
+                if (StatusCode.SELF_PRESENCE in status_codes) {
+                    flag.left_muc(stream, get_bare_jid(presence.from));
+                    self_removed_from_room(stream, presence.from, code);
+                    Presence.Flag presence_flag = stream.get_flag(Presence.Flag.IDENTITY);
+                    presence_flag.remove_presence(get_bare_jid(presence.from));
+                } else {
+                    removed_from_room(stream, presence.from, code);
+                }
+            }
         }
     }
 
@@ -192,59 +217,6 @@ public class Module : XmppStreamModule {
             ret.add(int.parse(status_node.get_attribute("code")));
         }
         return ret;
-    }
-}
-
-public enum StatusCode {
-    /** Inform user that any occupant is allowed to see the user's full JID */
-    JID_VISIBLE = 100,
-    /** Inform user that his or her affiliation changed while not in the room */
-    AFFILIATION_CHANGED = 101,
-    /** Inform occupants that room now shows unavailable members */
-    SHOWS_UNAVIABLE_MEMBERS = 102,
-    /** Inform occupants that room now does not show unavailable members */
-    SHOWS_UNAVIABLE_MEMBERS_NOT = 103,
-    /** Inform occupants that a non-privacy-related room configuration change has occurred */
-    CONFIG_CHANGE_NON_PRIVACY = 104,
-    /** Inform user that presence refers to itself */
-    SELF_PRESENCE = 110,
-    /** Inform occupants that room logging is now enabled */
-    LOGGING_ENABLED = 170,
-    /** Inform occupants that room logging is now disabled */
-    LOGGING_DISABLED = 171,
-    /** Inform occupants that the room is now non-anonymous */
-    NON_ANONYMOUS = 172,
-    /** Inform occupants that the room is now semi-anonymous */
-    SEMI_ANONYMOUS = 173,
-    /** Inform user that a new room has been created */
-    NEW_ROOM_CREATED = 201,
-    /** Inform user that service has assigned or modified occupant's roomnick */
-    MODIFIED_NICK = 210,
-    /** Inform user that he or she has been banned from the room */
-    BANNED = 301,
-    /** Inform all occupants of new room nickname */
-    ROOM_NICKNAME = 303,
-    /** Inform user that he or she has been kicked from the room */
-    KICKED = 307,
-    /** Inform user that he or she is being removed from the room */
-    REMOVED_AFFILIATION_CHANGE = 321,
-    /** Inform user that he or she is being removed from the room because the room has been changed to members-only
-    and the user is not a member */
-    REMOVED_MEMBERS_ONLY = 322,
-    /** Inform user that he or she is being removed from the room because the MUC service is being shut down */
-    REMOVED_SHUTDOWN = 332
-}
-
-public class ListenerHolder {
-    [CCode (has_target = false)] public delegate void OnSuccess(XmppStream stream, Object? store);
-    public OnSuccess on_success { get; private set; }
-    [CCode (has_target = false)] public delegate void OnError(XmppStream stream, MucEnterError error, Object? store);
-    public OnError on_error { get; private set; }
-    public Object? reference { get; private set; }
-
-    public ListenerHolder(OnSuccess on_success, OnError on_error, Object? reference = null) {
-        this.on_success = on_success;
-        this.reference = reference;
     }
 }
 

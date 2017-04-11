@@ -83,8 +83,8 @@ public class PresenceManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_available_show.connect((stream, jid, show) =>
             on_received_available_show(account, new Jid(jid), show)
         );
-        stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_unavailable.connect((stream, jid) =>
-            on_received_unavailable(account, new Jid(jid))
+        stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_unavailable.connect((stream, presence) =>
+            on_received_unavailable(account, new Jid(presence.from))
         );
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_subscription_request.connect((stream, jid) =>
             received_subscription_request(new Jid(jid), account)

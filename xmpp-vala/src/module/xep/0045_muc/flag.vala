@@ -7,7 +7,6 @@ namespace Xmpp.Xep.Muc {
 public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "muc");
 
-    private HashMap<string, ListenerHolder> enter_listeners = new HashMap<string, ListenerHolder>();
     private HashMap<string, string> enter_ids = new HashMap<string, string>();
     private HashMap<string, string> own_nicks = new HashMap<string, string>();
     private HashMap<string, string> subjects = new HashMap<string, string>();
@@ -32,8 +31,6 @@ public class Flag : XmppStreamFlag {
 
     public string? get_enter_id(string bare_jid) { return enter_ids[bare_jid]; }
 
-    public ListenerHolder? get_enter_listener(string bare_jid) { return enter_listeners[bare_jid]; }
-
     public bool is_muc(string jid) { return own_nicks[jid] != null; }
 
     public bool is_occupant(string jid) {
@@ -45,21 +42,31 @@ public class Flag : XmppStreamFlag {
 
     public string? get_muc_subject(string bare_jid) { return subjects[bare_jid]; }
 
-    public void set_muc_subject(string full_jid, string subject) {
+    public void set_muc_subject(string full_jid, string? subject) {
         string bare_jid = get_bare_jid(full_jid);
         subjects[bare_jid] = subject;
         subjects_by[bare_jid] = full_jid;
     }
 
-    public void start_muc_enter(string bare_jid, string presence_id, ListenerHolder listener) {
-        enter_listeners[bare_jid] = listener;
+    public void start_muc_enter(string bare_jid, string presence_id) {
         enter_ids[bare_jid] = presence_id;
     }
 
     public void finish_muc_enter(string bare_jid, string? nick = null) {
         if (nick != null) own_nicks[bare_jid] = nick;
-        enter_listeners.unset(bare_jid);
         enter_ids.unset(bare_jid);
+    }
+
+    public void left_muc(XmppStream stream, string muc) {
+        own_nicks.unset(muc);
+        subjects.unset(muc);
+        subjects_by.unset(muc);
+        Gee.List<string>? occupants = stream.get_flag(Presence.Flag.IDENTITY).get_resources(muc);
+        if (occupants != null) {
+            foreach (string occupant in occupants) {
+                remove_occupant_info(occupant);
+            }
+        }
     }
 
     public void remove_occupant_info(string full_jid) {
