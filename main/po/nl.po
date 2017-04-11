@@ -1,0 +1,202 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dino-0.0\n\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-10 17:36+0200\n"
+"PO-Revision-Date: 2017-04-10 17:50+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: it_IT\n"
+
+#: data/add_conversation/add_contact_dialog.ui:11
+#: data/add_conversation/add_groupchat_dialog.ui:11
+#: src/ui/add_conversation/conference/dialog.vala:15
+#: src/ui/manage_accounts/dialog.vala:151
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: data/add_conversation/add_contact_dialog.ui:23
+#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:28
+msgid "Add"
+msgstr "Toevoegen"
+
+#: data/add_conversation/add_contact_dialog.ui:48
+#: data/add_conversation/add_groupchat_dialog.ui:49
+#: data/add_conversation/conference_details_fragment.ui:16
+msgid "Account"
+msgstr "Account"
+
+#: data/add_conversation/add_contact_dialog.ui:101
+#: data/add_conversation/add_groupchat_dialog.ui:189
+msgid "Alias"
+msgstr "Alias"
+
+#: data/add_conversation/add_contact_dialog.ui:129
+msgid "Request presence updates"
+msgstr "Vraag om aanwezigheidsupdates"
+
+#: data/add_conversation/add_groupchat_dialog.ui:120
+#: data/add_conversation/conference_details_fragment.ui:120
+msgid "Nick"
+msgstr "Schermnaam"
+
+#: data/add_conversation/add_groupchat_dialog.ui:147
+#: data/add_conversation/conference_details_fragment.ui:172
+#: data/manage_accounts/add_account_dialog.ui:73
+#: data/manage_accounts/dialog.ui:163
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: data/add_conversation/add_groupchat_dialog.ui:176
+msgid "Join on startup"
+msgstr "Deelnemen bij opstarten"
+
+#: data/conversation_selector/view.ui:16
+msgid "Search"
+msgstr "Zoeken"
+
+#: data/manage_accounts/add_account_dialog.ui:21
+#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:42
+msgid "Save"
+msgstr "Opslaan"
+
+#: data/manage_accounts/add_account_dialog.ui:102
+#: data/manage_accounts/dialog.ui:217
+msgid "Local alias"
+msgstr "Lokale alias"
+
+#: data/manage_accounts/dialog.ui:9 data/menu_app.ui:6
+msgid "Accounts"
+msgstr "Accounts"
+
+#: data/manage_accounts/dialog.ui:306
+msgid "Add an account"
+msgstr "Account toevoegen"
+
+#: data/menu_add.ui:6
+msgid "Start Chat"
+msgstr "Gesprek starten"
+
+#: data/menu_add.ui:12 src/ui/add_conversation/conference/dialog.vala:26
+#: src/ui/unified_window.vala:145
+msgid "Join Conference"
+msgstr "Deelnemen aan groepsgesprek"
+
+#: data/menu_app.ui:10
+msgid "Settings"
+msgstr "Instellingen"
+
+#: data/menu_app.ui:16
+msgid "Quit"
+msgstr "Sluiten"
+
+#: data/menu_conversation.ui:5
+msgid "Contact Details"
+msgstr "Contactgegevens"
+
+#: data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Onversleuteld"
+
+#: data/settings_dialog.ui:8
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+#: data/settings_dialog.ui:23
+msgid "Send typing notifications and message marker"
+msgstr "Stuur aan-het-typen-meldingen en bericht markers"
+
+#: data/settings_dialog.ui:35
+msgid "Convert smileys to emojis"
+msgstr "Smileys omzetten naar emojis"
+
+#: src/ui/add_conversation/conference/dialog.vala:45
+msgid "Next"
+msgstr "Volgende"
+
+#: src/ui/add_conversation/conference/dialog.vala:60
+msgid "Join"
+msgstr "Deelnemen"
+
+#: src/ui/conversation_summary/message_item.vala:107
+msgid "Just now"
+msgstr "Zojuist"
+
+#: src/ui/conversation_summary/view.vala:120
+msgid "is typing..."
+msgstr "is aan het typen..."
+
+#: src/ui/conversation_summary/view.vala:122
+msgid "has stopped typing"
+msgstr "is gestopt met typen"
+
+#: src/ui/manage_accounts/add_account_dialog.vala:21
+msgid "Add Account"
+msgstr "Account Toevoegen"
+
+#: src/ui/manage_accounts/dialog.vala:150
+msgid "Select avatar"
+msgstr "Kies een avatar"
+
+#: src/ui/manage_accounts/dialog.vala:152
+msgid "Select"
+msgstr "Selecteer"
+
+#: src/ui/manage_accounts/dialog.vala:251
+msgid "Connecting..."
+msgstr "Verbinden..."
+
+#: src/ui/manage_accounts/dialog.vala:253
+msgid "Connected"
+msgstr "Verbonden"
+
+#: src/ui/manage_accounts/dialog.vala:255
+msgid "Disconnected"
+msgstr "Verbinding verbroken"
+
+#: src/ui/manage_accounts/dialog.vala:278
+msgid "Wrong password"
+msgstr "Foute wachtwoord"
+
+#: src/ui/manage_accounts/dialog.vala:281
+#: src/ui/manage_accounts/dialog.vala:283
+msgid "Error"
+msgstr "Fout"
+
+#: src/ui/occupant_menu/view.vala:48
+msgid "Start private conversation"
+msgstr "Privé gesprek beginnen"
+
+#: src/ui/notifications.vala:59
+msgid "Subscription request"
+msgstr "Abonneringsverzoek"
+
+#: src/ui/notifications.vala:61
+msgid "Accept"
+msgstr "Toestaan"
+
+#: src/ui/notifications.vala:74
+msgid "Deny"
+msgstr "Afwijzen"
+
+#: src/ui/unified_window.vala:135
+msgid "No accounts active"
+msgstr "Geen accounts actief"
+
+#: src/ui/unified_window.vala:136
+msgid "Manage accounts"
+msgstr "Accounts beheren"
+
+#: src/ui/unified_window.vala:143
+msgid "No conversation active"
+msgstr "Geen gesprek actief"
+
+#: src/ui/unified_window.vala:144
+msgid "Add Chat"
+msgstr "Chat beginnen"
+
