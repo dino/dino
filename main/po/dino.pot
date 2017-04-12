@@ -128,6 +128,7 @@ msgid "Join"
 msgstr ""
 
 #: src/ui/conversation_summary/message_item.vala:107
+#: src/ui/conversation_selector/conversation_row.vala:183
 msgid "Just now"
 msgstr ""
 
@@ -137,6 +138,10 @@ msgstr ""
 
 #: src/ui/conversation_summary/view.vala:122
 msgid "has stopped typing"
+msgstr ""
+
+#: src/ui/conversation_selector/conversation_row.vala:181
+msgid "min ago"
 msgstr ""
 
 #: src/ui/manage_accounts/add_account_dialog.vala:21
