@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: it_IT\n"
+"Language: nl_NL\n"
 
 #: data/add_conversation/add_contact_dialog.ui:11
 #: data/add_conversation/add_groupchat_dialog.ui:11
@@ -80,7 +80,7 @@ msgstr "Account toevoegen"
 
 #: data/menu_add.ui:6
 msgid "Start Chat"
-msgstr "Gesprek starten"
+msgstr "Gesprek beginnen"
 
 #: data/menu_add.ui:12 src/ui/add_conversation/conference/dialog.vala:26
 #: src/ui/unified_window.vala:145
@@ -124,6 +124,7 @@ msgid "Join"
 msgstr "Deelnemen"
 
 #: src/ui/conversation_summary/message_item.vala:107
+#: src/ui/conversation_selector/conversation_row.vala:183
 msgid "Just now"
 msgstr "Zojuist"
 
@@ -134,6 +135,10 @@ msgstr "is aan het typen..."
 #: src/ui/conversation_summary/view.vala:122
 msgid "has stopped typing"
 msgstr "is gestopt met typen"
+
+#: src/ui/conversation_selector/conversation_row.vala:181
+msgid " mis ago"
+msgstr " min geleden"
 
 #: src/ui/manage_accounts/add_account_dialog.vala:21
 msgid "Add Account"
@@ -149,7 +154,7 @@ msgstr "Selecteer"
 
 #: src/ui/manage_accounts/dialog.vala:251
 msgid "Connecting..."
-msgstr "Verbinden..."
+msgstr "Verbinding maken..."
 
 #: src/ui/manage_accounts/dialog.vala:253
 msgid "Connected"
@@ -161,7 +166,7 @@ msgstr "Verbinding verbroken"
 
 #: src/ui/manage_accounts/dialog.vala:278
 msgid "Wrong password"
-msgstr "Foute wachtwoord"
+msgstr "Verkeerde wachtwoord"
 
 #: src/ui/manage_accounts/dialog.vala:281
 #: src/ui/manage_accounts/dialog.vala:283
@@ -194,7 +199,7 @@ msgstr "Accounts beheren"
 
 #: src/ui/unified_window.vala:143
 msgid "No conversation active"
-msgstr "Geen gesprek actief"
+msgstr "Geen gesprekken actief"
 
 #: src/ui/unified_window.vala:144
 msgid "Add Chat"
