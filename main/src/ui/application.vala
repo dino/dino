@@ -9,8 +9,6 @@ public class Dino.Ui.Application : Dino.Application {
 
     public Application() throws Error {
         Notify.init("dino");
-        notifications = new Notifications(stream_interaction);
-        notifications.start();
         Environment.set_application_name("Dino");
         Gtk.Window.set_default_icon_name("dino");
         IconTheme.get_default().add_resource_path("/org/dino-im/icons");
@@ -18,6 +16,8 @@ public class Dino.Ui.Application : Dino.Application {
         activate.connect(() => {
             create_set_app_menu();
             window = new UnifiedWindow(this, stream_interaction);
+            notifications = new Notifications(stream_interaction, window);
+            notifications.start();
             notifications.conversation_selected.connect(window.on_conversation_selected);
             window.show();
         });

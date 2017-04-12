@@ -10,6 +10,7 @@ public class Notifications : Object {
     public signal void conversation_selected(Conversation conversation);
 
     private StreamInteractor stream_interactor;
+    private Gtk.Window window;
     private HashMap<Conversation, Notify.Notification> notifications = new HashMap<Conversation, Notify.Notification>(Conversation.hash_func, Conversation.equals_func);
 
     private enum ClosedReason { // org.freedesktop.Notifications.NotificationClosed
@@ -19,8 +20,9 @@ public class Notifications : Object {
         UNDEFINED = 4
     }
 
-    public Notifications(StreamInteractor stream_interactor) {
+    public Notifications(StreamInteractor stream_interactor, Gtk.Window window) {
         this.stream_interactor = stream_interactor;
+        this.window = window;
     }
 
     public void start() {
@@ -32,10 +34,13 @@ public class Notifications : Object {
         if (!notifications.has_key(conversation)) {
             notifications[conversation] = new Notify.Notification("", null, null);
             notifications[conversation].set_hint("transient", true);
-            notifications[conversation].closed.connect(() => {
-                if (notifications[conversation].closed_reason == ClosedReason.USER_DISMISSED) {
-                    // USER_DISMISSED + transient = very probably clicked on
-                    conversation_selected(conversation);
+            notifications[conversation].add_action("default", "Open", () => {
+                conversation_selected(conversation);
+                Gdk.X11.Window x11window = window.get_window() as Gdk.X11.Window;
+                if (x11window != null) {
+                    window.present_with_time(Gdk.X11.get_server_time(x11window));
+                } else {
+                    window.present();
                 }
             });
         }

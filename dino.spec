@@ -36,6 +36,7 @@ BuildRequires:	cmake
 BuildRequires:	git
 BuildRequires:	ninja-build
 BuildRequires:	desktop-file-utils
+BuildRequires:	gettext
 BuildRequires:	pkgconfig(gthread-2.0)
 BuildRequires:	pkgconfig(glib-2.0) >= 2.38
 BuildRequires:	pkgconfig(gio-2.0)
@@ -72,7 +73,7 @@ Summary:        OMEMO plugin for %{name}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
 %package        plugin-openpgp
-Summary:        OMEMO plugin for %{name}
+Summary:        OpenPGP plugin for %{name}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
 %description    libs
@@ -136,6 +137,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/icons/hicolor/*/apps/dino.*
 %{_datadir}/icons/hicolor/*/apps/dino-*
 %{_datadir}/icons/hicolor/*/status/dino-*
+%{_datadir}/locale/*/LC_MESSAGES/dino.mo
 
 %files libs
 %license LICENSE
@@ -158,11 +160,13 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %license LICENSE
 %doc README.md
 %{_libdir}/dino/plugins/omemo.so
+%{_datadir}/locale/*/LC_MESSAGES/dino-omemo.mo
 
 %files plugin-openpgp
 %license LICENSE
 %doc README.md
 %{_libdir}/dino/plugins/openpgp.so
+%{_datadir}/locale/*/LC_MESSAGES/dino-openpgp.mo
 
 %changelog
 * Mon Apr 3 2017 - 0.0-1
