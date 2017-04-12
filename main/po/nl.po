@@ -1,211 +1,207 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: dino-0.0\n\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-10 15:10+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2017-04-10 17:36+0200\n"
+"PO-Revision-Date: 2017-04-10 17:50+0200\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl_NL\n"
 
 #: data/add_conversation/add_contact_dialog.ui:11
 #: data/add_conversation/add_groupchat_dialog.ui:11
 #: src/ui/add_conversation/conference/dialog.vala:15
 #: src/ui/manage_accounts/dialog.vala:151
 msgid "Cancel"
-msgstr ""
+msgstr "Annuleren"
 
 #: data/add_conversation/add_contact_dialog.ui:23
 #: src/ui/add_conversation/conference/add_groupchat_dialog.vala:28
 msgid "Add"
-msgstr ""
+msgstr "Toevoegen"
 
 #: data/add_conversation/add_contact_dialog.ui:48
 #: data/add_conversation/add_groupchat_dialog.ui:49
 #: data/add_conversation/conference_details_fragment.ui:16
 msgid "Account"
-msgstr ""
+msgstr "Account"
 
 #: data/add_conversation/add_contact_dialog.ui:101
 #: data/add_conversation/add_groupchat_dialog.ui:189
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 #: data/add_conversation/add_contact_dialog.ui:129
 msgid "Request presence updates"
-msgstr ""
+msgstr "Vraag om aanwezigheidsupdates"
 
 #: data/add_conversation/add_groupchat_dialog.ui:120
 #: data/add_conversation/conference_details_fragment.ui:120
 msgid "Nick"
-msgstr ""
+msgstr "Schermnaam"
 
 #: data/add_conversation/add_groupchat_dialog.ui:147
 #: data/add_conversation/conference_details_fragment.ui:172
 #: data/manage_accounts/add_account_dialog.ui:73
 #: data/manage_accounts/dialog.ui:163
 msgid "Password"
-msgstr ""
+msgstr "Wachtwoord"
 
 #: data/add_conversation/add_groupchat_dialog.ui:176
 msgid "Join on startup"
-msgstr ""
+msgstr "Deelnemen bij opstarten"
 
 #: data/conversation_selector/view.ui:16
 msgid "Search"
-msgstr ""
+msgstr "Zoeken"
 
 #: data/manage_accounts/add_account_dialog.ui:21
 #: src/ui/add_conversation/conference/add_groupchat_dialog.vala:42
 msgid "Save"
-msgstr ""
+msgstr "Opslaan"
 
 #: data/manage_accounts/add_account_dialog.ui:102
 #: data/manage_accounts/dialog.ui:217
 msgid "Local alias"
-msgstr ""
+msgstr "Lokale alias"
 
 #: data/manage_accounts/dialog.ui:9 data/menu_app.ui:6
 msgid "Accounts"
-msgstr ""
+msgstr "Accounts"
 
 #: data/manage_accounts/dialog.ui:306
 msgid "Add an account"
-msgstr ""
+msgstr "Account toevoegen"
 
 #: data/menu_add.ui:6
 msgid "Start Chat"
-msgstr ""
+msgstr "Gesprek beginnen"
 
 #: data/menu_add.ui:12 src/ui/add_conversation/conference/dialog.vala:26
 #: src/ui/unified_window.vala:145
 msgid "Join Conference"
-msgstr ""
+msgstr "Deelnemen aan groepsgesprek"
 
 #: data/menu_app.ui:10
 msgid "Settings"
-msgstr ""
+msgstr "Instellingen"
 
 #: data/menu_app.ui:16
 msgid "Quit"
-msgstr ""
+msgstr "Afsluiten"
 
 #: data/menu_conversation.ui:5
 msgid "Contact Details"
-msgstr ""
+msgstr "Over Contact"
 
 #: data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr ""
+msgstr "Onversleuteld"
 
 #: data/settings_dialog.ui:8
 msgid "Preferences"
-msgstr ""
+msgstr "Voorkeuren"
 
 #: data/settings_dialog.ui:23
 msgid "Send typing notifications and message marker"
-msgstr ""
+msgstr "Stuur aan-het-typen-meldingen en bericht markers"
 
 #: data/settings_dialog.ui:35
 msgid "Convert smileys to emojis"
-msgstr ""
+msgstr "Smileys omzetten naar emojis"
 
 #: src/ui/add_conversation/conference/dialog.vala:45
 msgid "Next"
-msgstr ""
+msgstr "Volgende"
 
 #: src/ui/add_conversation/conference/dialog.vala:60
 msgid "Join"
-msgstr ""
+msgstr "Deelnemen"
 
 #: src/ui/conversation_summary/message_item.vala:107
 #: src/ui/conversation_selector/conversation_row.vala:183
 msgid "Just now"
-msgstr ""
+msgstr "Zojuist"
 
 #: src/ui/conversation_summary/view.vala:120
 msgid "is typing..."
-msgstr ""
+msgstr "is aan het typen..."
 
 #: src/ui/conversation_summary/view.vala:122
 msgid "has stopped typing"
-msgstr ""
+msgstr "is gestopt met typen"
 
 #: src/ui/conversation_selector/conversation_row.vala:181
-msgid " min ago"
-msgstr ""
-
+msgid " mis ago"
+msgstr " min geleden"
 
 #: src/ui/manage_accounts/add_account_dialog.vala:21
 msgid "Add Account"
-msgstr ""
+msgstr "Account Toevoegen"
 
 #: src/ui/manage_accounts/dialog.vala:150
 msgid "Select avatar"
-msgstr ""
+msgstr "Kies een avatar"
 
 #: src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
-msgstr ""
+msgstr "Selecteer"
 
 #: src/ui/manage_accounts/dialog.vala:251
 msgid "Connecting..."
-msgstr ""
+msgstr "Verbinding maken..."
 
 #: src/ui/manage_accounts/dialog.vala:253
 msgid "Connected"
-msgstr ""
+msgstr "Verbonden"
 
 #: src/ui/manage_accounts/dialog.vala:255
 msgid "Disconnected"
-msgstr ""
+msgstr "Verbinding verbroken"
 
 #: src/ui/manage_accounts/dialog.vala:278
 msgid "Wrong password"
-msgstr ""
+msgstr "Verkeerde wachtwoord"
 
 #: src/ui/manage_accounts/dialog.vala:281
 #: src/ui/manage_accounts/dialog.vala:283
 msgid "Error"
-msgstr ""
+msgstr "Fout"
 
 #: src/ui/occupant_menu/view.vala:48
 msgid "Start private conversation"
-msgstr ""
+msgstr "Privé gesprek beginnen"
 
 #: src/ui/notifications.vala:59
 msgid "Subscription request"
-msgstr ""
+msgstr "Abonneringsverzoek"
 
 #: src/ui/notifications.vala:61
 msgid "Accept"
-msgstr ""
+msgstr "Toestaan"
 
 #: src/ui/notifications.vala:74
 msgid "Deny"
-msgstr ""
+msgstr "Afwijzen"
 
 #: src/ui/unified_window.vala:135
 msgid "No accounts active"
-msgstr ""
+msgstr "Geen accounts actief"
 
 #: src/ui/unified_window.vala:136
 msgid "Manage accounts"
-msgstr ""
+msgstr "Accounts beheren"
 
 #: src/ui/unified_window.vala:143
 msgid "No conversation active"
-msgstr ""
+msgstr "Geen gesprekken actief"
 
 #: src/ui/unified_window.vala:144
 msgid "Add Chat"
-msgstr ""
+msgstr "Chat beginnen"
+
