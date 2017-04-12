@@ -23,6 +23,9 @@ public class SearchPathGenerator {
 [CCode (cname = "dino_gettext", cheader_filename = "dino_i18n.h")]
 public static extern unowned string _(string s);
 
+[CCode (cname = "dino_ngettext", cheader_filename = "dino_i18n.h")]
+public static extern unowned string n(string msgid, string plural, ulong number);
+
 [CCode (cname = "bindtextdomain", cheader_filename = "libintl.h")]
 private static extern unowned string? bindtextdomain(string domainname, string? dirname);
 

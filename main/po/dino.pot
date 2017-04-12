@@ -8,14 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-10 15:10+0200\n"
+"POT-Creation-Date: 2017-04-13 13:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/add_conversation/add_contact_dialog.ui:11
 #: data/add_conversation/add_groupchat_dialog.ui:11
@@ -127,8 +128,76 @@ msgstr ""
 msgid "Join"
 msgstr ""
 
-#: src/ui/conversation_summary/message_item.vala:107
+#. Day and month
+#: src/ui/conversation_selector/conversation_row.vala:175
+#, no-c-format
+msgid "%b %d"
+msgstr ""
+
+#: src/ui/conversation_selector/conversation_row.vala:179
+msgid "Yesterday"
+msgstr ""
+
+#. Time in 24h format (w/o seconds)
+#: src/ui/conversation_selector/conversation_row.vala:182
+#: src/ui/conversation_summary/message_item.vala:110
+#, no-c-format
+msgid "%H∶%M"
+msgstr ""
+
+#. Time in 12h format (w/o seconds)
+#: src/ui/conversation_selector/conversation_row.vala:183
+#: src/ui/conversation_summary/message_item.vala:111
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr ""
+
+#: src/ui/conversation_selector/conversation_row.vala:186
+#: src/ui/conversation_summary/message_item.vala:114
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/ui/conversation_selector/conversation_row.vala:188
+#: src/ui/conversation_summary/message_item.vala:116
 msgid "Just now"
+msgstr ""
+
+#. Date + time in 24h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:98
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr ""
+
+#. Date + time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:99
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr ""
+
+#. Month, day and time in 24h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:102
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr ""
+
+#. Month, day and time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:103
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr ""
+
+#. Day of week and time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:106
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr ""
+
+#: src/ui/conversation_summary/message_item.vala:107
+#, no-c-format
+msgid "%a, %l∶%M %p"
 msgstr ""
 
 #: src/ui/conversation_summary/view.vala:120
@@ -176,15 +245,15 @@ msgstr ""
 msgid "Start private conversation"
 msgstr ""
 
-#: src/ui/notifications.vala:59
+#: src/ui/notifications.vala:64
 msgid "Subscription request"
 msgstr ""
 
-#: src/ui/notifications.vala:61
+#: src/ui/notifications.vala:66
 msgid "Accept"
 msgstr ""
 
-#: src/ui/notifications.vala:74
+#: src/ui/notifications.vala:79
 msgid "Deny"
 msgstr ""
 

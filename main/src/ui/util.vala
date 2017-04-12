@@ -112,6 +112,13 @@ public class Util : Object {
         Gdk.RGBA bg = widget.get_style_context().get_background_color(StateFlags.NORMAL);
         return (bg.red < 0.5 && bg.green < 0.5 && bg.blue < 0.5);
     }
+
+    public static bool is_24h_format() {
+        GLib.Settings settings = new GLib.Settings("org.gnome.desktop.interface");
+        string settings_format = settings.get_string("clock-format");
+        string p_format = (new DateTime.now_local()).format("%p");
+        return settings_format == "24h" || p_format == " ";
+    }
 }
 
 }

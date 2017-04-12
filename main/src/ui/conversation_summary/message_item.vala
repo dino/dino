@@ -94,15 +94,24 @@ public class MessageItem : Grid, ConversationItem {
         DateTime now = new DateTime.now_local();
         TimeSpan timespan = now.difference(datetime);
         if (timespan > 365 * TimeSpan.DAY) {
-            return datetime.format("%d.%m.%Y %H:%M");
+            return datetime.format(Util.is_24h_format() ?
+                /* xgettext:no-c-format */ /* Date + time in 24h format (w/o seconds) */ _("%x, %H\u2236%M") :
+                /* xgettext:no-c-format */ /* Date + time in 12h format (w/o seconds)*/ _("%x, %l\u2236%M %p"));
         } else if (timespan > 7 * TimeSpan.DAY) {
-            return datetime.format("%d.%m %H:%M");
+            return datetime.format(Util.is_24h_format() ?
+                /* xgettext:no-c-format */ /* Month, day and time in 24h format (w/o seconds) */ _("%b %d, %H\u2236%M") :
+                /* xgettext:no-c-format */ /* Month, day and time in 12h format (w/o seconds) */ _("%b %d, %l\u2236%M %p"));
         } else if (timespan > 1 * TimeSpan.DAY) {
-            return datetime.format("%a, %H:%M");
+            return datetime.format(Util.is_24h_format() ?
+                /* xgettext:no-c-format */ /* Day of week and time in 12h format (w/o seconds) */ _("%a, %H\u2236%M") :
+                /* xgettext:no-c-format */ _("%a, %l\u2236%M %p"));
         } else if (timespan > 9 * TimeSpan.MINUTE) {
-            return datetime.format("%H:%M");
+            return datetime.format(Util.is_24h_format() ?
+                /* xgettext:no-c-format */  /* Time in 24h format (w/o seconds) */ _("%H\u2236%M") :
+                /* xgettext:no-c-format */  /* Time in 12h format (w/o seconds) */ _("%l\u2236%M %p"));
         } else if (timespan > TimeSpan.MINUTE) {
-            return (timespan / TimeSpan.MINUTE).to_string() + " min ago";
+            ulong mins = (ulong) (timespan.abs() / TimeSpan.MINUTE);
+            return n("%i min ago", "%i mins ago", mins).printf(mins);
         } else {
             return _("Just now");
         }

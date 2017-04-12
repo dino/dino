@@ -170,17 +170,22 @@ public abstract class ConversationRow : ListBoxRow {
          if (timespan > 365 * TimeSpan.DAY) {
              return datetime.get_year().to_string();
          } else if (timespan > 7 * TimeSpan.DAY) {
-             return datetime.format("%d.%m");
+             // Day and month
+             // xgettext:no-c-format
+             return datetime.format(_("%b %d"));
          } else if (timespan > 2 * TimeSpan.DAY) {
              return datetime.format("%a");
          } else if (timespan > 1 * TimeSpan.DAY) {
-             return "Yesterday";
+             return _("Yesterday");
          } else if (timespan > 9 * TimeSpan.MINUTE) {
-             return datetime.format("%H:%M");
+             return datetime.format(Util.is_24h_format() ?
+                /* xgettext:no-c-format */ /* Time in 24h format (w/o seconds) */ _("%H\u2236%M") :
+                /* xgettext:no-c-format */ /* Time in 12h format (w/o seconds) */ _("%l\u2236%M %p"));
          } else if (timespan > 1 * TimeSpan.MINUTE) {
-             return (timespan / TimeSpan.MINUTE).to_string() + " min ago";
+             ulong mins = (ulong) (timespan.abs() / TimeSpan.MINUTE);
+             return n("%i min ago", "%i mins ago", mins).printf(mins);
          } else {
-             return "Just now";
+             return _("Just now");
          }
     }
 }
