@@ -178,9 +178,9 @@ public abstract class ConversationRow : ListBoxRow {
          } else if (timespan > 9 * TimeSpan.MINUTE) {
              return datetime.format("%H:%M");
          } else if (timespan > 1 * TimeSpan.MINUTE) {
-             return (timespan / TimeSpan.MINUTE).to_string() + " min ago";
+             return (timespan / TimeSpan.MINUTE).to_string() + " " + _("min ago");
          } else {
-             return "Just now";
+             return _("Just now");
          }
     }
 }
