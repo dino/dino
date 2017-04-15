@@ -36,12 +36,16 @@ public class Notifications : Object {
             notifications[conversation].set_hint("transient", true);
             notifications[conversation].add_action("default", "Open", () => {
                 conversation_selected(conversation);
+#if GDK3_WITH_X11
                 Gdk.X11.Window x11window = window.get_window() as Gdk.X11.Window;
                 if (x11window != null) {
                     window.present_with_time(Gdk.X11.get_server_time(x11window));
                 } else {
                     window.present();
                 }
+#else
+                window.present();
+#endif
             });
         }
         if (!stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus()) {

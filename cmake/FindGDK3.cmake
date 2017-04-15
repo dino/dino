@@ -24,6 +24,17 @@ if(GDK3_FOUND AND NOT GDK3_VERSION)
     endif()
 endif()
 
+if(GDK3_FOUND)
+    find_path(GDK3_INCLUDE_DIR "gdk/gdk.h" HINTS ${GDK3_INCLUDE_DIRS})
+    unset(GDK3_WITH_X11)
+
+    if(GDK3_INCLUDE_DIR)
+        if(EXISTS "${GDK3_INCLUDE_DIR}/gdk/gdkx.h")
+            set(GDK3_WITH_X11 yes)
+        endif()
+    endif()
+endif()
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GDK3
     FOUND_VAR GDK3_FOUND
