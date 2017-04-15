@@ -13,8 +13,10 @@ class SmileyConverter {
     private static HashMap<string, string> smiley_translations = new HashMap<string, string>();
 
     static construct {
-        smiley_translations[":)"] = "🙂";
+        smiley_translations[":)"] = "😄";
+        smiley_translations[":-)"] = "😄";
         smiley_translations[":D"] = "😀";
+        smiley_translations[":-D"] = "😀";
         smiley_translations[";)"] = "😉";
         smiley_translations["O:)"] = "😇";
         smiley_translations["O:-)"] = "😇";
@@ -25,6 +27,13 @@ class SmileyConverter {
         smiley_translations[":("] = "🙁";
         smiley_translations[":'("] = "😢";
         smiley_translations[":/"] = "😕";
+        smiley_translations["<3"] = "🖤";
+        smiley_translations[":heart:"] = "🖤";
+        smiley_translations[":kiss:"] = "💋";
+        smiley_translations[":-*"] = "💋";
+        smiley_translations[":*"] = "💋";
+        smiley_translations[":thumbsup:"] = "👍";
+        smiley_translations["+1"] = "👍";
     }
 
     public SmileyConverter(StreamInteractor stream_interactor, TextView text_input) {
