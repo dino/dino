@@ -51,12 +51,8 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "signal_type_base", ref_function="signal_type_ref_vapi", unref_function="signal_type_unref_vapi", cheader_filename="signal_protocol_types.h,signal_helper.h")]
+    [CCode (cname = "signal_type_base", ref_function="signal_type_ref", ref_function_void=true, unref_function="signal_type_unref", cheader_filename="signal_protocol_types.h,signal_helper.h")]
     public class TypeBase {
-        [CCode (cname = "signal_type_ref_vapi")]
-        public TypeBase ref();
-        [CCode (cname = "signal_type_unref_vapi")]
-        public TypeBase unref(void* what);
     }
 
     [Compact]

@@ -16,8 +16,8 @@ Install
 * GTK (≥ 3.22)
 * GPGME (For the OpenPGP plugin)
 * libgee-0.8 (≥ 0.10)
+* libgcrypt (For the OMEMO plugin)
 * libnotify
-* OpenSSL (For the OMEMO plugin)
 * SQLite3
 
 Build

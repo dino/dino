@@ -52,6 +52,7 @@ mark_as_advanced(VALA_EXECUTABLE)
 
 # Determine the valac version
 if(VALA_EXECUTABLE)
+    file(TO_NATIVE_PATH "${VALA_EXECUTABLE}" VALA_EXECUTABLE)
     execute_process(COMMAND ${VALA_EXECUTABLE} "--version"
                     OUTPUT_VARIABLE VALA_VERSION
                     OUTPUT_STRIP_TRAILING_WHITESPACE)

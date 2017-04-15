@@ -3,7 +3,7 @@ set_property(TARGET curve25519 PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET protobuf-c PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET signal-protocol-c PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-find_package(OpenSSL REQUIRED)
+find_package(GCrypt REQUIRED)
 find_packages(SIGNAL_PROTOCOL_PACKAGES REQUIRED
     Gee
     GLib
@@ -34,7 +34,7 @@ set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src
 add_definitions(${CFLAGS})
 add_library(signal-protocol-vala ${SIGNAL_PROTOCOL_VALA_C} ${CMAKE_CURRENT_SOURCE_DIR}/src/signal_helper.c)
 add_dependencies(signal-protocol-vala signal-protocol-c)
-target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} ${OPENSSL_CRYPTO_LIBRARY} signal-protocol-c m)
+target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} gcrypt signal-protocol-c m)
 set_property(TARGET signal-protocol-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(SIGNAL_PROTOCOL_C_HEADERS
@@ -102,7 +102,7 @@ DEPENDS
     ${C_HEADERS_TARGET}
 )
 
-if(BUILD_TESTING)
+if(BUILD_TESTS)
     vala_precompile(SIGNAL_TEST_VALA_C
     SOURCES
         "tests/common.vala"
@@ -112,7 +112,7 @@ if(BUILD_TESTING)
         "tests/hkdf.vala"
         "tests/session_builder.vala"
     CUSTOM_VAPIS
-        ${CMAKE_BINARY_DIR}/exports/signal-protocol-vala-internal.vapi
+        ${CMAKE_BINARY_DIR}/exports/signal-protocol-vala_internal.vapi
         ${CMAKE_CURRENT_SOURCE_DIR}/vapi/signal-protocol-public.vapi
         ${CMAKE_CURRENT_SOURCE_DIR}/vapi/signal-protocol-native.vapi
     PACKAGES
@@ -123,4 +123,4 @@ if(BUILD_TESTING)
     add_executable(signal-protocol-vala-test ${SIGNAL_TEST_VALA_C})
     add_dependencies(signal-protocol-vala-test signal-protocol-vala signal-protocol-vapi)
     target_link_libraries(signal-protocol-vala-test signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES})
-endif(BUILD_TESTING)
+endif(BUILD_TESTS)

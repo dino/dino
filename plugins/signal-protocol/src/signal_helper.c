@@ -1,25 +1,7 @@
 #include <signal_helper.h>
 #include <signal_protocol_internal.h>
 
-#include <openssl/evp.h>
-#include <openssl/hmac.h>
-#include <openssl/rand.h>
-#include <openssl/sha.h>
-#include <openssl/err.h>
-
-signal_type_base* signal_type_ref_vapi(signal_type_base* instance) {
-    if (instance->ref_count > 100 || instance->ref_count < 1)
-        printf("REF %x -> %d\n", instance, instance->ref_count+1);
-    signal_type_ref(instance);
-    return instance;
-}
-
-signal_type_base* signal_type_unref_vapi(signal_type_base* instance) {
-    if (instance->ref_count > 100 || instance->ref_count < 0)
-        printf("UNREF %x -> %d\n", instance, instance->ref_count-1);
-    signal_type_unref(instance);
-    return 0;
-}
+#include <gcrypt.h>
 
 signal_protocol_address* signal_protocol_address_new() {
     signal_protocol_address* address = malloc(sizeof(signal_protocol_address));
@@ -68,199 +50,136 @@ session_signed_pre_key* session_signed_pre_key_new(uint32_t id, uint64_t timesta
 
 
 
-int signal_vala_random_generator(uint8_t *data, size_t len, void *user_data)
-{
-    if(RAND_bytes(data, len)) {
-        return 0;
-    }
-    else {
-        return SG_ERR_UNKNOWN;
-    }
+int signal_vala_random_generator(uint8_t *data, size_t len, void *user_data) {
+    gcry_randomize(data, len, GCRY_STRONG_RANDOM);
+    return SG_SUCCESS;
 }
 
-int signal_vala_hmac_sha256_init(void **hmac_context, const uint8_t *key, size_t key_len, void *user_data)
-{
-#if OPENSSL_VERSION_NUMBER >= 0x10100001L
-    HMAC_CTX *ctx = HMAC_CTX_new();
-#else
-    HMAC_CTX *ctx = malloc(sizeof(HMAC_CTX));
-    if(!ctx) {
-        return SG_ERR_NOMEM;
+int signal_vala_hmac_sha256_init(void **hmac_context, const uint8_t *key, size_t key_len, void *user_data) {
+    gcry_mac_hd_t* ctx = malloc(sizeof(gcry_mac_hd_t));
+    if (!ctx) return SG_ERR_NOMEM;
+
+    if (gcry_mac_open(ctx, GCRY_MAC_HMAC_SHA256, 0, 0)) {
+        free(ctx);
+        return SG_ERR_UNKNOWN;
     }
-    HMAC_CTX_init(ctx);
-#endif
+
+    if (gcry_mac_setkey(*ctx, key, key_len)) {
+        free(ctx);
+        return SG_ERR_UNKNOWN;
+    }
+
     *hmac_context = ctx;
 
-    if(HMAC_Init_ex(ctx, key, key_len, EVP_sha256(), 0) != 1) {
-        return SG_ERR_UNKNOWN;
-    }
-
-    return 0;
+    return SG_SUCCESS;
 }
 
-int signal_vala_hmac_sha256_update(void *hmac_context, const uint8_t *data, size_t data_len, void *user_data)
-{
-    HMAC_CTX *ctx = hmac_context;
-    int result = HMAC_Update(ctx, data, data_len);
+int signal_vala_hmac_sha256_update(void *hmac_context, const uint8_t *data, size_t data_len, void *user_data) {
+    gcry_mac_hd_t* *ctx = hmac_context;
 
-    return (result == 1) ? 0 : -1;
+    if (gcry_mac_write(*ctx, data, data_len)) return SG_ERR_UNKNOWN;
+
+    return SG_SUCCESS;
 }
 
-int signal_vala_hmac_sha256_final(void *hmac_context, signal_buffer **output, void *user_data)
-{
-    int result = 0;
-    unsigned char md[EVP_MAX_MD_SIZE];
-    unsigned int len = 0;
-    HMAC_CTX *ctx = hmac_context;
+int signal_vala_hmac_sha256_final(void *hmac_context, signal_buffer **output, void *user_data) {
+    unsigned int len = gcry_mac_get_algo_maclen(GCRY_MAC_HMAC_SHA256);
+    unsigned char md[len];
+    gcry_mac_hd_t* ctx = hmac_context;
 
-    if(HMAC_Final(ctx, md, &len) != 1) {
-        return SG_ERR_UNKNOWN;
-    }
+    if (gcry_mac_read(*ctx, md, &len)) return SG_ERR_UNKNOWN;
 
     signal_buffer *output_buffer = signal_buffer_create(md, len);
-    if(!output_buffer) {
-        result = SG_ERR_NOMEM;
-        goto complete;
-    }
+    if (!output_buffer) return SG_ERR_NOMEM;
 
     *output = output_buffer;
 
-complete:
-    return result;
+    return SG_SUCCESS;
 }
 
-void signal_vala_hmac_sha256_cleanup(void *hmac_context, void *user_data)
-{
-    if(hmac_context) {
-        HMAC_CTX *ctx = hmac_context;
-#if OPENSSL_VERSION_NUMBER >= 0x10100001L
-        HMAC_CTX_free(ctx);
-#else
-        HMAC_CTX_cleanup(ctx);
+void signal_vala_hmac_sha256_cleanup(void *hmac_context, void *user_data) {
+    gcry_mac_hd_t* ctx = hmac_context;
+    if (ctx) {
+        gcry_mac_close(*ctx);
         free(ctx);
-#endif
     }
 }
 
-const EVP_CIPHER *aes_cipher(int cipher, size_t key_len)
-{
-    if(cipher == SG_CIPHER_AES_CBC_PKCS5) {
-        if(key_len == 16) {
-            return EVP_aes_128_cbc();
-        }
-        else if(key_len == 24) {
-            return EVP_aes_192_cbc();
-        }
-        else if(key_len == 32) {
-            return EVP_aes_256_cbc();
-        }
+int signal_vala_sha512_digest_init(void **digest_context, void *user_data) {
+    gcry_md_hd_t* ctx = malloc(sizeof(gcry_mac_hd_t));
+    if (!ctx) return SG_ERR_NOMEM;
+
+    if (gcry_md_open(ctx, GCRY_MD_SHA512, 0)) {
+        free(ctx);
+        return SG_ERR_UNKNOWN;
     }
-    else if(cipher == SG_CIPHER_AES_CTR_NOPADDING) {
-        if(key_len == 16) {
-            return EVP_aes_128_ctr();
-        }
-        else if(key_len == 24) {
-            return EVP_aes_192_ctr();
-        }
-        else if(key_len == 32) {
-            return EVP_aes_256_ctr();
-        }
-    }
-    else if (cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        if(key_len == 16) {
-            return EVP_aes_128_gcm();
-        }
-        else if(key_len == 24) {
-            return EVP_aes_192_gcm();
-        }
-        else if(key_len == 32) {
-            return EVP_aes_256_gcm();
-        }
-    }
-    return 0;
+
+    *digest_context = ctx;
+
+    return SG_SUCCESS;
 }
 
-int signal_vala_sha512_digest_init(void **digest_context, void *user_data)
-{
-    int result = 0;
-    EVP_MD_CTX *ctx;
+int signal_vala_sha512_digest_update(void *digest_context, const uint8_t *data, size_t data_len, void *user_data) {
+    gcry_md_hd_t* ctx = digest_context;
 
-    ctx = EVP_MD_CTX_create();
-    if(!ctx) {
-        result = SG_ERR_NOMEM;
-        goto complete;
-    }
+    gcry_md_write(*ctx, data, data_len);
 
-    result = EVP_DigestInit_ex(ctx, EVP_sha512(), 0);
-    if(result == 1) {
-        result = SG_SUCCESS;
-    }
-    else {
-        result = SG_ERR_UNKNOWN;
-    }
-
-complete:
-    if(result < 0) {
-        if(ctx) {
-            EVP_MD_CTX_destroy(ctx);
-        }
-    }
-    else {
-        *digest_context = ctx;
-    }
-    return result;
+    return SG_SUCCESS;
 }
 
-int signal_vala_sha512_digest_update(void *digest_context, const uint8_t *data, size_t data_len, void *user_data)
-{
-    EVP_MD_CTX *ctx = digest_context;
+int signal_vala_sha512_digest_final(void *digest_context, signal_buffer **output, void *user_data) {
+    unsigned int len = gcry_md_get_algo_dlen(GCRY_MD_SHA512);
+    gcry_md_hd_t* ctx = digest_context;
 
-    int result = EVP_DigestUpdate(ctx, data, data_len);
+    unsigned char* md = gcry_md_read(*ctx, GCRY_MD_SHA512);
+    if (!md) return SG_ERR_UNKNOWN;
 
-    return (result == 1) ? SG_SUCCESS : SG_ERR_UNKNOWN;
-}
-
-int signal_vala_sha512_digest_final(void *digest_context, signal_buffer **output, void *user_data)
-{
-    int result = 0;
-    unsigned char md[EVP_MAX_MD_SIZE];
-    unsigned int len = 0;
-    EVP_MD_CTX *ctx = digest_context;
-
-    result = EVP_DigestFinal_ex(ctx, md, &len);
-    if(result == 1) {
-        result = SG_SUCCESS;
-    }
-    else {
-        result = SG_ERR_UNKNOWN;
-        goto complete;
-    }
-
-    result = EVP_DigestInit_ex(ctx, EVP_sha512(), 0);
-    if(result == 1) {
-        result = SG_SUCCESS;
-    }
-    else {
-        result = SG_ERR_UNKNOWN;
-        goto complete;
-    }
+    gcry_md_reset(*ctx);
 
     signal_buffer *output_buffer = signal_buffer_create(md, len);
-    if(!output_buffer) {
-        result = SG_ERR_NOMEM;
-        goto complete;
-    }
+    if (!output_buffer) return SG_ERR_NOMEM;
 
     *output = output_buffer;
 
-complete:
-    return result;
+    return SG_SUCCESS;
 }
 
-void signal_vala_sha512_digest_cleanup(void *digest_context, void *user_data)
-{
-    EVP_MD_CTX *ctx = digest_context;
-    EVP_MD_CTX_destroy(ctx);
+void signal_vala_sha512_digest_cleanup(void *digest_context, void *user_data) {
+    gcry_md_hd_t* ctx = digest_context;
+    if (ctx) {
+        gcry_md_close(*ctx);
+        free(ctx);
+    }
+}
+
+const int aes_cipher(int cipher, size_t key_len, int* algo, int* mode) {
+    switch (key_len) {
+        case 16:
+            *algo = GCRY_CIPHER_AES128;
+            break;
+        case 24:
+            *algo = GCRY_CIPHER_AES192;
+            break;
+        case 32:
+            *algo = GCRY_CIPHER_AES256;
+            break;
+        default:
+            return SG_ERR_UNKNOWN;
+    }
+    switch (cipher) {
+        case SG_CIPHER_AES_CBC_PKCS5:
+            *mode = GCRY_CIPHER_MODE_CBC;
+            break;
+        case SG_CIPHER_AES_CTR_NOPADDING:
+            *mode = GCRY_CIPHER_MODE_CTR;
+            break;
+        case SG_CIPHER_AES_GCM_NOPADDING:
+            *mode = GCRY_CIPHER_MODE_GCM;
+            break;
+        default:
+            return SG_ERR_UNKNOWN;
+    }
+    return SG_SUCCESS;
 }
 
 int signal_vala_encrypt(signal_buffer **output,
@@ -268,114 +187,59 @@ int signal_vala_encrypt(signal_buffer **output,
         const uint8_t *key, size_t key_len,
         const uint8_t *iv, size_t iv_len,
         const uint8_t *plaintext, size_t plaintext_len,
-        void *user_data)
-{
-    int result = 0;
-    uint8_t *out_buf = 0;
+        void *user_data) {
+    int algo, mode;
+    if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_UNKNOWN;
 
-    const EVP_CIPHER *evp_cipher = aes_cipher(cipher, key_len);
-    if(!evp_cipher) {
-        fprintf(stderr, "invalid AES mode or key size: %zu\n", key_len);
-        return SG_ERR_UNKNOWN;
+    if (iv_len != 16) return SG_ERR_UNKNOWN;
+
+    gcry_cipher_hd_t ctx = {0};
+
+    if (gcry_cipher_open(&ctx, algo, mode, 0)) return SG_ERR_UNKNOWN;
+
+    goto no_error;
+error:
+    gcry_cipher_close(ctx);
+    return SG_ERR_UNKNOWN;
+no_error:
+
+    if (gcry_cipher_setkey(ctx, key, key_len)) goto error;
+
+    uint8_t tag_len = 0, pad_len = 0;
+    switch (cipher) {
+        case SG_CIPHER_AES_CBC_PKCS5:
+            if (gcry_cipher_setiv(ctx, iv, iv_len)) goto error;
+            pad_len = 16 - (plaintext_len % 16);
+            if (pad_len == 0) pad_len = 16;
+            break;
+        case SG_CIPHER_AES_CTR_NOPADDING:
+            if (gcry_cipher_setctr(ctx, iv, iv_len)) goto error;
+            break;
+        case SG_CIPHER_AES_GCM_NOPADDING:
+            if (gcry_cipher_setiv(ctx, iv, iv_len)) goto error;
+            tag_len = 16;
+            break;
+        default:
+            return SG_ERR_UNKNOWN;
     }
 
-    if(iv_len != 16) {
-        fprintf(stderr, "invalid AES IV size: %zu\n", iv_len);
-        return SG_ERR_UNKNOWN;
+    size_t padded_len = plaintext_len + pad_len;
+    uint8_t padded[padded_len];
+    memset(padded + plaintext_len, pad_len, pad_len);
+    memcpy(padded, plaintext, plaintext_len);
+
+    uint8_t out_buf[padded_len + tag_len];
+
+    if (gcry_cipher_encrypt(ctx, out_buf, padded_len, padded, padded_len)) goto error;
+
+    if (tag_len > 0) {
+        if (gcry_cipher_gettag(ctx, out_buf + padded_len, tag_len)) goto error;
     }
 
-    if(plaintext_len > INT_MAX - EVP_CIPHER_block_size(evp_cipher)) {
-        fprintf(stderr, "invalid plaintext length: %zu\n", plaintext_len);
-        return SG_ERR_UNKNOWN;
-    }
+    *output = signal_buffer_create(out_buf, padded_len + tag_len);
 
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-
-    int buf_extra = 0;
-
-    if(cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        // In GCM mode we use the last 16 bytes as auth tag
-        buf_extra += 16;
-
-        result = EVP_EncryptInit_ex(ctx, evp_cipher, NULL, NULL, NULL);
-        if(!result) {
-            fprintf(stderr, "cannot initialize cipher\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-
-        result = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 16, NULL);
-        if(!result) {
-            fprintf(stderr, "cannot set iv size\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-
-        result = EVP_EncryptInit_ex(ctx, NULL, NULL, key, iv);
-        if(!result) {
-            fprintf(stderr, "cannot set key/iv\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-    } else {
-        result = EVP_EncryptInit_ex(ctx, evp_cipher, 0, key, iv);
-        if(!result) {
-            fprintf(stderr, "cannot initialize cipher\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-    }
-
-    if(cipher == SG_CIPHER_AES_CTR_NOPADDING || cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        result = EVP_CIPHER_CTX_set_padding(ctx, 0);
-        if(!result) {
-            fprintf(stderr, "cannot set padding\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-    }
-
-    out_buf = malloc(sizeof(uint8_t) * (plaintext_len + EVP_CIPHER_block_size(evp_cipher) + buf_extra));
-    if(!out_buf) {
-        fprintf(stderr, "cannot allocate output buffer\n");
-        result = SG_ERR_NOMEM;
-        goto complete;
-    }
-
-    int out_len = 0;
-    result = EVP_EncryptUpdate(ctx,
-        out_buf, &out_len, plaintext, plaintext_len);
-    if(!result) {
-        fprintf(stderr, "cannot encrypt plaintext\n");
-        result = SG_ERR_UNKNOWN;
-        goto complete;
-    }
-
-    int final_len = 0;
-    result = EVP_EncryptFinal_ex(ctx, out_buf + out_len, &final_len);
-    if(!result) {
-        fprintf(stderr, "cannot finish encrypting plaintext\n");
-        result = SG_ERR_UNKNOWN;
-        goto complete;
-    }
-
-    if(cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        result = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, out_buf + (out_len + final_len));
-        if(!result) {
-            fprintf(stderr, "cannot get tag\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-    }
-
-    *output = signal_buffer_create(out_buf, out_len + final_len + buf_extra);
-
-complete:
-    EVP_CIPHER_CTX_free(ctx);
-    if(out_buf) {
-        free(out_buf);
-    }
-    return result;
+    gcry_cipher_close(ctx);
+    return SG_SUCCESS;
 }
 
 int signal_vala_decrypt(signal_buffer **output,
@@ -383,112 +247,61 @@ int signal_vala_decrypt(signal_buffer **output,
         const uint8_t *key, size_t key_len,
         const uint8_t *iv, size_t iv_len,
         const uint8_t *ciphertext, size_t ciphertext_len,
-        void *user_data)
-{
-    int result = 0;
-    uint8_t *out_buf = 0;
+        void *user_data) {
+    int algo, mode;
+    if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_UNKNOWN;
 
-    const EVP_CIPHER *evp_cipher = aes_cipher(cipher, key_len);
-    if(!evp_cipher) {
-        fprintf(stderr, "invalid AES mode or key size: %zu\n", key_len);
-        return SG_ERR_INVAL;
+    if (iv_len != 16) return SG_ERR_UNKNOWN;
+
+    gcry_cipher_hd_t ctx = {0};
+
+    if (gcry_cipher_open(&ctx, algo, mode, 0)) return SG_ERR_UNKNOWN;
+
+    goto no_error;
+error:
+    gcry_cipher_close(ctx);
+    return SG_ERR_UNKNOWN;
+no_error:
+
+    if (gcry_cipher_setkey(ctx, key, key_len)) goto error;
+
+    uint8_t tag_len = 0, pkcs_pad = FALSE;
+    switch (cipher) {
+        case SG_CIPHER_AES_CBC_PKCS5:
+            if (gcry_cipher_setiv(ctx, iv, iv_len)) goto error;
+            pkcs_pad = TRUE;
+            break;
+        case SG_CIPHER_AES_CTR_NOPADDING:
+            if (gcry_cipher_setctr(ctx, iv, iv_len)) goto error;
+            break;
+        case SG_CIPHER_AES_GCM_NOPADDING:
+            if (gcry_cipher_setiv(ctx, iv, iv_len)) goto error;
+            if (ciphertext_len < 16) goto error;
+            tag_len = 16;
+            break;
+        default:
+            return SG_ERR_UNKNOWN;
     }
 
-    if(iv_len != 16) {
-        fprintf(stderr, "invalid AES IV size: %zu\n", iv_len);
-        return SG_ERR_INVAL;
+    size_t padded_len = ciphertext_len - tag_len;
+    uint8_t out_buf[padded_len];
+
+    if (gcry_cipher_decrypt(ctx, out_buf, padded_len, ciphertext, padded_len)) goto error;
+
+    if (tag_len > 0) {
+        if (gcry_cipher_checktag(ctx, ciphertext + padded_len, tag_len)) goto error;
     }
 
-    if(ciphertext_len > INT_MAX - EVP_CIPHER_block_size(evp_cipher)) {
-        fprintf(stderr, "invalid ciphertext length: %zu\n", ciphertext_len);
-        return SG_ERR_UNKNOWN;
-    }
-
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-
-    if(cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        // In GCM mode we use the last 16 bytes as auth tag
-        ciphertext_len -= 16;
-
-        result = EVP_DecryptInit_ex(ctx, evp_cipher, NULL, NULL, NULL);
-        if(!result) {
-            fprintf(stderr, "cannot initialize cipher\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-
-        result = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 16, NULL);
-        if(!result) {
-            fprintf(stderr, "cannot set iv size\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-
-        result = EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv);
-        if(!result) {
-            fprintf(stderr, "cannot set key/iv\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
+    if (pkcs_pad) {
+        uint8_t pad_len = out_buf[padded_len - 1];
+        if (pad_len > 16) goto error;
+        *output = signal_buffer_create(out_buf, padded_len - pad_len);
     } else {
-        result = EVP_DecryptInit_ex(ctx, evp_cipher, 0, key, iv);
-        if(!result) {
-            fprintf(stderr, "cannot initialize cipher\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
+        *output = signal_buffer_create(out_buf, padded_len);
     }
 
-    if(cipher == SG_CIPHER_AES_CTR_NOPADDING || cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        result = EVP_CIPHER_CTX_set_padding(ctx, 0);
-        if(!result) {
-            fprintf(stderr, "cannot set padding\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-    }
-
-    out_buf = malloc(sizeof(uint8_t) * (ciphertext_len + EVP_CIPHER_block_size(evp_cipher)));
-    if(!out_buf) {
-        fprintf(stderr, "cannot allocate output buffer\n");
-        result = SG_ERR_UNKNOWN;
-        goto complete;
-    }
-
-    int out_len = 0;
-    result = EVP_DecryptUpdate(ctx,
-        out_buf, &out_len, ciphertext, ciphertext_len);
-    if(!result) {
-        fprintf(stderr, "cannot decrypt ciphertext\n");
-        result = SG_ERR_UNKNOWN;
-        goto complete;
-    }
-
-    if(cipher == SG_CIPHER_AES_GCM_NOPADDING) {
-        result = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, 16, (uint8_t*)ciphertext + ciphertext_len);
-        if(!result) {
-            fprintf(stderr, "cannot set tag\n");
-            result = SG_ERR_UNKNOWN;
-            goto complete;
-        }
-    }
-
-    int final_len = 0;
-    result = EVP_DecryptFinal_ex(ctx, out_buf + out_len, &final_len);
-    if(!result) {
-        fprintf(stderr, "cannot finish decrypting ciphertexts\n");
-        result = SG_ERR_UNKNOWN;
-        goto complete;
-    }
-
-    *output = signal_buffer_create(out_buf, out_len + final_len);
-
-complete:
-    EVP_CIPHER_CTX_free(ctx);
-    if(out_buf) {
-        free(out_buf);
-    }
-    return result;
+    gcry_cipher_close(ctx);
+    return SG_SUCCESS;
 }
 
 void setup_signal_vala_crypto_provider(signal_context *context)

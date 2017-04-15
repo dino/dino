@@ -44,13 +44,13 @@ BuildRequires:	pkgconfig(gtk+-3.0) >= 3.22
 BuildRequires:	pkgconfig(gee-0.8) >= 0.10
 BuildRequires:	pkgconfig(libnotify)
 BuildRequires:	pkgconfig(sqlite3)
-BuildRequires:	pkgconfig(openssl)
+BuildRequires:	libgcrypt-devel
 BuildRequires:	gpgme-devel
-Requires:	    hicolor-icon-theme
-Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+Requires:	hicolor-icon-theme
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 # Technically these aren't requirements, we just want them always installed...
-Requires:       %{name}-plugin-omemo%{?_isa} = %{version}-%{release}
-Requires:       %{name}-plugin-openpgp%{?_isa} = %{version}-%{release}
+Requires:	%{name}-plugin-omemo%{?_isa} = %{version}-%{release}
+Requires:	%{name}-plugin-openpgp%{?_isa} = %{version}-%{release}
 
 %description
 Dino is an instant messaging client for the Jabber/XMPP network,
