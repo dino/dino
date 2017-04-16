@@ -4,7 +4,7 @@ using Sqlite;
 namespace Qlite {
 
 public class Row {
-    private Map<string, string> text_map = new HashMap<string, string>();
+    private Map<string, string?> text_map = new HashMap<string, string?>();
     private Map<string, long> int_map = new HashMap<string, long>();
     private Map<string, double?> real_map = new HashMap<string, double?>();
 
@@ -43,8 +43,8 @@ public class Row {
         return int_map.has_key(field);
     }
 
-    public double get_real(string field) {
-        return real_map[field];
+    public double get_real(string field, double def = 0) {
+        return real_map[field] ?? def;
     }
 
     public bool has_real(string field) {
@@ -71,11 +71,21 @@ public class RowIterator {
         }
     }
 
-    public Row? next_value() throws DatabaseError {
+    public bool next() {
         int r = stmt.step();
-        if (r == Sqlite.ROW) return new Row(stmt);
-        if (r == Sqlite.DONE) return null;
-        throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");
+        if (r == Sqlite.ROW) return true;
+        if (r == Sqlite.DONE) return false;
+        print(@"SQLite error: $(db.errcode()) - $(db.errmsg())\n");
+        return false;
+    }
+
+    public Row get() {
+        return new Row(stmt);
+    }
+
+    public Row? get_next() {
+        if (next()) return get();
+        return null;
     }
 }
 
@@ -91,8 +101,13 @@ public class RowOption {
     }
 
     public T get<T>(Column<T> field, T def = null) {
-        if (inner == null || field.is_null(inner)) return def;
-        return field[inner];
+        if (inner == null || field.is_null((!)inner)) return def;
+        return field[(!)inner];
+    }
+
+    internal long get_integer(string field, long def = 0) {
+        if (inner == null || !((!)inner).has_integer(field)) return def;
+        return ((!)inner).get_integer(field);
     }
 }
 

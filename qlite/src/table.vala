@@ -5,22 +5,21 @@ namespace Qlite {
 public class Table {
     protected Database db;
     public string name { get; private set; }
-    protected Column[] columns;
-    private string constraints;
+    protected Column[]? columns;
+    private string constraints = "";
 
     public Table(Database db, string name) {
         this.db = db;
         this.name = name;
     }
 
-    public void init(Column[] columns, string? constraints = null) {
+    public void init(Column[] columns, string constraints = "") {
         this.columns = columns;
         this.constraints = constraints;
     }
 
     public void unique(Column[] columns, string? on_conflict = null) {
-        if (constraints == null) constraints = ""; else constraints += ", ";
-        constraints += "UNIQUE (";
+        constraints += ", UNIQUE (";
         bool first = true;
         foreach (Column c in columns) {
             if (!first) constraints += ", ";
@@ -29,7 +28,7 @@ public class Table {
         }
         constraints += ")";
         if (on_conflict != null) {
-            constraints += "ON CONFLICT " + on_conflict;
+            constraints += "ON CONFLICT " + (!)on_conflict;
         }
     }
 
@@ -80,10 +79,7 @@ public class Table {
                 sql += @"$(i > 0 ? "," : "") $c";
             }
         }
-        if (constraints != null) {
-            sql += ", " + constraints;
-        }
-        sql += ")";
+        sql += @"$constraints)";
         db.exec(sql);
     }
 
@@ -98,10 +94,10 @@ public class Table {
 
     public void delete_columns_for_version(long old_version, long new_version) throws DatabaseError {
         bool column_deletion_required = false;
-        string column_list = null;
+        string column_list = "";
         foreach (Column c in columns) {
             if (c.min_version <= new_version && c.max_version >= new_version) {
-                if (column_list == null) {
+                if (column_list == "") {
                     column_list = c.name;
                 } else {
                     column_list += ", " + c.name;

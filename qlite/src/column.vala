@@ -4,12 +4,12 @@ namespace Qlite {
 
 public abstract class Column<T> {
     public string name { get; private set; }
-    public string default { get; set; }
+    public string? default { get; set; }
     public int sqlite_type { get; private set; }
     public bool primary_key { get; set; }
     public bool auto_increment { get; set; }
     public bool unique { get; set; }
-    public bool not_null { get; set; }
+    public virtual bool not_null { get; set; }
     public long min_version { get; set; default = -1; }
     public long max_version { get; set; default = long.MAX; }
 
@@ -43,7 +43,7 @@ public abstract class Column<T> {
         }
         if (not_null) res += " NOT NULL";
         if (unique) res += " UNIQUE";
-        if (default != null) res += @" DEFAULT $default";
+        if (default != null) res += @" DEFAULT $((!) default)";
 
         return res;
     }
@@ -122,10 +122,30 @@ public abstract class Column<T> {
 
         internal override void bind(Statement stmt, int index, string? value) {
             if (value != null) {
-                stmt.bind_text(index, value);
+                stmt.bind_text(index, (!) value);
             } else {
                 stmt.bind_null(index);
             }
+        }
+    }
+
+    public class NonNullText : Column<string> {
+        public NonNullText(string name) {
+            base(name, TEXT);
+        }
+
+        public override bool not_null { get { return true; } set {} }
+
+        public override string get(Row row) {
+            return (!)row.get_text(name);
+        }
+
+        public override bool is_null(Row row) {
+            return false;
+        }
+
+        internal override void bind(Statement stmt, int index, string value) {
+            stmt.bind_text(index, (!) value);
         }
     }
 

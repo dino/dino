@@ -17,11 +17,11 @@ public class Database {
     private string file_name;
     private Sqlite.Database db;
     private long expected_version;
-    private Table[] tables;
+    private Table[]? tables;
 
-    private Column<string> meta_name = new Column.Text("name") { primary_key = true };
+    private Column<string?> meta_name = new Column.Text("name") { primary_key = true };
     private Column<long> meta_int_val = new Column.Long("int_val");
-    private Column<string> meta_text_val = new Column.Text("text_val");
+    private Column<string?> meta_text_val = new Column.Text("text_val");
     private Table meta_table;
 
     public bool debug = false;

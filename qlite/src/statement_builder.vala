@@ -11,25 +11,32 @@ public abstract class StatementBuilder {
 
     internal abstract Statement prepare() throws DatabaseError;
 
-    internal class Field<T> {
+    internal abstract class AbstractField<T> {
         public T value;
         public Column<T>? column;
 
-        public Field(Column<T>? column, T value) {
-            this.column = column;
+        public AbstractField(T value) {
             this.value = value;
         }
 
-        internal virtual void bind(Statement stmt, int index) {
-            if (column != null) {
-                column.bind(stmt, index, value);
-            }
+        internal abstract void bind(Statement stmt, int index);
+    }
+
+    internal class Field<T> : AbstractField<T> {
+        public Field(Column<T> column, T value) {
+            base(value);
+            this.column = column;
+        }
+
+        internal override void bind(Statement stmt, int index) {
+            ((!)column).bind(stmt, index, value);
         }
     }
 
-    internal class NullField<T> : Field<T> {
-        public NullField(Column<T>? column) {
-            base(column, null);
+    internal class NullField<T> : AbstractField<T> {
+        public NullField(Column<T> column) {
+            base(null);
+            this.column = column;
         }
 
         internal override void bind(Statement stmt, int index) {
@@ -37,9 +44,9 @@ public abstract class StatementBuilder {
         }
     }
 
-    internal class StringField : Field<string> {
+    internal class StringField : AbstractField<string> {
         public StringField(string value) {
-            base(null, value);
+            base(value);
         }
 
         internal override void bind(Statement stmt, int index) {
