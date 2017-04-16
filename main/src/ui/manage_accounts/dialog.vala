@@ -248,7 +248,7 @@ public class Dialog : Gtk.Window {
             ConnectionManager.ConnectionState state = stream_interactor.connection_manager.get_state(account);
             switch (state) {
                 case ConnectionManager.ConnectionState.CONNECTING:
-                    state_label.label = _("Connecting..."); break;
+                    state_label.label = _("Connecting…"); break;
                 case ConnectionManager.ConnectionState.CONNECTED:
                     state_label.label = _("Connected"); break;
                 case ConnectionManager.ConnectionState.DISCONNECTED:
