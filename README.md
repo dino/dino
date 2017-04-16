@@ -5,10 +5,11 @@ Dino
 
 Install
 -------
-| OS           | Package|
-| ------------ | ------ |
-| Arch Linux   | [`dino-git`](https://aur.archlinux.org/packages/dino-git/) (AUR)     |
-| Fedora ≥ 25  | [`dino`](https://copr.fedorainfracloud.org/coprs/larma/dino/) (copr) |
+| OS                  | Package|
+| --------------------| ------ |
+| Arch Linux          | [`dino-git`](https://aur.archlinux.org/packages/dino-git/) (AUR)         |
+| Fedora ≥ 25         | [`dino`](https://copr.fedorainfracloud.org/coprs/larma/dino/) (copr)     |
+| openSUSE Tumbleweed | [`dino`](https://build.opensuse.org/package/show/home:jubalh/dino) (OBS) |
 
 **Dependencies**
 
