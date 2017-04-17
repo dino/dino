@@ -14,7 +14,6 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void bookmarks_updated(Account account, ArrayList<Xep.Bookmarks.Conference> conferences);
 
     private StreamInteractor stream_interactor;
-    protected HashMap<Jid, Xep.Bookmarks.Conference> conference_bookmarks = new HashMap<Jid, Xep.Bookmarks.Conference>();
 
     public static void start(StreamInteractor stream_interactor) {
         MucManager m = new MucManager(stream_interactor);
@@ -28,10 +27,11 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_pre_message_received);
     }
 
-    public void join(Account account, Jid jid, string nick, string? password = null) {
+    public void join(Account account, Jid jid, string? nick, string? password) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
         if (stream == null) return;
-        stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick, password);
+        string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
+        stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick_, password);
     }
 
     public void part(Account account, Jid jid) {
@@ -169,9 +169,8 @@ public class MucManager : StreamInteractionModule, Object {
             Account account_ = tuple.b;
             foreach (Xep.Bookmarks.Conference bookmark in conferences) {
                 Jid jid = new Jid(bookmark.jid);
-                outer_.conference_bookmarks[jid] = bookmark;
                 if (bookmark.autojoin) {
-                    outer_.join(account_, jid, bookmark.nick);
+                    outer_.join(account_, jid, bookmark.nick, bookmark.password);
                 }
             }
         }, Tuple.create(this, account));

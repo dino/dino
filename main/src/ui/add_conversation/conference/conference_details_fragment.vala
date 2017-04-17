@@ -31,14 +31,14 @@ protected class ConferenceDetailsFragment : Box {
             jid_entry.text = value;
         }
     }
-    public string nick {
-        get { return nick_entry.text; }
+    public string? nick {
+        get { return nick_entry.text != "" ? nick_entry.text : null; }
         set {
-            nick_label.label = value;
-            nick_entry.text = value;
+            nick_label.label = value ?? "";
+            nick_entry.text = value ?? "";
         }
     }
-    public string password {
+    public string? password {
         get { return password_entry.text == "" ? null : password_entry.text; }
         set {
             password_label.label = value;

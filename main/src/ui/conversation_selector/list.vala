@@ -149,7 +149,7 @@ public class List : ListBox {
                 ListBoxRow? index_m1 = get_row_at_index(index - 1);
                 if (index_m1 != null) {
                     select_row(index_m1);
-                    row_activated(index_p1);
+                    row_activated(index_m1);
                 }
             }
         }

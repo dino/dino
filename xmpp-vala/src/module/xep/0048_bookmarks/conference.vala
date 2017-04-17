@@ -38,10 +38,15 @@ public class Conference : Object {
         }
         set {
             StanzaNode? nick_node = stanza_node.get_subnode(NODE_NICK);
+            if (value == null) {
+                if (nick_node != null) stanza_node.sub_nodes.remove(nick_node);
+                return;
+            }
             if (nick_node == null) {
                 nick_node = new StanzaNode.build(NODE_NICK, NS_URI);
                 stanza_node.put_node(nick_node);
             }
+            nick_node.sub_nodes.clear();
             nick_node.put_node(new StanzaNode.text(value));
         }
     }
@@ -61,13 +66,20 @@ public class Conference : Object {
         }
     }
 
-    public Conference.from_stanza_node(StanzaNode stanza_node) {
-        this.stanza_node = stanza_node;
-    }
-
     public Conference(string jid) {
         this.stanza_node = new StanzaNode.build("conference", NS_URI);
         this.jid = jid;
+    }
+
+    public static Conference? create_from_stanza_node(StanzaNode stanza_node) {
+        if (stanza_node.get_attribute(ATTRIBUTE_JID) != null) {
+            return new Conference.from_stanza_node(stanza_node);
+        }
+        return null;
+    }
+
+    private Conference.from_stanza_node(StanzaNode stanza_node) {
+        this.stanza_node = stanza_node;
     }
 }
 

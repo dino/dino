@@ -44,7 +44,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         accounts_stack.set_visible_child_name("label");
         account_label.label = account.bare_jid.to_string();
         jid_entry.text = conference.jid;
-        nick_entry.text = conference.nick;
+        nick_entry.text = conference.nick ?? "";
         autojoin_checkbutton.active = conference.autojoin;
         alias_entry.text = conference.name;
     }
@@ -60,14 +60,13 @@ protected class AddGroupchatDialog : Gtk.Dialog {
 
     private bool check_ok() {
         Jid? parsed_jid = Jid.parse(jid_entry.text);
-        ok_button.sensitive = parsed_jid != null && parsed_jid.localpart != null && parsed_jid.resourcepart == null &&
-            nick_entry.text != "" && alias_entry.text != null;
+        ok_button.sensitive = parsed_jid != null && parsed_jid.localpart != null && parsed_jid.resourcepart == null;
         return false;
     }
 
     private void on_ok_button_clicked() {
         Xmpp.Xep.Bookmarks.Conference conference = new Xmpp.Xep.Bookmarks.Conference(jid_entry.text);
-        conference.nick = nick_entry.text;
+        conference.nick = nick_entry.text != "" ? nick_entry.text : null;
         conference.name = alias_entry.text;
         conference.autojoin = autojoin_checkbutton.active;
         if (edit_confrence == null) {
