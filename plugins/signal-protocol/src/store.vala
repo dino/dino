@@ -142,9 +142,9 @@ public class Store : Object {
         return 0;
     }
 
-    static int ss_load_session_func(out Buffer buffer, Address address, void* user_data) {
+    static int ss_load_session_func(out Buffer? buffer, Address address, void* user_data) {
         Store store = (Store) user_data;
-        uint8[] res = null;
+        uint8[]? res = null;
         try {
             res = store.session_store.load_session(address);
         } catch (Error e) {
@@ -155,12 +155,12 @@ public class Store : Object {
             buffer = null;
             return 0;
         }
-        buffer = new Buffer.from(res);
+        buffer = new Buffer.from((!)res);
         if (buffer == null) return ErrorCode.NOMEM;
         return 1;
     }
 
-    static int ss_get_sub_device_sessions_func(out IntList sessions, char[] name, void* user_data) {
+    static int ss_get_sub_device_sessions_func(out IntList? sessions, char[] name, void* user_data) {
         Store store = (Store) user_data;
         try {
             sessions = store.session_store.get_sub_device_sessions(carr_to_string(name));
@@ -206,9 +206,9 @@ public class Store : Object {
         return 0;
     }
 
-    static int pks_load_pre_key(out Buffer record, uint32 pre_key_id, void* user_data) {
+    static int pks_load_pre_key(out Buffer? record, uint32 pre_key_id, void* user_data) {
         Store store = (Store) user_data;
-        uint8[] res = null;
+        uint8[]? res = null;
         try {
             res = store.pre_key_store.load_pre_key(pre_key_id);
         } catch (Error e) {
@@ -219,7 +219,7 @@ public class Store : Object {
             record = new Buffer(0);
             return 0;
         }
-        record = new Buffer.from(res);
+        record = new Buffer.from((!)res);
         if (record == null) return ErrorCode.NOMEM;
         return 1;
     }
@@ -251,9 +251,9 @@ public class Store : Object {
         return 0;
     }
 
-    static int spks_load_signed_pre_key(out Buffer record, uint32 pre_key_id, void* user_data) {
+    static int spks_load_signed_pre_key(out Buffer? record, uint32 pre_key_id, void* user_data) {
         Store store = (Store) user_data;
-        uint8[] res = null;
+        uint8[]? res = null;
         try {
             res = store.signed_pre_key_store.load_signed_pre_key(pre_key_id);
         } catch (Error e) {
@@ -264,7 +264,7 @@ public class Store : Object {
             record = new Buffer(0);
             return 0;
         }
-        record = new Buffer.from(res);
+        record = new Buffer.from((!)res);
         if (record == null) return ErrorCode.NOMEM;
         return 1;
     }

@@ -12,8 +12,8 @@ public class Database : Qlite.Database {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> account_id = new Column.Integer("account_id") { unique = true, not_null = true };
         public Column<int> device_id = new Column.Integer("device_id") { not_null = true };
-        public Column<string> identity_key_private_base64 = new Column.Text("identity_key_private_base64") { not_null = true };
-        public Column<string> identity_key_public_base64 = new Column.Text("identity_key_public_base64") { not_null = true };
+        public Column<string> identity_key_private_base64 = new Column.NonNullText("identity_key_private_base64");
+        public Column<string> identity_key_public_base64 = new Column.NonNullText("identity_key_public_base64");
 
         internal IdentityTable(Database db) {
             base(db, "identity");
@@ -24,7 +24,7 @@ public class Database : Qlite.Database {
     public class SignedPreKeyTable : Table {
         public Column<int> identity_id = new Column.Integer("identity_id") { not_null = true };
         public Column<int> signed_pre_key_id = new Column.Integer("signed_pre_key_id") { not_null = true };
-        public Column<string> record_base64 = new Column.Text("record_base64") { not_null = true };
+        public Column<string> record_base64 = new Column.NonNullText("record_base64");
 
         internal SignedPreKeyTable(Database db) {
             base(db, "signed_pre_key");
@@ -36,7 +36,7 @@ public class Database : Qlite.Database {
     public class PreKeyTable : Table {
         public Column<int> identity_id = new Column.Integer("identity_id") { not_null = true };
         public Column<int> pre_key_id = new Column.Integer("pre_key_id") { not_null = true };
-        public Column<string> record_base64 = new Column.Text("record_base64") { not_null = true };
+        public Column<string> record_base64 = new Column.NonNullText("record_base64");
 
         internal PreKeyTable(Database db) {
             base(db, "pre_key");
@@ -47,9 +47,9 @@ public class Database : Qlite.Database {
 
     public class SessionTable : Table {
         public Column<int> identity_id = new Column.Integer("identity_id") { not_null = true };
-        public Column<string> address_name = new Column.Text("name") { not_null = true };
+        public Column<string> address_name = new Column.NonNullText("name");
         public Column<int> device_id = new Column.Integer("device_id") { not_null = true };
-        public Column<string> record_base64 = new Column.Text("record_base64") { not_null = true };
+        public Column<string> record_base64 = new Column.NonNullText("record_base64");
 
         internal SessionTable(Database db) {
             base(db, "session");

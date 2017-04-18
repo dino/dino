@@ -15,11 +15,10 @@ private class BackedSessionStore : SimpleSessionStore {
 
     private void init() {
         try {
-            Address addr = new Address();
             foreach (Row row in db.session.select().with(db.session.identity_id, "=", identity_id)) {
-                addr.name = row[db.session.address_name];
-                addr.device_id = row[db.session.device_id];
+                Address addr = new Address(row[db.session.address_name], row[db.session.device_id]);
                 store_session(addr, Base64.decode(row[db.session.record_base64]));
+                addr.device_id = 0;
             }
         } catch (Error e) {
             print(@"OMEMO: Error while initializing session store: $(e.message)\n");

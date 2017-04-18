@@ -9,21 +9,22 @@ public class Bundle {
 
     public Bundle(StanzaNode? node) {
         this.node = node;
+        assert(Plugin.ensure_context());
     }
 
     public int32 signed_pre_key_id { owned get {
         if (node == null) return -1;
-        string id = node.get_deep_attribute("signedPreKeyPublic", "signedPreKeyId");
+        string? id = ((!)node).get_deep_attribute("signedPreKeyPublic", "signedPreKeyId");
         if (id == null) return -1;
-        return int.parse(id);
+        return int.parse((!)id);
     }}
 
     public ECPublicKey? signed_pre_key { owned get {
         if (node == null) return null;
-        string? key = node.get_deep_string_content("signedPreKeyPublic");
+        string? key = ((!)node).get_deep_string_content("signedPreKeyPublic");
         if (key == null) return null;
         try {
-            return Plugin.context.decode_public_key(Base64.decode(key));
+            return Plugin.get_context().decode_public_key(Base64.decode((!)key));
         } catch (Error e) {
             return null;
         }
@@ -31,17 +32,17 @@ public class Bundle {
 
     public uint8[]? signed_pre_key_signature { owned get {
         if (node == null) return null;
-        string? sig = node.get_deep_string_content("signedPreKeySignature");
+        string? sig = ((!)node).get_deep_string_content("signedPreKeySignature");
         if (sig == null) return null;
-        return Base64.decode(sig);
+        return Base64.decode((!)sig);
     }}
 
     public ECPublicKey? identity_key { owned get {
         if (node == null) return null;
-        string? key = node.get_deep_string_content("identityKey");
+        string? key = ((!)node).get_deep_string_content("identityKey");
         if (key == null) return null;
         try {
-            return Plugin.context.decode_public_key(Base64.decode(key));
+            return Plugin.get_context().decode_public_key(Base64.decode((!)key));
         } catch (Error e) {
             return null;
         }
@@ -49,9 +50,9 @@ public class Bundle {
 
     public ArrayList<PreKey> pre_keys { owned get {
         ArrayList<PreKey> list = new ArrayList<PreKey>();
-        if (node == null || node.get_subnode("prekeys") == null) return list;
-        node.get_deep_subnodes("prekeys", "preKeyPublic")
-                .filter((node) => node.get_attribute("preKeyId") != null)
+        if (node == null || ((!)node).get_subnode("prekeys") == null) return list;
+        ((!)node).get_deep_subnodes("prekeys", "preKeyPublic")
+                .filter((node) => ((!)node).get_attribute("preKeyId") != null)
                 .map<PreKey>(PreKey.create)
                 .foreach((key) => list.add(key));
         return list;
@@ -76,7 +77,7 @@ public class Bundle {
             string? key = node.get_string_content();
             if (key == null) return null;
             try {
-                return Plugin.context.decode_public_key(Base64.decode(key));
+                return Plugin.get_context().decode_public_key(Base64.decode((!)key));
             } catch (Error e) {
                 return null;
             }

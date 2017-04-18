@@ -51,7 +51,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "signal_type_base", ref_function="signal_type_ref", ref_function_void=true, unref_function="signal_type_unref", cheader_filename="signal_protocol_types.h,signal_helper.h")]
+    [CCode (cname = "signal_type_base", ref_function="signal_type_ref_vapi", unref_function="signal_type_unref_vapi", cheader_filename="signal_protocol_types.h,signal_helper.h")]
     public class TypeBase {
     }
 
@@ -103,8 +103,8 @@ namespace Signal {
     [Compact]
     [CCode (cname = "session_pre_key_bundle", cprefix = "session_pre_key_bundle_", cheader_filename = "session_pre_key.h")]
     public class PreKeyBundle : TypeBase {
-        public static int create(out PreKeyBundle bundle, uint32 registration_id, int device_id, uint32 pre_key_id, ECPublicKey pre_key_public,
-                uint32 signed_pre_key_id, ECPublicKey signed_pre_key_public, uint8[] signed_pre_key_signature, ECPublicKey identity_key);
+        public static int create(out PreKeyBundle bundle, uint32 registration_id, int device_id, uint32 pre_key_id, ECPublicKey? pre_key_public,
+                uint32 signed_pre_key_id, ECPublicKey? signed_pre_key_public, uint8[]? signed_pre_key_signature, ECPublicKey? identity_key);
         public uint32 registration_id { get; }
         public int device_id { get; }
         public uint32 pre_key_id { get; }
@@ -192,9 +192,8 @@ namespace Signal {
     [Compact]
     [CCode (cname = "signal_protocol_address", cprefix = "signal_protocol_address_", cheader_filename = "signal_protocol.h,signal_helper.h")]
     public class Address {
-        public Address();
-        public int32 device_id;
-
+        public Address(string name, int32 device_id);
+        public int32 device_id { get; set; }
         public string name { owned get; set; }
     }
 

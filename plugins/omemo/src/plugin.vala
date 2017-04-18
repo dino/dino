@@ -5,7 +5,23 @@ namespace Dino.Plugins.Omemo {
 
 public class Plugin : RootInterface, Object {
     public const bool DEBUG = false;
-    public static Signal.Context context;
+    private static Signal.Context? _context;
+    public static Signal.Context get_context() {
+        assert(_context != null);
+        return (!)_context;
+    }
+    public static bool ensure_context() {
+        lock(_context) {
+            try {
+                if (_context == null) {
+                    _context = new Signal.Context(DEBUG);
+                }
+                return true;
+            } catch (Error e) {
+                return false;
+            }
+        }
+    }
 
     public Dino.Application app;
     public Database db;
@@ -14,7 +30,7 @@ public class Plugin : RootInterface, Object {
 
     public void registered(Dino.Application app) {
         try {
-            context = new Signal.Context(DEBUG);
+            ensure_context();
             this.app = app;
             this.db = new Database(Path.build_filename(Application.get_storage_dir(), "omemo.db"));
             this.list_entry = new EncryptionListEntry(this);
@@ -26,7 +42,13 @@ public class Plugin : RootInterface, Object {
             });
             Manager.start(this.app.stream_interaction, db);
 
-            internationalize(GETTEXT_PACKAGE, app.search_path_generator.get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR));
+            string locales_dir;
+            if (app.search_path_generator != null) {
+                locales_dir = ((!)app.search_path_generator).get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR);
+            } else {
+                locales_dir = LOCALE_INSTALL_DIR;
+            }
+            internationalize(GETTEXT_PACKAGE, locales_dir);
         } catch (Error e) {
             print(@"Error initializing OMEMO: $(e.message)\n");
         }

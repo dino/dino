@@ -18,12 +18,8 @@ class SessionBuilderTest : Gee.TestCase {
     public override void set_up() {
         try {
             global_context = new Context();
-            alice_address = new Address();
-            alice_address.name = "+14151111111";
-            alice_address.device_id = 1;
-            bob_address = new Address();
-            bob_address.name = "+14152222222";
-            bob_address.device_id = 1;
+            alice_address = new Address("+14151111111", 1);
+            bob_address = new Address("+14152222222", 1);
         } catch (Error e) {
             fail_if_reached(@"Unexpected error: $(e.message)");
         }

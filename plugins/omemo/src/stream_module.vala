@@ -29,25 +29,26 @@ public class StreamModule : XmppStreamModule {
 
     public EncryptState encrypt(Message.Stanza message, string self_bare_jid) {
         EncryptState status = new EncryptState();
-        if (Plugin.context == null) return status;
+        if (!Plugin.ensure_context()) return status;
+        if (message.to == null) return status;
         try {
-            string name = get_bare_jid(message.to);
-            if (device_lists.get(self_bare_jid) == null) return status;
+            string name = get_bare_jid((!)message.to);
+            if (!device_lists.has_key(self_bare_jid)) return status;
             status.own_list = true;
             status.own_devices = device_lists.get(self_bare_jid).size;
-            if (device_lists.get(name) == null) return status;
+            if (!device_lists.has_key(name)) return status;
             status.other_list = true;
             status.other_devices = device_lists.get(name).size;
             if (status.own_devices == 0 || status.other_devices == 0) return status;
 
             uint8[] key = new uint8[16];
-            Plugin.context.randomize(key);
+            Plugin.get_context().randomize(key);
             uint8[] iv = new uint8[16];
-            Plugin.context.randomize(iv);
+            Plugin.get_context().randomize(iv);
 
             uint8[] ciphertext = aes_encrypt(Cipher.AES_GCM_NOPADDING, key, iv, message.body.data);
 
-            StanzaNode header = null;
+            StanzaNode header;
             StanzaNode encrypted = new StanzaNode.build("encrypted", NS_URI).add_self_xmlns()
                     .put_node(header = new StanzaNode.build("header", NS_URI)
                         .put_attribute("sid", store.local_registration_id.to_string())
@@ -56,8 +57,7 @@ public class StreamModule : XmppStreamModule {
                     .put_node(new StanzaNode.build("payload", NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
 
-            Address address = new Address();
-            address.name = name;
+            Address address = new Address(name, 0);
             foreach(int32 device_id in device_lists[name]) {
                 if (is_ignored_device(name, device_id)) {
                     status.other_lost++;
@@ -114,57 +114,60 @@ public class StreamModule : XmppStreamModule {
     public override void attach(XmppStream stream) {
         Message.Module.require(stream);
         Pubsub.Module.require(stream);
-        if (Plugin.context == null) return;
+        if (!Plugin.ensure_context()) return;
 
-        this.store = Plugin.context.create_store();
+        this.store = Plugin.get_context().create_store();
         store_created(store);
         stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(on_pre_received_message);
-        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node, obj) => (obj as StreamModule).on_devicelist(stream, jid, id, node), this);
+        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node, obj) => ((StreamModule)obj).on_devicelist(stream, jid, id, node), this);
     }
 
     private void on_pre_received_message(XmppStream stream, Message.Stanza message) {
-        StanzaNode? encrypted = message.stanza.get_subnode("encrypted", NS_URI);
-        if (encrypted == null || MessageFlag.get_flag(message) != null) return;
+        StanzaNode? _encrypted = message.stanza.get_subnode("encrypted", NS_URI);
+        if (_encrypted == null || MessageFlag.get_flag(message) != null || message.from == null) return;
+        StanzaNode encrypted = (!)_encrypted;
+        if (!Plugin.ensure_context()) return;
         MessageFlag flag = new MessageFlag();
         message.add_flag(flag);
-        StanzaNode? header = encrypted.get_subnode("header");
-        if (header == null || header.get_attribute_int("sid") <= 0) return;
+        StanzaNode? _header = encrypted.get_subnode("header");
+        if (_header == null) return;
+        StanzaNode header = (!)_header;
+        if (header.get_attribute_int("sid") <= 0) return;
         foreach (StanzaNode key_node in header.get_subnodes("key")) {
             if (key_node.get_attribute_int("rid") == store.local_registration_id) {
                 try {
-                    uint8[] key = null;
-                    uint8[] ciphertext = Base64.decode(encrypted.get_subnode("payload").get_string_content());
-                    uint8[] iv = Base64.decode(header.get_subnode("iv").get_string_content());
-                    Address address = new Address();
-                    address.name = get_bare_jid(message.from);
-                    address.device_id = header.get_attribute_int("sid");
+                    string? payload = encrypted.get_deep_string_content("payload");
+                    string? iv_node = header.get_deep_string_content("iv");
+                    string? key_node_content = key_node.get_string_content();
+                    if (payload == null || iv_node == null || key_node_content == null) continue;
+                    uint8[] key;
+                    uint8[] ciphertext = Base64.decode((!)payload);
+                    uint8[] iv = Base64.decode((!)iv_node);
+                    Address address = new Address(get_bare_jid((!)message.from), header.get_attribute_int("sid"));
                     if (key_node.get_attribute_bool("prekey")) {
-                        PreKeySignalMessage msg = Plugin.context.deserialize_pre_key_signal_message(Base64.decode(key_node.get_string_content()));
+                        PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
                         SessionCipher cipher = store.create_session_cipher(address);
                         key = cipher.decrypt_pre_key_signal_message(msg);
                     } else {
-                        SignalMessage msg = Plugin.context.deserialize_signal_message(Base64.decode(key_node.get_string_content()));
+                        SignalMessage msg = Plugin.get_context().deserialize_signal_message(Base64.decode((!)key_node_content));
                         SessionCipher cipher = store.create_session_cipher(address);
                         key = cipher.decrypt_signal_message(msg);
                     }
                     address.device_id = 0; // TODO: Hack to have address obj live longer
 
-
-                    if (key != null && ciphertext != null && iv != null) {
-                        if (key.length >= 32) {
-                            int authtaglength = key.length - 16;
-                            uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
-                            uint8[] new_key = new uint8[16];
-                            Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
-                            Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
-                            Memory.copy(new_key, key, 16);
-                            ciphertext = new_ciphertext;
-                            key = new_key;
-                        }
-
-                        message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
-                        flag.decrypted = true;
+                    if (key.length >= 32) {
+                        int authtaglength = key.length - 16;
+                        uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
+                        uint8[] new_key = new uint8[16];
+                        Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
+                        Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
+                        Memory.copy(new_key, key, 16);
+                        ciphertext = new_ciphertext;
+                        key = new_key;
                     }
+
+                    message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
+                    flag.decrypted = true;
                 } catch (Error e) {
                     if (Plugin.DEBUG) print(@"OMEMO: Signal error while decrypting message: $(e.message)\n");
                 }
@@ -182,17 +185,15 @@ public class StreamModule : XmppStreamModule {
     public void request_user_devicelist(XmppStream stream, string jid) {
         if (active_devicelist_requests.add(jid)) {
             if (Plugin.DEBUG) print(@"OMEMO: requesting device list for $jid\n");
-            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node, obj) => (obj as StreamModule).on_devicelist(stream, jid, id ?? "", node), this);
+            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node, obj) => ((StreamModule)obj).on_devicelist(stream, jid, id ?? "", node), this);
         }
     }
 
     public void on_devicelist(XmppStream stream, string jid, string id, StanzaNode? node_) {
-        StanzaNode? node = node_;
-        if (jid == get_bare_jid(stream.get_flag(Bind.Flag.IDENTITY).my_jid) && store.local_registration_id != 0) {
-            if (node == null) {
-                node = new StanzaNode.build("list", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("device", NS_URI));
-            }
-
+        StanzaNode node = node_ ?? new StanzaNode.build("list", NS_URI).add_self_xmlns();
+        string? my_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid;
+        if (my_jid == null) return;
+        if (jid == get_bare_jid((!)my_jid) && store.local_registration_id != 0) {
             bool am_on_devicelist = false;
             foreach (StanzaNode device_node in node.get_subnodes("device")) {
                 int device_id = device_node.get_attribute_int("id");
@@ -223,8 +224,7 @@ public class StreamModule : XmppStreamModule {
             // TODO: manually request a device list
             return;
         }
-        Address address = new Address();
-        address.name = bare_jid;
+        Address address = new Address(bare_jid, 0);
         foreach(int32 device_id in device_lists[bare_jid]) {
             if (!is_ignored_device(bare_jid, device_id)) {
                 address.device_id = device_id;
@@ -293,9 +293,7 @@ public class StreamModule : XmppStreamModule {
             if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_key_id < 0 || pre_key == null) {
                 fail = true;
             } else {
-                Address address = new Address();
-                address.name = jid;
-                address.device_id = device_id;
+                Address address = new Address(jid, device_id);
                 try {
                     if (store.contains_session(address)) {
                         return;
@@ -322,13 +320,13 @@ public class StreamModule : XmppStreamModule {
     }
 
     private static void on_self_bundle_result(XmppStream stream, string jid, string? id, StanzaNode? node, Object? storage) {
+        if (!Plugin.ensure_context()) return;
         Store store = (Store)storage;
         Map<int, ECPublicKey> keys = new HashMap<int, ECPublicKey>();
-        ECPublicKey identity_key = null;
-        IdentityKeyPair identity_key_pair = null;
+        ECPublicKey? identity_key = null;
         int32 signed_pre_key_id = -1;
-        ECPublicKey signed_pre_key = null;
-        SignedPreKeyRecord signed_pre_key_record = null;
+        ECPublicKey? signed_pre_key = null;
+        SignedPreKeyRecord? signed_pre_key_record = null;
         bool changed = false;
         if (node == null) {
             identity_key = store.identity_key_pair.public;
@@ -336,7 +334,10 @@ public class StreamModule : XmppStreamModule {
         } else {
             Bundle bundle = new Bundle(node);
             foreach (Bundle.PreKey prekey in bundle.pre_keys) {
-                keys[prekey.key_id] = prekey.key;
+                ECPublicKey? key = prekey.key;
+                if (key != null) {
+                    keys[prekey.key_id] = (!)key;
+                }
             }
             identity_key = bundle.identity_key;
             signed_pre_key_id = bundle.signed_pre_key_id;;
@@ -345,16 +346,16 @@ public class StreamModule : XmppStreamModule {
 
         try {
             // Validate IdentityKey
-            if (store.identity_key_pair.public.compare(identity_key) != 0) {
+            if (identity_key == null || store.identity_key_pair.public.compare((!)identity_key) != 0) {
                 changed = true;
             }
-            identity_key_pair = store.identity_key_pair;
+            IdentityKeyPair identity_key_pair = store.identity_key_pair;
 
             // Validate signedPreKeyRecord + ID
-            if (signed_pre_key_id == -1 || !store.contains_signed_pre_key(signed_pre_key_id) || store.load_signed_pre_key(signed_pre_key_id).key_pair.public.compare(signed_pre_key) != 0) {
+            if (signed_pre_key == null || signed_pre_key_id == -1 || !store.contains_signed_pre_key(signed_pre_key_id) || store.load_signed_pre_key(signed_pre_key_id).key_pair.public.compare((!)signed_pre_key) != 0) {
                 signed_pre_key_id = Random.int_range(1, int32.MAX); // TODO: No random, use ordered number
-                signed_pre_key_record = Plugin.context.generate_signed_pre_key(identity_key_pair, signed_pre_key_id);
-                store.store_signed_pre_key(signed_pre_key_record);
+                signed_pre_key_record = Plugin.get_context().generate_signed_pre_key(identity_key_pair, signed_pre_key_id);
+                store.store_signed_pre_key((!)signed_pre_key_record);
                 changed = true;
             } else {
                 signed_pre_key_record = store.load_signed_pre_key(signed_pre_key_id);
@@ -373,7 +374,7 @@ public class StreamModule : XmppStreamModule {
             int new_keys = NUM_KEYS_TO_PUBLISH - pre_key_records.size;
             if (new_keys > 0) {
                 int32 next_id = Random.int_range(1, int32.MAX); // TODO: No random, use ordered number
-                Set<PreKeyRecord> new_records = Plugin.context.generate_pre_keys((uint)next_id, (uint)new_keys);
+                Set<PreKeyRecord> new_records = Plugin.get_context().generate_pre_keys((uint)next_id, (uint)new_keys);
                 pre_key_records.add_all(new_records);
                 foreach (PreKeyRecord record in new_records) {
                     store.store_pre_key(record);
@@ -382,7 +383,7 @@ public class StreamModule : XmppStreamModule {
             }
 
             if (changed) {
-                publish_bundles(stream, signed_pre_key_record, identity_key_pair, pre_key_records, (int32) store.local_registration_id);
+                publish_bundles(stream, (!)signed_pre_key_record, identity_key_pair, pre_key_records, (int32) store.local_registration_id);
             }
         } catch (Error e) {
             if (Plugin.DEBUG) print(@"Unexpected error while publishing bundle: $(e.message)\n");

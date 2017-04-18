@@ -34,7 +34,7 @@ public class AccountSettingWidget : Plugins.AccountSettingsWidget, Box {
             if (row == null) {
                 fingerprint.set_markup("%s\n<span font='8'>%s</span>".printf(_("Own fingerprint"), _("Will be generated on first connect")));
             } else {
-                uint8[] arr = Base64.decode(row[plugin.db.identity.identity_key_public_base64]);
+                uint8[] arr = Base64.decode(((!)row)[plugin.db.identity.identity_key_public_base64]);
                 arr = arr[1:arr.length];
                 string res = "";
                 foreach (uint8 i in arr) {

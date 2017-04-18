@@ -7,10 +7,8 @@ public class SimpleSessionStore : SessionStore {
     private Map<string, ArrayList<SessionStore.Session>> session_map = new HashMap<string, ArrayList<SessionStore.Session>>();
 
     public override uint8[]? load_session(Address address) throws Error {
-        string name = address.name;
-        if (name == null) return null;
-        if (session_map.has_key(name)) {
-            foreach (SessionStore.Session session in session_map[name]) {
+        if (session_map.has_key(address.name)) {
+            foreach (SessionStore.Session session in session_map[address.name]) {
                 if (session.device_id == address.device_id) return session.record;
             }
         }

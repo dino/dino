@@ -9,10 +9,14 @@
 
 signal_type_base* signal_type_ref_vapi(signal_type_base* what);
 signal_type_base* signal_type_unref_vapi(signal_type_base* what);
-signal_protocol_address* signal_protocol_address_new();
+
+signal_protocol_address* signal_protocol_address_new(const gchar* name, int32_t device_id);
 void signal_protocol_address_free(signal_protocol_address* ptr);
 void signal_protocol_address_set_name(signal_protocol_address* self, const gchar* name);
 gchar* signal_protocol_address_get_name(signal_protocol_address* self);
+void signal_protocol_address_set_device_id(signal_protocol_address* self, int32_t device_id);
+int32_t signal_protocol_address_get_device_id(signal_protocol_address* self);
+
 session_pre_key* session_pre_key_new(uint32_t pre_key_id, ec_key_pair* pair, int* err);
 session_signed_pre_key* session_signed_pre_key_new(uint32_t id, uint64_t timestamp, ec_key_pair* pair, uint8_t* key, int key_len, int* err);
 
