@@ -47,12 +47,16 @@ public class AvatarManager : StreamInteractionModule, Object {
     }
 
     private Pixbuf? get_avatar_by_hash(string hash) {
-        if (cached_pixbuf.has_key(hash)) {
-            return cached_pixbuf[hash];
+        lock (cached_pixbuf) {
+            if (cached_pixbuf.has_key(hash)) {
+                return cached_pixbuf[hash];
+            }
         }
         Pixbuf? image = avatar_storage.get_image(hash);
         if (image != null) {
-            cached_pixbuf[hash] = image;
+            lock (cached_pixbuf) {
+                cached_pixbuf[hash] = image;
+            }
         }
         return image;
     }
@@ -62,13 +66,17 @@ public class AvatarManager : StreamInteractionModule, Object {
         if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
             jid_ = jid.bare_jid;
         }
-        string? user_avatars_id = user_avatars[jid_];
-        if (user_avatars_id != null) {
-            return get_avatar_by_hash(user_avatars_id);
+        lock(user_avatars) {
+            string? user_avatars_id = user_avatars[jid_];
+            if (user_avatars_id != null) {
+                return get_avatar_by_hash(user_avatars_id);
+            }
         }
-        string? vcard_avatars_id = vcard_avatars[jid_];
-        if (vcard_avatars_id != null) {
-            return get_avatar_by_hash(vcard_avatars_id);
+        lock(vcard_avatars) {
+            string? vcard_avatars_id = vcard_avatars[jid_];
+            if (vcard_avatars_id != null) {
+                return get_avatar_by_hash(vcard_avatars_id);
+            }
         }
         return null;
     }
@@ -103,20 +111,26 @@ public class AvatarManager : StreamInteractionModule, Object {
             on_vcard_avatar_received(account, new Jid(jid), id)
         );
 
-        user_avatars = db.get_avatar_hashes(Source.USER_AVATARS);
-        foreach (Jid jid in user_avatars.keys) {
-            on_user_avatar_received(account, jid, user_avatars[jid]);
+        lock (user_avatars) {
+            user_avatars = db.get_avatar_hashes(Source.USER_AVATARS);
+            foreach (Jid jid in user_avatars.keys) {
+                on_user_avatar_received(account, jid, user_avatars[jid]);
+            }
         }
-        vcard_avatars = db.get_avatar_hashes(Source.VCARD);
-        foreach (Jid jid in vcard_avatars.keys) {
-            on_vcard_avatar_received(account, jid, vcard_avatars[jid]);
+        lock (vcard_avatars) {
+            vcard_avatars = db.get_avatar_hashes(Source.VCARD);
+            foreach (Jid jid in vcard_avatars.keys) {
+                on_vcard_avatar_received(account, jid, vcard_avatars[jid]);
+            }
         }
     }
 
     private void on_user_avatar_received(Account account, Jid jid, string id) {
-        if (!user_avatars.has_key(jid) || user_avatars[jid] != id) {
-            user_avatars[jid] = id;
-            db.set_avatar_hash(jid, id, Source.USER_AVATARS);
+        lock (user_avatars) {
+            if (!user_avatars.has_key(jid) || user_avatars[jid] != id) {
+                user_avatars[jid] = id;
+                db.set_avatar_hash(jid, id, Source.USER_AVATARS);
+            }
         }
         Pixbuf? avatar = avatar_storage.get_image(id);
         if (avatar != null) {
@@ -125,10 +139,12 @@ public class AvatarManager : StreamInteractionModule, Object {
     }
 
     private void on_vcard_avatar_received(Account account, Jid jid, string id) {
-        if (!vcard_avatars.has_key(jid) || vcard_avatars[jid] != id) {
-            vcard_avatars[jid] = id;
-            if (!jid.is_full()) { // don't save muc avatars
-                db.set_avatar_hash(jid, id, Source.VCARD);
+        lock (vcard_avatars) {
+            if (!vcard_avatars.has_key(jid) || vcard_avatars[jid] != id) {
+                vcard_avatars[jid] = id;
+                if (!jid.is_full()) { // don't save muc avatars
+                    db.set_avatar_hash(jid, id, Source.VCARD);
+                }
             }
         }
         Pixbuf? avatar = avatar_storage.get_image(id);

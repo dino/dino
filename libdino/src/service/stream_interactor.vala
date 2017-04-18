@@ -9,7 +9,7 @@ public class StreamInteractor {
 
     public signal void account_added(Account account);
     public signal void account_removed(Account account);
-    public signal void stream_negotiated(Account account);
+    public signal void stream_negotiated(Account account, Core.XmppStream stream);
 
     public ModuleManager module_manager;
     public ConnectionManager connection_manager;
@@ -59,7 +59,7 @@ public class StreamInteractor {
 
     private void on_stream_opened(Account account, Core.XmppStream stream) {
         stream.stream_negotiated.connect( (stream) => {
-            stream_negotiated(account);
+            stream_negotiated(account, stream);
         });
     }
 }

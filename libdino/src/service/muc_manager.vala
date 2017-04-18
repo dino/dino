@@ -161,9 +161,8 @@ public class MucManager : StreamInteractionModule, Object {
         });
     }
 
-    private void on_stream_negotiated(Account account) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences, o) => {
+    private void on_stream_negotiated(Account account, Core.XmppStream stream) {
+        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences, o) => {
             Tuple<MucManager, Account> tuple = o as Tuple<MucManager, Account>;
             MucManager outer_ = tuple.a;
             Account account_ = tuple.b;

@@ -3,7 +3,7 @@ public class Dino.Entities.Jid : Object {
     public string domainpart { get; set; }
     public string? resourcepart { get; set; }
 
-    public Jid? bare_jid {
+    public Jid bare_jid {
         owned get { return localpart != null ? new Jid(@"$localpart@$domainpart") : new Jid(domainpart); }
     }
 

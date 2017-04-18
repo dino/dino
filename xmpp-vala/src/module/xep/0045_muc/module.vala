@@ -167,16 +167,16 @@ public class Module : XmppStreamModule {
                         flag.finish_muc_enter(bare_jid, get_resource_part(presence.from));
                     }
                 }
-                string? affiliation = x_node["item", "affiliation"].val;
+                string? affiliation = x_node.get_deep_attribute("item", "affiliation");
                 if (affiliation != null) {
                     received_occupant_affiliation(stream, presence.from, affiliation);
                 }
-                string? jid = x_node["item", "jid"].val;
+                string? jid = x_node.get_deep_attribute("item", "jid");
                 if (jid != null) {
                     flag.set_real_jid(presence.from, jid);
                     received_occupant_jid(stream, presence.from, jid);
                 }
-                string? role = x_node["item", "role"].val;
+                string? role = x_node.get_deep_attribute("item", "role");
                 if (role != null) {
                     received_occupant_role(stream, presence.from, role);
                 }

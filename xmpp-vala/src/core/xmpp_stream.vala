@@ -65,7 +65,7 @@ public class XmppLog {
             }
             if (inner == null) return true;
             foreach (StanzaNode snode in node.get_all_subnodes()) {
-                if (inner.matches(snode)) return true;
+                if (((!)inner).matches(snode)) return true;
             }
             return false;
         }
@@ -78,10 +78,10 @@ public class XmppLog {
     private ArrayList<NodeLogDesc> descs = new ArrayList<NodeLogDesc>();
 
     public XmppLog(string? ident = null, string? desc = null) {
-        this.ident = ident;
-        this.desc = desc;
+        this.ident = ident ?? "";
+        this.desc = desc ?? "";
         this.use_ansi = is_atty(stderr.fileno());
-        while (this.desc != null && this.desc.contains(";")) {
+        while (this.desc.contains(";")) {
             string opt = this.desc.substring(0, this.desc.index_of(";"));
             this.desc = this.desc.substring(opt.length + 1);
             switch (opt) {
@@ -91,7 +91,7 @@ public class XmppLog {
                 case "show-ns": hide_ns = false; break;
             }
         }
-        if (desc != null) {
+        if (desc != "") {
             foreach (string d in this.desc.split("|")) {
                 descs.add(new NodeLogDesc(d));
             }
@@ -99,7 +99,7 @@ public class XmppLog {
     }
 
     public virtual bool should_log_node(StanzaNode node) {
-        if (ident == null || desc == null) return false;
+        if (ident == "" || desc == "") return false;
         if (desc == "all") return true;
         foreach (var desc in descs) {
             if (desc.matches(node)) return true;
@@ -108,7 +108,7 @@ public class XmppLog {
     }
 
     public virtual bool should_log_str(string str) {
-        if (ident == null || desc == null) return false;
+        if (ident == "" || desc == "") return false;
         if (desc == "all") return true;
         foreach (var desc in descs) {
             if (desc.name == "#text") return true;
@@ -158,12 +158,12 @@ public class XmppStream {
     public signal void stream_negotiated(XmppStream stream);
 
     public void connect(string? remote_name = null) throws IOStreamError {
-        if (remote_name != null) this.remote_name = remote_name;
+        if (remote_name != null) this.remote_name = (!)remote_name;
         SocketClient client = new SocketClient();
         try {
             SocketConnection? stream = client.connect(new NetworkService("xmpp-client", "tcp", this.remote_name));
             if (stream == null) throw new IOStreamError.CONNECT("client.connect() returned null");
-            reset_stream(stream);
+            reset_stream((!)stream);
         } catch (Error e) {
             stderr.printf("CONNECTION LOST?\n");
             throw new IOStreamError.CONNECT(e.message);
@@ -172,11 +172,14 @@ public class XmppStream {
     }
 
     public void disconnect() throws IOStreamError {
-        if (writer == null) throw new IOStreamError.DISCONNECT("trying to disconnect, but no stream open");
+        StanzaWriter? writer = this.writer;
+        StanzaReader? reader = this.reader;
+        IOStream? stream = this.stream;
+        if (writer == null || reader == null || stream == null) throw new IOStreamError.DISCONNECT("trying to disconnect, but no stream open");
         log.str("OUT", "</stream:stream>");
-        writer.write.begin("</stream:stream>");
-        reader.cancel();
-        stream.close_async.begin();
+        ((!)writer).write.begin("</stream:stream>");
+        ((!)reader).cancel();
+        ((!)stream).close_async.begin();
     }
 
     public void reset_stream(IOStream stream) {
@@ -195,9 +198,10 @@ public class XmppStream {
     }
 
     public StanzaNode read() throws IOStreamError {
+        StanzaReader? reader = this.reader;
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
-            StanzaNode node = reader.read_node();
+            StanzaNode node = ((!)reader).read_node();
             log.node("IN", node);
             return node;
         } catch (XmlError e) {
@@ -206,10 +210,11 @@ public class XmppStream {
     }
 
     public void write(StanzaNode node) throws IOStreamError {
+        StanzaWriter? writer = this.writer;
         if (writer == null) throw new IOStreamError.WRITE("trying to write, but no stream open");
         try {
             log.node("OUT", node);
-            writer.write_node(node);
+            ((!)writer).write_node(node);
         } catch (XmlError e) {
             throw new IOStreamError.WRITE(e.message);
         }
@@ -230,7 +235,7 @@ public class XmppStream {
     public T? get_flag<T>(FlagIdentity<T>? identity) {
         if (identity == null) return null;
         foreach (var flag in flags) {
-            if (identity.matches(flag)) return identity.cast(flag);
+            if (((!)identity).matches(flag)) return ((!)identity).cast(flag);
         }
         return null;
     }
@@ -254,7 +259,7 @@ public class XmppStream {
     public T? get_module<T>(ModuleIdentity<T>? identity) {
         if (identity == null) return null;
         foreach (var module in modules) {
-            if (identity.matches(module)) return identity.cast(module);
+            if (((!)identity).matches(module)) return ((!)identity).cast(module);
         }
         return null;
     }
@@ -315,10 +320,10 @@ public class XmppStream {
             bool mandatory_outstanding = false;
             bool negotiation_active = false;
             foreach (XmppStreamModule module in modules) {
-                XmppStreamNegotiationModule negotiation_module = module as XmppStreamNegotiationModule;
+                XmppStreamNegotiationModule? negotiation_module = module as XmppStreamNegotiationModule;
                 if (negotiation_module != null) {
-                    if (negotiation_module.negotiation_active(this)) negotiation_active = true;
-                    if (negotiation_module.mandatory_outstanding(this)) mandatory_outstanding = true;
+                    if (((!)negotiation_module).negotiation_active(this)) negotiation_active = true;
+                    if (((!)negotiation_module).mandatory_outstanding(this)) mandatory_outstanding = true;
                 }
             }
             if (!negotiation_active) {
@@ -341,8 +346,10 @@ public class XmppStream {
     }
 
     private StanzaNode read_root() throws IOStreamError {
+        StanzaReader? reader = this.reader;
+        if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
-            StanzaNode node = reader.read_root_node();
+            StanzaNode node = ((!)reader).read_root_node();
             log.node("IN ROOT", node);
             return node;
         } catch (XmlError e) {

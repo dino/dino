@@ -44,9 +44,10 @@ public class StanzaReader {
 
     private void update_buffer() throws XmlError {
         try {
+            InputStream? input = this.input;
             if (input == null) throw new XmlError.EOF("No input stream specified and end of buffer reached.");
             if (cancellable.is_cancelled()) throw new XmlError.EOF("Input stream is canceled.");
-            buffer_fill = (int) input.read(buffer, cancellable);
+            buffer_fill = (int) ((!)input).read(buffer, cancellable);
             if (buffer_fill == 0) throw new XmlError.EOF("End of input stream reached.");
             buffer_pos = 0;
         } catch (GLib.IOError e) {
@@ -140,21 +141,21 @@ public class StanzaReader {
 
     private void handle_stanza_ns(StanzaNode res) throws XmlError {
         foreach (StanzaAttribute attr in res.attributes) {
-            if (attr.name == "xmlns") {
+            if (attr.name == "xmlns" && attr.val != null) {
                 attr.ns_uri = XMLNS_URI;
-                ns_state.set_current(attr.val);
-            } else if (attr.name.contains(":")) {
+                ns_state.set_current((!)attr.val);
+            } else if (attr.name.contains(":") && attr.val != null) {
                 var split = attr.name.split(":");
                 if (split[0] == "xmlns") {
                     attr.ns_uri = XMLNS_URI;
                     attr.name = split[1];
-                    ns_state.add_assoc(attr.val, attr.name);
+                    ns_state.add_assoc((!)attr.val, attr.name);
                 }
             }
         }
         handle_entry_ns(res);
         foreach (StanzaAttribute attr in res.attributes) {
-            handle_entry_ns(attr, res.ns_uri);
+            handle_entry_ns(attr, res.ns_uri ?? ns_state.current_ns_uri);
         }
     }
 
@@ -229,7 +230,7 @@ public class StanzaReader {
                         skip_single();
                         if (desc.contains(":")) {
                             var split = desc.split(":");
-                            assert(split[0] == ns_state.find_name(res.ns_uri));
+                            assert(split[0] == ns_state.find_name((!)res.ns_uri));
                             assert(split[1] == res.name);
                         } else {
                             assert(ns_state.current_ns_uri == res.ns_uri);

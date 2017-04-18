@@ -12,12 +12,17 @@ public abstract class StanzaEntry {
     public string name;
     public string? val;
 
-    public string encoded_val {
+    public string? encoded_val {
         owned get {
-            return val != null ? val.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;") : null;
+            if (val == null) return null;
+            return ((!)val).replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
         }
         set {
-            string tmp = value.replace("&gt;", ">").replace("&lt;", "<").replace("&apos;","'").replace("&quot;","\"");
+            if (value == null) {
+                val = null;
+                return;
+            }
+            string tmp = ((!)value).replace("&gt;", ">").replace("&lt;", "<").replace("&apos;","'").replace("&quot;","\"");
             while (tmp.contains("&#")) {
                 int start = tmp.index_of("&#");
                 int end = tmp.index_of(";", start);
@@ -39,26 +44,20 @@ public abstract class StanzaEntry {
     }
 }
 
-public class NoStanza : StanzaEntry {
-    public NoStanza(string? name) {
-        this.name = name;
-    }
-}
-
 public class StanzaNode : StanzaEntry {
     public ArrayList<StanzaNode> sub_nodes = new ArrayList<StanzaNode>();
     public ArrayList<StanzaAttribute> attributes = new ArrayList<StanzaAttribute>();
     public bool has_nodes = false;
     public bool pseudo = false;
 
-    public StanzaNode() {
+    internal StanzaNode() {
     }
 
     public StanzaNode.build(string name, string ns_uri = "jabber:client", ArrayList<StanzaNode>? nodes = null, ArrayList<StanzaAttribute>? attrs = null) {
         this.ns_uri = ns_uri;
         this.name = name;
-        if (nodes != null) this.sub_nodes.add_all(nodes);
-        if (attrs != null) this.attributes.add_all(attrs);
+        if (nodes != null) this.sub_nodes.add_all((!)nodes);
+        if (attrs != null) this.attributes.add_all((!)attrs);
     }
 
     public StanzaNode.text(string text) {
@@ -72,7 +71,8 @@ public class StanzaNode : StanzaEntry {
     }
 
     public StanzaNode add_self_xmlns() {
-        return put_attribute("xmlns", ns_uri);
+        if (ns_uri == null) return this;
+        return put_attribute("xmlns", (!)ns_uri);
     }
 
     public unowned string? get_attribute(string name, string? ns_uri = null) {
@@ -88,7 +88,7 @@ public class StanzaNode : StanzaEntry {
             }
         }
         foreach (var attr in attributes) {
-            if (attr.ns_uri == _ns_uri && attr.name == _name) return attr.val;
+            if (attr.ns_uri == (!)_ns_uri && attr.name == _name) return attr.val;
         }
         return null;
     }
@@ -96,19 +96,19 @@ public class StanzaNode : StanzaEntry {
     public int get_attribute_int(string name, int def = -1, string? ns_uri = null) {
         string? res = get_attribute(name, ns_uri);
         if (res == null) return def;
-        return int.parse(res);
+        return int.parse((!)res);
     }
 
     public uint get_attribute_uint(string name, uint def = 0, string? ns_uri = null) {
         string? res = get_attribute(name, ns_uri);
         if (res == null) return def;
-        return (uint) long.parse(res);
+        return (uint) long.parse((!)res);
     }
 
     public bool get_attribute_bool(string name, bool def = false, string? ns_uri = null) {
         string? res = get_attribute(name, ns_uri);
         if (res == null) return def;
-        return res.down() == "true" || res == "1";
+        return ((!)res).down() == "true" || res == "1";
     }
 
     public StanzaAttribute? get_attribute_raw(string name, string? ns_uri = null) {
@@ -137,34 +137,26 @@ public class StanzaNode : StanzaEntry {
         return ret;
     }
 
-    public StanzaEntry get(...) {
-        va_list l = va_list();
-        StanzaEntry? res = get_deep_attribute_(va_list.copy(l));
-        if (res != null) return res;
-        res = get_deep_subnode_(va_list.copy(l));
-        if (res != null) return res;
-        return new NoStanza("-");
-    }
-
     public unowned string? get_deep_attribute(...) {
         va_list l = va_list();
-        var res = get_deep_attribute_(va_list.copy(l));
+        StanzaAttribute? res = get_deep_attribute_(va_list.copy(l));
         if (res == null) return null;
-        return res.val;
+        return ((!)res).val;
     }
 
     public StanzaAttribute? get_deep_attribute_(va_list l) {
-        StanzaNode? node = this;
+        StanzaNode node = this;
         string? attribute_name = l.arg();
         if (attribute_name == null) return null;
         while (true) {
             string? s = l.arg();
             if (s == null) break;
-            node = node.get_subnode(attribute_name);
-            if (node == null) return null;
+            StanzaNode? node_tmp = node.get_subnode((!)attribute_name);
+            if (node_tmp == null) return null;
+            node = (!)node_tmp;
             attribute_name = s;
         }
-        return node.get_attribute_raw(attribute_name);
+        return node.get_attribute_raw((!)attribute_name);
     }
 
     public StanzaNode? get_subnode(string name, string? ns_uri = null, bool recurse = false) {
@@ -217,35 +209,35 @@ public class StanzaNode : StanzaEntry {
     }
 
     public StanzaNode? get_deep_subnode_(va_list l) {
-        StanzaNode? node = this;
+        StanzaNode node = this;
         while (true) {
             string? s = l.arg();
             if (s == null) break;
-            node = node.get_subnode(s);
-            if (node == null) return null;
+            StanzaNode? node_tmp = node.get_subnode((!)s);
+            if (node_tmp == null) return null;
+            node = (!)node_tmp;
         }
         return node;
     }
 
     public ArrayList<StanzaNode> get_deep_subnodes(...) {
         va_list l = va_list();
-        var res = get_deep_subnodes_(va_list.copy(l));
-        if (res != null) return res;
-        return new ArrayList<StanzaNode>();
+        return get_deep_subnodes_(va_list.copy(l));
     }
 
     public ArrayList<StanzaNode> get_deep_subnodes_(va_list l) {
-        StanzaNode? node = this;
+        StanzaNode node = this;
         string? subnode_name = l.arg();
         if (subnode_name == null) return new ArrayList<StanzaNode>();
         while (true) {
             string? s = l.arg();
             if (s == null) break;
-            node = node.get_subnode(subnode_name);
-            if (node == null) return new ArrayList<StanzaNode>();
+            StanzaNode? node_tmp = node.get_subnode((!)subnode_name);
+            if (node_tmp == null) return new ArrayList<StanzaNode>();
+            node = (!)node_tmp;
             subnode_name = s;
         }
-        return node.get_subnodes(subnode_name);
+        return node.get_subnodes((!)subnode_name);
     }
 
     public ArrayList<StanzaNode> get_all_subnodes() {
@@ -255,7 +247,7 @@ public class StanzaNode : StanzaEntry {
     public ArrayList<StanzaNode> get_deep_all_subnodes(...) {
         va_list l = va_list();
         StanzaNode? node = get_deep_subnode_(va_list.copy(l));
-        if (node != null) return node.get_all_subnodes();
+        if (node != null) return ((!)node).get_all_subnodes();
         return new ArrayList<StanzaNode>();
     }
 
@@ -272,14 +264,16 @@ public class StanzaNode : StanzaEntry {
     public unowned string? get_deep_string_content(...) {
         va_list l = va_list();
         StanzaNode? node = get_deep_subnode_(va_list.copy(l));
-        if (node != null) return node.get_string_content();
+        if (node != null) return ((!)node).get_string_content();
         return null;
     }
 
     public StanzaNode put_attribute(string name, string val, string? ns_uri = null) {
-        if (name == "xmlns") ns_uri = XMLNS_URI;
-        if (ns_uri == null) ns_uri = this.ns_uri;
-        attributes.add(new StanzaAttribute.build(ns_uri, name, val));
+        string? _ns_uri = ns_uri;
+        if (name == "xmlns") _ns_uri = XMLNS_URI;
+        if (_ns_uri == null) _ns_uri = this.ns_uri;
+        if (_ns_uri == null) return this;
+        attributes.add(new StanzaAttribute.build((!)_ns_uri, name, val));
         return this;
     }
 
@@ -302,75 +296,79 @@ public class StanzaNode : StanzaEntry {
         return this;
     }
 
-    public string to_string(int i = 0) {
+    private const string TAG_START_BEGIN_FORMAT = "%s<{%s}:%s";
+    private const string TAG_START_EMPTY_END = " />\n";
+    private const string TAG_START_CONTENT_END = ">\n";
+    private const string TAG_END_FORMAT = "%s</{%s}:%s>\n";
+    private const string TAG_ANSI_START_BEGIN_FORMAT = "%s"+ANSI_COLOR_YELLOW+"<"+ANSI_COLOR_GRAY+"{%s}:"+ANSI_COLOR_YELLOW+"%s"+ANSI_COLOR_END;
+    private const string TAG_ANSI_START_BEGIN_NO_NS_FORMAT = "%s"+ANSI_COLOR_YELLOW+"<%s"+ANSI_COLOR_END;
+    private const string TAG_ANSI_START_EMPTY_END = ANSI_COLOR_YELLOW+" />"+ANSI_COLOR_END+"\n";
+    private const string TAG_ANSI_START_CONTENT_END = ANSI_COLOR_YELLOW+">"+ANSI_COLOR_END+"\n";
+    private const string TAG_ANSI_END_FORMAT = "%s"+ANSI_COLOR_YELLOW+"</"+ANSI_COLOR_GRAY+"{%s}:"+ANSI_COLOR_YELLOW+"%s>"+ANSI_COLOR_END+"\n";
+    private const string TAG_ANSI_END_NO_NS_FORMAT = "%s"+ANSI_COLOR_YELLOW+"</%s>"+ANSI_COLOR_END+"\n";
+
+    internal string printf(int i, string fmt_start_begin, string start_empty_end, string start_content_end, string fmt_end, string fmt_attr, bool no_ns = false) {
         string indent = string.nfill (i * 2, ' ');
         if (name == "#text") {
-            return @"$indent$val\n";
+            return indent + ((!)val).replace("\n", indent + "\n") + "\n";
         }
         var sb = new StringBuilder();
-        sb.append(@"$indent<{$ns_uri}:$name");
+        if (no_ns) {
+            sb.append_printf(fmt_start_begin, indent, name);
+        } else {
+            sb.append_printf(fmt_start_begin, indent, (!)ns_uri, name);
+        }
         foreach (StanzaAttribute attr in attributes) {
-            sb.append_printf(" %s", attr.to_string());
+            sb.append_printf(" %s", attr.printf(fmt_attr, no_ns));
         }
         if (!has_nodes && sub_nodes.size == 0) {
-            sb.append(" />\n");
+            sb.append(start_empty_end);
         } else {
-            sb.append(">\n");
+            sb.append(start_content_end);
             if (sub_nodes.size != 0) {
                 foreach (StanzaNode subnode in sub_nodes) {
-                    sb.append(subnode.to_string(i+1));
+                    sb.append(subnode.printf(i+1, fmt_start_begin, start_empty_end, start_content_end, fmt_end, fmt_attr, no_ns));
                 }
-                sb.append(@"$indent</{$ns_uri}:$name>\n");
+                if (no_ns) {
+                    sb.append_printf(fmt_end, indent, name);
+                } else {
+                    sb.append_printf(fmt_end, indent, (!)ns_uri, name);
+                }
             }
         }
         return sb.str;
     }
 
+    public string to_string(int i = 0) {
+        return printf(i, TAG_START_BEGIN_FORMAT, TAG_START_EMPTY_END, TAG_START_CONTENT_END, TAG_END_FORMAT, StanzaAttribute.ATTRIBUTE_STRING_FORMAT);
+    }
+
     public string to_ansi_string(bool hide_ns = false, int i = 0) {
-        string indent = string.nfill (i * 2, ' ');
-        if (name == "#text") {
-            return @"$indent$val\n";
-        }
-        var sb = new StringBuilder();
-        sb.append(@"$indent$ANSI_COLOR_YELLOW<");
-        if (!hide_ns) sb.append(@"$ANSI_COLOR_GRAY{$ns_uri}:$ANSI_COLOR_YELLOW");
-        sb.append(@"$name$ANSI_COLOR_END");
-        foreach (StanzaAttribute attr in attributes) {
-            sb.append_printf(" %s", attr.to_ansi_string(hide_ns));
-        }
-        if (!has_nodes && sub_nodes.size == 0) {
-            sb.append(@" $ANSI_COLOR_YELLOW/>$ANSI_COLOR_END\n");
+        if (hide_ns) {
+            return printf(i, TAG_ANSI_START_BEGIN_NO_NS_FORMAT, TAG_ANSI_START_EMPTY_END, TAG_ANSI_START_CONTENT_END, TAG_ANSI_END_NO_NS_FORMAT, StanzaAttribute.ATTRIBUTE_STRING_ANSI_NO_NS_FORMAT, true);
         } else {
-            sb.append(@"$ANSI_COLOR_YELLOW>$ANSI_COLOR_END\n");
-            if (sub_nodes.size != 0) {
-                foreach (StanzaNode subnode in sub_nodes) {
-                    sb.append(subnode.to_ansi_string(hide_ns, i + 1));
-                }
-                sb.append(@"$indent$ANSI_COLOR_YELLOW</");
-                if (!hide_ns) sb.append(@"$ANSI_COLOR_GRAY{$ns_uri}:$ANSI_COLOR_YELLOW");
-                sb.append(@"$name>$ANSI_COLOR_END\n");
-            }
+            return printf(i, TAG_ANSI_START_BEGIN_FORMAT, TAG_ANSI_START_EMPTY_END, TAG_ANSI_START_CONTENT_END, TAG_ANSI_END_FORMAT, StanzaAttribute.ATTRIBUTE_STRING_ANSI_FORMAT);
         }
-        return sb.str;
     }
 
     public string to_xml(NamespaceState? state = null) throws XmlError {
         NamespaceState my_state = state ?? new NamespaceState.for_stanza();
-        if (name == "#text") return @"$encoded_val";
+        if (name == "#text") return val == null ? "" : (!)encoded_val;
         foreach (var xmlns in get_attributes_by_ns_uri (XMLNS_URI)) {
+            if (xmlns.val == null) continue;
             if (xmlns.name == "xmlns") {
-                my_state = new NamespaceState.with_current(my_state, xmlns.val);
+                my_state = new NamespaceState.with_current(my_state, (!)xmlns.val);
             } else {
-                my_state = new NamespaceState.with_assoc(my_state, xmlns.val, xmlns.name);
+                my_state = new NamespaceState.with_assoc(my_state, (!)xmlns.val, xmlns.name);
             }
         }
         var sb = new StringBuilder();
         if (ns_uri == my_state.current_ns_uri) {
-            sb.append(@"<$name");
+            sb.append_printf("<%s", name);
         } else {
-            sb.append_printf("<%s:%s", my_state.find_name (ns_uri), name);
+            sb.append_printf("<%s:%s", my_state.find_name ((!)ns_uri), name);
         }
-        var attr_ns_state = new NamespaceState.with_current(my_state, ns_uri);
+        var attr_ns_state = new NamespaceState.with_current(my_state, (!)ns_uri);
         foreach (StanzaAttribute attr in attributes) {
             sb.append_printf(" %s", attr.to_xml(attr_ns_state));
         }
@@ -385,7 +383,7 @@ public class StanzaNode : StanzaEntry {
                 if (ns_uri == my_state.current_ns_uri) {
                     sb.append(@"</$name>");
                 } else {
-                    sb.append_printf("</%s:%s>", my_state.find_name (ns_uri), name);
+                    sb.append_printf("</%s:%s>", my_state.find_name ((!)ns_uri), name);
                 }
             }
         }

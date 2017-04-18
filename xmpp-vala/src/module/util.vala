@@ -1,5 +1,5 @@
 namespace Xmpp {
-    public string? get_bare_jid(string jid) {
+    public string get_bare_jid(string jid) {
         return jid.split("/")[0];
     }
 
