@@ -113,8 +113,8 @@ int signal_vala_hmac_sha256_update(void *hmac_context, const uint8_t *data, size
 }
 
 int signal_vala_hmac_sha256_final(void *hmac_context, signal_buffer **output, void *user_data) {
-    unsigned int len = gcry_mac_get_algo_maclen(GCRY_MAC_HMAC_SHA256);
-    unsigned char md[len];
+    size_t len = gcry_mac_get_algo_maclen(GCRY_MAC_HMAC_SHA256);
+    uint8_t md[len];
     gcry_mac_hd_t* ctx = hmac_context;
 
     if (gcry_mac_read(*ctx, md, &len)) return SG_ERR_UNKNOWN;
@@ -158,15 +158,16 @@ int signal_vala_sha512_digest_update(void *digest_context, const uint8_t *data, 
 }
 
 int signal_vala_sha512_digest_final(void *digest_context, signal_buffer **output, void *user_data) {
-    unsigned int len = gcry_md_get_algo_dlen(GCRY_MD_SHA512);
+    size_t len = gcry_md_get_algo_dlen(GCRY_MD_SHA512);
     gcry_md_hd_t* ctx = digest_context;
 
-    unsigned char* md = gcry_md_read(*ctx, GCRY_MD_SHA512);
+    uint8_t* md = gcry_md_read(*ctx, GCRY_MD_SHA512);
     if (!md) return SG_ERR_UNKNOWN;
 
     gcry_md_reset(*ctx);
 
     signal_buffer *output_buffer = signal_buffer_create(md, len);
+    free(md);
     if (!output_buffer) return SG_ERR_NOMEM;
 
     *output = output_buffer;
