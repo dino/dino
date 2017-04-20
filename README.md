@@ -9,6 +9,7 @@ Install
 | ------------ | ------ |
 | Arch Linux   | [`dino-git`](https://aur.archlinux.org/packages/dino-git/) (AUR)     |
 | Fedora ≥ 25  | [`dino`](https://copr.fedorainfracloud.org/coprs/larma/dino/) (copr) |
+| Nixos > 17.03 | [`dino`](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/networking/instant-messengers/dino/default.nix)
 
 **Dependencies**
 
