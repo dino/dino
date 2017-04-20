@@ -10,6 +10,23 @@ Install
 | Arch Linux   | [`dino-git`](https://aur.archlinux.org/packages/dino-git/) (AUR)     |
 | Fedora ≥ 25  | [`dino`](https://copr.fedorainfracloud.org/coprs/larma/dino/) (copr) |
 
+**Debian/Ubuntu**
+
+To install Dino under Debian/Ubuntu you must install the following packages:
+```bash
+apt install build-essential cmake valac ninja-build gcc git libgtk-3-dev libgpgme-dev libgee-0.8-dev libgcrypt11-dev libnotify-dev libsqlite3-dev 
+```
+Then do this:
+
+```bash
+cd /opt
+git clone https://github.com/dino/dino
+cd dino/
+./configure
+make
+sudo make install
+```
+
 **Dependencies**
 
 * GLib (≥ 2.38)
