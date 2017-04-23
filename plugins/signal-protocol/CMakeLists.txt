@@ -1,8 +1,3 @@
-add_subdirectory(libsignal-protocol-c EXCLUDE_FROM_ALL)
-set_property(TARGET curve25519 PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET protobuf-c PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET signal-protocol-c PROPERTY POSITION_INDEPENDENT_CODE ON)
-
 find_package(GCrypt REQUIRED)
 find_packages(SIGNAL_PROTOCOL_PACKAGES REQUIRED
     Gee
@@ -30,50 +25,54 @@ GENERATE_HEADER
     signal-protocol-vala
 )
 
-set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src -I${CMAKE_CURRENT_SOURCE_DIR}/src)
-add_definitions(${CFLAGS})
-add_library(signal-protocol-vala ${SIGNAL_PROTOCOL_VALA_C} ${CMAKE_CURRENT_SOURCE_DIR}/src/signal_helper.c)
-add_dependencies(signal-protocol-vala signal-protocol-c)
-target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} gcrypt signal-protocol-c m)
-set_property(TARGET signal-protocol-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-set(SIGNAL_PROTOCOL_C_HEADERS
-    signal_protocol.h
-    signal_protocol_types.h
-    curve.h
-    hkdf.h
-    ratchet.h
-    protocol.h
-    session_state.h
-    session_record.h
-    session_pre_key.h
-    session_builder.h
-    session_cipher.h
-    key_helper.h
-    sender_key.h
-    sender_key_state.h
-    sender_key_record.h
-    group_session_builder.h
-    group_cipher.h
-    fingerprint.h
-    device_consistency.h
-)
-
 set(C_HEADERS_SRC "")
 set(C_HEADERS_TARGET "")
 
-foreach(f ${SIGNAL_PROTOCOL_C_HEADERS})
-    list(APPEND C_HEADERS_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src/${f}")
-    list(APPEND C_HEADERS_TARGET "${CMAKE_BINARY_DIR}/exports/${f}")
-    add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/${f}"
-    COMMAND
-        cp "${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src/${f}" "${CMAKE_BINARY_DIR}/exports/${f}"
-    DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src/${f}"
-    COMMENT
-        Copy header file ${f}
+if((SHARED_SIGNAL_PROTOCOL) OR ($ENV{SHARED_SIGNAL_PROTOCOL}))
+    find_package(SignalProtocol REQUIRED)
+else()
+    add_subdirectory(libsignal-protocol-c EXCLUDE_FROM_ALL)
+    set_property(TARGET curve25519 PROPERTY POSITION_INDEPENDENT_CODE ON)
+    set_property(TARGET protobuf-c PROPERTY POSITION_INDEPENDENT_CODE ON)
+    set_property(TARGET signal-protocol-c PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+    set(SIGNAL_PROTOCOL_C_HEADERS
+        signal_protocol.h
+        signal_protocol_types.h
+        curve.h
+        hkdf.h
+        ratchet.h
+        protocol.h
+        session_state.h
+        session_record.h
+        session_pre_key.h
+        session_builder.h
+        session_cipher.h
+        key_helper.h
+        sender_key.h
+        sender_key_state.h
+        sender_key_record.h
+        group_session_builder.h
+        group_cipher.h
+        fingerprint.h
+        device_consistency.h
     )
-endforeach(f)
+
+    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/exports/signal")
+
+    foreach(f ${SIGNAL_PROTOCOL_C_HEADERS})
+        list(APPEND C_HEADERS_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src/${f}")
+        list(APPEND C_HEADERS_TARGET "${CMAKE_BINARY_DIR}/exports/signal/${f}")
+        add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/signal/${f}"
+        COMMAND
+            cp "${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src/${f}" "${CMAKE_BINARY_DIR}/exports/signal/${f}"
+        DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src/${f}"
+        COMMENT
+            Copy header file signal/${f}
+        )
+    endforeach(f)
+endif()
 
 list(APPEND C_HEADERS_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/signal_helper.h")
 list(APPEND C_HEADERS_TARGET "${CMAKE_BINARY_DIR}/exports/signal_helper.h")
@@ -102,6 +101,13 @@ DEPENDS
     ${C_HEADERS_TARGET}
 )
 
+set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src -I${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_definitions(${CFLAGS})
+add_library(signal-protocol-vala ${SIGNAL_PROTOCOL_VALA_C} ${CMAKE_CURRENT_SOURCE_DIR}/src/signal_helper.c)
+add_dependencies(signal-protocol-vala signal-protocol-vapi)
+target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} gcrypt signal-protocol-c m)
+set_property(TARGET signal-protocol-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 if(BUILD_TESTS)
     vala_precompile(SIGNAL_TEST_VALA_C
     SOURCES
@@ -121,6 +127,6 @@ if(BUILD_TESTS)
 
     set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_BINARY_DIR}/signal-protocol)
     add_executable(signal-protocol-vala-test ${SIGNAL_TEST_VALA_C})
-    add_dependencies(signal-protocol-vala-test signal-protocol-vala signal-protocol-vapi)
+    add_dependencies(signal-protocol-vala-test signal-protocol-vala)
     target_link_libraries(signal-protocol-vala-test signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES})
 endif(BUILD_TESTS)

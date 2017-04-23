@@ -65,6 +65,7 @@ endif(VALA_EXECUTABLE)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Vala
+    FOUND_VAR VALA_FOUND
     REQUIRED_VARS VALA_EXECUTABLE
     VERSION_VAR VALA_VERSION)
 

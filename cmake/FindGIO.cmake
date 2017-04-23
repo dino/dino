@@ -8,13 +8,12 @@ find_pkg_config_with_fallback(GIO
 )
 
 if(GIO_FOUND AND NOT GIO_VERSION)
-    find_package(GLib)
+    # TODO
+    find_package(GLib ${GLib_GLOBAL_VERSION})
     set(GIO_VERSION ${GLib_VERSION})
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GIO
-    FOUND_VAR GIO_FOUND
     REQUIRED_VARS GIO_LIBRARY
-    VERSION_VAR GIO_VERSION
-)
+    VERSION_VAR GIO_VERSION)

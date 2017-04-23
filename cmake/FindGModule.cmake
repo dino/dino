@@ -8,13 +8,12 @@ find_pkg_config_with_fallback(GModule
 )
 
 if(GModule_FOUND AND NOT GModule_VERSION)
-    find_package(GLib)
+    # TODO
+    find_package(GLib ${GLib_GLOBAL_VERSION})
     set(GModule_VERSION ${GLib_VERSION})
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GModule
-    FOUND_VAR GModule_FOUND
     REQUIRED_VARS GModule_LIBRARY
-    VERSION_VAR GModule_VERSION
-)
+    VERSION_VAR GModule_VERSION)

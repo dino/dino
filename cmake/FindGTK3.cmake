@@ -8,14 +8,15 @@ find_pkg_config_with_fallback(GTK3
 )
 
 if(GTK3_FOUND AND NOT GTK3_VERSION)
-    find_path(GTK3_INCLUDE_DIR "gtk/gtk.h" HINTS ${GTK3_INCLUDE_DIRS})
+    find_file(GTK3_VERSION_HEADER "gtk/gtkversion.h" HINTS ${GTK3_INCLUDE_DIRS})
+    mark_as_advanced(GTK3_VERSION_HEADER)
 
-    if(GTK3_INCLUDE_DIR)
-        file(STRINGS "${GTK3_INCLUDE_DIR}/gtk/gtkversion.h" GTK3_MAJOR_VERSION REGEX "^#define GTK_MAJOR_VERSION +\\(?([0-9]+)\\)?$")
+    if(GTK3_VERSION_HEADER)
+        file(STRINGS "${GTK3_VERSION_HEADER}" GTK3_MAJOR_VERSION REGEX "^#define GTK_MAJOR_VERSION +\\(?([0-9]+)\\)?$")
         string(REGEX REPLACE "^#define GTK_MAJOR_VERSION \\(?([0-9]+)\\)?$" "\\1" GTK3_MAJOR_VERSION "${GTK3_MAJOR_VERSION}")
-        file(STRINGS "${GTK3_INCLUDE_DIR}/gtk/gtkversion.h" GTK3_MINOR_VERSION REGEX "^#define GTK_MINOR_VERSION +\\(?([0-9]+)\\)?$")
+        file(STRINGS "${GTK3_VERSION_HEADER}" GTK3_MINOR_VERSION REGEX "^#define GTK_MINOR_VERSION +\\(?([0-9]+)\\)?$")
         string(REGEX REPLACE "^#define GTK_MINOR_VERSION \\(?([0-9]+)\\)?$" "\\1" GTK3_MINOR_VERSION "${GTK3_MINOR_VERSION}")
-        file(STRINGS "${GTK3_INCLUDE_DIR}/gtk/gtkversion.h" GTK3_MICRO_VERSION REGEX "^#define GTK_MICRO_VERSION +\\(?([0-9]+)\\)?$")
+        file(STRINGS "${GTK3_VERSION_HEADER}" GTK3_MICRO_VERSION REGEX "^#define GTK_MICRO_VERSION +\\(?([0-9]+)\\)?$")
         string(REGEX REPLACE "^#define GTK_MICRO_VERSION \\(?([0-9]+)\\)?$" "\\1" GTK3_MICRO_VERSION "${GTK3_MICRO_VERSION}")
         set(GTK3_VERSION "${GTK3_MAJOR_VERSION}.${GTK3_MINOR_VERSION}.${GTK3_MICRO_VERSION}")
         unset(GTK3_MAJOR_VERSION)
@@ -26,7 +27,5 @@ endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GTK3
-    FOUND_VAR GTK3_FOUND
     REQUIRED_VARS GTK3_LIBRARY
-    VERSION_VAR GTK3_VERSION
-)
+    VERSION_VAR GTK3_VERSION)

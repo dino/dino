@@ -66,16 +66,11 @@ COMMENT
     Copy header file dino_i18n.h
 )
 
-add_definitions(${VALA_CFLAGS} -DDINO_PLUGINS_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_PLUGINS_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}")
-add_library(libdino SHARED ${LIBDINO_VALA_C} ${CMAKE_BINARY_DIR}/exports/dino_i18n.h)
-add_dependencies(libdino xmpp-vala-vapi qlite-vapi)
-target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} m)
-set_target_properties(libdino PROPERTIES PREFIX "" VERSION 0.0 SOVERSION 0)
-
 add_custom_target(dino-vapi
 DEPENDS
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.deps
+    ${CMAKE_BINARY_DIR}/exports/dino_i18n.h
 )
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/gschemas.compiled
@@ -90,7 +85,13 @@ DEPENDS
     ${CMAKE_BINARY_DIR}/gschemas.compiled
 )
 
+add_definitions(${VALA_CFLAGS} -DDINO_PLUGINS_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_PLUGINS_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}")
+add_library(libdino SHARED ${LIBDINO_VALA_C} ${CMAKE_BINARY_DIR}/exports/dino_i18n.h)
+add_dependencies(libdino dino-vapi dino-gsettings-schema-compiled)
+target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} m)
+set_target_properties(libdino PROPERTIES PREFIX "" VERSION 0.0 SOVERSION 0)
+
 install(TARGETS libdino ${TARGET_INSTALL})
 install(FILES ${CMAKE_BINARY_DIR}/exports/dino.vapi ${CMAKE_BINARY_DIR}/exports/dino.deps DESTINATION ${VAPI_INSTALL_DIR})
-install(FILES ${CMAKE_BINARY_DIR}/exports/dino.h DESTINATION ${INCLUDE_INSTALL_DIR})
+install(FILES ${CMAKE_BINARY_DIR}/exports/dino.h ${CMAKE_BINARY_DIR}/exports/dino_i18n.h DESTINATION ${INCLUDE_INSTALL_DIR})
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/dino.gschema.xml DESTINATION ${SHARE_INSTALL_PREFIX}/glib-2.0/schemas/)

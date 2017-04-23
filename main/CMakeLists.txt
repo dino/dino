@@ -124,7 +124,7 @@ OPTIONS
 
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET})
-add_dependencies(dino dino-vapi dino-gsettings-schema-compiled ${GETTEXT_PACKAGE}-translations)
+add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})
 
 if(WIN32)

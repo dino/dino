@@ -8,17 +8,16 @@ find_pkg_config_with_fallback(GDKPixbuf2
 )
 
 if(GDKPixbuf2_FOUND AND NOT GDKPixbuf2_VERSION)
-    find_path(GDKPixbuf2_INCLUDE_DIR "gdk-pixbuf/gdk-pixbuf.h" HINTS ${GDKPixbuf2_INCLUDE_DIRS})
+    find_file(GDKPixbuf2_FEATURES_HEADER "gdk-pixbuf/gdk-pixbuf-features.h" HINTS ${GDKPixbuf2_INCLUDE_DIRS})
+    mark_as_advanced(GDKPixbuf2_FEATURES_HEADER)
 
-    if(GDKPixbuf2_INCLUDE_DIR)
-        file(STRINGS "${GDKPixbuf2_INCLUDE_DIR}/gdk-pixbuf/gdk-pixbuf-features.h" GDKPixbuf2_VERSION REGEX "^#define GDK_PIXBUF_VERSION \\\"[^\\\"]+\\\"")
+    if(GDKPixbuf2_FEATURES_HEADER)
+        file(STRINGS "${GDKPixbuf2_FEATURES_HEADER}" GDKPixbuf2_VERSION REGEX "^#define GDK_PIXBUF_VERSION \\\"[^\\\"]+\\\"")
         string(REGEX REPLACE "^#define GDK_PIXBUF_VERSION \\\"([0-9]+)\\.([0-9]+)\\.([0-9]+)\\\"$" "\\1.\\2.\\3" GDKPixbuf2_VERSION "${GDKPixbuf2_VERSION}")
     endif()
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GDKPixbuf2
-    FOUND_VAR GDKPixbuf2_FOUND
     REQUIRED_VARS GDKPixbuf2_LIBRARY
-    VERSION_VAR GDKPixbuf2_VERSION
-)
+    VERSION_VAR GDKPixbuf2_VERSION)

@@ -96,6 +96,9 @@ endif(NOT NO_DEBUG)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+set(GTK3_GLOBAL_VERSION 3.22)
+set(GLib_GLOBAL_VERSION 2.38)
+
 if(NOT VALA_EXECUTABLE)
     unset(VALA_EXECUTABLE CACHE)
 endif()
@@ -109,9 +112,6 @@ endif()
 include(${VALA_USE_FILE})
 include(MultiFind)
 include(GlibCompileResourcesSupport)
-
-set(GTK3_GLOBAL_VERSION 3.22)
-set(GLib_GLOBAL_VERSION 2.38)
 
 set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} --thread --target-glib=${GLib_GLOBAL_VERSION}")
 

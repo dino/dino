@@ -8,13 +8,12 @@ find_pkg_config_with_fallback(GObject
 )
 
 if(GObject_FOUND AND NOT GObject_VERSION)
-    find_package(GLib)
+    # TODO
+    find_package(GLib ${GLib_GLOBAL_VERSION})
     set(GObject_VERSION ${GLib_VERSION})
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GObject
-    FOUND_VAR GObject_FOUND
     REQUIRED_VARS GObject_LIBRARY
-    VERSION_VAR GObject_VERSION
-)
+    VERSION_VAR GObject_VERSION)

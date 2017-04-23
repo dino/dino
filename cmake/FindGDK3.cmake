@@ -8,14 +8,15 @@ find_pkg_config_with_fallback(GDK3
 )
 
 if(GDK3_FOUND AND NOT GDK3_VERSION)
-    find_path(GDK3_INCLUDE_DIR "gdk/gdk.h" HINTS ${GDK3_INCLUDE_DIRS})
+    find_file(GDK3_VERSION_HEADER "gdk/gdkversionmacros.h" HINTS ${GDK3_INCLUDE_DIRS})
+    mark_as_advanced(GDK3_VERSION_HEADER)
 
-    if(GDK3_INCLUDE_DIR)
-        file(STRINGS "${GDK3_INCLUDE_DIR}/gdk/gdkversionmacros.h" GDK3_MAJOR_VERSION REGEX "^#define GDK_MAJOR_VERSION +\\(?([0-9]+)\\)?$")
+    if(GDK3_VERSION_HEADER)
+        file(STRINGS "${GDK3_VERSION_HEADER}" GDK3_MAJOR_VERSION REGEX "^#define GDK_MAJOR_VERSION +\\(?([0-9]+)\\)?$")
         string(REGEX REPLACE "^#define GDK_MAJOR_VERSION \\(?([0-9]+)\\)?$" "\\1" GDK3_MAJOR_VERSION "${GDK3_MAJOR_VERSION}")
-        file(STRINGS "${GDK3_INCLUDE_DIR}/gdk/gdkversionmacros.h" GDK3_MINOR_VERSION REGEX "^#define GDK_MINOR_VERSION +\\(?([0-9]+)\\)?$")
+        file(STRINGS "${GDK3_VERSION_HEADER}" GDK3_MINOR_VERSION REGEX "^#define GDK_MINOR_VERSION +\\(?([0-9]+)\\)?$")
         string(REGEX REPLACE "^#define GDK_MINOR_VERSION \\(?([0-9]+)\\)?$" "\\1" GDK3_MINOR_VERSION "${GDK3_MINOR_VERSION}")
-        file(STRINGS "${GDK3_INCLUDE_DIR}/gdk/gdkversionmacros.h" GDK3_MICRO_VERSION REGEX "^#define GDK_MICRO_VERSION +\\(?([0-9]+)\\)?$")
+        file(STRINGS "${GDK3_VERSION_HEADER}" GDK3_MICRO_VERSION REGEX "^#define GDK_MICRO_VERSION +\\(?([0-9]+)\\)?$")
         string(REGEX REPLACE "^#define GDK_MICRO_VERSION \\(?([0-9]+)\\)?$" "\\1" GDK3_MICRO_VERSION "${GDK3_MICRO_VERSION}")
         set(GDK3_VERSION "${GDK3_MAJOR_VERSION}.${GDK3_MINOR_VERSION}.${GDK3_MICRO_VERSION}")
         unset(GDK3_MAJOR_VERSION)
@@ -25,19 +26,10 @@ if(GDK3_FOUND AND NOT GDK3_VERSION)
 endif()
 
 if(GDK3_FOUND)
-    find_path(GDK3_INCLUDE_DIR "gdk/gdk.h" HINTS ${GDK3_INCLUDE_DIRS})
-    unset(GDK3_WITH_X11)
-
-    if(GDK3_INCLUDE_DIR)
-        if(EXISTS "${GDK3_INCLUDE_DIR}/gdk/gdkx.h")
-            set(GDK3_WITH_X11 yes)
-        endif()
-    endif()
+    find_file(GDK3_WITH_X11 "gdk/gdkx.h" HINTS ${GDK3_INCLUDE_DIRS})
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GDK3
-    FOUND_VAR GDK3_FOUND
     REQUIRED_VARS GDK3_LIBRARY
-    VERSION_VAR GDK3_VERSION
-)
+    VERSION_VAR GDK3_VERSION)

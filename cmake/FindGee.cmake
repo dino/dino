@@ -9,7 +9,5 @@ find_pkg_config_with_fallback(Gee
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Gee
-    FOUND_VAR Gee_FOUND
     REQUIRED_VARS Gee_LIBRARY
-    VERSION_VAR Gee_VERSION
-)
+    VERSION_VAR Gee_VERSION)

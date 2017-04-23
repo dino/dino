@@ -6,17 +6,16 @@ find_pkg_config_with_fallback(SQLite3
 )
 
 if(SQLite3_FOUND AND NOT SQLite3_VERSION)
-    find_path(SQLite3_INCLUDE_DIR "sqlite3.h" HINTS ${SQLite3_INCLUDE_DIRS})
+    find_file(SQLite3_HEADER "sqlite3.h" HINTS ${SQLite3_INCLUDE_DIRS})
+    mark_as_advanced(SQLite3_HEADER)
 
-    if(SQLite3_INCLUDE_DIR)
-        file(STRINGS "${SQLite3_INCLUDE_DIR}/sqlite3.h" SQLite3_VERSION REGEX "^#define SQLITE_VERSION +\\\"[^\\\"]+\\\"")
+    if(SQLite3_HEADER)
+        file(STRINGS "${SQLite3_HEADER}" SQLite3_VERSION REGEX "^#define SQLITE_VERSION +\\\"[^\\\"]+\\\"")
         string(REGEX REPLACE "^#define SQLITE_VERSION +\\\"([0-9]+)\\.([0-9]+)\\.([0-9]+)\\\"$" "\\1.\\2.\\3" SQLite3_VERSION "${SQLite3_VERSION}")
     endif()
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SQLite3
-    FOUND_VAR SQLite3_FOUND
     REQUIRED_VARS SQLite3_LIBRARY
-    VERSION_VAR SQLite3_VERSION
-)
+    VERSION_VAR SQLite3_VERSION)

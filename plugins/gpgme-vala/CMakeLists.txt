@@ -20,12 +20,6 @@ GENERATE_HEADER
     gpgme-vala
 )
 
-set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
-add_definitions(${CFLAGS})
-add_library(gpgme-vala ${GPGME_VALA_C} src/gpgme_fix.c)
-target_link_libraries(gpgme-vala ${GPGME_VALA_PACKAGES} gpgme)
-set_property(TARGET gpgme-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
-
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/gpgme_fix.h"
 COMMAND
     cp "${CMAKE_CURRENT_SOURCE_DIR}/src/gpgme_fix.h" "${CMAKE_BINARY_DIR}/exports/gpgme_fix.h"
@@ -48,4 +42,11 @@ DEPENDS
     ${CMAKE_BINARY_DIR}/exports/gpgme_fix.h
     ${CMAKE_BINARY_DIR}/exports/gpgme.vapi
 )
+
+set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_definitions(${CFLAGS})
+add_library(gpgme-vala ${GPGME_VALA_C} src/gpgme_fix.c)
+add_dependencies(gpgme-vala gpgme-vapi)
+target_link_libraries(gpgme-vala ${GPGME_VALA_PACKAGES} gpgme)
+set_property(TARGET gpgme-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 

@@ -65,16 +65,17 @@ GENERATE_HEADER
     xmpp-vala
 )
 
-add_definitions(${VALA_CFLAGS})
-add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
-target_link_libraries(xmpp-vala ${ENGINE_PACKAGES})
-set_target_properties(xmpp-vala PROPERTIES VERSION 0.1 SOVERSION 0)
-
 add_custom_target(xmpp-vala-vapi
 DEPENDS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.deps
 )
+
+add_definitions(${VALA_CFLAGS})
+add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
+add_dependencies(xmpp-vala xmpp-vala-vapi)
+target_link_libraries(xmpp-vala ${ENGINE_PACKAGES})
+set_target_properties(xmpp-vala PROPERTIES VERSION 0.1 SOVERSION 0)
 
 install(TARGETS xmpp-vala ${TARGET_INSTALL})
 install(FILES ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi ${CMAKE_BINARY_DIR}/exports/xmpp-vala.deps DESTINATION ${VAPI_INSTALL_DIR})

@@ -9,14 +9,15 @@ find_pkg_config_with_fallback(GLib
 )
 
 if(GLib_FOUND AND NOT GLib_VERSION)
-    find_path(GLib_CONFIG_INCLUDE_DIR "glibconfig.h" HINTS ${GLib_INCLUDE_DIRS})
+    find_file(GLib_CONFIG_HEADER "glibconfig.h" HINTS ${GLib_INCLUDE_DIRS})
+    mark_as_advanced(GLib_CONFIG_HEADER)
 
-    if(GLib_CONFIG_INCLUDE_DIR)
-        file(STRINGS "${GLib_CONFIG_INCLUDE_DIR}/glibconfig.h" GLib_MAJOR_VERSION REGEX "^#define GLIB_MAJOR_VERSION +([0-9]+)")
+    if(GLib_CONFIG_HEADER)
+        file(STRINGS "${GLib_CONFIG_HEADER}" GLib_MAJOR_VERSION REGEX "^#define GLIB_MAJOR_VERSION +([0-9]+)")
         string(REGEX REPLACE "^#define GLIB_MAJOR_VERSION ([0-9]+)$" "\\1" GLib_MAJOR_VERSION "${GLib_MAJOR_VERSION}")
-        file(STRINGS "${GLib_CONFIG_INCLUDE_DIR}/glibconfig.h" GLib_MINOR_VERSION REGEX "^#define GLIB_MINOR_VERSION +([0-9]+)")
+        file(STRINGS "${GLib_CONFIG_HEADER}" GLib_MINOR_VERSION REGEX "^#define GLIB_MINOR_VERSION +([0-9]+)")
         string(REGEX REPLACE "^#define GLIB_MINOR_VERSION ([0-9]+)$" "\\1" GLib_MINOR_VERSION "${GLib_MINOR_VERSION}")
-        file(STRINGS "${GLib_CONFIG_INCLUDE_DIR}/glibconfig.h" GLib_MICRO_VERSION REGEX "^#define GLIB_MICRO_VERSION +([0-9]+)")
+        file(STRINGS "${GLib_CONFIG_HEADER}" GLib_MICRO_VERSION REGEX "^#define GLIB_MICRO_VERSION +([0-9]+)")
         string(REGEX REPLACE "^#define GLIB_MICRO_VERSION ([0-9]+)$" "\\1" GLib_MICRO_VERSION "${GLib_MICRO_VERSION}")
         set(GLib_VERSION "${GLib_MAJOR_VERSION}.${GLib_MINOR_VERSION}.${GLib_MICRO_VERSION}")
         unset(GLib_MAJOR_VERSION)
@@ -27,7 +28,5 @@ endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GLib
-    FOUND_VAR GLib_FOUND
     REQUIRED_VARS GLib_LIBRARY
-    VERSION_VAR GLib_VERSION
-)
+    VERSION_VAR GLib_VERSION)

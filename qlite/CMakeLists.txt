@@ -25,16 +25,17 @@ GENERATE_HEADER
     qlite
 )
 
-add_definitions(${VALA_CFLAGS})
-add_library(qlite SHARED ${QLITE_VALA_C})
-target_link_libraries(qlite ${QLITE_PACKAGES})
-set_target_properties(qlite PROPERTIES VERSION 0.1 SOVERSION 0)
-
 add_custom_target(qlite-vapi
 DEPENDS
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.deps
 )
+
+add_definitions(${VALA_CFLAGS})
+add_library(qlite SHARED ${QLITE_VALA_C})
+add_dependencies(qlite qlite-vapi)
+target_link_libraries(qlite ${QLITE_PACKAGES})
+set_target_properties(qlite PROPERTIES VERSION 0.1 SOVERSION 0)
 
 install(TARGETS qlite ${TARGET_INSTALL})
 install(FILES ${CMAKE_BINARY_DIR}/exports/qlite.vapi ${CMAKE_BINARY_DIR}/exports/qlite.deps DESTINATION ${VAPI_INSTALL_DIR})

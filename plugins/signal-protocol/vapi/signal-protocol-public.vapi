@@ -1,6 +1,6 @@
 namespace Signal {
 
-    [CCode (cname = "int", cprefix = "SG_ERR_", cheader_filename = "signal_protocol.h", has_type_id = false)]
+    [CCode (cname = "int", cprefix = "SG_ERR_", cheader_filename = "signal/signal_protocol.h", has_type_id = false)]
     public enum ErrorCode {
         [CCode (cname = "SG_SUCCESS")]
         SUCCESS,
@@ -23,10 +23,10 @@ namespace Signal {
         FP_IDENT_MISMATCH;
     }
 
-    [CCode (cname = "SG_ERR_MINIMUM", cheader_filename = "signal_protocol.h")]
+    [CCode (cname = "SG_ERR_MINIMUM", cheader_filename = "signal/signal_protocol.h")]
     public const int MIN_ERROR_CODE;
 
-    [CCode (cname = "int", cprefix = "SG_LOG_", cheader_filename = "signal_protocol.h", has_type_id = false)]
+    [CCode (cname = "int", cprefix = "SG_LOG_", cheader_filename = "signal/signal_protocol.h", has_type_id = false)]
     public enum LogLevel {
         ERROR,
         WARNING,
@@ -35,7 +35,7 @@ namespace Signal {
         DEBUG
     }
 
-    [CCode (cname = "signal_throw_gerror_by_code_", cheader_filename = "signal_protocol.h")]
+    [CCode (cname = "signal_throw_gerror_by_code_", cheader_filename = "signal/signal_protocol.h")]
     private int throw_by_code(int code, string? message = null) throws GLib.Error {
         if (code < 0 && code > MIN_ERROR_CODE) {
             throw new GLib.Error(-1, code, "%s: %s", message ?? "Signal error", ((ErrorCode)code).to_string());
@@ -43,7 +43,7 @@ namespace Signal {
         return code;
     }
 
-    [CCode (cname = "int", cprefix = "SG_CIPHER_", cheader_filename = "signal_protocol.h", has_type_id = false)]
+    [CCode (cname = "int", cprefix = "SG_CIPHER_", cheader_filename = "signal/signal_protocol.h", has_type_id = false)]
     public enum Cipher {
         AES_CTR_NOPADDING,
         AES_CBC_PKCS5,
@@ -51,12 +51,12 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "signal_type_base", ref_function="signal_type_ref_vapi", unref_function="signal_type_unref_vapi", cheader_filename="signal_protocol_types.h,signal_helper.h")]
+    [CCode (cname = "signal_type_base", ref_function="signal_type_ref_vapi", unref_function="signal_type_unref_vapi", cheader_filename="signal/signal_protocol_types.h,signal_helper.h")]
     public class TypeBase {
     }
 
     [Compact]
-    [CCode (cname = "signal_buffer", cheader_filename = "signal_protocol_types.h", free_function="signal_buffer_free")]
+    [CCode (cname = "signal_buffer", cheader_filename = "signal/signal_protocol_types.h", free_function="signal_buffer_free")]
     public class Buffer {
         [CCode (cname = "signal_buffer_alloc")]
         public Buffer(size_t len);
@@ -78,7 +78,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "signal_int_list", cheader_filename = "signal_protocol_types.h", free_function="signal_int_list_free")]
+    [CCode (cname = "signal_int_list", cheader_filename = "signal/signal_protocol_types.h", free_function="signal_int_list_free")]
     public class IntList {
         [CCode (cname = "signal_int_list_alloc")]
         public IntList();
@@ -90,7 +90,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_builder", cprefix = "session_builder_", free_function="session_builder_free", cheader_filename = "session_builder.h")]
+    [CCode (cname = "session_builder", cprefix = "session_builder_", free_function="session_builder_free", cheader_filename = "signal/session_builder.h")]
     public class SessionBuilder {
         [CCode (cname = "session_builder_process_pre_key_bundle")]
         private int process_pre_key_bundle_(PreKeyBundle pre_key_bundle);
@@ -101,7 +101,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_pre_key_bundle", cprefix = "session_pre_key_bundle_", cheader_filename = "session_pre_key.h")]
+    [CCode (cname = "session_pre_key_bundle", cprefix = "session_pre_key_bundle_", cheader_filename = "signal/session_pre_key.h")]
     public class PreKeyBundle : TypeBase {
         public static int create(out PreKeyBundle bundle, uint32 registration_id, int device_id, uint32 pre_key_id, ECPublicKey? pre_key_public,
                 uint32 signed_pre_key_id, ECPublicKey? signed_pre_key_public, uint8[]? signed_pre_key_signature, ECPublicKey? identity_key);
@@ -116,7 +116,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_pre_key", cprefix = "session_pre_key_", cheader_filename = "session_pre_key.h,signal_helper.h")]
+    [CCode (cname = "session_pre_key", cprefix = "session_pre_key_", cheader_filename = "signal/session_pre_key.h,signal_helper.h")]
     public class PreKeyRecord : TypeBase {
         public PreKeyRecord(uint32 id, ECKeyPair key_pair) throws GLib.Error {
             int err;
@@ -134,13 +134,13 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_record", cprefix = "session_record_", cheader_filename = "signal_protocol_types.h")]
+    [CCode (cname = "session_record", cprefix = "session_record_", cheader_filename = "signal/signal_protocol_types.h")]
     public class SessionRecord : TypeBase {
         public SessionState state { get; }
     }
 
     [Compact]
-    [CCode (cname = "session_state", cprefix = "session_state_", cheader_filename = "session_state.h")]
+    [CCode (cname = "session_state", cprefix = "session_state_", cheader_filename = "signal/session_state.h")]
     public class SessionState : TypeBase {
         //public static int create(out SessionState state, NativeContext context);
         //public static int deserialize(out SessionState state, uint8[] data, NativeContext context);
@@ -163,7 +163,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_signed_pre_key", cprefix = "session_signed_pre_key_", cheader_filename = "session_pre_key.h")]
+    [CCode (cname = "session_signed_pre_key", cprefix = "session_signed_pre_key_", cheader_filename = "signal/session_pre_key.h")]
     public class SignedPreKeyRecord : TypeBase {
         public SignedPreKeyRecord(uint32 id, uint64 timestamp, ECKeyPair key_pair, uint8[] signature) throws GLib.Error {
             int err;
@@ -190,7 +190,7 @@ namespace Signal {
      * Address of an Signal Protocol message recipient
      */
     [Compact]
-    [CCode (cname = "signal_protocol_address", cprefix = "signal_protocol_address_", cheader_filename = "signal_protocol.h,signal_helper.h")]
+    [CCode (cname = "signal_protocol_address", cprefix = "signal_protocol_address_", cheader_filename = "signal/signal_protocol.h,signal_helper.h")]
     public class Address {
         public Address(string name, int32 device_id);
         public int32 device_id { get; set; }
@@ -210,7 +210,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "ec_public_key", cprefix = "ec_public_key_", cheader_filename = "curve.h,signal_helper.h")]
+    [CCode (cname = "ec_public_key", cprefix = "ec_public_key_", cheader_filename = "signal/curve.h,signal_helper.h")]
     public class ECPublicKey : TypeBase {
         [CCode (cname = "curve_generate_public_key")]
         public static int generate(out ECPublicKey public_key, ECPrivateKey private_key);
@@ -227,7 +227,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "ec_private_key", cprefix = "ec_private_key_", cheader_filename = "curve.h,signal_helper.h")]
+    [CCode (cname = "ec_private_key", cprefix = "ec_private_key_", cheader_filename = "signal/curve.h,signal_helper.h")]
     public class ECPrivateKey : TypeBase {
         [CCode (instance_pos = 1, cname = "ec_private_key_serialize")]
         private int serialize_([CCode (pos = 0)] out Buffer buffer);
@@ -241,19 +241,19 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "ec_key_pair", cprefix="ec_key_pair_", cheader_filename = "curve.h,signal_helper.h")]
+    [CCode (cname = "ec_key_pair", cprefix="ec_key_pair_", cheader_filename = "signal/curve.h,signal_helper.h")]
     public class ECKeyPair : TypeBase {
         public static int create(out ECKeyPair key_pair, ECPublicKey public_key, ECPrivateKey private_key);
         public ECPublicKey public { get; }
         public ECPrivateKey private { get; }
     }
 
-    [CCode (cname = "ratchet_message_keys", cheader_filename = "ratchet.h")]
+    [CCode (cname = "ratchet_message_keys", cheader_filename = "signal/ratchet.h")]
     public class MessageKeys {
     }
 
     [Compact]
-    [CCode (cname = "ratchet_identity_key_pair", cprefix = "ratchet_identity_key_pair_", cheader_filename = "ratchet.h,signal_helper.h")]
+    [CCode (cname = "ratchet_identity_key_pair", cprefix = "ratchet_identity_key_pair_", cheader_filename = "signal/ratchet.h,signal_helper.h")]
     public class IdentityKeyPair : TypeBase {
         public static int create(out IdentityKeyPair key_pair, ECPublicKey public_key, ECPrivateKey private_key);
         public int serialze(out Buffer buffer);
@@ -273,7 +273,7 @@ namespace Signal {
      * that session.
      */
     [Compact]
-    [CCode (cname = "session_cipher", cprefix = "session_cipher_", cheader_filename = "session_cipher.h", free_function = "session_cipher_free")]
+    [CCode (cname = "session_cipher", cprefix = "session_cipher_", cheader_filename = "signal/session_cipher.h", free_function = "session_cipher_free")]
     public class SessionCipher {
         public void* user_data { get; set; }
         public DecryptionCallback decryption_callback { set; }
@@ -308,7 +308,7 @@ namespace Signal {
         public delegate int DecryptionCallback(SessionCipher cipher, Buffer plaintext, void* decrypt_context);
     }
 
-    [CCode (cname = "int", cheader_filename = "protocol.h", has_type_id = false)]
+    [CCode (cname = "int", cheader_filename = "signal/protocol.h", has_type_id = false)]
     public enum CiphertextType {
         [CCode (cname = "CIPHERTEXT_SIGNAL_TYPE")]
         SIGNAL,
@@ -321,7 +321,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "ciphertext_message", cprefix = "ciphertext_message_", cheader_filename = "protocol.h,signal_helper.h")]
+    [CCode (cname = "ciphertext_message", cprefix = "ciphertext_message_", cheader_filename = "signal/protocol.h,signal_helper.h")]
     public abstract class CiphertextMessage : TypeBase {
         public CiphertextType type { get; }
         [CCode (cname = "ciphertext_message_get_serialized")]
@@ -331,7 +331,7 @@ namespace Signal {
         }}
     }
     [Compact]
-    [CCode (cname = "signal_message", cprefix = "signal_message_", cheader_filename = "protocol.h,signal_helper.h")]
+    [CCode (cname = "signal_message", cprefix = "signal_message_", cheader_filename = "signal/protocol.h,signal_helper.h")]
     public class SignalMessage : CiphertextMessage {
         public ECPublicKey sender_ratchet_key { get; }
         public uint8 message_version { get; }
@@ -341,7 +341,7 @@ namespace Signal {
         public static int is_legacy(uint8[] data);
     }
     [Compact]
-    [CCode (cname = "pre_key_signal_message", cprefix = "pre_key_signal_message_", cheader_filename = "protocol.h,signal_helper.h")]
+    [CCode (cname = "pre_key_signal_message", cprefix = "pre_key_signal_message_", cheader_filename = "signal/protocol.h,signal_helper.h")]
     public class PreKeySignalMessage : CiphertextMessage {
         public uint8 message_version { get; }
         public ECPublicKey identity_key { get; }
@@ -352,14 +352,14 @@ namespace Signal {
         public SignalMessage signal_message { get; }
     }
     [Compact]
-    [CCode (cname = "sender_key_message", cprefix = "sender_key_message_", cheader_filename = "protocol.h,signal_helper.h")]
+    [CCode (cname = "sender_key_message", cprefix = "sender_key_message_", cheader_filename = "signal/protocol.h,signal_helper.h")]
     public class SenderKeyMessage : CiphertextMessage {
         public uint32 key_id { get; }
         public uint32 iteration { get; }
         public Buffer ciphertext { get; }
     }
     [Compact]
-    [CCode (cname = "sender_key_distribution_message", cprefix = "sender_key_distribution_message_", cheader_filename = "protocol.h,signal_helper.h")]
+    [CCode (cname = "sender_key_distribution_message", cprefix = "sender_key_distribution_message_", cheader_filename = "signal/protocol.h,signal_helper.h")]
     public class SenderKeyDistributionMessage : CiphertextMessage {
         public uint32 id { get; }
         public uint32 iteration { get; }
