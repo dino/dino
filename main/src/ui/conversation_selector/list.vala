@@ -23,19 +23,22 @@ public class List : ListBox {
         set_sort_func(sort);
 
         stream_interactor.get_module(ChatInteraction.IDENTITY).conversation_read.connect((conversation) => {
-            Idle.add(() => {if (rows.has_key(conversation)) rows[conversation].mark_read(); return false;});
+            Idle.add(() => { if (rows.has_key(conversation)) rows[conversation].mark_read(); return false; });
         });
         stream_interactor.get_module(ChatInteraction.IDENTITY).conversation_unread.connect((conversation) => {
-            Idle.add(() => {if (rows.has_key(conversation)) rows[conversation].mark_unread(); return false;});
+            Idle.add(() => { if (rows.has_key(conversation)) rows[conversation].mark_unread(); return false; });
         });
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect((conversation) => {
-            Idle.add(() => {add_conversation(conversation); return false;});
+            Idle.add(() => { add_conversation(conversation); return false; });
+        });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect((conversation) => {
+            Idle.add(() => { remove_conversation(conversation); return false; });
         });
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
-            Idle.add(() => {on_message_received(message, conversation); return false;});
+            Idle.add(() => { on_message_received(message, conversation); return false; });
         });
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
-            Idle.add(() => {on_message_received(message, conversation); return false;});
+            Idle.add(() => { on_message_received(message, conversation); return false; });
         });
         stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
             Idle.add(() => {
@@ -132,7 +135,6 @@ public class List : ListBox {
             rows[conversation] = row;
             add(row);
             row.closed.connect(() => { select_next_conversation(conversation); });
-            row.disappeared.connect(() => { remove_conversation(conversation); });
             row.main_revealer.set_reveal_child(true);
         }
         invalidate_sort();
@@ -156,6 +158,7 @@ public class List : ListBox {
     }
 
     private void remove_conversation(Conversation conversation) {
+        select_next_conversation(conversation);
         if (rows.has_key(conversation) && !conversation.active) {
             remove(rows[conversation]);
             rows.unset(conversation);

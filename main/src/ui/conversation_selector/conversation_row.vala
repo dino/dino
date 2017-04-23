@@ -12,7 +12,6 @@ namespace Dino.Ui.ConversationSelector {
 public abstract class ConversationRow : ListBoxRow {
 
     public signal void closed();
-    public signal void disappeared();
 
     [GtkChild] protected Image image;
     [GtkChild] private Label name_label;
@@ -149,7 +148,6 @@ public abstract class ConversationRow : ListBoxRow {
         closed();
         main_revealer.notify["child-revealed"].connect(() => {
             stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
-            disappeared();
         });
     }
 

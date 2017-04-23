@@ -28,7 +28,10 @@ public class Conference : Object {
 
     public string? name {
         get { return stanza_node.get_attribute(ATTRIBUTE_NAME); }
-        set { stanza_node.set_attribute(ATTRIBUTE_NAME, value); }
+        set {
+            if (value == null) return; // TODO actually remove
+            stanza_node.set_attribute(ATTRIBUTE_NAME, value);
+        }
     }
 
     public string? nick {
@@ -58,6 +61,10 @@ public class Conference : Object {
         }
         set {
             StanzaNode? password_node = stanza_node.get_subnode(NODE_PASSWORD);
+            if (value == null) {
+                if (password_node != null) stanza_node.sub_nodes.remove(password_node);
+                return;
+            }
             if (password_node == null) {
                 password_node = new StanzaNode.build(NODE_PASSWORD);
                 stanza_node.put_node(password_node);

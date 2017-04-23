@@ -1,24 +1,7 @@
-Dino
-====
+![Dino](https://cdn.rawgit.com/fiaxh/3cb1391c5a94443098d004b4bf7c712c/raw/62f6a5e7de8402a0a89ffc73e8d1ed170054051c/dino-writing.svg)
+=======
 
-![screenshots](http://i.imgur.com/xIKPEFF.png)
-
-Install
--------
-| OS           | Package|
-| ------------ | ------ |
-| Arch Linux   | [`dino-git`](https://aur.archlinux.org/packages/dino-git/) (AUR)     |
-| Fedora ≥ 25  | [`dino`](https://copr.fedorainfracloud.org/coprs/larma/dino/) (copr) |
-
-**Dependencies**
-
-* GLib (≥ 2.38)
-* GTK (≥ 3.22)
-* GPGME (For the OpenPGP plugin)
-* libgee-0.8 (≥ 0.10)
-* libgcrypt (For the OMEMO plugin)
-* libnotify
-* SQLite3
+![screenshots](https://i.imgur.com/xIKPEFF.png)
 
 Build
 -----
@@ -31,11 +14,25 @@ Build
 * ninja(-build) (recommend)
 * valac (≥ 0.30)
 
+**Run-time dependencies**
+
+* GLib (≥ 2.38)
+* GTK (≥ 3.22)
+* GPGME (For the OpenPGP plugin)
+* libgee-0.8 (≥ 0.10)
+* libgcrypt (For the OMEMO plugin)
+* libnotify
+* SQLite3
+
 **Instructions**
 
     ./configure
     make
     build/dino
+
+Resources
+---------
+Please refer to [the wiki](https://github.com/dino/dino/wiki) for further information.
 
 License
 -------

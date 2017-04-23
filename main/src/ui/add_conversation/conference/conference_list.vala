@@ -11,7 +11,7 @@ protected class ConferenceList : FilterableList {
     public signal void conversation_selected(Conversation? conversation);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Account, ArrayList<Xep.Bookmarks.Conference>> lists = new HashMap<Account, ArrayList<Xep.Bookmarks.Conference>>();
+    private HashMap<Account, Gee.List<Xep.Bookmarks.Conference>> lists = new HashMap<Account, Gee.List<Xep.Bookmarks.Conference>>();
 
     public ConferenceList(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -42,7 +42,7 @@ protected class ConferenceList : FilterableList {
         }
     }
 
-    private static void on_conference_bookmarks_received(Core.XmppStream stream, ArrayList<Xep.Bookmarks.Conference> conferences, Object? o) {
+    private static void on_conference_bookmarks_received(Core.XmppStream stream, Gee.List<Xep.Bookmarks.Conference> conferences, Object? o) {
         Idle.add(() => {
             Tuple<ConferenceList, Account> tuple = o as Tuple<ConferenceList, Account>;
             ConferenceList list = tuple.a;
@@ -89,13 +89,15 @@ internal class ConferenceListRow : ListRow {
         this.account = account;
         this.bookmark = bookmark;
 
-        if (bookmark.name != "" && bookmark.name != bookmark.jid) {
-            name_label.label = bookmark.name;
+        name_label.label = bookmark.name ?? bookmark.jid;
+        if (stream_interactor.get_accounts().size > 1) {
+            via_label.label = "via " + account.bare_jid.to_string();
+        } else if (bookmark.name != null && bookmark.name != bookmark.jid) {
             via_label.label = bookmark.jid;
         } else {
-            name_label.label = bookmark.jid;
             via_label.visible = false;
         }
+
         image.set_from_pixbuf((new AvatarGenerator(35, 35)).set_stateless(true).draw_jid(stream_interactor, jid, account));
     }
 }

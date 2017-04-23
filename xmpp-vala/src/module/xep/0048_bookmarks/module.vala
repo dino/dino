@@ -8,25 +8,27 @@ private const string NS_URI = "storage:bookmarks";
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0048_bookmarks_module");
 
-    public signal void conferences_updated(XmppStream stream, ArrayList<Conference> conferences);
+    public signal void received_conferences(XmppStream stream, Gee.List<Conference> conferences);
 
-    [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, ArrayList<Conference> conferences, Object? reference);
+    [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Gee.List<Conference> conferences, Object? storage);
     public void get_conferences(XmppStream stream, OnResult listener, Object? store) {
         StanzaNode get_node = new StanzaNode.build("storage", NS_URI).add_self_xmlns();
         stream.get_module(PrivateXmlStorage.Module.IDENTITY).retrieve(stream, get_node, (stream, node, o) => {
             Tuple<OnResult, Object?> tuple = o as Tuple<OnResult, Object?>;
             OnResult on_result = tuple.a;
-            on_result(stream, get_conferences_from_stanza(node), tuple.b);
+            Gee.List<Conference> conferences = get_conferences_from_stanza(node);
+            stream.get_module(Module.IDENTITY).received_conferences(stream, conferences);
+            on_result(stream, conferences, tuple.b);
         }, Tuple.create(listener, store));
     }
 
-    public void set_conferences(XmppStream stream, ArrayList<Conference> conferences) {
+    public void set_conferences(XmppStream stream, Gee.List<Conference> conferences) {
         StanzaNode storage_node = (new StanzaNode.build("storage", NS_URI)).add_self_xmlns();
         foreach (Conference conference in conferences) {
             storage_node.put_node(conference.stanza_node);
         }
         stream.get_module(PrivateXmlStorage.Module.IDENTITY).store(stream, storage_node, (stream, o) => {
-            stream.get_module(Module.IDENTITY).conferences_updated(stream, o as ArrayList<Conference>);
+            stream.get_module(Module.IDENTITY).received_conferences(stream, o as ArrayList<Conference>);
         }, conferences);
     }
 

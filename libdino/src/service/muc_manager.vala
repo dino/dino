@@ -11,7 +11,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void joined(Account account, Jid jid, string nick);
     public signal void left(Account account, Jid jid);
     public signal void subject_set(Account account, Jid jid, string? subject);
-    public signal void bookmarks_updated(Account account, ArrayList<Xep.Bookmarks.Conference> conferences);
+    public signal void bookmarks_updated(Account account, Gee.List<Xep.Bookmarks.Conference> conferences);
 
     private StreamInteractor stream_interactor;
 
@@ -31,12 +31,18 @@ public class MucManager : StreamInteractionModule, Object {
         Core.XmppStream stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
+        set_autojoin(stream, jid, nick_, password);
         stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick_, password);
     }
 
     public void part(Account account, Jid jid) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).exit(stream, jid.bare_jid.to_string());
+        if (stream == null) return;
+        unset_autojoin(stream, jid);
+        stream.get_module(Xep.Muc.Module.IDENTITY).exit(stream, jid.bare_jid.to_string());
+
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
+        if (conversation != null) stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
     }
 
     public void change_subject(Account account, Jid jid, string subject) {
@@ -156,7 +162,8 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).subject_set.connect( (stream, subject, jid) => {
             subject_set(account, new Jid(jid), subject);
         });
-        stream_interactor.module_manager.get_module(account, Xep.Bookmarks.Module.IDENTITY).conferences_updated.connect( (stream, conferences) => {
+        stream_interactor.module_manager.get_module(account, Xep.Bookmarks.Module.IDENTITY).received_conferences.connect( (stream, conferences) => {
+            sync_autojoin_active(account, conferences);
             bookmarks_updated(account, conferences);
         });
     }
@@ -194,6 +201,70 @@ public class MucManager : StreamInteractionModule, Object {
                 }
             }
         }
+    }
+
+    private void sync_autojoin_active(Account account, Gee.List<Xep.Bookmarks.Conference> conferences) {
+        Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations();
+        leave_non_autojoin(account, conferences, conversations);
+        join_autojoin(account, conferences, conversations);
+    }
+
+    private void leave_non_autojoin(Account account, Gee.List<Xep.Bookmarks.Conference> conferences, Gee.List<Conversation> conversations) {
+        foreach (Conversation conversation in conversations) {
+            if (conversation.type_ != Conversation.Type.GROUPCHAT || !conversation.account.equals(account)) continue;
+            bool is_autojoin = false;
+            foreach (Xep.Bookmarks.Conference conference in conferences) {
+                if (conference.jid == conversation.counterpart.to_string()) {
+                    if (conference.autojoin) is_autojoin = true;
+                }
+            }
+            if (!is_autojoin) {
+                part(account, conversation.counterpart);
+            }
+        }
+    }
+
+    private void join_autojoin(Account account, Gee.List<Xep.Bookmarks.Conference> conferences, Gee.List<Conversation> conversations) {
+        foreach (Xep.Bookmarks.Conference conference in conferences) {
+            if (!conference.autojoin) continue;
+            bool is_active = false;
+            foreach (Conversation conversation in conversations) {
+                if (conference.jid == conversation.counterpart.to_string()) is_active = true;
+            }
+            if (!is_active) {
+                join(account, new Jid(conference.jid), conference.nick, conference.password);
+            }
+        }
+    }
+
+    private void set_autojoin(Core.XmppStream stream, Jid jid, string? nick, string? password) {
+        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences, storage) => {
+            Triple<Jid, string?, string?> triple = storage as Triple<Jid, string?, string?>;
+            Xep.Bookmarks.Conference changed = new Xep.Bookmarks.Conference(triple.a.to_string()) { nick=triple.b, password=triple.c, autojoin=true };
+            foreach (Xep.Bookmarks.Conference conference in conferences) {
+                if (conference.jid == triple.a.bare_jid.to_string() && conference.nick == triple.b && conference.password == triple.c) {
+                    if (!conference.autojoin) {
+                        stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference(stream, conference, changed);
+                    }
+                    return;
+                }
+            }
+            stream.get_module(Xep.Bookmarks.Module.IDENTITY).add_conference(stream, changed);
+        }, Triple.create(jid, nick, password));
+    }
+
+    private void unset_autojoin(Core.XmppStream stream, Jid jid) {
+        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences, storage) => {
+            Jid jid_ = storage as Jid;
+            foreach (Xep.Bookmarks.Conference conference in conferences) {
+                if (conference.jid == jid_.bare_jid.to_string()) {
+                    if (conference.autojoin) {
+                        Xep.Bookmarks.Conference change = new Xep.Bookmarks.Conference(conference.jid) { nick=conference.nick, password=conference.password, autojoin=false };
+                        stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference(stream, conference, change);
+                    }
+                }
+            }
+        }, jid);
     }
 }
 

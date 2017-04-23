@@ -39,8 +39,12 @@ public class UnifiedWindow : Window {
 
         stream_interactor.account_added.connect((account) => { check_stack(true); });
         stream_interactor.account_removed.connect((account) => { check_stack(); });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect((conversation) => { check_stack(); });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect((conversation) => { check_stack(); });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect( (conversation) => {
+            Idle.add( () => { check_stack(); return false; });
+        });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect( (conversation) => {
+            Idle.add( () => { check_stack(); return false; });
+        });
         accounts_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("accounts", null); });
         conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
         conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });

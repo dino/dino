@@ -75,7 +75,7 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     public Gee.List<Conversation> get_active_conversations() {
-        ArrayList<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
+        Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
         foreach (Account account in conversations.keys) {
             foreach (Conversation conversation in conversations[account].values) {
                 if(conversation.active) ret.add(conversation);
