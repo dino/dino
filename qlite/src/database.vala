@@ -77,6 +77,9 @@ public class Database {
                 meta_table.update().with(meta_name, "=", "version").set(meta_int_val, expected_version).perform();
             }
         }
+        foreach (Table t in tables) {
+            t.post();
+        }
     }
 
     internal int errcode() {
@@ -136,7 +139,7 @@ public class Database {
         return statement;
     }
 
-    internal void exec(string sql) throws DatabaseError {
+    public void exec(string sql) throws DatabaseError {
         ensure_init();
         if (db.exec(sql) != OK) {
             throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");

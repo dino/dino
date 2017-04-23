@@ -7,6 +7,7 @@ public class Table {
     public string name { get; private set; }
     protected Column[]? columns;
     private string constraints = "";
+    private string[] post_statements = {};
 
     public Table(Database db, string name) {
         this.db = db;
@@ -30,6 +31,22 @@ public class Table {
         if (on_conflict != null) {
             constraints += "ON CONFLICT " + (!)on_conflict;
         }
+    }
+
+    public void add_post_statement(string stmt) {
+        post_statements += stmt;
+    }
+
+    public void index(string index_name, Column[] columns, bool unique = false) {
+        string stmt = @"CREATE $(unique ? "UNIQUE" : "") INDEX IF NOT EXISTS $index_name ON $name (";
+        bool first = true;
+        foreach (Column c in columns) {
+            if (!first) stmt += ", ";
+            stmt += c.name;
+            first = false;
+        }
+        stmt += ")";
+        add_post_statement(stmt);
     }
 
     private void ensure_init() throws DatabaseError {
@@ -112,6 +129,12 @@ public class Table {
             create_table_at_version(new_version);
             db.exec(@"INSERT INTO $name ($column_list) SELECT $column_list FROM _$(name)_$old_version");
             db.exec(@"DROP TABLE _$(name)_$old_version");
+        }
+    }
+
+    internal void post() throws DatabaseError {
+        foreach (string stmt in post_statements) {
+            db.exec(stmt);
         }
     }
 }

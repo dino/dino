@@ -110,6 +110,8 @@ public class Database : Qlite.Database {
         internal EntityFeatureTable(Database db) {
             base(db, "entity_feature");
             init({entity, feature});
+            unique({entity, feature}, "IGNORE");
+            index("entity_feature_idx", {entity});
         }
     }
 
@@ -135,6 +137,7 @@ public class Database : Qlite.Database {
         avatar = new AvatarTable(this);
         entity_feature = new EntityFeatureTable(this);
         init({ account, jid, message, real_jid, conversation, avatar, entity_feature });
+        exec("PRAGMA synchronous=0");
     }
 
     public override void migrate(long oldVersion) {

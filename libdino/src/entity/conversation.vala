@@ -88,13 +88,7 @@ public class Conversation : Object {
     }
 
     private void on_update(Object o, ParamSpec sp) {
-        var update = db.conversation.update().with(db.conversation.jid_id, "=", db.get_jid_id(counterpart))
-                .with(db.conversation.account_id, "=", account.id);
-        if (counterpart.resourcepart != null) {
-            update.with(db.conversation.resource, "=", counterpart.resourcepart);
-        } else {
-            update.with_null(db.conversation.resource);
-        }
+        var update = db.conversation.update().with(db.conversation.id, "=", id);
         switch (sp.name) {
             case "type-":
                 update.set(db.conversation.type_, type_); break;
