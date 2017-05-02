@@ -65,8 +65,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         Entities.Message new_message = create_in_message(account, message);
 
         determine_message_type(account, message, new_message);
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(new_message);
-        if (conversation != null) process_message(new_message, message);
     }
 
     private Entities.Message create_in_message(Account account, Xmpp.Message.Stanza message) {
@@ -131,6 +129,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
                     message.type_ = Entities.Message.Type.GROUPCHAT_PM;
                 }
+                process_message(message, message_stanza);
             } else {
                 Core.XmppStream stream = stream_interactor.get_stream(account);
                 if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid.to_string(), (stream, identities) => {
@@ -145,8 +144,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
                         } else {
                             message.type_ = Entities.Message.Type.CHAT;
                         }
-                        process_message(message, message_stanza);
                     }
+                    process_message(message, message_stanza);
                 });
             }
         }
