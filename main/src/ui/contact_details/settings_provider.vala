@@ -4,8 +4,8 @@ using Dino.Entities;
 
 namespace Dino.Ui.ContactDetails {
 
-public class SettingsProvider : Plugins.ContactDetailsProvider {
-    public override string id { get { return "chat_settings"; } }
+public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
+    public string id { get { return "chat_settings"; } }
 
     private StreamInteractor stream_interactor;
 
@@ -13,7 +13,8 @@ public class SettingsProvider : Plugins.ContactDetailsProvider {
         this.stream_interactor = stream_interactor;
     }
 
-    public override void populate(Conversation conversation, Plugins.ContactDetails contact_details) {
+    public void populate(Conversation conversation, Plugins.ContactDetails contact_details, Plugins.WidgetType type) {
+        if (type != Plugins.WidgetType.GTK) return;
         if (conversation.type_ == Conversation.Type.CHAT) {
             ComboBoxText[] comboboxes = new ComboBoxText[2];
             for (int i = 0; i < 3; i++) {

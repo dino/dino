@@ -56,16 +56,22 @@ public class Dialog : Gtk.Dialog {
         int16 default_top_padding = new Gtk.Button().get_style_context().get_padding(Gtk.StateFlags.NORMAL).top + 1;
         Application app = GLib.Application.get_default() as Application;
         foreach (var e in app.plugin_registry.account_settings_entries) {
-            Plugins.AccountSettingsWidget widget = e.get_widget();
+            Plugins.AccountSettingsWidget widget = e.get_widget(Plugins.WidgetType.GTK);
             plugin_widgets.add(widget);
-            widget.visible = true;
 
             Label label = new Label(e.name) { xalign=1, yalign=0, visible=true };
             label.get_style_context().add_class("dim-label");
             label.set_padding(0, e.label_top_padding == -1 ? default_top_padding : e.label_top_padding);
 
             settings_list.attach(label, 0, row_index);
-            settings_list.attach(widget, 1, row_index, 2);
+            if (widget is Widget) {
+                Widget gtkw = (Widget) widget;
+                plugin_widgets.add(widget);
+                gtkw.visible = true;
+                settings_list.attach(gtkw, 1, row_index, 2);
+            } else {
+                // TODO
+            }
             row_index++;
         }
     }

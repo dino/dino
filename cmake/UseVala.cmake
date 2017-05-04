@@ -118,7 +118,12 @@ function(vala_precompile output)
     cmake_parse_arguments(ARGS "FAST_VAPI" "DIRECTORY;GENERATE_HEADER;GENERATE_VAPI;EXPORTS_DIR"
         "SOURCES;PACKAGES;OPTIONS;DEFINITIONS;CUSTOM_VAPIS;CUSTOM_DEPS;GRESOURCES" ${ARGN})
 
-    if("Ninja" STREQUAL ${CMAKE_GENERATOR} AND NOT DISABLE_FAST_VAPI)
+    # Header and internal header is needed to generate internal vapi
+    if (ARGS_GENERATE_VAPI AND NOT ARGS_GENERATE_HEADER)
+        set(ARGS_GENERATE_HEADER ${ARGS_GENERATE_VAPI})
+    endif(ARGS_GENERATE_VAPI AND NOT ARGS_GENERATE_HEADER)
+
+    if("Ninja" STREQUAL ${CMAKE_GENERATOR} AND NOT DISABLE_FAST_VAPI AND NOT ARGS_GENERATE_HEADER)
         set(ARGS_FAST_VAPI true)
     endif()
 
@@ -172,11 +177,6 @@ function(vala_precompile output)
         list(APPEND out_extra_files "${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}.vapi")
         list(APPEND out_extra_files "${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}_internal.vapi")
         set(vapi_arguments "--vapi=${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}.vapi" "--internal-vapi=${ARGS_EXPORTS_DIR}/${ARGS_GENERATE_VAPI}_internal.vapi")
-
-        # Header and internal header is needed to generate internal vapi
-        if (NOT ARGS_GENERATE_HEADER)
-            set(ARGS_GENERATE_HEADER ${ARGS_GENERATE_VAPI})
-        endif(NOT ARGS_GENERATE_HEADER)
 
         if(ARGS_PACKAGES)
             string(REPLACE ";" "\\n" pkgs "${ARGS_PACKAGES};${ARGS_CUSTOM_DEPS}")

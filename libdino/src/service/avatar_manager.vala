@@ -31,7 +31,7 @@ public class AvatarManager : StreamInteractionModule, Object {
     }
 
     public static string get_storage_dir() {
-        return Path.build_filename(Application.get_storage_dir(), "avatars");
+        return Path.build_filename(Dino.get_storage_dir(), "avatars");
     }
 
     private AvatarManager(StreamInteractor stream_interactor, Database db) {

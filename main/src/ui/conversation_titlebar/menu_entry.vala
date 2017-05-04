@@ -4,8 +4,8 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-class MenuEntry : Plugins.ConversationTitlebarEntry {
-    public override string id { get { return "menu"; } }
+class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
+    public string id { get { return "menu"; } }
 
     StreamInteractor stream_interactor;
 
@@ -13,9 +13,12 @@ class MenuEntry : Plugins.ConversationTitlebarEntry {
         this.stream_interactor = stream_interactor;
     }
 
-    public override double order { get { return 0; } }
-    public override Plugins.ConversationTitlebarWidget get_widget() {
-        return new MenuWidget(stream_interactor) { visible=true };
+    public double order { get { return 0; } }
+    public Plugins.ConversationTitlebarWidget get_widget(Plugins.WidgetType type) {
+        if (type == Plugins.WidgetType.GTK) {
+            return new MenuWidget(stream_interactor) { visible=true };
+        }
+        return null;
     }
 }
 

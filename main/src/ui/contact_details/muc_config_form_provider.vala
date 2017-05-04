@@ -6,15 +6,16 @@ using Xmpp.Xep;
 
 namespace Dino.Ui.ContactDetails {
 
-public class MucConfigFormProvider : Plugins.ContactDetailsProvider {
-    public override string id { get { return "muc_config_form"; } }
+public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
+    public string id { get { return "muc_config_form"; } }
     private StreamInteractor stream_interactor;
 
     public MucConfigFormProvider(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
     }
 
-    public override void populate(Conversation conversation, Plugins.ContactDetails contact_details) {
+    public void populate(Conversation conversation, Plugins.ContactDetails contact_details, Plugins.WidgetType type) {
+        if (type != Plugins.WidgetType.GTK) return;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) return;

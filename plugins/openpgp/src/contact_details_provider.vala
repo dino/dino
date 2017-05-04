@@ -4,8 +4,8 @@ using Dino.Entities;
 
 namespace Dino.Plugins.OpenPgp {
 
-public class ContactDetailsProvider : Plugins.ContactDetailsProvider {
-    public override string id { get { return "pgp_info"; } }
+public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
+    public string id { get { return "pgp_info"; } }
 
     private StreamInteractor stream_interactor;
 
@@ -13,8 +13,8 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider {
         this.stream_interactor = stream_interactor;
     }
 
-    public override void populate(Conversation conversation, Plugins.ContactDetails contact_details) {
-        if (conversation.type_ == Conversation.Type.CHAT) {
+    public void populate(Conversation conversation, Plugins.ContactDetails contact_details, WidgetType type) {
+        if (conversation.type_ == Conversation.Type.CHAT && type == WidgetType.GTK) {
             string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart);
             if (key_id != null) {
                 Gee.List<GPG.Key> keys = GPGHelper.get_keylist(key_id);

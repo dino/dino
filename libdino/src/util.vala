@@ -20,6 +20,10 @@ public class SearchPathGenerator {
     }
 }
 
+public static string get_storage_dir() {
+    return Path.build_filename(Environment.get_user_data_dir(), "dino");
+}
+
 [CCode (cname = "dino_gettext", cheader_filename = "dino_i18n.h")]
 public static extern unowned string _(string s);
 

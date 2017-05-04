@@ -3,11 +3,17 @@ using Gtk;
 using Dino.Entities;
 using Dino.Ui;
 
-public class Dino.Ui.Application : Dino.Application {
+public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private Notifications notifications;
     private UnifiedWindow window;
 
+    public Database db { get; set; }
+    public StreamInteractor stream_interaction { get; set; }
+    public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
+    public SearchPathGenerator? search_path_generator { get; set; }
+
     public Application() throws Error {
+        init();
         Notify.init("dino");
         Environment.set_application_name("Dino");
         Gtk.Window.set_default_icon_name("dino");

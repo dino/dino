@@ -4,8 +4,8 @@ using Dino.Entities;
 
 namespace Dino.Plugins.HttpFiles {
 
-public class ConversationsTitlebarEntry : Plugins.ConversationTitlebarEntry {
-    public override string id { get { return "send_files"; } }
+public class ConversationsTitlebarEntry : Plugins.ConversationTitlebarEntry, Object {
+    public string id { get { return "send_files"; } }
 
     StreamInteractor stream_interactor;
 
@@ -13,9 +13,12 @@ public class ConversationsTitlebarEntry : Plugins.ConversationTitlebarEntry {
         this.stream_interactor = stream_interactor;
     }
 
-    public override double order { get { return 4; } }
-    public override Plugins.ConversationTitlebarWidget get_widget() {
-        return new ConversationTitlebarWidget(stream_interactor) { visible=true };
+    public double order { get { return 4; } }
+    public Plugins.ConversationTitlebarWidget get_widget(WidgetType type) {
+        if (type == WidgetType.GTK) {
+            return new ConversationTitlebarWidget(stream_interactor) { visible=true };
+        }
+        return null;
     }
 }
 

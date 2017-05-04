@@ -25,9 +25,11 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         app.plugin_registry.register_contact_titlebar_entry(new OccupantsEntry(stream_interactor, window));
 
         foreach(var e in app.plugin_registry.conversation_titlebar_entries) {
-            Plugins.ConversationTitlebarWidget widget = e.get_widget();
-            widgets.add(widget);
-            pack_end(widget);
+            Plugins.ConversationTitlebarWidget widget = e.get_widget(Plugins.WidgetType.GTK);
+            if (widget != null) {
+                widgets.add(widget);
+                pack_end((Gtk.Widget)widget);
+            }
         }
 
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {

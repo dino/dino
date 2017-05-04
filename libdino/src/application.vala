@@ -1,13 +1,11 @@
-using Gtk;
-
 using Dino.Entities;
 
-public class Dino.Application : Gtk.Application {
+public interface Dino.Application : GLib.Application {
 
-    public Database db;
-    public StreamInteractor stream_interaction;
-    public Plugins.Registry plugin_registry = new Plugins.Registry();
-    public SearchPathGenerator? search_path_generator { get; set; }
+    public abstract Database db { get; set; }
+    public abstract StreamInteractor stream_interaction { get; set; }
+    public abstract Plugins.Registry plugin_registry { get; set; }
+    public abstract SearchPathGenerator? search_path_generator { get; set; }
 
     static string print_xmpp;
 
@@ -16,7 +14,7 @@ public class Dino.Application : Gtk.Application {
         { null }
     };
 
-    public Application() throws Error {
+    public void init() throws Error {
         if (DirUtils.create_with_parents(get_storage_dir(), 0700) == -1) {
             throw new Error(-1, 0, "Could not create storage dir \"%s\": %s", get_storage_dir(), FileUtils.error_from_errno(errno).to_string());
         }

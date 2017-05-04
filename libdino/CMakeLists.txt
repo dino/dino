@@ -1,9 +1,9 @@
 find_packages(LIBDINO_PACKAGES REQUIRED
+    GDKPixbuf2
     Gee
     GLib
     GModule
     GObject
-    GTK3
 )
 
 vala_precompile(LIBDINO_VALA_C

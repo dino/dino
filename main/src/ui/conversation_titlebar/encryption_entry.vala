@@ -5,12 +5,15 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-class EncryptionEntry : Plugins.ConversationTitlebarEntry {
-    public override string id { get { return "encryption"; } }
+class EncryptionEntry : Plugins.ConversationTitlebarEntry, Object {
+    public string id { get { return "encryption"; } }
 
-    public override double order { get { return 2; } }
-    public override Plugins.ConversationTitlebarWidget get_widget() {
-        return new EncryptionWidget() { visible=true };
+    public double order { get { return 2; } }
+    public Plugins.ConversationTitlebarWidget get_widget(Plugins.WidgetType type) {
+        if (type == Plugins.WidgetType.GTK) {
+            return new EncryptionWidget() { visible=true };
+        }
+        return null;
     }
 }
 
