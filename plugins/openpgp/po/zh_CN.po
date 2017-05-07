@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dino-openpgp-0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-07 15:43+0200\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-05-08 01:20+0800\n"
+"Last-Translator: Tong Hui <tonghuix@gmail.com>\n"
+"Language-Team: Chinese (simplified)\n"
+
+#: src/account_settings_widget.vala:74 src/account_settings_widget.vala:80
+#: src/account_settings_widget.vala:108
+msgid "Key publishing disabled"
+msgstr "密钥发布已禁用"
+
+#: src/account_settings_widget.vala:74
+msgid "No keys available. Generate one!"
+msgstr "没有可用的密钥，生成一个吧！"
+
+#: src/account_settings_widget.vala:80
+msgid "Select key"
+msgstr "选择密钥"
+
+#: src/account_settings_widget.vala:97
+msgid "Loading..."
+msgstr "载入中..."
+
+#: src/account_settings_widget.vala:97
+msgid "Querying GnuPG"
+msgstr "正在查询 GnuPG"
+
+#: src/account_settings_widget.vala:108
+msgid "Error in GnuPG"
+msgstr "GnuPG 错误"
