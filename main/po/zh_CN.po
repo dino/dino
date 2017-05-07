@@ -1,0 +1,274 @@
+# Chinese translations for PACKAGE package
+# PACKAGE 软件包的简体中文翻译.
+# Copyright (C) 2017 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Tong Hui <tonghuix@gmail.com>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: dino\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-13 13:48+0200\n"
+"PO-Revision-Date: 2017-05-08 00:36+0800\n"
+"Last-Translator: Tong Hui <tonghuix@gmail.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: data/add_conversation/add_contact_dialog.ui:11
+#: data/add_conversation/add_groupchat_dialog.ui:11
+#: src/ui/add_conversation/conference/dialog.vala:15
+#: src/ui/manage_accounts/dialog.vala:151
+msgid "Cancel"
+msgstr "取消"
+
+#: data/add_conversation/add_contact_dialog.ui:23
+#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:28
+msgid "Add"
+msgstr "添加"
+
+#: data/add_conversation/add_contact_dialog.ui:48
+#: data/add_conversation/add_groupchat_dialog.ui:49
+#: data/add_conversation/conference_details_fragment.ui:16
+msgid "Account"
+msgstr "账户"
+
+#: data/add_conversation/add_contact_dialog.ui:101
+#: data/add_conversation/add_groupchat_dialog.ui:189
+msgid "Alias"
+msgstr "别名"
+
+#: data/add_conversation/add_contact_dialog.ui:129
+msgid "Request presence updates"
+msgstr "请求在线更新"
+
+#: data/add_conversation/add_groupchat_dialog.ui:120
+#: data/add_conversation/conference_details_fragment.ui:120
+msgid "Nick"
+msgstr "昵称"
+
+#: data/add_conversation/add_groupchat_dialog.ui:147
+#: data/add_conversation/conference_details_fragment.ui:172
+#: data/manage_accounts/add_account_dialog.ui:73
+#: data/manage_accounts/dialog.ui:163
+msgid "Password"
+msgstr "密码"
+
+#: data/add_conversation/add_groupchat_dialog.ui:176
+msgid "Join on startup"
+msgstr "启动时加入"
+
+#: data/conversation_selector/view.ui:16
+msgid "Search"
+msgstr "搜索"
+
+#: data/manage_accounts/add_account_dialog.ui:21
+#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:42
+msgid "Save"
+msgstr "保存"
+
+#: data/manage_accounts/add_account_dialog.ui:102
+#: data/manage_accounts/dialog.ui:217
+msgid "Local alias"
+msgstr "本地别名"
+
+#: data/manage_accounts/dialog.ui:9 data/menu_app.ui:6
+msgid "Accounts"
+msgstr "帐号"
+
+#: data/manage_accounts/dialog.ui:306
+msgid "Add an account"
+msgstr "添加新账号"
+
+#: data/menu_add.ui:6
+msgid "Start Chat"
+msgstr "开始聊天"
+
+#: data/menu_add.ui:12 src/ui/add_conversation/conference/dialog.vala:26
+#: src/ui/unified_window.vala:145
+msgid "Join Conference"
+msgstr "加入群聊"
+
+#: data/menu_app.ui:10
+msgid "Settings"
+msgstr "设置"
+
+#: data/menu_app.ui:16
+msgid "Quit"
+msgstr "退出"
+
+#: data/menu_conversation.ui:5
+msgid "Contact Details"
+msgstr "联系人详情"
+
+#: data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "未加密"
+
+#: data/settings_dialog.ui:8
+msgid "Preferences"
+msgstr "选项"
+
+#: data/settings_dialog.ui:23
+msgid "Send typing notifications and message marker"
+msgstr "发送打字通知和消息标记"
+
+#: data/settings_dialog.ui:35
+msgid "Convert smileys to emojis"
+msgstr "将笑脸转换成 Emoji"
+
+#: src/ui/add_conversation/conference/dialog.vala:45
+msgid "Next"
+msgstr "下一个"
+
+#: src/ui/add_conversation/conference/dialog.vala:60
+msgid "Join"
+msgstr "加入"
+
+#. Day and month
+#: src/ui/conversation_selector/conversation_row.vala:175
+#, no-c-format
+msgid "%b %d"
+msgstr " %_m 月 %_d 日"
+
+#: src/ui/conversation_selector/conversation_row.vala:179
+msgid "Yesterday"
+msgstr "昨天"
+
+#. Time in 24h format (w/o seconds)
+#: src/ui/conversation_selector/conversation_row.vala:182
+#: src/ui/conversation_summary/message_item.vala:110
+#, no-c-format
+msgid "%H∶%M"
+msgstr "%H∶%M"
+
+#. Time in 12h format (w/o seconds)
+#: src/ui/conversation_selector/conversation_row.vala:183
+#: src/ui/conversation_summary/message_item.vala:111
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr "%l∶%M %p"
+
+#: src/ui/conversation_selector/conversation_row.vala:186
+#: src/ui/conversation_summary/message_item.vala:114
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "%i 分钟以前"
+msgstr[1] "%i 分钟以前"
+
+#: src/ui/conversation_selector/conversation_row.vala:188
+#: src/ui/conversation_summary/message_item.vala:116
+msgid "Just now"
+msgstr "刚刚"
+
+#. Date + time in 24h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:98
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x, %H∶%M"
+
+#. Date + time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:99
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x, %l∶%M %p"
+
+#. Month, day and time in 24h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:102
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr " %_m 月 %_d 日，%H∶%M"
+
+#. Month, day and time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:103
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr " %_m 月 %_d 日，%l∶%M %p"
+
+#. Day of week and time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:106
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%A，%H∶%M"
+
+#: src/ui/conversation_summary/message_item.vala:107
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%A，%l∶%M %p"
+
+#: src/ui/conversation_summary/view.vala:120
+msgid "is typing..."
+msgstr "正在输入..."
+
+#: src/ui/conversation_summary/view.vala:122
+msgid "has stopped typing"
+msgstr "已经停止输入"
+
+#: src/ui/manage_accounts/add_account_dialog.vala:21
+msgid "Add Account"
+msgstr "添加帐号"
+
+#: src/ui/manage_accounts/dialog.vala:150
+msgid "Select avatar"
+msgstr "选择头像"
+
+#: src/ui/manage_accounts/dialog.vala:152
+msgid "Select"
+msgstr "选择"
+
+#: src/ui/manage_accounts/dialog.vala:251
+msgid "Connecting..."
+msgstr "连接中..."
+
+#: src/ui/manage_accounts/dialog.vala:253
+msgid "Connected"
+msgstr "已连接"
+
+#: src/ui/manage_accounts/dialog.vala:255
+msgid "Disconnected"
+msgstr "已断开连接"
+
+#: src/ui/manage_accounts/dialog.vala:278
+msgid "Wrong password"
+msgstr "密码错误"
+
+#: src/ui/manage_accounts/dialog.vala:281
+#: src/ui/manage_accounts/dialog.vala:283
+msgid "Error"
+msgstr "错误"
+
+#: src/ui/occupant_menu/view.vala:48
+msgid "Start private conversation"
+msgstr "启动私密会话"
+
+#: src/ui/notifications.vala:64
+msgid "Subscription request"
+msgstr "订阅请求"
+
+#: src/ui/notifications.vala:66
+msgid "Accept"
+msgstr "接受"
+
+#: src/ui/notifications.vala:79
+msgid "Deny"
+msgstr "拒绝"
+
+#: src/ui/unified_window.vala:135
+msgid "No accounts active"
+msgstr "没有激活的帐号"
+
+#: src/ui/unified_window.vala:136
+msgid "Manage accounts"
+msgstr "管理帐号"
+
+#: src/ui/unified_window.vala:143
+msgid "No conversation active"
+msgstr "没有激活的会话"
+
+#: src/ui/unified_window.vala:144
+msgid "Add Chat"
+msgstr "添加聊天"
