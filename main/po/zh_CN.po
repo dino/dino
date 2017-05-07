@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-13 13:48+0200\n"
-"PO-Revision-Date: 2017-05-08 00:57+0800\n"
+"PO-Revision-Date: 2017-05-08 01:23+0800\n"
 "Last-Translator: Tong Hui <tonghuix@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
 "Language: zh_CN\n"
@@ -34,7 +34,7 @@ msgstr "添加"
 #: data/add_conversation/add_groupchat_dialog.ui:49
 #: data/add_conversation/conference_details_fragment.ui:16
 msgid "Account"
-msgstr "账户"
+msgstr "账号"
 
 #: data/add_conversation/add_contact_dialog.ui:101
 #: data/add_conversation/add_groupchat_dialog.ui:189
