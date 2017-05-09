@@ -8,7 +8,7 @@ using Dino.Entities;
 namespace Dino.Ui.ManageAccounts {
 
 [GtkTemplate (ui = "/org/dino-im/manage_accounts/dialog.ui")]
-public class Dialog : Gtk.Window {
+public class Dialog : Gtk.Dialog {
 
     public signal void account_enabled(Account account);
     public signal void account_disabled(Account account);
@@ -75,6 +75,7 @@ public class Dialog : Gtk.Window {
     }
 
     public Dialog(StreamInteractor stream_interactor, Database db) {
+        Object(use_header_bar : 1);
         this.db = db;
         this.stream_interactor = stream_interactor;
         foreach (Account account in db.get_accounts()) {
