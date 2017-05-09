@@ -23,7 +23,7 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
         SimpleAction contacts_action = new SimpleAction("add_chat", null);
         contacts_action.activate.connect(() => {
             AddConversation.Chat.Dialog add_chat_dialog = new AddConversation.Chat.Dialog(stream_interactor);
-            add_chat_dialog.set_transient_for((Window) get_toplevel());
+            add_chat_dialog.set_transient_for(window);
             add_chat_dialog.conversation_opened.connect((conversation) => conversation_opened(conversation));
             add_chat_dialog.show();
         });
@@ -32,7 +32,7 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
         SimpleAction conference_action = new SimpleAction("add_conference", null);
         conference_action.activate.connect(() => {
             AddConversation.Conference.Dialog add_conference_dialog = new AddConversation.Conference.Dialog(stream_interactor);
-            add_conference_dialog.set_transient_for((Window) get_toplevel());
+            add_conference_dialog.set_transient_for(window);
             add_conference_dialog.conversation_opened.connect((conversation) => conversation_opened(conversation));
             add_conference_dialog.show();
         });

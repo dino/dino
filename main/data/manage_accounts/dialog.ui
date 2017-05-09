@@ -3,7 +3,6 @@
     <template class="DinoUiManageAccountsDialog">
         <property name="width-request">700</property>
         <property name="height-request">400</property>
-        <property name="visible">True</property>
         <child type="titlebar">
             <object class="GtkHeaderBar">
                 <property name="title" translatable="yes">Accounts</property>

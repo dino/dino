@@ -2,7 +2,6 @@
 <interface>
     <template class="DinoUiSettingsDialog">
         <property name="modal">True</property>
-        <property name="visible">True</property>
         <child type="titlebar">
             <object class="GtkHeaderBar">
                 <property name="title" translatable="yes">Preferences</property>
