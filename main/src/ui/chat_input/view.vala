@@ -72,7 +72,7 @@ public class View : Box {
     }
 
     private bool on_text_input_key_press(EventKey event) {
-        if (event.keyval == Key.Return) {
+        if (event.keyval in new uint[]{Key.Return, Key.KP_Enter}) {
             if ((event.state & ModifierType.SHIFT_MASK) > 0) {
                 text_input.buffer.insert_at_cursor("\n", 1);
             } else if (text_input.buffer.text != ""){
