@@ -29,11 +29,12 @@ namespace Xmpp.Xep.Pubsub {
             });
         }
 
-        public void publish(XmppStream stream, string? jid, string node_id, string node, string item_id, StanzaNode content) {
+        public void publish(XmppStream stream, string? jid, string node_id, string node, string? item_id, StanzaNode content) {
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI).add_self_xmlns();
             StanzaNode publish_node = new StanzaNode.build("publish", NS_URI).put_attribute("node", node_id);
             pubsub_node.put_node(publish_node);
-            StanzaNode items_node = new StanzaNode.build("item", NS_URI).put_attribute("id", item_id);
+            StanzaNode items_node = new StanzaNode.build("item", NS_URI);
+            if (item_id != null) items_node.put_attribute("id", item_id);
             items_node.put_node(content);
             publish_node.put_node(items_node);
             Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);

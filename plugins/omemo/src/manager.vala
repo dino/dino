@@ -83,7 +83,12 @@ public class Manager : StreamInteractionModule, Object {
                 message.marked = Entities.Message.Marked.UNSENT;
                 return;
             }
-            StreamModule module = ((!)stream).get_module(StreamModule.IDENTITY);
+            StreamModule? module_ = ((!)stream).get_module(StreamModule.IDENTITY);
+            if (module_ == null) {
+                message.marked = Entities.Message.Marked.UNSENT;
+                return;
+            }
+            StreamModule module = (!)module_;
             EncryptState enc_state = module.encrypt(message_stanza, conversation.account.bare_jid.to_string());
             MessageState state;
             lock (message_states) {
@@ -122,6 +127,7 @@ public class Manager : StreamInteractionModule, Object {
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created(account, store));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect((jid) => on_device_list_loaded(account, jid));
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).session_started.connect((jid, device_id) => on_session_started(account, jid, false));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).session_start_failed.connect((jid, device_id) => on_session_started(account, jid, true));
     }
@@ -179,6 +185,40 @@ public class Manager : StreamInteractionModule, Object {
             Entities.Conversation? conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(((!)msg.counterpart), account);
             if (conv == null) continue;
             stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(msg, (!)conv, true);
+        }
+
+        // Update meta database
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) {
+            return;
+        }
+        StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
+        if (module == null) {
+            return;
+        }
+        try {
+            ArrayList<int32> device_list = module.get_device_list(jid);
+            db.identity_meta.insert_device_list(jid, device_list);
+            int inc = 0;
+            foreach (Row row in db.identity_meta.with_address(jid).with_null(db.identity_meta.identity_key_public_base64)) {
+                module.fetch_bundle(stream, row[db.identity_meta.address_name], row[db.identity_meta.device_id]);
+                inc++;
+            }
+            if (inc > 0) {
+                if (Plugin.DEBUG) print(@"OMEMO: new bundles $inc/$(device_list.size) for $jid\n");
+            }
+        } catch (DatabaseError e) {
+            // Ignore
+            print(@"OMEMO: failed to use database: $(e.message)\n");
+        }
+    }
+
+    public void on_bundle_fetched(Account account, string jid, int32 device_id, Bundle bundle) {
+        try {
+            db.identity_meta.insert_device_bundle(jid, device_id, bundle);
+        } catch (DatabaseError e) {
+            // Ignore
+            print(@"OMEMO: failed to use database: $(e.message)\n");
         }
     }
 

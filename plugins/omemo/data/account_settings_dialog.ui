@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoPluginsOmemoAccountSettingsDialog">
+        <property name="modal">True</property>
+        <property name="title" translatable="yes">OMEMO Keys</property>
+        <child internal-child="vbox">
+            <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="margin-left">40</property>
+                <property name="margin-right">40</property>
+                <child>
+                    <object class="GtkBox">
+                        <property name="margin-top">12</property>
+                        <property name="orientation">horizontal</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Own fingerprint</property>
+                                <property name="xalign">0</property>
+                                <property name="yalign">1</property>
+                                <property name="hexpand">True</property>
+                                <property name="margin-bottom">2</property>
+                                <attributes>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                </attributes>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="copy_button">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <style>
+                                    <class name="flat"/>
+                                </style>
+                                <signal name="clicked" handler="copy_button_clicked"/>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="icon-name">edit-copy-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <!--<child>
+                            <object class="GtkButton" id="qr_button">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="sensitive">False</property>
+                                <style>
+                                    <class name="flat"/>
+                                </style>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="icon-name">camera-photo-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>-->
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkFrame">
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkListBox">
+                                <property name="visible">True</property>
+                                <property name="selection-mode">none</property>
+                                <child>
+                                    <object class="GtkLabel" id="own_fingerprint">
+                                        <property name="visible">True</property>
+                                        <property name="margin">8</property>
+                                        <property name="label">...</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkLabel">
+                        <property name="margin-top">12</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Other devices</property>
+                        <property name="margin-bottom">2</property>
+                        <attributes>
+                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                        </attributes>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkFrame">
+                        <property name="visible">True</property>
+                        <property name="margin-bottom">18</property>
+                        <child>
+                            <object class="GtkScrolledWindow">
+                                <property name="hscrollbar_policy">never</property>
+                                <property name="vscrollbar_policy">never</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkListBox" id="other_list">
+                                        <property name="visible">True</property>
+                                        <property name="selection-mode">none</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="margin">8</property>
+                                                <property name="label" translatable="yes">- None -</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>
