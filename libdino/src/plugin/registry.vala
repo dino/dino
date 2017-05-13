@@ -6,6 +6,7 @@ public class Registry {
     internal ArrayList<EncryptionListEntry> encryption_list_entries = new ArrayList<EncryptionListEntry>();
     internal ArrayList<AccountSettingsEntry> account_settings_entries = new ArrayList<AccountSettingsEntry>();
     internal ArrayList<ContactDetailsProvider> contact_details_entries = new ArrayList<ContactDetailsProvider>();
+    internal Map<string, TextCommand> text_commands = new HashMap<string, TextCommand>();
     internal Gee.Collection<ConversationTitlebarEntry> conversation_titlebar_entries = new Gee.TreeSet<ConversationTitlebarEntry>((a, b) => {
         if (a.order < b.order) {
             return -1;
@@ -45,6 +46,14 @@ public class Registry {
                 if (e.id == entry.id) return false;
             }
             contact_details_entries.add(entry);
+            return true;
+        }
+    }
+
+    public bool register_text_command(TextCommand cmd) {
+        lock(text_commands) {
+            if (text_commands.has_key(cmd.cmd)) return false;
+            text_commands[cmd.cmd] = cmd;
             return true;
         }
     }
