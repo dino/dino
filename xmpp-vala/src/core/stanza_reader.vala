@@ -1,7 +1,9 @@
 using Gee;
 
 namespace Xmpp.Core {
+
 public const string XMLNS_URI = "http://www.w3.org/2000/xmlns/";
+public const string XML_URI = "http://www.w3.org/XML/1998/namespace";
 public const string JABBER_URI = "jabber:client";
 
 public errordomain XmlError {
@@ -85,7 +87,7 @@ public class StanzaReader {
     private string read_until_ws() throws XmlError {
         var res = new StringBuilder();
         var what = peek_single();
-        while(!is_ws(what)) {
+        while (!is_ws(what)) {
             res.append_c(read_single());
             what = peek_single();
         }
@@ -95,7 +97,7 @@ public class StanzaReader {
     private string read_until_char_or_ws(char x, char y = 0) throws XmlError {
         var res = new StringBuilder();
         var what = peek_single();
-        while(what != x && what != y && !is_ws(what)) {
+        while (what != x && what != y && !is_ws(what)) {
             res.append_c(read_single());
             what = peek_single();
         }
@@ -105,11 +107,11 @@ public class StanzaReader {
     private string read_until_char(char x) throws XmlError {
         var res = new StringBuilder();
         var what = peek_single();
-        while(what != x) {
+        while (what != x) {
             res.append_c(read_single());
             what = peek_single();
         }
-       return res.str;
+        return res.str;
     }
 
     private StanzaAttribute read_attribute() throws XmlError {
@@ -169,7 +171,7 @@ public class StanzaReader {
             eof = true;
             skip_single();
             res.name = read_until_char_or_ws('>');
-            while(peek_single() != '>') {
+            while (peek_single() != '>') {
                 skip_single();
             }
             skip_single();
@@ -184,7 +186,7 @@ public class StanzaReader {
             res.attributes.add(read_attribute());
             skip_until_non_ws();
         }
-        if (read_single() == '/' || res.pseudo ) {
+        if (read_single() == '/' || res.pseudo) {
             res.has_nodes = false;
             skip_single();
         } else {
@@ -215,8 +217,8 @@ public class StanzaReader {
         }
     }
 
-    public StanzaNode read_stanza_node(NamespaceState? baseNs = null) throws XmlError {
-        ns_state = baseNs ?? new NamespaceState.for_stanza();
+    public StanzaNode read_stanza_node() throws XmlError {
+        ns_state = ns_state.push();
         var res = read_node_start();
         if (res.has_nodes) {
             bool finishNodeSeen = false;
@@ -238,8 +240,7 @@ public class StanzaReader {
                         }
                         finishNodeSeen = true;
                     } else {
-                        res.sub_nodes.add(read_stanza_node(ns_state.clone()));
-                        ns_state = baseNs ?? new NamespaceState.for_stanza();
+                        res.sub_nodes.add(read_stanza_node());
                     }
                 } else {
                     res.sub_nodes.add(read_text_node());
@@ -247,16 +248,18 @@ public class StanzaReader {
             } while (!finishNodeSeen);
             if (res.sub_nodes.size == 0) res.has_nodes = false;
         }
+        ns_state = ns_state.pop();
         return res;
     }
 
-    public StanzaNode read_node(NamespaceState? baseNs = null) throws XmlError {
+    public StanzaNode read_node() throws XmlError {
         skip_until_non_ws();
         if (peek_single() == '<') {
-            return read_stanza_node(baseNs ?? new NamespaceState.for_stanza());
+            return read_stanza_node();
         } else {
             return read_text_node();
         }
     }
 }
+
 }

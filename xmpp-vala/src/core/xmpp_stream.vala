@@ -11,7 +11,7 @@ public errordomain IOStreamError {
 }
 
 public class XmppStream {
-    private static string NS_URI = "http://etherx.jabber.org/streams";
+    public const string NS_URI = "http://etherx.jabber.org/streams";
 
     public string remote_name;
     public XmppLog log = new XmppLog();

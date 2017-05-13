@@ -300,6 +300,25 @@ public class StanzaNode : StanzaEntry {
         return this;
     }
 
+    public bool equals(StanzaNode other) {
+        if (other.name != name) return false;
+        if (other.val != val) return false;
+        if (name == "#text") return true;
+        if (other.ns_uri != ns_uri) return false;
+
+        if (other.sub_nodes.size != sub_nodes.size) return false;
+        for (int i = 0; i < sub_nodes.size; i++) {
+            if (!other.sub_nodes[i].equals(sub_nodes[i])) return false;
+        }
+
+        if (other.attributes.size != attributes.size) return false;
+        for (int i = 0; i < attributes.size; i++) {
+            if (!other.attributes[i].equals(attributes[i])) return false;
+        }
+
+        return true;
+    }
+
     private const string TAG_START_BEGIN_FORMAT = "%s<{%s}:%s";
     private const string TAG_START_EMPTY_END = " />\n";
     private const string TAG_START_CONTENT_END = ">\n";
@@ -358,12 +377,13 @@ public class StanzaNode : StanzaEntry {
     public string to_xml(NamespaceState? state = null) throws XmlError {
         NamespaceState my_state = state ?? new NamespaceState.for_stanza();
         if (name == "#text") return val == null ? "" : (!)encoded_val;
+        my_state = my_state.push();
         foreach (var xmlns in get_attributes_by_ns_uri (XMLNS_URI)) {
             if (xmlns.val == null) continue;
             if (xmlns.name == "xmlns") {
-                my_state = new NamespaceState.with_current(my_state, (!)xmlns.val);
+                my_state.set_current((!)xmlns.val);
             } else {
-                my_state = new NamespaceState.with_assoc(my_state, (!)xmlns.val, xmlns.name);
+                my_state.add_assoc((!)xmlns.val, xmlns.name);
             }
         }
         var sb = new StringBuilder();
@@ -391,6 +411,7 @@ public class StanzaNode : StanzaEntry {
                 }
             }
         }
+        my_state = my_state.pop();
         return sb.str;
     }
 }
