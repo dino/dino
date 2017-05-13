@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name>Dino</name>
+  <short-name>dino</short-name>
+  <shortdesc xml:lang="en">Modern Jabber/XMPP Client</shortdesc>
+  <description xml:lang="en">
+    Dino is an instant messaging client for the
+    Jabber/XMPP network, providing a unique and modern user experience
+    based on the latest technology from the GNOME project.
+  </description>
+
+  <homepage rdf:resource="https://dino.im/" />
+  <bug-database rdf:resource="https://github.com/dino/dino/issues" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
+  <programming-language>Vala</programming-language>
+
+</Project>
