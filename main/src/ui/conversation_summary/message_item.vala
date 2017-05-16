@@ -31,6 +31,12 @@ public class MessageItem : Grid, ConversationItem {
             encryption_image.visible = true;
             encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.SMALL_TOOLBAR);
         }
+        if (message.encryption == Encryption.PGP) {
+            encryption_image.tooltip_text = _("This message was encrypted with PGP");
+        }
+        if (message.encryption == Encryption.OMEMO) {
+            encryption_image.tooltip_text = _("This message was encrypted with OMEMO");
+        }
 
         time_label.label = get_relative_time(initial_time.to_local());
         Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(30, 30, image.scale_factor)).draw_message(stream_interactor, message));
