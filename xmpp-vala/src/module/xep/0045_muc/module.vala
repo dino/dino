@@ -8,17 +8,6 @@ private const string NS_URI = "http://jabber.org/protocol/muc";
 private const string NS_URI_ADMIN = NS_URI + "#admin";
 private const string NS_URI_USER = NS_URI + "#user";
 
-public const string AFFILIATION_ADMIN = "admin";
-public const string AFFILIATION_MEMBER = "member";
-public const string AFFILIATION_NONE = "none";
-public const string AFFILIATION_OUTCAST = "outcast";
-public const string AFFILIATION_OWNER = "owner";
-
-public const string ROLE_MODERATOR = "moderator";
-public const string ROLE_NONE = "none";
-public const string ROLE_PARTICIPANT = "participant";
-public const string ROLE_VISITOR = "visitor";
-
 public enum MucEnterError {
     PASSWORD_REQUIRED,
     NOT_IN_MEMBER_LIST,
@@ -28,12 +17,27 @@ public enum MucEnterError {
     ROOM_DOESNT_EXIST
 }
 
+public enum Affiliation {
+    ADMIN,
+    MEMBER,
+    NONE,
+    OUTCAST,
+    OWNER
+}
+
+public enum Role {
+    MODERATOR,
+    NONE,
+    PARTICIPANT,
+    VISITOR
+}
+
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0045_muc_module");
 
-    public signal void received_occupant_affiliation(XmppStream stream, string jid, string? affiliation);
+    public signal void received_occupant_affiliation(XmppStream stream, string jid, Affiliation? affiliation);
     public signal void received_occupant_jid(XmppStream stream, string jid, string? real_jid);
-    public signal void received_occupant_role(XmppStream stream, string jid, string? role);
+    public signal void received_occupant_role(XmppStream stream, string jid, Role? role);
     public signal void subject_set(XmppStream stream, string subject, string jid);
     public signal void room_configuration_changed(XmppStream stream, string jid, StatusCode code);
 
@@ -92,6 +96,12 @@ public class Module : XmppStreamModule {
         if (stream.get_module(ServiceDiscovery.Module.IDENTITY) != null) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         }
+
+        room_entered.connect((stream, jid, nick) => {
+            query_affiliation(stream, jid, "member", null, null);
+            query_affiliation(stream, jid, "admin", null, null);
+            query_affiliation(stream, jid, "owner", null, null);
+        });
     }
 
     public override void detach(XmppStream stream) {
@@ -167,8 +177,10 @@ public class Module : XmppStreamModule {
                         flag.finish_muc_enter(bare_jid, get_resource_part(presence.from));
                     }
                 }
-                string? affiliation = x_node.get_deep_attribute("item", "affiliation");
-                if (affiliation != null) {
+                string? affiliation_str = x_node.get_deep_attribute("item", "affiliation");
+                if (affiliation_str != null) {
+                    Affiliation affiliation = parse_affiliation(affiliation_str);
+                    flag.set_affiliation(get_bare_jid(presence.from), presence.from, affiliation);
                     received_occupant_affiliation(stream, presence.from, affiliation);
                 }
                 string? jid = x_node.get_deep_attribute("item", "jid");
@@ -176,8 +188,10 @@ public class Module : XmppStreamModule {
                     flag.set_real_jid(presence.from, jid);
                     received_occupant_jid(stream, presence.from, jid);
                 }
-                string? role = x_node.get_deep_attribute("item", "role");
-                if (role != null) {
+                string? role_str = x_node.get_deep_attribute("item", "role");
+                if (role_str != null) {
+                    Role role = parse_role(role_str);
+                    flag.set_occupant_role(presence.from, role);
                     received_occupant_role(stream, presence.from, role);
                 }
             }
@@ -211,12 +225,71 @@ public class Module : XmppStreamModule {
         }
     }
 
-    private ArrayList<int> get_status_codes(StanzaNode x_node) {
+    [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Gee.List<string> jids, Object? store);
+    private void query_affiliation(XmppStream stream, string jid, string affiliation, OnResult? on_result, Object? store) {
+        Iq.Stanza iq = new Iq.Stanza.get(
+            new StanzaNode.build("query", NS_URI_ADMIN)
+                .add_self_xmlns()
+                .put_node(new StanzaNode.build("item", NS_URI_ADMIN)
+                    .put_attribute("affiliation", affiliation))
+        ) { to=jid };
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq, store) => {
+            Tuple<OnResult?, Object?> tuple = store as Tuple<OnResult?, Object?>;
+            if (iq.is_error()) return;
+            StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI_ADMIN);
+            if (query_node == null) return;
+            Gee.List<StanzaNode> item_nodes = query_node.get_subnodes("item", NS_URI_ADMIN);
+            Gee.List<string> ret_jids = new ArrayList<string>();
+            foreach (StanzaNode item in item_nodes) {
+                string? jid_ = item.get_attribute("jid");
+                string? affiliation_ = item.get_attribute("affiliation");
+                if (jid_ != null && affiliation_ != null) {
+                    stream.get_flag(Muc.Flag.IDENTITY).set_offline_member(iq.from, jid_, parse_affiliation(affiliation_));
+                    ret_jids.add(jid_);
+                }
+            }
+            if (tuple.a != null) tuple.a(stream, ret_jids, tuple.b);
+        }, Tuple.create(on_result, store));
+    }
+
+    private static ArrayList<int> get_status_codes(StanzaNode x_node) {
         ArrayList<int> ret = new ArrayList<int>();
         foreach (StanzaNode status_node in x_node.get_subnodes("status", NS_URI_USER)) {
             ret.add(int.parse(status_node.get_attribute("code")));
         }
         return ret;
+    }
+
+    private static Affiliation parse_affiliation(string affiliation_str) {
+        Affiliation affiliation;
+        switch (affiliation_str) {
+            case "admin":
+                affiliation = Affiliation.ADMIN; break;
+            case "member":
+                affiliation = Affiliation.MEMBER; break;
+            case "outcast":
+                affiliation = Affiliation.OUTCAST; break;
+            case "owner":
+                affiliation = Affiliation.OWNER; break;
+            default:
+                affiliation = Affiliation.NONE; break;
+        }
+        return affiliation;
+    }
+
+    private static Role parse_role(string role_str) {
+        Role role;
+        switch (role_str) {
+            case "moderator":
+                role = Role.MODERATOR; break;
+            case "participant":
+                role = Role.PARTICIPANT; break;
+            case "visitor":
+                role = Role.VISITOR; break;
+            default:
+                role = Role.NONE; break;
+        }
+        return role;
     }
 }
 

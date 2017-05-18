@@ -132,6 +132,27 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public Xep.Muc.Affiliation? get_affiliation(Jid muc_jid, Jid jid, Account account) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) {
+            return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_affiliation(muc_jid.to_string(), jid.to_string());
+        }
+        return null;
+    }
+
+    public Gee.List<Jid>? get_offline_members(Jid jid, Account account) {
+        Gee.List<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) {
+            Gee.List<string>? members = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_offline_members(jid.to_string());
+            if (members == null) return null;
+            foreach (string member in members) {
+                ret.add(new Jid(member));
+            }
+        }
+        return ret;
+    }
+
     public Jid? get_message_real_jid(Entities.Message message) {
         if (message.real_jid != null) {
             return new Jid(message.real_jid);

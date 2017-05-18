@@ -11,21 +11,32 @@ public class Flag : XmppStreamFlag {
     private HashMap<string, string> own_nicks = new HashMap<string, string>();
     private HashMap<string, string> subjects = new HashMap<string, string>();
     private HashMap<string, string> subjects_by = new HashMap<string, string>();
+
     private HashMap<string, string> occupant_real_jids = new HashMap<string, string>();
-    private HashMap<string, string> occupant_affiliation = new HashMap<string, string>();
-    private HashMap<string, string> occupant_role = new HashMap<string, string>();
+    private HashMap<string, HashMap<string, Affiliation>> affiliations = new HashMap<string, HashMap<string, Affiliation>>();
+    private HashMap<string, Role> occupant_role = new HashMap<string, Role>();
 
     public string? get_real_jid(string full_jid) { return occupant_real_jids[full_jid]; }
 
-    public void set_real_jid(string full_jid, string real_jid) { occupant_real_jids[full_jid] = real_jid; }
+    public Gee.List<string> get_offline_members(string full_jid) {
+        Gee.List<string> ret = new ArrayList<string>();
+        foreach (string muc_jid in affiliations.keys) {
+            foreach (string jid in affiliations[muc_jid].keys) {
+                if (!jid.has_prefix(muc_jid)) ret.add(jid);
+            }
+        }
+        return ret;
+    }
 
-    public string? get_occupant_affiliation(string full_jid) { return occupant_affiliation[full_jid]; }
+    public Affiliation? get_affiliation(string muc_jid, string full_jid) {
+        if (affiliations.has_key(muc_jid) && affiliations[muc_jid].has_key(full_jid)) return affiliations[muc_jid][full_jid];
+        return Affiliation.NONE;
+    }
 
-    public void set_occupant_affiliation(string full_jid, string affiliation) { occupant_affiliation[full_jid] = affiliation; }
-
-    public string? get_occupant_role(string full_jid) { return occupant_role[full_jid]; }
-
-    public void set_occupant_role(string full_jid, string role) { occupant_role[full_jid] = role; }
+    public Role? get_occupant_role(string full_jid) {
+        if (occupant_role.has_key(full_jid)) return occupant_role[full_jid];
+        return Role.NONE;
+    }
 
     public string? get_muc_nick(string bare_jid) { return own_nicks[bare_jid]; }
 
@@ -42,22 +53,41 @@ public class Flag : XmppStreamFlag {
 
     public string? get_muc_subject(string bare_jid) { return subjects[bare_jid]; }
 
-    public void set_muc_subject(string full_jid, string? subject) {
+    internal void set_real_jid(string full_jid, string real_jid) { occupant_real_jids[full_jid] = real_jid; }
+
+    internal void set_offline_member(string muc_jid, string real_jid, Affiliation affiliation) {
+        set_affiliation(muc_jid, real_jid, affiliation);
+    }
+
+    internal void set_affiliation(string muc_jid, string full_jid, Affiliation affiliation) {
+        if (!affiliations.has_key(muc_jid)) affiliations[muc_jid] = new HashMap<string, Affiliation>();
+        if (affiliation == Affiliation.NONE) {
+            affiliations[muc_jid].unset(full_jid);
+        } else {
+            affiliations[muc_jid][full_jid] = affiliation;
+        }
+    }
+
+    internal void set_occupant_role(string full_jid, Role role) {
+        occupant_role[full_jid] = role;
+    }
+
+    internal void set_muc_subject(string full_jid, string? subject) {
         string bare_jid = get_bare_jid(full_jid);
         subjects[bare_jid] = subject;
         subjects_by[bare_jid] = full_jid;
     }
 
-    public void start_muc_enter(string bare_jid, string presence_id) {
+    internal void start_muc_enter(string bare_jid, string presence_id) {
         enter_ids[bare_jid] = presence_id;
     }
 
-    public void finish_muc_enter(string bare_jid, string? nick = null) {
+    internal void finish_muc_enter(string bare_jid, string? nick = null) {
         if (nick != null) own_nicks[bare_jid] = nick;
         enter_ids.unset(bare_jid);
     }
 
-    public void left_muc(XmppStream stream, string muc) {
+    internal void left_muc(XmppStream stream, string muc) {
         own_nicks.unset(muc);
         subjects.unset(muc);
         subjects_by.unset(muc);
@@ -69,15 +99,16 @@ public class Flag : XmppStreamFlag {
         }
     }
 
-    public void remove_occupant_info(string full_jid) {
+    internal void remove_occupant_info(string full_jid) {
         occupant_real_jids.unset(full_jid);
-        occupant_affiliation.unset(full_jid);
+        string bare_jid = get_bare_jid(full_jid);
+        if (affiliations.has_key(full_jid)) affiliations[bare_jid].unset(full_jid);
         occupant_role.unset(full_jid);
     }
 
-    public override string get_ns() { return NS_URI; }
+    internal override string get_ns() { return NS_URI; }
 
-    public override string get_id() { return IDENTITY.id; }
+    internal override string get_id() { return IDENTITY.id; }
 }
 
 }
