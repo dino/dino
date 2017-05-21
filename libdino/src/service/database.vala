@@ -115,6 +115,31 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class RosterTable : Table {
+        public Column<int> account_id = new Column.Integer("account_id");
+        public Column<string> jid = new Column.Text("jid");
+        public Column<string> name = new Column.Text("name");
+        public Column<string> subscription = new Column.Text("subscription");
+
+        internal RosterTable(Database db) {
+            base(db, "roster");
+            init({account_id, jid, name, subscription});
+            unique({account_id, jid}, "IGNORE");
+        }
+    }
+
+    public class AccountKeyValueTable : Table {
+        public Column<int> account_id = new Column.Integer("account_id");
+        public Column<string> key = new Column.Text("key");
+        public Column<string> value = new Column.Text("value");
+
+        internal AccountKeyValueTable(Database db) {
+            base(db, "account_key_value");
+            init({account_id, key, value});
+            unique({account_id, key}, "IGNORE");
+        }
+    }
+
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
     public MessageTable message { get; private set; }
@@ -122,6 +147,8 @@ public class Database : Qlite.Database {
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
+    public RosterTable roster { get; private set; }
+    public AccountKeyValueTable account_key_value { get; private set; }
 
     public Map<int, string> jid_table_cache = new HashMap<int, string>();
     public Map<string, int> jid_table_reverse = new HashMap<string, int>();
@@ -136,7 +163,9 @@ public class Database : Qlite.Database {
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
         entity_feature = new EntityFeatureTable(this);
-        init({ account, jid, message, real_jid, conversation, avatar, entity_feature });
+        roster = new RosterTable(this);
+        account_key_value = new AccountKeyValueTable(this);
+        init({ account, jid, message, real_jid, conversation, avatar, entity_feature, roster, account_key_value });
         exec("PRAGMA synchronous=0");
     }
 

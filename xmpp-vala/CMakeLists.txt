@@ -26,6 +26,7 @@ SOURCES
     "src/module/roster/flag.vala"
     "src/module/roster/item.vala"
     "src/module/roster/module.vala"
+    "src/module/roster/versioning_module.vala"
     "src/module/sasl.vala"
     "src/module/stanza.vala"
     "src/module/stanza_error.vala"
