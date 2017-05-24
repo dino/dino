@@ -72,14 +72,12 @@ public class RosterStoreImpl : Roster.Storage, Object {
     private Account account;
     private Database db;
 
-    private string version = "";
     private HashMap<string, Roster.Item> items = new HashMap<string, Roster.Item>();
 
     public class RosterStoreImpl(Account account, Database db) {
         this.account = account;
         this.db = db;
 
-        version = db_get_roster_version() ?? "";
         foreach (Qlite.Row row in db.roster.select().with(db.roster.account_id, "=", account.id)) {
             Roster.Item item = new Roster.Item();
             item.jid = row[db.roster.jid];
@@ -90,7 +88,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
     }
 
     public string? get_roster_version() {
-        return version;
+        return account.roster_version;
     }
 
     public Collection<Roster.Item> get_roster() {
@@ -102,11 +100,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
     }
 
     public void set_roster_version(string version) {
-        db.account_key_value.insert().or("REPLACE")
-            .value(db.account_key_value.account_id, account.id)
-            .value(db.account_key_value.key, "roster_version")
-            .value(db.account_key_value.value, version)
-            .perform();
+        account.roster_version = version;
     }
 
     public void set_roster(Collection<Roster.Item> items) {
@@ -130,15 +124,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
         items.unset(item.jid);
         db.roster.delete()
             .with(db.roster.account_id, "=", account.id)
-            .with(db.roster.jid, "=", item.jid);
-    }
-
-    private string? db_get_roster_version() {
-        Qlite.Row? row =  db.account_key_value.select()
-            .with(db.account_key_value.account_id, "=", account.id)
-            .with(db.account_key_value.key, "=", "roster_version").iterator().get_next();
-        if (row != null) return row[db.account_key_value.value];
-        return null;
+            .with(db.roster.jid, "=", item.jid).perform();
     }
 }
 

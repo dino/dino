@@ -61,6 +61,10 @@ public class View : Box {
                 case "/nick":
                     stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
                     break;
+                case "/ping":
+                    Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                    stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.to_string() + "/" + token[1], null);
+                    break;
                 case "/topic":
                     stream_interactor.get_module(MucManager.IDENTITY).change_subject(conversation.account, conversation.counterpart, token[1]);
                     break;

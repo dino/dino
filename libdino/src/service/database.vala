@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 1;
+    private const int VERSION = 2;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -15,10 +15,11 @@ public class Database : Qlite.Database {
         public Column<string> password = new Column.Text("password");
         public Column<string> alias = new Column.Text("alias");
         public Column<bool> enabled = new Column.BoolInt("enabled");
+        public Column<string> roster_version = new Column.Text("roster_version") { min_version=2 };
 
         internal AccountTable(Database db) {
             base(db, "account");
-            init({id, bare_jid, resourcepart, password, alias, enabled});
+            init({id, bare_jid, resourcepart, password, alias, enabled, roster_version});
         }
     }
 
@@ -128,18 +129,6 @@ public class Database : Qlite.Database {
         }
     }
 
-    public class AccountKeyValueTable : Table {
-        public Column<int> account_id = new Column.Integer("account_id");
-        public Column<string> key = new Column.Text("key");
-        public Column<string> value = new Column.Text("value");
-
-        internal AccountKeyValueTable(Database db) {
-            base(db, "account_key_value");
-            init({account_id, key, value});
-            unique({account_id, key}, "IGNORE");
-        }
-    }
-
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
     public MessageTable message { get; private set; }
@@ -148,7 +137,6 @@ public class Database : Qlite.Database {
     public AvatarTable avatar { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
     public RosterTable roster { get; private set; }
-    public AccountKeyValueTable account_key_value { get; private set; }
 
     public Map<int, string> jid_table_cache = new HashMap<int, string>();
     public Map<string, int> jid_table_reverse = new HashMap<string, int>();
@@ -164,8 +152,7 @@ public class Database : Qlite.Database {
         avatar = new AvatarTable(this);
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
-        account_key_value = new AccountKeyValueTable(this);
-        init({ account, jid, message, real_jid, conversation, avatar, entity_feature, roster, account_key_value });
+        init({ account, jid, message, real_jid, conversation, avatar, entity_feature, roster });
         exec("PRAGMA synchronous=0");
     }
 
