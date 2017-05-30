@@ -91,6 +91,14 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         Builder builder = new Builder.from_resource("/org/dino-im/menu_conversation.ui");
         MenuModel menu = builder.get_object("menu_conversation") as MenuModel;
         menu_button.set_menu_model(menu);
+
+        SimpleAction contact_details_action = new SimpleAction("contact_details", null);
+        contact_details_action.activate.connect(() => {
+            ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
+            contact_details_dialog.set_transient_for((Window) get_toplevel());
+            contact_details_dialog.present();
+        });
+        GLib.Application.get_default().add_action(contact_details_action);
     }
 
     private void encryption_changed() {

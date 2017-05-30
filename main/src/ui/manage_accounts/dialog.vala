@@ -120,7 +120,7 @@ public class Dialog : Gtk.Dialog {
             account_list.select_row(account_item);
             account_list.queue_draw();
         });
-        add_account_dialog.show();
+        add_account_dialog.present();
     }
 
     private void on_remove_button_clicked() {

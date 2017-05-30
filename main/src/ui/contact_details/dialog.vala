@@ -1,0 +1,120 @@
+using Gee;
+using Gtk;
+using Markup;
+
+using Dino.Entities;
+
+namespace Dino.Ui.ContactDetails {
+
+[GtkTemplate (ui = "/org/dino-im/contact_details_dialog.ui")]
+public class Dialog : Gtk.Dialog {
+
+    [GtkChild] public Image avatar;
+    [GtkChild] public Label name_label;
+    [GtkChild] public Label jid_label;
+    [GtkChild] public Label account_label;
+    [GtkChild] public Box main_box;
+
+    private StreamInteractor stream_interactor;
+    private Conversation conversation;
+
+    private Plugins.ContactDetails contact_details = new Plugins.ContactDetails();
+    private HashMap<string, ListBox> categories = new HashMap<string, ListBox>();
+    private Util.LabelHybridGroup hybrid_group = new Util.LabelHybridGroup();
+
+    public Dialog(StreamInteractor stream_interactor, Conversation conversation) {
+        Object(use_header_bar : 1);
+        this.stream_interactor = stream_interactor;
+        this.conversation = conversation;
+
+        title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
+        (get_header_bar() as HeaderBar).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+
+        name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
+        jid_label.label = conversation.counterpart.to_string();
+        account_label.label = "via " + conversation.account.bare_jid.to_string();
+        Util.image_set_from_scaled_pixbuf(avatar, (new AvatarGenerator(50, 50, avatar.scale_factor)).draw_conversation(stream_interactor, conversation));
+
+        contact_details.add.connect(add_entry);
+
+        Application app = GLib.Application.get_default() as Application;
+        app.plugin_registry.register_contact_details_entry(new SettingsProvider(stream_interactor));
+        app.plugin_registry.register_contact_details_entry(new MucConfigFormProvider(stream_interactor));
+
+        foreach (Plugins.ContactDetailsProvider provider in app.plugin_registry.contact_details_entries) {
+            provider.populate(conversation, contact_details);
+        }
+
+        destroy.connect(() => {
+            contact_details.save();
+        });
+    }
+
+    public void add_entry(string category, string label, string? description, Widget w) {
+        add_category(category);
+
+        ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
+        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_left=15, margin_right=15, margin_top=3, margin_bottom=3, visible=true };
+        list_row.add(row);
+        Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, visible=true };
+        if (description != null && description != "") {
+            Box box = new Box(Orientation.VERTICAL, 0) { visible=true };
+            box.add(label_label);
+            Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true, visible=true };
+            desc_label.set_markup("<span size='small'>%s</span>".printf(Markup.escape_text(description)));
+            desc_label.get_style_context().add_class("dim-label");
+            box.add(desc_label);
+            row.add(box);
+        } else {
+            row.add(label_label);
+        }
+
+        Widget widget = w;
+        if (widget.get_type().is_a(typeof(Entry))) {
+            Util.EntryLabelHybrid hybrid = new Util.EntryLabelHybrid(widget as Entry) { xalign=1, visible=true };
+            hybrid_group.add(hybrid);
+            widget = hybrid;
+        } else if (widget.get_type().is_a(typeof(ComboBoxText))) {
+            Util.ComboBoxTextLabelHybrid hybrid = new Util.ComboBoxTextLabelHybrid(widget as ComboBoxText) { xalign=1, visible=true };
+            hybrid_group.add(hybrid);
+            widget = hybrid;
+        }
+        widget.margin_bottom = 5;
+        widget.margin_top = 5;
+
+
+        row.add(widget);
+        categories[category].add(list_row);
+
+        Idle.add(() => {
+            int pref_height, pref_width;
+            get_content_area().get_preferred_height(null, out pref_height);
+            get_preferred_width(out pref_width, null);
+            resize(pref_width, int.min(500, pref_height));
+            return false;
+        });
+    }
+
+    public void add_category(string category) {
+        if (!categories.has_key(category)) {
+            ListBox list_box = new ListBox() { selection_mode=SelectionMode.NONE, visible=true };
+            categories[category] = list_box;
+            list_box.set_header_func((row, before_row) => {
+                if (row.get_header() == null && before_row != null) {
+                    row.set_header(new Separator(Orientation.HORIZONTAL));
+                }
+            });
+            Box box = new Box(Orientation.VERTICAL, 5) { margin_top=12, margin_bottom=12, visible=true };
+            Label category_label = new Label("") { xalign=0, visible=true };
+            category_label.set_markup(@"<b>$(Markup.escape_text(category))</b>");
+            box.add(category_label);
+            Frame frame = new Frame(null) { visible=true };
+            frame.add(list_box);
+            box.add(frame);
+            main_box.add(box);
+        }
+    }
+}
+
+}
+

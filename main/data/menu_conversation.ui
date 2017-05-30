@@ -2,6 +2,7 @@
     <menu id="menu_conversation">
         <section>
             <item>
+                <attribute name="action">app.contact_details</attribute>
                 <attribute name="label" translatable="yes">Contact Details</attribute>
             </item>
         </section>

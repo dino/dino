@@ -53,7 +53,7 @@ public class Dialog : Gtk.Dialog {
         select_jid_fragment.add_jid.connect((row) => {
             AddContactDialog add_contact_dialog = new AddContactDialog(stream_interactor);
             add_contact_dialog.set_transient_for(this);
-            add_contact_dialog.show();
+            add_contact_dialog.present();
         });
         select_jid_fragment.edit_jid.connect(() => {
 
