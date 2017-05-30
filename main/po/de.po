@@ -267,6 +267,18 @@ msgstr "PGP-verschlüsselte Mitteilung"
 msgid "OMEMO-encrypted message"
 msgstr "OMEMO-verschlüsselte Mitteilung"
 
+#: src/ui/conversation_summary/message_item.vala:91
+msgid "Message read by recipient"
+msgstr "Lesebestätigt"
+
+#: src/ui/conversation_summary/message_item.vala:95
+msgid "Message received by recipient"
+msgstr "Empfangsbestätigt"
+
+#: src/ui/conversation_summary/message_item.vala:98
+msgid "Receipt pending"
+msgstr "Unbestätigte Mitteilung"
+
 #. Date + time in 24h format (w/o seconds)
 #: src/ui/conversation_summary/message_item.vala:98
 #, no-c-format

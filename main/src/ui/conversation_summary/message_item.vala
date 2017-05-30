@@ -88,11 +88,14 @@ public class MessageItem : Grid, ConversationItem {
         if (all_read) {
             received_image.visible = true;
             received_image.set_from_icon_name("dino-double-tick-symbolic", IconSize.SMALL_TOOLBAR);
+            received_image.tooltip_text = _("Message read by recipient");
         } else if (all_received) {
             received_image.visible = true;
             received_image.set_from_icon_name("dino-tick-symbolic", IconSize.SMALL_TOOLBAR);
+            received_image.tooltip_text = _("Message received by recipient");
         } else if (received_image.visible) {
             received_image.set_from_icon_name("image-loading-symbolic", IconSize.SMALL_TOOLBAR);
+            received_image.tooltip_text = _("Receipt pending");
         }
     }
 
