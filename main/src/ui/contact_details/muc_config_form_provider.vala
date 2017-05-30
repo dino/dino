@@ -39,15 +39,14 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider {
         string? desc = null;
         switch (field.var) {
             case "muc#roomconfig_roomname":
-                label = _("Name");
-                desc = _("Name of the room");
+                label = _("Name of the room");
                 break;
             case "muc#roomconfig_roomdesc":
-                label = _("Description");
-                desc = _("Description of the room");
+                label = _("Description of the room");
                 break;
             case "muc#roomconfig_persistentroom":
                 label = _("Persistent");
+                desc = _("The room will persist after the last occupant exits");
                 break;
             case "muc#roomconfig_publicroom":
                 label = _("Publicly searchable");
@@ -56,22 +55,23 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider {
                 label = _("Occupants may change subject");
                 break;
             case "muc#roomconfig_whois":
-                label = _("Discover real jids");
-                desc = "Who may discover real jids";
+                label = _("Discover real JIDs");
+                desc = _("Who may discover real JIDs?");
                 break;
             case "muc#roomconfig_roomsecret":
                 label = _("Password");
-                desc = _("Passwort required to enter the room. Leave empty for none.");
+                desc = _("Password required to enter the room. Leave empty for none");
                 break;
             case "muc#roomconfig_moderatedroom":
                 label = _("Moderated");
+                desc = _("Only occupants with voice may send messages");
                 break;
             case "muc#roomconfig_membersonly":
                 label = _("Members only");
                 desc = _("Only members may enter the room");
                 break;
             case "muc#roomconfig_historylength":
-                label = _("Message History");
+                label = _("Message history");
                 desc = _("Maximum number of history messages returned by the room");
                 break;
         }
