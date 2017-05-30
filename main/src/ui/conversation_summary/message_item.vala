@@ -32,10 +32,10 @@ public class MessageItem : Grid, ConversationItem {
             encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.SMALL_TOOLBAR);
         }
         if (message.encryption == Encryption.PGP) {
-            encryption_image.tooltip_text = _("This message was encrypted with PGP");
+            encryption_image.tooltip_text = _("PGP-encrypted message");
         }
         if (message.encryption == Encryption.OMEMO) {
-            encryption_image.tooltip_text = _("This message was encrypted with OMEMO");
+            encryption_image.tooltip_text = _("OMEMO-encrypted message");
         }
 
         time_label.label = get_relative_time(initial_time.to_local());
