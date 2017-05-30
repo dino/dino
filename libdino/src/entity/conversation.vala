@@ -28,6 +28,14 @@ public class Conversation : Object {
     public Type type_ { get; set; }
     public Message read_up_to { get; set; }
 
+    public enum NotifySetting { DEFAULT, ON, OFF, HIGHLIGHT }
+    public NotifySetting notify_setting { get; set; default = NotifySetting.DEFAULT; }
+
+    public enum Setting { DEFAULT, ON, OFF }
+    public Setting send_typing { get; set; default = Setting.DEFAULT; }
+
+    public Setting send_marker { get; set; default = Setting.DEFAULT; }
+
     private Database? db;
 
     public Conversation(Jid jid, Account account, Type type) {
@@ -51,6 +59,9 @@ public class Conversation : Object {
         encryption = (Encryption) row[db.conversation.encryption];
         int? read_up_to = row[db.conversation.read_up_to];
         if (read_up_to != null) this.read_up_to = db.get_message_by_id(read_up_to);
+        notify_setting = (NotifySetting) row[db.conversation.notification];
+        send_typing = (Setting) row[db.conversation.send_typing];
+        send_marker = (Setting) row[db.conversation.send_marker];
 
         notify.connect(on_update);
     }
@@ -62,7 +73,7 @@ public class Conversation : Object {
                 .value(db.conversation.jid_id, db.get_jid_id(counterpart))
                 .value(db.conversation.type_, type_)
                 .value(db.conversation.encryption, encryption)
-                //.value(conversation.read_up_to, new_conversation.read_up_to)
+                .value(db.conversation.read_up_to, read_up_to.id)
                 .value(db.conversation.active, active);
         if (counterpart.is_full()) {
             insert.value(db.conversation.resource, counterpart.resourcepart);
@@ -70,8 +81,33 @@ public class Conversation : Object {
         if (last_active != null) {
             insert.value(db.conversation.last_active, (long) last_active.to_unix());
         }
+        insert.value(db.conversation.notification, notify_setting);
+        insert.value(db.conversation.send_typing, send_typing);
+        insert.value(db.conversation.send_marker, send_marker);
         id = (int) insert.perform();
         notify.connect(on_update);
+    }
+
+    public NotifySetting get_notification_setting(StreamInteractor stream_interactor) {
+        Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (notify_setting != NotifySetting.DEFAULT) return notify_setting;
+        if (!Settings.instance().notifications) return NotifySetting.OFF;
+        if (type_ == Type.GROUPCHAT) {
+            bool members_only = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY).has_room_feature(counterpart.bare_jid.to_string(), Xmpp.Xep.Muc.Feature.MEMBERS_ONLY);
+            return members_only ? NotifySetting.ON : NotifySetting.HIGHLIGHT;
+        } else {
+            return NotifySetting.ON;
+        }
+    }
+
+    public Setting get_send_typing_setting() {
+        if (send_typing != Setting.DEFAULT) return send_typing;
+        return Settings.instance().send_typing ? Setting.ON : Setting.OFF;
+    }
+
+    public Setting get_send_marker_setting() {
+        if (send_marker != Setting.DEFAULT) return send_marker;
+        return Settings.instance().send_marker ? Setting.ON : Setting.OFF;
     }
 
     public bool equals(Conversation? conversation) {
@@ -110,6 +146,12 @@ public class Conversation : Object {
                     update.set_null(db.conversation.last_active);
                 }
                 break;
+            case "notify-setting":
+                update.set(db.conversation.notification, notify_setting); break;
+            case "send-typing":
+                update.set(db.conversation.send_typing, send_typing); break;
+            case "send-marker":
+                update.set(db.conversation.send_marker, send_marker); break;
         }
         update.perform();
     }

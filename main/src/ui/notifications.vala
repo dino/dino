@@ -31,6 +31,8 @@ public class Notifications : Object {
     }
 
     private void on_message_received(Entities.Message message, Conversation conversation) {
+        if  (!should_notify_message(message, conversation)) return;
+
         if (!notifications.has_key(conversation)) {
             notifications[conversation] = new Notify.Notification("", null, null);
             notifications[conversation].set_hint("transient", true);
@@ -74,7 +76,7 @@ public class Notifications : Object {
                 AddConversation.Chat.AddContactDialog dialog = new AddConversation.Chat.AddContactDialog(stream_interactor);
                 dialog.jid = jid.bare_jid.to_string();
                 dialog.account = account;
-                dialog.show();
+                dialog.present();
             }
             try {
                 notification.close();
@@ -89,6 +91,14 @@ public class Notifications : Object {
         try {
             notification.show();
         } catch (Error error) { }
+    }
+
+    private bool should_notify_message(Entities.Message message, Conversation conversation) {
+        Conversation.NotifySetting notify = conversation.get_notification_setting(stream_interactor);
+        if (notify == Conversation.NotifySetting.OFF) return false;
+        string? nick = stream_interactor.get_module(MucManager.IDENTITY).get_nick(conversation.counterpart, conversation.account);
+        if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null && !message.body.contains(nick)) return false;
+        return true;
     }
 }
 
