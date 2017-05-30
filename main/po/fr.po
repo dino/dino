@@ -1,0 +1,274 @@
+# French translation of Dino
+# Copyright (C) 2017 Dino People.
+# This file is distributed under the same license as the Dino package.
+#
+# Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Dino 0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-13 13:48+0200\n"
+"PO-Revision-Date: 2017-04-16 16:01+0100\n"
+"Last-Translator: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>\n"
+"Language-Team: French <fr@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n>1);\n"
+
+#: data/add_conversation/add_contact_dialog.ui:11
+#: data/add_conversation/add_groupchat_dialog.ui:11
+#: src/ui/add_conversation/conference/dialog.vala:15
+#: src/ui/manage_accounts/dialog.vala:151
+msgid "Cancel"
+msgstr "Annuler"
+
+#: data/add_conversation/add_contact_dialog.ui:23
+#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:28
+msgid "Add"
+msgstr "Ajouter"
+
+#: data/add_conversation/add_contact_dialog.ui:48
+#: data/add_conversation/add_groupchat_dialog.ui:49
+#: data/add_conversation/conference_details_fragment.ui:16
+msgid "Account"
+msgstr "Compte"
+
+#: data/add_conversation/add_contact_dialog.ui:101
+#: data/add_conversation/add_groupchat_dialog.ui:189
+msgid "Alias"
+msgstr "Alias"
+
+#: data/add_conversation/add_contact_dialog.ui:129
+msgid "Request presence updates"
+msgstr "Demander les mises à jour de la présence"
+
+#: data/add_conversation/add_groupchat_dialog.ui:120
+#: data/add_conversation/conference_details_fragment.ui:120
+msgid "Nick"
+msgstr "Pseudo"
+
+#: data/add_conversation/add_groupchat_dialog.ui:147
+#: data/add_conversation/conference_details_fragment.ui:172
+#: data/manage_accounts/add_account_dialog.ui:73
+#: data/manage_accounts/dialog.ui:163
+msgid "Password"
+msgstr "Mot de passe"
+
+#: data/add_conversation/add_groupchat_dialog.ui:176
+msgid "Join on startup"
+msgstr "Rejoindre au démarrage"
+
+#: data/conversation_selector/view.ui:16
+msgid "Search"
+msgstr "Rechercher"
+
+#: data/manage_accounts/add_account_dialog.ui:21
+#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:42
+msgid "Save"
+msgstr "Sauver"
+
+#: data/manage_accounts/add_account_dialog.ui:102
+#: data/manage_accounts/dialog.ui:217
+msgid "Local alias"
+msgstr "Alias local"
+
+#: data/manage_accounts/dialog.ui:9 data/menu_app.ui:6
+msgid "Accounts"
+msgstr "Comptes"
+
+#: data/manage_accounts/dialog.ui:306
+msgid "Add an account"
+msgstr "Ajouter un compte"
+
+#: data/menu_add.ui:6
+msgid "Start Chat"
+msgstr "Commencer une discussion"
+
+#: data/menu_add.ui:12 src/ui/add_conversation/conference/dialog.vala:26
+#: src/ui/unified_window.vala:145
+msgid "Join Conference"
+msgstr "Rejoindre une conférence"
+
+#: data/menu_app.ui:10
+msgid "Settings"
+msgstr "Paramètres"
+
+#: data/menu_app.ui:16
+msgid "Quit"
+msgstr "Quitter"
+
+#: data/menu_conversation.ui:5
+msgid "Contact Details"
+msgstr "Informations du contact"
+
+#: data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Non-chiffré"
+
+#: data/settings_dialog.ui:8
+msgid "Preferences"
+msgstr "Préférences"
+
+#: data/settings_dialog.ui:23
+msgid "Send typing notifications and message marker"
+msgstr "Envoyer les notifications de frappe et les marqueurs de message"
+
+#: data/settings_dialog.ui:35
+msgid "Convert smileys to emojis"
+msgstr "Convertir les émoticônes en emojis"
+
+#: src/ui/add_conversation/conference/dialog.vala:45
+msgid "Next"
+msgstr "Suivant"
+
+#: src/ui/add_conversation/conference/dialog.vala:60
+msgid "Join"
+msgstr "Rejoindre"
+
+#. Day and month
+#: src/ui/conversation_selector/conversation_row.vala:175
+#, no-c-format
+msgid "%b %d"
+msgstr ""
+
+#: src/ui/conversation_selector/conversation_row.vala:179
+msgid "Yesterday"
+msgstr "Hier"
+
+#. Time in 24h format (w/o seconds)
+#: src/ui/conversation_selector/conversation_row.vala:182
+#: src/ui/conversation_summary/message_item.vala:110
+#, no-c-format
+msgid "%H∶%M"
+msgstr ""
+
+#. Time in 12h format (w/o seconds)
+#: src/ui/conversation_selector/conversation_row.vala:183
+#: src/ui/conversation_summary/message_item.vala:111
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr ""
+
+#: src/ui/conversation_selector/conversation_row.vala:186
+#: src/ui/conversation_summary/message_item.vala:114
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "Il y a %i minute"
+msgstr[1] "Il y a %i minutes"
+
+#: src/ui/conversation_selector/conversation_row.vala:188
+#: src/ui/conversation_summary/message_item.vala:116
+msgid "Just now"
+msgstr "À l’instant"
+
+#. Date + time in 24h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:98
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr ""
+
+#. Date + time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:99
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr ""
+
+#. Month, day and time in 24h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:102
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr ""
+
+#. Month, day and time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:103
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr ""
+
+#. Day of week and time in 12h format (w/o seconds)
+#: src/ui/conversation_summary/message_item.vala:106
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr ""
+
+#: src/ui/conversation_summary/message_item.vala:107
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr ""
+
+#: src/ui/conversation_summary/view.vala:120
+msgid "is typing..."
+msgstr "est en train d’écrire…"
+
+#: src/ui/conversation_summary/view.vala:122
+msgid "has stopped typing"
+msgstr "a arrêté d’écrire"
+
+#: src/ui/manage_accounts/add_account_dialog.vala:21
+msgid "Add Account"
+msgstr "Ajouter un compte"
+
+#: src/ui/manage_accounts/dialog.vala:150
+msgid "Select avatar"
+msgstr "Choisir un avatar"
+
+#: src/ui/manage_accounts/dialog.vala:152
+msgid "Select"
+msgstr "Choisir"
+
+#: src/ui/manage_accounts/dialog.vala:251
+msgid "Connecting..."
+msgstr "Connexion…"
+
+#: src/ui/manage_accounts/dialog.vala:253
+msgid "Connected"
+msgstr "Connecté"
+
+#: src/ui/manage_accounts/dialog.vala:255
+msgid "Disconnected"
+msgstr "Déconnecté"
+
+#: src/ui/manage_accounts/dialog.vala:278
+msgid "Wrong password"
+msgstr "Mauvais mot de passe"
+
+#: src/ui/manage_accounts/dialog.vala:281
+#: src/ui/manage_accounts/dialog.vala:283
+msgid "Error"
+msgstr "Erreur"
+
+#: src/ui/occupant_menu/view.vala:48
+msgid "Start private conversation"
+msgstr "Commencer une discussion privée"
+
+#: src/ui/notifications.vala:64
+msgid "Subscription request"
+msgstr "Requête de souscription"
+
+#: src/ui/notifications.vala:66
+msgid "Accept"
+msgstr "Accepter"
+
+#: src/ui/notifications.vala:79
+msgid "Deny"
+msgstr "Refuser"
+
+#: src/ui/unified_window.vala:135
+msgid "No accounts active"
+msgstr "Aucun compte actif"
+
+#: src/ui/unified_window.vala:136
+msgid "Manage accounts"
+msgstr "Gérer les comptes"
+
+#: src/ui/unified_window.vala:143
+msgid "No conversation active"
+msgstr "Aucune discussion en cours"
+
+#: src/ui/unified_window.vala:144
+msgid "Add Chat"
+msgstr "Ajouter discussion"
