@@ -56,7 +56,7 @@ public class Module : XmppStreamModule {
 
     private void on_received_message(XmppStream stream, Message.Stanza message) {
         if (!message.is_error()) {
-            ArrayList<StanzaNode> nodes = message.stanza.get_all_subnodes();
+            Gee.List<StanzaNode> nodes = message.stanza.get_all_subnodes();
             foreach (StanzaNode node in nodes) {
                 if (node.ns_uri == NS_URI &&
                     node.name in STATES) {

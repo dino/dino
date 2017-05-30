@@ -57,7 +57,7 @@ public class Module : XmppStreamModule {
             send_marker(stream, message.from, message.id, message.type_, MARKER_RECEIVED);
             return;
         }
-        ArrayList<StanzaNode> nodes = message.stanza.get_all_subnodes();
+        Gee.List<StanzaNode> nodes = message.stanza.get_all_subnodes();
         foreach (StanzaNode node in nodes) {
             if (node.ns_uri == NS_URI && node.name in MARKERS) {
                 marker_received(stream, message.from, node.name, node.get_attribute("id", NS_URI));

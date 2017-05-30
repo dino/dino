@@ -11,15 +11,15 @@ namespace Xmpp.Iq {
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
-        [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Iq.Stanza iq, Object reference);
-        public void send_iq(XmppStream stream, Iq.Stanza iq, OnResult? listener = null, Object? reference = null) {
+        [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Iq.Stanza iq, Object store);
+        public void send_iq(XmppStream stream, Iq.Stanza iq, OnResult? listener = null, Object? store = null) {
             try {
                 stream.write(iq.stanza);
             } catch (IOStreamError e) {
                 print(@"$(e.message)\n");
             }
             if (listener != null) {
-                responseListeners[iq.id] = new ResponseListener(listener, reference);
+                responseListeners[iq.id] = new ResponseListener(listener, store);
             }
         }
 
@@ -61,9 +61,9 @@ namespace Xmpp.Iq {
                     responseListeners.unset(iq.id);
                 }
             } else {
-                ArrayList<StanzaNode> children = node.get_all_subnodes();
+                Gee.List<StanzaNode> children = node.get_all_subnodes();
                 if (children.size == 1 && namespaceRegistrants.has_key(children[0].ns_uri)) {
-                    ArrayList<Handler> handlers = namespaceRegistrants[children[0].ns_uri];
+                    Gee.List<Handler> handlers = namespaceRegistrants[children[0].ns_uri];
                     foreach (Handler handler in handlers) {
                         if (iq.type_ == Iq.Stanza.TYPE_GET) {
                             handler.on_iq_get(stream, iq);

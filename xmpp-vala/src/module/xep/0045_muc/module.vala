@@ -6,6 +6,7 @@ namespace Xmpp.Xep.Muc {
 
 private const string NS_URI = "http://jabber.org/protocol/muc";
 private const string NS_URI_ADMIN = NS_URI + "#admin";
+private const string NS_URI_OWNER = NS_URI + "#owner";
 private const string NS_URI_USER = NS_URI + "#user";
 
 public enum MucEnterError {
@@ -32,6 +33,25 @@ public enum Role {
     VISITOR
 }
 
+public enum Feature {
+    REGISTER,
+    ROOMCONFIG,
+    ROOMINFO,
+    HIDDEN,
+    MEMBERS_ONLY,
+    MODERATED,
+    NON_ANONYMOUS,
+    OPEN,
+    PASSWORD_PROTECTED,
+    PERSISTENT,
+    PUBLIC,
+    ROOMS,
+    SEMI_ANONYMOUS,
+    TEMPORARY,
+    UNMODERATED,
+    UNSECURED
+}
+
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0045_muc_module");
 
@@ -56,6 +76,8 @@ public class Module : XmppStreamModule {
         presence.stanza.put_node(x_node);
 
         stream.get_flag(Flag.IDENTITY).start_muc_enter(bare_jid, presence.id);
+
+        query_room_info(stream, bare_jid);
         stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
 
@@ -83,6 +105,19 @@ public class Module : XmppStreamModule {
 
     public void kick(XmppStream stream, string jid, string nick) {
         change_role(stream, jid, nick, "none");
+    }
+
+    [CCode (has_target = false)] public delegate void OnConfigFormResult(XmppStream stream, string jid, DataForms.DataForm data_form, Object? store);
+    public void get_config_form(XmppStream stream, string jid, OnConfigFormResult listener, Object? store) {
+        Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_OWNER).add_self_xmlns()) { to=jid };
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq, store) => {
+            Tuple<OnConfigFormResult, Object?> tuple = store as Tuple<OnConfigFormResult, Object?>;
+            StanzaNode? x_node = iq.stanza.get_deep_subnode(NS_URI_OWNER + ":query", DataForms.NS_URI + ":x");
+            if (x_node != null) {
+                DataForms.DataForm data_form = DataForms.DataForm.create(stream, x_node, on_config_form_result, iq);
+                tuple.a(stream, iq.from, data_form, tuple.b);
+            }
+        }, Tuple.create(listener, store));
     }
 
     public override void attach(XmppStream stream) {
@@ -225,8 +260,37 @@ public class Module : XmppStreamModule {
         }
     }
 
-    [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Gee.List<string> jids, Object? store);
-    private void query_affiliation(XmppStream stream, string jid, string affiliation, OnResult? on_result, Object? store) {
+    private void query_room_info(XmppStream stream, string jid) {
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid, (stream, query_result, store) => {
+            Gee.List<Feature> features = new ArrayList<Feature>();
+            foreach (string feature in query_result.features) {
+                Feature? parsed = null;
+                switch (feature) {
+                    case "http://jabber.org/protocol/muc#register": parsed = Feature.REGISTER; break;
+                    case "http://jabber.org/protocol/muc#roomconfig": parsed = Feature.ROOMCONFIG; break;
+                    case "http://jabber.org/protocol/muc#roominfo": parsed = Feature.ROOMINFO; break;
+                    case "muc_hidden": parsed = Feature.HIDDEN; break;
+                    case "muc_membersonly": parsed = Feature.MEMBERS_ONLY; break;
+                    case "muc_moderated": parsed = Feature.MODERATED; break;
+                    case "muc_nonanonymous": parsed = Feature.NON_ANONYMOUS; break;
+                    case "muc_open": parsed = Feature.OPEN; break;
+                    case "muc_passwordprotected": parsed = Feature.PASSWORD_PROTECTED; break;
+                    case "muc_persistent": parsed = Feature.PERSISTENT; break;
+                    case "muc_public": parsed = Feature.PUBLIC; break;
+                    case "muc_rooms": parsed = Feature.ROOMS; break;
+                    case "muc_semianonymous": parsed = Feature.SEMI_ANONYMOUS; break;
+                    case "muc_temporary": parsed = Feature.TEMPORARY; break;
+                    case "muc_unmoderated": parsed = Feature.UNMODERATED; break;
+                    case "muc_unsecured": parsed = Feature.UNSECURED; break;
+                }
+                if (parsed != null) features.add(parsed);
+            }
+            stream.get_flag(Flag.IDENTITY).set_room_features(query_result.iq.from, features);
+        }, null);
+    }
+
+    [CCode (has_target = false)] public delegate void OnAffiliationResult(XmppStream stream, Gee.List<string> jids, Object? store);
+    private void query_affiliation(XmppStream stream, string jid, string affiliation, OnAffiliationResult? on_result, Object? store) {
         Iq.Stanza iq = new Iq.Stanza.get(
             new StanzaNode.build("query", NS_URI_ADMIN)
                 .add_self_xmlns()
@@ -234,7 +298,7 @@ public class Module : XmppStreamModule {
                     .put_attribute("affiliation", affiliation))
         ) { to=jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq, store) => {
-            Tuple<OnResult?, Object?> tuple = store as Tuple<OnResult?, Object?>;
+            Tuple<OnAffiliationResult?, Object?> tuple = store as Tuple<OnAffiliationResult?, Object?>;
             if (iq.is_error()) return;
             StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI_ADMIN);
             if (query_node == null) return;
@@ -250,6 +314,15 @@ public class Module : XmppStreamModule {
             }
             if (tuple.a != null) tuple.a(stream, ret_jids, tuple.b);
         }, Tuple.create(on_result, store));
+    }
+
+    public static void on_config_form_result(XmppStream stream, StanzaNode node, Object? store) {
+        Iq.Stanza form_iq = store as Iq.Stanza;
+        StanzaNode stanza_node = new StanzaNode.build("query", NS_URI_OWNER);
+        stanza_node.add_self_xmlns().put_node(node);
+        Iq.Stanza set_iq = new Iq.Stanza.set(stanza_node);
+        set_iq.to = form_iq.from;
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, set_iq);
     }
 
     private static ArrayList<int> get_status_codes(StanzaNode x_node) {

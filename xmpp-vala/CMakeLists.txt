@@ -34,6 +34,7 @@ SOURCES
     "src/module/tls.vala"
     "src/module/util.vala"
 
+    "src/module/xep/0004_data_forms.vala"
     "src/module/xep/0030_service_discovery/flag.vala"
     "src/module/xep/0030_service_discovery/identity.vala"
     "src/module/xep/0030_service_discovery/info_result.vala"

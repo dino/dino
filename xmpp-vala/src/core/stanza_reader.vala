@@ -230,13 +230,13 @@ public class StanzaReader {
                         skip_single();
                         if (desc.contains(":")) {
                             var split = desc.split(":");
-                            assert(split[0] == ns_state.find_name((!)res.ns_uri));
-                            assert(split[1] == res.name);
+                            if (split[0] != ns_state.find_name((!)res.ns_uri)) throw new XmlError.BAD_XML("");
+                            if (split[1] != res.name) throw new XmlError.BAD_XML("");
                         } else {
-                            assert(ns_state.current_ns_uri == res.ns_uri);
-                            assert(desc == res.name);
+                            if (ns_state.current_ns_uri != res.ns_uri) throw new XmlError.BAD_XML("");
+                            if (desc != res.name) throw new XmlError.BAD_XML("");
                         }
-                        return res;
+                        finishNodeSeen = true;
                     } else {
                         res.sub_nodes.add(read_stanza_node(ns_state.clone()));
                         ns_state = baseNs ?? new NamespaceState.for_stanza();
@@ -245,6 +245,7 @@ public class StanzaReader {
                     res.sub_nodes.add(read_text_node());
                 }
             } while (!finishNodeSeen);
+            if (res.sub_nodes.size == 0) res.has_nodes = false;
         }
         return res;
     }
