@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 1;
+    private const int VERSION = 3;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -15,10 +15,11 @@ public class Database : Qlite.Database {
         public Column<string> password = new Column.Text("password");
         public Column<string> alias = new Column.Text("alias");
         public Column<bool> enabled = new Column.BoolInt("enabled");
+        public Column<string> roster_version = new Column.Text("roster_version") { min_version=2 };
 
         internal AccountTable(Database db) {
             base(db, "account");
-            init({id, bare_jid, resourcepart, password, alias, enabled});
+            init({id, bare_jid, resourcepart, password, alias, enabled, roster_version});
         }
     }
 
@@ -85,10 +86,13 @@ public class Database : Qlite.Database {
         public Column<int> type_ = new Column.Integer("type");
         public Column<int> encryption = new Column.Integer("encryption");
         public Column<int> read_up_to = new Column.Integer("read_up_to");
+        public Column<int> notification = new Column.Integer("notification") { min_version=3 };
+        public Column<int> send_typing = new Column.Integer("send_typing") { min_version=3 };
+        public Column<int> send_marker = new Column.Integer("send_marker") { min_version=3 };
 
         internal ConversationTable(Database db) {
             base(db, "conversation");
-            init({id, account_id, jid_id, resource, active, last_active, type_, encryption, read_up_to});
+            init({id, account_id, jid_id, resource, active, last_active, type_, encryption, read_up_to, notification, send_typing, send_marker});
         }
     }
 
@@ -115,6 +119,19 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class RosterTable : Table {
+        public Column<int> account_id = new Column.Integer("account_id");
+        public Column<string> jid = new Column.Text("jid");
+        public Column<string> name = new Column.Text("name");
+        public Column<string> subscription = new Column.Text("subscription");
+
+        internal RosterTable(Database db) {
+            base(db, "roster");
+            init({account_id, jid, name, subscription});
+            unique({account_id, jid}, "IGNORE");
+        }
+    }
+
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
     public MessageTable message { get; private set; }
@@ -122,6 +139,7 @@ public class Database : Qlite.Database {
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
+    public RosterTable roster { get; private set; }
 
     public Map<int, string> jid_table_cache = new HashMap<int, string>();
     public Map<string, int> jid_table_reverse = new HashMap<string, int>();
@@ -136,7 +154,8 @@ public class Database : Qlite.Database {
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
         entity_feature = new EntityFeatureTable(this);
-        init({ account, jid, message, real_jid, conversation, avatar, entity_feature });
+        roster = new RosterTable(this);
+        init({ account, jid, message, real_jid, conversation, avatar, entity_feature, roster });
         exec("PRAGMA synchronous=0");
     }
 

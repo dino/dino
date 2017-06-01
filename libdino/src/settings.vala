@@ -4,9 +4,19 @@ public class Settings {
 
     private GLib.Settings gsettings;
 
-    public bool send_read {
-        get { return gsettings.get_boolean("send-read"); }
-        set { gsettings.set_boolean("send-read", value); }
+    public bool send_typing {
+        get { return gsettings.get_boolean("send-typing"); }
+        set { gsettings.set_boolean("send-typing", value); }
+    }
+
+    public bool send_marker {
+        get { return gsettings.get_boolean("send-marker"); }
+        set { gsettings.set_boolean("send-marker", value); }
+    }
+
+    public bool notifications {
+        get { return gsettings.get_boolean("notifications"); }
+        set { gsettings.set_boolean("notifications", value); }
     }
 
     public bool convert_utf8_smileys {

@@ -2,7 +2,7 @@ using Xmpp.Core;
 
 namespace Xmpp {
 
-    public class Stanza {
+    public class Stanza : Object {
 
         public const string ATTRIBUTE_FROM = "from";
         public const string ATTRIBUTE_ID = "id";

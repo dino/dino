@@ -84,7 +84,7 @@ public class UnifiedWindow : Window {
 
     private void setup_headerbar() {
         conversation_titlebar = new ConversationTitlebar(stream_interactor) { visible=true };
-        conversation_list_titlebar = new ConversationListTitlebar(this, stream_interactor) { visible=true };
+        conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
         headerbar_paned.add1(conversation_list_titlebar);
         headerbar_paned.add2(conversation_titlebar);
 

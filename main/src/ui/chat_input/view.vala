@@ -61,6 +61,10 @@ public class View : Box {
                 case "/nick":
                     stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
                     break;
+                case "/ping":
+                    Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                    stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.to_string() + "/" + token[1], null);
+                    break;
                 case "/topic":
                     stream_interactor.get_module(MucManager.IDENTITY).change_subject(conversation.account, conversation.counterpart, token[1]);
                     break;
@@ -72,7 +76,7 @@ public class View : Box {
     }
 
     private bool on_text_input_key_press(EventKey event) {
-        if (event.keyval == Key.Return) {
+        if (event.keyval in new uint[]{Key.Return, Key.KP_Enter}) {
             if ((event.state & ModifierType.SHIFT_MASK) > 0) {
                 text_input.buffer.insert_at_cursor("\n", 1);
             } else if (text_input.buffer.text != ""){

@@ -45,8 +45,8 @@ public abstract class StanzaEntry {
 }
 
 public class StanzaNode : StanzaEntry {
-    public ArrayList<StanzaNode> sub_nodes = new ArrayList<StanzaNode>();
-    public ArrayList<StanzaAttribute> attributes = new ArrayList<StanzaAttribute>();
+    public Gee.List<StanzaNode> sub_nodes = new ArrayList<StanzaNode>();
+    public Gee.List<StanzaAttribute> attributes = new ArrayList<StanzaAttribute>();
     public bool has_nodes = false;
     public bool pseudo = false;
 
@@ -129,7 +129,7 @@ public class StanzaNode : StanzaEntry {
         return null;
     }
 
-    public ArrayList<StanzaAttribute> get_attributes_by_ns_uri(string ns_uri) {
+    public Gee.List<StanzaAttribute> get_attributes_by_ns_uri(string ns_uri) {
         ArrayList<StanzaAttribute> ret = new ArrayList<StanzaAttribute> ();
         foreach (var attr in attributes) {
             if (attr.ns_uri == ns_uri) ret.add(attr);
@@ -181,7 +181,7 @@ public class StanzaNode : StanzaEntry {
         return null;
     }
 
-    public ArrayList<StanzaNode> get_subnodes(string name, string? ns_uri = null, bool recurse = false) {
+    public Gee.List<StanzaNode> get_subnodes(string name, string? ns_uri = null, bool recurse = false) {
         ArrayList<StanzaNode> ret = new ArrayList<StanzaNode>();
         string _name = name;
         string? _ns_uri = ns_uri;
@@ -220,12 +220,12 @@ public class StanzaNode : StanzaEntry {
         return node;
     }
 
-    public ArrayList<StanzaNode> get_deep_subnodes(...) {
+    public Gee.List<StanzaNode> get_deep_subnodes(...) {
         va_list l = va_list();
         return get_deep_subnodes_(va_list.copy(l));
     }
 
-    public ArrayList<StanzaNode> get_deep_subnodes_(va_list l) {
+    public Gee.List<StanzaNode> get_deep_subnodes_(va_list l) {
         StanzaNode node = this;
         string? subnode_name = l.arg();
         if (subnode_name == null) return new ArrayList<StanzaNode>();
@@ -240,11 +240,11 @@ public class StanzaNode : StanzaEntry {
         return node.get_subnodes((!)subnode_name);
     }
 
-    public ArrayList<StanzaNode> get_all_subnodes() {
+    public Gee.List<StanzaNode> get_all_subnodes() {
         return sub_nodes;
     }
 
-    public ArrayList<StanzaNode> get_deep_all_subnodes(...) {
+    public Gee.List<StanzaNode> get_deep_all_subnodes(...) {
         va_list l = va_list();
         StanzaNode? node = get_deep_subnode_(va_list.copy(l));
         if (node != null) return ((!)node).get_all_subnodes();

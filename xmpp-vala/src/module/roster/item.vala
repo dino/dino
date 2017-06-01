@@ -25,12 +25,12 @@ public class Item {
 
     public string? name {
         get { return stanza_node.get_attribute(NODE_NAME); }
-        set { stanza_node.set_attribute(NODE_NAME, value); }
+        set { if (value != null) stanza_node.set_attribute(NODE_NAME, value); }
     }
 
     public string? subscription {
         get { return stanza_node.get_attribute(NODE_SUBSCRIPTION); }
-        set { stanza_node.set_attribute(NODE_SUBSCRIPTION, value); }
+        set { if (value != null) stanza_node.set_attribute(NODE_SUBSCRIPTION, value); }
     }
 
     public Item() {

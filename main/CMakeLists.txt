@@ -27,6 +27,7 @@ set(RESOURCE_LIST
     add_conversation/list_row.ui
     add_conversation/select_jid_fragment.ui
     chat_input.ui
+    contact_details_dialog.ui
     conversation_list_titlebar.ui
     conversation_selector/view.ui
     conversation_selector/chat_row_tooltip.ui
@@ -84,6 +85,9 @@ SOURCES
     src/ui/chat_input/occupants_tab_completer.vala
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
+    src/ui/contact_details/settings_provider.vala
+    src/ui/contact_details/dialog.vala
+    src/ui/contact_details/muc_config_form_provider.vala
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_selector/chat_row.vala
     src/ui/conversation_selector/conversation_row.vala
@@ -108,7 +112,8 @@ SOURCES
     src/ui/occupant_menu/view.vala
     src/ui/settings_dialog.vala
     src/ui/unified_window.vala
-    src/ui/util.vala
+    src/ui/util/helper.vala
+    src/ui/util/label_hybrid.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi

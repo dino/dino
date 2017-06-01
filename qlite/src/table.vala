@@ -29,7 +29,7 @@ public class Table {
         }
         constraints += ")";
         if (on_conflict != null) {
-            constraints += "ON CONFLICT " + (!)on_conflict;
+            constraints += " ON CONFLICT " + (!)on_conflict;
         }
     }
 

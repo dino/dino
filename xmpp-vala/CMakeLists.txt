@@ -26,6 +26,7 @@ SOURCES
     "src/module/roster/flag.vala"
     "src/module/roster/item.vala"
     "src/module/roster/module.vala"
+    "src/module/roster/versioning_module.vala"
     "src/module/sasl.vala"
     "src/module/stanza.vala"
     "src/module/stanza_error.vala"
@@ -33,6 +34,7 @@ SOURCES
     "src/module/tls.vala"
     "src/module/util.vala"
 
+    "src/module/xep/0004_data_forms.vala"
     "src/module/xep/0030_service_discovery/flag.vala"
     "src/module/xep/0030_service_discovery/identity.vala"
     "src/module/xep/0030_service_discovery/info_result.vala"

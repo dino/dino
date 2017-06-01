@@ -19,7 +19,7 @@ public class Dino.Ui.Application : Dino.Application {
             notifications = new Notifications(stream_interaction, window);
             notifications.start();
             notifications.conversation_selected.connect(window.on_conversation_selected);
-            window.show();
+            window.present();
         });
     }
 
@@ -28,13 +28,13 @@ public class Dino.Ui.Application : Dino.Application {
         dialog.set_transient_for(window);
         dialog.account_enabled.connect(add_connection);
         dialog.account_disabled.connect(remove_connection);
-        dialog.show();
+        dialog.present();
     }
 
     private void show_settings_window() {
         SettingsDialog dialog = new SettingsDialog();
         dialog.set_transient_for(window);
-        dialog.show();
+        dialog.present();
     }
 
     private void create_set_app_menu() {

@@ -83,9 +83,39 @@ public class List : Box {
     }
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {
-        if (row.get_header() == null && before_row != null) {
-            row.set_header(new Separator(Orientation.HORIZONTAL));
+        ListRow c1 = row as ListRow;
+        Xmpp.Xep.Muc.Affiliation a1 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c1.jid, c1.account);
+        if (before_row != null) {
+            ListRow c2 = before_row as ListRow;
+            Xmpp.Xep.Muc.Affiliation a2 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c2.jid, c2.account);
+            if (a1 != a2) {
+                row.set_header(generate_header_widget(a1, false));
+            } else if (row.get_header() != null){
+                row.set_header(null);
+            }
+        } else {
+            row.set_header(generate_header_widget(a1, true));
         }
+    }
+
+    private Widget generate_header_widget(Xmpp.Xep.Muc.Affiliation affiliation, bool top) {
+        string aff_str;
+        switch (affiliation) {
+            case Xmpp.Xep.Muc.Affiliation.OWNER:
+                aff_str = _("Owner"); break;
+            case Xmpp.Xep.Muc.Affiliation.ADMIN:
+                aff_str = _("Admin"); break;
+            case Xmpp.Xep.Muc.Affiliation.MEMBER:
+                aff_str = _("Member"); break;
+            default:
+                aff_str = _("User"); break;
+        }
+        Box box = new Box(Orientation.VERTICAL, 0) { visible=true };
+        Label label = new Label("") { margin_left=10, margin_top=top?5:15, xalign=0, visible=true };
+        label.set_markup(@"<b>$(Markup.escape_text(aff_str))</b>");
+        box.add(label);
+        box.add(new Separator(Orientation.HORIZONTAL) { visible=true });
+        return box;
     }
 
     private bool filter(ListBoxRow r) {
@@ -102,9 +132,26 @@ public class List : Box {
         if (row1.get_type().is_a(typeof(ListRow)) && row2.get_type().is_a(typeof(ListRow))) {
             ListRow c1 = row1 as ListRow;
             ListRow c2 = row2 as ListRow;
-            return c1.name_label.label.collate(c2.name_label.label);
+            int affiliation1 = get_affiliation_ranking(stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c1.jid, c1.account) ?? Xmpp.Xep.Muc.Affiliation.NONE);
+            int affiliation2 = get_affiliation_ranking(stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c2.jid, c2.account) ?? Xmpp.Xep.Muc.Affiliation.NONE);
+            if (affiliation1 < affiliation2) return -1;
+            else if (affiliation1 > affiliation2) return 1;
+            else return c1.name_label.label.collate(c2.name_label.label);
         }
         return 0;
+    }
+
+    private int get_affiliation_ranking(Xmpp.Xep.Muc.Affiliation affiliation) {
+        switch (affiliation) {
+            case Xmpp.Xep.Muc.Affiliation.OWNER:
+                return 1;
+            case Xmpp.Xep.Muc.Affiliation.ADMIN:
+                return 2;
+            case Xmpp.Xep.Muc.Affiliation.MEMBER:
+                return 3;
+            default:
+                return 4;
+        }
     }
 }
 

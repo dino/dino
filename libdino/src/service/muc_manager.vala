@@ -45,6 +45,16 @@ public class MucManager : StreamInteractionModule, Object {
         if (conversation != null) stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
     }
 
+    [CCode (has_target = false)] public delegate void OnResult(Jid jid, Xep.DataForms.DataForm data_form, Object? store);
+    public void get_config_form(Account account, Jid jid, OnResult on_result, Object? store) {
+        Core.XmppStream stream = stream_interactor.get_stream(account);
+        if (stream == null) return;
+        stream.get_module(Xep.Muc.Module.IDENTITY).get_config_form(stream, jid.to_string(), (stream, jid, data_form, store) => {
+            Tuple<OnResult, Object?> tuple = store as Tuple<OnResult, Object?>;
+            tuple.a(new Jid(jid), data_form, tuple.b);
+        }, Tuple.create(on_result, store));
+    }
+
     public void change_subject(Account account, Jid jid, string subject) {
         Core.XmppStream stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_subject(stream, jid.bare_jid.to_string(), subject);
@@ -130,6 +140,27 @@ public class MucManager : StreamInteractionModule, Object {
             }
         }
         return null;
+    }
+
+    public Xep.Muc.Affiliation? get_affiliation(Jid muc_jid, Jid jid, Account account) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) {
+            return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_affiliation(muc_jid.to_string(), jid.to_string());
+        }
+        return null;
+    }
+
+    public Gee.List<Jid>? get_offline_members(Jid jid, Account account) {
+        Gee.List<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) {
+            Gee.List<string>? members = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_offline_members(jid.to_string());
+            if (members == null) return null;
+            foreach (string member in members) {
+                ret.add(new Jid(member));
+            }
+        }
+        return ret;
     }
 
     public Jid? get_message_real_jid(Entities.Message message) {

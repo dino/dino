@@ -92,13 +92,13 @@ public class Dialog : Gtk.Dialog {
         select_fragment.add_jid.connect((row) => {
             AddGroupchatDialog dialog = new AddGroupchatDialog(stream_interactor);
             dialog.set_transient_for(this);
-            dialog.show();
+            dialog.present();
         });
         select_fragment.edit_jid.connect((row) => {
             ConferenceListRow conference_row = row as ConferenceListRow;
             AddGroupchatDialog dialog = new AddGroupchatDialog.for_conference(stream_interactor, conference_row.account, conference_row.bookmark);
             dialog.set_transient_for(this);
-            dialog.show();
+            dialog.present();
         });
         select_fragment.remove_jid.connect((row) => {
             ConferenceListRow conference_row = row as ConferenceListRow;

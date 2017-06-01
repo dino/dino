@@ -40,7 +40,7 @@ namespace Xmpp {
 
         public string condition {
             get {
-                ArrayList<StanzaNode> subnodes = error_node.sub_nodes;
+                Gee.List<StanzaNode> subnodes = error_node.sub_nodes;
                 foreach (StanzaNode subnode in subnodes) { // TODO get subnode by ns
                     if (subnode.ns_uri == "urn:ietf:params:xml:ns:xmpp-stanzas") {
                         return subnode.name;

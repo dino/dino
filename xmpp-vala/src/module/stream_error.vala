@@ -32,7 +32,7 @@ namespace Xmpp.StreamError {
 
         private Flag generate_error_flag(StanzaNode node) {
             string? subnode_name = null;
-            ArrayList<StanzaNode> subnodes = node.sub_nodes;
+            Gee.List<StanzaNode> subnodes = node.sub_nodes;
             foreach (StanzaNode subnode in subnodes) { // TODO get subnode by ns
                 if (subnode.ns_uri == "urn:ietf:params:xml:ns:xmpp-streams" && subnode.name != "text") {
                     subnode_name = subnode.name;

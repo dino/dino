@@ -85,9 +85,9 @@ public class Module : XmppStreamModule {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    private static ArrayList<Conference> get_conferences_from_stanza(StanzaNode node) {
-        ArrayList<Conference> conferences = new ArrayList<Conference>();
-        ArrayList<StanzaNode> conferenceNodes = node.get_subnode("storage", NS_URI).get_subnodes("conference", NS_URI);
+    private static Gee.List<Conference> get_conferences_from_stanza(StanzaNode node) {
+        Gee.List<Conference> conferences = new ArrayList<Conference>();
+        Gee.List<StanzaNode> conferenceNodes = node.get_subnode("storage", NS_URI).get_subnodes("conference", NS_URI);
         foreach (StanzaNode conferenceNode in conferenceNodes) {
             Conference? conference = Conference.create_from_stanza_node(conferenceNode);
             conferences.add(conference);

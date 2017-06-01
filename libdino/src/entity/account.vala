@@ -15,6 +15,7 @@ public class Account : Object {
     }
     public string? alias { get; set; }
     public bool enabled { get; set; default = false; }
+    public string? roster_version { get; set; }
 
     private Database? db;
 
@@ -34,6 +35,7 @@ public class Account : Object {
         password = row[db.account.password];
         alias = row[db.account.alias];
         enabled = row[db.account.enabled];
+        roster_version = row[db.account.roster_version];
 
         notify.connect(on_update);
     }
@@ -46,6 +48,7 @@ public class Account : Object {
                 .value(db.account.password, password)
                 .value(db.account.alias, alias)
                 .value(db.account.enabled, enabled)
+                .value(db.account.roster_version, roster_version)
                 .perform();
 
         notify.connect(on_update);
@@ -83,6 +86,8 @@ public class Account : Object {
                 update.set(db.account.alias, alias); break;
             case "enabled":
                 update.set(db.account.enabled, enabled); break;
+            case "roster-version":
+                update.set(db.account.roster_version, roster_version); break;
         }
         update.perform();
     }

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoUiContactDetailsDialog">
+        <property name="modal">True</property>
+        <child type="titlebar">
+            <object class="GtkHeaderBar">
+                <property name="title">Conversation Details</property>
+                <property name="show_close_button">True</property>
+                <property name="visible">True</property>
+            </object>
+        </child>
+        <child internal-child="vbox">
+            <object class="GtkBox">
+                <property name="expand">True</property>
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkScrolledWindow">
+                        <property name="propagate_natural_height">True</property>
+                        <property name="max_content_height">500</property>
+                        <property name="hscrollbar_policy">never</property>
+                        <property name="expand">True</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkGrid">
+                                        <property name="margin-top">20</property>
+                                        <property name="margin-bottom">12</property>
+                                        <property name="margin-right">100</property>
+                                        <property name="margin-left">100</property>
+                                        <property name="column-spacing">15</property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkImage" id="avatar">
+                                                <property name="height_request">50</property>
+                                                <property name="width_request">50</property>
+                                                <property name="visible">True</property>
+                                            </object>
+                                            <packing>
+                                                <property name="left_attach">0</property>
+                                                <property name="top_attach">0</property>
+                                                <property name="width">1</property>
+                                                <property name="height">2</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel" id="name_label">
+                                                <property name="xalign">0</property>
+                                                <property name="expand">True</property>
+                                                <property name="visible">True</property>
+                                                <attributes>
+                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                </attributes>
+                                            </object>
+                                            <packing>
+                                                <property name="left_attach">1</property>
+                                                <property name="top_attach">0</property>
+                                                <property name="width">1</property>
+                                                <property name="height">1</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel" id="jid_label">
+                                                <property name="xalign">0</property>
+                                                <property name="expand">True</property>
+                                                <property name="visible">True</property>
+                                            </object>
+                                            <packing>
+                                                <property name="left_attach">1</property>
+                                                <property name="top_attach">1</property>
+                                                <property name="width">1</property>
+                                                <property name="height">1</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel" id="account_label">
+                                                <property name="xalign">1</property>
+                                                <property name="yalign">1</property>
+                                                <property name="margin">5</property>
+                                                <property name="expand">True</property>
+                                                <property name="visible">True</property>
+                                            </object>
+                                            <packing>
+                                                <property name="left_attach">2</property>
+                                                <property name="top_attach">1</property>
+                                                <property name="width">1</property>
+                                                <property name="height">1</property>
+                                            </packing>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkBox" id="main_box">
+                                        <property name="orientation">vertical</property>
+                                        <property name="margin-right">100</property>
+                                        <property name="margin-left">100</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

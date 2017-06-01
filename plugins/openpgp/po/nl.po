@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dino-openpgp-0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-10 17:51+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.11\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl_NL\n"
+
+#: src/account_settings_widget.vala:74 src/account_settings_widget.vala:80
+#: src/account_settings_widget.vala:108
+msgid "Key publishing disabled"
+msgstr "Publiceren sleutel uitgeschakeld"
+
+#: src/account_settings_widget.vala:74
+msgid "No keys available. Generate one!"
+msgstr "Geen sleutels voorhanden. Genereer er een!"
+
+#: src/account_settings_widget.vala:80
+msgid "Select key"
+msgstr "Sleutel selecteren"
+
+#: src/account_settings_widget.vala:97
+msgid "Loading..."
+msgstr "Laden..."
+
+#: src/account_settings_widget.vala:97
+msgid "Querying GnuPG"
+msgstr "GnuPG Vragen"
+
+#: src/account_settings_widget.vala:108
+msgid "Error in GnuPG"
+msgstr "Fout in GnuPG"
