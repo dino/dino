@@ -37,7 +37,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider {
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             ComboBoxText combobox = new ComboBoxText() { visible=true };
             combobox.append("default", _("Default"));
-            combobox.append("hightlight", _("Only when mentioned"));
+            combobox.append("highlight", _("Only when mentioned"));
             combobox.append("on", _("On"));
             combobox.append("off", _("Off"));
             contact_details.add(_("Local Settings"), _("Notifications"), "", combobox);
@@ -93,7 +93,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider {
             case Conversation.NotifySetting.OFF:
                 return "off";
             case Conversation.NotifySetting.HIGHLIGHT:
-                return "hightlight";
+                return "highlight";
         }
         assert_not_reached();
     }
