@@ -35,7 +35,7 @@ public class List : Box {
 
     public void initialize_for_conversation(Conversation conversation) {
         this.conversation = conversation;
-        ArrayList<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
+        Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
         if (occupants != null) {
             foreach (Jid occupant in occupants) {
                 add_occupant(occupant);
@@ -110,12 +110,24 @@ public class List : Box {
             default:
                 aff_str = _("User"); break;
         }
-        Box box = new Box(Orientation.VERTICAL, 0) { visible=true };
-        Label label = new Label("") { margin_left=10, margin_top=top?5:15, xalign=0, visible=true };
-        label.set_markup(@"<b>$(Markup.escape_text(aff_str))</b>");
-        box.add(label);
-        box.add(new Separator(Orientation.HORIZONTAL) { visible=true });
-        return box;
+
+        int count = 0;
+        foreach (ListRow row in rows.values) {
+            Xmpp.Xep.Muc.Affiliation aff = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, row.jid, conversation.account);
+            if (aff == affiliation) count++;
+        }
+
+        Label title_label = new Label("") { margin_left=10, xalign=0, visible=true };
+        title_label.set_markup(@"<b>$(Markup.escape_text(aff_str))</b>");
+
+        Label count_label = new Label(@"$count") { xalign=0, margin_right=7, expand=true, visible=true };
+        count_label.get_style_context().add_class("dim-label");
+
+        Grid grid = new Grid() { margin_top=top?5:15, column_spacing=5, hexpand=true, visible=true };
+        grid.attach(title_label, 0, 0, 1, 1);
+        grid.attach(count_label, 1, 0, 1, 1);
+        grid.attach(new Separator(Orientation.HORIZONTAL) { expand=true, visible=true }, 0, 1, 2, 1);
+        return grid;
     }
 
     private bool filter(ListBoxRow r) {

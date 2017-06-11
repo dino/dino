@@ -11,7 +11,7 @@ namespace Xmpp.Iq {
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
-        [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Iq.Stanza iq, Object store);
+        [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Iq.Stanza iq, Object? store);
         public void send_iq(XmppStream stream, Iq.Stanza iq, OnResult? listener = null, Object? store = null) {
             try {
                 stream.write(iq.stanza);

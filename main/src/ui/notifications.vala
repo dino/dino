@@ -96,8 +96,8 @@ public class Notifications : Object {
     private bool should_notify_message(Entities.Message message, Conversation conversation) {
         Conversation.NotifySetting notify = conversation.get_notification_setting(stream_interactor);
         if (notify == Conversation.NotifySetting.OFF) return false;
-        string? nick = stream_interactor.get_module(MucManager.IDENTITY).get_nick(conversation.counterpart, conversation.account);
-        if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null && !message.body.contains(nick)) return false;
+        Jid? nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+        if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null && !message.body.contains(nick.resourcepart)) return false;
         return true;
     }
 }

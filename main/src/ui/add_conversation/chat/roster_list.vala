@@ -10,27 +10,28 @@ protected class RosterList : FilterableList {
 
     public signal void conversation_selected(Conversation? conversation);
     private StreamInteractor stream_interactor;
+    private Gee.List<Account> accounts;
 
     private HashMap<Account, HashMap<Jid, ListRow>> rows = new HashMap<Account, HashMap<Jid, ListRow>>(Account.hash_func, Account.equals_func);
 
-    public RosterList(StreamInteractor stream_interactor) {
+    public RosterList(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
         this.stream_interactor = stream_interactor;
+        this.accounts = accounts;
 
         set_filter_func(filter);
         set_header_func(header);
         set_sort_func(sort);
 
         stream_interactor.get_module(RosterManager.IDENTITY).removed_roster_item.connect( (account, jid, roster_item) => {
-            Idle.add(() => { on_removed_roster_item(account, jid, roster_item); return false;});});
+            if (accounts.contains(account))
+                Idle.add(() => { on_removed_roster_item(account, jid, roster_item); return false;});
+        });
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect( (account, jid, roster_item) => {
-            Idle.add(() => { on_updated_roster_item(account, jid, roster_item); return false;});});
+            if (accounts.contains(account))
+                Idle.add(() => { on_updated_roster_item(account, jid, roster_item); return false;});
+        });
 
-        foreach (Account account in stream_interactor.get_accounts()) {
-            rows[account] = new HashMap<Jid, ListRow>(Jid.hash_func, Jid.equals_func);
-            foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
-                on_updated_roster_item(account, new Jid(roster_item.jid), roster_item);
-            }
-        }
+        foreach (Account a in accounts) fetch_roster_items(a);
     }
 
     private void on_removed_roster_item(Account account, Jid jid, Roster.Item roster_item) {
@@ -42,11 +43,18 @@ protected class RosterList : FilterableList {
 
     private void on_updated_roster_item(Account account, Jid jid, Roster.Item roster_item) {
         on_removed_roster_item(account, jid, roster_item);
-        ListRow row = new ListRow.from_jid(stream_interactor, new Jid(roster_item.jid), account);
+        ListRow row = new ListRow.from_jid(stream_interactor, new Jid(roster_item.jid), account, accounts.size > 1);
         rows[account][jid] = row;
         add(row);
         invalidate_sort();
         invalidate_filter();
+    }
+
+    private void fetch_roster_items(Account account) {
+        rows[account] = new HashMap<Jid, ListRow>(Jid.hash_func, Jid.equals_func);
+        foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
+            on_updated_roster_item(account, new Jid(roster_item.jid), roster_item);
+        }
     }
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {

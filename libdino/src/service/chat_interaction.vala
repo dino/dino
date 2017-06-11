@@ -124,26 +124,36 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     private void on_message_received(Entities.Message message, Conversation conversation) {
+        send_delivery_receipt(conversation, message);
         if (is_active_focus(conversation)) {
             check_send_read();
             conversation.read_up_to = message;
             send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_DISPLAYED);
         } else {
+            send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_RECEIVED);
             conversation_unread(conversation);
         }
     }
 
     private void send_chat_marker(Conversation conversation, Entities.Message message, string marker) {
         Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
-        if (stream != null && Settings.instance().send_marker &&
+        if (stream != null &&
+                (marker == Xep.ChatMarkers.MARKER_RECEIVED || conversation.get_send_marker_setting() == Conversation.Setting.ON) &&
                 Xep.ChatMarkers.Module.requests_marking(message.stanza)) {
             stream.get_module(Xep.ChatMarkers.Module.IDENTITY).send_marker(stream, message.stanza.from, message.stanza_id, message.get_type_string(), marker);
         }
     }
 
+    private void send_delivery_receipt(Conversation conversation, Entities.Message message) {
+        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+        if (stream != null && Xep.MessageDeliveryReceipts.Module.requests_receipt(message.stanza)) {
+            stream.get_module(Xep.MessageDeliveryReceipts.Module.IDENTITY).send_received(stream, message.from.to_string(), message.stanza_id);
+        }
+    }
+
     private void send_chat_state_notification(Conversation conversation, string state) {
         Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
-        if (stream != null && Settings.instance().send_typing &&
+        if (stream != null && conversation.get_send_typing_setting() == Conversation.Setting.ON &&
                 conversation.type_ != Conversation.Type.GROUPCHAT) {
             stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart.to_string(), state);
         }

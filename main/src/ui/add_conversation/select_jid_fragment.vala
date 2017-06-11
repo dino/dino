@@ -23,13 +23,16 @@ public class SelectJidFragment : Gtk.Box {
     [GtkChild] private Button edit_button;
     [GtkChild] private Button remove_button;
 
-    private FilterableList filterable_list;
-    private ArrayList<AddListRow> added_rows = new ArrayList<AddListRow>();
     private StreamInteractor stream_interactor;
+    private FilterableList filterable_list;
+    private Gee.List<Account> accounts;
 
-    public SelectJidFragment(StreamInteractor stream_interactor, FilterableList filterable_list) {
+    private ArrayList<AddListRow> added_rows = new ArrayList<AddListRow>();
+
+    public SelectJidFragment(StreamInteractor stream_interactor, FilterableList filterable_list, Gee.List<Account> accounts) {
         this.stream_interactor = stream_interactor;
         this.filterable_list = filterable_list;
+        this.accounts = accounts;
 
         filterable_list.visible = true;
         filterable_list.activate_on_single_click = false;
@@ -57,7 +60,7 @@ public class SelectJidFragment : Gtk.Box {
         filterable_list.set_filter_values(values);
         Jid? parsed_jid = Jid.parse(str);
         if (parsed_jid != null && parsed_jid.localpart != null) {
-            foreach (Account account in stream_interactor.get_accounts()) {
+            foreach (Account account in accounts) {
                 AddListRow row = new AddListRow(stream_interactor, str, account);
                 filterable_list.add(row);
                 added_rows.add(row);

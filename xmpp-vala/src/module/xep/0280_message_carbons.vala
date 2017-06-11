@@ -48,7 +48,6 @@ namespace Xmpp.Xep.MessageCarbons {
                 if (forwarded_node != null) {
                     StanzaNode? message_node = forwarded_node.get_subnode("message", Message.NS_URI);
                     string? from_attribute = message_node.get_attribute("from", Message.NS_URI);
-                    // The security model assumed by this document is that all of the resources for a single user are in the same trust boundary.
                     // Any forwarded copies received by a Carbons-enabled client MUST be from that user's bare JID; any copies that do not meet this requirement MUST be ignored.
                     if (from_attribute != null && from_attribute == get_bare_jid(stream.get_flag(Bind.Flag.IDENTITY).my_jid)) {
                         if (received_node != null) {

@@ -103,8 +103,35 @@ public class Module : XmppStreamModule {
         stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
 
+    public void invite(XmppStream stream, string to_muc, string jid) {
+        Message.Stanza message = new Message.Stanza();
+        message.to = to_muc;
+        StanzaNode invite_node = new StanzaNode.build("x", NS_URI_USER).add_self_xmlns()
+            .put_node(new StanzaNode.build("invite", NS_URI_USER).put_attribute("to", jid));
+        message.stanza.put_node(invite_node);
+        stream.get_module(Message.Module.IDENTITY).send_message(stream, message);
+    }
+
     public void kick(XmppStream stream, string jid, string nick) {
         change_role(stream, jid, nick, "none");
+    }
+
+    /* XEP 0046: "A user cannot be kicked by a moderator with a lower affiliation." (XEP 0045 8.2) */
+    public bool kick_possible(XmppStream stream, string occupant) {
+        string muc_jid = get_bare_jid(occupant);
+        Flag flag = stream.get_flag(Flag.IDENTITY);
+        string own_nick = flag.get_muc_nick(muc_jid);
+        Affiliation my_affiliation = flag.get_affiliation(muc_jid, muc_jid + "/" + own_nick);
+        Affiliation other_affiliation = flag.get_affiliation(muc_jid, occupant);
+        switch (my_affiliation) {
+            case Affiliation.MEMBER:
+                if (other_affiliation == Affiliation.ADMIN || other_affiliation == Affiliation.OWNER) return false;
+                break;
+            case Affiliation.ADMIN:
+                if (other_affiliation == Affiliation.OWNER) return false;
+                break;
+        }
+        return true;
     }
 
     [CCode (has_target = false)] public delegate void OnConfigFormResult(XmppStream stream, string jid, DataForms.DataForm data_form, Object? store);

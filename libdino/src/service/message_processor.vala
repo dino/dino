@@ -72,7 +72,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.stanza_id = message.id;
         Jid from_jid = new Jid(message.from);
         if (!account.bare_jid.equals_bare(from_jid) ||
-                stream_interactor.get_module(MucManager.IDENTITY).get_nick(from_jid.bare_jid, account) == from_jid.resourcepart) {
+                from_jid.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(from_jid.bare_jid, account))) {
             new_message.direction = Entities.Message.DIRECTION_RECEIVED;
         } else {
             new_message.direction = Entities.Message.DIRECTION_SENT;

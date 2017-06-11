@@ -63,7 +63,7 @@ namespace Xmpp.Xep.Pubsub {
             }
         }
 
-        private static void on_received_request_response(XmppStream stream, Iq.Stanza iq, Object o) {
+        private static void on_received_request_response(XmppStream stream, Iq.Stanza iq, Object? o) {
             Tuple<OnResult, Object?> tuple = o as Tuple<OnResult, Object?>;
             OnResult on_result = tuple.a;
             StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);

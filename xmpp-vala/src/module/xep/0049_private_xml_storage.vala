@@ -35,12 +35,12 @@ namespace Xmpp.Xep.PrivateXmlStorage {
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
 
-        private static void on_store_response(XmppStream stream, Iq.Stanza iq, Object o) {
+        private static void on_store_response(XmppStream stream, Iq.Stanza iq, Object? o) {
             Tuple<OnSuccess, Object> tuple = o as Tuple<OnSuccess, Object>;
             tuple.a(stream, tuple.b);
         }
 
-        private static void on_retrieve_response(XmppStream stream, Iq.Stanza iq, Object o) {
+        private static void on_retrieve_response(XmppStream stream, Iq.Stanza iq, Object? o) {
             Tuple<OnResponse, Object> tuple = o as Tuple<OnResponse, Object>;
             tuple.a(stream, iq.stanza.get_subnode("query", NS_URI), tuple.b);
         }

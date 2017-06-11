@@ -16,10 +16,12 @@ public class ConversationTitlebar : Gtk.HeaderBar {
     private Map<RadioButton, Plugins.EncryptionListEntry> encryption_radios = new HashMap<RadioButton, Plugins.EncryptionListEntry>();
 
     private StreamInteractor stream_interactor;
+    private Window window;
     private Conversation? conversation;
 
-    public ConversationTitlebar(StreamInteractor stream_interactor) {
+    public ConversationTitlebar(StreamInteractor stream_interactor, Window window) {
         this.stream_interactor = stream_interactor;
+        this.window = window;
         create_conversation_menu();
         create_encryption_menu();
 
@@ -67,7 +69,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         groupchat_button.visible = conversation.type_ == Conversation.Type.GROUPCHAT;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             groupchat_button.set_use_popover(true);
-            OccupantMenu.View menu = new OccupantMenu.View(stream_interactor, conversation);
+            OccupantMenu.View menu = new OccupantMenu.View(stream_interactor, window, conversation);
             groupchat_button.set_popover(menu);
         }
     }

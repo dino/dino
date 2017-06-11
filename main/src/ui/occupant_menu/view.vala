@@ -1,3 +1,4 @@
+using Gee;
 using Gtk;
 
 using Dino.Entities;
@@ -10,22 +11,40 @@ public class View : Popover {
 
     private Stack stack = new Stack() { vhomogeneous=false, visible=true };
     private List list;
-    private Label header_label = new Label("") { xalign=0.5f, hexpand=true, visible=true };
+    private ListBox invite_list;
 
-    public View(StreamInteractor stream_interactor, Conversation conversation) {
+    public View(StreamInteractor stream_interactor, Window window, Conversation conversation) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
 
+        Box list_box = new Box(Orientation.VERTICAL, 1) { visible=true };
         list = new List(stream_interactor, conversation) { visible=true };
-        stack.add_named(list, "list");
-        setup_menu();
+        list_box.add(list);
+
+        invite_list = new ListBox() { visible=true };
+        invite_list.add(new ListRow.label("+", _("Invite")) {visible=true});
+        list_box.add(invite_list);
+        invite_list.row_activated.connect((row) => {
+            hide();
+            Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
+            acc_list.add(conversation.account);
+            AddConversation.Chat.Dialog add_chat_dialog = new AddConversation.Chat.Dialog(stream_interactor, acc_list);
+            add_chat_dialog.set_transient_for(window);
+            add_chat_dialog.title = _("Invite to Conference");
+            add_chat_dialog.ok_button.label = _("Invite");
+            add_chat_dialog.selected.connect((account, jid) => {
+                stream_interactor.get_module(MucManager.IDENTITY).invite(conversation.account, conversation.counterpart, jid);
+            });
+            add_chat_dialog.present();
+        });
+
+        stack.add_named(list_box, "list");
         add(stack);
         stack.visible_child_name = "list";
 
         list.list_box.row_activated.connect((row) => {
             ListRow list_row = row as ListRow;
-            header_label.label = list_row.name_label.label;
-            show_menu();
+            show_menu(list_row.jid, list_row.name_label.label);
         });
 
         hide.connect(reset);
@@ -35,25 +54,7 @@ public class View : Popover {
         stack.transition_type = StackTransitionType.NONE;
         stack.visible_child_name = "list";
         list.list_box.unselect_all();
-    }
-
-    private void setup_menu() {
-        Box header_box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
-        header_box.add(new Image.from_icon_name("pan-start-symbolic", IconSize.SMALL_TOOLBAR) { visible=true });
-        header_box.add(header_label);
-
-        Button header_button = new Button() { relief=ReliefStyle.NONE, visible=true };
-        header_button.add(header_box);
-
-        ModelButton private_button = new ModelButton()  { active=true, text=_("Start private conversation"), visible=true };
-
-        Box outer_box = new Box(Orientation.VERTICAL, 5) { margin=10, visible=true };
-        outer_box.add(header_button);
-        outer_box.add(private_button);
-        stack.add_named(outer_box, "menu");
-
-        header_button.clicked.connect(show_list);
-        private_button.clicked.connect(private_conversation_button_clicked);
+        invite_list.unselect_all();
     }
 
     private void show_list() {
@@ -62,8 +63,34 @@ public class View : Popover {
         stack.visible_child_name = "list";
     }
 
-    private void show_menu() {
+    private void show_menu(Jid jid, string name_label) {
         stack.transition_type = StackTransitionType.SLIDE_LEFT;
+
+        Box header_box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
+        header_box.add(new Image.from_icon_name("pan-start-symbolic", IconSize.SMALL_TOOLBAR) { visible=true });
+        header_box.add(new Label(name_label) { xalign=0.5f, hexpand=true, visible=true });
+
+        Button header_button = new Button() { relief=ReliefStyle.NONE, visible=true };
+        header_button.add(header_box);
+
+        Box outer_box = new Box(Orientation.VERTICAL, 5) { margin=10, visible=true };
+        outer_box.add(header_button);
+        header_button.clicked.connect(show_list);
+
+        ModelButton private_button = new ModelButton()  { active=true, text=_("Start private conversation"), visible=true };
+        outer_box.add(private_button);
+        private_button.clicked.connect(private_conversation_button_clicked);
+
+        Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+        Xmpp.Xep.Muc.Role? role = stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account);
+
+        if (role ==  Xmpp.Xep.Muc.Role.MODERATOR && stream_interactor.get_module(MucManager.IDENTITY).kick_possible(conversation.account, jid)) {
+            ModelButton kick_button = new ModelButton()  { active=true, text=_("Kick"), visible=true };
+            outer_box.add(kick_button);
+            kick_button.clicked.connect(kick_button_clicked);
+        }
+
+        stack.add_named(outer_box, "menu");
         stack.visible_child_name = "menu";
     }
 
@@ -73,6 +100,13 @@ public class View : Popover {
 
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(list_row.jid, list_row.account, Conversation.Type.GROUPCHAT_PM);
         stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+    }
+
+    private void kick_button_clicked() {
+        ListRow? list_row = list.list_box.get_selected_row() as ListRow;
+        if (list_row == null) return;
+
+        stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, list_row.jid.resourcepart);
     }
 }
 

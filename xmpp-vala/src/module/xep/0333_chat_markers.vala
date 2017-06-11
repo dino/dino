@@ -53,10 +53,6 @@ public class Module : XmppStreamModule {
 
     private void on_received_message(XmppStream stream, Message.Stanza message) {
         if (message.type_ != Message.Stanza.TYPE_CHAT) return;
-        if (requests_marking(message)) {
-            send_marker(stream, message.from, message.id, message.type_, MARKER_RECEIVED);
-            return;
-        }
         Gee.List<StanzaNode> nodes = message.stanza.get_all_subnodes();
         foreach (StanzaNode node in nodes) {
             if (node.ns_uri == NS_URI && node.name in MARKERS) {

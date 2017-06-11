@@ -28,7 +28,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void join(Account account, Jid jid, string? nick, string? password) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
         set_autojoin(stream, jid, nick_, password);
@@ -36,7 +36,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void part(Account account, Jid jid) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         unset_autojoin(stream, jid);
         stream.get_module(Xep.Muc.Module.IDENTITY).exit(stream, jid.bare_jid.to_string());
@@ -47,7 +47,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     [CCode (has_target = false)] public delegate void OnResult(Jid jid, Xep.DataForms.DataForm data_form, Object? store);
     public void get_config_form(Account account, Jid jid, OnResult on_result, Object? store) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         stream.get_module(Xep.Muc.Module.IDENTITY).get_config_form(stream, jid.to_string(), (stream, jid, data_form, store) => {
             Tuple<OnResult, Object?> tuple = store as Tuple<OnResult, Object?>;
@@ -56,18 +56,29 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void change_subject(Account account, Jid jid, string subject) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_subject(stream, jid.bare_jid.to_string(), subject);
     }
 
     public void change_nick(Account account, Jid jid, string new_nick) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_nick(stream, jid.bare_jid.to_string(), new_nick);
     }
 
+    public void invite(Account account, Jid muc, Jid invitee) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).invite(stream, muc.bare_jid.to_string(), invitee.bare_jid.to_string());
+    }
+
     public void kick(Account account, Jid jid, string nick) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).kick(stream, jid.bare_jid.to_string(), nick);
+    }
+
+    public bool kick_possible(Account account, Jid occupant) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) return stream.get_module(Xep.Muc.Module.IDENTITY).kick_possible(stream, occupant.to_string());
+        return false;
     }
 
     public ArrayList<Jid>? get_occupants(Jid jid, Account account) {
@@ -79,9 +90,9 @@ public class MucManager : StreamInteractionModule, Object {
 
     public ArrayList<Jid>? get_other_occupants(Jid jid, Account account) {
         ArrayList<Jid>? occupants = get_occupants(jid, account);
-        string? nick = get_nick(jid, account);
-        if (occupants != null && nick != null) {
-            occupants.remove(new Jid(@"$(jid.bare_jid)/$nick"));
+        Jid? own_jid = get_own_jid(jid, account);
+        if (occupants != null && own_jid != null) {
+            occupants.remove(own_jid);
         }
         return occupants;
     }
@@ -142,11 +153,15 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public Xep.Muc.Role? get_role(Jid jid, Account account) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_occupant_role(jid.to_string());
+        return null;
+    }
+
     public Xep.Muc.Affiliation? get_affiliation(Jid muc_jid, Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_affiliation(muc_jid.to_string(), jid.to_string());
-        }
+        if (stream != null) return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_affiliation(muc_jid.to_string(), jid.to_string());
         return null;
     }
 
@@ -170,17 +185,19 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
-    public string? get_nick(Jid jid, Account account) {
+    public Jid? get_own_jid(Jid muc_jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
             Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-            if (flag != null) return flag.get_muc_nick(jid.bare_jid.to_string());
+            if (flag == null) return null;
+            string? nick  = flag.get_muc_nick(muc_jid.bare_jid.to_string());
+            if (nick != null) return new Jid.with_resource(muc_jid.bare_jid.to_string(), nick);
         }
         return null;
     }
 
     public bool is_joined(Jid jid, Account account) {
-        return get_nick(jid, account) != null;
+        return get_own_jid(jid, account) != null;
     }
 
     private void on_account_added(Account account) {
