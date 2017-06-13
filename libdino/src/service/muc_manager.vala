@@ -14,6 +14,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void bookmarks_updated(Account account, Gee.List<Xep.Bookmarks.Conference> conferences);
 
     private StreamInteractor stream_interactor;
+    private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         MucManager m = new MucManager(stream_interactor);
@@ -28,6 +29,8 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void join(Account account, Jid jid, string? nick, string? password) {
+        if (enter_errors.has_key(jid)) return;
+
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
@@ -203,6 +206,9 @@ public class MucManager : StreamInteractionModule, Object {
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_entered.connect( (stream, jid, nick) => {
             joined(account, new Jid(jid), nick);
+        });
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_enter_error.connect( (stream, jid, error) => {
+            enter_errors[new Jid(jid)] = error;
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).self_removed_from_room.connect( (stream, jid, code) => {
             left(account, new Jid(jid));

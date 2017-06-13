@@ -11,11 +11,13 @@ private const string NS_URI_USER = NS_URI + "#user";
 
 public enum MucEnterError {
     PASSWORD_REQUIRED,
-    NOT_IN_MEMBER_LIST,
     BANNED,
+    ROOM_DOESNT_EXIST,
+    CREATION_RESTRICTED,
+    USE_RESERVED_ROOMNICK,
+    NOT_IN_MEMBER_LIST,
     NICK_CONFLICT,
     OCCUPANT_LIMIT_REACHED,
-    ROOM_DOESNT_EXIST
 }
 
 public enum Affiliation {
@@ -205,20 +207,35 @@ public class Module : XmppStreamModule {
         if (presence.is_error() && flag.is_muc_enter_outstanding() && flag.is_occupant(presence.from)) {
             string bare_jid = get_bare_jid(presence.from);
             ErrorStanza? error_stanza = presence.get_error();
-            if (flag.get_enter_id(bare_jid) == error_stanza.original_id) {
+            if (flag.get_enter_id(bare_jid) == presence.id) {
+                print("is enter id\n");
                 MucEnterError? error = null;
-                if (error_stanza.condition == ErrorStanza.CONDITION_NOT_AUTHORIZED && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    error = MucEnterError.PASSWORD_REQUIRED;
-                } else if (ErrorStanza.CONDITION_REGISTRATION_REQUIRED == error_stanza.condition && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    error = MucEnterError.NOT_IN_MEMBER_LIST;
-                } else if (ErrorStanza.CONDITION_FORBIDDEN == error_stanza.condition && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    error = MucEnterError.BANNED;
-                } else if (ErrorStanza.CONDITION_CONFLICT == error_stanza.condition && ErrorStanza.TYPE_CANCEL == error_stanza.type_) {
-                    error = MucEnterError.NICK_CONFLICT;
-                } else if (ErrorStanza.CONDITION_SERVICE_UNAVAILABLE == error_stanza.condition && ErrorStanza.TYPE_WAIT == error_stanza.type_) {
-                    error = MucEnterError.OCCUPANT_LIMIT_REACHED;
-                } else if (ErrorStanza.CONDITION_ITEM_NOT_FOUND == error_stanza.condition && ErrorStanza.TYPE_CANCEL == error_stanza.type_) {
-                    error = MucEnterError.ROOM_DOESNT_EXIST;
+                print(@"$(error_stanza.condition) $(error_stanza.type_)\n");
+                switch (error_stanza.condition) {
+                    case ErrorStanza.CONDITION_NOT_AUTHORIZED:
+                        if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.PASSWORD_REQUIRED;
+                        break;
+                    case ErrorStanza.CONDITION_REGISTRATION_REQUIRED:
+                        if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.NOT_IN_MEMBER_LIST;
+                        break;
+                    case ErrorStanza.CONDITION_FORBIDDEN:
+                        if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.BANNED;
+                        break;
+                    case ErrorStanza.CONDITION_SERVICE_UNAVAILABLE:
+                        if (ErrorStanza.TYPE_WAIT == error_stanza.type_) error = MucEnterError.OCCUPANT_LIMIT_REACHED;
+                        break;
+                    case ErrorStanza.CONDITION_ITEM_NOT_FOUND:
+                        if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.ROOM_DOESNT_EXIST;
+                        break;
+                    case ErrorStanza.CONDITION_CONFLICT:
+                        if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.NICK_CONFLICT;
+                        break;
+                    case ErrorStanza.CONDITION_NOT_ALLOWED:
+                        if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.CREATION_RESTRICTED;
+                        break;
+                    case ErrorStanza.CONDITION_NOT_ACCEPTABLE:
+                        if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.USE_RESERVED_ROOMNICK;
+                        break;
                 }
                 if (error != null) room_enter_error(stream, bare_jid, error);
                 flag.finish_muc_enter(bare_jid);
@@ -289,31 +306,35 @@ public class Module : XmppStreamModule {
 
     private void query_room_info(XmppStream stream, string jid) {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid, (stream, query_result, store) => {
+            Tuple<string, string> tuple = store as Tuple<string, string>;
+
             Gee.List<Feature> features = new ArrayList<Feature>();
-            foreach (string feature in query_result.features) {
-                Feature? parsed = null;
-                switch (feature) {
-                    case "http://jabber.org/protocol/muc#register": parsed = Feature.REGISTER; break;
-                    case "http://jabber.org/protocol/muc#roomconfig": parsed = Feature.ROOMCONFIG; break;
-                    case "http://jabber.org/protocol/muc#roominfo": parsed = Feature.ROOMINFO; break;
-                    case "muc_hidden": parsed = Feature.HIDDEN; break;
-                    case "muc_membersonly": parsed = Feature.MEMBERS_ONLY; break;
-                    case "muc_moderated": parsed = Feature.MODERATED; break;
-                    case "muc_nonanonymous": parsed = Feature.NON_ANONYMOUS; break;
-                    case "muc_open": parsed = Feature.OPEN; break;
-                    case "muc_passwordprotected": parsed = Feature.PASSWORD_PROTECTED; break;
-                    case "muc_persistent": parsed = Feature.PERSISTENT; break;
-                    case "muc_public": parsed = Feature.PUBLIC; break;
-                    case "muc_rooms": parsed = Feature.ROOMS; break;
-                    case "muc_semianonymous": parsed = Feature.SEMI_ANONYMOUS; break;
-                    case "muc_temporary": parsed = Feature.TEMPORARY; break;
-                    case "muc_unmoderated": parsed = Feature.UNMODERATED; break;
-                    case "muc_unsecured": parsed = Feature.UNSECURED; break;
+            if (query_result != null) {
+                foreach (string feature in query_result.features) {
+                    Feature? parsed = null;
+                    switch (feature) {
+                        case "http://jabber.org/protocol/muc#register": parsed = Feature.REGISTER; break;
+                        case "http://jabber.org/protocol/muc#roomconfig": parsed = Feature.ROOMCONFIG; break;
+                        case "http://jabber.org/protocol/muc#roominfo": parsed = Feature.ROOMINFO; break;
+                        case "muc_hidden": parsed = Feature.HIDDEN; break;
+                        case "muc_membersonly": parsed = Feature.MEMBERS_ONLY; break;
+                        case "muc_moderated": parsed = Feature.MODERATED; break;
+                        case "muc_nonanonymous": parsed = Feature.NON_ANONYMOUS; break;
+                        case "muc_open": parsed = Feature.OPEN; break;
+                        case "muc_passwordprotected": parsed = Feature.PASSWORD_PROTECTED; break;
+                        case "muc_persistent": parsed = Feature.PERSISTENT; break;
+                        case "muc_public": parsed = Feature.PUBLIC; break;
+                        case "muc_rooms": parsed = Feature.ROOMS; break;
+                        case "muc_semianonymous": parsed = Feature.SEMI_ANONYMOUS; break;
+                        case "muc_temporary": parsed = Feature.TEMPORARY; break;
+                        case "muc_unmoderated": parsed = Feature.UNMODERATED; break;
+                        case "muc_unsecured": parsed = Feature.UNSECURED; break;
+                    }
+                    if (parsed != null) features.add(parsed);
                 }
-                if (parsed != null) features.add(parsed);
             }
-            stream.get_flag(Flag.IDENTITY).set_room_features(query_result.iq.from, features);
-        }, null);
+            stream.get_flag(Flag.IDENTITY).set_room_features(tuple.a, features);
+        }, Tuple.create(jid, "")); //TODO ugly
     }
 
     [CCode (has_target = false)] public delegate void OnAffiliationResult(XmppStream stream, Gee.List<string> jids, Object? store);

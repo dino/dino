@@ -43,6 +43,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         ok_button.sensitive = true;
         accounts_stack.set_visible_child_name("label");
         account_label.label = account.bare_jid.to_string();
+        account_combobox.selected = account;
         jid_entry.text = conference.jid;
         nick_entry.text = conference.nick ?? "";
         autojoin_checkbutton.active = conference.autojoin;

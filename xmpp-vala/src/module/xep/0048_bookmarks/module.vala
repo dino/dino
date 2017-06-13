@@ -17,7 +17,6 @@ public class Module : XmppStreamModule {
             Tuple<OnResult, Object?> tuple = o as Tuple<OnResult, Object?>;
             OnResult on_result = tuple.a;
             Gee.List<Conference> conferences = get_conferences_from_stanza(node);
-            stream.get_module(Module.IDENTITY).received_conferences(stream, conferences);
             on_result(stream, conferences, tuple.b);
         }, Tuple.create(listener, store));
     }
