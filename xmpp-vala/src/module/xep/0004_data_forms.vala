@@ -13,17 +13,16 @@ public class DataForm {
 
     public XmppStream stream;
     public OnResult on_result;
-    public Object? store;
 
     public void cancel() {
         StanzaNode stanza_node = new StanzaNode.build("x", NS_URI);
         stanza_node.add_self_xmlns().set_attribute("type", "cancel");
-        on_result(stream, stanza_node, store);
+        on_result(stream, stanza_node);
     }
 
     public void submit() {
         stanza_node.set_attribute("type", "submit");
-        on_result(stream, stanza_node, store);
+        on_result(stream, stanza_node);
     }
 
     public enum Type {
@@ -170,11 +169,11 @@ public class DataForm {
 
     // TODO text-multi
 
-    internal DataForm(StanzaNode node, XmppStream stream, OnResult on_result, Object? store) {
+    internal DataForm(StanzaNode node, XmppStream stream, owned OnResult listener) {
         this.stanza_node = node;
         this.stream = stream;
-        this.on_result = on_result;
-        this.store = store;
+        this.on_result = (owned)listener;
+
         Gee.List<StanzaNode> field_nodes = node.get_subnodes("field", NS_URI);
         foreach (StanzaNode field_node in field_nodes) {
             string? type = field_node.get_attribute("type", NS_URI);
@@ -199,9 +198,9 @@ public class DataForm {
         }
     }
 
-    [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, StanzaNode node, Object? store);
-    public static DataForm? create(XmppStream stream, StanzaNode node, OnResult on_result, Object? store) {
-        return new DataForm(node, stream, on_result, store);
+    public delegate void OnResult(XmppStream stream, StanzaNode node);
+    public static DataForm? create(XmppStream stream, StanzaNode node, owned OnResult listener) {
+        return new DataForm(node, stream, (owned)listener);
     }
 }
 

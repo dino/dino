@@ -52,12 +52,11 @@ public class Module : XmppStreamModule {
             } else {
                 iq.to = get_bare_jid(presence.from);
             }
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_received_vcard, storage);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_received_vcard);
         }
     }
 
-    private static void on_received_vcard(XmppStream stream, Iq.Stanza iq, Object? storage_obj) {
-        PixbufStorage? storage = storage_obj as PixbufStorage;
+    private void on_received_vcard(XmppStream stream, Iq.Stanza iq) {
         if (iq.is_error()) return;
         string? res = iq.stanza.get_deep_string_content(@"$NS_URI:vCard", "PHOTO", "BINVAL");
         if (res == null) return;

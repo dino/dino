@@ -57,20 +57,20 @@ namespace Xmpp.Xep.EntityCapabilities {
                 string ver_attribute = c_node.get_attribute("ver", NS_URI);
                 ArrayList<string> capabilities = storage.get_features(ver_attribute);
                 if (capabilities.size == 0) {
-                    stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, on_received_info_response, Tuple.create(storage, ver_attribute));
+                    stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
+                        store_entity_result(stream, ver_attribute, query_result);
+                    });
                 } else {
                     stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(presence.from, capabilities);
                 }
             }
         }
 
-        private static void on_received_info_response(XmppStream stream, ServiceDiscovery.InfoResult? query_result, Object? store) {
+        private void store_entity_result(XmppStream stream, string entity, ServiceDiscovery.InfoResult? query_result) {
             if (query_result == null) return;
-            Tuple<Storage, string> tuple = store as Tuple<Storage, string>;
-            Storage storage = tuple.a;
-            string entity = tuple.b;
             if (compute_hash(query_result.identities, query_result.features) == entity) {
                 storage.store_features(entity, query_result.features);
+                stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(query_result.iq.from, query_result.features);
             }
         }
 

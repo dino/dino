@@ -118,23 +118,21 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
             } else {
                 Core.XmppStream stream = stream_interactor.get_stream(account);
-                if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid.to_string(), (stream, identities, store) => {
-                    Triple<MessageProcessor, Entities.Message, Xmpp.Message.Stanza> triple = store as Triple<MessageProcessor, Entities.Message, Xmpp.Message.Stanza>;
-                    Entities.Message m = triple.b;
+                if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid.to_string(), (stream, identities) => {
                     if (identities == null) {
-                        m.type_ = Entities.Message.Type.CHAT;
-                        triple.a.process_message(m, triple.c);
+                        message.type_ = Entities.Message.Type.CHAT;
+                        process_message(message, message_stanza);
                         return;
                     }
                     foreach (Xep.ServiceDiscovery.Identity identity in identities) {
                         if (identity.category == Xep.ServiceDiscovery.Identity.CATEGORY_CONFERENCE) {
-                            m.type_ = Entities.Message.Type.GROUPCHAT_PM;
+                            message.type_ = Entities.Message.Type.GROUPCHAT_PM;
                         } else {
-                            m.type_ = Entities.Message.Type.CHAT;
+                            message.type_ = Entities.Message.Type.CHAT;
                         }
-                        triple.a.process_message(m, triple.c);
+                        process_message(message, message_stanza);
                     }
-                }, Triple.create(this, message, message_stanza));
+                });
             }
         }
     }

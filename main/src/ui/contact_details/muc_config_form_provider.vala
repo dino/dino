@@ -18,19 +18,16 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider {
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) return;
-            stream_interactor.get_module(MucManager.IDENTITY).get_config_form(conversation.account, conversation.counterpart, (jid, data_form, store) => {
-                Plugins.ContactDetails contact_details_ = store as Plugins.ContactDetails;
-                contact_details_.save.connect(() => {
-                    data_form.submit();
-                });
+            stream_interactor.get_module(MucManager.IDENTITY).get_config_form(conversation.account, conversation.counterpart, (jid, data_form) => {
+                contact_details.save.connect(() => { data_form.submit(); });
                 Idle.add(() => {
                     for (int i = 0; i < data_form.fields.size; i++) {
                         DataForms.DataForm.Field field = data_form.fields[i];
-                        add_field(field, contact_details_);
+                        add_field(field, contact_details);
                     }
                     return false;
                 });
-            }, contact_details);
+            });
         }
     }
 

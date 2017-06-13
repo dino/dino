@@ -29,32 +29,29 @@ public class Module : XmppStreamModule, Iq.Handler {
         identities.add(new Identity(category, type, name));
     }
 
-    [CCode (has_target = false)] public delegate void HasEntryCategoryRes(XmppStream stream, ArrayList<Identity>? identities, Object? store);
-    public void get_entity_categories(XmppStream stream, string jid, HasEntryCategoryRes on_result, Object? store) {
+    public delegate void HasEntryCategoryRes(XmppStream stream, ArrayList<Identity>? identities);
+    public void get_entity_categories(XmppStream stream, string jid, owned HasEntryCategoryRes listener) {
         ArrayList<Identity>? res = stream.get_flag(Flag.IDENTITY).get_entity_categories(jid);
-        if (res != null) on_result(stream, res, store);
-        request_info(stream, jid, (stream, query_result, store) => {
-            Tuple<HasEntryCategoryRes, Object> tuple = store as Tuple<HasEntryCategoryRes, Object>;
-            tuple.a(stream, query_result != null ? query_result.identities : null, tuple.b);
-        }, Tuple.create(on_result, store));
+        if (res != null) listener(stream, res);
+        request_info(stream, jid, (stream, query_result) => {
+            listener(stream, query_result != null ? query_result.identities : null);
+        });
     }
 
-    [CCode (has_target = false)] public delegate void OnInfoResult(XmppStream stream, InfoResult? query_result, Object? store);
-    public void request_info(XmppStream stream, string jid, OnInfoResult listener, Object? store) {
+    public delegate void OnInfoResult(XmppStream stream, InfoResult? query_result);
+    public void request_info(XmppStream stream, string jid, owned OnInfoResult listener) {
         Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
         iq.to = jid;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq, o) => {
-            Tuple<OnInfoResult, Object> tuple = o as Tuple<OnInfoResult, Object>;
-            OnInfoResult on_result = tuple.a;
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
             InfoResult? result = InfoResult.create_from_iq(iq);
             stream.get_flag(Flag.IDENTITY).set_entity_features(iq.from, result != null ? result.features : null);
             stream.get_flag(Flag.IDENTITY).set_entity_identities(iq.from, result != null ? result.identities : null);
-            on_result(stream, result, tuple.b);
-        }, Tuple.create(listener, store));
+            listener(stream, result);
+        });
     }
 
-    [CCode (has_target = false)] public delegate void OnItemsResult(XmppStream stream, ItemsResult query_result);
-    public void request_items(XmppStream stream, string jid, OnItemsResult listener, Object? store) {
+    public delegate void OnItemsResult(XmppStream stream, ItemsResult query_result);
+    public void request_items(XmppStream stream, string jid, owned OnItemsResult listener) {
         Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns());
         iq.to = jid;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);

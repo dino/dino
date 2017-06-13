@@ -34,7 +34,9 @@ namespace Xmpp.Bind {
                 var flag = new Flag();
                 StanzaNode bind_node = new StanzaNode.build("bind", NS_URI).add_self_xmlns();
                 bind_node.put_node(new StanzaNode.build("resource", NS_URI).put_node(new StanzaNode.text(requested_resource)));
-                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), on_bind_response);
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), (stream, iq) => {
+                    stream.get_module(Bind.Module.IDENTITY).iq_response_stanza(stream, iq);
+                });
                 stream.add_flag(flag);
             }
         }
@@ -62,10 +64,6 @@ namespace Xmpp.Bind {
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
-
-        private static void on_bind_response(XmppStream stream, Iq.Stanza iq) {
-            stream.get_module(Bind.Module.IDENTITY).iq_response_stanza(stream, iq);
-        }
     }
 
     public class Flag : XmppStreamFlag {

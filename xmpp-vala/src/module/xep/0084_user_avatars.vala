@@ -35,20 +35,19 @@ namespace Xmpp.Xep.UserAvatars {
 
         public override void attach(XmppStream stream) {
             Pubsub.Module.require(stream);
-            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_event_result, storage);
+            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_event);
         }
 
         public override void detach(XmppStream stream) { }
 
 
-        public static void on_event_result(XmppStream stream, string jid, string id, StanzaNode node, Object? obj) {
-            PixbufStorage? storage = obj as PixbufStorage;
+        public void on_pupsub_event(XmppStream stream, string jid, string id, StanzaNode? node) {
             StanzaNode? info_node = node.get_subnode("info", NS_URI_METADATA);
             if (info_node == null || info_node.get_attribute("type") != "image/png") return;
             if (storage.has_image(id)) {
                 stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
             } else {
-                stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NS_URI_DATA, on_pubsub_data_response, storage);
+                stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NS_URI_DATA, on_pubsub_data_response);
             }
         }
 
@@ -59,9 +58,8 @@ namespace Xmpp.Xep.UserAvatars {
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
 
-        private static void on_pubsub_data_response(XmppStream stream, string jid, string? id, StanzaNode? node, Object? o) {
+        private void on_pubsub_data_response(XmppStream stream, string jid, string? id, StanzaNode? node) {
             if (node == null) return;
-            PixbufStorage storage = o as PixbufStorage;
             storage.store(id, Base64.decode(node.get_string_content()));
             stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
         }

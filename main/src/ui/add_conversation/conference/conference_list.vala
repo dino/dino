@@ -29,7 +29,7 @@ protected class ConferenceList : FilterableList {
         });
 
         foreach (Account account in stream_interactor.get_accounts()) {
-            stream_interactor.get_module(MucManager.IDENTITY).get_bookmarks(account, on_conference_bookmarks_received, Tuple.create(this, account));
+            stream_interactor.get_module(MucManager.IDENTITY).get_bookmarks(account, (stream, conferences) => { on_conference_bookmarks_received(stream, account, conferences); });
         }
     }
 
@@ -42,13 +42,11 @@ protected class ConferenceList : FilterableList {
         }
     }
 
-    private static void on_conference_bookmarks_received(Core.XmppStream stream, Gee.List<Xep.Bookmarks.Conference> conferences, Object? o) {
+    private void on_conference_bookmarks_received(Core.XmppStream stream, Account account, Gee.List<Xep.Bookmarks.Conference> conferences) {
         Idle.add(() => {
-            Tuple<ConferenceList, Account> tuple = o as Tuple<ConferenceList, Account>;
-            ConferenceList list = tuple.a;
-            Account account = tuple.b;
-            list.lists[account] = conferences;
-            list.refresh_conferences(); return false;
+            lists[account] = conferences;
+            refresh_conferences();
+            return false;
         });
     }
 
