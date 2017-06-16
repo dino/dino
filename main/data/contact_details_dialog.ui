@@ -30,7 +30,7 @@
                                         <property name="margin-bottom">12</property>
                                         <property name="margin-right">100</property>
                                         <property name="margin-left">100</property>
-                                        <property name="column-spacing">15</property>
+                                        <property name="column-spacing">10</property>
                                         <property name="visible">True</property>
                                         <child>
                                             <object class="GtkImage" id="avatar">
@@ -43,6 +43,19 @@
                                                 <property name="top_attach">0</property>
                                                 <property name="width">1</property>
                                                 <property name="height">2</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <object class="DinoUiUtilEntryLabelHybrid" id="name_hybrid">
+                                                <property name="xalign">0</property>
+                                                <property name="expand">True</property>
+                                                <property name="visible">True</property>
+                                            </object>
+                                            <packing>
+                                                <property name="left_attach">1</property>
+                                                <property name="top_attach">0</property>
+                                                <property name="width">1</property>
+                                                <property name="height">1</property>
                                             </packing>
                                         </child>
                                         <child>

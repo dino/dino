@@ -16,24 +16,15 @@ public class Dialog : Gtk.Dialog {
     [GtkChild] public Stack main_stack;
     [GtkChild] public ListBox account_list;
     [GtkChild] public Button no_accounts_add;
-    [GtkChild] public ToolButton add_button;
-    [GtkChild] public ToolButton remove_button;
+    [GtkChild] public ToolButton add_account_button;
+    [GtkChild] public ToolButton remove_account_button;
     [GtkChild] public Image image;
     [GtkChild] public Button image_button;
     [GtkChild] public Label jid_label;
     [GtkChild] public Label state_label;
     [GtkChild] public Switch active_switch;
-
-    [GtkChild] public Stack password_stack;
-    [GtkChild] public Label password_label;
-    [GtkChild] public Button password_button;
-    [GtkChild] public Entry password_entry;
-
-    [GtkChild] public Stack alias_stack;
-    [GtkChild] public Label alias_label;
-    [GtkChild] public Button alias_button;
-    [GtkChild] public Entry alias_entry;
-
+    [GtkChild] public Util.EntryLabelHybrid password_hybrid;
+    [GtkChild] public Util.EntryLabelHybrid alias_hybrid;
     [GtkChild] public Grid settings_list;
 
     private ArrayList<Plugins.AccountSettingsWidget> plugin_widgets = new ArrayList<Plugins.AccountSettingsWidget>();
@@ -45,12 +36,19 @@ public class Dialog : Gtk.Dialog {
     construct {
         Util.force_error_color(state_label, ".is_error");
         account_list.row_selected.connect(on_account_list_row_selected);
-        add_button.clicked.connect(on_add_button_clicked);
-        no_accounts_add.clicked.connect(on_add_button_clicked);
-        remove_button.clicked.connect(on_remove_button_clicked);
-        password_entry.key_release_event.connect(on_password_key_release_event);
-        alias_entry.key_release_event.connect(on_alias_key_release_event);
-        image_button.clicked.connect(on_image_button_clicked);
+        add_account_button.clicked.connect(show_add_account_dialog);
+        no_accounts_add.clicked.connect(show_add_account_dialog);
+        remove_account_button.clicked.connect(() => {
+            AccountRow? account_row = account_list.get_selected_row() as AccountRow;
+            if (selected_account != null) remove_account(account_row);
+        });
+        image_button.clicked.connect(show_select_avatar);
+        alias_hybrid.entry.key_release_event.connect(() => { selected_account.alias = alias_hybrid.text; return false; });
+        password_hybrid.entry.key_release_event.connect(() => { selected_account.password = password_hybrid.text; return false; });
+
+        Util.LabelHybridGroup label_hybrid_group = new Util.LabelHybridGroup();
+        label_hybrid_group.add(alias_hybrid);
+        label_hybrid_group.add(password_hybrid);
 
         main_stack.set_visible_child_name("no_accounts");
 
@@ -61,13 +59,11 @@ public class Dialog : Gtk.Dialog {
             Plugins.AccountSettingsWidget widget = e.get_widget();
             plugin_widgets.add(widget);
             widget.visible = true;
-            widget.activated.connect(child_activated);
-            Label label = new Label(e.name);
+
+            Label label = new Label(e.name) { xalign=1, yalign=0, visible=true };
             label.get_style_context().add_class("dim-label");
             label.set_padding(0, e.label_top_padding == -1 ? default_top_padding : e.label_top_padding);
-            label.yalign = 0;
-            label.xalign = 1;
-            label.visible = true;
+
             settings_list.attach(label, 0, row_index);
             settings_list.attach(widget, 1, row_index, 2);
             row_index++;
@@ -111,7 +107,7 @@ public class Dialog : Gtk.Dialog {
         return account_item;
     }
 
-    private void on_add_button_clicked() {
+    private void show_add_account_dialog() {
         AddAccountDialog add_account_dialog = new AddAccountDialog(stream_interactor);
         add_account_dialog.set_transient_for(this);
         add_account_dialog.added.connect((account) => {
@@ -123,18 +119,15 @@ public class Dialog : Gtk.Dialog {
         add_account_dialog.present();
     }
 
-    private void on_remove_button_clicked() {
-        AccountRow account_item = account_list.get_selected_row() as AccountRow;
-        if (account_item != null) {
-            account_list.remove(account_item);
-            account_list.queue_draw();
-            if (account_item.account.enabled) account_disabled(account_item.account);
-            account_item.account.remove();
-            if (account_list.get_row_at_index(0) != null) {
-                account_list.select_row(account_list.get_row_at_index(0));
-            } else {
-                main_stack.set_visible_child_name("no_accounts");
-            }
+    private void remove_account(AccountRow account_item) {
+        account_list.remove(account_item);
+        account_list.queue_draw();
+        if (account_item.account.enabled) account_disabled(account_item.account);
+        account_item.account.remove();
+        if (account_list.get_row_at_index(0) != null) {
+            account_list.select_row(account_list.get_row_at_index(0));
+        } else {
+            main_stack.set_visible_child_name("no_accounts");
         }
     }
 
@@ -146,59 +139,34 @@ public class Dialog : Gtk.Dialog {
         }
     }
 
-    private void on_image_button_clicked() {
+    private void show_select_avatar() {
         FileChooserDialog chooser = new FileChooserDialog (
-				_("Select avatar"), this, FileChooserAction.OPEN,
-				_("Cancel"), ResponseType.CANCEL,
-				_("Select"), ResponseType.ACCEPT);
+                _("Select avatar"), this, FileChooserAction.OPEN,
+                _("Cancel"), ResponseType.CANCEL,
+                _("Select"), ResponseType.ACCEPT);
         FileFilter filter = new FileFilter();
         filter.add_mime_type("image/*");
         chooser.set_filter(filter);
         if (chooser.run() == Gtk.ResponseType.ACCEPT) {
             string uri = chooser.get_filename();
-            Account account = (account_list.get_selected_row() as AccountRow).account;
-            stream_interactor.get_module(AvatarManager.IDENTITY).publish(account, uri);
+            stream_interactor.get_module(AvatarManager.IDENTITY).publish(selected_account, uri);
         }
         chooser.close();
     }
 
     private bool on_active_switch_state_changed(bool state) {
-        Account account = (account_list.get_selected_row() as AccountRow).account;
-        account.enabled = state;
+        selected_account.enabled = state;
         if (state) {
-            if (account.enabled) account_disabled(account);
-            account_enabled(account);
+            if (selected_account.enabled) account_disabled(selected_account);
+            account_enabled(selected_account);
         } else {
-            account_disabled(account);
-        }
-        return false;
-    }
-
-    private bool on_password_key_release_event(EventKey event) {
-        Account account = (account_list.get_selected_row() as AccountRow).account;
-        account.password = password_entry.text;
-        string filler = "";
-        for (int i = 0; i < account.password.length; i++) filler += password_entry.get_invisible_char().to_string();
-        password_label.label = filler;
-        if (event.keyval == Key.Return) {
-            password_stack.set_visible_child_name("label");
-        }
-        return false;
-    }
-
-    private bool on_alias_key_release_event(EventKey event) {
-        Account account = (account_list.get_selected_row() as AccountRow).account;
-        account.alias = alias_entry.text;
-        alias_label.label = alias_entry.text;
-        if (event.keyval == Key.Return) {
-            alias_stack.set_visible_child_name("label");
+            account_disabled(selected_account);
         }
         return false;
     }
 
     private void on_received_avatar(Pixbuf pixbuf, Jid jid, Account account) {
-        Account curr_account = (account_list.get_selected_row() as AccountRow).account;
-        if (curr_account.equals(account) && jid.equals(account.bare_jid)) {
+        if (selected_account.equals(account) && jid.equals(account.bare_jid)) {
             Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(50, 50, image.scale_factor)).draw_account(stream_interactor, account));
         }
     }
@@ -210,27 +178,17 @@ public class Dialog : Gtk.Dialog {
         active_switch.set_active(account.enabled);
         jid_label.label = account.bare_jid.to_string();
 
-        string filler = "";
-        for (int i = 0; i < account.password.length; i++) filler += password_entry.get_invisible_char().to_string();
-        password_label.label = filler;
-        password_stack.set_visible_child_name("label");
-        password_entry.text = account.password;
-
-        alias_stack.set_visible_child_name("label");
-        alias_label.label = account.alias;
-        alias_entry.text = account.alias;
+        alias_hybrid.text = account.alias;
+        password_hybrid.entry.input_purpose = InputPurpose.PASSWORD;
+        password_hybrid.text = account.password;
 
         update_status_label(account);
 
-        password_button.clicked.connect(() => { set_active_stack(password_stack); });
-        alias_button.clicked.connect(() => { set_active_stack(alias_stack); });
         active_switch.state_set.connect(on_active_switch_state_changed);
 
         foreach(Plugins.AccountSettingsWidget widget in plugin_widgets) {
             widget.set_account(account);
         }
-
-        child_activated(null);
     }
 
     private void update_status_label(Account account) {
@@ -259,20 +217,6 @@ public class Dialog : Gtk.Dialog {
         }
     }
 
-    private void child_activated(Gtk.Widget? widget) {
-        if (widget != password_stack) password_stack.set_visible_child_name("label");
-        if (widget != alias_stack) alias_stack.set_visible_child_name("label");
-
-        foreach(var w in plugin_widgets) {
-            if (widget != (Gtk.Widget)w) w.deactivate();
-        }
-    }
-
-    private void set_active_stack(Stack stack) {
-        stack.set_visible_child_name("entry");
-        child_activated(stack);
-    }
-
     private string get_connection_error_description(ConnectionManager.ConnectionError error) {
         switch (error.source) {
             case ConnectionManager.ConnectionError.Source.SASL:
@@ -287,4 +231,3 @@ public class Dialog : Gtk.Dialog {
 }
 
 }
-

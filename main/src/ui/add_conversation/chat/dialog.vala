@@ -60,9 +60,6 @@ public class Dialog : Gtk.Dialog {
             add_contact_dialog.set_transient_for(this);
             add_contact_dialog.present();
         });
-        select_jid_fragment.edit_jid.connect(() => {
-
-        });
         select_jid_fragment.remove_jid.connect((row) => {
             ListRow list_row = roster_list.get_selected_row() as ListRow;
             stream_interactor.get_module(RosterManager.IDENTITY).remove_jid(list_row.account, list_row.jid);

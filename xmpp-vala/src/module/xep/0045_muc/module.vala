@@ -10,6 +10,7 @@ private const string NS_URI_OWNER = NS_URI + "#owner";
 private const string NS_URI_USER = NS_URI + "#user";
 
 public enum MucEnterError {
+    NONE,
     PASSWORD_REQUIRED,
     BANNED,
     ROOM_DOESNT_EXIST,
@@ -64,7 +65,7 @@ public class Module : XmppStreamModule {
     public signal void room_configuration_changed(XmppStream stream, string jid, StatusCode code);
 
     public signal void room_entered(XmppStream stream, string jid, string nick);
-    public signal void room_enter_error(XmppStream stream, string jid, MucEnterError error);
+    public signal void room_enter_error(XmppStream stream, string jid, MucEnterError? error); // TODO "?" shoudln't be necessary (vala bug), remove someday
     public signal void self_removed_from_room(XmppStream stream, string jid, StatusCode code);
     public signal void removed_from_room(XmppStream stream, string jid, StatusCode? code);
 
@@ -213,7 +214,7 @@ public class Module : XmppStreamModule {
             string bare_jid = get_bare_jid(presence.from);
             ErrorStanza? error_stanza = presence.get_error();
             if (flag.get_enter_id(bare_jid) == presence.id) {
-                MucEnterError? error = null;
+                MucEnterError error = MucEnterError.NONE;
                 switch (error_stanza.condition) {
                     case ErrorStanza.CONDITION_NOT_AUTHORIZED:
                         if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.PASSWORD_REQUIRED;
@@ -240,7 +241,7 @@ public class Module : XmppStreamModule {
                         if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.USE_RESERVED_ROOMNICK;
                         break;
                 }
-                if (error != null) room_enter_error(stream, bare_jid, error);
+                if (error != MucEnterError.NONE) room_enter_error(stream, bare_jid, error);
                 flag.finish_muc_enter(bare_jid);
             }
         }
@@ -312,6 +313,13 @@ public class Module : XmppStreamModule {
 
             Gee.List<Feature> features = new ArrayList<Feature>();
             if (query_result != null) {
+
+                foreach (ServiceDiscovery.Identity identity in query_result.identities) {
+                    if (identity.category == "conference") {
+                        stream.get_flag(Flag.IDENTITY).set_room_name(jid, identity.name);
+                    }
+                }
+
                 foreach (string feature in query_result.features) {
                     Feature? parsed = null;
                     switch (feature) {

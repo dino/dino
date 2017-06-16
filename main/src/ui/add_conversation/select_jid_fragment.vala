@@ -9,7 +9,6 @@ namespace Dino.Ui.AddConversation {
 public class SelectJidFragment : Gtk.Box {
 
     public signal void add_jid();
-    public signal void edit_jid(ListRow row);
     public signal void remove_jid(ListRow row);
     public bool done {
         get {
@@ -20,7 +19,6 @@ public class SelectJidFragment : Gtk.Box {
     [GtkChild] private Entry entry;
     [GtkChild] private Box box;
     [GtkChild] private Button add_button;
-    [GtkChild] private Button edit_button;
     [GtkChild] private Button remove_button;
 
     private StreamInteractor stream_interactor;
@@ -45,7 +43,6 @@ public class SelectJidFragment : Gtk.Box {
         entry.changed.connect(on_entry_changed);
         add_button.clicked.connect(() => { add_jid(); });
         remove_button.clicked.connect(() => { remove_jid(filterable_list.get_selected_row() as ListRow); });
-        edit_button.clicked.connect(() => { edit_jid(filterable_list.get_selected_row() as ListRow); });
     }
 
     private void on_entry_changed() {
@@ -71,7 +68,6 @@ public class SelectJidFragment : Gtk.Box {
     private void check_buttons_active() {
         ListBoxRow? row = filterable_list.get_selected_row();
         bool active = row != null && !row.get_type().is_a(typeof(AddListRow));
-        edit_button.sensitive = active;
         remove_button.sensitive = active;
     }
 

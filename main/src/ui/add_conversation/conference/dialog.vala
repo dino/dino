@@ -94,12 +94,6 @@ public class Dialog : Gtk.Dialog {
             dialog.set_transient_for(this);
             dialog.present();
         });
-        select_fragment.edit_jid.connect((row) => {
-            ConferenceListRow conference_row = row as ConferenceListRow;
-            AddGroupchatDialog dialog = new AddGroupchatDialog.for_conference(stream_interactor, conference_row.account, conference_row.bookmark);
-            dialog.set_transient_for(this);
-            dialog.present();
-        });
         select_fragment.remove_jid.connect((row) => {
             ConferenceListRow conference_row = row as ConferenceListRow;
             stream_interactor.get_module(MucManager.IDENTITY).remove_bookmark(conference_row.account, conference_row.bookmark);

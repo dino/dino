@@ -134,6 +134,11 @@ public class MucManager : StreamInteractionModule, Object {
         }
     }
 
+    public string? get_room_name(Account account, Jid jid) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        return stream != null ? stream.get_flag(Xep.Muc.Flag.IDENTITY).get_room_name(jid.to_string()) : null;
+    }
+
     public string? get_groupchat_subject(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {

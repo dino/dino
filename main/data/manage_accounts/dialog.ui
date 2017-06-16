@@ -64,13 +64,13 @@
                                                         <property name="toolbar-style">icons</property>
                                                         <property name="visible">True</property>
                                                         <child>
-                                                            <object class="GtkToolButton" id="add_button">
+                                                            <object class="GtkToolButton" id="add_account_button">
                                                                 <property name="icon-name">list-add-symbolic</property>
                                                                 <property name="visible">True</property>
                                                             </object>
                                                         </child>
                                                         <child>
-                                                            <object class="GtkToolButton" id="remove_button">
+                                                            <object class="GtkToolButton" id="remove_account_button">
                                                                 <property name="icon-name">list-remove-symbolic</property>
                                                                 <property name="visible">True</property>
                                                             </object>
@@ -178,35 +178,11 @@
                                                     </packing>
                                                 </child>
                                                 <child>
-                                                    <object class="GtkStack" id="password_stack">
+                                                    <object class="DinoUiUtilEntryLabelHybrid" id="password_hybrid">
+                                                        <property name="xalign">0</property>
+                                                        <property name="width_request">200</property>
+                                                        <property name="visibility">False</property>
                                                         <property name="visible">True</property>
-                                                        <child>
-                                                            <object class="GtkButton" id="password_button">
-                                                                <property name="relief">none</property>
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <object class="GtkLabel" id="password_label">
-                                                                        <property name="xalign">0</property>
-                                                                        <property name="visible">True</property>
-                                                                    </object>
-                                                                </child>
-                                                            </object>
-                                                            <packing>
-                                                                <property name="name">label</property>
-                                                            </packing>
-                                                        </child>
-                                                        <child>
-                                                            <object class="GtkEntry" id="password_entry">
-                                                                <property name="hexpand">True</property>
-                                                                <property name="input_purpose">password</property>
-                                                                <property name="width_request">200</property>
-                                                                <property name="visible">True</property>
-                                                                <property name="visibility">False</property>
-                                                            </object>
-                                                            <packing>
-                                                                <property name="name">entry</property>
-                                                            </packing>
-                                                        </child>
                                                     </object>
                                                     <packing>
                                                         <property name="left_attach">1</property>
@@ -232,33 +208,10 @@
                                                     </packing>
                                                 </child>
                                                 <child>
-                                                    <object class="GtkStack" id="alias_stack">
+                                                    <object class="DinoUiUtilEntryLabelHybrid" id="alias_hybrid">
+                                                        <property name="xalign">0</property>
+                                                        <property name="width_request">200</property>
                                                         <property name="visible">True</property>
-                                                        <child>
-                                                            <object class="GtkButton" id="alias_button">
-                                                                <property name="relief">none</property>
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <object class="GtkLabel" id="alias_label">
-                                                                        <property name="xalign">0</property>
-                                                                        <property name="visible">True</property>
-                                                                    </object>
-                                                                </child>
-                                                            </object>
-                                                            <packing>
-                                                                <property name="name">label</property>
-                                                            </packing>
-                                                        </child>
-                                                        <child>
-                                                            <object class="GtkEntry" id="alias_entry">
-                                                                <property name="hexpand">True</property>
-                                                                <property name="width_request">200</property>
-                                                                <property name="visible">True</property>
-                                                            </object>
-                                                            <packing>
-                                                                <property name="name">entry</property>
-                                                            </packing>
-                                                        </child>
                                                     </object>
                                                     <packing>
                                                         <property name="left_attach">1</property>

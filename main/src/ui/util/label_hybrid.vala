@@ -8,7 +8,7 @@ public class LabelHybrid : Stack {
     public Label label = new Label("") { visible=true };
     protected Button button = new Button() { relief=ReliefStyle.NONE, visible=true };
 
-    public void init(Widget widget) {
+    internal virtual void init(Widget widget) {
         button.add(label);
         add_named(button, "label");
         add_named(widget, "widget");
@@ -33,7 +33,13 @@ public class EntryLabelHybrid : LabelHybrid {
         get { return entry.text; }
         set {
             entry.text = value;
-            label.label = value;
+            if (visibility) {
+                label.label = value;
+            } else {
+                string filler = "";
+                for (int i = 0; i < value.length; i++) filler += entry.get_invisible_char().to_string();
+                label.label = filler;
+            }
         }
     }
 
@@ -50,11 +56,26 @@ public class EntryLabelHybrid : LabelHybrid {
         }
     }
 
-    private Entry entry;
+    private Entry? entry_;
+    public Entry entry {
+        get {
+            if (entry_ == null) {
+                entry_ = new Entry() { visible=true };
+                init(entry_);
+            }
+            return entry_;
+        }
+        set { entry_ = value; }
+    }
 
-    public EntryLabelHybrid(Entry? e = null) {
-        entry = e ?? new Entry() { visible=true };
-        init(entry);
+    public EntryLabelHybrid.wrap(Entry e) {
+        init(e);
+    }
+
+    internal override void init(Widget widget) {
+        Entry? e = widget as Entry; if (e == null) return;
+        entry = e;
+        base.init(entry);
         update_label();
 
         entry.key_release_event.connect((event) => {
@@ -84,11 +105,29 @@ public class ComboBoxTextLabelHybrid : LabelHybrid {
         set { label.xalign = value; }
     }
 
-    private ComboBoxText combobox;
+    private ComboBoxText combobox_;
+    public ComboBoxText combobox {
+        get {
+            if (combobox_ == null) {
+                combobox_ = new ComboBoxText() { visible=true };
+                init(combobox_);
+            }
+            return combobox_;
+        }
+        set { combobox_ = combobox; }
+    }
 
-    public ComboBoxTextLabelHybrid(ComboBoxText? cb = null) {
-        combobox = cb ?? new ComboBoxText() { visible=true };
-        init(combobox);
+    public ComboBoxTextLabelHybrid.wrap(ComboBoxText cb) {
+        combobox_ = cb;
+        init(cb);
+    }
+
+    public void append(string id, string text) { combobox.append(id, text); }
+    public string get_active_text() { return combobox.get_active_text(); }
+
+    internal override void init(Widget widget) {
+        ComboBoxText? combobox = widget as ComboBoxText; if (combobox == null) return;
+        base.init(combobox);
         update_label();
 
         combobox.changed.connect(() => {
@@ -99,9 +138,6 @@ public class ComboBoxTextLabelHybrid : LabelHybrid {
             combobox.popup();
         });
     }
-
-    public void append(string id, string text) { combobox.append(id, text); }
-    public string get_active_text() { return combobox.get_active_text(); }
 
     private void update_label() {
         label.label = combobox.get_active_text();

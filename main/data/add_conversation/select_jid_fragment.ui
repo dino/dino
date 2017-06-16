@@ -69,19 +69,6 @@
                                                     </object>
                                                 </child>
                                                 <child>
-                                                    <object class="GtkButton" id="edit_button">
-                                                        <property name="sensitive">False</property>
-                                                        <property name="visible">True</property>
-                                                        <child>
-                                                            <object class="GtkImage">
-                                                                <property name="icon-name">document-edit-symbolic</property>
-                                                                <property name="icon-size">1</property>
-                                                                <property name="visible">True</property>
-                                                            </object>
-                                                        </child>
-                                                    </object>
-                                                </child>
-                                                <child>
                                                     <object class="GtkButton" id="remove_button">
                                                         <property name="sensitive">False</property>
                                                         <property name="visible">True</property>
