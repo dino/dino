@@ -32,12 +32,13 @@ public class ModuleManager {
 
     public ArrayList<Core.XmppStreamModule> get_modules(Account account, string? resource = null) {
         ArrayList<Core.XmppStreamModule> modules = new ArrayList<Core.XmppStreamModule>();
+
+        modules.add(new Bind.Module(resource == null ? account.resourcepart : resource));
+        modules.add(new PlainSasl.Module(account.bare_jid.to_string(), account.password));
         lock (module_map) {
             if (!module_map.has_key(account)) initialize(account);
             foreach (Core.XmppStreamModule module in module_map[account]) modules.add(module);
         }
-        modules.add(new Bind.Module(resource == null ? account.resourcepart : resource));
-        modules.add(new PlainSasl.Module(account.bare_jid.to_string(), account.password));
         return modules;
     }
 
@@ -45,6 +46,7 @@ public class ModuleManager {
         lock(module_map) {
             module_map[account] = new ArrayList<Core.XmppStreamModule>();
             module_map[account].add(new Tls.Module());
+            module_map[account].add(new Session.Module());
             module_map[account].add(new Roster.Module());
             module_map[account].add(new Xep.ServiceDiscovery.Module.with_identity("client", "pc"));
             module_map[account].add(new Xep.PrivateXmlStorage.Module());

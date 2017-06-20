@@ -35,7 +35,7 @@ namespace Xmpp.Bind {
                 StanzaNode bind_node = new StanzaNode.build("bind", NS_URI).add_self_xmlns();
                 bind_node.put_node(new StanzaNode.build("resource", NS_URI).put_node(new StanzaNode.text(requested_resource)));
                 stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), (stream, iq) => {
-                    stream.get_module(Bind.Module.IDENTITY).iq_response_stanza(stream, iq);
+                    stream.get_module(Module.IDENTITY).iq_response_stanza(stream, iq);
                 });
                 stream.add_flag(flag);
             }
@@ -51,7 +51,7 @@ namespace Xmpp.Bind {
         }
 
         public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Bind.Module(""));
+            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module(""));
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {

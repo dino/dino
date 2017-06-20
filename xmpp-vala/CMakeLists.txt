@@ -28,6 +28,7 @@ SOURCES
     "src/module/roster/module.vala"
     "src/module/roster/versioning_module.vala"
     "src/module/sasl.vala"
+    "src/module/session.vala"
     "src/module/stanza.vala"
     "src/module/stanza_error.vala"
     "src/module/stream_error.vala"
