@@ -69,12 +69,17 @@ public class Module : XmppStreamModule {
     public signal void self_removed_from_room(XmppStream stream, string jid, StatusCode code);
     public signal void removed_from_room(XmppStream stream, string jid, StatusCode? code);
 
-    public void enter(XmppStream stream, string bare_jid, string nick, string? password) {
+    public void enter(XmppStream stream, string bare_jid, string nick, string? password, string? history_since) {
         Presence.Stanza presence = new Presence.Stanza();
         presence.to = bare_jid + "/" + nick;
         StanzaNode x_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
         if (password != null) {
             x_node.put_node(new StanzaNode.build("password", NS_URI).put_node(new StanzaNode.text(password)));
+        }
+        if (history_since != null) {
+            StanzaNode history_node = new StanzaNode.build("history", NS_URI);
+            history_node.set_attribute("since", history_since);
+            x_node.put_node(history_node);
         }
         presence.stanza.put_node(x_node);
 
