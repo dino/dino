@@ -1,5 +1,6 @@
 using Xmpp.Core;
 
+/* Legacy. RFC 3921 3*/
 namespace Xmpp.Session {
 private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-session";
 
@@ -19,10 +20,7 @@ public class Module : XmppStreamNegotiationModule {
         if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
     }
 
-    /* the client MUST establish a session if it desires to engage in instant messaging and presence functionality (RFC 3921 3) */
-    public override bool mandatory_outstanding(XmppStream stream) {
-        return !stream.has_flag(Flag.IDENTITY) || !stream.get_flag(Flag.IDENTITY).finished;
-    }
+    public override bool mandatory_outstanding(XmppStream stream) { return false; }
 
     public override bool negotiation_active(XmppStream stream) {
         return stream.has_flag(Flag.IDENTITY) && !stream.get_flag(Flag.IDENTITY).finished;
@@ -32,7 +30,8 @@ public class Module : XmppStreamNegotiationModule {
     public override string get_id() { return IDENTITY.id; }
 
     private void on_bound_resource(XmppStream stream, string my_jid) {
-        if (stream.features.get_subnode("session", NS_URI) != null) {
+        StanzaNode? session_node = stream.features.get_subnode("session", NS_URI);
+        if (session_node != null && session_node.get_subnode("optional", NS_URI) == null) {
             stream.add_flag(new Flag());
             Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("session", NS_URI).add_self_xmlns()) { to=stream.remote_name };
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
@@ -51,4 +50,5 @@ public class Flag : XmppStreamFlag {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 }
+
 }
