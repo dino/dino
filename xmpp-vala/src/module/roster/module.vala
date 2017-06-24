@@ -38,13 +38,11 @@ public class Module : XmppStreamModule, Iq.Handler {
      * @param   handle  Handle to be set. If null, any handle will be removed.
      */
     public void set_jid_handle(XmppStream stream, string jid, string? handle) {
-        Item roster_item = new Item();
-        roster_item.jid = jid;
-        if (handle != null) {
-            roster_item.name = handle;
-        }
+        Flag flag = stream.get_flag(Flag.IDENTITY);
+        Item item = flag.get_item(jid) ?? new Item() { jid=jid };
+        item.name = handle != null ? handle : "";
 
-        roster_set(stream, roster_item);
+        roster_set(stream, item);
     }
 
     public void on_iq_set(XmppStream stream, Iq.Stanza iq) {

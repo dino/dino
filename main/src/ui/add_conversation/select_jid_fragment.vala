@@ -9,7 +9,6 @@ namespace Dino.Ui.AddConversation {
 public class SelectJidFragment : Gtk.Box {
 
     public signal void add_jid();
-    public signal void edit_jid(ListRow row);
     public signal void remove_jid(ListRow row);
     public bool done {
         get {
@@ -20,16 +19,18 @@ public class SelectJidFragment : Gtk.Box {
     [GtkChild] private Entry entry;
     [GtkChild] private Box box;
     [GtkChild] private Button add_button;
-    [GtkChild] private Button edit_button;
     [GtkChild] private Button remove_button;
 
-    private FilterableList filterable_list;
-    private ArrayList<AddListRow> added_rows = new ArrayList<AddListRow>();
     private StreamInteractor stream_interactor;
+    private FilterableList filterable_list;
+    private Gee.List<Account> accounts;
 
-    public SelectJidFragment(StreamInteractor stream_interactor, FilterableList filterable_list) {
+    private ArrayList<AddListRow> added_rows = new ArrayList<AddListRow>();
+
+    public SelectJidFragment(StreamInteractor stream_interactor, FilterableList filterable_list, Gee.List<Account> accounts) {
         this.stream_interactor = stream_interactor;
         this.filterable_list = filterable_list;
+        this.accounts = accounts;
 
         filterable_list.visible = true;
         filterable_list.activate_on_single_click = false;
@@ -42,7 +43,6 @@ public class SelectJidFragment : Gtk.Box {
         entry.changed.connect(on_entry_changed);
         add_button.clicked.connect(() => { add_jid(); });
         remove_button.clicked.connect(() => { remove_jid(filterable_list.get_selected_row() as ListRow); });
-        edit_button.clicked.connect(() => { edit_jid(filterable_list.get_selected_row() as ListRow); });
     }
 
     private void on_entry_changed() {
@@ -57,7 +57,7 @@ public class SelectJidFragment : Gtk.Box {
         filterable_list.set_filter_values(values);
         Jid? parsed_jid = Jid.parse(str);
         if (parsed_jid != null && parsed_jid.localpart != null) {
-            foreach (Account account in stream_interactor.get_accounts()) {
+            foreach (Account account in accounts) {
                 AddListRow row = new AddListRow(stream_interactor, str, account);
                 filterable_list.add(row);
                 added_rows.add(row);
@@ -68,7 +68,6 @@ public class SelectJidFragment : Gtk.Box {
     private void check_buttons_active() {
         ListBoxRow? row = filterable_list.get_selected_row();
         bool active = row != null && !row.get_type().is_a(typeof(AddListRow));
-        edit_button.sensitive = active;
         remove_button.sensitive = active;
     }
 

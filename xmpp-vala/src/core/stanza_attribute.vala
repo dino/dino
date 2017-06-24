@@ -32,7 +32,7 @@ public class StanzaAttribute : StanzaEntry {
         }
     }
 
-    public string to_string() {
+    public override string to_string(int i = 0) {
         return printf(ATTRIBUTE_STRING_FORMAT);
     }
 

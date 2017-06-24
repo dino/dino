@@ -17,12 +17,12 @@ public class ListRow : ListBoxRow {
 
     public ListRow() {}
 
-    public ListRow.from_jid(StreamInteractor stream_interactor, Jid jid, Account account) {
+    public ListRow.from_jid(StreamInteractor stream_interactor, Jid jid, Account account, bool show_account) {
         this.jid = jid;
         this.account = account;
 
         string display_name = Util.get_display_name(stream_interactor, jid, account);
-        if (stream_interactor.get_accounts().size > 1) {
+        if (show_account && stream_interactor.get_accounts().size > 1) {
             via_label.label = @"via $(account.bare_jid)";
             this.has_tooltip = true;
             set_tooltip_text(jid.to_string());

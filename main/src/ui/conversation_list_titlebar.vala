@@ -22,9 +22,15 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
     private void create_add_menu(Window window) {
         SimpleAction contacts_action = new SimpleAction("add_chat", null);
         contacts_action.activate.connect(() => {
-            AddConversation.Chat.Dialog add_chat_dialog = new AddConversation.Chat.Dialog(stream_interactor);
+            AddConversation.Chat.Dialog add_chat_dialog = new AddConversation.Chat.Dialog(stream_interactor, stream_interactor.get_accounts());
             add_chat_dialog.set_transient_for(window);
-            add_chat_dialog.conversation_opened.connect((conversation) => conversation_opened(conversation));
+            add_chat_dialog.title = _("Start Chat");
+            add_chat_dialog.ok_button.label = _("Start");
+            add_chat_dialog.selected.connect((account, jid) => {
+                Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
+                stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+                conversation_opened(conversation);
+            });
             add_chat_dialog.present();
         });
         GLib.Application.get_default().add_action(contacts_action);

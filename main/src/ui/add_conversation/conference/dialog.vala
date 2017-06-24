@@ -88,15 +88,9 @@ public class Dialog : Gtk.Dialog {
     private void setup_jid_add_view() {
         conference_list = new ConferenceList(stream_interactor);
         conference_list.row_activated.connect(() => { ok_button.clicked(); });
-        select_fragment = new SelectJidFragment(stream_interactor, conference_list);
+        select_fragment = new SelectJidFragment(stream_interactor, conference_list, stream_interactor.get_accounts());
         select_fragment.add_jid.connect((row) => {
             AddGroupchatDialog dialog = new AddGroupchatDialog(stream_interactor);
-            dialog.set_transient_for(this);
-            dialog.present();
-        });
-        select_fragment.edit_jid.connect((row) => {
-            ConferenceListRow conference_row = row as ConferenceListRow;
-            AddGroupchatDialog dialog = new AddGroupchatDialog.for_conference(stream_interactor, conference_row.account, conference_row.bookmark);
             dialog.set_transient_for(this);
             dialog.present();
         });

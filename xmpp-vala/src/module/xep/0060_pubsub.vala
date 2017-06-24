@@ -11,16 +11,22 @@ namespace Xmpp.Xep.Pubsub {
 
         private HashMap<string, EventListenerDelegate> event_listeners = new HashMap<string, EventListenerDelegate>();
 
-        public void add_filtered_notification(XmppStream stream, string node, EventListenerDelegate.ResultFunc on_result, Object? reference = null) {
+        public void add_filtered_notification(XmppStream stream, string node, owned EventListenerDelegate.ResultFunc listener) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature_notify(stream, node);
-            event_listeners[node] = new EventListenerDelegate(on_result, reference);
+            event_listeners[node] = new EventListenerDelegate((owned)listener);
         }
 
-        [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, string jid, string? id, StanzaNode? node, Object? storage);
-        public void request(XmppStream stream, string jid, string node, OnResult listener, Object? store) { // TODO multiple nodes gehen auch
-            Iq.Stanza a = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
-            a.to = jid;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, a, on_received_request_response, Tuple.create(listener, store));
+        public delegate void OnResult(XmppStream stream, string jid, string? id, StanzaNode? node);
+        public void request(XmppStream stream, string jid, string node, owned OnResult listener) { // TODO multiple nodes gehen auch
+            Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
+            request_iq.to = jid;
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, request_iq, (stream, iq) => {
+                StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);
+                StanzaNode items_node = event_node != null ? event_node.get_subnode("items", NS_URI) : null;
+                StanzaNode item_node = items_node != null ? items_node.get_subnode("item", NS_URI) : null;
+                string? id = item_node != null ? item_node.get_attribute("id", NS_URI) : null;
+                listener(stream, iq.from, id, item_node != null ? item_node.sub_nodes[0] : null);
+            });
         }
 
         public void publish(XmppStream stream, string? jid, string node_id, string node, string item_id, StanzaNode content) {
@@ -59,30 +65,17 @@ namespace Xmpp.Xep.Pubsub {
             string node = items_node.get_attribute("node", NS_URI_EVENT);
             string id = item_node.get_attribute("id", NS_URI_EVENT);
             if (event_listeners.has_key(node)) {
-                event_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0], event_listeners[node].reference);
+                event_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0]);
             }
-        }
-
-        private static void on_received_request_response(XmppStream stream, Iq.Stanza iq, Object o) {
-            Tuple<OnResult, Object?> tuple = o as Tuple<OnResult, Object?>;
-            OnResult on_result = tuple.a;
-            StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);
-            StanzaNode items_node = event_node != null ? event_node.get_subnode("items", NS_URI) : null;
-            StanzaNode item_node = items_node != null ? items_node.get_subnode("item", NS_URI) : null;
-            string? id = item_node != null ? item_node.get_attribute("id", NS_URI) : null;
-            on_result(stream, iq.from, id, item_node != null ? item_node.sub_nodes[0] : null, tuple.b);
         }
     }
 
     public class EventListenerDelegate {
-        [CCode (has_target = false)]
-        public delegate void ResultFunc(XmppStream stream, string jid, string id, StanzaNode node, Object? object);
-        public ResultFunc on_result { get; private set; }
-        public Object? reference { get; private set; }
+        public delegate void ResultFunc(XmppStream stream, string jid, string id, StanzaNode? node);
+        public ResultFunc on_result { get; private owned set; }
 
-        public EventListenerDelegate(ResultFunc on_result, Object? reference = null) {
-            this.on_result = on_result;
-            this.reference = reference;
+        public EventListenerDelegate(owned ResultFunc on_result) {
+            this.on_result = (owned) on_result;
         }
     }
 }

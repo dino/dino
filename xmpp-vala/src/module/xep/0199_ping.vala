@@ -8,10 +8,11 @@ namespace Xmpp.Xep.Ping {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0199_ping");
 
-        public void send_ping(XmppStream stream, string jid, ResponseListener? listener) {
+        public delegate void OnResult(XmppStream stream);
+        public void send_ping(XmppStream stream, string jid, owned OnResult? listener) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("ping", NS_URI).add_self_xmlns());
             iq.to = jid;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, on_ping_response, listener);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream) => { listener(stream); });
         }
 
         public override void attach(XmppStream stream) {
@@ -34,14 +35,5 @@ namespace Xmpp.Xep.Ping {
             }
             public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
         }
-
-        private static void on_ping_response(XmppStream stream, Iq.Stanza iq, Object? o) {
-            ResponseListener? listener = o as ResponseListener;
-            if (listener != null) listener.on_result(stream);
-        }
-    }
-
-    public interface ResponseListener : Object {
-        public abstract void on_result(XmppStream stream);
     }
 }

@@ -42,6 +42,10 @@ public abstract class StanzaEntry {
     public virtual unowned string? get_string_content() {
         return val;
     }
+
+    public virtual string to_string(int i = 0) {
+        return get_string_content() ?? "(null)";
+    }
 }
 
 public class StanzaNode : StanzaEntry {
@@ -339,7 +343,7 @@ public class StanzaNode : StanzaEntry {
         return sb.str;
     }
 
-    public string to_string(int i = 0) {
+    public override string to_string(int i = 0) {
         return printf(i, TAG_START_BEGIN_FORMAT, TAG_START_EMPTY_END, TAG_START_CONTENT_END, TAG_END_FORMAT, StanzaAttribute.ATTRIBUTE_STRING_FORMAT);
     }
 

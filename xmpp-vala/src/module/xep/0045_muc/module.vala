@@ -10,12 +10,15 @@ private const string NS_URI_OWNER = NS_URI + "#owner";
 private const string NS_URI_USER = NS_URI + "#user";
 
 public enum MucEnterError {
+    NONE,
     PASSWORD_REQUIRED,
-    NOT_IN_MEMBER_LIST,
     BANNED,
+    ROOM_DOESNT_EXIST,
+    CREATION_RESTRICTED,
+    USE_RESERVED_ROOMNICK,
+    NOT_IN_MEMBER_LIST,
     NICK_CONFLICT,
     OCCUPANT_LIMIT_REACHED,
-    ROOM_DOESNT_EXIST
 }
 
 public enum Affiliation {
@@ -62,7 +65,7 @@ public class Module : XmppStreamModule {
     public signal void room_configuration_changed(XmppStream stream, string jid, StatusCode code);
 
     public signal void room_entered(XmppStream stream, string jid, string nick);
-    public signal void room_enter_error(XmppStream stream, string jid, MucEnterError error);
+    public signal void room_enter_error(XmppStream stream, string jid, MucEnterError? error); // TODO "?" shoudln't be necessary (vala bug), remove someday
     public signal void self_removed_from_room(XmppStream stream, string jid, StatusCode code);
     public signal void removed_from_room(XmppStream stream, string jid, StatusCode? code);
 
@@ -103,21 +106,53 @@ public class Module : XmppStreamModule {
         stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
     }
 
+    public void invite(XmppStream stream, string to_muc, string jid) {
+        Message.Stanza message = new Message.Stanza();
+        message.to = to_muc;
+        StanzaNode invite_node = new StanzaNode.build("x", NS_URI_USER).add_self_xmlns()
+            .put_node(new StanzaNode.build("invite", NS_URI_USER).put_attribute("to", jid));
+        message.stanza.put_node(invite_node);
+        stream.get_module(Message.Module.IDENTITY).send_message(stream, message);
+    }
+
     public void kick(XmppStream stream, string jid, string nick) {
         change_role(stream, jid, nick, "none");
     }
 
-    [CCode (has_target = false)] public delegate void OnConfigFormResult(XmppStream stream, string jid, DataForms.DataForm data_form, Object? store);
-    public void get_config_form(XmppStream stream, string jid, OnConfigFormResult listener, Object? store) {
-        Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_OWNER).add_self_xmlns()) { to=jid };
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq, store) => {
-            Tuple<OnConfigFormResult, Object?> tuple = store as Tuple<OnConfigFormResult, Object?>;
-            StanzaNode? x_node = iq.stanza.get_deep_subnode(NS_URI_OWNER + ":query", DataForms.NS_URI + ":x");
+    /* XEP 0046: "A user cannot be kicked by a moderator with a lower affiliation." (XEP 0045 8.2) */
+    public bool kick_possible(XmppStream stream, string occupant) {
+        string muc_jid = get_bare_jid(occupant);
+        Flag flag = stream.get_flag(Flag.IDENTITY);
+        string own_nick = flag.get_muc_nick(muc_jid);
+        Affiliation my_affiliation = flag.get_affiliation(muc_jid, muc_jid + "/" + own_nick);
+        Affiliation other_affiliation = flag.get_affiliation(muc_jid, occupant);
+        switch (my_affiliation) {
+            case Affiliation.MEMBER:
+                if (other_affiliation == Affiliation.ADMIN || other_affiliation == Affiliation.OWNER) return false;
+                break;
+            case Affiliation.ADMIN:
+                if (other_affiliation == Affiliation.OWNER) return false;
+                break;
+        }
+        return true;
+    }
+
+    public delegate void OnConfigFormResult(XmppStream stream, string jid, DataForms.DataForm data_form);
+    public void get_config_form(XmppStream stream, string jid, owned OnConfigFormResult listener) {
+        Iq.Stanza get_iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_OWNER).add_self_xmlns()) { to=jid };
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, get_iq, (stream, form_iq) => {
+            StanzaNode? x_node = form_iq.stanza.get_deep_subnode(NS_URI_OWNER + ":query", DataForms.NS_URI + ":x");
             if (x_node != null) {
-                DataForms.DataForm data_form = DataForms.DataForm.create(stream, x_node, on_config_form_result, iq);
-                tuple.a(stream, iq.from, data_form, tuple.b);
+                DataForms.DataForm data_form = DataForms.DataForm.create(stream, x_node, (stream, node) => {
+                    StanzaNode stanza_node = new StanzaNode.build("query", NS_URI_OWNER);
+                    stanza_node.add_self_xmlns().put_node(node);
+                    Iq.Stanza set_iq = new Iq.Stanza.set(stanza_node);
+                    set_iq.to = form_iq.from;
+                    stream.get_module(Iq.Module.IDENTITY).send_iq(stream, set_iq);
+                });
+                listener(stream, form_iq.from, data_form);
             }
-        }, Tuple.create(listener, store));
+        });
     }
 
     public override void attach(XmppStream stream) {
@@ -133,9 +168,9 @@ public class Module : XmppStreamModule {
         }
 
         room_entered.connect((stream, jid, nick) => {
-            query_affiliation(stream, jid, "member", null, null);
-            query_affiliation(stream, jid, "admin", null, null);
-            query_affiliation(stream, jid, "owner", null, null);
+            query_affiliation(stream, jid, "member", null);
+            query_affiliation(stream, jid, "admin", null);
+            query_affiliation(stream, jid, "owner", null);
         });
     }
 
@@ -178,22 +213,35 @@ public class Module : XmppStreamModule {
         if (presence.is_error() && flag.is_muc_enter_outstanding() && flag.is_occupant(presence.from)) {
             string bare_jid = get_bare_jid(presence.from);
             ErrorStanza? error_stanza = presence.get_error();
-            if (flag.get_enter_id(bare_jid) == error_stanza.original_id) {
-                MucEnterError? error = null;
-                if (error_stanza.condition == ErrorStanza.CONDITION_NOT_AUTHORIZED && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    error = MucEnterError.PASSWORD_REQUIRED;
-                } else if (ErrorStanza.CONDITION_REGISTRATION_REQUIRED == error_stanza.condition && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    error = MucEnterError.NOT_IN_MEMBER_LIST;
-                } else if (ErrorStanza.CONDITION_FORBIDDEN == error_stanza.condition && ErrorStanza.TYPE_AUTH == error_stanza.type_) {
-                    error = MucEnterError.BANNED;
-                } else if (ErrorStanza.CONDITION_CONFLICT == error_stanza.condition && ErrorStanza.TYPE_CANCEL == error_stanza.type_) {
-                    error = MucEnterError.NICK_CONFLICT;
-                } else if (ErrorStanza.CONDITION_SERVICE_UNAVAILABLE == error_stanza.condition && ErrorStanza.TYPE_WAIT == error_stanza.type_) {
-                    error = MucEnterError.OCCUPANT_LIMIT_REACHED;
-                } else if (ErrorStanza.CONDITION_ITEM_NOT_FOUND == error_stanza.condition && ErrorStanza.TYPE_CANCEL == error_stanza.type_) {
-                    error = MucEnterError.ROOM_DOESNT_EXIST;
+            if (flag.get_enter_id(bare_jid) == presence.id) {
+                MucEnterError error = MucEnterError.NONE;
+                switch (error_stanza.condition) {
+                    case ErrorStanza.CONDITION_NOT_AUTHORIZED:
+                        if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.PASSWORD_REQUIRED;
+                        break;
+                    case ErrorStanza.CONDITION_REGISTRATION_REQUIRED:
+                        if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.NOT_IN_MEMBER_LIST;
+                        break;
+                    case ErrorStanza.CONDITION_FORBIDDEN:
+                        if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.BANNED;
+                        break;
+                    case ErrorStanza.CONDITION_SERVICE_UNAVAILABLE:
+                        if (ErrorStanza.TYPE_WAIT == error_stanza.type_) error = MucEnterError.OCCUPANT_LIMIT_REACHED;
+                        break;
+                    case ErrorStanza.CONDITION_ITEM_NOT_FOUND:
+                        if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.ROOM_DOESNT_EXIST;
+                        break;
+                    case ErrorStanza.CONDITION_CONFLICT:
+                        if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.NICK_CONFLICT;
+                        break;
+                    case ErrorStanza.CONDITION_NOT_ALLOWED:
+                        if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.CREATION_RESTRICTED;
+                        break;
+                    case ErrorStanza.CONDITION_NOT_ACCEPTABLE:
+                        if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.USE_RESERVED_ROOMNICK;
+                        break;
                 }
-                if (error != null) room_enter_error(stream, bare_jid, error);
+                if (error != MucEnterError.NONE) room_enter_error(stream, bare_jid, error);
                 flag.finish_muc_enter(bare_jid);
             }
         }
@@ -261,44 +309,53 @@ public class Module : XmppStreamModule {
     }
 
     private void query_room_info(XmppStream stream, string jid) {
-        stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid, (stream, query_result, store) => {
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid, (stream, query_result) => {
+
             Gee.List<Feature> features = new ArrayList<Feature>();
-            foreach (string feature in query_result.features) {
-                Feature? parsed = null;
-                switch (feature) {
-                    case "http://jabber.org/protocol/muc#register": parsed = Feature.REGISTER; break;
-                    case "http://jabber.org/protocol/muc#roomconfig": parsed = Feature.ROOMCONFIG; break;
-                    case "http://jabber.org/protocol/muc#roominfo": parsed = Feature.ROOMINFO; break;
-                    case "muc_hidden": parsed = Feature.HIDDEN; break;
-                    case "muc_membersonly": parsed = Feature.MEMBERS_ONLY; break;
-                    case "muc_moderated": parsed = Feature.MODERATED; break;
-                    case "muc_nonanonymous": parsed = Feature.NON_ANONYMOUS; break;
-                    case "muc_open": parsed = Feature.OPEN; break;
-                    case "muc_passwordprotected": parsed = Feature.PASSWORD_PROTECTED; break;
-                    case "muc_persistent": parsed = Feature.PERSISTENT; break;
-                    case "muc_public": parsed = Feature.PUBLIC; break;
-                    case "muc_rooms": parsed = Feature.ROOMS; break;
-                    case "muc_semianonymous": parsed = Feature.SEMI_ANONYMOUS; break;
-                    case "muc_temporary": parsed = Feature.TEMPORARY; break;
-                    case "muc_unmoderated": parsed = Feature.UNMODERATED; break;
-                    case "muc_unsecured": parsed = Feature.UNSECURED; break;
+            if (query_result != null) {
+
+                foreach (ServiceDiscovery.Identity identity in query_result.identities) {
+                    if (identity.category == "conference") {
+                        stream.get_flag(Flag.IDENTITY).set_room_name(jid, identity.name);
+                    }
                 }
-                if (parsed != null) features.add(parsed);
+
+                foreach (string feature in query_result.features) {
+                    Feature? parsed = null;
+                    switch (feature) {
+                        case "http://jabber.org/protocol/muc#register": parsed = Feature.REGISTER; break;
+                        case "http://jabber.org/protocol/muc#roomconfig": parsed = Feature.ROOMCONFIG; break;
+                        case "http://jabber.org/protocol/muc#roominfo": parsed = Feature.ROOMINFO; break;
+                        case "muc_hidden": parsed = Feature.HIDDEN; break;
+                        case "muc_membersonly": parsed = Feature.MEMBERS_ONLY; break;
+                        case "muc_moderated": parsed = Feature.MODERATED; break;
+                        case "muc_nonanonymous": parsed = Feature.NON_ANONYMOUS; break;
+                        case "muc_open": parsed = Feature.OPEN; break;
+                        case "muc_passwordprotected": parsed = Feature.PASSWORD_PROTECTED; break;
+                        case "muc_persistent": parsed = Feature.PERSISTENT; break;
+                        case "muc_public": parsed = Feature.PUBLIC; break;
+                        case "muc_rooms": parsed = Feature.ROOMS; break;
+                        case "muc_semianonymous": parsed = Feature.SEMI_ANONYMOUS; break;
+                        case "muc_temporary": parsed = Feature.TEMPORARY; break;
+                        case "muc_unmoderated": parsed = Feature.UNMODERATED; break;
+                        case "muc_unsecured": parsed = Feature.UNSECURED; break;
+                    }
+                    if (parsed != null) features.add(parsed);
+                }
             }
-            stream.get_flag(Flag.IDENTITY).set_room_features(query_result.iq.from, features);
-        }, null);
+            stream.get_flag(Flag.IDENTITY).set_room_features(jid, features);
+        });
     }
 
-    [CCode (has_target = false)] public delegate void OnAffiliationResult(XmppStream stream, Gee.List<string> jids, Object? store);
-    private void query_affiliation(XmppStream stream, string jid, string affiliation, OnAffiliationResult? on_result, Object? store) {
+    public delegate void OnAffiliationResult(XmppStream stream, Gee.List<string> jids);
+    private void query_affiliation(XmppStream stream, string jid, string affiliation, owned OnAffiliationResult? listener) {
         Iq.Stanza iq = new Iq.Stanza.get(
             new StanzaNode.build("query", NS_URI_ADMIN)
                 .add_self_xmlns()
                 .put_node(new StanzaNode.build("item", NS_URI_ADMIN)
                     .put_attribute("affiliation", affiliation))
         ) { to=jid };
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq, store) => {
-            Tuple<OnAffiliationResult?, Object?> tuple = store as Tuple<OnAffiliationResult?, Object?>;
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
             if (iq.is_error()) return;
             StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI_ADMIN);
             if (query_node == null) return;
@@ -312,17 +369,8 @@ public class Module : XmppStreamModule {
                     ret_jids.add(jid_);
                 }
             }
-            if (tuple.a != null) tuple.a(stream, ret_jids, tuple.b);
-        }, Tuple.create(on_result, store));
-    }
-
-    public static void on_config_form_result(XmppStream stream, StanzaNode node, Object? store) {
-        Iq.Stanza form_iq = store as Iq.Stanza;
-        StanzaNode stanza_node = new StanzaNode.build("query", NS_URI_OWNER);
-        stanza_node.add_self_xmlns().put_node(node);
-        Iq.Stanza set_iq = new Iq.Stanza.set(stanza_node);
-        set_iq.to = form_iq.from;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, set_iq);
+            if (listener != null) listener(stream, ret_jids);
+        });
     }
 
     private static ArrayList<int> get_status_codes(StanzaNode x_node) {

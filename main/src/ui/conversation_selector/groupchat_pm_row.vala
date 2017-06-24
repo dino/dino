@@ -44,7 +44,7 @@ public class GroupchatPmRow : ConversationRow {
         Box inner_box = builder.get_object("inner_box") as Box;
         Label jid_label = builder.get_object("jid_label") as Label;
         jid_label.label = conversation.counterpart.to_string();
-        if (stream_interactor.get_module(MucManager.IDENTITY).get_nick(conversation.counterpart, conversation.account) != null) {
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_joined(conversation.counterpart, conversation.account)) {
             inner_box.add(get_fulljid_box(conversation.counterpart));
         }
         return main_box;

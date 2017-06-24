@@ -49,6 +49,11 @@ public class RosterManager : StreamInteractionModule, Object {
         if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).add_jid(stream, jid.bare_jid.to_string(), handle);
     }
 
+    public void set_jid_handle(Account account, Jid jid, string? handle) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).set_jid_handle(stream, jid.bare_jid.to_string(), handle);
+    }
+
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).received_roster.connect( (stream, roster) => {
             foreach (Roster.Item roster_item in roster) {
@@ -81,7 +86,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
         foreach (Qlite.Row row in db.roster.select().with(db.roster.account_id, "=", account.id)) {
             Roster.Item item = new Roster.Item();
             item.jid = row[db.roster.jid];
-            item.name = row[db.roster.name];
+            item.name = row[db.roster.handle];
             item.subscription = row[db.roster.subscription];
             items[item.jid] = item;
         }
@@ -115,7 +120,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
         db.roster.insert().or("REPLACE")
             .value(db.roster.account_id, account.id)
             .value(db.roster.jid, item.jid)
-            .value(db.roster.name, item.name)
+            .value(db.roster.handle, item.name)
             .value(db.roster.subscription, item.subscription)
             .perform();
     }

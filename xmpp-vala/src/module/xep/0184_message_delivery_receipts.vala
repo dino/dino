@@ -8,6 +8,17 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
 
         public signal void receipt_received(XmppStream stream, string jid, string id);
 
+        public void send_received(XmppStream stream, string from, string message_id) {
+            Message.Stanza received_message = new Message.Stanza();
+            received_message.to = from;
+            received_message.stanza.put_node(new StanzaNode.build("received", NS_URI).add_self_xmlns().put_attribute("id", message_id));
+            stream.get_module(Message.Module.IDENTITY).send_message(stream, received_message);
+        }
+
+        public static bool requests_receipt(Message.Stanza message) {
+            return message.stanza.get_subnode("request", NS_URI) != null;
+        }
+
         public override void attach(XmppStream stream) {
             ServiceDiscovery.Module.require(stream);
             Message.Module.require(stream);
@@ -33,16 +44,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
             StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);
             if (received_node != null) {
                 receipt_received(stream, message.from, received_node.get_attribute("id", NS_URI));
-            } else if (message.stanza.get_subnode("request", NS_URI) != null) {
-                send_received(stream, message);
             }
-        }
-
-        private void send_received(XmppStream stream, Message.Stanza message) {
-            Message.Stanza received_message = new Message.Stanza();
-            received_message.to = message.from;
-            received_message.stanza.put_node(new StanzaNode.build("received", NS_URI).add_self_xmlns().put_attribute("id", message.id));
-            stream.get_module(Message.Module.IDENTITY).send_message(stream, received_message);
         }
 
         private void pre_send_message(XmppStream stream, Message.Stanza message) {

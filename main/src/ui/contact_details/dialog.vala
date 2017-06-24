@@ -1,6 +1,7 @@
 using Gee;
 using Gtk;
 using Markup;
+using Pango;
 
 using Dino.Entities;
 
@@ -10,6 +11,7 @@ namespace Dino.Ui.ContactDetails {
 public class Dialog : Gtk.Dialog {
 
     [GtkChild] public Image avatar;
+    [GtkChild] public Util.EntryLabelHybrid name_hybrid;
     [GtkChild] public Label name_label;
     [GtkChild] public Label jid_label;
     [GtkChild] public Label account_label;
@@ -22,6 +24,11 @@ public class Dialog : Gtk.Dialog {
     private HashMap<string, ListBox> categories = new HashMap<string, ListBox>();
     private Util.LabelHybridGroup hybrid_group = new Util.LabelHybridGroup();
 
+    construct {
+        name_hybrid.label.attributes = new AttrList();
+        name_hybrid.label.attributes.insert(attr_weight_new(Weight.BOLD));
+    }
+
     public Dialog(StreamInteractor stream_interactor, Conversation conversation) {
         Object(use_header_bar : 1);
         this.stream_interactor = stream_interactor;
@@ -29,11 +36,7 @@ public class Dialog : Gtk.Dialog {
 
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
         (get_header_bar() as HeaderBar).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
-
-        name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
-        jid_label.label = conversation.counterpart.to_string();
-        account_label.label = "via " + conversation.account.bare_jid.to_string();
-        Util.image_set_from_scaled_pixbuf(avatar, (new AvatarGenerator(50, 50, avatar.scale_factor)).draw_conversation(stream_interactor, conversation));
+        setup_top();
 
         contact_details.add.connect(add_entry);
 
@@ -50,7 +53,26 @@ public class Dialog : Gtk.Dialog {
         });
     }
 
-    public void add_entry(string category, string label, string? description, Widget w) {
+    private void setup_top() {
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            name_label.visible = false;
+            jid_label.set_padding(new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1, 0);
+            name_hybrid.text = Util.get_conversation_display_name(stream_interactor, conversation);
+            destroy.connect(() => {
+                if (name_hybrid.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
+                    stream_interactor.get_module(RosterManager.IDENTITY).set_jid_handle(conversation.account, conversation.counterpart, name_hybrid.text);
+                }
+            });
+        } else {
+            name_hybrid.visible = false;
+            name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
+        }
+        jid_label.label = conversation.counterpart.to_string();
+        account_label.label = "via " + conversation.account.bare_jid.to_string();
+        Util.image_set_from_scaled_pixbuf(avatar, (new AvatarGenerator(50, 50, avatar.scale_factor)).draw_conversation(stream_interactor, conversation));
+    }
+
+    private void add_entry(string category, string label, string? description, Widget w) {
         add_category(category);
 
         ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
@@ -71,11 +93,11 @@ public class Dialog : Gtk.Dialog {
 
         Widget widget = w;
         if (widget.get_type().is_a(typeof(Entry))) {
-            Util.EntryLabelHybrid hybrid = new Util.EntryLabelHybrid(widget as Entry) { xalign=1, visible=true };
+            Util.EntryLabelHybrid hybrid = new Util.EntryLabelHybrid.wrap(widget as Entry) { xalign=1, visible=true };
             hybrid_group.add(hybrid);
             widget = hybrid;
         } else if (widget.get_type().is_a(typeof(ComboBoxText))) {
-            Util.ComboBoxTextLabelHybrid hybrid = new Util.ComboBoxTextLabelHybrid(widget as ComboBoxText) { xalign=1, visible=true };
+            Util.ComboBoxTextLabelHybrid hybrid = new Util.ComboBoxTextLabelHybrid.wrap(widget as ComboBoxText) { xalign=1, visible=true };
             hybrid_group.add(hybrid);
             widget = hybrid;
         }
@@ -95,7 +117,7 @@ public class Dialog : Gtk.Dialog {
         });
     }
 
-    public void add_category(string category) {
+    private void add_category(string category) {
         if (!categories.has_key(category)) {
             ListBox list_box = new ListBox() { selection_mode=SelectionMode.NONE, visible=true };
             categories[category] = list_box;

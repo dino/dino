@@ -26,7 +26,7 @@ public class Conversation : Object {
     }
     public Encryption encryption { get; set; default = Encryption.NONE; }
     public Type type_ { get; set; }
-    public Message read_up_to { get; set; }
+    public Message? read_up_to { get; set; }
 
     public enum NotifySetting { DEFAULT, ON, OFF, HIGHLIGHT }
     public NotifySetting notify_setting { get; set; default = NotifySetting.DEFAULT; }

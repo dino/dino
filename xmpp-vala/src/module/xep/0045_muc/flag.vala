@@ -8,6 +8,7 @@ public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "muc");
 
     private HashMap<string, Gee.List<Feature>> room_features = new HashMap<string, Gee.List<Feature>>();
+    private HashMap<string, string> room_names = new HashMap<string, string>();
 
     private HashMap<string, string> enter_ids = new HashMap<string, string>();
     private HashMap<string, string> own_nicks = new HashMap<string, string>();
@@ -17,6 +18,8 @@ public class Flag : XmppStreamFlag {
     private HashMap<string, string> occupant_real_jids = new HashMap<string, string>();
     private HashMap<string, HashMap<string, Affiliation>> affiliations = new HashMap<string, HashMap<string, Affiliation>>();
     private HashMap<string, Role> occupant_role = new HashMap<string, Role>();
+
+    public string? get_room_name(string jid) { return room_names.has_key(jid) ? room_names[jid] : null; }
 
     public bool has_room_feature(string jid, Feature feature) {
         return room_features.has_key(jid) && room_features[jid].contains(feature);
@@ -58,6 +61,10 @@ public class Flag : XmppStreamFlag {
     public bool is_muc_enter_outstanding() { return enter_ids.size != 0; }
 
     public string? get_muc_subject(string bare_jid) { return subjects[bare_jid]; }
+
+    internal void set_room_name(string jid, string name) {
+        room_names[jid] = name;
+    }
 
     internal void set_room_features(string jid, Gee.List<Feature> features) {
         room_features[jid] = features;

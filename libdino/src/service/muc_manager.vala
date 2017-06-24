@@ -14,6 +14,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void bookmarks_updated(Account account, Gee.List<Xep.Bookmarks.Conference> conferences);
 
     private StreamInteractor stream_interactor;
+    private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         MucManager m = new MucManager(stream_interactor);
@@ -28,7 +29,9 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void join(Account account, Jid jid, string? nick, string? password) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        if (enter_errors.has_key(jid)) return;
+
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
         set_autojoin(stream, jid, nick_, password);
@@ -36,7 +39,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void part(Account account, Jid jid) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         unset_autojoin(stream, jid);
         stream.get_module(Xep.Muc.Module.IDENTITY).exit(stream, jid.bare_jid.to_string());
@@ -45,29 +48,39 @@ public class MucManager : StreamInteractionModule, Object {
         if (conversation != null) stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
     }
 
-    [CCode (has_target = false)] public delegate void OnResult(Jid jid, Xep.DataForms.DataForm data_form, Object? store);
-    public void get_config_form(Account account, Jid jid, OnResult on_result, Object? store) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+    public delegate void OnResult(Jid jid, Xep.DataForms.DataForm data_form);
+    public void get_config_form(Account account, Jid jid, owned OnResult listener) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
-        stream.get_module(Xep.Muc.Module.IDENTITY).get_config_form(stream, jid.to_string(), (stream, jid, data_form, store) => {
-            Tuple<OnResult, Object?> tuple = store as Tuple<OnResult, Object?>;
-            tuple.a(new Jid(jid), data_form, tuple.b);
-        }, Tuple.create(on_result, store));
+        stream.get_module(Xep.Muc.Module.IDENTITY).get_config_form(stream, jid.to_string(), (stream, jid, data_form) => {
+            listener(new Jid(jid), data_form);
+        });
     }
 
     public void change_subject(Account account, Jid jid, string subject) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_subject(stream, jid.bare_jid.to_string(), subject);
     }
 
     public void change_nick(Account account, Jid jid, string new_nick) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_nick(stream, jid.bare_jid.to_string(), new_nick);
     }
 
+    public void invite(Account account, Jid muc, Jid invitee) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).invite(stream, muc.bare_jid.to_string(), invitee.bare_jid.to_string());
+    }
+
     public void kick(Account account, Jid jid, string nick) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).kick(stream, jid.bare_jid.to_string(), nick);
+    }
+
+    public bool kick_possible(Account account, Jid occupant) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) return stream.get_module(Xep.Muc.Module.IDENTITY).kick_possible(stream, occupant.to_string());
+        return false;
     }
 
     public ArrayList<Jid>? get_occupants(Jid jid, Account account) {
@@ -79,9 +92,9 @@ public class MucManager : StreamInteractionModule, Object {
 
     public ArrayList<Jid>? get_other_occupants(Jid jid, Account account) {
         ArrayList<Jid>? occupants = get_occupants(jid, account);
-        string? nick = get_nick(jid, account);
-        if (occupants != null && nick != null) {
-            occupants.remove(new Jid(@"$(jid.bare_jid)/$nick"));
+        Jid? own_jid = get_own_jid(jid, account);
+        if (occupants != null && own_jid != null) {
+            occupants.remove(own_jid);
         }
         return occupants;
     }
@@ -95,11 +108,9 @@ public class MucManager : StreamInteractionModule, Object {
         return is_groupchat(jid.bare_jid, account) && jid.is_full();
     }
 
-    public void get_bookmarks(Account account, Xep.Bookmarks.Module.OnResult listener, Object? store) {
+    public void get_bookmarks(Account account, owned Xep.Bookmarks.Module.OnResult listener) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, listener, store);
-        }
+        if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (owned)listener);
     }
 
     public void add_bookmark(Account account, Xep.Bookmarks.Conference conference) {
@@ -123,6 +134,11 @@ public class MucManager : StreamInteractionModule, Object {
         }
     }
 
+    public string? get_room_name(Account account, Jid jid) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        return stream != null ? stream.get_flag(Xep.Muc.Flag.IDENTITY).get_room_name(jid.to_string()) : null;
+    }
+
     public string? get_groupchat_subject(Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
@@ -142,11 +158,15 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public Xep.Muc.Role? get_role(Jid jid, Account account) {
+        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_occupant_role(jid.to_string());
+        return null;
+    }
+
     public Xep.Muc.Affiliation? get_affiliation(Jid muc_jid, Jid jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_affiliation(muc_jid.to_string(), jid.to_string());
-        }
+        if (stream != null) return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_affiliation(muc_jid.to_string(), jid.to_string());
         return null;
     }
 
@@ -170,22 +190,27 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
-    public string? get_nick(Jid jid, Account account) {
+    public Jid? get_own_jid(Jid muc_jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
             Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-            if (flag != null) return flag.get_muc_nick(jid.bare_jid.to_string());
+            if (flag == null) return null;
+            string? nick  = flag.get_muc_nick(muc_jid.bare_jid.to_string());
+            if (nick != null) return new Jid.with_resource(muc_jid.bare_jid.to_string(), nick);
         }
         return null;
     }
 
     public bool is_joined(Jid jid, Account account) {
-        return get_nick(jid, account) != null;
+        return get_own_jid(jid, account) != null;
     }
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_entered.connect( (stream, jid, nick) => {
             joined(account, new Jid(jid), nick);
+        });
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_enter_error.connect( (stream, jid, error) => {
+            enter_errors[new Jid(jid)] = error;
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).self_removed_from_room.connect( (stream, jid, code) => {
             left(account, new Jid(jid));
@@ -200,17 +225,14 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void on_stream_negotiated(Account account, Core.XmppStream stream) {
-        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences, o) => {
-            Tuple<MucManager, Account> tuple = o as Tuple<MucManager, Account>;
-            MucManager outer_ = tuple.a;
-            Account account_ = tuple.b;
+        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences) => {
             foreach (Xep.Bookmarks.Conference bookmark in conferences) {
                 Jid jid = new Jid(bookmark.jid);
                 if (bookmark.autojoin) {
-                    outer_.join(account_, jid, bookmark.nick, bookmark.password);
+                    join(account, jid, bookmark.nick, bookmark.password);
                 }
             }
-        }, Tuple.create(this, account));
+        });
     }
 
     private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
@@ -269,11 +291,10 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void set_autojoin(Core.XmppStream stream, Jid jid, string? nick, string? password) {
-        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences, storage) => {
-            Triple<Jid, string?, string?> triple = storage as Triple<Jid, string?, string?>;
-            Xep.Bookmarks.Conference changed = new Xep.Bookmarks.Conference(triple.a.to_string()) { nick=triple.b, password=triple.c, autojoin=true };
+        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences) => {
+            Xep.Bookmarks.Conference changed = new Xep.Bookmarks.Conference(jid.to_string()) { nick=nick, password=password, autojoin=true };
             foreach (Xep.Bookmarks.Conference conference in conferences) {
-                if (conference.jid == triple.a.bare_jid.to_string() && conference.nick == triple.b && conference.password == triple.c) {
+                if (conference.jid == jid.bare_jid.to_string() && conference.nick == nick && conference.password == password) {
                     if (!conference.autojoin) {
                         stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference(stream, conference, changed);
                     }
@@ -281,21 +302,20 @@ public class MucManager : StreamInteractionModule, Object {
                 }
             }
             stream.get_module(Xep.Bookmarks.Module.IDENTITY).add_conference(stream, changed);
-        }, Triple.create(jid, nick, password));
+        });
     }
 
     private void unset_autojoin(Core.XmppStream stream, Jid jid) {
-        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences, storage) => {
-            Jid jid_ = storage as Jid;
+        stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences) => {
             foreach (Xep.Bookmarks.Conference conference in conferences) {
-                if (conference.jid == jid_.bare_jid.to_string()) {
+                if (conference.jid == jid.bare_jid.to_string()) {
                     if (conference.autojoin) {
                         Xep.Bookmarks.Conference change = new Xep.Bookmarks.Conference(conference.jid) { nick=conference.nick, password=conference.password, autojoin=false };
                         stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference(stream, conference, change);
                     }
                 }
             }
-        }, jid);
+        });
     }
 }
 

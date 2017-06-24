@@ -55,7 +55,7 @@ namespace Xmpp {
         }
 
         public string type_ {
-            get { return stanza.get_attribute("type"); }
+            get { return error_node.get_attribute("type"); }
         }
 
         public StanzaNode stanza;

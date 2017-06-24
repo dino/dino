@@ -72,7 +72,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.stanza_id = message.id;
         Jid from_jid = new Jid(message.from);
         if (!account.bare_jid.equals_bare(from_jid) ||
-                stream_interactor.get_module(MucManager.IDENTITY).get_nick(from_jid.bare_jid, account) == from_jid.resourcepart) {
+                from_jid.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(from_jid.bare_jid, account))) {
             new_message.direction = Entities.Message.DIRECTION_RECEIVED;
         } else {
             new_message.direction = Entities.Message.DIRECTION_SENT;
@@ -118,23 +118,21 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
             } else {
                 Core.XmppStream stream = stream_interactor.get_stream(account);
-                if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid.to_string(), (stream, identities, store) => {
-                    Triple<MessageProcessor, Entities.Message, Xmpp.Message.Stanza> triple = store as Triple<MessageProcessor, Entities.Message, Xmpp.Message.Stanza>;
-                    Entities.Message m = triple.b;
+                if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid.to_string(), (stream, identities) => {
                     if (identities == null) {
-                        m.type_ = Entities.Message.Type.CHAT;
-                        triple.a.process_message(m, triple.c);
+                        message.type_ = Entities.Message.Type.CHAT;
+                        process_message(message, message_stanza);
                         return;
                     }
                     foreach (Xep.ServiceDiscovery.Identity identity in identities) {
                         if (identity.category == Xep.ServiceDiscovery.Identity.CATEGORY_CONFERENCE) {
-                            m.type_ = Entities.Message.Type.GROUPCHAT_PM;
+                            message.type_ = Entities.Message.Type.GROUPCHAT_PM;
                         } else {
-                            m.type_ = Entities.Message.Type.CHAT;
+                            message.type_ = Entities.Message.Type.CHAT;
                         }
-                        triple.a.process_message(m, triple.c);
+                        process_message(message, message_stanza);
                     }
-                }, Triple.create(this, message, message_stanza));
+                });
             }
         }
     }

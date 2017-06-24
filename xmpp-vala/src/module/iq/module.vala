@@ -11,15 +11,15 @@ namespace Xmpp.Iq {
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
-        [CCode (has_target = false)] public delegate void OnResult(XmppStream stream, Iq.Stanza iq, Object store);
-        public void send_iq(XmppStream stream, Iq.Stanza iq, OnResult? listener = null, Object? store = null) {
+        public delegate void OnResult(XmppStream stream, Iq.Stanza iq);
+        public void send_iq(XmppStream stream, Iq.Stanza iq, owned OnResult? listener = null) {
             try {
                 stream.write(iq.stanza);
             } catch (IOStreamError e) {
                 print(@"$(e.message)\n");
             }
             if (listener != null) {
-                responseListeners[iq.id] = new ResponseListener(listener, store);
+                responseListeners[iq.id] = new ResponseListener((owned) listener);
             }
         }
 
@@ -56,7 +56,7 @@ namespace Xmpp.Iq {
                 if (responseListeners.has_key(iq.id)) {
                     ResponseListener? listener = responseListeners.get(iq.id);
                     if (listener != null) {
-                        listener.on_result(stream, iq, listener.reference);
+                        listener.on_result(stream, iq);
                     }
                     responseListeners.unset(iq.id);
                 }
@@ -79,12 +79,10 @@ namespace Xmpp.Iq {
         }
 
         private class ResponseListener {
-            public OnResult on_result { get; private set; }
-            public Object? reference { get; private set; }
+            public OnResult on_result { get; private owned set; }
 
-            public ResponseListener(OnResult on_result, Object? reference = null) {
-                this.on_result = on_result;
-                this.reference = reference;
+            public ResponseListener(owned OnResult on_result) {
+                this.on_result = (owned) on_result;
             }
         }
     }

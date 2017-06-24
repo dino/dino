@@ -122,12 +122,12 @@ public class Database : Qlite.Database {
     public class RosterTable : Table {
         public Column<int> account_id = new Column.Integer("account_id");
         public Column<string> jid = new Column.Text("jid");
-        public Column<string> name = new Column.Text("name");
+        public Column<string> handle = new Column.Text("name");
         public Column<string> subscription = new Column.Text("subscription");
 
         internal RosterTable(Database db) {
             base(db, "roster");
-            init({account_id, jid, name, subscription});
+            init({account_id, jid, handle, subscription});
             unique({account_id, jid}, "IGNORE");
         }
     }

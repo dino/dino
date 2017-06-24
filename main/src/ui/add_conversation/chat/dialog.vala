@@ -8,19 +8,21 @@ namespace Dino.Ui.AddConversation.Chat {
 
 public class Dialog : Gtk.Dialog {
 
-    public signal void conversation_opened(Conversation conversation);
+    public signal void selected(Account account, Jid jid);
 
-    private Button ok_button;
+    public Button ok_button;
 
     private RosterList roster_list;
     private SelectJidFragment select_jid_fragment;
     private StreamInteractor stream_interactor;
+    private Gee.List<Account> accounts;
 
-    public Dialog(StreamInteractor stream_interactor) {
+    public Dialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
         Object(use_header_bar : 1);
-        this.title = _("Start Chat");
-        this.modal = true;
+        modal = true;
+
         this.stream_interactor = stream_interactor;
+        this.accounts = accounts;
 
         setup_headerbar();
         setup_view();
@@ -37,26 +39,26 @@ public class Dialog : Gtk.Dialog {
 
         ok_button = new Button();
         ok_button.get_style_context().add_class("suggested-action");
-        ok_button.label = _("Start");
         ok_button.sensitive = false;
         ok_button.visible = true;
         header_bar.pack_end(ok_button);
 
         cancel_button.clicked.connect(() => { close(); });
-        ok_button.clicked.connect(on_ok_button_clicked);
+        ok_button.clicked.connect(() => {
+            ListRow? selected_row = roster_list.get_selected_row() as ListRow;
+            if (selected_row != null) selected(selected_row.account, selected_row.jid);
+            close();
+        });
     }
 
     private void setup_view() {
-        roster_list = new RosterList(stream_interactor);
+        roster_list = new RosterList(stream_interactor, accounts);
         roster_list.row_activated.connect(() => { ok_button.clicked(); });
-        select_jid_fragment = new SelectJidFragment(stream_interactor, roster_list);
+        select_jid_fragment = new SelectJidFragment(stream_interactor, roster_list, accounts);
         select_jid_fragment.add_jid.connect((row) => {
             AddContactDialog add_contact_dialog = new AddContactDialog(stream_interactor);
             add_contact_dialog.set_transient_for(this);
             add_contact_dialog.present();
-        });
-        select_jid_fragment.edit_jid.connect(() => {
-
         });
         select_jid_fragment.remove_jid.connect((row) => {
             ListRow list_row = roster_list.get_selected_row() as ListRow;
@@ -66,16 +68,6 @@ public class Dialog : Gtk.Dialog {
             ok_button.sensitive = select_jid_fragment.done;
         });
         get_content_area().add(select_jid_fragment);
-    }
-
-    protected void on_ok_button_clicked() {
-        ListRow? selected_row = roster_list.get_selected_row() as ListRow;
-        if (selected_row != null) {
-            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(selected_row.jid, selected_row.account, Conversation.Type.CHAT);
-            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
-            conversation_opened(conversation);
-        }
-        close();
     }
 }
 

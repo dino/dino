@@ -178,7 +178,7 @@ public class ConnectionManager {
             return;
         }
         if (network_manager != null && network_manager.State != NetworkManager.CONNECTED_GLOBAL) {
-            wait_sec = 60;
+            wait_sec = 30;
         }
         print(@"recovering in $wait_sec\n");
         Timeout.add_seconds(wait_sec, () => {
@@ -194,13 +194,17 @@ public class ConnectionManager {
     }
 
     private void check_reconnect(Account account) {
-        PingResponseListenerImpl ping_response_listener = new PingResponseListenerImpl(this, account);
+        bool acked = false;
+
         Core.XmppStream stream = connections[account].stream;
-        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.domainpart, ping_response_listener);
+        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.domainpart, (stream) => {
+            acked = true;
+            change_connection_state(account, ConnectionState.CONNECTED);
+        });
 
         Timeout.add_seconds(5, () => {
             if (connections[account].stream != stream) return false;
-            if (ping_response_listener.acked) return false;
+            if (acked) return false;
 
             change_connection_state(account, ConnectionState.DISCONNECTED);
             try {
@@ -208,21 +212,6 @@ public class ConnectionManager {
             } catch (Error e) { }
             return false;
         });
-    }
-
-    private class PingResponseListenerImpl : Xep.Ping.ResponseListener, Object {
-        public bool acked = false;
-        ConnectionManager outer;
-        Account account;
-        public PingResponseListenerImpl(ConnectionManager outer, Account account) {
-            this.outer = outer;
-            this.account = account;
-        }
-        public void on_result(Core.XmppStream stream) {
-            print("ping ok\n");
-            acked = true;
-            outer.change_connection_state(account, ConnectionState.CONNECTED);
-        }
     }
 
     private void on_nm_state_changed(uint32 state) {
