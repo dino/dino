@@ -117,7 +117,7 @@ public class View : Box {
         if (state_ != null) {
             if (state_ == Xep.ChatStateNotifications.STATE_COMPOSING || state_ == Xep.ChatStateNotifications.STATE_PAUSED) {
                 if (state_ == Xep.ChatStateNotifications.STATE_COMPOSING) {
-                    typing_status = new StatusItem(stream_interactor, conversation, _("is typing..."));
+                    typing_status = new StatusItem(stream_interactor, conversation, _("is typing…"));
                 } else if (state_ == Xep.ChatStateNotifications.STATE_PAUSED) {
                     typing_status = new StatusItem(stream_interactor, conversation, _("has stopped typing"));
                 }

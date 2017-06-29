@@ -111,6 +111,7 @@ public class MessageItem : Grid, ConversationItem {
                 /* xgettext:no-c-format */  /* Time in 12h format (w/o seconds) */ _("%l\u2236%M %p"));
         } else if (timespan > TimeSpan.MINUTE) {
             ulong mins = (ulong) (timespan.abs() / TimeSpan.MINUTE);
+            /* xgettext:this is the beginning of a sentence. */
             return n("%i min ago", "%i mins ago", mins).printf(mins);
         } else {
             return _("Just now");
