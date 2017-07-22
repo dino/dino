@@ -133,7 +133,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void on_ok_button_clicked() {
-        stream_interactor.get_module(MucManager.IDENTITY).join(details_fragment.account, new Jid(details_fragment.jid), details_fragment.nick, details_fragment.password, null);
+        stream_interactor.get_module(MucManager.IDENTITY).join(details_fragment.account, new Jid(details_fragment.jid), details_fragment.nick, details_fragment.password);
         close();
     }
 
