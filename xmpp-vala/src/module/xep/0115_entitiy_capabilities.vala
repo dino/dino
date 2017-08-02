@@ -55,7 +55,7 @@ namespace Xmpp.Xep.EntityCapabilities {
             StanzaNode? c_node = presence.stanza.get_subnode("c", NS_URI);
             if (c_node != null) {
                 string ver_attribute = c_node.get_attribute("ver", NS_URI);
-                ArrayList<string> capabilities = storage.get_features(ver_attribute);
+                Gee.List<string> capabilities = storage.get_features(ver_attribute);
                 if (capabilities.size == 0) {
                     stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
                         store_entity_result(stream, ver_attribute, query_result);
@@ -74,7 +74,7 @@ namespace Xmpp.Xep.EntityCapabilities {
             }
         }
 
-        private static string compute_hash(ArrayList<ServiceDiscovery.Identity> identities, ArrayList<string> features) {
+        private static string compute_hash(Gee.List<ServiceDiscovery.Identity> identities, Gee.List<string> features) {
             identities.sort(compare_identities);
             features.sort();
 
@@ -109,7 +109,7 @@ namespace Xmpp.Xep.EntityCapabilities {
     }
 
     public interface Storage : Object {
-        public abstract void store_features(string entitiy, ArrayList<string> capabilities);
-        public abstract ArrayList<string> get_features(string entitiy);
+        public abstract void store_features(string entitiy, Gee.List<string> capabilities);
+        public abstract Gee.List<string> get_features(string entitiy);
     }
 }

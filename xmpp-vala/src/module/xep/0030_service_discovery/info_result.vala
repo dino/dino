@@ -7,7 +7,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
 public class InfoResult {
     public Iq.Stanza iq { get; private set; }
 
-    public ArrayList<string> features {
+    public Gee.List<string> features {
         owned get {
             ArrayList<string> ret = new ArrayList<string>();
             foreach (StanzaNode feature_node in iq.stanza.get_subnode("query", NS_URI_INFO).get_subnodes("feature", NS_URI_INFO)) {
@@ -22,7 +22,7 @@ public class InfoResult {
         }
     }
 
-    public ArrayList<Identity> identities {
+    public Gee.List<Identity> identities {
         owned get {
             ArrayList<Identity> ret = new ArrayList<Identity>();
             foreach (StanzaNode feature_node in iq.stanza.get_subnode("query", NS_URI_INFO).get_subnodes("identity", NS_URI_INFO)) {

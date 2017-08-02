@@ -19,8 +19,12 @@ public class ItemsResult {
         }
     }
 
-    public ItemsResult.from_iq(Iq.Stanza iq) {
+    private ItemsResult.from_iq(Iq.Stanza iq) {
         this.iq = iq;
+    }
+
+    public static ItemsResult? create_from_iq(Iq.Stanza iq) {
+        return new ItemsResult.from_iq(iq);
     }
 }
 

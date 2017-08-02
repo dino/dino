@@ -12,11 +12,11 @@ public class EntityCapabilitiesStorage : Xep.EntityCapabilities.Storage, Object 
         this.db = db;
     }
 
-    public void store_features(string entity, ArrayList<string> features) {
+    public void store_features(string entity, Gee.List<string> features) {
         db.add_entity_features(entity, features);
     }
 
-    public ArrayList<string> get_features(string entitiy) {
+    public Gee.List<string> get_features(string entitiy) {
         return db.get_entity_features(entitiy);
     }
 }

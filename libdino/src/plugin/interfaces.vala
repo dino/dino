@@ -53,4 +53,14 @@ public class ContactDetails : Object {
     public signal void add(string category, string label, string desc, Widget widget);
 }
 
+public abstract class ConversationTitlebarEntry : Object {
+    public abstract string id { get; }
+    public abstract double order { get; }
+    public abstract ConversationTitlebarWidget get_widget();
+}
+
+public interface ConversationTitlebarWidget : Gtk.Widget {
+    public abstract void set_conversation(Conversation conversation);
+}
+
 }

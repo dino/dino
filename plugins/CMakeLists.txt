@@ -7,3 +7,7 @@ if(PLUGIN_ENABLED_omemo)
   add_subdirectory(omemo)
   add_subdirectory(signal-protocol)
 endif(PLUGIN_ENABLED_omemo)
+
+if(PLUGIN_ENABLED_http-files)
+  add_subdirectory(http-files)
+endif(PLUGIN_ENABLED_http-files)

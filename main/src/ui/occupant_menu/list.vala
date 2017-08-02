@@ -14,7 +14,7 @@ public class List : Box {
     [GtkChild] public ListBox list_box;
     [GtkChild] private SearchEntry search_entry;
 
-    private Conversation? conversation;
+    private Conversation conversation;
     private string[]? filter_values;
     private HashMap<Jid, ListRow> rows = new HashMap<Jid, ListRow>(Jid.hash_func, Jid.equals_func);
 

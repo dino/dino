@@ -276,7 +276,7 @@ public class Database : Qlite.Database {
         return ret;
     }
 
-    public void add_entity_features(string entity, ArrayList<string> features) {
+    public void add_entity_features(string entity, Gee.List<string> features) {
         foreach (string feature in features) {
             entity_feature.insert()
                     .value(entity_feature.entity, entity)
@@ -285,7 +285,7 @@ public class Database : Qlite.Database {
         }
     }
 
-    public ArrayList<string> get_entity_features(string entity) {
+    public Gee.List<string> get_entity_features(string entity) {
         ArrayList<string> ret = new ArrayList<string>();
         foreach (Row row in entity_feature.select({entity_feature.feature}).with(entity_feature.entity, "=", entity)) {
             ret.add(row[entity_feature.feature]);

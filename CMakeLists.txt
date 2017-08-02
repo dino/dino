@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 # Prepare Plugins
-set(PLUGINS omemo;openpgp)
+set(PLUGINS omemo;openpgp;http-files)
 if(DISABLED_PLUGINS)
     list(REMOVE_ITEM PLUGINS ${DISABLED_PLUGINS})
 endif(DISABLED_PLUGINS)

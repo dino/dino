@@ -102,7 +102,10 @@ SOURCES
     src/ui/conversation_summary/slashme_item.vala
     src/ui/conversation_summary/status_item.vala
     src/ui/conversation_summary/view.vala
-    src/ui/conversation_titlebar.vala
+    src/ui/conversation_titlebar/encryption_entry.vala
+    src/ui/conversation_titlebar/menu_entry.vala
+    src/ui/conversation_titlebar/occupants_entry.vala
+    src/ui/conversation_titlebar/view.vala
     src/ui/manage_accounts/account_row.vala
     src/ui/manage_accounts/add_account_dialog.vala
     src/ui/manage_accounts/dialog.vala
