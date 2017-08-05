@@ -22,6 +22,7 @@ Build
 * libgee-0.8 (≥ 0.10)
 * libgcrypt (For the OMEMO plugin)
 * libnotify
+* libsoup (For the HTTP files plugin)
 * SQLite3
 
 **Instructions**
