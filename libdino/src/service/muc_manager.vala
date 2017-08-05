@@ -35,7 +35,15 @@ public class MucManager : StreamInteractionModule, Object {
         if (stream == null) return;
         string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
         set_autojoin(stream, jid, nick_, password);
-        stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick_, password);
+
+        string history_since = null;
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
+        if (conversation != null) {
+            Entities.Message? last_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
+            if (last_message != null) history_since = last_message.time.to_string();
+        }
+        
+        stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick_, password, history_since);
     }
 
     public void part(Account account, Jid jid) {
