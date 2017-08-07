@@ -33,16 +33,22 @@ public class Manager : StreamInteractionModule, Object {
     }
 
     public bool is_upload_available(Account account) {
-        return max_file_sizes.has_key(account);
+        lock (max_file_sizes) {
+            return max_file_sizes.has_key(account);
+        }
     }
 
     public int? get_max_file_size(Account account) {
-        return max_file_sizes[account];
+        lock (max_file_sizes) {
+            return max_file_sizes[account];
+        }
     }
 
     private void on_stream_negotiated(Account account, Core.XmppStream stream) {
         stream_interactor.module_manager.get_module(account, UploadStreamModule.IDENTITY).feature_available.connect((stream, max_file_size) => {
-            max_file_sizes[account] = max_file_size;
+            lock (max_file_sizes) {
+                max_file_sizes[account] = max_file_size;
+            }
             upload_available(account);
         });
     }

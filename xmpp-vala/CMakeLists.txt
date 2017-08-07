@@ -13,6 +13,7 @@ SOURCES
     "src/core/stanza_node.vala"
     "src/core/stanza_reader.vala"
     "src/core/stanza_writer.vala"
+    "src/core/xmpp_log.vala"
     "src/core/xmpp_stream.vala"
 
     "src/module/bind.vala"
