@@ -54,7 +54,6 @@ public class Module : XmppStreamModule, Iq.Handler {
     public void request_items(XmppStream stream, string jid, owned OnItemsResult listener) {
         Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns());
         iq.to = jid;
-        print(iq.stanza.to_string() + "\n");
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
             ItemsResult? result = ItemsResult.create_from_iq(iq);
             stream.get_flag(Flag.IDENTITY).set_entity_items(iq.from, result != null ? result.items : null);

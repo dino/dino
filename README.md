@@ -17,11 +17,13 @@ Build
 **Run-time dependencies**
 
 * GLib (≥ 2.38)
+* glib-networking
 * GTK (≥ 3.22)
 * GPGME (For the OpenPGP plugin)
 * libgee-0.8 (≥ 0.10)
 * libgcrypt (For the OMEMO plugin)
 * libnotify
+* libsoup (For the HTTP files plugin)
 * SQLite3
 
 **Instructions**

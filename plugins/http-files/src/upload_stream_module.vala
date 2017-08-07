@@ -15,6 +15,7 @@ public class UploadStreamModule : XmppStreamModule {
     public delegate void OnUploadOk(XmppStream stream, string url_down);
     public delegate void OnError(XmppStream stream, string error);
     public void upload(XmppStream stream, string file_uri, owned OnUploadOk listener, owned OnError error_listener) {
+        print("up!\n");
         File file = File.new_for_path(file_uri);
         FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
         request_slot(stream, file.get_basename(), (int)file_info.get_size(), file_info.get_content_type(),
@@ -27,7 +28,7 @@ public class UploadStreamModule : XmppStreamModule {
                 Soup.Session session = new Soup.Session();
                 session.send_async(message);
 
-                listener(stream, url_up);
+                listener(stream, url_down);
             },
             error_listener);
     }
@@ -35,30 +36,42 @@ public class UploadStreamModule : XmppStreamModule {
     private delegate void OnSlotOk(XmppStream stream, string url_get, string url_put);
     private void request_slot(XmppStream stream, string filename, int file_size, string? content_type, owned OnSlotOk listener, owned OnError error_listener) {
         Flag? flag = stream.get_flag(Flag.IDENTITY);
-        if (flag != null) return;
+        if (flag == null) return;
 
-        StanzaNode request_node;
-        if (flag.ns_ver == NS_URI_0) {
-            request_node = new StanzaNode.build("request", NS_URI_0).add_self_xmlns();
-            request_node.put_attribute("filename", filename).put_attribute("size", file_size.to_string());
-            if (content_type != null) request_node.put_attribute("content-type", content_type);
-        } else{
-            request_node = new StanzaNode.build("request", NS_URI).add_self_xmlns()
-                    .put_node(new StanzaNode.build("filename", NS_URI).put_node(new StanzaNode.text(filename)))
-                    .put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(file_size.to_string())));
-            if (content_type != null) {
-                request_node.put_node(new StanzaNode.build("content-type", NS_URI).put_node(new StanzaNode.text(content_type)));
-            }
+        StanzaNode? request_node = null;
+        switch (flag.ns_ver) {
+            case NS_URI_0:
+                request_node = new StanzaNode.build("request", NS_URI_0).add_self_xmlns();
+                request_node.put_attribute("filename", filename).put_attribute("size", file_size.to_string());
+                if (content_type != null) request_node.put_attribute("content-type", content_type);
+                break;
+            case NS_URI:
+                request_node = new StanzaNode.build("request", NS_URI).add_self_xmlns()
+                        .put_node(new StanzaNode.build("filename", NS_URI).put_node(new StanzaNode.text(filename)))
+                        .put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(file_size.to_string())));
+                if (content_type != null) {
+                    request_node.put_node(new StanzaNode.build("content-type", NS_URI).put_node(new StanzaNode.text(content_type)));
+                }
+                break;
         }
         Iq.Stanza iq = new Iq.Stanza.get(request_node) { to=flag.file_store_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
             if (iq.is_error()) {
                 error_listener(stream, "");
-            } else {
-                string? url_get = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":get");
-                string? url_put = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":put");
-                listener(stream, url_get, url_put);
+                return;
             }
+            string? url_get = null, url_put = null;
+            switch (flag.ns_ver) {
+                case NS_URI_0:
+                    url_get = iq.stanza.get_deep_attribute(flag.ns_ver + ":slot", flag.ns_ver + ":get", flag.ns_ver + ":url");
+                    url_put = iq.stanza.get_deep_attribute(flag.ns_ver + ":slot", flag.ns_ver + ":put", flag.ns_ver + ":url");
+                    break;
+                case NS_URI:
+                    url_get = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":get");
+                    url_put = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":put");
+                    break;
+            }
+            listener(stream, url_get, url_put);
         });
     }
 
@@ -86,12 +99,9 @@ public class UploadStreamModule : XmppStreamModule {
             if (!available) {
                 stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name, (stream, items_result) => {
                     foreach (Xep.ServiceDiscovery.Item item in items_result.items) {
-                        if (item.name == "HTTP File Upload") {
-                            stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, item.jid, (stream, info_result) => {
-                                check_ns_in_info(stream, item.jid, info_result);
-                            });
-                            break;
-                        }
+                        stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, item.jid, (stream, info_result) => {
+                            check_ns_in_info(stream, item.jid, info_result);
+                        });
                     }
                 });
             }
