@@ -15,7 +15,6 @@ public class UploadStreamModule : XmppStreamModule {
     public delegate void OnUploadOk(XmppStream stream, string url_down);
     public delegate void OnError(XmppStream stream, string error);
     public void upload(XmppStream stream, string file_uri, owned OnUploadOk listener, owned OnError error_listener) {
-        print("up!\n");
         File file = File.new_for_path(file_uri);
         FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
         request_slot(stream, file.get_basename(), (int)file_info.get_size(), file_info.get_content_type(),
@@ -143,10 +142,11 @@ public class UploadStreamModule : XmppStreamModule {
             if (var_attr == "max-file-size") {
                 StanzaNode value_node = node.get_subnode("value", "jabber:x:data");
                 max_file_size_str = value_node.get_string_content();
-            break;
+                break;
             }
         }
-        return max_file_size_str != null ? int.parse(max_file_size_str) : (int?) null;
+        if (max_file_size_str != null) return int.parse(max_file_size_str);
+        return null;
     }
 }
 
