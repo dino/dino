@@ -1,0 +1,32 @@
+name: dino
+version: '0.1'
+summary: Modern Jabber/XMPP Client using GTK+/Vala
+description: Modern Jabber/XMPP Client using GTK+/Vala
+
+grade: stable
+confinement: strict
+
+apps:
+  dino:
+    command: desktop-launch dino
+    plugs: [home, x11, unity7, network]
+
+parts:
+  dino:
+    plugin: autotools
+    build-packages:
+      - libsoup2.4-dev 
+      - libgcrypt20-dev
+      - libgpgme-dev
+      - libnotify-dev
+      - libsqlite3-dev
+      - libgee-0.8-dev
+      - valac
+    stage-packages:
+      - libsoup2.4-1
+      - libgcrypt20
+      - libgpgme11
+      - libnotify4
+      - libsqlite3-0
+      - libgee-0.8-2
+    after: [desktop-gtk3]
