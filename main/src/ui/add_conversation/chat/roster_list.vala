@@ -11,6 +11,7 @@ protected class RosterList : FilterableList {
     public signal void conversation_selected(Conversation? conversation);
     private StreamInteractor stream_interactor;
     private Gee.List<Account> accounts;
+    private ulong[] handler_ids = new ulong[0];
 
     private HashMap<Account, HashMap<Jid, ListRow>> rows = new HashMap<Account, HashMap<Jid, ListRow>>(Account.hash_func, Account.equals_func);
 
@@ -22,13 +23,18 @@ protected class RosterList : FilterableList {
         set_header_func(header);
         set_sort_func(sort);
 
-        stream_interactor.get_module(RosterManager.IDENTITY).removed_roster_item.connect( (account, jid, roster_item) => {
-            if (accounts.contains(account))
+        handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).removed_roster_item.connect( (account, jid, roster_item) => {
+            if (accounts.contains(account)) {
                 Idle.add(() => { on_removed_roster_item(account, jid, roster_item); return false;});
+            }
         });
-        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect( (account, jid, roster_item) => {
-            if (accounts.contains(account))
+        handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect( (account, jid, roster_item) => {
+            if (accounts.contains(account)) {
                 Idle.add(() => { on_updated_roster_item(account, jid, roster_item); return false;});
+            }
+        });
+        destroy.connect(() => {
+            foreach (ulong handler_id in handler_ids) stream_interactor.get_module(RosterManager.IDENTITY).disconnect(handler_id);
         });
 
         foreach (Account a in accounts) fetch_roster_items(a);
