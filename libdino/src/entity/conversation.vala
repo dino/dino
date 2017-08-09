@@ -73,17 +73,19 @@ public class Conversation : Object {
                 .value(db.conversation.jid_id, db.get_jid_id(counterpart))
                 .value(db.conversation.type_, type_)
                 .value(db.conversation.encryption, encryption)
-                .value(db.conversation.read_up_to, read_up_to.id)
-                .value(db.conversation.active, active);
+                .value(db.conversation.active, active)
+                .value(db.conversation.notification, notify_setting)
+                .value(db.conversation.send_typing, send_typing)
+                .value(db.conversation.send_marker, send_marker);
+        if (read_up_to != null) {
+            insert.value(db.conversation.read_up_to, read_up_to.id);
+        }
         if (counterpart.is_full()) {
             insert.value(db.conversation.resource, counterpart.resourcepart);
         }
         if (last_active != null) {
             insert.value(db.conversation.last_active, (long) last_active.to_unix());
         }
-        insert.value(db.conversation.notification, notify_setting);
-        insert.value(db.conversation.send_typing, send_typing);
-        insert.value(db.conversation.send_marker, send_marker);
         id = (int) insert.perform();
         notify.connect(on_update);
     }

@@ -60,6 +60,7 @@ SOURCES
     "src/module/xep/0203_delayed_delivery.vala"
     "src/module/xep/0280_message_carbons.vala"
     "src/module/xep/0333_chat_markers.vala"
+    "src/module/xep/0368_srv_records_tls.vala"
     "src/module/xep/pixbuf_storage.vala"
 PACKAGES
     ${ENGINE_PACKAGES}

@@ -21,8 +21,9 @@ public class XmppStream {
     private StanzaReader? reader;
     private StanzaWriter? writer;
 
-    private ArrayList<XmppStreamFlag> flags = new ArrayList<XmppStreamFlag>();
-    private ArrayList<XmppStreamModule> modules = new ArrayList<XmppStreamModule>();
+    private Gee.List<XmppStreamFlag> flags = new ArrayList<XmppStreamFlag>();
+    private Gee.List<XmppStreamModule> modules = new ArrayList<XmppStreamModule>();
+    private Gee.List<ConnectionProvider> connection_providers = new ArrayList<ConnectionProvider>();
     private bool setup_needed = false;
     private bool negotiation_complete = false;
 
@@ -35,11 +36,24 @@ public class XmppStream {
     public signal void received_nonza(XmppStream stream, StanzaNode node);
     public signal void stream_negotiated(XmppStream stream);
 
+    public XmppStream() {
+        register_connection_provider(new StartTlsConnectionProvider());
+    }
+
     public void connect(string? remote_name = null) throws IOStreamError {
         if (remote_name != null) this.remote_name = (!)remote_name;
-        SocketClient client = new SocketClient();
         try {
-            SocketConnection? stream = client.connect(new NetworkService("xmpp-client", "tcp", this.remote_name));
+            int min_priority = -1;
+            ConnectionProvider? best_provider = null;
+            foreach (ConnectionProvider connection_provider in connection_providers) {
+                int? priority = connection_provider.get_priority(remote_name);
+                if (priority != null && (priority < min_priority || min_priority == -1)) {
+                    min_priority = priority;
+                    best_provider = connection_provider;
+                }
+            }
+            if (best_provider == null) throw new IOStreamError.CONNECT("no suitable connection provider");
+            IOStream? stream = best_provider.connect(this);
             if (stream == null) throw new IOStreamError.CONNECT("client.connect() returned null");
             reset_stream((!)stream);
         } catch (Error e) {
@@ -140,6 +154,10 @@ public class XmppStream {
             if (((!)identity).matches(module)) return ((!)identity).cast(module);
         }
         return null;
+    }
+
+    public void register_connection_provider(ConnectionProvider connection_provider) {
+        connection_providers.add(connection_provider);
     }
 
     private void setup() throws IOStreamError {
@@ -292,6 +310,36 @@ public abstract class XmppStreamNegotiationModule : XmppStreamModule {
     public abstract bool mandatory_outstanding(XmppStream stream);
 
     public abstract bool negotiation_active(XmppStream stream);
+}
+
+public abstract class ConnectionProvider {
+    public abstract int? get_priority(string remote_name);
+    public abstract IOStream? connect(XmppStream stream);
+    public abstract string get_id();
+}
+
+public class StartTlsConnectionProvider : ConnectionProvider {
+    private SrvTarget? srv_target;
+
+    public override int? get_priority(string remote_name) {
+        GLib.List<SrvTarget>? xmpp_target = null;
+        try {
+            Resolver resolver = Resolver.get_default();
+            xmpp_target = resolver.lookup_service("xmpp-client", "tcp", remote_name, null);
+        } catch (Error e) {
+            return null;
+        }
+        xmpp_target.sort((a, b) => { return a.get_priority() - b.get_priority(); });
+        srv_target = xmpp_target.nth(0).data;
+        return xmpp_target.nth(0).data.get_priority();
+    }
+
+    public override IOStream? connect(XmppStream stream) {
+        SocketClient client = new SocketClient();
+        return client.connect_to_host(srv_target.get_hostname(), srv_target.get_port());
+    }
+
+    public override string get_id() { return "start_tls"; }
 }
 
 }

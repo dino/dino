@@ -54,9 +54,12 @@ public class ConversationTitlebarWidget : Button, Plugins.ConversationTitlebarWi
     }
 
     public void on_upload_available(Account account) {
-        if (conversation.account.equals(account)) {
-            visible = true;
-        }
+        Idle.add(() => {
+            if (conversation != null && conversation.account.equals(account)) {
+                visible = true;
+            }
+            return false;
+        });
     }
 
     public new void set_conversation(Conversation conversation) {

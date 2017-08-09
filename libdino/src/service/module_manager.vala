@@ -46,6 +46,7 @@ public class ModuleManager {
         lock(module_map) {
             module_map[account] = new ArrayList<Core.XmppStreamModule>();
             module_map[account].add(new Tls.Module());
+            module_map[account].add(new Xep.SrvRecordsTls.Module());
             module_map[account].add(new Session.Module());
             module_map[account].add(new Roster.Module());
             module_map[account].add(new Xep.ServiceDiscovery.Module.with_identity("client", "pc"));
