@@ -6,3 +6,6 @@ Makefile
 .idea
 .sqlite3
 gschemas.compiled
+parts
+stage
+prime
