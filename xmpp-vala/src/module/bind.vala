@@ -41,16 +41,11 @@ namespace Xmpp.Bind {
         }
 
         public override void attach(XmppStream stream) {
-            Iq.Module.require(stream);
             stream.received_features_node.connect(this.received_features_node);
         }
 
         public override void detach(XmppStream stream) {
             stream.received_features_node.disconnect(this.received_features_node);
-        }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module(""));
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {

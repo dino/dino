@@ -16,17 +16,11 @@ public class Module : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        Iq.Module.require(stream);
-        Presence.Module.require(stream);
         stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
     }
 
     public override void detach(XmppStream stream) {
         stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
-    }
-
-    public static void require(XmppStream stream) {
-        if (stream.get_module(IDENTITY) == null) stderr.printf("VCardModule required but not attached!\n"); ;
     }
 
     public override string get_ns() { return NS_URI; }

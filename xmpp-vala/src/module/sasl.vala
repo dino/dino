@@ -88,10 +88,6 @@ namespace Xmpp.PlainSasl {
             }
         }
 
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stderr.printf("PlainSaslModule required but not attached!\n");
-        }
-
         private static uchar[] get_plain_bytes(string name_s, string password_s) {
             var name = name_s.to_utf8();
             var password = password_s.to_utf8();

@@ -34,7 +34,6 @@ namespace Xmpp.Xep.UserAvatars {
         }
 
         public override void attach(XmppStream stream) {
-            Pubsub.Module.require(stream);
             stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_event);
         }
 
@@ -49,10 +48,6 @@ namespace Xmpp.Xep.UserAvatars {
             } else {
                 stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NS_URI_DATA, on_pubsub_data_response);
             }
-        }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stderr.printf("UserAvatarsModule required but not attached!\n");
         }
 
         public override string get_ns() { return NS_URI; }

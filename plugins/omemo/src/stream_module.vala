@@ -112,8 +112,6 @@ public class StreamModule : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        Message.Module.require(stream);
-        Pubsub.Module.require(stream);
         if (!Plugin.ensure_context()) return;
 
         this.store = Plugin.get_context().create_store();

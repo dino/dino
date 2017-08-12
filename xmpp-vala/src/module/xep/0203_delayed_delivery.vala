@@ -28,10 +28,6 @@ namespace Xmpp.Xep.DelayedDelivery {
 
         public override void detach(XmppStream stream) { }
 
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
-        }
-
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
 

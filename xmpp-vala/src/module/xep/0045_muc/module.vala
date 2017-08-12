@@ -162,9 +162,7 @@ public class Module : XmppStreamModule {
 
     public override void attach(XmppStream stream) {
         stream.add_flag(new Muc.Flag());
-        Message.Module.require(stream);
         stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
-        Presence.Module.require(stream);
         stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
         stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.connect(on_received_unavailable);
@@ -184,11 +182,6 @@ public class Module : XmppStreamModule {
         stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
         stream.get_module(Presence.Module.IDENTITY).received_available.disconnect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.disconnect(on_received_unavailable);
-    }
-
-    public static void require(XmppStream stream) {
-        Presence.Module.require(stream);
-        if (stream.get_module(IDENTITY) == null) stream.add_module(new Muc.Module());
     }
 
     public override string get_ns() { return NS_URI; }

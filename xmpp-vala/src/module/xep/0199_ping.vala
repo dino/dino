@@ -16,15 +16,10 @@ namespace Xmpp.Xep.Ping {
         }
 
         public override void attach(XmppStream stream) {
-            Iq.Module.require(stream);
             stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, new IqHandlerImpl());
         }
 
         public override void detach(XmppStream stream) { }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
-        }
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }

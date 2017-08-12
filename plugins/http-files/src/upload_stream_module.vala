@@ -75,17 +75,11 @@ public class UploadStreamModule : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        Iq.Module.require(stream);
-        ServiceDiscovery.Module.require(stream);
         stream.stream_negotiated.connect(query_availability);
     }
 
     public override void detach(XmppStream stream) {
         stream.get_module(Bind.Module.IDENTITY).bound_to_resource.disconnect(query_availability);
-    }
-
-    public static void require(XmppStream stream) {
-        if (stream.get_module(IDENTITY) == null) stream.add_module(new ChatMarkers.Module());
     }
 
     public override string get_ns() { return NS_URI; }

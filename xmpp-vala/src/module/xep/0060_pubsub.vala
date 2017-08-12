@@ -41,18 +41,11 @@ namespace Xmpp.Xep.Pubsub {
         }
 
         public override void attach(XmppStream stream) {
-            Iq.Module.require(stream);
-            Message.Module.require(stream);
-            ServiceDiscovery.Module.require(stream);
             stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
-        }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }
