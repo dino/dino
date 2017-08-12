@@ -33,11 +33,17 @@ public class ModuleManager {
     public ArrayList<Core.XmppStreamModule> get_modules(Account account, string? resource = null) {
         ArrayList<Core.XmppStreamModule> modules = new ArrayList<Core.XmppStreamModule>();
 
-        modules.add(new Bind.Module(resource == null ? account.resourcepart : resource));
-        modules.add(new PlainSasl.Module(account.bare_jid.to_string(), account.password));
         lock (module_map) {
             if (!module_map.has_key(account)) initialize(account);
             foreach (Core.XmppStreamModule module in module_map[account]) modules.add(module);
+        }
+
+        foreach (Core.XmppStreamModule module in module_map[account]) {
+            if (module.get_id() == Bind.Module.IDENTITY.id) {
+                (module as Bind.Module).requested_resource == null ? account.resourcepart : resource;
+            } else if (module.get_id() == PlainSasl.Module.IDENTITY.id) {
+                (module as PlainSasl.Module).password = account.password;
+            }
         }
         return modules;
     }
@@ -45,8 +51,12 @@ public class ModuleManager {
     public void initialize(Account account) {
         lock(module_map) {
             module_map[account] = new ArrayList<Core.XmppStreamModule>();
+            module_map[account].add(new Iq.Module());
             module_map[account].add(new Tls.Module());
             module_map[account].add(new Xep.SrvRecordsTls.Module());
+            module_map[account].add(new PlainSasl.Module(account.bare_jid.to_string(), account.password));
+            module_map[account].add(new Xep.StreamManagement.Module());
+            module_map[account].add(new Bind.Module(account.resourcepart));
             module_map[account].add(new Session.Module());
             module_map[account].add(new Roster.Module());
             module_map[account].add(new Xep.ServiceDiscovery.Module.with_identity("client", "pc"));

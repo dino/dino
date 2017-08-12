@@ -1,13 +1,13 @@
 namespace Xmpp.Xep.DateTimeProfiles {
 
-    public class Module {
-        public Regex DATETIME_REGEX;
+public class Module {
+    public Regex DATETIME_REGEX;
 
-        public Module() {
-            DATETIME_REGEX = new Regex("""^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(\.(\d{3}))?(Z|((\+|\-)(\d{2}):(\d{2})))$""");
-        }
+    public Module() {
+        DATETIME_REGEX = new Regex("""^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(\.(\d{3}))?(Z|((\+|\-)(\d{2})(:(\d{2}))?))$""");
+    }
 
-        public DateTime? parse_string(string time_string) {
+    public DateTime? parse_string(string time_string) {
         MatchInfo match_info;
         if (DATETIME_REGEX.match(time_string, RegexMatchFlags.ANCHORED, out match_info)) {
             int year = int.parse(match_info.fetch(1));
@@ -33,9 +33,10 @@ namespace Xmpp.Xep.DateTimeProfiles {
         return null;
     }
 
-    public string to_datetime(DateTime time) {
-        return time.format("%Y-%m-%dT%H:%M:%SZ");
-    }
+public string to_datetime(DateTime time) {
+    return time.to_utc().format("%Y-%m-%dT%H:%M:%SZ");
+}
+
 }
 
 }

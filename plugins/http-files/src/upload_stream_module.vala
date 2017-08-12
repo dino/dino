@@ -77,8 +77,7 @@ public class UploadStreamModule : XmppStreamModule {
     public override void attach(XmppStream stream) {
         Iq.Module.require(stream);
         ServiceDiscovery.Module.require(stream);
-
-        query_availability(stream);
+        stream.stream_negotiated.connect(query_availability);
     }
 
     public override void detach(XmppStream stream) {

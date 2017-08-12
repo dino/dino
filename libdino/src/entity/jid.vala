@@ -63,12 +63,12 @@ public class Dino.Entities.Jid : Object {
         return jid;
     }
 
-    public bool equals_bare(Jid jid) {
-        return equals_bare_func(this, jid);
+    public bool equals_bare(Jid? jid) {
+        return jid != null && equals_bare_func(this, jid);
     }
 
-    public bool equals(Jid jid) {
-        return equals_func(this, jid);
+    public bool equals(Jid? jid) {
+        return jid != null && equals_func(this, jid);
     }
 
     public static new bool equals_bare_func(Jid jid1, Jid jid2) {

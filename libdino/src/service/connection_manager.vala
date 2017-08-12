@@ -126,7 +126,7 @@ public class ConnectionManager {
         Connection connection = new Connection(stream, new DateTime.now_local());
         connections[account] = connection;
         change_connection_state(account, ConnectionState.CONNECTING);
-        stream.stream_negotiated.connect((stream) => {
+        stream.attached_modules.connect((stream) => {
             change_connection_state(account, ConnectionState.CONNECTED);
         });
         stream.get_module(PlainSasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {

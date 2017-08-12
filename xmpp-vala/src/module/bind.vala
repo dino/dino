@@ -7,7 +7,7 @@ namespace Xmpp.Bind {
     public class Module : XmppStreamNegotiationModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "bind_module");
 
-        private string requested_resource;
+        public string requested_resource { get; set; }
 
         public signal void bound_to_resource(XmppStream stream, string my_jid);
 
@@ -28,15 +28,14 @@ namespace Xmpp.Bind {
 
         public void received_features_node(XmppStream stream) {
             if (stream.is_setup_needed()) return;
+            if (stream.is_negotiation_active()) return;
 
             var bind = stream.features.get_subnode("bind", NS_URI);
             if (bind != null) {
                 var flag = new Flag();
                 StanzaNode bind_node = new StanzaNode.build("bind", NS_URI).add_self_xmlns();
                 bind_node.put_node(new StanzaNode.build("resource", NS_URI).put_node(new StanzaNode.text(requested_resource)));
-                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), (stream, iq) => {
-                    stream.get_module(Module.IDENTITY).iq_response_stanza(stream, iq);
-                });
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), iq_response_stanza);
                 stream.add_flag(flag);
             }
         }
