@@ -3,12 +3,15 @@ msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-31 20:04+0200\n"
-"PO-Revision-Date: 2017-04-20 23:51+0000\n"
+"PO-Revision-Date: 2017-08-14 21:07+0000\n"
+"Language-Team: German "
+"<https://hosted.weblate.org/projects/dino/translations/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.17-dev\n"
 
 #: data/add_conversation/add_contact_dialog.ui:11
 #: data/add_conversation/add_groupchat_dialog.ui:11
@@ -35,12 +38,12 @@ msgstr "Alias"
 
 #: data/add_conversation/add_contact_dialog.ui:129
 msgid "Request presence updates"
-msgstr "Online-Status erbitten"
+msgstr "Online-Status erfragen"
 
 #: data/add_conversation/add_groupchat_dialog.ui:120
 #: data/add_conversation/conference_details_fragment.ui:120
 msgid "Nick"
-msgstr "Nick"
+msgstr "Spitzname"
 
 #: data/add_conversation/add_groupchat_dialog.ui:147
 #: data/add_conversation/conference_details_fragment.ui:172
@@ -141,33 +144,32 @@ msgstr "Beschreibung des Raums"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:48
 msgid "Persistent"
-msgstr "Persistent"
+msgstr "Dauerhaft"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:49
 msgid "The room will persist after the last occupant exits"
-msgstr ""
+msgstr "Der Raum bleibt bestehen nachdem alle Benutzer ihn verlassen haben"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:52
 msgid "Publicly searchable"
-msgstr ""
+msgstr "Öffentlich sichtbar"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:55
 msgid "Occupants may change subject"
-msgstr ""
+msgstr "Nutzer können das Thema ändern"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:58
-#, fuzzy
 msgid "Discover real JIDs"
-msgstr "Wer erfährt echte JIDs?"
+msgstr "Echte JIDs erfahren"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:59
-#, fuzzy
 msgid "Who may discover real JIDs?"
 msgstr "Wer erfährt echte JIDs?"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Passwort required to enter the room. Leave empty for none"
 msgstr ""
+"Password, welches benötigt wird um den Raum zu betreten. Leer bedeutet keins"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Moderated"
@@ -175,7 +177,7 @@ msgstr "Moderiert"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Only occupants with voice may send messages"
-msgstr ""
+msgstr "Nur Nutzer mit Stimme können Nachrichten senden"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:70
 msgid "Members only"
@@ -191,7 +193,7 @@ msgstr "Chatverlauf"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:75
 msgid "Maximum number of history messages returned by the room"
-msgstr ""
+msgstr "Anzahl der für diesen Raum gespeicherten Nachrichten"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:80
 msgid "Room Configuration"
