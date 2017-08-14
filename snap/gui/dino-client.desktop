@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Dino
+Exec=dino-client
+Icon=${SNAP}/meta/gui/icon.svg
+GenericName=Jabber/XMPP Client
+Keywords=chat;talk;im;message;xmpp;jabber;
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=GTK;Network;Chat;InstantMessaging;
+X-GNOME-UsesNotifications=true
+Name[en_US]=dino-client
