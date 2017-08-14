@@ -6,6 +6,15 @@ public class Registry {
     internal ArrayList<EncryptionListEntry> encryption_list_entries = new ArrayList<EncryptionListEntry>();
     internal ArrayList<AccountSettingsEntry> account_settings_entries = new ArrayList<AccountSettingsEntry>();
     internal ArrayList<ContactDetailsProvider> contact_details_entries = new ArrayList<ContactDetailsProvider>();
+    internal Gee.Collection<ConversationTitlebarEntry> conversation_titlebar_entries = new Gee.TreeSet<ConversationTitlebarEntry>((a, b) => {
+        if (a.order < b.order) {
+            return -1;
+        } else if (a.order > b.order) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
 
     public bool register_encryption_list_entry(EncryptionListEntry entry) {
         lock(encryption_list_entries) {
@@ -36,6 +45,16 @@ public class Registry {
                 if (e.id == entry.id) return false;
             }
             contact_details_entries.add(entry);
+            return true;
+        }
+    }
+
+    public bool register_contact_titlebar_entry(ConversationTitlebarEntry entry) {
+        lock(conversation_titlebar_entries) {
+            foreach(ConversationTitlebarEntry e in conversation_titlebar_entries) {
+                if (e.id == entry.id) return false;
+            }
+            conversation_titlebar_entries.add(entry);
             return true;
         }
     }

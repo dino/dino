@@ -145,7 +145,7 @@ public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
 public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
     public NoConversationsPlaceholder() {
         label.label = _("No conversation active");
-        primary_button.label = _("Add Chat");
+        primary_button.label = _("Start Chat");
         secondary_button.label = _("Join Conference");
         secondary_button.visible = true;
     }

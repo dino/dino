@@ -81,7 +81,7 @@ namespace Xmpp.Tls {
     public class Flag : XmppStreamFlag {
         public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "tls");
         public TlsCertificate? peer_certificate;
-        public bool finished = false;
+        public bool finished { get; set; default=false; }
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }

@@ -34,7 +34,7 @@ void main(string[] args) {
             return -1;
         });
 
-        foreach (string plugin in new string[]{"omemo", "openpgp"}) {
+        foreach (string plugin in new string[]{"omemo", "openpgp", "http-files"}) {
             try {
                 loader.load(plugin, app);
             } catch (Error e) {

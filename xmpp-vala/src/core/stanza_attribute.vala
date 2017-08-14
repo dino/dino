@@ -20,6 +20,13 @@ public class StanzaAttribute : StanzaEntry {
         this.val = val;
     }
 
+    public bool equals(StanzaAttribute other) {
+        if (other.ns_uri != ns_uri) return false;
+        if (other.name != name) return false;
+        if (other.val != val) return false;
+        return true;
+    }
+
     internal string printf(string fmt, bool no_ns = false, string? ns_name = null) {
         if (no_ns) {
             return fmt.printf(name, (!)val);

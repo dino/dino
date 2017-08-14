@@ -13,6 +13,7 @@ SOURCES
     "src/core/stanza_node.vala"
     "src/core/stanza_reader.vala"
     "src/core/stanza_writer.vala"
+    "src/core/xmpp_log.vala"
     "src/core/xmpp_stream.vala"
 
     "src/module/bind.vala"
@@ -59,6 +60,7 @@ SOURCES
     "src/module/xep/0203_delayed_delivery.vala"
     "src/module/xep/0280_message_carbons.vala"
     "src/module/xep/0333_chat_markers.vala"
+    "src/module/xep/0368_srv_records_tls.vala"
     "src/module/xep/pixbuf_storage.vala"
 PACKAGES
     ${ENGINE_PACKAGES}
@@ -83,3 +85,21 @@ set_target_properties(xmpp-vala PROPERTIES VERSION 0.1 SOVERSION 0)
 install(TARGETS xmpp-vala ${TARGET_INSTALL})
 install(FILES ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi ${CMAKE_BINARY_DIR}/exports/xmpp-vala.deps DESTINATION ${VAPI_INSTALL_DIR})
 install(FILES ${CMAKE_BINARY_DIR}/exports/xmpp-vala.h DESTINATION ${INCLUDE_INSTALL_DIR})
+
+if(BUILD_TESTS)
+    vala_precompile(ENGINE_TEST_VALA_C
+    SOURCES
+        "tests/common.vala"
+        "tests/testcase.vala"
+
+        "tests/stanza.vala"
+    CUSTOM_VAPIS
+        ${CMAKE_BINARY_DIR}/exports/xmpp-vala_internal.vapi
+    PACKAGES
+        ${ENGINE_PACKAGES}
+    )
+
+    add_definitions(${VALA_CFLAGS})
+    add_executable(xmpp-vala-test ${ENGINE_TEST_VALA_C})
+    target_link_libraries(xmpp-vala-test xmpp-vala ${SIGNAL_PROTOCOL_PACKAGES})
+endif(BUILD_TESTS)

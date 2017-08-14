@@ -10,7 +10,7 @@ public class ItemsResult {
     public ArrayList<Item> items {
         owned get {
             ArrayList<Item> ret = new ArrayList<Item>();
-            foreach (StanzaNode feature_node in iq.stanza.get_subnode("query", NS_URI_ITEMS).get_subnodes("identity", NS_URI_INFO)) {
+            foreach (StanzaNode feature_node in iq.stanza.get_subnode("query", NS_URI_ITEMS).get_subnodes("item", NS_URI_ITEMS)) {
                 ret.add(new Item(feature_node.get_attribute("jid", NS_URI_ITEMS),
                                         feature_node.get_attribute("name", NS_URI_ITEMS),
                                         feature_node.get_attribute("node", NS_URI_ITEMS)));
@@ -19,8 +19,12 @@ public class ItemsResult {
         }
     }
 
-    public ItemsResult.from_iq(Iq.Stanza iq) {
+    private ItemsResult.from_iq(Iq.Stanza iq) {
         this.iq = iq;
+    }
+
+    public static ItemsResult? create_from_iq(Iq.Stanza iq) {
+        return new ItemsResult.from_iq(iq);
     }
 }
 

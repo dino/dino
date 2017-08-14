@@ -43,6 +43,7 @@ BuildRequires:	pkgconfig(gio-2.0)
 BuildRequires:	pkgconfig(gtk+-3.0) >= 3.22
 BuildRequires:	pkgconfig(gee-0.8) >= 0.10
 BuildRequires:	pkgconfig(libnotify)
+BuildRequires:	pkgconfig(libsoup-2.4)
 BuildRequires:	pkgconfig(sqlite3)
 BuildRequires:	libgcrypt-devel
 BuildRequires:	gpgme-devel
@@ -51,6 +52,7 @@ Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 # Technically these aren't requirements, we just want them always installed...
 Requires:	%{name}-plugin-omemo%{?_isa} = %{version}-%{release}
 Requires:	%{name}-plugin-openpgp%{?_isa} = %{version}-%{release}
+Requires:	%{name}-plugin-http-files%{?_isa} = %{version}-%{release}
 
 %description
 Dino is an instant messaging client for the Jabber/XMPP network,
@@ -76,6 +78,10 @@ Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 Summary:        OpenPGP plugin for %{name}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
+%package        plugin-http-files
+Summary:        Http files plugin for %{name}
+Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+
 %description    libs
 The %{name}-libs package contains libraries used and provided by %{name}.
 
@@ -90,6 +96,10 @@ OMEMO encryption to Dino.
 %description    plugin-openpgp
 The %{name}-plugin-openpgp package contains a plugin that adds support for
 OpenPGP encryption to Dino.
+
+%description    plugin-http-files
+The %{name}-plugin-http-files package contains a plugin that adds support for
+http file upload and download to Dino.
 
 %prep
 %setup -n "dino-v%{version}"
@@ -167,6 +177,11 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %doc README.md
 %{_libdir}/dino/plugins/openpgp.so
 %{_datadir}/locale/*/LC_MESSAGES/dino-openpgp.mo
+
+%files plugin-http-files
+%license LICENSE
+%doc README.md
+%{_libdir}/dino/plugins/http-files.so
 
 %changelog
 * Mon Apr 3 2017 - 0.0-1

@@ -7,11 +7,12 @@ namespace Xmpp.Xep.ServiceDiscovery {
 public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "service_discovery");
 
-    private HashMap<string, ArrayList<string>?> entity_features = new HashMap<string, ArrayList<string>?>();
-    private HashMap<string, ArrayList<Identity>?> entity_identities = new HashMap<string, ArrayList<Identity>?>();
-    public ArrayList<string> features = new ArrayList<string>();
+    private HashMap<string, Gee.List<string>?> entity_features = new HashMap<string, Gee.List<string>?>();
+    private HashMap<string, Gee.List<Identity>?> entity_identities = new HashMap<string, Gee.List<Identity>?>();
+    private HashMap<string, Gee.List<Item>?> entity_items = new HashMap<string, Gee.List<Item>?>();
+    public Gee.List<string> features = new ArrayList<string>();
 
-    public ArrayList<Identity>? get_entity_categories(string jid) {
+    public Gee.List<Identity>? get_entity_categories(string jid) {
         return entity_identities.has_key(jid) ? entity_identities[jid] : null; // TODO isnt this default for hashmap
     }
 
@@ -30,12 +31,16 @@ public class Flag : XmppStreamFlag {
         return entity_features[jid].contains(feature);
     }
 
-    public void set_entity_identities(string jid, ArrayList<Identity>? identities) {
+    public void set_entity_identities(string jid, Gee.List<Identity>? identities) {
         entity_identities[jid] = identities;
     }
 
-    public void set_entity_features(string jid, ArrayList<string>? features) {
+    public void set_entity_features(string jid, Gee.List<string>? features) {
         entity_features[jid] = features;
+    }
+
+    public void set_entity_items(string jid, Gee.List<Item>? features) {
+        entity_items[jid] = features;
     }
 
     public void add_own_feature(string feature) { features.add(feature); }

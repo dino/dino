@@ -29,9 +29,9 @@ public class Module : XmppStreamModule, Iq.Handler {
         identities.add(new Identity(category, type, name));
     }
 
-    public delegate void HasEntryCategoryRes(XmppStream stream, ArrayList<Identity>? identities);
+    public delegate void HasEntryCategoryRes(XmppStream stream, Gee.List<Identity>? identities);
     public void get_entity_categories(XmppStream stream, string jid, owned HasEntryCategoryRes listener) {
-        ArrayList<Identity>? res = stream.get_flag(Flag.IDENTITY).get_entity_categories(jid);
+        Gee.List<Identity>? res = stream.get_flag(Flag.IDENTITY).get_entity_categories(jid);
         if (res != null) listener(stream, res);
         request_info(stream, jid, (stream, query_result) => {
             listener(stream, query_result != null ? query_result.identities : null);
@@ -54,7 +54,11 @@ public class Module : XmppStreamModule, Iq.Handler {
     public void request_items(XmppStream stream, string jid, owned OnItemsResult listener) {
         Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns());
         iq.to = jid;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
+            ItemsResult? result = ItemsResult.create_from_iq(iq);
+            stream.get_flag(Flag.IDENTITY).set_entity_items(iq.from, result != null ? result.items : null);
+            listener(stream, result);
+        });
     }
 
     public void on_iq_get(XmppStream stream, Iq.Stanza iq) {
