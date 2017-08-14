@@ -30,6 +30,7 @@ vala_precompile(OPENPGP_VALA_C
 SOURCES
     src/account_settings_entry.vala
     src/account_settings_widget.vala
+    src/contact_details_provider.vala
     src/database.vala
     src/encryption_list_entry.vala
     src/manager.vala
@@ -37,6 +38,7 @@ SOURCES
     src/register_plugin.vala
     src/stream_flag.vala
     src/stream_module.vala
+    src/util.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/gpgme.vapi
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi

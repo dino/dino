@@ -77,10 +77,10 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
 
         TreeIter iter;
         list_store.append(out iter);
-        list_store.set(iter, 0, build_markup_string(_("Key publishing disabled"), _("Select key")), 1, "");
+        list_store.set(iter, 0, build_markup_string(_("Key publishing disabled"), _("Select key") + "<span font_family='monospace' font='8'> \n </span>"), 1, "");
         for (int i = 0; i < keys.size; i++) {
             list_store.append(out iter);
-            list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font_family='monospace' font='8'>0x$(Markup.escape_text(keys[i].fpr[0:16]))</span>");
+            list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font_family='monospace' font='8'>$(markup_colorize_id(keys[i].fpr, true))</span><span font='8'> </span>");
             list_store.set(iter, 1, keys[i].fpr);
             if (keys[i].fpr == plugin.db.get_account_key(current_account)) {
                 set_label_active(iter, i + 1);
@@ -139,7 +139,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     private string build_markup_string(string primary, string secondary) {
-        return @"$(Markup.escape_text(primary))\n<span font='8'>$(Markup.escape_text(secondary))</span>";
+        return @"$(Markup.escape_text(primary))\n<span font='8'>$secondary</span>";
     }
 }
 
