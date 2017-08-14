@@ -31,6 +31,12 @@ public class MessageItem : Grid, ConversationItem {
             encryption_image.visible = true;
             encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.SMALL_TOOLBAR);
         }
+        if (message.encryption == Encryption.PGP) {
+            encryption_image.tooltip_text = _("PGP-encrypted message");
+        }
+        if (message.encryption == Encryption.OMEMO) {
+            encryption_image.tooltip_text = _("OMEMO-encrypted message");
+        }
 
         time_label.label = get_relative_time(initial_time.to_local());
         Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(30, 30, image.scale_factor)).draw_message(stream_interactor, message));
@@ -82,11 +88,14 @@ public class MessageItem : Grid, ConversationItem {
         if (all_read) {
             received_image.visible = true;
             received_image.set_from_icon_name("dino-double-tick-symbolic", IconSize.SMALL_TOOLBAR);
+            received_image.tooltip_text = _("Message read by recipient");
         } else if (all_received) {
             received_image.visible = true;
             received_image.set_from_icon_name("dino-tick-symbolic", IconSize.SMALL_TOOLBAR);
+            received_image.tooltip_text = _("Message received by recipient");
         } else if (received_image.visible) {
             received_image.set_from_icon_name("image-loading-symbolic", IconSize.SMALL_TOOLBAR);
+            received_image.tooltip_text = _("Receipt pending");
         }
     }
 
