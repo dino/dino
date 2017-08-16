@@ -19,11 +19,13 @@ public class View : Box {
     private int vscrollbar_min_height;
     private OccupantsTabCompletor occupants_tab_completor;
     private SmileyConverter smiley_converter;
+    private EditHistory edit_history;
 
     public View(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
         smiley_converter = new SmileyConverter(stream_interactor, text_input);
+        edit_history = new EditHistory(text_input, GLib.Application.get_default());
 
         scrolled.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
@@ -33,6 +35,7 @@ public class View : Box {
 
     public void initialize_for_conversation(Conversation conversation) {
         occupants_tab_completor.initialize_for_conversation(conversation);
+        edit_history.initialize_for_conversation(conversation);
 
         if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
         this.conversation = conversation;
@@ -81,6 +84,7 @@ public class View : Box {
                 text_input.buffer.insert_at_cursor("\n", 1);
             } else if (text_input.buffer.text != ""){
                 send_text();
+                edit_history.reset_history();
             }
             return true;
         }
