@@ -84,10 +84,12 @@ public class List : Box {
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {
         ListRow c1 = row as ListRow;
-        Xmpp.Xep.Muc.Affiliation a1 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c1.jid, c1.account);
+        Xmpp.Xep.Muc.Affiliation? a1 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c1.jid, c1.account);
+        if (a1 == null) return;
+
         if (before_row != null) {
-            ListRow c2 = before_row as ListRow;
-            Xmpp.Xep.Muc.Affiliation a2 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c2.jid, c2.account);
+            ListRow c2 = (ListRow) before_row;
+            Xmpp.Xep.Muc.Affiliation? a2 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c2.jid, c2.account);
             if (a1 != a2) {
                 row.set_header(generate_header_widget(a1, false));
             } else if (row.get_header() != null){

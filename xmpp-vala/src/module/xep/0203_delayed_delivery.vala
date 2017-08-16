@@ -8,18 +8,22 @@ namespace Xmpp.Xep.DelayedDelivery {
 
         public static void set_message_delay(Message.Stanza message, DateTime datetime) {
             StanzaNode delay_node = (new StanzaNode.build("delay", NS_URI)).add_self_xmlns();
-            delay_node.put_attribute("stamp", (new DateTimeProfiles.Module()).to_datetime(datetime));
+            delay_node.put_attribute("stamp", DateTimeProfiles.to_datetime(datetime));
             message.stanza.put_node(delay_node);
         }
 
-        public static DateTime? get_send_time(Message.Stanza message) {
+        public static DateTime? get_time_for_message(Message.Stanza message) {
             StanzaNode? delay_node = message.stanza.get_subnode("delay", NS_URI);
             if (delay_node != null) {
-                string time = delay_node.get_attribute("stamp");
-                return (new DateTimeProfiles.Module()).parse_string(time);
-            } else {
-                return null;
+                return get_time_for_node(delay_node);
             }
+            return null;
+        }
+
+        public static DateTime? get_time_for_node(StanzaNode node) {
+            string? time = node.get_attribute("stamp");
+            if (time != null) return DateTimeProfiles.parse_string(time);
+            return null;
         }
 
         public override void attach(XmppStream stream) {
@@ -32,7 +36,7 @@ namespace Xmpp.Xep.DelayedDelivery {
         public override string get_id() { return IDENTITY.id; }
 
         private void on_pre_received_message(XmppStream stream, Message.Stanza message) {
-            DateTime? datetime = get_send_time(message);
+            DateTime? datetime = get_time_for_message(message);
             if (datetime != null) message.add_flag(new MessageFlag(datetime));
         }
     }

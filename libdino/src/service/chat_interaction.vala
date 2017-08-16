@@ -124,6 +124,8 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     private void on_message_received(Entities.Message message, Conversation conversation) {
+        if (Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null) return;
+
         send_delivery_receipt(conversation, message);
         if (is_active_focus(conversation)) {
             check_send_read();

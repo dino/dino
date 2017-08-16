@@ -50,7 +50,7 @@ public abstract class ContactDetailsProvider : Object {
 
 public class ContactDetails : Object {
     public signal void save();
-    public signal void add(string category, string label, string desc, Widget widget);
+    public signal void add(string category, string label, string? desc, Widget widget);
 }
 
 public abstract class ConversationTitlebarEntry : Object {

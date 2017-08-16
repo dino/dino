@@ -44,6 +44,9 @@ public class MessageProcessor : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xmpp.Message.Module.IDENTITY).received_message.connect( (stream, message) => {
             on_message_received(account, message);
         });
+        stream_interactor.module_manager.get_module(account, Xmpp.Xep.MessageArchiveManagement.Module.IDENTITY).feature_available.connect( (stream) => {
+            stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, account.mam_earliest_synced.add_minutes(-1), null);
+        });
     }
 
     private void send_unsent_messages(Account account) {
@@ -80,9 +83,15 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.counterpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.to) : new Jid(message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.from) : new Jid(message.to);
         new_message.stanza = message;
-        Xep.DelayedDelivery.MessageFlag? deleyed_delivery_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
-        new_message.time = deleyed_delivery_flag != null ? deleyed_delivery_flag.datetime : new DateTime.now_local();
-        new_message.local_time = new DateTime.now_local();
+
+        Xep.MessageArchiveManagement.MessageFlag? mam_message_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
+        if (mam_message_flag != null) new_message.local_time = mam_message_flag.server_time;
+        if (new_message.local_time == null || new_message.local_time.compare(new DateTime.now_local()) > 0) new_message.local_time = new DateTime.now_local();
+
+        Xep.DelayedDelivery.MessageFlag? delayed_message_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
+        if (delayed_message_flag != null) new_message.time = delayed_message_flag.datetime;
+        if (new_message.time == null || new_message.time.compare(new_message.local_time) > 0) new_message.time = new_message.local_time;
+
         return new_message;
     }
 
@@ -99,6 +108,12 @@ public class MessageProcessor : StreamInteractionModule, Object {
                     message_sent(new_message, conversation);
                 } else {
                     message_received(new_message, conversation);
+                }
+
+                Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                Xep.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) : null;
+                if (Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null || (mam_flag != null && mam_flag.cought_up == true)) {
+                    conversation.account.mam_earliest_synced = new_message.local_time;
                 }
             }
         }

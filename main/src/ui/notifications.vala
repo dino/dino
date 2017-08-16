@@ -35,7 +35,7 @@ public class Notifications : Object {
 
         if (!notifications.has_key(conversation)) {
             notifications[conversation] = new Notify.Notification("", null, null);
-            notifications[conversation].set_hint("transient", true);
+            notifications[conversation].set_hint("persistent", true);
             notifications[conversation].add_action("default", "Open", () => {
                 conversation_selected(conversation);
 #if GDK3_WITH_X11
@@ -69,6 +69,7 @@ public class Notifications : Object {
     private void on_received_subscription_request(Jid jid, Account account) {
         Notify.Notification notification = new Notify.Notification(_("Subscription request"), jid.bare_jid.to_string(), null);
         notification.set_image_from_pixbuf((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, jid, account));
+        notification.set_hint("persistent", true);
         notification.add_action("accept", _("Accept"), () => {
             stream_interactor.get_module(PresenceManager.IDENTITY).approve_subscription(account, jid);
 
