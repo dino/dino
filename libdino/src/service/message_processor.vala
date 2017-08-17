@@ -45,7 +45,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
             on_message_received(account, message);
         });
         stream_interactor.module_manager.get_module(account, Xmpp.Xep.MessageArchiveManagement.Module.IDENTITY).feature_available.connect( (stream) => {
-            stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, account.mam_earliest_synced.add_minutes(-1), null);
+            DateTime start_time = account.mam_earliest_synced.to_unix() > 60 ? account.mam_earliest_synced.add_minutes(-1) : account.mam_earliest_synced;
+            stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, start_time, null);
         });
     }
 
@@ -102,15 +103,21 @@ public class MessageProcessor : StreamInteractionModule, Object {
             if ((is_uuid && !db.contains_message_by_stanza_id(new_message.stanza_id, conversation.account)) ||
                     (!is_uuid && !db.contains_message(new_message, conversation.account))) {
                 stream_interactor.get_module(MessageStorage.IDENTITY).add_message(new_message, conversation);
-                if (new_message.direction == Entities.Message.DIRECTION_SENT) {
-                    message_sent(new_message, conversation);
-                } else {
-                    message_received(new_message, conversation);
+
+                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
+                bool is_recent = new_message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+                if (!is_mam_message || is_recent) {
+                    print(new_message.local_time.to_string() + "\n");
+                    if (new_message.direction == Entities.Message.DIRECTION_SENT) {
+                        message_sent(new_message, conversation);
+                    } else {
+                        message_received(new_message, conversation);
+                    }
                 }
 
                 Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
                 Xep.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) : null;
-                if (Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null || (mam_flag != null && mam_flag.cought_up == true)) {
+                if (is_mam_message || (mam_flag != null && mam_flag.cought_up == true)) {
                     conversation.account.mam_earliest_synced = new_message.local_time;
                 }
             }

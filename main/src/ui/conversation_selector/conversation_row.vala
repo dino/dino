@@ -45,19 +45,19 @@ public abstract class ConversationRow : ListBoxRow {
         x_button.clicked.connect(on_x_button_clicked);
 
         update_name(Util.get_conversation_display_name(stream_interactor, conversation));
-        Entities.Message message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
-        if (message != null) {
-            message_received(message);
-        }
+        message_received();
     }
 
     public void update() {
         update_time();
     }
 
-    public void message_received(Entities.Message message) {
-        update_message(message.body.replace("\n", " "));
-        update_time(message.time.to_local());
+    public void message_received(Entities.Message? m = null) {
+        Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
+        if (message != null) {
+            update_message(message.body.replace("\n", " "));
+            update_time(message.time.to_local());
+        }
     }
 
     public void set_avatar(Pixbuf pixbuf, int scale_factor = 1) {
