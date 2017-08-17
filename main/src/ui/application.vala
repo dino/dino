@@ -14,6 +14,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public SearchPathGenerator? search_path_generator { get; set; }
 
     public Application() throws Error {
+        Object(application_id: "im.dino.Dino", flags: ApplicationFlags.HANDLES_OPEN);
         init();
         Notify.init("dino");
         Environment.set_application_name("Dino");
@@ -21,13 +22,23 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         IconTheme.get_default().add_resource_path("/im/dino/icons");
 
         activate.connect(() => {
-            create_set_app_menu();
-            window = new UnifiedWindow(this, stream_interaction);
-            notifications = new Notifications(stream_interaction, window);
-            notifications.start();
-            notifications.conversation_selected.connect(window.on_conversation_selected);
+            if (window == null) {
+                create_set_app_menu();
+                window = new UnifiedWindow(this, stream_interaction);
+                notifications = new Notifications(stream_interaction, window);
+                notifications.start();
+                notifications.conversation_selected.connect(window.on_conversation_selected);
+            }
             window.present();
         });
+    }
+
+    public void handle_uri(string jid, string query, Gee.Map<string, string> options) {
+        switch (query) {
+            case "message":
+                // TODO
+                break;
+        }
     }
 
     private void show_accounts_window() {
