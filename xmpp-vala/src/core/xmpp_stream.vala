@@ -55,8 +55,12 @@ public class XmppStream {
                     best_provider = connection_provider;
                 }
             }
-            if (best_provider == null) throw new IOStreamError.CONNECT("no suitable connection provider");
-            IOStream? stream = best_provider.connect(this);
+            IOStream? stream = null;
+            if (best_provider != null) {
+                stream = best_provider.connect(this);
+            } else {
+                stream = (new SocketClient()).connect(new NetworkService("xmpp-client", "tcp", this.remote_name));
+            }
             if (stream == null) throw new IOStreamError.CONNECT("client.connect() returned null");
             reset_stream((!)stream);
         } catch (Error e) {
