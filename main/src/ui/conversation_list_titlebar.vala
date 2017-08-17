@@ -4,7 +4,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/org/dino-im/conversation_list_titlebar.ui")]
+[GtkTemplate (ui = "/im/dino/conversation_list_titlebar.ui")]
 public class ConversationListTitlebar : Gtk.HeaderBar {
 
     public signal void conversation_opened(Conversation conversation);
@@ -44,7 +44,7 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
         });
         GLib.Application.get_default().add_action(conference_action);
 
-        Builder builder = new Builder.from_resource("/org/dino-im/menu_add.ui");
+        Builder builder = new Builder.from_resource("/im/dino/menu_add.ui");
         MenuModel menu = builder.get_object("menu_add") as MenuModel;
         add_button.set_menu_model(menu);
     }

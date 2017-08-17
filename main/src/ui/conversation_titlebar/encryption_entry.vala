@@ -24,7 +24,7 @@ class EncryptionWidget : MenuButton, Plugins.ConversationTitlebarWidget {
     private Map<RadioButton, Plugins.EncryptionListEntry> encryption_radios = new HashMap<RadioButton, Plugins.EncryptionListEntry>();
 
     public EncryptionWidget() {
-        Builder builder = new Builder.from_resource("/org/dino-im/menu_encryption.ui");
+        Builder builder = new Builder.from_resource("/im/dino/menu_encryption.ui");
         PopoverMenu menu = builder.get_object("menu_encryption") as PopoverMenu;
         Box encryption_box = builder.get_object("encryption_box") as Box;
         button_unencrypted = builder.get_object("button_unencrypted") as RadioButton;

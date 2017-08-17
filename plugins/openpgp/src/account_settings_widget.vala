@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Plugins.OpenPgp {
 
-[GtkTemplate (ui = "/org/dino-im/account_settings_item.ui")]
+[GtkTemplate (ui = "/im/dino/account_settings_item.ui")]
 
 private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     [GtkChild] private Label label;

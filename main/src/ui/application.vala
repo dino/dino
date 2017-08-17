@@ -17,7 +17,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         Notify.init("dino");
         Environment.set_application_name("Dino");
         Gtk.Window.set_default_icon_name("dino");
-        IconTheme.get_default().add_resource_path("/org/dino-im/icons");
+        IconTheme.get_default().add_resource_path("/im/dino/icons");
 
         activate.connect(() => {
             create_set_app_menu();
@@ -57,7 +57,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         add_action(quit_action);
         add_accelerator("<Ctrl>Q", "app.quit", null);
 
-        Builder builder = new Builder.from_resource("/org/dino-im/menu_app.ui");
+        Builder builder = new Builder.from_resource("/im/dino/menu_app.ui");
         MenuModel menu = builder.get_object("menu_app") as MenuModel;
 
         set_app_menu(menu);

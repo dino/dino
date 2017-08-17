@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.OccupantMenu{
 
-[GtkTemplate (ui = "/org/dino-im/occupant_list.ui")]
+[GtkTemplate (ui = "/im/dino/occupant_list.ui")]
 public class List : Box {
 
     public signal void conversation_selected(Conversation? conversation);

@@ -151,7 +151,7 @@ public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
     }
 }
 
-[GtkTemplate (ui = "/org/dino-im/unified_window_placeholder.ui")]
+[GtkTemplate (ui = "/im/dino/unified_window_placeholder.ui")]
 public class UnifiedWindowPlaceholder : Box {
     [GtkChild] public Label label;
     [GtkChild] public Button primary_button;

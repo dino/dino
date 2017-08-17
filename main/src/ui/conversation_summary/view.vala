@@ -7,7 +7,7 @@ using Xmpp;
 
 namespace Dino.Ui.ConversationSummary {
 
-[GtkTemplate (ui = "/org/dino-im/conversation_summary/view.ui")]
+[GtkTemplate (ui = "/im/dino/conversation_summary/view.ui")]
 public class View : Box {
 
     public Conversation? conversation { get; private set; }

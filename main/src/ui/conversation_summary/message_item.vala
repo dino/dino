@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ConversationSummary {
 
-[GtkTemplate (ui = "/org/dino-im/conversation_summary/message_item.ui")]
+[GtkTemplate (ui = "/im/dino/conversation_summary/message_item.ui")]
 public class MessageItem : Grid, ConversationItem {
 
     [GtkChild] private Image image;

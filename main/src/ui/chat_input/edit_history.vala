@@ -30,12 +30,11 @@ class EditHistory {
     }
 
     public bool on_text_input_key_press(EventKey event) {
-        if ((event.state & ModifierType.CONTROL_MASK) > 0) {
-            if (event.keyval == Key.z) {
-                undo();
-            } else if (event.keyval == Key.Z) {
-                redo();
-            }
+        bool ctrl_pressed = (event.state & ModifierType.CONTROL_MASK) > 0;
+        if (ctrl_pressed && event.keyval == Key.z) {
+            undo();
+        } else if (ctrl_pressed && (event.keyval in new uint[]{ Key.Z, Key.y } )) {
+            redo();
         } else if (event.keyval in new uint[]{ Key.space, Key.Tab, Key.ISO_Left_Tab }) {
             if (indices[conversation] < histories[conversation].size - 1) {
                 histories[conversation] = histories[conversation].slice(0, indices[conversation] + 1);

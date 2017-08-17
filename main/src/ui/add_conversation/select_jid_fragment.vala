@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.AddConversation {
 
-[GtkTemplate (ui = "/org/dino-im/add_conversation/select_jid_fragment.ui")]
+[GtkTemplate (ui = "/im/dino/add_conversation/select_jid_fragment.ui")]
 public class SelectJidFragment : Gtk.Box {
 
     public signal void add_jid();

@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.AddConversation.Conference {
 
-[GtkTemplate (ui = "/org/dino-im/add_conversation/conference_details_fragment.ui")]
+[GtkTemplate (ui = "/im/dino/add_conversation/conference_details_fragment.ui")]
 protected class ConferenceDetailsFragment : Box {
 
     public bool done {

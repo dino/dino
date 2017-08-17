@@ -54,7 +54,7 @@ compile_gresources(
     TARGET ${CMAKE_CURRENT_BINARY_DIR}/resources/resources.c
     TYPE EMBED_C
     RESOURCES ${RESOURCE_LIST}
-    PREFIX /org/dino-im
+    PREFIX /im/dino
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
 )
 

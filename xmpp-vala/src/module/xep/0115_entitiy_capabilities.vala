@@ -40,7 +40,7 @@ namespace Xmpp.Xep.EntityCapabilities {
             if (presence.type_ == Presence.Stanza.TYPE_AVAILABLE) {
                 presence.stanza.put_node(new StanzaNode.build("c", NS_URI).add_self_xmlns()
                     .put_attribute("hash", "sha-1")
-                    .put_attribute("node", "http://dino-im.org")
+                    .put_attribute("node", "https://dino.im")
                     .put_attribute("ver", get_own_hash(stream)));
             }
         }

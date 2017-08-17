@@ -4,7 +4,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ManageAccounts {
 
-[GtkTemplate (ui = "/org/dino-im/manage_accounts/account_row.ui")]
+[GtkTemplate (ui = "/im/dino/manage_accounts/account_row.ui")]
 public class AccountRow :  Gtk.ListBoxRow {
 
     [GtkChild] public Image image;
