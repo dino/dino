@@ -21,6 +21,12 @@ public class MessageTextView : TextView {
         style_updated.connect(update_display_style);
     }
 
+    // Workaround GTK TextView issues
+    public override void get_preferred_width (out int minimum_width, out int natural_width) {
+        base.get_preferred_width(out minimum_width, out natural_width);
+        minimum_width = 0;
+    }
+
     public void add_text(string text) {
         TextIter end;
         buffer.get_end_iter(out end);

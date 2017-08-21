@@ -9,7 +9,7 @@ namespace Dino.Ui.ConversationSummary {
 
 public class MergedMessageItem : MessageItem {
 
-    private Label name_label = new Label("") { xalign=0, visible=true };
+    private Label name_label = new Label("") { xalign=0, visible=true, hexpand=true };
     private MessageTextView textview = new MessageTextView() { visible=true };
 
     public MergedMessageItem(StreamInteractor stream_interactor, Conversation conversation, Message message) {

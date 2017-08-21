@@ -78,15 +78,15 @@ public class UnifiedWindow : Window {
         grid.add(chat_input);
 
         paned.set_position(300);
-        paned.add1(filterable_conversation_list);
-        paned.add2(grid);
+        paned.pack1(filterable_conversation_list, false, false);
+        paned.pack2(grid, true, false);
     }
 
     private void setup_headerbar() {
         conversation_titlebar = new ConversationTitlebar(stream_interactor, this) { visible=true };
         conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
-        headerbar_paned.add1(conversation_list_titlebar);
-        headerbar_paned.add2(conversation_titlebar);
+        headerbar_paned.pack1(conversation_list_titlebar, false, false);
+        headerbar_paned.pack2(conversation_titlebar, true, false);
 
         // Distribute start/end decoration_layout buttons to left/right headerbar. Ensure app menu fallback.
         Gtk.Settings? gtk_settings = Gtk.Settings.get_default();

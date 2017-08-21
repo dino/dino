@@ -199,6 +199,7 @@ public class View : Box {
         }
     }
 
+    // Workaround GTK TextView issues
     private void force_alloc_width(Widget widget, int width) {
         Allocation alloc = Allocation();
         widget.get_preferred_width(out alloc.width, null);
