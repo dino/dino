@@ -8,6 +8,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private UnifiedWindow window;
 
     public Database db { get; set; }
+    public Dino.Entities.Settings settings { get; set; }
     public StreamInteractor stream_interaction { get; set; }
     public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
     public SearchPathGenerator? search_path_generator { get; set; }

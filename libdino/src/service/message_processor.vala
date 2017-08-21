@@ -107,7 +107,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
                 bool is_recent = new_message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
                 if (!is_mam_message || is_recent) {
-                    print(new_message.local_time.to_string() + "\n");
                     if (new_message.direction == Entities.Message.DIRECTION_SENT) {
                         message_sent(new_message, conversation);
                     } else {

@@ -42,7 +42,7 @@ class SmileyConverter {
     }
 
     private void check_convert() {
-        if (Dino.Settings.instance().convert_utf8_smileys) {
+        if (Dino.Application.get_default().settings.convert_utf8_smileys) {
             foreach (string smiley in smiley_translations.keys) {
                 if (text_input.buffer.text.has_suffix(smiley)) {
                     if (text_input.buffer.text.length == smiley.length ||

@@ -3,6 +3,7 @@ using Dino.Entities;
 public interface Dino.Application : GLib.Application {
 
     public abstract Database db { get; set; }
+    public abstract Dino.Entities.Settings settings { get; set; }
     public abstract StreamInteractor stream_interaction { get; set; }
     public abstract Plugins.Registry plugin_registry { get; set; }
     public abstract SearchPathGenerator? search_path_generator { get; set; }
@@ -20,6 +21,7 @@ public interface Dino.Application : GLib.Application {
         }
 
         this.db = new Database(Path.build_filename(get_storage_dir(), "dino.db"));
+        this.settings = new Dino.Entities.Settings.from_db(db);
         this.stream_interaction = new StreamInteractor(db);
 
         AvatarManager.start(stream_interaction, db);
@@ -41,6 +43,10 @@ public interface Dino.Application : GLib.Application {
 
     public static string get_storage_dir() {
         return Path.build_filename(Environment.get_user_data_dir(), "dino");
+    }
+
+    public static unowned Application get_default() {
+        return (Dino.Application) GLib.Application.get_default();
     }
 
     protected void add_connection(Account account) {

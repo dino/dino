@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 4;
+    private const int VERSION = 5;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -133,6 +133,17 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class SettingsTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<string> key = new Column.Text("key") { unique = true, not_null = true };
+        public Column<string> value = new Column.Text("value");
+
+        internal SettingsTable(Database db) {
+            base(db, "settings");
+            init({id, key, value});
+        }
+    }
+
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
     public MessageTable message { get; private set; }
@@ -141,6 +152,7 @@ public class Database : Qlite.Database {
     public AvatarTable avatar { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
     public RosterTable roster { get; private set; }
+    public SettingsTable settings { get; private set; }
 
     public Map<int, string> jid_table_cache = new HashMap<int, string>();
     public Map<string, int> jid_table_reverse = new HashMap<string, int>();
@@ -156,7 +168,8 @@ public class Database : Qlite.Database {
         avatar = new AvatarTable(this);
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
-        init({ account, jid, message, real_jid, conversation, avatar, entity_feature, roster });
+        settings = new SettingsTable(this);
+        init({ account, jid, message, real_jid, conversation, avatar, entity_feature, roster, settings });
         exec("PRAGMA synchronous=0");
     }
 

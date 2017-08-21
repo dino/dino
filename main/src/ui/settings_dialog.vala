@@ -10,7 +10,7 @@ class SettingsDialog : Dialog {
     [GtkChild] private CheckButton notification_checkbutton;
     [GtkChild] private CheckButton emoji_checkbutton;
 
-    Dino.Settings settings = Dino.Settings.instance();
+    Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
     public SettingsDialog() {
         Object(use_header_bar : 1);
