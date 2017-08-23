@@ -29,13 +29,13 @@ public class Message : Object {
     public Jid? counterpart { get; set; }
     public Jid? ourpart { get; set; }
     public Jid? from {
-        get { return direction == DIRECTION_SENT ? account.bare_jid : counterpart; }
+        get { return direction == DIRECTION_SENT ? ourpart : counterpart; }
     }
     public Jid? to {
-        get { return direction == DIRECTION_SENT ? counterpart : account.bare_jid; }
+        get { return direction == DIRECTION_SENT ? counterpart : ourpart; }
     }
     public bool direction { get; set; }
-    public string? real_jid { get; set; }
+    public Jid? real_jid { get; set; }
     public Type type_ { get; set; default = Type.UNKNOWN; }
     public string? body { get; set; }
     public string? stanza_id { get; set; }
@@ -56,19 +56,30 @@ public class Message : Object {
         this.db = db;
 
         id = row[db.message.id];
+        account = db.get_account_by_id(row[db.message.account_id]); // TODO dont have to generate acc new
         stanza_id = row[db.message.stanza_id];
-        string from = db.get_jid_by_id(row[db.message.counterpart_id]);
-        string from_resource = row[db.message.counterpart_resource];
-        counterpart = from_resource != null ? new Jid(from + "/" + from_resource) : new Jid(from);
-        direction = row[db.message.direction];
         type_ = (Message.Type) row[db.message.type_];
+
+        string counterpart_jid = db.get_jid_by_id(row[db.message.counterpart_id]);
+        string counterpart_resource = row[db.message.counterpart_resource];
+        counterpart = counterpart_resource != null ? new Jid.with_resource(counterpart_jid, counterpart_resource) : new Jid(counterpart_jid);
+
+        string our_resource = row[db.message.our_resource];
+        if (type_ == Type.GROUPCHAT && our_resource != null) {
+            ourpart = new Jid.with_resource(counterpart_jid, our_resource);
+        } else if (our_resource != null) {
+            ourpart = new Jid.with_resource(account.bare_jid.to_string(), our_resource);
+        } else {
+            ourpart = account.bare_jid;
+        }
+        direction = row[db.message.direction];
         time = new DateTime.from_unix_local(row[db.message.time]);
         local_time = new DateTime.from_unix_local(row[db.message.time]);
         body = row[db.message.body];
-        account = db.get_account_by_id(row[db.message.account_id]); // TODO dont have to generate acc new
         marked = (Message.Marked) row[db.message.marked];
         encryption = (Encryption) row[db.message.encryption];
-        real_jid = db.real_jid.select({db.real_jid.real_jid}).with(db.real_jid.message_id, "=", id)[db.real_jid.real_jid];
+        string? real_jid_str = db.real_jid.select({db.real_jid.real_jid}).with(db.real_jid.message_id, "=", id)[db.real_jid.real_jid];
+        if (real_jid_str != null) real_jid = new Jid(real_jid_str);
 
         notify.connect(on_update);
     }
@@ -95,7 +106,7 @@ public class Message : Object {
         if (real_jid != null) {
             db.real_jid.insert()
                 .value(db.real_jid.message_id, id)
-                .value(db.real_jid.real_jid, real_jid)
+                .value(db.real_jid.real_jid, real_jid.to_string())
                 .perform();
         }
         notify.connect(on_update);
@@ -168,7 +179,7 @@ public class Message : Object {
         if (sp.get_name() == "real-jid") {
             db.real_jid.insert().or("REPLACE")
                 .value(db.real_jid.message_id, id)
-                .value(db.real_jid.real_jid, real_jid)
+                .value(db.real_jid.real_jid, real_jid.to_string())
                 .perform();
         }
     }

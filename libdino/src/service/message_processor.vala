@@ -167,7 +167,12 @@ public class MessageProcessor : StreamInteractionModule, Object {
         message.local_time = new DateTime.now_local();
         message.direction = Entities.Message.DIRECTION_SENT;
         message.counterpart = conversation.counterpart;
-        message.ourpart = new Jid(conversation.account.bare_jid.to_string() + "/" + conversation.account.resourcepart);
+        if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+            message.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+            message.real_jid = conversation.account.bare_jid;
+        } else {
+            message.ourpart = new Jid.with_resource(conversation.account.bare_jid.to_string(), conversation.account.resourcepart);
+        }
         message.marked = Entities.Message.Marked.UNSENT;
         message.encryption = conversation.encryption;
 

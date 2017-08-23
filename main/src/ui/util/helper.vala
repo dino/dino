@@ -12,18 +12,32 @@ private const string[] material_colors_500 = {"F44336", "E91E63", "9C27B0", "673
 private const string[] material_colors_300 = {"E57373", "F06292", "BA68C8", "9575CD", "7986CB", "64B5F6", "4FC3F7", "4DD0E1", "4DB6AC", "81C784", "AED581", "DCE775", "FFD54F", "FFB74D", "FF8A65", "A1887F"};
 private const string[] material_colors_200 = {"EF9A9A", "F48FB1", "CE93D8", "B39DDB", "9FA8DA", "90CAF9", "81D4FA", "80DEEA", "80CBC4", "A5D6A7", "C5E1A5", "E6EE9C", "FFE082", "FFCC80", "FFAB91", "BCAAA4"};
 
-public static string get_avatar_hex_color(string name) {
-    return material_colors_300[name.hash() % material_colors_300.length];
-//        return tango_colors_light[name.hash() % tango_colors_light.length];
+public static string get_avatar_hex_color(StreamInteractor stream_interactor, Account account, Jid jid) {
+    uint hash = get_relevant_jid(stream_interactor, account, jid).to_string().hash();
+    return material_colors_300[hash % material_colors_300.length];
+//    return tango_colors_light[name.hash() % tango_colors_light.length];
 }
 
-public static string get_name_hex_color(string name, bool dark_theme = false) {
+public static string get_name_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, bool dark_theme = false) {
+    uint hash = get_relevant_jid(stream_interactor, account, jid).to_string().hash();
     if (dark_theme) {
-        return material_colors_300[name.hash() % material_colors_300.length];
+        return material_colors_300[hash % material_colors_300.length];
     } else {
-        return material_colors_500[name.hash() % material_colors_500.length];
+        return material_colors_500[hash % material_colors_500.length];
     }
-//        return tango_colors_medium[name.hash() % tango_colors_medium.length];
+//    return tango_colors_medium[name.hash() % tango_colors_medium.length];
+}
+
+private static Jid get_relevant_jid(StreamInteractor stream_interactor, Account account, Jid jid) {
+    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid.bare_jid, account)) {
+        Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, account);
+        if (real_jid != null) {
+            return real_jid.bare_jid;
+        }
+    } else {
+        return jid.bare_jid;
+    }
+    return jid;
 }
 
 public static string color_for_show(string show) {
@@ -46,6 +60,9 @@ public static string get_conversation_display_name(StreamInteractor stream_inter
 
 public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
     if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
+        if (jid.resourcepart == account.resourcepart) {
+            return account.alias; // FIXME temporary. remove again.
+        }
         return jid.resourcepart;
     } else {
         if (jid.bare_jid.equals(account.bare_jid.bare_jid)) {
@@ -64,12 +81,7 @@ public static string get_display_name(StreamInteractor stream_interactor, Jid ji
 }
 
 public static string get_message_display_name(StreamInteractor stream_interactor, Entities.Message message, Account account) {
-    Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_message_real_jid(message);
-    if (real_jid != null) {
-        return get_display_name(stream_interactor, real_jid, account);
-    } else {
-        return get_display_name(stream_interactor, message.from, account);
-    }
+    return get_display_name(stream_interactor, message.from, account);
 }
 
 public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0) {

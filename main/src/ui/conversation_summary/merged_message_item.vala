@@ -16,10 +16,11 @@ public class MergedMessageItem : MessageItem {
         base(stream_interactor, conversation, message);
         set_main_widget(textview);
         set_title_widget(name_label);
-
         add_message(message);
+
         string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
-        name_label.set_markup(@"<span foreground=\"#$(Util.get_name_hex_color(display_name, false))\">$display_name</span>");
+        string color = Util.get_name_hex_color(stream_interactor, conversation.account, message.from, false);
+        name_label.set_markup(@"<span foreground=\"#$color\">$display_name</span>");
 
         textview.style_updated.connect(update_display_style);
         update_display_style();
@@ -28,7 +29,11 @@ public class MergedMessageItem : MessageItem {
     public override void add_message(Message message) {
         base.add_message(message);
         if (messages.size > 1) textview.add_text("\n");
-        textview.add_text(message.body);
+        string text = message.body;
+        if (text.length > 10000) {
+            text = text.slice(0, 10000) + " [" + _("Message too long") + "]";
+        }
+        textview.add_text(text);
     }
 
     public override bool merge(Message message) {
@@ -46,7 +51,8 @@ public class MergedMessageItem : MessageItem {
 
     private void update_display_style() {
         string display_name = Util.get_message_display_name(stream_interactor, messages[0], conversation.account);
-        name_label.set_markup(@"<span foreground=\"#$(Util.get_name_hex_color(display_name, Util.is_dark_theme(textview)))\">$display_name</span>");
+        string color = Util.get_name_hex_color(stream_interactor, conversation.account, messages[0].real_jid ?? messages[0].from, Util.is_dark_theme(textview));
+        name_label.set_markup(@"<span foreground=\"#$color\">$display_name</span>");
     }
 }
 

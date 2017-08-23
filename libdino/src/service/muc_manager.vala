@@ -191,13 +191,6 @@ public class MucManager : StreamInteractionModule, Object {
         return ret;
     }
 
-    public Jid? get_message_real_jid(Entities.Message message) {
-        if (message.real_jid != null) {
-            return new Jid(message.real_jid);
-        }
-        return null;
-    }
-
     public Jid? get_own_jid(Jid muc_jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
@@ -250,7 +243,7 @@ public class MucManager : StreamInteractionModule, Object {
         if (Xep.DelayedDelivery.MessageFlag.get_flag(message.stanza) == null) {
             string? real_jid = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_real_jid(message.counterpart.to_string());
             if (real_jid != null && real_jid != message.counterpart.to_string()) {
-                message.real_jid = real_jid;
+                message.real_jid = new Jid(real_jid).bare_jid;
             }
         }
         string? muc_nick = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_nick(conversation.counterpart.bare_jid.to_string());

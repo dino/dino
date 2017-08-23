@@ -19,7 +19,8 @@ public class SlashMeItem : MessageItem {
         text = message.body.substring(3);
 
         string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
-        nick_tag = textview.buffer.create_tag("nick", foreground: @"#$(Util.get_name_hex_color(display_name, false))");
+        string color = Util.get_name_hex_color(stream_interactor, conversation.account, conversation.counterpart, false);
+        nick_tag = textview.buffer.create_tag("nick", foreground: "#" + color);
         TextIter iter;
         textview.buffer.get_start_iter(out iter);
         textview.buffer.insert_with_tags(ref iter, display_name, display_name.length, nick_tag);
@@ -35,8 +36,8 @@ public class SlashMeItem : MessageItem {
     }
 
     private void update_display_style() {
-        string display_name = Util.get_message_display_name(stream_interactor, messages[0], conversation.account);
-        nick_tag.foreground = @"#$(Util.get_name_hex_color(display_name, Util.is_dark_theme(textview)))";
+        string color = Util.get_name_hex_color(stream_interactor, conversation.account, messages[0].real_jid ?? messages[0].from, Util.is_dark_theme(textview));
+        nick_tag.foreground = "#" + color;
     }
 }
 

@@ -12,6 +12,7 @@ public class View : Popover {
     private Stack stack = new Stack() { vhomogeneous=false, visible=true };
     private List list;
     private ListBox invite_list;
+    private Box? jid_menu = null;
 
     public View(StreamInteractor stream_interactor, Window window, Conversation conversation) {
         this.stream_interactor = stream_interactor;
@@ -63,13 +64,16 @@ public class View : Popover {
         stack.visible_child_name = "list";
     }
 
-    private void show_menu(Jid jid, string name_label) {
+    private void show_menu(Jid jid, string name_) {
         stack.transition_type = StackTransitionType.SLIDE_LEFT;
+
+        string name = name_;
+        Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
+        if (real_jid != null) name += @"\n<span font=\'8\'>$(real_jid.bare_jid)</span>";
 
         Box header_box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
         header_box.add(new Image.from_icon_name("pan-start-symbolic", IconSize.SMALL_TOOLBAR) { visible=true });
-        header_box.add(new Label(name_label) { xalign=0.5f, hexpand=true, visible=true });
-
+        header_box.add(new Label(name) { xalign=0, use_markup=true, hexpand=true, visible=true });
         Button header_button = new Button() { relief=ReliefStyle.NONE, visible=true };
         header_button.add(header_box);
 
@@ -90,8 +94,10 @@ public class View : Popover {
             kick_button.clicked.connect(kick_button_clicked);
         }
 
+        if (jid_menu != null) stack.remove(jid_menu);
         stack.add_named(outer_box, "menu");
         stack.visible_child_name = "menu";
+        jid_menu = outer_box;
     }
 
     private void private_conversation_button_clicked() {
