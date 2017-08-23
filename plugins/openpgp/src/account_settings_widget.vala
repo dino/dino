@@ -31,7 +31,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     public void deactivate() {
-        this.set_visible_child_name("label");
+        set_visible_child_name("label");
     }
 
     public void set_account(Account account) {
@@ -45,7 +45,8 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
 
     private void on_button_clicked() {
         activated();
-        this.set_visible_child_name("entry");
+        set_visible_child_name("entry");
+        combobox.grab_focus();
         combobox.popup();
     }
 

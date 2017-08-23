@@ -20,6 +20,7 @@ public class LabelHybrid : Stack {
 
     public void show_widget() {
         visible_child_name = "widget";
+        get_child_by_name("widget").grab_focus();
     }
 
     public void show_label() {
@@ -86,6 +87,10 @@ public class EntryLabelHybrid : LabelHybrid {
             }
             return false;
         });
+        entry.focus_out_event.connect(() => {
+            show_label();
+            return false;
+        });
     }
 
     private void update_label() {
@@ -133,6 +138,11 @@ public class ComboBoxTextLabelHybrid : LabelHybrid {
         combobox.changed.connect(() => {
             update_label();
             show_label();
+        });
+        combobox.focus_out_event.connect(() => {
+            update_label();
+            show_label();
+            return false;
         });
         button.clicked.connect(() => {
             combobox.popup();
