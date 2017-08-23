@@ -53,7 +53,10 @@ public class ConversationItemSkeleton : Grid {
 
     public void update_time() {
         if (items.size > 0 && items[0].display_time != null) {
+            DateTime local = items[0].display_time.to_local();
             time_label.label = get_relative_time(items[0].display_time.to_local());
+            /* xgettext:no-c-format */ /* Full date + time for the relative time tooltip */
+            time_label.tooltip_text = local.format(_("%x %X"));
         }
     }
 
