@@ -20,9 +20,11 @@ public class ConnectionManager {
     private ArrayList<Account> connection_todo = new ArrayList<Account>(Account.equals_func);
     private HashMap<Account, Connection> connections = new HashMap<Account, Connection>(Account.hash_func, Account.equals_func);
     private HashMap<Account, ConnectionError> connection_errors = new HashMap<Account, ConnectionError>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, RecMutexWrap> connection_mutexes = new HashMap<Account, RecMutexWrap>(Account.hash_func, Account.equals_func);
 
     private NetworkManager? network_manager;
     private Login1Manager? login1;
+    private NetworkManagerDBusProperties? dbus_properties;
     private ModuleManager module_manager;
     public string? log_options;
 
@@ -48,10 +50,18 @@ public class ConnectionManager {
         public Core.XmppStream stream { get; set; }
         public ConnectionState connection_state { get; set; default = ConnectionState.DISCONNECTED; }
         public DateTime established { get; set; }
+        public DateTime last_activity { get; set; }
         public class Connection(Core.XmppStream stream, DateTime established) {
             this.stream = stream;
             this.established = established;
         }
+    }
+
+    private class RecMutexWrap {
+        public RecMutex mutex = new RecMutex();
+        public void lock() { mutex.lock(); }
+        public void unlock() { mutex.unlock(); }
+        public bool trylock() { return mutex.trylock(); }
     }
 
     public ConnectionManager(ModuleManager module_manager) {
@@ -64,6 +74,25 @@ public class ConnectionManager {
         if (login1 != null) {
             login1.PrepareForSleep.connect(on_prepare_for_sleep);
         }
+        dbus_properties = get_dbus_properties();
+        if (dbus_properties != null) {
+            dbus_properties.properties_changed.connect((s, sv, sa) => {
+                foreach (string key in sv.get_keys()) {
+                    if (key == "PrimaryConnection") {
+                        print("primary connection changed\n");
+                        check_reconnects();
+                    }
+                }
+            });
+        }
+        Timeout.add_seconds(60, () => {
+            foreach (Account account in connection_todo) {
+                if (connections[account].last_activity.compare(new DateTime.now_utc().add_minutes(-1)) < 0) {
+                    check_reconnect(account);
+                }
+            }
+            return true;
+        });
     }
 
     public Core.XmppStream? get_stream(Account account) {
@@ -92,6 +121,7 @@ public class ConnectionManager {
     }
 
     public Core.XmppStream? connect(Account account) {
+        if (!connection_mutexes.contains(account)) connection_mutexes[account] = new RecMutexWrap();
         if (!connection_todo.contains(account)) connection_todo.add(account);
         if (!connections.has_key(account)) {
             return connect_(account);
@@ -113,6 +143,8 @@ public class ConnectionManager {
     }
 
     private Core.XmppStream? connect_(Account account, string? resource = null) {
+        if (!connection_mutexes[account].trylock()) return null;
+
         if (connections.has_key(account)) connections[account].stream.remove_modules();
         connection_errors.unset(account);
         if (resource == null) resource = account.resourcepart;
@@ -133,6 +165,9 @@ public class ConnectionManager {
             set_connection_error(account, ConnectionError.Source.SASL, null);
             change_connection_state(account, ConnectionState.DISCONNECTED);
         });
+        stream.received_node.connect(() => {
+            connections[account].last_activity = new DateTime.now_utc();
+        });
         new Thread<void*> (null, () => {
             try {
                 stream.connect(account.domainpart);
@@ -141,18 +176,20 @@ public class ConnectionManager {
                 change_connection_state(account, ConnectionState.DISCONNECTED);
                 if (!connection_todo.contains(account)) {
                     connections.unset(account);
-                } else {
-                    StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
-                    if (flag != null) {
-                        set_connection_error(account, ConnectionError.Source.STREAM_ERROR, flag.error_type);
-                    }
-                    interpret_connection_error(account);
+                    return null;
                 }
+                StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
+                if (flag != null) {
+                    set_connection_error(account, ConnectionError.Source.STREAM_ERROR, flag.error_type);
+                }
+                interpret_connection_error(account);
             }
+            connection_mutexes[account].unlock();
             return null;
         });
         stream_opened(account, stream);
 
+        connection_mutexes[account].unlock();
         return stream;
     }
 
@@ -182,7 +219,7 @@ public class ConnectionManager {
         }
         print(@"recovering in $wait_sec\n");
         Timeout.add_seconds(wait_sec, () => {
-            connect_(account);
+            check_reconnect(account);
             return false;
         });
     }
@@ -194,6 +231,7 @@ public class ConnectionManager {
     }
 
     private void check_reconnect(Account account) {
+        if (!connection_mutexes[account].trylock()) return;
         bool acked = false;
 
         Core.XmppStream stream = connections[account].stream;
@@ -210,6 +248,8 @@ public class ConnectionManager {
             try {
                 connections[account].stream.disconnect();
             } catch (Error e) { }
+            connect_(account);
+            connection_mutexes[account].unlock();
             return false;
         });
     }
