@@ -91,15 +91,17 @@ public class Conversation : Object {
     }
 
     public NotifySetting get_notification_setting(StreamInteractor stream_interactor) {
+        return notify_setting != NotifySetting.DEFAULT ? notify_setting : get_notification_default_setting(stream_interactor);
+    }
+
+    public NotifySetting get_notification_default_setting(StreamInteractor stream_interactor) {
         Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (notify_setting != NotifySetting.DEFAULT) return notify_setting;
         if (!Application.get_default().settings.notifications) return NotifySetting.OFF;
         if (type_ == Type.GROUPCHAT) {
             bool members_only = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY).has_room_feature(counterpart.bare_jid.to_string(), Xmpp.Xep.Muc.Feature.MEMBERS_ONLY);
             return members_only ? NotifySetting.ON : NotifySetting.HIGHLIGHT;
-        } else {
-            return NotifySetting.ON;
         }
+        return NotifySetting.ON;
     }
 
     public Setting get_send_typing_setting() {

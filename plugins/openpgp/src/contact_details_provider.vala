@@ -17,15 +17,14 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
         if (conversation.type_ == Conversation.Type.CHAT && type == WidgetType.GTK) {
             string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart);
             if (key_id != null) {
+                Label label = new Label("") { use_markup=true, justify=Justification.RIGHT, selectable=true, visible=true };
                 Gee.List<GPG.Key> keys = GPGHelper.get_keylist(key_id);
                 if (keys.size > 0) {
-                    Label label = new Label(markup_colorize_id(keys[0].fpr, true)) { use_markup=true, justify=Justification.RIGHT, visible=true };
-                    contact_details.add(_("Encryption"), _("OpenPGP"), "", label);
+                    label.label = markup_colorize_id(keys[0].fpr, true);
                 } else {
-                    string s = _("Key not in keychain") + "\n" + markup_colorize_id(key_id, false);
-                    Label label = new Label(s) { use_markup=true, justify=Justification.RIGHT, visible=true };
-                    contact_details.add(_("Encryption"), _("OpenPGP"), "", label);
+                    label.label = _("Key not in keychain") + "\n" + markup_colorize_id(key_id, false);
                 }
+                contact_details.add(_("Encryption"), _("OpenPGP"), "", label);
             }
         }
     }
