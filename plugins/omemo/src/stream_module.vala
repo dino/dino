@@ -282,25 +282,28 @@ public class StreamModule : XmppStreamModule {
             ECPublicKey? identity_key = bundle.identity_key;
 
             ArrayList<Bundle.PreKey> pre_keys = bundle.pre_keys;
-            int pre_key_idx = Random.int_range(0, pre_keys.size);
-            int32 pre_key_id = pre_keys[pre_key_idx].key_id;
-            ECPublicKey? pre_key = pre_keys[pre_key_idx].key;
-
-            if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_key_id < 0 || pre_key == null) {
+            if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_keys.size == 0) {
                 fail = true;
             } else {
-                Address address = new Address(jid, device_id);
-                try {
-                    if (store.contains_session(address)) {
-                        return;
-                    }
-                    SessionBuilder builder = store.create_session_builder(address);
-                    builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
-                    stream.get_module(IDENTITY).session_started(jid, device_id);
-                } catch (Error e) {
+                int pre_key_idx = Random.int_range(0, pre_keys.size);
+                int32 pre_key_id = pre_keys[pre_key_idx].key_id;
+                ECPublicKey? pre_key = pre_keys[pre_key_idx].key;
+                if (pre_key_id < 0 || pre_key == null) {
                     fail = true;
+                } else {
+                    Address address = new Address(jid, device_id);
+                    try {
+                        if (store.contains_session(address)) {
+                            return;
+                        }
+                        SessionBuilder builder = store.create_session_builder(address);
+                        builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
+                        stream.get_module(IDENTITY).session_started(jid, device_id);
+                    } catch (Error e) {
+                        fail = true;
+                    }
+                    address.device_id = 0; // TODO: Hack to have address obj live longer
                 }
-                address.device_id = 0; // TODO: Hack to have address obj live longer
             }
         }
         if (fail) {
