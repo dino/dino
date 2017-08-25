@@ -20,6 +20,10 @@ class EditHistory {
         this.text_input = text_input;
 
         text_input.key_press_event.connect(on_text_input_key_press);
+        text_input.cut_clipboard.connect_after(save_state);
+        text_input.paste_clipboard.connect_after(save_state);
+        text_input.move_cursor.connect_after(save_state);
+        text_input.button_release_event.connect_after(() => { save_state(); return false; });
     }
 
     public void initialize_for_conversation(Conversation conversation) {
@@ -36,18 +40,13 @@ class EditHistory {
         } else if (ctrl_pressed && (event.keyval in new uint[]{ Key.Z, Key.y } )) {
             redo();
         } else if (event.keyval in new uint[]{ Key.space, Key.Tab, Key.ISO_Left_Tab }) {
-            if (indices[conversation] < histories[conversation].size - 1) {
-                histories[conversation] = histories[conversation].slice(0, indices[conversation] + 1);
-            }
             save_state();
         }
         return false;
     }
 
     private void undo() {
-        if (histories[conversation][indices[conversation]] != text_input.buffer.text) {
-            save_state();
-        }
+        save_state();
         if (indices[conversation] > 0) {
             indices[conversation] = indices[conversation] - 1;
             text_input.buffer.text = histories[conversation][indices[conversation]];
@@ -62,6 +61,10 @@ class EditHistory {
     }
 
     private void save_state() {
+        if (histories[conversation][indices[conversation]] == text_input.buffer.text) return;
+        if (indices[conversation] < histories[conversation].size - 1) {
+            histories[conversation] = histories[conversation].slice(0, indices[conversation] + 1);
+        }
         histories[conversation].add(text_input.buffer.text);
         indices[conversation] = indices[conversation] + 1;
     }
