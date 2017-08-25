@@ -68,6 +68,11 @@ public class Table {
         return db.update(this);
     }
 
+    public UpsertBuilder upsert() throws DatabaseError {
+        ensure_init();
+        return db.upsert(this);
+    }
+
     public DeleteBuilder delete() throws DatabaseError {
         ensure_init();
         return db.delete().from(this);
