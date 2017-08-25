@@ -9,7 +9,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
     public Database db { get; set; }
     public Dino.Entities.Settings settings { get; set; }
-    public StreamInteractor stream_interaction { get; set; }
+    public StreamInteractor stream_interactor { get; set; }
     public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
     public SearchPathGenerator? search_path_generator { get; set; }
 
@@ -24,8 +24,8 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         activate.connect(() => {
             if (window == null) {
                 create_set_app_menu();
-                window = new UnifiedWindow(this, stream_interaction);
-                notifications = new Notifications(stream_interaction, window);
+                window = new UnifiedWindow(this, stream_interactor);
+                notifications = new Notifications(stream_interactor, window);
                 notifications.start();
                 notifications.conversation_selected.connect(window.on_conversation_selected);
             }
@@ -35,14 +35,44 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
     public void handle_uri(string jid, string query, Gee.Map<string, string> options) {
         switch (query) {
+            case "join":
+                Dialog dialog = new Dialog.with_buttons(_("Join Conference"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
+                dialog.modal = true;
+                Widget ok_button = dialog.get_widget_for_response(ResponseType.OK);
+                ok_button.get_style_context().add_class("suggested-action");
+                AddConversation.Conference.ConferenceDetailsFragment conference_fragment = new AddConversation.Conference.ConferenceDetailsFragment(stream_interactor);
+                conference_fragment.jid = jid;
+                conference_fragment.set_editable();
+                Box content_area = dialog.get_content_area();
+                content_area.add(conference_fragment);
+                dialog.response.connect((response_id) => {
+                    if (response_id == ResponseType.OK) {
+                        stream_interactor.get_module(MucManager.IDENTITY).join(conference_fragment.account, new Jid(conference_fragment.jid), conference_fragment.nick, conference_fragment.password);
+                        dialog.destroy();
+                    } else if (response_id == ResponseType.CANCEL) {
+                        dialog.destroy();
+                    }
+                });
+                dialog.present();
+                break;
             case "message":
-                // TODO
+                AddConversation.Chat.Dialog dialog = new AddConversation.Chat.Dialog(stream_interactor, stream_interactor.get_accounts());
+                dialog.set_filter(jid);
+                dialog.set_transient_for(window);
+                dialog.title = _("Start Chat");
+                dialog.ok_button.label = _("Start");
+                dialog.selected.connect((account, jid) => {
+                    Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
+                    stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+                    window.on_conversation_selected(conversation);
+                });
+                dialog.present();
                 break;
         }
     }
 
     private void show_accounts_window() {
-        ManageAccounts.Dialog dialog = new ManageAccounts.Dialog(stream_interaction, db);
+        ManageAccounts.Dialog dialog = new ManageAccounts.Dialog(stream_interactor, db);
         dialog.set_transient_for(window);
         dialog.account_enabled.connect(add_connection);
         dialog.account_disabled.connect(remove_connection);

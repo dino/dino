@@ -13,6 +13,11 @@ public class View : Box {
     [GtkChild] private ScrolledWindow scrolled;
     [GtkChild] private TextView text_input;
 
+    public string text {
+        owned get { return text_input.buffer.text; }
+        set { text_input.buffer.text = value; }
+    }
+
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);

@@ -37,10 +37,10 @@ public class Plugin : RootInterface, Object {
             this.settings_entry = new AccountSettingsEntry(this);
             this.app.plugin_registry.register_encryption_list_entry(list_entry);
             this.app.plugin_registry.register_account_settings_entry(settings_entry);
-            this.app.stream_interaction.module_manager.initialize_account_modules.connect((account, list) => {
+            this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
                 list.add(new StreamModule());
             });
-            Manager.start(this.app.stream_interaction, db);
+            Manager.start(this.app.stream_interactor, db);
 
             string locales_dir;
             if (app.search_path_generator != null) {

@@ -16,7 +16,7 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
     }}
 
     public bool can_encrypt(Entities.Conversation conversation) {
-        return plugin.app.stream_interaction.get_module(Manager.IDENTITY).can_encrypt(conversation);
+        return plugin.app.stream_interactor.get_module(Manager.IDENTITY).can_encrypt(conversation);
     }
 }
 

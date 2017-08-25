@@ -19,16 +19,16 @@ public class Plugin : Plugins.RootInterface, Object {
     public void registered(Dino.Application app) {
         this.app = app;
         this.db = new Database(Path.build_filename(Application.get_storage_dir(), "pgp.db"));
-        this.list_entry = new EncryptionListEntry(app.stream_interaction);
+        this.list_entry = new EncryptionListEntry(app.stream_interactor);
         this.settings_entry = new AccountSettingsEntry(this);
-        this.contact_details_provider = new ContactDetailsProvider(app.stream_interaction);
+        this.contact_details_provider = new ContactDetailsProvider(app.stream_interactor);
 
         app.plugin_registry.register_encryption_list_entry(list_entry);
         app.plugin_registry.register_account_settings_entry(settings_entry);
         app.plugin_registry.register_contact_details_entry(contact_details_provider);
-        app.stream_interaction.module_manager.initialize_account_modules.connect(on_initialize_account_modules);
+        app.stream_interactor.module_manager.initialize_account_modules.connect(on_initialize_account_modules);
 
-        Manager.start(app.stream_interaction, db);
+        Manager.start(app.stream_interactor, db);
 
         internationalize(GETTEXT_PACKAGE, app.search_path_generator.get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR));
     }

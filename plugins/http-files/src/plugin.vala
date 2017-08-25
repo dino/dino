@@ -11,13 +11,13 @@ public class Plugin : RootInterface, Object {
     public void registered(Dino.Application app) {
         try {
             this.app = app;
-            this.conversations_titlebar_entry = new ConversationsTitlebarEntry(app.stream_interaction);
+            this.conversations_titlebar_entry = new ConversationsTitlebarEntry(app.stream_interactor);
 
             this.app.plugin_registry.register_contact_titlebar_entry(conversations_titlebar_entry);
-            this.app.stream_interaction.module_manager.initialize_account_modules.connect((account, list) => {
+            this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
                 list.add(new UploadStreamModule());
             });
-            Manager.start(this.app.stream_interaction);
+            Manager.start(this.app.stream_interactor);
         } catch (Error e) {
             print(@"Error initializing http-files: $(e.message)\n");
         }

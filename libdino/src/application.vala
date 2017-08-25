@@ -4,7 +4,7 @@ public interface Dino.Application : GLib.Application {
 
     public abstract Database db { get; set; }
     public abstract Dino.Entities.Settings settings { get; set; }
-    public abstract StreamInteractor stream_interaction { get; set; }
+    public abstract StreamInteractor stream_interactor { get; set; }
     public abstract Plugins.Registry plugin_registry { get; set; }
     public abstract SearchPathGenerator? search_path_generator { get; set; }
 
@@ -24,20 +24,20 @@ public interface Dino.Application : GLib.Application {
 
         this.db = new Database(Path.build_filename(get_storage_dir(), "dino.db"));
         this.settings = new Dino.Entities.Settings.from_db(db);
-        this.stream_interaction = new StreamInteractor(db);
+        this.stream_interactor = new StreamInteractor(db);
 
-        AvatarManager.start(stream_interaction, db);
-        MessageProcessor.start(stream_interaction, db);
-        MessageStorage.start(stream_interaction, db);
-        CounterpartInteractionManager.start(stream_interaction);
-        PresenceManager.start(stream_interaction);
-        MucManager.start(stream_interaction);
-        RosterManager.start(stream_interaction, db);
-        ConversationManager.start(stream_interaction, db);
-        ChatInteraction.start(stream_interaction);
+        AvatarManager.start(stream_interactor, db);
+        MessageProcessor.start(stream_interactor, db);
+        MessageStorage.start(stream_interactor, db);
+        CounterpartInteractionManager.start(stream_interactor);
+        PresenceManager.start(stream_interactor);
+        MucManager.start(stream_interactor);
+        RosterManager.start(stream_interactor, db);
+        ConversationManager.start(stream_interactor, db);
+        ChatInteraction.start(stream_interactor);
 
         activate.connect(() => {
-            stream_interaction.connection_manager.log_options = print_xmpp;
+            stream_interactor.connection_manager.log_options = print_xmpp;
             restore();
         });
         open.connect((files, hint) => {
@@ -86,11 +86,11 @@ public interface Dino.Application : GLib.Application {
     }
 
     protected void add_connection(Account account) {
-        stream_interaction.connect(account);
+        stream_interactor.connect(account);
     }
 
     protected void remove_connection(Account account) {
-        stream_interaction.disconnect(account);
+        stream_interactor.disconnect(account);
     }
 
     private void restore() {
