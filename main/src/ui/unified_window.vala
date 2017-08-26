@@ -30,7 +30,7 @@ public class UnifiedWindow : Window {
         setup_unified();
         setup_stack();
 
-        conversation_list_titlebar.search_button.bind_property("active", filterable_conversation_list.search_bar, "search-mode-enabled",
+        conversation_list_titlebar.search_button.bind_property("active", filterable_conversation_list.search_revealer, "reveal-child",
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 

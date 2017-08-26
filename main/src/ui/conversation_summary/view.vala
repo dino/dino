@@ -67,7 +67,7 @@ public class View : Box {
         ArrayList<Object> objects = new ArrayList<Object>();
         Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
         if (messages.size > 0) {
-            earliest_message = messages[0];
+            earliest_message = messages[messages.size -1];
             objects.add_all(messages);
         }
         HashMap<Jid, ArrayList<Show>>? shows = stream_interactor.get_module(PresenceManager.IDENTITY).get_shows(conversation.counterpart, conversation.account);

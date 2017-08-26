@@ -11,7 +11,7 @@ public class View : Box {
     public List conversation_list;
 
     [GtkChild] public SearchEntry search_entry;
-    [GtkChild] public SearchBar search_bar;
+    [GtkChild] public Revealer search_revealer;
     [GtkChild] private ScrolledWindow scrolled;
 
     public View(StreamInteractor stream_interactor) {
