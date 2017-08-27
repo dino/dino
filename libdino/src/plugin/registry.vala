@@ -7,6 +7,8 @@ public class Registry {
     internal ArrayList<AccountSettingsEntry> account_settings_entries = new ArrayList<AccountSettingsEntry>();
     internal ArrayList<ContactDetailsProvider> contact_details_entries = new ArrayList<ContactDetailsProvider>();
     internal Map<string, TextCommand> text_commands = new HashMap<string, TextCommand>();
+    internal Gee.List<MessageDisplayProvider> message_displays = new ArrayList<MessageDisplayProvider>();
+    internal Gee.List<ConversationItemPopulator> conversation_item_populators = new ArrayList<ConversationItemPopulator>();
     internal Gee.Collection<ConversationTitlebarEntry> conversation_titlebar_entries = new Gee.TreeSet<ConversationTitlebarEntry>((a, b) => {
         if (a.order < b.order) {
             return -1;
@@ -64,6 +66,26 @@ public class Registry {
                 if (e.id == entry.id) return false;
             }
             conversation_titlebar_entries.add(entry);
+            return true;
+        }
+    }
+
+    public bool register_message_display(MessageDisplayProvider provider) {
+        lock (message_displays) {
+            foreach(MessageDisplayProvider p in message_displays) {
+                if (p.id == provider.id) return false;
+            }
+            message_displays.add(provider);
+            return true;
+        }
+    }
+
+    public bool register_conversation_item_populator(ConversationItemPopulator populator) {
+        lock (conversation_item_populators) {
+            foreach(ConversationItemPopulator p in conversation_item_populators) {
+                if (p.id == populator.id) return false;
+            }
+            conversation_item_populators.add(populator);
             return true;
         }
     }

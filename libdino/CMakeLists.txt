@@ -16,8 +16,8 @@ SOURCES
     src/dbus/upower.vala
 
     src/entity/account.vala
-    src/entity/encryption.vala
     src/entity/conversation.vala
+    src/entity/encryption.vala
     src/entity/jid.vala
     src/entity/message.vala
     src/entity/settings.vala

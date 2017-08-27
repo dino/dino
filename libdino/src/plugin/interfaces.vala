@@ -71,4 +71,41 @@ public interface ConversationTitlebarWidget : Object {
     public abstract void set_conversation(Conversation conversation);
 }
 
+public abstract interface ConversationItemPopulator : Object {
+    public abstract string id { get; }
+    public abstract void init(Conversation conversation, ConversationItemCollection summary, WidgetType type);
+    public virtual void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
+    public virtual void populate_between_widgets(Conversation conversation, DateTime from, DateTime to) { }
+    public abstract void close(Conversation conversation);
+}
+
+public abstract class MetaConversationItem : Object {
+    public virtual Jid? jid { get; set; default=null; }
+    public virtual string color { get; set; default=null; }
+    public virtual string display_name { get; set; default=null; }
+    public virtual bool dim { get; set; default=false; }
+    public virtual DateTime? sort_time { get; set; default=null; }
+    public virtual DateTime? display_time { get; set; default=null; }
+    public virtual Encryption? encryption { get; set; default=null; }
+    public virtual Entities.Message.Marked? mark { get; set; default=null; }
+
+    public abstract bool can_merge { get; set; }
+    public abstract bool requires_avatar { get; set; }
+    public abstract bool requires_header { get; set; }
+
+    public abstract Object get_widget(WidgetType type);
+}
+
+public interface ConversationItemCollection : Object {
+    public abstract void insert_item(MetaConversationItem item);
+    public abstract void remove_item(MetaConversationItem item);
+}
+
+public interface MessageDisplayProvider : Object {
+    public abstract string id { get; set; }
+    public abstract double priority { get; set; }
+    public abstract bool can_display(Entities.Message? message);
+    public abstract MetaConversationItem? get_item(Entities.Message message, Entities.Conversation conversation);
+}
+
 }

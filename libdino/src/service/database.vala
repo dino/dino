@@ -201,7 +201,7 @@ public class Database : Qlite.Database {
         }
     }
 
-    public Gee.List<Message> get_messages(Jid jid, Account account, Message.Type? type, int count, Message? before) {
+    public Gee.List<Message> get_messages(Jid jid, Account account, Message.Type? type, int count, DateTime? before) {
         QueryBuilder select = message.select()
                 .with(message.counterpart_id, "=", get_jid_id(jid))
                 .with(message.account_id, "=", account.id)
@@ -214,7 +214,7 @@ public class Database : Qlite.Database {
             select.with(message.type_, "=", (int) type);
         }
         if (before != null) {
-            select.with(message.time, "<", (long) before.time.to_unix());
+            select.with(message.time, "<", (long) before.to_unix());
         }
 
         LinkedList<Message> ret = new LinkedList<Message>();

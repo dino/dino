@@ -27,7 +27,11 @@ public class MessageTextView : TextView {
         minimum_width = 0;
     }
 
-    public void add_text(string text) {
+    public void add_text(string text_) {
+        string text = text_;
+        if (text.length > 10000) {
+            text = text.slice(0, 10000) + " [" + _("Message too long") + "]";
+        }
         TextIter end;
         buffer.get_end_iter(out end);
         buffer.insert(ref end, text, -1);

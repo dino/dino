@@ -12,7 +12,7 @@ public class UnifiedWindow : Window {
     private ChatInput.View chat_input;
     private ConversationListTitlebar conversation_list_titlebar;
     private ConversationSelector.View filterable_conversation_list;
-    private ConversationSummary.View conversation_frame;
+    private ConversationSummary.ConversationView conversation_frame;
     private ConversationTitlebar conversation_titlebar;
     private HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
     private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
@@ -69,7 +69,7 @@ public class UnifiedWindow : Window {
 
     private void setup_unified() {
         chat_input = new ChatInput.View(stream_interactor) { visible=true };
-        conversation_frame = new ConversationSummary.View(stream_interactor) { visible=true };
+        conversation_frame = new ConversationSummary.ConversationView(stream_interactor) { visible=true };
         filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
 
         Grid grid = new Grid() { orientation=Orientation.VERTICAL, visible=true };

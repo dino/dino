@@ -47,7 +47,7 @@ public class MessageStorage : StreamInteractionModule, Object {
         return null;
     }
 
-    public Gee.List<Message>? get_messages_before(Conversation? conversation, Message before, int count = 20) {
+    public Gee.List<Message>? get_messages_before(Conversation? conversation, DateTime before, int count = 20) {
         Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, before);
         return db_messages;
     }

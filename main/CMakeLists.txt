@@ -96,13 +96,13 @@ SOURCES
     src/ui/conversation_selector/groupchat_row.vala
     src/ui/conversation_selector/list.vala
     src/ui/conversation_selector/view.vala
-    src/ui/conversation_summary/conversation_item.vala
-    src/ui/conversation_summary/merged_message_item.vala
-    src/ui/conversation_summary/message_item.vala
+    src/ui/conversation_summary/chat_state_populator.vala
+    src/ui/conversation_summary/conversation_item_skeleton.vala
+    src/ui/conversation_summary/conversation_view.vala
+    src/ui/conversation_summary/default_message_display.vala
+    src/ui/conversation_summary/message_populator.vala
     src/ui/conversation_summary/message_textview.vala
-    src/ui/conversation_summary/slashme_item.vala
-    src/ui/conversation_summary/status_item.vala
-    src/ui/conversation_summary/view.vala
+    src/ui/conversation_summary/slashme_message_display.vala
     src/ui/conversation_titlebar/encryption_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala

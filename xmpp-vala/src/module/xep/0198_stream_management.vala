@@ -5,7 +5,7 @@ namespace Xmpp.Xep.StreamManagement  {
 public const string NS_URI = "urn:xmpp:sm:3";
 
 public class Module : XmppStreamNegotiationModule {
-    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0313_message_archive_management");
+    public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0198_stream_management");
 
     public int h_inbound { get; private set; default=0; }
     public string? session_id { get; set; default=null; }
