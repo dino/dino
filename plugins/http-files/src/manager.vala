@@ -9,6 +9,8 @@ public class Manager : StreamInteractionModule, Object {
     public string id { get { return IDENTITY.id; } }
 
     public signal void upload_available(Account account);
+    public signal void uploading(FileTransfer file_transfer);
+    public signal void uploaded(FileTransfer file_transfer, string url);
 
     private StreamInteractor stream_interactor;
     private HashMap<Account, int?> max_file_sizes = new HashMap<Account, int?>(Account.hash_func, Account.equals_func);
@@ -22,11 +24,31 @@ public class Manager : StreamInteractionModule, Object {
     public void send(Conversation conversation, string file_uri) {
         Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream != null) {
+            File file = File.new_for_path(file_uri);
+            FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+
+            FileTransfer file_transfer = new FileTransfer();
+            file_transfer.account = conversation.account;
+            file_transfer.counterpart = conversation.counterpart;
+            file_transfer.ourpart = conversation.account.bare_jid;
+            file_transfer.direction = FileTransfer.DIRECTION_SENT;
+            file_transfer.time = new DateTime.now_utc();
+            file_transfer.local_time = new DateTime.now_utc();
+            file_transfer.encryption = Encryption.NONE;
+            file_transfer.file_name = file_info.get_display_name();
+            file_transfer.input_stream = file.read();
+            file_transfer.mime_type = file_info.get_content_type();
+            file_transfer.size = (int)file_info.get_size();
+            uploading(file_transfer);
+
             stream_interactor.module_manager.get_module(conversation.account, UploadStreamModule.IDENTITY).upload(stream, file_uri,
                 (stream, url_down) => {
+                    uploaded(file_transfer, url_down);
                     stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(url_down, conversation);
                 },
-                () => {}
+                () => {
+                    file_transfer.state = FileTransfer.State.FAILED;
+                }
             );
 
         }

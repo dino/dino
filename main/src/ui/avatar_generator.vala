@@ -32,7 +32,7 @@ public class AvatarGenerator {
         if (real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, real_jid) != null) {
             jid = real_jid;
         }
-        return crop_corners(draw_tile(jid, account, width * scale_factor, height * scale_factor));
+        return crop_corners(draw_tile(jid, account, width * scale_factor, height * scale_factor), 3 * scale_factor);
     }
 
     public Pixbuf draw_message(StreamInteractor stream_interactor, Message message) {
@@ -52,7 +52,7 @@ public class AvatarGenerator {
 
     public Pixbuf draw_text(string text) {
         Pixbuf pixbuf = draw_colored_rectangle_text(COLOR_GREY, text, width, height);
-        return crop_corners(pixbuf);
+        return crop_corners(pixbuf, 3 * scale_factor);
     }
 
     public AvatarGenerator set_greyscale(bool greyscale) {
@@ -207,8 +207,7 @@ public class AvatarGenerator {
         return pixbuf_get_from_surface(context.get_target(), 0, 0, pixbuf.width, pixbuf.height);
     }
 
-    private Pixbuf crop_corners(Pixbuf pixbuf, double radius = 3) {
-        radius *= scale_factor;
+    public static Pixbuf crop_corners(Pixbuf pixbuf, double radius = 3) {
         Context ctx = new Context(new ImageSurface(Format.ARGB32, pixbuf.width, pixbuf.height));
         cairo_set_source_pixbuf(ctx, pixbuf, 0, 0);
         double degrees = Math.PI / 180.0;

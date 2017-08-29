@@ -32,6 +32,7 @@ set(RESOURCE_LIST
     conversation_selector/view.ui
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
+    conversation_summary/image_toolbar.ui
     conversation_summary/message_item.ui
     conversation_summary/view.ui
     manage_accounts/account_row.ui
@@ -101,6 +102,8 @@ SOURCES
     src/ui/conversation_summary/conversation_item_skeleton.vala
     src/ui/conversation_summary/conversation_view.vala
     src/ui/conversation_summary/default_message_display.vala
+    src/ui/conversation_summary/file_populator.vala
+    src/ui/conversation_summary/image_display.vala
     src/ui/conversation_summary/message_populator.vala
     src/ui/conversation_summary/message_textview.vala
     src/ui/conversation_summary/slashme_message_display.vala

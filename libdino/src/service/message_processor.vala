@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class MessageProcessor : StreamInteractionModule, Object {
-    public static ModuleIdentity<MessageProcessor> IDENTITY = new ModuleIdentity<MessageProcessor>("message_manager");
+    public static ModuleIdentity<MessageProcessor> IDENTITY = new ModuleIdentity<MessageProcessor>("message_processor");
     public string id { get { return IDENTITY.id; } }
 
     public signal void pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);

@@ -22,16 +22,16 @@ public enum MucEnterError {
 }
 
 public enum Affiliation {
+    NONE,
     ADMIN,
     MEMBER,
-    NONE,
     OUTCAST,
     OWNER
 }
 
 public enum Role {
-    MODERATOR,
     NONE,
+    MODERATOR,
     PARTICIPANT,
     VISITOR
 }

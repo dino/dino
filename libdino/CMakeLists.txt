@@ -18,6 +18,7 @@ SOURCES
     src/entity/account.vala
     src/entity/conversation.vala
     src/entity/encryption.vala
+    src/entity/file_transfer.vala
     src/entity/jid.vala
     src/entity/message.vala
     src/entity/settings.vala
@@ -34,6 +35,7 @@ SOURCES
     src/service/counterpart_interaction_manager.vala
     src/service/database.vala
     src/service/entity_capabilities_storage.vala
+    src/service/file_manager.vala
     src/service/message_processor.vala
     src/service/message_storage.vala
     src/service/module_manager.vala

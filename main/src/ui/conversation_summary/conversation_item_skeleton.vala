@@ -84,6 +84,7 @@ public class ConversationItemSkeleton : Grid {
     private void update_received() {
         bool all_received = true;
         bool all_read = true;
+        bool all_sent = true;
         foreach (Plugins.MetaConversationItem item in items) {
             if (item.mark == Message.Marked.WONTSEND) {
                 received_image.visible = true;
@@ -96,6 +97,9 @@ public class ConversationItemSkeleton : Grid {
                 all_read = false;
                 if (item.mark != Message.Marked.RECEIVED) {
                     all_received = false;
+                    if (item.mark == Message.Marked.UNSENT) {
+                        all_sent = false;
+                    }
                 }
             }
         }
@@ -105,6 +109,9 @@ public class ConversationItemSkeleton : Grid {
         } else if (all_received) {
             received_image.visible = true;
             received_image.set_from_icon_name("dino-tick-symbolic", IconSize.SMALL_TOOLBAR);
+        } else if (!all_sent) {
+            received_image.visible = true;
+            received_image.set_from_icon_name("image-loading-symbolic", IconSize.SMALL_TOOLBAR);
         } else if (received_image.visible) {
             received_image.set_from_icon_name("image-loading-symbolic", IconSize.SMALL_TOOLBAR);
         }
@@ -130,7 +137,7 @@ public class ConversationItemSkeleton : Grid {
             return format_time(datetime,
                 /* xgettext:no-c-format */ /* Month, day and time in 24h format (w/o seconds) */ _("%b %d, %H∶%M"),
                 /* xgettext:no-c-format */ /* Month, day and time in 12h format (w/o seconds) */ _("%b %d, %l∶%M %p"));
-        } else if (datetime.get_day_of_month() != new DateTime.now_utc().get_day_of_month()) {
+        } else if (datetime.get_day_of_month() != now.get_day_of_month()) {
             return format_time(datetime,
                 /* xgettext:no-c-format */ /* Day of week and time in 24h format (w/o seconds) */ _("%a, %H∶%M"),
                 /* xgettext:no-c-format */ /* Day of week and time in 12h format (w/o seconds) */_("%a, %l∶%M %p"));

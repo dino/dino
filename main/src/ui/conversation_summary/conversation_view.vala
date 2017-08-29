@@ -39,6 +39,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_conversation_item_populator(new ChatStatePopulator(stream_interactor));
+        app.plugin_registry.register_conversation_item_populator(new FilePopulator(stream_interactor));
 
         Timeout.add_seconds(60, () => {
             foreach (ConversationItemSkeleton item_skeleton in item_skeletons) {
@@ -59,30 +60,33 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         animate = false;
         Timeout.add(20, () => { animate = true; return false; });
 
-        message_item_populator.init(conversation, this);
-        message_item_populator.populate_number(conversation, new DateTime.now_utc(), 50);
-
         Dino.Application app = Dino.Application.get_default();
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
         }
+        message_item_populator.init(conversation, this);
+        message_item_populator.populate_number(conversation, new DateTime.now_utc(), 50);
 
         stack.set_visible_child_name("main");
     }
 
     public void insert_item(Plugins.MetaConversationItem item) {
-        meta_items.add(item);
-        if (!item.can_merge || !merge_back(item)) {
-            insert_new(item);
+        lock (meta_items) {
+            meta_items.add(item);
+            if (!item.can_merge || !merge_back(item)) {
+                insert_new(item);
+            }
         }
     }
 
     public void remove_item(Plugins.MetaConversationItem item) {
-        main.remove(widgets[item]);
-        widgets.unset(item);
-        meta_items.remove(item);
-        item_skeletons.remove(item_item_skeletons[item]);
-        item_item_skeletons.unset(item);
+        lock (meta_items) {
+            main.remove(widgets[item]);
+            widgets.unset(item);
+            meta_items.remove(item);
+            item_skeletons.remove(item_item_skeletons[item]);
+            item_item_skeletons.unset(item);
+        }
     }
 
     private bool merge_back(Plugins.MetaConversationItem item) {
@@ -125,6 +129,19 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         widgets[item] = insert;
         force_alloc_width(insert, main.get_allocated_width());
         main.reorder_child(insert, index);
+
+        if (index == 0) {
+            Dino.Application app = Dino.Application.get_default();
+            if (item_skeletons.size == 1) {
+                foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
+                    populator.populate_between_widgets(conversation, item.sort_time, new DateTime.now_utc());
+                }
+            } else {
+                foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
+                    populator.populate_between_widgets(conversation, item.sort_time, meta_items.higher(item).sort_time);
+                }
+            }
+        }
     }
 
     private void on_upper_notify() {

@@ -85,7 +85,7 @@ public static string get_message_display_name(StreamInteractor stream_interactor
 }
 
 public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0) {
-    if (scale == 0) scale = image.get_scale_factor();
+    if (scale == 0) scale = image.scale_factor;
     image.set_from_surface(Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window()));
 }
 

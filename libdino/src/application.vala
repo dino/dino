@@ -35,6 +35,7 @@ public interface Dino.Application : GLib.Application {
         RosterManager.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
+        FileManager.start(stream_interactor, db);
 
         activate.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;

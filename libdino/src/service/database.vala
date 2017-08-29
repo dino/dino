@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 5;
+    private const int VERSION = 6;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -53,6 +53,7 @@ public class Database : Qlite.Database {
             base(db, "message");
             init({id, stanza_id, account_id, counterpart_id, our_resource, counterpart_resource, direction,
                 type_, time, local_time, body, encryption, marked});
+            index("message_localtime_counterpart_idx", {local_time, counterpart_id});
         }
     }
 
@@ -74,6 +75,32 @@ public class Database : Qlite.Database {
         internal UndecryptedTable(Database db) {
             base(db, "undecrypted");
             init({message_id, type_, data});
+        }
+    }
+
+    public class FileTransferTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<int> counterpart_id = new Column.Integer("counterpart_id") { not_null = true };
+        public Column<string> counterpart_resource = new Column.Text("counterpart_resource");
+        public Column<string> our_resource = new Column.Text("our_resource");
+        public Column<bool> direction = new Column.BoolInt("direction") { not_null = true };
+        public Column<long> time = new Column.Long("time");
+        public Column<long> local_time = new Column.Long("local_time");
+        public Column<int> encryption = new Column.Integer("encryption");
+        public Column<string> file_name = new Column.Text("file_name");
+        public Column<string> path = new Column.Text("path");
+        public Column<string> mime_type = new Column.Text("mime_type");
+        public Column<int> size = new Column.Integer("size");
+        public Column<int> state = new Column.Integer("state");
+        public Column<int> provider = new Column.Integer("provider");
+        public Column<string> info = new Column.Text("info");
+
+        internal FileTransferTable(Database db) {
+            base(db, "file_transfer");
+            init({id, account_id, counterpart_id, counterpart_resource, our_resource, direction, time, local_time,
+                    encryption, file_name, path, mime_type, size, state, provider, info});
+            index("filetransfer_localtime_counterpart_idx", {local_time, counterpart_id});
         }
     }
 
@@ -148,6 +175,7 @@ public class Database : Qlite.Database {
     public JidTable jid { get; private set; }
     public MessageTable message { get; private set; }
     public RealJidTable real_jid { get; private set; }
+    public FileTransferTable file_transfer { get; private set; }
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
@@ -164,12 +192,13 @@ public class Database : Qlite.Database {
         jid = new JidTable(this);
         message = new MessageTable(this);
         real_jid = new RealJidTable(this);
+        file_transfer = new FileTransferTable(this);
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, message, real_jid, conversation, avatar, entity_feature, roster, settings });
+        init({ account, jid, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
         exec("PRAGMA synchronous=0");
     }
 
@@ -214,7 +243,7 @@ public class Database : Qlite.Database {
             select.with(message.type_, "=", (int) type);
         }
         if (before != null) {
-            select.with(message.time, "<", (long) before.to_unix());
+            select.with(message.local_time, "<", (long) before.to_unix());
         }
 
         LinkedList<Message> ret = new LinkedList<Message>();

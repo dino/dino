@@ -47,14 +47,17 @@ public class MessagePopulator : Object {
         if (!conversation.equals(current_conversation)) return;
 
         Plugins.MessageDisplayProvider? best_provider = null;
-        int priority = -1;
+        double priority = -1;
         Application app = GLib.Application.get_default() as Application;
         foreach (Plugins.MessageDisplayProvider provider in app.plugin_registry.message_displays) {
             if (provider.can_display(message) && provider.priority > priority) {
                 best_provider = provider;
+                priority = provider.priority;
             }
         }
-        Plugins.MetaConversationItem meta_item = best_provider.get_item(message, conversation);
+        Plugins.MetaConversationItem? meta_item = best_provider.get_item(message, conversation);
+        if (meta_item == null) return;
+
         meta_item.mark = message.marked;
         message.notify["marked"].connect(() => {
             meta_item.mark = message.marked;
