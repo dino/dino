@@ -146,18 +146,26 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void show_select_avatar() {
-        FileChooserDialog chooser = new FileChooserDialog (
+        FileChooserNative chooser = new FileChooserNative (
                 _("Select avatar"), this, FileChooserAction.OPEN,
-                _("Cancel"), ResponseType.CANCEL,
-                _("Select"), ResponseType.ACCEPT);
+                _("Select"), _("Cancel"));
         FileFilter filter = new FileFilter();
-        filter.add_mime_type("image/*");
-        chooser.set_filter(filter);
+        filter.add_pattern("*.png");
+        filter.add_pattern("*.jpg");
+        filter.add_pattern("*.jpeg");
+        filter.add_pattern("*.gif");
+        filter.add_pattern("*.svg");
+        filter.add_pattern("*.bmp");
+        filter.set_filter_name(_("Images"));
+        chooser.add_filter(filter);
+        filter = new FileFilter();
+        filter.set_filter_name(_("All files"));
+        filter.add_pattern("*");
+        chooser.add_filter(filter);
         if (chooser.run() == Gtk.ResponseType.ACCEPT) {
             string uri = chooser.get_filename();
             stream_interactor.get_module(AvatarManager.IDENTITY).publish(selected_account, uri);
         }
-        chooser.close();
     }
 
     private bool on_active_switch_state_changed(bool state) {

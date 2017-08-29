@@ -110,25 +110,34 @@ public class ConversationItemSkeleton : Grid {
         }
     }
 
+    private static string format_time(DateTime datetime, string format_24h, string format_12h) {
+        string format = Util.is_24h_format() ? format_24h : format_12h;
+        if (!get_charset(null)) {
+            // No UTF-8 support, use simple colon for time instead
+            format = format.replace("∶", ":");
+        }
+        return datetime.format(format);
+    }
+
     private static string get_relative_time(DateTime datetime) {
         DateTime now = new DateTime.now_local();
         TimeSpan timespan = now.difference(datetime);
         if (timespan > 365 * TimeSpan.DAY) {
-        return datetime.format(Util.is_24h_format() ?
-            /* xgettext:no-c-format */ /* Date + time in 24h format (w/o seconds) */ _("%x, %H\u2236%M") :
-                /* xgettext:no-c-format */ /* Date + time in 12h format (w/o seconds)*/ _("%x, %l\u2236%M %p"));
+            return format_time(datetime,
+                /* xgettext:no-c-format */ /* Date + time in 24h format (w/o seconds) */ _("%x, %H∶%M"),
+                /* xgettext:no-c-format */ /* Date + time in 12h format (w/o seconds)*/ _("%x, %l∶%M %p"));
         } else if (timespan > 7 * TimeSpan.DAY) {
-        return datetime.format(Util.is_24h_format() ?
-            /* xgettext:no-c-format */ /* Month, day and time in 24h format (w/o seconds) */ _("%b %d, %H\u2236%M") :
-                /* xgettext:no-c-format */ /* Month, day and time in 12h format (w/o seconds) */ _("%b %d, %l\u2236%M %p"));
+            return format_time(datetime,
+                /* xgettext:no-c-format */ /* Month, day and time in 24h format (w/o seconds) */ _("%b %d, %H∶%M"),
+                /* xgettext:no-c-format */ /* Month, day and time in 12h format (w/o seconds) */ _("%b %d, %l∶%M %p"));
         } else if (datetime.get_day_of_month() != new DateTime.now_utc().get_day_of_month()) {
-        return datetime.format(Util.is_24h_format() ?
-            /* xgettext:no-c-format */ /* Day of week and time in 12h format (w/o seconds) */ _("%a, %H\u2236%M") :
-                /* xgettext:no-c-format */ _("%a, %l\u2236%M %p"));
+            return format_time(datetime,
+                /* xgettext:no-c-format */ /* Day of week and time in 24h format (w/o seconds) */ _("%a, %H∶%M"),
+                /* xgettext:no-c-format */ /* Day of week and time in 12h format (w/o seconds) */_("%a, %l∶%M %p"));
         } else if (timespan > 9 * TimeSpan.MINUTE) {
-        return datetime.format(Util.is_24h_format() ?
-            /* xgettext:no-c-format */  /* Time in 24h format (w/o seconds) */ _("%H\u2236%M") :
-                /* xgettext:no-c-format */  /* Time in 12h format (w/o seconds) */ _("%l\u2236%M %p"));
+            return format_time(datetime,
+                /* xgettext:no-c-format */  /* Time in 24h format (w/o seconds) */ _("%H∶%M"),
+                /* xgettext:no-c-format */  /* Time in 12h format (w/o seconds) */ _("%l∶%M %p"));
         } else if (timespan > TimeSpan.MINUTE) {
             ulong mins = (ulong) (timespan.abs() / TimeSpan.MINUTE);
             /* xgettext:this is the beginning of a sentence. */

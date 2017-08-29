@@ -35,10 +35,9 @@ public class ConversationTitlebarWidget : Button, Plugins.ConversationTitlebarWi
     }
 
     public void on_clicked() {
-        FileChooserDialog chooser = new FileChooserDialog (
-                "Select file", null, FileChooserAction.OPEN,
-                "Cancel", ResponseType.CANCEL,
-                "Select", ResponseType.ACCEPT);
+        FileChooserNative chooser = new FileChooserNative (
+                "Select file", get_toplevel() as Window, FileChooserAction.OPEN,
+                "Select", "Cancel");
         int? max_file_size = stream_interactor.get_module(Manager.IDENTITY).get_max_file_size(conversation.account);
         if (max_file_size != null) {
             FileFilter filter = new FileFilter();
@@ -53,7 +52,6 @@ public class ConversationTitlebarWidget : Button, Plugins.ConversationTitlebarWi
             string uri = chooser.get_filename();
             stream_interactor.get_module(Manager.IDENTITY).send(conversation, uri);
         }
-        chooser.close();
     }
 
     public void on_upload_available(Account account) {
