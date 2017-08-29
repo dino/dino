@@ -1,5 +1,8 @@
 namespace Dino {
 
+private extern const string SYSTEM_LIBDIR_NAME;
+private extern const string SYSTEM_PLUGIN_DIR;
+
 public class SearchPathGenerator {
 
     public string? exec_path { get; private set; }
@@ -17,6 +20,28 @@ public class SearchPathGenerator {
             }
         }
         return locale_dir ?? locale_install_dir;
+    }
+
+    public string[] get_plugin_paths() {
+        string[] search_paths = new string[0];
+        if (Environment.get_variable("DINO_PLUGIN_DIR") != null) {
+            search_paths += Environment.get_variable("DINO_PLUGIN_DIR");
+        }
+        search_paths += Path.build_filename(Environment.get_home_dir(), ".local", "lib", "dino", "plugins");
+        string? exec_path = this.exec_path;
+        if (exec_path != null) {
+            if (!exec_path.contains(Path.DIR_SEPARATOR_S)) {
+                exec_path = Environment.find_program_in_path(this.exec_path);
+            }
+            if (Path.get_dirname(exec_path).contains("dino") || Path.get_dirname(exec_path) == "." || Path.get_dirname(exec_path).contains("build")) {
+                search_paths += Path.build_filename(Path.get_dirname(exec_path), "plugins");
+            }
+            if (Path.get_basename(Path.get_dirname(exec_path)) == "bin") {
+                search_paths += Path.build_filename(Path.get_dirname(Path.get_dirname(exec_path)), SYSTEM_LIBDIR_NAME, "dino", "plugins");
+            }
+        }
+        search_paths += SYSTEM_PLUGIN_DIR;
+        return search_paths;
     }
 }
 
