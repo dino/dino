@@ -26,6 +26,7 @@ public class UnifiedWindow : Window {
         Object(application : application, default_width : 1200, default_height : 700);
         this.stream_interactor = stream_interactor;
 
+        this.get_style_context().add_class("dino-main");
         setup_headerbar();
         setup_unified();
         setup_stack();

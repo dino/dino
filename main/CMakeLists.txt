@@ -34,7 +34,6 @@ set(RESOURCE_LIST
     conversation_selector/conversation_row.ui
     conversation_summary/message_item.ui
     conversation_summary/view.ui
-    conversation_titlebar.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
     manage_accounts/dialog.ui
@@ -46,6 +45,8 @@ set(RESOURCE_LIST
     occupant_list_item.ui
     settings_dialog.ui
     unified_window_placeholder.ui
+
+    pre_theme.css
 )
 
 compile_gresources(

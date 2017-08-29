@@ -14,12 +14,15 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public SearchPathGenerator? search_path_generator { get; set; }
 
     public Application() throws Error {
-        Object(application_id: "im.dino.Dino", flags: ApplicationFlags.HANDLES_OPEN);
+        Object(application_id: "im.dino", flags: ApplicationFlags.HANDLES_OPEN);
         init();
         Notify.init("dino");
         Environment.set_application_name("Dino");
-        Gtk.Window.set_default_icon_name("dino");
-        IconTheme.get_default().add_resource_path("/im/dino/icons");
+        Window.set_default_icon_name("dino");
+
+        CssProvider provider = new CssProvider();
+        provider.load_from_resource("/im/dino/pre_theme.css");
+        StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_THEME - 1);
 
         activate.connect(() => {
             if (window == null) {

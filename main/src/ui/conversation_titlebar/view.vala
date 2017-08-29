@@ -16,6 +16,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         this.stream_interactor = stream_interactor;
         this.window = window;
 
+        this.get_style_context().add_class("dino-right");
         show_close_button = true;
         hexpand = true;
 

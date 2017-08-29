@@ -16,6 +16,10 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
 
     public ConversationListTitlebar(StreamInteractor stream_interactor, Window window) {
         this.stream_interactor = stream_interactor;
+
+        custom_title = new Label("Dino") { visible = true, hexpand = true, xalign = 0 };
+        custom_title.get_style_context().add_class("title");
+
         create_add_menu(window);
     }
 
