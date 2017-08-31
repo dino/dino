@@ -70,6 +70,7 @@ public class ImageItem : Plugins.MetaConversationItem {
 
         this.jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? new Jid.with_resource(file_transfer.account.bare_jid.to_string(), file_transfer.account.resourcepart) : file_transfer.counterpart;
         this.sort_time = file_transfer.time;
+        this.seccondary_sort_indicator = file_transfer.id + 0.2903;
         this.display_time = file_transfer.time;
         this.encryption = file_transfer.encryption;
         this.mark = file_to_message_state(file_transfer.state);

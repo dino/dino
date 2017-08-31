@@ -56,7 +56,7 @@ public abstract class ConversationRow : ListBoxRow {
         Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
         if (message != null) {
             update_message(message.body.replace("\n", " "));
-            update_time(message.time.to_utc());
+            update_time(message.time);
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class ConversationRow : ListBoxRow {
             time = new_time;
         }
         if (time != null) {
-            time_label.label = get_relative_time(time);
+            time_label.label = get_relative_time(time.to_local());
         }
     }
 

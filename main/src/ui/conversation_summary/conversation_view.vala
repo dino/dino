@@ -16,7 +16,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     [GtkChild] private Stack stack;
 
     private StreamInteractor stream_interactor;
-    private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>((a, b) => { return a.sort_time.compare(b.sort_time); });
+    private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>(sort_meta_items);
     private Gee.Map<Plugins.MetaConversationItem, Gee.List<Plugins.MetaConversationItem>> meta_after_items = new Gee.HashMap<Plugins.MetaConversationItem, Gee.List<Plugins.MetaConversationItem>>();
     private Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton> item_item_skeletons = new Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton>();
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
@@ -167,6 +167,15 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         was_value = scrolled.vadjustment.value;
         if (!reloading_mutex.trylock()) return;
         if (meta_items.size > 0) message_item_populator.populate_number(conversation, meta_items.first().sort_time, 20);
+    }
+
+    private static int sort_meta_items(Plugins.MetaConversationItem a, Plugins.MetaConversationItem b) {
+        int res = a.sort_time.compare(b.sort_time);
+        if (res == 0) {
+            if (a.seccondary_sort_indicator < b.seccondary_sort_indicator) res = -1;
+            else if (a.seccondary_sort_indicator > b.seccondary_sort_indicator) res = 1;
+        }
+        return res;
     }
 
     // Workaround GTK TextView issues

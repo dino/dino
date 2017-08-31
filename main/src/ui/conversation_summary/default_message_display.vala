@@ -35,6 +35,7 @@ public class MetaMessageItem : Plugins.MetaConversationItem {
         this.message = message;
         this.jid = message.from;
         this.sort_time = message.local_time;
+        this.seccondary_sort_indicator = message.id + 0.2085;
         this.display_time = message.time;
         this.encryption = message.encryption;
     }

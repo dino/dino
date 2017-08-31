@@ -32,7 +32,7 @@ public class ListRow : ListBoxRow {
             via_label.visible = false;
         }
         name_label.label = display_name;
-        image.set_from_pixbuf((new AvatarGenerator(35, 35, image.scale_factor)).draw_jid(stream_interactor, jid, account));
+        Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(35, 35, image.scale_factor)).draw_jid(stream_interactor, jid, account));
     }
 }
 

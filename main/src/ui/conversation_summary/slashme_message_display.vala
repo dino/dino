@@ -41,6 +41,7 @@ public class MetaSlashmeItem : Plugins.MetaConversationItem {
         this.message = message;
         this.jid = message.from;
         this.sort_time = message.local_time;
+        this.seccondary_sort_indicator = message.id + 0.0845;
         this.display_time = message.time;
         this.encryption = message.encryption;
     }

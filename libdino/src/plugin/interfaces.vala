@@ -85,6 +85,7 @@ public abstract class MetaConversationItem : Object {
     public virtual string display_name { get; set; default=null; }
     public virtual bool dim { get; set; default=false; }
     public virtual DateTime? sort_time { get; set; default=null; }
+    public virtual double seccondary_sort_indicator { get; set; }
     public virtual DateTime? display_time { get; set; default=null; }
     public virtual Encryption? encryption { get; set; default=null; }
     public virtual Entities.Message.Marked? mark { get; set; default=null; }
