@@ -34,7 +34,7 @@ public class Context {
     }
 
     public SignedPreKeyRecord generate_signed_pre_key(IdentityKeyPair identity_key_pair, int32 id, uint64 timestamp = 0) throws Error {
-        if (timestamp == 0) timestamp = new DateTime.now_local().to_unix();
+        if (timestamp == 0) timestamp = new DateTime.now_utc().to_unix();
         SignedPreKeyRecord res;
         throw_by_code(Protocol.KeyHelper.generate_signed_pre_key(out res, identity_key_pair, id, timestamp, native_context));
         return res;

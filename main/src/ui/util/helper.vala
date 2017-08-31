@@ -126,7 +126,7 @@ public static bool is_dark_theme(Gtk.Widget widget) {
 public static bool is_24h_format() {
     GLib.Settings settings = new GLib.Settings("org.gnome.desktop.interface");
     string settings_format = settings.get_string("clock-format");
-    string p_format = (new DateTime.now_local()).format("%p");
+    string p_format = (new DateTime.now_utc()).format("%p");
     return settings_format == "24h" || p_format == " ";
 }
 

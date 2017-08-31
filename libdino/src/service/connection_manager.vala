@@ -155,7 +155,7 @@ public class ConnectionManager {
         }
         stream.log = new Core.XmppLog(account.bare_jid.to_string(), log_options);
 
-        Connection connection = new Connection(stream, new DateTime.now_local());
+        Connection connection = new Connection(stream, new DateTime.now_utc());
         connections[account] = connection;
         change_connection_state(account, ConnectionState.CONNECTING);
         stream.attached_modules.connect((stream) => {

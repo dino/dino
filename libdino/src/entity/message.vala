@@ -73,8 +73,8 @@ public class Message : Object {
             ourpart = account.bare_jid;
         }
         direction = row[db.message.direction];
-        time = new DateTime.from_unix_local(row[db.message.time]);
-        local_time = new DateTime.from_unix_local(row[db.message.time]);
+        time = new DateTime.from_unix_utc(row[db.message.time]);
+        local_time = new DateTime.from_unix_utc(row[db.message.time]);
         body = row[db.message.body];
         marked = (Message.Marked) row[db.message.marked];
         encryption = (Encryption) row[db.message.encryption];

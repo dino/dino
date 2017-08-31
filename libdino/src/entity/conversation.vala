@@ -54,7 +54,7 @@ public class Conversation : Object {
         counterpart = resource != null ? new Jid.with_resource(jid, resource) : new Jid(jid);
         active = row[db.conversation.active];
         int64? last_active = row[db.conversation.last_active];
-        if (last_active != null) this.last_active = new DateTime.from_unix_local(last_active);
+        if (last_active != null) this.last_active = new DateTime.from_unix_utc(last_active);
         type_ = (Conversation.Type) row[db.conversation.type_];
         encryption = (Encryption) row[db.conversation.encryption];
         int? read_up_to = row[db.conversation.read_up_to];

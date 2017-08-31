@@ -56,7 +56,7 @@ public abstract class ConversationRow : ListBoxRow {
         Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
         if (message != null) {
             update_message(message.body.replace("\n", " "));
-            update_time(message.time.to_local());
+            update_time(message.time.to_utc());
         }
     }
 
@@ -163,7 +163,7 @@ public abstract class ConversationRow : ListBoxRow {
     }
 
     private static string get_relative_time(DateTime datetime) {
-         DateTime now = new DateTime.now_local();
+         DateTime now = new DateTime.now_utc();
          TimeSpan timespan = now.difference(datetime);
          if (timespan > 365 * TimeSpan.DAY) {
              return datetime.get_year().to_string();

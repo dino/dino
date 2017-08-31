@@ -51,8 +51,8 @@ public class ChatInteraction : StreamInteractionModule, Object {
         if (!last_input_interaction.has_key(conversation)) {
             send_chat_state_notification(conversation, Xep.ChatStateNotifications.STATE_COMPOSING);
         }
-        last_input_interaction[conversation] = new DateTime.now_local();
-        last_interface_interaction[conversation] = new DateTime.now_local();
+        last_input_interaction[conversation] = new DateTime.now_utc();
+        last_interface_interaction[conversation] = new DateTime.now_utc();
     }
 
     public void on_message_cleared(Conversation? conversation) {
@@ -106,7 +106,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
             if (!iter.valid && iter.has_next()) iter.next();
             Conversation conversation = iter.get_key();
             if (last_input_interaction.has_key(conversation) &&
-                    (new DateTime.now_local()).difference(last_input_interaction[conversation]) >= 15 *  TimeSpan.SECOND) {
+                    (new DateTime.now_utc()).difference(last_input_interaction[conversation]) >= 15 *  TimeSpan.SECOND) {
                 iter.unset();
                 send_chat_state_notification(conversation, Xep.ChatStateNotifications.STATE_PAUSED);
             }
@@ -115,7 +115,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
             if (!iter.valid && iter.has_next()) iter.next();
             Conversation conversation = iter.get_key();
             if (last_interface_interaction.has_key(conversation) &&
-                    (new DateTime.now_local()).difference(last_interface_interaction[conversation]) >= 1.5 *  TimeSpan.MINUTE) {
+                    (new DateTime.now_utc()).difference(last_interface_interaction[conversation]) >= 1.5 *  TimeSpan.MINUTE) {
                 iter.unset();
                 send_chat_state_notification(conversation, Xep.ChatStateNotifications.STATE_GONE);
             }

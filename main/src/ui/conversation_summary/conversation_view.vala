@@ -134,11 +134,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             Dino.Application app = Dino.Application.get_default();
             if (item_skeletons.size == 1) {
                 foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
-                    populator.populate_between_widgets(conversation, item.sort_time, new DateTime.now_utc());
+                    populator.populate_timespan(conversation, item.sort_time, new DateTime.now_utc());
                 }
             } else {
                 foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
-                    populator.populate_between_widgets(conversation, item.sort_time, meta_items.higher(item).sort_time);
+                    populator.populate_timespan(conversation, item.sort_time, meta_items.higher(item).sort_time);
                 }
             }
         }

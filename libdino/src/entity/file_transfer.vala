@@ -52,8 +52,8 @@ public class FileTransfer : Object {
             ourpart = account.bare_jid;
         }
         direction = row[db.file_transfer.direction];
-        time = new DateTime.from_unix_local(row[db.file_transfer.time]);
-        local_time = new DateTime.from_unix_local(row[db.file_transfer.time]);
+        time = new DateTime.from_unix_utc(row[db.file_transfer.time]);
+        local_time = new DateTime.from_unix_utc(row[db.file_transfer.time]);
         encryption = (Encryption) row[db.file_transfer.encryption];
         file_name = row[db.file_transfer.file_name];
         path = row[db.file_transfer.path];

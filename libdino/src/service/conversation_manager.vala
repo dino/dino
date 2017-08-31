@@ -86,7 +86,7 @@ public class ConversationManager : StreamInteractionModule, Object {
 
     public void start_conversation(Conversation conversation, bool push_front = false) {
         if (push_front) {
-            conversation.last_active = new DateTime.now_local();
+            conversation.last_active = new DateTime.now_utc();
             if (conversation.active) conversation_activated(conversation);
         }
         if (!conversation.active) {

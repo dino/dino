@@ -31,14 +31,14 @@ class FilePopulator : Plugins.ConversationItemPopulator, Object {
 
     public void close(Conversation conversation) { }
 
-    public void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
-
-    public void populate_between_widgets(Conversation conversation, DateTime from, DateTime to) {
+    public void populate_timespan(Conversation conversation, DateTime from, DateTime to) {
         Gee.List<FileTransfer> transfers = stream_interactor.get_module(FileManager.IDENTITY).get_file_transfers(conversation.account, conversation.counterpart, from, to);
         foreach (FileTransfer transfer in transfers) {
             insert_file(transfer);
         }
     }
+
+    public void populate_between_widgets(Conversation conversation, DateTime from, DateTime to) { }
 
     private void insert_file(FileTransfer transfer) {
         if (transfer.mime_type.has_prefix("image")) {

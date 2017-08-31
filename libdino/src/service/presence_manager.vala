@@ -30,10 +30,10 @@ public class PresenceManager : StreamInteractionModule, Object {
         if (stream != null) {
             Xmpp.Presence.Stanza? presence = stream.get_flag(Presence.Flag.IDENTITY).get_presence(jid.to_string());
             if (presence != null) {
-                return new Show(jid, presence.show, new DateTime.now_local());
+                return new Show(jid, presence.show, new DateTime.now_utc());
             }
         }
-        return new Show(jid, Show.OFFLINE, new DateTime.now_local());
+        return new Show(jid, Show.OFFLINE, new DateTime.now_utc());
     }
 
     public HashMap<Jid, ArrayList<Show>>? get_shows(Jid jid, Account account) {
@@ -116,7 +116,7 @@ public class PresenceManager : StreamInteractionModule, Object {
     }
 
     private void add_show(Account account, Jid jid, string s) {
-        Show show = new Show(jid, s, new DateTime.now_local());
+        Show show = new Show(jid, s, new DateTime.now_utc());
         lock (shows) {
             if (!shows.has_key(jid)) {
                 shows[jid] = new HashMap<Jid, ArrayList<Show>>();
