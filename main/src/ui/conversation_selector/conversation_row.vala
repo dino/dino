@@ -3,7 +3,6 @@ using Gdk;
 using Gtk;
 using Pango;
 
-using Xmpp;
 using Dino.Entities;
 
 namespace Dino.Ui.ConversationSelector {
@@ -14,21 +13,20 @@ public abstract class ConversationRow : ListBoxRow {
     public signal void closed();
 
     [GtkChild] protected Image image;
-    [GtkChild] private Label name_label;
-    [GtkChild] private Label time_label;
-    [GtkChild] private Label message_label;
+    [GtkChild] protected Label name_label;
+    [GtkChild] protected Label time_label;
+    [GtkChild] protected Label nick_label;
+    [GtkChild] protected Label message_label;
     [GtkChild] protected Button x_button;
-    [GtkChild] private Revealer time_revealer;
-    [GtkChild] private Revealer xbutton_revealer;
+    [GtkChild] protected Revealer time_revealer;
+    [GtkChild] protected Revealer xbutton_revealer;
     [GtkChild] public Revealer main_revealer;
 
     public Conversation conversation { get; private set; }
 
     protected const int AVATAR_SIZE = 40;
 
-    protected string display_name;
-    protected string message;
-    protected DateTime time;
+    protected Message? last_message;
     protected bool read = true;
 
 
@@ -42,27 +40,23 @@ public abstract class ConversationRow : ListBoxRow {
         this.conversation = conversation;
         this.stream_interactor = stream_interactor;
 
-        x_button.clicked.connect(on_x_button_clicked);
+        x_button.clicked.connect(close_conversation);
+        stream_interactor.connection_manager.connection_state_changed.connect(update_avatar);
 
-        update_name(Util.get_conversation_display_name(stream_interactor, conversation));
+        update_name_label();
+        update_avatar();
         message_received();
+
     }
 
     public void update() {
-        update_time();
+        update_time_label();
     }
 
     public void message_received(Entities.Message? m = null) {
-        Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
-        if (message != null) {
-            update_message(message.body.replace("\n", " "));
-            update_time(message.time);
-        }
-    }
-
-    public void set_avatar(Pixbuf pixbuf, int scale_factor = 1) {
-        Util.image_set_from_scaled_pixbuf(image, pixbuf, scale_factor);
-        image.queue_draw();
+        last_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation) ?? m;
+        update_message_label();
+        update_time_label();
     }
 
     public void mark_read() {
@@ -73,33 +67,39 @@ public abstract class ConversationRow : ListBoxRow {
         update_read(false);
     }
 
-    public abstract void on_show_received(Show presence);
-    public abstract void network_connection(bool connected);
-
-    protected void update_name(string? new_name = null) {
-        if (new_name != null) {
-            display_name = new_name;
-        }
-        name_label.label = display_name;
+    public virtual void on_show_received(Show presence) {
+        update_avatar();
     }
 
-    protected void update_time(DateTime? new_time = null) {
-        time_label.visible = true;
-        if (new_time != null) {
-            time = new_time;
-        }
-        if (time != null) {
-            time_label.label = get_relative_time(time.to_local());
+    public void update_avatar() {
+        bool self_online = stream_interactor.connection_manager.get_state(conversation.account) == ConnectionManager.ConnectionState.CONNECTED;
+        bool counterpart_online = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account) != null;
+        bool greyscale = !self_online || !counterpart_online;
+
+        Idle.add(() => {
+            Pixbuf pixbuf = ((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor))
+                .set_greyscale(greyscale)
+                .draw_conversation(stream_interactor, conversation));
+            Util.image_set_from_scaled_pixbuf(image, pixbuf, image.get_scale_factor());
+            return false;
+        });
+    }
+
+    protected void update_name_label(string? new_name = null) {
+        name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
+    }
+
+    protected void update_time_label(DateTime? new_time = null) {
+        if (last_message != null) {
+            time_label.visible = true;
+            time_label.label = get_relative_time(last_message.time.to_local());
         }
     }
 
-    protected void update_message(string? new_message = null) {
-        if (new_message != null) {
-            message = new_message;
-        }
-        if (message != null) {
+    protected virtual void update_message_label() {
+        if (last_message != null) {
             message_label.visible = true;
-            message_label.label = message;
+            message_label.label = last_message.body.replace("\n", " ");
         }
     }
 
@@ -108,14 +108,17 @@ public abstract class ConversationRow : ListBoxRow {
         if (read) {
             name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
             time_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+            nick_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
             message_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
         } else {
             name_label.attributes.insert(attr_weight_new(Weight.BOLD));
             time_label.attributes.insert(attr_weight_new(Weight.BOLD));
+            nick_label.attributes.insert(attr_weight_new(Weight.BOLD));
             message_label.attributes.insert(attr_weight_new(Weight.BOLD));
         }
         name_label.label = name_label.label; // TODO initializes redrawing, which would otherwise not happen. nicer?
         time_label.label = time_label.label;
+        nick_label.label = nick_label.label;
         message_label.label = message_label.label;
     }
 
@@ -142,7 +145,7 @@ public abstract class ConversationRow : ListBoxRow {
         return box;
     }
 
-    private void on_x_button_clicked() {
+    private void close_conversation() {
         main_revealer.set_transition_type(RevealerTransitionType.SLIDE_UP);
         main_revealer.set_reveal_child(false);
         closed();
@@ -177,8 +180,8 @@ public abstract class ConversationRow : ListBoxRow {
              return _("Yesterday");
          } else if (timespan > 9 * TimeSpan.MINUTE) {
              return datetime.format(Util.is_24h_format() ?
-                /* xgettext:no-c-format */ /* Time in 24h format (w/o seconds) */ _("%H\u2236%M") :
-                /* xgettext:no-c-format */ /* Time in 12h format (w/o seconds) */ _("%l\u2236%M %p"));
+                /* xgettext:no-c-format */ /* Time in 24h format (w/o seconds) */ _("%H∶%M") :
+                /* xgettext:no-c-format */ /* Time in 12h format (w/o seconds) */ _("%l∶%M %p"));
          } else if (timespan > 1 * TimeSpan.MINUTE) {
              ulong mins = (ulong) (timespan.abs() / TimeSpan.MINUTE);
              return n("%i min ago", "%i mins ago", mins).printf(mins);

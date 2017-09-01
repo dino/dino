@@ -48,30 +48,12 @@ public class List : ListBox {
                 return false;
             });
         });
-        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
-            Idle.add(() => {
-                Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
-                if (conversation != null && rows.has_key(conversation)) {
-                    ChatRow row = rows[conversation] as ChatRow;
-                    if (row != null) row.on_updated_roster_item(roster_item);
-                }
-                return false;
-            });
-        });
         stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect((avatar, jid, account) => {
             Idle.add(() => {
                 Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
                 if (conversation != null && rows.has_key(conversation)) {
                     ChatRow row = rows[conversation] as ChatRow;
                     if (row != null) row.update_avatar();
-                }
-                return false;
-            });
-        });
-        stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
-            Idle.add(() => {
-                foreach (ConversationRow row in rows.values) {
-                    if (row.conversation.account.equals(account)) row.network_connection(state == ConnectionManager.ConnectionState.CONNECTED);
                 }
                 return false;
             });

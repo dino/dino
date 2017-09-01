@@ -2,7 +2,6 @@ using Gdk;
 using Gee;
 using Gtk;
 
-using Xmpp;
 using Dino.Entities;
 
 namespace Dino.Ui.ConversationSelector {
@@ -16,34 +15,22 @@ public class ChatRow : ConversationRow {
             tooltip.set_custom(generate_tooltip());
             return true;
         });
-        update_avatar();
+        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
+            if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
+                update_name_label();
+                update_avatar();
+            }
+        });
     }
 
-    public override void on_show_received(Show show) {
-        update_avatar();
-    }
-
-    public override void network_connection(bool connected) {
-        if (!connected) {
-            set_avatar((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor)).set_greyscale(true).draw_conversation(stream_interactor, conversation), image.scale_factor);
+    protected override void update_message_label() {
+        base.update_message_label();
+        if (last_message != null && last_message.direction == Message.DIRECTION_SENT) {
+            nick_label.visible = true;
+            nick_label.label = _("Me") + ": ";
         } else {
-            update_avatar();
+            nick_label.label = "";
         }
-    }
-
-    public void on_updated_roster_item(Roster.Item roster_item) {
-        if (roster_item.name != null) {
-            display_name = roster_item.name;
-            update_name();
-        }
-        update_avatar();
-    }
-
-    public void update_avatar() {
-        ArrayList<Jid> full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
-        set_avatar((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor))
-            .set_greyscale(full_jids == null)
-            .draw_conversation(stream_interactor, conversation), image.scale_factor);
     }
 
     private Widget generate_tooltip() {
