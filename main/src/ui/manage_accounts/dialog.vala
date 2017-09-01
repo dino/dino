@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ManageAccounts {
 
-[GtkTemplate (ui = "/org/dino-im/manage_accounts/dialog.ui")]
+[GtkTemplate (ui = "/im/dino/manage_accounts/dialog.ui")]
 public class Dialog : Gtk.Dialog {
 
     public signal void account_enabled(Account account);
@@ -56,16 +56,22 @@ public class Dialog : Gtk.Dialog {
         int16 default_top_padding = new Gtk.Button().get_style_context().get_padding(Gtk.StateFlags.NORMAL).top + 1;
         Application app = GLib.Application.get_default() as Application;
         foreach (var e in app.plugin_registry.account_settings_entries) {
-            Plugins.AccountSettingsWidget widget = e.get_widget();
+            Plugins.AccountSettingsWidget widget = e.get_widget(Plugins.WidgetType.GTK);
             plugin_widgets.add(widget);
-            widget.visible = true;
 
             Label label = new Label(e.name) { xalign=1, yalign=0, visible=true };
             label.get_style_context().add_class("dim-label");
             label.set_padding(0, e.label_top_padding == -1 ? default_top_padding : e.label_top_padding);
 
             settings_list.attach(label, 0, row_index);
-            settings_list.attach(widget, 1, row_index, 2);
+            if (widget is Widget) {
+                Widget gtkw = (Widget) widget;
+                plugin_widgets.add(widget);
+                gtkw.visible = true;
+                settings_list.attach(gtkw, 1, row_index, 2);
+            } else {
+                // TODO
+            }
             row_index++;
         }
     }
@@ -140,18 +146,26 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void show_select_avatar() {
-        FileChooserDialog chooser = new FileChooserDialog (
+        FileChooserNative chooser = new FileChooserNative (
                 _("Select avatar"), this, FileChooserAction.OPEN,
-                _("Cancel"), ResponseType.CANCEL,
-                _("Select"), ResponseType.ACCEPT);
+                _("Select"), _("Cancel"));
         FileFilter filter = new FileFilter();
-        filter.add_mime_type("image/*");
-        chooser.set_filter(filter);
+        filter.add_pattern("*.png");
+        filter.add_pattern("*.jpg");
+        filter.add_pattern("*.jpeg");
+        filter.add_pattern("*.gif");
+        filter.add_pattern("*.svg");
+        filter.add_pattern("*.bmp");
+        filter.set_filter_name(_("Images"));
+        chooser.add_filter(filter);
+        filter = new FileFilter();
+        filter.set_filter_name(_("All files"));
+        filter.add_pattern("*");
+        chooser.add_filter(filter);
         if (chooser.run() == Gtk.ResponseType.ACCEPT) {
             string uri = chooser.get_filename();
             stream_interactor.get_module(AvatarManager.IDENTITY).publish(selected_account, uri);
         }
-        chooser.close();
     }
 
     private bool on_active_switch_state_changed(bool state) {

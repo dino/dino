@@ -33,7 +33,7 @@ public class XmppLog {
             }
             if (d.contains(":") && d.index_of("{") == 0 && d.index_of("}") != -1) {
                 int end = d.index_of("}");
-                this.ns_uri = d.substring(1, end - 2);
+                this.ns_uri = d.substring(1, end - 1);
                 d = d.substring(end + 2);
             }
             if (d.contains(".")) {

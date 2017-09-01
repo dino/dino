@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ContactDetails {
 
-[GtkTemplate (ui = "/org/dino-im/contact_details_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/contact_details_dialog.ui")]
 public class Dialog : Gtk.Dialog {
 
     [GtkChild] public Image avatar;
@@ -45,7 +45,7 @@ public class Dialog : Gtk.Dialog {
         app.plugin_registry.register_contact_details_entry(new MucConfigFormProvider(stream_interactor));
 
         foreach (Plugins.ContactDetailsProvider provider in app.plugin_registry.contact_details_entries) {
-            provider.populate(conversation, contact_details);
+            provider.populate(conversation, contact_details, Plugins.WidgetType.GTK);
         }
 
         destroy.connect(() => {
@@ -72,7 +72,9 @@ public class Dialog : Gtk.Dialog {
         Util.image_set_from_scaled_pixbuf(avatar, (new AvatarGenerator(50, 50, avatar.scale_factor)).draw_conversation(stream_interactor, conversation));
     }
 
-    private void add_entry(string category, string label, string? description, Widget w) {
+    private void add_entry(string category, string label, string? description, Object wo) {
+        if (!(wo is Widget)) return;
+        Widget w = (Widget) wo;
         add_category(category);
 
         ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };

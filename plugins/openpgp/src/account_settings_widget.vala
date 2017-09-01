@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Plugins.OpenPgp {
 
-[GtkTemplate (ui = "/org/dino-im/account_settings_item.ui")]
+[GtkTemplate (ui = "/im/dino/account_settings_item.ui")]
 
 private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     [GtkChild] private Label label;
@@ -31,7 +31,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     public void deactivate() {
-        this.set_visible_child_name("label");
+        set_visible_child_name("label");
     }
 
     public void set_account(Account account) {
@@ -45,7 +45,8 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
 
     private void on_button_clicked() {
         activated();
-        this.set_visible_child_name("entry");
+        set_visible_child_name("entry");
+        combobox.grab_focus();
         combobox.popup();
     }
 
@@ -77,10 +78,10 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
 
         TreeIter iter;
         list_store.append(out iter);
-        list_store.set(iter, 0, build_markup_string(_("Key publishing disabled"), _("Select key")), 1, "");
+        list_store.set(iter, 0, build_markup_string(_("Key publishing disabled"), _("Select key") + "<span font_family='monospace' font='8'> \n </span>"), 1, "");
         for (int i = 0; i < keys.size; i++) {
             list_store.append(out iter);
-            list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font_family='monospace' font='8'>0x$(Markup.escape_text(keys[i].fpr[0:16]))</span>");
+            list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font_family='monospace' font='8'>$(markup_colorize_id(keys[i].fpr, true))</span><span font='8'> </span>");
             list_store.set(iter, 1, keys[i].fpr);
             if (keys[i].fpr == plugin.db.get_account_key(current_account)) {
                 set_label_active(iter, i + 1);
@@ -139,7 +140,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     private string build_markup_string(string primary, string secondary) {
-        return @"$(Markup.escape_text(primary))\n<span font='8'>$(Markup.escape_text(secondary))</span>";
+        return @"$(Markup.escape_text(primary))\n<span font='8'>$secondary</span>";
     }
 }
 

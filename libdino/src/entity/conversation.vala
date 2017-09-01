@@ -54,7 +54,7 @@ public class Conversation : Object {
         counterpart = resource != null ? new Jid.with_resource(jid, resource) : new Jid(jid);
         active = row[db.conversation.active];
         int64? last_active = row[db.conversation.last_active];
-        if (last_active != null) this.last_active = new DateTime.from_unix_local(last_active);
+        if (last_active != null) this.last_active = new DateTime.from_unix_utc(last_active);
         type_ = (Conversation.Type) row[db.conversation.type_];
         encryption = (Encryption) row[db.conversation.encryption];
         int? read_up_to = row[db.conversation.read_up_to];
@@ -91,25 +91,27 @@ public class Conversation : Object {
     }
 
     public NotifySetting get_notification_setting(StreamInteractor stream_interactor) {
+        return notify_setting != NotifySetting.DEFAULT ? notify_setting : get_notification_default_setting(stream_interactor);
+    }
+
+    public NotifySetting get_notification_default_setting(StreamInteractor stream_interactor) {
         Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (notify_setting != NotifySetting.DEFAULT) return notify_setting;
-        if (!Settings.instance().notifications) return NotifySetting.OFF;
+        if (!Application.get_default().settings.notifications) return NotifySetting.OFF;
         if (type_ == Type.GROUPCHAT) {
             bool members_only = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY).has_room_feature(counterpart.bare_jid.to_string(), Xmpp.Xep.Muc.Feature.MEMBERS_ONLY);
             return members_only ? NotifySetting.ON : NotifySetting.HIGHLIGHT;
-        } else {
-            return NotifySetting.ON;
         }
+        return NotifySetting.ON;
     }
 
     public Setting get_send_typing_setting() {
         if (send_typing != Setting.DEFAULT) return send_typing;
-        return Settings.instance().send_typing ? Setting.ON : Setting.OFF;
+        return Application.get_default().settings.send_typing ? Setting.ON : Setting.OFF;
     }
 
     public Setting get_send_marker_setting() {
         if (send_marker != Setting.DEFAULT) return send_marker;
-        return Settings.instance().send_marker ? Setting.ON : Setting.OFF;
+        return Application.get_default().settings.send_marker ? Setting.ON : Setting.OFF;
     }
 
     public bool equals(Conversation? conversation) {

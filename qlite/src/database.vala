@@ -41,6 +41,7 @@ public class Database {
         }
         this.tables = tables;
         start_migration();
+        if (debug) db.trace((message) => print(@"Qlite trace: $message\n"));
     }
 
     public void ensure_init() throws DatabaseError {
@@ -114,6 +115,11 @@ public class Database {
         return new UpdateBuilder(this, table);
     }
 
+    public UpsertBuilder upsert(Table table) throws DatabaseError {
+        ensure_init();
+        return new UpsertBuilder(this, table);
+    }
+
     public UpdateBuilder update_named(string table) throws DatabaseError {
         ensure_init();
         return new UpdateBuilder.for_name(this, table);
@@ -131,7 +137,6 @@ public class Database {
 
     internal Statement prepare(string sql) throws DatabaseError {
         ensure_init();
-        if (debug) print(@"prepare: $sql\n");
         Sqlite.Statement statement;
         if (db.prepare_v2(sql, sql.length, out statement) != OK) {
             throw new DatabaseError.PREPARE_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");

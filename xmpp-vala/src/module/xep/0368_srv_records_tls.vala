@@ -13,10 +13,6 @@ public class Module : XmppStreamNegotiationModule {
 
     public override void detach(XmppStream stream) { }
 
-    public static void require(XmppStream stream) {
-        if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
-    }
-
     public override bool mandatory_outstanding(XmppStream stream) { return false; }
     public override bool negotiation_active(XmppStream stream) { return false; }
     public override string get_ns() { return IDENTITY.ns; }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiConversationSummaryView">
+    <template class="DinoUiConversationSummaryConversationView">
         <property name="expand">True</property>
         <property name="homogeneous">False</property>
         <property name="spacing">0</property>

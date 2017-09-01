@@ -5,16 +5,15 @@ using Dino.Entities;
 
 namespace Dino.Ui.AddConversation {
 
-[GtkTemplate (ui = "/org/dino-im/add_conversation/select_jid_fragment.ui")]
+[GtkTemplate (ui = "/im/dino/add_conversation/select_jid_fragment.ui")]
 public class SelectJidFragment : Gtk.Box {
 
     public signal void add_jid();
     public signal void remove_jid(ListRow row);
     public bool done {
-        get {
-            return filterable_list.get_selected_row() != null;
-        }
-        private set {} }
+        get { return filterable_list.get_selected_row() != null; }
+        private set {}
+    }
 
     [GtkChild] private Entry entry;
     [GtkChild] private Box box;
@@ -40,20 +39,18 @@ public class SelectJidFragment : Gtk.Box {
         filterable_list.set_sort_func(sort);
         filterable_list.row_selected.connect(check_buttons_active);
         filterable_list.row_selected.connect(() => { done = true; }); // just for notifying
-        entry.changed.connect(on_entry_changed);
+        entry.changed.connect(() => { set_filter(entry.text); });
         add_button.clicked.connect(() => { add_jid(); });
         remove_button.clicked.connect(() => { remove_jid(filterable_list.get_selected_row() as ListRow); });
     }
 
-    private void on_entry_changed() {
-        foreach (AddListRow row in added_rows) {
-            filterable_list.remove(row);
-        }
+    public void set_filter(string str) {
+        if (entry.text != str) entry.text = str;
+
+        foreach (AddListRow row in added_rows) filterable_list.remove(row);
         added_rows.clear();
 
-        string[] ? values;
-        string str = entry.get_text();
-        values = str == "" ? null : str.split(" ");
+        string[] ? values = str == "" ? null : str.split(" ");
         filterable_list.set_filter_values(values);
         Jid? parsed_jid = Jid.parse(str);
         if (parsed_jid != null && parsed_jid.localpart != null) {

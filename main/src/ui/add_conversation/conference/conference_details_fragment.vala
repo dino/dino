@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.AddConversation.Conference {
 
-[GtkTemplate (ui = "/org/dino-im/add_conversation/conference_details_fragment.ui")]
+[GtkTemplate (ui = "/im/dino/add_conversation/conference_details_fragment.ui")]
 protected class ConferenceDetailsFragment : Box {
 
     public bool done {
@@ -83,6 +83,7 @@ protected class ConferenceDetailsFragment : Box {
         password_button.clicked.connect(() => { set_active_stack(password_stack); });
 
         account_combobox.changed.connect(() => { accounts_label.label = account_combobox.selected.bare_jid.to_string(); });
+        accounts_label.label = account_combobox.selected.bare_jid.to_string();
         jid_entry.key_release_event.connect(on_jid_key_release_event);
         nick_entry.key_release_event.connect(on_nick_key_release_event);
         password_entry.key_release_event.connect(on_password_key_release_event);

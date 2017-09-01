@@ -27,6 +27,7 @@ public class Plugin : RootInterface, Object {
     public Database db;
     public EncryptionListEntry list_entry;
     public AccountSettingsEntry settings_entry;
+    public ContactDetailsProvider contact_details_provider;
 
     public void registered(Dino.Application app) {
         try {
@@ -35,12 +36,14 @@ public class Plugin : RootInterface, Object {
             this.db = new Database(Path.build_filename(Application.get_storage_dir(), "omemo.db"));
             this.list_entry = new EncryptionListEntry(this);
             this.settings_entry = new AccountSettingsEntry(this);
+            this.contact_details_provider = new ContactDetailsProvider(this);
             this.app.plugin_registry.register_encryption_list_entry(list_entry);
             this.app.plugin_registry.register_account_settings_entry(settings_entry);
-            this.app.stream_interaction.module_manager.initialize_account_modules.connect((account, list) => {
+            this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
+            this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
                 list.add(new StreamModule());
             });
-            Manager.start(this.app.stream_interaction, db);
+            Manager.start(this.app.stream_interactor, db);
 
             string locales_dir;
             if (app.search_path_generator != null) {

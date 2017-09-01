@@ -65,14 +65,8 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     public void on_iq_get(XmppStream stream, Iq.Stanza iq) { }
 
-    public static void require(XmppStream stream) {
-        if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
-    }
-
     public override void attach(XmppStream stream) {
-        Iq.Module.require(stream);
         stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, this);
-        Presence.Module.require(stream);
         stream.get_module(Presence.Module.IDENTITY).initial_presence_sent.connect(roster_get);
         stream.add_flag(new Flag());
     }

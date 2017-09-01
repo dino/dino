@@ -36,11 +36,11 @@ public class MucManager : StreamInteractionModule, Object {
         string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
         set_autojoin(stream, jid, nick_, password);
 
-        string history_since = null;
+        DateTime? history_since = null;
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
         if (conversation != null) {
             Entities.Message? last_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
-            if (last_message != null) history_since = last_message.time.to_string();
+            if (last_message != null) history_since = last_message.time;
         }
         
         stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid.to_string(), nick_, password, history_since);
@@ -191,13 +191,6 @@ public class MucManager : StreamInteractionModule, Object {
         return ret;
     }
 
-    public Jid? get_message_real_jid(Entities.Message message) {
-        if (message.real_jid != null) {
-            return new Jid(message.real_jid);
-        }
-        return null;
-    }
-
     public Jid? get_own_jid(Jid muc_jid, Account account) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
@@ -250,7 +243,7 @@ public class MucManager : StreamInteractionModule, Object {
         if (Xep.DelayedDelivery.MessageFlag.get_flag(message.stanza) == null) {
             string? real_jid = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_real_jid(message.counterpart.to_string());
             if (real_jid != null && real_jid != message.counterpart.to_string()) {
-                message.real_jid = real_jid;
+                message.real_jid = new Jid(real_jid).bare_jid;
             }
         }
         string? muc_nick = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_nick(conversation.counterpart.bare_jid.to_string());

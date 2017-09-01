@@ -49,10 +49,8 @@ namespace Dino.Plugins.OpenPgp {
         }
 
         public override void attach(XmppStream stream) {
-            Presence.Module.require(stream);
             stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
-            Message.Module.require(stream);
             stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(on_pre_received_message);
             stream.add_flag(new Flag());
         }

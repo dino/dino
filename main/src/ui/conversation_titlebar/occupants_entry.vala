@@ -4,8 +4,8 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-class OccupantsEntry : Plugins.ConversationTitlebarEntry {
-    public override string id { get { return "occupants"; } }
+class OccupantsEntry : Plugins.ConversationTitlebarEntry, Object {
+    public string id { get { return "occupants"; } }
 
     StreamInteractor stream_interactor;
     Window window;
@@ -15,9 +15,12 @@ class OccupantsEntry : Plugins.ConversationTitlebarEntry {
         this.window = window;
     }
 
-    public override double order { get { return 3; } }
-    public override Plugins.ConversationTitlebarWidget get_widget() {
-        return new OccupantsWidget(stream_interactor, window) { visible=true };
+    public double order { get { return 3; } }
+    public Plugins.ConversationTitlebarWidget get_widget(Plugins.WidgetType type) {
+        if (type == Plugins.WidgetType.GTK) {
+            return new OccupantsWidget(stream_interactor, window) { visible=true };
+        }
+        return null;
     }
 }
 

@@ -95,10 +95,6 @@ namespace Xmpp.Presence {
             }
         }
 
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Presence.Module());
-        }
-
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
     }

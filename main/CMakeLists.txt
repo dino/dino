@@ -32,9 +32,9 @@ set(RESOURCE_LIST
     conversation_selector/view.ui
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
+    conversation_summary/image_toolbar.ui
     conversation_summary/message_item.ui
     conversation_summary/view.ui
-    conversation_titlebar.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
     manage_accounts/dialog.ui
@@ -46,6 +46,8 @@ set(RESOURCE_LIST
     occupant_list_item.ui
     settings_dialog.ui
     unified_window_placeholder.ui
+
+    pre_theme.css
 )
 
 compile_gresources(
@@ -54,7 +56,7 @@ compile_gresources(
     TARGET ${CMAKE_CURRENT_BINARY_DIR}/resources/resources.c
     TYPE EMBED_C
     RESOURCES ${RESOURCE_LIST}
-    PREFIX /org/dino-im
+    PREFIX /im/dino
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
 )
 
@@ -82,6 +84,7 @@ SOURCES
     src/ui/add_conversation/list_row.vala
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala
+    src/ui/chat_input/edit_history.vala
     src/ui/chat_input/occupants_tab_completer.vala
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
@@ -95,13 +98,15 @@ SOURCES
     src/ui/conversation_selector/groupchat_row.vala
     src/ui/conversation_selector/list.vala
     src/ui/conversation_selector/view.vala
-    src/ui/conversation_summary/conversation_item.vala
-    src/ui/conversation_summary/merged_message_item.vala
-    src/ui/conversation_summary/message_item.vala
+    src/ui/conversation_summary/chat_state_populator.vala
+    src/ui/conversation_summary/conversation_item_skeleton.vala
+    src/ui/conversation_summary/conversation_view.vala
+    src/ui/conversation_summary/default_message_display.vala
+    src/ui/conversation_summary/file_populator.vala
+    src/ui/conversation_summary/image_display.vala
+    src/ui/conversation_summary/message_populator.vala
     src/ui/conversation_summary/message_textview.vala
-    src/ui/conversation_summary/slashme_item.vala
-    src/ui/conversation_summary/status_item.vala
-    src/ui/conversation_summary/view.vala
+    src/ui/conversation_summary/slashme_message_display.vala
     src/ui/conversation_titlebar/encryption_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala

@@ -10,6 +10,7 @@ find_packages(HTTP_FILES_PACKAGES REQUIRED
 vala_precompile(HTTP_FILES_VALA_C
 SOURCES
     src/contact_titlebar_entry.vala
+    src/file_provider.vala
     src/manager.vala
     src/plugin.vala
     src/register_plugin.vala

@@ -6,15 +6,16 @@ using Xmpp.Xep;
 
 namespace Dino.Ui.ContactDetails {
 
-public class MucConfigFormProvider : Plugins.ContactDetailsProvider {
-    public override string id { get { return "muc_config_form"; } }
+public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
+    public string id { get { return "muc_config_form"; } }
     private StreamInteractor stream_interactor;
 
     public MucConfigFormProvider(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
     }
 
-    public override void populate(Conversation conversation, Plugins.ContactDetails contact_details) {
+    public void populate(Conversation conversation, Plugins.ContactDetails contact_details, Plugins.WidgetType type) {
+        if (type != Plugins.WidgetType.GTK) return;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) return;
@@ -34,43 +35,46 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider {
     public static void add_field(DataForms.DataForm.Field field, Plugins.ContactDetails contact_details) {
         string label = field.label ?? "";
         string? desc = null;
-        switch (field.var) {
-            case "muc#roomconfig_roomname":
-                label = _("Name of the room");
-                break;
-            case "muc#roomconfig_roomdesc":
-                label = _("Description of the room");
-                break;
-            case "muc#roomconfig_persistentroom":
-                label = _("Persistent");
-                desc = _("The room will persist after the last occupant exits");
-                break;
-            case "muc#roomconfig_publicroom":
-                label = _("Publicly searchable");
-                break;
-            case "muc#roomconfig_changesubject":
-                label = _("Occupants may change subject");
-                break;
-            case "muc#roomconfig_whois":
-                label = _("Discover real JIDs");
-                desc = _("Who may discover real JIDs?");
-                break;
-            case "muc#roomconfig_roomsecret":
-                label = _("Password");
-                desc = _("Password required to enter the room. Leave empty for none");
-                break;
-            case "muc#roomconfig_moderatedroom":
-                label = _("Moderated");
-                desc = _("Only occupants with voice may send messages");
-                break;
-            case "muc#roomconfig_membersonly":
-                label = _("Members only");
-                desc = _("Only members may enter the room");
-                break;
-            case "muc#roomconfig_historylength":
-                label = _("Message history");
-                desc = _("Maximum number of history messages returned by the room");
-                break;
+
+        if (field.var != null) {
+            switch (field.var) {
+                case "muc#roomconfig_roomname":
+                    label = _("Name of the room");
+                    break;
+                case "muc#roomconfig_roomdesc":
+                    label = _("Description of the room");
+                    break;
+                case "muc#roomconfig_persistentroom":
+                    label = _("Persistent");
+                    desc = _("The room will persist after the last occupant exits");
+                    break;
+                case "muc#roomconfig_publicroom":
+                    label = _("Publicly searchable");
+                    break;
+                case "muc#roomconfig_changesubject":
+                    label = _("Occupants may change subject");
+                    break;
+                case "muc#roomconfig_whois":
+                    label = _("Discover real JIDs");
+                    desc = _("Who may discover real JIDs?");
+                    break;
+                case "muc#roomconfig_roomsecret":
+                    label = _("Password");
+                    desc = _("Password required to enter the room. Leave empty for none");
+                    break;
+                case "muc#roomconfig_moderatedroom":
+                    label = _("Moderated");
+                    desc = _("Only occupants with voice may send messages");
+                    break;
+                case "muc#roomconfig_membersonly":
+                    label = _("Members only");
+                    desc = _("Only members may enter the room");
+                    break;
+                case "muc#roomconfig_historylength":
+                    label = _("Message history");
+                    desc = _("Maximum number of history messages returned by the room");
+                    break;
+            }
         }
 
         Widget? widget = get_widget(field);
@@ -78,6 +82,7 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider {
     }
 
     private static Widget? get_widget(DataForms.DataForm.Field field) {
+        if (field.type_ == null) return null;
         switch (field.type_) {
             case DataForms.DataForm.Type.BOOLEAN:
                 DataForms.DataForm.BooleanField boolean_field = field as DataForms.DataForm.BooleanField;

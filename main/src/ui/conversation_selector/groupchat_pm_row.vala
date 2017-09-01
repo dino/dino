@@ -2,7 +2,6 @@ using Gdk;
 using Gee;
 using Gtk;
 
-using Xmpp;
 using Dino.Entities;
 
 namespace Dino.Ui.ConversationSelector {
@@ -19,27 +18,18 @@ public class GroupchatPmRow : ConversationRow {
         update_avatar();
     }
 
-    public override void on_show_received(Show show) {
-        update_avatar();
-    }
-
-    public override void network_connection(bool connected) {
-        if (!connected) {
-            set_avatar((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor)).set_greyscale(true).draw_conversation(stream_interactor, conversation), image.scale_factor);
+    protected override void update_message_label() {
+        base.update_message_label();
+        if (last_message != null && last_message.direction == Message.DIRECTION_SENT) {
+            nick_label.visible = true;
+            nick_label.label = _("Me") + ": ";
         } else {
-            update_avatar();
+            nick_label.label = "";
         }
     }
 
-    public void update_avatar() {
-        ArrayList<Jid> full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
-        set_avatar((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor))
-            .set_greyscale(full_jids == null)
-            .draw_conversation(stream_interactor, conversation), image.scale_factor);
-    }
-
     private Widget generate_tooltip() {
-        Builder builder = new Builder.from_resource("/org/dino-im/conversation_selector/chat_row_tooltip.ui");
+        Builder builder = new Builder.from_resource("/im/dino/conversation_selector/chat_row_tooltip.ui");
         Box main_box = builder.get_object("main_box") as Box;
         Box inner_box = builder.get_object("inner_box") as Box;
         Label jid_label = builder.get_object("jid_label") as Label;

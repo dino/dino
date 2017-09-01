@@ -8,16 +8,11 @@ public class Module : XmppStreamNegotiationModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "session");
 
     public override void attach(XmppStream stream) {
-        Bind.Module.require(stream);
         stream.get_module(Bind.Module.IDENTITY).bound_to_resource.connect(on_bound_resource);
     }
 
     public override void detach(XmppStream stream) {
         stream.get_module(Bind.Module.IDENTITY).bound_to_resource.disconnect(on_bound_resource);
-    }
-
-    public static void require(XmppStream stream) {
-        if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
     }
 
     public override bool mandatory_outstanding(XmppStream stream) { return false; }

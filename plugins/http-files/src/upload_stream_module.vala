@@ -25,9 +25,18 @@ public class UploadStreamModule : XmppStreamModule {
                 Soup.Message message = new Soup.Message("PUT", url_up);
                 message.set_request(file_info.get_content_type(), Soup.MemoryUse.COPY, data);
                 Soup.Session session = new Soup.Session();
-                session.send_async(message);
-
-                listener(stream, url_down);
+                session.send_async.begin(message, null, (obj, res) => {
+                    try {
+                        session.send_async.end(res);
+                        if (message.status_code == 200) {
+                            listener(stream, url_down);
+                        } else {
+                            error_listener(stream, "HTTP status code " + message.status_code.to_string());
+                        }
+                    } catch (Error e) {
+                        error_listener(stream, e.message);
+                    }
+                });
             },
             error_listener);
     }
@@ -75,18 +84,11 @@ public class UploadStreamModule : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        Iq.Module.require(stream);
-        ServiceDiscovery.Module.require(stream);
-
-        query_availability(stream);
+        stream.stream_negotiated.connect(query_availability);
     }
 
     public override void detach(XmppStream stream) {
         stream.get_module(Bind.Module.IDENTITY).bound_to_resource.disconnect(query_availability);
-    }
-
-    public static void require(XmppStream stream) {
-        if (stream.get_module(IDENTITY) == null) stream.add_module(new ChatMarkers.Module());
     }
 
     public override string get_ns() { return NS_URI; }

@@ -23,8 +23,6 @@ namespace Xmpp.Xep.EntityCapabilities {
         }
 
         public override void attach(XmppStream stream) {
-            ServiceDiscovery.Module.require(stream);
-            Presence.Module.require(stream);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
             stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
@@ -35,10 +33,6 @@ namespace Xmpp.Xep.EntityCapabilities {
             stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
         }
 
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stderr.printf("EntityCapabilitiesModule required but not attached!\n");
-        }
-
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
 
@@ -46,7 +40,7 @@ namespace Xmpp.Xep.EntityCapabilities {
             if (presence.type_ == Presence.Stanza.TYPE_AVAILABLE) {
                 presence.stanza.put_node(new StanzaNode.build("c", NS_URI).add_self_xmlns()
                     .put_attribute("hash", "sha-1")
-                    .put_attribute("node", "http://dino-im.org")
+                    .put_attribute("node", "https://dino.im")
                     .put_attribute("ver", get_own_hash(stream)));
             }
         }

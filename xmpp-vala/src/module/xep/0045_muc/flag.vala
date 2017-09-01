@@ -37,8 +37,9 @@ public class Flag : XmppStreamFlag {
         return ret;
     }
 
-    public Affiliation? get_affiliation(string muc_jid, string full_jid) {
-        if (affiliations.has_key(muc_jid) && affiliations[muc_jid].has_key(full_jid)) return affiliations[muc_jid][full_jid];
+    public Affiliation get_affiliation(string muc_jid, string full_jid) {
+        HashMap<string, Affiliation>? muc_affiliations = affiliations[muc_jid];
+        if (muc_affiliations != null) return muc_affiliations[full_jid];
         return Affiliation.NONE;
     }
 

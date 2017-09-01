@@ -12,7 +12,7 @@ public class UnifiedWindow : Window {
     private ChatInput.View chat_input;
     private ConversationListTitlebar conversation_list_titlebar;
     private ConversationSelector.View filterable_conversation_list;
-    private ConversationSummary.View conversation_frame;
+    private ConversationSummary.ConversationView conversation_frame;
     private ConversationTitlebar conversation_titlebar;
     private HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
     private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
@@ -26,11 +26,12 @@ public class UnifiedWindow : Window {
         Object(application : application, default_width : 1200, default_height : 700);
         this.stream_interactor = stream_interactor;
 
+        this.get_style_context().add_class("dino-main");
         setup_headerbar();
         setup_unified();
         setup_stack();
 
-        conversation_list_titlebar.search_button.bind_property("active", filterable_conversation_list.search_bar, "search-mode-enabled",
+        conversation_list_titlebar.search_button.bind_property("active", filterable_conversation_list.search_revealer, "reveal-child",
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
@@ -69,7 +70,7 @@ public class UnifiedWindow : Window {
 
     private void setup_unified() {
         chat_input = new ChatInput.View(stream_interactor) { visible=true };
-        conversation_frame = new ConversationSummary.View(stream_interactor) { visible=true };
+        conversation_frame = new ConversationSummary.ConversationView(stream_interactor) { visible=true };
         filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
 
         Grid grid = new Grid() { orientation=Orientation.VERTICAL, visible=true };
@@ -78,15 +79,15 @@ public class UnifiedWindow : Window {
         grid.add(chat_input);
 
         paned.set_position(300);
-        paned.add1(filterable_conversation_list);
-        paned.add2(grid);
+        paned.pack1(filterable_conversation_list, false, false);
+        paned.pack2(grid, true, false);
     }
 
     private void setup_headerbar() {
         conversation_titlebar = new ConversationTitlebar(stream_interactor, this) { visible=true };
         conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
-        headerbar_paned.add1(conversation_list_titlebar);
-        headerbar_paned.add2(conversation_titlebar);
+        headerbar_paned.pack1(conversation_list_titlebar, false, false);
+        headerbar_paned.pack2(conversation_titlebar, true, false);
 
         // Distribute start/end decoration_layout buttons to left/right headerbar. Ensure app menu fallback.
         Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
@@ -151,7 +152,7 @@ public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
     }
 }
 
-[GtkTemplate (ui = "/org/dino-im/unified_window_placeholder.ui")]
+[GtkTemplate (ui = "/im/dino/unified_window_placeholder.ui")]
 public class UnifiedWindowPlaceholder : Box {
     [GtkChild] public Label label;
     [GtkChild] public Button primary_button;

@@ -10,6 +10,7 @@ public class StreamInteractor {
     public signal void account_added(Account account);
     public signal void account_removed(Account account);
     public signal void stream_negotiated(Account account, Core.XmppStream stream);
+    public signal void attached_modules(Account account, Core.XmppStream stream);
 
     public ModuleManager module_manager;
     public ConnectionManager connection_manager;

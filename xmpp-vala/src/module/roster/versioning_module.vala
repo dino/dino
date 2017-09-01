@@ -16,7 +16,6 @@ public class VersioningModule : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        Module.require(stream);
         stream.get_module(Module.IDENTITY).pre_get_roster.connect(on_pre_get_roster);
         stream.get_module(Module.IDENTITY).received_roster.connect(on_received_roster);
         stream.get_module(Module.IDENTITY).item_updated.connect(on_item_updated);

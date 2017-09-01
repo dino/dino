@@ -21,7 +21,17 @@ public class MessageTextView : TextView {
         style_updated.connect(update_display_style);
     }
 
-    public void add_text(string text) {
+    // Workaround GTK TextView issues
+    public override void get_preferred_width (out int minimum_width, out int natural_width) {
+        base.get_preferred_width(out minimum_width, out natural_width);
+        minimum_width = 0;
+    }
+
+    public void add_text(string text_) {
+        string text = text_;
+        if (text.length > 10000) {
+            text = text.slice(0, 10000) + " [" + _("Message too long") + "]";
+        }
         TextIter end;
         buffer.get_end_iter(out end);
         buffer.insert(ref end, text, -1);

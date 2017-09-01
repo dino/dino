@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.AddConversation.Chat {
 
-[GtkTemplate (ui = "/org/dino-im/add_conversation/add_contact_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/add_conversation/add_contact_dialog.ui")]
 protected class AddContactDialog : Gtk.Dialog {
 
     public Account? account {

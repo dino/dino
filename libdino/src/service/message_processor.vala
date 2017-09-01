@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class MessageProcessor : StreamInteractionModule, Object {
-    public static ModuleIdentity<MessageProcessor> IDENTITY = new ModuleIdentity<MessageProcessor>("message_manager");
+    public static ModuleIdentity<MessageProcessor> IDENTITY = new ModuleIdentity<MessageProcessor>("message_processor");
     public string id { get { return IDENTITY.id; } }
 
     public signal void pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
@@ -44,6 +44,10 @@ public class MessageProcessor : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xmpp.Message.Module.IDENTITY).received_message.connect( (stream, message) => {
             on_message_received(account, message);
         });
+        stream_interactor.module_manager.get_module(account, Xmpp.Xep.MessageArchiveManagement.Module.IDENTITY).feature_available.connect( (stream) => {
+            DateTime start_time = account.mam_earliest_synced.to_unix() > 60 ? account.mam_earliest_synced.add_minutes(-1) : account.mam_earliest_synced;
+            stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, start_time, null);
+        });
     }
 
     private void send_unsent_messages(Account account) {
@@ -62,8 +66,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         Entities.Message new_message = create_in_message(account, message);
 
         determine_message_type(account, message, new_message);
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(new_message);
-        if (conversation != null) process_message(new_message, message);
     }
 
     private Entities.Message create_in_message(Account account, Xmpp.Message.Stanza message) {
@@ -80,9 +82,15 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.counterpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.to) : new Jid(message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.from) : new Jid(message.to);
         new_message.stanza = message;
-        Xep.DelayedDelivery.MessageFlag? deleyed_delivery_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
-        new_message.time = deleyed_delivery_flag != null ? deleyed_delivery_flag.datetime : new DateTime.now_local();
-        new_message.local_time = new DateTime.now_local();
+
+        Xep.MessageArchiveManagement.MessageFlag? mam_message_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
+        if (mam_message_flag != null) new_message.local_time = mam_message_flag.server_time;
+        if (new_message.local_time == null || new_message.local_time.compare(new DateTime.now_utc()) > 0) new_message.local_time = new DateTime.now_utc();
+
+        Xep.DelayedDelivery.MessageFlag? delayed_message_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
+        if (delayed_message_flag != null) new_message.time = delayed_message_flag.datetime;
+        if (new_message.time == null || new_message.time.compare(new_message.local_time) > 0) new_message.time = new_message.local_time;
+
         return new_message;
     }
 
@@ -95,10 +103,21 @@ public class MessageProcessor : StreamInteractionModule, Object {
             if ((is_uuid && !db.contains_message_by_stanza_id(new_message.stanza_id, conversation.account)) ||
                     (!is_uuid && !db.contains_message(new_message, conversation.account))) {
                 stream_interactor.get_module(MessageStorage.IDENTITY).add_message(new_message, conversation);
-                if (new_message.direction == Entities.Message.DIRECTION_SENT) {
-                    message_sent(new_message, conversation);
-                } else {
-                    message_received(new_message, conversation);
+
+                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
+                bool is_recent = new_message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+                if (!is_mam_message || is_recent) {
+                    if (new_message.direction == Entities.Message.DIRECTION_SENT) {
+                        message_sent(new_message, conversation);
+                    } else {
+                        message_received(new_message, conversation);
+                    }
+                }
+
+                Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                Xep.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) : null;
+                if (is_mam_message || (mam_flag != null && mam_flag.cought_up == true)) {
+                    conversation.account.mam_earliest_synced = new_message.local_time;
                 }
             }
         }
@@ -116,6 +135,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
                     message.type_ = Entities.Message.Type.GROUPCHAT_PM;
                 }
+                process_message(message, message_stanza);
             } else {
                 Core.XmppStream stream = stream_interactor.get_stream(account);
                 if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid.to_string(), (stream, identities) => {
@@ -130,8 +150,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
                         } else {
                             message.type_ = Entities.Message.Type.CHAT;
                         }
-                        process_message(message, message_stanza);
                     }
+                    process_message(message, message_stanza);
                 });
             }
         }
@@ -143,11 +163,16 @@ public class MessageProcessor : StreamInteractionModule, Object {
         message.stanza_id = random_uuid();
         message.account = conversation.account;
         message.body = text;
-        message.time = new DateTime.now_local();
-        message.local_time = new DateTime.now_local();
+        message.time = new DateTime.now_utc();
+        message.local_time = new DateTime.now_utc();
         message.direction = Entities.Message.DIRECTION_SENT;
         message.counterpart = conversation.counterpart;
-        message.ourpart = new Jid(conversation.account.bare_jid.to_string() + "/" + conversation.account.resourcepart);
+        if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+            message.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+            message.real_jid = conversation.account.bare_jid;
+        } else {
+            message.ourpart = new Jid.with_resource(conversation.account.bare_jid.to_string(), conversation.account.resourcepart);
+        }
         message.marked = Entities.Message.Marked.UNSENT;
         message.encryption = conversation.encryption;
 

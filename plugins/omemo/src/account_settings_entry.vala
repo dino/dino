@@ -15,8 +15,11 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
         return "OMEMO";
     }}
 
-    public override Plugins.AccountSettingsWidget get_widget() {
-        return new AccountSettingWidget(plugin);
+    public override Plugins.AccountSettingsWidget? get_widget(WidgetType type) {
+        if (type == WidgetType.GTK) {
+            return new AccountSettingWidget(plugin);
+        }
+        return null;
     }
 }
 

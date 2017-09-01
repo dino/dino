@@ -21,8 +21,12 @@ public class DataForm {
     }
 
     public void submit() {
+        on_result(stream, get_submit_node());
+    }
+
+    public StanzaNode get_submit_node() {
         stanza_node.set_attribute("type", "submit");
-        on_result(stream, stanza_node);
+        return stanza_node;
     }
 
     public enum Type {
@@ -46,19 +50,24 @@ public class DataForm {
         }
     }
 
-    public abstract class Field {
-        public string label {
+    public class Field {
+        public StanzaNode node { get; set; }
+        public string? label {
             get { return node.get_attribute("label", NS_URI); }
             set { node.set_attribute("label", value); }
+            default = null;
         }
-        public StanzaNode node { get; set; }
-        public abstract Type type_ { get; internal set; }
-        public string var {
+        public virtual Type? type_ { get; internal set; default=null; }
+        public string? var {
             get { return node.get_attribute("var", NS_URI); }
             set { node.set_attribute("var", value); }
         }
 
-        public Field(StanzaNode node) {
+        public Field() {
+            this.node = new StanzaNode.build("field", NS_URI);
+        }
+
+        public Field.from_node(StanzaNode node) {
             this.node = node;
         }
 
@@ -103,73 +112,94 @@ public class DataForm {
     }
 
     public class BooleanField : Field {
-        public override Type type_ { get; internal set; default=Type.BOOLEAN; }
         public bool value {
             get { return get_value_string() == "1"; }
             set { set_value_string(value ? "1" : "0"); }
         }
-        public BooleanField(StanzaNode node) { base(node); }
+        public BooleanField(StanzaNode node) {
+            base.from_node(node);
+            type_ = Type.BOOLEAN;
+        }
     }
 
     public class FixedField : Field {
-        public override Type type_ { get; internal set; default=Type.FIXED; }
         public string value {
             owned get { return get_value_string(); }
             set { set_value_string(value); }
         }
-        public FixedField(StanzaNode node) { base(node); }
+        public FixedField(StanzaNode node) {
+            base.from_node(node);
+            type_ = Type.FIXED;
+        }
     }
 
     public class HiddenField : Field {
-        public override Type type_ { get; internal set; default=Type.HIDDEN; }
-        public HiddenField(StanzaNode node) { base(node); }
+        public HiddenField() {
+            base();
+            type_ = Type.HIDDEN;;
+            node.put_attribute("type", "hidden");
+        }
+        public HiddenField.from_node(StanzaNode node) {
+            base.from_node(node);
+            type_ = Type.HIDDEN;;
+        }
     }
 
     public class JidMultiField : Field {
         public Gee.List<Option> options { owned get { return get_options(); } }
-        public override Type type_ { get; internal set; default=Type.JID_MULTI; }
         public Gee.List<string> value { get; set; }
-        public JidMultiField(StanzaNode node) { base(node); }
+        public JidMultiField(StanzaNode node) {
+            base.from_node(node);
+            type_ = Type.JID_MULTI;
+        }
     }
 
     public class ListSingleField : Field {
         public Gee.List<Option> options { owned get { return get_options(); } }
-        public override Type type_ { get; internal set; default=Type.LIST_SINGLE; }
         public string value {
             owned get { return get_value_string(); }
             set { set_value_string(value); }
         }
-        public ListSingleField(StanzaNode node) { base(node); }
+        public ListSingleField(StanzaNode node) {
+            base.from_node(node);
+            type_ = Type.LIST_SINGLE;;
+        }
     }
 
     public class ListMultiField : Field {
         public Gee.List<Option> options { owned get { return get_options(); } }
-        public override Type type_ { get; internal set; default=Type.LIST_MULTI; }
         public Gee.List<string> value { get; set; }
-        public ListMultiField(StanzaNode node) { base(node); }
+        public ListMultiField(StanzaNode node) {
+            base.from_node(node);
+            type_ = Type.LIST_MULTI;
+        }
     }
 
     public class TextPrivateField : Field {
-        public override Type type_ { get; internal set; default=Type.TEXT_PRIVATE; }
         public string value {
             owned get { return get_value_string(); }
             set { set_value_string(value); }
         }
-        public TextPrivateField(StanzaNode node) { base(node); }
+        public TextPrivateField(StanzaNode node) {
+            base.from_node(node);
+            type_ = Type.TEXT_PRIVATE;
+        }
     }
 
     public class TextSingleField : Field {
-        public override Type type_ { get; internal set; default=Type.TEXT_SINGLE; }
         public string value {
             owned get { return get_value_string(); }
             set { set_value_string(value); }
         }
-        public TextSingleField(StanzaNode node) { base(node); }
+        public TextSingleField(StanzaNode node) {
+            base.from_node(node);
+            type_ = Type.TEXT_SINGLE;
+        }
     }
 
     // TODO text-multi
 
-    internal DataForm(StanzaNode node, XmppStream stream, owned OnResult listener) {
+    internal DataForm.from_node(StanzaNode node, XmppStream stream, owned OnResult listener) {
         this.stanza_node = node;
         this.stream = stream;
         this.on_result = (owned)listener;
@@ -183,7 +213,7 @@ public class DataForm {
                 case "fixed":
                     fields.add(new FixedField(field_node)); break;
                 case "hidden":
-                    fields.add(new HiddenField(field_node)); break;
+                    fields.add(new HiddenField.from_node(field_node)); break;
                 case "jid-multi":
                     fields.add(new JidMultiField(field_node)); break;
                 case "list-single":
@@ -198,9 +228,18 @@ public class DataForm {
         }
     }
 
+    internal DataForm() {
+        this.stanza_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
+    }
+
     public delegate void OnResult(XmppStream stream, StanzaNode node);
-    public static DataForm? create(XmppStream stream, StanzaNode node, owned OnResult listener) {
-        return new DataForm(node, stream, (owned)listener);
+    public static DataForm? create_from_node(XmppStream stream, StanzaNode node, owned OnResult listener) {
+        return new DataForm.from_node(node, stream, (owned)listener);
+    }
+
+    public void add_field(Field field) {
+        fields.add(field);
+        stanza_node.put_node(field.node);
     }
 }
 

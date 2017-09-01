@@ -7,17 +7,22 @@ public class Plugin : RootInterface, Object {
 
     public Dino.Application app;
     public ConversationsTitlebarEntry conversations_titlebar_entry;
+    public FileProvider file_provider;
 
     public void registered(Dino.Application app) {
         try {
             this.app = app;
-            this.conversations_titlebar_entry = new ConversationsTitlebarEntry(app.stream_interaction);
+            Manager.start(this.app.stream_interactor);
 
-            this.app.plugin_registry.register_contact_titlebar_entry(conversations_titlebar_entry);
-            this.app.stream_interaction.module_manager.initialize_account_modules.connect((account, list) => {
+            conversations_titlebar_entry = new ConversationsTitlebarEntry(app.stream_interactor);
+            file_provider = new FileProvider(app.stream_interactor, app.db);
+
+            app.plugin_registry.register_contact_titlebar_entry(conversations_titlebar_entry);
+            app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
                 list.add(new UploadStreamModule());
             });
-            Manager.start(this.app.stream_interaction);
+
+            app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(file_provider);
         } catch (Error e) {
             print(@"Error initializing http-files: $(e.message)\n");
         }

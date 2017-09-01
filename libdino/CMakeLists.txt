@@ -1,9 +1,9 @@
 find_packages(LIBDINO_PACKAGES REQUIRED
+    GDKPixbuf2
     Gee
     GLib
     GModule
     GObject
-    GTK3
 )
 
 vala_precompile(LIBDINO_VALA_C
@@ -11,14 +11,17 @@ SOURCES
     src/application.vala
 
     src/dbus/login1.vala
-    src/dbus/networkmanager.vala
+    src/dbus/network_manager.vala
+    src/dbus/network_manager_dbus_properties.vala
     src/dbus/upower.vala
 
     src/entity/account.vala
     src/entity/conversation.vala
+    src/entity/encryption.vala
+    src/entity/file_transfer.vala
     src/entity/jid.vala
     src/entity/message.vala
-    src/entity/encryption.vala
+    src/entity/settings.vala
 
     src/plugin/interfaces.vala
     src/plugin/loader.vala
@@ -32,6 +35,7 @@ SOURCES
     src/service/counterpart_interaction_manager.vala
     src/service/database.vala
     src/service/entity_capabilities_storage.vala
+    src/service/file_manager.vala
     src/service/message_processor.vala
     src/service/message_storage.vala
     src/service/module_manager.vala
@@ -41,7 +45,6 @@ SOURCES
     src/service/stream_interactor.vala
     src/service/util.vala
 
-    src/settings.vala
     src/util.vala
 CUSTOM_VAPIS
     "${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi"
@@ -73,25 +76,12 @@ DEPENDS
     ${CMAKE_BINARY_DIR}/exports/dino_i18n.h
 )
 
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/gschemas.compiled
-COMMAND
-    glib-compile-schemas --targetdir=${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/data
-DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/data/dino.gschema.xml
-)
-
-add_custom_target(dino-gsettings-schema-compiled
-DEPENDS
-    ${CMAKE_BINARY_DIR}/gschemas.compiled
-)
-
-add_definitions(${VALA_CFLAGS} -DDINO_PLUGINS_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_PLUGINS_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}")
+add_definitions(${VALA_CFLAGS} -DDINO_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}")
 add_library(libdino SHARED ${LIBDINO_VALA_C} ${CMAKE_BINARY_DIR}/exports/dino_i18n.h)
-add_dependencies(libdino dino-vapi dino-gsettings-schema-compiled)
+add_dependencies(libdino dino-vapi)
 target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} m)
 set_target_properties(libdino PROPERTIES PREFIX "" VERSION 0.0 SOVERSION 0)
 
 install(TARGETS libdino ${TARGET_INSTALL})
 install(FILES ${CMAKE_BINARY_DIR}/exports/dino.vapi ${CMAKE_BINARY_DIR}/exports/dino.deps DESTINATION ${VAPI_INSTALL_DIR})
 install(FILES ${CMAKE_BINARY_DIR}/exports/dino.h ${CMAKE_BINARY_DIR}/exports/dino_i18n.h DESTINATION ${INCLUDE_INSTALL_DIR})
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/dino.gschema.xml DESTINATION ${SHARE_INSTALL_PREFIX}/glib-2.0/schemas/)

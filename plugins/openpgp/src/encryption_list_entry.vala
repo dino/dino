@@ -19,7 +19,8 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
     }}
 
     public bool can_encrypt(Entities.Conversation conversation) {
-        return stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart) != null;
+        string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart);
+        return key_id != null && GPGHelper.get_keylist(key_id).size > 0;
     }
 }
 

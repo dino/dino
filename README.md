@@ -34,7 +34,9 @@ Build
 
 Resources
 ---------
-Please refer to [the wiki](https://github.com/dino/dino/wiki) for further information.
+Join our conference room at [chat@dino.im](xmpp:chat@dino.im?join)
+
+Please refer to [the wiki](https://github.com/dino/dino/wiki) for further information or check out our [website](https://dino.im).
 
 License
 -------

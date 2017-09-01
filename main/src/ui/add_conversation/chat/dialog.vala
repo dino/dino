@@ -28,6 +28,10 @@ public class Dialog : Gtk.Dialog {
         setup_view();
     }
 
+    public void set_filter(string str) {
+        select_jid_fragment.set_filter(str);
+    }
+
     private void setup_headerbar() {
         HeaderBar header_bar = get_header_bar() as HeaderBar;
         header_bar.show_close_button = false;

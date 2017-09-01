@@ -24,6 +24,7 @@ public class StreamModule : XmppStreamModule {
 
     public signal void store_created(Store store);
     public signal void device_list_loaded(string jid);
+    public signal void bundle_fetched(string jid, int device_id, Bundle bundle);
     public signal void session_started(string jid, int device_id);
     public signal void session_start_failed(string jid, int device_id);
 
@@ -112,8 +113,6 @@ public class StreamModule : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        Message.Module.require(stream);
-        Pubsub.Module.require(stream);
         if (!Plugin.ensure_context()) return;
 
         this.store = Plugin.get_context().create_store();
@@ -185,11 +184,11 @@ public class StreamModule : XmppStreamModule {
     public void request_user_devicelist(XmppStream stream, string jid) {
         if (active_devicelist_requests.add(jid)) {
             if (Plugin.DEBUG) print(@"OMEMO: requesting device list for $jid\n");
-            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id ?? "", node));
+            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
         }
     }
 
-    public void on_devicelist(XmppStream stream, string jid, string id, StanzaNode? node_) {
+    public void on_devicelist(XmppStream stream, string jid, string? id, StanzaNode? node_) {
         StanzaNode node = node_ ?? new StanzaNode.build("list", NS_URI).add_self_xmlns();
         string? my_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid;
         if (my_jid == null) return;
@@ -221,7 +220,6 @@ public class StreamModule : XmppStreamModule {
 
     public void start_sessions_with(XmppStream stream, string bare_jid) {
         if (!device_lists.has_key(bare_jid)) {
-            // TODO: manually request a device list
             return;
         }
         Address address = new Address(bare_jid, 0);
@@ -246,6 +244,23 @@ public class StreamModule : XmppStreamModule {
             stream.get_module(Pubsub.Module.IDENTITY).request(stream, bare_jid, @"$NODE_BUNDLES:$device_id", (stream, jid, id, node) => {
                 on_other_bundle_result(stream, jid, device_id, id, node);
             });
+        }
+    }
+
+    public void fetch_bundle(XmppStream stream, string bare_jid, int device_id) {
+        if (active_bundle_requests.add(bare_jid + @":$device_id")) {
+            if (Plugin.DEBUG) print(@"OMEMO: Asking for bundle from $bare_jid:$device_id\n");
+            stream.get_module(Pubsub.Module.IDENTITY).request(stream, bare_jid, @"$NODE_BUNDLES:$device_id", (stream, jid, id, node) => {
+                bundle_fetched(jid, device_id, new Bundle(node));
+            });
+        }
+    }
+
+    public ArrayList<int32> get_device_list(string jid) {
+        if (is_known_address(jid)) {
+            return device_lists[jid];
+        } else {
+            return new ArrayList<int32>();
         }
     }
 
@@ -278,31 +293,35 @@ public class StreamModule : XmppStreamModule {
             fail = true;
         } else {
             Bundle bundle = new Bundle(node);
+            bundle_fetched(jid, device_id, bundle);
             int32 signed_pre_key_id = bundle.signed_pre_key_id;
             ECPublicKey? signed_pre_key = bundle.signed_pre_key;
             uint8[] signed_pre_key_signature = bundle.signed_pre_key_signature;
             ECPublicKey? identity_key = bundle.identity_key;
 
             ArrayList<Bundle.PreKey> pre_keys = bundle.pre_keys;
-            int pre_key_idx = Random.int_range(0, pre_keys.size);
-            int32 pre_key_id = pre_keys[pre_key_idx].key_id;
-            ECPublicKey? pre_key = pre_keys[pre_key_idx].key;
-
-            if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_key_id < 0 || pre_key == null) {
+            if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_keys.size == 0) {
                 fail = true;
             } else {
-                Address address = new Address(jid, device_id);
-                try {
-                    if (store.contains_session(address)) {
-                        return;
-                    }
-                    SessionBuilder builder = store.create_session_builder(address);
-                    builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
-                    stream.get_module(IDENTITY).session_started(jid, device_id);
-                } catch (Error e) {
+                int pre_key_idx = Random.int_range(0, pre_keys.size);
+                int32 pre_key_id = pre_keys[pre_key_idx].key_id;
+                ECPublicKey? pre_key = pre_keys[pre_key_idx].key;
+                if (pre_key_id < 0 || pre_key == null) {
                     fail = true;
+                } else {
+                    Address address = new Address(jid, device_id);
+                    try {
+                        if (store.contains_session(address)) {
+                            return;
+                        }
+                        SessionBuilder builder = store.create_session_builder(address);
+                        builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
+                        stream.get_module(IDENTITY).session_started(jid, device_id);
+                    } catch (Error e) {
+                        fail = true;
+                    }
+                    address.device_id = 0; // TODO: Hack to have address obj live longer
                 }
-                address.device_id = 0; // TODO: Hack to have address obj live longer
             }
         }
         if (fail) {

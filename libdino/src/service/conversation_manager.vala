@@ -27,7 +27,7 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MucManager.IDENTITY).joined.connect(on_groupchat_joined);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
     }
 
@@ -86,7 +86,7 @@ public class ConversationManager : StreamInteractionModule, Object {
 
     public void start_conversation(Conversation conversation, bool push_front = false) {
         if (push_front) {
-            conversation.last_active = new DateTime.now_local();
+            conversation.last_active = new DateTime.now_utc();
             if (conversation.active) conversation_activated(conversation);
         }
         if (!conversation.active) {
@@ -107,7 +107,7 @@ public class ConversationManager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+    private void on_message_received(Entities.Message message, Conversation conversation) {
         conversation.last_active = message.time;
         start_conversation(conversation);
     }

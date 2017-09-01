@@ -7,8 +7,8 @@ namespace Xmpp.PlainSasl {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "plain_module");
         private const string MECHANISM = "PLAIN";
 
-        private string name;
-        private string password;
+        public string name { get; set; }
+        public string password { get; set; }
         public bool use_full_name = false;
 
         public signal void received_auth_failure(XmppStream stream, StanzaNode node);
@@ -86,10 +86,6 @@ namespace Xmpp.PlainSasl {
                 flag.name = name;
                 stream.add_flag(flag);
             }
-        }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stderr.printf("PlainSaslModule required but not attached!\n");
         }
 
         private static uchar[] get_plain_bytes(string name_s, string password_s) {

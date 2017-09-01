@@ -17,11 +17,6 @@ namespace Xmpp.Xep.MessageCarbons {
         }
 
         public override void attach(XmppStream stream) {
-            Bind.Module.require(stream);
-            Iq.Module.require(stream);
-            Message.Module.require(stream);
-            ServiceDiscovery.Module.require(stream);
-
             stream.stream_negotiated.connect(enable);
             stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(pre_received_message);
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
@@ -30,10 +25,6 @@ namespace Xmpp.Xep.MessageCarbons {
         public override void detach(XmppStream stream) {
             stream.stream_negotiated.disconnect(enable);
             stream.get_module(Message.Module.IDENTITY).pre_received_message.disconnect(pre_received_message);
-        }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }

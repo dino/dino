@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiConversationSummaryMessageItem">
+    <template class="DinoUiConversationSummaryConversationItemSkeleton">
         <property name="hexpand">True</property>
         <property name="column-spacing">7</property>
         <property name="orientation">horizontal</property>
@@ -23,8 +23,9 @@
         </child>
         <child>
             <object class="GtkLabel" id="time_label">
-                <property name="visible">True</property>
                 <property name="xalign">1</property>
+                <property name="valign">start</property>
+                <property name="visible">True</property>
                 <style>
                     <class name="dim-label"/>
                 </style>
@@ -40,6 +41,7 @@
             <object class="GtkImage" id="encryption_image">
                 <property name="visible">False</property>
                 <property name="xalign">1</property>
+                <property name="valign">start</property>
                 <style>
                     <class name="dim-label"/>
                 </style>
@@ -55,6 +57,7 @@
             <object class="GtkImage" id="received_image">
                 <property name="visible">False</property>
                 <property name="xalign">1</property>
+                <property name="valign">start</property>
                 <style>
                     <class name="dim-label"/>
                 </style>

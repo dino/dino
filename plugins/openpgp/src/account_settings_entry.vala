@@ -16,8 +16,11 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
         return "OpenPGP";
     }}
 
-    public override Plugins.AccountSettingsWidget get_widget() {
-        return new AccountSettingsWidget(plugin);
+    public override Plugins.AccountSettingsWidget? get_widget(WidgetType type) {
+        if (type == WidgetType.GTK) {
+            return new AccountSettingsWidget(plugin);
+        }
+        return null;
     }
 }
 

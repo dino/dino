@@ -26,15 +26,9 @@ namespace Xmpp.Xep.PrivateXmlStorage {
             });
         }
 
-        public override void attach(XmppStream stream) {
-            Iq.Module.require(stream);
-        }
+        public override void attach(XmppStream stream) { }
 
         public override void detach(XmppStream stream) { }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new PrivateXmlStorage.Module());
-        }
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }

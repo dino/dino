@@ -22,16 +22,16 @@ public enum MucEnterError {
 }
 
 public enum Affiliation {
+    NONE,
     ADMIN,
     MEMBER,
-    NONE,
     OUTCAST,
     OWNER
 }
 
 public enum Role {
-    MODERATOR,
     NONE,
+    MODERATOR,
     PARTICIPANT,
     VISITOR
 }
@@ -69,7 +69,7 @@ public class Module : XmppStreamModule {
     public signal void self_removed_from_room(XmppStream stream, string jid, StatusCode code);
     public signal void removed_from_room(XmppStream stream, string jid, StatusCode? code);
 
-    public void enter(XmppStream stream, string bare_jid, string nick, string? password, string? history_since) {
+    public void enter(XmppStream stream, string bare_jid, string nick, string? password, DateTime? history_since) {
         Presence.Stanza presence = new Presence.Stanza();
         presence.to = bare_jid + "/" + nick;
         StanzaNode x_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
@@ -78,7 +78,7 @@ public class Module : XmppStreamModule {
         }
         if (history_since != null) {
             StanzaNode history_node = new StanzaNode.build("history", NS_URI);
-            history_node.set_attribute("since", history_since);
+            history_node.set_attribute("since", DateTimeProfiles.to_datetime(history_since));
             x_node.put_node(history_node);
         }
         presence.stanza.put_node(x_node);
@@ -148,7 +148,7 @@ public class Module : XmppStreamModule {
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, get_iq, (stream, form_iq) => {
             StanzaNode? x_node = form_iq.stanza.get_deep_subnode(NS_URI_OWNER + ":query", DataForms.NS_URI + ":x");
             if (x_node != null) {
-                DataForms.DataForm data_form = DataForms.DataForm.create(stream, x_node, (stream, node) => {
+                DataForms.DataForm data_form = DataForms.DataForm.create_from_node(stream, x_node, (stream, node) => {
                     StanzaNode stanza_node = new StanzaNode.build("query", NS_URI_OWNER);
                     stanza_node.add_self_xmlns().put_node(node);
                     Iq.Stanza set_iq = new Iq.Stanza.set(stanza_node);
@@ -162,9 +162,7 @@ public class Module : XmppStreamModule {
 
     public override void attach(XmppStream stream) {
         stream.add_flag(new Muc.Flag());
-        Message.Module.require(stream);
         stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
-        Presence.Module.require(stream);
         stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
         stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.connect(on_received_unavailable);
@@ -184,11 +182,6 @@ public class Module : XmppStreamModule {
         stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
         stream.get_module(Presence.Module.IDENTITY).received_available.disconnect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.disconnect(on_received_unavailable);
-    }
-
-    public static void require(XmppStream stream) {
-        Presence.Module.require(stream);
-        if (stream.get_module(IDENTITY) == null) stream.add_module(new Muc.Module());
     }
 
     public override string get_ns() { return NS_URI; }

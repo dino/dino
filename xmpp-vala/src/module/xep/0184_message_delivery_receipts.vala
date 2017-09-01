@@ -20,9 +20,6 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
         }
 
         public override void attach(XmppStream stream) {
-            ServiceDiscovery.Module.require(stream);
-            Message.Module.require(stream);
-
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
             stream.get_module(Message.Module.IDENTITY).received_message.connect(received_message);
             stream.get_module(Message.Module.IDENTITY).pre_send_message.connect(pre_send_message);
@@ -31,10 +28,6 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
         public override void detach(XmppStream stream) {
             stream.get_module(Message.Module.IDENTITY).received_message.disconnect(received_message);
             stream.get_module(Message.Module.IDENTITY).pre_send_message.disconnect(pre_send_message);
-        }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }

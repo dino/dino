@@ -13,10 +13,11 @@ SOURCES
     "src/row.vala"
 
     "src/statement_builder.vala"
-    "src/query_builder.vala"
-    "src/insert_builder.vala"
-    "src/update_builder.vala"
     "src/delete_builder.vala"
+    "src/insert_builder.vala"
+    "src/query_builder.vala"
+    "src/update_builder.vala"
+    "src/upsert_builder.vala"
 PACKAGES
     ${QLITE_PACKAGES}
 GENERATE_VAPI
