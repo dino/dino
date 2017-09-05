@@ -126,6 +126,7 @@ public class UnifiedWindow : Window {
 
     private bool on_focus_in_event() {
         stream_interactor.get_module(ChatInteraction.IDENTITY).on_window_focus_in(conversation);
+        urgency_hint = false;
         return false;
     }
 

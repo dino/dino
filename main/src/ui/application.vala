@@ -21,8 +21,8 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         Window.set_default_icon_name("dino");
 
         CssProvider provider = new CssProvider();
-        provider.load_from_resource("/im/dino/pre_theme.css");
-        StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_THEME - 1);
+        provider.load_from_resource("/im/dino/theme.css");
+        StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
 
         activate.connect(() => {
             if (window == null) {

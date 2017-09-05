@@ -46,7 +46,7 @@ public class Database : Qlite.Database {
 
     public string? get_contact_key(Jid jid) {
         return contact_key_table.select({contact_key_table.key})
-            .with(contact_key_table.jid, "=", jid.bare_jid.to_string())[contact_key_table.key];
+            .with(contact_key_table.jid, "=", jid.to_string())[contact_key_table.key];
     }
 
     public void set_account_key(Account account, string key) {

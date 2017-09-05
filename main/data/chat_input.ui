@@ -6,6 +6,9 @@
         <property name="orientation">horizontal</property>
         <property name="margin">5</property>
         <property name="visible">True</property>
+        <style>
+            <class name="dino-chatinput"/>
+        </style>
         <child>
             <object class="GtkScrolledWindow" id="scrolled">
                 <property name="max_content_height">300</property>
@@ -15,12 +18,17 @@
                     <object class="GtkFrame">
                         <property name="visible">True</property>
                         <child>
-                            <object class="GtkTextView" id="text_input">
-                                <property name="wrap-mode">GTK_WRAP_WORD_CHAR</property>
-                                <property name="border-width">5</property>
-                                <property name="can_focus">True</property>
-                                <property name="hexpand">True</property>
+                            <object class="GtkBox" id="box">
                                 <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkTextView" id="text_input">
+                                        <property name="wrap-mode">GTK_WRAP_WORD_CHAR</property>
+                                        <property name="border-width">5</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>
