@@ -63,6 +63,7 @@ public class Notifications : Object {
             try {
                 notifications[conversation].show();
             } catch (Error error) { }
+            window.urgency_hint = true;
         }
     }
 

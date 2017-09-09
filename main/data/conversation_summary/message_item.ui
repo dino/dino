@@ -38,7 +38,7 @@
             </packing>
         </child>
         <child>
-            <object class="GtkImage" id="encryption_image">
+            <object class="GtkImage" id="received_image">
                 <property name="visible">False</property>
                 <property name="xalign">1</property>
                 <property name="valign">start</property>
@@ -54,7 +54,7 @@
             </packing>
         </child>
         <child>
-            <object class="GtkImage" id="received_image">
+            <object class="GtkImage" id="encryption_image">
                 <property name="visible">False</property>
                 <property name="xalign">1</property>
                 <property name="valign">start</property>

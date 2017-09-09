@@ -12,6 +12,7 @@ public class View : Box {
 
     [GtkChild] private ScrolledWindow scrolled;
     [GtkChild] private TextView text_input;
+    [GtkChild] private Box box;
 
     public string text {
         owned get { return text_input.buffer.text; }
@@ -25,6 +26,7 @@ public class View : Box {
     private OccupantsTabCompletor occupants_tab_completor;
     private SmileyConverter smiley_converter;
     private EditHistory edit_history;
+    private EncryptionButton encryption_widget = new EncryptionButton() { yalign=0, visible=true };
 
     public View(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -32,6 +34,8 @@ public class View : Box {
         smiley_converter = new SmileyConverter(stream_interactor, text_input);
         edit_history = new EditHistory(text_input, GLib.Application.get_default());
 
+        box.add(encryption_widget);
+        encryption_widget.get_style_context().add_class("dino-chatinput-button");
         scrolled.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
         text_input.key_press_event.connect(on_text_input_key_press);
@@ -41,6 +45,7 @@ public class View : Box {
     public void initialize_for_conversation(Conversation conversation) {
         occupants_tab_completor.initialize_for_conversation(conversation);
         edit_history.initialize_for_conversation(conversation);
+        encryption_widget.set_conversation(conversation);
 
         if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
         this.conversation = conversation;

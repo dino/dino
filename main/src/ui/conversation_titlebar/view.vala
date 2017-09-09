@@ -22,7 +22,6 @@ public class ConversationTitlebar : Gtk.HeaderBar {
 
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
-        app.plugin_registry.register_contact_titlebar_entry(new EncryptionEntry());
         app.plugin_registry.register_contact_titlebar_entry(new OccupantsEntry(stream_interactor, window));
 
         foreach(var e in app.plugin_registry.conversation_titlebar_entries) {
@@ -32,6 +31,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
                 pack_end((Gtk.Widget)widget);
             }
         }
+
 
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
             Idle.add(() => {

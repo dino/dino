@@ -47,7 +47,7 @@ set(RESOURCE_LIST
     settings_dialog.ui
     unified_window_placeholder.ui
 
-    pre_theme.css
+    theme.css
 )
 
 compile_gresources(
@@ -85,6 +85,7 @@ SOURCES
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala
     src/ui/chat_input/edit_history.vala
+    src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
@@ -107,7 +108,6 @@ SOURCES
     src/ui/conversation_summary/message_populator.vala
     src/ui/conversation_summary/message_textview.vala
     src/ui/conversation_summary/slashme_message_display.vala
-    src/ui/conversation_titlebar/encryption_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
     src/ui/conversation_titlebar/view.vala

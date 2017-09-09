@@ -27,10 +27,11 @@ public class Flag : XmppStreamFlag {
 
     public string? get_real_jid(string full_jid) { return occupant_real_jids[full_jid]; }
 
-    public Gee.List<string> get_offline_members(string full_jid) {
+    public Gee.List<string> get_offline_members(string muc_jid) {
         Gee.List<string> ret = new ArrayList<string>();
-        foreach (string muc_jid in affiliations.keys) {
-            foreach (string jid in affiliations[muc_jid].keys) {
+        HashMap<string, Affiliation>? muc_affiliations = affiliations[muc_jid];
+        if (muc_affiliations != null) {
+            foreach (string jid in muc_affiliations.keys) {
                 if (!jid.has_prefix(muc_jid)) ret.add(jid);
             }
         }

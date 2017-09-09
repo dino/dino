@@ -98,7 +98,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                     item.display_time.difference(lower_start_item.display_time) < TimeSpan.MINUTE &&
                     lower_start_item.jid.equals(item.jid) &&
                     lower_start_item.encryption == item.encryption &&
-                    item.mark != Message.Marked.WONTSEND) {
+                    (item.mark == Message.Marked.WONTSEND) == (lower_start_item.mark == Message.Marked.WONTSEND)) {
                 lower_skeleton.add_meta_item(item);
                 force_alloc_width(lower_skeleton, main.get_allocated_width());
                 item_item_skeletons[item] = lower_skeleton;
