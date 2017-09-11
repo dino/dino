@@ -33,13 +33,11 @@ class MenuWidget : MenuButton, Plugins.ConversationTitlebarWidget {
         MenuModel menu = builder.get_object("menu_conversation") as MenuModel;
         set_menu_model(menu);
 
-        SimpleAction contact_details_action = new SimpleAction("contact_details", null);
-        contact_details_action.activate.connect(() => {
+        Util.Shortcuts.singleton.enable_action("contact_details").activate.connect(() => {
             ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
             contact_details_dialog.set_transient_for((Window) get_toplevel());
             contact_details_dialog.present();
         });
-        GLib.Application.get_default().add_action(contact_details_action);
     }
 
     public new void set_conversation(Conversation conversation) {

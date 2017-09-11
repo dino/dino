@@ -9,6 +9,10 @@
                 <attribute name="action">app.settings</attribute>
                 <attribute name="label" translatable="yes">Settings</attribute>
             </item>
+            <item>
+                <attribute name="action">app.shortcuts</attribute>
+                <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
+            </item>
         </section>
         <section>
             <item>

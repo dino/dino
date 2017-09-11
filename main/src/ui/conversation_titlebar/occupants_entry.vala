@@ -46,6 +46,11 @@ class OccupantsWidget : MenuButton, Plugins.ConversationTitlebarWidget {
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             OccupantMenu.View menu = new OccupantMenu.View(stream_interactor, window, conversation);
             set_popover(menu);
+
+            Util.Shortcuts.singleton.enable_action("occupants").activate.connect(() => {
+                if (is_visible())
+                    menu.popup();
+            });
         }
     }
 }

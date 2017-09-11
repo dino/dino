@@ -29,6 +29,11 @@ public class ConversationTitlebar : Gtk.HeaderBar {
             if (widget != null) {
                 widgets.add(widget);
                 pack_end((Gtk.Widget)widget);
+                if (widget.get_type().name() == "DinoPluginsHttpFilesConversationTitlebarWidget") {
+                    Util.Shortcuts.singleton.enable_action("send_file").activate.connect(() => {
+                        ((Button) widget).clicked();
+                    });
+                }
             }
         }
 

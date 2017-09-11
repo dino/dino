@@ -89,6 +89,10 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         }
     }
 
+    public void scroll_window(ScrollType type) {
+        scrolled.scroll_child(type, false);
+    }
+
     private bool merge_back(Plugins.MetaConversationItem item) {
         Plugins.MetaConversationItem? lower_item = meta_items.lower(item);
         if (lower_item != null) {

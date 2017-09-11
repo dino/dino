@@ -40,6 +40,10 @@ public class View : Box {
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
         text_input.key_press_event.connect(on_text_input_key_press);
         text_input.buffer.changed.connect(on_text_input_changed);
+
+        Util.Shortcuts.singleton.enable_action("select_encryption").activate.connect(() => {
+            encryption_widget.clicked();
+        });
     }
 
     public void initialize_for_conversation(Conversation conversation) {
@@ -57,6 +61,10 @@ public class View : Box {
         }
         text_input.buffer.changed.connect(on_text_input_changed);
 
+        text_input.grab_focus();
+    }
+
+    public new void grab_focus() {
         text_input.grab_focus();
     }
 

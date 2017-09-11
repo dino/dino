@@ -24,8 +24,7 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
     }
 
     private void create_add_menu(Window window) {
-        SimpleAction contacts_action = new SimpleAction("add_chat", null);
-        contacts_action.activate.connect(() => {
+        Util.Shortcuts.singleton.enable_action("add_chat").activate.connect(() => {
             AddConversation.Chat.Dialog add_chat_dialog = new AddConversation.Chat.Dialog(stream_interactor, stream_interactor.get_accounts());
             add_chat_dialog.set_transient_for(window);
             add_chat_dialog.title = _("Start Chat");
@@ -37,16 +36,13 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
             });
             add_chat_dialog.present();
         });
-        GLib.Application.get_default().add_action(contacts_action);
 
-        SimpleAction conference_action = new SimpleAction("add_conference", null);
-        conference_action.activate.connect(() => {
+        Util.Shortcuts.singleton.enable_action("add_conference").activate.connect(() => {
             AddConversation.Conference.Dialog add_conference_dialog = new AddConversation.Conference.Dialog(stream_interactor);
             add_conference_dialog.set_transient_for(window);
             add_conference_dialog.conversation_opened.connect((conversation) => conversation_opened(conversation));
             add_conference_dialog.present();
         });
-        GLib.Application.get_default().add_action(conference_action);
 
         Builder builder = new Builder.from_resource("/im/dino/menu_add.ui");
         MenuModel menu = builder.get_object("menu_add") as MenuModel;
