@@ -11,8 +11,6 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
     public signal void focused_in(Conversation conversation);
     public signal void focused_out(Conversation conversation);
-    public signal void conversation_read(Conversation conversation);
-    public signal void conversation_unread(Conversation conversation);
 
     private StreamInteractor stream_interactor;
     private Conversation? selected_conversation;
@@ -80,7 +78,6 @@ public class ChatInteraction : StreamInteractionModule, Object {
         focus_in = true;
         if (conversation == null) return;
         focused_in(selected_conversation);
-        conversation_read(selected_conversation);
         check_send_read();
         selected_conversation.read_up_to = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
     }
@@ -137,7 +134,6 @@ public class ChatInteraction : StreamInteractionModule, Object {
             send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_DISPLAYED);
         } else {
             send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_RECEIVED);
-            conversation_unread(conversation);
         }
     }
 
