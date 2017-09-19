@@ -9,6 +9,8 @@ public class ChatInteraction : StreamInteractionModule, Object {
     public static ModuleIdentity<ChatInteraction> IDENTITY = new ModuleIdentity<ChatInteraction>("chat_interaction");
     public string id { get { return IDENTITY.id; } }
 
+    public signal void focused_in(Conversation conversation);
+    public signal void focused_out(Conversation conversation);
     public signal void conversation_read(Conversation conversation);
     public signal void conversation_unread(Conversation conversation);
 
@@ -77,6 +79,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private void on_conversation_focused(Conversation? conversation) {
         focus_in = true;
         if (conversation == null) return;
+        focused_in(selected_conversation);
         conversation_read(selected_conversation);
         check_send_read();
         selected_conversation.read_up_to = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
@@ -85,6 +88,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private void on_conversation_unfocused(Conversation? conversation) {
         focus_in = false;
         if (conversation == null) return;
+        focused_out(selected_conversation);
         if (last_input_interaction.has_key(conversation)) {
             send_chat_state_notification(conversation, Xep.ChatStateNotifications.STATE_PAUSED);
             last_input_interaction.unset(conversation);
