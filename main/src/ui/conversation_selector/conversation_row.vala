@@ -41,6 +41,7 @@ public abstract class ConversationRow : ListBoxRow {
         this.stream_interactor = stream_interactor;
 
         x_button.clicked.connect(close_conversation);
+        conversation.notify["read-up-to"].connect(update_read);
         stream_interactor.connection_manager.connection_state_changed.connect(update_avatar);
 
         update_name_label();
