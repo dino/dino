@@ -68,6 +68,7 @@ public class Module : XmppStreamModule {
     public signal void room_enter_error(XmppStream stream, string jid, MucEnterError? error); // TODO "?" shoudln't be necessary (vala bug), remove someday
     public signal void self_removed_from_room(XmppStream stream, string jid, StatusCode code);
     public signal void removed_from_room(XmppStream stream, string jid, StatusCode? code);
+    public signal void invite_received(XmppStream stream, string room_jid, string from_jid, string? password, string? reason);
 
     public void enter(XmppStream stream, string bare_jid, string nick, string? password, DateTime? history_since) {
         Presence.Stanza presence = new Presence.Stanza();
@@ -202,6 +203,25 @@ public class Module : XmppStreamModule {
                 string subject = subject_node.get_string_content();
                 stream.get_flag(Flag.IDENTITY).set_muc_subject(message.from, subject);
                 subject_set(stream, subject, message.from);
+            }
+        } else if (message.type_ == Message.Stanza.TYPE_NORMAL) {
+            StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_USER);
+            if (x_node != null) {
+                StanzaNode? invite_node = x_node.get_subnode("invite", NS_URI_USER);
+                string? password = null;
+                StanzaNode? password_node = x_node.get_subnode("password", NS_URI_USER);
+                if (password_node != null)
+                    password = password_node.get_string_content();
+                if (invite_node != null) {
+                    string? from_jid = invite_node.get_attribute("from");
+                    if (from_jid != null) {
+                        StanzaNode? reason_node = invite_node.get_subnode("reason", NS_URI_USER);
+                        string? reason = null;
+                        if (reason_node != null)
+                            reason = reason_node.get_string_content();
+                        invite_received(stream, message.from, from_jid, password, reason);
+                    }
+                }
             }
         }
     }
