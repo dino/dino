@@ -69,12 +69,15 @@ public class UploadStreamModule : XmppStreamModule {
                 return;
             }
             string? url_get = null, url_put = null;
-            // FIXME change back to switch on version in a while (prosody bug)
-            url_get = iq.stanza.get_deep_attribute(flag.ns_ver + ":slot", flag.ns_ver + ":get", flag.ns_ver + ":url");
-            url_put = iq.stanza.get_deep_attribute(flag.ns_ver + ":slot", flag.ns_ver + ":put", flag.ns_ver + ":url");
-            if (url_get == null && url_put == null) {
-                url_get = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":get");
-                url_put = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":put");
+            switch (flag.ns_ver) {
+                case NS_URI_0:
+                    url_get = iq.stanza.get_deep_attribute(flag.ns_ver + ":slot", flag.ns_ver + ":get", flag.ns_ver + ":url");
+                    url_put = iq.stanza.get_deep_attribute(flag.ns_ver + ":slot", flag.ns_ver + ":put", flag.ns_ver + ":url");
+                    break;
+                case NS_URI:
+                    url_get = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":get");
+                    url_put = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":put");
+                    break;
             }
             if (url_get == null || url_put == null) {
                 error_listener(stream, "Error getting upload/download url");
