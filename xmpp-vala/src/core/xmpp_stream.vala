@@ -149,7 +149,7 @@ public class XmppStream {
         return this;
     }
 
-    public void remove_modules() {
+    public void detach_modules() {
         foreach (XmppStreamModule module in modules) module.detach(this);
     }
 

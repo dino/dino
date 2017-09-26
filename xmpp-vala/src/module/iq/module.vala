@@ -30,6 +30,11 @@ namespace Xmpp.Iq {
             namespaceRegistrants[namespace].add(module);
         }
 
+        public void unregister_from_namespace(string namespace, Handler module) {
+            ArrayList<Handler>? handlers = namespaceRegistrants[namespace];
+            if (handlers != null) handlers.remove(module);
+        }
+
         public override void attach(XmppStream stream) {
             stream.received_iq_stanza.connect(on_received_iq_stanza);
         }

@@ -10,7 +10,7 @@ private const string NS_URI_0 = "urn:xmpp:http:upload:0";
 public class UploadStreamModule : XmppStreamModule {
     public static Core.ModuleIdentity<UploadStreamModule> IDENTITY = new Core.ModuleIdentity<UploadStreamModule>(NS_URI, "0363_http_file_upload");
 
-    public signal void feature_available(XmppStream stream, int? max_file_size);
+    public signal void feature_available(XmppStream stream, long max_file_size);
 
     public delegate void OnUploadOk(XmppStream stream, string url_down);
     public delegate void OnError(XmppStream stream, string error);
@@ -122,7 +122,7 @@ public class UploadStreamModule : XmppStreamModule {
         }
 
         if (ver_available || ver_0_available) {
-            int? max_file_size = extract_max_file_size(info_result);
+            long max_file_size = extract_max_file_size(info_result);
             if (ver_0_available) {
                 stream.add_flag(new Flag(jid, NS_URI_0));
             } else if (ver_available) {
@@ -135,7 +135,7 @@ public class UploadStreamModule : XmppStreamModule {
         return false;
     }
 
-    private int? extract_max_file_size(Xep.ServiceDiscovery.InfoResult info_result) {
+    private long extract_max_file_size(Xep.ServiceDiscovery.InfoResult info_result) {
         string? max_file_size_str = null;
         StanzaNode x_node = info_result.iq.stanza.get_deep_subnode("http://jabber.org/protocol/disco#info:query", "jabber:x:data:x");
         Gee.List<StanzaNode> field_nodes = x_node.get_subnodes("field", "jabber:x:data");
@@ -147,8 +147,8 @@ public class UploadStreamModule : XmppStreamModule {
                 break;
             }
         }
-        if (max_file_size_str != null) return int.parse(max_file_size_str);
-        return null;
+        if (max_file_size_str != null) return long.parse(max_file_size_str);
+        return -1;
     }
 }
 

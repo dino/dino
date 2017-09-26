@@ -71,12 +71,14 @@ public class Module : XmppStreamModule, Iq.Handler {
     public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
 
     public override void attach(XmppStream stream) {
-        stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI_INFO, this);
         stream.add_flag(new Flag());
+        stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI_INFO, this);
         add_feature(stream, NS_URI_INFO);
     }
 
-    public override void detach(XmppStream stream) { }
+    public override void detach(XmppStream stream) {
+        stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI_INFO, this);
+    }
 
     public static void require(XmppStream stream) {
         if (stream.get_module(IDENTITY) == null) stream.add_module(new ServiceDiscovery.Module());
