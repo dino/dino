@@ -38,8 +38,8 @@ public class ConversationTitlebarWidget : Button, Plugins.ConversationTitlebarWi
         FileChooserNative chooser = new FileChooserNative (
                 "Select file", get_toplevel() as Window, FileChooserAction.OPEN,
                 "Select", "Cancel");
-        int? max_file_size = stream_interactor.get_module(Manager.IDENTITY).get_max_file_size(conversation.account);
-        if (max_file_size != null) {
+        long max_file_size = stream_interactor.get_module(Manager.IDENTITY).get_max_file_size(conversation.account);
+        if (max_file_size != -1) {
             FileFilter filter = new FileFilter();
             filter.add_custom(FileFilterFlags.URI, (filter_info) => {
                 File file = File.new_for_uri(filter_info.uri);

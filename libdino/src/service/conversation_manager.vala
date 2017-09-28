@@ -74,6 +74,15 @@ public class ConversationManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public Conversation? get_conversation_by_id(int id) {
+        foreach (HashMap<Jid, Conversation> hm in conversations.values) {
+            foreach (Conversation conversation in hm.values) {
+                if (conversation.id == id) return conversation;
+            }
+        }
+        return null;
+    }
+
     public Gee.List<Conversation> get_active_conversations() {
         Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
         foreach (Account account in conversations.keys) {

@@ -22,12 +22,6 @@ public class List : ListBox {
         set_header_func(header);
         set_sort_func(sort);
 
-        stream_interactor.get_module(ChatInteraction.IDENTITY).conversation_read.connect((conversation) => {
-            Idle.add(() => { if (rows.has_key(conversation)) rows[conversation].mark_read(); return false; });
-        });
-        stream_interactor.get_module(ChatInteraction.IDENTITY).conversation_unread.connect((conversation) => {
-            Idle.add(() => { if (rows.has_key(conversation)) rows[conversation].mark_unread(); return false; });
-        });
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect((conversation) => {
             Idle.add(() => { add_conversation(conversation); return false; });
         });

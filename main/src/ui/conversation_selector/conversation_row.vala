@@ -41,6 +41,7 @@ public abstract class ConversationRow : ListBoxRow {
         this.stream_interactor = stream_interactor;
 
         x_button.clicked.connect(close_conversation);
+        conversation.notify["read-up-to"].connect(update_read);
         stream_interactor.connection_manager.connection_state_changed.connect(update_avatar);
 
         update_name_label();
@@ -57,14 +58,7 @@ public abstract class ConversationRow : ListBoxRow {
         last_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation) ?? m;
         update_message_label();
         update_time_label();
-    }
-
-    public void mark_read() {
-        update_read(true);
-    }
-
-    public void mark_unread() {
-        update_read(false);
+        update_read();
     }
 
     public virtual void on_show_received(Show presence) {
@@ -103,8 +97,10 @@ public abstract class ConversationRow : ListBoxRow {
         }
     }
 
-    protected void update_read(bool read) {
-        this.read = read;
+    protected void update_read() {
+        bool read_was = read;
+        read = last_message == null || (conversation.read_up_to != null && last_message.equals(conversation.read_up_to));
+        if (read == read_was) return;
         if (read) {
             name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
             time_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));

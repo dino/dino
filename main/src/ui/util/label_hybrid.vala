@@ -34,13 +34,7 @@ public class EntryLabelHybrid : LabelHybrid {
         get { return entry.text; }
         set {
             entry.text = value;
-            if (visibility) {
-                label.label = value;
-            } else {
-                string filler = "";
-                for (int i = 0; i < value.length; i++) filler += entry.get_invisible_char().to_string();
-                label.label = filler;
-            }
+            set_label_label(value);
         }
     }
 
@@ -83,7 +77,7 @@ public class EntryLabelHybrid : LabelHybrid {
             if (event.keyval == Gdk.Key.Return) {
                 show_label();
             } else {
-                label.label = entry.text;
+                set_label_label(entry.text);
             }
             return false;
         });
@@ -91,6 +85,16 @@ public class EntryLabelHybrid : LabelHybrid {
             show_label();
             return false;
         });
+    }
+
+    private void set_label_label(string value) {
+        if (visibility) {
+            label.label = value;
+        } else {
+            string filler = "";
+            for (int i = 0; i < value.length; i++) filler += entry.get_invisible_char().to_string();
+            label.label = filler;
+        }
     }
 
     private void update_label() {

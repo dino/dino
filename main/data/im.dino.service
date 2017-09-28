@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=im.dino
+Exec=dino

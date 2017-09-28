@@ -13,7 +13,7 @@ public class Manager : StreamInteractionModule, Object {
     public signal void uploaded(FileTransfer file_transfer, string url);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Account, int?> max_file_sizes = new HashMap<Account, int?>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, long> max_file_sizes = new HashMap<Account, long>(Account.hash_func, Account.equals_func);
 
     private Manager(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -60,7 +60,7 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    public int? get_max_file_size(Account account) {
+    public long get_max_file_size(Account account) {
         lock (max_file_sizes) {
             return max_file_sizes[account];
         }

@@ -9,7 +9,6 @@ find_packages(MAIN_PACKAGES REQUIRED
     GModule
     GObject
     GTK3>=3.22
-    Libnotify
 )
 
 set(RESOURCE_LIST
@@ -145,7 +144,8 @@ if(WIN32)
 endif(WIN32)
 
 install(TARGETS dino ${TARGET_INSTALL})
-install(FILES data/dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
+install(FILES data/im.dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
+install(FILES data/im.dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
 install(FILES data/icons/dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
 install(FILES data/icons/dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
 install(FILES

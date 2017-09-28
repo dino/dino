@@ -36,7 +36,8 @@ public class FileProvider : Plugins.FileProvider, Object {
 
     public void check_message(Message message, Conversation conversation) {
         if (ignore_once.remove(message.body)) return;
-        bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, conversation.counterpart) != null;
+        Jid relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(message.from, conversation.account) ?? conversation.counterpart;
+        bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
         if (message.direction == Message.DIRECTION_RECEIVED && !in_roster) return;
         if (message.body.length < 5) return;
         if (!url_regex.match(message.body)) return;
@@ -57,11 +58,11 @@ public class FileProvider : Plugins.FileProvider, Object {
                 Soup.Request request = session.request (message.body);
                 FileTransfer file_transfer = new FileTransfer();
                 file_transfer.account = conversation.account;
-                file_transfer.counterpart = conversation.counterpart;
+                file_transfer.counterpart = message.counterpart;
                 file_transfer.ourpart = message.ourpart;
                 file_transfer.encryption = Encryption.NONE;
-                file_transfer.time = new DateTime.now_utc();
-                file_transfer.local_time = new DateTime.now_utc();
+                file_transfer.time = message.time;
+                file_transfer.local_time = message.local_time;
                 file_transfer.direction = message.direction;
                 file_transfer.input_stream = request.send();
                 file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);

@@ -16,7 +16,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public Application() throws Error {
         Object(application_id: "im.dino", flags: ApplicationFlags.HANDLES_OPEN);
         init();
-        Notify.init("dino");
         Environment.set_application_name("Dino");
         Window.set_default_icon_name("dino");
 

@@ -145,7 +145,7 @@ public class ConnectionManager {
     private Core.XmppStream? connect_(Account account, string? resource = null) {
         if (!connection_mutexes[account].trylock()) return null;
 
-        if (connections.has_key(account)) connections[account].stream.remove_modules();
+        if (connections.has_key(account)) connections[account].stream.detach_modules();
         connection_errors.unset(account);
         if (resource == null) resource = account.resourcepart;
 
