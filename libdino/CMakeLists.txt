@@ -4,6 +4,7 @@ find_packages(LIBDINO_PACKAGES REQUIRED
     GLib
     GModule
     GObject
+    Secret
 )
 
 vala_precompile(LIBDINO_VALA_C
@@ -42,6 +43,7 @@ SOURCES
     src/service/muc_manager.vala
     src/service/presence_manager.vala
     src/service/roster_manager.vala
+    src/service/secret_manager.vala
     src/service/stream_interactor.vala
     src/service/util.vala
 
