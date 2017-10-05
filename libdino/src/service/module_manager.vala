@@ -70,6 +70,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.Pubsub.Module());
             module_map[account].add(new Xep.EntityCapabilities.Module(entity_capabilities_storage));
             module_map[account].add(new Xep.MessageDeliveryReceipts.Module());
+            module_map[account].add(new Xep.BlockingCommand.Module());
             module_map[account].add(new Xep.ChatStateNotifications.Module());
             module_map[account].add(new Xep.ChatMarkers.Module());
             module_map[account].add(new Xep.Ping.Module());
