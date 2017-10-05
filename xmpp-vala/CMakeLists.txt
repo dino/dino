@@ -56,6 +56,7 @@ SOURCES
     "src/module/xep/0084_user_avatars.vala"
     "src/module/xep/0085_chat_state_notifications.vala"
     "src/module/xep/0115_entitiy_capabilities.vala"
+    "src/module/xep/0191_blocking_command.vala"
     "src/module/xep/0198_stream_management.vala"
     "src/module/xep/0199_ping.vala"
     "src/module/xep/0184_message_delivery_receipts.vala"
