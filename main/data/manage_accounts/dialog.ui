@@ -248,7 +248,7 @@
                                 </child>
                                 <child>
                                     <object class="GtkLabel">
-                                        <property name="label">No accounts configured</property>
+                                        <property name="label" translatable="yes">No accounts configured</property>
                                         <property name="xalign">0.5</property>
                                         <property name="yalign">0.5</property>
                                         <property name="visible">True</property>

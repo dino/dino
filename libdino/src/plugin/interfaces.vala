@@ -109,15 +109,6 @@ public interface MessageDisplayProvider : Object {
     public abstract MetaConversationItem? get_item(Entities.Message message, Entities.Conversation conversation);
 }
 
-public interface FileProvider : Object {
-    public signal void file_incoming(FileTransfer file_transfer);
-}
-
-public interface FileProcessor : Object {
-    public abstract bool can_process(FileTransfer file_transfer);
-    public abstract FileTransfer process(FileTransfer file_transfer);
-}
-
 public interface FileWidget : Object {
     public abstract Object get_widget(WidgetType type);
 }
