@@ -74,6 +74,7 @@ public class Notifications : Object {
     public void start() {
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
         stream_interactor.get_module(PresenceManager.IDENTITY).received_subscription_request.connect(on_received_subscription_request);
+        stream_interactor.get_module(MucManager.IDENTITY).invite_received.connect(on_invite_received);
     }
 
     private void on_message_received(Entities.Message message, Conversation conversation) {
@@ -106,6 +107,21 @@ public class Notifications : Object {
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
         notification.add_button_with_target_value(_("Accept"), "app.accept-subscription", conversation.id);
         notification.add_button_with_target_value(_("Deny"), "app.deny-subscription", conversation.id);
+        window.get_application().send_notification(null, notification);
+    }
+
+    private void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
+        Notification notification = new Notification(_("Invitation received"));
+        string body;
+        if (reason != null)
+            body = _("You have been invited to room “%s” by “%s”, they said: “%s”").printf(room_jid.bare_jid.to_string(), from_jid.bare_jid.to_string(), reason);
+        else
+            body = _("You have been invited to room “%s” by “%s”.").printf(room_jid.bare_jid.to_string(), from_jid.bare_jid.to_string());
+        notification.set_body(body);
+        notification.set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, from_jid, account)));
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
+        notification.add_button_with_target_value(_("Accept"), "app.accept-invite", conversation.id);
+        notification.add_button_with_target_value(_("Deny"), "app.deny-invite", conversation.id);
         window.get_application().send_notification(null, notification);
     }
 
