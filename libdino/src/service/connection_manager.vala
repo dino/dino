@@ -121,7 +121,7 @@ public class ConnectionManager {
     }
 
     public Core.XmppStream? connect(Account account) {
-        if (!connection_mutexes.contains(account)) connection_mutexes[account] = new RecMutexWrap();
+        if (!connection_mutexes.has_key(account)) connection_mutexes[account] = new RecMutexWrap();
         if (!connection_todo.contains(account)) connection_todo.add(account);
         if (!connections.has_key(account)) {
             return connect_(account);
