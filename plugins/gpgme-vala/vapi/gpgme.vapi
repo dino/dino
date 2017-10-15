@@ -464,7 +464,13 @@ namespace GPG {
         }
 
         [CCode (cname = "gpgme_data_new_from_file")]
-        public static GPGError.Error create_from_file(out Data d, string filename, int copy = 1);
+        public static GPGError.Error new_from_file(out Data d, string filename, int copy = 1);
+
+        public static Data create_from_file(string filename, int copy = 1) {
+            Data data;
+            throw_if_error(new_from_file(out data, filename, copy));
+            return data;
+        }
 
         [CCode (cname = "gpgme_data_release_and_get_mem")]
         public string release_and_get_mem(out size_t len);

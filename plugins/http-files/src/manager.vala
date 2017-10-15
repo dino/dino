@@ -23,9 +23,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     public void send_file(Conversation conversation, FileTransfer file_transfer) {
         Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream != null) {
-            file_transfer.provider = 0;
-            uploading(file_transfer);
-            stream_interactor.module_manager.get_module(file_transfer.account, UploadStreamModule.IDENTITY).upload(stream, Path.build_filename(FileManager.get_storage_dir(), file_transfer.path),
+            stream_interactor.module_manager.get_module(file_transfer.account, UploadStreamModule.IDENTITY).upload(stream, file_transfer.input_stream, file_transfer.server_file_name, file_transfer.size, file_transfer.mime_type,
                 (stream, url_down) => {
                     uploaded(file_transfer, url_down);
                     stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(url_down, conversation);

@@ -47,7 +47,7 @@ public class FileProvider : Dino.FileProvider, Object {
                 if (name == "Content-Type") content_type = val;
                 if (name == "Content-Length") content_length = val;
             });
-            if (content_type != null && content_type.has_prefix("image") && content_length != null && int.parse(content_length) < 5000000) {
+            if (/*content_type != null && content_type.has_prefix("image") &&*/ content_length != null && int.parse(content_length) < 5000000) {
                 Soup.Request request = session.request (message.body);
                 FileTransfer file_transfer = new FileTransfer();
                 file_transfer.account = conversation.account;

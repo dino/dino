@@ -25,6 +25,11 @@ public class FileTransfer : Object {
     public OutputStream output_stream { get; set; }
 
     public string file_name { get; set; }
+    private string? server_file_name_ = null;
+    public string server_file_name {
+        get { return server_file_name_ ?? file_name; }
+        set { server_file_name_ = value; }
+    }
     public string path { get; set; }
     public string mime_type { get; set; }
     public int size { get; set; }
@@ -88,6 +93,10 @@ public class FileTransfer : Object {
             .value(db.file_transfer.info, info);
         id = (int) builder.perform();
         notify.connect(on_update);
+    }
+
+    public string get_uri() {
+        return Path.build_filename(Dino.get_storage_dir(), "files", path);
     }
 
     private void on_update(Object o, ParamSpec sp) {

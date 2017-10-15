@@ -33,11 +33,8 @@ namespace Dino.Plugins.OpenPgp {
             }
         }
 
-        public bool encrypt(Message.Stanza message, Gee.List<string> fprs) {
-            string[] encrypt_to = new string[fprs.size + 1];
-            for (int i = 0; i < fprs.size; i++) encrypt_to[i] = fprs[i];
-            encrypt_to[encrypt_to.length - 1] = own_key.fpr;
-            string? enc_body = gpg_encrypt(message.body, encrypt_to);
+        public bool encrypt(Message.Stanza message, GPG.Key[] keys) {
+            string? enc_body = gpg_encrypt(message.body, keys);
             if (enc_body != null) {
                 message.stanza.put_node(new StanzaNode.build("x", NS_URI_ENCRYPTED).add_self_xmlns().put_node(new StanzaNode.text(enc_body)));
                 message.body = "[This message is OpenPGP encrypted (see XEP-0027)]";
@@ -105,13 +102,9 @@ namespace Dino.Plugins.OpenPgp {
             }
         }
 
-        private static string? gpg_encrypt(string plain, string[] key_ids) {
-            GPG.Key[] keys = new GPG.Key[key_ids.length];
+        private static string? gpg_encrypt(string plain, GPG.Key[] keys) {
             string encr;
             try {
-                for (int i = 0; i < key_ids.length; i++) {
-                    keys[i] = GPGHelper.get_public_key(key_ids[i]);
-                }
                 encr = GPGHelper.encrypt_armor(plain, keys, GPG.EncryptFlags.ALWAYS_TRUST);
             } catch (Error e) {
                 return null;

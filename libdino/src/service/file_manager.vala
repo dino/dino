@@ -16,6 +16,8 @@ public class FileManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private Gee.List<FileSender> file_senders = new ArrayList<FileSender>();
+    private Gee.List<IncommingFileProcessor> incomming_processors = new ArrayList<IncommingFileProcessor>();
+    private Gee.List<OutgoingFileProcessor> outgoing_processors = new ArrayList<OutgoingFileProcessor>();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
         FileManager m = new FileManager(stream_interactor, db);
@@ -46,11 +48,18 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.encryption = Encryption.NONE;
         file_transfer.file_name = file_info.get_display_name();
         file_transfer.input_stream = file.read();
+
         file_transfer.mime_type = file_info.get_content_type();
         file_transfer.size = (int)file_info.get_size();
         save_file(file_transfer);
 
         file_transfer.persist(db);
+
+        foreach (OutgoingFileProcessor processor in outgoing_processors) {
+            if (processor.can_process(conversation, file_transfer)) {
+                processor.process(conversation, file_transfer);
+            }
+        }
 
         foreach (FileSender file_sender in file_senders) {
             if (file_sender.can_send(conversation, file_transfer)) {
@@ -88,11 +97,7 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     public void add_provider(FileProvider file_provider) {
-        file_provider.file_incoming.connect((file_transfer) => {
-            save_file(file_transfer);
-            file_transfer.persist(db);
-            received_file(file_transfer);
-        });
+        file_provider.file_incoming.connect(handle_incomming_file);
     }
 
     public void add_sender(FileSender file_sender) {
@@ -100,6 +105,30 @@ public class FileManager : StreamInteractionModule, Object {
         file_sender.upload_available.connect((account) => {
             upload_available(account);
         });
+    }
+
+    public void add_incomming_processor(IncommingFileProcessor processor) {
+        incomming_processors.add(processor);
+    }
+
+    public void add_outgoing_processor(OutgoingFileProcessor processor) {
+        outgoing_processors.add(processor);
+    }
+
+    private void handle_incomming_file(FileTransfer file_transfer) {
+        foreach (IncommingFileProcessor processor in incomming_processors) {
+            if (processor.can_process(file_transfer)) {
+                processor.process(file_transfer);
+            }
+        }
+        save_file(file_transfer);
+
+        File file = File.new_for_path(file_transfer.get_uri());
+        FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+        file_transfer.mime_type = file_info.get_content_type();
+
+        file_transfer.persist(db);
+        received_file(file_transfer);
     }
 
     private void save_file(FileTransfer file_transfer) {
@@ -132,12 +161,12 @@ public interface FileSender : Object {
 
 public interface IncommingFileProcessor : Object {
     public abstract bool can_process(FileTransfer file_transfer);
-    public abstract FileTransfer process(FileTransfer file_transfer);
+    public abstract void process(FileTransfer file_transfer);
 }
 
 public interface OutgoingFileProcessor : Object {
-    public abstract bool can_process(FileTransfer file_transfer);
-    public abstract FileTransfer process(FileTransfer file_transfer);
+    public abstract bool can_process(Conversation conversation, FileTransfer file_transfer);
+    public abstract void process(Conversation conversation, FileTransfer file_transfer);
 }
 
 }

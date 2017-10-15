@@ -30,6 +30,39 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(check_encypt);
     }
 
+    public GPG.Key[] get_key_fprs(Conversation conversation) {
+        Gee.List<string> keys = new Gee.ArrayList<string>();
+        keys.add(db.get_account_key(conversation.account));
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            Gee.List<Jid> muc_jids = new Gee.ArrayList<Jid>();
+            Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
+            if (occupants != null) muc_jids.add_all(occupants);
+            Gee.List<Jid>? offline_members = stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account);
+            if (occupants != null) muc_jids.add_all(offline_members);
+
+            foreach (Jid jid in muc_jids) {
+                string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, jid);
+                if (key_id != null && GPGHelper.get_keylist(key_id).size > 0 && !keys.contains(key_id)) {
+                    keys.add(key_id);
+                }
+            }
+        } else {
+            string? key_id = get_key_id(conversation.account, conversation.counterpart);
+            if (key_id != null) {
+                keys.add(key_id);
+            }
+        }
+        GPG.Key[] gpgkeys = new GPG.Key[keys.size];
+        for (int i = 0; i < keys.size; i++) {
+            try {
+                GPG.Key key = GPGHelper.get_public_key(keys[i]);
+                if (key != null) gpgkeys[i] = key;
+            } catch (Error e)  {}
+        }
+
+        return gpgkeys;
+    }
+
     private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
         if (MessageFlag.get_flag(message_stanza) != null && MessageFlag.get_flag(message_stanza).decrypted) {
             message.encryption = Encryption.PGP;
@@ -38,45 +71,13 @@ public class Manager : StreamInteractionModule, Object {
 
     private void check_encypt(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
         if (message.encryption == Encryption.PGP) {
-            bool encrypted = false;
-            if (conversation.type_ == Conversation.Type.CHAT) {
-                encrypted = encrypt_for_chat(message, message_stanza, conversation);
-            } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                encrypted = encrypt_for_groupchat(message, message_stanza, conversation);
-            }
-            if (!encrypted) message.marked = Entities.Message.Marked.WONTSEND;
-        }
-    }
-
-    private bool encrypt_for_chat(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
-        Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
-        if (stream == null) return false;
-
-        string? key_id = get_key_id(conversation.account, message.counterpart);
-        if (key_id != null) {
-            return stream.get_module(Module.IDENTITY).encrypt(message_stanza, new Gee.ArrayList<string>.wrap(new string[]{key_id}));
-        }
-        return false;
-    }
-
-    private bool encrypt_for_groupchat(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
-        Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
-        if (stream == null) return false;
-
-        Gee.List<Jid> muc_jids = new Gee.ArrayList<Jid>();
-        Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
-        if (occupants != null) muc_jids.add_all(occupants);
-        Gee.List<Jid>? offline_members = stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account);
-        if (occupants != null) muc_jids.add_all(offline_members);
-
-        Gee.List<string> keys = new Gee.ArrayList<string>();
-        foreach (Jid jid in muc_jids) {
-            string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, jid);
-            if (key_id != null && GPGHelper.get_keylist(key_id).size > 0 && !keys.contains(key_id)) {
-                keys.add(key_id);
+            GPG.Key[] keys = get_key_fprs(conversation);
+            Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+            if (stream != null) {
+                bool encrypted = stream.get_module(Module.IDENTITY).encrypt(message_stanza, keys);
+                if (!encrypted) message.marked = Entities.Message.Marked.WONTSEND;
             }
         }
-        return stream.get_module(Module.IDENTITY).encrypt(message_stanza, keys);
     }
 
     public string? get_key_id(Account account, Jid jid) {

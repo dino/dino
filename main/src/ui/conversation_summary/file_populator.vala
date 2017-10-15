@@ -41,7 +41,7 @@ class FilePopulator : Plugins.ConversationItemPopulator, Object {
     public void populate_between_widgets(Conversation conversation, DateTime from, DateTime to) { }
 
     private void insert_file(FileTransfer transfer) {
-        if (transfer.mime_type.has_prefix("image")) {
+        if (transfer.mime_type != null && transfer.mime_type.has_prefix("image")) {
             item_collection.insert_item(new ImageItem(stream_interactor, transfer));
         }
     }
@@ -81,7 +81,7 @@ public class ImageItem : Plugins.MetaConversationItem {
 
     public override Object get_widget(Plugins.WidgetType widget_type) {
         Image image = new Image() { halign=Align.START, visible = true };
-        Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_stream(file_transfer.input_stream);
+        Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_file(file_transfer.get_uri());
 
         int max_scaled_height = MAX_HEIGHT * image.scale_factor;
         if (pixbuf.height > max_scaled_height) {
