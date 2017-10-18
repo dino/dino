@@ -25,6 +25,14 @@ Build
 * libsoup (For the HTTP files plugin)
 * SQLite3
 
+**To compile on Ubuntu**
+
+Install the following dependencies :
+
+```
+ sudo apt install libvala-0.34-dev  libgee-0.8-dev libsqlite0-dev libsqlite3-dev libgpgme-dev libgcrypt20-dev libsoup2.4-dev 
+```
+
 **Instructions**
 
     ./configure
