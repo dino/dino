@@ -113,7 +113,9 @@ public class Notifications : Object {
         Conversation.NotifySetting notify = conversation.get_notification_setting(stream_interactor);
         if (notify == Conversation.NotifySetting.OFF) return false;
         Jid? nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
-        if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null && !message.body.contains(nick.resourcepart)) return false;
+        if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null) {
+            return Regex.match_simple("""\b""" + Regex.escape_string(nick.resourcepart) + """\b""", message.body, RegexCompileFlags.CASELESS);
+        }
         return true;
     }
 
