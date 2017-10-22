@@ -58,17 +58,24 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 dialog.present();
                 break;
             case "message":
-                AddConversation.Chat.Dialog dialog = new AddConversation.Chat.Dialog(stream_interactor, stream_interactor.get_accounts());
-                dialog.set_filter(jid);
-                dialog.set_transient_for(window);
-                dialog.title = _("Start Chat");
-                dialog.ok_button.label = _("Start");
-                dialog.selected.connect((account, jid) => {
-                    Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
+                Gee.List<Account> accounts = stream_interactor.get_accounts();
+                if (accounts.size == 1) {
+                    Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(new Jid(jid), accounts[0], Conversation.Type.CHAT);
                     stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
                     window.on_conversation_selected(conversation);
-                });
-                dialog.present();
+                } else {
+                    AddConversation.Chat.Dialog dialog = new AddConversation.Chat.Dialog(stream_interactor, stream_interactor.get_accounts());
+                    dialog.set_filter(jid);
+                    dialog.set_transient_for(window);
+                    dialog.title = _("Start Chat");
+                    dialog.ok_button.label = _("Start");
+                    dialog.selected.connect((account, jid) => {
+                        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
+                        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+                        window.on_conversation_selected(conversation);
+                    });
+                    dialog.present();
+                }
                 break;
         }
     }
