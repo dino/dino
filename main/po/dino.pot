@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-31 20:04+0200\n"
+"POT-Creation-Date: 2017-10-23 00:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,9 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/add_conversation/add_contact_dialog.ui:11
-#: data/add_conversation/add_groupchat_dialog.ui:11
+#: data/add_conversation/add_groupchat_dialog.ui:11 src/ui/application.vala:41
+#: src/ui/add_conversation/chat/dialog.vala:40
 #: src/ui/add_conversation/conference/dialog.vala:15
-#: src/ui/manage_accounts/dialog.vala:152
+#: src/ui/manage_accounts/dialog.vala:151
 msgid "Cancel"
 msgstr ""
 
@@ -62,7 +63,7 @@ msgstr ""
 msgid "Join on startup"
 msgstr ""
 
-#: data/conversation_selector/view.ui:15
+#: data/conversation_selector/view.ui:14
 msgid "Search"
 msgstr ""
 
@@ -72,7 +73,7 @@ msgid "Save"
 msgstr ""
 
 #: data/manage_accounts/add_account_dialog.ui:102
-#: data/manage_accounts/dialog.ui:220
+#: data/manage_accounts/dialog.ui:196
 msgid "Local alias"
 msgstr ""
 
@@ -80,22 +81,28 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: data/manage_accounts/dialog.ui:309
+#: data/manage_accounts/dialog.ui:251
+msgid "No accounts configured"
+msgstr ""
+
+#: data/manage_accounts/dialog.ui:262
 msgid "Add an account"
 msgstr ""
 
-#: data/menu_add.ui:6
+#: data/menu_add.ui:6 src/ui/application.vala:70
+#: src/ui/conversation_list_titlebar.vala:31 src/ui/unified_window.vala:150
 msgid "Start Chat"
 msgstr ""
 
-#: data/menu_add.ui:12 src/ui/add_conversation/conference/dialog.vala:26
-#: src/ui/unified_window.vala:149
+#: data/menu_add.ui:12 src/ui/application.vala:41
+#: src/ui/add_conversation/conference/dialog.vala:26
+#: src/ui/unified_window.vala:151
 msgid "Join Conference"
 msgstr ""
 
-#: data/menu_app.ui:10 src/ui/contact_details/settings_provider.vala:26
+#: data/menu_app.ui:10 src/ui/contact_details/settings_provider.vala:22
+#: src/ui/contact_details/settings_provider.vala:25
 #: src/ui/contact_details/settings_provider.vala:30
-#: src/ui/contact_details/settings_provider.vala:34
 msgid "Settings"
 msgstr ""
 
@@ -103,7 +110,7 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
-#: data/menu_conversation.ui:6
+#: data/menu_conversation.ui:6 src/ui/contact_details/dialog.vala:37
 msgid "Contact Details"
 msgstr ""
 
@@ -115,11 +122,11 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: data/settings_dialog.ui:22 src/ui/contact_details/settings_provider.vala:26
+#: data/settings_dialog.ui:22 src/ui/contact_details/settings_provider.vala:22
 msgid "Send typing notifications"
 msgstr ""
 
-#: data/settings_dialog.ui:34 src/ui/contact_details/settings_provider.vala:30
+#: data/settings_dialog.ui:34 src/ui/contact_details/settings_provider.vala:25
 msgid "Send message marker"
 msgstr ""
 
@@ -131,12 +138,51 @@ msgstr ""
 msgid "Convert smileys to emojis"
 msgstr ""
 
+#: src/ui/application.vala:41 src/ui/add_conversation/conference/dialog.vala:60
+msgid "Join"
+msgstr ""
+
+#: src/ui/application.vala:71 src/ui/conversation_list_titlebar.vala:32
+msgid "Start"
+msgstr ""
+
 #: src/ui/add_conversation/conference/dialog.vala:45
 msgid "Next"
 msgstr ""
 
-#: src/ui/add_conversation/conference/dialog.vala:60
-msgid "Join"
+#: src/ui/contact_details/settings_provider.vala:30
+#: src/ui/contact_details/settings_provider.vala:39
+msgid "Notifications"
+msgstr ""
+
+#: src/ui/contact_details/settings_provider.vala:39
+msgid "Local Settings"
+msgstr ""
+
+#: src/ui/contact_details/settings_provider.vala:74
+#: src/ui/contact_details/settings_provider.vala:114
+#: src/ui/contact_details/settings_provider.vala:116
+msgid "On"
+msgstr ""
+
+#: src/ui/contact_details/settings_provider.vala:76
+#: src/ui/contact_details/settings_provider.vala:114
+#: src/ui/contact_details/settings_provider.vala:117
+msgid "Off"
+msgstr ""
+
+#: src/ui/contact_details/settings_provider.vala:78
+msgid "Only when mentioned"
+msgstr ""
+
+#: src/ui/contact_details/settings_provider.vala:80
+#: src/ui/contact_details/settings_provider.vala:115
+#, c-format
+msgid "Default: %s"
+msgstr ""
+
+#: src/ui/contact_details/dialog.vala:37
+msgid "Conference Details"
 msgstr ""
 
 #: src/ui/contact_details/muc_config_form_provider.vala:42
@@ -172,7 +218,7 @@ msgid "Who may discover real JIDs?"
 msgstr ""
 
 #: src/ui/contact_details/muc_config_form_provider.vala:63
-msgid "Passwort required to enter the room. Leave empty for none"
+msgid "Password required to enter the room. Leave empty for none"
 msgstr ""
 
 #: src/ui/contact_details/muc_config_form_provider.vala:66
@@ -199,187 +245,184 @@ msgstr ""
 msgid "Maximum number of history messages returned by the room"
 msgstr ""
 
-#: src/ui/contact_details/muc_config_form_provider.vala:80
+#: src/ui/contact_details/muc_config_form_provider.vala:81
 msgid "Room Configuration"
 msgstr ""
 
-#: src/ui/contact_details/settings_provider.vala:21
-#: src/ui/contact_details/settings_provider.vala:39
-msgid "Default"
+#: src/ui/conversation_selector/chat_row.vala:30
+#: src/ui/conversation_selector/groupchat_pm_row.vala:25
+msgid "Me"
 msgstr ""
 
-#: src/ui/contact_details/settings_provider.vala:22
-#: src/ui/contact_details/settings_provider.vala:41
-msgid "On"
-msgstr ""
-
-#: src/ui/contact_details/settings_provider.vala:23
-#: src/ui/contact_details/settings_provider.vala:42
-msgid "Off"
-msgstr ""
-
-#: src/ui/contact_details/settings_provider.vala:34
-#: src/ui/contact_details/settings_provider.vala:43
-msgid "Notifications"
-msgstr ""
-
-#: src/ui/contact_details/settings_provider.vala:40
-msgid "Only when mentioned"
-msgstr ""
-
-#: src/ui/contact_details/settings_provider.vala:43
-msgid "Local Settings"
-msgstr ""
-
-#: src/ui/conversation_selector/conversation_row.vala:173
+#: src/ui/conversation_selector/conversation_row.vala:172
 #, no-c-format
 msgid "%b %d"
 msgstr ""
 
-#: src/ui/conversation_selector/conversation_row.vala:177
+#: src/ui/conversation_selector/conversation_row.vala:176
 msgid "Yesterday"
 msgstr ""
 
-#: src/ui/conversation_selector/conversation_row.vala:180
-#: src/ui/conversation_summary/message_item.vala:110
+#: src/ui/conversation_selector/conversation_row.vala:179
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:146
 #, no-c-format
 msgid "%H∶%M"
 msgstr ""
 
-#: src/ui/conversation_selector/conversation_row.vala:181
-#: src/ui/conversation_summary/message_item.vala:111
+#: src/ui/conversation_selector/conversation_row.vala:180
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:147
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr ""
 
-#: src/ui/conversation_selector/conversation_row.vala:184
-#: src/ui/conversation_summary/message_item.vala:114
+#: src/ui/conversation_selector/conversation_row.vala:183
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:151
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui/conversation_selector/conversation_row.vala:186
-#: src/ui/conversation_summary/message_item.vala:116
+#: src/ui/conversation_selector/conversation_row.vala:185
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:153
 msgid "Just now"
 msgstr ""
 
-#: src/ui/conversation_summary/message_item.vala:98
+#: src/ui/conversation_summary/chat_state_populator.vala:58
+msgid "is typing..."
+msgstr ""
+
+#: src/ui/conversation_summary/chat_state_populator.vala:60
+msgid "has stopped typing"
+msgstr ""
+
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:134
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr ""
 
-#: src/ui/conversation_summary/message_item.vala:99
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:135
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr ""
 
-#: src/ui/conversation_summary/message_item.vala:102
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:138
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr ""
 
-#: src/ui/conversation_summary/message_item.vala:103
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:139
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr ""
 
-#: src/ui/conversation_summary/message_item.vala:106
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:142
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr ""
 
-#: src/ui/conversation_summary/message_item.vala:107
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:143
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr ""
 
-#: src/ui/conversation_summary/view.vala:120
-msgid "is typing..."
-msgstr ""
-
-#: src/ui/conversation_summary/view.vala:122
-msgid "has stopped typing"
+#: src/ui/conversation_summary/message_textview.vala:33
+msgid "Message too long"
 msgstr ""
 
 #: src/ui/manage_accounts/add_account_dialog.vala:21
 msgid "Add Account"
 msgstr ""
 
-#: src/ui/manage_accounts/dialog.vala:151
+#: src/ui/manage_accounts/dialog.vala:150
 msgid "Select avatar"
 msgstr ""
 
-#: src/ui/manage_accounts/dialog.vala:153
+#: src/ui/manage_accounts/dialog.vala:151
 msgid "Select"
 msgstr ""
 
-#: src/ui/manage_accounts/dialog.vala:252
-msgid "Connecting..."
+#: src/ui/manage_accounts/dialog.vala:159
+msgid "Images"
 msgstr ""
 
-#: src/ui/manage_accounts/dialog.vala:254
+#: src/ui/manage_accounts/dialog.vala:162
+msgid "All files"
+msgstr ""
+
+#: src/ui/manage_accounts/dialog.vala:224
+msgid "Connecting…"
+msgstr ""
+
+#: src/ui/manage_accounts/dialog.vala:226
 msgid "Connected"
 msgstr ""
 
-#: src/ui/manage_accounts/dialog.vala:256
+#: src/ui/manage_accounts/dialog.vala:228
 msgid "Disconnected"
 msgstr ""
 
-#: src/ui/manage_accounts/dialog.vala:279
+#: src/ui/manage_accounts/dialog.vala:237
 msgid "Wrong password"
 msgstr ""
 
-#: src/ui/manage_accounts/dialog.vala:282
-#: src/ui/manage_accounts/dialog.vala:284
+#: src/ui/manage_accounts/dialog.vala:240
+#: src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr ""
 
-#: src/ui/occupant_menu/list.vala:105
-msgid "Owner"
-msgstr ""
-
-#: src/ui/occupant_menu/list.vala:107
-msgid "Admin"
-msgstr ""
-
-#: src/ui/occupant_menu/list.vala:109
-msgid "Member"
-msgstr ""
-
-#: src/ui/occupant_menu/list.vala:111
-msgid "User"
-msgstr ""
-
-#: src/ui/occupant_menu/view.vala:48
-msgid "Start private conversation"
-msgstr ""
-
-#: src/ui/notifications.vala:70
+#: src/ui/notifications.vala:103
 msgid "Subscription request"
 msgstr ""
 
-#: src/ui/notifications.vala:72
+#: src/ui/notifications.vala:107
 msgid "Accept"
 msgstr ""
 
-#: src/ui/notifications.vala:85
+#: src/ui/notifications.vala:108
 msgid "Deny"
 msgstr ""
 
-#: src/ui/unified_window.vala:139
+#: src/ui/occupant_menu/list.vala:107
+msgid "Owner"
+msgstr ""
+
+#: src/ui/occupant_menu/list.vala:109
+msgid "Admin"
+msgstr ""
+
+#: src/ui/occupant_menu/list.vala:111
+msgid "Member"
+msgstr ""
+
+#: src/ui/occupant_menu/list.vala:113
+msgid "User"
+msgstr ""
+
+#: src/ui/occupant_menu/view.vala:26 src/ui/occupant_menu/view.vala:35
+msgid "Invite"
+msgstr ""
+
+#: src/ui/occupant_menu/view.vala:34
+msgid "Invite to Conference"
+msgstr ""
+
+#: src/ui/occupant_menu/view.vala:84
+msgid "Start private conversation"
+msgstr ""
+
+#: src/ui/occupant_menu/view.vala:92
+msgid "Kick"
+msgstr ""
+
+#: src/ui/unified_window.vala:141
 msgid "No accounts active"
 msgstr ""
 
-#: src/ui/unified_window.vala:140
+#: src/ui/unified_window.vala:142
 msgid "Manage accounts"
 msgstr ""
 
-#: src/ui/unified_window.vala:147
+#: src/ui/unified_window.vala:149
 msgid "No conversation active"
-msgstr ""
-
-#: src/ui/unified_window.vala:148
-msgid "Add Chat"
 msgstr ""
