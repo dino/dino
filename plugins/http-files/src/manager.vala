@@ -12,12 +12,21 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     public signal void uploaded(FileTransfer file_transfer, string url);
 
     private StreamInteractor stream_interactor;
+    private Database db;
     private HashMap<Account, long> max_file_sizes = new HashMap<Account, long>(Account.hash_func, Account.equals_func);
-    private Manager(StreamInteractor stream_interactor) {
+
+    public static void start(StreamInteractor stream_interactor, Database db) {
+        Manager m = new Manager(stream_interactor, db);
+        stream_interactor.add_module(m);
+    }
+
+    private Manager(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
+        this.db = db;
 
         stream_interactor.get_module(FileManager.IDENTITY).add_sender(this);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(check_add_oob);
     }
 
     public void send_file(Conversation conversation, FileTransfer file_transfer) {
@@ -60,9 +69,10 @@ public class Manager : StreamInteractionModule, FileSender, Object {
         });
     }
 
-    public static void start(StreamInteractor stream_interactor) {
-        Manager m = new Manager(stream_interactor);
-        stream_interactor.add_module(m);
+    private void check_add_oob(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+        if (message_is_file(db, message)) {
+            Xep.OutOfBandData.add_url_to_message(message_stanza, message_stanza.body);
+        }
     }
 }
 
@@ -77,20 +87,20 @@ public class FileMessageFilterDisplay : Plugins.MessageDisplayProvider, Object {
     }
 
     public bool can_display(Entities.Message? message) {
-        return message_is_file(message);
+        return message_is_file(db, message);
     }
 
     public Plugins.MetaConversationItem? get_item(Entities.Message message, Conversation conversation) {
         return null;
     }
+}
 
-    private bool message_is_file(Entities.Message message) {
-        Qlite.QueryBuilder builder = db.file_transfer.select()
+private bool message_is_file(Database db, Entities.Message message) {
+    Qlite.QueryBuilder builder = db.file_transfer.select()
                 .with(db.file_transfer.info, "=", message.body)
                 .with(db.file_transfer.account_id, "=", message.account.id)
                 .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(message.counterpart));
-        return builder.count() > 0;
-    }
+    return builder.count() > 0;
 }
 
 }

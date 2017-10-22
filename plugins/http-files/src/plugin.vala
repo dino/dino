@@ -11,7 +11,7 @@ public class Plugin : RootInterface, Object {
     public void registered(Dino.Application app) {
         try {
             this.app = app;
-            Manager.start(this.app.stream_interactor);
+            Manager.start(this.app.stream_interactor, app.db);
 
             file_provider = new FileProvider(app.stream_interactor, app.db);
 

@@ -11,7 +11,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     public signal void pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
     public signal void message_received(Entities.Message message, Conversation conversation);
-    public signal void out_message_created(Entities.Message message, Conversation conversation);
+    public signal void build_message_stanza(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
     public signal void pre_message_send(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
     public signal void message_sent(Entities.Message message, Conversation conversation);
 
@@ -175,8 +175,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
         message.marked = Entities.Message.Marked.UNSENT;
         message.encryption = conversation.encryption;
-
-        out_message_created(message, conversation);
         return message;
     }
 
@@ -193,6 +191,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 } else {
                     new_message.type_ = Xmpp.Message.Stanza.TYPE_CHAT;
                 }
+                build_message_stanza(message, new_message, conversation);
                 pre_message_send(message, new_message, conversation);
                 if (message.marked == Entities.Message.Marked.UNSENT || message.marked == Entities.Message.Marked.WONTSEND) return;
                 if (delayed) {
