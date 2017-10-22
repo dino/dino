@@ -207,8 +207,10 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_entered.connect( (stream, jid, nick) => {
-            joined(account, new Jid(jid), nick);
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_entered.connect( (stream, jid_string, nick) => {
+            Jid jid = new Jid(jid_string);
+            joined(account, jid, nick);
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_messages(account, jid);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_enter_error.connect( (stream, jid, error) => {
             enter_errors[new Jid(jid)] = error;

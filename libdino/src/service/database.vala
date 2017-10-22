@@ -253,11 +253,14 @@ public class Database : Qlite.Database {
         return ret;
     }
 
-    public Gee.List<Message> get_unsend_messages(Account account) {
+    public Gee.List<Message> get_unsend_messages(Account account, Jid? jid = null) {
         Gee.List<Message> ret = new ArrayList<Message>();
         var select = message.select()
             .with(message.account_id, "=", account.id)
             .with(message.marked, "=", (int) Message.Marked.UNSENT);
+        if (jid != null) {
+            select.with(message.counterpart_id, "=", get_jid_id(jid));
+        }
         foreach (Row row in select) {
             ret.add(new Message.from_row(this, row));
         }
