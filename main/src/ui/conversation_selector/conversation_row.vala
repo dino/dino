@@ -141,7 +141,7 @@ public abstract class ConversationRow : ListBoxRow {
         return box;
     }
 
-    private void close_conversation() {
+    public void close_conversation() {
         main_revealer.set_transition_type(RevealerTransitionType.SLIDE_UP);
         main_revealer.set_reveal_child(false);
         closed();

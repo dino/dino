@@ -23,6 +23,8 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         provider.load_from_resource("/im/dino/theme.css");
         StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
 
+        Util.Shortcuts.singleton.initialize(this, get_shortcuts_window());
+
         activate.connect(() => {
             if (window == null) {
                 create_set_app_menu();
@@ -94,19 +96,16 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         dialog.present();
     }
 
+    private ShortcutsWindow get_shortcuts_window() {
+        Builder builder = new Builder.from_resource("/im/dino/shortcuts_dialog.ui");
+        return builder.get_object("dino-shortcuts") as ShortcutsWindow;
+    }
+
     private void create_set_app_menu() {
-        SimpleAction accounts_action = new SimpleAction("accounts", null);
-        accounts_action.activate.connect(show_accounts_window);
-        add_action(accounts_action);
-
-        SimpleAction settings_action = new SimpleAction("settings", null);
-        settings_action.activate.connect(show_settings_window);
-        add_action(settings_action);
-
-        SimpleAction quit_action = new SimpleAction("quit", null);
-        quit_action.activate.connect(quit);
-        add_action(quit_action);
-        add_accelerator("<Ctrl>Q", "app.quit", null);
+        Util.Shortcuts.singleton.enable_action("accounts").activate.connect(show_accounts_window);
+        Util.Shortcuts.singleton.enable_action("settings").activate.connect(show_settings_window);
+        Util.Shortcuts.singleton.enable_action("shortcuts").activate.connect(() => { get_shortcuts_window().present(); });
+        Util.Shortcuts.singleton.enable_action("quit").activate.connect(quit);
 
         Builder builder = new Builder.from_resource("/im/dino/menu_app.ui");
         MenuModel menu = builder.get_object("menu_app") as MenuModel;

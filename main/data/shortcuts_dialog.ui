@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <object class="GtkShortcutsWindow" id="dino-shortcuts">
+        <property name="modal">false</property>
+        <child>
+            <object class="GtkShortcutsSection">
+                <property name="visible">1</property>
+                <property name="section-name">shortcuts</property>
+                <property name="max-height">14</property>
+                <child>
+                    <object class="GtkShortcutsGroup">
+                        <property name="visible">1</property>
+                        <property name="title" translatable="yes">General</property>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;&lt;Shift&gt;A</property>
+                                <property name="title" translatable="yes">Accounts</property>
+                                <property name="action_name">app.accounts</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;P</property>
+                                <property name="title" translatable="yes">Settings</property>
+                                <property name="action_name">app.settings</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;F1</property>
+                                <property name="title" translatable="yes">This dialog</property>
+                                <property name="action_name">app.shortcuts</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <!-- alias for above -->
+                                <property name="visible">false</property>
+                                <property name="accelerator">&lt;Primary&gt;question</property>
+                                <property name="action_name">app.shortcuts</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;Q</property>
+                                <property name="title" translatable="yes">Quit</property>
+                                <property name="action_name">app.quit</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;N</property>
+                                <property name="title" translatable="yes">Start chat</property>
+                                <property name="action_name">app.add_chat</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;M</property>
+                                <property name="title" translatable="yes">Join conference</property>
+                                <property name="action_name">app.add_conference</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;E</property>
+                                <property name="title" translatable="yes">Encryption method</property>
+                                <property name="action_name">app.select_encryption</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Alt&gt;Return</property>
+                                <property name="title" translatable="yes">Contact details</property>
+                                <property name="action_name">app.contact_details</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <!-- scroll in message window -->
+                                <property name="visible">false</property>
+                                <property name="accelerator">Page_Up</property>
+                                <property name="action_name">app.scroll_up</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">false</property>
+                                <property name="accelerator">Page_Down</property>
+                                <property name="action_name">app.scroll_down</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkShortcutsGroup">
+                        <property name="visible">1</property>
+                        <property name="title" translatable="yes">1-to-1 Chats</property>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;O</property>
+                                <property name="title" translatable="yes">Send file</property>
+                                <property name="action_name">app.send_file</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkShortcutsGroup">
+                        <property name="visible">1</property>
+                        <property name="title" translatable="yes">Conferences</property>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;L</property>
+                                <property name="title" translatable="yes">List participants</property>
+                                <property name="action_name">app.occupants</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkShortcutsGroup">
+                        <property name="visible">1</property>
+                        <property name="title" translatable="yes">Switching conversations</property>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;W</property>
+                                <property name="title" translatable="yes">Close the current conversation</property>
+                                <property name="action_name">app.close_conversation</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;F</property>
+                                <property name="title" translatable="yes">Find conversations</property>
+                                <property name="action_name">app.search_conversations</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <!-- undo ^F -->
+                                <property name="visible">false</property>
+                                <property name="accelerator">Escape</property>
+                                <property name="action_name">app.search_conversations_hide</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;Tab</property>
+                                <property name="title" translatable="yes">Switch to the next conversation (up)</property>
+                                <property name="action_name">app.switch_conversations_up</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;&lt;Shift&gt;Tab</property>
+                                <property name="title" translatable="yes">Switch to the previous conversation (down)</property>
+                                <property name="action_name">app.switch_conversations_down</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;Page_Up</property>
+                                <property name="title" translatable="yes">Switch to the next conversation (up)</property>
+                                <property name="action_name">app.switch_conversations_up</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Primary&gt;Page_Down</property>
+                                <property name="title" translatable="yes">Switch to the previous conversation (down)</property>
+                                <property name="action_name">app.switch_conversations_down</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Alt&gt;1</property>
+                                <property name="title" translatable="yes">Switch to the first conversation (bottom)</property>
+                                <property name="action_name">app.switch_conversations_1</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Alt&gt;2</property>
+                                <property name="title" translatable="yes">Switch to the second conversation</property>
+                                <property name="action_name">app.switch_conversations_2</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">false</property>
+                                <property name="accelerator">&lt;Alt&gt;3</property>
+                                <property name="action_name">app.switch_conversations_3</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">false</property>
+                                <property name="accelerator">&lt;Alt&gt;4</property>
+                                <property name="action_name">app.switch_conversations_4</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">false</property>
+                                <property name="accelerator">&lt;Alt&gt;5</property>
+                                <property name="action_name">app.switch_conversations_5</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">false</property>
+                                <property name="accelerator">&lt;Alt&gt;6</property>
+                                <property name="action_name">app.switch_conversations_6</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">false</property>
+                                <property name="accelerator">&lt;Alt&gt;7</property>
+                                <property name="action_name">app.switch_conversations_7</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">false</property>
+                                <property name="accelerator">&lt;Alt&gt;8</property>
+                                <property name="action_name">app.switch_conversations_8</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">false</property>
+                                <property name="accelerator">&lt;Alt&gt;9</property>
+                                <property name="action_name">app.switch_conversations_9</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">1</property>
+                                <property name="accelerator">&lt;Alt&gt;0</property>
+                                <property name="title" translatable="yes">Switch to the last conversation (top)</property>
+                                <property name="action_name">app.switch_conversations_0</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+
+</interface>

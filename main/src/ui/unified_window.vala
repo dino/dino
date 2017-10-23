@@ -35,6 +35,21 @@ public class UnifiedWindow : Window {
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
+        Util.Shortcuts.singleton.enable_action("search_conversations").activate.connect(() => {
+            if (! filterable_conversation_list.search_revealer.reveal_child)
+                conversation_list_titlebar.search_button.clicked();
+            // TODO: prevent pseudo-selecting top conversation in filterable_conversation_list
+            //filterable_conversation_list.search_entry.grab_focus();
+        });
+        Util.Shortcuts.singleton.enable_action("search_conversations_hide").activate.connect(() => {
+            if (filterable_conversation_list.search_entry.has_focus) {
+                filterable_conversation_list.search_entry.set_text("");
+                filterable_conversation_list.search_revealer.reveal_child = false;
+                if (chat_input != null)
+                    chat_input.grab_focus();
+            }
+        });
+
         focus_in_event.connect(on_focus_in_event);
         focus_out_event.connect(on_focus_out_event);
 
@@ -81,6 +96,13 @@ public class UnifiedWindow : Window {
         paned.set_position(300);
         paned.pack1(filterable_conversation_list, false, false);
         paned.pack2(grid, true, false);
+
+        Util.Shortcuts.singleton.enable_action("scroll_up").activate.connect(() => {
+                conversation_frame.scroll_window(ScrollType.PAGE_UP);
+        });
+        Util.Shortcuts.singleton.enable_action("scroll_down").activate.connect(() => {
+                conversation_frame.scroll_window(ScrollType.PAGE_DOWN);
+        });
     }
 
     private void setup_headerbar() {

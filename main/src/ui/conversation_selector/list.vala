@@ -67,6 +67,48 @@ public class List : ListBox {
                 row_activated(first_row);
             }
         });
+
+        Util.Shortcuts.singleton.enable_action("close_conversation").activate.connect(() => {
+            ((ConversationRow) get_selected_row()).close_conversation();
+        });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_down").activate.connect(() => {
+            ListBoxRow selected = get_selected_row();
+            bool found = false;
+            foreach (ListBoxRow row in get_visible_rows()) {
+                if (found) {
+                    row.activate();
+                    return;
+                }
+                if (row == selected)
+                    found = true;
+            }
+        });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_up").activate.connect(() => {
+            ListBoxRow selected = get_selected_row();
+            ListBoxRow previous = null;
+            foreach (ListBoxRow row in get_visible_rows()) {
+                if (row == selected) {
+                    if (previous != null)
+                        previous.activate();
+                    return;
+                }
+                previous = row;
+            }
+        });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_1").activate.connect(() => { select_visible_row(1); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_2").activate.connect(() => { select_visible_row(2); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_3").activate.connect(() => { select_visible_row(3); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_4").activate.connect(() => { select_visible_row(4); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_5").activate.connect(() => { select_visible_row(5); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_6").activate.connect(() => { select_visible_row(6); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_7").activate.connect(() => { select_visible_row(7); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_8").activate.connect(() => { select_visible_row(8); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_9").activate.connect(() => { select_visible_row(9); });
+        Util.Shortcuts.singleton.enable_action("switch_conversations_0").activate.connect(() => {
+            unowned GLib.List<ListBoxRow> first = get_visible_rows().first();
+            if (first != null)
+                first.data.activate();
+        });
     }
 
     public override void row_activated(ListBoxRow r) {
@@ -139,6 +181,21 @@ public class List : ListBox {
             remove(rows[conversation]);
             rows.unset(conversation);
         }
+    }
+
+    private GLib.List<ListBoxRow> get_visible_rows() {
+        GLib.List<ListBoxRow> visible_rows = new GLib.List<ListBoxRow>();
+        foreach (Widget row in get_children()) {
+            if (filter((ListBoxRow) row))
+                visible_rows.append((ListBoxRow) row);
+        }
+        return visible_rows;
+    }
+
+    private void select_visible_row(uint nr) {
+        GLib.List<ListBoxRow> rows = get_visible_rows();
+        if (rows.length() >= nr)
+            rows.nth(rows.length() - nr).data.activate();
     }
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {

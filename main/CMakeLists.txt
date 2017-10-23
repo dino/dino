@@ -44,6 +44,7 @@ set(RESOURCE_LIST
     occupant_list.ui
     occupant_list_item.ui
     settings_dialog.ui
+    shortcuts_dialog.ui
     unified_window_placeholder.ui
 
     theme.css
@@ -122,6 +123,7 @@ SOURCES
     src/ui/unified_window.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
+    src/ui/util/shortcuts.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
