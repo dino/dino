@@ -45,13 +45,13 @@ public class InsertBuilder : StatementBuilder {
         return this;
     }
 
-    public InsertBuilder value_null<T>(Column<T> column) throws DatabaseError {
-        if (column.not_null) throw new DatabaseError.ILLEGAL_QUERY(@"Can't set non-null column $(column.name) to null");
+    public InsertBuilder value_null<T>(Column<T> column) {
+        if (column.not_null) error("Qlite Error: ILLEGAL QUERY: Can't set non-null column %s to null", column.name);
         fields += new NullField<T>(column);
         return this;
     }
 
-    internal override Statement prepare() throws DatabaseError {
+    internal override Statement prepare() {
         string fields_text = "";
         string value_qs = "";
         for (int i = 0; i < fields.length; i++) {
@@ -72,9 +72,9 @@ public class InsertBuilder : StatementBuilder {
         return stmt;
     }
 
-    public int64 perform() throws DatabaseError {
+    public int64 perform() {
         if (prepare().step() != DONE) {
-            throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");
+            error(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
         return db.last_insert_rowid();
     }

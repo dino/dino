@@ -23,11 +23,11 @@ public class Database : Qlite.Database {
             index("identity_meta_list_idx", {address_name});
         }
 
-        public QueryBuilder with_address(string address_name) throws DatabaseError {
+        public QueryBuilder with_address(string address_name) {
             return select().with(this.address_name, "=", address_name);
         }
 
-        public void insert_device_list(string address_name, ArrayList<int32> devices) throws DatabaseError {
+        public void insert_device_list(string address_name, ArrayList<int32> devices) {
             update().with(this.address_name, "=", address_name).set(now_active, false).perform();
             foreach (int32 device_id in devices) {
                 upsert()
@@ -39,7 +39,7 @@ public class Database : Qlite.Database {
             }
         }
 
-        public int64 insert_device_bundle(string address_name, int device_id, Bundle bundle) throws DatabaseError {
+        public int64 insert_device_bundle(string address_name, int device_id, Bundle bundle) {
             if (bundle == null || bundle.identity_key == null) return -1;
             return upsert()
                     .value(this.address_name, address_name, true)
@@ -108,7 +108,7 @@ public class Database : Qlite.Database {
     public PreKeyTable pre_key { get; private set; }
     public SessionTable session { get; private set; }
 
-    public Database(string fileName) throws DatabaseError {
+    public Database(string fileName) {
         base(fileName, VERSION);
         identity_meta = new IdentityMetaTable(this);
         identity = new IdentityTable(this);

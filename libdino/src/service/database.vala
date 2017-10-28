@@ -186,7 +186,7 @@ public class Database : Qlite.Database {
     public Map<string, int> jid_table_reverse = new HashMap<string, int>();
     public Map<int, Account> account_table_cache = new HashMap<int, Account>();
 
-    public Database(string fileName) throws DatabaseError {
+    public Database(string fileName) {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);

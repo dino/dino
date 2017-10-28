@@ -49,42 +49,42 @@ public class Table {
         add_post_statement(stmt);
     }
 
-    private void ensure_init() throws DatabaseError {
-        if (columns == null) throw new DatabaseError.NOT_INITIALIZED(@"Table $name was not initialized, call init()");
+    private void ensure_init() {
+        if (columns == null) error("Table %s was not initialized, call init()", name);
     }
 
-    public QueryBuilder select(Column[]? columns = null) throws DatabaseError {
+    public QueryBuilder select(Column[]? columns = null) {
         ensure_init();
         return db.select(columns).from(this);
     }
 
-    public InsertBuilder insert() throws DatabaseError {
+    public InsertBuilder insert() {
         ensure_init();
         return db.insert().into(this);
     }
 
-    public UpdateBuilder update() throws DatabaseError {
+    public UpdateBuilder update() {
         ensure_init();
         return db.update(this);
     }
 
-    public UpsertBuilder upsert() throws DatabaseError {
+    public UpsertBuilder upsert() {
         ensure_init();
         return db.upsert(this);
     }
 
-    public DeleteBuilder delete() throws DatabaseError {
+    public DeleteBuilder delete() {
         ensure_init();
         return db.delete().from(this);
     }
 
-    public RowOption row_with<T>(Column<T> column, T value) throws DatabaseError {
+    public RowOption row_with<T>(Column<T> column, T value) {
         ensure_init();
-        if (!column.unique && !column.primary_key) throw new DatabaseError.NON_UNIQUE(@"$(column.name) is not suited to identify a row, but used with row_with()");
+        if (!column.unique && !column.primary_key) error("%s is not suited to identify a row, but used with row_with()", column.name);
         return select().with(column, "=", value).row();
     }
 
-    public bool is_known_column(string column) throws DatabaseError {
+    public bool is_known_column(string column) {
         ensure_init();
         foreach (Column c in columns) {
             if (c.name == column) return true;
@@ -92,7 +92,7 @@ public class Table {
         return false;
     }
 
-    public void create_table_at_version(long version) throws DatabaseError {
+    public void create_table_at_version(long version) {
         ensure_init();
         string sql = @"CREATE TABLE IF NOT EXISTS $name (";
         for (int i = 0; i < columns.length; i++) {
@@ -105,7 +105,7 @@ public class Table {
         db.exec(sql);
     }
 
-    public void add_columns_for_version(long old_version, long new_version) throws DatabaseError {
+    public void add_columns_for_version(long old_version, long new_version) {
         ensure_init();
         foreach (Column c in columns) {
             if (c.min_version <= new_version && c.max_version >= new_version && c.min_version > old_version) {
@@ -114,7 +114,7 @@ public class Table {
         }
     }
 
-    public void delete_columns_for_version(long old_version, long new_version) throws DatabaseError {
+    public void delete_columns_for_version(long old_version, long new_version) {
         bool column_deletion_required = false;
         string column_list = "";
         foreach (Column c in columns) {
@@ -137,7 +137,7 @@ public class Table {
         }
     }
 
-    internal void post() throws DatabaseError {
+    internal void post() {
         foreach (string stmt in post_statements) {
             db.exec(stmt);
         }

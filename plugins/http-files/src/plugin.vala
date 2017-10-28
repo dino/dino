@@ -9,21 +9,17 @@ public class Plugin : RootInterface, Object {
     public FileProvider file_provider;
 
     public void registered(Dino.Application app) {
-        try {
-            this.app = app;
-            Manager.start(this.app.stream_interactor, app.db);
+        this.app = app;
+        Manager.start(this.app.stream_interactor, app.db);
 
-            file_provider = new FileProvider(app.stream_interactor, app.db);
+        file_provider = new FileProvider(app.stream_interactor, app.db);
 
-            app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
-                list.add(new UploadStreamModule());
-            });
+        app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
+            list.add(new UploadStreamModule());
+        });
 
-            app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(file_provider);
-            app.plugin_registry.register_message_display(new FileMessageFilterDisplay(app.db));
-        } catch (Error e) {
-            print(@"Error initializing http-files: $(e.message)\n");
-        }
+        app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(file_provider);
+        app.plugin_registry.register_message_display(new FileMessageFilterDisplay(app.db));
     }
 
     public void shutdown() {
