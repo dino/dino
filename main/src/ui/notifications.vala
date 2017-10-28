@@ -54,7 +54,7 @@ public class Notifications : Object {
             if (conversation == null) return;
             stream_interactor.get_module(PresenceManager.IDENTITY).approve_subscription(conversation.account, conversation.counterpart);
             if (stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, conversation.counterpart) == null) {
-                AddConversation.Chat.AddContactDialog dialog = new AddConversation.Chat.AddContactDialog(stream_interactor);
+                AddContactDialog dialog = new AddContactDialog(stream_interactor);
                 dialog.jid = conversation.counterpart.bare_jid.to_string();
                 dialog.account = conversation.account;
                 dialog.present();

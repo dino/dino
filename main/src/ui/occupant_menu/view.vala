@@ -29,7 +29,7 @@ public class View : Popover {
             hide();
             Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
             acc_list.add(conversation.account);
-            AddConversation.Chat.Dialog add_chat_dialog = new AddConversation.Chat.Dialog(stream_interactor, acc_list);
+            SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
             add_chat_dialog.set_transient_for(window);
             add_chat_dialog.title = _("Invite to Conference");
             add_chat_dialog.ok_button.label = _("Invite");

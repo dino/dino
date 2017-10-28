@@ -3,7 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.AddConversation {
+namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/add_conversation/select_jid_fragment.ui")]
 public class SelectJidFragment : Gtk.Box {

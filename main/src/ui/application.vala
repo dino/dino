@@ -40,9 +40,9 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             case "join":
                 Dialog dialog = new Dialog.with_buttons(_("Join Conference"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
                 dialog.modal = true;
-                Widget ok_button = dialog.get_widget_for_response(ResponseType.OK);
+                Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
                 ok_button.get_style_context().add_class("suggested-action");
-                AddConversation.Conference.ConferenceDetailsFragment conference_fragment = new AddConversation.Conference.ConferenceDetailsFragment(stream_interactor);
+                ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor, ok_button);
                 conference_fragment.jid = jid;
                 conference_fragment.set_editable();
                 Box content_area = dialog.get_content_area();
@@ -64,14 +64,10 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                     stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
                     window.on_conversation_selected(conversation);
                 } else {
-                    AddConversation.Chat.Dialog dialog = new AddConversation.Chat.Dialog(stream_interactor, stream_interactor.get_accounts());
+                    AddChatDialog dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
                     dialog.set_filter(jid);
                     dialog.set_transient_for(window);
-                    dialog.title = _("Start Chat");
-                    dialog.ok_button.label = _("Start");
-                    dialog.selected.connect((account, jid) => {
-                        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
-                        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+                    dialog.added.connect((conversation) => {
                         window.on_conversation_selected(conversation);
                     });
                     dialog.present();

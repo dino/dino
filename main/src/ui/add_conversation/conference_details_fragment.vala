@@ -3,7 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.AddConversation.Conference {
+namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/add_conversation/conference_details_fragment.ui")]
 protected class ConferenceDetailsFragment : Box {
@@ -64,12 +64,20 @@ protected class ConferenceDetailsFragment : Box {
     [GtkChild] private Stack password_stack;
     [GtkChild] private Button password_button;
     [GtkChild] private Label password_label;
+    [GtkChild] private Label password_text_label;
     [GtkChild] private Entry password_entry;
 
-    private StreamInteractor stream_interactor;
+    [GtkChild] private Revealer notification_revealer;
+    [GtkChild] private Button notification_button;
+    [GtkChild] private Label notification_label;
 
-    public ConferenceDetailsFragment(StreamInteractor stream_interactor) {
+    private StreamInteractor stream_interactor;
+    private Button ok_button;
+
+    public ConferenceDetailsFragment(StreamInteractor stream_interactor, Button ok_button) {
         this.stream_interactor = stream_interactor;
+        this.ok_button = ok_button;
+
         account_combobox.initialize(stream_interactor);
 
         accounts_stack.set_visible_child_name("label");
@@ -90,6 +98,18 @@ protected class ConferenceDetailsFragment : Box {
 
         jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
         nick_entry.key_release_event.connect(() => { done = true; return false; });
+
+        stream_interactor.get_module(MucManager.IDENTITY).enter_error.connect((account, jid, error) => {
+            Idle.add(() => {
+                on_enter_error(account, jid, error);
+                return false;
+            });
+        });
+        notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
+        ok_button.clicked.connect(() => {
+            ok_button.label = _("Joining...");
+            ok_button.sensitive = false;
+        });
     }
 
     public void set_editable() {
@@ -108,7 +128,38 @@ protected class ConferenceDetailsFragment : Box {
         jid = "";
         nick = "";
         password = "";
+        password_text_label.visible = false;
+        password_stack.visible = false;
+        notification_revealer.set_reveal_child(false);
         reset_editable();
+    }
+
+    private void on_enter_error(Account account, Jid jid, Xmpp.Xep.Muc.MucEnterError error) {
+        ok_button.label = _("Join");
+        ok_button.sensitive = true;
+        string label_text = "";
+        switch (error) {
+            case Xmpp.Xep.Muc.MucEnterError.PASSWORD_REQUIRED:
+                label_text = _("Password required to enter room");
+                password_text_label.visible = true;
+                password_stack.visible = true;
+                break;
+            case Xmpp.Xep.Muc.MucEnterError.BANNED:
+                label_text = _("Banned from joining or creating conference"); break;
+            case Xmpp.Xep.Muc.MucEnterError.ROOM_DOESNT_EXIST:
+                label_text = _("Room does not exist"); break;
+            case Xmpp.Xep.Muc.MucEnterError.CREATION_RESTRICTED:
+                label_text = _("Not allowed to create room"); break;
+            case Xmpp.Xep.Muc.MucEnterError.NOT_IN_MEMBER_LIST:
+                label_text = _("Room is members only"); break;
+            case Xmpp.Xep.Muc.MucEnterError.USE_RESERVED_ROOMNICK:
+            case Xmpp.Xep.Muc.MucEnterError.NICK_CONFLICT:
+                label_text = _("Choose a different nick"); break;
+            case Xmpp.Xep.Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
+                label_text = _("Room has too many occupants"); break;
+        }
+        notification_label.label = label_text;
+        notification_revealer.set_reveal_child(true);
     }
 
     private bool on_jid_key_release_event(EventKey event) {

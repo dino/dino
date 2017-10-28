@@ -43,7 +43,14 @@ public class Message : Object {
     /** UTC **/
     public DateTime? local_time { get; set; }
     public Encryption encryption { get; set; default = Encryption.NONE; }
-    public Marked marked { get; set; default = Marked.NONE; }
+    private Marked marked_ = Marked.NONE;
+    public Marked marked {
+        get { return marked_; }
+        set {
+            if (marked == Marked.RECEIVED && marked == Marked.READ) return;
+            marked_ = value;
+        }
+    }
     public Xmpp.Message.Stanza stanza { get; set; }
 
     private Database? db;

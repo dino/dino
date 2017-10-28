@@ -3,7 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.AddConversation {
+namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/add_conversation/list_row.ui")]
 public class ListRow : ListBoxRow {

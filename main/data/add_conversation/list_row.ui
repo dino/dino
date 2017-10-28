@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiAddConversationListRow" parent="GtkListBoxRow">
+    <template class="DinoUiListRow" parent="GtkListBoxRow">
         <property name="visible">True</property>
         <child>
             <object class="GtkGrid" id="outer_grid">

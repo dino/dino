@@ -12,7 +12,9 @@ namespace Xmpp.Xep.Ping {
         public void send_ping(XmppStream stream, string jid, owned OnResult? listener) {
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("ping", NS_URI).add_self_xmlns());
             iq.to = jid;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream) => { listener(stream); });
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream) => {
+                if (listener != null) listener(stream);
+            });
         }
 
         public override void attach(XmppStream stream) {

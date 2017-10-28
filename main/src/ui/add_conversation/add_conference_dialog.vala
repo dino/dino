@@ -3,9 +3,9 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.AddConversation.Conference {
+namespace Dino.Ui {
 
-public class Dialog : Gtk.Dialog {
+public class AddConferenceDialog : Gtk.Dialog {
 
     public signal void conversation_opened(Conversation conversation);
 
@@ -21,7 +21,7 @@ public class Dialog : Gtk.Dialog {
 
     private StreamInteractor stream_interactor;
 
-    public Dialog(StreamInteractor stream_interactor) {
+    public AddConferenceDialog(StreamInteractor stream_interactor) {
         Object(use_header_bar : 1);
         this.title = _("Join Conference");
         this.modal = true;
@@ -35,6 +35,8 @@ public class Dialog : Gtk.Dialog {
         setup_jid_add_view();
         setup_conference_details_view();
         show_jid_add_view();
+
+        stream_interactor.get_module(MucManager.IDENTITY).joined.connect((account, jid, nick) => { Idle.add(() => { on_joined(account, jid, nick); return false; } ); });
     }
 
     private void show_jid_add_view() {
@@ -102,7 +104,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void setup_conference_details_view() {
-        details_fragment = new ConferenceDetailsFragment(stream_interactor);
+        details_fragment = new ConferenceDetailsFragment(stream_interactor, ok_button);
         stack.add_named(details_fragment, "details");
     }
 
@@ -134,7 +136,15 @@ public class Dialog : Gtk.Dialog {
 
     private void on_ok_button_clicked() {
         stream_interactor.get_module(MucManager.IDENTITY).join(details_fragment.account, new Jid(details_fragment.jid), details_fragment.nick, details_fragment.password);
-        close();
+    }
+
+    private void on_joined(Account account, Jid jid, string nick) {
+        if (account.equals(details_fragment.account) && jid.equals_bare(new Jid(details_fragment.jid))) {
+            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+            conversation_opened(conversation);
+            close();
+        }
     }
 
     private void on_cancel() {

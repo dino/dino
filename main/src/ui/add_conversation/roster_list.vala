@@ -4,7 +4,7 @@ using Gtk;
 using Dino.Entities;
 using Xmpp;
 
-namespace Dino.Ui.AddConversation.Chat {
+namespace Dino.Ui {
 
 protected class RosterList : FilterableList {
 

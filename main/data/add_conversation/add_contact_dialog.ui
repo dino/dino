@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiAddConversationChatAddContactDialog">
+    <template class="DinoUiAddContactDialog">
         <property name="default_width">300</property>
         <property name="modal">True</property>
         <child type="titlebar">

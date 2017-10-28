@@ -4,9 +4,9 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.AddConversation.Chat {
+namespace Dino.Ui {
 
-public class Dialog : Gtk.Dialog {
+public class SelectContactDialog : Gtk.Dialog {
 
     public signal void selected(Account account, Jid jid);
 
@@ -17,7 +17,7 @@ public class Dialog : Gtk.Dialog {
     private StreamInteractor stream_interactor;
     private Gee.List<Account> accounts;
 
-    public Dialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
+    public SelectContactDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
         Object(use_header_bar : 1);
         modal = true;
 
@@ -72,6 +72,22 @@ public class Dialog : Gtk.Dialog {
             ok_button.sensitive = select_jid_fragment.done;
         });
         get_content_area().add(select_jid_fragment);
+    }
+}
+
+public class AddChatDialog : SelectContactDialog {
+
+    public signal void added(Conversation conversation);
+
+    public AddChatDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
+        base(stream_interactor, accounts);
+        title = _("Start Chat");
+        ok_button.label = _("Start");
+        selected.connect((account, jid) => {
+            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+            added(conversation);
+        });
     }
 }
 

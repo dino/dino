@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiAddConversationSelectJidFragment">
+    <template class="DinoUiSelectJidFragment">
         <property name="height_request">500</property>
         <property name="width_request">460</property>
         <property name="visible">True</property>

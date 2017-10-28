@@ -9,6 +9,7 @@ public class MucManager : StreamInteractionModule, Object {
     public string id { get { return IDENTITY.id; } }
 
     public signal void joined(Account account, Jid jid, string nick);
+    public signal void enter_error(Account account, Jid jid, Xep.Muc.MucEnterError error);
     public signal void left(Account account, Jid jid);
     public signal void subject_set(Account account, Jid jid, string? subject);
     public signal void bookmarks_updated(Account account, Gee.List<Xep.Bookmarks.Conference> conferences);
@@ -29,12 +30,9 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void join(Account account, Jid jid, string? nick, string? password) {
-        if (enter_errors.has_key(jid)) return;
-
         Core.XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
-        set_autojoin(stream, jid, nick_, password);
 
         DateTime? history_since = null;
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
@@ -209,11 +207,15 @@ public class MucManager : StreamInteractionModule, Object {
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_entered.connect( (stream, jid_string, nick) => {
             Jid jid = new Jid(jid_string);
+            enter_errors.unset(jid);
+            set_autojoin(stream, jid, nick, null); // TODO password
             joined(account, jid, nick);
             stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_messages(account, jid);
         });
-        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_enter_error.connect( (stream, jid, error) => {
-            enter_errors[new Jid(jid)] = error;
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_enter_error.connect( (stream, jid_str, error) => {
+            Jid jid = new Jid(jid_str);
+            enter_errors[jid] = error;
+            enter_error(account, jid, error);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).self_removed_from_room.connect( (stream, jid, code) => {
             left(account, new Jid(jid));
