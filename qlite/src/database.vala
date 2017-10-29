@@ -129,7 +129,7 @@ public class Database {
         return statement;
     }
 
-    public void exec(string sql) {
+    public void exec(string sql) throws Error {
         ensure_init();
         if (db.exec(sql) != OK) {
             throw new Error(-1, 0, @"SQLite error: $(db.errcode()) - $(db.errmsg())");

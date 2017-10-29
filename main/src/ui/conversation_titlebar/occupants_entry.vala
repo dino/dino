@@ -16,7 +16,7 @@ class OccupantsEntry : Plugins.ConversationTitlebarEntry, Object {
     }
 
     public double order { get { return 3; } }
-    public Plugins.ConversationTitlebarWidget get_widget(Plugins.WidgetType type) {
+    public Plugins.ConversationTitlebarWidget? get_widget(Plugins.WidgetType type) {
         if (type == Plugins.WidgetType.GTK) {
             return new OccupantsWidget(stream_interactor, window) { visible=true };
         }

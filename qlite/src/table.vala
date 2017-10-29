@@ -102,14 +102,22 @@ public class Table {
             }
         }
         sql += @"$constraints)";
-        db.exec(sql);
+        try {
+            db.exec(sql);
+        } catch (Error e) {
+            error("Qlite Error: Create table at version");
+        }
     }
 
     public void add_columns_for_version(long old_version, long new_version) {
         ensure_init();
         foreach (Column c in columns) {
             if (c.min_version <= new_version && c.max_version >= new_version && c.min_version > old_version) {
-                db.exec(@"ALTER TABLE $name ADD COLUMN $c");
+                try {
+                    db.exec(@"ALTER TABLE $name ADD COLUMN $c");
+                } catch (Error e) {
+                    error("Qlite Error: Add columns for version");
+                }
             }
         }
     }
@@ -130,16 +138,24 @@ public class Table {
             }
         }
         if (column_deletion_required) {
-            db.exec(@"ALTER TABLE $name RENAME TO _$(name)_$old_version");
-            create_table_at_version(new_version);
-            db.exec(@"INSERT INTO $name ($column_list) SELECT $column_list FROM _$(name)_$old_version");
-            db.exec(@"DROP TABLE _$(name)_$old_version");
+            try {
+                db.exec(@"ALTER TABLE $name RENAME TO _$(name)_$old_version");
+                create_table_at_version(new_version);
+                db.exec(@"INSERT INTO $name ($column_list) SELECT $column_list FROM _$(name)_$old_version");
+                db.exec(@"DROP TABLE _$(name)_$old_version");
+            } catch (Error e) {
+                error("Qlite Error: Delete volumns for version change");
+            }
         }
     }
 
     internal void post() {
         foreach (string stmt in post_statements) {
-            db.exec(stmt);
+            try {
+                db.exec(stmt);
+            } catch (Error e) {
+                error("Qlite Error: Post");
+            }
         }
     }
 }

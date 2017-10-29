@@ -51,7 +51,6 @@ public class MessageTextView : TextView {
         MatchInfo match_info;
         url_regex.match(text, 0, out match_info);
         for (; match_info.matches(); match_info.next()) {
-            string? url = match_info.fetch(0);
             int start;
             int end;
             match_info.fetch_pos(0, out start, out end);

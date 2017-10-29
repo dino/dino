@@ -116,7 +116,9 @@ public class Database : Qlite.Database {
         pre_key = new PreKeyTable(this);
         session = new SessionTable(this);
         init({identity_meta, identity, signed_pre_key, pre_key, session});
-        exec("PRAGMA synchronous=0");
+        try {
+            exec("PRAGMA synchronous=0");
+        } catch (Error e) { }
     }
 
     public override void migrate(long oldVersion) {

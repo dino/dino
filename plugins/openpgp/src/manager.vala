@@ -30,7 +30,7 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(check_encypt);
     }
 
-    public GPG.Key[] get_key_fprs(Conversation conversation) {
+    public GPG.Key[] get_key_fprs(Conversation conversation) throws Error {
         Gee.List<string> keys = new Gee.ArrayList<string>();
         keys.add(db.get_account_key(conversation.account));
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
@@ -70,13 +70,17 @@ public class Manager : StreamInteractionModule, Object {
     }
 
     private void check_encypt(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
-        if (message.encryption == Encryption.PGP) {
-            GPG.Key[] keys = get_key_fprs(conversation);
-            Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
-            if (stream != null) {
-                bool encrypted = stream.get_module(Module.IDENTITY).encrypt(message_stanza, keys);
-                if (!encrypted) message.marked = Entities.Message.Marked.WONTSEND;
+        try {
+            if (message.encryption == Encryption.PGP) {
+                GPG.Key[] keys = get_key_fprs(conversation);
+                Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                if (stream != null) {
+                    bool encrypted = stream.get_module(Module.IDENTITY).encrypt(message_stanza, keys);
+                    if (!encrypted) message.marked = Entities.Message.Marked.WONTSEND;
+                }
             }
+        } catch (Error e) {
+            message.marked = Entities.Message.Marked.WONTSEND;
         }
     }
 

@@ -59,7 +59,6 @@ public class ConnectionManager {
 
     private class RecMutexWrap {
         public RecMutex mutex = RecMutex();
-        public void lock() { mutex.lock(); }
         public void unlock() { mutex.unlock(); }
         public bool trylock() { return mutex.trylock(); }
     }

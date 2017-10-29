@@ -54,8 +54,6 @@ public class StanzaReader {
             buffer_pos = 0;
         } catch (GLib.IOError e) {
             throw new XmlError.IO_ERROR("IOError in GLib: %s".printf(e.message));
-        } catch (GLib.TlsError e) {
-            throw new XmlError.IO_ERROR("TlsError in GLib: %s".printf(e.message));
         }
     }
 

@@ -360,8 +360,12 @@ public class StartTlsConnectionProvider : ConnectionProvider {
     }
 
     public override IOStream? connect(XmppStream stream) {
-        SocketClient client = new SocketClient();
-        return client.connect_to_host(srv_target.get_hostname(), srv_target.get_port());
+        try {
+            SocketClient client = new SocketClient();
+            return client.connect_to_host(srv_target.get_hostname(), srv_target.get_port());
+        } catch (Error e) {
+            return null;
+        }
     }
 
     public override string get_id() { return "start_tls"; }

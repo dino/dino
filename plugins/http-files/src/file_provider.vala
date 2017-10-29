@@ -48,8 +48,13 @@ public class FileProvider : Dino.FileProvider, Object {
                 if (name == "Content-Length") content_length = val;
             });
             if (/*content_type != null && content_type.has_prefix("image") &&*/ content_length != null && int.parse(content_length) < 5000000) {
-                Soup.Request request = session.request (message.body);
                 FileTransfer file_transfer = new FileTransfer();
+                try {
+                    Soup.Request request = session.request(message.body);
+                    file_transfer.input_stream = request.send();
+                } catch (Error e) {
+                    return;
+                }
                 file_transfer.account = conversation.account;
                 file_transfer.counterpart = message.counterpart;
                 file_transfer.ourpart = message.ourpart;
@@ -57,7 +62,6 @@ public class FileProvider : Dino.FileProvider, Object {
                 file_transfer.time = message.time;
                 file_transfer.local_time = message.local_time;
                 file_transfer.direction = message.direction;
-                file_transfer.input_stream = request.send();
                 file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);
                 file_transfer.mime_type = content_type;
                 file_transfer.size = int.parse(content_length);

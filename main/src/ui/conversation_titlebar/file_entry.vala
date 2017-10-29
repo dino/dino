@@ -14,7 +14,7 @@ public class FileEntry : Plugins.ConversationTitlebarEntry, Object {
     }
 
     public double order { get { return 4; } }
-    public Plugins.ConversationTitlebarWidget get_widget(Plugins.WidgetType type) {
+    public Plugins.ConversationTitlebarWidget? get_widget(Plugins.WidgetType type) {
         if (type == Plugins.WidgetType.GTK) {
             return new FileWidget(stream_interactor) { visible=true };
         }

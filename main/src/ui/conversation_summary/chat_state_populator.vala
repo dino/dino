@@ -53,7 +53,6 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Object {
         string? new_text = null;
         if (state_ != null) {
             if (state_ == Xep.ChatStateNotifications.STATE_COMPOSING || state_ == Xep.ChatStateNotifications.STATE_PAUSED) {
-                string display_name = Util.get_display_name(stream_interactor, jid, account);
                 if (state_ == Xep.ChatStateNotifications.STATE_COMPOSING) {
                     new_text = _("is typing...");
                 } else if (state_ == Xep.ChatStateNotifications.STATE_PAUSED) {
@@ -95,7 +94,7 @@ public class MetaChatStateItem : Plugins.MetaConversationItem {
         this.text = text;
     }
 
-    public override Object get_widget(Plugins.WidgetType widget_type) {
+    public override Object? get_widget(Plugins.WidgetType widget_type) {
         label = new Label("") { xalign=0, vexpand=true, visible=true };
         label.get_style_context().add_class("dim-label");
         update_text();

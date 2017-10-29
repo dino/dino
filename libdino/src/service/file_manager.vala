@@ -35,9 +35,6 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     public void send_file(string uri, Conversation conversation) {
-        File file = File.new_for_path(uri);
-        FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-
         FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
         file_transfer.counterpart = conversation.counterpart;
@@ -46,11 +43,16 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.time = new DateTime.now_utc();
         file_transfer.local_time = new DateTime.now_utc();
         file_transfer.encryption = Encryption.NONE;
-        file_transfer.file_name = file_info.get_display_name();
-        file_transfer.input_stream = file.read();
-
-        file_transfer.mime_type = file_info.get_content_type();
-        file_transfer.size = (int)file_info.get_size();
+        try {
+            File file = File.new_for_path(uri);
+            FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+            file_transfer.file_name = file_info.get_display_name();
+            file_transfer.mime_type = file_info.get_content_type();
+            file_transfer.size = (int)file_info.get_size();
+            file_transfer.input_stream = file.read();
+        } catch (Error e) {
+            file_transfer.state = FileTransfer.State.FAILED;
+        }
         save_file(file_transfer);
 
         file_transfer.persist(db);
@@ -90,7 +92,7 @@ public class FileManager : StreamInteractionModule, Object {
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), file_transfer.path ?? file_transfer.file_name));
             try {
                 file_transfer.input_stream = file.read();
-            } catch (IOError e) { }
+            } catch (Error e) { }
             ret.insert(0, file_transfer);
         }
         return ret;
@@ -123,27 +125,29 @@ public class FileManager : StreamInteractionModule, Object {
         }
         save_file(file_transfer);
 
-        File file = File.new_for_path(file_transfer.get_uri());
-        FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-        file_transfer.mime_type = file_info.get_content_type();
+        try {
+            File file = File.new_for_path(file_transfer.get_uri());
+            FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+            file_transfer.mime_type = file_info.get_content_type();
+        } catch (Error e) { }
 
         file_transfer.persist(db);
         received_file(file_transfer);
     }
 
     private void save_file(FileTransfer file_transfer) {
-        string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
-        File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
         try {
+            string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
+            File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
             os.splice(file_transfer.input_stream, 0);
             os.close();
             file_transfer.state = FileTransfer.State.COMPLETE;
+            file_transfer.path = filename;
+            file_transfer.input_stream = file.read();
         } catch (Error e) {
             file_transfer.state = FileTransfer.State.FAILED;
         }
-        file_transfer.path = filename;
-        file_transfer.input_stream = file.read();
     }
 
 }

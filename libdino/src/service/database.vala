@@ -199,7 +199,9 @@ public class Database : Qlite.Database {
         roster = new RosterTable(this);
         settings = new SettingsTable(this);
         init({ account, jid, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
-        exec("PRAGMA synchronous=0");
+        try {
+            exec("PRAGMA synchronous=0");
+        } catch (Error e) { }
     }
 
     public override void migrate(long oldVersion) {

@@ -21,7 +21,11 @@ public class UploadStreamModule : XmppStreamModule {
                 Array<uint8> data = new Array<uint8>(false, true, 0);
                 size_t len = -1;
                 do {
-                    len = input_stream.read(buf);
+                    try {
+                        len = input_stream.read(buf);
+                    } catch (IOError error) {
+                        error_listener(stream, @"HTTP upload: IOError reading stream: $(error.message)");
+                    }
                     data.append_vals(buf, (uint) len);
                 } while(len > 0);
 
@@ -41,7 +45,7 @@ public class UploadStreamModule : XmppStreamModule {
                     }
                 });
             },
-            error_listener);
+            (stream, error) => error_listener(stream, error));
     }
 
     private delegate void OnSlotOk(XmppStream stream, string url_get, string url_put);

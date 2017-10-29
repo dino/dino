@@ -79,9 +79,14 @@ public class ImageItem : Plugins.MetaConversationItem {
         });
     }
 
-    public override Object get_widget(Plugins.WidgetType widget_type) {
+    public override Object? get_widget(Plugins.WidgetType widget_type) {
         Image image = new Image() { halign=Align.START, visible = true };
-        Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_file(file_transfer.get_uri());
+        Gdk.Pixbuf pixbuf;
+        try {
+            pixbuf = new Gdk.Pixbuf.from_file(file_transfer.get_uri());
+        } catch (Error error) {
+            return null;
+        }
 
         int max_scaled_height = MAX_HEIGHT * image.scale_factor;
         if (pixbuf.height > max_scaled_height) {
@@ -104,7 +109,6 @@ public class ImageItem : Plugins.MetaConversationItem {
         Util.force_color(url_label, "#eee");
         file_transfer.notify["info"].connect_after(() => { update_info(url_label, file_transfer.info); });
         update_info(url_label, file_transfer.info);
-        Box url_box = builder.get_object("url_box") as Box;
 
         Image copy_image = builder.get_object("copy_image") as Image;
         Util.force_css(copy_image, "*:not(:hover) { color: #eee; }");

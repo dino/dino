@@ -152,16 +152,18 @@ public class AvatarGenerator {
         Context rectancle_context = new Context(new ImageSurface(Format.ARGB32, width, height));
         draw_colored_rectangle(rectancle_context, hex_color, width, height);
 
-        Pixbuf icon_pixbuf = IconTheme.get_default().load_icon(icon, ICON_SIZE, IconLookupFlags.FORCE_SIZE);
-        Surface icon_surface = cairo_surface_create_from_pixbuf(icon_pixbuf, 1, null);
-        Context context = new Context(icon_surface);
-        context.set_operator(Operator.IN);
-        context.set_source_rgba(1, 1, 1, 1);
-        context.rectangle(0, 0, width, height);
-        context.fill();
+        try {
+            Pixbuf icon_pixbuf = IconTheme.get_default().load_icon(icon, ICON_SIZE, IconLookupFlags.FORCE_SIZE);
+            Surface icon_surface = cairo_surface_create_from_pixbuf(icon_pixbuf, 1, null);
+            Context context = new Context(icon_surface);
+            context.set_operator(Operator.IN);
+            context.set_source_rgba(1, 1, 1, 1);
+            context.rectangle(0, 0, width, height);
+            context.fill();
 
-        rectancle_context.set_source_surface(icon_surface, width / 2 - ICON_SIZE / 2, height / 2 - ICON_SIZE / 2);
-        rectancle_context.paint();
+            rectancle_context.set_source_surface(icon_surface, width / 2 - ICON_SIZE / 2, height / 2 - ICON_SIZE / 2);
+            rectancle_context.paint();
+        } catch (Error e) { warning(@"Icon $icon does not exist"); }
 
         return pixbuf_get_from_surface(rectancle_context.get_target(), 0, 0, width, height);
     }

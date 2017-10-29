@@ -17,6 +17,7 @@ public class AccountSettingsDialog : Gtk.Dialog {
     public AccountSettingsDialog(Plugin plugin, Account account) {
         Object(use_header_bar : 1);
         this.plugin = plugin;
+        this.account = account;
 
         string own_b64 = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.identity_key_public_base64];
         fingerprint = fingerprint_from_base64(own_b64);
