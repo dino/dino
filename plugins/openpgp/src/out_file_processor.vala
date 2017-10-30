@@ -21,7 +21,7 @@ public class OutFileProcessor : OutgoingFileProcessor, Object {
             uint8[] enc_content = GPGHelper.encrypt_file(uri, keys, GPG.EncryptFlags.ALWAYS_TRUST);
             file_transfer.input_stream = new MemoryInputStream.from_data(enc_content, GLib.free);
             file_transfer.encryption = Encryption.PGP;
-            file_transfer.server_file_name = file_transfer.server_file_name + ".pgp";
+            file_transfer.server_file_name = Xmpp.random_uuid() + ".pgp";
         } catch (Error e) {
             file_transfer.state = FileTransfer.State.FAILED;
         }

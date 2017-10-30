@@ -130,14 +130,29 @@ public class ConnectionManager {
         return null;
     }
 
-    public void disconnect(Account account) {
+    public void make_offline_all() {
+        foreach (Account account in connection_todo) {
+            make_offline(account);
+        }
+    }
+
+    private void make_offline(Account account) {
+        Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
+        presence.type_ = Xmpp.Presence.Stanza.TYPE_UNAVAILABLE;
         change_connection_state(account, ConnectionState.DISCONNECTED);
+        try {
+            connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
+        } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
+    }
+
+    public void disconnect(Account account) {
+        make_offline(account);
+        try {
+            connections[account].stream.disconnect();
+        } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
         connection_todo.remove(account);
         if (connections.has_key(account)) {
-            try {
-                connections[account].stream.disconnect();
-                connections.unset(account);
-            } catch (Error e) { }
+            connections.unset(account);
         }
     }
 

@@ -42,6 +42,9 @@ public interface Dino.Application : GLib.Application {
             stream_interactor.connection_manager.log_options = print_xmpp;
             restore();
         });
+        shutdown.connect(() => {
+            stream_interactor.connection_manager.make_offline_all();
+        });
         open.connect((files, hint) => {
             if (files.length != 1) {
                 warning("Can't handle more than one URI at once.");
