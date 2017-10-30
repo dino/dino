@@ -128,10 +128,13 @@ public class Dialog : Gtk.Dialog {
     private void remove_account(AccountRow account_item) {
         Gtk.MessageDialog msg = new Gtk.MessageDialog (
                         this,  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
-                        Gtk.MessageType.WARNING, Gtk.ButtonsType.YES_NO,
-                        _("Delete Account"));
-        msg.format_secondary_markup(_("Do you really want to delete <b>%s</b>? This action is irreversible!"), account_item.jid_label.get_text());
-        if (msg.run() == Gtk.ResponseType.YES) {
+                        Gtk.MessageType.WARNING, Gtk.ButtonsType.OK_CANCEL,
+                        _("Remove account %s?".printf(account_item.jid_label.get_text())));
+        msg.secondary_text = "You won't be able to access your conversation history anymore."; // TODO remove history!
+        Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
+        ok_button.label = _("Remove");
+        ok_button.get_style_context().add_class("destructive-action");
+        if (msg.run() == Gtk.ResponseType.OK) {
             account_list.remove(account_item);
             account_list.queue_draw();
             if (account_item.account.enabled) account_disabled(account_item.account);
