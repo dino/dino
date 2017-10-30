@@ -126,15 +126,23 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void remove_account(AccountRow account_item) {
-        account_list.remove(account_item);
-        account_list.queue_draw();
-        if (account_item.account.enabled) account_disabled(account_item.account);
-        account_item.account.remove();
-        if (account_list.get_row_at_index(0) != null) {
-            account_list.select_row(account_list.get_row_at_index(0));
-        } else {
-            main_stack.set_visible_child_name("no_accounts");
+        Gtk.MessageDialog msg = new Gtk.MessageDialog (
+                        this,  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
+                        Gtk.MessageType.WARNING, Gtk.ButtonsType.YES_NO,
+                        _("Delete Account"));
+        msg.format_secondary_markup(_("Do you really want to delete <b>%s</b>? This action is irreversible!"), account_item.jid_label.get_text());
+        if (msg.run() == Gtk.ResponseType.YES) {
+            account_list.remove(account_item);
+            account_list.queue_draw();
+            if (account_item.account.enabled) account_disabled(account_item.account);
+            account_item.account.remove();
+            if (account_list.get_row_at_index(0) != null) {
+                account_list.select_row(account_list.get_row_at_index(0));
+            } else {
+                main_stack.set_visible_child_name("no_accounts");
+            }
         }
+        msg.close();
     }
 
     private void on_account_list_row_selected(ListBoxRow? row) {
