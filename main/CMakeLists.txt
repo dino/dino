@@ -88,6 +88,7 @@ SOURCES
     src/ui/chat_input/occupants_tab_completer.vala
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
+    src/ui/contact_details/blocking_provider.vala
     src/ui/contact_details/settings_provider.vala
     src/ui/contact_details/dialog.vala
     src/ui/contact_details/muc_config_form_provider.vala

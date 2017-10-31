@@ -31,6 +31,7 @@ public interface Dino.Application : GLib.Application {
         MessageStorage.start(stream_interactor, db);
         CounterpartInteractionManager.start(stream_interactor);
         PresenceManager.start(stream_interactor);
+        BlockingManager.start(stream_interactor);
         MucManager.start(stream_interactor);
         RosterManager.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
