@@ -14,13 +14,15 @@ public class Module : XmppStreamModule, Iq.Handler {
     public signal void unblock_all_received(XmppStream stream);
 
     public bool is_blocked(XmppStream stream, string jid) {
-        return stream.get_flag(Flag.IDENTITY).blocklist.contains(jid);
+        foreach (string blocked in stream.get_flag(Flag.IDENTITY).blocklist) {
+            if (blocked.contains(jid)) return true;
+        }
+        return false;
     }
 
     public bool block(XmppStream stream, Gee.List<string> jids) {
-        // This would otherwise be a bad-request error.
-        if (jids.size == 0)
-            return false;
+        if (jids.size == 0) return false; // This would otherwise be a bad-request error.
+
         StanzaNode block_node = new StanzaNode.build("block", NS_URI).add_self_xmlns();
         fill_node_with_items(block_node, jids);
         Iq.Stanza iq = new Iq.Stanza.set(block_node);
@@ -29,9 +31,8 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public bool unblock(XmppStream stream, Gee.List<string> jids) {
-        // This would otherwise unblock all blocked JIDs.
-        if (jids.size == 0)
-            return false;
+        if (jids.size == 0)  return false; // This would otherwise unblock all blocked JIDs.
+
         StanzaNode unblock_node = new StanzaNode.build("unblock", NS_URI).add_self_xmlns();
         fill_node_with_items(unblock_node, jids);
         Iq.Stanza iq = new Iq.Stanza.set(unblock_node);
@@ -43,6 +44,10 @@ public class Module : XmppStreamModule, Iq.Handler {
         StanzaNode unblock_node = new StanzaNode.build("unblock", NS_URI).add_self_xmlns();
         Iq.Stanza iq = new Iq.Stanza.set(unblock_node);
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
+    }
+
+    public bool is_supported(XmppStream stream) {
+        return stream.has_flag(Flag.IDENTITY);
     }
 
     private void on_iq_get(XmppStream stream, Iq.Stanza iq) { }
@@ -81,7 +86,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     public override string get_id() { return IDENTITY.id; }
 
     private void on_stream_negotiated(XmppStream stream) {
-        stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).request_info(stream, "jabberfr.org", (stream, info_result) => {
+        stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).request_info(stream, stream.remote_name, (stream, info_result) => {
             if (info_result.features.contains(NS_URI)) {
                 stream.add_flag(new Flag());
                 get_blocklist(stream, (stream, jids) => {
@@ -110,8 +115,9 @@ public class Module : XmppStreamModule, Iq.Handler {
         Gee.List<string> jids = new ArrayList<string>();
         foreach (StanzaNode item_node in item_nodes) {
             string? jid = item_node.get_attribute("jid", NS_URI);
-            if (jid != null)
+            if (jid != null) {
                 jids.add(jid);
+            }
         }
         return jids;
     }

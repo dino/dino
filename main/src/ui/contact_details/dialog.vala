@@ -42,6 +42,7 @@ public class Dialog : Gtk.Dialog {
 
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_contact_details_entry(new SettingsProvider(stream_interactor));
+        app.plugin_registry.register_contact_details_entry(new BlockingProvider(stream_interactor));
         app.plugin_registry.register_contact_details_entry(new MucConfigFormProvider(stream_interactor));
 
         foreach (Plugins.ContactDetailsProvider provider in app.plugin_registry.contact_details_entries) {
