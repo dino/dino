@@ -14,10 +14,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     public signal void unblock_all_received(XmppStream stream);
 
     public bool is_blocked(XmppStream stream, string jid) {
-        foreach (string blocked in stream.get_flag(Flag.IDENTITY).blocklist) {
-            if (blocked.contains(jid)) return true;
-        }
-        return false;
+        return stream.get_flag(Flag.IDENTITY).blocklist.contains(jid);
     }
 
     public bool block(XmppStream stream, Gee.List<string> jids) {
