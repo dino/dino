@@ -70,7 +70,6 @@ endif()
 AddCFlagIfSupported(-Wall)
 AddCFlagIfSupported(-Werror=format-security)
 
-AddValaCFlagIfSupported(-Wno-deprecated-declarations)
 AddValaCFlagIfSupported(-Wno-incompatible-pointer-types)
 AddValaCFlagIfSupported(-Wno-pointer-sign)
 AddValaCFlagIfSupported(-Wno-int-conversion)
