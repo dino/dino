@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiAddConversationConferenceAddGroupchatDialog">
+    <template class="DinoUiAddGroupchatDialog">
         <property name="default_width">400</property>
         <property name="modal">True</property>
         <child type="titlebar">
@@ -171,20 +171,6 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkCheckButton" id="autojoin_checkbutton">
-                                <property name="active">False</property>
-                                <property name="label" translatable="yes">Join on startup</property>
-                                <property name="xalign">0</property>
-                                <property name="visible">True</property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">5</property>
-                                <property name="width">1</property>
-                                <property name="height">1</property>
-                            </packing>
-                        </child>
-                        <child>
                             <object class="GtkLabel" id="alias_label">
                                 <property name="label" translatable="yes">Alias</property>
                                 <property name="xalign">1</property>
@@ -192,7 +178,7 @@
                             </object>
                             <packing>
                                 <property name="left_attach">0</property>
-                                <property name="top_attach">6</property>
+                                <property name="top_attach">5</property>
                                 <property name="width">1</property>
                                 <property name="height">1</property>
                             </packing>
@@ -206,7 +192,7 @@
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>
-                                <property name="top_attach">6</property>
+                                <property name="top_attach">5</property>
                                 <property name="width">1</property>
                                 <property name="height">1</property>
                             </packing>

@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Plugins.HttpFiles {
 
-public class FileProvider : Plugins.FileProvider, Object {
+public class FileProvider : Dino.FileProvider, Object {
     public string id { get { return "http"; } }
 
     private StreamInteractor stream_interactor;
@@ -19,15 +19,8 @@ public class FileProvider : Plugins.FileProvider, Object {
         this.url_regex = new Regex("""^(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$""");
         this.file_ext_regex = new Regex("""\.(png|jpg|jpeg|svg|gif)""");
 
-        Application app = GLib.Application.get_default() as Application;
-        app.plugin_registry.register_message_display(new FileMessageFilterDisplay(dino_db));
-
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(check_message);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(check_message);
-        stream_interactor.get_module(Manager.IDENTITY).uploading.connect((file_transfer) => {
-            file_transfer.provider = 0;
-            file_incoming(file_transfer);
-        });
         stream_interactor.get_module(Manager.IDENTITY).uploaded.connect((file_transfer, url) => {
             file_transfer.info = url;
             ignore_once.add(url);
@@ -54,9 +47,14 @@ public class FileProvider : Plugins.FileProvider, Object {
                 if (name == "Content-Type") content_type = val;
                 if (name == "Content-Length") content_length = val;
             });
-            if (content_type != null && content_type.has_prefix("image") && content_length != null && int.parse(content_length) < 5000000) {
-                Soup.Request request = session.request (message.body);
+            if (/*content_type != null && content_type.has_prefix("image") &&*/ content_length != null && int.parse(content_length) < 5000000) {
                 FileTransfer file_transfer = new FileTransfer();
+                try {
+                    Soup.Request request = session.request(message.body);
+                    file_transfer.input_stream = request.send();
+                } catch (Error e) {
+                    return;
+                }
                 file_transfer.account = conversation.account;
                 file_transfer.counterpart = message.counterpart;
                 file_transfer.ourpart = message.ourpart;
@@ -64,7 +62,6 @@ public class FileProvider : Plugins.FileProvider, Object {
                 file_transfer.time = message.time;
                 file_transfer.local_time = message.local_time;
                 file_transfer.direction = message.direction;
-                file_transfer.input_stream = request.send();
                 file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);
                 file_transfer.mime_type = content_type;
                 file_transfer.size = int.parse(content_length);
@@ -74,33 +71,6 @@ public class FileProvider : Plugins.FileProvider, Object {
                 file_incoming(file_transfer);
             }
         }
-    }
-}
-
-public class FileMessageFilterDisplay : Plugins.MessageDisplayProvider, Object {
-    public string id { get; set; default="file_message_filter"; }
-    public double priority { get; set; default=10; }
-
-    public Database db;
-
-    public FileMessageFilterDisplay(Dino.Database db) {
-        this.db = db;
-    }
-
-    public bool can_display(Entities.Message? message) {
-        return message_is_file(message);
-    }
-
-    public Plugins.MetaConversationItem? get_item(Entities.Message message, Conversation conversation) {
-        return null;
-    }
-
-    private bool message_is_file(Entities.Message message) {
-        Qlite.QueryBuilder builder = db.file_transfer.select()
-                .with(db.file_transfer.info, "=", message.body)
-                .with(db.file_transfer.account_id, "=", message.account.id)
-                .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(message.counterpart));
-        return builder.count() > 0;
     }
 }
 

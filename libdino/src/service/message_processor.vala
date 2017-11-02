@@ -11,7 +11,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     public signal void pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
     public signal void message_received(Entities.Message message, Conversation conversation);
-    public signal void out_message_created(Entities.Message message, Conversation conversation);
+    public signal void build_message_stanza(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
     public signal void pre_message_send(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
     public signal void message_sent(Entities.Message message, Conversation conversation);
 
@@ -40,6 +40,16 @@ public class MessageProcessor : StreamInteractionModule, Object {
         message_sent(message, conversation);
     }
 
+    public void send_unsent_messages(Account account, Jid? jid = null) {
+        Gee.List<Entities.Message> unsend_messages = db.get_unsend_messages(account, jid);
+        foreach (Entities.Message message in unsend_messages) {
+            Conversation? msg_conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart, account);
+            if (msg_conv != null) {
+                send_xmpp_message(message, msg_conv, true);
+            }
+        }
+    }
+
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xmpp.Message.Module.IDENTITY).received_message.connect( (stream, message) => {
             on_message_received(account, message);
@@ -48,16 +58,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
             DateTime start_time = account.mam_earliest_synced.to_unix() > 60 ? account.mam_earliest_synced.add_minutes(-1) : account.mam_earliest_synced;
             stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, start_time, null);
         });
-    }
-
-    private void send_unsent_messages(Account account) {
-        Gee.List<Entities.Message> unsend_messages = db.get_unsend_messages(account);
-        foreach (Entities.Message message in unsend_messages) {
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart, account);
-            if (conversation != null) {
-                send_xmpp_message(message, conversation, true);
-            }
-        }
     }
 
     private void on_message_received(Account account, Xmpp.Message.Stanza message) {
@@ -168,15 +168,13 @@ public class MessageProcessor : StreamInteractionModule, Object {
         message.direction = Entities.Message.DIRECTION_SENT;
         message.counterpart = conversation.counterpart;
         if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
-            message.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+            message.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
             message.real_jid = conversation.account.bare_jid;
         } else {
             message.ourpart = new Jid.with_resource(conversation.account.bare_jid.to_string(), conversation.account.resourcepart);
         }
         message.marked = Entities.Message.Marked.UNSENT;
         message.encryption = conversation.encryption;
-
-        out_message_created(message, conversation);
         return message;
     }
 
@@ -193,6 +191,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 } else {
                     new_message.type_ = Xmpp.Message.Stanza.TYPE_CHAT;
                 }
+                build_message_stanza(message, new_message, conversation);
                 pre_message_send(message, new_message, conversation);
                 if (message.marked == Entities.Message.Marked.UNSENT || message.marked == Entities.Message.Marked.WONTSEND) return;
                 if (delayed) {

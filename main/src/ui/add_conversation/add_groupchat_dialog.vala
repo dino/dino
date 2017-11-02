@@ -3,7 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.AddConversation.Conference {
+namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/add_conversation/add_groupchat_dialog.ui")]
 protected class AddGroupchatDialog : Gtk.Dialog {
@@ -16,7 +16,6 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     [GtkChild] private Entry jid_entry;
     [GtkChild] private Entry alias_entry;
     [GtkChild] private Entry nick_entry;
-    [GtkChild] private CheckButton autojoin_checkbutton;
 
     private StreamInteractor stream_interactor;
     private Xmpp.Xep.Bookmarks.Conference? edit_confrence = null;
@@ -46,7 +45,6 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         account_combobox.selected = account;
         jid_entry.text = conference.jid;
         nick_entry.text = conference.nick ?? "";
-        autojoin_checkbutton.active = conference.autojoin;
         alias_entry.text = conference.name;
     }
 
@@ -69,7 +67,6 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         Xmpp.Xep.Bookmarks.Conference conference = new Xmpp.Xep.Bookmarks.Conference(jid_entry.text);
         conference.nick = nick_entry.text != "" ? nick_entry.text : null;
         conference.name = alias_entry.text;
-        conference.autojoin = autojoin_checkbutton.active;
         if (edit_confrence == null) {
             stream_interactor.get_module(MucManager.IDENTITY).add_bookmark(account_combobox.selected, conference);
         } else {

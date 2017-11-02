@@ -64,7 +64,7 @@ public interface TextCommand : Object {
 public interface ConversationTitlebarEntry : Object {
     public abstract string id { get; }
     public abstract double order { get; }
-    public abstract ConversationTitlebarWidget get_widget(WidgetType type);
+    public abstract ConversationTitlebarWidget? get_widget(WidgetType type);
 }
 
 public interface ConversationTitlebarWidget : Object {
@@ -94,7 +94,7 @@ public abstract class MetaConversationItem : Object {
     public abstract bool requires_avatar { get; set; }
     public abstract bool requires_header { get; set; }
 
-    public abstract Object get_widget(WidgetType type);
+    public abstract Object? get_widget(WidgetType type);
 }
 
 public interface ConversationItemCollection : Object {
@@ -109,17 +109,8 @@ public interface MessageDisplayProvider : Object {
     public abstract MetaConversationItem? get_item(Entities.Message message, Entities.Conversation conversation);
 }
 
-public interface FileProvider : Object {
-    public signal void file_incoming(FileTransfer file_transfer);
-}
-
-public interface FileProcessor : Object {
-    public abstract bool can_process(FileTransfer file_transfer);
-    public abstract FileTransfer process(FileTransfer file_transfer);
-}
-
 public interface FileWidget : Object {
-    public abstract Object get_widget(WidgetType type);
+    public abstract Object? get_widget(WidgetType type);
 }
 
 public interface FileDisplayProvider : Object {

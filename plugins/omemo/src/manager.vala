@@ -196,39 +196,24 @@ public class Manager : StreamInteractionModule, Object {
         if (module == null) {
             return;
         }
-        try {
-            ArrayList<int32> device_list = module.get_device_list(jid);
-            db.identity_meta.insert_device_list(jid, device_list);
-            int inc = 0;
-            foreach (Row row in db.identity_meta.with_address(jid).with_null(db.identity_meta.identity_key_public_base64)) {
-                module.fetch_bundle(stream, row[db.identity_meta.address_name], row[db.identity_meta.device_id]);
-                inc++;
-            }
-            if (inc > 0) {
-                if (Plugin.DEBUG) print(@"OMEMO: new bundles $inc/$(device_list.size) for $jid\n");
-            }
-        } catch (DatabaseError e) {
-            // Ignore
-            print(@"OMEMO: failed to use database: $(e.message)\n");
+        ArrayList<int32> device_list = module.get_device_list(jid);
+        db.identity_meta.insert_device_list(jid, device_list);
+        int inc = 0;
+        foreach (Row row in db.identity_meta.with_address(jid).with_null(db.identity_meta.identity_key_public_base64)) {
+            module.fetch_bundle(stream, row[db.identity_meta.address_name], row[db.identity_meta.device_id]);
+            inc++;
+        }
+        if (inc > 0) {
+            if (Plugin.DEBUG) print(@"OMEMO: new bundles $inc/$(device_list.size) for $jid\n");
         }
     }
 
     public void on_bundle_fetched(Account account, string jid, int32 device_id, Bundle bundle) {
-        try {
-            db.identity_meta.insert_device_bundle(jid, device_id, bundle);
-        } catch (DatabaseError e) {
-            // Ignore
-            print(@"OMEMO: failed to use database: $(e.message)\n");
-        }
+        db.identity_meta.insert_device_bundle(jid, device_id, bundle);
     }
 
     private void on_store_created(Account account, Store store) {
-        Qlite.Row? row = null;
-        try {
-            row = db.identity.row_with(db.identity.account_id, account.id).inner;
-        } catch (Error e) {
-            // Ignore error
-        }
+        Qlite.Row? row = db.identity.row_with(db.identity.account_id, account.id).inner;
         int identity_id = -1;
 
         if (row == null) {

@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-31 20:04+0200\n"
+"POT-Creation-Date: 2017-10-23 00:48+0200\n"
 "PO-Revision-Date: 2017-06-01 10:32+0000\n"
 "Last-Translator: tonghuix <tonghuix@gmail.com>\n"
-"Language-Team: Chinese (Simplified) "
-"<https://hosted.weblate.org/projects/dino/translations/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"dino/translations/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,9 +20,10 @@ msgstr ""
 "X-Generator: Weblate 2.15-dev\n"
 
 #: data/add_conversation/add_contact_dialog.ui:11
-#: data/add_conversation/add_groupchat_dialog.ui:11
+#: data/add_conversation/add_groupchat_dialog.ui:11 src/ui/application.vala:41
+#: src/ui/add_conversation/chat/dialog.vala:40
 #: src/ui/add_conversation/conference/dialog.vala:15
-#: src/ui/manage_accounts/dialog.vala:152
+#: src/ui/manage_accounts/dialog.vala:151
 msgid "Cancel"
 msgstr "取消"
 
@@ -63,7 +64,7 @@ msgstr "密码"
 msgid "Join on startup"
 msgstr "启动时加入"
 
-#: data/conversation_selector/view.ui:15
+#: data/conversation_selector/view.ui:14
 msgid "Search"
 msgstr "搜索"
 
@@ -73,7 +74,7 @@ msgid "Save"
 msgstr "保存"
 
 #: data/manage_accounts/add_account_dialog.ui:102
-#: data/manage_accounts/dialog.ui:220
+#: data/manage_accounts/dialog.ui:196
 msgid "Local alias"
 msgstr "本地别名"
 
@@ -81,22 +82,29 @@ msgstr "本地别名"
 msgid "Accounts"
 msgstr "帐号"
 
-#: data/manage_accounts/dialog.ui:309
+#: data/manage_accounts/dialog.ui:251
+#, fuzzy
+msgid "No accounts configured"
+msgstr "没有激活的帐号"
+
+#: data/manage_accounts/dialog.ui:262
 msgid "Add an account"
 msgstr "添加新账号"
 
-#: data/menu_add.ui:6
+#: data/menu_add.ui:6 src/ui/application.vala:70
+#: src/ui/conversation_list_titlebar.vala:31 src/ui/unified_window.vala:150
 msgid "Start Chat"
 msgstr "开始聊天"
 
-#: data/menu_add.ui:12 src/ui/add_conversation/conference/dialog.vala:26
-#: src/ui/unified_window.vala:149
+#: data/menu_add.ui:12 src/ui/application.vala:41
+#: src/ui/add_conversation/conference/dialog.vala:26
+#: src/ui/unified_window.vala:151
 msgid "Join Conference"
 msgstr "加入群聊"
 
-#: data/menu_app.ui:10 src/ui/contact_details/settings_provider.vala:26
+#: data/menu_app.ui:10 src/ui/contact_details/settings_provider.vala:22
+#: src/ui/contact_details/settings_provider.vala:25
 #: src/ui/contact_details/settings_provider.vala:30
-#: src/ui/contact_details/settings_provider.vala:34
 msgid "Settings"
 msgstr "设置"
 
@@ -104,7 +112,7 @@ msgstr "设置"
 msgid "Quit"
 msgstr "退出"
 
-#: data/menu_conversation.ui:6
+#: data/menu_conversation.ui:6 src/ui/contact_details/dialog.vala:37
 msgid "Contact Details"
 msgstr "联系人详情"
 
@@ -116,11 +124,11 @@ msgstr "未加密"
 msgid "Preferences"
 msgstr "选项"
 
-#: data/settings_dialog.ui:22 src/ui/contact_details/settings_provider.vala:26
+#: data/settings_dialog.ui:22 src/ui/contact_details/settings_provider.vala:22
 msgid "Send typing notifications"
 msgstr "发送打字通知"
 
-#: data/settings_dialog.ui:34 src/ui/contact_details/settings_provider.vala:30
+#: data/settings_dialog.ui:34 src/ui/contact_details/settings_provider.vala:25
 msgid "Send message marker"
 msgstr "发送消息标记"
 
@@ -132,13 +140,54 @@ msgstr "新消息到达时通知"
 msgid "Convert smileys to emojis"
 msgstr "将笑脸转换成 Emoji"
 
+#: src/ui/application.vala:41 src/ui/add_conversation/conference/dialog.vala:60
+msgid "Join"
+msgstr "加入"
+
+#: src/ui/application.vala:71 src/ui/conversation_list_titlebar.vala:32
+#, fuzzy
+msgid "Start"
+msgstr "开始聊天"
+
 #: src/ui/add_conversation/conference/dialog.vala:45
 msgid "Next"
 msgstr "下一个"
 
-#: src/ui/add_conversation/conference/dialog.vala:60
-msgid "Join"
-msgstr "加入"
+#: src/ui/contact_details/settings_provider.vala:30
+#: src/ui/contact_details/settings_provider.vala:39
+msgid "Notifications"
+msgstr "通知"
+
+#: src/ui/contact_details/settings_provider.vala:39
+msgid "Local Settings"
+msgstr "本地设置"
+
+#: src/ui/contact_details/settings_provider.vala:74
+#: src/ui/contact_details/settings_provider.vala:114
+#: src/ui/contact_details/settings_provider.vala:116
+msgid "On"
+msgstr "开启"
+
+#: src/ui/contact_details/settings_provider.vala:76
+#: src/ui/contact_details/settings_provider.vala:114
+#: src/ui/contact_details/settings_provider.vala:117
+msgid "Off"
+msgstr "关闭"
+
+#: src/ui/contact_details/settings_provider.vala:78
+msgid "Only when mentioned"
+msgstr "只有被提到时"
+
+#: src/ui/contact_details/settings_provider.vala:80
+#: src/ui/contact_details/settings_provider.vala:115
+#, fuzzy, c-format
+msgid "Default: %s"
+msgstr "默认"
+
+#: src/ui/contact_details/dialog.vala:37
+#, fuzzy
+msgid "Conference Details"
+msgstr "联系人详情"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:42
 msgid "Name of the room"
@@ -173,7 +222,8 @@ msgid "Who may discover real JIDs?"
 msgstr "谁可能发现真实 JID？"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:63
-msgid "Passwort required to enter the room. Leave empty for none"
+#, fuzzy
+msgid "Password required to enter the room. Leave empty for none"
 msgstr "进入房间要求使用密码。留空表示不需要密码"
 
 #: src/ui/contact_details/muc_config_form_provider.vala:66
@@ -200,186 +250,189 @@ msgstr "消息历史记录"
 msgid "Maximum number of history messages returned by the room"
 msgstr "返回的房间的历史消息的最大数目"
 
-#: src/ui/contact_details/muc_config_form_provider.vala:80
+#: src/ui/contact_details/muc_config_form_provider.vala:81
 msgid "Room Configuration"
 msgstr "房间配置"
 
-#: src/ui/contact_details/settings_provider.vala:21
-#: src/ui/contact_details/settings_provider.vala:39
-msgid "Default"
-msgstr "默认"
+#: src/ui/conversation_selector/chat_row.vala:30
+#: src/ui/conversation_selector/groupchat_pm_row.vala:25
+msgid "Me"
+msgstr ""
 
-#: src/ui/contact_details/settings_provider.vala:22
-#: src/ui/contact_details/settings_provider.vala:41
-msgid "On"
-msgstr "开启"
-
-#: src/ui/contact_details/settings_provider.vala:23
-#: src/ui/contact_details/settings_provider.vala:42
-msgid "Off"
-msgstr "关闭"
-
-#: src/ui/contact_details/settings_provider.vala:34
-#: src/ui/contact_details/settings_provider.vala:43
-msgid "Notifications"
-msgstr "通知"
-
-#: src/ui/contact_details/settings_provider.vala:40
-msgid "Only when mentioned"
-msgstr "只有被提到时"
-
-#: src/ui/contact_details/settings_provider.vala:43
-msgid "Local Settings"
-msgstr "本地设置"
-
-#: src/ui/conversation_selector/conversation_row.vala:173
+#: src/ui/conversation_selector/conversation_row.vala:172
 #, no-c-format
 msgid "%b %d"
 msgstr "%_m 月 %_d 日"
 
-#: src/ui/conversation_selector/conversation_row.vala:177
+#: src/ui/conversation_selector/conversation_row.vala:176
 msgid "Yesterday"
 msgstr "昨天"
 
-#: src/ui/conversation_selector/conversation_row.vala:180
-#: src/ui/conversation_summary/message_item.vala:110
+#: src/ui/conversation_selector/conversation_row.vala:179
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:146
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: src/ui/conversation_selector/conversation_row.vala:181
-#: src/ui/conversation_summary/message_item.vala:111
+#: src/ui/conversation_selector/conversation_row.vala:180
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:147
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: src/ui/conversation_selector/conversation_row.vala:184
-#: src/ui/conversation_summary/message_item.vala:114
+#: src/ui/conversation_selector/conversation_row.vala:183
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:151
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i 分钟以前"
 
-#: src/ui/conversation_selector/conversation_row.vala:186
-#: src/ui/conversation_summary/message_item.vala:116
+#: src/ui/conversation_selector/conversation_row.vala:185
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:153
 msgid "Just now"
 msgstr "刚刚"
 
-#: src/ui/conversation_summary/message_item.vala:98
+#: src/ui/conversation_summary/chat_state_populator.vala:58
+msgid "is typing..."
+msgstr "正在输入..."
+
+#: src/ui/conversation_summary/chat_state_populator.vala:60
+msgid "has stopped typing"
+msgstr "已经停止输入"
+
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:134
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: src/ui/conversation_summary/message_item.vala:99
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:135
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: src/ui/conversation_summary/message_item.vala:102
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:138
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%_m 月 %_d 日，%H∶%M"
 
-#: src/ui/conversation_summary/message_item.vala:103
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:139
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%_m 月 %_d 日，%l∶%M %p"
 
-#: src/ui/conversation_summary/message_item.vala:106
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:142
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%A，%H∶%M"
 
-#: src/ui/conversation_summary/message_item.vala:107
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:143
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%A，%l∶%M %p"
 
-#: src/ui/conversation_summary/view.vala:120
-msgid "is typing..."
-msgstr "正在输入..."
-
-#: src/ui/conversation_summary/view.vala:122
-msgid "has stopped typing"
-msgstr "已经停止输入"
+#: src/ui/conversation_summary/message_textview.vala:33
+#, fuzzy
+msgid "Message too long"
+msgstr "消息历史记录"
 
 #: src/ui/manage_accounts/add_account_dialog.vala:21
 msgid "Add Account"
 msgstr "添加帐号"
 
-#: src/ui/manage_accounts/dialog.vala:151
+#: src/ui/manage_accounts/dialog.vala:150
 msgid "Select avatar"
 msgstr "选择头像"
 
-#: src/ui/manage_accounts/dialog.vala:153
+#: src/ui/manage_accounts/dialog.vala:151
 msgid "Select"
 msgstr "选择"
 
-#: src/ui/manage_accounts/dialog.vala:252
-msgid "Connecting..."
+#: src/ui/manage_accounts/dialog.vala:159
+msgid "Images"
+msgstr ""
+
+#: src/ui/manage_accounts/dialog.vala:162
+msgid "All files"
+msgstr ""
+
+#: src/ui/manage_accounts/dialog.vala:224
+#, fuzzy
+msgid "Connecting…"
 msgstr "连接中..."
 
-#: src/ui/manage_accounts/dialog.vala:254
+#: src/ui/manage_accounts/dialog.vala:226
 msgid "Connected"
 msgstr "已连接"
 
-#: src/ui/manage_accounts/dialog.vala:256
+#: src/ui/manage_accounts/dialog.vala:228
 msgid "Disconnected"
 msgstr "已断开连接"
 
-#: src/ui/manage_accounts/dialog.vala:279
+#: src/ui/manage_accounts/dialog.vala:237
 msgid "Wrong password"
 msgstr "密码错误"
 
-#: src/ui/manage_accounts/dialog.vala:282
-#: src/ui/manage_accounts/dialog.vala:284
+#: src/ui/manage_accounts/dialog.vala:240
+#: src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr "错误"
 
-#: src/ui/occupant_menu/list.vala:105
-msgid "Owner"
-msgstr "所有者"
-
-#: src/ui/occupant_menu/list.vala:107
-msgid "Admin"
-msgstr "管理员"
-
-#: src/ui/occupant_menu/list.vala:109
-msgid "Member"
-msgstr "成员"
-
-#: src/ui/occupant_menu/list.vala:111
-msgid "User"
-msgstr "用户"
-
-#: src/ui/occupant_menu/view.vala:48
-msgid "Start private conversation"
-msgstr "启动私密会话"
-
-#: src/ui/notifications.vala:70
+#: src/ui/notifications.vala:103
 msgid "Subscription request"
 msgstr "订阅请求"
 
-#: src/ui/notifications.vala:72
+#: src/ui/notifications.vala:107
 msgid "Accept"
 msgstr "接受"
 
-#: src/ui/notifications.vala:85
+#: src/ui/notifications.vala:108
 msgid "Deny"
 msgstr "拒绝"
 
-#: src/ui/unified_window.vala:139
+#: src/ui/occupant_menu/list.vala:107
+msgid "Owner"
+msgstr "所有者"
+
+#: src/ui/occupant_menu/list.vala:109
+msgid "Admin"
+msgstr "管理员"
+
+#: src/ui/occupant_menu/list.vala:111
+msgid "Member"
+msgstr "成员"
+
+#: src/ui/occupant_menu/list.vala:113
+msgid "User"
+msgstr "用户"
+
+#: src/ui/occupant_menu/view.vala:26 src/ui/occupant_menu/view.vala:35
+msgid "Invite"
+msgstr ""
+
+#: src/ui/occupant_menu/view.vala:34
+#, fuzzy
+msgid "Invite to Conference"
+msgstr "加入群聊"
+
+#: src/ui/occupant_menu/view.vala:84
+msgid "Start private conversation"
+msgstr "启动私密会话"
+
+#: src/ui/occupant_menu/view.vala:92
+msgid "Kick"
+msgstr ""
+
+#: src/ui/unified_window.vala:141
 msgid "No accounts active"
 msgstr "没有激活的帐号"
 
-#: src/ui/unified_window.vala:140
+#: src/ui/unified_window.vala:142
 msgid "Manage accounts"
 msgstr "管理帐号"
 
-#: src/ui/unified_window.vala:147
+#: src/ui/unified_window.vala:149
 msgid "No conversation active"
 msgstr "没有激活的会话"
 
-#: src/ui/unified_window.vala:148
-msgid "Add Chat"
-msgstr "添加聊天"
+#~ msgid "Add Chat"
+#~ msgstr "添加聊天"

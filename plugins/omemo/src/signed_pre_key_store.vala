@@ -27,27 +27,18 @@ private class BackedSignedPreKeyStore : SimpleSignedPreKeyStore {
     }
 
     public void on_signed_pre_key_stored(SignedPreKeyStore.Key key) {
-        try {
-            db.signed_pre_key.insert().or("REPLACE")
-                    .value(db.signed_pre_key.identity_id, identity_id)
-                    .value(db.signed_pre_key.signed_pre_key_id, (int) key.key_id)
-                    .value(db.signed_pre_key.record_base64, Base64.encode(key.record))
-                    .perform();
-        } catch (Error e) {
-            print(@"OMEMO: Error while updating signed pre key store: $(e.message)\n");
-        }
-
+        db.signed_pre_key.insert().or("REPLACE")
+                .value(db.signed_pre_key.identity_id, identity_id)
+                .value(db.signed_pre_key.signed_pre_key_id, (int) key.key_id)
+                .value(db.signed_pre_key.record_base64, Base64.encode(key.record))
+                .perform();
     }
 
     public void on_signed_pre_key_deleted(SignedPreKeyStore.Key key) {
-        try {
-            db.signed_pre_key.delete()
-                    .with(db.signed_pre_key.identity_id, "=", identity_id)
-                    .with(db.signed_pre_key.signed_pre_key_id, "=", (int) key.key_id)
-                    .perform();
-        } catch (Error e) {
-            print(@"OMEMO: Error while updating signed pre key store: $(e.message)\n");
-        }
+        db.signed_pre_key.delete()
+                .with(db.signed_pre_key.identity_id, "=", identity_id)
+                .with(db.signed_pre_key.signed_pre_key_id, "=", (int) key.key_id)
+                .perform();
     }
 }
 

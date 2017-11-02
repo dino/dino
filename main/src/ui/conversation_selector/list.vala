@@ -144,6 +144,8 @@ public class List : ListBox {
     private void header(ListBoxRow row, ListBoxRow? before_row) {
         if (row.get_header() == null && before_row != null) {
             row.set_header(new Separator(Orientation.HORIZONTAL));
+        } else if (row.get_header() != null && before_row == null) {
+            row.set_header(null);
         }
     }
 

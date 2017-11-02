@@ -14,16 +14,23 @@ public class UploadStreamModule : XmppStreamModule {
 
     public delegate void OnUploadOk(XmppStream stream, string url_down);
     public delegate void OnError(XmppStream stream, string error);
-    public void upload(XmppStream stream, string file_uri, owned OnUploadOk listener, owned OnError error_listener) {
-        File file = File.new_for_path(file_uri);
-        FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-        request_slot(stream, file.get_basename(), (int)file_info.get_size(), file_info.get_content_type(),
+    public void upload(XmppStream stream, InputStream input_stream, string file_name, int file_size, string file_content_type, owned OnUploadOk listener, owned OnError error_listener) {
+        request_slot(stream, file_name, file_size, file_content_type,
             (stream, url_down, url_up) => {
-                uint8[] data;
-                FileUtils.get_data(file_uri, out data);
+                uint8[] buf = new uint8[256];
+                Array<uint8> data = new Array<uint8>(false, true, 0);
+                size_t len = -1;
+                do {
+                    try {
+                        len = input_stream.read(buf);
+                    } catch (IOError error) {
+                        error_listener(stream, @"HTTP upload: IOError reading stream: $(error.message)");
+                    }
+                    data.append_vals(buf, (uint) len);
+                } while(len > 0);
 
                 Soup.Message message = new Soup.Message("PUT", url_up);
-                message.set_request(file_info.get_content_type(), Soup.MemoryUse.COPY, data);
+                message.set_request(file_content_type, Soup.MemoryUse.COPY, data.data);
                 Soup.Session session = new Soup.Session();
                 session.send_async.begin(message, null, (obj, res) => {
                     try {
@@ -38,7 +45,7 @@ public class UploadStreamModule : XmppStreamModule {
                     }
                 });
             },
-            error_listener);
+            (stream, error) => error_listener(stream, error));
     }
 
     private delegate void OnSlotOk(XmppStream stream, string url_get, string url_put);

@@ -4,7 +4,7 @@ using Gtk;
 using Xmpp;
 using Dino.Entities;
 
-namespace Dino.Ui.AddConversation.Conference {
+namespace Dino.Ui {
 
 protected class ConferenceList : FilterableList {
 

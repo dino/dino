@@ -37,10 +37,14 @@ public class TlsConnectionProvider : ConnectionProvider {
 
     public override IOStream? connect(XmppStream stream) {
         SocketClient client = new SocketClient();
-        IOStream? io_stream = client.connect_to_host(srv_target.get_hostname(), srv_target.get_port());
-        io_stream = TlsClientConnection.new(io_stream, new NetworkAddress(srv_target.get_hostname(), srv_target.get_port()));
-        stream.add_flag(new Tls.Flag() { finished=true });
-        return io_stream;
+        try {
+            IOStream? io_stream = client.connect_to_host(srv_target.get_hostname(), srv_target.get_port());
+            io_stream = TlsClientConnection.new(io_stream, new NetworkAddress(srv_target.get_hostname(), srv_target.get_port()));
+            stream.add_flag(new Tls.Flag() { finished=true });
+            return io_stream;
+        } catch (Error e) {
+            return null;
+        }
     }
 
     public override string get_id() { return "start_tls"; }

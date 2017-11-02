@@ -50,7 +50,7 @@ public class MetaSlashmeItem : Plugins.MetaConversationItem {
     public override bool requires_avatar { get; set; default=true; }
     public override bool requires_header { get; set; default=false; }
 
-    public override Object get_widget(Plugins.WidgetType widget_type) {
+    public override Object? get_widget(Plugins.WidgetType widget_type) {
         text_view = new MessageTextView() { valign=Align.CENTER, vexpand=true, visible = true };
 
         string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
@@ -67,7 +67,6 @@ public class MetaSlashmeItem : Plugins.MetaConversationItem {
     }
 
     private void update_style() {
-        string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
         string color = Util.get_name_hex_color(stream_interactor, conversation.account, message.real_jid ?? message.from, Util.is_dark_theme(text_view));
         nick_tag.foreground = "#" + color;
     }

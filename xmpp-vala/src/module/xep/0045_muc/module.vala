@@ -163,7 +163,7 @@ public class Module : XmppStreamModule {
     public override void attach(XmppStream stream) {
         stream.add_flag(new Muc.Flag());
         stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
-        stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
+        stream.get_module(Presence.Module.IDENTITY).received_presence.connect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.connect(on_received_unavailable);
         if (stream.get_module(ServiceDiscovery.Module.IDENTITY) != null) {
@@ -179,7 +179,7 @@ public class Module : XmppStreamModule {
 
     public override void detach(XmppStream stream) {
         stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
-        stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
+        stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.disconnect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.disconnect(on_received_unavailable);
     }
@@ -206,7 +206,7 @@ public class Module : XmppStreamModule {
         }
     }
 
-    private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
+    private void check_for_enter_error(XmppStream stream, Presence.Stanza presence) {
         Flag flag = stream.get_flag(Flag.IDENTITY);
         if (presence.is_error() && flag.is_muc_enter_outstanding() && flag.is_occupant(presence.from)) {
             string bare_jid = get_bare_jid(presence.from);

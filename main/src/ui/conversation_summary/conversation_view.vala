@@ -27,7 +27,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private double? was_upper;
     private double? was_page_size;
 
-    private Mutex reloading_mutex = new Mutex();
+    private Mutex reloading_mutex = Mutex();
     private bool animate = false;
 
     public ConversationView(StreamInteractor stream_interactor) {

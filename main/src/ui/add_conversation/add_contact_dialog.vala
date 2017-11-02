@@ -3,7 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.AddConversation.Chat {
+namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/add_conversation/add_contact_dialog.ui")]
 protected class AddContactDialog : Gtk.Dialog {

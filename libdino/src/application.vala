@@ -31,6 +31,7 @@ public interface Dino.Application : GLib.Application {
         MessageStorage.start(stream_interactor, db);
         CounterpartInteractionManager.start(stream_interactor);
         PresenceManager.start(stream_interactor);
+        BlockingManager.start(stream_interactor);
         MucManager.start(stream_interactor);
         RosterManager.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
@@ -40,6 +41,9 @@ public interface Dino.Application : GLib.Application {
         activate.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;
             restore();
+        });
+        shutdown.connect(() => {
+            stream_interactor.connection_manager.make_offline_all();
         });
         open.connect((files, hint) => {
             if (files.length != 1) {

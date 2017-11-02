@@ -49,8 +49,8 @@ public class QueryBuilder : StatementBuilder {
         return this;
     }
 
-    public QueryBuilder from(Table table) throws DatabaseError {
-        if (this.table_name != null) throw new DatabaseError.ILLEGAL_QUERY("cannot use from() multiple times.");
+    public QueryBuilder from(Table table) {
+        if (this.table_name != null) error("cannot use from() multiple times.");
         this.table = table;
         this.table_name = table.name;
         return this;
@@ -61,8 +61,8 @@ public class QueryBuilder : StatementBuilder {
         return this;
     }
 
-    public QueryBuilder where(string selection, string[] selection_args = {}) throws DatabaseError {
-        if (this.selection != "1") throw new DatabaseError.ILLEGAL_QUERY("selection was already done, but where() was called.");
+    public QueryBuilder where(string selection, string[] selection_args = {}) {
+        if (this.selection != "1") error("selection was already done, but where() was called.");
         this.selection = selection;
         foreach (string arg in selection_args) {
             this.selection_args += new StatementBuilder.StringField(arg);
@@ -102,26 +102,26 @@ public class QueryBuilder : StatementBuilder {
         return this;
     }
 
-    public int64 count() throws DatabaseError {
+    public int64 count() {
         this.column_selector = @"COUNT($column_selector) AS count";
         this.single_result = true;
         return row().get_integer("count");
     }
 
-    private Row? row_() throws DatabaseError {
-        if (!single_result) throw new DatabaseError.NON_UNIQUE("query is not suited to return a single row, but row() was called.");
+    private Row? row_() {
+        if (!single_result) error("query is not suited to return a single row, but row() was called.");
         return iterator().get_next();
     }
 
-    public RowOption row() throws DatabaseError {
+    public RowOption row() {
         return new RowOption(row_());
     }
 
-    public T get<T>(Column<T> field) throws DatabaseError {
+    public T get<T>(Column<T> field) {
         return row()[field];
     }
 
-    internal override Statement prepare() throws DatabaseError {
+    internal override Statement prepare() {
         Statement stmt = db.prepare(@"SELECT $column_selector $(table_name == null ? "" : @"FROM $((!) table_name)") WHERE $selection $(OrderingTerm.all_to_string(order_by_terms)) $(limit_val > 0 ? @" LIMIT $limit_val" : "")");
         for (int i = 0; i < selection_args.length; i++) {
             selection_args[i].bind(stmt, i+1);
@@ -129,7 +129,7 @@ public class QueryBuilder : StatementBuilder {
         return stmt;
     }
 
-    public RowIterator iterator() throws DatabaseError {
+    public RowIterator iterator() {
         return new RowIterator.from_query_builder(db, this);
     }
 

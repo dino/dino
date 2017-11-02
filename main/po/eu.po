@@ -1,0 +1,439 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-23 00:48+0200\n"
+"PO-Revision-Date: 2017-09-15 16:45+0000\n"
+"Last-Translator: Aitor Beriain <beriain@bitmessage.ch>\n"
+"Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
+"eu/>\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.17-dev\n"
+
+#: data/add_conversation/add_contact_dialog.ui:11
+#: data/add_conversation/add_groupchat_dialog.ui:11 src/ui/application.vala:41
+#: src/ui/add_conversation/chat/dialog.vala:40
+#: src/ui/add_conversation/conference/dialog.vala:15
+#: src/ui/manage_accounts/dialog.vala:151
+msgid "Cancel"
+msgstr "Utzi"
+
+#: data/add_conversation/add_contact_dialog.ui:23
+#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:28
+msgid "Add"
+msgstr "Gehitu"
+
+#: data/add_conversation/add_contact_dialog.ui:48
+#: data/add_conversation/add_groupchat_dialog.ui:49
+#: data/add_conversation/conference_details_fragment.ui:16
+msgid "Account"
+msgstr "Kontuak"
+
+#: data/add_conversation/add_contact_dialog.ui:101
+#: data/add_conversation/add_groupchat_dialog.ui:189
+msgid "Alias"
+msgstr "Ezizena"
+
+#: data/add_conversation/add_contact_dialog.ui:129
+msgid "Request presence updates"
+msgstr "Presentzia eguneraketak eskatu"
+
+#: data/add_conversation/add_groupchat_dialog.ui:120
+#: data/add_conversation/conference_details_fragment.ui:120
+msgid "Nick"
+msgstr "Ezizena"
+
+#: data/add_conversation/add_groupchat_dialog.ui:147
+#: data/add_conversation/conference_details_fragment.ui:172
+#: data/manage_accounts/add_account_dialog.ui:73
+#: data/manage_accounts/dialog.ui:166
+#: src/ui/contact_details/muc_config_form_provider.vala:62
+msgid "Password"
+msgstr "Pasahitza"
+
+#: data/add_conversation/add_groupchat_dialog.ui:176
+msgid "Join on startup"
+msgstr "Hasieran batu"
+
+#: data/conversation_selector/view.ui:14
+msgid "Search"
+msgstr "Bilatu"
+
+#: data/manage_accounts/add_account_dialog.ui:21
+#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:42
+msgid "Save"
+msgstr "Gorde"
+
+#: data/manage_accounts/add_account_dialog.ui:102
+#: data/manage_accounts/dialog.ui:196
+msgid "Local alias"
+msgstr "Bertako ezizena"
+
+#: data/manage_accounts/dialog.ui:9 data/menu_app.ui:6
+msgid "Accounts"
+msgstr "Kontuak"
+
+#: data/manage_accounts/dialog.ui:251
+#, fuzzy
+msgid "No accounts configured"
+msgstr "Ez dago kontu aktiborik"
+
+#: data/manage_accounts/dialog.ui:262
+msgid "Add an account"
+msgstr "Kontu bat gehitu"
+
+#: data/menu_add.ui:6 src/ui/application.vala:70
+#: src/ui/conversation_list_titlebar.vala:31 src/ui/unified_window.vala:150
+msgid "Start Chat"
+msgstr "Berriketa hasi"
+
+#: data/menu_add.ui:12 src/ui/application.vala:41
+#: src/ui/add_conversation/conference/dialog.vala:26
+#: src/ui/unified_window.vala:151
+msgid "Join Conference"
+msgstr "Konferentziara batu"
+
+#: data/menu_app.ui:10 src/ui/contact_details/settings_provider.vala:22
+#: src/ui/contact_details/settings_provider.vala:25
+#: src/ui/contact_details/settings_provider.vala:30
+msgid "Settings"
+msgstr "Ezarpenak"
+
+#: data/menu_app.ui:16
+msgid "Quit"
+msgstr "Irten"
+
+#: data/menu_conversation.ui:6 src/ui/contact_details/dialog.vala:37
+msgid "Contact Details"
+msgstr "Kontaktuaren xehetasunak"
+
+#: data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Enkriptatu gabe"
+
+#: data/settings_dialog.ui:7
+msgid "Preferences"
+msgstr "Hobespenak"
+
+#: data/settings_dialog.ui:22 src/ui/contact_details/settings_provider.vala:22
+msgid "Send typing notifications"
+msgstr "Idazte jakinarazpenak bidali"
+
+#: data/settings_dialog.ui:34 src/ui/contact_details/settings_provider.vala:25
+msgid "Send message marker"
+msgstr "Mezu marka bidali"
+
+#: data/settings_dialog.ui:46
+msgid "Notify when a new message arrives"
+msgstr "Mezu berri bat heltzerakoan jakinarazi"
+
+#: data/settings_dialog.ui:58
+msgid "Convert smileys to emojis"
+msgstr "Irrifartxoak emotikono bihurtu"
+
+#: src/ui/application.vala:41 src/ui/add_conversation/conference/dialog.vala:60
+msgid "Join"
+msgstr "Batu"
+
+#: src/ui/application.vala:71 src/ui/conversation_list_titlebar.vala:32
+#, fuzzy
+msgid "Start"
+msgstr "Berriketa hasi"
+
+#: src/ui/add_conversation/conference/dialog.vala:45
+msgid "Next"
+msgstr "Hurrengoa"
+
+#: src/ui/contact_details/settings_provider.vala:30
+#: src/ui/contact_details/settings_provider.vala:39
+msgid "Notifications"
+msgstr "Jakinarazpenak"
+
+#: src/ui/contact_details/settings_provider.vala:39
+msgid "Local Settings"
+msgstr "Bertako ezarpenak"
+
+#: src/ui/contact_details/settings_provider.vala:74
+#: src/ui/contact_details/settings_provider.vala:114
+#: src/ui/contact_details/settings_provider.vala:116
+msgid "On"
+msgstr "Piztuta"
+
+#: src/ui/contact_details/settings_provider.vala:76
+#: src/ui/contact_details/settings_provider.vala:114
+#: src/ui/contact_details/settings_provider.vala:117
+msgid "Off"
+msgstr "Itzalita"
+
+#: src/ui/contact_details/settings_provider.vala:78
+msgid "Only when mentioned"
+msgstr "Soilik aipatua izaterakoan"
+
+#: src/ui/contact_details/settings_provider.vala:80
+#: src/ui/contact_details/settings_provider.vala:115
+#, fuzzy, c-format
+msgid "Default: %s"
+msgstr "Lehenetsia"
+
+#: src/ui/contact_details/dialog.vala:37
+#, fuzzy
+msgid "Conference Details"
+msgstr "Kontaktuaren xehetasunak"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:42
+msgid "Name of the room"
+msgstr "Gelaren izena"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:45
+msgid "Description of the room"
+msgstr "Gelaren deskribapena"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:48
+msgid "Persistent"
+msgstr "Iraunkorra"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:49
+msgid "The room will persist after the last occupant exits"
+msgstr "Gelak iraun egingo du azken okupatzailea irten ondoren"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:52
+msgid "Publicly searchable"
+msgstr "Publikoki bilagarria"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:55
+msgid "Occupants may change subject"
+msgstr "Okupatzaileek gaia alda dezakete"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:58
+msgid "Discover real JIDs"
+msgstr "Egiazko JIDak ikusi"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:59
+msgid "Who may discover real JIDs?"
+msgstr "Nork ikus ditzake egiazko JIDak?"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:63
+#, fuzzy
+msgid "Password required to enter the room. Leave empty for none"
+msgstr "Gelan sartzeko pasahitza. Utzi zuriz pasahitzik ez ezartzeko"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:66
+msgid "Moderated"
+msgstr "Moderatua"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:67
+msgid "Only occupants with voice may send messages"
+msgstr "Ahotsa duten okupatzaileek soilik bidali dezakete mezuak"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:70
+msgid "Members only"
+msgstr "Kideak soilik"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:71
+msgid "Only members may enter the room"
+msgstr "Kideak soilik sar daitezke gelara"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:74
+msgid "Message history"
+msgstr "Mezuen historia"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:75
+msgid "Maximum number of history messages returned by the room"
+msgstr "Gelak itzuliko dituen gehienezko historiako mezuak"
+
+#: src/ui/contact_details/muc_config_form_provider.vala:81
+msgid "Room Configuration"
+msgstr "Gelaren konfigurazioa"
+
+#: src/ui/conversation_selector/chat_row.vala:30
+#: src/ui/conversation_selector/groupchat_pm_row.vala:25
+msgid "Me"
+msgstr ""
+
+#: src/ui/conversation_selector/conversation_row.vala:172
+#, fuzzy, no-c-format
+msgid "%b %d"
+msgstr "%b %d"
+
+#: src/ui/conversation_selector/conversation_row.vala:176
+msgid "Yesterday"
+msgstr "Atzo"
+
+#: src/ui/conversation_selector/conversation_row.vala:179
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:146
+#, fuzzy, no-c-format
+msgid "%H∶%M"
+msgstr "%H∶%M"
+
+#: src/ui/conversation_selector/conversation_row.vala:180
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:147
+#, fuzzy, no-c-format
+msgid "%l∶%M %p"
+msgstr "%l∶%M %p"
+
+#: src/ui/conversation_selector/conversation_row.vala:183
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:151
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "orain dela min %i"
+msgstr[1] "orain dela %i min"
+
+#: src/ui/conversation_selector/conversation_row.vala:185
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:153
+msgid "Just now"
+msgstr "Orain"
+
+#: src/ui/conversation_summary/chat_state_populator.vala:58
+msgid "is typing..."
+msgstr "idazten ari da..."
+
+#: src/ui/conversation_summary/chat_state_populator.vala:60
+msgid "has stopped typing"
+msgstr "idazteari utzi dio"
+
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:134
+#, fuzzy, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x, %H∶%M"
+
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:135
+#, fuzzy, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x, %l∶%M %p"
+
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:138
+#, fuzzy, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%b %d, %H∶%M"
+
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:139
+#, fuzzy, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%b %d, %l∶%M %p"
+
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:142
+#, fuzzy, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%a, %H∶%M"
+
+#: src/ui/conversation_summary/conversation_item_skeleton.vala:143
+#, fuzzy, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%a, %l∶%M %p"
+
+#: src/ui/conversation_summary/message_textview.vala:33
+#, fuzzy
+msgid "Message too long"
+msgstr "Mezuen historia"
+
+#: src/ui/manage_accounts/add_account_dialog.vala:21
+msgid "Add Account"
+msgstr "Kontua gehitu"
+
+#: src/ui/manage_accounts/dialog.vala:150
+msgid "Select avatar"
+msgstr "Irudia hautatu"
+
+#: src/ui/manage_accounts/dialog.vala:151
+msgid "Select"
+msgstr "Hautatu"
+
+#: src/ui/manage_accounts/dialog.vala:159
+msgid "Images"
+msgstr ""
+
+#: src/ui/manage_accounts/dialog.vala:162
+msgid "All files"
+msgstr ""
+
+#: src/ui/manage_accounts/dialog.vala:224
+#, fuzzy
+msgid "Connecting…"
+msgstr "Konektatzen..."
+
+#: src/ui/manage_accounts/dialog.vala:226
+msgid "Connected"
+msgstr "Konektatuta"
+
+#: src/ui/manage_accounts/dialog.vala:228
+msgid "Disconnected"
+msgstr "Ez konektatuta"
+
+#: src/ui/manage_accounts/dialog.vala:237
+msgid "Wrong password"
+msgstr "Pasahitz okerra"
+
+#: src/ui/manage_accounts/dialog.vala:240
+#: src/ui/manage_accounts/dialog.vala:242
+msgid "Error"
+msgstr "Akatsa"
+
+#: src/ui/notifications.vala:103
+msgid "Subscription request"
+msgstr "Harpidetzaren eskaera"
+
+#: src/ui/notifications.vala:107
+msgid "Accept"
+msgstr "Onartu"
+
+#: src/ui/notifications.vala:108
+msgid "Deny"
+msgstr "Ukatu"
+
+#: src/ui/occupant_menu/list.vala:107
+msgid "Owner"
+msgstr "Jabea"
+
+#: src/ui/occupant_menu/list.vala:109
+msgid "Admin"
+msgstr "Administratzailea"
+
+#: src/ui/occupant_menu/list.vala:111
+msgid "Member"
+msgstr "Kidea"
+
+#: src/ui/occupant_menu/list.vala:113
+msgid "User"
+msgstr "Erabiltzailea"
+
+#: src/ui/occupant_menu/view.vala:26 src/ui/occupant_menu/view.vala:35
+msgid "Invite"
+msgstr ""
+
+#: src/ui/occupant_menu/view.vala:34
+#, fuzzy
+msgid "Invite to Conference"
+msgstr "Konferentziara batu"
+
+#: src/ui/occupant_menu/view.vala:84
+msgid "Start private conversation"
+msgstr "Solasaldi pribatua hasi"
+
+#: src/ui/occupant_menu/view.vala:92
+msgid "Kick"
+msgstr ""
+
+#: src/ui/unified_window.vala:141
+msgid "No accounts active"
+msgstr "Ez dago kontu aktiborik"
+
+#: src/ui/unified_window.vala:142
+msgid "Manage accounts"
+msgstr "Kontuak kudeatu"
+
+#: src/ui/unified_window.vala:149
+msgid "No conversation active"
+msgstr "Ez dago solasaldi aktiborik"
+
+#~ msgid "Add Chat"
+#~ msgstr "Berriketa gehitu"

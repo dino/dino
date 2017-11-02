@@ -186,7 +186,7 @@ public class Database : Qlite.Database {
     public Map<string, int> jid_table_reverse = new HashMap<string, int>();
     public Map<int, Account> account_table_cache = new HashMap<int, Account>();
 
-    public Database(string fileName) throws DatabaseError {
+    public Database(string fileName) {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);
@@ -199,7 +199,9 @@ public class Database : Qlite.Database {
         roster = new RosterTable(this);
         settings = new SettingsTable(this);
         init({ account, jid, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
-        exec("PRAGMA synchronous=0");
+        try {
+            exec("PRAGMA synchronous=0");
+        } catch (Error e) { }
     }
 
     public override void migrate(long oldVersion) {
@@ -253,11 +255,14 @@ public class Database : Qlite.Database {
         return ret;
     }
 
-    public Gee.List<Message> get_unsend_messages(Account account) {
+    public Gee.List<Message> get_unsend_messages(Account account, Jid? jid = null) {
         Gee.List<Message> ret = new ArrayList<Message>();
         var select = message.select()
             .with(message.account_id, "=", account.id)
             .with(message.marked, "=", (int) Message.Marked.UNSENT);
+        if (jid != null) {
+            select.with(message.counterpart_id, "=", get_jid_id(jid));
+        }
         foreach (Row row in select) {
             ret.add(new Message.from_row(this, row));
         }

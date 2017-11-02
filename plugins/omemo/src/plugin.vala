@@ -30,31 +30,27 @@ public class Plugin : RootInterface, Object {
     public ContactDetailsProvider contact_details_provider;
 
     public void registered(Dino.Application app) {
-        try {
-            ensure_context();
-            this.app = app;
-            this.db = new Database(Path.build_filename(Application.get_storage_dir(), "omemo.db"));
-            this.list_entry = new EncryptionListEntry(this);
-            this.settings_entry = new AccountSettingsEntry(this);
-            this.contact_details_provider = new ContactDetailsProvider(this);
-            this.app.plugin_registry.register_encryption_list_entry(list_entry);
-            this.app.plugin_registry.register_account_settings_entry(settings_entry);
-            this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
-            this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
-                list.add(new StreamModule());
-            });
-            Manager.start(this.app.stream_interactor, db);
+        ensure_context();
+        this.app = app;
+        this.db = new Database(Path.build_filename(Application.get_storage_dir(), "omemo.db"));
+        this.list_entry = new EncryptionListEntry(this);
+        this.settings_entry = new AccountSettingsEntry(this);
+        this.contact_details_provider = new ContactDetailsProvider(this);
+        this.app.plugin_registry.register_encryption_list_entry(list_entry);
+        this.app.plugin_registry.register_account_settings_entry(settings_entry);
+        this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
+        this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
+            list.add(new StreamModule());
+        });
+        Manager.start(this.app.stream_interactor, db);
 
-            string locales_dir;
-            if (app.search_path_generator != null) {
-                locales_dir = ((!)app.search_path_generator).get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR);
-            } else {
-                locales_dir = LOCALE_INSTALL_DIR;
-            }
-            internationalize(GETTEXT_PACKAGE, locales_dir);
-        } catch (Error e) {
-            print(@"Error initializing OMEMO: $(e.message)\n");
+        string locales_dir;
+        if (app.search_path_generator != null) {
+            locales_dir = ((!)app.search_path_generator).get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR);
+        } else {
+            locales_dir = LOCALE_INSTALL_DIR;
         }
+        internationalize(GETTEXT_PACKAGE, locales_dir);
     }
 
     public void shutdown() {

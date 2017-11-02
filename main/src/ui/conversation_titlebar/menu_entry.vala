@@ -14,7 +14,7 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
     }
 
     public double order { get { return 0; } }
-    public Plugins.ConversationTitlebarWidget get_widget(Plugins.WidgetType type) {
+    public Plugins.ConversationTitlebarWidget? get_widget(Plugins.WidgetType type) {
         if (type == Plugins.WidgetType.GTK) {
             return new MenuWidget(stream_interactor) { visible=true };
         }

@@ -72,15 +72,14 @@ SOURCES
     src/main.vala
 
     src/ui/application.vala
-    src/ui/add_conversation/chat/add_contact_dialog.vala
-    src/ui/add_conversation/chat/roster_list.vala
-    src/ui/add_conversation/chat/dialog.vala
-    src/ui/add_conversation/conference/add_groupchat_dialog.vala
-    src/ui/add_conversation/conference/conference_details_fragment.vala
-    src/ui/add_conversation/conference/conference_list.vala
-    src/ui/add_conversation/conference/dialog.vala
-    src/ui/add_conversation/accounts_combo_box.vala
+    src/ui/add_conversation/add_conference_dialog.vala
+    src/ui/add_conversation/add_contact_dialog.vala
+    src/ui/add_conversation/add_groupchat_dialog.vala
+    src/ui/add_conversation/conference_details_fragment.vala
+    src/ui/add_conversation/conference_list.vala
     src/ui/add_conversation/list_row.vala
+    src/ui/add_conversation/roster_list.vala
+    src/ui/add_conversation/select_contact_dialog.vala
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala
     src/ui/chat_input/edit_history.vala
@@ -88,6 +87,7 @@ SOURCES
     src/ui/chat_input/occupants_tab_completer.vala
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
+    src/ui/contact_details/blocking_provider.vala
     src/ui/contact_details/settings_provider.vala
     src/ui/contact_details/dialog.vala
     src/ui/contact_details/muc_config_form_provider.vala
@@ -107,6 +107,7 @@ SOURCES
     src/ui/conversation_summary/message_populator.vala
     src/ui/conversation_summary/message_textview.vala
     src/ui/conversation_summary/slashme_message_display.vala
+    src/ui/conversation_titlebar/file_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
     src/ui/conversation_titlebar/view.vala
@@ -119,6 +120,7 @@ SOURCES
     src/ui/occupant_menu/view.vala
     src/ui/settings_dialog.vala
     src/ui/unified_window.vala
+    src/ui/util/accounts_combo_box.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
 CUSTOM_VAPIS

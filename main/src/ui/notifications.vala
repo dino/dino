@@ -54,7 +54,7 @@ public class Notifications : Object {
             if (conversation == null) return;
             stream_interactor.get_module(PresenceManager.IDENTITY).approve_subscription(conversation.account, conversation.counterpart);
             if (stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, conversation.counterpart) == null) {
-                AddConversation.Chat.AddContactDialog dialog = new AddConversation.Chat.AddContactDialog(stream_interactor);
+                AddContactDialog dialog = new AddContactDialog(stream_interactor);
                 dialog.jid = conversation.counterpart.bare_jid.to_string();
                 dialog.account = conversation.account;
                 dialog.present();
@@ -92,7 +92,9 @@ public class Notifications : Object {
             }
             notifications[conversation].set_title(display_name);
             notifications[conversation].set_body(text);
-            notifications[conversation].set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_conversation(stream_interactor, conversation)));
+            try {
+                notifications[conversation].set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_conversation(stream_interactor, conversation)));
+            } catch (Error e) { }
             window.get_application().send_notification(conversation.id.to_string(), notifications[conversation]);
             active_notification_ids.add(conversation.id.to_string());
             window.urgency_hint = true;
@@ -102,7 +104,9 @@ public class Notifications : Object {
     private void on_received_subscription_request(Jid jid, Account account) {
         Notification notification = new Notification(_("Subscription request"));
         notification.set_body(jid.bare_jid.to_string());
-        notification.set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, jid, account)));
+        try {
+            notification.set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, jid, account)));
+        } catch (Error e) { }
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
         notification.add_button_with_target_value(_("Accept"), "app.accept-subscription", conversation.id);
         notification.add_button_with_target_value(_("Deny"), "app.deny-subscription", conversation.id);
@@ -113,11 +117,13 @@ public class Notifications : Object {
         Conversation.NotifySetting notify = conversation.get_notification_setting(stream_interactor);
         if (notify == Conversation.NotifySetting.OFF) return false;
         Jid? nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
-        if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null && !message.body.contains(nick.resourcepart)) return false;
+        if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null) {
+            return Regex.match_simple("""\b""" + Regex.escape_string(nick.resourcepart) + """\b""", message.body, RegexCompileFlags.CASELESS);
+        }
         return true;
     }
 
-    private Icon get_pixbuf_icon(Gdk.Pixbuf avatar) {
+    private Icon get_pixbuf_icon(Gdk.Pixbuf avatar) throws Error {
         uint8[] buffer;
         avatar.save_to_buffer(out buffer, "png");
         return new BytesIcon(new Bytes(buffer));

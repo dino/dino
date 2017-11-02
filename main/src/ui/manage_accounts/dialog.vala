@@ -126,15 +126,26 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void remove_account(AccountRow account_item) {
-        account_list.remove(account_item);
-        account_list.queue_draw();
-        if (account_item.account.enabled) account_disabled(account_item.account);
-        account_item.account.remove();
-        if (account_list.get_row_at_index(0) != null) {
-            account_list.select_row(account_list.get_row_at_index(0));
-        } else {
-            main_stack.set_visible_child_name("no_accounts");
+        Gtk.MessageDialog msg = new Gtk.MessageDialog (
+                        this,  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
+                        Gtk.MessageType.WARNING, Gtk.ButtonsType.OK_CANCEL,
+                        _("Remove account %s?"), account_item.jid_label.get_text());
+        msg.secondary_text = "You won't be able to access your conversation history anymore."; // TODO remove history!
+        Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
+        ok_button.label = _("Remove");
+        ok_button.get_style_context().add_class("destructive-action");
+        if (msg.run() == Gtk.ResponseType.OK) {
+            account_list.remove(account_item);
+            account_list.queue_draw();
+            if (account_item.account.enabled) account_disabled(account_item.account);
+            account_item.account.remove();
+            if (account_list.get_row_at_index(0) != null) {
+                account_list.select_row(account_list.get_row_at_index(0));
+            } else {
+                main_stack.set_visible_child_name("no_accounts");
+            }
         }
+        msg.close();
     }
 
     private void on_account_list_row_selected(ListBoxRow? row) {

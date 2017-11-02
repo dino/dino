@@ -58,8 +58,7 @@ public class ConnectionManager {
     }
 
     private class RecMutexWrap {
-        public RecMutex mutex = new RecMutex();
-        public void lock() { mutex.lock(); }
+        public RecMutex mutex = RecMutex();
         public void unlock() { mutex.unlock(); }
         public bool trylock() { return mutex.trylock(); }
     }
@@ -121,7 +120,7 @@ public class ConnectionManager {
     }
 
     public Core.XmppStream? connect(Account account) {
-        if (!connection_mutexes.contains(account)) connection_mutexes[account] = new RecMutexWrap();
+        if (!connection_mutexes.has_key(account)) connection_mutexes[account] = new RecMutexWrap();
         if (!connection_todo.contains(account)) connection_todo.add(account);
         if (!connections.has_key(account)) {
             return connect_(account);
@@ -131,14 +130,29 @@ public class ConnectionManager {
         return null;
     }
 
-    public void disconnect(Account account) {
+    public void make_offline_all() {
+        foreach (Account account in connection_todo) {
+            make_offline(account);
+        }
+    }
+
+    private void make_offline(Account account) {
+        Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
+        presence.type_ = Xmpp.Presence.Stanza.TYPE_UNAVAILABLE;
         change_connection_state(account, ConnectionState.DISCONNECTED);
+        try {
+            connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
+        } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
+    }
+
+    public void disconnect(Account account) {
+        make_offline(account);
+        try {
+            connections[account].stream.disconnect();
+        } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
         connection_todo.remove(account);
         if (connections.has_key(account)) {
-            try {
-                connections[account].stream.disconnect();
-                connections.unset(account);
-            } catch (Error e) { }
+            connections.unset(account);
         }
     }
 

@@ -9,7 +9,7 @@ public abstract class StatementBuilder {
         this.db = db;
     }
 
-    internal abstract Statement prepare() throws DatabaseError;
+    internal abstract Statement prepare();
 
     internal abstract class AbstractField<T> {
         public T value;
