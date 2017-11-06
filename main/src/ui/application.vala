@@ -102,7 +102,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction quit_action = new SimpleAction("quit", null);
         quit_action.activate.connect(quit);
         add_action(quit_action);
-        add_accelerator("<Ctrl>Q", "app.quit", null);
+        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
 
         Builder builder = new Builder.from_resource("/im/dino/menu_app.ui");
         MenuModel menu = builder.get_object("menu_app") as MenuModel;

@@ -140,9 +140,7 @@ public class ConnectionManager {
         Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
         presence.type_ = Xmpp.Presence.Stanza.TYPE_UNAVAILABLE;
         change_connection_state(account, ConnectionState.DISCONNECTED);
-        try {
-            connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
-        } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
+        connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
     }
 
     public void disconnect(Account account) {
