@@ -84,23 +84,16 @@ public class Dialog : Gtk.Dialog {
             add_account(account);
         }
 
-        stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect((pixbuf, jid, account) => {
-            Idle.add(() => {
-                on_received_avatar(pixbuf, jid, account);
-                return false;
-            });
-        });
+        stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect(on_received_avatar);
         stream_interactor.connection_manager.connection_error.connect((account, error) => {
-            Idle.add(() => {
-                if (account.equals(selected_account)) update_status_label(account);
-                return false;
-            });
+            if (account.equals(selected_account)) {
+                update_status_label(account);
+            }
         });
         stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
-            Idle.add(() => {
-                if (account.equals(selected_account)) update_status_label(account);
-                return false;
-            });
+            if (account.equals(selected_account)) {
+                update_status_label(account);
+            }
         });
 
         if (account_list.get_row_at_index(0) != null) account_list.select_row(account_list.get_row_at_index(0));

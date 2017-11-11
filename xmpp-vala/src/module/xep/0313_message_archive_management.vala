@@ -5,6 +5,10 @@ namespace Xmpp.Xep.MessageArchiveManagement {
 public const string NS_URI = "urn:xmpp:mam:2";
 public const string NS_URI_1 = "urn:xmpp:mam:1";
 
+private static string NS_VER(XmppStream stream) {
+    return stream.get_flag(Flag.IDENTITY).ns_ver;
+}
+
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0313_message_archive_management");
 
@@ -38,7 +42,7 @@ public class Module : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(on_pre_received_message);
+        stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(new ReceivedPipelineListener());
         stream.stream_negotiated.connect(query_availability);
     }
 
@@ -46,21 +50,6 @@ public class Module : XmppStreamModule {
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
-
-    private void on_pre_received_message(XmppStream stream, Message.Stanza message) {
-//        if (message.from != stream.remote_name) return;
-        if (stream.get_flag(Flag.IDENTITY) == null) return;
-
-        StanzaNode? message_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", Message.NS_URI + ":message");
-        if (message_node != null) {
-            StanzaNode? forward_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", DelayedDelivery.NS_URI + ":delay");
-            DateTime? datetime = DelayedDelivery.Module.get_time_for_node(forward_node);
-            message.add_flag(new MessageFlag(datetime));
-
-            message.stanza = message_node;
-            message.rerun_parsing = true;
-        }
-    }
 
     private static void page_through_results(XmppStream stream, Iq.Stanza iq) {
         string? last = iq.stanza.get_deep_string_content(NS_VER(stream) + ":fin", "http://jabber.org/protocol/rsm" + ":set", "last");
@@ -89,9 +78,28 @@ public class Module : XmppStreamModule {
             if (stream.get_flag(Flag.IDENTITY) != null) feature_available(stream);
         });
     }
+}
 
-    private static string NS_VER(XmppStream stream) {
-        return stream.get_flag(Flag.IDENTITY).ns_ver;
+public class ReceivedPipelineListener : StanzaListener<Message.Stanza> {
+
+    private const string[] after_actions_const = {};
+
+    public override string action_group { get { return "EXTRACT_MESSAGE_1"; } }
+    public override string[] after_actions { get { return after_actions_const; } }
+
+    public override async void run(Core.XmppStream stream, Message.Stanza message) {
+        //        if (message.from != stream.remote_name) return;
+        if (stream.get_flag(Flag.IDENTITY) == null) return;
+
+        StanzaNode? message_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", Message.NS_URI + ":message");
+        if (message_node != null) {
+            StanzaNode? forward_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", DelayedDelivery.NS_URI + ":delay");
+            DateTime? datetime = DelayedDelivery.Module.get_time_for_node(forward_node);
+            message.add_flag(new MessageFlag(datetime));
+
+            message.stanza = message_node;
+            message.rerun_parsing = true;
+        }
     }
 }
 

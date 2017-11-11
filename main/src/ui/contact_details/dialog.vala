@@ -111,13 +111,10 @@ public class Dialog : Gtk.Dialog {
         row.add(widget);
         categories[category].add(list_row);
 
-        Idle.add(() => {
-            int pref_height, pref_width;
-            get_content_area().get_preferred_height(null, out pref_height);
-            get_preferred_width(out pref_width, null);
-            resize(pref_width, int.min(500, pref_height));
-            return false;
-        });
+        int pref_height, pref_width;
+        get_content_area().get_preferred_height(null, out pref_height);
+        get_preferred_width(out pref_width, null);
+        resize(pref_width, int.min(500, pref_height));
     }
 
     private void add_category(string category) {

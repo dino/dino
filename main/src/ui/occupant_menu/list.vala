@@ -25,9 +25,7 @@ public class List : Box {
         list_box.set_filter_func(filter);
         search_entry.search_changed.connect(search_changed);
 
-        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
-            Idle.add(() => { on_show_received(show, jid, account); return false; });
-        });
+        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_show_received);
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_updated_roster_item);
 
         initialize_for_conversation(conversation);

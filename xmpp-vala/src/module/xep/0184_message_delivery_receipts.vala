@@ -22,12 +22,11 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
         public override void attach(XmppStream stream) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
             stream.get_module(Message.Module.IDENTITY).received_message.connect(received_message);
-            stream.get_module(Message.Module.IDENTITY).pre_send_message.connect(pre_send_message);
+            stream.get_module(Message.Module.IDENTITY).send_pipeline.connect(new SendPipelineListener());
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Message.Module.IDENTITY).received_message.disconnect(received_message);
-            stream.get_module(Message.Module.IDENTITY).pre_send_message.disconnect(pre_send_message);
         }
 
         public override string get_ns() { return NS_URI; }
@@ -39,13 +38,22 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
                 receipt_received(stream, message.from, received_node.get_attribute("id", NS_URI));
             }
         }
-
-        private void pre_send_message(XmppStream stream, Message.Stanza message) {
-            StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);
-            if (received_node != null) return;
-            if (message.body == null) return;
-            if (message.type_ == Message.Stanza.TYPE_GROUPCHAT) return;
-            message.stanza.put_node(new StanzaNode.build("request", NS_URI).add_self_xmlns());
-        }
     }
+
+public class SendPipelineListener : StanzaListener<Message.Stanza> {
+
+    private const string[] after_actions_const = {};
+
+    public override string action_group { get { return "ADD_NODES"; } }
+    public override string[] after_actions { get { return after_actions_const; } }
+
+    public override async void run(Core.XmppStream stream, Message.Stanza message) {
+        StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);
+        if (received_node != null) return;
+        if (message.body == null) return;
+        if (message.type_ == Message.Stanza.TYPE_GROUPCHAT) return;
+        message.stanza.put_node(new StanzaNode.build("request", NS_URI).add_self_xmlns());
+    }
+}
+
 }

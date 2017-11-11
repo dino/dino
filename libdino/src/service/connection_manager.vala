@@ -20,7 +20,6 @@ public class ConnectionManager {
     private ArrayList<Account> connection_todo = new ArrayList<Account>(Account.equals_func);
     private HashMap<Account, Connection> connections = new HashMap<Account, Connection>(Account.hash_func, Account.equals_func);
     private HashMap<Account, ConnectionError> connection_errors = new HashMap<Account, ConnectionError>(Account.hash_func, Account.equals_func);
-    private HashMap<Account, RecMutexWrap> connection_mutexes = new HashMap<Account, RecMutexWrap>(Account.hash_func, Account.equals_func);
 
     private NetworkManager? network_manager;
     private Login1Manager? login1;
@@ -55,12 +54,6 @@ public class ConnectionManager {
             this.stream = stream;
             this.established = established;
         }
-    }
-
-    private class RecMutexWrap {
-        public RecMutex mutex = RecMutex();
-        public void unlock() { mutex.unlock(); }
-        public bool trylock() { return mutex.trylock(); }
     }
 
     public ConnectionManager(ModuleManager module_manager) {
@@ -120,7 +113,6 @@ public class ConnectionManager {
     }
 
     public Core.XmppStream? connect(Account account) {
-        if (!connection_mutexes.has_key(account)) connection_mutexes[account] = new RecMutexWrap();
         if (!connection_todo.contains(account)) connection_todo.add(account);
         if (!connections.has_key(account)) {
             return connect_(account);
@@ -155,8 +147,6 @@ public class ConnectionManager {
     }
 
     private Core.XmppStream? connect_(Account account, string? resource = null) {
-        if (!connection_mutexes[account].trylock()) return null;
-
         if (connections.has_key(account)) connections[account].stream.detach_modules();
         connection_errors.unset(account);
         if (resource == null) resource = account.resourcepart;
@@ -180,29 +170,28 @@ public class ConnectionManager {
         stream.received_node.connect(() => {
             connections[account].last_activity = new DateTime.now_utc();
         });
-        new Thread<void*> (null, () => {
-            try {
-                stream.connect(account.domainpart);
-            } catch (Error e) {
-                stderr.printf("Stream Error: %s\n", e.message);
-                change_connection_state(account, ConnectionState.DISCONNECTED);
-                if (!connection_todo.contains(account)) {
-                    connections.unset(account);
-                    return null;
-                }
-                StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
-                if (flag != null) {
-                    set_connection_error(account, ConnectionError.Source.STREAM_ERROR, flag.error_type);
-                }
-                interpret_connection_error(account);
-            }
-            connection_mutexes[account].unlock();
-            return null;
-        });
+        connect_async.begin(account, stream);
         stream_opened(account, stream);
 
-        connection_mutexes[account].unlock();
         return stream;
+    }
+
+    private async void connect_async(Account account, Core.XmppStream stream) {
+        try {
+            yield stream.connect(account.domainpart);
+        } catch (Error e) {
+            stderr.printf("Stream Error: %s\n", e.message);
+            change_connection_state(account, ConnectionState.DISCONNECTED);
+            if (!connection_todo.contains(account)) {
+                connections.unset(account);
+                return;
+            }
+            StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
+            if (flag != null) {
+                set_connection_error(account, ConnectionError.Source.STREAM_ERROR, flag.error_type);
+            }
+            interpret_connection_error(account);
+        }
     }
 
     private void interpret_connection_error(Account account) {
@@ -243,7 +232,6 @@ public class ConnectionManager {
     }
 
     private void check_reconnect(Account account) {
-        if (!connection_mutexes[account].trylock()) return;
         bool acked = false;
 
         Core.XmppStream stream = connections[account].stream;
@@ -261,7 +249,6 @@ public class ConnectionManager {
                 connections[account].stream.disconnect();
             } catch (Error e) { }
             connect_(account);
-            connection_mutexes[account].unlock();
             return false;
         });
     }

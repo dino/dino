@@ -99,12 +99,7 @@ protected class ConferenceDetailsFragment : Box {
         jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
         nick_entry.key_release_event.connect(() => { done = true; return false; });
 
-        stream_interactor.get_module(MucManager.IDENTITY).enter_error.connect((account, jid, error) => {
-            Idle.add(() => {
-                on_enter_error(account, jid, error);
-                return false;
-            });
-        });
+        stream_interactor.get_module(MucManager.IDENTITY).enter_error.connect(on_enter_error);
         notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
         ok_button.clicked.connect(() => {
             ok_button.label = _("Joining...");

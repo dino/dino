@@ -70,13 +70,10 @@ public abstract class ConversationRow : ListBoxRow {
         bool counterpart_online = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account) != null;
         bool greyscale = !self_online || !counterpart_online;
 
-        Idle.add(() => {
-            Pixbuf pixbuf = ((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor))
+        Pixbuf pixbuf = ((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor))
                 .set_greyscale(greyscale)
                 .draw_conversation(stream_interactor, conversation));
-            Util.image_set_from_scaled_pixbuf(image, pixbuf, image.get_scale_factor());
-            return false;
-        });
+        Util.image_set_from_scaled_pixbuf(image, pixbuf, image.get_scale_factor());
     }
 
     protected void update_name_label(string? new_name = null) {

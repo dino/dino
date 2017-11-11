@@ -42,7 +42,7 @@ public class XmppStream {
         register_connection_provider(new StartTlsConnectionProvider());
     }
 
-    public void connect(string? remote_name = null) throws IOStreamError {
+    public async void connect(string? remote_name = null) throws IOStreamError {
         if (remote_name != null) this.remote_name = (!)remote_name;
         attach_negotation_modules();
         try {
@@ -67,7 +67,7 @@ public class XmppStream {
             stderr.printf("CONNECTION LOST?\n");
             throw new IOStreamError.CONNECT(e.message);
         }
-        loop();
+        yield loop();
     }
 
     public void disconnect() throws IOStreamError {
@@ -96,11 +96,11 @@ public class XmppStream {
         return setup_needed;
     }
 
-    public StanzaNode read() throws IOStreamError {
+    public async StanzaNode read() throws IOStreamError {
         StanzaReader? reader = this.reader;
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
-            StanzaNode node = ((!)reader).read_node();
+            StanzaNode node = yield ((!)reader).read_node();
             log.node("IN", node);
             return node;
         } catch (XmlError e) {
@@ -175,7 +175,7 @@ public class XmppStream {
         return false;
     }
 
-    private void setup() throws IOStreamError {
+    private async void setup() throws IOStreamError {
         StanzaNode outs = new StanzaNode.build("stream", "http://etherx.jabber.org/streams")
                             .put_attribute("to", remote_name)
                             .put_attribute("version", "1.0")
@@ -184,17 +184,21 @@ public class XmppStream {
         outs.has_nodes = true;
         log.node("OUT ROOT", outs);
         write(outs);
-        received_root_node(this, read_root());
+        received_root_node(this, yield read_root());
     }
 
-    private void loop() throws IOStreamError {
+    private async void loop() throws IOStreamError {
         while (true) {
             if (setup_needed) {
-                setup();
+                yield setup();
                 setup_needed = false;
             }
 
-            StanzaNode node = read();
+            StanzaNode node = yield read();
+
+            Idle.add(loop.callback);
+            yield;
+
             received_node(this, node);
 
             if (node.ns_uri == NS_URI && node.name == "features") {
@@ -266,11 +270,11 @@ public class XmppStream {
         }
     }
 
-    private StanzaNode read_root() throws IOStreamError {
+    private async StanzaNode read_root() throws IOStreamError {
         StanzaReader? reader = this.reader;
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
-            StanzaNode node = ((!)reader).read_root_node();
+            StanzaNode node = yield ((!)reader).read_root_node();
             log.node("IN ROOT", node);
             return node;
         } catch (XmlError e) {

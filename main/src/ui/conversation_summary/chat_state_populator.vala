@@ -21,12 +21,12 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Object {
 
         stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).received_state.connect((account, jid, state) => {
             if (current_conversation != null && current_conversation.account.equals(account) && current_conversation.counterpart.equals_bare(jid)) {
-                Idle.add(() => { update_chat_state(account, jid, state); return false; });
+                update_chat_state(account, jid, state);
             }
         });
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
             if (conversation.equals(current_conversation)) {
-                Idle.add(() => { update_chat_state(conversation.account, conversation.counterpart); return false; });
+                update_chat_state(conversation.account, conversation.counterpart);
             }
         });
     }

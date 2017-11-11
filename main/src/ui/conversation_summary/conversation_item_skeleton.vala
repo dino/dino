@@ -39,7 +39,7 @@ public class ConversationItemSkeleton : Grid {
         } else {
             set_title_widget(widget);
         }
-        item.notify["mark"].connect_after(() => { Idle.add(() => { update_received(); return false; }); });
+        item.notify["mark"].connect_after(update_received);
         update_received();
     }
 

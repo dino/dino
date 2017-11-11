@@ -31,12 +31,11 @@ public class Module : XmppStreamModule {
 
     public override void attach(XmppStream stream) {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
-        stream.get_module(Message.Module.IDENTITY).pre_send_message.connect(on_pre_send_message);
+        stream.get_module(Message.Module.IDENTITY).send_pipeline.connect(new SendPipelineListener());
         stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
     }
 
     public override void detach(XmppStream stream) {
-        stream.get_module(Message.Module.IDENTITY).pre_send_message.disconnect(on_pre_send_message);
         stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
     }
 
@@ -52,8 +51,16 @@ public class Module : XmppStreamModule {
             }
         }
     }
+}
 
-    private void on_pre_send_message(XmppStream stream, Message.Stanza message) {
+public class SendPipelineListener : StanzaListener<Message.Stanza> {
+
+    private const string[] after_actions_const = {};
+
+    public override string action_group { get { return "ADD_NODES"; } }
+    public override string[] after_actions { get { return after_actions_const; } }
+
+    public override async void run(Core.XmppStream stream, Message.Stanza message) {
         StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);
         if (received_node != null) return;
         if (message.body == null) return;

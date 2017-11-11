@@ -19,12 +19,8 @@ public class MessagePopulator : Object {
         app.plugin_registry.register_message_display(new SlashmeMessageDisplay(stream_interactor));
 
 
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
-            Idle.add(() => { handle_message(message, conversation); return false; });
-        });
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
-            Idle.add(() => { handle_message(message, conversation); return false; });
-        });
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(handle_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_message);
     }
 
     public void init(Conversation conversation, Plugins.ConversationItemCollection item_collection) {

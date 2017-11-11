@@ -36,7 +36,7 @@ public class AddConferenceDialog : Gtk.Dialog {
         setup_conference_details_view();
         show_jid_add_view();
 
-        stream_interactor.get_module(MucManager.IDENTITY).joined.connect((account, jid, nick) => { Idle.add(() => { on_joined(account, jid, nick); return false; } ); });
+        stream_interactor.get_module(MucManager.IDENTITY).joined.connect(on_joined);
     }
 
     private void show_jid_add_view() {
