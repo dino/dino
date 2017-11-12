@@ -16,6 +16,7 @@ public class XmppStream {
     public string remote_name;
     public XmppLog log = new XmppLog();
     public StanzaNode? features { get; private set; default = new StanzaNode.build("features", NS_URI); }
+    public bool is_insecure = false;
 
     private IOStream? stream;
     private StanzaReader? reader;

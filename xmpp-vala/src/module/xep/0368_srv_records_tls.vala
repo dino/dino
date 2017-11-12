@@ -39,9 +39,12 @@ public class TlsConnectionProvider : ConnectionProvider {
         SocketClient client = new SocketClient();
         try {
             IOStream? io_stream = client.connect_to_host(srv_target.get_hostname(), srv_target.get_port());
-            io_stream = TlsClientConnection.new(io_stream, new NetworkAddress(srv_target.get_hostname(), srv_target.get_port()));
+            TlsClientConnection? io_stream_tls = TlsClientConnection.new(io_stream, new NetworkAddress(srv_target.get_hostname(), srv_target.get_port()));
+            if (stream.is_insecure) {
+                io_stream_tls.validation_flags = 0;
+            }
             stream.add_flag(new Tls.Flag() { finished=true });
-            return io_stream;
+            return (IOStream?) io_stream_tls;
         } catch (Error e) {
             return null;
         }

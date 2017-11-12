@@ -164,6 +164,7 @@ public class ConnectionManager {
         if (resource == null) resource = account.resourcepart;
 
         Core.XmppStream stream = new Core.XmppStream();
+        stream.is_insecure = account.is_insecure;
         foreach (Core.XmppStreamModule module in module_manager.get_modules(account, resource)) {
             stream.add_module(module);
         }
