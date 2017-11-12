@@ -15,7 +15,10 @@ public class AccountSettingWidget : Plugins.AccountSettingsWidget, Box {
         fingerprint = new Label("...");
         fingerprint.xalign = 0;
         Border border = new Button().get_style_context().get_padding(StateFlags.NORMAL);
-        fingerprint.set_padding(border.left + 1, border.top + 1);
+        fingerprint.set_margin_start(border.left + 1);
+        fingerprint.set_margin_end(border.left + 1);
+        fingerprint.set_margin_top(border.top + 1);
+        fingerprint.set_margin_bottom(border.top + 1);
         fingerprint.visible = true;
         pack_start(fingerprint);
 

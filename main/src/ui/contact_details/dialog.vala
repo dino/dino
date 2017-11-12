@@ -57,7 +57,11 @@ public class Dialog : Gtk.Dialog {
     private void setup_top() {
         if (conversation.type_ == Conversation.Type.CHAT) {
             name_label.visible = false;
-            jid_label.set_padding(new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1, 0);
+            int padding = new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1;
+            jid_label.set_margin_start(padding);
+            jid_label.set_margin_end(padding);
+            jid_label.set_margin_top(0);
+            jid_label.set_margin_bottom(0);
             name_hybrid.text = Util.get_conversation_display_name(stream_interactor, conversation);
             destroy.connect(() => {
                 if (name_hybrid.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
