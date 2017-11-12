@@ -57,7 +57,11 @@ public class Dialog : Gtk.Dialog {
     private void setup_top() {
         if (conversation.type_ == Conversation.Type.CHAT) {
             name_label.visible = false;
-            jid_label.set_padding(new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1, 0);
+            int padding = new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1;
+            jid_label.set_margin_start(padding);
+            jid_label.set_margin_end(padding);
+            jid_label.set_margin_top(0);
+            jid_label.set_margin_bottom(0);
             name_hybrid.text = Util.get_conversation_display_name(stream_interactor, conversation);
             destroy.connect(() => {
                 if (name_hybrid.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
@@ -79,7 +83,7 @@ public class Dialog : Gtk.Dialog {
         add_category(category);
 
         ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
-        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_left=15, margin_right=15, margin_top=3, margin_bottom=3, visible=true };
+        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3, visible=true };
         list_row.add(row);
         Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, visible=true };
         if (description != null && description != "") {

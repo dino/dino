@@ -61,7 +61,11 @@ public class Dialog : Gtk.Dialog {
 
             Label label = new Label(e.name) { xalign=1, yalign=0, visible=true };
             label.get_style_context().add_class("dim-label");
-            label.set_padding(0, e.label_top_padding == -1 ? default_top_padding : e.label_top_padding);
+            int padding = e.label_top_padding == -1 ? default_top_padding : e.label_top_padding;
+            label.set_margin_start(0);
+            label.set_margin_end(0);
+            label.set_margin_top(padding);
+            label.set_margin_bottom(padding);
 
             settings_list.attach(label, 0, row_index);
             if (widget is Widget) {
