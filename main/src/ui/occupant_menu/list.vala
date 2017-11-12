@@ -119,10 +119,10 @@ public class List : Box {
             if (aff == affiliation) count++;
         }
 
-        Label title_label = new Label("") { margin_left=10, xalign=0, visible=true };
+        Label title_label = new Label("") { margin_start=10, xalign=0, visible=true };
         title_label.set_markup(@"<b>$(Markup.escape_text(aff_str))</b>");
 
-        Label count_label = new Label(@"$count") { xalign=0, margin_right=7, expand=true, visible=true };
+        Label count_label = new Label(@"$count") { xalign=0, margin_end=7, expand=true, visible=true };
         count_label.get_style_context().add_class("dim-label");
 
         Grid grid = new Grid() { margin_top=top?5:15, column_spacing=5, hexpand=true, visible=true };
