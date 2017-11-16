@@ -23,7 +23,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         provider.load_from_resource("/im/dino/theme.css");
         StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-        startup.connect(() => {
+        activate.connect(() => {
             if (window == null) {
                 create_set_app_menu();
                 window = new UnifiedWindow(this, stream_interactor);
