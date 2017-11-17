@@ -6,12 +6,12 @@ class StanzaTest : Gee.TestCase {
     public StanzaTest() {
         base("Stanza");
 
-        add_test("node_one", test_node_one);
-        add_test("typical_stream", test_typical_stream);
-        add_test("ack_stream", test_ack_stream);
+        add_test("node_one", () => { test_node_one.begin(); });
+        add_test("typical_stream", () => { test_typical_stream.begin(); });
+        add_test("ack_stream", () => { test_ack_stream.begin(); });
     }
 
-    private void test_node_one() {
+    private async void test_node_one() {
         var node1 = new StanzaNode.build("test", "ns1_uri")
                 .add_self_xmlns()
                 .put_attribute("ns2", "ns2_uri", XMLNS_URI)
@@ -22,12 +22,12 @@ class StanzaTest : Gee.TestCase {
                     .add_self_xmlns());
 
         var xml1 = node1.to_xml();
-        var node2 = new StanzaReader.for_string(xml1).read_node();
+        var node2 = yield new StanzaReader.for_string(xml1).read_node();
         fail_if_not(node1.equals(node2));
         fail_if_not_eq_str(node1.to_string(), node2.to_string());
     }
 
-    private void test_typical_stream() {
+    private async void test_typical_stream() {
         var stream = """
         <?xml version='1.0' encoding='UTF-8'?>
         <stream:stream
@@ -55,13 +55,13 @@ class StanzaTest : Gee.TestCase {
                         .put_node(new StanzaNode.text("I'll send a friar with speed, to Mantua, with my letters to thy lord.")));
 
         var reader = new StanzaReader.for_string(stream);
-        fail_if_not_eq_node(root_node_cmp, reader.read_root_node());
-        fail_if_not_eq_node(node_cmp, reader.read_node());
-        reader.read_node();
+        fail_if_not_eq_node(root_node_cmp, yield reader.read_root_node());
+        fail_if_not_eq_node(node_cmp, yield reader.read_node());
+        yield reader.read_node();
         fail_if_not_error_code(() => reader.read_node(), 3, "end of stream should be reached");
     }
 
-    private void test_ack_stream() {
+    private async void test_ack_stream() {
         var stream = """
         <?xml version='1.0' encoding='UTF-8'?>
         <stream:stream
@@ -93,10 +93,10 @@ class StanzaTest : Gee.TestCase {
         var node2_cmp = new StanzaNode.build("r", "http://jabber.org/protocol/ack");
 
         var reader = new StanzaReader.for_string(stream);
-        fail_if_not_eq_node(root_node_cmp, reader.read_root_node());
-        fail_if_not_eq_node(node_cmp, reader.read_node());
-        fail_if_not_eq_node(node2_cmp, reader.read_node());
-        reader.read_node();
+        fail_if_not_eq_node(root_node_cmp, yield reader.read_root_node());
+        fail_if_not_eq_node(node_cmp, yield reader.read_node());
+        fail_if_not_eq_node(node2_cmp, yield reader.read_node());
+        yield reader.read_node();
         fail_if_not_error_code(() => reader.read_node(), 3, "end of stream should be reached");
     }
 

@@ -95,7 +95,7 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
         TreeIter iter;
         list_store.clear();
         list_store.append(out iter);
-        label.set_markup(build_markup_string(_("Loading..."), _("Querying GnuPG")));
+        label.set_markup(build_markup_string(_("Loading…"), _("Querying GnuPG")));
         new Thread<void*> (null, () => { // Querying GnuPG might take some time
             try {
                 keys = GPGHelper.get_keylist(null, true);

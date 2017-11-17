@@ -14,7 +14,6 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     public signal void received_message_displayed(Account account, Jid jid, Entities.Message message);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Jid, Entities.Message> last_read = new HashMap<Jid, Entities.Message>(Jid.hash_bare_func, Jid.equals_bare_func);
     private HashMap<Jid, string> chat_states = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
 
     public static void start(StreamInteractor stream_interactor) {
@@ -30,10 +29,6 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
 
     public string? get_chat_state(Account account, Jid jid) {
         return chat_states[jid];
-    }
-
-    public Entities.Message? get_last_read(Account account, Jid jid) {
-        return last_read[jid];
     }
 
     private void on_account_added(Account account) {
@@ -63,7 +58,6 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
                         message.marked = Entities.Message.Marked.RECEIVED;
                         break;
                     case Xep.ChatMarkers.MARKER_DISPLAYED:
-                        last_read[jid] = message;
                         received_message_displayed(account, jid, message);
                         Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
                         foreach (Entities.Message m in messages) {

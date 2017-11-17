@@ -15,8 +15,9 @@ namespace Xmpp.Message {
         public signal void received_message(XmppStream stream, Message.Stanza message);
 
         public void send_message(XmppStream stream, Message.Stanza message) {
-            send_pipeline.run.begin(stream, message);
-            stream.write(message.stanza);
+            send_pipeline.run.begin(stream, message, (obj, res) => {
+                stream.write(message.stanza);
+            });
         }
 
         public async void received_message_stanza_async(XmppStream stream, StanzaNode node) {

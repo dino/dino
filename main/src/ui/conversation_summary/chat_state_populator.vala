@@ -54,7 +54,7 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Object {
         if (state_ != null) {
             if (state_ == Xep.ChatStateNotifications.STATE_COMPOSING || state_ == Xep.ChatStateNotifications.STATE_PAUSED) {
                 if (state_ == Xep.ChatStateNotifications.STATE_COMPOSING) {
-                    new_text = _("is typing...");
+                    new_text = _("is typing…");
                 } else if (state_ == Xep.ChatStateNotifications.STATE_PAUSED) {
                     new_text = _("has stopped typing");
                 }
