@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 02:03+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -48,8 +48,4 @@ msgstr ""
 
 #: ../src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr ""
-
-#: ../src/contact_details_provider.vala:30
-msgid "OpenPGP"
 msgstr ""

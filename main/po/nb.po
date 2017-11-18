@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 01:27+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-11-18 00:19+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Norwegian Bokmål "
-"<https://hosted.weblate.org/projects/dino/translations/nb/>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
+"translations/nb/>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,15 +40,15 @@ msgstr "Fjern konto %s?"
 msgid "Remove"
 msgstr "Fjern"
 
-#: ../src/ui/manage_accounts/dialog.vala:154
+#: ../src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "Velg avatar"
 
-#: ../src/ui/manage_accounts/dialog.vala:155
+#: ../src/ui/manage_accounts/dialog.vala:154
 msgid "Select"
 msgstr "Velg"
 
-#: ../src/ui/manage_accounts/dialog.vala:155 ../src/ui/application.vala:41
+#: ../src/ui/manage_accounts/dialog.vala:154 ../src/ui/application.vala:41
 #: ../src/ui/add_conversation/add_conference_dialog.vala:15
 #: ../src/ui/add_conversation/select_contact_dialog.vala:40
 #: ../data/add_conversation/add_groupchat_dialog.ui:11
@@ -56,32 +56,32 @@ msgstr "Velg"
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: ../src/ui/manage_accounts/dialog.vala:163
+#: ../src/ui/manage_accounts/dialog.vala:162
 msgid "Images"
 msgstr "Bilder"
 
-#: ../src/ui/manage_accounts/dialog.vala:166
+#: ../src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr "Alle filer"
 
-#: ../src/ui/manage_accounts/dialog.vala:228
+#: ../src/ui/manage_accounts/dialog.vala:227
 msgid "Connecting…"
 msgstr "Kobler til…"
 
-#: ../src/ui/manage_accounts/dialog.vala:230
+#: ../src/ui/manage_accounts/dialog.vala:229
 msgid "Connected"
 msgstr "Tilkoblet"
 
-#: ../src/ui/manage_accounts/dialog.vala:232
+#: ../src/ui/manage_accounts/dialog.vala:231
 msgid "Disconnected"
 msgstr "Frakoblet"
 
-#: ../src/ui/manage_accounts/dialog.vala:241
+#: ../src/ui/manage_accounts/dialog.vala:240
 msgid "Wrong password"
 msgstr "Feil passord"
 
-#: ../src/ui/manage_accounts/dialog.vala:244
-#: ../src/ui/manage_accounts/dialog.vala:246
+#: ../src/ui/manage_accounts/dialog.vala:243
+#: ../src/ui/manage_accounts/dialog.vala:245
 msgid "Error"
 msgstr "Feil"
 
@@ -104,19 +104,19 @@ msgid "Yesterday"
 msgstr "I går"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:176
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:154
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:177
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:155
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:180
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:159
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -124,7 +124,7 @@ msgstr[0] "%i minutt siden"
 msgstr[1] "%i minutter siden"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:182
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:153
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:161
 msgid "Just now"
 msgstr "Akkurat nå"
 
@@ -164,7 +164,7 @@ msgid "Start"
 msgstr "Start"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:105
-msgid "Joining..."
+msgid "Joining…"
 msgstr "Tar del…"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:138
@@ -184,7 +184,7 @@ msgid "Not allowed to create room"
 msgstr "Ikke tillatt å opprette rom"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:149
-msgid "Room is members only"
+msgid "Members-only room"
 msgstr "Rommet er kun for medlemmer"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:152
@@ -192,11 +192,11 @@ msgid "Choose a different nick"
 msgstr "Velg et annet kallenavn"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:154
-msgid "Room has too many occupants"
+msgid "Too many occupants in room"
 msgstr "Rommet har for mange deltagere"
 
 #: ../src/ui/unified_window.vala:137
-msgid "No accounts active"
+msgid "No active accounts"
 msgstr "Ingen kontoer aktive"
 
 #: ../src/ui/unified_window.vala:138
@@ -204,11 +204,11 @@ msgid "Manage accounts"
 msgstr "Behandle kontoer"
 
 #: ../src/ui/unified_window.vala:145
-msgid "No conversation active"
+msgid "No active conversations"
 msgstr "Ingen kontoer aktive"
 
 #: ../src/ui/conversation_summary/chat_state_populator.vala:57
-msgid "is typing..."
+msgid "is typing…"
 msgstr ""
 "Du kjenner blott blodets hvisken og benpipernes bøn fra det ubevisste "
 "sjeleliv…"
@@ -221,32 +221,32 @@ msgstr "har tatt pause i skrivinga"
 msgid "Message too long"
 msgstr "Meldingen er for land"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:134
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:135
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:138
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H∶%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:139
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l∶%M %p"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:150
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
@@ -304,7 +304,7 @@ msgid "Persistent"
 msgstr "Vedvarende"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:46
-msgid "The room will persist after the last occupant exits"
+msgid "The room will persist after the last occupant leaves"
 msgstr "Rommet vil vedvare etter at siste deltager forlater"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:49
@@ -312,7 +312,7 @@ msgid "Publicly searchable"
 msgstr "Offentlig søkbart"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:52
-msgid "Occupants may change subject"
+msgid "Occupants may change the subject"
 msgstr "Deltagere kan endre emne"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:55
@@ -332,7 +332,8 @@ msgid "Password"
 msgstr "Passord"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:60
-msgid "Password required to enter the room. Leave empty for none"
+#, fuzzy
+msgid "Password required for room entry, if any"
 msgstr "Passord kreves for å ta del i rommet. La stå tomt for inget"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:63
@@ -356,7 +357,7 @@ msgid "Message history"
 msgstr "Meldingshistorikk"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:72
-msgid "Maximum number of history messages returned by the room"
+msgid "Maximum amount of backlog issued by the room"
 msgstr "Maksimalt antall meldinger med historikk som skal svares av rommet"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:78
@@ -471,10 +472,6 @@ msgstr "Konto"
 msgid "Nick"
 msgstr "Kallenavn"
 
-#: ../data/add_conversation/conference_details_fragment.ui:253
-msgid "This is an app-notification. Click the button to dismiss"
-msgstr "Dette er en merknad i programmet. Klikk på knappen for å avvise"
-
 #: ../data/add_conversation/add_groupchat_dialog.ui:175
 #: ../data/add_conversation/add_contact_dialog.ui:101
 msgid "Alias"
@@ -483,6 +480,9 @@ msgstr "Alias"
 #: ../data/add_conversation/add_contact_dialog.ui:129
 msgid "Request presence updates"
 msgstr "Forespør tilstedeværelsesoppdateringer"
+
+#~ msgid "This is an app-notification. Click the button to dismiss"
+#~ msgstr "Dette er en merknad i programmet. Klikk på knappen for å avvise"
 
 #~ msgid "Join on startup"
 #~ msgstr "Ta del ved oppstart"

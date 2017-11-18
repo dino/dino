@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 01:27+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-11-17 12:02+0000\n"
 "Last-Translator: Valerio Baldisserotto <svalo@libersoft.it>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/plugin-"
@@ -28,10 +28,6 @@ msgid "Encryption"
 msgstr "Crittografia"
 
 #: ../src/contact_details_provider.vala:31
-msgid "OMEMO"
-msgstr "OMEMO"
-
-#: ../src/contact_details_provider.vala:31
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
@@ -54,6 +50,9 @@ msgstr "Altri dispositivi"
 #: ../data/account_settings_dialog.ui:112
 msgid "- None -"
 msgstr "- Nessuno -"
+
+#~ msgid "OMEMO"
+#~ msgstr "OMEMO"
 
 #~ msgid "Database error"
 #~ msgstr "Errore del database"

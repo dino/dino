@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 02:03+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-11-18 00:21+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino"
-"/plugin-omemo/nb/>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
+"plugin-omemo/nb/>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,10 +31,6 @@ msgstr "Vil bli generert ved første tilkobling"
 #: ../src/contact_details_provider.vala:31
 msgid "Encryption"
 msgstr "Kryptering"
-
-#: ../src/contact_details_provider.vala:31
-msgid "OMEMO"
-msgstr "OMEMO"
 
 #: ../src/contact_details_provider.vala:31
 #, c-format
@@ -59,3 +55,6 @@ msgstr "Andre enheter"
 #: ../data/account_settings_dialog.ui:112
 msgid "- None -"
 msgstr "- Ingen -"
+
+#~ msgid "OMEMO"
+#~ msgstr "OMEMO"

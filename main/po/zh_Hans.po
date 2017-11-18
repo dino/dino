@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 01:27+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-06-01 10:32+0000\n"
 "Last-Translator: tonghuix <tonghuix@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -40,15 +40,15 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../src/ui/manage_accounts/dialog.vala:154
+#: ../src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "选择头像"
 
-#: ../src/ui/manage_accounts/dialog.vala:155
+#: ../src/ui/manage_accounts/dialog.vala:154
 msgid "Select"
 msgstr "选择"
 
-#: ../src/ui/manage_accounts/dialog.vala:155 ../src/ui/application.vala:41
+#: ../src/ui/manage_accounts/dialog.vala:154 ../src/ui/application.vala:41
 #: ../src/ui/add_conversation/add_conference_dialog.vala:15
 #: ../src/ui/add_conversation/select_contact_dialog.vala:40
 #: ../data/add_conversation/add_groupchat_dialog.ui:11
@@ -56,32 +56,32 @@ msgstr "选择"
 msgid "Cancel"
 msgstr "取消"
 
-#: ../src/ui/manage_accounts/dialog.vala:163
+#: ../src/ui/manage_accounts/dialog.vala:162
 msgid "Images"
 msgstr ""
 
-#: ../src/ui/manage_accounts/dialog.vala:166
+#: ../src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr ""
 
-#: ../src/ui/manage_accounts/dialog.vala:228
+#: ../src/ui/manage_accounts/dialog.vala:227
 msgid "Connecting…"
 msgstr ""
 
-#: ../src/ui/manage_accounts/dialog.vala:230
+#: ../src/ui/manage_accounts/dialog.vala:229
 msgid "Connected"
 msgstr "已连接"
 
-#: ../src/ui/manage_accounts/dialog.vala:232
+#: ../src/ui/manage_accounts/dialog.vala:231
 msgid "Disconnected"
 msgstr "已断开连接"
 
-#: ../src/ui/manage_accounts/dialog.vala:241
+#: ../src/ui/manage_accounts/dialog.vala:240
 msgid "Wrong password"
 msgstr "密码错误"
 
-#: ../src/ui/manage_accounts/dialog.vala:244
-#: ../src/ui/manage_accounts/dialog.vala:246
+#: ../src/ui/manage_accounts/dialog.vala:243
+#: ../src/ui/manage_accounts/dialog.vala:245
 msgid "Error"
 msgstr "错误"
 
@@ -104,26 +104,26 @@ msgid "Yesterday"
 msgstr "昨天"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:176
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:154
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:177
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:155
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:180
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:159
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i 分钟以前"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:182
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:153
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:161
 msgid "Just now"
 msgstr "刚刚"
 
@@ -163,7 +163,7 @@ msgid "Start"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:105
-msgid "Joining..."
+msgid "Joining…"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:138
@@ -183,7 +183,7 @@ msgid "Not allowed to create room"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:149
-msgid "Room is members only"
+msgid "Members-only room"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:152
@@ -191,11 +191,11 @@ msgid "Choose a different nick"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:154
-msgid "Room has too many occupants"
+msgid "Too many occupants in room"
 msgstr ""
 
 #: ../src/ui/unified_window.vala:137
-msgid "No accounts active"
+msgid "No active accounts"
 msgstr "没有激活的帐号"
 
 #: ../src/ui/unified_window.vala:138
@@ -203,11 +203,11 @@ msgid "Manage accounts"
 msgstr "管理帐号"
 
 #: ../src/ui/unified_window.vala:145
-msgid "No conversation active"
+msgid "No active conversations"
 msgstr "没有激活的会话"
 
 #: ../src/ui/conversation_summary/chat_state_populator.vala:57
-msgid "is typing..."
+msgid "is typing…"
 msgstr "正在输入..."
 
 #: ../src/ui/conversation_summary/chat_state_populator.vala:59
@@ -218,32 +218,32 @@ msgstr "已经停止输入"
 msgid "Message too long"
 msgstr ""
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:134
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:135
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:138
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%_m 月 %_d 日，%H∶%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:139
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%_m 月 %_d 日，%l∶%M %p"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:150
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%A，%H∶%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%A，%l∶%M %p"
@@ -301,7 +301,7 @@ msgid "Persistent"
 msgstr "一直在线"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:46
-msgid "The room will persist after the last occupant exits"
+msgid "The room will persist after the last occupant leaves"
 msgstr "此房间将一直保持存在直到最后一个人离开"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:49
@@ -309,7 +309,7 @@ msgid "Publicly searchable"
 msgstr "公开可搜索"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:52
-msgid "Occupants may change subject"
+msgid "Occupants may change the subject"
 msgstr "参与者可以更改主题"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:55
@@ -329,7 +329,7 @@ msgid "Password"
 msgstr "密码"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:60
-msgid "Password required to enter the room. Leave empty for none"
+msgid "Password required for room entry, if any"
 msgstr ""
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:63
@@ -353,7 +353,7 @@ msgid "Message history"
 msgstr "消息历史记录"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:72
-msgid "Maximum number of history messages returned by the room"
+msgid "Maximum amount of backlog issued by the room"
 msgstr "返回的房间的历史消息的最大数目"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:78
@@ -467,10 +467,6 @@ msgstr "账号"
 #: ../data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
 msgstr "昵称"
-
-#: ../data/add_conversation/conference_details_fragment.ui:253
-msgid "This is an app-notification. Click the button to dismiss"
-msgstr ""
 
 #: ../data/add_conversation/add_groupchat_dialog.ui:175
 #: ../data/add_conversation/add_contact_dialog.ui:101

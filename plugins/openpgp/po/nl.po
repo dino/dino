@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 01:27+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-11-17 20:52+0000\n"
 "Last-Translator: Nathan Follens <nathan@email.is>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-"
@@ -29,7 +29,7 @@ msgid "Select key"
 msgstr "Selecteer een sleutel"
 
 #: ../src/account_settings_widget.vala:98
-msgid "Loading..."
+msgid "Loading…"
 msgstr "Laden…"
 
 #: ../src/account_settings_widget.vala:98
@@ -48,6 +48,5 @@ msgstr "Sleutel niet in sleutelbos"
 msgid "Encryption"
 msgstr "Versleuteling"
 
-#: ../src/contact_details_provider.vala:30
-msgid "OpenPGP"
-msgstr "OpenPGP"
+#~ msgid "OpenPGP"
+#~ msgstr "OpenPGP"

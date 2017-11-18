@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 01:27+0100\n"
-"PO-Revision-Date: 2017-11-09 15:44+0000\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
+"PO-Revision-Date: 2017-11-23 00:31+0000\n"
 "Last-Translator: Aitor Beriain <beriain@bitmessage.ch>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
 "eu/>\n"
@@ -34,21 +34,21 @@ msgstr "Ukatu"
 #: ../src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
-msgstr ""
+msgstr "%s kontua kendu?"
 
 #: ../src/ui/manage_accounts/dialog.vala:128
 msgid "Remove"
-msgstr ""
+msgstr "Kendu"
 
-#: ../src/ui/manage_accounts/dialog.vala:154
+#: ../src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "Irudia hautatu"
 
-#: ../src/ui/manage_accounts/dialog.vala:155
+#: ../src/ui/manage_accounts/dialog.vala:154
 msgid "Select"
 msgstr "Hautatu"
 
-#: ../src/ui/manage_accounts/dialog.vala:155 ../src/ui/application.vala:41
+#: ../src/ui/manage_accounts/dialog.vala:154 ../src/ui/application.vala:41
 #: ../src/ui/add_conversation/add_conference_dialog.vala:15
 #: ../src/ui/add_conversation/select_contact_dialog.vala:40
 #: ../data/add_conversation/add_groupchat_dialog.ui:11
@@ -56,32 +56,32 @@ msgstr "Hautatu"
 msgid "Cancel"
 msgstr "Utzi"
 
-#: ../src/ui/manage_accounts/dialog.vala:163
+#: ../src/ui/manage_accounts/dialog.vala:162
 msgid "Images"
 msgstr "Irudiak"
 
-#: ../src/ui/manage_accounts/dialog.vala:166
+#: ../src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr "Fitxategi guztiak"
 
-#: ../src/ui/manage_accounts/dialog.vala:228
+#: ../src/ui/manage_accounts/dialog.vala:227
 msgid "Connecting…"
 msgstr "Konektatzen…"
 
-#: ../src/ui/manage_accounts/dialog.vala:230
+#: ../src/ui/manage_accounts/dialog.vala:229
 msgid "Connected"
 msgstr "Konektatuta"
 
-#: ../src/ui/manage_accounts/dialog.vala:232
+#: ../src/ui/manage_accounts/dialog.vala:231
 msgid "Disconnected"
 msgstr "Ez konektatuta"
 
-#: ../src/ui/manage_accounts/dialog.vala:241
+#: ../src/ui/manage_accounts/dialog.vala:240
 msgid "Wrong password"
 msgstr "Pasahitz okerra"
 
-#: ../src/ui/manage_accounts/dialog.vala:244
-#: ../src/ui/manage_accounts/dialog.vala:246
+#: ../src/ui/manage_accounts/dialog.vala:243
+#: ../src/ui/manage_accounts/dialog.vala:245
 msgid "Error"
 msgstr "Akatsa"
 
@@ -104,19 +104,19 @@ msgid "Yesterday"
 msgstr "Atzo"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:176
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:154
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:177
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:155
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr ""
 
 #: ../src/ui/conversation_selector/conversation_row.vala:180
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:159
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -124,7 +124,7 @@ msgstr[0] "orain dela min %i"
 msgstr[1] "orain dela %i min"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:182
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:153
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:161
 msgid "Just now"
 msgstr "Orain"
 
@@ -164,12 +164,12 @@ msgid "Start"
 msgstr "Hasi"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:105
-msgid "Joining..."
-msgstr ""
+msgid "Joining…"
+msgstr "Batzen..."
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
-msgstr ""
+msgstr "Pasahitza behar da gelara sartzeko"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
@@ -177,26 +177,26 @@ msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
-msgstr ""
+msgstr "Gela ez da existitzen"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
-msgstr ""
+msgstr "Ez duzu gela sortzeko baimenik"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:149
-msgid "Room is members only"
-msgstr ""
+msgid "Members-only room"
+msgstr "Gela kideentzat da soilik"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
-msgstr ""
+msgstr "Ezizen ezberdin bat hautatu"
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:154
-msgid "Room has too many occupants"
-msgstr ""
+msgid "Too many occupants in room"
+msgstr "Gelak kide gehiegi ditu"
 
 #: ../src/ui/unified_window.vala:137
-msgid "No accounts active"
+msgid "No active accounts"
 msgstr "Ez dago kontu aktiborik"
 
 #: ../src/ui/unified_window.vala:138
@@ -204,11 +204,11 @@ msgid "Manage accounts"
 msgstr "Kontuak kudeatu"
 
 #: ../src/ui/unified_window.vala:145
-msgid "No conversation active"
+msgid "No active conversations"
 msgstr "Ez dago solasaldi aktiborik"
 
 #: ../src/ui/conversation_summary/chat_state_populator.vala:57
-msgid "is typing..."
+msgid "is typing…"
 msgstr "idazten ari da..."
 
 #: ../src/ui/conversation_summary/chat_state_populator.vala:59
@@ -219,32 +219,32 @@ msgstr "idazteari utzi dio"
 msgid "Message too long"
 msgstr "Mezu luzeegia"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:134
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr ""
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:135
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr ""
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:138
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr ""
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:139
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr ""
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:150
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr ""
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr ""
@@ -302,7 +302,7 @@ msgid "Persistent"
 msgstr "Iraunkorra"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:46
-msgid "The room will persist after the last occupant exits"
+msgid "The room will persist after the last occupant leaves"
 msgstr "Gelak iraun egingo du azken okupatzailea irten ondoren"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:49
@@ -310,7 +310,7 @@ msgid "Publicly searchable"
 msgstr "Publikoki bilagarria"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:52
-msgid "Occupants may change subject"
+msgid "Occupants may change the subject"
 msgstr "Okupatzaileek gaia alda dezakete"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:55
@@ -330,7 +330,8 @@ msgid "Password"
 msgstr "Pasahitza"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:60
-msgid "Password required to enter the room. Leave empty for none"
+#, fuzzy
+msgid "Password required for room entry, if any"
 msgstr ""
 "Gelan sartzeko beharrezko pasahitza. Utzi zuriz pasahitzik ez ezartzeko"
 
@@ -355,7 +356,7 @@ msgid "Message history"
 msgstr "Mezuen historia"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:72
-msgid "Maximum number of history messages returned by the room"
+msgid "Maximum amount of backlog issued by the room"
 msgstr "Gelak itzuliko dituen gehienezko historiako mezuak"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:78
@@ -371,7 +372,7 @@ msgstr "Ezarpenak"
 
 #: ../src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr ""
+msgstr "Blokeatu"
 
 #: ../src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
@@ -469,10 +470,6 @@ msgstr "Kontuak"
 #: ../data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
 msgstr "Ezizena"
-
-#: ../data/add_conversation/conference_details_fragment.ui:253
-msgid "This is an app-notification. Click the button to dismiss"
-msgstr ""
 
 #: ../data/add_conversation/add_groupchat_dialog.ui:175
 #: ../data/add_conversation/add_contact_dialog.ui:101

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 02:03+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-11-18 07:32+0000\n"
 "Last-Translator: sergio <srg.dev@posteo.net>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/plugin-"
@@ -33,10 +33,6 @@ msgid "Encryption"
 msgstr "Cifrado"
 
 #: ../src/contact_details_provider.vala:31
-msgid "OMEMO"
-msgstr "OMEMO"
-
-#: ../src/contact_details_provider.vala:31
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
@@ -59,3 +55,6 @@ msgstr "Otros dispositivos"
 #: ../data/account_settings_dialog.ui:112
 msgid "- None -"
 msgstr "- Ninguno -"
+
+#~ msgid "OMEMO"
+#~ msgstr "OMEMO"

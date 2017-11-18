@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 01:27+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-07-16 08:49+0000\n"
 "Last-Translator: Jean-Baptiste <jean-baptiste@holcroft.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
@@ -40,15 +40,15 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../src/ui/manage_accounts/dialog.vala:154
+#: ../src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "Choisir un avatar"
 
-#: ../src/ui/manage_accounts/dialog.vala:155
+#: ../src/ui/manage_accounts/dialog.vala:154
 msgid "Select"
 msgstr "Choisir"
 
-#: ../src/ui/manage_accounts/dialog.vala:155 ../src/ui/application.vala:41
+#: ../src/ui/manage_accounts/dialog.vala:154 ../src/ui/application.vala:41
 #: ../src/ui/add_conversation/add_conference_dialog.vala:15
 #: ../src/ui/add_conversation/select_contact_dialog.vala:40
 #: ../data/add_conversation/add_groupchat_dialog.ui:11
@@ -56,32 +56,32 @@ msgstr "Choisir"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: ../src/ui/manage_accounts/dialog.vala:163
+#: ../src/ui/manage_accounts/dialog.vala:162
 msgid "Images"
 msgstr ""
 
-#: ../src/ui/manage_accounts/dialog.vala:166
+#: ../src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr ""
 
-#: ../src/ui/manage_accounts/dialog.vala:228
+#: ../src/ui/manage_accounts/dialog.vala:227
 msgid "Connecting…"
 msgstr ""
 
-#: ../src/ui/manage_accounts/dialog.vala:230
+#: ../src/ui/manage_accounts/dialog.vala:229
 msgid "Connected"
 msgstr "Connecté"
 
-#: ../src/ui/manage_accounts/dialog.vala:232
+#: ../src/ui/manage_accounts/dialog.vala:231
 msgid "Disconnected"
 msgstr "Déconnecté"
 
-#: ../src/ui/manage_accounts/dialog.vala:241
+#: ../src/ui/manage_accounts/dialog.vala:240
 msgid "Wrong password"
 msgstr "Mauvais mot de passe"
 
-#: ../src/ui/manage_accounts/dialog.vala:244
-#: ../src/ui/manage_accounts/dialog.vala:246
+#: ../src/ui/manage_accounts/dialog.vala:243
+#: ../src/ui/manage_accounts/dialog.vala:245
 msgid "Error"
 msgstr "Erreur"
 
@@ -104,19 +104,19 @@ msgid "Yesterday"
 msgstr "Hier"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:176
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:154
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%Hh%M"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:177
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:155
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:180
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:159
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -124,7 +124,7 @@ msgstr[0] "Il y a %i minute"
 msgstr[1] "Il y a %i minutes"
 
 #: ../src/ui/conversation_selector/conversation_row.vala:182
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:153
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:161
 msgid "Just now"
 msgstr "À l’instant"
 
@@ -164,7 +164,7 @@ msgid "Start"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:105
-msgid "Joining..."
+msgid "Joining…"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:138
@@ -184,7 +184,7 @@ msgid "Not allowed to create room"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:149
-msgid "Room is members only"
+msgid "Members-only room"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:152
@@ -192,11 +192,11 @@ msgid "Choose a different nick"
 msgstr ""
 
 #: ../src/ui/add_conversation/conference_details_fragment.vala:154
-msgid "Room has too many occupants"
+msgid "Too many occupants in room"
 msgstr ""
 
 #: ../src/ui/unified_window.vala:137
-msgid "No accounts active"
+msgid "No active accounts"
 msgstr "Aucun compte actif"
 
 #: ../src/ui/unified_window.vala:138
@@ -204,11 +204,11 @@ msgid "Manage accounts"
 msgstr "Gérer les comptes"
 
 #: ../src/ui/unified_window.vala:145
-msgid "No conversation active"
+msgid "No active conversations"
 msgstr "Aucune discussion en cours"
 
 #: ../src/ui/conversation_summary/chat_state_populator.vala:57
-msgid "is typing..."
+msgid "is typing…"
 msgstr "est en train d’écrire…"
 
 #: ../src/ui/conversation_summary/chat_state_populator.vala:59
@@ -219,32 +219,32 @@ msgstr "a arrêté d’écrire"
 msgid "Message too long"
 msgstr ""
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:134
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %Hh%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:135
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:138
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d %b, %Hh%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:139
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d %b, %l∶%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:150
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %Hh%M"
 
-#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M"
@@ -302,7 +302,7 @@ msgid "Persistent"
 msgstr "Persistant"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:46
-msgid "The room will persist after the last occupant exits"
+msgid "The room will persist after the last occupant leaves"
 msgstr "Ce salon persistera après le départ du dernier occupant"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:49
@@ -310,7 +310,7 @@ msgid "Publicly searchable"
 msgstr "Visible publiquement"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:52
-msgid "Occupants may change subject"
+msgid "Occupants may change the subject"
 msgstr "Les occupants peuvent changer le sujet"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:55
@@ -330,7 +330,7 @@ msgid "Password"
 msgstr "Mot de passe"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:60
-msgid "Password required to enter the room. Leave empty for none"
+msgid "Password required for room entry, if any"
 msgstr ""
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:63
@@ -354,7 +354,7 @@ msgid "Message history"
 msgstr "Historique des messages"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:72
-msgid "Maximum number of history messages returned by the room"
+msgid "Maximum amount of backlog issued by the room"
 msgstr "Nombre de messages d’historique retourné par le salon"
 
 #: ../src/ui/contact_details/muc_config_form_provider.vala:78
@@ -468,10 +468,6 @@ msgstr "Compte"
 #: ../data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
 msgstr "Pseudo"
-
-#: ../data/add_conversation/conference_details_fragment.ui:253
-msgid "This is an app-notification. Click the button to dismiss"
-msgstr ""
 
 #: ../data/add_conversation/add_groupchat_dialog.ui:175
 #: ../data/add_conversation/add_contact_dialog.ui:101

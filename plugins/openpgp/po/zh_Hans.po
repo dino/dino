@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 01:27+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-05-08 01:21+0800\n"
 "Language-Team: Chinese (simplified)\n"
 "Language: \n"
@@ -25,7 +25,7 @@ msgid "Select key"
 msgstr ""
 
 #: ../src/account_settings_widget.vala:98
-msgid "Loading..."
+msgid "Loading…"
 msgstr ""
 
 #: ../src/account_settings_widget.vala:98
@@ -42,10 +42,6 @@ msgstr ""
 
 #: ../src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr ""
-
-#: ../src/contact_details_provider.vala:30
-msgid "OpenPGP"
 msgstr ""
 
 #~ msgid "Own fingerprint"

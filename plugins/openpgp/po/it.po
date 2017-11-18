@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-17 01:27+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: 2017-11-17 11:57+0000\n"
 "Last-Translator: Valerio Baldisserotto <svalo@libersoft.it>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/plugin-"
@@ -29,7 +29,7 @@ msgid "Select key"
 msgstr "Seleziona una chiave"
 
 #: ../src/account_settings_widget.vala:98
-msgid "Loading..."
+msgid "Loading…"
 msgstr "Caricamento..."
 
 #: ../src/account_settings_widget.vala:98
@@ -48,6 +48,5 @@ msgstr "La chiave non è nel portachiavi"
 msgid "Encryption"
 msgstr "Crittografia"
 
-#: ../src/contact_details_provider.vala:30
-msgid "OpenPGP"
-msgstr "OpenPGP"
+#~ msgid "OpenPGP"
+#~ msgstr "OpenPGP"

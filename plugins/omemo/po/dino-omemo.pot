@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-18 19:28+0100\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,26 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../data/account_settings_dialog.ui:5
-msgid "OMEMO Keys"
-msgstr ""
-
-#: ../data/account_settings_dialog.ui:19 ../src/account_settings_widget.vala:42
-#: ../src/account_settings_widget.vala:45
+#: ../src/account_settings_widget.vala:42
+#: ../src/account_settings_widget.vala:45 ../data/account_settings_dialog.ui:19
 msgid "Own fingerprint"
-msgstr ""
-
-#: ../data/account_settings_dialog.ui:88
-msgid "Other devices"
-msgstr ""
-
-#: ../data/account_settings_dialog.ui:112
-msgid "- None -"
-msgstr ""
-
-#: ../src/account_settings_dialog.vala:35
-#, c-format
-msgid "Unknown device (0x%xd)"
 msgstr ""
 
 #: ../src/account_settings_widget.vala:42
@@ -54,3 +37,20 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] ""
 msgstr[1] ""
+
+#: ../src/account_settings_dialog.vala:35
+#, c-format
+msgid "Unknown device (0x%xd)"
+msgstr ""
+
+#: ../data/account_settings_dialog.ui:5
+msgid "OMEMO Keys"
+msgstr ""
+
+#: ../data/account_settings_dialog.ui:88
+msgid "Other devices"
+msgstr ""
+
+#: ../data/account_settings_dialog.ui:112
+msgid "- None -"
+msgstr ""
