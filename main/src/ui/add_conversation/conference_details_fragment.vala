@@ -140,18 +140,18 @@ protected class ConferenceDetailsFragment : Box {
                 password_stack.visible = true;
                 break;
             case Xmpp.Xep.Muc.MucEnterError.BANNED:
-                label_text = _("Banned from joining or creating conference"); break;
+                label_text = _("Banned from joining or creating conferences"); break;
             case Xmpp.Xep.Muc.MucEnterError.ROOM_DOESNT_EXIST:
                 label_text = _("Room does not exist"); break;
             case Xmpp.Xep.Muc.MucEnterError.CREATION_RESTRICTED:
                 label_text = _("Not allowed to create room"); break;
             case Xmpp.Xep.Muc.MucEnterError.NOT_IN_MEMBER_LIST:
-                label_text = _("Room is members only"); break;
+                label_text = _("Members only room"); break;
             case Xmpp.Xep.Muc.MucEnterError.USE_RESERVED_ROOMNICK:
             case Xmpp.Xep.Muc.MucEnterError.NICK_CONFLICT:
                 label_text = _("Choose a different nick"); break;
             case Xmpp.Xep.Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
-                label_text = _("Room has too many occupants"); break;
+                label_text = _("Too many occupants in room"); break;
         }
         notification_label.label = label_text;
         notification_revealer.set_reveal_child(true);
