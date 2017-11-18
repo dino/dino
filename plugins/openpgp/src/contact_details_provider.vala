@@ -27,7 +27,7 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
                 } else {
                     label.label = _("Key not in keychain") + "\n" + markup_colorize_id(key_id, false);
                 }
-                contact_details.add(_("Encryption"), _("OpenPGP"), "", label);
+                contact_details.add(_("Encryption"), "OpenPGP", "", label);
             }
         }
     }

@@ -32,9 +32,11 @@ public class MessageStorage : StreamInteractionModule, Object {
     public Gee.List<Message> get_messages(Conversation conversation, int count = 50) {
         init_conversation(conversation);
         Gee.List<Message> ret = new ArrayList<Message>(Message.equals_func);
-        foreach (Message message in messages[conversation]) {
-            if (ret.size >= count) break;
-            ret.add(message);
+        BidirIterator<Message> iter = messages[conversation].bidir_iterator();
+        iter.last();
+        while (iter.valid && ret.size < count) {
+            iter.previous();
+            ret.insert(0, iter.get());
         }
         return ret;
     }
@@ -42,7 +44,7 @@ public class MessageStorage : StreamInteractionModule, Object {
     public Message? get_last_message(Conversation conversation) {
         init_conversation(conversation);
         if (messages[conversation].size > 0) {
-            return messages[conversation].first();
+            return messages[conversation].last();
         }
         return null;
     }
@@ -62,7 +64,7 @@ public class MessageStorage : StreamInteractionModule, Object {
 
     private void init_conversation(Conversation conversation) {
         if (!messages.has_key(conversation)) {
-            messages[conversation] = new Gee.TreeSet<Message>((a, b) => { return -1 * a.local_time.compare(b.local_time); });
+            messages[conversation] = new Gee.TreeSet<Message>((a, b) => { return a.local_time.compare(b.local_time); });
             Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), 50, null);
             messages[conversation].add_all(db_messages);
         }

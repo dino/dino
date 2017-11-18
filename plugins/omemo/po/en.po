@@ -2,8 +2,49 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-07 15:43+0200\n"
+"POT-Creation-Date: 2017-11-17 01:27+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/account_settings_widget.vala:42
+#: ../src/account_settings_widget.vala:45 ../data/account_settings_dialog.ui:19
+msgid "Own fingerprint"
+msgstr ""
+
+#: ../src/account_settings_widget.vala:42
+msgid "Will be generated on first connect"
+msgstr ""
+
+#: ../src/contact_details_provider.vala:31
+msgid "Encryption"
+msgstr ""
+
+#: ../src/contact_details_provider.vala:31
+msgid "OMEMO"
+msgstr ""
+
+#: ../src/contact_details_provider.vala:31
+#, c-format
+msgid "%d OMEMO device"
+msgid_plural "%d OMEMO devices"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../src/account_settings_dialog.vala:35
+#, c-format
+msgid "Unknown device (0x%xd)"
+msgstr ""
+
+#: ../data/account_settings_dialog.ui:5
+msgid "OMEMO Keys"
+msgstr ""
+
+#: ../data/account_settings_dialog.ui:88
+msgid "Other devices"
+msgstr ""
+
+#: ../data/account_settings_dialog.ui:112
+msgid "- None -"
+msgstr ""

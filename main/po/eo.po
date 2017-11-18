@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-23 00:48+0200\n"
+"POT-Creation-Date: 2017-11-17 01:27+0100\n"
 "PO-Revision-Date: 2017-06-19 20:29+0000\n"
 "Last-Translator: Tirifto <tirifto@posteo.cz>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/dino/"
@@ -19,422 +19,471 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.15-dev\n"
 
-#: data/add_conversation/add_contact_dialog.ui:11
-#: data/add_conversation/add_groupchat_dialog.ui:11 src/ui/application.vala:41
-#: src/ui/add_conversation/chat/dialog.vala:40
-#: src/ui/add_conversation/conference/dialog.vala:15
-#: src/ui/manage_accounts/dialog.vala:151
+#: ../src/ui/notifications.vala:105
+msgid "Subscription request"
+msgstr "Abona peto"
+
+#: ../src/ui/notifications.vala:111
+msgid "Accept"
+msgstr "Akcepti"
+
+#: ../src/ui/notifications.vala:112
+msgid "Deny"
+msgstr "Rifuzi"
+
+#: ../src/ui/manage_accounts/dialog.vala:125
+#, c-format
+msgid "Remove account %s?"
+msgstr ""
+
+#: ../src/ui/manage_accounts/dialog.vala:128
+msgid "Remove"
+msgstr ""
+
+#: ../src/ui/manage_accounts/dialog.vala:154
+msgid "Select avatar"
+msgstr "Elekti profilbildon"
+
+#: ../src/ui/manage_accounts/dialog.vala:155
+msgid "Select"
+msgstr "Elekti"
+
+#: ../src/ui/manage_accounts/dialog.vala:155 ../src/ui/application.vala:41
+#: ../src/ui/add_conversation/add_conference_dialog.vala:15
+#: ../src/ui/add_conversation/select_contact_dialog.vala:40
+#: ../data/add_conversation/add_groupchat_dialog.ui:11
+#: ../data/add_conversation/add_contact_dialog.ui:11
 msgid "Cancel"
 msgstr "Nuligi"
 
-#: data/add_conversation/add_contact_dialog.ui:23
-#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:28
-msgid "Add"
-msgstr "Aldoni"
-
-#: data/add_conversation/add_contact_dialog.ui:48
-#: data/add_conversation/add_groupchat_dialog.ui:49
-#: data/add_conversation/conference_details_fragment.ui:16
-msgid "Account"
-msgstr "Konto"
-
-#: data/add_conversation/add_contact_dialog.ui:101
-#: data/add_conversation/add_groupchat_dialog.ui:189
-msgid "Alias"
-msgstr "Kaŝnomo"
-
-#: data/add_conversation/add_contact_dialog.ui:129
-msgid "Request presence updates"
-msgstr "Peti sciigojn pri ĉeesto"
-
-#: data/add_conversation/add_groupchat_dialog.ui:120
-#: data/add_conversation/conference_details_fragment.ui:120
-msgid "Nick"
-msgstr "Kaŝnomo"
-
-#: data/add_conversation/add_groupchat_dialog.ui:147
-#: data/add_conversation/conference_details_fragment.ui:172
-#: data/manage_accounts/add_account_dialog.ui:73
-#: data/manage_accounts/dialog.ui:166
-#: src/ui/contact_details/muc_config_form_provider.vala:62
-msgid "Password"
-msgstr "Pasvorto"
-
-#: data/add_conversation/add_groupchat_dialog.ui:176
-msgid "Join on startup"
-msgstr "Aliĝi je lanĉo"
-
-#: data/conversation_selector/view.ui:14
-msgid "Search"
-msgstr "Serĉi"
-
-#: data/manage_accounts/add_account_dialog.ui:21
-#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:42
-msgid "Save"
-msgstr "Konservi"
-
-#: data/manage_accounts/add_account_dialog.ui:102
-#: data/manage_accounts/dialog.ui:196
-msgid "Local alias"
-msgstr "Loka kaŝnomo"
-
-#: data/manage_accounts/dialog.ui:9 data/menu_app.ui:6
-msgid "Accounts"
-msgstr "Kontoj"
-
-#: data/manage_accounts/dialog.ui:251
-#, fuzzy
-msgid "No accounts configured"
-msgstr "Neniuj aktivaj kontoj"
-
-#: data/manage_accounts/dialog.ui:262
-msgid "Add an account"
-msgstr "Aldoni konton"
-
-#: data/menu_add.ui:6 src/ui/application.vala:70
-#: src/ui/conversation_list_titlebar.vala:31 src/ui/unified_window.vala:150
-msgid "Start Chat"
-msgstr "Ekbabili"
-
-#: data/menu_add.ui:12 src/ui/application.vala:41
-#: src/ui/add_conversation/conference/dialog.vala:26
-#: src/ui/unified_window.vala:151
-msgid "Join Conference"
-msgstr "Aliĝi al Kunveno"
-
-#: data/menu_app.ui:10 src/ui/contact_details/settings_provider.vala:22
-#: src/ui/contact_details/settings_provider.vala:25
-#: src/ui/contact_details/settings_provider.vala:30
-msgid "Settings"
-msgstr "Agordoj"
-
-#: data/menu_app.ui:16
-msgid "Quit"
-msgstr "Ĉesi"
-
-#: data/menu_conversation.ui:6 src/ui/contact_details/dialog.vala:37
-msgid "Contact Details"
-msgstr "Kontaktaj Detaloj"
-
-#: data/menu_encryption.ui:14
-msgid "Unencrypted"
-msgstr "Neĉifrita"
-
-#: data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "Preferoj"
-
-#: data/settings_dialog.ui:22 src/ui/contact_details/settings_provider.vala:22
-msgid "Send typing notifications"
-msgstr "Sciigi pri tajpado"
-
-#: data/settings_dialog.ui:34 src/ui/contact_details/settings_provider.vala:25
-msgid "Send message marker"
-msgstr "Sendi mesaĝmarkilon"
-
-#: data/settings_dialog.ui:46
-msgid "Notify when a new message arrives"
-msgstr "Sciigi pri envenaj mesaĝoj"
-
-#: data/settings_dialog.ui:58
-msgid "Convert smileys to emojis"
-msgstr "Grafikigi tekstajn mienetojn"
-
-#: src/ui/application.vala:41 src/ui/add_conversation/conference/dialog.vala:60
-msgid "Join"
-msgstr "Aliĝi"
-
-#: src/ui/application.vala:71 src/ui/conversation_list_titlebar.vala:32
-#, fuzzy
-msgid "Start"
-msgstr "Ekbabili"
-
-#: src/ui/add_conversation/conference/dialog.vala:45
-msgid "Next"
-msgstr "Sekva"
-
-#: src/ui/contact_details/settings_provider.vala:30
-#: src/ui/contact_details/settings_provider.vala:39
-msgid "Notifications"
-msgstr "Sciigoj"
-
-#: src/ui/contact_details/settings_provider.vala:39
-msgid "Local Settings"
-msgstr "Lokaj Agordoj"
-
-#: src/ui/contact_details/settings_provider.vala:74
-#: src/ui/contact_details/settings_provider.vala:114
-#: src/ui/contact_details/settings_provider.vala:116
-msgid "On"
-msgstr "Ek"
-
-#: src/ui/contact_details/settings_provider.vala:76
-#: src/ui/contact_details/settings_provider.vala:114
-#: src/ui/contact_details/settings_provider.vala:117
-msgid "Off"
-msgstr "For"
-
-#: src/ui/contact_details/settings_provider.vala:78
-msgid "Only when mentioned"
-msgstr "Nur menciite"
-
-#: src/ui/contact_details/settings_provider.vala:80
-#: src/ui/contact_details/settings_provider.vala:115
-#, fuzzy, c-format
-msgid "Default: %s"
-msgstr "Implicita"
-
-#: src/ui/contact_details/dialog.vala:37
-#, fuzzy
-msgid "Conference Details"
-msgstr "Kontaktaj Detaloj"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:42
-msgid "Name of the room"
-msgstr "Nomo de la ĉambro"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:45
-msgid "Description of the room"
-msgstr "Priskribo de la ĉambro"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:48
-msgid "Persistent"
-msgstr "Daŭra"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:49
-msgid "The room will persist after the last occupant exits"
-msgstr "La ĉambro daŭros post eliro de la lasta ĉeestinto"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:52
-msgid "Publicly searchable"
-msgstr "Publike serĉebla"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:55
-msgid "Occupants may change subject"
-msgstr "Ĉeestantoj rajtas ŝanĝi temon"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:58
-msgid "Discover real JIDs"
-msgstr "Eltrovi verajn JID-ojn"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:59
-msgid "Who may discover real JIDs?"
-msgstr "Kiu rajtas eltrovi verajn JID-ojn?"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:63
-#, fuzzy
-msgid "Password required to enter the room. Leave empty for none"
-msgstr ""
-"Pasvorto necesa por eniri la ĉambron. Lasu malplenan por neniu pasvorto"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:66
-msgid "Moderated"
-msgstr "Kontrolata"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:67
-msgid "Only occupants with voice may send messages"
+#: ../src/ui/manage_accounts/dialog.vala:163
+msgid "Images"
 msgstr ""
 
-#: src/ui/contact_details/muc_config_form_provider.vala:70
-msgid "Members only"
-msgstr "Nur anoj"
+#: ../src/ui/manage_accounts/dialog.vala:166
+msgid "All files"
+msgstr ""
 
-#: src/ui/contact_details/muc_config_form_provider.vala:71
-msgid "Only members may enter the room"
-msgstr "Nur anoj rajtas eniri la ĉambron"
+#: ../src/ui/manage_accounts/dialog.vala:228
+msgid "Connecting…"
+msgstr ""
 
-#: src/ui/contact_details/muc_config_form_provider.vala:74
-msgid "Message history"
-msgstr "Mesaĝa historio"
+#: ../src/ui/manage_accounts/dialog.vala:230
+msgid "Connected"
+msgstr "Konektita"
 
-#: src/ui/contact_details/muc_config_form_provider.vala:75
-msgid "Maximum number of history messages returned by the room"
-msgstr "Maksimuma nombro da historiaj mesaĝoj donotaj de la ĉambro"
+#: ../src/ui/manage_accounts/dialog.vala:232
+msgid "Disconnected"
+msgstr "Malkonektita"
 
-#: src/ui/contact_details/muc_config_form_provider.vala:81
-msgid "Room Configuration"
-msgstr "Ĉambraj Agordoj"
+#: ../src/ui/manage_accounts/dialog.vala:241
+msgid "Wrong password"
+msgstr "Malĝusta pasvorto"
 
-#: src/ui/conversation_selector/chat_row.vala:30
-#: src/ui/conversation_selector/groupchat_pm_row.vala:25
+#: ../src/ui/manage_accounts/dialog.vala:244
+#: ../src/ui/manage_accounts/dialog.vala:246
+msgid "Error"
+msgstr "Eraro"
+
+#: ../src/ui/manage_accounts/add_account_dialog.vala:21
+msgid "Add Account"
+msgstr "Aldoni Konton"
+
+#: ../src/ui/conversation_selector/groupchat_pm_row.vala:25
+#: ../src/ui/conversation_selector/chat_row.vala:30
 msgid "Me"
 msgstr ""
 
-#: src/ui/conversation_selector/conversation_row.vala:172
+#: ../src/ui/conversation_selector/conversation_row.vala:169
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: src/ui/conversation_selector/conversation_row.vala:176
+#: ../src/ui/conversation_selector/conversation_row.vala:173
 msgid "Yesterday"
 msgstr "Hieraŭ"
 
-#: src/ui/conversation_selector/conversation_row.vala:179
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:146
+#: ../src/ui/conversation_selector/conversation_row.vala:176
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: src/ui/conversation_selector/conversation_row.vala:180
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:147
+#: ../src/ui/conversation_selector/conversation_row.vala:177
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: src/ui/conversation_selector/conversation_row.vala:183
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:151
+#: ../src/ui/conversation_selector/conversation_row.vala:180
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "Antaŭ %i minuto"
 msgstr[1] "Antaŭ %i minutoj"
 
-#: src/ui/conversation_selector/conversation_row.vala:185
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:153
+#: ../src/ui/conversation_selector/conversation_row.vala:182
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:153
 msgid "Just now"
 msgstr "Ĵus"
 
-#: src/ui/conversation_summary/chat_state_populator.vala:58
+#: ../src/ui/application.vala:41
+#: ../src/ui/add_conversation/add_conference_dialog.vala:26
+#: ../src/ui/unified_window.vala:147 ../data/menu_add.ui:12
+msgid "Join Conference"
+msgstr "Aliĝi al Kunveno"
+
+#: ../src/ui/application.vala:41
+#: ../src/ui/add_conversation/add_conference_dialog.vala:62
+#: ../src/ui/add_conversation/conference_details_fragment.vala:133
+msgid "Join"
+msgstr "Aliĝi"
+
+#: ../src/ui/add_conversation/add_groupchat_dialog.vala:27
+#: ../data/add_conversation/add_contact_dialog.ui:23
+msgid "Add"
+msgstr "Aldoni"
+
+#: ../src/ui/add_conversation/add_groupchat_dialog.vala:41
+#: ../data/manage_accounts/add_account_dialog.ui:21
+msgid "Save"
+msgstr "Konservi"
+
+#: ../src/ui/add_conversation/add_conference_dialog.vala:47
+msgid "Next"
+msgstr "Sekva"
+
+#: ../src/ui/add_conversation/select_contact_dialog.vala:84
+#: ../src/ui/unified_window.vala:146 ../data/menu_add.ui:6
+msgid "Start Chat"
+msgstr "Ekbabili"
+
+#: ../src/ui/add_conversation/select_contact_dialog.vala:85
+msgid "Start"
+msgstr ""
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:105
+msgid "Joining..."
+msgstr ""
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:138
+msgid "Password required to enter room"
+msgstr ""
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:143
+msgid "Banned from joining or creating conference"
+msgstr ""
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:145
+msgid "Room does not exist"
+msgstr ""
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:147
+msgid "Not allowed to create room"
+msgstr ""
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:149
+msgid "Room is members only"
+msgstr ""
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:152
+msgid "Choose a different nick"
+msgstr ""
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:154
+msgid "Room has too many occupants"
+msgstr ""
+
+#: ../src/ui/unified_window.vala:137
+msgid "No accounts active"
+msgstr "Neniuj aktivaj kontoj"
+
+#: ../src/ui/unified_window.vala:138
+msgid "Manage accounts"
+msgstr "Administri kontojn"
+
+#: ../src/ui/unified_window.vala:145
+msgid "No conversation active"
+msgstr "Neniu aktiva interparolo"
+
+#: ../src/ui/conversation_summary/chat_state_populator.vala:57
 msgid "is typing..."
 msgstr "tajpas…"
 
-#: src/ui/conversation_summary/chat_state_populator.vala:60
+#: ../src/ui/conversation_summary/chat_state_populator.vala:59
 msgid "has stopped typing"
 msgstr "ĉesis tajpi"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:134
+#: ../src/ui/conversation_summary/message_textview.vala:33
+msgid "Message too long"
+msgstr ""
+
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:134
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:135
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:135
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:138
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:138
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H∶%M"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:139
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:139
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l∶%M %p"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:142
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:143
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
-#: src/ui/conversation_summary/message_textview.vala:33
-#, fuzzy
-msgid "Message too long"
-msgstr "Mesaĝa historio"
-
-#: src/ui/manage_accounts/add_account_dialog.vala:21
-msgid "Add Account"
-msgstr "Aldoni Konton"
-
-#: src/ui/manage_accounts/dialog.vala:150
-msgid "Select avatar"
-msgstr "Elekti profilbildon"
-
-#: src/ui/manage_accounts/dialog.vala:151
-msgid "Select"
-msgstr "Elekti"
-
-#: src/ui/manage_accounts/dialog.vala:159
-msgid "Images"
-msgstr ""
-
-#: src/ui/manage_accounts/dialog.vala:162
-msgid "All files"
-msgstr ""
-
-#: src/ui/manage_accounts/dialog.vala:224
-#, fuzzy
-msgid "Connecting…"
-msgstr "Konektata…"
-
-#: src/ui/manage_accounts/dialog.vala:226
-msgid "Connected"
-msgstr "Konektita"
-
-#: src/ui/manage_accounts/dialog.vala:228
-msgid "Disconnected"
-msgstr "Malkonektita"
-
-#: src/ui/manage_accounts/dialog.vala:237
-msgid "Wrong password"
-msgstr "Malĝusta pasvorto"
-
-#: src/ui/manage_accounts/dialog.vala:240
-#: src/ui/manage_accounts/dialog.vala:242
-msgid "Error"
-msgstr "Eraro"
-
-#: src/ui/notifications.vala:103
-msgid "Subscription request"
-msgstr "Abona peto"
-
-#: src/ui/notifications.vala:107
-msgid "Accept"
-msgstr "Akcepti"
-
-#: src/ui/notifications.vala:108
-msgid "Deny"
-msgstr "Rifuzi"
-
-#: src/ui/occupant_menu/list.vala:107
+#: ../src/ui/occupant_menu/list.vala:105
 msgid "Owner"
 msgstr "Posedanto"
 
-#: src/ui/occupant_menu/list.vala:109
+#: ../src/ui/occupant_menu/list.vala:107
 msgid "Admin"
 msgstr "Administranto"
 
-#: src/ui/occupant_menu/list.vala:111
+#: ../src/ui/occupant_menu/list.vala:109
 msgid "Member"
 msgstr "Ano"
 
-#: src/ui/occupant_menu/list.vala:113
+#: ../src/ui/occupant_menu/list.vala:111
 msgid "User"
 msgstr "Uzanto"
 
-#: src/ui/occupant_menu/view.vala:26 src/ui/occupant_menu/view.vala:35
+#: ../src/ui/occupant_menu/view.vala:26 ../src/ui/occupant_menu/view.vala:35
 msgid "Invite"
 msgstr ""
 
-#: src/ui/occupant_menu/view.vala:34
-#, fuzzy
+#: ../src/ui/occupant_menu/view.vala:34
 msgid "Invite to Conference"
-msgstr "Aliĝi al Kunveno"
+msgstr ""
 
-#: src/ui/occupant_menu/view.vala:84
+#: ../src/ui/occupant_menu/view.vala:84
 msgid "Start private conversation"
 msgstr "Komenci privatan interparolon"
 
-#: src/ui/occupant_menu/view.vala:92
+#: ../src/ui/occupant_menu/view.vala:92
 msgid "Kick"
 msgstr ""
 
-#: src/ui/unified_window.vala:141
-msgid "No accounts active"
-msgstr "Neniuj aktivaj kontoj"
+#: ../src/ui/contact_details/dialog.vala:37
+msgid "Conference Details"
+msgstr ""
 
-#: src/ui/unified_window.vala:142
-msgid "Manage accounts"
-msgstr "Administri kontojn"
+#: ../src/ui/contact_details/dialog.vala:37 ../data/menu_conversation.ui:6
+msgid "Contact Details"
+msgstr "Kontaktaj Detaloj"
 
-#: src/ui/unified_window.vala:149
-msgid "No conversation active"
-msgstr "Neniu aktiva interparolo"
+#: ../src/ui/contact_details/muc_config_form_provider.vala:39
+msgid "Name of the room"
+msgstr "Nomo de la ĉambro"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:42
+msgid "Description of the room"
+msgstr "Priskribo de la ĉambro"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:45
+msgid "Persistent"
+msgstr "Daŭra"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:46
+msgid "The room will persist after the last occupant exits"
+msgstr "La ĉambro daŭros post eliro de la lasta ĉeestinto"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:49
+msgid "Publicly searchable"
+msgstr "Publike serĉebla"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:52
+msgid "Occupants may change subject"
+msgstr "Ĉeestantoj rajtas ŝanĝi temon"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:55
+msgid "Discover real JIDs"
+msgstr "Eltrovi verajn JID-ojn"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:56
+msgid "Who may discover real JIDs?"
+msgstr "Kiu rajtas eltrovi verajn JID-ojn?"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:59
+#: ../data/manage_accounts/dialog.ui:166
+#: ../data/manage_accounts/add_account_dialog.ui:73
+#: ../data/add_conversation/conference_details_fragment.ui:175
+#: ../data/add_conversation/add_groupchat_dialog.ui:147
+msgid "Password"
+msgstr "Pasvorto"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:60
+msgid "Password required to enter the room. Leave empty for none"
+msgstr ""
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:63
+msgid "Moderated"
+msgstr "Kontrolata"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:64
+msgid "Only occupants with voice may send messages"
+msgstr ""
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:67
+msgid "Members only"
+msgstr "Nur anoj"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:68
+msgid "Only members may enter the room"
+msgstr "Nur anoj rajtas eniri la ĉambron"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:71
+msgid "Message history"
+msgstr "Mesaĝa historio"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:72
+msgid "Maximum number of history messages returned by the room"
+msgstr "Maksimuma nombro da historiaj mesaĝoj donotaj de la ĉambro"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:78
+msgid "Room Configuration"
+msgstr "Ĉambraj Agordoj"
+
+#: ../src/ui/contact_details/blocking_provider.vala:31
+#: ../src/ui/contact_details/settings_provider.vala:22
+#: ../src/ui/contact_details/settings_provider.vala:25
+#: ../src/ui/contact_details/settings_provider.vala:30 ../data/menu_app.ui:10
+msgid "Settings"
+msgstr "Agordoj"
+
+#: ../src/ui/contact_details/blocking_provider.vala:31
+msgid "Block"
+msgstr ""
+
+#: ../src/ui/contact_details/blocking_provider.vala:31
+msgid "Communication and status updates in either direction are blocked"
+msgstr ""
+
+#: ../src/ui/contact_details/settings_provider.vala:22
+#: ../data/settings_dialog.ui:22
+msgid "Send typing notifications"
+msgstr "Sciigi pri tajpado"
+
+#: ../src/ui/contact_details/settings_provider.vala:25
+#: ../data/settings_dialog.ui:34
+msgid "Send message marker"
+msgstr "Sendi mesaĝmarkilon"
+
+#: ../src/ui/contact_details/settings_provider.vala:30
+#: ../src/ui/contact_details/settings_provider.vala:39
+msgid "Notifications"
+msgstr "Sciigoj"
+
+#: ../src/ui/contact_details/settings_provider.vala:39
+msgid "Local Settings"
+msgstr "Lokaj Agordoj"
+
+#: ../src/ui/contact_details/settings_provider.vala:74
+#: ../src/ui/contact_details/settings_provider.vala:114
+#: ../src/ui/contact_details/settings_provider.vala:116
+msgid "On"
+msgstr "Ek"
+
+#: ../src/ui/contact_details/settings_provider.vala:76
+#: ../src/ui/contact_details/settings_provider.vala:114
+#: ../src/ui/contact_details/settings_provider.vala:117
+msgid "Off"
+msgstr "For"
+
+#: ../src/ui/contact_details/settings_provider.vala:78
+msgid "Only when mentioned"
+msgstr "Nur menciite"
+
+#: ../src/ui/contact_details/settings_provider.vala:80
+#: ../src/ui/contact_details/settings_provider.vala:115
+#, c-format
+msgid "Default: %s"
+msgstr ""
+
+#: ../data/settings_dialog.ui:7
+msgid "Preferences"
+msgstr "Preferoj"
+
+#: ../data/settings_dialog.ui:46
+msgid "Notify when a new message arrives"
+msgstr "Sciigi pri envenaj mesaĝoj"
+
+#: ../data/settings_dialog.ui:58
+msgid "Convert smileys to emojis"
+msgstr "Grafikigi tekstajn mienetojn"
+
+#: ../data/manage_accounts/dialog.ui:9 ../data/menu_app.ui:6
+msgid "Accounts"
+msgstr "Kontoj"
+
+#: ../data/manage_accounts/dialog.ui:196
+#: ../data/manage_accounts/add_account_dialog.ui:102
+msgid "Local alias"
+msgstr "Loka kaŝnomo"
+
+#: ../data/manage_accounts/dialog.ui:251
+msgid "No accounts configured"
+msgstr ""
+
+#: ../data/manage_accounts/dialog.ui:262
+msgid "Add an account"
+msgstr "Aldoni konton"
+
+#: ../data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Neĉifrita"
+
+#: ../data/menu_app.ui:16
+msgid "Quit"
+msgstr "Ĉesi"
+
+#: ../data/conversation_selector/view.ui:14
+msgid "Search"
+msgstr "Serĉi"
+
+#: ../data/add_conversation/conference_details_fragment.ui:19
+#: ../data/add_conversation/add_groupchat_dialog.ui:49
+#: ../data/add_conversation/add_contact_dialog.ui:48
+msgid "Account"
+msgstr "Konto"
+
+#: ../data/add_conversation/conference_details_fragment.ui:123
+#: ../data/add_conversation/add_groupchat_dialog.ui:120
+msgid "Nick"
+msgstr "Kaŝnomo"
+
+#: ../data/add_conversation/conference_details_fragment.ui:253
+msgid "This is an app-notification. Click the button to dismiss"
+msgstr ""
+
+#: ../data/add_conversation/add_groupchat_dialog.ui:175
+#: ../data/add_conversation/add_contact_dialog.ui:101
+msgid "Alias"
+msgstr "Kaŝnomo"
+
+#: ../data/add_conversation/add_contact_dialog.ui:129
+msgid "Request presence updates"
+msgstr "Peti sciigojn pri ĉeesto"
+
+#~ msgid "Join on startup"
+#~ msgstr "Aliĝi je lanĉo"
 
 #~ msgid "Add Chat"
 #~ msgstr "Aldoni Babilon"

@@ -2,38 +2,52 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-10 17:51+0200\n"
+"POT-Creation-Date: 2017-11-17 01:27+0100\n"
+"PO-Revision-Date: 2017-11-17 20:52+0000\n"
+"Last-Translator: Nathan Follens <nathan@email.is>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-"
+"openpgp/nl/>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 1.8.11\n"
-"Last-Translator: \n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.18-dev\n"
 
-#: src/account_settings_widget.vala:74 src/account_settings_widget.vala:80
-#: src/account_settings_widget.vala:108
+#: ../src/account_settings_widget.vala:75
+#: ../src/account_settings_widget.vala:81
+#: ../src/account_settings_widget.vala:109
 msgid "Key publishing disabled"
-msgstr "Publiceren sleutel uitgeschakeld"
+msgstr "Publiceren van sleutels uitgeschakeld"
 
-#: src/account_settings_widget.vala:74
+#: ../src/account_settings_widget.vala:75
 msgid "No keys available. Generate one!"
-msgstr "Geen sleutels voorhanden. Genereer er een!"
+msgstr "Geen sleutels beschikbaar. Genereer er een!"
 
-#: src/account_settings_widget.vala:80
+#: ../src/account_settings_widget.vala:81
 msgid "Select key"
-msgstr "Sleutel selecteren"
+msgstr "Selecteer een sleutel"
 
-#: src/account_settings_widget.vala:97
+#: ../src/account_settings_widget.vala:98
 msgid "Loading..."
-msgstr "Laden..."
+msgstr "Laden…"
 
-#: src/account_settings_widget.vala:97
+#: ../src/account_settings_widget.vala:98
 msgid "Querying GnuPG"
-msgstr "GnuPG Vragen"
+msgstr "GnuPG inroepen"
 
-#: src/account_settings_widget.vala:108
+#: ../src/account_settings_widget.vala:109
 msgid "Error in GnuPG"
 msgstr "Fout in GnuPG"
+
+#: ../src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr "Sleutel niet in sleutelbos"
+
+#: ../src/contact_details_provider.vala:30
+msgid "Encryption"
+msgstr "Versleuteling"
+
+#: ../src/contact_details_provider.vala:30
+msgid "OpenPGP"
+msgstr "OpenPGP"
