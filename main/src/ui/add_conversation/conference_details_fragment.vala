@@ -146,7 +146,7 @@ protected class ConferenceDetailsFragment : Box {
             case Xmpp.Xep.Muc.MucEnterError.CREATION_RESTRICTED:
                 label_text = _("Not allowed to create room"); break;
             case Xmpp.Xep.Muc.MucEnterError.NOT_IN_MEMBER_LIST:
-                label_text = _("Members only room"); break;
+                label_text = _("Members-only room"); break;
             case Xmpp.Xep.Muc.MucEnterError.USE_RESERVED_ROOMNICK:
             case Xmpp.Xep.Muc.MucEnterError.NICK_CONFLICT:
                 label_text = _("Choose a different nick"); break;
