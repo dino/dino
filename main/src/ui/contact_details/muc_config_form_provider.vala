@@ -57,7 +57,7 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
                     break;
                 case "muc#roomconfig_roomsecret":
                     label = _("Password");
-                    desc = _("Chosen password required for room entry. Leave empty for none");
+                    desc = _("Chosen password (, if any,) required for room entry.");
                     break;
                 case "muc#roomconfig_moderatedroom":
                     label = _("Moderated");
