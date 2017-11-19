@@ -140,7 +140,7 @@ protected class ConferenceDetailsFragment : Box {
                 password_stack.visible = true;
                 break;
             case Xmpp.Xep.Muc.MucEnterError.BANNED:
-                label_text = _("Banned from joining or creating conferences"); break;
+                label_text = _("Banned from joining or creating conference"); break;
             case Xmpp.Xep.Muc.MucEnterError.ROOM_DOESNT_EXIST:
                 label_text = _("Room does not exist"); break;
             case Xmpp.Xep.Muc.MucEnterError.CREATION_RESTRICTED:
