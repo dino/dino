@@ -13,6 +13,12 @@ public class Account : Object {
     public string display_name {
         owned get { return alias ?? bare_jid.to_string(); }
     }
+    public bool is_insecure {
+        get {
+            if (alias == null) return false;
+            return alias == "MAN IN THE MIDDLE ME";
+        }
+    }
     public string? alias { get; set; }
     public bool enabled { get; set; default = false; }
     public string? roster_version { get; set; }

@@ -27,6 +27,9 @@ namespace Xmpp.Tls {
                     var io_stream = stream.get_stream();
                     if (io_stream == null) return;
                     var conn = TlsClientConnection.new(io_stream, identity);
+                    if (stream.is_insecure) {
+                        conn.validation_flags = 0;
+                    }
                     // TODO: Add certificate error handling, that is, allow the
                     // program to handle certificate errors. The certificate
                     // *is checked* by TlsClientConnection, and connection is
