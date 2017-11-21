@@ -30,10 +30,15 @@ public abstract class StanzaListener<T> : Object {
 }
 
 public class StanzaListenerHolder<T> : Object {
-    private Gee.List<StanzaListener<T>> listeners = new ArrayList<StanzaListener<T>>();
+    private ArrayList<StanzaListener<T>> listeners = new ArrayList<StanzaListener<T>>();
 
     public new void connect(StanzaListener<T> listener) {
         listeners.add(listener);
+        resort_list();
+    }
+
+    public new void disconnect(StanzaListener<T> listener) {
+        listeners.remove(listener);
         resort_list();
     }
 
@@ -63,7 +68,7 @@ public class StanzaListenerHolder<T> : Object {
     }
 
     private void resort_list() {
-        Gee.List<StanzaListener<T>> new_list = new ArrayList<StanzaListener<T>>();
+        ArrayList<StanzaListener<T>> new_list = new ArrayList<StanzaListener<T>>();
         while (listeners.size > new_list.size) {
             bool changed = false;
             foreach (StanzaListener<T> l in listeners) {

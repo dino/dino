@@ -21,6 +21,7 @@ public class StreamModule : XmppStreamModule {
     private ConcurrentSet<string> active_devicelist_requests = new ConcurrentSet<string>();
     private Map<string, ArrayList<int32>> device_lists = new HashMap<string, ArrayList<int32>>();
     private Map<string, ArrayList<int32>> ignored_devices = new HashMap<string, ArrayList<int32>>();
+    private ReceivedPipelineListener received_pipeline_listener;
 
     public signal void store_created(Store store);
     public signal void device_list_loaded(string jid);
@@ -117,8 +118,13 @@ public class StreamModule : XmppStreamModule {
 
         this.store = Plugin.get_context().create_store();
         store_created(store);
-        stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(new ReceivedPipelineListener(store));
+        received_pipeline_listener = new ReceivedPipelineListener(store);
+        stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(received_pipeline_listener);
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
+    }
+
+    public override void detach(XmppStream stream) {
+        stream.get_module(Message.Module.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
     }
 
     public void request_user_devicelist(XmppStream stream, string jid) {
@@ -367,10 +373,6 @@ public class StreamModule : XmppStreamModule {
         bundle.put_node(prekeys);
 
         stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, @"$NODE_BUNDLES:$device_id", @"$NODE_BUNDLES:$device_id", "1", bundle);
-    }
-
-    public override void detach(XmppStream stream) {
-
     }
 
     public override string get_ns() {

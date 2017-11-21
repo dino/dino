@@ -6,6 +6,8 @@ namespace Xmpp.Xep.DelayedDelivery {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0203_delayed_delivery");
 
+        private ReceivedPipelineListener received_pipeline_listener = new ReceivedPipelineListener();
+
         public static void set_message_delay(Message.Stanza message, DateTime datetime) {
             StanzaNode delay_node = (new StanzaNode.build("delay", NS_URI)).add_self_xmlns();
             delay_node.put_attribute("stamp", DateTimeProfiles.to_datetime(datetime));
@@ -27,10 +29,12 @@ namespace Xmpp.Xep.DelayedDelivery {
         }
 
         public override void attach(XmppStream stream) {
-            stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(new ReceivedPipelineListener());
+            stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(received_pipeline_listener);
         }
 
-        public override void detach(XmppStream stream) { }
+        public override void detach(XmppStream stream) {
+            stream.get_module(Message.Module.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
+        }
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }

@@ -8,6 +8,8 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
 
         public signal void receipt_received(XmppStream stream, string jid, string id);
 
+        private SendPipelineListener send_pipeline_listener = new SendPipelineListener();
+
         public void send_received(XmppStream stream, string from, string message_id) {
             Message.Stanza received_message = new Message.Stanza();
             received_message.to = from;
@@ -22,11 +24,12 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
         public override void attach(XmppStream stream) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
             stream.get_module(Message.Module.IDENTITY).received_message.connect(received_message);
-            stream.get_module(Message.Module.IDENTITY).send_pipeline.connect(new SendPipelineListener());
+            stream.get_module(Message.Module.IDENTITY).send_pipeline.connect(send_pipeline_listener);
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Message.Module.IDENTITY).received_message.disconnect(received_message);
+            stream.get_module(Message.Module.IDENTITY).send_pipeline.disconnect(send_pipeline_listener);
         }
 
         public override string get_ns() { return NS_URI; }

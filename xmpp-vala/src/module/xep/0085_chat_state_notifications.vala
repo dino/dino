@@ -18,6 +18,8 @@ public class Module : XmppStreamModule {
 
     public signal void chat_state_received(XmppStream stream, string jid, string state);
 
+    private SendPipelineListener send_pipeline_listener = new SendPipelineListener();
+
     /**
     * "A message stanza that does not contain standard messaging content [...] SHOULD be a state other than <active/>" (0085, 5.6)
     */
@@ -31,12 +33,13 @@ public class Module : XmppStreamModule {
 
     public override void attach(XmppStream stream) {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
-        stream.get_module(Message.Module.IDENTITY).send_pipeline.connect(new SendPipelineListener());
+        stream.get_module(Message.Module.IDENTITY).send_pipeline.connect(send_pipeline_listener);
         stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
     }
 
     public override void detach(XmppStream stream) {
         stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
+        stream.get_module(Message.Module.IDENTITY).send_pipeline.disconnect(send_pipeline_listener);
     }
 
     public override string get_ns() { return NS_URI; }

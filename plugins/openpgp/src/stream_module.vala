@@ -15,6 +15,7 @@ namespace Dino.Plugins.OpenPgp {
 
         private string? signed_status = null;
         private Key? own_key = null;
+        private ReceivedPipelineDecryptListener received_pipeline_decrypt_listener = new ReceivedPipelineDecryptListener();
 
         public Module(string? own_key_id = null) {
             set_private_key_id(own_key_id);
@@ -28,7 +29,6 @@ namespace Dino.Plugins.OpenPgp {
                 } catch (Error e) { }
                 if (own_key != null) {
                     signed_status = gpg_sign("", own_key);
-                    get_sign_key(signed_status, "");
                 }
             }
         }
@@ -46,13 +46,14 @@ namespace Dino.Plugins.OpenPgp {
         public override void attach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
-            stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(new ReceivedPipelineDecryptListener());
+            stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(received_pipeline_decrypt_listener);
             stream.add_flag(new Flag());
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
+            stream.get_module(Message.Module.IDENTITY).received_pipeline.disconnect(received_pipeline_decrypt_listener);
         }
 
         public static void require(XmppStream stream) {
@@ -63,21 +64,19 @@ namespace Dino.Plugins.OpenPgp {
         public override string get_id() { return IDENTITY.id; }
 
         private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
+            StanzaNode x_node = presence.stanza.get_subnode("x", NS_URI_SIGNED);
+            if (x_node == null) return;
+            string? sig = x_node.get_string_content();
+            if (sig == null) return;
             new Thread<void*> (null, () => {
-                StanzaNode x_node = presence.stanza.get_subnode("x", NS_URI_SIGNED);
-                if (x_node != null) {
-                    string? sig = x_node.get_string_content();
-                    if (sig != null) {
-                        string signed_data = presence.status == null ? "" : presence.status;
-                        string? key_id = get_sign_key(sig, signed_data);
-                        if (key_id != null) {
-                            stream.get_flag(Flag.IDENTITY).set_key_id(presence.from, key_id);
-                            Idle.add(() => {
-                                received_jid_key_id(stream, presence.from, key_id);
-                                return false;
-                            });
-                        }
-                    }
+                string signed_data = presence.status == null ? "" : presence.status;
+                string? key_id = get_sign_key(sig, signed_data);
+                if (key_id != null) {
+                    stream.get_flag(Flag.IDENTITY).set_key_id(presence.from, key_id);
+                    Idle.add(() => {
+                        received_jid_key_id(stream, presence.from, key_id);
+                        return false;
+                    });
                 }
                 return null;
             });

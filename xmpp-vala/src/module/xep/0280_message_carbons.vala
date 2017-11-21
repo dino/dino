@@ -6,6 +6,8 @@ namespace Xmpp.Xep.MessageCarbons {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0280_message_carbons_module");
 
+        private ReceivedPipelineListener received_pipeline_listener = new ReceivedPipelineListener();
+
         public void enable(XmppStream stream) {
             Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("enable", NS_URI).add_self_xmlns());
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
@@ -18,12 +20,13 @@ namespace Xmpp.Xep.MessageCarbons {
 
         public override void attach(XmppStream stream) {
             stream.stream_negotiated.connect(enable);
-            stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(new ReceivedPipelineListener());
+            stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(received_pipeline_listener);
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         }
 
         public override void detach(XmppStream stream) {
             stream.stream_negotiated.disconnect(enable);
+            stream.get_module(Message.Module.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
         }
 
         public override string get_ns() { return NS_URI; }

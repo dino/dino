@@ -14,6 +14,8 @@ public class Module : XmppStreamModule {
 
     public signal void feature_available(XmppStream stream);
 
+    private ReceivedPipelineListener received_pipeline_listener = new ReceivedPipelineListener();
+
     public void query_archive(XmppStream stream, string? jid, DateTime? start, DateTime? end) {
         if (stream.get_flag(Flag.IDENTITY) == null) return;
 
@@ -42,11 +44,13 @@ public class Module : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(new ReceivedPipelineListener());
+        stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(received_pipeline_listener);
         stream.stream_negotiated.connect(query_availability);
     }
 
-    public override void detach(XmppStream stream) { }
+    public override void detach(XmppStream stream) {
+        stream.get_module(Message.Module.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
+    }
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
