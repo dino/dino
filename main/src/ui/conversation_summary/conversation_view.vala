@@ -72,7 +72,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     public void insert_item(Plugins.MetaConversationItem item) {
         lock (meta_items) {
-            meta_items.add(item);
             if (!item.can_merge || !merge_back(item)) {
                 insert_new(item);
             }
@@ -81,11 +80,16 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     public void remove_item(Plugins.MetaConversationItem item) {
         lock (meta_items) {
-            main.remove(widgets[item]);
-            widgets.unset(item);
+            ConversationItemSkeleton? skeleton = item_item_skeletons[item];
+            if (skeleton.items.size > 1) {
+                skeleton.remove_meta_item(item);
+            } else {
+                main.remove(widgets[item]);
+                widgets.unset(item);
+                item_skeletons.remove(item_item_skeletons[item]);
+                item_item_skeletons.unset(item);
+            }
             meta_items.remove(item);
-            item_skeletons.remove(item_item_skeletons[item]);
-            item_item_skeletons.unset(item);
         }
     }
 
@@ -101,7 +105,10 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                     (item.mark == Message.Marked.WONTSEND) == (lower_start_item.mark == Message.Marked.WONTSEND)) {
                 lower_skeleton.add_meta_item(item);
                 force_alloc_width(lower_skeleton, main.get_allocated_width());
+
                 item_item_skeletons[item] = lower_skeleton;
+                meta_items.add(item);
+
                 return true;
             }
         }
@@ -109,13 +116,28 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     }
 
     private void insert_new(Plugins.MetaConversationItem item) {
+        Plugins.MetaConversationItem? lower_item = meta_items.lower(item);
+
+        // Does another skeleton need to be split?
+        if (lower_item != null) {
+            ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
+            if (lower_skeleton.items.size > 1) {
+                Plugins.MetaConversationItem lower_end_item = lower_skeleton.items[lower_skeleton.items.size - 1];
+                if (item.sort_time.compare(lower_end_item.sort_time) < 0) {
+                    split_at_time(lower_skeleton, item.sort_time);
+                }
+            }
+        }
+
+        // Fill datastructure
         ConversationItemSkeleton item_skeleton = new ConversationItemSkeleton(stream_interactor, conversation);
         item_skeleton.add_meta_item(item);
         item_item_skeletons[item] = item_skeleton;
-        Plugins.MetaConversationItem? lower_item = meta_items.lower(item);
         int index = lower_item != null ? item_skeletons.index_of(item_item_skeletons[lower_item]) + 1 : 0;
         item_skeletons.insert(index, item_skeleton);
+        meta_items.add(item);
 
+        // Insert widget
         Widget insert = item_skeleton;
         if (animate) {
             Revealer revealer = new Revealer() {transition_duration = 200, transition_type = RevealerTransitionType.SLIDE_UP, visible = true};
@@ -130,6 +152,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         force_alloc_width(insert, main.get_allocated_width());
         main.reorder_child(insert, index);
 
+        // If an item from the past was added, add everything between that item and the (post-)first present item
         if (index == 0) {
             Dino.Application app = Dino.Application.get_default();
             if (item_skeletons.size == 1) {
@@ -141,6 +164,24 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                     populator.populate_timespan(conversation, item.sort_time, meta_items.higher(item).sort_time);
                 }
             }
+        }
+    }
+
+    private void split_at_time(ConversationItemSkeleton split_skeleton, DateTime time) {
+        bool already_divided = false;
+        int i = 0;
+        while(i < split_skeleton.items.size) {
+            Plugins.MetaConversationItem meta_item = split_skeleton.items[i];
+            if (time.compare(meta_item.display_time) < 0) {
+                remove_item(meta_item);
+                if (!already_divided) {
+                    insert_new(meta_item);
+                    already_divided = true;
+                } else {
+                    insert_item(meta_item);
+                }
+            }
+            i++;
         }
     }
 

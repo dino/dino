@@ -64,7 +64,16 @@ public class MessageStorage : StreamInteractionModule, Object {
 
     private void init_conversation(Conversation conversation) {
         if (!messages.has_key(conversation)) {
-            messages[conversation] = new Gee.TreeSet<Message>((a, b) => { return a.local_time.compare(b.local_time); });
+            messages[conversation] = new Gee.TreeSet<Message>((a, b) => {
+                int res = a.local_time.compare(b.local_time);
+                if (res == 0) {
+                    res = a.time.compare(b.time);
+                }
+                if (res == 0) {
+                    res = a.id - b.id > 0 ? 1 : -1;
+                }
+                return res;
+            });
             Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), 50, null);
             messages[conversation].add_all(db_messages);
         }

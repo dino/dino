@@ -17,9 +17,10 @@ public class ConversationItemSkeleton : Grid {
 
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
-    public Gee.List<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
+    public ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
 
     private Box box = new Box(Orientation.VERTICAL, 2) { visible=true };
+    private HashMap<Plugins.MetaConversationItem, Widget> item_widgets = new HashMap<Plugins.MetaConversationItem, Widget>();
 
     public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation) {
         this.conversation = conversation;
@@ -36,11 +37,17 @@ public class ConversationItemSkeleton : Grid {
         Widget widget = (Widget) item.get_widget(Plugins.WidgetType.GTK);
         if (item.requires_header) {
             box.add(widget);
+            item_widgets[item] = widget;
         } else {
             set_title_widget(widget);
         }
-        item.notify["mark"].connect_after(update_received);
-        update_received();
+        item.notify["mark"].connect_after(update_received_mark);
+        update_received_mark();
+    }
+
+    public void remove_meta_item(Plugins.MetaConversationItem item) {
+        box.remove(item_widgets[item]);
+        items.remove(item);
     }
 
     public void set_title_widget(Widget w) {
@@ -81,7 +88,7 @@ public class ConversationItemSkeleton : Grid {
         set_title_widget(name_label);
     }
 
-    private void update_received() {
+    private void update_received_mark() {
         bool all_received = true;
         bool all_read = true;
         bool all_sent = true;
