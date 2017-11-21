@@ -122,8 +122,8 @@ public class Dialog : Gtk.Dialog {
         Gtk.MessageDialog msg = new Gtk.MessageDialog (
                         this,  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
                         Gtk.MessageType.WARNING, Gtk.ButtonsType.OK_CANCEL,
-                        _("Remove the \'%s\' account?"), account_item.jid_label.get_text());
-        msg.secondary_text = "You won\'t be able to access your conversation history anymore."; // TODO remove history!
+                        _("Remove account %s?"), account_item.jid_label.get_text());
+        msg.secondary_text = "You won't be able to access your conversation history anymore."; // TODO remove history!
         Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
         ok_button.label = _("Remove");
         ok_button.get_style_context().add_class("destructive-action");
