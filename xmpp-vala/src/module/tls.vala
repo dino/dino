@@ -53,11 +53,7 @@ namespace Xmpp.Tls {
                     server_requires_tls = true;
                 }
                 if (server_requires_tls || require) {
-                    try {
-                        stream.write(new StanzaNode.build("starttls", NS_URI).add_self_xmlns());
-                    } catch (IOStreamError e) {
-                        stderr.printf("Failed to request TLS: %s\n", e.message);
-                    }
+                    stream.write(new StanzaNode.build("starttls", NS_URI).add_self_xmlns());
                 }
                 if (identity == null) {
                     identity = new NetworkService("xmpp-client", "tcp", stream.remote_name);

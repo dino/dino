@@ -48,16 +48,6 @@ public class StanzaListenerHolder<T> : Object {
         }
     }
 
-    private Gee.List<StanzaListener<T>> set_minus(Gee.List<StanzaListener<T>> main_set, Gee.List<StanzaListener<T>> minus) {
-        Gee.List<StanzaListener<T>> res = new ArrayList<StanzaListener<T>>();
-        foreach (StanzaListener<T> l in main_set) {
-            if (!minus.contains(l)) {
-                res.add(l);
-            }
-        }
-        return res;
-    }
-
     private bool set_contains_action(Gee.List<StanzaListener<T>> s, string[] actions) {
         foreach(StanzaListener<T> l in s) {
             if (l.action_group in actions) {
@@ -69,16 +59,23 @@ public class StanzaListenerHolder<T> : Object {
 
     private void resort_list() {
         ArrayList<StanzaListener<T>> new_list = new ArrayList<StanzaListener<T>>();
-        while (listeners.size > new_list.size) {
+        ArrayList<StanzaListener<T>> remaining = new ArrayList<StanzaListener<T>>();
+        remaining.add_all(listeners);
+        while (remaining.size > 0) {
             bool changed = false;
-            foreach (StanzaListener<T> l in listeners) {
-                Gee.List<StanzaListener<T>> remaining = set_minus(listeners, new_list);
+            Gee.Iterator<StanzaListener<T>> iter = remaining.iterator();
+            while (iter.has_next()) {
+                if (!iter.valid) {
+                    iter.next();
+                }
+                StanzaListener<T> l = iter.get();
                 if (!set_contains_action(remaining, l.after_actions)) {
                     new_list.add(l);
+                    iter.remove();
                     changed = true;
                 }
             }
-            if (!changed) warning("Can't sort listeners");
+            if (!changed) error("Can't sort listeners");
         }
         listeners = new_list;
     }

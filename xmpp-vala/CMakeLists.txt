@@ -8,6 +8,8 @@ find_packages(ENGINE_PACKAGES REQUIRED
 
 vala_precompile(ENGINE_VALA_C
 SOURCES
+    "src/glib_fixes.vapi"
+
     "src/core/namespace_state.vala"
     "src/core/stanza_attribute.vala"
     "src/core/stanza_node.vala"
