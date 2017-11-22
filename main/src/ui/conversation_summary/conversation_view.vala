@@ -84,9 +84,10 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             if (skeleton.items.size > 1) {
                 skeleton.remove_meta_item(item);
             } else {
-                main.remove(widgets[item]);
+                widgets[item].destroy();
                 widgets.unset(item);
-                item_skeletons.remove(item_item_skeletons[item]);
+                skeleton.destroy();
+                item_skeletons.remove(skeleton);
                 item_item_skeletons.unset(item);
             }
             meta_items.remove(item);
@@ -233,7 +234,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         meta_after_items.clear();
         item_skeletons.clear();
         item_item_skeletons.clear();
-        main.@foreach((widget) => { main.remove(widget); });
+        widgets.clear();
+        main.@foreach((widget) => { widget.destroy(); });
     }
 }
 

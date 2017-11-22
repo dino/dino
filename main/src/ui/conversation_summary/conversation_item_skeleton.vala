@@ -46,7 +46,8 @@ public class ConversationItemSkeleton : Grid {
     }
 
     public void remove_meta_item(Plugins.MetaConversationItem item) {
-        box.remove(item_widgets[item]);
+        item_widgets[item].destroy();
+        item_widgets.unset(item);
         items.remove(item);
     }
 

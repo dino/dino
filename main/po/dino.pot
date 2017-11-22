@@ -59,10 +59,6 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: ../data/add_conversation/conference_details_fragment.ui:253
-msgid "This is an app-notification. Click the button to dismiss"
-msgstr ""
-
 #: ../data/conversation_selector/view.ui:14
 msgid "Search"
 msgstr ""

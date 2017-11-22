@@ -29,7 +29,7 @@ public class AccountSettingsDialog : Gtk.Dialog {
         foreach (Row row in plugin.db.identity_meta.with_address(account.bare_jid.to_string())) {
             if (row[plugin.db.identity_meta.device_id] == own_id) continue;
             if (i == 0) {
-                other_list.foreach((widget) => { other_list.remove(widget); });
+                other_list.foreach((widget) => { widget.destroy(); });
             }
             string? other_b64 = row[plugin.db.identity_meta.identity_key_public_base64];
             Label lbl = new Label(other_b64 != null ? fingerprint_markup(fingerprint_from_base64(other_b64)) : _("Unknown device (0x%xd)").printf(row[plugin.db.identity_meta.device_id])) { use_markup = true, visible = true, margin = 8, selectable=true };
