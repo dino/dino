@@ -134,7 +134,7 @@ public class UnifiedWindow : Window {
 
 public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
     public NoAccountsPlaceholder() {
-        label.label = _("No accounts active");
+        label.label = _("No active accounts");
         primary_button.label = _("Manage accounts");
         secondary_button.visible = false;
     }
@@ -142,7 +142,7 @@ public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
 
 public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
     public NoConversationsPlaceholder() {
-        label.label = _("No conversation active");
+        label.label = _("No active conversations");
         primary_button.label = _("Start Chat");
         secondary_button.label = _("Join Conference");
         secondary_button.visible = true;
