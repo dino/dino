@@ -19,6 +19,7 @@ public class MessageTextView : TextView {
         update_display_style();
         Util.force_base_background(this, "textview, text:not(:selected)");
         style_updated.connect(update_display_style);
+        populate_popup.connect(append_copy_url_menu_item);
     }
 
     // Workaround GTK TextView issues
@@ -44,6 +45,57 @@ public class MessageTextView : TextView {
         link_tag.foreground_rgba = link_color;
     }
 
+    private string? find_url_at_location(int x, int y) {
+        TextIter iter;
+        get_iter_at_location(out iter, x, y);
+        TextIter start_iter = iter, end_iter = iter;
+        if (start_iter.backward_to_tag_toggle(null) && end_iter.forward_to_tag_toggle(null)) {
+            return start_iter.get_text(end_iter);
+        }
+
+        return null;
+    }
+
+    private void append_copy_url_menu_item(Gtk.Menu popup) {
+        Gdk.Window window = get_window(TextWindowType.TEXT);
+
+        foreach (Seat seat in window.get_display().list_seats()) {
+            int device_x, device_y;
+            window.get_device_position(seat.get_pointer(), out device_x, out device_y, null);
+            string url = find_url_at_location(device_x, device_y);
+
+            if (url == null) {
+                continue;
+            }
+
+            Gtk.MenuItem menu_item = new Gtk.MenuItem.with_label(_("Copy URL"));
+
+            menu_item.activate.connect(() => {
+                Clipboard.get_default(window.get_display()).set_text(url, url.length);
+            });
+
+            popup.append(menu_item);
+
+            int position = 0;
+            foreach (Widget item in popup.get_children()) {
+                position++;
+
+                if (!(item is Gtk.MenuItem)) {
+                    continue;
+                }
+
+                if ((item as Gtk.MenuItem).get_label() == _("_Copy")) {
+                    break;
+                }
+            }
+
+            popup.reorder_child(menu_item, position);
+            popup.show_all();
+
+            break;
+        }
+    }
+
     private void format_suffix_urls(string text) {
         int absolute_start = buffer.text.char_count() - text.char_count();
 
@@ -67,11 +119,9 @@ public class MessageTextView : TextView {
     private bool open_url(EventButton event_button) {
         int buffer_x, buffer_y;
         window_to_buffer_coords(TextWindowType.TEXT, (int) event_button.x, (int) event_button.y, out buffer_x, out buffer_y);
-        TextIter iter;
-        get_iter_at_location(out iter, buffer_x, buffer_y);
-        TextIter start_iter = iter, end_iter = iter;
-        if (start_iter.backward_to_tag_toggle(null) && end_iter.forward_to_tag_toggle(null)) {
-            string url = start_iter.get_text(end_iter);
+        string url = find_url_at_location(buffer_x, buffer_y);
+
+        if (url != null) {
             try{
                 AppInfo.launch_default_for_uri(url, null);
             } catch (Error err) {
