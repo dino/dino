@@ -46,15 +46,14 @@ public class PresenceManager : StreamInteractionModule, Object {
         if (stream != null) {
             Xmpp.Presence.Flag flag = stream.get_flag(Presence.Flag.IDENTITY);
             if (flag == null) return null;
-            Gee.List<string> resources = flag.get_resources(jid.bare_jid.to_string());
+            Gee.List<string>? resources = flag.get_resources(jid.bare_jid.to_string());
             if (resources == null) {
                 return null;
             }
             ArrayList<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
-            resources.foreach((resource) => {
+            foreach (string resource in resources) {
                 ret.add(new Jid(resource));
-                return true;
-            });
+            }
             return ret;
         }
         return null;

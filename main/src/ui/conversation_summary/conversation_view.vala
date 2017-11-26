@@ -161,8 +161,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         }
 
         // Fill datastructure
-        ConversationItemSkeleton item_skeleton = new ConversationItemSkeleton(stream_interactor, conversation);
-        item_skeleton.add_meta_item(item);
+        ConversationItemSkeleton item_skeleton = new ConversationItemSkeleton(stream_interactor, conversation, item) { visible=true };
         item_item_skeletons[item] = item_skeleton;
         int index = lower_item != null ? item_skeletons.index_of(item_item_skeletons[lower_item]) + 1 : 0;
         item_skeletons.insert(index, item_skeleton);

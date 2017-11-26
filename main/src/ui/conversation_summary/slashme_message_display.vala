@@ -59,8 +59,8 @@ public class MetaSlashmeItem : Plugins.MetaConversationItem {
         TextIter iter;
         text_view.buffer.get_start_iter(out iter);
         text_view.buffer.insert_with_tags(ref iter, display_name, display_name.length, nick_tag);
-
         text_view.add_text(message.body.substring(3));
+
         text_view.style_updated.connect(update_style);
         text_view.realize.connect(update_style);
         return text_view;

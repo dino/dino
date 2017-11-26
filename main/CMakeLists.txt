@@ -12,6 +12,7 @@ find_packages(MAIN_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
+    icons/dino-changes-prevent-symbolic.svg
     icons/dino-double-tick-symbolic.svg
     icons/dino-status-away.svg
     icons/dino-status-chat.svg
@@ -32,7 +33,6 @@ set(RESOURCE_LIST
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
     conversation_summary/image_toolbar.ui
-    conversation_summary/message_item.ui
     conversation_summary/view.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
@@ -159,6 +159,7 @@ install(FILES
     data/icons/dino-status-dnd.svg
     data/icons/dino-status-online.svg
 
+    data/icons/dino-changes-prevent-symbolic.svg
     data/icons/dino-double-tick-symbolic.svg
     data/icons/dino-tick-symbolic.svg
 DESTINATION
