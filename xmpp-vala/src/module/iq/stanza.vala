@@ -23,6 +23,7 @@ public class Stanza : Xmpp.Stanza {
 
     public Stanza.result(Stanza request, StanzaNode? stanza_node = null) {
         this(request.id);
+        this.to = request.from;
         this.type_ = TYPE_RESULT;
         if (stanza_node != null) {
             stanza.put_node(stanza_node);

@@ -37,9 +37,13 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
         message_item_populator = new MessagePopulator(stream_interactor);
 
+        insert_item.connect(on_insert_item);
+        remove_item.connect(on_remove_item);
+
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_conversation_item_populator(new ChatStatePopulator(stream_interactor));
         app.plugin_registry.register_conversation_item_populator(new FilePopulator(stream_interactor));
+        app.plugin_registry.register_conversation_item_populator(new DateSeparatorPopulator(stream_interactor));
 
         Timeout.add_seconds(60, () => {
             foreach (ConversationItemSkeleton item_skeleton in item_skeletons) {
@@ -52,6 +56,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     }
 
     public void initialize_for_conversation(Conversation? conversation) {
+        Dino.Application app = Dino.Application.get_default();
+        if (this.conversation != null) {
+            foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
+                populator.close(conversation);
+            }
+        }
         this.conversation = conversation;
         stack.set_visible_child_name("void");
         clear();
@@ -60,7 +70,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         animate = false;
         Timeout.add(20, () => { animate = true; return false; });
 
-        Dino.Application app = Dino.Application.get_default();
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
         }
@@ -70,7 +79,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         stack.set_visible_child_name("main");
     }
 
-    public void insert_item(Plugins.MetaConversationItem item) {
+    public void on_insert_item(Plugins.MetaConversationItem item) {
         lock (meta_items) {
             if (!item.can_merge || !merge_back(item)) {
                 insert_new(item);
@@ -78,7 +87,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         }
     }
 
-    public void remove_item(Plugins.MetaConversationItem item) {
+    public void on_remove_item(Plugins.MetaConversationItem item) {
         lock (meta_items) {
             ConversationItemSkeleton? skeleton = item_item_skeletons[item];
             if (skeleton.items.size > 1) {
