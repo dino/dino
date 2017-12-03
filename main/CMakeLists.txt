@@ -151,6 +151,7 @@ if(WIN32)
 endif(WIN32)
 
 install(TARGETS dino ${TARGET_INSTALL})
+install(FILES data/im.dino.Dino.appdata.xml DESTINATION ${APPDATA_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
 install(FILES data/icons/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
