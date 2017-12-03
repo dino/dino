@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 OPTS=`getopt -o "h" --long \
 help,fetch-only,no-debug,disable-fast-vapi,with-tests,\
