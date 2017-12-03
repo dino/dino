@@ -14,10 +14,10 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public SearchPathGenerator? search_path_generator { get; set; }
 
     public Application() throws Error {
-        Object(application_id: "im.dino", flags: ApplicationFlags.HANDLES_OPEN);
+        Object(application_id: "im.dino.Dino", flags: ApplicationFlags.HANDLES_OPEN);
         init();
         Environment.set_application_name("Dino");
-        Window.set_default_icon_name("dino");
+        Window.set_default_icon_name("im.dino.Dino");
 
         CssProvider provider = new CssProvider();
         provider.load_from_resource("/im/dino/theme.css");

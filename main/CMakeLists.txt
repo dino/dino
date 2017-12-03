@@ -17,7 +17,7 @@ set(RESOURCE_LIST
     icons/dino-status-chat.svg
     icons/dino-status-dnd.svg
     icons/dino-status-online.svg
-    icons/dino-symbolic.svg
+    icons/im.dino.Dino-symbolic.svg
     icons/dino-tick-symbolic.svg
 
     add_conversation/add_contact_dialog.ui
@@ -147,10 +147,10 @@ if(WIN32)
 endif(WIN32)
 
 install(TARGETS dino ${TARGET_INSTALL})
-install(FILES data/im.dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
-install(FILES data/im.dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
-install(FILES data/icons/dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
-install(FILES data/icons/dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
+install(FILES data/im.dino.Dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
+install(FILES data/im.dino.Dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
+install(FILES data/icons/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
+install(FILES data/icons/im.dino.Dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
 install(FILES
     data/icons/dino-status-away.svg
     data/icons/dino-status-chat.svg
