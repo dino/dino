@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ConversationSummary {
 
-[GtkTemplate (ui = "/im/dino/conversation_summary/view.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/conversation_summary/view.ui")]
 public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     public Conversation? conversation { get; private set; }

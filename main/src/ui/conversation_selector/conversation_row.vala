@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ConversationSelector {
 
-[GtkTemplate (ui = "/im/dino/conversation_selector/conversation_row.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/conversation_selector/conversation_row.ui")]
 public abstract class ConversationRow : ListBoxRow {
 
     public signal void closed();

@@ -20,7 +20,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         Window.set_default_icon_name("im.dino.Dino");
 
         CssProvider provider = new CssProvider();
-        provider.load_from_resource("/im/dino/theme.css");
+        provider.load_from_resource("/im/dino/Dino/theme.css");
         StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
 
         activate.connect(() => {
@@ -104,7 +104,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         add_action(quit_action);
         set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
 
-        Builder builder = new Builder.from_resource("/im/dino/menu_app.ui");
+        Builder builder = new Builder.from_resource("/im/dino/Dino/menu_app.ui");
         MenuModel menu = builder.get_object("menu_app") as MenuModel;
 
         set_app_menu(menu);

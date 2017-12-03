@@ -5,7 +5,7 @@ using Xmpp;
 
 namespace Dino.Ui.OccupantMenu {
 
-[GtkTemplate (ui = "/im/dino/occupant_list_item.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/occupant_list_item.ui")]
 public class ListRow : ListBoxRow {
 
     [GtkChild] private Image image;

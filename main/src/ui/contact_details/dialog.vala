@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ContactDetails {
 
-[GtkTemplate (ui = "/im/dino/contact_details_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/contact_details_dialog.ui")]
 public class Dialog : Gtk.Dialog {
 
     [GtkChild] public Image avatar;

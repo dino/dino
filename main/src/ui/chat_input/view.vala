@@ -7,7 +7,7 @@ using Xmpp;
 
 namespace Dino.Ui.ChatInput {
 
-[GtkTemplate (ui = "/im/dino/chat_input.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/chat_input.ui")]
 public class View : Box {
 
     [GtkChild] private ScrolledWindow scrolled;

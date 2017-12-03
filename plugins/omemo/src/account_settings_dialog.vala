@@ -4,7 +4,7 @@ using Dino.Entities;
 
 namespace Dino.Plugins.Omemo {
 
-[GtkTemplate (ui = "/im/dino/omemo/account_settings_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/omemo/account_settings_dialog.ui")]
 public class AccountSettingsDialog : Gtk.Dialog {
 
     private Plugin plugin;

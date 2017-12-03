@@ -21,7 +21,7 @@ compile_gresources(
     TARGET ${CMAKE_CURRENT_BINARY_DIR}/resources/resources.c
     TYPE EMBED_C
     RESOURCES ${RESOURCE_LIST}
-    PREFIX /im/dino/omemo
+    PREFIX /im/dino/Dino/omemo
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
 )
 

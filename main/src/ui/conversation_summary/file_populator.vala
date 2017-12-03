@@ -100,7 +100,7 @@ public class ImageItem : Plugins.MetaConversationItem {
         Util.image_set_from_scaled_pixbuf(image, pixbuf);
         Util.force_css(image, "* { box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.1); margin: 2px; border-radius: 3px; }");
 
-        Builder builder = new Builder.from_resource("/im/dino/conversation_summary/image_toolbar.ui");
+        Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_summary/image_toolbar.ui");
         Widget toolbar = builder.get_object("main") as Widget;
         Util.force_background(toolbar, "rgba(0, 0, 0, 0.5)");
         Util.force_css(toolbar, "* { padding: 3px; border-radius: 3px; }");

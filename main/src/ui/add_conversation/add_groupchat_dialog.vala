@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/add_conversation/add_groupchat_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/add_conversation/add_groupchat_dialog.ui")]
 protected class AddGroupchatDialog : Gtk.Dialog {
 
     [GtkChild] private Stack accounts_stack;
