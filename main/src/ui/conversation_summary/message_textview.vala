@@ -13,13 +13,18 @@ public class MessageTextView : TextView {
         Object(editable:false, hexpand:true, wrap_mode:WrapMode.WORD_CHAR);
 
         link_tag = buffer.create_tag("url", underline: Pango.Underline.SINGLE, foreground: "blue");
-        button_release_event.connect(open_url);
+        button_release_event.connect((event_button) => {
+            if (event_button.button == 1) {
+                open_url(event_button);
+            }
+            return false;
+        });
         motion_notify_event.connect(change_cursor_over_url);
 
         update_display_style();
         Util.force_base_background(this, "textview, text:not(:selected)");
         style_updated.connect(update_display_style);
-        populate_popup.connect(append_copy_url_menu_item);
+        populate_popup.connect(populate_context_menu);
     }
 
     // Workaround GTK TextView issues
@@ -56,44 +61,32 @@ public class MessageTextView : TextView {
         return null;
     }
 
-    private void append_copy_url_menu_item(Gtk.Menu popup) {
+    private void populate_context_menu(Gtk.Menu popup) {
+        popup.@foreach((widget) => { widget.destroy(); });
+
         Gdk.Window window = get_window(TextWindowType.TEXT);
-
-        foreach (Seat seat in window.get_display().list_seats()) {
+        List<weak Seat> seats = window.get_display().list_seats();
+        if (seats.length() > 0) {
             int device_x, device_y;
-            window.get_device_position(seat.get_pointer(), out device_x, out device_y, null);
+            window.get_device_position(seats.nth_data(0).get_pointer(), out device_x, out device_y, null);
             string url = find_url_at_location(device_x, device_y);
-
-            if (url == null) {
-                continue;
+            if (url != null) {
+                Gtk.MenuItem copy_url_item = new Gtk.MenuItem.with_label(_("Copy Link Address")) { visible=true };
+                copy_url_item.activate.connect(() => {
+                    Clipboard.get_default(window.get_display()).set_text(url, url.length);
+                });
+                popup.append(copy_url_item);
             }
-
-            Gtk.MenuItem menu_item = new Gtk.MenuItem.with_label(_("Copy URL"));
-
-            menu_item.activate.connect(() => {
-                Clipboard.get_default(window.get_display()).set_text(url, url.length);
-            });
-
-            popup.append(menu_item);
-
-            int position = 0;
-            foreach (Widget item in popup.get_children()) {
-                position++;
-
-                if (!(item is Gtk.MenuItem)) {
-                    continue;
-                }
-
-                if ((item as Gtk.MenuItem).get_label() == _("_Copy")) {
-                    break;
-                }
-            }
-
-            popup.reorder_child(menu_item, position);
-            popup.show_all();
-
-            break;
         }
+
+        Gtk.MenuItem copy_item = new Gtk.MenuItem.with_label(_("Copy")) { visible=true };
+        copy_item.sensitive = buffer.get_has_selection();
+        copy_item.activate.connect(() => this.copy_clipboard() );
+        popup.append(copy_item);
+
+        Gtk.MenuItem select_all_item = new Gtk.MenuItem.with_label(_("Select All")) { visible=true };
+        select_all_item.activate.connect(() => this.select_all(true) );
+        popup.append(select_all_item);
     }
 
     private void format_suffix_urls(string text) {
@@ -120,7 +113,6 @@ public class MessageTextView : TextView {
         int buffer_x, buffer_y;
         window_to_buffer_coords(TextWindowType.TEXT, (int) event_button.x, (int) event_button.y, out buffer_x, out buffer_y);
         string url = find_url_at_location(buffer_x, buffer_y);
-
         if (url != null) {
             try{
                 AppInfo.launch_default_for_uri(url, null);
