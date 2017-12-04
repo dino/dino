@@ -15,6 +15,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private HashMap<Jid, string> chat_states = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
+    private HashMap<string, string> marker_wo_message = new HashMap<string, string>();
 
     public static void start(StreamInteractor stream_interactor) {
         CounterpartInteractionManager m = new CounterpartInteractionManager(stream_interactor);
@@ -25,6 +26,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(check_if_got_marker);
     }
 
     public string? get_chat_state(Account account, Jid jid) {
@@ -67,7 +69,20 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
                         message.marked = Entities.Message.Marked.READ;
                         break;
                 }
+            } else {
+                if (marker_wo_message.has_key(stanza_id) &&
+                        marker_wo_message[stanza_id] == Xep.ChatMarkers.MARKER_DISPLAYED && marker == Xep.ChatMarkers.MARKER_RECEIVED) {
+                    return;
+                }
+                marker_wo_message[stanza_id] = marker;
             }
+        }
+    }
+
+    private void check_if_got_marker(Entities.Message message, Conversation conversation) {
+        if (marker_wo_message.has_key(message.stanza_id)) {
+            on_chat_marker_received(conversation.account, conversation.counterpart, marker_wo_message[message.stanza_id], message.stanza_id);
+            marker_wo_message.unset(message.stanza_id);
         }
     }
 
@@ -79,4 +94,5 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         on_chat_marker_received(account, jid, Xep.ChatMarkers.MARKER_RECEIVED, id);
     }
 }
+
 }

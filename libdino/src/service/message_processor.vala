@@ -104,16 +104,13 @@ public class MessageProcessor : StreamInteractionModule, Object {
                     (!is_uuid && !db.contains_message(new_message, conversation.account))) {
                 stream_interactor.get_module(MessageStorage.IDENTITY).add_message(new_message, conversation);
 
-                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
-                bool is_recent = new_message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
-                if (!is_mam_message || is_recent) {
-                    if (new_message.direction == Entities.Message.DIRECTION_SENT) {
-                        message_sent(new_message, conversation);
-                    } else {
-                        message_received(new_message, conversation);
-                    }
+                if (new_message.direction == Entities.Message.DIRECTION_SENT) {
+                    message_sent(new_message, conversation);
+                } else {
+                    message_received(new_message, conversation);
                 }
 
+                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
                 Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
                 Xep.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) : null;
                 if (is_mam_message || (mam_flag != null && mam_flag.cought_up == true)) {
