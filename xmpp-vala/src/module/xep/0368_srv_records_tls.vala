@@ -22,11 +22,11 @@ public class Module : XmppStreamNegotiationModule {
 public class TlsConnectionProvider : ConnectionProvider {
     private SrvTarget? srv_target;
 
-    public override int? get_priority(string remote_name) {
+    public async override int? get_priority(string remote_name) {
         GLib.List<SrvTarget>? xmpp_target = null;
         try {
-            Resolver resolver = Resolver.get_default();
-            xmpp_target = resolver.lookup_service("xmpps-client", "tcp", remote_name, null);
+            GLibFixes.Resolver resolver = GLibFixes.Resolver.get_default();
+            xmpp_target = yield resolver.lookup_service_async("xmpps-client", "tcp", remote_name, null);
         } catch (Error e) {
             return null;
         }
@@ -35,10 +35,10 @@ public class TlsConnectionProvider : ConnectionProvider {
         return xmpp_target.nth(0).data.get_priority();
     }
 
-    public override IOStream? connect(XmppStream stream) {
+    public async override IOStream? connect(XmppStream stream) {
         SocketClient client = new SocketClient();
         try {
-            IOStream? io_stream = client.connect_to_host(srv_target.get_hostname(), srv_target.get_port());
+            IOStream? io_stream = yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
             io_stream = TlsClientConnection.new(io_stream, new NetworkAddress(srv_target.get_hostname(), srv_target.get_port()));
             stream.add_flag(new Tls.Flag() { finished=true });
             return io_stream;

@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ManageAccounts {
 
-[GtkTemplate (ui = "/im/dino/manage_accounts/dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/manage_accounts/dialog.ui")]
 public class Dialog : Gtk.Dialog {
 
     public signal void account_enabled(Account account);
@@ -61,7 +61,7 @@ public class Dialog : Gtk.Dialog {
 
             Label label = new Label(e.name) { xalign=1, yalign=0, visible=true };
             label.get_style_context().add_class("dim-label");
-            label.set_padding(0, e.label_top_padding == -1 ? default_top_padding : e.label_top_padding);
+            label.margin_top = e.label_top_padding == -1 ? default_top_padding : e.label_top_padding;
 
             settings_list.attach(label, 0, row_index);
             if (widget is Widget) {
@@ -84,23 +84,16 @@ public class Dialog : Gtk.Dialog {
             add_account(account);
         }
 
-        stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect((pixbuf, jid, account) => {
-            Idle.add(() => {
-                on_received_avatar(pixbuf, jid, account);
-                return false;
-            });
-        });
+        stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect(on_received_avatar);
         stream_interactor.connection_manager.connection_error.connect((account, error) => {
-            Idle.add(() => {
-                if (account.equals(selected_account)) update_status_label(account);
-                return false;
-            });
+            if (account.equals(selected_account)) {
+                update_status_label(account);
+            }
         });
         stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
-            Idle.add(() => {
-                if (account.equals(selected_account)) update_status_label(account);
-                return false;
-            });
+            if (account.equals(selected_account)) {
+                update_status_label(account);
+            }
         });
 
         if (account_list.get_row_at_index(0) != null) account_list.select_row(account_list.get_row_at_index(0));
@@ -135,8 +128,7 @@ public class Dialog : Gtk.Dialog {
         ok_button.label = _("Remove");
         ok_button.get_style_context().add_class("destructive-action");
         if (msg.run() == Gtk.ResponseType.OK) {
-            account_list.remove(account_item);
-            account_list.queue_draw();
+            account_item.destroy();
             if (account_item.account.enabled) account_disabled(account_item.account);
             account_item.account.remove();
             if (account_list.get_row_at_index(0) != null) {

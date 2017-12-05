@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/add_conversation/list_row.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/add_conversation/list_row.ui")]
 public class ListRow : ListBoxRow {
 
     [GtkChild] public Image image;

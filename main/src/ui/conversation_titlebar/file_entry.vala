@@ -55,12 +55,9 @@ public class FileWidget : Button, Plugins.ConversationTitlebarWidget {
     }
 
     public void on_upload_available(Account account) {
-        Idle.add(() => {
-            if (conversation != null && conversation.account.equals(account)) {
-                visible = true;
-            }
-            return false;
-        });
+        if (conversation != null && conversation.account.equals(account)) {
+            visible = true;
+        }
     }
 
     public new void set_conversation(Conversation conversation) {

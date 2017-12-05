@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.OccupantMenu{
 
-[GtkTemplate (ui = "/im/dino/occupant_list.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/occupant_list.ui")]
 public class List : Box {
 
     public signal void conversation_selected(Conversation? conversation);
@@ -25,9 +25,7 @@ public class List : Box {
         list_box.set_filter_func(filter);
         search_entry.search_changed.connect(search_changed);
 
-        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
-            Idle.add(() => { on_show_received(show, jid, account); return false; });
-        });
+        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_show_received);
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_updated_roster_item);
 
         initialize_for_conversation(conversation);
@@ -119,10 +117,10 @@ public class List : Box {
             if (aff == affiliation) count++;
         }
 
-        Label title_label = new Label("") { margin_left=10, xalign=0, visible=true };
+        Label title_label = new Label("") { margin_start=10, xalign=0, visible=true };
         title_label.set_markup(@"<b>$(Markup.escape_text(aff_str))</b>");
 
-        Label count_label = new Label(@"$count") { xalign=0, margin_right=7, expand=true, visible=true };
+        Label count_label = new Label(@"$count") { xalign=0, margin_end=7, expand=true, visible=true };
         count_label.get_style_context().add_class("dim-label");
 
         Grid grid = new Grid() { margin_top=top?5:15, column_spacing=5, hexpand=true, visible=true };

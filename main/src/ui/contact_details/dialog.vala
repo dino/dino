@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ContactDetails {
 
-[GtkTemplate (ui = "/im/dino/contact_details_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/contact_details_dialog.ui")]
 public class Dialog : Gtk.Dialog {
 
     [GtkChild] public Image avatar;
@@ -57,7 +57,7 @@ public class Dialog : Gtk.Dialog {
     private void setup_top() {
         if (conversation.type_ == Conversation.Type.CHAT) {
             name_label.visible = false;
-            jid_label.set_padding(new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1, 0);
+            jid_label.margin_start = new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1;
             name_hybrid.text = Util.get_conversation_display_name(stream_interactor, conversation);
             destroy.connect(() => {
                 if (name_hybrid.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
@@ -79,7 +79,7 @@ public class Dialog : Gtk.Dialog {
         add_category(category);
 
         ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
-        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_left=15, margin_right=15, margin_top=3, margin_bottom=3, visible=true };
+        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3, visible=true };
         list_row.add(row);
         Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, visible=true };
         if (description != null && description != "") {
@@ -111,13 +111,10 @@ public class Dialog : Gtk.Dialog {
         row.add(widget);
         categories[category].add(list_row);
 
-        Idle.add(() => {
-            int pref_height, pref_width;
-            get_content_area().get_preferred_height(null, out pref_height);
-            get_preferred_width(out pref_width, null);
-            resize(pref_width, int.min(500, pref_height));
-            return false;
-        });
+        int pref_height, pref_width;
+        get_content_area().get_preferred_height(null, out pref_height);
+        get_preferred_width(out pref_width, null);
+        resize(pref_width, int.min(500, pref_height));
     }
 
     private void add_category(string category) {

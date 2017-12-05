@@ -19,12 +19,8 @@ public class MessagePopulator : Object {
         app.plugin_registry.register_message_display(new SlashmeMessageDisplay(stream_interactor));
 
 
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
-            Idle.add(() => { handle_message(message, conversation); return false; });
-        });
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
-            Idle.add(() => { handle_message(message, conversation); return false; });
-        });
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(handle_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_message);
     }
 
     public void init(Conversation conversation, Plugins.ConversationItemCollection item_collection) {
@@ -59,8 +55,13 @@ public class MessagePopulator : Object {
         if (meta_item == null) return;
 
         meta_item.mark = message.marked;
+        WeakRef weak_meta_item = WeakRef(meta_item);
+        WeakRef weak_message = WeakRef(message);
         message.notify["marked"].connect(() => {
-            meta_item.mark = message.marked;
+            Plugins.MetaConversationItem? mi = weak_meta_item.get() as Plugins.MetaConversationItem;
+            Message? m = weak_message.get() as Message;
+            if (mi == null || m == null) return;
+            mi.mark = m.marked;
         });
         item_collection.insert_item(meta_item);
     }

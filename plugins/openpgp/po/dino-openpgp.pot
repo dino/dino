@@ -1,34 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: dino-openpgp-0.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-07 15:43+0200\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/account_settings_widget.vala:74 src/account_settings_widget.vala:80
-#: src/account_settings_widget.vala:108
+#: ../src/account_settings_widget.vala:75
+#: ../src/account_settings_widget.vala:81
+#: ../src/account_settings_widget.vala:109
 msgid "Key publishing disabled"
 msgstr ""
 
-#: src/account_settings_widget.vala:74
+#: ../src/account_settings_widget.vala:75
 msgid "No keys available. Generate one!"
 msgstr ""
 
-#: src/account_settings_widget.vala:80
+#: ../src/account_settings_widget.vala:81
 msgid "Select key"
 msgstr ""
 
-#: src/account_settings_widget.vala:97
-msgid "Loading..."
+#: ../src/account_settings_widget.vala:98
+msgid "Loading…"
 msgstr ""
 
-#: src/account_settings_widget.vala:97
+#: ../src/account_settings_widget.vala:98
 msgid "Querying GnuPG"
 msgstr ""
 
-#: src/account_settings_widget.vala:108
+#: ../src/account_settings_widget.vala:109
 msgid "Error in GnuPG"
+msgstr ""
+
+#: ../src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr ""
+
+#: ../src/contact_details_provider.vala:30
+msgid "Encryption"
 msgstr ""

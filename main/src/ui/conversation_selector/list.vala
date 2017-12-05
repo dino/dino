@@ -22,35 +22,21 @@ public class List : ListBox {
         set_header_func(header);
         set_sort_func(sort);
 
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect((conversation) => {
-            Idle.add(() => { add_conversation(conversation); return false; });
-        });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect((conversation) => {
-            Idle.add(() => { remove_conversation(conversation); return false; });
-        });
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
-            Idle.add(() => { on_message_received(message, conversation); return false; });
-        });
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
-            Idle.add(() => { on_message_received(message, conversation); return false; });
-        });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(add_conversation);
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(remove_conversation);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_received);
         stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
-            Idle.add(() => {
-                foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations_for_presence(show, account)) {
-                    if (rows.has_key(conversation)) rows[conversation].on_show_received(show);
-                }
-                return false;
-            });
+            foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations_for_presence(show, account)) {
+                if (rows.has_key(conversation)) rows[conversation].on_show_received(show);
+            }
         });
         stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect((avatar, jid, account) => {
-            Idle.add(() => {
-                Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
-                if (conversation != null && rows.has_key(conversation)) {
-                    ChatRow row = rows[conversation] as ChatRow;
-                    if (row != null) row.update_avatar();
-                }
-                return false;
-            });
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
+            if (conversation != null && rows.has_key(conversation)) {
+                ChatRow row = rows[conversation] as ChatRow;
+                if (row != null) row.update_avatar();
+            }
         });
         Timeout.add_seconds(60, () => {
             foreach (ConversationRow row in rows.values) row.update();

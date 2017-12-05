@@ -15,6 +15,7 @@ namespace Dino.Plugins.OpenPgp {
 
         private string? signed_status = null;
         private Key? own_key = null;
+        private ReceivedPipelineDecryptListener received_pipeline_decrypt_listener = new ReceivedPipelineDecryptListener();
 
         public Module(string? own_key_id = null) {
             set_private_key_id(own_key_id);
@@ -28,7 +29,6 @@ namespace Dino.Plugins.OpenPgp {
                 } catch (Error e) { }
                 if (own_key != null) {
                     signed_status = gpg_sign("", own_key);
-                    get_sign_key(signed_status, "");
                 }
             }
         }
@@ -43,22 +43,17 @@ namespace Dino.Plugins.OpenPgp {
             return false;
         }
 
-        public string? get_cyphertext(Message.Stanza message) {
-            StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_ENCRYPTED);
-            return x_node == null ? null : x_node.get_string_content();
-        }
-
         public override void attach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
-            stream.get_module(Message.Module.IDENTITY).pre_received_message.connect(on_pre_received_message);
+            stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(received_pipeline_decrypt_listener);
             stream.add_flag(new Flag());
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
-            stream.get_module(Message.Module.IDENTITY).pre_received_message.disconnect(on_pre_received_message);
+            stream.get_module(Message.Module.IDENTITY).received_pipeline.disconnect(received_pipeline_decrypt_listener);
         }
 
         public static void require(XmppStream stream) {
@@ -70,35 +65,26 @@ namespace Dino.Plugins.OpenPgp {
 
         private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
             StanzaNode x_node = presence.stanza.get_subnode("x", NS_URI_SIGNED);
-            if (x_node != null) {
-                string? sig = x_node.get_string_content();
-                if (sig != null) {
-                    string signed_data = presence.status == null ? "" : presence.status;
-                    string? key_id = get_sign_key(sig, signed_data);
-                    if (key_id != null) {
-                        stream.get_flag(Flag.IDENTITY).set_key_id(presence.from, key_id);
+            if (x_node == null) return;
+            string? sig = x_node.get_string_content();
+            if (sig == null) return;
+            new Thread<void*> (null, () => {
+                string signed_data = presence.status == null ? "" : presence.status;
+                string? key_id = get_sign_key(sig, signed_data);
+                if (key_id != null) {
+                    stream.get_flag(Flag.IDENTITY).set_key_id(presence.from, key_id);
+                    Idle.add(() => {
                         received_jid_key_id(stream, presence.from, key_id);
-                    }
+                        return false;
+                    });
                 }
-            }
+                return null;
+            });
         }
 
         private void on_pre_send_presence_stanza(XmppStream stream, Presence.Stanza presence) {
             if (presence.type_ == Presence.Stanza.TYPE_AVAILABLE && signed_status != null) {
                 presence.stanza.put_node(new StanzaNode.build("x", NS_URI_SIGNED).add_self_xmlns().put_node(new StanzaNode.text(signed_status)));
-            }
-        }
-
-        private void on_pre_received_message(XmppStream stream, Message.Stanza message) {
-            string? encrypted = get_cyphertext(message);
-            if (encrypted != null) {
-                MessageFlag flag = new MessageFlag();
-                message.add_flag(flag);
-                string? decrypted = gpg_decrypt(encrypted);
-                if (decrypted != null) {
-                    flag.decrypted = true;
-                    message.body = decrypted;
-                }
             }
         }
 
@@ -111,15 +97,6 @@ namespace Dino.Plugins.OpenPgp {
             }
             int encryption_start = encr.index_of("\n\n") + 2;
             return encr.substring(encryption_start, encr.length - "\n-----END PGP MESSAGE-----".length - encryption_start);
-        }
-
-        private static string? gpg_decrypt(string enc) {
-            string armor = "-----BEGIN PGP MESSAGE-----\n\n" + enc + "\n-----END PGP MESSAGE-----";
-            string? decr = null;
-            try {
-                decr = GPGHelper.decrypt(armor);
-            } catch (Error e) { }
-            return decr;
         }
 
         private static string? get_sign_key(string sig, string signed_text) {
@@ -156,4 +133,48 @@ namespace Dino.Plugins.OpenPgp {
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return id; }
     }
+
+public class ReceivedPipelineDecryptListener : StanzaListener<Message.Stanza> {
+
+    private const string[] after_actions_const = {"MODIFY_BODY"};
+
+    public override string action_group { get { return "ENCRYPT_BODY"; } }
+    public override string[] after_actions { get { return after_actions_const; } }
+
+    public override async void run(Core.XmppStream stream, Message.Stanza message) {
+        string? encrypted = get_cyphertext(message);
+        if (encrypted != null) {
+            MessageFlag flag = new MessageFlag();
+            message.add_flag(flag);
+            string? decrypted = yield gpg_decrypt(encrypted);
+            if (decrypted != null) {
+                flag.decrypted = true;
+                message.body = decrypted;
+            }
+        }
+    }
+
+    private static async string? gpg_decrypt(string enc) {
+        SourceFunc callback = gpg_decrypt.callback;
+        string? res = null;
+        new Thread<void*> (null, () => {
+            string armor = "-----BEGIN PGP MESSAGE-----\n\n" + enc + "\n-----END PGP MESSAGE-----";
+            try {
+                res = GPGHelper.decrypt(armor);
+            } catch (Error e) {
+                res = null;
+            }
+            Idle.add((owned) callback);
+            return null;
+        });
+        yield;
+        return res;
+    }
+
+    private string? get_cyphertext(Message.Stanza message) {
+        StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_ENCRYPTED);
+        return x_node == null ? null : x_node.get_string_content();
+    }
+}
+
 }

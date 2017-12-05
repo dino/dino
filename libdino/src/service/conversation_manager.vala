@@ -34,6 +34,7 @@ public class ConversationManager : StreamInteractionModule, Object {
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
         assert(conversations.has_key(account));
         if (conversations[account].has_key(jid)) {
+            conversations[account][jid].type_ = type;
             return conversations[account][jid];
         } else {
             Conversation conversation = new Conversation(jid, account, type);

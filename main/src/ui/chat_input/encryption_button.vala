@@ -17,7 +17,7 @@ public class EncryptionButton : MenuButton {
         image = new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON);
         get_style_context().add_class("flat");
 
-        Builder builder = new Builder.from_resource("/im/dino/menu_encryption.ui");
+        Builder builder = new Builder.from_resource("/im/dino/Dino/menu_encryption.ui");
         popover = builder.get_object("menu_encryption") as PopoverMenu;
         Box encryption_box = builder.get_object("encryption_box") as Box;
         button_unencrypted = builder.get_object("button_unencrypted") as RadioButton;

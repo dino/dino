@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/add_conversation/select_jid_fragment.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/add_conversation/select_jid_fragment.ui")]
 public class SelectJidFragment : Gtk.Box {
 
     public signal void add_jid();
@@ -47,7 +47,7 @@ public class SelectJidFragment : Gtk.Box {
     public void set_filter(string str) {
         if (entry.text != str) entry.text = str;
 
-        foreach (AddListRow row in added_rows) filterable_list.remove(row);
+        foreach (AddListRow row in added_rows) row.destroy();
         added_rows.clear();
 
         string[] ? values = str == "" ? null : str.split(" ");

@@ -40,12 +40,8 @@ public class UnifiedWindow : Window {
 
         stream_interactor.account_added.connect((account) => { check_stack(true); });
         stream_interactor.account_removed.connect((account) => { check_stack(); });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect( (conversation) => {
-            Idle.add( () => { check_stack(); return false; });
-        });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect( (conversation) => {
-            Idle.add( () => { check_stack(); return false; });
-        });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(() => check_stack());
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => check_stack());
         accounts_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("accounts", null); });
         conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
         conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });
@@ -138,7 +134,7 @@ public class UnifiedWindow : Window {
 
 public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
     public NoAccountsPlaceholder() {
-        label.label = _("No accounts active");
+        label.label = _("No active accounts");
         primary_button.label = _("Manage accounts");
         secondary_button.visible = false;
     }
@@ -146,14 +142,14 @@ public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
 
 public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
     public NoConversationsPlaceholder() {
-        label.label = _("No conversation active");
+        label.label = _("No active conversations");
         primary_button.label = _("Start Chat");
         secondary_button.label = _("Join Conference");
         secondary_button.visible = true;
     }
 }
 
-[GtkTemplate (ui = "/im/dino/unified_window_placeholder.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
 public class UnifiedWindowPlaceholder : Box {
     [GtkChild] public Label label;
     [GtkChild] public Button primary_button;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
     <template class="DinoUiAddGroupchatDialog">
-        <property name="default_width">400</property>
+        <property name="valign">center</property>
         <property name="modal">True</property>
         <child type="titlebar">
             <object class="GtkHeaderBar">
@@ -39,8 +39,8 @@
                     <object class="GtkGrid">
                         <property name="orientation">vertical</property>
                         <property name="margin">20</property>
-                        <property name="margin_right">40</property>
-                        <property name="margin_left">40</property>
+                        <property name="margin-start">40</property>
+                        <property name="margin-end">40</property>
                         <property name="row-spacing">7</property>
                         <property name="column-spacing">10</property>
                         <property name="visible">True</property>

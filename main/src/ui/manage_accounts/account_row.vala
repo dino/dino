@@ -4,7 +4,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ManageAccounts {
 
-[GtkTemplate (ui = "/im/dino/manage_accounts/account_row.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/manage_accounts/account_row.ui")]
 public class AccountRow :  Gtk.ListBoxRow {
 
     [GtkChild] public Image image;
@@ -21,16 +21,14 @@ public class AccountRow :  Gtk.ListBoxRow {
         jid_label.set_label(account.bare_jid.to_string());
 
         stream_interactor.connection_manager.connection_error.connect((account, error) => {
-            Idle.add(() => {
-                if (account.equals(this.account)) update_warning_icon();
-                return false;
-            });
+            if (account.equals(this.account)) {
+                update_warning_icon();
+            }
         });
         stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
-            Idle.add(() => {
-                if (account.equals(this.account)) update_warning_icon();
-                return false;
-            });
+            if (account.equals(this.account)) {
+                update_warning_icon();
+            }
         });
     }
 

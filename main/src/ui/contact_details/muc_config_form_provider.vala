@@ -21,13 +21,10 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
             if (stream == null) return;
             stream_interactor.get_module(MucManager.IDENTITY).get_config_form(conversation.account, conversation.counterpart, (jid, data_form) => {
                 contact_details.save.connect(() => { data_form.submit(); });
-                Idle.add(() => {
-                    for (int i = 0; i < data_form.fields.size; i++) {
-                        DataForms.DataForm.Field field = data_form.fields[i];
-                        add_field(field, contact_details);
-                    }
-                    return false;
-                });
+                for (int i = 0; i < data_form.fields.size; i++) {
+                    DataForms.DataForm.Field field = data_form.fields[i];
+                    add_field(field, contact_details);
+                }
             });
         }
     }
@@ -46,13 +43,13 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
                     break;
                 case "muc#roomconfig_persistentroom":
                     label = _("Persistent");
-                    desc = _("The room will persist after the last occupant exits");
+                    desc = _("The room will persist after the last occupant leaves");
                     break;
                 case "muc#roomconfig_publicroom":
                     label = _("Publicly searchable");
                     break;
                 case "muc#roomconfig_changesubject":
-                    label = _("Occupants may change subject");
+                    label = _("Occupants may change the subject");
                     break;
                 case "muc#roomconfig_whois":
                     label = _("Discover real JIDs");
@@ -60,7 +57,7 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
                     break;
                 case "muc#roomconfig_roomsecret":
                     label = _("Password");
-                    desc = _("Password required to enter the room. Leave empty for none");
+                    desc = _("Password required for room entry, if any");
                     break;
                 case "muc#roomconfig_moderatedroom":
                     label = _("Moderated");
@@ -72,7 +69,7 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
                     break;
                 case "muc#roomconfig_historylength":
                     label = _("Message history");
-                    desc = _("Maximum number of history messages returned by the room");
+                    desc = _("Maximum amount of backlog issued by the room");
                     break;
             }
         }

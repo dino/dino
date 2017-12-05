@@ -7,435 +7,485 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-23 00:48+0200\n"
-"PO-Revision-Date: 2017-10-20 11:47+0000\n"
+"POT-Creation-Date: 2017-11-24 01:10+0100\n"
+"PO-Revision-Date: 2017-11-18 00:19+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
-"translations/nb_NO/>\n"
-"Language: nb_NO\n"
+"translations/nb/>\n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.17\n"
+"X-Generator: Weblate 2.18-dev\n"
 
-#: data/add_conversation/add_contact_dialog.ui:11
-#: data/add_conversation/add_groupchat_dialog.ui:11 src/ui/application.vala:41
-#: src/ui/add_conversation/chat/dialog.vala:40
-#: src/ui/add_conversation/conference/dialog.vala:15
-#: src/ui/manage_accounts/dialog.vala:151
+#: ../src/ui/notifications.vala:105
+msgid "Subscription request"
+msgstr "Abonnementsforespørsel"
+
+#: ../src/ui/notifications.vala:111
+msgid "Accept"
+msgstr "Godta"
+
+#: ../src/ui/notifications.vala:112
+msgid "Deny"
+msgstr "Nekt"
+
+#: ../src/ui/manage_accounts/dialog.vala:125
+#, c-format
+msgid "Remove account %s?"
+msgstr "Fjern konto %s?"
+
+#: ../src/ui/manage_accounts/dialog.vala:128
+msgid "Remove"
+msgstr "Fjern"
+
+#: ../src/ui/manage_accounts/dialog.vala:153
+msgid "Select avatar"
+msgstr "Velg avatar"
+
+#: ../src/ui/manage_accounts/dialog.vala:154
+msgid "Select"
+msgstr "Velg"
+
+#: ../src/ui/manage_accounts/dialog.vala:154 ../src/ui/application.vala:41
+#: ../src/ui/add_conversation/add_conference_dialog.vala:15
+#: ../src/ui/add_conversation/select_contact_dialog.vala:40
+#: ../data/add_conversation/add_groupchat_dialog.ui:11
+#: ../data/add_conversation/add_contact_dialog.ui:11
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: data/add_conversation/add_contact_dialog.ui:23
-#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:28
-msgid "Add"
-msgstr "Legg til"
+#: ../src/ui/manage_accounts/dialog.vala:162
+msgid "Images"
+msgstr "Bilder"
 
-#: data/add_conversation/add_contact_dialog.ui:48
-#: data/add_conversation/add_groupchat_dialog.ui:49
-#: data/add_conversation/conference_details_fragment.ui:16
-msgid "Account"
-msgstr "Konto"
+#: ../src/ui/manage_accounts/dialog.vala:165
+msgid "All files"
+msgstr "Alle filer"
 
-#: data/add_conversation/add_contact_dialog.ui:101
-#: data/add_conversation/add_groupchat_dialog.ui:189
-msgid "Alias"
-msgstr "Alias"
+#: ../src/ui/manage_accounts/dialog.vala:227
+msgid "Connecting…"
+msgstr "Kobler til…"
 
-#: data/add_conversation/add_contact_dialog.ui:129
-msgid "Request presence updates"
-msgstr "Forespør tilstedeværelsesoppdateringer"
+#: ../src/ui/manage_accounts/dialog.vala:229
+msgid "Connected"
+msgstr "Tilkoblet"
 
-#: data/add_conversation/add_groupchat_dialog.ui:120
-#: data/add_conversation/conference_details_fragment.ui:120
-msgid "Nick"
-msgstr "Kallenavn"
+#: ../src/ui/manage_accounts/dialog.vala:231
+msgid "Disconnected"
+msgstr "Frakoblet"
 
-#: data/add_conversation/add_groupchat_dialog.ui:147
-#: data/add_conversation/conference_details_fragment.ui:172
-#: data/manage_accounts/add_account_dialog.ui:73
-#: data/manage_accounts/dialog.ui:166
-#: src/ui/contact_details/muc_config_form_provider.vala:62
-msgid "Password"
-msgstr "Passord"
+#: ../src/ui/manage_accounts/dialog.vala:240
+msgid "Wrong password"
+msgstr "Feil passord"
 
-#: data/add_conversation/add_groupchat_dialog.ui:176
-msgid "Join on startup"
-msgstr "Ta del ved oppstart"
+#: ../src/ui/manage_accounts/dialog.vala:243
+#: ../src/ui/manage_accounts/dialog.vala:245
+msgid "Error"
+msgstr "Feil"
 
-#: data/conversation_selector/view.ui:14
-msgid "Search"
-msgstr "Søk"
+#: ../src/ui/manage_accounts/add_account_dialog.vala:21
+msgid "Add Account"
+msgstr "Legg til konto"
 
-#: data/manage_accounts/add_account_dialog.ui:21
-#: src/ui/add_conversation/conference/add_groupchat_dialog.vala:42
-msgid "Save"
-msgstr "Lagre"
-
-#: data/manage_accounts/add_account_dialog.ui:102
-#: data/manage_accounts/dialog.ui:196
-msgid "Local alias"
-msgstr "Lokalt alias"
-
-#: data/manage_accounts/dialog.ui:9 data/menu_app.ui:6
-msgid "Accounts"
-msgstr "Kontoer"
-
-#: data/manage_accounts/dialog.ui:251
-#, fuzzy
-msgid "No accounts configured"
-msgstr "Ingen kontoer aktive"
-
-#: data/manage_accounts/dialog.ui:262
-msgid "Add an account"
-msgstr "Legg til en konto"
-
-#: data/menu_add.ui:6 src/ui/application.vala:70
-#: src/ui/conversation_list_titlebar.vala:31 src/ui/unified_window.vala:150
-msgid "Start Chat"
-msgstr "Start sludring"
-
-#: data/menu_add.ui:12 src/ui/application.vala:41
-#: src/ui/add_conversation/conference/dialog.vala:26
-#: src/ui/unified_window.vala:151
-msgid "Join Conference"
-msgstr "Ta del i konferanse"
-
-#: data/menu_app.ui:10 src/ui/contact_details/settings_provider.vala:22
-#: src/ui/contact_details/settings_provider.vala:25
-#: src/ui/contact_details/settings_provider.vala:30
-msgid "Settings"
-msgstr "Innstillinger"
-
-#: data/menu_app.ui:16
-msgid "Quit"
-msgstr "Avslutt"
-
-#: data/menu_conversation.ui:6 src/ui/contact_details/dialog.vala:37
-msgid "Contact Details"
-msgstr "Kontaktdetaljer"
-
-#: data/menu_encryption.ui:14
-msgid "Unencrypted"
-msgstr "Ukryptert"
-
-#: data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "Innstillinger"
-
-#: data/settings_dialog.ui:22 src/ui/contact_details/settings_provider.vala:22
-msgid "Send typing notifications"
-msgstr "Send skrivevarsling"
-
-#: data/settings_dialog.ui:34 src/ui/contact_details/settings_provider.vala:25
-msgid "Send message marker"
-msgstr "Send meldingsmarkør"
-
-#: data/settings_dialog.ui:46
-msgid "Notify when a new message arrives"
-msgstr "Varsle ved mottak av ny melding"
-
-#: data/settings_dialog.ui:58
-msgid "Convert smileys to emojis"
-msgstr "Konverter smilefjes til emoji-er"
-
-#: src/ui/application.vala:41 src/ui/add_conversation/conference/dialog.vala:60
-msgid "Join"
-msgstr "Ta del"
-
-#: src/ui/application.vala:71 src/ui/conversation_list_titlebar.vala:32
-#, fuzzy
-msgid "Start"
-msgstr "Start sludring"
-
-#: src/ui/add_conversation/conference/dialog.vala:45
-msgid "Next"
-msgstr "Neste"
-
-#: src/ui/contact_details/settings_provider.vala:30
-#: src/ui/contact_details/settings_provider.vala:39
-msgid "Notifications"
-msgstr "Merknader"
-
-#: src/ui/contact_details/settings_provider.vala:39
-msgid "Local Settings"
-msgstr "Lokale innstillinger"
-
-#: src/ui/contact_details/settings_provider.vala:74
-#: src/ui/contact_details/settings_provider.vala:114
-#: src/ui/contact_details/settings_provider.vala:116
-msgid "On"
-msgstr "På"
-
-#: src/ui/contact_details/settings_provider.vala:76
-#: src/ui/contact_details/settings_provider.vala:114
-#: src/ui/contact_details/settings_provider.vala:117
-msgid "Off"
-msgstr "Av"
-
-#: src/ui/contact_details/settings_provider.vala:78
-msgid "Only when mentioned"
-msgstr "Bare når nevnt"
-
-#: src/ui/contact_details/settings_provider.vala:80
-#: src/ui/contact_details/settings_provider.vala:115
-#, fuzzy, c-format
-msgid "Default: %s"
-msgstr "Forvalg"
-
-#: src/ui/contact_details/dialog.vala:37
-#, fuzzy
-msgid "Conference Details"
-msgstr "Kontaktdetaljer"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:42
-msgid "Name of the room"
-msgstr "Rommets navn"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:45
-msgid "Description of the room"
-msgstr "Beskrivelse av rommet"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:48
-msgid "Persistent"
-msgstr "Vedvarende"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:49
-msgid "The room will persist after the last occupant exits"
-msgstr "Rommet vil vedvare etter at siste deltager forlater"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:52
-msgid "Publicly searchable"
-msgstr "Offentlig søkbart"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:55
-msgid "Occupants may change subject"
-msgstr "Deltagere kan endre emne"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:58
-msgid "Discover real JIDs"
-msgstr "Oppdag ekte JID-er"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:59
-msgid "Who may discover real JIDs?"
-msgstr "Hvem har tilgang til oppdagelse av ekte JID-er?"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:63
-#, fuzzy
-msgid "Password required to enter the room. Leave empty for none"
-msgstr "Passord kreves for å ta del i rommet. La stå tomt for inget."
-
-#: src/ui/contact_details/muc_config_form_provider.vala:66
-msgid "Moderated"
-msgstr "Moderert"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:67
-msgid "Only occupants with voice may send messages"
-msgstr "Bare deltagere med stemme kan sende meldinger"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:70
-msgid "Members only"
-msgstr "Kun for medlemmer"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:71
-msgid "Only members may enter the room"
-msgstr "Kun medlemmer har adgang til rommet"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:74
-msgid "Message history"
-msgstr "Meldingshistorikk"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:75
-msgid "Maximum number of history messages returned by the room"
-msgstr "Maksimalt antall meldinger med historikk som skal svares av rommet"
-
-#: src/ui/contact_details/muc_config_form_provider.vala:81
-msgid "Room Configuration"
-msgstr "Rom-oppsett"
-
-#: src/ui/conversation_selector/chat_row.vala:30
-#: src/ui/conversation_selector/groupchat_pm_row.vala:25
+#: ../src/ui/conversation_selector/groupchat_pm_row.vala:25
+#: ../src/ui/conversation_selector/chat_row.vala:30
 msgid "Me"
-msgstr ""
+msgstr "Meg"
 
-#: src/ui/conversation_selector/conversation_row.vala:172
+#: ../src/ui/conversation_selector/conversation_row.vala:169
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: src/ui/conversation_selector/conversation_row.vala:176
+#: ../src/ui/conversation_selector/conversation_row.vala:173
 msgid "Yesterday"
 msgstr "I går"
 
-#: src/ui/conversation_selector/conversation_row.vala:179
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:146
+#: ../src/ui/conversation_selector/conversation_row.vala:176
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:154
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: src/ui/conversation_selector/conversation_row.vala:180
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:147
+#: ../src/ui/conversation_selector/conversation_row.vala:177
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:155
 #, no-c-format
 msgid "%l∶%M %p"
-msgstr ""
+msgstr "%l∶%M %p"
 
-#: src/ui/conversation_selector/conversation_row.vala:183
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:151
+#: ../src/ui/conversation_selector/conversation_row.vala:180
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:159
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i minutt siden"
 msgstr[1] "%i minutter siden"
 
-#: src/ui/conversation_selector/conversation_row.vala:185
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:153
+#: ../src/ui/conversation_selector/conversation_row.vala:182
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:161
 msgid "Just now"
-msgstr ""
+msgstr "Akkurat nå"
 
-#: src/ui/conversation_summary/chat_state_populator.vala:58
-msgid "is typing..."
+#: ../src/ui/application.vala:41
+#: ../src/ui/add_conversation/add_conference_dialog.vala:26
+#: ../src/ui/unified_window.vala:147 ../data/menu_add.ui:12
+msgid "Join Conference"
+msgstr "Ta del i konferanse"
+
+#: ../src/ui/application.vala:41
+#: ../src/ui/add_conversation/add_conference_dialog.vala:62
+#: ../src/ui/add_conversation/conference_details_fragment.vala:133
+msgid "Join"
+msgstr "Ta del"
+
+#: ../src/ui/add_conversation/add_groupchat_dialog.vala:27
+#: ../data/add_conversation/add_contact_dialog.ui:23
+msgid "Add"
+msgstr "Legg til"
+
+#: ../src/ui/add_conversation/add_groupchat_dialog.vala:41
+#: ../data/manage_accounts/add_account_dialog.ui:21
+msgid "Save"
+msgstr "Lagre"
+
+#: ../src/ui/add_conversation/add_conference_dialog.vala:47
+msgid "Next"
+msgstr "Neste"
+
+#: ../src/ui/add_conversation/select_contact_dialog.vala:84
+#: ../src/ui/unified_window.vala:146 ../data/menu_add.ui:6
+msgid "Start Chat"
+msgstr "Start sludring"
+
+#: ../src/ui/add_conversation/select_contact_dialog.vala:85
+msgid "Start"
+msgstr "Start"
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:105
+msgid "Joining…"
+msgstr "Tar del…"
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:138
+msgid "Password required to enter room"
+msgstr "Passord kreves for å ta del i rommet"
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:143
+msgid "Banned from joining or creating conference"
+msgstr "Bannlyst fra å ta del i eller å opprette konferanser"
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:145
+msgid "Room does not exist"
+msgstr "Rommet finnes ikke"
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:147
+msgid "Not allowed to create room"
+msgstr "Ikke tillatt å opprette rom"
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:149
+msgid "Members-only room"
+msgstr "Rommet er kun for medlemmer"
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:152
+msgid "Choose a different nick"
+msgstr "Velg et annet kallenavn"
+
+#: ../src/ui/add_conversation/conference_details_fragment.vala:154
+msgid "Too many occupants in room"
+msgstr "Rommet har for mange deltagere"
+
+#: ../src/ui/unified_window.vala:137
+msgid "No active accounts"
+msgstr "Ingen kontoer aktive"
+
+#: ../src/ui/unified_window.vala:138
+msgid "Manage accounts"
+msgstr "Behandle kontoer"
+
+#: ../src/ui/unified_window.vala:145
+msgid "No active conversations"
+msgstr "Ingen kontoer aktive"
+
+#: ../src/ui/conversation_summary/chat_state_populator.vala:57
+msgid "is typing…"
 msgstr ""
 "Du kjenner blott blodets hvisken og benpipernes bøn fra det ubevisste "
 "sjeleliv…"
 
-#: src/ui/conversation_summary/chat_state_populator.vala:60
+#: ../src/ui/conversation_summary/chat_state_populator.vala:59
 msgid "has stopped typing"
 msgstr "har tatt pause i skrivinga"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:134
+#: ../src/ui/conversation_summary/message_textview.vala:33
+msgid "Message too long"
+msgstr "Meldingen er for land"
+
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:142
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr ""
+msgstr "%x, %H∶%M"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:135
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:143
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr ""
+msgstr "%x, %l∶%M %p"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:138
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:146
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr ""
+msgstr "%b %d, %H∶%M"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:139
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:147
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr ""
+msgstr "%b %d, %l∶%M %p"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:142
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:150
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr ""
+msgstr "%a, %H∶%M"
 
-#: src/ui/conversation_summary/conversation_item_skeleton.vala:143
+#: ../src/ui/conversation_summary/conversation_item_skeleton.vala:151
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr ""
+msgstr "%a, %l∶%M %p"
 
-#: src/ui/conversation_summary/message_textview.vala:33
-#, fuzzy
-msgid "Message too long"
-msgstr "Meldingshistorikk"
-
-#: src/ui/manage_accounts/add_account_dialog.vala:21
-msgid "Add Account"
-msgstr "Legg til konto"
-
-#: src/ui/manage_accounts/dialog.vala:150
-msgid "Select avatar"
-msgstr "Velg avatar"
-
-#: src/ui/manage_accounts/dialog.vala:151
-msgid "Select"
-msgstr "Velg"
-
-#: src/ui/manage_accounts/dialog.vala:159
-msgid "Images"
-msgstr ""
-
-#: src/ui/manage_accounts/dialog.vala:162
-msgid "All files"
-msgstr ""
-
-#: src/ui/manage_accounts/dialog.vala:224
-#, fuzzy
-msgid "Connecting…"
-msgstr "Kobler til…"
-
-#: src/ui/manage_accounts/dialog.vala:226
-msgid "Connected"
-msgstr "Tilkoblet"
-
-#: src/ui/manage_accounts/dialog.vala:228
-msgid "Disconnected"
-msgstr "Frakoblet"
-
-#: src/ui/manage_accounts/dialog.vala:237
-msgid "Wrong password"
-msgstr "Feil passord"
-
-#: src/ui/manage_accounts/dialog.vala:240
-#: src/ui/manage_accounts/dialog.vala:242
-msgid "Error"
-msgstr "Feil"
-
-#: src/ui/notifications.vala:103
-msgid "Subscription request"
-msgstr "Abonnementsforespørsel"
-
-#: src/ui/notifications.vala:107
-msgid "Accept"
-msgstr "Godta"
-
-#: src/ui/notifications.vala:108
-msgid "Deny"
-msgstr "Nekt"
-
-#: src/ui/occupant_menu/list.vala:107
+#: ../src/ui/occupant_menu/list.vala:105
 msgid "Owner"
 msgstr "Eier"
 
-#: src/ui/occupant_menu/list.vala:109
+#: ../src/ui/occupant_menu/list.vala:107
 msgid "Admin"
 msgstr "Admin"
 
-#: src/ui/occupant_menu/list.vala:111
+#: ../src/ui/occupant_menu/list.vala:109
 msgid "Member"
 msgstr "Medlem"
 
-#: src/ui/occupant_menu/list.vala:113
+#: ../src/ui/occupant_menu/list.vala:111
 msgid "User"
 msgstr "Bruker"
 
-#: src/ui/occupant_menu/view.vala:26 src/ui/occupant_menu/view.vala:35
+#: ../src/ui/occupant_menu/view.vala:26 ../src/ui/occupant_menu/view.vala:35
 msgid "Invite"
-msgstr ""
+msgstr "Inviter"
 
-#: src/ui/occupant_menu/view.vala:34
-#, fuzzy
+#: ../src/ui/occupant_menu/view.vala:34
 msgid "Invite to Conference"
-msgstr "Ta del i konferanse"
+msgstr "Inviter til konferanse"
 
-#: src/ui/occupant_menu/view.vala:84
+#: ../src/ui/occupant_menu/view.vala:84
 msgid "Start private conversation"
 msgstr "Start privat samtale"
 
-#: src/ui/occupant_menu/view.vala:92
+#: ../src/ui/occupant_menu/view.vala:92
 msgid "Kick"
-msgstr ""
+msgstr "Kast ut"
 
-#: src/ui/unified_window.vala:141
-msgid "No accounts active"
-msgstr "Ingen kontoer aktive"
+#: ../src/ui/contact_details/dialog.vala:37
+msgid "Conference Details"
+msgstr "Konferansedetaljer"
 
-#: src/ui/unified_window.vala:142
-msgid "Manage accounts"
-msgstr "Behandle kontoer"
+#: ../src/ui/contact_details/dialog.vala:37 ../data/menu_conversation.ui:6
+msgid "Contact Details"
+msgstr "Kontaktdetaljer"
 
-#: src/ui/unified_window.vala:149
-msgid "No conversation active"
-msgstr "Ingen kontoer aktive"
+#: ../src/ui/contact_details/muc_config_form_provider.vala:39
+msgid "Name of the room"
+msgstr "Rommets navn"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:42
+msgid "Description of the room"
+msgstr "Beskrivelse av rommet"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:45
+msgid "Persistent"
+msgstr "Vedvarende"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:46
+msgid "The room will persist after the last occupant leaves"
+msgstr "Rommet vil vedvare etter at siste deltager forlater"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:49
+msgid "Publicly searchable"
+msgstr "Offentlig søkbart"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:52
+msgid "Occupants may change the subject"
+msgstr "Deltagere kan endre emne"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:55
+msgid "Discover real JIDs"
+msgstr "Oppdag ekte JID-er"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:56
+msgid "Who may discover real JIDs?"
+msgstr "Hvem har tilgang til oppdagelse av ekte JID-er?"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:59
+#: ../data/manage_accounts/dialog.ui:166
+#: ../data/manage_accounts/add_account_dialog.ui:73
+#: ../data/add_conversation/conference_details_fragment.ui:175
+#: ../data/add_conversation/add_groupchat_dialog.ui:147
+msgid "Password"
+msgstr "Passord"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:60
+#, fuzzy
+msgid "Password required for room entry, if any"
+msgstr "Passord kreves for å ta del i rommet. La stå tomt for inget"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:63
+msgid "Moderated"
+msgstr "Moderert"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:64
+msgid "Only occupants with voice may send messages"
+msgstr "Bare deltagere med stemme kan sende meldinger"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:67
+msgid "Members only"
+msgstr "Kun for medlemmer"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:68
+msgid "Only members may enter the room"
+msgstr "Kun medlemmer har adgang til rommet"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:71
+msgid "Message history"
+msgstr "Meldingshistorikk"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:72
+msgid "Maximum amount of backlog issued by the room"
+msgstr "Maksimalt antall meldinger med historikk som skal svares av rommet"
+
+#: ../src/ui/contact_details/muc_config_form_provider.vala:78
+msgid "Room Configuration"
+msgstr "Rom-oppsett"
+
+#: ../src/ui/contact_details/blocking_provider.vala:31
+#: ../src/ui/contact_details/settings_provider.vala:22
+#: ../src/ui/contact_details/settings_provider.vala:25
+#: ../src/ui/contact_details/settings_provider.vala:30 ../data/menu_app.ui:10
+msgid "Settings"
+msgstr "Innstillinger"
+
+#: ../src/ui/contact_details/blocking_provider.vala:31
+msgid "Block"
+msgstr "Blokker"
+
+#: ../src/ui/contact_details/blocking_provider.vala:31
+msgid "Communication and status updates in either direction are blocked"
+msgstr "Kommunikasjon og statusoppdateringer i begge retninger er blokkert"
+
+#: ../src/ui/contact_details/settings_provider.vala:22
+#: ../data/settings_dialog.ui:22
+msgid "Send typing notifications"
+msgstr "Send skrivevarsling"
+
+#: ../src/ui/contact_details/settings_provider.vala:25
+#: ../data/settings_dialog.ui:34
+msgid "Send message marker"
+msgstr "Send meldingsmarkør"
+
+#: ../src/ui/contact_details/settings_provider.vala:30
+#: ../src/ui/contact_details/settings_provider.vala:39
+msgid "Notifications"
+msgstr "Merknader"
+
+#: ../src/ui/contact_details/settings_provider.vala:39
+msgid "Local Settings"
+msgstr "Lokale innstillinger"
+
+#: ../src/ui/contact_details/settings_provider.vala:74
+#: ../src/ui/contact_details/settings_provider.vala:114
+#: ../src/ui/contact_details/settings_provider.vala:116
+msgid "On"
+msgstr "På"
+
+#: ../src/ui/contact_details/settings_provider.vala:76
+#: ../src/ui/contact_details/settings_provider.vala:114
+#: ../src/ui/contact_details/settings_provider.vala:117
+msgid "Off"
+msgstr "Av"
+
+#: ../src/ui/contact_details/settings_provider.vala:78
+msgid "Only when mentioned"
+msgstr "Bare når nevnt"
+
+#: ../src/ui/contact_details/settings_provider.vala:80
+#: ../src/ui/contact_details/settings_provider.vala:115
+#, c-format
+msgid "Default: %s"
+msgstr "Forvalg: %s"
+
+#: ../data/settings_dialog.ui:7
+msgid "Preferences"
+msgstr "Innstillinger"
+
+#: ../data/settings_dialog.ui:46
+msgid "Notify when a new message arrives"
+msgstr "Varsle ved mottak av ny melding"
+
+#: ../data/settings_dialog.ui:58
+msgid "Convert smileys to emojis"
+msgstr "Konverter smilefjes til emoji-er"
+
+#: ../data/manage_accounts/dialog.ui:9 ../data/menu_app.ui:6
+msgid "Accounts"
+msgstr "Kontoer"
+
+#: ../data/manage_accounts/dialog.ui:196
+#: ../data/manage_accounts/add_account_dialog.ui:102
+msgid "Local alias"
+msgstr "Lokalt alias"
+
+#: ../data/manage_accounts/dialog.ui:251
+msgid "No accounts configured"
+msgstr "Ingen kontoer satt opp"
+
+#: ../data/manage_accounts/dialog.ui:262
+msgid "Add an account"
+msgstr "Legg til en konto"
+
+#: ../data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Ukryptert"
+
+#: ../data/menu_app.ui:16
+msgid "Quit"
+msgstr "Avslutt"
+
+#: ../data/conversation_selector/view.ui:14
+msgid "Search"
+msgstr "Søk"
+
+#: ../data/add_conversation/conference_details_fragment.ui:19
+#: ../data/add_conversation/add_groupchat_dialog.ui:49
+#: ../data/add_conversation/add_contact_dialog.ui:48
+msgid "Account"
+msgstr "Konto"
+
+#: ../data/add_conversation/conference_details_fragment.ui:123
+#: ../data/add_conversation/add_groupchat_dialog.ui:120
+msgid "Nick"
+msgstr "Kallenavn"
+
+#: ../data/add_conversation/add_groupchat_dialog.ui:175
+#: ../data/add_conversation/add_contact_dialog.ui:101
+msgid "Alias"
+msgstr "Alias"
+
+#: ../data/add_conversation/add_contact_dialog.ui:129
+msgid "Request presence updates"
+msgstr "Forespør tilstedeværelsesoppdateringer"
+
+#~ msgid "This is an app-notification. Click the button to dismiss"
+#~ msgstr "Dette er en merknad i programmet. Klikk på knappen for å avvise"
+
+#~ msgid "Join on startup"
+#~ msgstr "Ta del ved oppstart"
 
 #~ msgid "Add Chat"
 #~ msgstr "Legg til sludring"

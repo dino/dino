@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ConversationSummary {
 
-[GtkTemplate (ui = "/im/dino/conversation_summary/message_item.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/conversation_summary/message_item.ui")]
 public class ConversationItemSkeleton : Grid {
 
     [GtkChild] private Image image;
@@ -17,9 +17,10 @@ public class ConversationItemSkeleton : Grid {
 
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
-    public Gee.List<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
+    public ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
 
     private Box box = new Box(Orientation.VERTICAL, 2) { visible=true };
+    private HashMap<Plugins.MetaConversationItem, Widget> item_widgets = new HashMap<Plugins.MetaConversationItem, Widget>();
 
     public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation) {
         this.conversation = conversation;
@@ -36,11 +37,18 @@ public class ConversationItemSkeleton : Grid {
         Widget widget = (Widget) item.get_widget(Plugins.WidgetType.GTK);
         if (item.requires_header) {
             box.add(widget);
+            item_widgets[item] = widget;
         } else {
             set_title_widget(widget);
         }
-        item.notify["mark"].connect_after(() => { Idle.add(() => { update_received(); return false; }); });
-        update_received();
+        item.notify["mark"].connect_after(update_received_mark);
+        update_received_mark();
+    }
+
+    public void remove_meta_item(Plugins.MetaConversationItem item) {
+        item_widgets[item].destroy();
+        item_widgets.unset(item);
+        items.remove(item);
     }
 
     public void set_title_widget(Widget w) {
@@ -59,7 +67,9 @@ public class ConversationItemSkeleton : Grid {
 
     private void setup(Plugins.MetaConversationItem item) {
         update_time();
-        Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(30, 30, image.scale_factor)).set_greyscale(item.dim).draw_jid(stream_interactor, item.jid, conversation.account));
+        if (item.requires_avatar) {
+            Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(30, 30, image.scale_factor)).set_greyscale(item.dim).draw_jid(stream_interactor, item.jid, conversation.account));
+        }
         if (item.requires_header) {
             set_default_title_widget(item.jid);
         }
@@ -81,7 +91,7 @@ public class ConversationItemSkeleton : Grid {
         set_title_widget(name_label);
     }
 
-    private void update_received() {
+    private void update_received_mark() {
         bool all_received = true;
         bool all_read = true;
         bool all_sent = true;

@@ -40,7 +40,10 @@ public interface Dino.Application : GLib.Application {
 
         activate.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;
-            restore();
+            Idle.add(() => {
+                restore();
+                return false;
+            });
         });
         shutdown.connect(() => {
             stream_interactor.connection_manager.make_offline_all();

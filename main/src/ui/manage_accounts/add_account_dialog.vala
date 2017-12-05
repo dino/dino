@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ManageAccounts {
 
-[GtkTemplate (ui = "/im/dino/manage_accounts/add_account_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/manage_accounts/add_account_dialog.ui")]
 public class AddAccountDialog : Gtk.Dialog {
 
     public signal void added(Account account);

@@ -14,13 +14,13 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public SearchPathGenerator? search_path_generator { get; set; }
 
     public Application() throws Error {
-        Object(application_id: "im.dino", flags: ApplicationFlags.HANDLES_OPEN);
+        Object(application_id: "im.dino.Dino", flags: ApplicationFlags.HANDLES_OPEN);
         init();
         Environment.set_application_name("Dino");
-        Window.set_default_icon_name("dino");
+        Window.set_default_icon_name("im.dino.Dino");
 
         CssProvider provider = new CssProvider();
-        provider.load_from_resource("/im/dino/theme.css");
+        provider.load_from_resource("/im/dino/Dino/theme.css");
         StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
 
         activate.connect(() => {
@@ -102,9 +102,9 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction quit_action = new SimpleAction("quit", null);
         quit_action.activate.connect(quit);
         add_action(quit_action);
-        add_accelerator("<Ctrl>Q", "app.quit", null);
+        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
 
-        Builder builder = new Builder.from_resource("/im/dino/menu_app.ui");
+        Builder builder = new Builder.from_resource("/im/dino/Dino/menu_app.ui");
         MenuModel menu = builder.get_object("menu_app") as MenuModel;
 
         set_app_menu(menu);

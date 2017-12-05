@@ -1,13 +1,18 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: dino-openpgp-0.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-24 01:10+0100\n"
-"PO-Revision-Date: 2017-11-17 20:52+0000\n"
-"Last-Translator: Nathan Follens <nathan@email.is>\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-"
-"openpgp/nl/>\n"
-"Language: nl\n"
+"PO-Revision-Date: 2017-11-18 00:23+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
+"plugin-openpgp/nb/>\n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,35 +23,35 @@ msgstr ""
 #: ../src/account_settings_widget.vala:81
 #: ../src/account_settings_widget.vala:109
 msgid "Key publishing disabled"
-msgstr "Publiceren van sleutels uitgeschakeld"
+msgstr "Nøkkelpublisering avskrudd"
 
 #: ../src/account_settings_widget.vala:75
 msgid "No keys available. Generate one!"
-msgstr "Geen sleutels beschikbaar. Genereer er een!"
+msgstr "Ingen nøkler tilgjengelige. Generer én."
 
 #: ../src/account_settings_widget.vala:81
 msgid "Select key"
-msgstr "Selecteer een sleutel"
+msgstr "Velg nøkkel"
 
 #: ../src/account_settings_widget.vala:98
 msgid "Loading…"
-msgstr "Laden…"
+msgstr "Laster…"
 
 #: ../src/account_settings_widget.vala:98
 msgid "Querying GnuPG"
-msgstr "GnuPG inroepen"
+msgstr "Sender spørring til GnuPG"
 
 #: ../src/account_settings_widget.vala:109
 msgid "Error in GnuPG"
-msgstr "Fout in GnuPG"
+msgstr "Feil i GnuPG"
 
 #: ../src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "Sleutel niet in sleutelbos"
+msgstr "Nøkkelen finnes ikke i nøkkelknippet"
 
 #: ../src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "Versleuteling"
+msgstr "Kryptering"
 
 #~ msgid "OpenPGP"
 #~ msgstr "OpenPGP"

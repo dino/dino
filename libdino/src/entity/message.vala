@@ -47,7 +47,7 @@ public class Message : Object {
     public Marked marked {
         get { return marked_; }
         set {
-            if (marked == Marked.RECEIVED && marked == Marked.READ) return;
+            if (value == Marked.RECEIVED && marked == Marked.READ) return;
             marked_ = value;
         }
     }

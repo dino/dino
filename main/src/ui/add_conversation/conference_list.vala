@@ -21,11 +21,8 @@ protected class ConferenceList : FilterableList {
         set_sort_func(sort);
 
         stream_interactor.get_module(MucManager.IDENTITY).bookmarks_updated.connect((account, conferences) => {
-            Idle.add(() => {
-                lists[account] = conferences;
-                refresh_conferences();
-                return false;
-            });
+            lists[account] = conferences;
+            refresh_conferences();
         });
 
         foreach (Account account in stream_interactor.get_accounts()) {
@@ -43,11 +40,8 @@ protected class ConferenceList : FilterableList {
     }
 
     private void on_conference_bookmarks_received(Core.XmppStream stream, Account account, Gee.List<Xep.Bookmarks.Conference> conferences) {
-        Idle.add(() => {
-            lists[account] = conferences;
-            refresh_conferences();
-            return false;
-        });
+        lists[account] = conferences;
+        refresh_conferences();
     }
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {

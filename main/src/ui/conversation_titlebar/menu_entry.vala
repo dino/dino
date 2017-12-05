@@ -29,7 +29,7 @@ class MenuWidget : MenuButton, Plugins.ConversationTitlebarWidget {
     public MenuWidget(StreamInteractor stream_interactor) {
         image = new Image.from_icon_name("open-menu-symbolic", IconSize.MENU);
 
-        Builder builder = new Builder.from_resource("/im/dino/menu_conversation.ui");
+        Builder builder = new Builder.from_resource("/im/dino/Dino/menu_conversation.ui");
         MenuModel menu = builder.get_object("menu_conversation") as MenuModel;
         set_menu_model(menu);
 

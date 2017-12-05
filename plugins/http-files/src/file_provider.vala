@@ -17,7 +17,7 @@ public class FileProvider : Dino.FileProvider, Object {
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.url_regex = new Regex("""^(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$""");
-        this.file_ext_regex = new Regex("""\.(png|jpg|jpeg|svg|gif)""");
+        this.file_ext_regex = new Regex("""\.(png|jpg|jpeg|svg|gif|pgp)""");
 
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(check_message);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(check_message);
@@ -39,37 +39,40 @@ public class FileProvider : Dino.FileProvider, Object {
         var session = new Soup.Session();
         var head_message = new Soup.Message("HEAD", message.body);
         if (head_message != null) {
-            session.send_message(head_message);
-            string? content_type = null, content_length = null;
-            print(message.body + ":\n");
-            head_message.response_headers.foreach((name, val) => {
-                print(name + " " + val + "\n");
-                if (name == "Content-Type") content_type = val;
-                if (name == "Content-Length") content_length = val;
-            });
-            if (/*content_type != null && content_type.has_prefix("image") &&*/ content_length != null && int.parse(content_length) < 5000000) {
-                FileTransfer file_transfer = new FileTransfer();
-                try {
+            session.send_async.begin(head_message, null, (obj, res) => {
+                string? content_type = null, content_length = null;
+                print(message.body + ":\n");
+                head_message.response_headers.foreach((name, val) => {
+                    print(name + " " + val + "\n");
+                    if (name == "Content-Type") content_type = val;
+                    if (name == "Content-Length") content_length = val;
+                });
+                if (/*content_type != null && content_type.has_prefix("image") &&*/ content_length != null && int.parse(content_length) < 5000000) {
+                    FileTransfer file_transfer = new FileTransfer();
                     Soup.Request request = session.request(message.body);
-                    file_transfer.input_stream = request.send();
-                } catch (Error e) {
-                    return;
+                    request.send_async.begin(null, (obj, res) => {
+                        try {
+                            file_transfer.input_stream = request.send_async.end(res);
+                        } catch (Error e) {
+                            return;
+                        }
+                        file_transfer.account = conversation.account;
+                        file_transfer.counterpart = message.counterpart;
+                        file_transfer.ourpart = message.ourpart;
+                        file_transfer.encryption = Encryption.NONE;
+                        file_transfer.time = message.time;
+                        file_transfer.local_time = message.local_time;
+                        file_transfer.direction = message.direction;
+                        file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);
+                        file_transfer.mime_type = content_type;
+                        file_transfer.size = int.parse(content_length);
+                        file_transfer.state = FileTransfer.State.NOT_STARTED;
+                        file_transfer.provider = 0;
+                        file_transfer.info = message.body;
+                        file_incoming(file_transfer);
+                    });
                 }
-                file_transfer.account = conversation.account;
-                file_transfer.counterpart = message.counterpart;
-                file_transfer.ourpart = message.ourpart;
-                file_transfer.encryption = Encryption.NONE;
-                file_transfer.time = message.time;
-                file_transfer.local_time = message.local_time;
-                file_transfer.direction = message.direction;
-                file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);
-                file_transfer.mime_type = content_type;
-                file_transfer.size = int.parse(content_length);
-                file_transfer.state = FileTransfer.State.NOT_STARTED;
-                file_transfer.provider = 0;
-                file_transfer.info = message.body;
-                file_incoming(file_transfer);
-            }
+            });
         }
     }
 }

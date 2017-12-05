@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/add_conversation/conference_details_fragment.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/add_conversation/conference_details_fragment.ui")]
 protected class ConferenceDetailsFragment : Box {
 
     public bool done {
@@ -99,15 +99,10 @@ protected class ConferenceDetailsFragment : Box {
         jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
         nick_entry.key_release_event.connect(() => { done = true; return false; });
 
-        stream_interactor.get_module(MucManager.IDENTITY).enter_error.connect((account, jid, error) => {
-            Idle.add(() => {
-                on_enter_error(account, jid, error);
-                return false;
-            });
-        });
+        stream_interactor.get_module(MucManager.IDENTITY).enter_error.connect(on_enter_error);
         notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
         ok_button.clicked.connect(() => {
-            ok_button.label = _("Joining...");
+            ok_button.label = _("Joining…");
             ok_button.sensitive = false;
         });
     }
@@ -151,12 +146,12 @@ protected class ConferenceDetailsFragment : Box {
             case Xmpp.Xep.Muc.MucEnterError.CREATION_RESTRICTED:
                 label_text = _("Not allowed to create room"); break;
             case Xmpp.Xep.Muc.MucEnterError.NOT_IN_MEMBER_LIST:
-                label_text = _("Room is members only"); break;
+                label_text = _("Members-only room"); break;
             case Xmpp.Xep.Muc.MucEnterError.USE_RESERVED_ROOMNICK:
             case Xmpp.Xep.Muc.MucEnterError.NICK_CONFLICT:
                 label_text = _("Choose a different nick"); break;
             case Xmpp.Xep.Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
-                label_text = _("Room has too many occupants"); break;
+                label_text = _("Too many occupants in room"); break;
         }
         notification_label.label = label_text;
         notification_revealer.set_reveal_child(true);

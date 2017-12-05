@@ -25,12 +25,12 @@ protected class RosterList : FilterableList {
 
         handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).removed_roster_item.connect( (account, jid, roster_item) => {
             if (accounts.contains(account)) {
-                Idle.add(() => { on_removed_roster_item(account, jid, roster_item); return false;});
+                on_removed_roster_item(account, jid, roster_item);
             }
         });
         handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect( (account, jid, roster_item) => {
             if (accounts.contains(account)) {
-                Idle.add(() => { on_updated_roster_item(account, jid, roster_item); return false;});
+                on_updated_roster_item(account, jid, roster_item);
             }
         });
         destroy.connect(() => {

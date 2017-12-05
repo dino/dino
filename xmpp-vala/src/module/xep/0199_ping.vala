@@ -5,7 +5,7 @@ using Xmpp.Core;
 namespace Xmpp.Xep.Ping {
     private const string NS_URI = "urn:xmpp:ping";
 
-    public class Module : XmppStreamModule {
+    public class Module : XmppStreamModule, Iq.Handler {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0199_ping");
 
         public delegate void OnResult(XmppStream stream);
@@ -18,19 +18,20 @@ namespace Xmpp.Xep.Ping {
         }
 
         public override void attach(XmppStream stream) {
-            stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, new IqHandlerImpl());
+            stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, this);
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         }
 
-        public override void detach(XmppStream stream) { }
+        public override void detach(XmppStream stream) {
+            stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI, this);
+        }
+
+        public void on_iq_get(XmppStream stream, Iq.Stanza iq) {
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+        }
+        public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
-
-        private class IqHandlerImpl : Iq.Handler, Object {
-            public void on_iq_get(XmppStream stream, Iq.Stanza iq) {
-                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
-            }
-            public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
-        }
     }
 }
