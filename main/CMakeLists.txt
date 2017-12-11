@@ -102,6 +102,7 @@ SOURCES
     src/ui/conversation_summary/conversation_item_skeleton.vala
     src/ui/conversation_summary/conversation_view.vala
     src/ui/conversation_summary/date_separator_populator.vala
+    src/ui/conversation_summary/default_file_display.vala
     src/ui/conversation_summary/default_message_display.vala
     src/ui/conversation_summary/file_populator.vala
     src/ui/conversation_summary/image_display.vala

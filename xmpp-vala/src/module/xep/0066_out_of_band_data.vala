@@ -8,4 +8,8 @@ public static void add_url_to_message(Message.Stanza message, string url, string
     message.stanza.put_node(new StanzaNode.build("x", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("url", NS_URI).put_node(new StanzaNode.text(url))));
 }
 
+public static string? get_url_from_message(Message.Stanza message) {
+    return message.stanza.get_deep_string_content(NS_URI + ":x", NS_URI + ":url");
+}
+
 }
