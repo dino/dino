@@ -109,6 +109,7 @@ SOURCES
     src/ui/conversation_summary/message_populator.vala
     src/ui/conversation_summary/message_textview.vala
     src/ui/conversation_summary/slashme_message_display.vala
+    src/ui/conversation_summary/subscription_notification.vala
     src/ui/conversation_titlebar/file_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala

@@ -12,6 +12,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     public Conversation? conversation { get; private set; }
 
     [GtkChild] private ScrolledWindow scrolled;
+    [GtkChild] private Revealer notification_revealer;
+    [GtkChild] private Box notifications;
     [GtkChild] private Box main;
     [GtkChild] private Stack stack;
 
@@ -22,6 +24,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
     private Gee.List<ConversationItemSkeleton> item_skeletons = new Gee.ArrayList<ConversationItemSkeleton>();
     private MessagePopulator message_item_populator;
+    private SubscriptionNotitication subscription_notification;
 
     private double? was_value;
     private double? was_upper;
@@ -36,6 +39,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         scrolled.vadjustment.notify["value"].connect(on_value_notify);
 
         message_item_populator = new MessagePopulator(stream_interactor);
+        subscription_notification = new SubscriptionNotitication(stream_interactor);
 
         insert_item.connect(on_insert_item);
         remove_item.connect(on_remove_item);
@@ -77,6 +81,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         message_item_populator.populate_latest(conversation, 40);
         Idle.add(() => { on_value_notify(); return false; });
 
+        subscription_notification.init(conversation, this);
+
         stack.set_visible_child_name("main");
     }
 
@@ -102,6 +108,20 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             }
             meta_items.remove(item);
         }
+    }
+
+    public void add_notification(Widget widget) {
+        notifications.add(widget);
+        Timeout.add(20, () => {
+            notification_revealer.transition_duration = 200;
+            notification_revealer.reveal_child = true;
+            return false;
+        });
+    }
+
+    public void remove_notification(Widget widget) {
+        notification_revealer.reveal_child = false;
+        widget.destroy();
     }
 
     private bool merge_back(Plugins.MetaConversationItem item) {
@@ -246,6 +266,9 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         item_item_skeletons.clear();
         widgets.clear();
         main.@foreach((widget) => { widget.destroy(); });
+        notifications.@foreach((widget) => { widget.destroy(); });
+        notification_revealer.transition_duration = 0;
+        notification_revealer.set_reveal_child(false);
     }
 }
 

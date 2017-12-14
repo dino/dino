@@ -82,6 +82,7 @@ namespace Xmpp.Presence {
                     received_subscription_request(stream, presence.from);
                     break;
                 case Presence.Stanza.TYPE_UNSUBSCRIBE:
+                    stream.get_flag(Flag.IDENTITY).remove_presence(presence.from);
                     received_unsubscription(stream, presence.from);
                     break;
             }
