@@ -39,7 +39,6 @@ public class DefaultFileDisplay : Plugins.MetaConversationItem {
 
     public override Object? get_widget(Plugins.WidgetType widget_type) {
         Box main_box = new Box(Orientation.HORIZONTAL, 4) { halign=Align.START, visible=true };
-        string? content_type = ContentType.from_mime_type(file_transfer.mime_type);
         string? icon_name = ContentType.get_generic_icon_name(file_transfer.mime_type);
         Image content_type_image = new Image.from_icon_name(icon_name, IconSize.DND) { visible=true };
         main_box.add(content_type_image);

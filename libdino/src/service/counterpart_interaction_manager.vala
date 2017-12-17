@@ -27,9 +27,11 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(check_if_got_marker);
+        stream_interactor.stream_negotiated.connect(() => chat_states.clear() );
     }
 
     public string? get_chat_state(Account account, Jid jid) {
+        if (stream_interactor.connection_manager.get_state(account) != ConnectionManager.ConnectionState.CONNECTED) return null;
         return chat_states[jid];
     }
 
