@@ -17,25 +17,38 @@ public class FileProvider : Dino.FileProvider, Object {
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.url_regex = new Regex("""^(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$""");
-        this.file_ext_regex = new Regex("""\.(png|jpg|jpeg|svg|gif|pgp)""");
+        this.file_ext_regex = new Regex("""\.(png|jpg|jpeg|svg|gif|pgp)$""");
 
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(check_message);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(check_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(check_in_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(check_out_message);
         stream_interactor.get_module(Manager.IDENTITY).uploaded.connect((file_transfer, url) => {
             file_transfer.info = url;
             ignore_once.add(url);
         });
     }
 
-    public void check_message(Message message, Conversation conversation) {
-        if (ignore_once.remove(message.body)) return;
+    private void check_in_message(Message message, Conversation conversation) {
+        if (!url_regex.match(message.body)) return;
         Jid relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(message.from, conversation.account) ?? conversation.counterpart;
         bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
         if (message.direction == Message.DIRECTION_RECEIVED && !in_roster) return;
+
+        string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(message.stanza);
+        if ((oob_url != null && oob_url == message.body) || file_ext_regex.match(message.body)) {
+            download_url(message, conversation);
+        }
+    }
+
+    public void check_out_message(Message message, Conversation conversation) {
+        if (ignore_once.remove(message.body)) return;
         if (message.body.length < 5) return;
         if (!url_regex.match(message.body)) return;
         if (!file_ext_regex.match(message.body)) return;
 
+        download_url(message, conversation);
+    }
+
+    private void download_url(Message message, Conversation conversation) {
         var session = new Soup.Session();
         var head_message = new Soup.Message("HEAD", message.body);
         if (head_message != null) {
@@ -47,7 +60,7 @@ public class FileProvider : Dino.FileProvider, Object {
                     if (name == "Content-Type") content_type = val;
                     if (name == "Content-Length") content_length = val;
                 });
-                if (/*content_type != null && content_type.has_prefix("image") &&*/ content_length != null && int.parse(content_length) < 5000000) {
+                if (content_length != null && int.parse(content_length) < 5000000) {
                     FileTransfer file_transfer = new FileTransfer();
                     Soup.Request request = session.request(message.body);
                     request.send_async.begin(null, (obj, res) => {

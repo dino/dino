@@ -27,8 +27,8 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MucManager.IDENTITY).joined.connect(on_groupchat_joined);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(handle_new_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_new_message);
     }
 
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
@@ -117,13 +117,15 @@ public class ConversationManager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_message_received(Entities.Message message, Conversation conversation) {
+    private void handle_new_message(Entities.Message message, Conversation conversation) {
         conversation.last_active = message.time;
-        start_conversation(conversation);
-    }
 
-    private void on_message_sent(Entities.Message message, Conversation conversation) {
-        conversation.last_active = message.time;
+        if (message.stanza != null) {
+            bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null;
+            bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+            if (is_mam_message && !is_recent) return;
+        }
+        start_conversation(conversation);
     }
 
     private void on_groupchat_joined(Account account, Jid jid, string nick) {

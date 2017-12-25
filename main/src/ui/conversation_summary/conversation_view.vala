@@ -74,7 +74,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
         }
         message_item_populator.init(conversation, this);
-        message_item_populator.populate_number(conversation, new DateTime.now_utc(), 50);
+        message_item_populator.populate_latest(conversation, 40);
+        Idle.add(() => { on_value_notify(); return false; });
 
         stack.set_visible_child_name("main");
     }
@@ -217,7 +218,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private void load_earlier_messages() {
         was_value = scrolled.vadjustment.value;
         if (!reloading_mutex.trylock()) return;
-        if (meta_items.size > 0) message_item_populator.populate_number(conversation, meta_items.first().sort_time, 20);
+        if (meta_items.size > 0) message_item_populator.populate_before(conversation, meta_items.first(), 20);
     }
 
     private static int sort_meta_items(Plugins.MetaConversationItem a, Plugins.MetaConversationItem b) {

@@ -34,9 +34,11 @@ public class MessageStorage : StreamInteractionModule, Object {
         Gee.List<Message> ret = new ArrayList<Message>(Message.equals_func);
         BidirIterator<Message> iter = messages[conversation].bidir_iterator();
         iter.last();
-        while (iter.valid && ret.size < count) {
-            iter.previous();
-            ret.insert(0, iter.get());
+        if (messages[conversation].size > 0) {
+            do {
+                ret.insert(0, iter.get());
+                iter.previous();
+            } while (iter.has_previous() && ret.size < count);
         }
         return ret;
     }
@@ -49,9 +51,23 @@ public class MessageStorage : StreamInteractionModule, Object {
         return null;
     }
 
-    public Gee.List<Message>? get_messages_before(Conversation? conversation, DateTime before, int count = 20) {
-        Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, before);
-        return db_messages;
+    public Gee.List<Message>? get_messages_before_message(Conversation? conversation, Message message, int count = 20) {
+        SortedSet<Message>? before = messages[conversation].head_set(message);
+        if (before != null && before.size >= count) {
+            Gee.List<Message> ret = new ArrayList<Message>(Message.equals_func);
+            Iterator<Message> iter = before.iterator();
+            iter.next();
+            for (int from_index = before.size - count; iter.has_next() && from_index > 0; from_index--) iter.next();
+            while(iter.has_next()) {
+                Message m = iter.get();
+                ret.add(m);
+                iter.next();
+            }
+            return ret;
+        } else {
+            Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, message.local_time);
+            return db_messages;
+        }
     }
 
     public Message? get_message_by_id(string stanza_id, Conversation conversation) {

@@ -68,6 +68,7 @@ public class ConversationItemSkeleton : Grid {
     private void setup(Plugins.MetaConversationItem item) {
         update_time();
         if (item.requires_avatar) {
+            image.visible = true;
             Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(30, 30, image.scale_factor)).set_greyscale(item.dim).draw_jid(stream_interactor, item.jid, conversation.account));
         }
         if (item.requires_header) {

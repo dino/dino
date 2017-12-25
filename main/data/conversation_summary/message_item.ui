@@ -11,7 +11,6 @@
                 <property name="height_request">30</property>
                 <property name="margin_top">2</property>
                 <property name="width_request">30</property>
-                <property name="visible">True</property>
                 <property name="yalign">0</property>
             </object>
             <packing>
