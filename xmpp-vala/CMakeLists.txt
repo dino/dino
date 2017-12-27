@@ -68,6 +68,7 @@ SOURCES
     "src/module/xep/0313_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/0368_srv_records_tls.vala"
+    "src/module/xep/0385_stateless_inline_media_sharing.vala"
     "src/module/xep/pixbuf_storage.vala"
 PACKAGES
     ${ENGINE_PACKAGES}
