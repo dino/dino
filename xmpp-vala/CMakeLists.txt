@@ -63,6 +63,7 @@ SOURCES
     "src/module/xep/0199_ping.vala"
     "src/module/xep/0184_message_delivery_receipts.vala"
     "src/module/xep/0203_delayed_delivery.vala"
+    "src/module/xep/0234_jingle_file_transfer.vala"
     "src/module/xep/0280_message_carbons.vala"
     "src/module/xep/0313_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"
