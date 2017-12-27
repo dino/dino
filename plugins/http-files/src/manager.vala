@@ -27,6 +27,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
         stream_interactor.get_module(FileManager.IDENTITY).add_sender(this);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(check_add_oob);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(check_add_sims);
     }
 
     public void send_file(Conversation conversation, FileTransfer file_transfer) {
@@ -74,6 +75,17 @@ public class Manager : StreamInteractionModule, FileSender, Object {
             Xep.OutOfBandData.add_url_to_message(message_stanza, message_stanza.body);
         }
     }
+
+    private void check_add_sims(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+        FileTransfer? file_transfer = message_get_file(db, message);
+        if (file_transfer != null) {
+            ArrayList<string> uris = new ArrayList<string>();
+            uris.add(message_stanza.body);
+            // XXX: This should be a size in codepoints, not bytes.
+            int message_length = message_stanza.body.length;
+            Xep.StatelessInlineMediaSharing.add_sims_to_message(message_stanza, 0, message_length, uris, file_transfer.file_name, file_transfer.mime_type, file_transfer.size);
+        }
+    }
 }
 
 public class FileMessageFilterDisplay : Plugins.MessageDisplayProvider, Object {
@@ -93,6 +105,16 @@ public class FileMessageFilterDisplay : Plugins.MessageDisplayProvider, Object {
     public Plugins.MetaConversationItem? get_item(Entities.Message message, Conversation conversation) {
         return null;
     }
+}
+
+private FileTransfer? message_get_file(Database db, Entities.Message message) {
+    Qlite.QueryBuilder builder = db.file_transfer.select()
+                .with(db.file_transfer.info, "=", message.body)
+                .with(db.file_transfer.account_id, "=", message.account.id)
+                .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(message.counterpart));
+    foreach (Qlite.Row row in builder)
+        return new FileTransfer.from_row(db, row);
+    return null;
 }
 
 private bool message_is_file(Database db, Entities.Message message) {
