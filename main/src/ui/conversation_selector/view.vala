@@ -44,6 +44,8 @@ public class View : Box {
                 conversation_list.select_row(row);
                 row.grab_focus();
             }
+        } else if (event.keyval == Key.Escape) {
+            search_revealer.reveal_child = false;
         }
         return false;
     }
