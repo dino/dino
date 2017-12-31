@@ -32,7 +32,7 @@ public class AccountSettingsDialog : Gtk.Dialog {
                 other_list.foreach((widget) => { widget.destroy(); });
             }
             string? other_b64 = row[plugin.db.identity_meta.identity_key_public_base64];
-            Label lbl = new Label(other_b64 != null ? fingerprint_markup(fingerprint_from_base64(other_b64)) : _("Unknown device (0x%xd)").printf(row[plugin.db.identity_meta.device_id])) { use_markup = true, visible = true, margin = 8, selectable=true };
+            Label lbl = new Label(other_b64 != null ? fingerprint_markup(fingerprint_from_base64(other_b64)) : _("Unknown device (0x%.8x)").printf(row[plugin.db.identity_meta.device_id])) { use_markup = true, visible = true, margin = 8, selectable=true };
             if (row[plugin.db.identity_meta.now_active] && other_b64 != null) {
                 other_list.insert(lbl, 0);
             } else {

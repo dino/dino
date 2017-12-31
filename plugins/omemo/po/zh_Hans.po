@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-24 01:10+0100\n"
+"POT-Creation-Date: 2017-12-31 22:08+0100\n"
 "PO-Revision-Date: 2017-05-08 01:21+0800\n"
 "Language-Team: Chinese (simplified)\n"
 "Language: \n"
@@ -10,40 +10,41 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/account_settings_widget.vala:42
-#: ../src/account_settings_widget.vala:45 ../data/account_settings_dialog.ui:19
+#: plugins/omemo/src/account_settings_widget.vala:42
+#: plugins/omemo/src/account_settings_widget.vala:45
+#: plugins/omemo/data/account_settings_dialog.ui:19
 msgid "Own fingerprint"
 msgstr "自己的指纹"
 
-#: ../src/account_settings_widget.vala:42
+#: plugins/omemo/src/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
 msgstr "会在第一次连接时生成"
 
-#: ../src/contact_details_provider.vala:31
+#: plugins/omemo/src/contact_details_provider.vala:31
 msgid "Encryption"
 msgstr ""
 
-#: ../src/contact_details_provider.vala:31
+#: plugins/omemo/src/contact_details_provider.vala:31
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/account_settings_dialog.vala:35
+#: plugins/omemo/src/account_settings_dialog.vala:35
 #, c-format
-msgid "Unknown device (0x%xd)"
+msgid "Unknown device (0x%.8x)"
 msgstr ""
 
-#: ../data/account_settings_dialog.ui:5
+#: plugins/omemo/data/account_settings_dialog.ui:5
 msgid "OMEMO Keys"
 msgstr ""
 
-#: ../data/account_settings_dialog.ui:88
+#: plugins/omemo/data/account_settings_dialog.ui:88
 msgid "Other devices"
 msgstr ""
 
-#: ../data/account_settings_dialog.ui:112
+#: plugins/omemo/data/account_settings_dialog.ui:112
 msgid "- None -"
 msgstr ""
 

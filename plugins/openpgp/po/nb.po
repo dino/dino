@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-24 01:10+0100\n"
+"POT-Creation-Date: 2017-12-31 22:08+0100\n"
 "PO-Revision-Date: 2017-11-18 00:23+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
@@ -19,37 +19,37 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.18-dev\n"
 
-#: ../src/account_settings_widget.vala:75
-#: ../src/account_settings_widget.vala:81
-#: ../src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:109
 msgid "Key publishing disabled"
 msgstr "Nøkkelpublisering avskrudd"
 
-#: ../src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:75
 msgid "No keys available. Generate one!"
 msgstr "Ingen nøkler tilgjengelige. Generer én."
 
-#: ../src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:81
 msgid "Select key"
 msgstr "Velg nøkkel"
 
-#: ../src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Loading…"
 msgstr "Laster…"
 
-#: ../src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Querying GnuPG"
 msgstr "Sender spørring til GnuPG"
 
-#: ../src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:109
 msgid "Error in GnuPG"
 msgstr "Feil i GnuPG"
 
-#: ../src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
 msgstr "Nøkkelen finnes ikke i nøkkelknippet"
 
-#: ../src/contact_details_provider.vala:30
+#: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Kryptering"
 

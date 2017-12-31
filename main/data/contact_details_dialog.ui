@@ -4,7 +4,7 @@
         <property name="modal">True</property>
         <child type="titlebar">
             <object class="GtkHeaderBar">
-                <property name="title" translatable="yes">Conversation Details</property>
+                <property name="title">Conversation Details</property>
                 <property name="show_close_button">True</property>
                 <property name="visible">True</property>
             </object>

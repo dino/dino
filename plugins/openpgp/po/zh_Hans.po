@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-24 01:10+0100\n"
+"POT-Creation-Date: 2017-12-31 22:08+0100\n"
 "PO-Revision-Date: 2017-05-08 01:21+0800\n"
 "Language-Team: Chinese (simplified)\n"
 "Language: \n"
@@ -10,37 +10,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/account_settings_widget.vala:75
-#: ../src/account_settings_widget.vala:81
-#: ../src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:109
 msgid "Key publishing disabled"
 msgstr ""
 
-#: ../src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:75
 msgid "No keys available. Generate one!"
 msgstr ""
 
-#: ../src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:81
 msgid "Select key"
 msgstr ""
 
-#: ../src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Loading…"
 msgstr ""
 
-#: ../src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Querying GnuPG"
 msgstr ""
 
-#: ../src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:109
 msgid "Error in GnuPG"
 msgstr ""
 
-#: ../src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
 msgstr ""
 
-#: ../src/contact_details_provider.vala:30
+#: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-24 01:10+0100\n"
+"POT-Creation-Date: 2017-12-31 22:08+0100\n"
 "PO-Revision-Date: 2017-11-22 16:39+0000\n"
 "Last-Translator: Aitor Beriain <beriain@bitmessage.ch>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-omemo/"
@@ -19,39 +19,40 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.18-dev\n"
 
-#: ../src/account_settings_widget.vala:42
-#: ../src/account_settings_widget.vala:45 ../data/account_settings_dialog.ui:19
+#: plugins/omemo/src/account_settings_widget.vala:42
+#: plugins/omemo/src/account_settings_widget.vala:45
+#: plugins/omemo/data/account_settings_dialog.ui:19
 msgid "Own fingerprint"
 msgstr "Norberaren hatz marka"
 
-#: ../src/account_settings_widget.vala:42
+#: plugins/omemo/src/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
 msgstr "Lehen konexioan sortuko da"
 
-#: ../src/contact_details_provider.vala:31
+#: plugins/omemo/src/contact_details_provider.vala:31
 msgid "Encryption"
 msgstr "Enkriptazioa"
 
-#: ../src/contact_details_provider.vala:31
+#: plugins/omemo/src/contact_details_provider.vala:31
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "OMEMO gailu %d"
 msgstr[1] "%d OMEMO gailu"
 
-#: ../src/account_settings_dialog.vala:35
+#: plugins/omemo/src/account_settings_dialog.vala:35
 #, c-format
-msgid "Unknown device (0x%xd)"
-msgstr "Gailu ezezaguna (0x%xd)"
+msgid "Unknown device (0x%.8x)"
+msgstr "Gailu ezezaguna (0x%.8x)"
 
-#: ../data/account_settings_dialog.ui:5
+#: plugins/omemo/data/account_settings_dialog.ui:5
 msgid "OMEMO Keys"
 msgstr "OMEMO gakoak"
 
-#: ../data/account_settings_dialog.ui:88
+#: plugins/omemo/data/account_settings_dialog.ui:88
 msgid "Other devices"
 msgstr "Beste gailuak"
 
-#: ../data/account_settings_dialog.ui:112
+#: plugins/omemo/data/account_settings_dialog.ui:112
 msgid "- None -"
 msgstr "- Bat ere ez -"
