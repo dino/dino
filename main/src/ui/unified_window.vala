@@ -21,10 +21,15 @@ public class UnifiedWindow : Window {
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
+    private Application app;
 
     public UnifiedWindow(Application application, StreamInteractor stream_interactor) {
-        Object(application : application, default_width : 1200, default_height : 700);
+        Object(application : application);
         this.stream_interactor = stream_interactor;
+        this.app = application;
+
+        restore_window_size();
+
 
         this.get_style_context().add_class("dino-main");
         setup_headerbar();
@@ -118,6 +123,30 @@ public class UnifiedWindow : Window {
             stack.set_visible_child_name("main");
             set_titlebar(headerbar_paned);
         }
+    }
+
+    private void restore_window_size() {
+        default_width = app.settings.current_width;
+        default_height = app.settings.current_height;
+        if (app.settings.is_maximized) this.maximize();
+        if (app.settings.position_x != -1 && app.settings.position_y != -1) {
+            move(app.settings.position_x, app.settings.position_y);
+        }
+
+        delete_event.connect(() => {
+            int x, y;
+            get_position(out x, out y);
+            app.settings.position_x = x;
+            app.settings.position_y = y;
+
+            int width, height;
+            get_size(out width, out height);
+            app.settings.current_width = width;
+            app.settings.current_height = height;
+
+            app.settings.is_maximized = is_maximized;
+            return false;
+        });
     }
 
     private bool on_focus_in_event() {

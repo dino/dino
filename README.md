@@ -12,7 +12,7 @@ Build
 * C compiler
 * gettext
 * ninja(-build) (recommend)
-* valac (≥ 0.30)
+* valac (≥ 0.34)
 
 **Run-time dependencies**
 

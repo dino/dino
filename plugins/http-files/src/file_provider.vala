@@ -62,28 +62,30 @@ public class FileProvider : Dino.FileProvider, Object {
                 });
                 if (content_length != null && int.parse(content_length) < 5000000) {
                     FileTransfer file_transfer = new FileTransfer();
-                    Soup.Request request = session.request(message.body);
-                    request.send_async.begin(null, (obj, res) => {
-                        try {
-                            file_transfer.input_stream = request.send_async.end(res);
-                        } catch (Error e) {
-                            return;
-                        }
-                        file_transfer.account = conversation.account;
-                        file_transfer.counterpart = message.counterpart;
-                        file_transfer.ourpart = message.ourpart;
-                        file_transfer.encryption = Encryption.NONE;
-                        file_transfer.time = message.time;
-                        file_transfer.local_time = message.local_time;
-                        file_transfer.direction = message.direction;
-                        file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);
-                        file_transfer.mime_type = content_type;
-                        file_transfer.size = int.parse(content_length);
-                        file_transfer.state = FileTransfer.State.NOT_STARTED;
-                        file_transfer.provider = 0;
-                        file_transfer.info = message.body;
-                        file_incoming(file_transfer);
-                    });
+                    try {
+                        Soup.Request request = session.request(message.body);
+                        request.send_async.begin(null, (obj, res) => {
+                            try {
+                                file_transfer.input_stream = request.send_async.end(res);
+                            } catch (Error e) {
+                                return;
+                            }
+                            file_transfer.account = conversation.account;
+                            file_transfer.counterpart = message.counterpart;
+                            file_transfer.ourpart = message.ourpart;
+                            file_transfer.encryption = Encryption.NONE;
+                            file_transfer.time = message.time;
+                            file_transfer.local_time = message.local_time;
+                            file_transfer.direction = message.direction;
+                            file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);
+                            file_transfer.mime_type = content_type;
+                            file_transfer.size = int.parse(content_length);
+                            file_transfer.state = FileTransfer.State.NOT_STARTED;
+                            file_transfer.provider = 0;
+                            file_transfer.info = message.body;
+                            file_incoming(file_transfer);
+                        });
+                    } catch (Error e) { }
                 }
             });
         }
