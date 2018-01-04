@@ -32,12 +32,20 @@ public class ConnectionManager {
         public enum Source {
             CONNECTION,
             SASL,
+            TLS,
             STREAM_ERROR
+        }
+
+        public enum Reconnect {
+            NOW,
+            LATER,
+            NEVER
         }
 
         public Source source;
         public string? identifier;
-        public StreamError.Flag? flag;
+        public Reconnect reconnect_recomendation { get; set; default=Reconnect.NOW; }
+        public bool resource_rejected = false;
 
         public ConnectionError(Source source, string? identifier) {
             this.source = source;
@@ -79,7 +87,8 @@ public class ConnectionManager {
         }
         Timeout.add_seconds(60, () => {
             foreach (Account account in connection_todo) {
-                if (connections[account].last_activity.compare(new DateTime.now_utc().add_minutes(-1)) < 0) {
+                if (connections[account].last_activity != null &&
+                        connections[account].last_activity.compare(new DateTime.now_utc().add_minutes(-1)) < 0) {
                     check_reconnect(account);
                 }
             }
@@ -164,7 +173,7 @@ public class ConnectionManager {
             change_connection_state(account, ConnectionState.CONNECTED);
         });
         stream.get_module(PlainSasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
-            set_connection_error(account, ConnectionError.Source.SASL, null);
+            set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, null));
             change_connection_state(account, ConnectionState.DISCONNECTED);
         });
         stream.received_node.connect(() => {
@@ -186,9 +195,13 @@ public class ConnectionManager {
                 connections.unset(account);
                 return;
             }
+            if (e is Core.IOStreamError.TLS) {
+                set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, e.message) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
+                return;
+            }
             StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
             if (flag != null) {
-                set_connection_error(account, ConnectionError.Source.STREAM_ERROR, flag.error_type);
+                set_connection_error(account, new ConnectionError(ConnectionError.Source.STREAM_ERROR, flag.error_type) { resource_rejected=flag.resource_rejected });
             }
             interpret_connection_error(account);
         }
@@ -199,17 +212,17 @@ public class ConnectionManager {
         int wait_sec = 5;
         if (error == null) {
             wait_sec = 3;
-        } else if (error.source == ConnectionError.Source.STREAM_ERROR && error.flag != null) {
-            if (error.flag.resource_rejected) {
+        } else if (error.source == ConnectionError.Source.STREAM_ERROR) {
+            if (error.resource_rejected) {
                 connect_(account, account.resourcepart + "-" + random_uuid());
                 return;
             }
-            switch (error.flag.reconnection_recomendation) {
-                case StreamError.Flag.Reconnect.NOW:
+            switch (error.reconnect_recomendation) {
+                case ConnectionError.Reconnect.NOW:
                     wait_sec = 5; break;
-                case StreamError.Flag.Reconnect.LATER:
+                case ConnectionError.Reconnect.LATER:
                     wait_sec = 60; break;
-                case StreamError.Flag.Reconnect.NEVER:
+                case ConnectionError.Reconnect.NEVER:
                     return;
             }
         } else if (error.source == ConnectionError.Source.SASL) {
@@ -291,8 +304,7 @@ public class ConnectionManager {
         }
     }
 
-    private void set_connection_error(Account account, ConnectionError.Source source, string? id) {
-        ConnectionError error = new ConnectionError(source, id);
+    private void set_connection_error(Account account, ConnectionError error) {
         connection_errors[account] = error;
         connection_error(account, error);
     }

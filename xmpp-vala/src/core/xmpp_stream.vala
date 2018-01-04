@@ -6,8 +6,8 @@ public errordomain IOStreamError {
     READ,
     WRITE,
     CONNECT,
-    DISCONNECT
-
+    DISCONNECT,
+    TLS
 }
 
 public class XmppStream {
@@ -58,10 +58,13 @@ public class XmppStream {
             IOStream? stream = null;
             if (best_provider != null) {
                 stream = yield best_provider.connect(this);
-            } else {
+            }
+            if (stream != null) {
                 stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name));
             }
-            if (stream == null) throw new IOStreamError.CONNECT("client.connect() returned null");
+            if (stream == null) {
+                throw new IOStreamError.CONNECT("client.connect() returned null");
+            }
             reset_stream((!)stream);
         } catch (Error e) {
             stderr.printf("CONNECTION LOST?\n");
@@ -154,7 +157,10 @@ public class XmppStream {
     }
 
     public void detach_modules() {
-        foreach (XmppStreamModule module in modules) module.detach(this);
+        foreach (XmppStreamModule module in modules) {
+            if (!(module is XmppStreamNegotiationModule) && !negotiation_complete) continue;
+            module.detach(this);
+        }
     }
 
     public T? get_module<T>(ModuleIdentity<T>? identity) {
@@ -238,23 +244,18 @@ public class XmppStream {
     }
 
     private bool negotiation_modules_done() throws IOStreamError {
-        if (!setup_needed) {
-            bool mandatory_outstanding = false;
-            foreach (XmppStreamModule module in modules) {
-                if (module is XmppStreamNegotiationModule) {
-                    XmppStreamNegotiationModule negotiation_module = (XmppStreamNegotiationModule) module;
-                    if (negotiation_module.mandatory_outstanding(this)) mandatory_outstanding = true;
-                }
-            }
-            if (!is_negotiation_active()) {
-                if (mandatory_outstanding) {
-                    throw new IOStreamError.CONNECT("mandatory-to-negotiate feature not negotiated");
-                } else {
-                    return true;
+        if (setup_needed) return false;
+        if (is_negotiation_active()) return false;
+
+        foreach (XmppStreamModule module in modules) {
+            if (module is XmppStreamNegotiationModule) {
+                XmppStreamNegotiationModule negotiation_module = (XmppStreamNegotiationModule) module;
+                if (negotiation_module.mandatory_outstanding(this)) {
+                    throw new IOStreamError.CONNECT("mandatory-to-negotiate feature not negotiated: " + negotiation_module.get_id());
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private void attach_non_negotation_modules() {
@@ -281,7 +282,9 @@ public class XmppStream {
             StanzaNode node = yield ((!)reader).read_root_node();
             log.node("IN ROOT", node);
             return node;
-        } catch (XmlError e) {
+        } catch (XmlError.TLS e) {
+            throw new IOStreamError.TLS(e.message);
+        } catch (Error e) {
             throw new IOStreamError.READ(e.message);
         }
     }

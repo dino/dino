@@ -30,7 +30,7 @@ public class StanzaWriter {
                 sfw.sfun();
             }
         } catch (GLib.Error e) {
-            throw new XmlError.IO_ERROR(@"IOError in GLib: $(e.message)");
+            throw new XmlError.IO(@"IOError in GLib: $(e.message)");
         } finally {
             running = false;
         }
