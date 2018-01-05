@@ -59,7 +59,7 @@ public class XmppStream {
             if (best_provider != null) {
                 stream = yield best_provider.connect(this);
             }
-            if (stream != null) {
+            if (stream == null) {
                 stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name));
             }
             if (stream == null) {
