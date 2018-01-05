@@ -256,11 +256,13 @@ public class ConnectionManager {
     }
 
     private bool network_is_online() {
-        if (network_monitor != null && network_monitor.network_available && network_monitor.connectivity == GLib.NetworkConnectivity.FULL) {
-            return true;
-        }
-
-        return false;
+        /* FIXME: We should also check for connectivity eventually. For more
+         * details on why we don't do it for now, see:
+         *
+         * - https://github.com/dino/dino/pull/236#pullrequestreview-86851793
+         * - https://bugzilla.gnome.org/show_bug.cgi?id=792240
+         */
+        return network_monitor != null && network_monitor.network_available;
     }
 
     private void on_network_changed() {
