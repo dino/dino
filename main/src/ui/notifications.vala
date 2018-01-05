@@ -61,9 +61,8 @@ public class Notifications : Object {
             }
             notifications[conversation].set_title(display_name);
             notifications[conversation].set_body(text);
-            try {
-                notifications[conversation].set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_conversation(stream_interactor, conversation)));
-            } catch (Error e) { }
+            string filestring = stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar_path(conversation.account, message.counterpart);
+            notifications[conversation].set_icon(new FileIcon(File.new_for_path(filestring)));
             window.get_application().send_notification(conversation.id.to_string(), notifications[conversation]);
             active_conversation_ids.add(conversation.id.to_string());
             window.urgency_hint = true;
@@ -76,9 +75,8 @@ public class Notifications : Object {
 
         Notification notification = new Notification(_("Subscription request"));
         notification.set_body(jid.bare_jid.to_string());
-        try {
-            notification.set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, jid, account)));
-        } catch (Error e) { }
+        string filestring = stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar_path(account, jid);
+        notification.set_icon(new FileIcon(File.new_for_path(filestring)));
         notification.set_default_action_and_target_value("app.open-conversation", new Variant.int32(conversation.id));
         notification.add_button_with_target_value(_("Accept"), "app.accept-subscription", conversation.id);
         notification.add_button_with_target_value(_("Deny"), "app.deny-subscription", conversation.id);
@@ -96,11 +94,6 @@ public class Notifications : Object {
         return true;
     }
 
-    private Icon get_pixbuf_icon(Gdk.Pixbuf avatar) throws Error {
-        uint8[] buffer;
-        avatar.save_to_buffer(out buffer, "png");
-        return new BytesIcon(new Bytes(buffer));
-    }
 }
 
 }

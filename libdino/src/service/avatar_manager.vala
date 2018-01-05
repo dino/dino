@@ -81,6 +81,26 @@ public class AvatarManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public string? get_avatar_path(Account account, Jid jid) {
+        Jid jid_ = jid;
+        if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
+            jid_ = jid.bare_jid;
+        }
+        lock(user_avatars) {
+            string? user_avatars_id = user_avatars[jid_];
+            if (user_avatars_id != null) {
+                return avatar_storage.get_image_path(user_avatars_id);
+            }
+        }
+        lock(vcard_avatars) {
+            string? vcard_avatars_id = vcard_avatars[jid_];
+            if (vcard_avatars_id != null) {
+                return avatar_storage.get_image_path(vcard_avatars_id);
+            }
+        }
+        return null;
+    }
+
     public void publish(Account account, string file) {
         try {
             Pixbuf pixbuf = new Pixbuf.from_file(file);

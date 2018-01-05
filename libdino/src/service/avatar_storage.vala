@@ -35,5 +35,13 @@ public class AvatarStorage : Xep.PixbufStorage, Object {
             return null;
         }
     }
+
+    public string? get_image_path(string id) {
+        if (has_image(id)) {
+            return Path.build_filename(folder, id);
+        } else {
+            return null;
+        }
+    }
 }
 }
