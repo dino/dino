@@ -123,6 +123,9 @@ public class Module : XmppStreamModule {
     public void kick(XmppStream stream, string jid, string nick) {
         change_role(stream, jid, nick, "none");
     }
+    public void affiliate(XmppStream stream, string jid, string nick, string role) {
+        change_affiliation(stream, jid, role, nick);
+    }
 
     /* XEP 0046: "A user cannot be kicked by a moderator with a lower affiliation." (XEP 0045 8.2) */
     public bool kick_possible(XmppStream stream, string occupant) {
@@ -190,6 +193,14 @@ public class Module : XmppStreamModule {
     private void change_role(XmppStream stream, string jid, string nick, string new_role) {
         StanzaNode query = new StanzaNode.build("query", NS_URI_ADMIN).add_self_xmlns();
         query.put_node(new StanzaNode.build("item", NS_URI_ADMIN).put_attribute("nick", nick, NS_URI_ADMIN).put_attribute("role", new_role, NS_URI_ADMIN));
+        Iq.Stanza iq = new Iq.Stanza.set(query);
+        iq.to = jid;
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
+    }
+
+    private void change_affiliation(XmppStream stream, string jid, string nick, string new_affiliation) {
+        StanzaNode query = new StanzaNode.build("query", NS_URI_ADMIN).add_self_xmlns();
+        query.put_node(new StanzaNode.build("item", NS_URI_ADMIN).put_attribute("nick", nick, NS_URI_ADMIN).put_attribute("affiliation", new_affiliation, NS_URI_ADMIN));
         Iq.Stanza iq = new Iq.Stanza.set(query);
         iq.to = jid;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
