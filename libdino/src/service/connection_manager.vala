@@ -21,9 +21,8 @@ public class ConnectionManager {
     private HashMap<Account, Connection> connections = new HashMap<Account, Connection>(Account.hash_func, Account.equals_func);
     private HashMap<Account, ConnectionError> connection_errors = new HashMap<Account, ConnectionError>(Account.hash_func, Account.equals_func);
 
-    private NetworkManager? network_manager;
+    private NetworkMonitor? network_monitor;
     private Login1Manager? login1;
-    private NetworkManagerDBusProperties? dbus_properties;
     private ModuleManager module_manager;
     public string? log_options;
 
@@ -66,24 +65,14 @@ public class ConnectionManager {
 
     public ConnectionManager(ModuleManager module_manager) {
         this.module_manager = module_manager;
-        network_manager = get_network_manager();
-        if (network_manager != null) {
-            network_manager.StateChanged.connect(on_nm_state_changed);
+        network_monitor = GLib.NetworkMonitor.get_default();
+        if (network_monitor != null) {
+            network_monitor.network_changed.connect(on_network_changed);
+            network_monitor.notify["connectivity"].connect(on_network_changed);
         }
         login1 = get_login1();
         if (login1 != null) {
             login1.PrepareForSleep.connect(on_prepare_for_sleep);
-        }
-        dbus_properties = get_dbus_properties();
-        if (dbus_properties != null) {
-            dbus_properties.properties_changed.connect((s, sv, sa) => {
-                foreach (string key in sv.get_keys()) {
-                    if (key == "PrimaryConnection") {
-                        print("primary connection changed\n");
-                        check_reconnects();
-                    }
-                }
-            });
         }
         Timeout.add_seconds(60, () => {
             foreach (Account account in connection_todo) {
@@ -228,7 +217,7 @@ public class ConnectionManager {
         } else if (error.source == ConnectionError.Source.SASL) {
             return;
         }
-        if (network_manager != null && network_manager.State != NetworkManager.CONNECTED_GLOBAL) {
+        if (network_is_online()) {
             wait_sec = 30;
         }
         print(@"recovering in $wait_sec\n");
@@ -266,11 +255,22 @@ public class ConnectionManager {
         });
     }
 
-    private void on_nm_state_changed(uint32 state) {
-        print("nm " + state.to_string() + "\n");
-        if (state == NetworkManager.CONNECTED_GLOBAL) {
+    private bool network_is_online() {
+        /* FIXME: We should also check for connectivity eventually. For more
+         * details on why we don't do it for now, see:
+         *
+         * - https://github.com/dino/dino/pull/236#pullrequestreview-86851793
+         * - https://bugzilla.gnome.org/show_bug.cgi?id=792240
+         */
+        return network_monitor != null && network_monitor.network_available;
+    }
+
+    private void on_network_changed() {
+        if (network_is_online()) {
+            print("network online\n");
             check_reconnects();
         } else {
+            print("network offline\n");
             foreach (Account account in connection_todo) {
                 change_connection_state(account, ConnectionState.DISCONNECTED);
             }

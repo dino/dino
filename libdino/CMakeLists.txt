@@ -11,8 +11,6 @@ SOURCES
     src/application.vala
 
     src/dbus/login1.vala
-    src/dbus/network_manager.vala
-    src/dbus/network_manager_dbus_properties.vala
     src/dbus/upower.vala
 
     src/entity/account.vala
