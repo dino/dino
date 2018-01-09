@@ -83,9 +83,9 @@ public class MucManager : StreamInteractionModule, Object {
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).kick(stream, jid.bare_jid.to_string(), nick);
     }
 
-    public void change_affiliation(Account account, Jid jid,  string role, string nick) {
+    public void change_affiliation(Account account, Jid jid, string nick, string role) {
         Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation(stream, jid.bare_jid.to_string(), role, nick);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation(stream, jid.bare_jid.to_string(), nick, role);
     }
 
     public bool kick_possible(Account account, Jid occupant) {
