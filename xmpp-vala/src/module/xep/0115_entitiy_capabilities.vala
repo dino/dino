@@ -103,7 +103,7 @@ namespace Xmpp.Xep.EntityCapabilities {
     }
 
     public interface Storage : Object {
-        public abstract void store_features(string entitiy, Gee.List<string> capabilities);
-        public abstract Gee.List<string> get_features(string entitiy);
+        public abstract void store_features(string entity, Gee.List<string> capabilities);
+        public abstract Gee.List<string> get_features(string entity);
     }
 }

@@ -117,7 +117,7 @@ public class MessageTextView : TextView {
             try{
                 AppInfo.launch_default_for_uri(url, null);
             } catch (Error err) {
-                print("Tryed to open " + url);
+                print("Tried to open " + url);
             }
         }
         return false;

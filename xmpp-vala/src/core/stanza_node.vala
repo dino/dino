@@ -282,7 +282,7 @@ public class StanzaNode : StanzaEntry {
     }
 
     /**
-    *    Set only occurence
+    *    Set only occurrence
     **/
     public void set_attribute(string name, string val, string? ns_uri = null) {
         if (ns_uri == null) ns_uri = this.ns_uri;

@@ -83,7 +83,7 @@ public class ImageDisplay : Plugins.MetaConversationItem {
             try{
                 AppInfo.launch_default_for_uri(file_transfer.info, null);
             } catch (Error err) {
-                print("Tryed to open " + file_transfer.info);
+                print("Tried to open " + file_transfer.info);
             }
         });
 
