@@ -13,7 +13,7 @@ public class Flag : XmppStreamFlag {
     public Gee.List<string> features = new ArrayList<string>();
 
     public Gee.List<Identity>? get_entity_categories(string jid) {
-        return entity_identities.has_key(jid) ? entity_identities[jid] : null; // TODO isnt this default for hashmap
+        return entity_identities.has_key(jid) ? entity_identities[jid] : null; // TODO isn’t this default for hashmap
     }
 
     public bool? has_entity_identity(string jid, string category, string type) {

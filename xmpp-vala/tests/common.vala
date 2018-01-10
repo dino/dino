@@ -27,7 +27,7 @@ void fail_if_not_error_code(ErrorFunc func, int expectedCode, string? reason = n
         func();
         fail_if_reached(@"$(reason + ": " ?? "")no error thrown");
     } catch (Error e) {
-        fail_if_not_eq_int(e.code, expectedCode, @"$(reason + ": " ?? "")catched unexpected error");
+        fail_if_not_eq_int(e.code, expectedCode, @"$(reason + ": " ?? "")caught unexpected error");
     }
 }
 

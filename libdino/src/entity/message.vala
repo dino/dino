@@ -63,7 +63,7 @@ public class Message : Object {
         this.db = db;
 
         id = row[db.message.id];
-        account = db.get_account_by_id(row[db.message.account_id]); // TODO dont have to generate acc new
+        account = db.get_account_by_id(row[db.message.account_id]); // TODO don’t have to generate acc new
         stanza_id = row[db.message.stanza_id];
         type_ = (Message.Type) row[db.message.type_];
 

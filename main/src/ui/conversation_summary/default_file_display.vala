@@ -67,7 +67,7 @@ public class DefaultFileDisplay : Plugins.MetaConversationItem {
                 try{
                     AppInfo.launch_default_for_uri("file://" + file_transfer.get_uri(), null);
                 } catch (Error err) {
-                    print("Tryed to open " + file_transfer.get_uri());
+                    print("Tried to open " + file_transfer.get_uri());
                 }
             }
             return false;
