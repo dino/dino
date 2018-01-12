@@ -1,5 +1,5 @@
 using Xmpp;
-using Xmpp.Core;
+using Xmpp;
 using Xmpp.Xep;
 
 namespace Dino.Plugins.HttpFiles {
@@ -8,7 +8,7 @@ private const string NS_URI = "urn:xmpp:http:upload";
 private const string NS_URI_0 = "urn:xmpp:http:upload:0";
 
 public class UploadStreamModule : XmppStreamModule {
-    public static Core.ModuleIdentity<UploadStreamModule> IDENTITY = new Core.ModuleIdentity<UploadStreamModule>(NS_URI, "0363_http_file_upload");
+    public static Xmpp.ModuleIdentity<UploadStreamModule> IDENTITY = new Xmpp.ModuleIdentity<UploadStreamModule>(NS_URI, "0363_http_file_upload");
 
     public signal void feature_available(XmppStream stream, long max_file_size);
 
@@ -116,7 +116,7 @@ public class UploadStreamModule : XmppStreamModule {
         });
     }
 
-    private bool check_ns_in_info(XmppStream stream, string jid, Xep.ServiceDiscovery.InfoResult info_result) {
+    private bool check_ns_in_info(XmppStream stream, Jid jid, Xep.ServiceDiscovery.InfoResult info_result) {
         bool ver_available = false;
         bool ver_0_available = false;
         foreach (string feature in info_result.features) {
@@ -162,11 +162,11 @@ public class UploadStreamModule : XmppStreamModule {
 public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "service_discovery");
 
-    public string file_store_jid;
+    public Jid file_store_jid;
     public string ns_ver;
     public int? max_file_size;
 
-    public Flag(string file_store_jid, string ns_ver) {
+    public Flag(Jid file_store_jid, string ns_ver) {
         this.file_store_jid = file_store_jid;
         this.ns_ver = ns_ver;
     }

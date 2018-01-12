@@ -7,7 +7,7 @@ namespace Dino {
 
 public class ConnectionManager {
 
-    public signal void stream_opened(Account account, Core.XmppStream stream);
+    public signal void stream_opened(Account account, XmppStream stream);
     public signal void connection_state_changed(Account account, ConnectionState state);
     public signal void connection_error(Account account, ConnectionError error);
 
@@ -53,11 +53,11 @@ public class ConnectionManager {
     }
 
     private class Connection {
-        public Core.XmppStream stream { get; set; }
+        public XmppStream stream { get; set; }
         public ConnectionState connection_state { get; set; default = ConnectionState.DISCONNECTED; }
         public DateTime established { get; set; }
         public DateTime last_activity { get; set; }
-        public class Connection(Core.XmppStream stream, DateTime established) {
+        public class Connection(XmppStream stream, DateTime established) {
             this.stream = stream;
             this.established = established;
         }
@@ -85,7 +85,7 @@ public class ConnectionManager {
         });
     }
 
-    public Core.XmppStream? get_stream(Account account) {
+    public XmppStream? get_stream(Account account) {
         if (get_state(account) == ConnectionState.CONNECTED) {
             return connections[account].stream;
         }
@@ -110,7 +110,7 @@ public class ConnectionManager {
         return connection_todo;
     }
 
-    public Core.XmppStream? connect(Account account) {
+    public XmppStream? connect(Account account) {
         if (!connection_todo.contains(account)) connection_todo.add(account);
         if (!connections.has_key(account)) {
             return connect_(account);
@@ -144,16 +144,16 @@ public class ConnectionManager {
         }
     }
 
-    private Core.XmppStream? connect_(Account account, string? resource = null) {
+    private XmppStream? connect_(Account account, string? resource = null) {
         if (connections.has_key(account)) connections[account].stream.detach_modules();
         connection_errors.unset(account);
         if (resource == null) resource = account.resourcepart;
 
-        Core.XmppStream stream = new Core.XmppStream();
-        foreach (Core.XmppStreamModule module in module_manager.get_modules(account, resource)) {
+        XmppStream stream = new XmppStream();
+        foreach (XmppStreamModule module in module_manager.get_modules(account, resource)) {
             stream.add_module(module);
         }
-        stream.log = new Core.XmppLog(account.bare_jid.to_string(), log_options);
+        stream.log = new XmppLog(account.bare_jid.to_string(), log_options);
 
         Connection connection = new Connection(stream, new DateTime.now_utc());
         connections[account] = connection;
@@ -174,7 +174,7 @@ public class ConnectionManager {
         return stream;
     }
 
-    private async void connect_async(Account account, Core.XmppStream stream) {
+    private async void connect_async(Account account, XmppStream stream) {
         try {
             yield stream.connect(account.domainpart);
         } catch (Error e) {
@@ -184,7 +184,7 @@ public class ConnectionManager {
                 connections.unset(account);
                 return;
             }
-            if (e is Core.IOStreamError.TLS) {
+            if (e is IOStreamError.TLS) {
                 set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, e.message) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
                 return;
             }
@@ -236,8 +236,8 @@ public class ConnectionManager {
     private void check_reconnect(Account account) {
         bool acked = false;
 
-        Core.XmppStream stream = connections[account].stream;
-        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.domainpart, (stream) => {
+        XmppStream stream = connections[account].stream;
+        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.bare_jid.domain_jid, (stream) => {
             acked = true;
             change_connection_state(account, ConnectionState.CONNECTED);
         });

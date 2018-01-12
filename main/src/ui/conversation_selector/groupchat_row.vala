@@ -8,12 +8,10 @@ public class GroupchatRow : ConversationRow {
         base(stream_interactor, conversation);
         has_tooltip = true;
         set_tooltip_text(conversation.counterpart.bare_jid.to_string());
-        update_avatar();
 
         closed.connect(() => {
             stream_interactor.get_module(MucManager.IDENTITY).part(conversation.account, conversation.counterpart);
         });
-        stream_interactor.get_module(MucManager.IDENTITY).left.connect(update_avatar);
     }
 
     protected override void update_message_label() {

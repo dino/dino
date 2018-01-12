@@ -49,7 +49,7 @@ protected class RosterList : FilterableList {
 
     private void on_updated_roster_item(Account account, Jid jid, Roster.Item roster_item) {
         on_removed_roster_item(account, jid, roster_item);
-        ListRow row = new ListRow.from_jid(stream_interactor, new Jid(roster_item.jid), account, accounts.size > 1);
+        ListRow row = new ListRow.from_jid(stream_interactor, roster_item.jid, account, accounts.size > 1);
         rows[account][jid] = row;
         add(row);
         invalidate_sort();
@@ -59,7 +59,7 @@ protected class RosterList : FilterableList {
     private void fetch_roster_items(Account account) {
         rows[account] = new HashMap<Jid, ListRow>(Jid.hash_func, Jid.equals_func);
         foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
-            on_updated_roster_item(account, new Jid(roster_item.jid), roster_item);
+            on_updated_roster_item(account, roster_item.jid, roster_item);
         }
     }
 

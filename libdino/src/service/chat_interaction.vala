@@ -138,7 +138,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     private void send_chat_marker(Conversation conversation, Entities.Message message, string marker) {
-        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream != null &&
                 (marker == Xep.ChatMarkers.MARKER_RECEIVED || conversation.get_send_marker_setting() == Conversation.Setting.ON) &&
                 Xep.ChatMarkers.Module.requests_marking(message.stanza)) {
@@ -147,17 +147,17 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     private void send_delivery_receipt(Conversation conversation, Entities.Message message) {
-        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream != null && Xep.MessageDeliveryReceipts.Module.requests_receipt(message.stanza)) {
-            stream.get_module(Xep.MessageDeliveryReceipts.Module.IDENTITY).send_received(stream, message.from.to_string(), message.stanza_id);
+            stream.get_module(Xep.MessageDeliveryReceipts.Module.IDENTITY).send_received(stream, message.from, message.stanza_id);
         }
     }
 
     private void send_chat_state_notification(Conversation conversation, string state) {
-        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream != null && conversation.get_send_typing_setting() == Conversation.Setting.ON &&
                 conversation.type_ != Conversation.Type.GROUPCHAT) {
-            stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart.to_string(), state);
+            stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart, state);
         }
     }
 }

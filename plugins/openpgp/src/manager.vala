@@ -63,17 +63,17 @@ public class Manager : StreamInteractionModule, Object {
         return gpgkeys;
     }
 
-    private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+    private void on_pre_message_received(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         if (MessageFlag.get_flag(message_stanza) != null && MessageFlag.get_flag(message_stanza).decrypted) {
             message.encryption = Encryption.PGP;
         }
     }
 
-    private void check_encypt(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+    private void check_encypt(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         try {
             if (message.encryption == Encryption.PGP) {
                 GPG.Key[] keys = get_key_fprs(conversation);
-                Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                XmppStream? stream = stream_interactor.get_stream(conversation.account);
                 if (stream != null) {
                     bool encrypted = stream.get_module(Module.IDENTITY).encrypt(message_stanza, keys);
                     if (!encrypted) message.marked = Entities.Message.Marked.WONTSEND;
@@ -91,7 +91,7 @@ public class Manager : StreamInteractionModule, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Module.IDENTITY).received_jid_key_id.connect((stream, jid, key_id) => {
-            on_jid_key_received(account, new Jid(jid), key_id);
+            on_jid_key_received(account, jid, key_id);
         });
     }
 

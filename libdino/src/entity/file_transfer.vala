@@ -1,3 +1,5 @@
+using Xmpp;
+
 namespace Dino.Entities {
 
 public class FileTransfer : Object {
@@ -48,11 +50,12 @@ public class FileTransfer : Object {
 
         string counterpart_jid = db.get_jid_by_id(row[db.file_transfer.counterpart_id]);
         string counterpart_resource = row[db.file_transfer.counterpart_resource];
-        counterpart = counterpart_resource != null ? new Jid.with_resource(counterpart_jid, counterpart_resource) : new Jid(counterpart_jid);
+        counterpart = Jid.parse(counterpart_jid);
+        if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
 
         string our_resource = row[db.file_transfer.our_resource];
         if (our_resource != null) {
-            ourpart = new Jid.with_resource(account.bare_jid.to_string(), our_resource);
+            ourpart = account.bare_jid.with_resource(our_resource);
         } else {
             ourpart = account.bare_jid;
         }

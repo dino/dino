@@ -2,6 +2,7 @@ using Gtk;
 
 using Dino.Entities;
 using Dino.Ui;
+using Xmpp;
 
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private Notifications notifications;

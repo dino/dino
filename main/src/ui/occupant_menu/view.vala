@@ -2,6 +2,7 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.OccupantMenu {
 public class View : Popover {

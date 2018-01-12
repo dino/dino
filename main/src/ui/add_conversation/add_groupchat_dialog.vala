@@ -2,6 +2,7 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui {
 
@@ -43,7 +44,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         accounts_stack.set_visible_child_name("label");
         account_label.label = account.bare_jid.to_string();
         account_combobox.selected = account;
-        jid_entry.text = conference.jid;
+        jid_entry.text = conference.jid.to_string();
         nick_entry.text = conference.nick ?? "";
         alias_entry.text = conference.name;
     }
@@ -64,7 +65,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     }
 
     private void on_ok_button_clicked() {
-        Xmpp.Xep.Bookmarks.Conference conference = new Xmpp.Xep.Bookmarks.Conference(jid_entry.text);
+        Xmpp.Xep.Bookmarks.Conference conference = new Xmpp.Xep.Bookmarks.Conference(Jid.parse(jid_entry.text));
         conference.nick = nick_entry.text != "" ? nick_entry.text : null;
         conference.name = alias_entry.text;
         if (edit_conference == null) {

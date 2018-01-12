@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.EntityCapabilities {
     private const string NS_URI = "http://jabber.org/protocol/caps";
 

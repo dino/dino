@@ -39,8 +39,12 @@ protected class ConferenceList : FilterableList {
         }
     }
 
-    private void on_conference_bookmarks_received(Core.XmppStream stream, Account account, Gee.List<Xep.Bookmarks.Conference> conferences) {
-        lists[account] = conferences;
+    private void on_conference_bookmarks_received(XmppStream stream, Account account, Gee.List<Xep.Bookmarks.Conference>? conferences) {
+        if (conferences == null) {
+            lists.unset(account);
+        } else {
+            lists[account] = conferences;
+        }
         refresh_conferences();
     }
 
@@ -77,15 +81,15 @@ internal class ConferenceListRow : ListRow {
     public Xep.Bookmarks.Conference bookmark;
 
     public ConferenceListRow(StreamInteractor stream_interactor, Xep.Bookmarks.Conference bookmark, Account account) {
-        this.jid = new Jid(bookmark.jid);
+        this.jid = bookmark.jid;
         this.account = account;
         this.bookmark = bookmark;
 
-        name_label.label = bookmark.name ?? bookmark.jid;
+        name_label.label = bookmark.name ?? bookmark.jid.to_string();
         if (stream_interactor.get_accounts().size > 1) {
             via_label.label = "via " + account.bare_jid.to_string();
-        } else if (bookmark.name != null && bookmark.name != bookmark.jid) {
-            via_label.label = bookmark.jid;
+        } else if (bookmark.name != null && bookmark.name != bookmark.jid.to_string()) {
+            via_label.label = bookmark.jid.to_string();
         } else {
             via_label.visible = false;
         }

@@ -1,4 +1,5 @@
 using Gee;
+using Xmpp;
 
 namespace Dino.Entities {
 
@@ -51,7 +52,7 @@ public class Message : Object {
             marked_ = value;
         }
     }
-    public Xmpp.Message.Stanza stanza { get; set; }
+    public Xmpp.MessageStanza stanza { get; set; }
 
     private Database? db;
 
@@ -67,15 +68,15 @@ public class Message : Object {
         stanza_id = row[db.message.stanza_id];
         type_ = (Message.Type) row[db.message.type_];
 
-        string counterpart_jid = db.get_jid_by_id(row[db.message.counterpart_id]);
+        counterpart = Jid.parse(db.get_jid_by_id(row[db.message.counterpart_id]));
         string counterpart_resource = row[db.message.counterpart_resource];
-        counterpart = counterpart_resource != null ? new Jid.with_resource(counterpart_jid, counterpart_resource) : new Jid(counterpart_jid);
+        if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
 
         string our_resource = row[db.message.our_resource];
         if (type_ == Type.GROUPCHAT && our_resource != null) {
-            ourpart = new Jid.with_resource(counterpart_jid, our_resource);
+            ourpart = counterpart.with_resource(our_resource);
         } else if (our_resource != null) {
-            ourpart = new Jid.with_resource(account.bare_jid.to_string(), our_resource);
+            ourpart = account.bare_jid.with_resource(our_resource);
         } else {
             ourpart = account.bare_jid;
         }
@@ -121,9 +122,9 @@ public class Message : Object {
 
     public void set_type_string(string type) {
     switch (type) {
-            case Xmpp.Message.Stanza.TYPE_CHAT:
+            case Xmpp.MessageStanza.TYPE_CHAT:
                 type_ = Type.CHAT; break;
-            case Xmpp.Message.Stanza.TYPE_GROUPCHAT:
+            case Xmpp.MessageStanza.TYPE_GROUPCHAT:
                 type_ = Type.GROUPCHAT; break;
         }
     }
@@ -131,11 +132,11 @@ public class Message : Object {
     public new string get_type_string() {
     switch (type_) {
             case Type.CHAT:
-                return Xmpp.Message.Stanza.TYPE_CHAT;
+                return Xmpp.MessageStanza.TYPE_CHAT;
             case Type.GROUPCHAT:
-                return Xmpp.Message.Stanza.TYPE_GROUPCHAT;
+                return Xmpp.MessageStanza.TYPE_GROUPCHAT;
             default:
-                return Xmpp.Message.Stanza.TYPE_NORMAL;
+                return Xmpp.MessageStanza.TYPE_NORMAL;
         }
     }
 

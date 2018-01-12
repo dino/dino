@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Presence {
     private const string NS_URI = "jabber:client";
 
@@ -10,39 +8,39 @@ namespace Xmpp.Presence {
         public signal void pre_send_presence_stanza(XmppStream stream, Presence.Stanza presence);
         public signal void initial_presence_sent(XmppStream stream, Presence.Stanza presence);
         public signal void received_available(XmppStream stream, Presence.Stanza presence);
-        public signal void received_available_show(XmppStream stream, string jid, string show);
+        public signal void received_available_show(XmppStream stream, Jid jid, string show);
         public signal void received_unavailable(XmppStream stream, Presence.Stanza presence);
-        public signal void received_subscription_request(XmppStream stream, string jid);
-        public signal void received_unsubscription(XmppStream stream, string jid);
+        public signal void received_subscription_request(XmppStream stream, Jid jid);
+        public signal void received_unsubscription(XmppStream stream, Jid jid);
 
         public bool available_resource = true;
 
-        public void request_subscription(XmppStream stream, string bare_jid) {
+        public void request_subscription(XmppStream stream, Jid bare_jid) {
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = bare_jid;
             presence.type_ = Presence.Stanza.TYPE_SUBSCRIBE;
             send_presence(stream, presence);
         }
 
-        public void approve_subscription(XmppStream stream, string bare_jid) {
+        public void approve_subscription(XmppStream stream, Jid bare_jid) {
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = bare_jid;
             presence.type_ = Presence.Stanza.TYPE_SUBSCRIBED;
             send_presence(stream, presence);
         }
 
-        public void deny_subscription(XmppStream stream, string bare_jid) {
+        public void deny_subscription(XmppStream stream, Jid bare_jid) {
             cancel_subscription(stream, bare_jid);
         }
 
-        public void cancel_subscription(XmppStream stream, string bare_jid) {
+        public void cancel_subscription(XmppStream stream, Jid bare_jid) {
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = bare_jid;
             presence.type_ = Presence.Stanza.TYPE_UNSUBSCRIBED;
             send_presence(stream, presence);
         }
 
-        public void unsubscribe(XmppStream stream, string bare_jid) {
+        public void unsubscribe(XmppStream stream, Jid bare_jid) {
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = bare_jid;
             presence.type_ = Presence.Stanza.TYPE_UNSUBSCRIBE;

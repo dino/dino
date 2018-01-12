@@ -17,7 +17,6 @@ SOURCES
     src/entity/conversation.vala
     src/entity/encryption.vala
     src/entity/file_transfer.vala
-    src/entity/jid.vala
     src/entity/message.vala
     src/entity/settings.vala
 

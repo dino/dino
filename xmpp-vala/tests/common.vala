@@ -39,7 +39,7 @@ bool fail_if_eq_int(int left, int right, string? reason = null) {
     return fail_if(left == right, @"$(reason + ": " ?? "")$left == $right");
 }
 
-bool fail_if_not_eq_node(Core.StanzaNode left, Core.StanzaNode right, string? reason = null) {
+bool fail_if_not_eq_node(StanzaNode left, StanzaNode right, string? reason = null) {
     if (fail_if_not_eq_str(left.name, right.name, @"$(reason + ": " ?? "")name mismatch")) return true;
     if (fail_if_not_eq_str(left.val, right.val, @"$(reason + ": " ?? "")val mismatch")) return true;
     if (left.name == "#text") return false;
@@ -55,7 +55,7 @@ bool fail_if_not_eq_node(Core.StanzaNode left, Core.StanzaNode right, string? re
     return false;
 }
 
-bool fail_if_not_eq_attr(Core.StanzaAttribute left, Core.StanzaAttribute right, string? reason = null) {
+bool fail_if_not_eq_attr(StanzaAttribute left, StanzaAttribute right, string? reason = null) {
     if (fail_if_not_eq_str(left.name, right.name, @"$(reason + ": " ?? "")name mismatch")) return true;
     if (fail_if_not_eq_str(left.val, right.val, @"$(reason + ": " ?? "")val mismatch")) return true;
     if (fail_if_not_eq_str(left.ns_uri, right.ns_uri, @"$(reason + ": " ?? "")ns_uri mismatch")) return true;

@@ -10,6 +10,7 @@ public class EncryptionButton : MenuButton {
     private Conversation? conversation;
     private RadioButton? button_unencrypted;
     private Map<RadioButton, Plugins.EncryptionListEntry> encryption_radios = new HashMap<RadioButton, Plugins.EncryptionListEntry>();
+    private string? current_icon;
 
     public EncryptionButton() {
         relief = ReliefStyle.NONE;
@@ -56,12 +57,15 @@ public class EncryptionButton : MenuButton {
         }
     }
 
-    private void update_encryption_menu_icon() {
-        if (conversation.encryption == Encryption.NONE) {
-            set_image(new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON));
-        } else {
-            set_image(new Image.from_icon_name("changes-prevent-symbolic", IconSize.BUTTON));
+    private void set_icon(string icon) {
+        if (icon != current_icon) {
+            image = new Image.from_icon_name(icon, IconSize.BUTTON);
+            current_icon = icon;
         }
+    }
+
+    private void update_encryption_menu_icon() {
+        set_icon(conversation.encryption == Encryption.NONE ? "changes-allow-symbolic" : "changes-prevent-symbolic");
     }
 
     public new void set_conversation(Conversation conversation) {

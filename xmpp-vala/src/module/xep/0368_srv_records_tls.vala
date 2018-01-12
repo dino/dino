@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.SrvRecordsTls {
 
 public class Module : XmppStreamNegotiationModule {
@@ -22,11 +20,11 @@ public class Module : XmppStreamNegotiationModule {
 public class TlsConnectionProvider : ConnectionProvider {
     private SrvTarget? srv_target;
 
-    public async override int? get_priority(string remote_name) {
+    public async override int? get_priority(Jid remote_name) {
         GLib.List<SrvTarget>? xmpp_target = null;
         try {
             GLibFixes.Resolver resolver = GLibFixes.Resolver.get_default();
-            xmpp_target = yield resolver.lookup_service_async("xmpps-client", "tcp", remote_name, null);
+            xmpp_target = yield resolver.lookup_service_async("xmpps-client", "tcp", remote_name.to_string(), null);
         } catch (Error e) {
             return null;
         }

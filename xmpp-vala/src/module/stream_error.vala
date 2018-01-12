@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.StreamError {
     private const string NS_URI = "jabber:client";
     private const string NS_ERROR = "urn:ietf:params:xml:ns:xmpp-streams";

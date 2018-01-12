@@ -1,4 +1,5 @@
-namespace Xmpp.Core {
+namespace Xmpp {
+
 public class StanzaWriter {
     private OutputStream output;
 

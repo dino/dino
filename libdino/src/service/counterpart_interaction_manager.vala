@@ -37,13 +37,13 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.ChatMarkers.Module.IDENTITY).marker_received.connect( (stream, jid, marker, id) => {
-            on_chat_marker_received(account, new Jid(jid), marker, id);
+            on_chat_marker_received(account, jid, marker, id);
         });
         stream_interactor.module_manager.get_module(account, Xep.MessageDeliveryReceipts.Module.IDENTITY).receipt_received.connect((stream, jid, id) => {
-            on_receipt_received(account, new Jid(jid), id);
+            on_receipt_received(account, jid, id);
         });
         stream_interactor.module_manager.get_module(account, Xep.ChatStateNotifications.Module.IDENTITY).chat_state_received.connect((stream, jid, state) => {
-            on_chat_state_received(account, new Jid(jid), state);
+            on_chat_state_received(account, jid, state);
         });
     }
 

@@ -9,10 +9,10 @@ public class MessageProcessor : StreamInteractionModule, Object {
     public static ModuleIdentity<MessageProcessor> IDENTITY = new ModuleIdentity<MessageProcessor>("message_processor");
     public string id { get { return IDENTITY.id; } }
 
-    public signal void pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
+    public signal void pre_message_received(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
     public signal void message_received(Entities.Message message, Conversation conversation);
-    public signal void build_message_stanza(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
-    public signal void pre_message_send(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation);
+    public signal void build_message_stanza(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
+    public signal void pre_message_send(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
     public signal void message_sent(Entities.Message message, Conversation conversation);
 
     private StreamInteractor stream_interactor;
@@ -51,7 +51,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, Xmpp.Message.Module.IDENTITY).received_message.connect( (stream, message) => {
+        stream_interactor.module_manager.get_module(account, Xmpp.MessageModule.IDENTITY).received_message.connect( (stream, message) => {
             on_message_received(account, message);
         });
         stream_interactor.module_manager.get_module(account, Xmpp.Xep.MessageArchiveManagement.Module.IDENTITY).feature_available.connect( (stream) => {
@@ -60,7 +60,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         });
     }
 
-    private void on_message_received(Account account, Xmpp.Message.Stanza message) {
+    private void on_message_received(Account account, Xmpp.MessageStanza message) {
         if (message.body == null) return;
 
         Entities.Message new_message = create_in_message(account, message);
@@ -68,19 +68,18 @@ public class MessageProcessor : StreamInteractionModule, Object {
         determine_message_type(account, message, new_message);
     }
 
-    private Entities.Message create_in_message(Account account, Xmpp.Message.Stanza message) {
+    private Entities.Message? create_in_message(Account account, Xmpp.MessageStanza message) {
         Entities.Message new_message = new Entities.Message(message.body);
         new_message.account = account;
         new_message.stanza_id = message.id;
-        Jid from_jid = new Jid(message.from);
-        if (!account.bare_jid.equals_bare(from_jid) ||
-                from_jid.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(from_jid.bare_jid, account))) {
+        if (!account.bare_jid.equals_bare(message.from) ||
+                message.from.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.from.bare_jid, account))) {
             new_message.direction = Entities.Message.DIRECTION_RECEIVED;
         } else {
             new_message.direction = Entities.Message.DIRECTION_SENT;
         }
-        new_message.counterpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.to) : new Jid(message.from);
-        new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? new Jid(message.from) : new Jid(message.to);
+        new_message.counterpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from;
+        new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
         new_message.stanza = message;
 
         Xep.MessageArchiveManagement.MessageFlag? mam_message_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
@@ -94,7 +93,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         return new_message;
     }
 
-    private void process_message(Entities.Message new_message, Xmpp.Message.Stanza stanza) {
+    private void process_message(Entities.Message new_message, Xmpp.MessageStanza stanza) {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(new_message);
         if (conversation != null) {
             pre_message_received(new_message, stanza, conversation);
@@ -111,7 +110,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
 
                 bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
-                Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                XmppStream? stream = stream_interactor.get_stream(conversation.account);
                 Xep.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) : null;
                 if (is_mam_message || (mam_flag != null && mam_flag.cought_up == true)) {
                     conversation.account.mam_earliest_synced = new_message.local_time;
@@ -120,11 +119,11 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
-    private void determine_message_type(Account account, Xmpp.Message.Stanza message_stanza, Entities.Message message) {
-        if (message_stanza.type_ == Xmpp.Message.Stanza.TYPE_GROUPCHAT) {
+    private void determine_message_type(Account account, Xmpp.MessageStanza message_stanza, Entities.Message message) {
+        if (message_stanza.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
             message.type_ = Entities.Message.Type.GROUPCHAT;
             process_message(message, message_stanza);
-        } else if (message_stanza.type_ == Xmpp.Message.Stanza.TYPE_CHAT) {
+        } else if (message_stanza.type_ == Xmpp.MessageStanza.TYPE_CHAT) {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart.bare_jid, account);
             if (conversation != null) {
                 if (conversation.type_ == Conversation.Type.CHAT) {
@@ -134,8 +133,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
                 process_message(message, message_stanza);
             } else {
-                Core.XmppStream stream = stream_interactor.get_stream(account);
-                if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid.to_string(), (stream, identities) => {
+                XmppStream stream = stream_interactor.get_stream(account);
+                if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid, (stream, identities) => {
                     if (identities == null) {
                         message.type_ = Entities.Message.Type.CHAT;
                         process_message(message, message_stanza);
@@ -168,7 +167,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             message.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
             message.real_jid = conversation.account.bare_jid;
         } else {
-            message.ourpart = new Jid.with_resource(conversation.account.bare_jid.to_string(), conversation.account.resourcepart);
+            message.ourpart = conversation.account.bare_jid.with_resource(conversation.account.resourcepart);
         }
         message.marked = Entities.Message.Marked.UNSENT;
         message.encryption = conversation.encryption;
@@ -177,16 +176,16 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     public void send_xmpp_message(Entities.Message message, Conversation conversation, bool delayed = false) {
         lock (lock_send_unsent) {
-            Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+            XmppStream stream = stream_interactor.get_stream(conversation.account);
             message.marked = Entities.Message.Marked.NONE;
             if (stream != null) {
-                Xmpp.Message.Stanza new_message = new Xmpp.Message.Stanza(message.stanza_id);
-                new_message.to = message.counterpart.to_string();
+                Xmpp.MessageStanza new_message = new Xmpp.MessageStanza(message.stanza_id);
+                new_message.to = message.counterpart;
                 new_message.body = message.body;
                 if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                    new_message.type_ = Xmpp.Message.Stanza.TYPE_GROUPCHAT;
+                    new_message.type_ = Xmpp.MessageStanza.TYPE_GROUPCHAT;
                 } else {
-                    new_message.type_ = Xmpp.Message.Stanza.TYPE_CHAT;
+                    new_message.type_ = Xmpp.MessageStanza.TYPE_CHAT;
                 }
                 build_message_stanza(message, new_message, conversation);
                 pre_message_send(message, new_message, conversation);
@@ -194,7 +193,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 if (delayed) {
                     Xmpp.Xep.DelayedDelivery.Module.set_message_delay(new_message, message.time);
                 }
-                stream.get_module(Xmpp.Message.Module.IDENTITY).send_message(stream, new_message);
+                stream.get_module(Xmpp.MessageModule.IDENTITY).send_message(stream, new_message);
                 message.stanza_id = new_message.id;
                 message.stanza = new_message;
             } else {

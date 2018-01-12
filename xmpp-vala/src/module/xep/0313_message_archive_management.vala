@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Xep.MessageArchiveManagement {
 
 public const string NS_URI = "urn:xmpp:mam:2";
@@ -44,12 +42,12 @@ public class Module : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(received_pipeline_listener);
+        stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_listener);
         stream.stream_negotiated.connect(query_availability);
     }
 
     public override void detach(XmppStream stream) {
-        stream.get_module(Message.Module.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
+        stream.get_module(MessageModule.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
     }
 
     public override string get_ns() { return NS_URI; }
@@ -73,29 +71,31 @@ public class Module : XmppStreamModule {
     }
 
     private void query_availability(XmppStream stream) {
-        stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).request_info(stream, get_bare_jid(stream.get_flag(Bind.Flag.IDENTITY).my_jid), (stream, info_result) => {
+        stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).request_info(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, (stream, info_result) => {
+            if (info_result == null) return;
             if (info_result.features.contains(NS_URI)) {
                 stream.add_flag(new Flag(NS_URI));
+                feature_available(stream);
             } else if (info_result.features.contains(NS_URI_1)) {
                 stream.add_flag(new Flag(NS_URI_1));
+                feature_available(stream);
             }
-            if (stream.get_flag(Flag.IDENTITY) != null) feature_available(stream);
         });
     }
 }
 
-public class ReceivedPipelineListener : StanzaListener<Message.Stanza> {
+public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
 
     private const string[] after_actions_const = {};
 
     public override string action_group { get { return "EXTRACT_MESSAGE_1"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(Core.XmppStream stream, Message.Stanza message) {
+    public override async void run(XmppStream stream, MessageStanza message) {
         //        if (message.from != stream.remote_name) return;
         if (stream.get_flag(Flag.IDENTITY) == null) return;
 
-        StanzaNode? message_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", Message.NS_URI + ":message");
+        StanzaNode? message_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", Xmpp.NS_URI + ":message");
         if (message_node != null) {
             StanzaNode? forward_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", DelayedDelivery.NS_URI + ":delay");
             DateTime? datetime = DelayedDelivery.Module.get_time_for_node(forward_node);
@@ -120,7 +120,7 @@ public class Flag : XmppStreamFlag {
     public override string get_id() { return IDENTITY.id; }
 }
 
-public class MessageFlag : Message.MessageFlag {
+public class MessageFlag : Xmpp.MessageFlag {
     public const string ID = "message_archive_management";
 
     public DateTime? server_time { get; private set; }
@@ -129,7 +129,7 @@ public class MessageFlag : Message.MessageFlag {
         this.server_time = server_time;
     }
 
-    public static MessageFlag? get_flag(Message.Stanza message) { return (MessageFlag) message.get_flag(NS_URI, ID); }
+    public static MessageFlag? get_flag(MessageStanza message) { return (MessageFlag) message.get_flag(NS_URI, ID); }
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return ID; }

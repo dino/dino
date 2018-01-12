@@ -40,18 +40,18 @@ public class RosterManager : StreamInteractionModule, Object {
     }
 
     public void remove_jid(Account account, Jid jid) {
-        Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).remove_jid(stream, jid.bare_jid.to_string());
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).remove_jid(stream, jid.bare_jid);
     }
 
     public void add_jid(Account account, Jid jid, string? handle) {
-        Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).add_jid(stream, jid.bare_jid.to_string(), handle);
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).add_jid(stream, jid.bare_jid, handle);
     }
 
     public void set_jid_handle(Account account, Jid jid, string? handle) {
-        Core.XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).set_jid_handle(stream, jid.bare_jid.to_string(), handle);
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xmpp.Roster.Module.IDENTITY).set_jid_handle(stream, jid.bare_jid, handle);
     }
 
     private void on_account_added(Account account) {
@@ -61,7 +61,7 @@ public class RosterManager : StreamInteractionModule, Object {
             }
         });
         stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_removed.connect( (stream, roster_item) => {
-            removed_roster_item(account, new Jid(roster_item.jid), roster_item);
+            removed_roster_item(account, roster_item.jid, roster_item);
         });
         stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_updated.connect( (stream, roster_item) => {
             on_roster_item_updated(account, roster_item);
@@ -69,7 +69,7 @@ public class RosterManager : StreamInteractionModule, Object {
     }
 
     private void on_roster_item_updated(Account account, Roster.Item roster_item) {
-        updated_roster_item(account, new Jid(roster_item.jid), roster_item);
+        updated_roster_item(account, roster_item.jid, roster_item);
     }
 }
 
@@ -77,7 +77,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
     private Account account;
     private Database db;
 
-    private HashMap<string, Roster.Item> items = new HashMap<string, Roster.Item>();
+    private HashMap<Jid, Roster.Item> items = new HashMap<Jid, Roster.Item>(Jid.hash_bare_func, Jid.equals_bare_func);
 
     public class RosterStoreImpl(Account account, Database db) {
         this.account = account;
@@ -85,7 +85,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
 
         foreach (Qlite.Row row in db.roster.select().with(db.roster.account_id, "=", account.id)) {
             Roster.Item item = new Roster.Item();
-            item.jid = row[db.roster.jid];
+            item.jid = Jid.parse(row[db.roster.jid]);
             item.name = row[db.roster.handle];
             item.subscription = row[db.roster.subscription];
             items[item.jid] = item;
@@ -101,7 +101,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
     }
 
     public Roster.Item? get_item(Jid jid) {
-        return items.has_key(jid.bare_jid.to_string()) ? items[jid.bare_jid.to_string()] : null;
+        return items.has_key(jid) ? items[jid] : null;
     }
 
     public void set_roster_version(string version) {
@@ -119,7 +119,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
         items[item.jid] = item;
         db.roster.insert().or("REPLACE")
             .value(db.roster.account_id, account.id)
-            .value(db.roster.jid, item.jid)
+            .value(db.roster.jid, item.jid.to_string())
             .value(db.roster.handle, item.name)
             .value(db.roster.subscription, item.subscription)
             .perform();
@@ -129,7 +129,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
         items.unset(item.jid);
         db.roster.delete()
             .with(db.roster.account_id, "=", account.id)
-            .with(db.roster.jid, "=", item.jid).perform();
+            .with(db.roster.jid, "=", item.jid.to_string()).perform();
     }
 }
 

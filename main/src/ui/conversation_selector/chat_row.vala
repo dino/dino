@@ -3,6 +3,7 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.ConversationSelector {
 
@@ -18,7 +19,6 @@ public class ChatRow : ConversationRow {
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
             if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
                 update_name_label();
-                update_avatar();
             }
         });
     }
@@ -41,7 +41,7 @@ public class ChatRow : ConversationRow {
 
         jid_label.label = conversation.counterpart.to_string();
 
-        ArrayList<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
+        Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
         if (full_jids != null) {
             for (int i = 0; i < full_jids.size; i++) {
                 inner_box.add(get_fulljid_box(full_jids[i]));

@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.ChatStateNotifications {
 private const string NS_URI = "http://jabber.org/protocol/chatstates";
 
@@ -16,36 +14,36 @@ private const string[] STATES = {STATE_ACTIVE, STATE_INACTIVE, STATE_GONE, STATE
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0085_chat_state_notifications");
 
-    public signal void chat_state_received(XmppStream stream, string jid, string state);
+    public signal void chat_state_received(XmppStream stream, Jid jid, string state);
 
     private SendPipelineListener send_pipeline_listener = new SendPipelineListener();
 
     /**
     * "A message stanza that does not contain standard messaging content [...] SHOULD be a state other than <active/>" (0085, 5.6)
     */
-    public void send_state(XmppStream stream, string jid, string state) {
-        Message.Stanza message = new Message.Stanza();
+    public void send_state(XmppStream stream, Jid jid, string state) {
+        MessageStanza message = new MessageStanza();
         message.to = jid;
-        message.type_ = Message.Stanza.TYPE_CHAT;
+        message.type_ = MessageStanza.TYPE_CHAT;
         message.stanza.put_node(new StanzaNode.build(state, NS_URI).add_self_xmlns());
-        stream.get_module(Message.Module.IDENTITY).send_message(stream, message);
+        stream.get_module(MessageModule.IDENTITY).send_message(stream, message);
     }
 
     public override void attach(XmppStream stream) {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
-        stream.get_module(Message.Module.IDENTITY).send_pipeline.connect(send_pipeline_listener);
-        stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
+        stream.get_module(MessageModule.IDENTITY).send_pipeline.connect(send_pipeline_listener);
+        stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
     }
 
     public override void detach(XmppStream stream) {
-        stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
-        stream.get_module(Message.Module.IDENTITY).send_pipeline.disconnect(send_pipeline_listener);
+        stream.get_module(MessageModule.IDENTITY).received_message.disconnect(on_received_message);
+        stream.get_module(MessageModule.IDENTITY).send_pipeline.disconnect(send_pipeline_listener);
     }
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    private void on_received_message(XmppStream stream, Message.Stanza message) {
+    private void on_received_message(XmppStream stream, MessageStanza message) {
         if (!message.is_error()) {
             Gee.List<StanzaNode> nodes = message.stanza.get_all_subnodes();
             foreach (StanzaNode node in nodes) {
@@ -58,16 +56,16 @@ public class Module : XmppStreamModule {
     }
 }
 
-public class SendPipelineListener : StanzaListener<Message.Stanza> {
+public class SendPipelineListener : StanzaListener<MessageStanza> {
 
     private const string[] after_actions_const = {"MODIFY_BODY"};
 
     public override string action_group { get { return "ADD_NODES"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(Core.XmppStream stream, Message.Stanza message) {
+    public override async void run(XmppStream stream, MessageStanza message) {
         if (message.body == null) return;
-        if (message.type_ != Message.Stanza.TYPE_CHAT) return;
+        if (message.type_ != MessageStanza.TYPE_CHAT) return;
         message.stanza.put_node(new StanzaNode.build(STATE_ACTIVE, NS_URI).add_self_xmlns());
     }
 }

@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Tls {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-tls";
 
@@ -52,7 +50,7 @@ namespace Xmpp.Tls {
                     stream.write(new StanzaNode.build("starttls", NS_URI).add_self_xmlns());
                 }
                 if (identity == null) {
-                    identity = new NetworkService("xmpp-client", "tcp", stream.remote_name);
+                    identity = new NetworkService("xmpp-client", "tcp", stream.remote_name.to_string());
                 }
                 stream.add_flag(new Flag());
             }

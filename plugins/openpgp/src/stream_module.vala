@@ -1,7 +1,6 @@
 using GPG;
 
 using Xmpp;
-using Xmpp.Core;
 
 namespace Dino.Plugins.OpenPgp {
     private const string NS_URI = "jabber:x";
@@ -9,9 +8,9 @@ namespace Dino.Plugins.OpenPgp {
     private const string NS_URI_SIGNED = NS_URI +  ":signed";
 
     public class Module : XmppStreamModule {
-        public static Core.ModuleIdentity<Module> IDENTITY = new Core.ModuleIdentity<Module>(NS_URI, "0027_current_pgp_usage");
+        public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0027_current_pgp_usage");
 
-        public signal void received_jid_key_id(XmppStream stream, string jid, string key_id);
+        public signal void received_jid_key_id(XmppStream stream, Jid jid, string key_id);
 
         private string? signed_status = null;
         private Key? own_key = null;
@@ -33,7 +32,7 @@ namespace Dino.Plugins.OpenPgp {
             }
         }
 
-        public bool encrypt(Message.Stanza message, GPG.Key[] keys) {
+        public bool encrypt(MessageStanza message, GPG.Key[] keys) {
             string? enc_body = gpg_encrypt(message.body, keys);
             if (enc_body != null) {
                 message.stanza.put_node(new StanzaNode.build("x", NS_URI_ENCRYPTED).add_self_xmlns().put_node(new StanzaNode.text(enc_body)));
@@ -46,14 +45,14 @@ namespace Dino.Plugins.OpenPgp {
         public override void attach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
-            stream.get_module(Message.Module.IDENTITY).received_pipeline.connect(received_pipeline_decrypt_listener);
+            stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_decrypt_listener);
             stream.add_flag(new Flag());
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
-            stream.get_module(Message.Module.IDENTITY).received_pipeline.disconnect(received_pipeline_decrypt_listener);
+            stream.get_module(MessageModule.IDENTITY).received_pipeline.disconnect(received_pipeline_decrypt_listener);
         }
 
         public static void require(XmppStream stream) {
@@ -121,12 +120,12 @@ namespace Dino.Plugins.OpenPgp {
         }
     }
 
-    public class MessageFlag : Message.MessageFlag {
+    public class MessageFlag : Xmpp.MessageFlag {
         public const string id = "pgp";
 
         public bool decrypted = false;
 
-        public static MessageFlag? get_flag(Message.Stanza message) {
+        public static MessageFlag? get_flag(MessageStanza message) {
             return (MessageFlag) message.get_flag(NS_URI, id);
         }
 
@@ -134,14 +133,14 @@ namespace Dino.Plugins.OpenPgp {
         public override string get_id() { return id; }
     }
 
-public class ReceivedPipelineDecryptListener : StanzaListener<Message.Stanza> {
+public class ReceivedPipelineDecryptListener : StanzaListener<MessageStanza> {
 
     private const string[] after_actions_const = {"MODIFY_BODY"};
 
     public override string action_group { get { return "ENCRYPT_BODY"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(Core.XmppStream stream, Message.Stanza message) {
+    public override async void run(XmppStream stream, MessageStanza message) {
         string? encrypted = get_cyphertext(message);
         if (encrypted != null) {
             MessageFlag flag = new MessageFlag();
@@ -171,7 +170,7 @@ public class ReceivedPipelineDecryptListener : StanzaListener<Message.Stanza> {
         return res;
     }
 
-    private string? get_cyphertext(Message.Stanza message) {
+    private string? get_cyphertext(MessageStanza message) {
         StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_ENCRYPTED);
         return x_node == null ? null : x_node.get_string_content();
     }

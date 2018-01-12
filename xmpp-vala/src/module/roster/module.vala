@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Roster {
 
 private const string NS_URI = "jabber:iq:roster";
@@ -16,7 +14,7 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     public bool interested_resource = true;
 
-    public void add_jid(XmppStream stream, string jid, string? handle = null) {
+    public void add_jid(XmppStream stream, Jid jid, string? handle = null) {
         Item roster_item = new Item();
         roster_item.jid = jid;
         if (handle != null) {
@@ -25,7 +23,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         roster_set(stream, roster_item);
     }
 
-    public void remove_jid(XmppStream stream, string jid) {
+    public void remove_jid(XmppStream stream, Jid jid) {
         Item roster_item = new Item();
         roster_item.jid = jid;
         roster_item.subscription = Item.SUBSCRIPTION_REMOVE;
@@ -37,7 +35,7 @@ public class Module : XmppStreamModule, Iq.Handler {
      * Set a handle for a jid
      * @param   handle  Handle to be set. If null, any handle will be removed.
      */
-    public void set_jid_handle(XmppStream stream, string jid, string? handle) {
+    public void set_jid_handle(XmppStream stream, Jid jid, string? handle) {
         Flag flag = stream.get_flag(Flag.IDENTITY);
         Item item = flag.get_item(jid) ?? new Item() { jid=jid };
         item.name = handle != null ? handle : "";

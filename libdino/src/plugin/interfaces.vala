@@ -1,4 +1,5 @@
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Plugins {
 

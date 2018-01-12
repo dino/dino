@@ -2,12 +2,12 @@ using Xmpp;
 
 namespace Dino.Plugins.Omemo {
 
-public class MessageFlag : Message.MessageFlag {
+public class MessageFlag : Xmpp.MessageFlag {
     public const string id = "omemo";
 
     public bool decrypted = false;
 
-    public static MessageFlag? get_flag(Message.Stanza message) {
+    public static MessageFlag? get_flag(MessageStanza message) {
         return (MessageFlag) message.get_flag(NS_URI, id);
     }
 

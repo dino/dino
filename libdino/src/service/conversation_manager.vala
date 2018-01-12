@@ -33,9 +33,10 @@ public class ConversationManager : StreamInteractionModule, Object {
 
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
         assert(conversations.has_key(account));
-        if (conversations[account].has_key(jid)) {
-            conversations[account][jid].type_ = type;
-            return conversations[account][jid];
+        Jid store_jid = type == Conversation.Type.GROUPCHAT ? jid.bare_jid : jid;
+        if (conversations[account].has_key(store_jid)) {
+            conversations[account][store_jid].type_ = type;
+            return conversations[account][store_jid];
         } else {
             Conversation conversation = new Conversation(jid, account, type);
             add_conversation(conversation);
@@ -84,10 +85,11 @@ public class ConversationManager : StreamInteractionModule, Object {
         return null;
     }
 
-    public Gee.List<Conversation> get_active_conversations() {
+    public Gee.List<Conversation> get_active_conversations(Account? account = null) {
         Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
-        foreach (Account account in conversations.keys) {
-            foreach (Conversation conversation in conversations[account].values) {
+        foreach (Account account_ in conversations.keys) {
+            if (account != null && !account_.equals(account)) continue;
+            foreach (Conversation conversation in conversations[account_].values) {
                 if(conversation.active) ret.add(conversation);
             }
         }

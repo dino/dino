@@ -30,7 +30,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     }
 
     public void send_file(Conversation conversation, FileTransfer file_transfer) {
-        Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
+        Xmpp.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream != null) {
             stream_interactor.module_manager.get_module(file_transfer.account, UploadStreamModule.IDENTITY).upload(stream, file_transfer.input_stream, file_transfer.server_file_name, file_transfer.size, file_transfer.mime_type,
                 (stream, url_down) => {
@@ -60,7 +60,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
         }
     }
 
-    private void on_stream_negotiated(Account account, Core.XmppStream stream) {
+    private void on_stream_negotiated(Account account, XmppStream stream) {
         stream_interactor.module_manager.get_module(account, UploadStreamModule.IDENTITY).feature_available.connect((stream, max_file_size) => {
             lock (max_file_sizes) {
                 max_file_sizes[account] = max_file_size;
@@ -69,7 +69,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
         });
     }
 
-    private void check_add_oob(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+    private void check_add_oob(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         if (message_is_file(db, message)) {
             Xep.OutOfBandData.add_url_to_message(message_stanza, message_stanza.body);
         }

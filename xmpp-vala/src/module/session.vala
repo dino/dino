@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 /* Legacy. RFC 3921 3*/
 namespace Xmpp.Session {
 private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-session";
@@ -24,7 +22,7 @@ public class Module : XmppStreamNegotiationModule {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    private void on_bound_resource(XmppStream stream, string my_jid) {
+    private void on_bound_resource(XmppStream stream, Jid my_jid) {
         StanzaNode? session_node = stream.features.get_subnode("session", NS_URI);
         if (session_node != null && session_node.get_subnode("optional", NS_URI) == null) {
             stream.add_flag(new Flag());

@@ -4,6 +4,7 @@ using Gdk;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui {
 
@@ -109,7 +110,7 @@ public class AvatarGenerator {
     }
 
     private Pixbuf draw_groupchat_tile(Jid jid, Account account, int width, int height) {
-        ArrayList<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(jid, account);
+        Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(jid, account);
         if (stateless || occupants == null || occupants.size == 0) {
             return draw_chat_tile(jid, account, width, height);
         }

@@ -1,6 +1,6 @@
 using Gee;
 
-namespace Xmpp.Core {
+namespace Xmpp {
 
 public abstract class StanzaEntry {
     protected const string ANSI_COLOR_END = "\x1b[0m";

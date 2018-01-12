@@ -4,6 +4,7 @@ using Gtk;
 using Markup;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.ManageAccounts {
 

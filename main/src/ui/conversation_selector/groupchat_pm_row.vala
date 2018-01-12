@@ -15,7 +15,6 @@ public class GroupchatPmRow : ConversationRow {
             tooltip.set_custom(generate_tooltip());
             return true;
         });
-        update_avatar();
     }
 
     protected override void update_message_label() {

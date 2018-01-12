@@ -232,7 +232,7 @@ public class Database : Qlite.Database {
         }
     }
 
-    public Gee.List<Message> get_messages(Jid jid, Account account, Message.Type? type, int count, DateTime? before) {
+    public Gee.List<Message> get_messages(Xmpp.Jid jid, Account account, Message.Type? type, int count, DateTime? before) {
         QueryBuilder select = message.select()
                 .with(message.counterpart_id, "=", get_jid_id(jid))
                 .with(message.account_id, "=", account.id)
@@ -255,7 +255,7 @@ public class Database : Qlite.Database {
         return ret;
     }
 
-    public Gee.List<Message> get_unsend_messages(Account account, Jid? jid = null) {
+    public Gee.List<Message> get_unsend_messages(Account account, Xmpp.Jid? jid = null) {
         Gee.List<Message> ret = new ArrayList<Message>();
         var select = message.select()
             .with(message.account_id, "=", account.id)
@@ -308,7 +308,7 @@ public class Database : Qlite.Database {
         return ret;
     }
 
-    public void set_avatar_hash(Jid jid, string hash, int type) {
+    public void set_avatar_hash(Xmpp.Jid jid, string hash, int type) {
         avatar.insert().or("REPLACE")
                 .value(avatar.jid, jid.to_string())
                 .value(avatar.hash, hash)
@@ -316,10 +316,10 @@ public class Database : Qlite.Database {
                 .perform();
     }
 
-    public HashMap<Jid, string> get_avatar_hashes(int type) {
-        HashMap<Jid, string> ret = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
+    public HashMap<Xmpp.Jid, string> get_avatar_hashes(int type) {
+        HashMap<Xmpp.Jid, string> ret = new HashMap<Xmpp.Jid, string>(Xmpp.Jid.hash_func, Xmpp.Jid.equals_func);
         foreach (Row row in avatar.select({avatar.jid, avatar.hash}).with(avatar.type_, "=", type)) {
-            ret[new Jid(row[avatar.jid])] = row[avatar.hash];
+            ret[Xmpp.Jid.parse(row[avatar.jid])] = row[avatar.hash];
         }
         return ret;
     }
@@ -342,7 +342,7 @@ public class Database : Qlite.Database {
     }
 
 
-    public int get_jid_id(Jid jid_obj) {
+    public int get_jid_id(Xmpp.Jid jid_obj) {
         string bare_jid = jid_obj.bare_jid.to_string();
         if (jid_table_reverse.has_key(bare_jid)) {
             return jid_table_reverse[bare_jid];
@@ -372,7 +372,7 @@ public class Database : Qlite.Database {
         }
     }
 
-    private int add_jid(Jid jid_obj) {
+    private int add_jid(Xmpp.Jid jid_obj) {
         string bare_jid = jid_obj.bare_jid.to_string();
         int id = (int) jid.insert().value(jid.bare_jid, bare_jid).perform();
         jid_table_cache[id] = bare_jid;

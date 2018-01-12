@@ -4,6 +4,7 @@ using Gtk;
 using Pango;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.ConversationSelector {
 

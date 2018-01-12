@@ -21,6 +21,7 @@ SOURCES
     "src/module/bind.vala"
     "src/module/iq/module.vala"
     "src/module/iq/stanza.vala"
+    "src/module/jid.vala"
     "src/module/message/module.vala"
     "src/module/message/stanza.vala"
     "src/module/presence/flag.vala"

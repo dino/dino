@@ -9,8 +9,8 @@ public class StreamInteractor {
 
     public signal void account_added(Account account);
     public signal void account_removed(Account account);
-    public signal void stream_negotiated(Account account, Core.XmppStream stream);
-    public signal void attached_modules(Account account, Core.XmppStream stream);
+    public signal void stream_negotiated(Account account, XmppStream stream);
+    public signal void attached_modules(Account account, XmppStream stream);
 
     public ModuleManager module_manager;
     public ConnectionManager connection_manager;
@@ -42,7 +42,7 @@ public class StreamInteractor {
         return ret;
     }
 
-    public Core.XmppStream? get_stream(Account account) {
+    public XmppStream? get_stream(Account account) {
         return connection_manager.get_stream(account);
     }
 
@@ -58,7 +58,7 @@ public class StreamInteractor {
         return null;
     }
 
-    private void on_stream_opened(Account account, Core.XmppStream stream) {
+    private void on_stream_opened(Account account, XmppStream stream) {
         stream.stream_negotiated.connect( (stream) => {
             stream_negotiated(account, stream);
         });

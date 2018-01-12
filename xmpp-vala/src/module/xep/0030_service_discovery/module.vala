@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.ServiceDiscovery {
 
 private const string NS_URI = "http://jabber.org/protocol/disco";
@@ -30,7 +28,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public delegate void HasEntryCategoryRes(XmppStream stream, Gee.List<Identity>? identities);
-    public void get_entity_categories(XmppStream stream, string jid, owned HasEntryCategoryRes listener) {
+    public void get_entity_categories(XmppStream stream, Jid jid, owned HasEntryCategoryRes listener) {
         Gee.List<Identity>? res = stream.get_flag(Flag.IDENTITY).get_entity_categories(jid);
         if (res != null) listener(stream, res);
         request_info(stream, jid, (stream, query_result) => {
@@ -39,7 +37,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public delegate void OnInfoResult(XmppStream stream, InfoResult? query_result);
-    public void request_info(XmppStream stream, string jid, owned OnInfoResult listener) {
+    public void request_info(XmppStream stream, Jid jid, owned OnInfoResult listener) {
         Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
         iq.to = jid;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
@@ -51,7 +49,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public delegate void OnItemsResult(XmppStream stream, ItemsResult query_result);
-    public void request_items(XmppStream stream, string jid, owned OnItemsResult listener) {
+    public void request_items(XmppStream stream, Jid jid, owned OnItemsResult listener) {
         Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns());
         iq.to = jid;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {

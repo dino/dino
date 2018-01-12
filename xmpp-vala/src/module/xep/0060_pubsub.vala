@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.Pubsub {
     private const string NS_URI = "http://jabber.org/protocol/pubsub";
     private const string NS_URI_EVENT = NS_URI + "#event";
@@ -16,8 +14,8 @@ namespace Xmpp.Xep.Pubsub {
             event_listeners[node] = new EventListenerDelegate((owned)listener);
         }
 
-        public delegate void OnResult(XmppStream stream, string jid, string? id, StanzaNode? node);
-        public void request(XmppStream stream, string jid, string node, owned OnResult listener) { // TODO multiple nodes gehen auch
+        public delegate void OnResult(XmppStream stream, Jid jid, string? id, StanzaNode? node);
+        public void request(XmppStream stream, Jid jid, string node, owned OnResult listener) { // TODO multiple nodes gehen auch
             Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
             request_iq.to = jid;
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, request_iq, (stream, iq) => {
@@ -29,7 +27,7 @@ namespace Xmpp.Xep.Pubsub {
             });
         }
 
-        public void publish(XmppStream stream, string? jid, string node_id, string node, string? item_id, StanzaNode content) {
+        public void publish(XmppStream stream, Jid? jid, string node_id, string node, string? item_id, StanzaNode content) {
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI).add_self_xmlns();
             StanzaNode publish_node = new StanzaNode.build("publish", NS_URI).put_attribute("node", node_id);
             pubsub_node.put_node(publish_node);
@@ -42,17 +40,17 @@ namespace Xmpp.Xep.Pubsub {
         }
 
         public override void attach(XmppStream stream) {
-            stream.get_module(Message.Module.IDENTITY).received_message.connect(on_received_message);
+            stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
         }
 
         public override void detach(XmppStream stream) {
-            stream.get_module(Message.Module.IDENTITY).received_message.disconnect(on_received_message);
+            stream.get_module(MessageModule.IDENTITY).received_message.disconnect(on_received_message);
         }
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
 
-        private void on_received_message(XmppStream stream, Message.Stanza message) {
+        private void on_received_message(XmppStream stream, MessageStanza message) {
             StanzaNode event_node = message.stanza.get_subnode("event", NS_URI_EVENT); if (event_node == null) return;
             StanzaNode items_node = event_node.get_subnode("items", NS_URI_EVENT); if (items_node == null) return;
             StanzaNode item_node = items_node.get_subnode("item", NS_URI_EVENT); if (item_node == null) return;
@@ -65,7 +63,7 @@ namespace Xmpp.Xep.Pubsub {
     }
 
     public class EventListenerDelegate {
-        public delegate void ResultFunc(XmppStream stream, string jid, string id, StanzaNode? node);
+        public delegate void ResultFunc(XmppStream stream, Jid jid, string id, StanzaNode? node);
         public ResultFunc on_result { get; private owned set; }
 
         public EventListenerDelegate(owned ResultFunc on_result) {
