@@ -226,9 +226,13 @@ public class MucManager : StreamInteractionModule, Object {
 
     private void on_stream_negotiated(Account account, XmppStream stream) {
         stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (stream, conferences) => {
-            foreach (Xep.Bookmarks.Conference bookmark in conferences) {
-                if (bookmark.autojoin) {
-                    join(account, bookmark.jid, bookmark.nick, bookmark.password);
+            if (conferences == null) {
+                join_all_active(account);
+            } else {
+                foreach (Xep.Bookmarks.Conference bookmark in conferences) {
+                    if (bookmark.autojoin) {
+                        join(account, bookmark.jid, bookmark.nick, bookmark.password);
+                    }
                 }
             }
         });
@@ -251,6 +255,15 @@ public class MucManager : StreamInteractionModule, Object {
                 if (m.equals(message)) {
                     m.marked = Entities.Message.Marked.RECEIVED;
                 }
+            }
+        }
+    }
+
+    private void join_all_active(Account account) {
+        Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
+        foreach (Conversation conversation in conversations) {
+            if (conversation.type_ == Conversation.Type.GROUPCHAT && conversation.nickname != null) {
+                join(account, conversation.counterpart, conversation.nickname, null);
             }
         }
     }

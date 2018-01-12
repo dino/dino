@@ -64,6 +64,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         if (message.body == null) return;
 
         Entities.Message new_message = create_in_message(account, message);
+        if (new_message == null) return;
 
         determine_message_type(account, message, new_message);
     }
@@ -81,6 +82,23 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.counterpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from;
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
         new_message.stanza = message;
+
+        // Slack non-standard behavior
+        if (account.domainpart.index_of("xmpp.slack.com") == account.domainpart.length - 14) {
+            if (new_message.counterpart.equals_bare(account.bare_jid)) {
+                // Ignore messages from us, because we neither know which conversation they belong to, nor can match
+                // them to one of our send messages because of timestamp mismatches.
+                return null;
+            }
+            if (new_message.direction == Entities.Message.DIRECTION_RECEIVED && message.type_ == "chat" && new_message.body.index_of("["+account.localpart+"] ") == 0) {
+                // That is the best thing we can do, although allowing for attacks.
+                new_message.direction = Entities.Message.DIRECTION_SENT;
+                new_message.body = new_message.body.substring(account.localpart.length + 3);
+            }
+            if (message.stanza.get_attribute("ts") != null) {
+                new_message.time = new DateTime.from_unix_utc((int64) double.parse(message.stanza.get_attribute("ts")));
+            }
+        }
 
         Xep.MessageArchiveManagement.MessageFlag? mam_message_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
         if (mam_message_flag != null) new_message.local_time = mam_message_flag.server_time;

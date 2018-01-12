@@ -16,6 +16,7 @@ public class Conversation : Object {
     public Type type_ { get; set; }
     public Account account { get; private set; }
     public Jid counterpart { get; private set; }
+    public string? nickname { get; private set; }
     public bool active { get; set; default = false; }
     private DateTime? _last_active;
     public DateTime? last_active {
@@ -55,6 +56,7 @@ public class Conversation : Object {
         string? resource = row[db.conversation.resource];
         counterpart = Jid.parse(db.get_jid_by_id(row[db.conversation.jid_id]));
         if (type_ == Conversation.Type.GROUPCHAT_PM) counterpart = counterpart.with_resource(resource);
+        nickname = type_ == Conversation.Type.GROUPCHAT ? resource : null;
         active = row[db.conversation.active];
         int64? last_active = row[db.conversation.last_active];
         if (last_active != null) this.last_active = new DateTime.from_unix_utc(last_active);
