@@ -14,6 +14,11 @@ Build
 * ninja(-build) (recommend)
 * valac (≥ 0.34)
 
+Eg. On Ubuntu 17.10 this command should pull most build dependencies
+```
+sudo apt-get install cmake gettext libgcrypt20-dev libgdk-pixbuf2.0-dev libgee-0.8-dev libgpgme-dev libgtk-3-dev libsoup2.4-dev libsqlite3-dev libxml2-utils ninja-build sqlite3 valac
+```
+
 **Run-time dependencies**
 
 * GLib (≥ 2.38)
