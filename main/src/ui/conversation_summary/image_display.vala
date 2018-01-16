@@ -54,7 +54,7 @@ public class ImageDisplay : Plugins.MetaConversationItem {
         if (pixbuf.width > max_scaled_width) {
             pixbuf = pixbuf.scale_simple(max_scaled_width, (int) ((double) max_scaled_width / pixbuf.width * pixbuf.height), Gdk.InterpType.BILINEAR);
         }
-        pixbuf = AvatarGenerator.crop_corners(pixbuf, 3 * image.get_scale_factor());
+        pixbuf = crop_corners(pixbuf, 3 * image.get_scale_factor());
         Util.image_set_from_scaled_pixbuf(image, pixbuf);
         Util.force_css(image, "* { box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.1); margin: 2px; border-radius: 3px; }");
 
@@ -101,6 +101,21 @@ public class ImageDisplay : Plugins.MetaConversationItem {
         event_box.leave_notify_event.connect(() => { toolbar_revealer.reveal_child = false; return false; });
 
         return event_box;
+    }
+
+    private static Gdk.Pixbuf crop_corners(Gdk.Pixbuf pixbuf, double radius = 3) {
+        Cairo.Context ctx = new Cairo.Context(new Cairo.ImageSurface(Cairo.Format.ARGB32, pixbuf.width, pixbuf.height));
+        Gdk.cairo_set_source_pixbuf(ctx, pixbuf, 0, 0);
+        double degrees = Math.PI / 180.0;
+        ctx.new_sub_path();
+        ctx.arc(pixbuf.width - radius, radius, radius, -90 * degrees, 0 * degrees);
+        ctx.arc(pixbuf.width - radius, pixbuf.height - radius, radius, 0 * degrees, 90 * degrees);
+        ctx.arc(radius, pixbuf.height - radius, radius, 90 * degrees, 180 * degrees);
+        ctx.arc(radius, radius, radius, 180 * degrees, 270 * degrees);
+        ctx.close_path();
+        ctx.clip();
+        ctx.paint();
+        return Gdk.pixbuf_get_from_surface(ctx.get_target(), 0, 0, pixbuf.width, pixbuf.height);
     }
 
     private void update_info(Label url_label, string? info) {

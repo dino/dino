@@ -9,7 +9,7 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/add_conversation/list_row.ui")]
 public class ListRow : ListBoxRow {
 
-    [GtkChild] public Image image;
+    [GtkChild] public AvatarImage image;
     [GtkChild] public Label name_label;
     [GtkChild] public Label via_label;
 
@@ -33,7 +33,7 @@ public class ListRow : ListBoxRow {
             via_label.visible = false;
         }
         name_label.label = display_name;
-        Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(35, 35, image.scale_factor)).draw_jid(stream_interactor, jid, account));
+        image.set_jid(stream_interactor, jid, account);
     }
 }
 

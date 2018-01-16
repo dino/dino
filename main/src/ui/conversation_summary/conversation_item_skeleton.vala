@@ -9,7 +9,7 @@ namespace Dino.Ui.ConversationSummary {
 
 public class ConversationItemSkeleton : Box {
 
-    private Image image = new Image() { margin_top=2, valign=Align.START, visible=true };
+    private AvatarImage image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true, allow_gray = false };
 
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
@@ -24,7 +24,7 @@ public class ConversationItemSkeleton : Box {
         this.stream_interactor = stream_interactor;
 
         if (item.requires_avatar) {
-            Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(32, 32, image.scale_factor)).set_greyscale(item.dim).draw_jid(stream_interactor, item.jid, conversation.account));
+            image.set_jid(stream_interactor, item.jid, conversation.account);
         }
         if (item.display_time != null) {
             default_header = new DefaultSkeletonHeader(stream_interactor, conversation, item) { visible=true };

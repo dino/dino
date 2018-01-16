@@ -26,34 +26,36 @@ public class AvatarGenerator {
         this.scale_factor = scale_factor;
     }
 
-    public Pixbuf draw_jid(StreamInteractor stream_interactor, Jid jid_, Account account) {
+    public ImageSurface draw_jid(StreamInteractor stream_interactor, Jid jid_, Account account) {
         Jid? jid = jid_;
         this.stream_interactor = stream_interactor;
         Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, account);
         if (real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, real_jid) != null) {
             jid = real_jid;
         }
-        return crop_corners(draw_tile(jid, account, width * scale_factor, height * scale_factor), 3 * scale_factor);
+        ImageSurface surface = crop_corners(draw_tile(jid, account, width * scale_factor, height * scale_factor), 3 * scale_factor);
+        surface.set_device_scale(scale_factor, scale_factor);
+        return surface;
     }
 
-    public Pixbuf draw_message(StreamInteractor stream_interactor, Message message) {
+    public ImageSurface draw_message(StreamInteractor stream_interactor, Message message) {
         if (message.real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(message.account, message.real_jid) != null) {
             return draw_jid(stream_interactor, message.real_jid, message.account);
         }
         return draw_jid(stream_interactor, message.from, message.account);
     }
 
-    public Pixbuf draw_conversation(StreamInteractor stream_interactor, Conversation conversation) {
+    public ImageSurface draw_conversation(StreamInteractor stream_interactor, Conversation conversation) {
         return draw_jid(stream_interactor, conversation.counterpart, conversation.account);
     }
 
-    public Pixbuf draw_account(StreamInteractor stream_interactor, Account account) {
+    public ImageSurface draw_account(StreamInteractor stream_interactor, Account account) {
         return draw_jid(stream_interactor, account.bare_jid, account);
     }
 
-    public Pixbuf draw_text(string text) {
-        Pixbuf pixbuf = draw_colored_rectangle_text(COLOR_GREY, text, width, height);
-        return crop_corners(pixbuf, 3 * scale_factor);
+    public ImageSurface draw_text(string text) {
+        ImageSurface surface = draw_colored_rectangle_text(COLOR_GREY, text, width, height);
+        return crop_corners(surface, 3 * scale_factor);
     }
 
     public AvatarGenerator set_greyscale(bool greyscale) {
@@ -75,33 +77,39 @@ public class AvatarGenerator {
     }
 
     private void add_tile_to_pixbuf(Pixbuf pixbuf, Jid jid, Account account, int width, int height, int x, int y) {
-        Pixbuf tile = draw_chat_tile(jid, account, width, height);
+        Pixbuf tile = pixbuf_get_from_surface(draw_chat_tile(jid, account, width, height), 0, 0, width, height);
         tile.copy_area(0, 0, width, height, pixbuf, x, y);
     }
 
-    private Pixbuf draw_tile(Jid jid, Account account, int width, int height) {
+    private ImageSurface draw_tile(Jid jid, Account account, int width, int height) {
+        ImageSurface surface;
         if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
-            return draw_groupchat_tile(jid, account, width, height);
+            surface = draw_groupchat_tile(jid, account, width, height);
         } else {
-            return draw_chat_tile(jid, account, width, height);
+            surface = draw_chat_tile(jid, account, width, height);
         }
+        return surface;
     }
 
-    private Pixbuf draw_chat_tile(Jid jid, Account account, int width, int height) {
-        Pixbuf? avatar = stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, jid);
-        if (avatar != null) {
+    private ImageSurface draw_chat_tile(Jid jid, Account account, int width, int height) {
+        Pixbuf? pixbuf = stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, jid);
+        if (pixbuf != null) {
             double desired_ratio = (double) width / height;
-            double avatar_ratio = (double) avatar.width / avatar.height;
+            double avatar_ratio = (double) pixbuf.width / pixbuf.height;
             if (avatar_ratio > desired_ratio) {
-                int comp_width = width * avatar.height / height;
-                avatar = new Pixbuf.subpixbuf(avatar, avatar.width / 2 - comp_width / 2, 0, comp_width, avatar.height);
+                int comp_width = width * pixbuf.height / height;
+                pixbuf = new Pixbuf.subpixbuf(pixbuf, pixbuf.width / 2 - comp_width / 2, 0, comp_width, pixbuf.height);
             } else if (avatar_ratio < desired_ratio) {
-                int comp_height = height * avatar.width / width;
-                avatar = new Pixbuf.subpixbuf(avatar, 0, avatar.height / 2 - comp_height / 2, avatar.width, comp_height);
+                int comp_height = height * pixbuf.width / width;
+                pixbuf = new Pixbuf.subpixbuf(pixbuf, 0, pixbuf.height / 2 - comp_height / 2, pixbuf.width, comp_height);
             }
-            avatar = avatar.scale_simple(width, height, InterpType.BILINEAR);
-            if (greyscale) avatar = convert_to_greyscale(avatar);
-            return avatar;
+            pixbuf = pixbuf.scale_simple(width, height, InterpType.BILINEAR);
+            Context ctx = new Context(new ImageSurface(Format.ARGB32, pixbuf.width, pixbuf.height));
+            cairo_set_source_pixbuf(ctx, pixbuf, 0, 0);
+            ctx.paint();
+            ImageSurface avatar_surface = (ImageSurface) ctx.get_target();
+            if (greyscale) avatar_surface = convert_to_greyscale(avatar_surface);
+            return avatar_surface;
         } else {
             string display_name = Util.get_display_name(stream_interactor, jid, account);
             string color = greyscale ? COLOR_GREY : Util.get_avatar_hex_color(stream_interactor, account, jid);
@@ -109,7 +117,7 @@ public class AvatarGenerator {
         }
     }
 
-    private Pixbuf draw_groupchat_tile(Jid jid, Account account, int width, int height) {
+    private ImageSurface draw_groupchat_tile(Jid jid, Account account, int width, int height) {
         Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(jid, account);
         if (stateless || occupants == null || occupants.size == 0) {
             return draw_chat_tile(jid, account, width, height);
@@ -139,15 +147,18 @@ public class AvatarGenerator {
             if (occupants.size == 4) {
                 add_tile_to_pixbuf(pixbuf, occupants[3], account, width / 2 - get_left_border(), height / 2 - get_left_border(), width / 2 + get_left_border(), height / 2 + get_left_border());
             } else if (occupants.size > 4) {
-                Pixbuf plus_pixbuf = draw_colored_rectangle_text("555753", "+", width / 2 - get_left_border(), height / 2 - get_left_border());
-                if (greyscale) plus_pixbuf = convert_to_greyscale(plus_pixbuf);
-                plus_pixbuf.copy_area(0, 0, width / 2 - get_left_border(), height / 2 - get_left_border(), pixbuf, width / 2 + get_left_border(), height / 2 + get_left_border());
+                ImageSurface plus_surface = draw_colored_rectangle_text("555753", "+", width / 2 - get_left_border(), height / 2 - get_left_border());
+                if (greyscale) plus_surface = convert_to_greyscale(plus_surface);
+                pixbuf_get_from_surface(plus_surface, 0, 0, plus_surface.get_width(), plus_surface.get_height()).copy_area(0, 0, width / 2 - get_left_border(), height / 2 - get_left_border(), pixbuf, width / 2 + get_left_border(), height / 2 + get_left_border());
             }
         }
-        return pixbuf;
+        Context ctx = new Context(new ImageSurface(Format.ARGB32, pixbuf.width, pixbuf.height));
+        cairo_set_source_pixbuf(ctx, pixbuf, 0, 0);
+        ctx.paint();
+        return (ImageSurface) ctx.get_target();
     }
 
-    public Pixbuf draw_colored_icon(string hex_color, string icon, int width, int height) {
+    public ImageSurface draw_colored_icon(string hex_color, string icon, int width, int height) {
         int ICON_SIZE = width > 20 * scale_factor ? 17 * scale_factor : 14 * scale_factor;
 
         Context rectancle_context = new Context(new ImageSurface(Format.ARGB32, width, height));
@@ -166,14 +177,14 @@ public class AvatarGenerator {
             rectancle_context.paint();
         } catch (Error e) { warning(@"Icon $icon does not exist"); }
 
-        return pixbuf_get_from_surface(rectancle_context.get_target(), 0, 0, width, height);
+        return (ImageSurface) rectancle_context.get_target();
     }
 
-    public Pixbuf draw_colored_rectangle_text(string hex_color, string text, int width, int height) {
+    public ImageSurface draw_colored_rectangle_text(string hex_color, string text, int width, int height) {
         Context ctx = new Context(new ImageSurface(Format.ARGB32, width, height));
         draw_colored_rectangle(ctx, hex_color, width, height);
         draw_center_text(ctx, text, width < 40 * scale_factor ? 17 * scale_factor : 25 * scale_factor, width, height);
-        return pixbuf_get_from_surface(ctx.get_target(), 0, 0, width, height);
+        return (ImageSurface) ctx.get_target();
     }
 
     private static void draw_center_text(Context ctx, string text, int fontsize, int width, int height) {
@@ -194,23 +205,22 @@ public class AvatarGenerator {
         ctx.fill();
     }
 
-    private static Pixbuf convert_to_greyscale(Pixbuf pixbuf) {
-        Surface surface = cairo_surface_create_from_pixbuf(pixbuf, 1, null);
+    private static ImageSurface convert_to_greyscale(ImageSurface surface) {
         Context context = new Context(surface);
         // convert to greyscale
         context.set_operator(Operator.HSL_COLOR);
         context.set_source_rgb(1, 1, 1);
-        context.rectangle(0, 0, pixbuf.width, pixbuf.height);
+        context.rectangle(0, 0, surface.get_width(), surface.get_height());
         context.fill();
         // make the visible part more light
         context.set_operator(Operator.ATOP);
         context.set_source_rgba(1, 1, 1, 0.7);
-        context.rectangle(0, 0, pixbuf.width, pixbuf.height);
+        context.rectangle(0, 0, surface.get_width(), surface.get_height());
         context.fill();
-        return pixbuf_get_from_surface(context.get_target(), 0, 0, pixbuf.width, pixbuf.height);
+        return (ImageSurface) context.get_target();
     }
 
-    public static Pixbuf crop_corners(Pixbuf pixbuf, double radius = 3) {
+    public static Pixbuf crop_corners_pixbuf(Pixbuf pixbuf, double radius = 3) {
         Context ctx = new Context(new ImageSurface(Format.ARGB32, pixbuf.width, pixbuf.height));
         cairo_set_source_pixbuf(ctx, pixbuf, 0, 0);
         double degrees = Math.PI / 180.0;
@@ -223,6 +233,21 @@ public class AvatarGenerator {
         ctx.clip();
         ctx.paint();
         return pixbuf_get_from_surface(ctx.get_target(), 0, 0, pixbuf.width, pixbuf.height);
+    }
+
+    public static ImageSurface crop_corners(ImageSurface surface, double radius = 3) {
+        Context ctx = new Context(new ImageSurface(Format.ARGB32, surface.get_width(), surface.get_height()));
+        ctx.set_source_surface(surface, 0, 0);
+        double degrees = Math.PI / 180.0;
+        ctx.new_sub_path();
+        ctx.arc(surface.get_width() - radius, radius, radius, -90 * degrees, 0 * degrees);
+        ctx.arc(surface.get_width() - radius, surface.get_height() - radius, radius, 0 * degrees, 90 * degrees);
+        ctx.arc(radius, surface.get_height() - radius, radius, 90 * degrees, 180 * degrees);
+        ctx.arc(radius, radius, radius, 180 * degrees, 270 * degrees);
+        ctx.close_path();
+        ctx.clip();
+        ctx.paint();
+        return (ImageSurface) ctx.get_target();
     }
 
     private static Pixbuf initialize_pixbuf(int width, int height) {

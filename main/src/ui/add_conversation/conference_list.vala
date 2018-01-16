@@ -94,7 +94,7 @@ internal class ConferenceListRow : ListRow {
             via_label.visible = false;
         }
 
-        image.set_from_pixbuf((new AvatarGenerator(35, 35)).set_stateless(true).draw_jid(stream_interactor, jid, account));
+        image.set_jid(stream_interactor, jid, account);
     }
 }
 

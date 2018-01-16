@@ -33,10 +33,11 @@
                                         <property name="column-spacing">10</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <object class="GtkImage" id="avatar">
-                                                <property name="height_request">50</property>
-                                                <property name="width_request">50</property>
+                                            <object class="DinoUiAvatarImage" id="avatar">
+                                                <property name="height">50</property>
+                                                <property name="width">50</property>
                                                 <property name="visible">True</property>
+                                                <property name="allow_gray">False</property>
                                             </object>
                                             <packing>
                                                 <property name="left_attach">0</property>

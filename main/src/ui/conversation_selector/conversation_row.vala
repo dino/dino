@@ -13,7 +13,7 @@ public abstract class ConversationRow : ListBoxRow {
 
     public signal void closed();
 
-    [GtkChild] protected Image image;
+    [GtkChild] protected AvatarImage image;
     [GtkChild] protected Label name_label;
     [GtkChild] protected Label time_label;
     [GtkChild] protected Label nick_label;
@@ -42,11 +42,10 @@ public abstract class ConversationRow : ListBoxRow {
         this.stream_interactor = stream_interactor;
 
         x_button.clicked.connect(close_conversation);
+        image.set_jid(stream_interactor, conversation.counterpart, conversation.account);
         conversation.notify["read-up-to"].connect(update_read);
-        stream_interactor.connection_manager.connection_state_changed.connect(update_avatar);
 
         update_name_label();
-        update_avatar();
         message_received();
 
     }
@@ -60,21 +59,6 @@ public abstract class ConversationRow : ListBoxRow {
         update_message_label();
         update_time_label();
         update_read();
-    }
-
-    public virtual void on_show_received(Show presence) {
-        update_avatar();
-    }
-
-    public void update_avatar() {
-        bool self_online = stream_interactor.connection_manager.get_state(conversation.account) == ConnectionManager.ConnectionState.CONNECTED;
-        bool counterpart_online = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account) != null;
-        bool greyscale = !self_online || !counterpart_online;
-
-        Pixbuf pixbuf = ((new AvatarGenerator(AVATAR_SIZE, AVATAR_SIZE, image.scale_factor))
-                .set_greyscale(greyscale)
-                .draw_conversation(stream_interactor, conversation));
-        Util.image_set_from_scaled_pixbuf(image, pixbuf, image.get_scale_factor());
     }
 
     protected void update_name_label(string? new_name = null) {
@@ -91,7 +75,7 @@ public abstract class ConversationRow : ListBoxRow {
     protected virtual void update_message_label() {
         if (last_message != null) {
             message_label.visible = true;
-            message_label.label = last_message.body.replace("\n", " ");
+            message_label.label = (new Regex("\\s+")).replace_literal(last_message.body, -1, 0, " ");
         }
     }
 

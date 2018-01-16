@@ -96,7 +96,8 @@ public class Notifications : Object {
         return true;
     }
 
-    private Icon get_pixbuf_icon(Gdk.Pixbuf avatar) throws Error {
+    private Icon get_pixbuf_icon(Cairo.ImageSurface surface) throws Error {
+        Gdk.Pixbuf avatar = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height());
         uint8[] buffer;
         avatar.save_to_buffer(out buffer, "png");
         return new BytesIcon(new Bytes(buffer));

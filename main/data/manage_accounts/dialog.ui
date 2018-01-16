@@ -102,11 +102,12 @@
                                                                     <class name="image-button"/>
                                                                 </style>
                                                                 <child>
-                                                                    <object class="GtkImage" id="image">
-                                                                        <property name="height_request">50</property>
-                                                                        <property name="width_request">50</property>
+                                                                    <object class="DinoUiAvatarImage" id="image">
+                                                                        <property name="height">50</property>
+                                                                        <property name="width">50</property>
                                                                         <property name="xalign">1</property>
                                                                         <property name="visible">True</property>
+                                                                        <property name="allow_gray">False</property>
                                                                     </object>
                                                                 </child>
                                                             </object>

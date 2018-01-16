@@ -19,7 +19,7 @@ public class Dialog : Gtk.Dialog {
     [GtkChild] public Button no_accounts_add;
     [GtkChild] public ToolButton add_account_button;
     [GtkChild] public ToolButton remove_account_button;
-    [GtkChild] public Image image;
+    [GtkChild] public AvatarImage image;
     [GtkChild] public Button image_button;
     [GtkChild] public Label jid_label;
     [GtkChild] public Label state_label;
@@ -185,14 +185,14 @@ public class Dialog : Gtk.Dialog {
 
     private void on_received_avatar(Pixbuf pixbuf, Jid jid, Account account) {
         if (selected_account.equals(account) && jid.equals(account.bare_jid)) {
-            Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(50, 50, image.scale_factor)).draw_account(stream_interactor, account));
+            image.set_jid(stream_interactor, account.bare_jid, account);
         }
     }
 
     private void populate_grid_data(Account account) {
         active_switch.state_set.disconnect(change_account_state);
 
-        Util.image_set_from_scaled_pixbuf(image, (new AvatarGenerator(50, 50, image.scale_factor)).draw_account(stream_interactor, account));
+        image.set_jid(stream_interactor, account.bare_jid, account);
         active_switch.set_active(account.enabled);
         jid_label.label = account.bare_jid.to_string();
 

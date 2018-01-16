@@ -82,6 +82,7 @@ SOURCES
     src/ui/add_conversation/select_contact_dialog.vala
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala
+    src/ui/avatar_image.vala
     src/ui/chat_input/edit_history.vala
     src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala

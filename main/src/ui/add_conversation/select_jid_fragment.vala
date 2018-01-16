@@ -92,7 +92,7 @@ public class SelectJidFragment : Gtk.Box {
             } else {
                 via_label.visible = false;
             }
-            image.set_from_pixbuf((new AvatarGenerator(35, 35)).set_greyscale(true).draw_text("?"));
+            image.set_text("?");
         }
     }
 }
