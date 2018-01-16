@@ -14,7 +14,7 @@ public class Conference : Object {
     public bool autojoin {
         get {
             string? attr = stanza_node.get_attribute(ATTRIBUTE_AUTOJOIN);
-            return attr == "true" || attr == "1"; // "1" isn't standard, but it's used
+            return attr == "true" || attr == "1";
         }
         set { stanza_node.set_attribute(ATTRIBUTE_AUTOJOIN, value.to_string()); }
     }

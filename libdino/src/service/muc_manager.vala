@@ -105,7 +105,10 @@ public class MucManager : StreamInteractionModule, Object {
         Gee.List<Jid>? occupants = get_occupants(jid, account);
         Jid? own_jid = get_own_jid(jid, account);
         if (occupants != null && own_jid != null) {
-            occupants.remove(own_jid);
+            Gee.List<Jid> occupants_ = new ArrayList<Jid>(Jid.equals_func);
+            occupants_.add_all(occupants);
+            occupants_.remove(own_jid);
+            return occupants_;
         }
         return occupants;
     }
@@ -309,7 +312,8 @@ public class MucManager : StreamInteractionModule, Object {
             foreach (Xep.Bookmarks.Conference conference in conferences) {
                 if (conference.jid.equals_bare(jid) && conference.nick == nick && conference.password == password) {
                     if (!conference.autojoin) {
-                        stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference(stream, conference, changed);
+                        conference.autojoin = true;
+                        stream.get_module(Xep.Bookmarks.Module.IDENTITY).set_conferences(stream, conferences);
                     }
                     return;
                 }
@@ -324,8 +328,9 @@ public class MucManager : StreamInteractionModule, Object {
             foreach (Xep.Bookmarks.Conference conference in conferences) {
                 if (conference.jid.equals_bare(jid)) {
                     if (conference.autojoin) {
-                        Xep.Bookmarks.Conference change = new Xep.Bookmarks.Conference(conference.jid) { nick=conference.nick, password=conference.password, autojoin=false };
-                        stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference(stream, conference, change);
+                        conference.autojoin = false;
+                        stream.get_module(Xep.Bookmarks.Module.IDENTITY).set_conferences(stream, conferences);
+                        return;
                     }
                 }
             }
