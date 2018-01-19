@@ -27,7 +27,7 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MucManager.IDENTITY).joined.connect(on_groupchat_joined);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(handle_new_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new MessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_new_message);
     }
 
@@ -116,6 +116,31 @@ public class ConversationManager : StreamInteractionModule, Object {
         conversations[account] = new HashMap<Jid, Conversation>(Jid.hash_func, Jid.equals_func);
         foreach (Conversation conversation in db.get_conversations(account)) {
             add_conversation(conversation);
+        }
+    }
+
+    private class MessageListener : Dino.MessageListener {
+
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
+        public override string action_group { get { return "MANAGER"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+
+        public MessageListener(StreamInteractor stream_interactor) {
+            this.stream_interactor = stream_interactor;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            conversation.last_active = message.time;
+
+            if (message.stanza != null) {
+                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null;
+                bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+                if (is_mam_message && !is_recent) return false;
+            }
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+            return false;
         }
     }
 

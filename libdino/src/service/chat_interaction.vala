@@ -27,7 +27,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private ChatInteraction(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         Timeout.add_seconds(30, update_interactions);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
     }
 
@@ -124,18 +124,34 @@ public class ChatInteraction : StreamInteractionModule, Object {
         return true;
     }
 
-    private void on_message_received(Entities.Message message, Conversation conversation) {
-        if (Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null) return;
+    private class ReceivedMessageListener : MessageListener {
 
-        send_delivery_receipt(conversation, message);
-        if (is_active_focus(conversation)) {
-            check_send_read();
-            conversation.read_up_to = message;
-            send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_DISPLAYED);
-        } else {
-            send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_RECEIVED);
+        public string[] after_actions_const = new string[]{ "" };
+        public override string action_group { get { return "OTHER_NODES"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+
+        public ReceivedMessageListener(StreamInteractor stream_interactor) {
+            this.stream_interactor = stream_interactor;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null) return false;
+
+            ChatInteraction outer = stream_interactor.get_module(ChatInteraction.IDENTITY);
+            outer.send_delivery_receipt(conversation, message);
+            if (outer.is_active_focus(conversation)) {
+                outer.check_send_read();
+                conversation.read_up_to = message;
+                outer.send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_DISPLAYED);
+            } else {
+                outer.send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_RECEIVED);
+            }
+            return false;
         }
     }
+
 
     private void send_chat_marker(Conversation conversation, Entities.Message message, string marker) {
         XmppStream stream = stream_interactor.get_stream(conversation.account);

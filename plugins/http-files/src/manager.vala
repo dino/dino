@@ -37,7 +37,8 @@ public class Manager : StreamInteractionModule, FileSender, Object {
                     uploaded(file_transfer, url_down);
                     stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(url_down, conversation);
                 },
-                () => {
+                (stream, error_str) => {
+                    print(@"Failed getting upload url + $error_str\n");
                     file_transfer.state = FileTransfer.State.FAILED;
                 }
             );

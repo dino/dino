@@ -44,7 +44,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
     public override string action_group { get { return "EXTRACT_MESSAGE_2"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(XmppStream stream, MessageStanza message) {
+    public override async bool run(XmppStream stream, MessageStanza message) {
         StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);
         StanzaNode? sent_node = received_node == null ? message.stanza.get_subnode("sent", NS_URI) : null;
         StanzaNode? carbons_node = received_node != null ? received_node : sent_node;
@@ -55,18 +55,18 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 string? from_attribute = message_node.get_attribute("from", Xmpp.NS_URI);
                 // Any forwarded copies received by a Carbons-enabled client MUST be from that user's bare JID; any copies that do not meet this requirement MUST be ignored.
                 if (from_attribute != null && from_attribute == stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid.to_string()) {
-                    if (received_node != null) {
-                        message.add_flag(new MessageFlag(MessageFlag.TYPE_RECEIVED));
-                    } else if (sent_node != null) {
-                        message.add_flag(new MessageFlag(MessageFlag.TYPE_SENT));
-                    }
-                    message.stanza = message_node;
-                    message.rerun_parsing = true;
+                    return true;
+                }
+                if (received_node != null) {
+                    message.add_flag(new MessageFlag(MessageFlag.TYPE_RECEIVED));
+                } else if (sent_node != null) {
+                    message.add_flag(new MessageFlag(MessageFlag.TYPE_SENT));
                 }
                 message.stanza = message_node;
                 message.rerun_parsing = true;
             }
         }
+        return false;
     }
 }
 

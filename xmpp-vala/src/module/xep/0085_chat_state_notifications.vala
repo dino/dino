@@ -9,7 +9,7 @@ public const string STATE_GONE = "gone";
 public const string STATE_COMPOSING = "composing";
 public const string STATE_PAUSED = "paused";
 
-private const string[] STATES = {STATE_ACTIVE, STATE_INACTIVE, STATE_GONE, STATE_COMPOSING, STATE_PAUSED};
+private const string[] STATES = { STATE_ACTIVE, STATE_INACTIVE, STATE_GONE, STATE_COMPOSING, STATE_PAUSED };
 
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0085_chat_state_notifications");
@@ -63,10 +63,11 @@ public class SendPipelineListener : StanzaListener<MessageStanza> {
     public override string action_group { get { return "ADD_NODES"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(XmppStream stream, MessageStanza message) {
-        if (message.body == null) return;
-        if (message.type_ != MessageStanza.TYPE_CHAT) return;
+    public override async bool run(XmppStream stream, MessageStanza message) {
+        if (message.body == null) return false;
+        if (message.type_ != MessageStanza.TYPE_CHAT) return false;
         message.stanza.put_node(new StanzaNode.build(STATE_ACTIVE, NS_URI).add_self_xmlns());
+        return false;
     }
 }
 

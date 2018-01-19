@@ -25,7 +25,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     private CounterpartInteractionManager(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(this));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(check_if_got_marker);
         stream_interactor.stream_negotiated.connect(() => chat_states.clear() );
     }
@@ -88,8 +88,22 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_message_received(Entities.Message message, Conversation conversation) {
-        on_chat_state_received(conversation.account, conversation.counterpart, Xep.ChatStateNotifications.STATE_ACTIVE);
+    private class ReceivedMessageListener : MessageListener {
+
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
+        public override string action_group { get { return "STORE"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private CounterpartInteractionManager outer;
+
+        public ReceivedMessageListener(CounterpartInteractionManager outer) {
+            this.outer = outer;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            outer.on_chat_state_received(conversation.account, conversation.counterpart, Xep.ChatStateNotifications.STATE_ACTIVE);
+            return false;
+        }
     }
 
     private void on_receipt_received(Account account, Jid jid, string id) {

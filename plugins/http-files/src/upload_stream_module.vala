@@ -11,6 +11,7 @@ public class UploadStreamModule : XmppStreamModule {
     public static Xmpp.ModuleIdentity<UploadStreamModule> IDENTITY = new Xmpp.ModuleIdentity<UploadStreamModule>(NS_URI, "0363_http_file_upload");
 
     public signal void feature_available(XmppStream stream, long max_file_size);
+    public signal void received_url(XmppStream stream, MessageStanza message);
 
     public delegate void OnUploadOk(XmppStream stream, string url_down);
     public delegate void OnError(XmppStream stream, string error);
@@ -156,6 +157,22 @@ public class UploadStreamModule : XmppStreamModule {
         }
         if (max_file_size_str != null) return long.parse(max_file_size_str);
         return -1;
+    }
+}
+
+public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
+
+    private const string[] after_actions_const = {"EXTRACT_MESSAGE_2"};
+
+    public override string action_group { get { return "EXTRACT_MESSAGE_2"; } }
+    public override string[] after_actions { get { return after_actions_const; } }
+
+    public override async bool run(XmppStream stream, MessageStanza message) {
+        string? oob_url = OutOfBandData.get_url_from_message(message);
+        if (oob_url != null && oob_url == message.body) {
+            stream.get_module(UploadStreamModule.IDENTITY).received_url(stream, message);
+        }
+        return true;
     }
 }
 

@@ -61,12 +61,13 @@ public class SendPipelineListener : StanzaListener<MessageStanza> {
     public override string action_group { get { return "ADD_NODES"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(XmppStream stream, MessageStanza message) {
+    public override async bool run(XmppStream stream, MessageStanza message) {
         StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);
-        if (received_node != null) return;
-        if (message.body == null) return;
-        if (message.type_ != MessageStanza.TYPE_CHAT) return;
+        if (received_node != null) return false;
+        if (message.body == null) return false;
+        if (message.type_ != MessageStanza.TYPE_CHAT) return false;
         message.stanza.put_node(new StanzaNode.build("markable", NS_URI).add_self_xmlns());
+        return false;
     }
 }
 

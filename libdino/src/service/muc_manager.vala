@@ -16,6 +16,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
+    private ReceivedMessageListener received_message_listener;
 
     public static void start(StreamInteractor stream_interactor) {
         MucManager m = new MucManager(stream_interactor);
@@ -24,9 +25,10 @@ public class MucManager : StreamInteractionModule, Object {
 
     private MucManager(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
+        this.received_message_listener = new ReceivedMessageListener(stream_interactor);
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_pre_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
     }
 
     public void join(Account account, Jid jid, string? nick, string? password) {
@@ -241,27 +243,6 @@ public class MucManager : StreamInteractionModule, Object {
         });
     }
 
-    private void on_pre_message_received(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (conversation.type_ != Conversation.Type.GROUPCHAT) return;
-        XmppStream stream = stream_interactor.get_stream(conversation.account);
-        if (stream == null) return;
-        if (Xep.DelayedDelivery.MessageFlag.get_flag(message.stanza) == null) {
-            Jid? real_jid = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_real_jid(message.counterpart);
-            if (real_jid != null && !real_jid.equals(message.counterpart)) {
-                message.real_jid = real_jid.bare_jid;
-            }
-        }
-        string? muc_nick = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_nick(conversation.counterpart.bare_jid);
-        if (muc_nick != null && message.from.equals(message.from.with_resource(muc_nick))) { // TODO better from own
-            Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
-            foreach (Entities.Message m in messages) { // TODO not here
-                if (m.equals(message)) {
-                    m.marked = Entities.Message.Marked.RECEIVED;
-                }
-            }
-        }
-    }
-
     private void join_all_active(Account account) {
         Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
         foreach (Conversation conversation in conversations) {
@@ -335,6 +316,41 @@ public class MucManager : StreamInteractionModule, Object {
                 }
             }
         });
+    }
+
+    private class ReceivedMessageListener : MessageListener {
+
+        public string[] after_actions_const = new string[]{ "" };
+        public override string action_group { get { return "OTHER_NODES"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+
+        public ReceivedMessageListener(StreamInteractor stream_interactor) {
+            this.stream_interactor = stream_interactor;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (conversation.type_ != Conversation.Type.GROUPCHAT) return false;
+            XmppStream stream = stream_interactor.get_stream(conversation.account);
+            if (stream == null) return false;
+            if (Xep.DelayedDelivery.MessageFlag.get_flag(message.stanza) == null) {
+                Jid? real_jid = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_real_jid(message.counterpart);
+                if (real_jid != null && !real_jid.equals(message.counterpart)) {
+                    message.real_jid = real_jid.bare_jid;
+                }
+            }
+            string? muc_nick = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_nick(conversation.counterpart.bare_jid);
+            if (muc_nick != null && message.from.equals(new Jid(@"$(message.from.bare_jid)/$muc_nick"))) { // TODO better from own
+                Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
+                foreach (Entities.Message m in messages) { // TODO not here
+                    if (m.equals(message)) {
+                        m.marked = Entities.Message.Marked.RECEIVED;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
 

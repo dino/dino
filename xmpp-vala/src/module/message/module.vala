@@ -11,7 +11,6 @@ namespace Xmpp {
         public StanzaListenerHolder<MessageStanza> received_pipeline = new StanzaListenerHolder<MessageStanza>();
         public StanzaListenerHolder<MessageStanza> send_pipeline = new StanzaListenerHolder<MessageStanza>();
 
-        public signal void pre_received_message(XmppStream stream, MessageStanza message);
         public signal void received_message(XmppStream stream, MessageStanza message);
 
         public void send_message(XmppStream stream, MessageStanza message) {

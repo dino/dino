@@ -91,9 +91,9 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
     public override string action_group { get { return "EXTRACT_MESSAGE_1"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(XmppStream stream, MessageStanza message) {
+    public override async bool run(XmppStream stream, MessageStanza message) {
         //        if (message.from != stream.remote_name) return;
-        if (stream.get_flag(Flag.IDENTITY) == null) return;
+        if (stream.get_flag(Flag.IDENTITY) == null) return false;
 
         StanzaNode? message_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", Xmpp.NS_URI + ":message");
         if (message_node != null) {
@@ -104,6 +104,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
             message.stanza = message_node;
             message.rerun_parsing = true;
         }
+        return false;
     }
 }
 

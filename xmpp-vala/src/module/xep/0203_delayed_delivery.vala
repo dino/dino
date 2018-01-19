@@ -51,9 +51,10 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
     public override string action_group { get { return "ADD_NODE"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(XmppStream stream, MessageStanza message) {
+    public override async bool run(XmppStream stream, MessageStanza message) {
         DateTime? datetime = Module.get_time_for_message(message);
         if (datetime != null) message.add_flag(new MessageFlag(datetime));
+        return false;
     }
 }
 

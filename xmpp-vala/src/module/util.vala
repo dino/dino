@@ -12,34 +12,42 @@ public string random_uuid() {
     return "%08x-%04x-%04x-%04x-%04x%08x".printf(b1, b2, b3, b4, b5_1, b5_2);
 }
 
-public abstract class StanzaListener<T> : Object {
-    public abstract string action_group { get; }
-    public abstract string[] after_actions { get; }
+public abstract class StanzaListener<T> : OrderedListener {
 
-    public abstract async void run(XmppStream stream, T stanza);
+    public abstract async bool run(XmppStream stream, T stanza);
 }
 
-public class StanzaListenerHolder<T> : Object {
-    private ArrayList<StanzaListener<T>> listeners = new ArrayList<StanzaListener<T>>();
+public class StanzaListenerHolder<T> : ListenerHolder {
 
-    public new void connect(StanzaListener<T> listener) {
+    public async void run(XmppStream stream, T stanza) {
+        foreach (OrderedListener ol in listeners) {
+            StanzaListener<T> l = ol as StanzaListener<T>;
+        bool stop = yield l.run(stream, stanza);
+            if (stop) break;
+        }
+    }
+}
+
+public abstract class OrderedListener : Object {
+    public abstract string action_group { get; }
+    public abstract string[] after_actions { get; }
+}
+
+public abstract class ListenerHolder : Object {
+    protected ArrayList<OrderedListener> listeners = new ArrayList<OrderedListener>();
+
+    public new void connect(OrderedListener listener) {
         listeners.add(listener);
         resort_list();
     }
 
-    public new void disconnect(StanzaListener<T> listener) {
+    public new void disconnect(OrderedListener listener) {
         listeners.remove(listener);
         resort_list();
     }
 
-    public async void run(XmppStream stream, T stanza) {
-        foreach (StanzaListener<T> l in listeners) {
-            yield l.run(stream, stanza);
-        }
-    }
-
-    private bool set_contains_action(Gee.List<StanzaListener<T>> s, string[] actions) {
-        foreach (StanzaListener<T> l in s) {
+    private bool set_contains_action(Gee.List<OrderedListener> s, string[] actions) {
+        foreach(OrderedListener l in s) {
             if (l.action_group in actions) {
                 return true;
             }
@@ -48,22 +56,23 @@ public class StanzaListenerHolder<T> : Object {
     }
 
     private void resort_list() {
-        ArrayList<StanzaListener<T>> new_list = new ArrayList<StanzaListener<T>>();
-        ArrayList<StanzaListener<T>> remaining = new ArrayList<StanzaListener<T>>();
+        ArrayList<OrderedListener> new_list = new ArrayList<OrderedListener>();
+        ArrayList<OrderedListener> remaining = new ArrayList<OrderedListener>();
         remaining.add_all(listeners);
         while (remaining.size > 0) {
             bool changed = false;
-            Gee.Iterator<StanzaListener<T>> iter = remaining.iterator();
+            Gee.Iterator<OrderedListener> iter = remaining.iterator();
             while (iter.has_next()) {
                 if (!iter.valid) {
                     iter.next();
                 }
-                StanzaListener<T> l = iter.get();
+                OrderedListener l = iter.get();
                 if (!set_contains_action(remaining, l.after_actions)) {
                     new_list.add(l);
                     iter.remove();
                     changed = true;
                 }
+                iter.next();
             }
             if (!changed) error("Can't sort listeners");
         }

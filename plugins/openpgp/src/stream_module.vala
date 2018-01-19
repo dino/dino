@@ -140,7 +140,7 @@ public class ReceivedPipelineDecryptListener : StanzaListener<MessageStanza> {
     public override string action_group { get { return "ENCRYPT_BODY"; } }
     public override string[] after_actions { get { return after_actions_const; } }
 
-    public override async void run(XmppStream stream, MessageStanza message) {
+    public override async bool run(XmppStream stream, MessageStanza message) {
         string? encrypted = get_cyphertext(message);
         if (encrypted != null) {
             MessageFlag flag = new MessageFlag();
@@ -151,6 +151,7 @@ public class ReceivedPipelineDecryptListener : StanzaListener<MessageStanza> {
                 message.body = decrypted;
             }
         }
+        return false;
     }
 
     private static async string? gpg_decrypt(string enc) {

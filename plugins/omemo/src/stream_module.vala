@@ -397,17 +397,17 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
         this.store = store;
     }
 
-    public override async void run(XmppStream stream, MessageStanza message) {
+    public override async bool run(XmppStream stream, MessageStanza message) {
         StanzaNode? _encrypted = message.stanza.get_subnode("encrypted", NS_URI);
-        if (_encrypted == null || MessageFlag.get_flag(message) != null || message.from == null) return;
+        if (_encrypted == null || MessageFlag.get_flag(message) != null || message.from == null) return false;
         StanzaNode encrypted = (!)_encrypted;
-        if (!Plugin.ensure_context()) return;
+        if (!Plugin.ensure_context()) return false;
         MessageFlag flag = new MessageFlag();
         message.add_flag(flag);
         StanzaNode? _header = encrypted.get_subnode("header");
-        if (_header == null) return;
+        if (_header == null) return false;
         StanzaNode header = (!)_header;
-        if (header.get_attribute_int("sid") <= 0) return;
+        if (header.get_attribute_int("sid") <= 0) return false;
         foreach (StanzaNode key_node in header.get_subnodes("key")) {
             if (key_node.get_attribute_int("rid") == store.local_registration_id) {
                 try {
@@ -448,6 +448,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 }
             }
         }
+        return false;
     }
 
     private string arr_to_str(uint8[] arr) {

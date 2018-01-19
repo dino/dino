@@ -15,6 +15,7 @@ public class Manager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private HashMap<Jid, string> pgp_key_ids = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
+    private ReceivedMessageListener received_message_listener = new ReceivedMessageListener();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
         Manager m = new Manager(stream_interactor, db);
@@ -26,7 +27,7 @@ public class Manager : StreamInteractionModule, Object {
         this.db = db;
 
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_pre_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(check_encypt);
     }
 
@@ -63,12 +64,6 @@ public class Manager : StreamInteractionModule, Object {
         return gpgkeys;
     }
 
-    private void on_pre_message_received(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (MessageFlag.get_flag(message_stanza) != null && MessageFlag.get_flag(message_stanza).decrypted) {
-            message.encryption = Encryption.PGP;
-        }
-    }
-
     private void check_encypt(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         try {
             if (message.encryption == Encryption.PGP) {
@@ -102,6 +97,20 @@ public class Manager : StreamInteractionModule, Object {
                 db.set_contact_key(set_jid, key_id);
             }
             pgp_key_ids[jid] = key_id;
+        }
+    }
+
+    private class ReceivedMessageListener : MessageListener {
+
+        public string[] after_actions_const = new string[]{ "" };
+        public override string action_group { get { return "DECRYPT"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (MessageFlag.get_flag(stanza) != null && MessageFlag.get_flag(stanza).decrypted) {
+                message.encryption = Encryption.PGP;
+            }
+            return false;
         }
     }
 }
