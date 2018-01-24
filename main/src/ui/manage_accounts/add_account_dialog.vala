@@ -41,7 +41,7 @@ public class AddAccountDialog : Gtk.Dialog {
         if (jid == null || jid.localpart == null || jid.resourcepart != null) {
             jid_entry.secondary_icon_name = "dialog-warning-symbolic";
             // TODO why doesn't the tooltip work
-            jid_entry.set_icon_tooltip_text(EntryIconPosition.SECONDARY, "JID should be of the form \"user@example.com\"");
+            jid_entry.set_icon_tooltip_text(EntryIconPosition.SECONDARY, _("JID should be of the form “user@example.com”"));
         } else {
             jid_entry.secondary_icon_name = null;
         }
