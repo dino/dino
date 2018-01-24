@@ -25,6 +25,7 @@ public class ConnectionManager {
     private Login1Manager? login1;
     private ModuleManager module_manager;
     public string? log_options;
+    private bool network_was_active;
 
     public class ConnectionError {
 
@@ -266,11 +267,15 @@ public class ConnectionManager {
     }
 
     private void on_network_changed() {
-        if (network_is_online()) {
+        bool network_online = network_is_online();
+
+        if (network_online && !network_was_active) {
             print("network online\n");
+           network_was_active = true;
             check_reconnects();
-        } else {
+        } else if (!network_online && network_was_active) {
             print("network offline\n");
+            network_was_active = false;
             foreach (Account account in connection_todo) {
                 change_connection_state(account, ConnectionState.DISCONNECTED);
             }
