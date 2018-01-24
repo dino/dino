@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-31 22:08+0100\n"
+"POT-Creation-Date: 2018-01-24 17:37+0100\n"
 "PO-Revision-Date: 2017-06-19 20:29+0000\n"
 "Last-Translator: Tirifto <tirifto@posteo.cz>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/dino/"
@@ -66,24 +66,28 @@ msgstr ""
 msgid "All files"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:227
+#: main/src/ui/manage_accounts/dialog.vala:230
 msgid "Connecting…"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:229
+#: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Connected"
 msgstr "Konektita"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Disconnected"
 msgstr "Malkonektita"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:243
 msgid "Wrong password"
 msgstr "Malĝusta pasvorto"
 
-#: main/src/ui/manage_accounts/dialog.vala:243
 #: main/src/ui/manage_accounts/dialog.vala:245
+msgid "Invalid TLS certificate"
+msgstr ""
+
+#: main/src/ui/manage_accounts/dialog.vala:248
+#: main/src/ui/manage_accounts/dialog.vala:250
 msgid "Error"
 msgstr "Eraro"
 
@@ -108,19 +112,19 @@ msgid "Yesterday"
 msgstr "Hieraŭ"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:176
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:177
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:180
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -128,7 +132,7 @@ msgstr[0] "Antaŭ %i minuto"
 msgstr[1] "Antaŭ %i minutoj"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:182
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:204
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Ĵus"
 
@@ -251,32 +255,32 @@ msgstr ""
 msgid "This contact would like to add you to their contact list"
 msgstr ""
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:186
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:190
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:194
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
@@ -355,7 +359,7 @@ msgid "Who may discover real JIDs?"
 msgstr "Kiu rajtas eltrovi verajn JID-ojn?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
-#: main/data/manage_accounts/dialog.ui:166
+#: main/data/manage_accounts/dialog.ui:169
 #: main/data/manage_accounts/add_account_dialog.ui:73
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
@@ -467,16 +471,16 @@ msgstr "Grafikigi tekstajn mienetojn"
 msgid "Accounts"
 msgstr "Kontoj"
 
-#: main/data/manage_accounts/dialog.ui:196
+#: main/data/manage_accounts/dialog.ui:199
 #: main/data/manage_accounts/add_account_dialog.ui:102
 msgid "Local alias"
 msgstr "Loka kaŝnomo"
 
-#: main/data/manage_accounts/dialog.ui:251
+#: main/data/manage_accounts/dialog.ui:254
 msgid "No accounts configured"
 msgstr ""
 
-#: main/data/manage_accounts/dialog.ui:262
+#: main/data/manage_accounts/dialog.ui:265
 msgid "Add an account"
 msgstr "Aldoni konton"
 

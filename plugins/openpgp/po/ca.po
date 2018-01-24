@@ -1,5 +1,4 @@
 # Catalan translation for dino-openpgp.
-# Copyright © 2018 Free Software Foundation.
 # This file is distributed under the same license as the dino package.
 # Jordi Mallach <jordi@mallach.net>, 2018.
 #
@@ -7,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp 20180123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-31 22:08+0100\n"
+"POT-Creation-Date: 2018-01-24 17:37+0100\n"
 "PO-Revision-Date: 2018-01-24 11:24+0100\n"
 "Last-Translator: Jordi Mallach <jordi@mallach.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"

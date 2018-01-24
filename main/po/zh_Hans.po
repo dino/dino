@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-31 22:08+0100\n"
+"POT-Creation-Date: 2018-01-24 17:37+0100\n"
 "PO-Revision-Date: 2017-06-01 10:32+0000\n"
 "Last-Translator: tonghuix <tonghuix@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -66,24 +66,28 @@ msgstr ""
 msgid "All files"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:227
+#: main/src/ui/manage_accounts/dialog.vala:230
 msgid "Connecting…"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:229
+#: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Connected"
 msgstr "已连接"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Disconnected"
 msgstr "已断开连接"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:243
 msgid "Wrong password"
 msgstr "密码错误"
 
-#: main/src/ui/manage_accounts/dialog.vala:243
 #: main/src/ui/manage_accounts/dialog.vala:245
+msgid "Invalid TLS certificate"
+msgstr ""
+
+#: main/src/ui/manage_accounts/dialog.vala:248
+#: main/src/ui/manage_accounts/dialog.vala:250
 msgid "Error"
 msgstr "错误"
 
@@ -108,26 +112,26 @@ msgid "Yesterday"
 msgstr "昨天"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:176
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:177
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:180
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i 分钟以前"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:182
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:204
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "刚刚"
 
@@ -250,32 +254,32 @@ msgstr ""
 msgid "This contact would like to add you to their contact list"
 msgstr ""
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:186
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%_m 月 %_d 日，%H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:190
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%_m 月 %_d 日，%l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%A，%H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:194
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%A，%l∶%M %p"
@@ -354,7 +358,7 @@ msgid "Who may discover real JIDs?"
 msgstr "谁可能发现真实 JID？"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
-#: main/data/manage_accounts/dialog.ui:166
+#: main/data/manage_accounts/dialog.ui:169
 #: main/data/manage_accounts/add_account_dialog.ui:73
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
@@ -466,16 +470,16 @@ msgstr "将笑脸转换成 Emoji"
 msgid "Accounts"
 msgstr "帐号"
 
-#: main/data/manage_accounts/dialog.ui:196
+#: main/data/manage_accounts/dialog.ui:199
 #: main/data/manage_accounts/add_account_dialog.ui:102
 msgid "Local alias"
 msgstr "本地别名"
 
-#: main/data/manage_accounts/dialog.ui:251
+#: main/data/manage_accounts/dialog.ui:254
 msgid "No accounts configured"
 msgstr ""
 
-#: main/data/manage_accounts/dialog.ui:262
+#: main/data/manage_accounts/dialog.ui:265
 msgid "Add an account"
 msgstr "添加新账号"
 

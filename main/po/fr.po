@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-31 22:08+0100\n"
-"PO-Revision-Date: 2017-12-22 20:55+0000\n"
+"POT-Creation-Date: 2018-01-24 17:37+0100\n"
+"PO-Revision-Date: 2018-01-24 12:13+0000\n"
 "Last-Translator: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
@@ -66,24 +66,28 @@ msgstr "Images"
 msgid "All files"
 msgstr "Tous les fichiers"
 
-#: main/src/ui/manage_accounts/dialog.vala:227
+#: main/src/ui/manage_accounts/dialog.vala:230
 msgid "Connecting…"
 msgstr "Connexion…"
 
-#: main/src/ui/manage_accounts/dialog.vala:229
+#: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Connected"
 msgstr "Connecté"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Disconnected"
 msgstr "Déconnecté"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:243
 msgid "Wrong password"
 msgstr "Mauvais mot de passe"
 
-#: main/src/ui/manage_accounts/dialog.vala:243
 #: main/src/ui/manage_accounts/dialog.vala:245
+msgid "Invalid TLS certificate"
+msgstr ""
+
+#: main/src/ui/manage_accounts/dialog.vala:248
+#: main/src/ui/manage_accounts/dialog.vala:250
 msgid "Error"
 msgstr "Erreur"
 
@@ -108,19 +112,19 @@ msgid "Yesterday"
 msgstr "Hier"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:176
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%Hh%M"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:177
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:180
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -128,7 +132,7 @@ msgstr[0] "Il y a %i minute"
 msgstr[1] "Il y a %i minutes"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:182
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:204
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "À l’instant"
 
@@ -213,11 +217,11 @@ msgstr "Aucune discussion en cours"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:87
 msgid "Today"
-msgstr ""
+msgstr "Aujourd’hui"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 msgid "%a, %b %d"
-msgstr ""
+msgstr "%a %d %b"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:57
 msgid "is typing…"
@@ -229,7 +233,7 @@ msgstr "a arrêté d’écrire"
 
 #: main/src/ui/conversation_summary/default_file_display.vala:49
 msgid "File"
-msgstr ""
+msgstr "Fichier"
 
 #: main/src/ui/conversation_summary/message_textview.vala:39
 msgid "Message too long"
@@ -237,46 +241,46 @@ msgstr "Message trop long"
 
 #: main/src/ui/conversation_summary/message_textview.vala:74
 msgid "Copy Link Address"
-msgstr ""
+msgstr "Copier l’adresse du lien"
 
 #: main/src/ui/conversation_summary/message_textview.vala:82
 msgid "Copy"
-msgstr ""
+msgstr "Copier"
 
 #: main/src/ui/conversation_summary/message_textview.vala:87
 msgid "Select All"
-msgstr ""
+msgstr "Tout sélectionner"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr ""
+msgstr "Ce contact voudrait vous ajouter à sa liste de contacts"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %Hh%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:186
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d %b, %Hh%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:190
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d %b, %l∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %Hh%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:194
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M"
@@ -355,7 +359,7 @@ msgid "Who may discover real JIDs?"
 msgstr "Qui peut découvrir les vrais JID ?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
-#: main/data/manage_accounts/dialog.ui:166
+#: main/data/manage_accounts/dialog.ui:169
 #: main/data/manage_accounts/add_account_dialog.ui:73
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
@@ -413,7 +417,7 @@ msgstr "Tous les échanges de messages et de statuts sont bloqués"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/data/settings_dialog.ui:22
 msgid "Send typing notifications"
-msgstr "Envoyer les notifications de frappe"
+msgstr "Notifier vos correspondants lorsque vous écrivez"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
@@ -467,16 +471,16 @@ msgstr "Convertir les smileys en emojis"
 msgid "Accounts"
 msgstr "Comptes"
 
-#: main/data/manage_accounts/dialog.ui:196
+#: main/data/manage_accounts/dialog.ui:199
 #: main/data/manage_accounts/add_account_dialog.ui:102
 msgid "Local alias"
 msgstr "Alias local"
 
-#: main/data/manage_accounts/dialog.ui:251
+#: main/data/manage_accounts/dialog.ui:254
 msgid "No accounts configured"
 msgstr "Aucun compte configuré"
 
-#: main/data/manage_accounts/dialog.ui:262
+#: main/data/manage_accounts/dialog.ui:265
 msgid "Add an account"
 msgstr "Ajouter un compte"
 
@@ -510,7 +514,7 @@ msgstr "Alias"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr ""
+msgstr "Ajouter un contact"
 
 #~ msgid "Request presence updates"
 #~ msgstr "Demander les mises à jour de la présence"

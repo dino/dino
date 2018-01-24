@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-31 22:08+0100\n"
-"PO-Revision-Date: 2017-11-17 11:57+0000\n"
-"Last-Translator: Valerio Baldisserotto <svalo@libersoft.it>\n"
+"POT-Creation-Date: 2018-01-24 17:37+0100\n"
+"PO-Revision-Date: 2018-01-24 12:18+0000\n"
+"Last-Translator: fiaxh <weblate@mx.ax.lt>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/it/>\n"
 "Language: it\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 2.19-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:75
 #: plugins/openpgp/src/account_settings_widget.vala:81
@@ -30,7 +30,7 @@ msgstr "Seleziona una chiave"
 
 #: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Loading…"
-msgstr "Caricamento..."
+msgstr "Caricamento…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Querying GnuPG"

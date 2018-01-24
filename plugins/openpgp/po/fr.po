@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-24 01:10+0100\n"
-"PO-Revision-Date: 2017-12-22 20:52+0000\n"
-"Last-Translator: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>\n"
+"POT-Creation-Date: 2018-01-24 17:37+0100\n"
+"PO-Revision-Date: 2018-01-24 12:13+0000\n"
+"Last-Translator: Jean-Baptiste <jean-baptiste@holcroft.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/fr/>\n"
 "Language: fr\n"
@@ -19,36 +19,36 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2.19-dev\n"
 
-#: ../src/account_settings_widget.vala:75
-#: ../src/account_settings_widget.vala:81
-#: ../src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:109
 msgid "Key publishing disabled"
-msgstr "Publication de la clé désactivée"
+msgstr "La publication des clefs est désactivée"
 
-#: ../src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:75
 msgid "No keys available. Generate one!"
-msgstr "Aucune clé disponible. Une nouvelle va être générée !"
+msgstr "Aucune clef n’est disponible. Générez en une !"
 
-#: ../src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:81
 msgid "Select key"
 msgstr "Choix d’une clé"
 
-#: ../src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Loading…"
 msgstr "Chargement…"
 
-#: ../src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Querying GnuPG"
-msgstr "Requête à GnuPG"
+msgstr "Interrogation de GnuPG"
 
-#: ../src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:109
 msgid "Error in GnuPG"
 msgstr "Erreur dans GnuPG"
 
-#: ../src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "La clé n’est pas dans le trousseau de clés"
+msgstr "La clef n’est pas dans le trousseau"
 
-#: ../src/contact_details_provider.vala:30
+#: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Chiffrement"
