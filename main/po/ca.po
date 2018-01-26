@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: dino 20180123\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-24 17:37+0100\n"
-"PO-Revision-Date: 2018-01-24 02:19+0100\n"
+"PO-Revision-Date: 2018-01-27 00:21+0100\n"
 "Last-Translator: Jordi Mallach <jordi@mallach.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Language: ca\n"
@@ -81,7 +81,7 @@ msgstr "Contrasenya incorrecta"
 
 #: main/src/ui/manage_accounts/dialog.vala:245
 msgid "Invalid TLS certificate"
-msgstr ""
+msgstr "El certificat TLS és invàlid"
 
 #: main/src/ui/manage_accounts/dialog.vala:248
 #: main/src/ui/manage_accounts/dialog.vala:250
@@ -118,7 +118,7 @@ msgstr "%H.%M"
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
-msgstr "%l∶%M %p"
+msgstr "%l.%M %p"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:180
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
@@ -255,32 +255,32 @@ msgstr "Aquest contacte vol afegir-vos a la seva llista de contactes"
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr "%x, %H∶%M"
+msgstr "%x, %H.%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr "%x, %l∶%M %p"
+msgstr "%x, %l.%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr "%b %d, %H∶%M"
+msgstr "%b %d, %H.%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr "%b %d, %l∶%M %p"
+msgstr "%b %d, %l.%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr "%a, %H∶%M"
+msgstr "%a, %H.%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr "%a, %l∶%M %p"
+msgstr "%a, %l.%M %p"
 
 #: main/src/ui/occupant_menu/list.vala:105
 msgid "Owner"
@@ -445,7 +445,7 @@ msgstr "Inhabilitat"
 
 #: main/src/ui/contact_details/settings_provider.vala:78
 msgid "Only when mentioned"
-msgstr "Només quan rep una menció"
+msgstr "Només quan rebeu una menció"
 
 #: main/src/ui/contact_details/settings_provider.vala:80
 #: main/src/ui/contact_details/settings_provider.vala:115
@@ -512,4 +512,4 @@ msgstr "Àlias"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr "Afegeix contacte"
+msgstr "Afegeix el contacte"
