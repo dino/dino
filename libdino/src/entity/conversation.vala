@@ -16,7 +16,7 @@ public class Conversation : Object {
     public Type type_ { get; set; }
     public Account account { get; private set; }
     public Jid counterpart { get; private set; }
-    public string? nickname { get; private set; }
+    public string? nickname { get; set; }
     public bool active { get; set; default = false; }
     private DateTime? _last_active;
     public DateTime? last_active {
@@ -84,6 +84,9 @@ public class Conversation : Object {
         if (read_up_to != null) {
             insert.value(db.conversation.read_up_to, read_up_to.id);
         }
+        if (nickname != null) {
+            insert.value(db.conversation.resource, nickname);
+        }
         if (counterpart.is_full()) {
             insert.value(db.conversation.resource, counterpart.resourcepart);
         }
@@ -145,6 +148,8 @@ public class Conversation : Object {
                     update.set_null(db.conversation.read_up_to);
                 }
                 break;
+            case "nickname":
+                update.set(db.conversation.resource, nickname); break;
             case "active":
                 update.set(db.conversation.active, active); break;
             case "last-active":

@@ -26,7 +26,6 @@ public class ConversationManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.get_module(MucManager.IDENTITY).joined.connect(on_groupchat_joined);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new MessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_new_message);
     }
@@ -152,11 +151,6 @@ public class ConversationManager : StreamInteractionModule, Object {
             bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
             if (is_mam_message && !is_recent) return;
         }
-        start_conversation(conversation);
-    }
-
-    private void on_groupchat_joined(Account account, Jid jid, string nick) {
-        Conversation conversation = create_conversation(jid, account, Conversation.Type.GROUPCHAT);
         start_conversation(conversation);
     }
 

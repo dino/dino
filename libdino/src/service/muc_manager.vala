@@ -208,10 +208,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_entered.connect( (stream, jid, nick) => {
-            enter_errors.unset(jid);
-            set_autojoin(stream, jid, nick, null); // TODO password
-            joined(account, jid, nick);
-            stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_messages(account, jid);
+            on_room_entred(account, stream, jid, nick);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_enter_error.connect( (stream, jid, error) => {
             enter_errors[jid] = error;
@@ -241,6 +238,16 @@ public class MucManager : StreamInteractionModule, Object {
                 }
             }
         });
+    }
+
+    private void on_room_entred(Account account, XmppStream stream, Jid jid, string nick) {
+        enter_errors.unset(jid);
+        set_autojoin(stream, jid, nick, null); // TODO password
+        joined(account, jid, nick);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_messages(account, jid);
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
+        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+        conversation.nickname = nick;
     }
 
     private void join_all_active(Account account) {

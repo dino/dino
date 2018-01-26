@@ -8,11 +8,13 @@ namespace Dino.Ui.ConversationSummary {
 public class MessageTextView : TextView {
 
     private TextTag link_tag;
+    private TextTag bold_tag;
 
     public MessageTextView() {
         Object(editable:false, hexpand:true, wrap_mode:WrapMode.WORD_CHAR);
 
         link_tag = buffer.create_tag("url", underline: Pango.Underline.SINGLE, foreground: "blue");
+        bold_tag = buffer.create_tag("semibold", weight: Pango.Weight.SEMIBOLD);
         button_release_event.connect((event_button) => {
             if (event_button.button == 1) {
                 open_url(event_button);
@@ -42,6 +44,24 @@ public class MessageTextView : TextView {
         buffer.get_end_iter(out end);
         buffer.insert(ref end, text, -1);
         format_suffix_urls(text);
+    }
+
+    public void highlight_word(string word) {
+        Regex word_regex = new Regex("""\b""" + Regex.escape_string(word) + """\b""");
+        MatchInfo match_info;
+        word_regex.match(buffer.text, 0, out match_info);
+        for (; match_info.matches(); match_info.next()) {
+            int start;
+            int end;
+            match_info.fetch_pos(0, out start, out end);
+            start = buffer.text[0:start].char_count();
+            end = buffer.text[0:end].char_count();
+            TextIter start_iter;
+            TextIter end_iter;
+            buffer.get_iter_at_offset(out start_iter, start);
+            buffer.get_iter_at_offset(out end_iter, end);
+            buffer.apply_tag_by_name("semibold", start_iter, end_iter);
+        }
     }
 
     private void update_display_style() {
