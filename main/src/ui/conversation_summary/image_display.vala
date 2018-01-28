@@ -41,7 +41,7 @@ public class ImageDisplay : Plugins.MetaConversationItem {
         Image image = new Image() { halign=Align.START, visible = true };
         Gdk.Pixbuf pixbuf;
         try {
-            pixbuf = new Gdk.Pixbuf.from_file(file_transfer.get_uri());
+            pixbuf = new Gdk.Pixbuf.from_file(file_transfer.get_file().get_path());
         } catch (Error error) {
             return null;
         }
@@ -65,16 +65,7 @@ public class ImageDisplay : Plugins.MetaConversationItem {
 
         Label url_label = builder.get_object("url_label") as Label;
         Util.force_color(url_label, "#eee");
-        file_transfer.notify["info"].connect_after(() => { update_info(url_label, file_transfer.info); });
-        update_info(url_label, file_transfer.info);
-
-        Image copy_image = builder.get_object("copy_image") as Image;
-        Util.force_css(copy_image, "*:not(:hover) { color: #eee; }");
-        Button copy_button = builder.get_object("copy_button") as Button;
-        Util.force_css(copy_button, "*:hover { background-color: rgba(255,255,255,0.3); border-color: transparent; }");
-        copy_button.clicked.connect(() => {
-           if (file_transfer.info != null) Clipboard.get_default(Gdk.Display.get_default()).set_text(file_transfer.info, file_transfer.info.length);
-        });
+        update_info(url_label, file_transfer.file_name);
 
         Image open_image = builder.get_object("open_image") as Image;
         Util.force_css(open_image, "*:not(:hover) { color: #eee; }");
@@ -82,9 +73,9 @@ public class ImageDisplay : Plugins.MetaConversationItem {
         Util.force_css(open_button, "*:hover { background-color: rgba(255,255,255,0.3); border-color: transparent; }");
         open_button.clicked.connect(() => {
             try{
-                AppInfo.launch_default_for_uri(file_transfer.info, null);
+                AppInfo.launch_default_for_uri(file_transfer.get_file().get_uri(), null);
             } catch (Error err) {
-                print("Tried to open " + file_transfer.info);
+                print("Tried to open file://" + file_transfer.get_file().get_path() + " " + err.message + "\n");
             }
         });
 

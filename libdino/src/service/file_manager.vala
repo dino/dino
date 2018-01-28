@@ -126,8 +126,7 @@ public class FileManager : StreamInteractionModule, Object {
         save_file(file_transfer);
 
         try {
-            File file = File.new_for_path(file_transfer.get_uri());
-            FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+            FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
             file_transfer.mime_type = file_info.get_content_type();
         } catch (Error e) { }
 

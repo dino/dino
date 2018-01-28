@@ -98,8 +98,8 @@ public class FileTransfer : Object {
         notify.connect(on_update);
     }
 
-    public string get_uri() {
-        return Path.build_filename(Dino.get_storage_dir(), "files", path);
+    public File get_file() {
+        return File.new_for_path(Path.build_filename(Dino.get_storage_dir(), "files", path));
     }
 
     private void on_update(Object o, ParamSpec sp) {
@@ -118,6 +118,8 @@ public class FileTransfer : Object {
                 update_builder.set(db.file_transfer.local_time, (long) local_time.to_unix()); break;
             case "encryption":
                 update_builder.set(db.file_transfer.encryption, encryption); break;
+            case "file-name":
+                update_builder.set(db.file_transfer.file_name, file_name); break;
             case "state":
                 update_builder.set(db.file_transfer.state, state); break;
             case "provider":

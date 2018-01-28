@@ -17,10 +17,12 @@ public class InFileProcessor : IncommingFileProcessor, Object {
                 data.append_vals(buf, (uint) len);
             } while(len > 0);
 
-            uint8[] clear_data = GPGHelper.decrypt_data(data.data);
-            file_transfer.input_stream = new MemoryInputStream.from_data(clear_data, GLib.free);
+            GPGHelper.DecryptedData clear_data = GPGHelper.decrypt_data(data.data);
+            file_transfer.input_stream = new MemoryInputStream.from_data(clear_data.data, GLib.free);
             file_transfer.encryption = Encryption.PGP;
-            if (file_transfer.file_name.has_suffix(".pgp")) {
+            if (clear_data.filename != null && clear_data.filename != "") {
+                file_transfer.file_name = clear_data.filename;
+            } else if (file_transfer.file_name.has_suffix(".pgp")) {
                 file_transfer.file_name = file_transfer.file_name.substring(0, file_transfer.file_name.length - 4);
             }
         } catch (Error e) {

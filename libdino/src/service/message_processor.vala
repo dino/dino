@@ -37,11 +37,16 @@ public class MessageProcessor : StreamInteractionModule, Object {
         received_pipeline.connect(new MamMessageListener(stream_interactor));
     }
 
-    public void send_message(string text, Conversation conversation) {
+    public Entities.Message send_text(string text, Conversation conversation) {
         Entities.Message message = create_out_message(text, conversation);
+        return send_message(message, conversation);
+    }
+
+    public Entities.Message send_message(Entities.Message message, Conversation conversation) {
         stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
         send_xmpp_message(message, conversation);
         message_sent(message, conversation);
+        return message;
     }
 
     public void send_unsent_messages(Account account, Jid? jid = null) {
@@ -224,7 +229,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
-    private Entities.Message create_out_message(string text, Conversation conversation) {
+    public Entities.Message create_out_message(string text, Conversation conversation) {
         Entities.Message message = new Entities.Message(text);
         message.type_ = Util.get_message_type_for_conversation(conversation);
         message.stanza_id = random_uuid();

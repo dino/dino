@@ -105,7 +105,7 @@ public class View : Box {
                     break;
             }
         }
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(text, conversation);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
     }
 
     private bool on_text_input_key_press(EventKey event) {

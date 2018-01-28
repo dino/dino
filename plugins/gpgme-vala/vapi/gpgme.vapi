@@ -59,7 +59,7 @@ namespace GPG {
         string unsupported_algorithm;
         bool wrong_key_usage;
         Recipient recipients;
-        string filename;
+        string file_name;
     }
 
     [CCode (cname = "struct _gpgme_recipient")]
@@ -481,7 +481,9 @@ namespace GPG {
 
         public long seek(long offset, int whence=0);
 
-        public DataEncoding *get_encoding();
+        public GPGError.Error set_file_name(string file_name);
+
+        public DataEncoding* get_encoding();
 
         public GPGError.Error set_encoding(DataEncoding enc);
     }
