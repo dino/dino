@@ -32,7 +32,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     public void send_file(Conversation conversation, FileTransfer file_transfer) {
         Xmpp.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream != null) {
-            stream_interactor.module_manager.get_module(file_transfer.account, UploadStreamModule.IDENTITY).upload(stream, file_transfer.input_stream, file_transfer.server_file_name, file_transfer.size, file_transfer.mime_type,
+            stream_interactor.module_manager.get_module(file_transfer.account, UploadStreamModule.IDENTITY).upload(stream, file_transfer.input_stream, file_transfer.server_file_name, file_transfer.mime_type,
                 (stream, url_down) => {
                     uploaded(file_transfer, url_down);
                     file_transfer.info = url_down;

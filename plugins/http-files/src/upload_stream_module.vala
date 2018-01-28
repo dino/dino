@@ -15,21 +15,21 @@ public class UploadStreamModule : XmppStreamModule {
 
     public delegate void OnUploadOk(XmppStream stream, string url_down);
     public delegate void OnError(XmppStream stream, string error);
-    public void upload(XmppStream stream, InputStream input_stream, string file_name, int file_size, string file_content_type, owned OnUploadOk listener, owned OnError error_listener) {
-        request_slot(stream, file_name, file_size, file_content_type,
-            (stream, url_down, url_up) => {
-                uint8[] buf = new uint8[256];
-                Array<uint8> data = new Array<uint8>(false, true, 0);
-                size_t len = -1;
-                do {
-                    try {
-                        len = input_stream.read(buf);
-                    } catch (IOError error) {
-                        error_listener(stream, @"HTTP upload: IOError reading stream: $(error.message)");
-                    }
-                    data.append_vals(buf, (uint) len);
-                } while(len > 0);
+    public void upload(XmppStream stream, InputStream input_stream, string file_name, string file_content_type, owned OnUploadOk listener, owned OnError error_listener) {
+        uint8[] buf = new uint8[256];
+        Array<uint8> data = new Array<uint8>(false, true, 0);
+        size_t len = -1;
+        do {
+            try {
+                len = input_stream.read(buf);
+            } catch (IOError error) {
+                error_listener(stream, @"HTTP upload: IOError reading stream: $(error.message)");
+            }
+            data.append_vals(buf, (uint) len);
+        } while(len > 0);
 
+        request_slot(stream, file_name, (int) data.length, file_content_type,
+            (stream, url_down, url_up) => {
                 Soup.Message message = new Soup.Message("PUT", url_up);
                 message.set_request(file_content_type, Soup.MemoryUse.COPY, data.data);
                 Soup.Session session = new Soup.Session();
