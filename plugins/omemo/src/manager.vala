@@ -72,7 +72,7 @@ public class Manager : StreamInteractionModule, Object {
 
     private class ReceivedMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "" };
+        public string[] after_actions_const = new string[]{ };
         public override string action_group { get { return "DECRYPT"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 

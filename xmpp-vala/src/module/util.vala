@@ -63,16 +63,13 @@ public abstract class ListenerHolder : Object {
             bool changed = false;
             Gee.Iterator<OrderedListener> iter = remaining.iterator();
             while (iter.has_next()) {
-                if (!iter.valid) {
-                    iter.next();
-                }
+                iter.next();
                 OrderedListener l = iter.get();
                 if (!set_contains_action(remaining, l.after_actions)) {
                     new_list.add(l);
                     iter.remove();
                     changed = true;
                 }
-                iter.next();
             }
             if (!changed) error("Can't sort listeners");
         }

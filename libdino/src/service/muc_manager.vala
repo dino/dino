@@ -327,8 +327,8 @@ public class MucManager : StreamInteractionModule, Object {
 
     private class ReceivedMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "" };
-        public override string action_group { get { return "OTHER_NODES"; } }
+        public string[] after_actions_const = new string[]{ };
+        public override string action_group { get { return "MUC"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
         private StreamInteractor stream_interactor;

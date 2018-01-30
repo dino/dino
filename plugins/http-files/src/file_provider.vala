@@ -11,14 +11,12 @@ public class FileProvider : Dino.FileProvider, Object {
 
     private StreamInteractor stream_interactor;
     private Regex url_regex;
-    private Regex file_ext_regex;
 
     private Gee.List<string> ignore_once = new ArrayList<string>();
 
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.url_regex = new Regex("""^(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$""");
-        this.file_ext_regex = new Regex("""\.(png|jpg|jpeg|svg|gif|pgp)$""");
 
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(this));
         stream_interactor.get_module(Manager.IDENTITY).uploaded.connect((file_transfer, url) => {
@@ -28,7 +26,7 @@ public class FileProvider : Dino.FileProvider, Object {
 
     private class ReceivedMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "" };
+        public string[] after_actions_const = new string[]{ };
         public override string action_group { get { return "DECRYPT"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
@@ -47,7 +45,7 @@ public class FileProvider : Dino.FileProvider, Object {
             if (message.direction == Message.DIRECTION_RECEIVED && !in_roster) return false;
 
             string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(message.stanza);
-            if ((oob_url != null && oob_url == message.body) || outer.file_ext_regex.match(message.body)) {
+            if (oob_url != null && oob_url == message.body) {
                 yield outer.download_url(message, conversation);
             }
             return false;

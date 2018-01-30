@@ -74,7 +74,7 @@ public class MessageTextView : TextView {
         TextIter iter;
         get_iter_at_location(out iter, x, y);
         TextIter start_iter = iter, end_iter = iter;
-        if (start_iter.backward_to_tag_toggle(null) && end_iter.forward_to_tag_toggle(null)) {
+        if (start_iter.backward_to_tag_toggle(link_tag) && end_iter.forward_to_tag_toggle(link_tag)) {
             return start_iter.get_text(end_iter);
         }
 
