@@ -78,6 +78,7 @@ public class View : Box {
                     return;
                 case "/affiliate":
                     string[] user_role = token[1].split(" ", 2);
+                    if (user_role.length < 2) return;
                     stream_interactor.get_module(MucManager.IDENTITY).change_affiliation(conversation.account, conversation.counterpart, user_role[0].strip(), user_role[1].strip());
                     return;
                 case "/nick":
