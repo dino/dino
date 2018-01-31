@@ -27,6 +27,7 @@ public class XmppStream {
     public bool negotiation_complete { get; set; default=false; }
     private bool setup_needed = false;
     private bool non_negotiation_modules_attached = false;
+    public TlsCertificate? pinned_certificate { get; set; default = null;}
 
     public signal void received_node(XmppStream stream, StanzaNode node);
     public signal void received_root_node(XmppStream stream, StanzaNode node);

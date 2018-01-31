@@ -25,10 +25,15 @@ namespace Xmpp.Tls {
                     var io_stream = stream.get_stream();
                     if (io_stream == null) return;
                     var conn = TlsClientConnection.new(io_stream, identity);
+                    var pinned_certificate = stream.pinned_certificate;
+                    var flag = stream.get_flag(Flag.IDENTITY);
+                    conn.accept_certificate.connect((conn, server_cert, errors) => {
+                        flag.used_pinned_certificate = true;
+                        return pinned_certificate != null && server_cert.is_same(pinned_certificate);
+		    });
                     stream.reset_stream(conn);
 
-                    var flag = stream.get_flag(Flag.IDENTITY);
-                    flag.peer_certificate = conn.get_peer_certificate();
+                    flag.connection = conn;
                     flag.finished = true;
                 } catch (Error e) {
                     stderr.printf("Failed to start TLS: %s\n", e.message);
@@ -70,10 +75,13 @@ namespace Xmpp.Tls {
 
     public class Flag : XmppStreamFlag {
         public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "tls");
-        public TlsCertificate? peer_certificate;
+        public TlsClientConnection? connection { get; set; default=null; }
         public bool finished { get; set; default=false; }
+        public bool used_pinned_certificate { get; set; default=false; }
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
+
+        public TlsCertificate? get_certificate() { return connection.get_peer_certificate(); }
     }
 }

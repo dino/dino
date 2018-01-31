@@ -176,6 +176,7 @@ public class ConnectionManager {
 
     private async void connect_async(Account account, XmppStream stream) {
         try {
+            stream.pinned_certificate = account.certificate;
             yield stream.connect(account.domainpart);
         } catch (Error e) {
             stderr.printf("Stream Error: %s\n", e.message);
@@ -225,6 +226,32 @@ public class ConnectionManager {
             check_reconnect(account);
             return false;
         });
+    }
+
+    public TlsCertificate? get_server_certificate(Account account) {
+        if (connections.has_key(account)){
+            var stream = connections[account].stream;
+            if (stream != null) {
+                var flag = stream.get_flag(Xmpp.Tls.Flag.IDENTITY);
+                if (flag != null) {
+                    return flag.get_certificate();
+                }
+            }
+        }
+        return null;
+    }
+
+    public bool get_used_pinned_certificate(Account account) {
+        if (connections.has_key(account)){
+            var stream = connections[account].stream;
+            if (stream != null) {
+                var flag = stream.get_flag(Xmpp.Tls.Flag.IDENTITY);
+                if (flag != null) {
+                    return flag.used_pinned_certificate;
+                }
+            }
+        }
+        return false;
     }
 
     private void check_reconnects() {

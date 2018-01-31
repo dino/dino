@@ -153,13 +153,34 @@
                                                     </packing>
                                                 </child>
                                                 <child>
+                                                    <object class="GtkButton" id="is_trusted_button">
+						        <property name="relief">none</property>
+                                                        <property name="halign">end</property>
+                                                        <property name="valign">center</property>
+                                                        <property name="visible">True</property>
+                                                        <child>
+                                                            <object class="GtkImage" id="is_trusted_image">
+								<property name="icon-name">changes-prevent-symbolic</property>
+                                                                <property name="visible">True</property>
+								<property name="icon-size">1</property>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                    <packing>
+                                                        <property name="left_attach">2</property>
+                                                        <property name="top_attach">0</property>
+                                                        <property name="width">1</property>
+                                                        <property name="height">2</property>
+                                                    </packing>
+                                                </child>
+                                                <child>
                                                     <object class="GtkSwitch" id="active_switch">
                                                         <property name="visible">True</property>
                                                         <property name="halign">end</property>
                                                         <property name="valign">center</property>
                                                     </object>
                                                     <packing>
-                                                        <property name="left_attach">2</property>
+                                                        <property name="left_attach">3</property>
                                                         <property name="top_attach">0</property>
                                                         <property name="width">1</property>
                                                         <property name="height">2</property>
@@ -191,7 +212,7 @@
                                                     <packing>
                                                         <property name="left_attach">1</property>
                                                         <property name="top_attach">2</property>
-                                                        <property name="width">2</property>
+                                                        <property name="width">3</property>
                                                         <property name="height">1</property>
                                                     </packing>
                                                 </child>
@@ -220,7 +241,7 @@
                                                     <packing>
                                                         <property name="left_attach">1</property>
                                                         <property name="top_attach">3</property>
-                                                        <property name="width">2</property>
+                                                        <property name="width">3</property>
                                                         <property name="height">1</property>
                                                     </packing>
                                                 </child>

@@ -1,6 +1,7 @@
 using Gee;
 using Xmpp;
 
+
 namespace Dino.Entities {
 
 public class Account : Object {
@@ -18,6 +19,7 @@ public class Account : Object {
     public bool enabled { get; set; default = false; }
     public string? roster_version { get; set; }
     public DateTime mam_earliest_synced { get; set; default=new DateTime.from_unix_utc(0); }
+    public TlsCertificate? certificate { get; set; default=null; }
 
     private Database? db;
 
@@ -39,12 +41,22 @@ public class Account : Object {
         enabled = row[db.account.enabled];
         roster_version = row[db.account.roster_version];
         mam_earliest_synced = new DateTime.from_unix_utc(row[db.account.mam_earliest_synced]);
+        var db_cert = row[db.account.certificate];
+        if (db_cert != null && db_cert.length > 0) {
+          try {
+            certificate = new TlsCertificate.from_pem(db_cert, db_cert.length);
+          } catch (Error error) { }
+        }
 
         notify.connect(on_update);
     }
 
     public void persist(Database db) {
         this.db = db;
+        string cert_str = "";
+        if (certificate != null) {
+            cert_str = certificate.certificate_pem;
+        }
         id = (int) db.account.insert()
                 .value(db.account.bare_jid, bare_jid.to_string())
                 .value(db.account.resourcepart, resourcepart)
@@ -53,6 +65,7 @@ public class Account : Object {
                 .value(db.account.enabled, enabled)
                 .value(db.account.roster_version, roster_version)
                 .value(db.account.mam_earliest_synced, (long)mam_earliest_synced.to_unix())
+                .value(db.account.certificate, cert_str)
                 .perform();
 
         notify.connect(on_update);
@@ -94,6 +107,11 @@ public class Account : Object {
                 update.set(db.account.roster_version, roster_version); break;
             case "mam-earliest-synced":
                 update.set(db.account.mam_earliest_synced, (long)mam_earliest_synced.to_unix()); break;
+            case "certificate":
+                string cert_str = "";
+                if (certificate != null) cert_str = certificate.certificate_pem;
+                update.set(db.account.certificate, cert_str);
+                break;
         }
         update.perform();
     }

@@ -2,6 +2,7 @@ using Gdk;
 using Gee;
 using Gtk;
 using Markup;
+using Gcr;
 
 using Dino.Entities;
 using Xmpp;
@@ -24,6 +25,7 @@ public class Dialog : Gtk.Dialog {
     [GtkChild] public Label jid_label;
     [GtkChild] public Label state_label;
     [GtkChild] public Switch active_switch;
+    [GtkChild] public Button is_trusted_button;
     [GtkChild] public Util.EntryLabelHybrid password_hybrid;
     [GtkChild] public Util.EntryLabelHybrid alias_hybrid;
     [GtkChild] public Grid settings_list;
@@ -46,6 +48,7 @@ public class Dialog : Gtk.Dialog {
         image_button.clicked.connect(show_select_avatar);
         alias_hybrid.entry.key_release_event.connect(() => { selected_account.alias = alias_hybrid.text; return false; });
         password_hybrid.entry.key_release_event.connect(() => { selected_account.password = password_hybrid.text; return false; });
+        is_trusted_button.clicked.connect(on_is_trusted_button_clicked);
 
         Util.LabelHybridGroup label_hybrid_group = new Util.LabelHybridGroup();
         label_hybrid_group.add(alias_hybrid);
@@ -238,6 +241,7 @@ public class Dialog : Gtk.Dialog {
         }
     }
 
+
     private string get_connection_error_description(ConnectionManager.ConnectionError error) {
         switch (error.source) {
             case ConnectionManager.ConnectionError.Source.SASL:
@@ -249,6 +253,17 @@ public class Dialog : Gtk.Dialog {
             return _("Error") + ": " + error.identifier;
         } else {
             return _("Error");
+        }
+    }
+
+    private void on_is_trusted_button_clicked() {
+        if (selected_account != null) {
+            var cert = stream_interactor.connection_manager.get_server_certificate(selected_account);
+            var used_pinned_cert = stream_interactor.connection_manager.get_used_pinned_certificate(selected_account);
+
+            CertificatePinningDialog dialog = new CertificatePinningDialog(db, selected_account, cert, used_pinned_cert);
+            dialog.set_transient_for(this);
+            dialog.present();
         }
     }
 }

@@ -6,3 +6,4 @@ Makefile
 .idea
 .sqlite3
 gschemas.compiled
+*.swp

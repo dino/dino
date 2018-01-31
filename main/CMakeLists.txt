@@ -9,6 +9,8 @@ find_packages(MAIN_PACKAGES REQUIRED
     GModule
     GObject
     GTK3>=3.22
+    Gcr
+    GcrUi
 )
 
 set(RESOURCE_LIST
@@ -36,6 +38,7 @@ set(RESOURCE_LIST
     conversation_summary/view.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
+    manage_accounts/certificate_pinning_dialog.ui
     manage_accounts/dialog.ui
     menu_add.ui
     menu_app.ui
@@ -117,6 +120,7 @@ SOURCES
     src/ui/conversation_titlebar/view.vala
     src/ui/manage_accounts/account_row.vala
     src/ui/manage_accounts/add_account_dialog.vala
+    src/ui/manage_accounts/certificate_pinning_dialog.vala
     src/ui/manage_accounts/dialog.vala
     src/ui/notifications.vala
     src/ui/occupant_menu/list.vala
@@ -141,6 +145,7 @@ OPTIONS
 )
 
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
+add_definitions(${VALA_CFLAGS} -DGCR_API_SUBJECT_TO_CHANGE)
 add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET})
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})
