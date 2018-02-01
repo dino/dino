@@ -1,6 +1,6 @@
 using Gee;
 
-namespace Xmpp.Core {
+namespace Xmpp {
 
 public abstract class StanzaEntry {
     protected const string ANSI_COLOR_END = "\x1b[0m";
@@ -282,7 +282,7 @@ public class StanzaNode : StanzaEntry {
     }
 
     /**
-    *    Set only occurence
+    *    Set only occurrence
     **/
     public void set_attribute(string name, string val, string? ns_uri = null) {
         if (ns_uri == null) ns_uri = this.ns_uri;

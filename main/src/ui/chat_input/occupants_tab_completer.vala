@@ -3,6 +3,7 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.ChatInput {
 
@@ -67,9 +68,9 @@ class OccupantsTabCompletor {
         string prev_completion = text.substring(start_index);
         if (index > -1) {
             start_index = int.max(
-                text.substring(0, text.length - 1).last_index_of(" "),
+                text.last_index_of(completions[index]),
                 text.substring(0, text.length - 1).last_index_of("\n")
-            ) + 1;
+            );
             prev_completion = text.substring(start_index);
         }
         if (backwards) {
@@ -103,7 +104,9 @@ class OccupantsTabCompletor {
         Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(conversation.counterpart, conversation.account);
         if (occupants != null) {
             foreach (Jid jid in occupants) {
-                if (jid.resourcepart.to_string().has_prefix(prefix)) ret.add(jid.resourcepart.to_string());
+                if (jid.resourcepart.to_string().down().has_prefix(prefix.down())) {
+                    ret.add(jid.resourcepart.to_string());
+                }
             }
         }
         ret.sort();

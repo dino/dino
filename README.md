@@ -12,8 +12,7 @@ Build
 * C compiler
 * gettext
 * ninja(-build) (recommend)
-* libsoup2.4-dev
-* valac (≥ 0.30)
+* valac (≥ 0.34)
 
 **Run-time dependencies**
 

@@ -12,6 +12,7 @@ find_packages(MAIN_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
+    icons/dino-changes-prevent-symbolic.svg
     icons/dino-double-tick-symbolic.svg
     icons/dino-status-away.svg
     icons/dino-status-chat.svg
@@ -32,7 +33,6 @@ set(RESOURCE_LIST
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
     conversation_summary/image_toolbar.ui
-    conversation_summary/message_item.ui
     conversation_summary/view.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
@@ -82,6 +82,7 @@ SOURCES
     src/ui/add_conversation/select_contact_dialog.vala
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala
+    src/ui/avatar_image.vala
     src/ui/chat_input/edit_history.vala
     src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala
@@ -109,6 +110,7 @@ SOURCES
     src/ui/conversation_summary/message_populator.vala
     src/ui/conversation_summary/message_textview.vala
     src/ui/conversation_summary/slashme_message_display.vala
+    src/ui/conversation_summary/subscription_notification.vala
     src/ui/conversation_titlebar/file_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
@@ -158,6 +160,7 @@ install(FILES
     data/icons/dino-status-dnd.svg
     data/icons/dino-status-online.svg
 
+    data/icons/dino-changes-prevent-symbolic.svg
     data/icons/dino-double-tick-symbolic.svg
     data/icons/dino-tick-symbolic.svg
 DESTINATION

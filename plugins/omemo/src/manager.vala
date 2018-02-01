@@ -13,6 +13,7 @@ public class Manager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private Map<Entities.Message, MessageState> message_states = new HashMap<Entities.Message, MessageState>(Entities.Message.hash_func, Entities.Message.equals_func);
+    private ReceivedMessageListener received_message_listener = new ReceivedMessageListener();
 
     private class MessageState {
         public Entities.Message msg { get; private set; }
@@ -65,20 +66,28 @@ public class Manager : StreamInteractionModule, Object {
 
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_received.connect(on_pre_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
     }
 
-    private void on_pre_message_received(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
-        MessageFlag? flag = MessageFlag.get_flag(message_stanza);
-        if (flag != null && ((!)flag).decrypted) {
-            message.encryption = Encryption.OMEMO;
+    private class ReceivedMessageListener : MessageListener {
+
+        public string[] after_actions_const = new string[]{ };
+        public override string action_group { get { return "DECRYPT"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            MessageFlag? flag = MessageFlag.get_flag(stanza);
+            if (flag != null && ((!)flag).decrypted) {
+                message.encryption = Encryption.OMEMO;
+            }
+            return false;
         }
     }
 
-    private void on_pre_message_send(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+    private void on_pre_message_send(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         if (message.encryption == Encryption.OMEMO) {
-            Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+            XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) {
                 message.marked = Entities.Message.Marked.UNSENT;
                 return;
@@ -89,7 +98,7 @@ public class Manager : StreamInteractionModule, Object {
                 return;
             }
             StreamModule module = (!)module_;
-            EncryptState enc_state = module.encrypt(message_stanza, conversation.account.bare_jid.to_string());
+            EncryptState enc_state = module.encrypt(message_stanza, conversation.account.bare_jid);
             MessageState state;
             lock (message_states) {
                 if (message_states.has_key(message)) {
@@ -111,13 +120,13 @@ public class Manager : StreamInteractionModule, Object {
                     if (Plugin.DEBUG) print(@"OMEMO: message will be delayed: $state\n");
 
                     if (state.waiting_own_sessions > 0) {
-                        module.start_sessions_with((!)stream, conversation.account.bare_jid.to_string());
+                        module.start_sessions_with((!)stream, conversation.account.bare_jid);
                     }
                     if (state.waiting_other_sessions > 0 && message.counterpart != null) {
-                        module.start_sessions_with((!)stream, ((!)message.counterpart).bare_jid.to_string());
+                        module.start_sessions_with((!)stream, ((!)message.counterpart).bare_jid);
                     }
                     if (state.waiting_other_devicelist && message.counterpart != null) {
-                        module.request_user_devicelist((!)stream, ((!)message.counterpart).bare_jid.to_string());
+                        module.request_user_devicelist((!)stream, ((!)message.counterpart).bare_jid);
                     }
                 }
             }
@@ -132,20 +141,20 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).session_start_failed.connect((jid, device_id) => on_session_started(account, jid, true));
     }
 
-    private void on_stream_negotiated(Account account, Core.XmppStream stream) {
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist(stream, account.bare_jid.to_string());
+    private void on_stream_negotiated(Account account, XmppStream stream) {
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist(stream, account.bare_jid);
     }
 
-    private void on_session_started(Account account, string jid, bool failed) {
+    private void on_session_started(Account account, Jid jid, bool failed) {
         if (Plugin.DEBUG) print(@"OMEMO: session start between $(account.bare_jid) and $jid $(failed ? "failed" : "successful")\n");
         HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
                 if (!msg.account.equals(account)) continue;
                 MessageState state = message_states[msg];
-                if (account.bare_jid.to_string() == jid) {
+                if (account.bare_jid.equals(jid)) {
                     state.waiting_own_sessions--;
-                } else if (msg.counterpart != null && ((!)msg.counterpart).bare_jid.to_string() == jid) {
+                } else if (msg.counterpart != null && msg.counterpart.equals_bare(jid)) {
                     state.waiting_other_sessions--;
                 }
                 if (state.should_retry_now()) {
@@ -162,16 +171,16 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_device_list_loaded(Account account, string jid) {
+    private void on_device_list_loaded(Account account, Jid jid) {
         if (Plugin.DEBUG) print(@"OMEMO: received device list for $(account.bare_jid) from $jid\n");
         HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
                 if (!msg.account.equals(account)) continue;
                 MessageState state = message_states[msg];
-                if (account.bare_jid.to_string() == jid) {
+                if (account.bare_jid.equals(jid)) {
                     state.waiting_own_devicelist = false;
-                } else if (msg.counterpart != null && ((!)msg.counterpart).bare_jid.to_string() == jid) {
+                } else if (msg.counterpart != null && msg.counterpart.equals_bare(jid)) {
                     state.waiting_other_devicelist = false;
                 }
                 if (state.should_retry_now()) {
@@ -188,7 +197,7 @@ public class Manager : StreamInteractionModule, Object {
         }
 
         // Update meta database
-        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) {
             return;
         }
@@ -197,10 +206,10 @@ public class Manager : StreamInteractionModule, Object {
             return;
         }
         ArrayList<int32> device_list = module.get_device_list(jid);
-        db.identity_meta.insert_device_list(jid, device_list);
+        db.identity_meta.insert_device_list(jid.bare_jid.to_string(), device_list);
         int inc = 0;
-        foreach (Row row in db.identity_meta.with_address(jid).with_null(db.identity_meta.identity_key_public_base64)) {
-            module.fetch_bundle(stream, row[db.identity_meta.address_name], row[db.identity_meta.device_id]);
+        foreach (Row row in db.identity_meta.with_address(jid.bare_jid.to_string()).with_null(db.identity_meta.identity_key_public_base64)) {
+            module.fetch_bundle(stream, Jid.parse(row[db.identity_meta.address_name]), row[db.identity_meta.device_id]);
             inc++;
         }
         if (inc > 0) {
@@ -208,8 +217,8 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    public void on_bundle_fetched(Account account, string jid, int32 device_id, Bundle bundle) {
-        db.identity_meta.insert_device_bundle(jid, device_id, bundle);
+    public void on_bundle_fetched(Account account, Jid jid, int32 device_id, Bundle bundle) {
+        db.identity_meta.insert_device_bundle(jid.bare_jid.to_string(), device_id, bundle);
     }
 
     private void on_store_created(Account account, Store store) {
@@ -252,11 +261,11 @@ public class Manager : StreamInteractionModule, Object {
 
 
     public bool can_encrypt(Entities.Conversation conversation) {
-        Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+        XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return false;
         StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
         if (module == null) return false;
-        return ((!)module).is_known_address(conversation.counterpart.bare_jid.to_string());
+        return ((!)module).is_known_address(conversation.counterpart.bare_jid);
     }
 
     public static void start(StreamInteractor stream_interactor, Database db) {

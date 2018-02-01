@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Test {
 
 class StanzaTest : Gee.TestCase {

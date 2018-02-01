@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.BlockingCommand {
 
 private const string NS_URI = "urn:xmpp:blocking";

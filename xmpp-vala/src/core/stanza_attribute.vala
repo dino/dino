@@ -1,4 +1,4 @@
-namespace Xmpp.Core {
+namespace Xmpp {
 
 public class StanzaAttribute : StanzaEntry {
 

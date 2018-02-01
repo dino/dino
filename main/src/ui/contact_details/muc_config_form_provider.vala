@@ -17,7 +17,7 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, Plugins.WidgetType type) {
         if (type != Plugins.WidgetType.GTK) return;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+            Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) return;
             stream_interactor.get_module(MucManager.IDENTITY).get_config_form(conversation.account, conversation.counterpart, (jid, data_form) => {
                 contact_details.save.connect(() => { data_form.submit(); });

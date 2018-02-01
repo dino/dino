@@ -1,18 +1,18 @@
 using Gee;
 
-namespace Xmpp.Core {
+namespace Xmpp {
 
 public const string XMLNS_URI = "http://www.w3.org/2000/xmlns/";
 public const string XML_URI = "http://www.w3.org/XML/1998/namespace";
 public const string JABBER_URI = "jabber:client";
 
 public errordomain XmlError {
-    XML_ERROR,
     NS_DICT_ERROR,
     UNSUPPORTED,
     EOF,
     BAD_XML,
-    IO_ERROR
+    IO,
+    TLS
 }
 
 public class StanzaReader {
@@ -52,8 +52,10 @@ public class StanzaReader {
             buffer_fill = (int) yield ((!)input).read_async(buffer, GLib.Priority.DEFAULT, cancellable);
             if (buffer_fill == 0) throw new XmlError.EOF("End of input stream reached.");
             buffer_pos = 0;
+        } catch (TlsError e) {
+            throw new XmlError.TLS("TlsError: %s".printf(e.message));
         } catch (GLib.IOError e) {
-            throw new XmlError.IO_ERROR("IOError in GLib: %s".printf(e.message));
+            throw new XmlError.IO("GLib.IOError: %s".printf(e.message));
         }
     }
 

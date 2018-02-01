@@ -16,8 +16,8 @@ public class EntityCapabilitiesStorage : Xep.EntityCapabilities.Storage, Object 
         db.add_entity_features(entity, features);
     }
 
-    public Gee.List<string> get_features(string entitiy) {
-        return db.get_entity_features(entitiy);
+    public Gee.List<string> get_features(string entity) {
+        return db.get_entity_features(entity);
     }
 }
 }

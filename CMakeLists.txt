@@ -121,7 +121,7 @@ if(NOT VALA_EXECUTABLE)
     unset(VALA_EXECUTABLE CACHE)
 endif()
 
-find_package(Vala 0.30 REQUIRED)
+find_package(Vala 0.34 REQUIRED)
 if(VALA_VERSION VERSION_GREATER "0.34.90" AND VALA_VERSION VERSION_LESS "0.36.1")
     # Due to a bug on 0.36.0 (and pre-releases), we need to disable FAST_VAPI
     set(DISABLE_FAST_VAPI yes)

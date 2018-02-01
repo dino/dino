@@ -2,6 +2,7 @@ using Gdk;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.ConversationSummary {
 
@@ -26,7 +27,7 @@ public class DefaultFileDisplay : Plugins.MetaConversationItem {
         this.stream_interactor = stream_interactor;
         this.file_transfer = file_transfer;
 
-        this.jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? new Jid.with_resource(file_transfer.account.bare_jid.to_string(), file_transfer.account.resourcepart) : file_transfer.counterpart;
+        this.jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? file_transfer.account.bare_jid.with_resource(file_transfer.account.resourcepart) : file_transfer.counterpart;
         this.sort_time = file_transfer.time;
         this.seccondary_sort_indicator = file_transfer.id + 0.2903;
         this.display_time = file_transfer.time;
@@ -39,7 +40,6 @@ public class DefaultFileDisplay : Plugins.MetaConversationItem {
 
     public override Object? get_widget(Plugins.WidgetType widget_type) {
         Box main_box = new Box(Orientation.HORIZONTAL, 4) { halign=Align.START, visible=true };
-        string? content_type = ContentType.from_mime_type(file_transfer.mime_type);
         string? icon_name = ContentType.get_generic_icon_name(file_transfer.mime_type);
         Image content_type_image = new Image.from_icon_name(icon_name, IconSize.DND) { visible=true };
         main_box.add(content_type_image);
@@ -66,9 +66,9 @@ public class DefaultFileDisplay : Plugins.MetaConversationItem {
         event_box.button_release_event.connect((event_button) => {
             if (event_button.button == 1) {
                 try{
-                    AppInfo.launch_default_for_uri("file://" + file_transfer.get_uri(), null);
+                    AppInfo.launch_default_for_uri(file_transfer.get_file().get_uri(), null);
                 } catch (Error err) {
-                    print("Tryed to open " + file_transfer.get_uri());
+                    print("Tried to open " + file_transfer.get_file().get_path());
                 }
             }
             return false;

@@ -281,6 +281,7 @@ int signal_vala_decrypt(signal_buffer **output,
         void *user_data) {
     int algo, mode;
     if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_UNKNOWN;
+    if (ciphertext_len == 0) return SG_ERR_UNKNOWN;
 
     if (iv_len != 16) return SG_ERR_UNKNOWN;
 
@@ -325,7 +326,7 @@ no_error:
 
     if (pkcs_pad) {
         uint8_t pad_len = out_buf[padded_len - 1];
-        if (pad_len > 16) goto error;
+        if (pad_len > 16 || pad_len > padded_len) goto error;
         *output = signal_buffer_create(out_buf, padded_len - pad_len);
     } else {
         *output = signal_buffer_create(out_buf, padded_len);

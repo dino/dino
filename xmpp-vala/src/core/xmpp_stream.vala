@@ -1,19 +1,19 @@
 using Gee;
 
-namespace Xmpp.Core {
+namespace Xmpp {
 
 public errordomain IOStreamError {
     READ,
     WRITE,
     CONNECT,
-    DISCONNECT
-
+    DISCONNECT,
+    TLS
 }
 
 public class XmppStream {
     public const string NS_URI = "http://etherx.jabber.org/streams";
 
-    public string remote_name;
+    public Jid remote_name;
     public XmppLog log = new XmppLog();
     public StanzaNode? features { get; private set; default = new StanzaNode.build("features", NS_URI); }
 
@@ -43,13 +43,13 @@ public class XmppStream {
     }
 
     public async void connect(string? remote_name = null) throws IOStreamError {
-        if (remote_name != null) this.remote_name = (!)remote_name;
+        if (remote_name != null) this.remote_name = Jid.parse(remote_name);
         attach_negotation_modules();
         try {
             int min_priority = -1;
             ConnectionProvider? best_provider = null;
             foreach (ConnectionProvider connection_provider in connection_providers) {
-                int? priority = yield connection_provider.get_priority(remote_name);
+                int? priority = yield connection_provider.get_priority(this.remote_name);
                 if (priority != null && (priority < min_priority || min_priority == -1)) {
                     min_priority = priority;
                     best_provider = connection_provider;
@@ -58,10 +58,13 @@ public class XmppStream {
             IOStream? stream = null;
             if (best_provider != null) {
                 stream = yield best_provider.connect(this);
-            } else {
-                stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name));
             }
-            if (stream == null) throw new IOStreamError.CONNECT("client.connect() returned null");
+            if (stream == null) {
+                stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name.to_string()));
+            }
+            if (stream == null) {
+                throw new IOStreamError.CONNECT("client.connect() returned null");
+            }
             reset_stream((!)stream);
         } catch (Error e) {
             stderr.printf("CONNECTION LOST?\n");
@@ -154,7 +157,10 @@ public class XmppStream {
     }
 
     public void detach_modules() {
-        foreach (XmppStreamModule module in modules) module.detach(this);
+        foreach (XmppStreamModule module in modules) {
+            if (!(module is XmppStreamNegotiationModule) && !negotiation_complete) continue;
+            module.detach(this);
+        }
     }
 
     public T? get_module<T>(ModuleIdentity<T>? identity) {
@@ -181,7 +187,7 @@ public class XmppStream {
 
     private async void setup() throws IOStreamError {
         StanzaNode outs = new StanzaNode.build("stream", "http://etherx.jabber.org/streams")
-                            .put_attribute("to", remote_name)
+                            .put_attribute("to", remote_name.to_string())
                             .put_attribute("version", "1.0")
                             .put_attribute("xmlns", "jabber:client")
                             .put_attribute("stream", "http://etherx.jabber.org/streams", XMLNS_URI);
@@ -238,23 +244,18 @@ public class XmppStream {
     }
 
     private bool negotiation_modules_done() throws IOStreamError {
-        if (!setup_needed) {
-            bool mandatory_outstanding = false;
-            foreach (XmppStreamModule module in modules) {
-                if (module is XmppStreamNegotiationModule) {
-                    XmppStreamNegotiationModule negotiation_module = (XmppStreamNegotiationModule) module;
-                    if (negotiation_module.mandatory_outstanding(this)) mandatory_outstanding = true;
-                }
-            }
-            if (!is_negotiation_active()) {
-                if (mandatory_outstanding) {
-                    throw new IOStreamError.CONNECT("mandatory-to-negotiate feature not negotiated");
-                } else {
-                    return true;
+        if (setup_needed) return false;
+        if (is_negotiation_active()) return false;
+
+        foreach (XmppStreamModule module in modules) {
+            if (module is XmppStreamNegotiationModule) {
+                XmppStreamNegotiationModule negotiation_module = (XmppStreamNegotiationModule) module;
+                if (negotiation_module.mandatory_outstanding(this)) {
+                    throw new IOStreamError.CONNECT("mandatory-to-negotiate feature not negotiated: " + negotiation_module.get_id());
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private void attach_non_negotation_modules() {
@@ -281,7 +282,9 @@ public class XmppStream {
             StanzaNode node = yield ((!)reader).read_root_node();
             log.node("IN ROOT", node);
             return node;
-        } catch (XmlError e) {
+        } catch (XmlError.TLS e) {
+            throw new IOStreamError.TLS(e.message);
+        } catch (Error e) {
             throw new IOStreamError.READ(e.message);
         }
     }
@@ -346,7 +349,7 @@ public abstract class XmppStreamNegotiationModule : XmppStreamModule {
 }
 
 public abstract class ConnectionProvider {
-    public async abstract int? get_priority(string remote_name);
+    public async abstract int? get_priority(Jid remote_name);
     public async abstract IOStream? connect(XmppStream stream);
     public abstract string get_id();
 }
@@ -354,11 +357,11 @@ public abstract class ConnectionProvider {
 public class StartTlsConnectionProvider : ConnectionProvider {
     private SrvTarget? srv_target;
 
-    public async override int? get_priority(string remote_name) {
+    public async override int? get_priority(Jid remote_name) {
         GLib.List<SrvTarget>? xmpp_target = null;
         try {
             GLibFixes.Resolver resolver = GLibFixes.Resolver.get_default();
-            xmpp_target = yield resolver.lookup_service_async("xmpp-client", "tcp", remote_name, null);
+            xmpp_target = yield resolver.lookup_service_async("xmpp-client", "tcp", remote_name.to_string(), null);
         } catch (Error e) {
             return null;
         }

@@ -1,6 +1,7 @@
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.ConversationSummary {
 
@@ -52,6 +53,9 @@ public class MetaSlashmeItem : Plugins.MetaConversationItem {
 
     public override Object? get_widget(Plugins.WidgetType widget_type) {
         text_view = new MessageTextView() { valign=Align.CENTER, vexpand=true, visible = true };
+        if (conversation.type_ == Conversation.Type.GROUPCHAT)  {
+            text_view.highlight_word(conversation.nickname);
+        }
 
         string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
         string color = Util.get_name_hex_color(stream_interactor, conversation.account, conversation.counterpart, Util.is_dark_theme(text_view));
@@ -59,8 +63,8 @@ public class MetaSlashmeItem : Plugins.MetaConversationItem {
         TextIter iter;
         text_view.buffer.get_start_iter(out iter);
         text_view.buffer.insert_with_tags(ref iter, display_name, display_name.length, nick_tag);
-
         text_view.add_text(message.body.substring(3));
+
         text_view.style_updated.connect(update_style);
         text_view.realize.connect(update_style);
         return text_view;

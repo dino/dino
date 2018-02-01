@@ -76,12 +76,16 @@ public class View : Box {
                 case "/kick":
                     stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, token[1]);
                     return;
+                case "/affiliate":
+                    string[] user_role = token[1].split(" ", 2);
+                    stream_interactor.get_module(MucManager.IDENTITY).change_affiliation(conversation.account, conversation.counterpart, user_role[0].strip(), user_role[1].strip());
+                    return;
                 case "/nick":
                     stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
                     return;
                 case "/ping":
-                    Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
-                    stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.to_string() + "/" + token[1], null);
+                    Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                    stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.with_resource(token[1]), null);
                     return;
                 case "/topic":
                     stream_interactor.get_module(MucManager.IDENTITY).change_subject(conversation.account, conversation.counterpart, token[1]);
@@ -101,7 +105,7 @@ public class View : Box {
                     break;
             }
         }
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(text, conversation);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
     }
 
     private bool on_text_input_key_press(EventKey event) {

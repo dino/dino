@@ -38,6 +38,8 @@ public interface Dino.Application : GLib.Application {
         ChatInteraction.start(stream_interactor);
         FileManager.start(stream_interactor, db);
 
+        create_actions();
+
         activate.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;
             Idle.add(() => {
@@ -91,6 +93,17 @@ public interface Dino.Application : GLib.Application {
 
     public static unowned Application get_default() {
         return (Dino.Application) GLib.Application.get_default();
+    }
+
+    public void create_actions() {
+        SimpleAction accept_subscription_action = new SimpleAction("accept-subscription", VariantType.INT32);
+        accept_subscription_action.activate.connect((variant) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
+            if (conversation == null) return;
+            stream_interactor.get_module(PresenceManager.IDENTITY).approve_subscription(conversation.account, conversation.counterpart);
+            stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(conversation.account, conversation.counterpart);
+        });
+        add_action(accept_subscription_action);
     }
 
     protected void add_connection(Account account) {

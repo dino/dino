@@ -14,6 +14,7 @@ public class PresenceManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private HashMap<Jid, HashMap<Jid, ArrayList<Show>>> shows = new HashMap<Jid, HashMap<Jid, ArrayList<Show>>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private HashMap<Jid, ArrayList<Jid>> resources = new HashMap<Jid, ArrayList<Jid>>(Jid.hash_bare_func, Jid.equals_bare_func);
+    private Gee.List<Jid> subscription_requests = new ArrayList<Jid>(Jid.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         PresenceManager m = new PresenceManager(stream_interactor);
@@ -26,9 +27,9 @@ public class PresenceManager : StreamInteractionModule, Object {
     }
 
     public Show get_last_show(Jid jid, Account account) {
-        Core.XmppStream? stream = stream_interactor.get_stream(account);
+        XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            Xmpp.Presence.Stanza? presence = stream.get_flag(Presence.Flag.IDENTITY).get_presence(jid.to_string());
+            Xmpp.Presence.Stanza? presence = stream.get_flag(Presence.Flag.IDENTITY).get_presence(jid);
             if (presence != null) {
                 return new Show(jid, presence.show, new DateTime.now_utc());
             }
@@ -40,55 +41,59 @@ public class PresenceManager : StreamInteractionModule, Object {
         return shows[jid];
     }
 
-    public ArrayList<Jid>? get_full_jids(Jid jid, Account account) {
-        Core.XmppStream? stream = stream_interactor.get_stream(account);
+    public Gee.List<Jid>? get_full_jids(Jid jid, Account account) {
+        XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
             Xmpp.Presence.Flag flag = stream.get_flag(Presence.Flag.IDENTITY);
             if (flag == null) return null;
-            Gee.List<string> resources = flag.get_resources(jid.bare_jid.to_string());
-            if (resources == null) {
-                return null;
-            }
-            ArrayList<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
-            resources.foreach((resource) => {
-                ret.add(new Jid(resource));
-                return true;
-            });
-            return ret;
+            return flag.get_resources(jid.bare_jid);
         }
         return null;
     }
 
+    public bool exists_subscription_request(Account account, Jid jid) {
+        return subscription_requests.contains(jid);
+    }
+
     public void request_subscription(Account account, Jid jid) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).request_subscription(stream, jid.bare_jid.to_string());
+        XmppStream stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).request_subscription(stream, jid.bare_jid);
     }
 
     public void approve_subscription(Account account, Jid jid) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).approve_subscription(stream, jid.bare_jid.to_string());
+        XmppStream stream = stream_interactor.get_stream(account);
+        if (stream != null) {
+            stream.get_module(Xmpp.Presence.Module.IDENTITY).approve_subscription(stream, jid.bare_jid);
+            subscription_requests.remove(jid);
+        }
     }
 
     public void deny_subscription(Account account, Jid jid) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).deny_subscription(stream, jid.bare_jid.to_string());
+        XmppStream stream = stream_interactor.get_stream(account);
+        if (stream != null) {
+            stream.get_module(Xmpp.Presence.Module.IDENTITY).deny_subscription(stream, jid.bare_jid);
+            subscription_requests.remove(jid);
+        }
     }
 
     public void cancel_subscription(Account account, Jid jid) {
-        Core.XmppStream stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).cancel_subscription(stream, jid.bare_jid.to_string());
+        XmppStream stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).cancel_subscription(stream, jid.bare_jid);
     }
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_available_show.connect((stream, jid, show) =>
-            on_received_available_show(account, new Jid(jid), show)
+            on_received_available_show(account, jid, show)
         );
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_unavailable.connect((stream, presence) =>
-            on_received_unavailable(account, new Jid(presence.from))
+            on_received_unavailable(account, presence.from)
         );
-        stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_subscription_request.connect((stream, jid) =>
-            received_subscription_request(new Jid(jid), account)
-        );
+        stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_subscription_request.connect((stream, jid) => {
+            if (!subscription_requests.contains(jid)) {
+                subscription_requests.add(jid);
+            }
+            received_subscription_request(jid, account);
+        });
     }
 
     private void on_received_available_show(Account account, Jid jid, string show) {

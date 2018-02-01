@@ -30,14 +30,19 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     }
 
     public void send_file(Conversation conversation, FileTransfer file_transfer) {
-        Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
+        Xmpp.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream != null) {
-            stream_interactor.module_manager.get_module(file_transfer.account, UploadStreamModule.IDENTITY).upload(stream, file_transfer.input_stream, file_transfer.server_file_name, file_transfer.size, file_transfer.mime_type,
+            stream_interactor.module_manager.get_module(file_transfer.account, UploadStreamModule.IDENTITY).upload(stream, file_transfer.input_stream, file_transfer.server_file_name, file_transfer.mime_type,
                 (stream, url_down) => {
                     uploaded(file_transfer, url_down);
-                    stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(url_down, conversation);
+                    file_transfer.info = url_down;
+                    Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(url_down, conversation);
+                    message.encryption = Encryption.NONE;
+                    stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(message, conversation);
+                    file_transfer.info = message.id.to_string();
                 },
-                () => {
+                (stream, error_str) => {
+                    print(@"Failed getting upload url + $error_str\n");
                     file_transfer.state = FileTransfer.State.FAILED;
                 }
             );
@@ -60,7 +65,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
         }
     }
 
-    private void on_stream_negotiated(Account account, Core.XmppStream stream) {
+    private void on_stream_negotiated(Account account, XmppStream stream) {
         stream_interactor.module_manager.get_module(account, UploadStreamModule.IDENTITY).feature_available.connect((stream, max_file_size) => {
             lock (max_file_sizes) {
                 max_file_sizes[account] = max_file_size;
@@ -69,7 +74,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
         });
     }
 
-    private void check_add_oob(Entities.Message message, Xmpp.Message.Stanza message_stanza, Conversation conversation) {
+    private void check_add_oob(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         if (message_is_file(db, message)) {
             Xep.OutOfBandData.add_url_to_message(message_stanza, message_stanza.body);
         }
@@ -96,11 +101,9 @@ public class FileMessageFilterDisplay : Plugins.MessageDisplayProvider, Object {
 }
 
 private bool message_is_file(Database db, Entities.Message message) {
-    Qlite.QueryBuilder builder = db.file_transfer.select()
-                .with(db.file_transfer.info, "=", message.body)
-                .with(db.file_transfer.account_id, "=", message.account.id)
-                .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(message.counterpart));
-    return builder.count() > 0;
+    Qlite.QueryBuilder builder = db.file_transfer.select().with(db.file_transfer.info, "=", message.id.to_string());
+    Qlite.QueryBuilder builder2 = db.file_transfer.select().with(db.file_transfer.info, "=", message.body);
+    return builder.count() > 0 || builder2.count() > 0;
 }
 
 }

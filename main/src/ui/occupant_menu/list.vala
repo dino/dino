@@ -2,6 +2,7 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.OccupantMenu{
 
@@ -39,6 +40,7 @@ public class List : Box {
                 add_occupant(occupant);
             }
         }
+        list_box.invalidate_filter();
     }
 
     private void refilter() {
@@ -57,8 +59,6 @@ public class List : Box {
     public void add_occupant(Jid jid) {
         rows[jid] = new ListRow(stream_interactor, conversation.account, jid);
         list_box.add(rows[jid]);
-        list_box.invalidate_filter();
-        list_box.invalidate_sort();
     }
 
     public void remove_occupant(Jid jid) {
@@ -77,6 +77,7 @@ public class List : Box {
             } else if (show.as != Show.OFFLINE && !rows.has_key(jid)) {
                 add_occupant(jid);
             }
+            list_box.invalidate_filter();
         }
     }
 

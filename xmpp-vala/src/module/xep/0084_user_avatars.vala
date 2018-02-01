@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Xep.UserAvatars {
     private const string NS_URI = "urn:xmpp:avatar";
     private const string NS_URI_DATA = NS_URI + ":data";
@@ -8,7 +6,7 @@ namespace Xmpp.Xep.UserAvatars {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0084_user_avatars");
 
-        public signal void received_avatar(XmppStream stream, string jid, string id);
+        public signal void received_avatar(XmppStream stream, Jid jid, string id);
 
         private PixbufStorage storage;
 
@@ -40,7 +38,7 @@ namespace Xmpp.Xep.UserAvatars {
         public override void detach(XmppStream stream) { }
 
 
-        public void on_pupsub_event(XmppStream stream, string jid, string id, StanzaNode? node) {
+        public void on_pupsub_event(XmppStream stream, Jid jid, string id, StanzaNode? node) {
             StanzaNode? info_node = node.get_subnode("info", NS_URI_METADATA);
             if (info_node == null || info_node.get_attribute("type") != "image/png") return;
             if (storage.has_image(id)) {
@@ -53,7 +51,7 @@ namespace Xmpp.Xep.UserAvatars {
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
 
-        private void on_pubsub_data_response(XmppStream stream, string jid, string? id, StanzaNode? node) {
+        private void on_pubsub_data_response(XmppStream stream, Jid jid, string? id, StanzaNode? node) {
             if (node == null) return;
             storage.store(id, Base64.decode(node.get_string_content()));
             stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);

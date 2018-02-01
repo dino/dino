@@ -37,7 +37,7 @@ public class Plugin : Plugins.RootInterface, Object {
 
     public void shutdown() { }
 
-    private void on_initialize_account_modules(Account account, ArrayList<Xmpp.Core.XmppStreamModule> modules) {
+    private void on_initialize_account_modules(Account account, ArrayList<Xmpp.XmppStreamModule> modules) {
         Module module = new Module(db.get_account_key(account));
         this.modules[account] = module;
         modules.add(module);

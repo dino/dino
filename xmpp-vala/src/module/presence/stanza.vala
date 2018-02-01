@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Presence {
 
 public class Stanza : Xmpp.Stanza {
@@ -85,7 +83,7 @@ public class Stanza : Xmpp.Stanza {
         this.id = id ?? random_uuid();
     }
 
-    public Stanza.from_stanza(StanzaNode stanza_node, string my_jid) {
+    public Stanza.from_stanza(StanzaNode stanza_node, Jid my_jid) {
         base.incoming(stanza_node, my_jid);
     }
 }

@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Tls {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-tls";
 
@@ -27,10 +25,6 @@ namespace Xmpp.Tls {
                     var io_stream = stream.get_stream();
                     if (io_stream == null) return;
                     var conn = TlsClientConnection.new(io_stream, identity);
-                    // TODO: Add certificate error handling, that is, allow the
-                    // program to handle certificate errors. The certificate
-                    // *is checked* by TlsClientConnection, and connection is
-                    // not allowed to continue in case that there is an error.
                     stream.reset_stream(conn);
 
                     var flag = stream.get_flag(Flag.IDENTITY);
@@ -56,7 +50,7 @@ namespace Xmpp.Tls {
                     stream.write(new StanzaNode.build("starttls", NS_URI).add_self_xmlns());
                 }
                 if (identity == null) {
-                    identity = new NetworkService("xmpp-client", "tcp", stream.remote_name);
+                    identity = new NetworkService("xmpp-client", "tcp", stream.remote_name.to_string());
                 }
                 stream.add_flag(new Flag());
             }

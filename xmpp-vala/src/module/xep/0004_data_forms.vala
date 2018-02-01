@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.DataForms {
 
 public const string NS_URI = "jabber:x:data";

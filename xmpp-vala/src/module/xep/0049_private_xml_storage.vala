@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.PrivateXmlStorage {
     private const string NS_URI = "jabber:iq:private";
 
@@ -17,7 +15,7 @@ namespace Xmpp.Xep.PrivateXmlStorage {
             });
         }
 
-        public delegate void OnResponse(XmppStream stream, StanzaNode node);
+        public delegate void OnResponse(XmppStream stream, StanzaNode? node);
         public void retrieve(XmppStream stream, StanzaNode node, owned OnResponse listener) {
             StanzaNode queryNode = new StanzaNode.build("query", NS_URI).add_self_xmlns().put_node(node);
             Iq.Stanza iq = new Iq.Stanza.get(queryNode);

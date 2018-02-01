@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.PlainSasl {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-sasl";
 
@@ -56,16 +54,16 @@ namespace Xmpp.PlainSasl {
                     }
                 }
                 if (!supportsPlain) {
-                    stderr.printf("Server at %s does not support %s auth, use full-features Sasl implementation!\n", stream.remote_name, MECHANISM);
+                    stderr.printf("Server at %s does not support %s auth, use full-features Sasl implementation!\n", stream.remote_name.to_string(), MECHANISM);
                     return;
                 }
 
                 if (!name.contains("@")) {
-                    name = "%s@%s".printf(name, stream.remote_name);
+                    name = "%s@%s".printf(name, stream.remote_name.to_string());
                 }
                 if (!use_full_name && name.contains("@")) {
                     var split = name.split("@");
-                    if (split[1] == stream.remote_name) {
+                    if (split[1] == stream.remote_name.to_string()) {
                         name = split[0];
                     } else {
                         use_full_name = true;
@@ -74,7 +72,7 @@ namespace Xmpp.PlainSasl {
                 var name = this.name;
                 if (!use_full_name && name.contains("@")) {
                     var split = name.split("@");
-                    if (split[1] == stream.remote_name) {
+                    if (split[1] == stream.remote_name.to_string()) {
                         name = split[0];
                     }
                 }

@@ -26,16 +26,16 @@ public class ConversationManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.get_module(MucManager.IDENTITY).joined.connect(on_groupchat_joined);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(handle_new_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new MessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_new_message);
     }
 
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
         assert(conversations.has_key(account));
-        if (conversations[account].has_key(jid)) {
-            conversations[account][jid].type_ = type;
-            return conversations[account][jid];
+        Jid store_jid = type == Conversation.Type.GROUPCHAT ? jid.bare_jid : jid;
+        if (conversations[account].has_key(store_jid)) {
+            conversations[account][store_jid].type_ = type;
+            return conversations[account][store_jid];
         } else {
             Conversation conversation = new Conversation(jid, account, type);
             add_conversation(conversation);
@@ -84,10 +84,11 @@ public class ConversationManager : StreamInteractionModule, Object {
         return null;
     }
 
-    public Gee.List<Conversation> get_active_conversations() {
+    public Gee.List<Conversation> get_active_conversations(Account? account = null) {
         Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
-        foreach (Account account in conversations.keys) {
-            foreach (Conversation conversation in conversations[account].values) {
+        foreach (Account account_ in conversations.keys) {
+            if (account != null && !account_.equals(account)) continue;
+            foreach (Conversation conversation in conversations[account_].values) {
                 if(conversation.active) ret.add(conversation);
             }
         }
@@ -117,6 +118,31 @@ public class ConversationManager : StreamInteractionModule, Object {
         }
     }
 
+    private class MessageListener : Dino.MessageListener {
+
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
+        public override string action_group { get { return "MANAGER"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+
+        public MessageListener(StreamInteractor stream_interactor) {
+            this.stream_interactor = stream_interactor;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            conversation.last_active = message.time;
+
+            if (message.stanza != null) {
+                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null;
+                bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+                if (is_mam_message && !is_recent) return false;
+            }
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+            return false;
+        }
+    }
+
     private void handle_new_message(Entities.Message message, Conversation conversation) {
         conversation.last_active = message.time;
 
@@ -125,11 +151,6 @@ public class ConversationManager : StreamInteractionModule, Object {
             bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
             if (is_mam_message && !is_recent) return;
         }
-        start_conversation(conversation);
-    }
-
-    private void on_groupchat_joined(Account account, Jid jid, string nick) {
-        Conversation conversation = create_conversation(jid, account, Conversation.Type.GROUPCHAT);
         start_conversation(conversation);
     }
 

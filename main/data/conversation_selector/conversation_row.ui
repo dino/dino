@@ -15,9 +15,9 @@
                         <property name="margin-right">14</property>
                         <property name="visible">True</property>
                         <child>
-                            <object class="GtkImage" id="image">
-                                <property name="height_request">40</property>
-                                <property name="width_request">40</property>
+                            <object class="DinoUiAvatarImage" id="image">
+                                <property name="height">40</property>
+                                <property name="width">40</property>
                                 <property name="visible">True</property>
                             </object>
                         </child>

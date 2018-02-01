@@ -2,6 +2,7 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui {
 
@@ -23,7 +24,6 @@ protected class AddContactDialog : Gtk.Dialog {
     [GtkChild] private Button cancel_button;
     [GtkChild] private Entry jid_entry;
     [GtkChild] private Entry alias_entry;
-    [GtkChild] private CheckButton subscribe_checkbutton;
 
     private StreamInteractor stream_interactor;
 
@@ -41,9 +41,7 @@ protected class AddContactDialog : Gtk.Dialog {
         string? alias = alias_entry.text == "" ? null : alias_entry.text;
         Jid jid = new Jid(jid_entry.text);
         stream_interactor.get_module(RosterManager.IDENTITY).add_jid(account, jid, alias);
-        if (subscribe_checkbutton.active) {
-            stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(account, jid);
-        }
+        stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(account, jid);
         close();
     }
 

@@ -2,6 +2,7 @@ using Gtk;
 
 using Dino.Entities;
 using Dino.Ui;
+using Xmpp;
 
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private Notifications notifications;
@@ -22,6 +23,8 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         CssProvider provider = new CssProvider();
         provider.load_from_resource("/im/dino/Dino/theme.css");
         StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+        create_actions();
 
         activate.connect(() => {
             if (window == null) {
@@ -76,9 +79,27 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         }
     }
 
+    private void create_actions() {
+        SimpleAction open_conversation_action = new SimpleAction("open-conversation", VariantType.INT32);
+        open_conversation_action.activate.connect((variant) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
+            if (conversation != null) window.on_conversation_selected(conversation);
+            window.present();
+        });
+        add_action(open_conversation_action);
+
+        SimpleAction deny_subscription_action = new SimpleAction("deny-subscription", VariantType.INT32);
+        deny_subscription_action.activate.connect((variant) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
+            if (conversation == null) return;
+            stream_interactor.get_module(PresenceManager.IDENTITY).deny_subscription(conversation.account, conversation.counterpart);
+        });
+        add_action(deny_subscription_action);
+    }
+
     private void show_accounts_window() {
         ManageAccounts.Dialog dialog = new ManageAccounts.Dialog(stream_interactor, db);
-        dialog.set_transient_for(window);
+        dialog.set_transient_for(get_active_window());
         dialog.account_enabled.connect(add_connection);
         dialog.account_disabled.connect(remove_connection);
         dialog.present();
@@ -86,7 +107,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
     private void show_settings_window() {
         SettingsDialog dialog = new SettingsDialog();
-        dialog.set_transient_for(window);
+        dialog.set_transient_for(get_active_window());
         dialog.present();
     }
 

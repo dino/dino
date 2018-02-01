@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-24 01:10+0100\n"
+"POT-Creation-Date: 2018-01-24 17:37+0100\n"
 "PO-Revision-Date: 2017-11-17 20:52+0000\n"
 "Last-Translator: Nathan Follens <nathan@email.is>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-omemo/"
@@ -14,40 +14,41 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.18-dev\n"
 
-#: ../src/account_settings_widget.vala:42
-#: ../src/account_settings_widget.vala:45 ../data/account_settings_dialog.ui:19
+#: plugins/omemo/src/account_settings_widget.vala:42
+#: plugins/omemo/src/account_settings_widget.vala:45
+#: plugins/omemo/data/account_settings_dialog.ui:19
 msgid "Own fingerprint"
 msgstr "Eigen vingerafdruk"
 
-#: ../src/account_settings_widget.vala:42
+#: plugins/omemo/src/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
 msgstr "Wordt bij eerste verbinding gegenereerd"
 
-#: ../src/contact_details_provider.vala:31
+#: plugins/omemo/src/contact_details_provider.vala:31
 msgid "Encryption"
 msgstr "Versleuteling"
 
-#: ../src/contact_details_provider.vala:31
+#: plugins/omemo/src/contact_details_provider.vala:31
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d OMEMO-apparaat"
 msgstr[1] "%d OMEMO-apparaten"
 
-#: ../src/account_settings_dialog.vala:35
+#: plugins/omemo/src/account_settings_dialog.vala:35
 #, c-format
-msgid "Unknown device (0x%xd)"
-msgstr "Onbekend apparaat (0x%xd)"
+msgid "Unknown device (0x%.8x)"
+msgstr "Onbekend apparaat (0x%.8x)"
 
-#: ../data/account_settings_dialog.ui:5
+#: plugins/omemo/data/account_settings_dialog.ui:5
 msgid "OMEMO Keys"
 msgstr "OMEMO-sleutels"
 
-#: ../data/account_settings_dialog.ui:88
+#: plugins/omemo/data/account_settings_dialog.ui:88
 msgid "Other devices"
 msgstr "Andere apparaten"
 
-#: ../data/account_settings_dialog.ui:112
+#: plugins/omemo/data/account_settings_dialog.ui:112
 msgid "- None -"
 msgstr "- Geen -"
 

@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Roster {
 
 public class Item {
@@ -18,9 +16,10 @@ public class Item {
 
     public StanzaNode stanza_node;
 
-    public string jid {
-        get { return stanza_node.get_attribute(NODE_JID); }
-        set { stanza_node.set_attribute(NODE_JID, value); }
+    private Jid jid_;
+    public Jid jid {
+        get { return jid_ ?? (jid_ = Jid.parse(stanza_node.get_attribute(NODE_JID))); }
+        set { stanza_node.set_attribute(NODE_JID, value.to_string()); }
     }
 
     public string? name {

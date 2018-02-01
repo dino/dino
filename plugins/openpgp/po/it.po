@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-24 01:10+0100\n"
-"PO-Revision-Date: 2017-11-17 11:57+0000\n"
-"Last-Translator: Valerio Baldisserotto <svalo@libersoft.it>\n"
+"POT-Creation-Date: 2018-01-24 17:37+0100\n"
+"PO-Revision-Date: 2018-01-24 12:18+0000\n"
+"Last-Translator: fiaxh <weblate@mx.ax.lt>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/it/>\n"
 "Language: it\n"
@@ -12,39 +12,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 2.19-dev\n"
 
-#: ../src/account_settings_widget.vala:75
-#: ../src/account_settings_widget.vala:81
-#: ../src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:109
 msgid "Key publishing disabled"
 msgstr "Pubblicazione della chiave disabilitata"
 
-#: ../src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:75
 msgid "No keys available. Generate one!"
 msgstr "Nessuna chiave disponibile. Generane una!"
 
-#: ../src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:81
 msgid "Select key"
 msgstr "Seleziona una chiave"
 
-#: ../src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Loading…"
-msgstr "Caricamento..."
+msgstr "Caricamento…"
 
-#: ../src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:98
 msgid "Querying GnuPG"
 msgstr "Interrogando GnuPG"
 
-#: ../src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:109
 msgid "Error in GnuPG"
 msgstr "Errore in GnuPG"
 
-#: ../src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
 msgstr "La chiave non è nel portachiavi"
 
-#: ../src/contact_details_provider.vala:30
+#: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Crittografia"
 

@@ -2,17 +2,18 @@
 <interface>
     <object class="GtkBox" id="main">
         <property name="valign">end</property>
+        <property name="halign">end</property>
         <property name="margin">10</property>
         <property name="visible">True</property>
         <child>
             <object class="GtkToolItem">
                 <property name="visible">True</property>
                 <child>
-                    <object class="GtkBox" id="url_box">
+                    <object class="GtkBox">
                         <property name="visible">True</property>
                         <child>
                             <object class="GtkLabel" id="url_label">
-                                <property name="max_width_chars">10</property>
+                                <property name="max_width_chars">25</property>
                                 <property name="ellipsize">middle</property>
                                 <property name="hexpand">True</property>
                                 <property name="margin-left">5</property>
@@ -20,31 +21,7 @@
                             </object>
                         </child>
                         <child>
-                            <object class="GtkButton" id="copy_button">
-                                <property name="visible">True</property>
-                                <property name="relief">none</property>
-                                <child>
-                                    <object class="GtkImage" id="copy_image">
-                                        <property name="icon-name">edit-copy-symbolic</property>
-                                        <property name="icon-size">1</property>
-                                        <property name="visible">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-            </object>
-        </child>
-        <child>
-            <object class="GtkToolItem">
-                <property name="visible">True</property>
-                <child>
-                    <object class="GtkToolItem">
-                        <property name="visible">True</property>
-                        <child>
                             <object class="GtkButton" id="open_button">
-                                <property name="margin-left">5</property>
                                 <property name="relief">none</property>
                                 <property name="visible">True</property>
                                 <child>

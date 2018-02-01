@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Iq {
     private const string NS_URI = "jabber:client";
 
