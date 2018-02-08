@@ -3,7 +3,7 @@
         <section>
             <item>
                 <attribute name="action">app.add_chat</attribute>
-                <attribute name="label" translatable="yes">Start Chat</attribute>
+                <attribute name="label" translatable="yes">Start Conversation</attribute>
             </item>
         </section>
         <section>
