@@ -37,7 +37,7 @@ public class TlsConnectionProvider : ConnectionProvider {
         SocketClient client = new SocketClient();
         try {
             IOStream? io_stream = yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
-            io_stream = TlsClientConnection.new(io_stream, new NetworkAddress(srv_target.get_hostname(), srv_target.get_port()));
+            io_stream = TlsClientConnection.new(io_stream, new NetworkAddress(stream.remote_name.to_string(), srv_target.get_port()));
             stream.add_flag(new Tls.Flag() { finished=true });
             return io_stream;
         } catch (Error e) {
