@@ -14,10 +14,13 @@ public class Notifications : Object {
     private HashMap<Conversation, Notification> notifications = new HashMap<Conversation, Notification>(Conversation.hash_func, Conversation.equals_func);
     private Set<string>? active_conversation_ids = null;
     private Set<string>? active_ids = new HashSet<string>();
+    private Canberra.Context sound_context;
 
     public Notifications(StreamInteractor stream_interactor, Gtk.Window window) {
         this.stream_interactor = stream_interactor;
         this.window = window;
+
+        Canberra.Context.create(out sound_context);
 
         stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((focused_conversation) => {
             if (active_conversation_ids == null) {
@@ -67,6 +70,11 @@ public class Notifications : Object {
             window.get_application().send_notification(conversation.id.to_string(), notifications[conversation]);
             active_conversation_ids.add(conversation.id.to_string());
             window.urgency_hint = true;
+        }
+        if (conversation.get_sound_setting(stream_interactor)) {
+            sound_context.play (0,
+                Canberra.PROP_EVENT_ID, "message-new-instant",
+                Canberra.PROP_EVENT_DESCRIPTION, "New Dino message");
         }
     }
 
