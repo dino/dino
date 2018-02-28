@@ -14,7 +14,8 @@ public class Module : XmppStreamModule {
 
     private ReceivedPipelineListener received_pipeline_listener = new ReceivedPipelineListener();
 
-    public void query_archive(XmppStream stream, string? jid, DateTime? start, DateTime? end) {
+    public delegate void OnFinished(XmppStream stream);
+    public void query_archive(XmppStream stream, string? jid, DateTime? start, DateTime? end, owned OnFinished? on_finished = null) {
         if (stream.get_flag(Flag.IDENTITY) == null) return;
 
         DataForms.DataForm data_form = new DataForms.DataForm();
@@ -38,7 +39,7 @@ public class Module : XmppStreamModule {
         }
         StanzaNode query_node = new StanzaNode.build("query", NS_VER(stream)).add_self_xmlns().put_node(data_form.get_submit_node());
         Iq.Stanza iq = new Iq.Stanza.set(query_node);
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, page_through_results);
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => { page_through_results(stream, iq, on_finished); });
     }
 
     public override void attach(XmppStream stream) {
@@ -53,10 +54,11 @@ public class Module : XmppStreamModule {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    private static void page_through_results(XmppStream stream, Iq.Stanza iq) {
+    private static void page_through_results(XmppStream stream, Iq.Stanza iq, owned OnFinished? on_finished = null) {
         string? last = iq.stanza.get_deep_string_content(NS_VER(stream) + ":fin", "http://jabber.org/protocol/rsm" + ":set", "last");
         if (last == null) {
             stream.get_flag(Flag.IDENTITY).cought_up = true;
+            if (on_finished != null) on_finished(stream);
             return;
         }
 
@@ -67,7 +69,7 @@ public class Module : XmppStreamModule {
                     )
                 )
             );
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, paging_iq, page_through_results);
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, paging_iq, (stream, iq) => { page_through_results(stream, iq, on_finished); });
     }
 
     private void query_availability(XmppStream stream) {

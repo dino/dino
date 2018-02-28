@@ -53,30 +53,39 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     }
 
     private void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id) {
-        foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations(jid, account)) {
+        bool own_marker = account.bare_jid.to_string() == jid.bare_jid.to_string();
+        if (own_marker) {
+            Conversation? conversation = stream_interactor.get_module(MessageStorage.IDENTITY).get_conversation_for_stanza_id(account, stanza_id);
+            if (conversation == null) return;
             Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(stanza_id, conversation);
-            if (message != null) {
-                switch (marker) {
-                    case Xep.ChatMarkers.MARKER_RECEIVED:
-                        received_message_received(account, jid, message);
-                        message.marked = Entities.Message.Marked.RECEIVED;
-                        break;
-                    case Xep.ChatMarkers.MARKER_DISPLAYED:
-                        received_message_displayed(account, jid, message);
-                        Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
-                        foreach (Entities.Message m in messages) {
-                            if (m.equals(message)) break;
-                            if (m.marked == Entities.Message.Marked.RECEIVED) m.marked = Entities.Message.Marked.READ;
-                        }
-                        message.marked = Entities.Message.Marked.READ;
-                        break;
-                }
-            } else {
-                if (marker_wo_message.has_key(stanza_id) &&
+            if (message == null) return;
+            conversation.read_up_to = message;
+        } else {
+            foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations(jid, account)) {
+                Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(stanza_id, conversation);
+                if (message != null) {
+                    switch (marker) {
+                        case Xep.ChatMarkers.MARKER_RECEIVED:
+                            received_message_received(account, jid, message);
+                            message.marked = Entities.Message.Marked.RECEIVED;
+                            break;
+                        case Xep.ChatMarkers.MARKER_DISPLAYED:
+                            received_message_displayed(account, jid, message);
+                            Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
+                            foreach (Entities.Message m in messages) {
+                                if (m.equals(message)) break;
+                                if (m.marked == Entities.Message.Marked.RECEIVED) m.marked = Entities.Message.Marked.READ;
+                            }
+                            message.marked = Entities.Message.Marked.READ;
+                            break;
+                    }
+                } else {
+                    if (marker_wo_message.has_key(stanza_id) &&
                         marker_wo_message[stanza_id] == Xep.ChatMarkers.MARKER_DISPLAYED && marker == Xep.ChatMarkers.MARKER_RECEIVED) {
-                    return;
+                        return;
+                    }
+                    marker_wo_message[stanza_id] = marker;
                 }
-                marker_wo_message[stanza_id] = marker;
             }
         }
     }

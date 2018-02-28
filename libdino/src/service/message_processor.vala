@@ -13,6 +13,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
     public signal void build_message_stanza(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
     public signal void pre_message_send(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
     public signal void message_sent(Entities.Message message, Conversation conversation);
+    public signal void history_synced(Account account);
 
     public MessageListenerHolder received_pipeline = new MessageListenerHolder();
 
@@ -66,7 +67,9 @@ public class MessageProcessor : StreamInteractionModule, Object {
         });
         stream_interactor.module_manager.get_module(account, Xmpp.Xep.MessageArchiveManagement.Module.IDENTITY).feature_available.connect( (stream) => {
             DateTime start_time = account.mam_earliest_synced.to_unix() > 60 ? account.mam_earliest_synced.add_minutes(-1) : account.mam_earliest_synced;
-            stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, start_time, null);
+            stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, start_time, null, () => {
+                history_synced(account);
+            });
         });
     }
 
