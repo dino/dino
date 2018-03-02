@@ -9,7 +9,6 @@ find_packages(MAIN_PACKAGES REQUIRED
     GModule
     GObject
     GTK3>=3.22
-    Canberra
 )
 
 set(RESOURCE_LIST

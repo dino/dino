@@ -10,7 +10,6 @@ public class Settings : Object {
         send_typing_ = col_to_bool_or_default("send_typing", true);
         send_marker_ = col_to_bool_or_default("send_marker", true);
         notifications_ = col_to_bool_or_default("notifications", true);
-        sound_ = col_to_bool_or_default("sound", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
 
         current_width = col_to_int_or_default("window_width", 1200);
@@ -54,15 +53,6 @@ public class Settings : Object {
         set {
             db.settings.insert().or("REPLACE").value(db.settings.key, "notifications").value(db.settings.value, value.to_string()).perform();
             notifications_ = value;
-        }
-    }
-
-    private bool sound_;
-    public bool sound {
-        get { return sound_; }
-        set {
-            db.settings.insert().or("REPLACE").value(db.settings.key, "sound").value(db.settings.value, value.to_string()).perform();
-            sound_ = value;
         }
     }
 

@@ -101,10 +101,6 @@ public class Conversation : Object {
         return notify_setting != NotifySetting.DEFAULT ? notify_setting : get_notification_default_setting(stream_interactor);
     }
 
-    public bool get_sound_setting(StreamInteractor stream_interactor) {
-        return Application.get_default().settings.sound;
-    }
-
     public NotifySetting get_notification_default_setting(StreamInteractor stream_interactor) {
         Xmpp.XmppStream? stream = stream_interactor.get_stream(account);
         if (!Application.get_default().settings.notifications) return NotifySetting.OFF;
