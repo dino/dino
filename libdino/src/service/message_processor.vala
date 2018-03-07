@@ -171,7 +171,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
             bool is_uuid = message.stanza_id != null && Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", message.stanza_id);
-            bool new_uuid_msg = is_uuid && !db.contains_message_by_stanza_id(message.stanza_id, conversation.account);
+            bool new_uuid_msg = is_uuid && !db.contains_message_by_stanza_id(message, conversation.account);
             bool new_misc_msg = !is_uuid && !db.contains_message(message, conversation.account);
             bool new_msg = new_uuid_msg || new_misc_msg;
             return !new_msg;
