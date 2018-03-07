@@ -94,13 +94,17 @@ public class MessageProcessor : StreamInteractionModule, Object {
         Entities.Message new_message = new Entities.Message(message.body);
         new_message.account = account;
         new_message.stanza_id = message.id;
-        if (!account.bare_jid.equals_bare(message.from) ||
-                message.from.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.from.bare_jid, account))) {
-            new_message.direction = Entities.Message.DIRECTION_RECEIVED;
-        } else {
+
+        Jid? counterpart_override = null;
+        if (message.from.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.from.bare_jid, account))) {
             new_message.direction = Entities.Message.DIRECTION_SENT;
+            counterpart_override = message.from.bare_jid;
+        } else if (account.bare_jid.equals_bare(message.from)) {
+            new_message.direction = Entities.Message.DIRECTION_SENT;
+        } else {
+            new_message.direction = Entities.Message.DIRECTION_RECEIVED;
         }
-        new_message.counterpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from;
+        new_message.counterpart = counterpart_override ?? (new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
         new_message.stanza = message;
 

@@ -347,15 +347,19 @@ public class MucManager : StreamInteractionModule, Object {
                     message.real_jid = real_jid.bare_jid;
                 }
             }
-            string? muc_nick = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_nick(conversation.counterpart.bare_jid);
-            if (muc_nick != null && message.from.equals(new Jid(@"$(message.from.bare_jid)/$muc_nick"))) { // TODO better from own
+            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.counterpart.bare_jid, conversation.account);
+            if (own_muc_jid != null && message.from.equals(own_muc_jid)) {
                 Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
                 foreach (Entities.Message m in messages) { // TODO not here
                     if (m.equals(message)) {
-                        m.marked = Entities.Message.Marked.RECEIVED;
+                        // For own messages from this device (msg is a duplicate)
+                        m.marked = Message.Marked.RECEIVED;
                     }
                 }
             }
+            // For own messages from other devices (msg is not a duplicate msg)
+            message.marked = Message.Marked.RECEIVED;
+
             return false;
         }
     }
