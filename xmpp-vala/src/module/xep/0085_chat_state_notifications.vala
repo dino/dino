@@ -14,7 +14,7 @@ private const string[] STATES = { STATE_ACTIVE, STATE_INACTIVE, STATE_GONE, STAT
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0085_chat_state_notifications");
 
-    public signal void chat_state_received(XmppStream stream, Jid jid, string state);
+    public signal void chat_state_received(XmppStream stream, Jid jid, string state, MessageStanza stanza);
 
     private SendPipelineListener send_pipeline_listener = new SendPipelineListener();
 
@@ -49,7 +49,7 @@ public class Module : XmppStreamModule {
             foreach (StanzaNode node in nodes) {
                 if (node.ns_uri == NS_URI &&
                     node.name in STATES) {
-                    chat_state_received(stream, message.from, node.name);
+                    chat_state_received(stream, message.from, node.name, message);
                 }
             }
         }

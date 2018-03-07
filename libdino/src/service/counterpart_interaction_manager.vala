@@ -14,7 +14,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     public signal void received_message_displayed(Account account, Jid jid, Entities.Message message);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Jid, string> chat_states = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
+    private HashMap<Conversation, HashMap<Jid, string>> chat_states = new HashMap<Conversation, HashMap<Jid, string>>(Conversation.hash_func, Conversation.equals_func);
     private HashMap<string, string> marker_wo_message = new HashMap<string, string>();
 
     public static void start(StreamInteractor stream_interactor) {
@@ -30,9 +30,9 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         stream_interactor.stream_negotiated.connect(() => chat_states.clear() );
     }
 
-    public string? get_chat_state(Account account, Jid jid) {
-        if (stream_interactor.connection_manager.get_state(account) != ConnectionManager.ConnectionState.CONNECTED) return null;
-        return chat_states[jid];
+    public HashMap? get_chat_states(Conversation conversation) {
+        if (stream_interactor.connection_manager.get_state(conversation.account) != ConnectionManager.ConnectionState.CONNECTED) return null;
+        return chat_states[conversation];
     }
 
     private void on_account_added(Account account) {
@@ -42,13 +42,24 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xep.MessageDeliveryReceipts.Module.IDENTITY).receipt_received.connect((stream, jid, id) => {
             on_receipt_received(account, jid, id);
         });
-        stream_interactor.module_manager.get_module(account, Xep.ChatStateNotifications.Module.IDENTITY).chat_state_received.connect((stream, jid, state) => {
-            on_chat_state_received(account, jid, state);
+        stream_interactor.module_manager.get_module(account, Xep.ChatStateNotifications.Module.IDENTITY).chat_state_received.connect((stream, jid, state, stanza) => {
+            on_chat_state_received.begin(account, jid, state, stanza);
         });
     }
 
-    private void on_chat_state_received(Account account, Jid jid, string state) {
-        chat_states[jid] = state;
+    private async void on_chat_state_received(Account account, Jid jid, string state, MessageStanza stanza) {
+        Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+        if (conversation == null) return;
+
+        if (!chat_states.has_key(conversation)) {
+            chat_states[conversation] = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
+        }
+        if (state == Xmpp.Xep.ChatStateNotifications.STATE_ACTIVE) {
+            chat_states[conversation].unset(jid);
+        } else {
+            chat_states[conversation][jid] = state;
+        }
         received_state(account, jid, state);
     }
 
@@ -110,7 +121,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            outer.on_chat_state_received(conversation.account, conversation.counterpart, Xep.ChatStateNotifications.STATE_ACTIVE);
+            outer.on_chat_state_received.begin(conversation.account, conversation.counterpart, Xep.ChatStateNotifications.STATE_ACTIVE, stanza);
             return false;
         }
     }

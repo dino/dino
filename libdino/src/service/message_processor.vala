@@ -76,7 +76,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
     private async void on_message_received(Account account, Xmpp.MessageStanza message_stanza) {
         if (message_stanza.body == null) return;
 
-        Entities.Message message = yield create_in_message(account, message_stanza);
+        Entities.Message message = yield parse_message_stanza(account, message_stanza);
 
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
         if (conversation != null) {
@@ -90,7 +90,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
-    private async Entities.Message create_in_message(Account account, Xmpp.MessageStanza message) {
+    public async Entities.Message parse_message_stanza(Account account, Xmpp.MessageStanza message) {
         Entities.Message new_message = new Entities.Message(message.body);
         new_message.account = account;
         new_message.stanza_id = message.id;

@@ -184,7 +184,7 @@ public class AvatarImage : Misc {
             jid = jid_;
             if (occupants == null || occupants.size == 0) {
                 if (force_update || current_jids.length != 1 || !current_jids[0].equals(jid_) || gray != (allow_gray && (occupants == null || !is_self_online()))) {
-                    set_jids(new Jid[] {jid_}, false, occupants == null || !is_self_online());
+                    set_jids_(new Jid[] {jid_}, false, occupants == null || !is_self_online());
                 }
             } else if (occupants.size > 4) {
                 bool requires_update = force_update;
@@ -195,7 +195,7 @@ public class AvatarImage : Misc {
                     }
                 }
                 if (requires_update) {
-                    set_jids(occupants.slice(0, 3).to_array(), true);
+                    set_jids_(occupants.slice(0, 3).to_array(), true);
                 }
             } else { // 1 <= occupants.size <= 4
                 bool requires_update = force_update;
@@ -207,16 +207,22 @@ public class AvatarImage : Misc {
                     }
                 }
                 if (requires_update) {
-                    set_jids(occupants.to_array(), false);
+                    set_jids_(occupants.to_array(), false);
                 }
             }
         } else {
             // Single user
             this.jid = jid_;
             if (force_update || current_jids.length != 1 || !current_jids[0].equals(jid) || gray != (allow_gray && (!is_counterpart_online(jid) || !is_self_online()))) {
-                set_jids(new Jid[] { jid }, false, !is_counterpart_online(jid) || !is_self_online());
+                set_jids_(new Jid[] { jid }, false, !is_counterpart_online(jid) || !is_self_online());
             }
         }
+    }
+
+    public void set_jids(StreamInteractor stream_interactor, Jid[] jids, Account account, bool gray = false) {
+        this.stream_interactor = stream_interactor;
+        this.account = account;
+        set_jids_(jids.length > 3 ? jids[0:3] : jids, jids.length > 3, gray);
     }
 
     private void on_show_received(Show show, Jid jid, Account account) {
@@ -266,7 +272,7 @@ public class AvatarImage : Misc {
         return stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(counterpart, account) != null;
     }
 
-    public void set_jids(Jid[] jids, bool with_plus = false, bool gray = false) {
+    public void set_jids_(Jid[] jids, bool with_plus = false, bool gray = false) {
         assert(jids.length > 0);
         assert(jids.length < 5);
         assert(!with_plus || jids.length == 3);

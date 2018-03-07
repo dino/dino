@@ -22,9 +22,11 @@ public class ConversationItemSkeleton : Box {
     public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.conversation = conversation;
         this.stream_interactor = stream_interactor;
+        Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
 
         if (item.requires_avatar) {
             image.set_jid(stream_interactor, item.jid, conversation.account);
+            image_content_box.add(image);
         }
         if (item.display_time != null) {
             default_header = new DefaultSkeletonHeader(stream_interactor, conversation, item) { visible=true };
@@ -36,8 +38,6 @@ public class ConversationItemSkeleton : Box {
         }
         add_meta_item(item);
 
-        Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
-        image_content_box.add(image);
         image_content_box.add(grid);
         this.add(image_content_box);
     }
