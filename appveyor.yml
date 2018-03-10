@@ -1,0 +1,11 @@
+environment:
+  matrix:
+    - MSYSTEM: MINGW32
+
+artifacts:
+  - path: build\dist
+    name: Dino
+
+build_script:
+  - C:\msys64\usr\bin\bash.exe --login -c '/usr/bin/bash -x /c/projects/dino/win/build-win32.sh'
+
