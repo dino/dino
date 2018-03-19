@@ -273,7 +273,6 @@ public class Database : Qlite.Database {
         QueryBuilder builder = message.select()
                 .with(message.account_id, "=", account.id)
                 .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
-                .with(message.counterpart_resource, "=", query_message.counterpart.resourcepart)
                 .with(message.body, "=", query_message.body)
                 .with(message.time, "<", (long) query_message.time.add_minutes(1).to_unix())
                 .with(message.time, ">", (long) query_message.time.add_minutes(-1).to_unix());
@@ -282,14 +281,25 @@ public class Database : Qlite.Database {
         } else {
             builder.with_null(message.stanza_id);
         }
+        if (query_message.counterpart.resourcepart != null) {
+            builder.with(message.counterpart_resource, "=", query_message.counterpart.resourcepart);
+        } else {
+            builder.with_null(message.counterpart_resource);
+        }
         return builder.count() > 0;
     }
 
-    public bool contains_message_by_stanza_id(string stanza_id, Account account) {
-        return message.select()
-                .with(message.stanza_id, "=", stanza_id)
-                .with(message.account_id, "=", account.id)
-                .count() > 0;
+    public bool contains_message_by_stanza_id(Message query_message, Account account) {
+        QueryBuilder builder =  message.select()
+                .with(message.stanza_id, "=", query_message.stanza_id)
+                .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
+                .with(message.account_id, "=", account.id);
+        if (query_message.counterpart.resourcepart != null) {
+            builder.with(message.counterpart_resource, "=", query_message.counterpart.resourcepart);
+        } else {
+            builder.with_null(message.counterpart_resource);
+        }
+        return builder.count() > 0;
     }
 
     public Message? get_message_by_id(int id) {

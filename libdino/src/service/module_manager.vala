@@ -40,7 +40,7 @@ public class ModuleManager {
 
         foreach (XmppStreamModule module in module_map[account]) {
             if (module.get_id() == Bind.Module.IDENTITY.id) {
-                (module as Bind.Module).requested_resource == null ? account.resourcepart : resource;
+                (module as Bind.Module).requested_resource = resource ?? account.resourcepart;
             } else if (module.get_id() == PlainSasl.Module.IDENTITY.id) {
                 (module as PlainSasl.Module).password = account.password;
             }

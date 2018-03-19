@@ -37,10 +37,11 @@ public interface Dino.Application : GLib.Application {
         ConversationManager.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
         FileManager.start(stream_interactor, db);
+        NotificationEvents.start(stream_interactor);
 
         create_actions();
 
-        activate.connect(() => {
+        startup.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;
             Idle.add(() => {
                 restore();

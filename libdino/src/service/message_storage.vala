@@ -78,6 +78,16 @@ public class MessageStorage : StreamInteractionModule, Object {
         return null;
     }
 
+    public Conversation? get_conversation_for_stanza_id(Account account, string stanza_id) {
+        foreach (Conversation conversation in messages.keys) {
+            if (!conversation.account.equals(account)) continue;
+            foreach (Message message in messages[conversation]) {
+                if (message.stanza_id == stanza_id) return conversation;
+            }
+        }
+        return null;
+    }
+
     private void init_conversation(Conversation conversation) {
         if (!messages.has_key(conversation)) {
             messages[conversation] = new Gee.TreeSet<Message>((a, b) => {
