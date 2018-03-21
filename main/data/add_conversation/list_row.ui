@@ -10,7 +10,7 @@
                 <property name="visible">True</property>
                 <child>
                     <object class="DinoUiAvatarImage" id="image">
-                        <property name="allow_gray">False</property>
+                        <property name="allow_gray">True</property>
                         <property name="height">30</property>
                         <property name="width">30</property>
                         <property name="valign">center</property>
