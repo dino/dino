@@ -66,6 +66,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     private void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id) {
         bool own_marker = account.bare_jid.to_string() == jid.bare_jid.to_string();
         if (own_marker) {
+            if (marker != Xep.ChatMarkers.MARKER_DISPLAYED && marker != Xep.ChatMarkers.MARKER_ACKNOWLEDGED) return;
             Conversation? conversation = stream_interactor.get_module(MessageStorage.IDENTITY).get_conversation_for_stanza_id(account, stanza_id);
             if (conversation == null) return;
             Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(stanza_id, conversation);
