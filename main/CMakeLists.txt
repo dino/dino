@@ -10,6 +10,7 @@ find_packages(MAIN_PACKAGES REQUIRED
     GObject
     GTK3
     ICU
+    Gspell
 )
 
 set(RESOURCE_LIST
@@ -127,6 +128,7 @@ SOURCES
     src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala
     src/ui/chat_input/smiley_converter.vala
+    src/ui/chat_input/spell_checker.vala
     src/ui/chat_input/view.vala
 
     src/ui/contact_details/blocking_provider.vala
