@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 17:37+0100\n"
+"POT-Creation-Date: 2018-03-24 15:30-0600\n"
 "PO-Revision-Date: 2017-06-19 20:29+0000\n"
 "Last-Translator: Tirifto <tirifto@posteo.cz>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/dino/"
@@ -19,111 +19,116 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.15-dev\n"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:70
 msgid "Subscription request"
 msgstr "Abona peto"
 
-#: main/src/ui/notifications.vala:83
+#: main/src/ui/notifications.vala:76
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Akcepti"
 
-#: main/src/ui/notifications.vala:84
+#: main/src/ui/notifications.vala:77
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Rifuzi"
 
-#: main/src/ui/manage_accounts/dialog.vala:125
+#: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
 msgid "Remove account %s?"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:128
+#: main/src/ui/manage_accounts/dialog.vala:129
 msgid "Remove"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:153
+#: main/src/ui/manage_accounts/dialog.vala:154
 msgid "Select avatar"
 msgstr "Elekti profilbildon"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:155
 msgid "Select"
 msgstr "Elekti"
 
-#: main/src/ui/manage_accounts/dialog.vala:154 main/src/ui/application.vala:43
-#: main/src/ui/add_conversation/add_conference_dialog.vala:15
-#: main/src/ui/add_conversation/select_contact_dialog.vala:40
+#: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:16
+#: main/src/ui/add_conversation/select_contact_dialog.vala:41
+#: main/data/manage_accounts/add_account_dialog.ui:11
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
 msgstr "Nuligi"
 
-#: main/src/ui/manage_accounts/dialog.vala:162
+#: main/src/ui/manage_accounts/dialog.vala:163
 msgid "Images"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:165
+#: main/src/ui/manage_accounts/dialog.vala:166
 msgid "All files"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:230
+#: main/src/ui/manage_accounts/dialog.vala:231
 msgid "Connecting…"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:232
+#: main/src/ui/manage_accounts/dialog.vala:233
 msgid "Connected"
 msgstr "Konektita"
 
-#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Disconnected"
 msgstr "Malkonektita"
 
-#: main/src/ui/manage_accounts/dialog.vala:243
+#: main/src/ui/manage_accounts/dialog.vala:244
 msgid "Wrong password"
 msgstr "Malĝusta pasvorto"
 
-#: main/src/ui/manage_accounts/dialog.vala:245
+#: main/src/ui/manage_accounts/dialog.vala:246
 msgid "Invalid TLS certificate"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:248
-#: main/src/ui/manage_accounts/dialog.vala:250
+#: main/src/ui/manage_accounts/dialog.vala:249
+#: main/src/ui/manage_accounts/dialog.vala:251
 msgid "Error"
 msgstr "Eraro"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:21
+#: main/src/ui/manage_accounts/add_account_dialog.vala:22
 msgid "Add Account"
 msgstr "Aldoni Konton"
 
-#: main/src/ui/conversation_selector/groupchat_pm_row.vala:25
+#: main/src/ui/manage_accounts/add_account_dialog.vala:45
+msgid "JID should be of the form “user@example.com”"
+msgstr ""
+
+#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
 msgid "Me"
 msgstr ""
 
-#: main/src/ui/conversation_selector/conversation_row.vala:169
+#: main/src/ui/conversation_selector/conversation_row.vala:154
 #: main/src/ui/conversation_summary/date_separator_populator.vala:102
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:173
+#: main/src/ui/conversation_selector/conversation_row.vala:158
 #: main/src/ui/conversation_summary/date_separator_populator.vala:93
 msgid "Yesterday"
 msgstr "Hieraŭ"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:176
+#: main/src/ui/conversation_selector/conversation_row.vala:161
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:177
+#: main/src/ui/conversation_selector/conversation_row.vala:162
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:180
+#: main/src/ui/conversation_selector/conversation_row.vala:165
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -131,75 +136,75 @@ msgid_plural "%i mins ago"
 msgstr[0] "Antaŭ %i minuto"
 msgstr[1] "Antaŭ %i minutoj"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:182
+#: main/src/ui/conversation_selector/conversation_row.vala:167
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Ĵus"
 
-#: main/src/ui/application.vala:43
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/src/ui/application.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
 msgstr "Aliĝi al Kunveno"
 
-#: main/src/ui/application.vala:43
-#: main/src/ui/add_conversation/add_conference_dialog.vala:62
-#: main/src/ui/add_conversation/conference_details_fragment.vala:133
+#: main/src/ui/application.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:63
+#: main/src/ui/add_conversation/conference_details_fragment.vala:134
 msgid "Join"
 msgstr "Aliĝi"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:27
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "Aldoni"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:41
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
 #: main/data/manage_accounts/add_account_dialog.ui:21
 msgid "Save"
 msgstr "Konservi"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "Sekva"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:84
+#: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
 msgid "Start Chat"
 msgstr "Ekbabili"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:85
+#: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:105
+#: main/src/ui/add_conversation/conference_details_fragment.vala:106
 msgid "Joining…"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:138
+#: main/src/ui/add_conversation/conference_details_fragment.vala:139
 msgid "Password required to enter room"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:143
+#: main/src/ui/add_conversation/conference_details_fragment.vala:144
 msgid "Banned from joining or creating conference"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:145
+#: main/src/ui/add_conversation/conference_details_fragment.vala:146
 msgid "Room does not exist"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:147
+#: main/src/ui/add_conversation/conference_details_fragment.vala:148
 msgid "Not allowed to create room"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:149
+#: main/src/ui/add_conversation/conference_details_fragment.vala:150
 msgid "Members-only room"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:152
+#: main/src/ui/add_conversation/conference_details_fragment.vala:153
 msgid "Choose a different nick"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:154
+#: main/src/ui/add_conversation/conference_details_fragment.vala:155
 msgid "Too many occupants in room"
 msgstr ""
 
@@ -223,31 +228,49 @@ msgstr ""
 msgid "%a, %b %d"
 msgstr ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:57
-msgid "is typing…"
-msgstr "tajpas…"
+#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#, c-format
+msgid "%s, %s and %i others"
+msgstr ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:59
+#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#, c-format
+msgid "%s, %s and %s"
+msgstr ""
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:152
+#, c-format
+msgid "%s and %s"
+msgstr ""
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+#, fuzzy
+msgid "is typing…"
+msgid_plural "are typing…"
+msgstr[0] "tajpas…"
+msgstr[1] "tajpas…"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
 msgstr "ĉesis tajpi"
 
-#: main/src/ui/conversation_summary/default_file_display.vala:49
+#: main/src/ui/conversation_summary/default_file_display.vala:50
 msgid "File"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:39
+#: main/src/ui/conversation_summary/message_textview.vala:41
 msgid "Message too long"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:74
+#: main/src/ui/conversation_summary/message_textview.vala:94
 msgid "Copy Link Address"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:82
+#: main/src/ui/conversation_summary/message_textview.vala:102
 msgid "Copy"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:87
+#: main/src/ui/conversation_summary/message_textview.vala:107
 msgid "Select All"
 msgstr ""
 
@@ -285,36 +308,36 @@ msgstr "%a, %H∶%M"
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
-#: main/src/ui/occupant_menu/list.vala:105
+#: main/src/ui/occupant_menu/list.vala:106
 msgid "Owner"
 msgstr "Posedanto"
 
-#: main/src/ui/occupant_menu/list.vala:107
+#: main/src/ui/occupant_menu/list.vala:108
 msgid "Admin"
 msgstr "Administranto"
 
-#: main/src/ui/occupant_menu/list.vala:109
+#: main/src/ui/occupant_menu/list.vala:110
 msgid "Member"
 msgstr "Ano"
 
-#: main/src/ui/occupant_menu/list.vala:111
+#: main/src/ui/occupant_menu/list.vala:112
 msgid "User"
 msgstr "Uzanto"
 
-#: main/src/ui/occupant_menu/view.vala:26
-#: main/src/ui/occupant_menu/view.vala:35
+#: main/src/ui/occupant_menu/view.vala:27
+#: main/src/ui/occupant_menu/view.vala:36
 msgid "Invite"
 msgstr ""
 
-#: main/src/ui/occupant_menu/view.vala:34
+#: main/src/ui/occupant_menu/view.vala:35
 msgid "Invite to Conference"
 msgstr ""
 
-#: main/src/ui/occupant_menu/view.vala:84
+#: main/src/ui/occupant_menu/view.vala:85
 msgid "Start private conversation"
 msgstr "Komenci privatan interparolon"
 
-#: main/src/ui/occupant_menu/view.vala:92
+#: main/src/ui/occupant_menu/view.vala:93
 msgid "Kick"
 msgstr ""
 
@@ -359,7 +382,7 @@ msgid "Who may discover real JIDs?"
 msgstr "Kiu rajtas eltrovi verajn JID-ojn?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
-#: main/data/manage_accounts/dialog.ui:169
+#: main/data/manage_accounts/dialog.ui:170
 #: main/data/manage_accounts/add_account_dialog.ui:73
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
@@ -471,16 +494,16 @@ msgstr "Grafikigi tekstajn mienetojn"
 msgid "Accounts"
 msgstr "Kontoj"
 
-#: main/data/manage_accounts/dialog.ui:199
+#: main/data/manage_accounts/dialog.ui:200
 #: main/data/manage_accounts/add_account_dialog.ui:102
 msgid "Local alias"
 msgstr "Loka kaŝnomo"
 
-#: main/data/manage_accounts/dialog.ui:254
+#: main/data/manage_accounts/dialog.ui:255
 msgid "No accounts configured"
 msgstr ""
 
-#: main/data/manage_accounts/dialog.ui:265
+#: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "Aldoni konton"
 
