@@ -130,7 +130,6 @@ public class AddConferenceDialog : Gtk.Dialog {
         } else if (row != null) {
             details_fragment.account = row.account;
             details_fragment.jid = row.jid.to_string();
-            details_fragment.set_editable();
         }
         show_conference_details_view();
     }
