@@ -23,6 +23,10 @@ protected class ConferenceDetailsFragment : Box {
         set {
             accounts_label.label = value.bare_jid.to_string();
             account_combobox.selected = value;
+            if (nick == null && value.alias != null) {
+                nick = value.alias;
+            }
+            accounts_stack.set_visible_child_name("label");
         }
     }
     public string jid {
@@ -30,6 +34,7 @@ protected class ConferenceDetailsFragment : Box {
         set {
             jid_label.label = value;
             jid_entry.text = value;
+            jid_stack.set_visible_child_name("label");
         }
     }
     public string? nick {
@@ -37,6 +42,7 @@ protected class ConferenceDetailsFragment : Box {
         set {
             nick_label.label = value ?? "";
             nick_entry.text = value ?? "";
+            nick_stack.set_visible_child_name("label");
         }
     }
     public string? password {
@@ -44,6 +50,7 @@ protected class ConferenceDetailsFragment : Box {
         set {
             password_label.label = value;
             password_entry.text = value;
+            nick_stack.set_visible_child_name("label");
         }
     }
 
@@ -81,11 +88,6 @@ protected class ConferenceDetailsFragment : Box {
 
         account_combobox.initialize(stream_interactor);
 
-        accounts_stack.set_visible_child_name("label");
-        jid_stack.set_visible_child_name("label");
-        nick_stack.set_visible_child_name("label");
-        password_stack.set_visible_child_name("label");
-
         accounts_button.clicked.connect(() => { set_active_stack(accounts_stack); });
         jid_button.clicked.connect(() => { set_active_stack(jid_stack); });
         nick_button.clicked.connect(() => { set_active_stack(nick_stack); });
@@ -106,18 +108,8 @@ protected class ConferenceDetailsFragment : Box {
             ok_button.label = _("Joining…");
             ok_button.sensitive = false;
         });
-    }
 
-    public void set_editable() {
-        nick_stack.set_visible_child_name("entry");
-        password_stack.set_visible_child_name("entry");
-    }
-
-    public void reset_editable() {
-        jid_stack.set_visible_child_name("label");
-        accounts_stack.set_visible_child_name("label");
-        nick_stack.set_visible_child_name("label");
-        password_stack.set_visible_child_name("label");
+        clear();
     }
 
     public void clear() {
@@ -128,6 +120,13 @@ protected class ConferenceDetailsFragment : Box {
         password_stack.visible = false;
         notification_revealer.set_reveal_child(false);
         reset_editable();
+    }
+
+    public void reset_editable() {
+        jid_stack.set_visible_child_name("entry");
+        accounts_stack.set_visible_child_name("entry");
+        nick_stack.set_visible_child_name("entry");
+        password_stack.set_visible_child_name("entry");
     }
 
     private void on_enter_error(Account account, Jid jid, Xmpp.Xep.Muc.MucEnterError error) {
