@@ -13,18 +13,41 @@ class SmileyConverter {
     private static HashMap<string, string> smiley_translations = new HashMap<string, string>();
 
     static construct {
-        smiley_translations[":)"] = "🙂";
-        smiley_translations[":D"] = "😀";
+        smiley_translations[":-D"] = "😁";
+        smiley_translations[":D"] = "😁";
+        smiley_translations[":3"] = "😁";
+        smiley_translations["XD"] = "😁";
+        smiley_translations["xD"] = "😁";
+        smiley_translations["xd"] = "😁";
+        smiley_translations["X-D"] = "😁";
+        smiley_translations["x-D"] = "😁";
+        smiley_translations["x-d"] = "😁";
+        smiley_translations["8)"] = "😎";
+        smiley_translations["8-)"] = "😎";
         smiley_translations[";)"] = "😉";
+        smiley_translations[";-)"] = "😉";
         smiley_translations["O:)"] = "😇";
         smiley_translations["O:-)"] = "😇";
         smiley_translations["]:>"] = "😈";
         smiley_translations[":o"] = "😮";
+        smiley_translations[":O"] = "😮";
+        smiley_translations[":-o"] = "😮";
+        smiley_translations[":-O"] = "😮";
         smiley_translations[":P"] = "😛";
+        smiley_translations[":-P"] = "😛";
         smiley_translations[";P"] = "😜";
+        smiley_translations[";-P"] = "😜";
         smiley_translations[":("] = "🙁";
+        smiley_translations[":-("] = "🙁";
         smiley_translations[":'("] = "😢";
+        smiley_translations[":'-("] = "😢";
+        smiley_translations[":|"] = "😐";
+        smiley_translations[":-|"] = "😐";
         smiley_translations[":/"] = "😕";
+        smiley_translations[":-/"] = "😕";
+        smiley_translations[":*"] = "😘";
+        smiley_translations[":-*"] = "😘";
+        smiley_translations["<3"] = "💓";
     }
 
     public SmileyConverter(StreamInteractor stream_interactor, TextView text_input) {
