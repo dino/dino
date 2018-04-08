@@ -38,6 +38,30 @@ public class FileWidget : Button, Plugins.ConversationTitlebarWidget {
         FileChooserNative chooser = new FileChooserNative (
                 "Select file", get_toplevel() as Window, FileChooserAction.OPEN,
                 "Select", "Cancel");
+        Image preview_area = new Image();
+        chooser.set_preview_widget (preview_area);
+        chooser.update_preview.connect (() => {
+            try {
+                // TODO: maybe handle get_preview_uri with gvfs or something
+                string filename = chooser.get_preview_filename();
+                if (filename != null) {
+                    int preview_width, preview_height;
+                    Gdk.PixbufFormat preview_format = Gdk.Pixbuf.get_file_info(filename, out preview_width, out preview_height);
+                    if (preview_format == null || preview_width > 4096 || preview_height > 4096) {
+                        chooser.set_preview_widget_active(false);
+                        return;
+                    }
+                    Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_file_at_size(filename, 180, 180);
+                    preview_area.set_from_pixbuf(pixbuf);
+                    chooser.set_preview_widget_active(true);
+                } else {
+                    chooser.set_preview_widget_active(false);
+                }
+            } catch (Error e) {
+              chooser.set_preview_widget_active(false);
+            }
+        });
+
 //        long max_file_size = stream_interactor.get_module(Manager.IDENTITY).get_max_file_size(conversation.account);
 //        if (max_file_size != -1) {
 //            FileFilter filter = new FileFilter();

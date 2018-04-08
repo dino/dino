@@ -166,6 +166,29 @@ public class Dialog : Gtk.Dialog {
         filter.set_filter_name(_("All files"));
         filter.add_pattern("*");
         chooser.add_filter(filter);
+        Image preview_area = new Image();
+        chooser.set_preview_widget (preview_area);
+        chooser.update_preview.connect (() => {
+            try {
+                // TODO: maybe handle get_preview_uri with gvfs or something
+                string filename = chooser.get_preview_filename();
+                if (filename != null) {
+                    int preview_width, preview_height;
+                    Gdk.PixbufFormat preview_format = Gdk.Pixbuf.get_file_info(filename, out preview_width, out preview_height);
+                    if (preview_format == null || preview_width > 4096 || preview_height > 4096) {
+                        chooser.set_preview_widget_active(false);
+                        return;
+                    }
+                    Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_file_at_size(filename, 180, 180);
+                    preview_area.set_from_pixbuf(pixbuf);
+                    chooser.set_preview_widget_active(true);
+                } else {
+                    chooser.set_preview_widget_active(false);
+                }
+            } catch (Error e) {
+              chooser.set_preview_widget_active(false);
+            }
+        });
         if (chooser.run() == Gtk.ResponseType.ACCEPT) {
             string uri = chooser.get_filename();
             stream_interactor.get_module(AvatarManager.IDENTITY).publish(selected_account, uri);
