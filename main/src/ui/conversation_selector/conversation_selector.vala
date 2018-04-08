@@ -11,6 +11,7 @@ public class ConversationSelector : ListBox {
     public signal void conversation_selected(Conversation conversation);
 
     private StreamInteractor stream_interactor;
+    private uint? drag_timeout;
     private HashMap<Conversation, ConversationSelectorRow> rows = new HashMap<Conversation, ConversationSelectorRow>(Conversation.hash_func, Conversation.equals_func);
 
     public ConversationSelector init(StreamInteractor stream_interactor) {
@@ -72,8 +73,34 @@ public class ConversationSelector : ListBox {
             rows[conversation] = row;
             add(row);
             row.main_revealer.set_reveal_child(true);
+            drag_dest_set(row, DestDefaults.MOTION, null, Gdk.DragAction.COPY);
+            drag_dest_set_track_motion(row, true);
+            row.drag_motion.connect(this.on_drag_motion);
+            row.drag_leave.connect(this.on_drag_leave);
         }
         invalidate_sort();
+    }
+
+    public bool on_drag_motion(Widget widget, Gdk.DragContext context,
+                               int x, int y, uint time) {
+        if (this.drag_timeout != null)
+            return false;
+        this.drag_timeout = Timeout.add(200, () => {
+            if (widget.get_type().is_a(typeof(ConversationRow))) {
+                ConversationRow row = widget as ConversationRow;
+                conversation_selected(row.conversation);
+            }
+            this.drag_timeout = null;
+            return false;
+        });
+        return false;
+    }
+
+    public void on_drag_leave(Widget widget, Gdk.DragContext context, uint time) {
+        if (this.drag_timeout != null) {
+            Source.remove(this.drag_timeout);
+            this.drag_timeout = null;
+        }
     }
 
     private void select_fallback_conversation(Conversation conversation) {
