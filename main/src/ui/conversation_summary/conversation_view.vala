@@ -4,6 +4,15 @@ using Pango;
 
 using Dino.Entities;
 
+enum Target {
+    URI_LIST,
+    STRING
+}
+
+const TargetEntry[] target_list = {
+    { "text/uri-list", 0, Target.URI_LIST },
+};
+
 namespace Dino.Ui.ConversationSummary {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_summary/view.ui")]
@@ -59,6 +68,10 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             }
             return true;
         });
+
+        drag_dest_unset(main);
+        drag_dest_set(scrolled, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
+        scrolled.drag_data_received.connect(this.on_drag_data_received);
 
         return this;
     }
@@ -181,6 +194,28 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             }
         }
         do_insert_item(item);
+    }
+
+    public void on_drag_data_received(Widget widget, Gdk.DragContext context,
+                                      int x, int y,
+                                      SelectionData selection_data,
+                                      uint target_type, uint time) {
+        if ((selection_data != null) && (selection_data.get_length() >= 0)) {
+            switch (target_type) {
+            case Target.URI_LIST:
+                string[] uris = selection_data.get_uris();
+                for (int i = 0; i < uris.length; i++) {
+                  try {
+                    string filename = Filename.from_uri(uris[i]);
+                    stream_interactor.get_module(FileManager.IDENTITY).send_file(filename, conversation);
+                  } catch (Error err) {
+                  }
+                }
+                break;
+            default:
+                break;
+            }
+        }
     }
 
     public void do_insert_item(Plugins.MetaConversationItem item) {
