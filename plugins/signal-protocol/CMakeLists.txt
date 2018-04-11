@@ -5,6 +5,10 @@ find_packages(SIGNAL_PROTOCOL_PACKAGES REQUIRED
     GObject
 )
 
+if(APPLE)
+    include_directories(${INCLUDE_INSTALL_DIR})
+endif()
+
 vala_precompile(SIGNAL_PROTOCOL_VALA_C
 SOURCES
     "src/context.vala"
@@ -105,7 +109,11 @@ set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src
 add_definitions(${CFLAGS})
 add_library(signal-protocol-vala ${SIGNAL_PROTOCOL_VALA_C} ${CMAKE_CURRENT_SOURCE_DIR}/src/signal_helper.c)
 add_dependencies(signal-protocol-vala signal-protocol-vapi)
-target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} gcrypt signal-protocol-c m)
+if(APPLE)
+    target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} signal-protocol-c m)
+else()
+    target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} gcrypt signal-protocol-c m)
+endif()
 set_property(TARGET signal-protocol-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(BUILD_TESTS)
