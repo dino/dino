@@ -19,7 +19,8 @@ pacman -S --noconfirm --needed \
        mingw64/mingw-w64-x86_64-libgcrypt \
        mingw64/mingw-w64-x86_64-libgee \
        mingw64/mingw-w64-x86_64-pkg-config \
-       mingw64/mingw-w64-x86_64-vala
+       mingw64/mingw-w64-x86_64-vala \
+       mingw64/mingw-w64-x86_64-gsettings-desktop-schemas
 
 cd /c/projects/dino
 ./configure
