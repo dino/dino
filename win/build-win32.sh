@@ -21,11 +21,11 @@ pacman -S --noconfirm --needed \
        mingw64/mingw-w64-x86_64-pkg-config \
        mingw64/mingw-w64-x86_64-vala
 
-cd /c/projects/dino
+cd $OLDPWD
 ./configure
 make
 cd build
-mkdir dist
+mkdir -p dist
 cp *.exe *.dll dist
 cd dist
 ldd dino.exe | grep mingw64 | awk '{print "cp /mingw64/bin/"$1" ."}' | sh
