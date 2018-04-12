@@ -41,7 +41,7 @@ public interface Dino.Application : GLib.Application {
 
         create_actions();
 
-        activate.connect(() => {
+        startup.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;
             Idle.add(() => {
                 restore();

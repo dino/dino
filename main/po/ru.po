@@ -8,47 +8,48 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-24 15:30-0600\n"
-"PO-Revision-Date: 2017-11-30 21:49+0000\n"
-"Last-Translator: sergio <srg.dev@posteo.net>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/dino/"
-"translations/es/>\n"
-"Language: es\n"
+"PO-Revision-Date: 2018-03-24 18:39+0000\n"
+"Last-Translator: ethylmorphine <desilent@icloud.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/dino/"
+"translations/ru/>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 2.20-dev\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
-msgstr "Solicitud de suscripción"
+msgstr "Требуется авторизация"
 
 #: main/src/ui/notifications.vala:76
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
-msgstr "Aceptar"
+msgstr "Принять"
 
 #: main/src/ui/notifications.vala:77
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
-msgstr "Denegar"
+msgstr "Отклонить"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
 msgid "Remove account %s?"
-msgstr "¿Eliminar cuenta %s?"
+msgstr "Удалить аккаунт %s?"
 
 #: main/src/ui/manage_accounts/dialog.vala:129
 msgid "Remove"
-msgstr "Eliminar"
+msgstr "Удалить"
 
 #: main/src/ui/manage_accounts/dialog.vala:154
 msgid "Select avatar"
-msgstr "Seleccionar imagen de perfil"
+msgstr "Выбрать аватар"
 
 #: main/src/ui/manage_accounts/dialog.vala:155
 msgid "Select"
-msgstr "Seleccionar"
+msgstr "Выбрать"
 
 #: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
@@ -57,44 +58,44 @@ msgstr "Seleccionar"
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "Отменить"
 
 #: main/src/ui/manage_accounts/dialog.vala:163
 msgid "Images"
-msgstr "Imágenes"
+msgstr "Изображения"
 
 #: main/src/ui/manage_accounts/dialog.vala:166
 msgid "All files"
-msgstr "Todos los ficheros"
+msgstr "Все файлы"
 
 #: main/src/ui/manage_accounts/dialog.vala:231
 msgid "Connecting…"
-msgstr "Conectando…"
+msgstr "Подключение…"
 
 #: main/src/ui/manage_accounts/dialog.vala:233
 msgid "Connected"
-msgstr "Conectado"
+msgstr "Подключено"
 
 #: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Disconnected"
-msgstr "Desconectado"
+msgstr "Отключено"
 
 #: main/src/ui/manage_accounts/dialog.vala:244
 msgid "Wrong password"
-msgstr "Contraseña incorrecta"
+msgstr "Неверный пароль"
 
 #: main/src/ui/manage_accounts/dialog.vala:246
 msgid "Invalid TLS certificate"
-msgstr ""
+msgstr "Недействительный TSL сертификат"
 
 #: main/src/ui/manage_accounts/dialog.vala:249
 #: main/src/ui/manage_accounts/dialog.vala:251
 msgid "Error"
-msgstr "Error"
+msgstr "Ошибка"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:22
 msgid "Add Account"
-msgstr "Añadir Cuenta"
+msgstr "Добавить аккаунт"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:45
 msgid "JID should be of the form “user@example.com”"
@@ -103,18 +104,18 @@ msgstr ""
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
 msgid "Me"
-msgstr "Yo"
+msgstr "Я"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:154
 #: main/src/ui/conversation_summary/date_separator_populator.vala:102
 #, no-c-format
 msgid "%b %d"
-msgstr "%d %b"
+msgstr "%b %d"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:158
 #: main/src/ui/conversation_summary/date_separator_populator.vala:93
 msgid "Yesterday"
-msgstr "Ayer"
+msgstr "Вчера"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:161
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
@@ -133,101 +134,101 @@ msgstr "%l∶%M %p"
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] "hace %i min"
-msgstr[1] "hace %i mins"
+msgstr[0] "%i минуту назад"
+msgstr[1] "%i минут назад"
+msgstr[2] ""
 
 #: main/src/ui/conversation_selector/conversation_row.vala:167
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
-msgstr "Ahora"
+msgstr "Только что"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
-msgstr "Unirse a Conversación en grupo"
+msgstr "Войти в конференцию"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:134
 msgid "Join"
-msgstr "Unirse"
+msgstr "Войти"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
-msgstr "Añadir"
+msgstr "Добавить"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
 #: main/data/manage_accounts/add_account_dialog.ui:21
 msgid "Save"
-msgstr "Guardar"
+msgstr "Сохранить"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
-msgstr "Siguiente"
+msgstr "Следующее"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
 msgid "Start Chat"
-msgstr "Iniciar Conversación"
+msgstr "Начать чат"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
-msgstr "Iniciar Conversación"
+msgstr "Начать"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:106
 msgid "Joining…"
-msgstr "Uniéndose…"
+msgstr "Присоединение…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:139
 msgid "Password required to enter room"
-msgstr "Contraseña requerida para entrar en la conversación en grupo"
+msgstr "Требуется пароль для входа в комнату"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:144
 msgid "Banned from joining or creating conference"
-msgstr ""
-"Tu entrada ha sido prohibida o no puedes crear la conversación en grupo"
+msgstr "Вам запрещено заходить в конференции или создавать их"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:146
 msgid "Room does not exist"
-msgstr "La conversación en grupo no existe"
+msgstr "Данная комната не существует"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:148
 msgid "Not allowed to create room"
-msgstr "No está permitido crear la conversación en grupo"
+msgstr "Вам запрещенно создавать комнаты"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:150
 msgid "Members-only room"
-msgstr "La conversación es solo para miembros"
+msgstr "Комната только для участников"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:153
 msgid "Choose a different nick"
-msgstr "Elige un alias diferente"
+msgstr "Выберите другой никнейм"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:155
 msgid "Too many occupants in room"
-msgstr "La conversación tiene demasiados ocupantes"
+msgstr "Слишком много посетителей в комнате"
 
 #: main/src/ui/unified_window.vala:166
 msgid "No active accounts"
-msgstr "No hay cuentas activas"
+msgstr "Нет активных аккаунтов"
 
 #: main/src/ui/unified_window.vala:167
 msgid "Manage accounts"
-msgstr "Gestionar cuentas"
+msgstr "Управление аккаунтами"
 
 #: main/src/ui/unified_window.vala:174
 msgid "No active conversations"
-msgstr "No hay conversaciones activa"
+msgstr "Нет активных чатов"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:87
 msgid "Today"
-msgstr ""
+msgstr "Сегодня"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 msgid "%a, %b %d"
-msgstr ""
+msgstr "%a, %b %d"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
@@ -248,36 +249,37 @@ msgstr ""
 #, fuzzy
 msgid "is typing…"
 msgid_plural "are typing…"
-msgstr[0] "está escribiendo…"
-msgstr[1] "está escribiendo…"
+msgstr[0] "печатает…"
+msgstr[1] "печатает…"
+msgstr[2] "печатает…"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
-msgstr "ha dejado de escribir"
+msgstr "перестал печатать"
 
 #: main/src/ui/conversation_summary/default_file_display.vala:50
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: main/src/ui/conversation_summary/message_textview.vala:41
 msgid "Message too long"
-msgstr "Mensaje demasiado largo"
+msgstr "Сообщение слишком длинное"
 
 #: main/src/ui/conversation_summary/message_textview.vala:94
 msgid "Copy Link Address"
-msgstr ""
+msgstr "Копировать адресс ссылки"
 
 #: main/src/ui/conversation_summary/message_textview.vala:102
 msgid "Copy"
-msgstr ""
+msgstr "Копировать"
 
 #: main/src/ui/conversation_summary/message_textview.vala:107
 msgid "Select All"
-msgstr ""
+msgstr "Выбрать всё"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr ""
+msgstr "Этот контакт хочет добавить вас в список контактов"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
@@ -292,12 +294,12 @@ msgstr "%x, %l∶%M %p"
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr "%d %b, %H∶%M"
+msgstr "%b %d, %H∶%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr "%d %b, %l∶%M %p"
+msgstr "%b %d, %l∶%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
 #, no-c-format
@@ -311,76 +313,76 @@ msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/occupant_menu/list.vala:106
 msgid "Owner"
-msgstr "Propietario"
+msgstr "Владелец"
 
 #: main/src/ui/occupant_menu/list.vala:108
 msgid "Admin"
-msgstr "Administrador"
+msgstr "Администратор"
 
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Member"
-msgstr "Miembro"
+msgstr "Участник"
 
 #: main/src/ui/occupant_menu/list.vala:112
 msgid "User"
-msgstr "Usuario"
+msgstr "Пользователь"
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:36
 msgid "Invite"
-msgstr "Invitar"
+msgstr "Пригласить"
 
 #: main/src/ui/occupant_menu/view.vala:35
 msgid "Invite to Conference"
-msgstr "Invitar a Conversación en grupo"
+msgstr "Пригласить в конференцию"
 
 #: main/src/ui/occupant_menu/view.vala:85
 msgid "Start private conversation"
-msgstr "Iniciar conversación privada"
+msgstr "Начать личный чат"
 
 #: main/src/ui/occupant_menu/view.vala:93
 msgid "Kick"
-msgstr "Expulsar"
+msgstr "Выгнать"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr "Detalles de la Conversación"
+msgstr "Информация о конференции"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
 msgid "Contact Details"
-msgstr "Detalles del contacto"
+msgstr "Информация о контакте"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:39
 msgid "Name of the room"
-msgstr "Nombre de la conversación en grupo"
+msgstr "Название комнаты"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:42
 msgid "Description of the room"
-msgstr "Descripción de la conversación en grupo"
+msgstr "Описание комнаты"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:45
 msgid "Persistent"
-msgstr "Conversación permanente"
+msgstr "Сохранение"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:46
 msgid "The room will persist after the last occupant leaves"
-msgstr "La conversación en grupo no se eliminará aunque no haya participantes"
+msgstr "Комната сохранится, даже если уйдёт последний посетитель"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:49
 msgid "Publicly searchable"
-msgstr "Conversación pública"
+msgstr "Доступность для публичного поиска"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:52
 msgid "Occupants may change the subject"
-msgstr "Los ocupantes pueden cambiar el asunto de la conversación"
+msgstr "Посетители могут менять тему"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:55
 msgid "Discover real JIDs"
-msgstr "Descubrir JIDs reales"
+msgstr "Показывать настоящие JID"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Who may discover real JIDs?"
-msgstr "¿Quién puede ver los JIDs reales?"
+msgstr "Кто может видеть настоящие JID?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
@@ -388,41 +390,39 @@ msgstr "¿Quién puede ver los JIDs reales?"
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
-msgstr "Contraseña"
+msgstr "Пароль"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Password required for room entry, if any"
-msgstr ""
-"Contraseña requerida para entrar en la conversación en grupo. Dejar vacío "
-"para ninguna"
+msgstr "Требуется пароль для входа в комнату, если"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Moderated"
-msgstr "Conversación moderada"
+msgstr "Модерируемый"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:64
 msgid "Only occupants with voice may send messages"
-msgstr "Solo los participantes con voz pueden enviar mensajes"
+msgstr "Только посетители с голосом могут отправлять сообщения"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Members only"
-msgstr "Conversación privada solo para miembros"
+msgstr "Только для участников"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:68
 msgid "Only members may enter the room"
-msgstr "Solo los miembros pueden entrar en la conversación en grupo"
+msgstr "Только участники могут заходить в комнату"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "Message history"
-msgstr "Histórico de mensajes"
+msgstr "История сообщений"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:72
 msgid "Maximum amount of backlog issued by the room"
-msgstr "Número máximo de mensajes que se almacenan en servidor"
+msgstr "Комната выдала максимальное количество логов"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Room Configuration"
-msgstr "Configuración de la conversación en grupo"
+msgstr "Конфигурация комнаты"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:22
@@ -430,128 +430,114 @@ msgstr "Configuración de la conversación en grupo"
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/data/menu_app.ui:10
 msgid "Settings"
-msgstr "Ajustes"
+msgstr "Настройки"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr "Bloquear"
+msgstr "Заблокировать"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
-msgstr "Las comunicaciones y las actualizaciones de presencia serán bloqueadas"
+msgstr "Переписка и обновления статусов заблокированы в оба направления"
 
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/data/settings_dialog.ui:22
 msgid "Send typing notifications"
-msgstr "Enviar notificaciones cuando escribes"
+msgstr "Отправлять уведомления о наборе сообщения"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send message marker"
-msgstr "Enviar confirmación al recibir y al leer los mensajes"
+msgstr "Отправлять маркеры сообщений"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
 msgid "Notifications"
-msgstr "Notificaciones"
+msgstr "Уведомления"
 
 #: main/src/ui/contact_details/settings_provider.vala:39
 msgid "Local Settings"
-msgstr "Ajustes locales"
+msgstr "Локальные настройки"
 
 #: main/src/ui/contact_details/settings_provider.vala:74
 #: main/src/ui/contact_details/settings_provider.vala:114
 #: main/src/ui/contact_details/settings_provider.vala:116
 msgid "On"
-msgstr "Sí"
+msgstr "ВКЛ"
 
 #: main/src/ui/contact_details/settings_provider.vala:76
 #: main/src/ui/contact_details/settings_provider.vala:114
 #: main/src/ui/contact_details/settings_provider.vala:117
 msgid "Off"
-msgstr "No"
+msgstr "ВЫКЛ"
 
 #: main/src/ui/contact_details/settings_provider.vala:78
 msgid "Only when mentioned"
-msgstr "Solo cuando te mencionan en la conversación"
+msgstr "Только при упоминании"
 
 #: main/src/ui/contact_details/settings_provider.vala:80
 #: main/src/ui/contact_details/settings_provider.vala:115
 #, c-format
 msgid "Default: %s"
-msgstr "Por defecto: %s"
+msgstr "По умолчанию: %s"
 
 #: main/data/settings_dialog.ui:7
 msgid "Preferences"
-msgstr "Preferencias"
+msgstr "Опции"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
-msgstr "Notificar cuando llega un nuevo mensaje"
+msgstr "Уведомлять о новых сообщениях"
 
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
-msgstr "Convertir smileys en emojis"
+msgstr "Превращать смайлы в эмоджи"
 
 #: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:6
 msgid "Accounts"
-msgstr "Cuentas"
+msgstr "Аккаунты"
 
 #: main/data/manage_accounts/dialog.ui:200
 #: main/data/manage_accounts/add_account_dialog.ui:102
 msgid "Local alias"
-msgstr "Alias local"
+msgstr "Локальный псевдоним"
 
 #: main/data/manage_accounts/dialog.ui:255
 msgid "No accounts configured"
-msgstr "No hay cuentas activas"
+msgstr "Нет настроенных аккаунтов"
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
-msgstr "Añadir una cuenta"
+msgstr "Добавить аккаунт"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr "Sin cifrar"
+msgstr "Не шифровать"
 
 #: main/data/menu_app.ui:16
 msgid "Quit"
-msgstr "Salir"
+msgstr "Выйти"
 
 #: main/data/conversation_selector/view.ui:14
 msgid "Search"
-msgstr "Buscar"
+msgstr "Поиск"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
 msgid "Account"
-msgstr "Cuenta"
+msgstr "Аккаунт"
 
 #: main/data/add_conversation/conference_details_fragment.ui:123
 #: main/data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
-msgstr "Alias"
+msgstr "Никнейм"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:175
 #: main/data/add_conversation/add_contact_dialog.ui:102
 msgid "Alias"
-msgstr "Alias"
+msgstr "Псевдоним"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr ""
-
-#~ msgid "Request presence updates"
-#~ msgstr "Solicitar actualizaciones de presencia"
-
-#~ msgid "This is an app-notification. Click the button to dismiss"
-#~ msgstr ""
-#~ "Esto es una notificación de la aplicación. Haz click en el botón para "
-#~ "descartar"
-
-#~ msgid "Join on startup"
-#~ msgstr "Unirse al inicio"
-
-#~ msgid "Add Chat"
-#~ msgstr "Añadir conversación"
+msgstr "Добавить контакт"

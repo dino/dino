@@ -8,53 +8,53 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-24 15:30-0600\n"
-"PO-Revision-Date: 2018-01-12 23:09+0000\n"
-"Last-Translator: Licaon Kter <licaon.kter@protonmail.com>\n"
-"Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
-"omemo/ro/>\n"
-"Language: ro\n"
+"PO-Revision-Date: 2018-03-24 18:39+0000\n"
+"Last-Translator: ethylmorphine <desilent@icloud.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
+"omemo/ru/>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
-"20)) ? 1 : 2;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 2.20-dev\n"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 #: plugins/omemo/src/account_settings_widget.vala:45
 #: plugins/omemo/data/account_settings_dialog.ui:19
 msgid "Own fingerprint"
-msgstr "Amprentă proprie"
+msgstr "Отпечаток этого устройства"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
-msgstr "Se va genera la prima conectare"
+msgstr "Будет сгенерирован при первом подключении"
 
 #: plugins/omemo/src/contact_details_provider.vala:31
 msgid "Encryption"
-msgstr "Criptare"
+msgstr "Шифрование"
 
 #: plugins/omemo/src/contact_details_provider.vala:31
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
-msgstr[0] "%d dispozitiv OMEMO"
-msgstr[1] "%d dispozitive OMEMO"
-msgstr[2] "%d de dispozitive OMEMO"
+msgstr[0] "%d устройство OMEMO"
+msgstr[1] "%d устройства OMEMO"
+msgstr[2] ""
 
 #: plugins/omemo/src/account_settings_dialog.vala:35
 #, c-format
 msgid "Unknown device (0x%.8x)"
-msgstr "Dispozitiv necunoscut (0x%.8x)"
+msgstr "Неизвестное устройство (0x%.8x)"
 
 #: plugins/omemo/data/account_settings_dialog.ui:5
 msgid "OMEMO Keys"
-msgstr "Chei OMEMO"
+msgstr "Ключи OMEMO"
 
 #: plugins/omemo/data/account_settings_dialog.ui:88
 msgid "Other devices"
-msgstr "Alte dispozitive"
+msgstr "Другие устройства"
 
 #: plugins/omemo/data/account_settings_dialog.ui:112
 msgid "- None -"
-msgstr "- Nici unul -"
+msgstr "- Нет -"

@@ -151,6 +151,12 @@ public class XmppStream {
     }
 
     public XmppStream add_module(XmppStreamModule module) {
+        foreach (XmppStreamModule m in modules) {
+            if (m.get_ns() == module.get_ns() && m.get_id() == module.get_id()) {
+                print("[%p] Adding already added module: %s\n".printf(this, module.get_id()));
+                return this;
+            }
+        }
         modules.add(module);
         if (negotiation_complete) module.attach(this);
         return this;

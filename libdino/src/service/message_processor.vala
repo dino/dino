@@ -13,6 +13,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
     public signal void build_message_stanza(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
     public signal void pre_message_send(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
     public signal void message_sent(Entities.Message message, Conversation conversation);
+    public signal void history_synced(Account account);
 
     public MessageListenerHolder received_pipeline = new MessageListenerHolder();
 
@@ -66,14 +67,16 @@ public class MessageProcessor : StreamInteractionModule, Object {
         });
         stream_interactor.module_manager.get_module(account, Xmpp.Xep.MessageArchiveManagement.Module.IDENTITY).feature_available.connect( (stream) => {
             DateTime start_time = account.mam_earliest_synced.to_unix() > 60 ? account.mam_earliest_synced.add_minutes(-1) : account.mam_earliest_synced;
-            stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, start_time, null);
+            stream.get_module(Xep.MessageArchiveManagement.Module.IDENTITY).query_archive(stream, null, start_time, null, () => {
+                history_synced(account);
+            });
         });
     }
 
     private async void on_message_received(Account account, Xmpp.MessageStanza message_stanza) {
         if (message_stanza.body == null) return;
 
-        Entities.Message message = yield create_in_message(account, message_stanza);
+        Entities.Message message = yield parse_message_stanza(account, message_stanza);
 
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
         if (conversation != null) {
@@ -87,17 +90,21 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
-    private async Entities.Message create_in_message(Account account, Xmpp.MessageStanza message) {
+    public async Entities.Message parse_message_stanza(Account account, Xmpp.MessageStanza message) {
         Entities.Message new_message = new Entities.Message(message.body);
         new_message.account = account;
         new_message.stanza_id = message.id;
-        if (!account.bare_jid.equals_bare(message.from) ||
-                message.from.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.from.bare_jid, account))) {
-            new_message.direction = Entities.Message.DIRECTION_RECEIVED;
-        } else {
+
+        Jid? counterpart_override = null;
+        if (message.from.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.from.bare_jid, account))) {
             new_message.direction = Entities.Message.DIRECTION_SENT;
+            counterpart_override = message.from.bare_jid;
+        } else if (account.bare_jid.equals_bare(message.from)) {
+            new_message.direction = Entities.Message.DIRECTION_SENT;
+        } else {
+            new_message.direction = Entities.Message.DIRECTION_RECEIVED;
         }
-        new_message.counterpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from;
+        new_message.counterpart = counterpart_override ?? (new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
         new_message.stanza = message;
 
@@ -164,7 +171,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
             bool is_uuid = message.stanza_id != null && Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", message.stanza_id);
-            bool new_uuid_msg = is_uuid && !db.contains_message_by_stanza_id(message.stanza_id, conversation.account);
+            bool new_uuid_msg = is_uuid && !db.contains_message_by_stanza_id(message, conversation.account);
             bool new_misc_msg = !is_uuid && !db.contains_message(message, conversation.account);
             bool new_msg = new_uuid_msg || new_misc_msg;
             return !new_msg;
