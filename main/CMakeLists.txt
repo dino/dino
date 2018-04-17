@@ -127,6 +127,7 @@ SOURCES
     src/ui/util/accounts_combo_box.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
+    src/ui/util/preview_file_chooser_native.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
