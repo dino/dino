@@ -173,7 +173,7 @@ public class Module : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        stream.add_flag(new Muc.Flag());
+        stream.add_flag(new Flag());
         stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
         stream.get_module(Presence.Module.IDENTITY).received_presence.connect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
@@ -368,7 +368,7 @@ public class Module : XmppStreamModule {
                 Jid? jid_ = Jid.parse(item.get_attribute("jid"));
                 string? affiliation_ = item.get_attribute("affiliation");
                 if (jid_ != null && affiliation_ != null) {
-                    stream.get_flag(Muc.Flag.IDENTITY).set_offline_member(iq.from, jid_, parse_affiliation(affiliation_));
+                    stream.get_flag(Flag.IDENTITY).set_offline_member(iq.from, jid_, parse_affiliation(affiliation_));
                     ret_jids.add(jid_);
                 }
             }
