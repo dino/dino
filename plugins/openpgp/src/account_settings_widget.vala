@@ -35,12 +35,16 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     public void set_account(Account account) {
+        set_account_.begin(account);
+    }
+
+    private async void set_account_(Account account) {
         this.current_account = account;
         if (keys == null) {
-            fetch_keys();
-        } else {
-            activate_current_account();
+            yield fetch_keys();
+            populate_list_store();
         }
+        activate_current_account();
     }
 
     private void on_button_clicked() {
@@ -52,6 +56,14 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
 
     private void activate_current_account() {
         combobox.changed.disconnect(key_changed);
+        if (keys == null) {
+            label.set_markup(build_markup_string(_("Key publishing disabled"), _("Error in GnuPG")));
+            return;
+        }
+        if (keys.size == 0) {
+            label.set_markup(build_markup_string(_("Key publishing disabled"), _("No keys available. Generate one!")));
+            return;
+        }
 
         string? account_key = plugin.db.get_account_key(current_account);
         int activate_index = 0;
@@ -71,11 +83,11 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
     }
 
     private void populate_list_store() {
-        if (keys.size == 0) {
-            label.set_markup(build_markup_string(_("Key publishing disabled"), _("No keys available. Generate one!")));
+        if (keys == null || keys.size == 0) {
             return;
         }
 
+        list_store.clear();
         TreeIter iter;
         list_store.append(out iter);
         list_store.set(iter, 0, build_markup_string(_("Key publishing disabled"), _("Select key") + "<span font_family='monospace' font='8'> \n </span>"), 1, "");
@@ -87,31 +99,21 @@ private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
                 set_label_active(iter, i + 1);
             }
         }
-        activate_current_account();
         button.sensitive = true;
     }
 
-    private void fetch_keys() {
-        TreeIter iter;
-        list_store.clear();
-        list_store.append(out iter);
+    private async void fetch_keys() {
         label.set_markup(build_markup_string(_("Loading…"), _("Querying GnuPG")));
+
+        SourceFunc callback = fetch_keys.callback;
         new Thread<void*> (null, () => { // Querying GnuPG might take some time
             try {
                 keys = GPGHelper.get_keylist(null, true);
-                Idle.add(() => {
-                    list_store.clear();
-                    populate_list_store();
-                    return false;
-                });
-            } catch (Error e) {
-                Idle.add(() => {
-                    label.set_markup(build_markup_string(_("Key publishing disabled"), _("Error in GnuPG")));
-                    return false;
-                });
-            }
+            } catch (Error e) { }
+            Idle.add((owned)callback);
             return null;
         });
+        yield;
     }
 
     private void set_label_active(TreeIter iter, int i = -1) {
