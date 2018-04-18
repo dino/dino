@@ -35,6 +35,8 @@ SOURCES
     src/database.vala
     src/encrypt_state.vala
     src/encryption_list_entry.vala
+    src/in_file_processor.vala
+    src/in_url_rewriter.vala
     src/manager.vala
     src/message_flag.vala
     src/plugin.vala

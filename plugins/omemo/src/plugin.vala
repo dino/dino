@@ -43,6 +43,8 @@ public class Plugin : RootInterface, Object {
             list.add(new StreamModule());
         });
         Manager.start(this.app.stream_interactor, db);
+        app.stream_interactor.get_module(FileManager.IDENTITY).add_incomming_processor(new InFileProcessor());
+        app.stream_interactor.get_module(FileManager.IDENTITY).add_incoming_url_rewriter(new InURLRewriter());
 
         string locales_dir;
         if (app.search_path_generator != null) {

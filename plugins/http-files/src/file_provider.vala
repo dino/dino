@@ -40,12 +40,13 @@ public class FileProvider : Dino.FileProvider, Object {
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
             if (!outer.url_regex.match(message.body)) return false;
+            string url = message.body.strip();
             Jid relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(message.from, conversation.account) ?? conversation.counterpart;
             bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
             if (message.direction == Message.DIRECTION_RECEIVED && !in_roster) return false;
 
             string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(message.stanza);
-            if (oob_url != null && oob_url == message.body) {
+            if (oob_url != null && oob_url.strip() == url || url.has_prefix("aesgcm")) {
                 yield outer.download_url(message, conversation);
             }
             return false;
