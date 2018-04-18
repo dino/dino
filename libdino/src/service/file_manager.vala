@@ -16,6 +16,8 @@ public class FileManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private Gee.List<FileSender> file_senders = new ArrayList<FileSender>();
+    private Gee.List<IncomingURLRewriter> incoming_url_rewriters = new ArrayList<IncomingURLRewriter>();
+    private Gee.List<OutgoingURLRewriter> outgoing_url_rewriters = new ArrayList<OutgoingURLRewriter>();
     private Gee.List<IncommingFileProcessor> incomming_processors = new ArrayList<IncommingFileProcessor>();
     private Gee.List<OutgoingFileProcessor> outgoing_processors = new ArrayList<OutgoingFileProcessor>();
 
@@ -117,6 +119,32 @@ public class FileManager : StreamInteractionModule, Object {
         outgoing_processors.add(processor);
     }
 
+    public void add_incoming_url_rewriter(IncomingURLRewriter rewriter) {
+        incoming_url_rewriters.add(rewriter);
+    }
+
+    public void add_outgoing_url_rewriter(OutgoingURLRewriter rewriter) {
+        outgoing_url_rewriters.add(rewriter);
+    }
+
+    public string rewrite_incoming_url(string url) {
+        foreach (IncomingURLRewriter rewriter in incoming_url_rewriters) {
+            string? rewritten_url = rewriter.rewrite(url);
+            if (rewritten_url != null)
+              return rewritten_url;
+        }
+        return url;
+    }
+
+    public string rewrite_outgoing_url(string url, Conversation conversation) {
+        foreach (OutgoingURLRewriter rewriter in outgoing_url_rewriters) {
+            string? rewritten_url = rewriter.rewrite(conversation, url);
+            if (rewritten_url != null)
+              return rewritten_url;
+        }
+        return url;
+    }
+
     private void handle_incomming_file(FileTransfer file_transfer) {
         foreach (IncommingFileProcessor processor in incomming_processors) {
             if (processor.can_process(file_transfer)) {
@@ -160,6 +188,14 @@ public interface FileSender : Object {
     public abstract bool is_upload_available(Conversation conversation);
     public abstract bool can_send(Conversation conversation, FileTransfer file_transfer);
     public abstract void send_file(Conversation conversation, FileTransfer file_transfer);
+}
+
+public interface IncomingURLRewriter : Object {
+    public abstract string? rewrite(string url);
+}
+
+public interface OutgoingURLRewriter : Object {
+    public abstract string? rewrite(Conversation conversation, string url);
 }
 
 public interface IncommingFileProcessor : Object {
