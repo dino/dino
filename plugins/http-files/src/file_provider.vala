@@ -54,22 +54,22 @@ public class FileProvider : Dino.FileProvider, Object {
 
     private async bool download_url(Message message, Conversation conversation) {
         bool success = false;
+        string original_url = message.body.strip();
+        string url = this.stream_interactor.get_module(FileManager.IDENTITY).rewrite_incoming_url(message.body.strip());
         var session = new Soup.Session();
-        var head_message = new Soup.Message("HEAD", message.body);
+        var head_message = new Soup.Message("HEAD", url);
         if (head_message != null) {
             SourceFunc callback = download_url.callback;
             session.send_async.begin(head_message, null, (obj, res) => {
                 string? content_type = null, content_length = null;
-                print(message.body + ":\n");
                 head_message.response_headers.foreach((name, val) => {
-                    print(name + " " + val + "\n");
                     if (name == "Content-Type") content_type = val;
                     if (name == "Content-Length") content_length = val;
                 });
                 if (content_length != null && int.parse(content_length) < 5000000) {
                     FileTransfer file_transfer = new FileTransfer();
                     try {
-                        Soup.Request request = session.request(message.body);
+                        Soup.Request request = session.request(url);
                         request.send_async.begin(null, (obj, res) => {
                             try {
                                 file_transfer.input_stream = request.send_async.end(res);
@@ -84,12 +84,12 @@ public class FileProvider : Dino.FileProvider, Object {
                             file_transfer.time = message.time;
                             file_transfer.local_time = message.local_time;
                             file_transfer.direction = message.direction;
-                            file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);
+                            file_transfer.file_name = url.substring(url.last_index_of("/") + 1);
                             file_transfer.mime_type = content_type;
                             file_transfer.size = int.parse(content_length);
                             file_transfer.state = FileTransfer.State.NOT_STARTED;
                             file_transfer.provider = 0;
-                            file_transfer.info = message.id.to_string();
+                            file_transfer.info = message.id.to_string() + ":" + original_url;
                             file_incoming(file_transfer);
                             success = true;
                             Idle.add((owned)callback);
