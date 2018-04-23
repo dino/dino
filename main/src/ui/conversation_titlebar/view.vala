@@ -36,33 +36,37 @@ public class ConversationTitlebar : Gtk.HeaderBar {
 
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_subtitle(subject);
+                update_subject(subject);
             }
         });
     }
 
     public void initialize_for_conversation(Conversation conversation) {
         this.conversation = conversation;
-        update_title();
-        update_subtitle();
+        update_subject();
 
         foreach (Plugins.ConversationTitlebarWidget widget in widgets) {
             widget.set_conversation(conversation);
         }
     }
 
-    private void update_title() {
-        set_title(Util.get_conversation_display_name(stream_interactor, conversation));
-    }
+    private void update_subject(string? subject = null) {
+        string conversation_display_name = Util.get_conversation_display_name(stream_interactor, conversation);
 
-    private void update_subtitle(string? subtitle = null) {
-        if (subtitle != null) {
-            set_subtitle(subtitle);
-        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            string subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
-            set_subtitle(subject != "" ? subject : null);
+        string groupchat_subject = null;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            groupchat_subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
+        }
+
+        if (subject != null) {
+            set_title(subject);
+            set_subtitle(conversation_display_name);
+        } else if (groupchat_subject != null) {
+            set_title(groupchat_subject);
+            set_subtitle(conversation_display_name);
         } else {
-            set_subtitle(null);
+            set_title(conversation_display_name);
+            set_subtitle("");
         }
     }
 }
