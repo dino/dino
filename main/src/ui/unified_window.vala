@@ -75,8 +75,8 @@ public class UnifiedWindow : Window {
         filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
 
         Grid grid = new Grid() { orientation=Orientation.VERTICAL, visible=true };
+        grid.get_style_context().add_class("dino-conversation");
         grid.add(conversation_frame);
-        grid.add(new Separator(Orientation.HORIZONTAL) { visible=true });
         grid.add(chat_input);
 
         paned.set_position(300);
