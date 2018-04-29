@@ -4,6 +4,7 @@ include(${GETTEXT_USE_FILE})
 gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
 
 find_packages(OMEMO_PACKAGES REQUIRED
+    GCrypt
     Gee
     GLib
     GModule
