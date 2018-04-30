@@ -20,9 +20,14 @@ public abstract class StanzaListener<T> : OrderedListener {
 public class StanzaListenerHolder<T> : ListenerHolder {
 
     public async void run(XmppStream stream, T stanza) {
-        foreach (OrderedListener ol in listeners) {
+
+        // listeners can change e.g. when switching to another stream
+        ArrayList<OrderedListener> listeners_copy = new ArrayList<OrderedListener>();
+        listeners_copy.add_all(listeners);
+
+        foreach (OrderedListener ol in listeners_copy) {
             StanzaListener<T> l = ol as StanzaListener<T>;
-        bool stop = yield l.run(stream, stanza);
+            bool stop = yield l.run(stream, stanza);
             if (stop) break;
         }
     }

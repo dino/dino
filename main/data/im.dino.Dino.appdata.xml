@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>im.dino.Dino</id>
+  <launchable type="desktop-id">im.dino.Dino.desktop</launchable>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>Dino</name>
+  <summary>Modern XMPP Client</summary>
+  <description>
+    <p>
+      Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable
+      Jabber/XMPP experience while having your privacy in mind.
+    </p>
+    <p>
+      It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features
+      such as read marker and typing notifications.
+    </p>
+    <p>
+      Dino fetches history from the server and synchronizes messages with other devices.
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main window with conversations</caption>
+      <image height="900" width="1600">https://dino.im/img/appdata/main.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Start a chat</caption>
+      <image height="900" width="1600">https://dino.im/img/appdata/start_chat.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Contact details</caption>
+      <image height="900" width="1600">https://dino.im/img/appdata/contact_details.png</image>
+    </screenshot>
+  </screenshots>
+  <translation type="gettext">dino</translation>
+  <developer_name>Dino Development Team</developer_name>
+  <url type="homepage">https://dino.im</url>
+  <url type="bugtracker">https://github.com/dino/dino/issues</url>
+  <url type="donation">https://liberapay.com/Dino</url>
+  <url type="translate">https://hosted.weblate.org/projects/dino/</url>
+  <!-- TODO: Point this to a webpage with documentation when there is one
+  <url type="help">http://dino.im/help/</url>
+  -->
+  <update_contact>appstream@dino.im</update_contact>
+
+  <!-- TODO: Write this when Dino is released
+  <releases>
+    <release date="XXXX-XX-XX" version="X.X">
+      <description>
+        <p>
+          This is our first release. It comes with a clean UI, notifications,
+          end-to-end encryption support (OMEMO and GnuPG), multi-user chats,
+          and more!
+        </p>
+      </description>
+    </release>
+  </releases>
+  -->
+</component>

@@ -24,6 +24,9 @@ public class FileEntry : Plugins.ConversationTitlebarEntry, Object {
 
 public class FileWidget : Button, Plugins.ConversationTitlebarWidget {
 
+    private const int PREVIEW_SIZE = 180;
+    private const int PREVIEW_PADDING = 3;
+
     private Conversation? conversation;
     private StreamInteractor stream_interactor;
 
@@ -35,9 +38,8 @@ public class FileWidget : Button, Plugins.ConversationTitlebarWidget {
     }
 
     public void on_clicked() {
-        FileChooserNative chooser = new FileChooserNative (
-                "Select file", get_toplevel() as Window, FileChooserAction.OPEN,
-                "Select", "Cancel");
+        PreviewFileChooserNative chooser = new PreviewFileChooserNative("Select file", get_toplevel() as Window, FileChooserAction.OPEN, "Select", "Cancel");
+
 //        long max_file_size = stream_interactor.get_module(Manager.IDENTITY).get_max_file_size(conversation.account);
 //        if (max_file_size != -1) {
 //            FileFilter filter = new FileFilter();
