@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
 "PO-Revision-Date: 2018-03-23 18:26+0000\n"
 "Last-Translator: ethylmorphine <desilent@icloud.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
@@ -20,31 +20,31 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 2.20-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
-#: plugins/openpgp/src/account_settings_widget.vala:81
-#: plugins/openpgp/src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
 msgstr "Публикация ключа отключена"
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr "Ошибка в GnuPG"
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
 msgstr "Нет доступных ключей. Стоит сгенерировать!"
 
-#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
 msgstr "Выбрать ключ"
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
 msgstr "Загрузка…"
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
 msgstr "Запрос GnuPG"
-
-#: plugins/openpgp/src/account_settings_widget.vala:109
-msgid "Error in GnuPG"
-msgstr "Ошибка в GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"

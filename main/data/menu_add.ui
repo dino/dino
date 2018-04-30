@@ -9,7 +9,7 @@
         <section>
             <item>
                 <attribute name="action">app.add_conference</attribute>
-                <attribute name="label" translatable="yes">Join Conference</attribute>
+                <attribute name="label" translatable="yes">Join Channel</attribute>
             </item>
         </section>
     </menu>

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
-"PO-Revision-Date: 2018-01-24 16:43+0000\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
+"PO-Revision-Date: 2018-03-26 12:37+0000\n"
 "Last-Translator: Valerio Baldisserotto <svalo@libersoft.it>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"X-Generator: Weblate 2.20-dev\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
-msgstr "Richiesta di abbonamento"
+msgstr "Richiesta di iscrizione"
 
 #: main/src/ui/notifications.vala:76
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
@@ -36,21 +36,21 @@ msgstr "Rifiuta"
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
 msgid "Remove account %s?"
-msgstr "Rimuovere il conto %s?"
+msgstr "Rimuovere l'account %s?"
 
 #: main/src/ui/manage_accounts/dialog.vala:129
 msgid "Remove"
-msgstr "Cancella"
+msgstr "Rimuovi"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "Scegli un avatar"
 
-#: main/src/ui/manage_accounts/dialog.vala:155
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
-msgstr "Scegli"
+msgstr "Seleziona"
 
-#: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/manage_accounts/add_account_dialog.ui:11
@@ -59,11 +59,11 @@ msgstr "Scegli"
 msgid "Cancel"
 msgstr "Annulla"
 
-#: main/src/ui/manage_accounts/dialog.vala:163
+#: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
 msgstr "Immagini"
 
-#: main/src/ui/manage_accounts/dialog.vala:166
+#: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr "Tutti i documenti"
 
@@ -81,7 +81,7 @@ msgstr "Disconnesso"
 
 #: main/src/ui/manage_accounts/dialog.vala:244
 msgid "Wrong password"
-msgstr "Parola d'ordine sbagliata"
+msgstr "Password errata"
 
 #: main/src/ui/manage_accounts/dialog.vala:246
 msgid "Invalid TLS certificate"
@@ -94,11 +94,11 @@ msgstr "Errore"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:22
 msgid "Add Account"
-msgstr "Aggiungi un conto"
+msgstr "Aggiungi un account"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:45
 msgid "JID should be of the form “user@example.com”"
-msgstr ""
+msgstr "Il JID dovrebbe essere nella forma \"utente@example.com\""
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
@@ -142,16 +142,14 @@ msgid "Just now"
 msgstr "Adesso"
 
 #: main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
-msgstr "Entra in una conferenza"
+msgstr "Partecipa alla conferenza"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:134
+#: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
-msgstr "Entra"
+msgstr "Partecipa"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -163,48 +161,54 @@ msgstr "Aggiungi"
 msgid "Save"
 msgstr "Salva"
 
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "Avanti"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
-msgstr "Inizia una conversazione"
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
 msgstr "Inizia"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:106
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
 msgstr "Accesso in corso…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:139
+#: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
 msgstr "Una password è richiesta per entrare nella stanza"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:144
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
 msgstr "Ti è proibito entrare o creare la conferenza"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
 msgstr "La stanza non esiste"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:148
+#: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
 msgstr "Non sei abilitato a creare la stanza"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:150
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
 msgstr "La stanza è solo per membri"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
 msgstr "Scegli un soprannome differente"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
 msgstr "La stanza ha troppi occupanti"
 
@@ -231,24 +235,23 @@ msgstr "%a, %d %b"
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %i others"
-msgstr ""
+msgstr "%s, %s e %i altri"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s, %s and %s"
-msgstr ""
+msgstr "%s, %s, e %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:152
 #, c-format
 msgid "%s and %s"
-msgstr ""
+msgstr "%s e %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
-#, fuzzy
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "sta scrivendo…"
-msgstr[1] "sta scrivendo…"
+msgstr[1] "stanno scrivendo…"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
@@ -346,6 +349,7 @@ msgid "Conference Details"
 msgstr "Dettagli della conferenza"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
 msgstr "Dettagli del contatto"
 
@@ -371,7 +375,7 @@ msgstr "Ricercabile pubblicamente"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:52
 msgid "Occupants may change the subject"
-msgstr "Gli occupanti possono cambiare il soggetto"
+msgstr "Gli occupanti possono cambiare l'argomento"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:55
 msgid "Discover real JIDs"
@@ -446,8 +450,8 @@ msgstr "Invia notifiche di digitazione"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
-msgid "Send message marker"
-msgstr "Invia lo stato del messaggio"
+msgid "Send read receipts"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -494,7 +498,7 @@ msgstr "Trasforma smileys in emojis"
 
 #: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:6
 msgid "Accounts"
-msgstr "Conti"
+msgstr "Account"
 
 #: main/data/manage_accounts/dialog.ui:200
 #: main/data/manage_accounts/add_account_dialog.ui:102
@@ -540,6 +544,40 @@ msgstr "Alias"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Aggiungi Contatto"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Send message marker"
+#~ msgstr "Invia lo stato del messaggio"
+
+#~ msgid "Start Chat"
+#~ msgstr "Inizia una conversazione"
 
 #~ msgid "Request presence updates"
 #~ msgstr "Richiedi gli aggiornamenti di stato"

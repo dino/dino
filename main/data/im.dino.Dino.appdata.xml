@@ -13,7 +13,7 @@
     </p>
     <p>
       It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features
-      such as read marker and typing notifications.
+      such as read receipts and typing notifications.
     </p>
     <p>
       Dino fetches history from the server and synchronizes messages with other devices.
@@ -25,11 +25,11 @@
       <image height="900" width="1600">https://dino.im/img/appdata/main.png</image>
     </screenshot>
     <screenshot>
-      <caption>Start a chat</caption>
+      <caption>Start Conversation</caption>
       <image height="900" width="1600">https://dino.im/img/appdata/start_chat.png</image>
     </screenshot>
     <screenshot>
-      <caption>Contact details</caption>
+      <caption>Contact Details</caption>
       <image height="900" width="1600">https://dino.im/img/appdata/contact_details.png</image>
     </screenshot>
   </screenshots>

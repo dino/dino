@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
-"PO-Revision-Date: 2017-11-23 00:31+0000\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
+"PO-Revision-Date: 2018-04-08 08:34+0000\n"
 "Last-Translator: Aitor Beriain <beriain@bitmessage.ch>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
 "eu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 2.20\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
@@ -42,15 +42,15 @@ msgstr "%s kontua kendu?"
 msgid "Remove"
 msgstr "Kendu"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "Irudia hautatu"
 
-#: main/src/ui/manage_accounts/dialog.vala:155
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
 msgstr "Hautatu"
 
-#: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/manage_accounts/add_account_dialog.ui:11
@@ -59,11 +59,11 @@ msgstr "Hautatu"
 msgid "Cancel"
 msgstr "Utzi"
 
-#: main/src/ui/manage_accounts/dialog.vala:163
+#: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
 msgstr "Irudiak"
 
-#: main/src/ui/manage_accounts/dialog.vala:166
+#: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr "Fitxategi guztiak"
 
@@ -85,7 +85,7 @@ msgstr "Pasahitz okerra"
 
 #: main/src/ui/manage_accounts/dialog.vala:246
 msgid "Invalid TLS certificate"
-msgstr ""
+msgstr "TLS ziurtagiri ez balidouna"
 
 #: main/src/ui/manage_accounts/dialog.vala:249
 #: main/src/ui/manage_accounts/dialog.vala:251
@@ -98,7 +98,7 @@ msgstr "Kontua gehitu"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:45
 msgid "JID should be of the form “user@example.com”"
-msgstr ""
+msgstr "JIDak \"erabiltzailea@eredua.com\" itxura izan beharko luke"
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
@@ -109,7 +109,7 @@ msgstr "Ni"
 #: main/src/ui/conversation_summary/date_separator_populator.vala:102
 #, no-c-format
 msgid "%b %d"
-msgstr ""
+msgstr "%b %d"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:158
 #: main/src/ui/conversation_summary/date_separator_populator.vala:93
@@ -126,7 +126,7 @@ msgstr "%H∶%M"
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
-msgstr ""
+msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:165
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
@@ -142,14 +142,12 @@ msgid "Just now"
 msgstr "Orain"
 
 #: main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
 msgstr "Konferentziara batu"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:134
+#: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
 msgstr "Batu"
 
@@ -163,48 +161,54 @@ msgstr "Gehitu"
 msgid "Save"
 msgstr "Gorde"
 
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "Hurrengoa"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
-msgstr "Berriketa hasi"
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
 msgstr "Hasi"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:106
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
-msgstr "Batzen..."
+msgstr "Batzen…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:139
+#: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
 msgstr "Pasahitza behar da gelara sartzeko"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:144
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
-msgstr ""
+msgstr "Konferentzia sortu edo batzea debekatuta"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
 msgstr "Gela ez da existitzen"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:148
+#: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
 msgstr "Ez duzu gela sortzeko baimenik"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:150
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
 msgstr "Gela kideentzat da soilik"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
 msgstr "Ezizen ezberdin bat hautatu"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
 msgstr "Gelak kide gehiegi ditu"
 
@@ -222,33 +226,32 @@ msgstr "Ez dago solasaldi aktiborik"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:87
 msgid "Today"
-msgstr ""
+msgstr "Gaur"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 msgid "%a, %b %d"
-msgstr ""
+msgstr "%a, %b %d"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %i others"
-msgstr ""
+msgstr "%s, %s eta beste %i"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s, %s and %s"
-msgstr ""
+msgstr "%s, %s eta %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:152
 #, c-format
 msgid "%s and %s"
-msgstr ""
+msgstr "%s eta %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
-#, fuzzy
 msgid "is typing…"
 msgid_plural "are typing…"
-msgstr[0] "idazten ari da..."
-msgstr[1] "idazten ari da..."
+msgstr[0] "idazten ari da…"
+msgstr[1] "idazten ari dira…"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
@@ -256,7 +259,7 @@ msgstr "idazteari utzi dio"
 
 #: main/src/ui/conversation_summary/default_file_display.vala:50
 msgid "File"
-msgstr ""
+msgstr "Fitxategia"
 
 #: main/src/ui/conversation_summary/message_textview.vala:41
 msgid "Message too long"
@@ -264,49 +267,49 @@ msgstr "Mezu luzeegia"
 
 #: main/src/ui/conversation_summary/message_textview.vala:94
 msgid "Copy Link Address"
-msgstr ""
+msgstr "Loturaren helbidea kopiatu"
 
 #: main/src/ui/conversation_summary/message_textview.vala:102
 msgid "Copy"
-msgstr ""
+msgstr "Kopiatu"
 
 #: main/src/ui/conversation_summary/message_textview.vala:107
 msgid "Select All"
-msgstr ""
+msgstr "Dena hautatu"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr ""
+msgstr "Kontaktu honek bere kontaktuen zerrendara gehitu nahi zaitu"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr ""
+msgstr "%x, %H∶%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr ""
+msgstr "%x, %l∶%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr ""
+msgstr "%b %d, %H∶%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr ""
+msgstr "%b %d, %l∶%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr ""
+msgstr "%a, %H∶%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr ""
+msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/occupant_menu/list.vala:106
 msgid "Owner"
@@ -346,6 +349,7 @@ msgid "Conference Details"
 msgstr "Konferentziaren xehetasunak"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
 msgstr "Kontaktuaren xehetasunak"
 
@@ -390,10 +394,9 @@ msgid "Password"
 msgstr "Pasahitza"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
-#, fuzzy
 msgid "Password required for room entry, if any"
 msgstr ""
-"Gelan sartzeko beharrezko pasahitza. Utzi zuriz pasahitzik ez ezartzeko"
+"Gelan sartzeko beharrezko pasahitza, utzi zuriz pasahitzik ez ezartzeko"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Moderated"
@@ -438,6 +441,7 @@ msgstr "Blokeatu"
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
 msgstr ""
+"Komunikazioa eta egoeraren eguneraketak edozein norabideetan blokeatuta daude"
 
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/data/settings_dialog.ui:22
@@ -446,8 +450,8 @@ msgstr "Idazte jakinarazpenak bidali"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
-msgid "Send message marker"
-msgstr "Mezu marka bidali"
+msgid "Send read receipts"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -539,7 +543,41 @@ msgstr "Ezizena"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
+msgstr "Kontaktua gehitu"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
 msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Send message marker"
+#~ msgstr "Mezu marka bidali"
+
+#~ msgid "Start Chat"
+#~ msgstr "Berriketa hasi"
 
 #~ msgid "Request presence updates"
 #~ msgstr "Presentzia eguneraketak eskatu"

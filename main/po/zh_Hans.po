@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
-"PO-Revision-Date: 2017-06-01 10:32+0000\n"
-"Last-Translator: tonghuix <tonghuix@gmail.com>\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
+"PO-Revision-Date: 2018-04-09 15:35+0000\n"
+"Last-Translator: 朱陈锬 <201603748@stu.lzjtu.edu.cn>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2.15-dev\n"
+"X-Generator: Weblate 2.20\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
@@ -36,21 +36,21 @@ msgstr "拒绝"
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
 msgid "Remove account %s?"
-msgstr ""
+msgstr "移除账户 %s？"
 
 #: main/src/ui/manage_accounts/dialog.vala:129
 msgid "Remove"
-msgstr ""
+msgstr "移除"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "选择头像"
 
-#: main/src/ui/manage_accounts/dialog.vala:155
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
 msgstr "选择"
 
-#: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/manage_accounts/add_account_dialog.ui:11
@@ -59,17 +59,17 @@ msgstr "选择"
 msgid "Cancel"
 msgstr "取消"
 
-#: main/src/ui/manage_accounts/dialog.vala:163
+#: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:166
+#: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
-msgstr ""
+msgstr "所有文件"
 
 #: main/src/ui/manage_accounts/dialog.vala:231
 msgid "Connecting…"
-msgstr ""
+msgstr "连接中…"
 
 #: main/src/ui/manage_accounts/dialog.vala:233
 msgid "Connected"
@@ -85,7 +85,7 @@ msgstr "密码错误"
 
 #: main/src/ui/manage_accounts/dialog.vala:246
 msgid "Invalid TLS certificate"
-msgstr ""
+msgstr "无效的 TLS 证书"
 
 #: main/src/ui/manage_accounts/dialog.vala:249
 #: main/src/ui/manage_accounts/dialog.vala:251
@@ -103,7 +103,7 @@ msgstr ""
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
 msgid "Me"
-msgstr ""
+msgstr "我"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:154
 #: main/src/ui/conversation_summary/date_separator_populator.vala:102
@@ -141,14 +141,12 @@ msgid "Just now"
 msgstr "刚刚"
 
 #: main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
 msgstr "加入群聊"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:134
+#: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
 msgstr "加入"
 
@@ -162,50 +160,56 @@ msgstr "添加"
 msgid "Save"
 msgstr "保存"
 
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "下一个"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
-msgstr "开始聊天"
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
-msgstr ""
+msgstr "开始"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:106
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
-msgstr ""
+msgstr "加入中…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:139
+#: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:144
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
-msgstr ""
+msgstr "房间不存在"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:148
+#: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
-msgstr ""
+msgstr "不允许创建房间"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:150
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
 msgstr ""
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
-msgstr ""
+msgstr "选择一个不同的昵称"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
-msgstr ""
+msgstr "房间内人数过多"
 
 #: main/src/ui/unified_window.vala:166
 msgid "No active accounts"
@@ -221,7 +225,7 @@ msgstr "没有激活的会话"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:87
 msgid "Today"
-msgstr ""
+msgstr "今天"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 msgid "%a, %b %d"
@@ -254,7 +258,7 @@ msgstr "已经停止输入"
 
 #: main/src/ui/conversation_summary/default_file_display.vala:50
 msgid "File"
-msgstr ""
+msgstr "文件"
 
 #: main/src/ui/conversation_summary/message_textview.vala:41
 msgid "Message too long"
@@ -262,15 +266,15 @@ msgstr ""
 
 #: main/src/ui/conversation_summary/message_textview.vala:94
 msgid "Copy Link Address"
-msgstr ""
+msgstr "复制链接地址"
 
 #: main/src/ui/conversation_summary/message_textview.vala:102
 msgid "Copy"
-msgstr ""
+msgstr "复制"
 
 #: main/src/ui/conversation_summary/message_textview.vala:107
 msgid "Select All"
-msgstr ""
+msgstr "全选"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -325,7 +329,7 @@ msgstr "用户"
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:36
 msgid "Invite"
-msgstr ""
+msgstr "邀请"
 
 #: main/src/ui/occupant_menu/view.vala:35
 msgid "Invite to Conference"
@@ -344,6 +348,7 @@ msgid "Conference Details"
 msgstr ""
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
 msgstr "联系人详情"
 
@@ -442,8 +447,8 @@ msgstr "发送打字通知"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
-msgid "Send message marker"
-msgstr "发送消息标记"
+msgid "Send read receipts"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -474,7 +479,7 @@ msgstr "只有被提到时"
 #: main/src/ui/contact_details/settings_provider.vala:115
 #, c-format
 msgid "Default: %s"
-msgstr ""
+msgstr "默认：%s"
 
 #: main/data/settings_dialog.ui:7
 msgid "Preferences"
@@ -535,7 +540,41 @@ msgstr "别名"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
+msgstr "增加联系人"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
 msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Send message marker"
+#~ msgstr "发送消息标记"
+
+#~ msgid "Start Chat"
+#~ msgstr "开始聊天"
 
 #~ msgid "Request presence updates"
 #~ msgstr "请求在线更新"

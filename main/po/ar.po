@@ -1,49 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Luxembourgish (Dino)\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-03-27 21:47+0000\n"
-"Last-Translator: Dennis Fink <dennis.fink@c3l.lu>\n"
-"Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
-"translations/lb/>\n"
-"Language: lb\n"
+"PO-Revision-Date: 2018-04-13 17:34+0000\n"
+"Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
+"Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
+"ar/>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
-msgstr "Abonnement Ufro"
+msgstr "طلب اشتراك"
 
 #: main/src/ui/notifications.vala:76
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
-msgstr "Akzeptéieren"
+msgstr "قبول"
 
 #: main/src/ui/notifications.vala:77
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
-msgstr "Verweigeren"
+msgstr "رفض"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
 msgid "Remove account %s?"
-msgstr "Konto %s läschen?"
+msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:129
 msgid "Remove"
-msgstr "Läschen"
+msgstr "حذف"
 
 #: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
-msgstr "Avatar auswielen"
+msgstr "اختيار الصورة الرمزية"
 
 #: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
-msgstr "Auswielen"
+msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
@@ -52,109 +58,113 @@ msgstr "Auswielen"
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
-msgstr "Ofbriechen"
+msgstr "إلغاء"
 
 #: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
-msgstr "Biller"
+msgstr "الصور"
 
 #: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
-msgstr "All Dateien"
+msgstr "كافة الملفات"
 
 #: main/src/ui/manage_accounts/dialog.vala:231
 msgid "Connecting…"
-msgstr "Verbannen…"
+msgstr "الإتصال جارٍ …"
 
 #: main/src/ui/manage_accounts/dialog.vala:233
 msgid "Connected"
-msgstr "Verbonnen"
+msgstr "متصل"
 
 #: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Disconnected"
-msgstr "Getrennt"
+msgstr "غير متصل"
 
 #: main/src/ui/manage_accounts/dialog.vala:244
 msgid "Wrong password"
-msgstr "Falsch Passwuert"
+msgstr "كلمة المرور خاطئة"
 
 #: main/src/ui/manage_accounts/dialog.vala:246
 msgid "Invalid TLS certificate"
-msgstr "Invaliden TLS Zertifikat"
+msgstr "شهادة TLS غير صالحة"
 
 #: main/src/ui/manage_accounts/dialog.vala:249
 #: main/src/ui/manage_accounts/dialog.vala:251
 msgid "Error"
-msgstr "Feeler"
+msgstr "خطأ"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:22
 msgid "Add Account"
-msgstr "Account bäisetzen"
+msgstr "إضافة حساب"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:45
 msgid "JID should be of the form “user@example.com”"
-msgstr "JID sollt folgend Form hunn „user@example.com“"
+msgstr ""
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
 msgid "Me"
-msgstr "Ech"
+msgstr "أنا"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:154
 #: main/src/ui/conversation_summary/date_separator_populator.vala:102
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:158
 #: main/src/ui/conversation_summary/date_separator_populator.vala:93
 msgid "Yesterday"
-msgstr "Gëschter"
+msgstr "البارحة"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:161
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "%H∶%M"
-msgstr "%H:%M"
+msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:162
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "%l∶%M %p"
-msgstr "%l:%M %p"
+msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:165
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] "%i Minutt hier"
-msgstr[1] "%i Minutten hier"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #: main/src/ui/conversation_selector/conversation_row.vala:167
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
-msgstr "Just elo"
+msgstr "الآن"
 
 #: main/src/ui/application.vala:44
 msgid "Join Conference"
-msgstr "Konferenz bäitrieden"
+msgstr ""
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
-msgstr "Bäitrieden"
+msgstr "إنضمّ"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
-msgstr "Bäisetzen"
+msgstr "إضافة"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
 #: main/data/manage_accounts/add_account_dialog.ui:21
 msgid "Save"
-msgstr "Späicheren"
+msgstr "حفظ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
@@ -163,7 +173,7 @@ msgstr ""
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
-msgstr "Nächst"
+msgstr "التالي"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
@@ -173,212 +183,216 @@ msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
-msgstr "Start"
+msgstr "إبدأ"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
-msgstr "Bäitrieden…"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
-msgstr "Passwuert gëtt gebraucht fir de Raum ze betrieden"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
-msgstr "Gebannt vum bäitrieden an erstelle vu Konferenzen"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
-msgstr "Raum existéiert net"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
-msgstr "Net erlaabt ee Raum ze erstellen"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
-msgstr "Raum ass nëmme fir Memberen"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
-msgstr "Wiel een anere Spëtznumm"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
-msgstr "De Raum huet ze vill Benotzer"
+msgstr ""
 
 #: main/src/ui/unified_window.vala:166
 msgid "No active accounts"
-msgstr "Keng Kontoen aktiv"
+msgstr ""
 
 #: main/src/ui/unified_window.vala:167
 msgid "Manage accounts"
-msgstr "Kontoe managen"
+msgstr ""
 
 #: main/src/ui/unified_window.vala:174
 msgid "No active conversations"
-msgstr "Keng Conversatiounen aktiv"
+msgstr ""
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:87
 msgid "Today"
-msgstr "Haut"
+msgstr ""
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 msgid "%a, %b %d"
-msgstr "%a, %b %d"
+msgstr ""
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %i others"
-msgstr "%s, %s an %i anerer"
+msgstr ""
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s, %s and %s"
-msgstr "%s, %s an %s"
+msgstr ""
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:152
 #, c-format
 msgid "%s and %s"
-msgstr "%s an %s"
+msgstr ""
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
 msgid "is typing…"
 msgid_plural "are typing…"
-msgstr[0] "tippt grad…"
-msgstr[1] "tippe grad…"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
-msgstr "huet opgehalen ze tippen"
+msgstr ""
 
 #: main/src/ui/conversation_summary/default_file_display.vala:50
 msgid "File"
-msgstr "Datei"
+msgstr ""
 
 #: main/src/ui/conversation_summary/message_textview.vala:41
 msgid "Message too long"
-msgstr "Noriicht ze laang"
+msgstr ""
 
 #: main/src/ui/conversation_summary/message_textview.vala:94
 msgid "Copy Link Address"
-msgstr "Kopéier Link Adress"
+msgstr ""
 
 #: main/src/ui/conversation_summary/message_textview.vala:102
 msgid "Copy"
-msgstr "Kopéieren"
+msgstr ""
 
 #: main/src/ui/conversation_summary/message_textview.vala:107
 msgid "Select All"
-msgstr "Alles auswielen"
+msgstr ""
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr "Dëse Kontakt wéilt dech gären an seng Kontaktlecht ophuelen"
+msgstr ""
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr "%x, %H:%M"
+msgstr ""
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr "%x, %l:%M %p"
+msgstr ""
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr "%b %d, %H:%M"
+msgstr ""
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr "%b %d, %l:%M %p"
+msgstr ""
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr "%a, %H∶%M"
+msgstr ""
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr "%a, %l∶%M %p"
+msgstr ""
 
 #: main/src/ui/occupant_menu/list.vala:106
 msgid "Owner"
-msgstr "Besëtzer"
+msgstr ""
 
 #: main/src/ui/occupant_menu/list.vala:108
 msgid "Admin"
-msgstr "Administrateur"
+msgstr ""
 
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Member"
-msgstr "Member"
+msgstr ""
 
 #: main/src/ui/occupant_menu/list.vala:112
 msgid "User"
-msgstr "Benotzer"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:36
 msgid "Invite"
-msgstr "Alueden"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:35
 msgid "Invite to Conference"
-msgstr "Invitéieren an Konferenz"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:85
 msgid "Start private conversation"
-msgstr "Privat Conversatioun starten"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:93
 msgid "Kick"
-msgstr "Erausgeheien"
+msgstr ""
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr "Konferenz Detailer"
+msgstr ""
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
 #: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
-msgstr "Kontaktdetailer"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:39
 msgid "Name of the room"
-msgstr "Numm vum Raum"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:42
 msgid "Description of the room"
-msgstr "Beschreiwung vum Raum"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:45
 msgid "Persistent"
-msgstr "Dauerhaft"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:46
 msgid "The room will persist after the last occupant leaves"
-msgstr "De Raum bleift bestoen, nodeems de leschte Benotzer erausgaangen ass"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:49
 msgid "Publicly searchable"
-msgstr "Ëffentlech siichtbar"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:52
 msgid "Occupants may change the subject"
-msgstr "Benotzer däerfe Sujet änneren"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:55
 msgid "Discover real JIDs"
-msgstr "Echt JIDs gesinn"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Who may discover real JIDs?"
-msgstr "Ween däerf echt JIDs gesinn?"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
@@ -386,39 +400,39 @@ msgstr "Ween däerf echt JIDs gesinn?"
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
-msgstr "Passwuert"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Password required for room entry, if any"
-msgstr "Passwuert fir de Raum ze betrieden, wann een gebraucht gëtt"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Moderated"
-msgstr "Moderéiert"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:64
 msgid "Only occupants with voice may send messages"
-msgstr "Nëmme Benotzer mat Stemm däerfe Messagë schécken"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Members only"
-msgstr "Nëmme fir Memberen"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:68
 msgid "Only members may enter the room"
-msgstr "Nëmme Memberen däerfen de Raum betrieden"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "Message history"
-msgstr "Messagen Historique"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:72
 msgid "Maximum amount of backlog issued by the room"
-msgstr "Maximal Unzuel vum ale Messagen, déi vum Raum geschéckt ginn"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Room Configuration"
-msgstr "Raum Astellungen"
+msgstr ""
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:22
@@ -426,20 +440,20 @@ msgstr "Raum Astellungen"
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/data/menu_app.ui:10
 msgid "Settings"
-msgstr "Astellungen"
+msgstr ""
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr "Blockéieren"
+msgstr ""
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
-msgstr "Kommunikatioun a Status Updates sinn an all Richtung blockéiert"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/data/settings_dialog.ui:22
 msgid "Send typing notifications"
-msgstr "Tipp-Notifikatioune schécken"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
@@ -449,94 +463,94 @@ msgstr ""
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
 msgid "Notifications"
-msgstr "Notifikatiounen"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:39
 msgid "Local Settings"
-msgstr "Lokal Astellungen"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:74
 #: main/src/ui/contact_details/settings_provider.vala:114
 #: main/src/ui/contact_details/settings_provider.vala:116
 msgid "On"
-msgstr "Un"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:76
 #: main/src/ui/contact_details/settings_provider.vala:114
 #: main/src/ui/contact_details/settings_provider.vala:117
 msgid "Off"
-msgstr "Aus"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:78
 msgid "Only when mentioned"
-msgstr "Nëmme wann erwäänt"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:80
 #: main/src/ui/contact_details/settings_provider.vala:115
 #, c-format
 msgid "Default: %s"
-msgstr "Standard: %s"
+msgstr ""
 
 #: main/data/settings_dialog.ui:7
 msgid "Preferences"
-msgstr "Astellungen"
+msgstr ""
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
-msgstr "Benoriichtege wann een neie Message ukënnt"
+msgstr ""
 
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
-msgstr "Smileyen an Emojien konvertéieren"
+msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:6
 msgid "Accounts"
-msgstr "Kontoen"
+msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:200
 #: main/data/manage_accounts/add_account_dialog.ui:102
 msgid "Local alias"
-msgstr "Lokalen Pseudonym"
+msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:255
 msgid "No accounts configured"
-msgstr "Keng Kontoe konfiguréiert"
+msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
-msgstr "Ee Konto bäisetzen"
+msgstr ""
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr "Onverschlësselt"
+msgstr ""
 
 #: main/data/menu_app.ui:16
 msgid "Quit"
-msgstr "Zoumaachen"
+msgstr ""
 
 #: main/data/conversation_selector/view.ui:14
 msgid "Search"
-msgstr "Sichen"
+msgstr ""
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
 msgid "Account"
-msgstr "Konto"
+msgstr ""
 
 #: main/data/add_conversation/conference_details_fragment.ui:123
 #: main/data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
-msgstr "Spëtznumm"
+msgstr ""
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:175
 #: main/data/add_conversation/add_contact_dialog.ui:102
 msgid "Alias"
-msgstr "Pseudonym"
+msgstr ""
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr "Kontakt bäisetzen"
+msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml:8
 msgid "Modern XMPP Client"
@@ -566,16 +580,5 @@ msgstr ""
 msgid "Main window with conversations"
 msgstr ""
 
-#~ msgid "Send message marker"
-#~ msgstr "Message Marker verschécken"
-
 #~ msgid "Start Chat"
-#~ msgstr "Chat starten"
-
-#~ msgid "Request presence updates"
-#~ msgstr "Presenz Updaten ufroen"
-
-#~ msgid "This is an app-notification. Click the button to dismiss"
-#~ msgstr ""
-#~ "Dat heiten ass eng App-Notifikatioun. Klick de Knäppche fir ze ewech ze "
-#~ "maachen"
+#~ msgstr "إبدأ الدردشة"
