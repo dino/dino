@@ -8,7 +8,8 @@ export PATH="/mingw64/bin:/usr/bin:$PATH"
 pacman -Q
 
 pacman -R --noconfirm \
-       mingw-w64-i686-sqlite3
+       mingw-w64-i686-sqlite3 \
+       mingw-w64-i686-python3
 
 # pacman -Syuu --needed --noconfirm --ask=127
 pacman -S --noconfirm --needed \
