@@ -5,6 +5,9 @@ IFS=$'\n\t'
 
 export PATH="/mingw64/bin:/usr/bin:$PATH"
 
+pacman -R --noconfirm \
+       mingw32/mingw-w64-i686-sqlite3 || true
+
 # pacman -Syuu --needed --noconfirm --ask=127
 pacman -S --noconfirm --needed \
        mingw64/mingw-w64-x86_64-cmake \
