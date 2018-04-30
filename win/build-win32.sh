@@ -7,6 +7,9 @@ export PATH="/mingw64/bin:/usr/bin:$PATH"
 
 pacman -Q
 
+pacman -R --noconfirm \
+       mingw-w64-i686-sqlite3
+
 # pacman -Syuu --needed --noconfirm --ask=127
 pacman -S --noconfirm --needed \
        mingw64/mingw-w64-x86_64-cmake \
