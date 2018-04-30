@@ -9,7 +9,8 @@ pacman -Q
 
 pacman -R --noconfirm \
        mingw-w64-i686-sqlite3 \
-       mingw-w64-i686-python3
+       mingw-w64-i686-python3 \
+       mingw-w64-i686-gdb
 
 # pacman -Syuu --needed --noconfirm --ask=127
 pacman -S --noconfirm --needed \
