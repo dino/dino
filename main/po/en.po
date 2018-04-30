@@ -158,7 +158,7 @@ msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
+msgid "Start Conversation"
 msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
