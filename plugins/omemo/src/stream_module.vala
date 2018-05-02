@@ -94,6 +94,13 @@ public class StreamModule : XmppStreamModule {
             }
 
             message.stanza.put_node(encrypted);
+
+            // Add XEP-0380 (Explicit Message Encryption) tag
+            StanzaNode encryption = new StanzaNode.build("encryption", "urn:xmpp:eme:0").add_self_xmlns()
+                    .put_attribute("name", "OMEMO")
+                    .put_attribute("namespace", "eu.siacs.conversations.axolotl");
+			message.stanza.put_node(encryption);
+
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;
         } catch (Error e) {
