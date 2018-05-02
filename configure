@@ -130,8 +130,8 @@ while true; do
         # Ignore for autotools compat
         --host | --build ) shift; shift ;;
         --disable-dependency-tracking | --enable-dependency-tracking ) shift ;;
-	# Ignore for debian compat
-	--disable-silent-rules | --disable-maintainer-mode ) shift ;;
+        # Ignore for debian compat
+        --disable-silent-rules | --disable-maintainer-mode ) shift ;;
         -h | --help ) help; exit 0 ;;
         -- ) shift; break ;;
         * ) break ;;
