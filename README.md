@@ -39,8 +39,8 @@ Please refer to [the wiki](https://github.com/dino/dino/wiki) for further inform
 
 License
 -------
-    Dino - Modern Jabber/XMPP Client using GTK+/Vala
-    Copyright (C) 2017 Dino contributors
+    Dino - Modern XMPP Client using GTK+/Vala
+    Copyright © 2018 Dino contributors
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
