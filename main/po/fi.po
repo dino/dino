@@ -1,0 +1,578 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
+"PO-Revision-Date: 2018-04-30 11:36+0000\n"
+"Last-Translator: mjlapin <muu@kapsi.fi>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
+"translations/fi/>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.0-dev\n"
+
+#: main/src/ui/notifications.vala:70
+msgid "Subscription request"
+msgstr "Yhteyspyyntö"
+
+#: main/src/ui/notifications.vala:76
+#: main/src/ui/conversation_summary/subscription_notification.vala:37
+msgid "Accept"
+msgstr "Hyväksy"
+
+#: main/src/ui/notifications.vala:77
+#: main/src/ui/conversation_summary/subscription_notification.vala:38
+msgid "Deny"
+msgstr "Hylkää"
+
+#: main/src/ui/manage_accounts/dialog.vala:126
+#, c-format
+msgid "Remove account %s?"
+msgstr "Poista tili %s?"
+
+#: main/src/ui/manage_accounts/dialog.vala:129
+msgid "Remove"
+msgstr "Poista"
+
+#: main/src/ui/manage_accounts/dialog.vala:153
+msgid "Select avatar"
+msgstr "Valitse keskustelukuvake"
+
+#: main/src/ui/manage_accounts/dialog.vala:153
+msgid "Select"
+msgstr "Valitse"
+
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:16
+#: main/src/ui/add_conversation/select_contact_dialog.vala:41
+#: main/data/manage_accounts/add_account_dialog.ui:11
+#: main/data/add_conversation/add_groupchat_dialog.ui:11
+#: main/data/add_conversation/add_contact_dialog.ui:12
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: main/src/ui/manage_accounts/dialog.vala:161
+msgid "Images"
+msgstr "Kuvat"
+
+#: main/src/ui/manage_accounts/dialog.vala:165
+msgid "All files"
+msgstr "Kaikki tiedostot"
+
+#: main/src/ui/manage_accounts/dialog.vala:231
+msgid "Connecting…"
+msgstr "Yhdistää…"
+
+#: main/src/ui/manage_accounts/dialog.vala:233
+msgid "Connected"
+msgstr "Yhdistetty"
+
+#: main/src/ui/manage_accounts/dialog.vala:235
+msgid "Disconnected"
+msgstr "Ei yhdistetty"
+
+#: main/src/ui/manage_accounts/dialog.vala:244
+msgid "Wrong password"
+msgstr "Väärä salasana"
+
+#: main/src/ui/manage_accounts/dialog.vala:246
+msgid "Invalid TLS certificate"
+msgstr "TLS-varmenne ei kelpaa"
+
+#: main/src/ui/manage_accounts/dialog.vala:249
+#: main/src/ui/manage_accounts/dialog.vala:251
+msgid "Error"
+msgstr "Virhe"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:22
+msgid "Add Account"
+msgstr "Lisää tili"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:45
+msgid "JID should be of the form “user@example.com”"
+msgstr "Anna JID muodossa \"user@example.com\""
+
+#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
+#: main/src/ui/conversation_selector/chat_row.vala:30
+msgid "Me"
+msgstr "Minä"
+
+#: main/src/ui/conversation_selector/conversation_row.vala:154
+#: main/src/ui/conversation_summary/date_separator_populator.vala:102
+#, no-c-format
+msgid "%b %d"
+msgstr "%d. %b"
+
+#: main/src/ui/conversation_selector/conversation_row.vala:158
+#: main/src/ui/conversation_summary/date_separator_populator.vala:93
+msgid "Yesterday"
+msgstr "Eilen"
+
+#: main/src/ui/conversation_selector/conversation_row.vala:161
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
+#, no-c-format
+msgid "%H∶%M"
+msgstr "%H∶%M"
+
+#: main/src/ui/conversation_selector/conversation_row.vala:162
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr "%l∶%M %p"
+
+#: main/src/ui/conversation_selector/conversation_row.vala:165
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "%i min sitten"
+msgstr[1] "%i min sitten"
+
+#: main/src/ui/conversation_selector/conversation_row.vala:167
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
+msgid "Just now"
+msgstr "Juuri nyt"
+
+#: main/src/ui/application.vala:44
+msgid "Join Conference"
+msgstr "Liity ryhmäkeskusteluun"
+
+#: main/src/ui/application.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:63
+#: main/src/ui/add_conversation/conference_details_fragment.vala:133
+msgid "Join"
+msgstr "Liity"
+
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
+#: main/data/add_conversation/add_contact_dialog.ui:24
+msgid "Add"
+msgstr "Lisää"
+
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
+#: main/data/manage_accounts/add_account_dialog.ui:21
+msgid "Save"
+msgstr "Tallenna"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:48
+msgid "Next"
+msgstr "Seuraava"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:85
+#: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:86
+msgid "Start"
+msgstr "Aloita"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
+msgid "Joining…"
+msgstr "Yhdistää…"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:138
+msgid "Password required to enter room"
+msgstr "Huoneeseen vaaditaan salasana"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
+msgid "Banned from joining or creating conference"
+msgstr "Estetty liittymästä tai luomasta ryhmäkeskustelua"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:145
+msgid "Room does not exist"
+msgstr "Huonetta ei ole olemassa"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:147
+msgid "Not allowed to create room"
+msgstr "Huoneen luomista ei sallita"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
+msgid "Members-only room"
+msgstr "Huone vain jäsenille"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:152
+msgid "Choose a different nick"
+msgstr "Valitse jokin muu nimimerkki"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:154
+msgid "Too many occupants in room"
+msgstr "Liikaa käyttäjiä huoneessa"
+
+#: main/src/ui/unified_window.vala:166
+msgid "No active accounts"
+msgstr "Ei aktiivisia tilejä"
+
+#: main/src/ui/unified_window.vala:167
+msgid "Manage accounts"
+msgstr "Hallitse tilejä"
+
+#: main/src/ui/unified_window.vala:174
+msgid "No active conversations"
+msgstr "Ei aktiivisia keskusteluja"
+
+#: main/src/ui/conversation_summary/date_separator_populator.vala:87
+msgid "Today"
+msgstr "Tänään"
+
+#: main/src/ui/conversation_summary/date_separator_populator.vala:100
+msgid "%a, %b %d"
+msgstr "%a, %b %d"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#, c-format
+msgid "%s, %s and %i others"
+msgstr "%s, %s and %i muuta"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#, c-format
+msgid "%s, %s and %s"
+msgstr "%s, %s ja %s"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:152
+#, c-format
+msgid "%s and %s"
+msgstr "%s ja %s"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+msgid "is typing…"
+msgid_plural "are typing…"
+msgstr[0] "kirjoittaa…"
+msgstr[1] "kirjoittavat…"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:159
+msgid "has stopped typing"
+msgstr "on lakannut kirjoittamasta"
+
+#: main/src/ui/conversation_summary/default_file_display.vala:50
+msgid "File"
+msgstr "Tiedosto"
+
+#: main/src/ui/conversation_summary/message_textview.vala:41
+msgid "Message too long"
+msgstr "Viesti liian pitkä"
+
+#: main/src/ui/conversation_summary/message_textview.vala:94
+msgid "Copy Link Address"
+msgstr "Kopioi linkin osoite"
+
+#: main/src/ui/conversation_summary/message_textview.vala:102
+msgid "Copy"
+msgstr "Kopioi"
+
+#: main/src/ui/conversation_summary/message_textview.vala:107
+msgid "Select All"
+msgstr "Valitse kaikki"
+
+#: main/src/ui/conversation_summary/subscription_notification.vala:48
+msgid "This contact would like to add you to their contact list"
+msgstr "Tämä käyttäjä haluaisi lisätä sinut yhteystietoihinsa"
+
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x, %H∶%M"
+
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x, %l∶%M %p"
+
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%d. %b, %H∶%M"
+
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%d. %b, %l∶%M %p"
+
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%a, %H∶%M"
+
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%a, %l∶%M %p"
+
+#: main/src/ui/occupant_menu/list.vala:106
+msgid "Owner"
+msgstr "Omistaja"
+
+#: main/src/ui/occupant_menu/list.vala:108
+msgid "Admin"
+msgstr "Ylläpitäjä"
+
+#: main/src/ui/occupant_menu/list.vala:110
+msgid "Member"
+msgstr "Jäsen"
+
+#: main/src/ui/occupant_menu/list.vala:112
+msgid "User"
+msgstr "Käyttäjä"
+
+#: main/src/ui/occupant_menu/view.vala:27
+#: main/src/ui/occupant_menu/view.vala:36
+msgid "Invite"
+msgstr "Kutsu"
+
+#: main/src/ui/occupant_menu/view.vala:35
+msgid "Invite to Conference"
+msgstr "Kutsu ryhmäkeskusteluun"
+
+#: main/src/ui/occupant_menu/view.vala:85
+msgid "Start private conversation"
+msgstr "Aloita yksityiskeskustelu"
+
+#: main/src/ui/occupant_menu/view.vala:93
+msgid "Kick"
+msgstr "Potkaise pihalle"
+
+#: main/src/ui/contact_details/dialog.vala:37
+msgid "Conference Details"
+msgstr "Ryhmäkeskustelun yksityiskohdat"
+
+#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
+msgid "Contact Details"
+msgstr "Yhteystiedot"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:39
+msgid "Name of the room"
+msgstr "Huoneen nimi"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:42
+msgid "Description of the room"
+msgstr "Huoneen kuvaus"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:45
+msgid "Persistent"
+msgstr "Pysyvä"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:46
+msgid "The room will persist after the last occupant leaves"
+msgstr "Huone säilyy viimeisen käyttäjän poistuttua"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:49
+msgid "Publicly searchable"
+msgstr "Julkisesti löydettävissä"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:52
+msgid "Occupants may change the subject"
+msgstr "Käyttäjät voivat vaihtaa aihetta"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:55
+msgid "Discover real JIDs"
+msgstr "Näytä oikeat JID:t"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:56
+msgid "Who may discover real JIDs?"
+msgstr "Kuka voi nähdä oikeat JID:t?"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:59
+#: main/data/manage_accounts/dialog.ui:170
+#: main/data/manage_accounts/add_account_dialog.ui:73
+#: main/data/add_conversation/conference_details_fragment.ui:175
+#: main/data/add_conversation/add_groupchat_dialog.ui:147
+msgid "Password"
+msgstr "Salasana"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:60
+msgid "Password required for room entry, if any"
+msgstr "Huoneeseen vaadittava salasana, jos asetettu"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:63
+msgid "Moderated"
+msgstr "Moderoitu"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:64
+msgid "Only occupants with voice may send messages"
+msgstr "Vain äänen saaneet käyttäjät voivat lähettää viestejä"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:67
+msgid "Members only"
+msgstr "Vain jäsenille"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:68
+msgid "Only members may enter the room"
+msgstr "Vain jäsenet pääsevät huoneeseen"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:71
+msgid "Message history"
+msgstr "Viestihistoria"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:72
+msgid "Maximum amount of backlog issued by the room"
+msgstr "Säilytettyjen viestien enimmäismäärä huoneessa"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:78
+msgid "Room Configuration"
+msgstr "Huoneen asetukset"
+
+#: main/src/ui/contact_details/blocking_provider.vala:31
+#: main/src/ui/contact_details/settings_provider.vala:22
+#: main/src/ui/contact_details/settings_provider.vala:25
+#: main/src/ui/contact_details/settings_provider.vala:30
+#: main/data/menu_app.ui:10
+msgid "Settings"
+msgstr "Asetukset"
+
+#: main/src/ui/contact_details/blocking_provider.vala:31
+msgid "Block"
+msgstr "Estä"
+
+#: main/src/ui/contact_details/blocking_provider.vala:31
+msgid "Communication and status updates in either direction are blocked"
+msgstr "Viestit ja tilapäivitykset estetään molempiin suuntiin"
+
+#: main/src/ui/contact_details/settings_provider.vala:22
+#: main/data/settings_dialog.ui:22
+msgid "Send typing notifications"
+msgstr "Lähetä kirjoittamisilmoitukset"
+
+#: main/src/ui/contact_details/settings_provider.vala:25
+#: main/data/settings_dialog.ui:34
+msgid "Send read receipts"
+msgstr ""
+
+#: main/src/ui/contact_details/settings_provider.vala:30
+#: main/src/ui/contact_details/settings_provider.vala:39
+msgid "Notifications"
+msgstr "Ilmoitukset"
+
+#: main/src/ui/contact_details/settings_provider.vala:39
+msgid "Local Settings"
+msgstr "Paikalliset asetukset"
+
+#: main/src/ui/contact_details/settings_provider.vala:74
+#: main/src/ui/contact_details/settings_provider.vala:114
+#: main/src/ui/contact_details/settings_provider.vala:116
+msgid "On"
+msgstr "Käytössä"
+
+#: main/src/ui/contact_details/settings_provider.vala:76
+#: main/src/ui/contact_details/settings_provider.vala:114
+#: main/src/ui/contact_details/settings_provider.vala:117
+msgid "Off"
+msgstr "Pois"
+
+#: main/src/ui/contact_details/settings_provider.vala:78
+msgid "Only when mentioned"
+msgstr "Vain mainittaessa"
+
+#: main/src/ui/contact_details/settings_provider.vala:80
+#: main/src/ui/contact_details/settings_provider.vala:115
+#, c-format
+msgid "Default: %s"
+msgstr "Oletus: %s"
+
+#: main/data/settings_dialog.ui:7
+msgid "Preferences"
+msgstr "Asetukset"
+
+#: main/data/settings_dialog.ui:46
+msgid "Notify when a new message arrives"
+msgstr "Ilmoita kun uusi viesti saapuu"
+
+#: main/data/settings_dialog.ui:58
+msgid "Convert smileys to emojis"
+msgstr "Muuta hymiöt emojeiksi"
+
+#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:6
+msgid "Accounts"
+msgstr "Tilit"
+
+#: main/data/manage_accounts/dialog.ui:200
+#: main/data/manage_accounts/add_account_dialog.ui:102
+msgid "Local alias"
+msgstr "Paikallinen alias"
+
+#: main/data/manage_accounts/dialog.ui:255
+msgid "No accounts configured"
+msgstr "Ei asetettuja tilejä"
+
+#: main/data/manage_accounts/dialog.ui:266
+msgid "Add an account"
+msgstr "Lisää tili"
+
+#: main/data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Salaamaton"
+
+#: main/data/menu_app.ui:16
+msgid "Quit"
+msgstr "Lopeta"
+
+#: main/data/conversation_selector/view.ui:14
+msgid "Search"
+msgstr "Etsi"
+
+#: main/data/add_conversation/conference_details_fragment.ui:19
+#: main/data/add_conversation/add_groupchat_dialog.ui:49
+#: main/data/add_conversation/add_contact_dialog.ui:49
+msgid "Account"
+msgstr "Tili"
+
+#: main/data/add_conversation/conference_details_fragment.ui:123
+#: main/data/add_conversation/add_groupchat_dialog.ui:120
+msgid "Nick"
+msgstr "Nimimerkki"
+
+#: main/data/add_conversation/add_groupchat_dialog.ui:175
+#: main/data/add_conversation/add_contact_dialog.ui:102
+msgid "Alias"
+msgstr "Alias"
+
+#: main/data/add_conversation/add_contact_dialog.ui:8
+msgid "Add Contact"
+msgstr "Lisää yhteystieto"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Send message marker"
+#~ msgstr "Lähetä lukukuittaus"
+
+#~ msgid "Start Chat"
+#~ msgstr "Aloita keskustelu"

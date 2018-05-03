@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 17:37+0100\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
 "PO-Revision-Date: 2018-01-24 12:13+0000\n"
 "Last-Translator: Jean-Baptiste <jean-baptiste@holcroft.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-"
@@ -19,31 +19,31 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2.19-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
-#: plugins/openpgp/src/account_settings_widget.vala:81
-#: plugins/openpgp/src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
 msgstr "La publication des clefs est désactivée"
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr "Erreur dans GnuPG"
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
 msgstr "Aucune clef n’est disponible. Générez en une !"
 
-#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
 msgstr "Choix d’une clé"
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
 msgstr "Chargement…"
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
 msgstr "Interrogation de GnuPG"
-
-#: plugins/openpgp/src/account_settings_widget.vala:109
-msgid "Error in GnuPG"
-msgstr "Erreur dans GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"

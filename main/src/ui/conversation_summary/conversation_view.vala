@@ -32,6 +32,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     private Mutex reloading_mutex = Mutex();
     private bool animate = false;
+    private bool firstLoad = true;
 
     public ConversationView(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -59,7 +60,22 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         Util.force_base_background(this);
     }
 
+    // Workaround GTK TextView issues: Delay first load of contents
     public void initialize_for_conversation(Conversation? conversation) {
+        if (firstLoad) {
+            int timeout = firstLoad ? 1000 : 0;
+            Timeout.add(timeout, () => {
+                initialize_for_conversation_(conversation);
+                return false;
+            });
+            firstLoad = false;
+        } else {
+            initialize_for_conversation_(conversation);
+        }
+
+    }
+
+    private void initialize_for_conversation_(Conversation? conversation) {
         Dino.Application app = Dino.Application.get_default();
         if (this.conversation != null) {
             foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp 20180123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 17:37+0100\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
 "PO-Revision-Date: 2018-01-24 11:24+0100\n"
 "Last-Translator: Jordi Mallach <jordi@mallach.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
@@ -15,31 +15,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
-#: plugins/openpgp/src/account_settings_widget.vala:81
-#: plugins/openpgp/src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
 msgstr "Publicació de claus inhabilitada"
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr "S'ha produït un error al GnuPG"
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
 msgstr "No hi ha claus disponibles. Genereu una!"
 
-#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
 msgstr "Seleccioneu una clau"
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
 msgstr "S'està carregant…"
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
 msgstr "S'està consultant al GnuPG"
-
-#: plugins/openpgp/src/account_settings_widget.vala:109
-msgid "Error in GnuPG"
-msgstr "S'ha produït un error al GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"

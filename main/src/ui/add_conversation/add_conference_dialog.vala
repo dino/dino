@@ -24,7 +24,7 @@ public class AddConferenceDialog : Gtk.Dialog {
 
     public AddConferenceDialog(StreamInteractor stream_interactor) {
         Object(use_header_bar : 1);
-        this.title = _("Join Conference");
+        this.title = _("Join Channel");
         this.modal = true;
         this.stream_interactor = stream_interactor;
 
@@ -130,7 +130,6 @@ public class AddConferenceDialog : Gtk.Dialog {
         } else if (row != null) {
             details_fragment.account = row.account;
             details_fragment.jid = row.jid.to_string();
-            details_fragment.set_editable();
         }
         show_conference_details_view();
     }

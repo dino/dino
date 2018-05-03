@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 17:37+0100\n"
-"PO-Revision-Date: 2018-01-24 12:26+0000\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
+"PO-Revision-Date: 2018-03-26 09:23+0000\n"
 "Last-Translator: Licaon Kter <licaon.kter@protonmail.com>\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
 "translations/ro/>\n"
@@ -18,28 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"X-Generator: Weblate 2.20-dev\n"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:70
 msgid "Subscription request"
 msgstr "Cerere de abonare"
 
-#: main/src/ui/notifications.vala:83
+#: main/src/ui/notifications.vala:76
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Acceptă"
 
-#: main/src/ui/notifications.vala:84
+#: main/src/ui/notifications.vala:77
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Refuză"
 
-#: main/src/ui/manage_accounts/dialog.vala:125
+#: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
 msgid "Remove account %s?"
 msgstr "Se șterge contul %s?"
 
-#: main/src/ui/manage_accounts/dialog.vala:128
+#: main/src/ui/manage_accounts/dialog.vala:129
 msgid "Remove"
 msgstr "Șterge"
 
@@ -47,19 +47,20 @@ msgstr "Șterge"
 msgid "Select avatar"
 msgstr "Selectare avatar"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
 msgstr "Selectare"
 
-#: main/src/ui/manage_accounts/dialog.vala:154 main/src/ui/application.vala:43
-#: main/src/ui/add_conversation/add_conference_dialog.vala:15
-#: main/src/ui/add_conversation/select_contact_dialog.vala:40
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:16
+#: main/src/ui/add_conversation/select_contact_dialog.vala:41
+#: main/data/manage_accounts/add_account_dialog.ui:11
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
 msgstr "Anulare"
 
-#: main/src/ui/manage_accounts/dialog.vala:162
+#: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
 msgstr "Imagini"
 
@@ -67,64 +68,68 @@ msgstr "Imagini"
 msgid "All files"
 msgstr "Toate fișierele"
 
-#: main/src/ui/manage_accounts/dialog.vala:230
+#: main/src/ui/manage_accounts/dialog.vala:231
 msgid "Connecting…"
 msgstr "Conectare…"
 
-#: main/src/ui/manage_accounts/dialog.vala:232
+#: main/src/ui/manage_accounts/dialog.vala:233
 msgid "Connected"
 msgstr "Conectat"
 
-#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Disconnected"
 msgstr "Deconectat"
 
-#: main/src/ui/manage_accounts/dialog.vala:243
+#: main/src/ui/manage_accounts/dialog.vala:244
 msgid "Wrong password"
 msgstr "Parolă greșită"
 
-#: main/src/ui/manage_accounts/dialog.vala:245
+#: main/src/ui/manage_accounts/dialog.vala:246
 msgid "Invalid TLS certificate"
-msgstr ""
+msgstr "Certificat TLS invalid"
 
-#: main/src/ui/manage_accounts/dialog.vala:248
-#: main/src/ui/manage_accounts/dialog.vala:250
+#: main/src/ui/manage_accounts/dialog.vala:249
+#: main/src/ui/manage_accounts/dialog.vala:251
 msgid "Error"
 msgstr "Eroare"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:21
+#: main/src/ui/manage_accounts/add_account_dialog.vala:22
 msgid "Add Account"
 msgstr "Adaugă un cont"
 
-#: main/src/ui/conversation_selector/groupchat_pm_row.vala:25
+#: main/src/ui/manage_accounts/add_account_dialog.vala:45
+msgid "JID should be of the form “user@example.com”"
+msgstr "JID trebuie să fie de forma “utilizator@exemplu.ro”"
+
+#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
 msgid "Me"
 msgstr "Eu"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:169
+#: main/src/ui/conversation_selector/conversation_row.vala:154
 #: main/src/ui/conversation_summary/date_separator_populator.vala:102
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:173
+#: main/src/ui/conversation_selector/conversation_row.vala:158
 #: main/src/ui/conversation_summary/date_separator_populator.vala:93
 msgid "Yesterday"
 msgstr "Ieri"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:176
+#: main/src/ui/conversation_selector/conversation_row.vala:161
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:177
+#: main/src/ui/conversation_selector/conversation_row.vala:162
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:180
+#: main/src/ui/conversation_selector/conversation_row.vala:165
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -133,47 +138,51 @@ msgstr[0] "Acum %i minut"
 msgstr[1] "Acum %i minute"
 msgstr[2] "Acum %i de minute"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:182
+#: main/src/ui/conversation_selector/conversation_row.vala:167
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Chiar acum"
 
-#: main/src/ui/application.vala:43
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+#: main/src/ui/application.vala:44
 msgid "Join Conference"
 msgstr "Alătură-te unei conferințe"
 
-#: main/src/ui/application.vala:43
-#: main/src/ui/add_conversation/add_conference_dialog.vala:62
+#: main/src/ui/application.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
 msgstr "Alătură-te"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:27
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "Adaugă"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:41
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
 #: main/data/manage_accounts/add_account_dialog.ui:21
 msgid "Save"
 msgstr "Salvare"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "Următorul"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:84
-#: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
-msgstr "Pornește o discuție"
-
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
+#: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
 msgstr "Pornire"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:105
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
 msgstr "Conectare…"
 
@@ -225,31 +234,49 @@ msgstr "Azi"
 msgid "%a, %b %d"
 msgstr "%a, %b %d"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:57
-msgid "is typing…"
-msgstr "tastează…"
+#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#, c-format
+msgid "%s, %s and %i others"
+msgstr "%s, %s și încă %i alții"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:59
+#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#, c-format
+msgid "%s, %s and %s"
+msgstr "%s, %s și %s"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:152
+#, c-format
+msgid "%s and %s"
+msgstr "%s și %s"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+msgid "is typing…"
+msgid_plural "are typing…"
+msgstr[0] "tastează…"
+msgstr[1] "tastează…"
+msgstr[2] "tastează…"
+
+#: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
 msgstr "s-a oprit din scris"
 
-#: main/src/ui/conversation_summary/default_file_display.vala:49
+#: main/src/ui/conversation_summary/default_file_display.vala:50
 msgid "File"
 msgstr "Fișier"
 
-#: main/src/ui/conversation_summary/message_textview.vala:39
+#: main/src/ui/conversation_summary/message_textview.vala:41
 msgid "Message too long"
 msgstr "Mesaj prea lung"
 
-#: main/src/ui/conversation_summary/message_textview.vala:74
+#: main/src/ui/conversation_summary/message_textview.vala:94
 msgid "Copy Link Address"
 msgstr "Copiază adresa legăturii"
 
-#: main/src/ui/conversation_summary/message_textview.vala:82
+#: main/src/ui/conversation_summary/message_textview.vala:102
 msgid "Copy"
 msgstr "Copiere"
 
-#: main/src/ui/conversation_summary/message_textview.vala:87
+#: main/src/ui/conversation_summary/message_textview.vala:107
 msgid "Select All"
 msgstr "Selectează tot"
 
@@ -287,36 +314,36 @@ msgstr "%a, %H∶%M"
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
-#: main/src/ui/occupant_menu/list.vala:105
+#: main/src/ui/occupant_menu/list.vala:106
 msgid "Owner"
 msgstr "Proprietar"
 
-#: main/src/ui/occupant_menu/list.vala:107
+#: main/src/ui/occupant_menu/list.vala:108
 msgid "Admin"
 msgstr "Administrator"
 
-#: main/src/ui/occupant_menu/list.vala:109
+#: main/src/ui/occupant_menu/list.vala:110
 msgid "Member"
 msgstr "Membru/ă"
 
-#: main/src/ui/occupant_menu/list.vala:111
+#: main/src/ui/occupant_menu/list.vala:112
 msgid "User"
 msgstr "Utilizator"
 
-#: main/src/ui/occupant_menu/view.vala:26
-#: main/src/ui/occupant_menu/view.vala:35
+#: main/src/ui/occupant_menu/view.vala:27
+#: main/src/ui/occupant_menu/view.vala:36
 msgid "Invite"
 msgstr "Invită"
 
-#: main/src/ui/occupant_menu/view.vala:34
+#: main/src/ui/occupant_menu/view.vala:35
 msgid "Invite to Conference"
 msgstr "Invită la o conferință"
 
-#: main/src/ui/occupant_menu/view.vala:84
+#: main/src/ui/occupant_menu/view.vala:85
 msgid "Start private conversation"
 msgstr "Pornește o conversație privată"
 
-#: main/src/ui/occupant_menu/view.vala:92
+#: main/src/ui/occupant_menu/view.vala:93
 msgid "Kick"
 msgstr "Dă afară"
 
@@ -325,6 +352,7 @@ msgid "Conference Details"
 msgstr "Detalii conferință"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
 msgstr "Detalii contact"
 
@@ -361,7 +389,7 @@ msgid "Who may discover real JIDs?"
 msgstr "Cine poate descoperi ID-urile adevărate?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
-#: main/data/manage_accounts/dialog.ui:169
+#: main/data/manage_accounts/dialog.ui:170
 #: main/data/manage_accounts/add_account_dialog.ui:73
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
@@ -423,8 +451,8 @@ msgstr "Trimite notificare la tastare"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
-msgid "Send message marker"
-msgstr "Trimite marcajul mesajului"
+msgid "Send read receipts"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -473,16 +501,16 @@ msgstr "Convertește zâmbilici în emoticoane"
 msgid "Accounts"
 msgstr "Conturi"
 
-#: main/data/manage_accounts/dialog.ui:199
+#: main/data/manage_accounts/dialog.ui:200
 #: main/data/manage_accounts/add_account_dialog.ui:102
 msgid "Local alias"
 msgstr "Alias local"
 
-#: main/data/manage_accounts/dialog.ui:254
+#: main/data/manage_accounts/dialog.ui:255
 msgid "No accounts configured"
 msgstr "Nici un cont configurat"
 
-#: main/data/manage_accounts/dialog.ui:265
+#: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "Adaugă un cont"
 
@@ -517,3 +545,37 @@ msgstr "Alias"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Adaugă contact"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Send message marker"
+#~ msgstr "Trimite marcajul mesajului"
+
+#~ msgid "Start Chat"
+#~ msgstr "Pornește o discuție"

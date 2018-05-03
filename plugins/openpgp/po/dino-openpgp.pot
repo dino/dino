@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 17:37+0100\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,30 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
-#: plugins/openpgp/src/account_settings_widget.vala:81
-#: plugins/openpgp/src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
 msgstr ""
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr ""
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
 msgstr ""
 
-#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
 msgstr ""
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
 msgstr ""
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr ""
-
-#: plugins/openpgp/src/account_settings_widget.vala:109
-msgid "Error in GnuPG"
 msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28

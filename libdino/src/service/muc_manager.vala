@@ -151,53 +151,66 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public string? get_room_name(Account account, Jid jid) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        return stream != null ? stream.get_flag(Xep.Muc.Flag.IDENTITY).get_room_name(jid) : null;
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag != null) {
+            return flag.get_room_name(jid);
+        }
+        return null;
     }
 
     public string? get_groupchat_subject(Jid jid, Account account) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_muc_subject(jid.bare_jid);
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag != null) {
+            return flag.get_muc_subject(jid.bare_jid);
         }
         return null;
     }
 
     public Jid? get_real_jid(Jid jid, Account account) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_real_jid(jid);
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag != null) {
+            return flag.get_real_jid(jid);
         }
         return null;
     }
 
     public Xep.Muc.Role? get_role(Jid jid, Account account) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_occupant_role(jid);
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag != null) {
+            return flag.get_occupant_role(jid);
+        }
         return null;
     }
 
     public Xep.Muc.Affiliation? get_affiliation(Jid muc_jid, Jid jid, Account account) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_affiliation(muc_jid, jid);
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag != null) {
+            return flag.get_affiliation(muc_jid, jid);
+        }
         return null;
     }
 
     public Gee.List<Jid>? get_offline_members(Jid jid, Account account) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            return stream.get_flag(Xep.Muc.Flag.IDENTITY).get_offline_members(jid);
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag != null) {
+            return flag.get_offline_members(jid);
         }
         return null;
     }
 
     public Jid? get_own_jid(Jid muc_jid, Account account) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-            if (flag == null) return null;
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag != null) {
             string? nick  = flag.get_muc_nick(muc_jid);
             if (nick != null) return muc_jid.with_resource(nick);
+        }
+        return null;
+    }
+
+    private Xep.Muc.Flag? get_muc_flag(Account account) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) {
+            return stream.get_flag(Xep.Muc.Flag.IDENTITY);
         }
         return null;
     }

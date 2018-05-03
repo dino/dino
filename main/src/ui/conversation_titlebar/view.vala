@@ -23,7 +23,6 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
         app.plugin_registry.register_contact_titlebar_entry(new OccupantsEntry(stream_interactor, window));
-        app.plugin_registry.register_contact_titlebar_entry(new FileEntry(stream_interactor));
 
         foreach(var e in app.plugin_registry.conversation_titlebar_entries) {
             Plugins.ConversationTitlebarWidget widget = e.get_widget(Plugins.WidgetType.GTK);
