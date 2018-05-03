@@ -3,10 +3,9 @@ msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-04-11 15:35+0000\n"
-"Last-Translator: 朱陈锬 <201603748@stu.lzjtu.edu.cn>\n"
-"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
-"dino/plugin-openpgp/zh_Hans/>\n"
+"PO-Revision-Date: 2018-05-04 04:13+0800\n"
+"Last-Translator: Tong Hui <tonghuix@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/dino/plugin-openpgp/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,19 +17,19 @@ msgstr ""
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr ""
+msgstr "已禁用密钥发布功能"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
-msgstr ""
+msgstr "GnuPG 错误"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr ""
+msgstr "没有密钥可用。生成一个吧！"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr ""
+msgstr "选择密钥"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
@@ -38,15 +37,15 @@ msgstr "载入中…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr ""
+msgstr "正在查询 GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr ""
+msgstr "密钥并没有在密钥串里"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr ""
+msgstr "加密"
 
 #~ msgid "Own fingerprint"
 #~ msgstr "自己的指纹"
