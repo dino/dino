@@ -58,6 +58,10 @@ public class StreamModule : XmppStreamModule {
                     .put_node(new StanzaNode.build("payload", NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
 
+            StanzaNode encryption = new StanzaNode.build("encryption", "urn:xmpp:eme:0").add_self_xmlns()
+                    .put_attribute("name", "OMEMO")
+                    .put_attribute("namespace", NS_URI);
+
             Address address = new Address(message.to.bare_jid.to_string(), 0);
             foreach(int32 device_id in device_lists[message.to]) {
                 if (is_ignored_device(message.to, device_id)) {
@@ -94,6 +98,7 @@ public class StreamModule : XmppStreamModule {
             }
 
             message.stanza.put_node(encrypted);
+            message.stanza.put_node(encryption);
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;
         } catch (Error e) {
