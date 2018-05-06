@@ -11,6 +11,8 @@ private const string NODE_DEVICELIST = NS_URI + ".devicelist";
 private const string NODE_BUNDLES = NS_URI + ".bundles";
 private const string NODE_VERIFICATION = NS_URI + ".verification";
 
+private const string NS_URI_0380 = "urn:xmpp:eme:0";
+
 private const int NUM_KEYS_TO_PUBLISH = 100;
 
 public class StreamModule : XmppStreamModule {
@@ -58,7 +60,7 @@ public class StreamModule : XmppStreamModule {
                     .put_node(new StanzaNode.build("payload", NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
 
-            StanzaNode encryption = new StanzaNode.build("encryption", "urn:xmpp:eme:0").add_self_xmlns()
+            StanzaNode encryption = new StanzaNode.build("encryption", NS_URI_0380).add_self_xmlns()
                     .put_attribute("name", "OMEMO")
                     .put_attribute("namespace", NS_URI);
 

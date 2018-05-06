@@ -7,6 +7,8 @@ namespace Dino.Plugins.OpenPgp {
     private const string NS_URI_ENCRYPTED = NS_URI + ":encrypted";
     private const string NS_URI_SIGNED = NS_URI +  ":signed";
 
+    private const string NS_URI_0380 = "urn:xmpp:eme:0";
+
     public class Module : XmppStreamModule {
         public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0027_current_pgp_usage");
 
@@ -37,7 +39,7 @@ namespace Dino.Plugins.OpenPgp {
             if (enc_body != null) {
                 message.stanza.put_node(new StanzaNode.build("x", NS_URI_ENCRYPTED).add_self_xmlns().put_node(new StanzaNode.text(enc_body)));
                 message.body = "[This message is OpenPGP encrypted (see XEP-0027)]";
-                message.stanza.put_node(new StanzaNode.build("encryption", "urn:xmpp:eme:0").add_self_xmlns().put_attribute("namespace", NS_URI_ENCRYPTED));
+                message.stanza.put_node(new StanzaNode.build("encryption", NS_URI_0380).add_self_xmlns().put_attribute("namespace", NS_URI_ENCRYPTED));
                 return true;
             }
             return false;
