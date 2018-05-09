@@ -13,6 +13,7 @@
                         <property name="allow_gray">False</property>
                         <property name="height">30</property>
                         <property name="width">30</property>
+                        <property name="valign">center</property>
                         <property name="visible">True</property>
                     </object>
                 </child>

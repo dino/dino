@@ -60,9 +60,6 @@ public static string get_conversation_display_name(StreamInteractor stream_inter
 
 public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
     if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
-        if (jid.resourcepart == account.resourcepart) {
-            return account.alias; // FIXME temporary. remove again.
-        }
         return jid.resourcepart;
     } else {
         if (jid.equals_bare(account.bare_jid)) {
@@ -73,7 +70,7 @@ public static string get_display_name(StreamInteractor stream_interactor, Jid ji
             }
         }
         Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
-        if (roster_item != null && roster_item.name != null) {
+        if (roster_item != null && roster_item.name != null && roster_item.name != "") {
             return roster_item.name;
         }
         return jid.bare_jid.to_string();

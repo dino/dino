@@ -18,6 +18,7 @@
                             <object class="DinoUiAvatarImage" id="image">
                                 <property name="height">40</property>
                                 <property name="width">40</property>
+                                <property name="valign">center</property>
                                 <property name="visible">True</property>
                             </object>
                         </child>
