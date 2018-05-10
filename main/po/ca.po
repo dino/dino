@@ -3,13 +3,12 @@
 # Jordi Mallach <jordi@mallach.net>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: dino 20180123\n"
+"Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-02-01 11:26+0000\n"
+"PO-Revision-Date: 2018-05-10 14:38+0200\n"
 "Last-Translator: fiaxh <weblate@mx.ax.lt>\n"
-"Language-Team: Catalan <https://hosted.weblate.org/projects/dino/"
-"translations/ca/>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/dino/translations/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -246,11 +245,10 @@ msgid "%s and %s"
 msgstr ""
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
-#, fuzzy
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "està escrivint…"
-msgstr[1] "està escrivint…"
+msgstr[1] "estan escrivint…"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
@@ -449,7 +447,7 @@ msgstr "Envia notificacions de tecleig"
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Envia rebuts de lectura"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -545,31 +543,31 @@ msgstr "Afegeix el contacte"
 
 #: main/data/im.dino.Dino.appdata.xml:8
 msgid "Modern XMPP Client"
-msgstr ""
+msgstr "Client d'XMPP modern"
 
 #: main/data/im.dino.Dino.appdata.xml:10
 msgid ""
 "Dino is a modern open-source chat client for the desktop. It focuses on "
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
-msgstr ""
+msgstr "Dino és un client de xat lliure i modern per a l'escriptori. Està centrat en proveir una experiència neta i fiable de Jabber/XMPP, sempre tenint en compte la vostra privacitat."
 
 #: main/data/im.dino.Dino.appdata.xml:14
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
-msgstr ""
+msgstr "Implementa xifratge punt a punt amb OMEMO i OpenPGP, i permet configurar funcionalitats relacionades amb la privacitat com per exemple rebuts de lectura i notificacions d'escriptura."
 
 #: main/data/im.dino.Dino.appdata.xml:18
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
-msgstr ""
+msgstr "Dino recupera l'historial del servidor i sincronitza els missatges amb altres dispositius."
 
 #: main/data/im.dino.Dino.appdata.xml:24
 msgid "Main window with conversations"
-msgstr ""
+msgstr "Finestra principal amb converses"
 
 #~ msgid "Send message marker"
 #~ msgstr "Envia marcador de missatge"
