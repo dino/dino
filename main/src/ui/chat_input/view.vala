@@ -7,11 +7,8 @@ using Xmpp;
 
 namespace Dino.Ui.ChatInput {
 
+[GtkTemplate (ui = "/im/dino/Dino/chat_input.ui")]
 public class View : Box {
-
-    private ScrolledWindow scrolled;
-    private TextView text_input;
-    private Box outer_box;
 
     public string text {
         owned get { return text_input.buffer.text; }
@@ -22,19 +19,26 @@ public class View : Box {
     private Conversation? conversation;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
     private int vscrollbar_min_height;
+
     private OccupantsTabCompletor occupants_tab_completor;
     private SmileyConverter smiley_converter;
     private EditHistory edit_history;
-    private EncryptionButton encryption_widget;
-    private Button file_button = new Button.from_icon_name("mail-attachment-symbolic", IconSize.MENU) { margin_top=3, valign=Align.START, relief=ReliefStyle.NONE };
-    private Separator file_separator = new Separator(Orientation.VERTICAL);
+
+    [GtkChild] private Frame frame;
+    [GtkChild] private ScrolledWindow scrolled;
+    [GtkChild] private TextView text_input;
+    [GtkChild] private Box outer_box;
+    [GtkChild] private Button file_button;
+    [GtkChild] private Separator file_separator;
+    private EncryptionButton encryption_widget = new EncryptionButton() { margin_top=3, valign=Align.START, visible=true };
 
     public View(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        outer_box = new Box(Orientation.HORIZONTAL, 0) { visible=true };
+        occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
+        smiley_converter = new SmileyConverter(stream_interactor, text_input);
+        edit_history = new EditHistory(text_input, GLib.Application.get_default());
 
-        file_button.get_style_context().add_class("dino-chatinput-button");
         file_button.clicked.connect(() => {
             PreviewFileChooserNative chooser = new PreviewFileChooserNative("Select file", get_toplevel() as Gtk.Window, FileChooserAction.OPEN, "Select", "Cancel");
 
@@ -53,32 +57,17 @@ public class View : Box {
                 stream_interactor.get_module(FileManager.IDENTITY).send_file(uri, conversation);
             }
         });
-        outer_box.add(file_button);
-        outer_box.add(file_separator);
-
-        scrolled = new ScrolledWindow(null, null) { max_content_height=300, propagate_natural_height=true, visible=true };
-        text_input = new TextView() { valign=Align.CENTER, wrap_mode=WrapMode.WORD_CHAR, margin=8, can_focus=true, hexpand=true, visible=true };
-
-        scrolled.add(text_input);
-        outer_box.add(scrolled);
-
-        encryption_widget = new EncryptionButton() { margin_top=3, valign=Align.START, visible=true };
-        encryption_widget.get_style_context().add_class("dino-chatinput-button");
-        outer_box.add(encryption_widget);
 
         scrolled.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
+
+        encryption_widget.get_style_context().add_class("dino-chatinput-button");
+        outer_box.add(encryption_widget);
+
         text_input.key_press_event.connect(on_text_input_key_press);
         text_input.buffer.changed.connect(on_text_input_changed);
 
-        Frame frame = new Frame(null) { margin=12, margin_top=0, visible=true };
         Util.force_css(frame, "* { border-radius: 3px; }");
-        frame.add(outer_box);
-        this.add(frame);
-
-        occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
-        smiley_converter = new SmileyConverter(stream_interactor, text_input);
-        edit_history = new EditHistory(text_input, GLib.Application.get_default());
 
         stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(on_upload_available);
     }
