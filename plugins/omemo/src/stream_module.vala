@@ -11,8 +11,6 @@ private const string NODE_DEVICELIST = NS_URI + ".devicelist";
 private const string NODE_BUNDLES = NS_URI + ".bundles";
 private const string NODE_VERIFICATION = NS_URI + ".verification";
 
-private const string NS_URI_0380 = "urn:xmpp:eme:0";
-
 private const int NUM_KEYS_TO_PUBLISH = 100;
 
 public class StreamModule : XmppStreamModule {
@@ -60,10 +58,6 @@ public class StreamModule : XmppStreamModule {
                     .put_node(new StanzaNode.build("payload", NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
 
-            StanzaNode encryption = new StanzaNode.build("encryption", NS_URI_0380).add_self_xmlns()
-                    .put_attribute("name", "OMEMO")
-                    .put_attribute("namespace", NS_URI);
-
             Address address = new Address(message.to.bare_jid.to_string(), 0);
             foreach(int32 device_id in device_lists[message.to]) {
                 if (is_ignored_device(message.to, device_id)) {
@@ -100,7 +94,7 @@ public class StreamModule : XmppStreamModule {
             }
 
             message.stanza.put_node(encrypted);
-            message.stanza.put_node(encryption);
+            Xep.ExplicitEncryption.add_encryption_tag_to_message(message, NS_URI, "OMEMO");
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;
         } catch (Error e) {
