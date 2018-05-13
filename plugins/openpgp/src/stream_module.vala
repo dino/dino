@@ -1,14 +1,11 @@
 using GPG;
 
 using Xmpp;
-using Xep;
 
 namespace Dino.Plugins.OpenPgp {
     private const string NS_URI = "jabber:x";
     private const string NS_URI_ENCRYPTED = NS_URI + ":encrypted";
     private const string NS_URI_SIGNED = NS_URI +  ":signed";
-
-    private const string NS_URI_0380 = "urn:xmpp:eme:0";
 
     public class Module : XmppStreamModule {
         public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0027_current_pgp_usage");
