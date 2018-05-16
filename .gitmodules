@@ -1,4 +1,4 @@
 [submodule "libsignal-protocol-c"]
 	path = plugins/signal-protocol/libsignal-protocol-c
 	url = https://github.com/WhisperSystems/libsignal-protocol-c.git
-	branch = e59089a644ca747ed50442eb8804266618f11c0b
+	branch = 4a137eaf4eb4421949e2e1dde9f11ec7bc07b88f
