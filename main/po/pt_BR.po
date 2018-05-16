@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
 "PO-Revision-Date: 2018-01-26 18:05+0000\n"
 "Last-Translator: Paulo Canedo <paulocanedo@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/dino/"
@@ -41,15 +41,15 @@ msgstr "Remover conta %s?"
 msgid "Remove"
 msgstr "Remover"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "Escolher avatar"
 
-#: main/src/ui/manage_accounts/dialog.vala:155
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
 msgstr "Selecionar"
 
-#: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/manage_accounts/add_account_dialog.ui:11
@@ -58,11 +58,11 @@ msgstr "Selecionar"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: main/src/ui/manage_accounts/dialog.vala:163
+#: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
 msgstr "Imagens"
 
-#: main/src/ui/manage_accounts/dialog.vala:166
+#: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr "Todos os arquivos"
 
@@ -141,14 +141,12 @@ msgid "Just now"
 msgstr "Agora há pouco"
 
 #: main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
 msgstr "Juntar-se a uma conferência"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:134
+#: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
 msgstr "Juntar-se"
 
@@ -162,48 +160,54 @@ msgstr "Adicionar"
 msgid "Save"
 msgstr "Salvar"
 
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "Próximo"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
-msgstr "Iniciar bate-papo"
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
 msgstr "Iniciar"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:106
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
 msgstr "Juntando-se…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:139
+#: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
 msgstr "Senha necessária para entrar na sala"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:144
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
 msgstr "Banido para junta-se ou criar uma conferência"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
 msgstr "Sala não existe"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:148
+#: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
 msgstr "Não permitido criar sala"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:150
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
 msgstr "Sala somente para membros"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
 msgstr "Escolha um apelido diferente"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
 msgstr "Número máximo da sala"
 
@@ -345,6 +349,7 @@ msgid "Conference Details"
 msgstr "Detalhes da Conferência"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
 msgstr "Detalhes do contato"
 
@@ -443,8 +448,8 @@ msgstr "Enviar notificação ao digitar"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
-msgid "Send message marker"
-msgstr "Enviar marcador de mensagem"
+msgid "Send read receipts"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -537,6 +542,40 @@ msgstr "Pseudônimo"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Adicionar contato"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Send message marker"
+#~ msgstr "Enviar marcador de mensagem"
+
+#~ msgid "Start Chat"
+#~ msgstr "Iniciar bate-papo"
 
 #~ msgid "Request presence updates"
 #~ msgstr "Pedir atualizações sobre presença"

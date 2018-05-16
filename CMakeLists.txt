@@ -32,6 +32,7 @@ set_path(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share" "Installation dire
 
 set_path(BIN_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/bin" "Installation directory for user executables")
 set_path(DATA_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/dino" "Installation directory for dino-specific data")
+set_path(APPDATA_FILE_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/metainfo" "Installation directory for .appdata.xml files")
 set_path(DESKTOP_FILE_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/applications" "Installation directory for .desktop files")
 set_path(SERVICE_FILE_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/dbus-1/services" "Installation directory for .service files")
 set_path(ICON_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/icons" "Installation directory for icons")

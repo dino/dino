@@ -111,7 +111,6 @@ SOURCES
     src/ui/conversation_summary/message_textview.vala
     src/ui/conversation_summary/slashme_message_display.vala
     src/ui/conversation_summary/subscription_notification.vala
-    src/ui/conversation_titlebar/file_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
     src/ui/conversation_titlebar/view.vala
@@ -127,6 +126,7 @@ SOURCES
     src/ui/util/accounts_combo_box.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
+    src/ui/util/preview_file_chooser_native.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
@@ -150,6 +150,7 @@ if(WIN32)
 endif(WIN32)
 
 install(TARGETS dino ${TARGET_INSTALL})
+install(FILES data/im.dino.Dino.appdata.xml DESTINATION ${APPDATA_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
 install(FILES data/icons/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)

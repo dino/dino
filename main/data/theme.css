@@ -9,6 +9,14 @@ window.dino-main headerbar.dino-left label.title {
     color: transparent;
 }
 
+window.dino-main .dino-conversation {
+    background: @theme_base_color;
+}
+
+window.dino-main .dino-conversation undershoot {
+    background: none;
+}
+
 window.dino-main .dino-chatinput frame box {
     background: @theme_base_color;
 }

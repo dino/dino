@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino 20180123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
 "PO-Revision-Date: 2018-02-01 11:26+0000\n"
 "Last-Translator: fiaxh <weblate@mx.ax.lt>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/dino/"
@@ -40,15 +40,15 @@ msgstr "Voleu suprimir el compte %s?"
 msgid "Remove"
 msgstr "Suprimeix"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "Seleccioneu l'àvatar"
 
-#: main/src/ui/manage_accounts/dialog.vala:155
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
 msgstr "Selecciona"
 
-#: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/manage_accounts/add_account_dialog.ui:11
@@ -57,11 +57,11 @@ msgstr "Selecciona"
 msgid "Cancel"
 msgstr "Cancel·la"
 
-#: main/src/ui/manage_accounts/dialog.vala:163
+#: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
 msgstr "Imatges"
 
-#: main/src/ui/manage_accounts/dialog.vala:166
+#: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr "Tots els fitxers"
 
@@ -140,14 +140,12 @@ msgid "Just now"
 msgstr "Ara mateix"
 
 #: main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
 msgstr "Uneix-te a la conferència"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:134
+#: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
 msgstr "Uneix-te"
 
@@ -161,48 +159,54 @@ msgstr "Afegeix"
 msgid "Save"
 msgstr "Desa"
 
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "Següent"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
-msgstr "Inicia un xat"
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
 msgstr "Inicia"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:106
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
 msgstr "S'està unint…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:139
+#: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
 msgstr "Es requereix una contrasenya per entrar a la sala"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:144
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
 msgstr "Heu estat bandejat de unir-vos o crear conferències"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
 msgstr "La sala no existeix"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:148
+#: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
 msgstr "No esteu autoritzat a crear una sala"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:150
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
 msgstr "Sala només per membres"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
 msgstr "Seleccioneu un sobrenom diferent"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
 msgstr "Massa ocupants a la sala"
 
@@ -344,6 +348,7 @@ msgid "Conference Details"
 msgstr "Detalls de la conferència"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
 msgstr "Detalls del contacte"
 
@@ -443,8 +448,8 @@ msgstr "Envia notificacions de tecleig"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
-msgid "Send message marker"
-msgstr "Envia marcador de missatge"
+msgid "Send read receipts"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -537,3 +542,37 @@ msgstr "Àlias"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Afegeix el contacte"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Send message marker"
+#~ msgstr "Envia marcador de missatge"
+
+#~ msgid "Start Chat"
+#~ msgstr "Inicia un xat"

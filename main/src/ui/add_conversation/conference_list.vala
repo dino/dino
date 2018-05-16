@@ -85,7 +85,7 @@ internal class ConferenceListRow : ListRow {
         this.account = account;
         this.bookmark = bookmark;
 
-        name_label.label = bookmark.name ?? bookmark.jid.to_string();
+        name_label.label = bookmark.name != null && bookmark.name != "" ? bookmark.name : bookmark.jid.to_string();
         if (stream_interactor.get_accounts().size > 1) {
             via_label.label = "via " + account.bare_jid.to_string();
         } else if (bookmark.name != null && bookmark.name != bookmark.jid.to_string()) {

@@ -2,38 +2,42 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
-"PO-Revision-Date: 2017-05-08 01:21+0800\n"
-"Language-Team: Chinese (simplified)\n"
-"Language: \n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
+"PO-Revision-Date: 2018-04-11 15:35+0000\n"
+"Last-Translator: 朱陈锬 <201603748@stu.lzjtu.edu.cn>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"dino/plugin-openpgp/zh_Hans/>\n"
+"Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 2.20\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
-#: plugins/openpgp/src/account_settings_widget.vala:81
-#: plugins/openpgp/src/account_settings_widget.vala:109
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
 msgstr ""
 
-#: plugins/openpgp/src/account_settings_widget.vala:75
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr ""
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
 msgstr ""
 
-#: plugins/openpgp/src/account_settings_widget.vala:81
+#: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
 msgstr ""
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
-msgstr ""
+msgstr "载入中…"
 
-#: plugins/openpgp/src/account_settings_widget.vala:98
+#: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr ""
-
-#: plugins/openpgp/src/account_settings_widget.vala:109
-msgid "Error in GnuPG"
 msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28

@@ -55,15 +55,15 @@ public class RosterManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).received_roster.connect( (stream, roster) => {
+        stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).received_roster.connect_after( (stream, roster) => {
             foreach (Roster.Item roster_item in roster) {
                 on_roster_item_updated(account, roster_item);
             }
         });
-        stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_removed.connect( (stream, roster_item) => {
+        stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_removed.connect_after( (stream, roster_item) => {
             removed_roster_item(account, roster_item.jid, roster_item);
         });
-        stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_updated.connect( (stream, roster_item) => {
+        stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_updated.connect_after( (stream, roster_item) => {
             on_roster_item_updated(account, roster_item);
         });
     }

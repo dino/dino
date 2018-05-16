@@ -75,8 +75,8 @@ public class UnifiedWindow : Window {
         filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
 
         Grid grid = new Grid() { orientation=Orientation.VERTICAL, visible=true };
+        grid.get_style_context().add_class("dino-conversation");
         grid.add(conversation_frame);
-        grid.add(new Separator(Orientation.HORIZONTAL) { visible=true });
         grid.add(chat_input);
 
         paned.set_position(300);
@@ -172,8 +172,8 @@ public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
 public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
     public NoConversationsPlaceholder() {
         label.label = _("No active conversations");
-        primary_button.label = _("Start Chat");
-        secondary_button.label = _("Join Conference");
+        primary_button.label = _("Start Conversation");
+        secondary_button.label = _("Join Channel");
         secondary_button.visible = true;
     }
 }

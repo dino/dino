@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
-"PO-Revision-Date: 2018-01-24 20:47+0000\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
+"PO-Revision-Date: 2018-03-26 09:23+0000\n"
 "Last-Translator: Licaon Kter <licaon.kter@protonmail.com>\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
 "translations/ro/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"X-Generator: Weblate 2.20-dev\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
@@ -43,15 +43,15 @@ msgstr "Se șterge contul %s?"
 msgid "Remove"
 msgstr "Șterge"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "Selectare avatar"
 
-#: main/src/ui/manage_accounts/dialog.vala:155
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
 msgstr "Selectare"
 
-#: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/manage_accounts/add_account_dialog.ui:11
@@ -60,11 +60,11 @@ msgstr "Selectare"
 msgid "Cancel"
 msgstr "Anulare"
 
-#: main/src/ui/manage_accounts/dialog.vala:163
+#: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
 msgstr "Imagini"
 
-#: main/src/ui/manage_accounts/dialog.vala:166
+#: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr "Toate fișierele"
 
@@ -99,7 +99,7 @@ msgstr "Adaugă un cont"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:45
 msgid "JID should be of the form “user@example.com”"
-msgstr ""
+msgstr "JID trebuie să fie de forma “utilizator@exemplu.ro”"
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
@@ -144,14 +144,12 @@ msgid "Just now"
 msgstr "Chiar acum"
 
 #: main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
 msgstr "Alătură-te unei conferințe"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:134
+#: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
 msgstr "Alătură-te"
 
@@ -165,48 +163,54 @@ msgstr "Adaugă"
 msgid "Save"
 msgstr "Salvare"
 
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "Următorul"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
-msgstr "Pornește o discuție"
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
 msgstr "Pornire"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:106
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
 msgstr "Conectare…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:139
+#: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
 msgstr "Este necesară o parolă pentru a te putea alătura acestei discuții"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:144
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
 msgstr "Aveți interdicție de a vă alătura sau de a crea o conferință"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
 msgstr "Această discuție nu există"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:148
+#: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
 msgstr "Este interzisă crearea unei discuții"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:150
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
 msgstr "Discuție accesibilă numai membrilor"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
 msgstr "Alegeți un nume diferit"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
 msgstr "Discuția are prea mulți membrii"
 
@@ -233,20 +237,19 @@ msgstr "%a, %b %d"
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %i others"
-msgstr ""
+msgstr "%s, %s și încă %i alții"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s, %s and %s"
-msgstr ""
+msgstr "%s, %s și %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:152
 #, c-format
 msgid "%s and %s"
-msgstr ""
+msgstr "%s și %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
-#, fuzzy
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "tastează…"
@@ -349,6 +352,7 @@ msgid "Conference Details"
 msgstr "Detalii conferință"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
 msgstr "Detalii contact"
 
@@ -447,8 +451,8 @@ msgstr "Trimite notificare la tastare"
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
-msgid "Send message marker"
-msgstr "Trimite marcajul mesajului"
+msgid "Send read receipts"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -541,3 +545,37 @@ msgstr "Alias"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Adaugă contact"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Send message marker"
+#~ msgstr "Trimite marcajul mesajului"
+
+#~ msgid "Start Chat"
+#~ msgstr "Pornește o discuție"

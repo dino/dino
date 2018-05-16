@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 15:30-0600\n"
-"PO-Revision-Date: 2018-03-06 08:38+0000\n"
+"POT-Creation-Date: 2018-05-01 00:23+0200\n"
+"PO-Revision-Date: 2018-04-04 05:38+0000\n"
 "Last-Translator: Mako N <mako@pasero.net>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/dino/"
 "translations/ja/>\n"
@@ -21,17 +21,17 @@ msgstr ""
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
-msgstr ""
+msgstr "在席通知の申込"
 
 #: main/src/ui/notifications.vala:76
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
-msgstr ""
+msgstr "承諾"
 
 #: main/src/ui/notifications.vala:77
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
-msgstr ""
+msgstr "拒否"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -42,15 +42,15 @@ msgstr "アカウント %s を削除しますか ?"
 msgid "Remove"
 msgstr "削除"
 
-#: main/src/ui/manage_accounts/dialog.vala:154
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
 msgstr "アバターを選択"
 
-#: main/src/ui/manage_accounts/dialog.vala:155
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
 msgstr "選択"
 
-#: main/src/ui/manage_accounts/dialog.vala:155 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/manage_accounts/add_account_dialog.ui:11
@@ -59,11 +59,11 @@ msgstr "選択"
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: main/src/ui/manage_accounts/dialog.vala:163
+#: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
 msgstr "画像"
 
-#: main/src/ui/manage_accounts/dialog.vala:166
+#: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
 msgstr "すべてのファイル"
 
@@ -98,7 +98,7 @@ msgstr "アカウントを追加"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:45
 msgid "JID should be of the form “user@example.com”"
-msgstr ""
+msgstr "JID は “user@example.com” の形式にしてください"
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
@@ -141,14 +141,12 @@ msgid "Just now"
 msgstr "たった今"
 
 #: main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Conference"
 msgstr "談話室に参加"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:134
+#: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
 msgstr "参加"
 
@@ -162,48 +160,54 @@ msgstr "追加"
 msgid "Save"
 msgstr "保存"
 
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+msgid "Join Channel"
+msgstr ""
+
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
 msgstr "次"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-msgid "Start Chat"
-msgstr "会話を開始"
+#: main/data/im.dino.Dino.appdata.xml:28
+msgid "Start Conversation"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
 msgstr "開始"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:106
+#: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
 msgstr "参加します…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:139
+#: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
 msgstr "談話室に入るにはパスワードが必要です"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:144
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
 msgstr "参加中または作成の談話室から締め出されました"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
 msgstr "談話室は存在しません"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:148
+#: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
 msgstr "談話室を作成する権限がありません"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:150
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
 msgstr "メンバー制談話室"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
 msgstr "別のニックネームを選んでください"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
 msgstr "談話室は参加者が多すぎます"
 
@@ -243,7 +247,6 @@ msgid "%s and %s"
 msgstr ""
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
-#, fuzzy
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "は入力中…"
@@ -262,19 +265,19 @@ msgstr "メッセージが長すぎます"
 
 #: main/src/ui/conversation_summary/message_textview.vala:94
 msgid "Copy Link Address"
-msgstr ""
+msgstr "リンクアドレスをコピー"
 
 #: main/src/ui/conversation_summary/message_textview.vala:102
 msgid "Copy"
-msgstr ""
+msgstr "コピー"
 
 #: main/src/ui/conversation_summary/message_textview.vala:107
 msgid "Select All"
-msgstr ""
+msgstr "すべて選択"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr ""
+msgstr "この相手先はあなたを名簿に入れたいと希望しています"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
@@ -308,72 +311,73 @@ msgstr ""
 
 #: main/src/ui/occupant_menu/list.vala:106
 msgid "Owner"
-msgstr ""
+msgstr "主宰者"
 
 #: main/src/ui/occupant_menu/list.vala:108
 msgid "Admin"
-msgstr ""
+msgstr "管理人"
 
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Member"
-msgstr ""
+msgstr "メンバー"
 
 #: main/src/ui/occupant_menu/list.vala:112
 msgid "User"
-msgstr ""
+msgstr "ユーザー"
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:36
 msgid "Invite"
-msgstr ""
+msgstr "招待"
 
 #: main/src/ui/occupant_menu/view.vala:35
 msgid "Invite to Conference"
-msgstr ""
+msgstr "談話室へ招待"
 
 #: main/src/ui/occupant_menu/view.vala:85
 msgid "Start private conversation"
-msgstr ""
+msgstr "私信を始める"
 
 #: main/src/ui/occupant_menu/view.vala:93
 msgid "Kick"
-msgstr ""
+msgstr "蹴り出す"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr ""
+msgstr "談話室の詳細"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/data/im.dino.Dino.appdata.xml:32
 msgid "Contact Details"
-msgstr ""
+msgstr "相手先の詳細"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:39
 msgid "Name of the room"
-msgstr ""
+msgstr "談話室の名称"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:42
 msgid "Description of the room"
-msgstr ""
+msgstr "談話室の説明"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:45
 msgid "Persistent"
-msgstr ""
+msgstr "常設"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:46
 msgid "The room will persist after the last occupant leaves"
-msgstr ""
+msgstr "この談話室は最後の参加者が提出しても残ります"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:49
 msgid "Publicly searchable"
-msgstr ""
+msgstr "検索可"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:52
 msgid "Occupants may change the subject"
-msgstr ""
+msgstr "参加者は題を変更できます"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:55
 msgid "Discover real JIDs"
-msgstr ""
+msgstr "真の JID を探索"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Who may discover real JIDs?"
@@ -385,7 +389,7 @@ msgstr ""
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
-msgstr ""
+msgstr "パスワード"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Password required for room entry, if any"
@@ -397,19 +401,19 @@ msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:64
 msgid "Only occupants with voice may send messages"
-msgstr ""
+msgstr "発言権のある参加者のみがメッセージを送れます"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Members only"
-msgstr ""
+msgstr "メンバー制"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:68
 msgid "Only members may enter the room"
-msgstr ""
+msgstr "メンバーのみが入室できます"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "Message history"
-msgstr ""
+msgstr "メッセージの履歴"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:72
 msgid "Maximum amount of backlog issued by the room"
@@ -417,7 +421,7 @@ msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Room Configuration"
-msgstr ""
+msgstr "談話室の調整"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:22
@@ -425,7 +429,7 @@ msgstr ""
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/data/menu_app.ui:10
 msgid "Settings"
-msgstr ""
+msgstr "設定"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
@@ -442,13 +446,13 @@ msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
-msgid "Send message marker"
+msgid "Send read receipts"
 msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 #: main/src/ui/contact_details/settings_provider.vala:39
 msgid "Local Settings"
@@ -474,7 +478,7 @@ msgstr ""
 #: main/src/ui/contact_details/settings_provider.vala:115
 #, c-format
 msgid "Default: %s"
-msgstr ""
+msgstr "デフォルト: %s"
 
 #: main/data/settings_dialog.ui:7
 msgid "Preferences"
@@ -482,15 +486,15 @@ msgstr ""
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
-msgstr ""
+msgstr "新しいメッセージが届いたとき通知"
 
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
-msgstr ""
+msgstr "スマイリーを絵文字に変換"
 
 #: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:6
 msgid "Accounts"
-msgstr ""
+msgstr "アカウント"
 
 #: main/data/manage_accounts/dialog.ui:200
 #: main/data/manage_accounts/add_account_dialog.ui:102
@@ -503,11 +507,11 @@ msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
-msgstr ""
+msgstr "アカウントを追加"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr ""
+msgstr "非暗号化"
 
 #: main/data/menu_app.ui:16
 msgid "Quit"
@@ -515,24 +519,55 @@ msgstr ""
 
 #: main/data/conversation_selector/view.ui:14
 msgid "Search"
-msgstr ""
+msgstr "検索"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
 msgid "Account"
-msgstr ""
+msgstr "アカウント"
 
 #: main/data/add_conversation/conference_details_fragment.ui:123
 #: main/data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
-msgstr ""
+msgstr "ニックネーム"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:175
 #: main/data/add_conversation/add_contact_dialog.ui:102
 msgid "Alias"
-msgstr ""
+msgstr "別名"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
+msgstr "相手先を追加"
+
+#: main/data/im.dino.Dino.appdata.xml:8
+msgid "Modern XMPP Client"
 msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml:24
+msgid "Main window with conversations"
+msgstr ""
+
+#~ msgid "Start Chat"
+#~ msgstr "会話を開始"
