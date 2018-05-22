@@ -1,3 +1,4 @@
+using Gdk;
 using Gee;
 using Gtk;
 
@@ -5,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class UnifiedWindow : Window {
+public class UnifiedWindow : Gtk.Window {
 
     private NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     private NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
@@ -35,6 +36,8 @@ public class UnifiedWindow : Window {
         setup_headerbar();
         setup_unified();
         setup_stack();
+
+        this.key_press_event.connect(on_key_press_event);
 
         conversation_list_titlebar.search_button.bind_property("active", filterable_conversation_list.search_revealer, "reveal-child",
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -158,6 +161,15 @@ public class UnifiedWindow : Window {
     private bool on_focus_out_event() {
         stream_interactor.get_module(ChatInteraction.IDENTITY).on_window_focus_out(conversation);
         return false;
+    }
+
+    private bool on_key_press_event(EventKey event) {
+      bool ctrl_pressed = (event.state & ModifierType.CONTROL_MASK) > 0;
+      if (ctrl_pressed && event.keyval == Key.t) {
+        get_application().activate_action("add_chat", null);
+        return true;
+      }
+      return false;
     }
 }
 
