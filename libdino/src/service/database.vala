@@ -202,6 +202,9 @@ public class Database : Qlite.Database {
         try {
             exec("PRAGMA synchronous=0");
         } catch (Error e) { }
+        try {
+            exec("PRAGMA secure_delete=1");
+        } catch (Error e) { }
     }
 
     public override void migrate(long oldVersion) {
