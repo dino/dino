@@ -37,6 +37,7 @@ namespace Dino.Plugins.OpenPgp {
             if (enc_body != null) {
                 message.stanza.put_node(new StanzaNode.build("x", NS_URI_ENCRYPTED).add_self_xmlns().put_node(new StanzaNode.text(enc_body)));
                 message.body = "[This message is OpenPGP encrypted (see XEP-0027)]";
+                Xep.ExplicitEncryption.add_encryption_tag_to_message(message, NS_URI_ENCRYPTED);
                 return true;
             }
             return false;

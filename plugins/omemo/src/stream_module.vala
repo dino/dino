@@ -94,6 +94,7 @@ public class StreamModule : XmppStreamModule {
             }
 
             message.stanza.put_node(encrypted);
+            Xep.ExplicitEncryption.add_encryption_tag_to_message(message, NS_URI, "OMEMO");
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;
         } catch (Error e) {
