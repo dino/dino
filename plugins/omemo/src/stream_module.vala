@@ -197,6 +197,7 @@ public class StreamModule : XmppStreamModule {
         if (active_bundle_requests.add(jid.bare_jid.to_string() + @":$device_id")) {
             if (Plugin.DEBUG) print(@"OMEMO: Asking for bundle from $(jid.bare_jid.to_string()):$device_id\n");
             stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid.bare_jid, @"$NODE_BUNDLES:$device_id", (stream, jid, id, node) => {
+                stream.get_module(IDENTITY).active_bundle_requests.remove(jid.bare_jid.to_string() + @":$device_id");
                 bundle_fetched(jid, device_id, new Bundle(node));
             });
         }
