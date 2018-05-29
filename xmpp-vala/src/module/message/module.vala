@@ -21,8 +21,10 @@ namespace Xmpp {
 
         public async void received_message_stanza_async(XmppStream stream, StanzaNode node) {
             MessageStanza message = new MessageStanza.from_stanza(node, stream.get_flag(Bind.Flag.IDENTITY).my_jid);
-            yield received_pipeline.run(stream, message);
-            received_message(stream, message);
+            if (!message.is_error()) {
+                yield received_pipeline.run(stream, message);
+                received_message(stream, message);
+            }
         }
 
         private void received_message_stanza(XmppStream stream, StanzaNode node) {
