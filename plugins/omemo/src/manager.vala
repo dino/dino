@@ -37,12 +37,12 @@ public class Manager : StreamInteractionModule, Object {
             this.waiting_other_sessions = new_try.other_unknown;
             this.waiting_own_sessions = new_try.own_unknown;
             this.waiting_own_devicelist = !new_try.own_list;
-            this.waiting_other_devicelist = !new_try.own_list;
+            this.waiting_other_devicelist = !new_try.other_list;
             this.active_send_attempt = false;
             will_send_now = false;
             if (new_try.other_failure > 0 || (new_try.other_lost == new_try.other_devices && new_try.other_devices > 0)) {
                 msg.marked = Entities.Message.Marked.WONTSEND;
-            } else if (new_try.other_unknown > 0 || new_try.own_devices == 0) {
+            } else if (new_try.other_unknown > 0 || new_try.own_unknown > 0 || !new_try.other_list || !new_try.own_list || new_try.own_devices == 0) {
                 msg.marked = Entities.Message.Marked.UNSENT;
             } else if (!new_try.encrypted) {
                 msg.marked = Entities.Message.Marked.WONTSEND;
