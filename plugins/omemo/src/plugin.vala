@@ -4,7 +4,7 @@ extern const string LOCALE_INSTALL_DIR;
 namespace Dino.Plugins.Omemo {
 
 public class Plugin : RootInterface, Object {
-    public const bool DEBUG = true;
+    public const bool DEBUG = false;
     private static Signal.Context? _context;
     public static Signal.Context get_context() {
         assert(_context != null);
