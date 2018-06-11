@@ -44,6 +44,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
         insert_item.connect(on_insert_item);
         remove_item.connect(on_remove_item);
+        add_meta_notification.connect(on_add_meta_notification);
+        remove_meta_notification.connect(on_remove_meta_notification);
 
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_conversation_item_populator(new ChatStatePopulator(stream_interactor));
@@ -124,6 +126,18 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             }
             meta_items.remove(item);
         }
+    }
+
+    public void on_add_meta_notification(Plugins.MetaConversationNotification notification) {
+        Widget? widget = (Widget) notification.get_widget(Plugins.WidgetType.GTK);
+        if(widget != null)
+            add_notification(widget);
+    }
+
+    public void on_remove_meta_notification(Plugins.MetaConversationNotification notification){
+        Widget? widget = (Widget) notification.get_widget(Plugins.WidgetType.GTK);
+        if(widget != null)
+            remove_notification(widget);
     }
 
     public void add_notification(Widget widget) {

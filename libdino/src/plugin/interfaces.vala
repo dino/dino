@@ -98,9 +98,15 @@ public abstract class MetaConversationItem : Object {
     public abstract Object? get_widget(WidgetType type);
 }
 
+public abstract class MetaConversationNotification : Object {
+    public abstract Object? get_widget(WidgetType type);
+}
+
 public interface ConversationItemCollection : Object {
     public signal void insert_item(MetaConversationItem item);
     public signal void remove_item(MetaConversationItem item);
+    public signal void add_meta_notification(MetaConversationNotification item);
+    public signal void remove_meta_notification(MetaConversationNotification item);
 }
 
 public interface MessageDisplayProvider : Object {

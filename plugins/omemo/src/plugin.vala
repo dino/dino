@@ -4,7 +4,7 @@ extern const string LOCALE_INSTALL_DIR;
 namespace Dino.Plugins.Omemo {
 
 public class Plugin : RootInterface, Object {
-    public const bool DEBUG = false;
+    public const bool DEBUG = true;
     private static Signal.Context? _context;
     public static Signal.Context get_context() {
         assert(_context != null);
@@ -28,6 +28,7 @@ public class Plugin : RootInterface, Object {
     public EncryptionListEntry list_entry;
     public AccountSettingsEntry settings_entry;
     public ContactDetailsProvider contact_details_provider;
+    public DeviceNotificationPopulator device_notification_populator;
 
     public void registered(Dino.Application app) {
         ensure_context();
@@ -36,9 +37,11 @@ public class Plugin : RootInterface, Object {
         this.list_entry = new EncryptionListEntry(this);
         this.settings_entry = new AccountSettingsEntry(this);
         this.contact_details_provider = new ContactDetailsProvider(this);
+        this.device_notification_populator = new DeviceNotificationPopulator(this, this.app.stream_interactor);
         this.app.plugin_registry.register_encryption_list_entry(list_entry);
         this.app.plugin_registry.register_account_settings_entry(settings_entry);
         this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
+        this.app.plugin_registry.register_conversation_item_populator(device_notification_populator);
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
             list.add(new StreamModule());
         });

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoPluginsOmemoContactDetailsDialog">
+        <property name="modal">True</property>
+        <property name="title" translatable="yes">OMEMO Keys</property>
+        <property name="resizable">False</property>
+        <child internal-child="vbox">
+            <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="margin-left">40</property>
+                <property name="margin-right">40</property>
+                <child>
+                    <object class="GtkBox" id="fingerprints_prompt_label">
+                        <property name="margin-top">12</property>
+                        <property name="orientation">horizontal</property>
+                        <property name="visible">False</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="halign">start</property>
+                                <property name="valign">center</property>
+                                <property name="hexpand">True</property>
+                                <property name="label" translatable="yes">New Devices</property>
+                                <property name="margin-bottom">2</property>
+                                <attributes>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                </attributes>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkFrame" id="fingerprints_prompt_container">
+                        <property name="visible">False</property>
+                        <property name="margin-bottom">18</property>
+                        <child>
+                            <object class="GtkScrolledWindow">
+                                <property name="hscrollbar_policy">never</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                                <property name="visible">True</property>
+                                <property name="propagate_natural_height">True</property>
+                                <child>
+                                    <object class="GtkGrid" id="fingerprints_prompt">
+                                        <property name="visible">True</property>
+                                        <property name="vexpand">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="margin-top">12</property>
+                        <property name="orientation">horizontal</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="halign">start</property>
+                                <property name="valign">center</property>
+                                <property name="hexpand">True</property>
+                                <property name="label" translatable="yes">Devices</property>
+                                <property name="margin-bottom">2</property>
+                                <attributes>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                </attributes>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="scan_button">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <style>
+                                    <class name="flat"/>
+                                </style>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="icon-name">camera-photo-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkFrame">
+                        <property name="visible">True</property>
+                        <property name="margin-bottom">18</property>
+                        <child>
+                            <object class="GtkScrolledWindow">
+                                <property name="hscrollbar_policy">never</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                                <property name="visible">True</property>
+                                <property name="propagate_natural_height">True</property>
+                                <child>
+                                    <object class="GtkGrid" id="fingerprints">
+                                        <property name="visible">True</property>
+                                        <property name="vexpand">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

@@ -103,6 +103,23 @@ public class StreamModule : XmppStreamModule {
         return status;
     }
 
+    public void untrust_device(Jid jid, int device_id) {
+        if(device_lists.has_key(jid) && device_lists[jid].contains(device_id))
+            device_lists[jid].remove(device_id);
+        if(store.contains_session(new Address(jid.bare_jid.to_string(), device_id)))
+            store.delete_session(new Address(jid.bare_jid.to_string(), device_id));
+    }
+
+    public void trust_device(Jid jid, int device_id) {
+        if(is_ignored_device(jid, device_id)){
+            ignored_devices[jid].remove(device_id);
+        }
+        if(!device_lists.has_key(jid))
+            device_lists[jid] = new ArrayList<int32>();
+        if(!device_lists[jid].contains(device_id))
+            device_lists[jid].add(device_id);
+    }
+
     private StanzaNode create_encrypted_key(uint8[] key, Address address) throws GLib.Error {
         SessionCipher cipher = store.create_session_cipher(address);
         CiphertextMessage device_key = cipher.encrypt(key);
@@ -223,7 +240,7 @@ public class StreamModule : XmppStreamModule {
             }
             ignored_devices[jid].add(device_id);
         }
-        session_start_failed(jid, device_id);
+        //session_start_failed(jid, device_id);
     }
 
     public bool is_ignored_device(Jid jid, int32 device_id) {
@@ -234,47 +251,51 @@ public class StreamModule : XmppStreamModule {
     }
 
     private void on_other_bundle_result(XmppStream stream, Jid jid, int device_id, string? id, StanzaNode? node) {
-        bool fail = false;
         if (node == null) {
             // Device not registered, shouldn't exist
-            fail = true;
+            stream.get_module(IDENTITY).ignore_device(jid, device_id);
         } else {
             Bundle bundle = new Bundle(node);
             bundle_fetched(jid, device_id, bundle);
-            int32 signed_pre_key_id = bundle.signed_pre_key_id;
-            ECPublicKey? signed_pre_key = bundle.signed_pre_key;
-            uint8[] signed_pre_key_signature = bundle.signed_pre_key_signature;
-            ECPublicKey? identity_key = bundle.identity_key;
+        }
+        stream.get_module(IDENTITY).active_bundle_requests.remove(jid.bare_jid.to_string() + @":$device_id");
+    }
 
-            ArrayList<Bundle.PreKey> pre_keys = bundle.pre_keys;
-            if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_keys.size == 0) {
+    public bool create_session_if_needed(XmppStream stream, Jid jid, int32 device_id, Bundle bundle) {
+        bool fail = false;
+        int32 signed_pre_key_id = bundle.signed_pre_key_id;
+        ECPublicKey? signed_pre_key = bundle.signed_pre_key;
+        uint8[] signed_pre_key_signature = bundle.signed_pre_key_signature;
+        ECPublicKey? identity_key = bundle.identity_key;
+
+        ArrayList<Bundle.PreKey> pre_keys = bundle.pre_keys;
+        if (signed_pre_key_id < 0 || signed_pre_key == null || identity_key == null || pre_keys.size == 0) {
+            fail = true;
+        } else {
+            int pre_key_idx = Random.int_range(0, pre_keys.size);
+            int32 pre_key_id = pre_keys[pre_key_idx].key_id;
+            ECPublicKey? pre_key = pre_keys[pre_key_idx].key;
+            if (pre_key_id < 0 || pre_key == null) {
                 fail = true;
             } else {
-                int pre_key_idx = Random.int_range(0, pre_keys.size);
-                int32 pre_key_id = pre_keys[pre_key_idx].key_id;
-                ECPublicKey? pre_key = pre_keys[pre_key_idx].key;
-                if (pre_key_id < 0 || pre_key == null) {
-                    fail = true;
-                } else {
-                    Address address = new Address(jid.bare_jid.to_string(), device_id);
-                    try {
-                        if (store.contains_session(address)) {
-                            return;
-                        }
-                        SessionBuilder builder = store.create_session_builder(address);
-                        builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
-                        stream.get_module(IDENTITY).session_started(jid, device_id);
-                    } catch (Error e) {
-                        fail = true;
+                Address address = new Address(jid.bare_jid.to_string(), device_id);
+                try {
+                    if (store.contains_session(address)) {
+                        return false;
                     }
-                    address.device_id = 0; // TODO: Hack to have address obj live longer
+                    SessionBuilder builder = store.create_session_builder(address);
+                    builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
+                    //stream.get_module(IDENTITY).session_started(jid, device_id);
+                } catch (Error e) {
+                    fail = true;
                 }
+                address.device_id = 0; // TODO: Hack to have address obj live longer
             }
         }
         if (fail) {
             stream.get_module(IDENTITY).ignore_device(jid, device_id);
         }
-        stream.get_module(IDENTITY).active_bundle_requests.remove(jid.bare_jid.to_string() + @":$device_id");
+        return true;
     }
 
     public void publish_bundles_if_needed(XmppStream stream, Jid jid) {
