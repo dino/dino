@@ -4,6 +4,9 @@ using Dino.Entities;
 using Dino.Ui;
 using Xmpp;
 
+extern const string DINO_VERSION;
+extern const string DINO_AUTHORS;
+
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private Notifications notifications;
     private UnifiedWindow window;
@@ -90,6 +93,10 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         settings_action.activate.connect(show_settings_window);
         add_action(settings_action);
 
+        SimpleAction about_action = new SimpleAction("about", null);
+        about_action.activate.connect(show_about_window);
+        add_action(about_action);
+
         SimpleAction quit_action = new SimpleAction("quit", null);
         quit_action.activate.connect(quit);
         add_action(quit_action);
@@ -146,6 +153,20 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SettingsDialog dialog = new SettingsDialog();
         dialog.set_transient_for(get_active_window());
         dialog.present();
+    }
+
+    private void show_about_window() {
+        string[] authors = DINO_AUTHORS.strip().split("\n");
+
+        // Use property names as keys
+        show_about_dialog (get_active_window(),
+            logo_icon_name: "dino",
+            program_name: "Dino",
+            comments: "Dino. Communicating happiness.",
+            version: DINO_VERSION,
+            authors: authors,
+            license_type: License.GPL_3_0,
+            website: "https://dino.im/");
     }
 }
 

@@ -10,6 +10,10 @@
                 <attribute name="action">app.settings</attribute>
                 <attribute name="label" translatable="yes">Settings</attribute>
             </item>
+            <item>
+                <attribute name="action">app.about</attribute>
+                <attribute name="label" translatable="yes">About</attribute>
+            </item>
         </section>
     </menu>
 </interface>

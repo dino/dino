@@ -174,3 +174,11 @@ install(FILES
 DESTINATION
     ${ICON_INSTALL_DIR}/hicolor/scalable/status
 )
+
+# Version
+execute_process(COMMAND git describe --tags OUTPUT_VARIABLE DINO_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+add_definitions(-DDINO_VERSION=\"${DINO_VERSION}\")
+
+# Authors
+execute_process(COMMAND sh -c "git shortlog -n | sed -n '/^Translations/b; s/^\\(.*\\) ([[:digit:]]\\+):/\\1/p' | awk 1 ORS='\\\\n'" OUTPUT_VARIABLE DINO_AUTHORS)
+add_definitions(-DDINO_AUTHORS=\"${DINO_AUTHORS}\")
