@@ -90,6 +90,11 @@ public class Database {
         return new QueryBuilder(this).select(columns);
     }
 
+    internal MatchQueryBuilder match_query(Table table) {
+        ensure_init();
+        return new MatchQueryBuilder(this, table);
+    }
+
     public InsertBuilder insert() {
         ensure_init();
         return new InsertBuilder(this);
