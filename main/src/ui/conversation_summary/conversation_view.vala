@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino.Ui.ConversationSummary {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_summary/view.ui")]
-public class ConversationView : Box, Plugins.ConversationItemCollection {
+public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins.NotificationCollection {
 
     public Conversation? conversation { get; private set; }
 
@@ -83,6 +83,9 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
                 populator.close(conversation);
             }
+            foreach (Plugins.NotificationPopulator populator in app.plugin_registry.notification_populators) {
+                populator.close(conversation);
+            }
         }
         this.conversation = conversation;
         stack.set_visible_child_name("void");
@@ -93,6 +96,9 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         Timeout.add(20, () => { animate = true; return false; });
 
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
+            populator.init(conversation, this, Plugins.WidgetType.GTK);
+        }
+        foreach (Plugins.NotificationPopulator populator in app.plugin_registry.notification_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
         }
         message_item_populator.init(conversation, this);
@@ -130,14 +136,16 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     public void on_add_meta_notification(Plugins.MetaConversationNotification notification) {
         Widget? widget = (Widget) notification.get_widget(Plugins.WidgetType.GTK);
-        if(widget != null)
+        if (widget != null) {
             add_notification(widget);
+        }
     }
 
     public void on_remove_meta_notification(Plugins.MetaConversationNotification notification){
         Widget? widget = (Widget) notification.get_widget(Plugins.WidgetType.GTK);
-        if(widget != null)
+        if (widget != null) {
             remove_notification(widget);
+        }
     }
 
     public void add_notification(Widget widget) {

@@ -50,6 +50,46 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkBox" id="fingerprints_verified_label">
+                        <property name="margin-top">12</property>
+                        <property name="orientation">horizontal</property>
+                        <property name="visible">False</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="halign">start</property>
+                                <property name="valign">center</property>
+                                <property name="hexpand">True</property>
+                                <property name="label" translatable="yes">Verified Devices</property>
+                                <property name="margin-bottom">2</property>
+                                <attributes>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                </attributes>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkFrame" id="fingerprints_verified_container">
+                        <property name="visible">False</property>
+                        <property name="margin-bottom">18</property>
+                        <child>
+                            <object class="GtkScrolledWindow">
+                                <property name="hscrollbar_policy">never</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                                <property name="visible">True</property>
+                                <property name="propagate_natural_height">True</property>
+                                <child>
+                                    <object class="GtkGrid" id="fingerprints_verified">
+                                        <property name="visible">True</property>
+                                        <property name="vexpand">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkBox">
                         <property name="margin-top">12</property>
                         <property name="orientation">horizontal</property>

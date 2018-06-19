@@ -98,8 +98,14 @@ public class QueryBuilder : StatementBuilder {
     }
 
     public QueryBuilder limit(int limit) {
+        if (this.limit_val != 0 && limit > this.limit_val) error("tried to increase an existing limit");
         this.limit_val = limit;
         return this;
+    }
+
+    public QueryBuilder single() {
+        this.single_result = true;
+        return limit(1);
     }
 
     public int64 count() {
@@ -117,8 +123,8 @@ public class QueryBuilder : StatementBuilder {
         return new RowOption(row_());
     }
 
-    public T get<T>(Column<T> field) {
-        return row()[field];
+    public T get<T>(Column<T> field, T def = null) {
+        return row().get(field, def);
     }
 
     internal override Statement prepare() {

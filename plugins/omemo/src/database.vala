@@ -37,8 +37,8 @@ public class Database : Qlite.Database {
             index("identity_meta_list_idx", {identity_id, address_name});
         }
 
-        public QueryBuilder with_address(string address_name) {
-            return select().with(this.address_name, "=", address_name);
+        public QueryBuilder with_address(int identity_id, string address_name) {
+            return select().with(this.identity_id, "=", identity_id).with(this.address_name, "=", address_name);
         }
 
         public void insert_device_list(int32 identity_id, string address_name, ArrayList<int32> devices) {

@@ -181,7 +181,7 @@ public class Manager : StreamInteractionModule, Object {
         ArrayList<int32> device_list = module.get_device_list(jid);
         db.identity_meta.insert_device_list(account.id, jid.bare_jid.to_string(), device_list);
         int inc = 0;
-        foreach (Row row in db.identity_meta.with_address(jid.bare_jid.to_string()).with_null(db.identity_meta.identity_key_public_base64)) {
+        foreach (Row row in db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with_null(db.identity_meta.identity_key_public_base64)) {
             module.fetch_bundle(stream, Jid.parse(row[db.identity_meta.address_name]), row[db.identity_meta.device_id]);
             inc++;
         }
@@ -189,32 +189,26 @@ public class Manager : StreamInteractionModule, Object {
             if (Plugin.DEBUG) print(@"OMEMO: new bundles $inc/$(device_list.size) for $jid\n");
         }
 
-        if(db.trust.select().with(db.trust.identity_id, "=", account.id).with(db.trust.address_name, "    =", jid.bare_jid.to_string()).count() == 0)
-            db.trust.insert().value(db.trust.identity_id, account.id).value(db.trust.address_name, jid    .bare_jid.to_string()).value(db.trust.blind_trust, true).perform();
-
+        if (db.trust.select().with(db.trust.identity_id, "=", account.id).with(db.trust.address_name, "=", jid.bare_jid.to_string()).count() == 0) {
+            db.trust.insert().value(db.trust.identity_id, account.id).value(db.trust.address_name, jid.bare_jid.to_string()).value(db.trust.blind_trust, true).perform();
+        }
     }
 
     public void on_bundle_fetched(Account account, Jid jid, int32 device_id, Bundle bundle) {
         bool blind_trust = db.trust.get_blind_trust(account.id, jid.bare_jid.to_string());
 
-        bool untrust = !(blind_trust || db.identity_meta.with_address(jid.bare_jid.to_string())
-                .with(db.identity_meta.identity_id, "=", account.id)
+        bool untrust = !(blind_trust || db.identity_meta.with_address(account.id, jid.bare_jid.to_string())
                 .with(db.identity_meta.device_id, "=", device_id)
                 .with(db.identity_meta.identity_key_public_base64, "=", Base64.encode(bundle.identity_key.serialize()))
-                .count() > 0);
+                .single().row().is_present());
 
-        Database.IdentityMetaTable.TrustLevel trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
-        foreach(Row row in db.identity_meta.with_address(jid.bare_jid.to_string())
-                .with(db.identity_meta.identity_id, "=", account.id)
-                .with(db.identity_meta.device_id, "=", device_id)) {
-            trusted = (Database.IdentityMetaTable.TrustLevel) row[db.identity_meta.trusted_identity];
-            break;
-        }
+        Database.IdentityMetaTable.TrustLevel trusted = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with(db.identity_meta.device_id, "=", device_id).single()[db.identity_meta.trusted_identity, Database.IdentityMetaTable.TrustLevel.UNKNOWN];
 
-        if(untrust)
+        if(untrust) {
             trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
-        else if (blind_trust && trusted == Database.IdentityMetaTable.TrustLevel.UNKNOWN)
+        } else if (blind_trust && trusted == Database.IdentityMetaTable.TrustLevel.UNKNOWN) {
             trusted = Database.IdentityMetaTable.TrustLevel.TRUSTED;
+        }
 
         db.identity_meta.insert_device_bundle(account.id, jid.bare_jid.to_string(), device_id, bundle, trusted);
 
@@ -234,8 +228,9 @@ public class Manager : StreamInteractionModule, Object {
                 if (trusted != Database.IdentityMetaTable.TrustLevel.TRUSTED && trusted != Database.IdentityMetaTable.TrustLevel.VERIFIED) {
                     module.untrust_device(jid, device_id);
                 } else {
-                    if(account.bare_jid.equals(jid) || (msg.counterpart != null && msg.counterpart.equals_bare(jid)))
+                    if(account.bare_jid.equals(jid) || (msg.counterpart != null && msg.counterpart.equals_bare(jid))) {
                         session_created = module.start_session(stream, jid, device_id, bundle);
+                    }
                 }
                 if (account.bare_jid.equals(jid) && session_created) {
                     state.waiting_own_sessions--;

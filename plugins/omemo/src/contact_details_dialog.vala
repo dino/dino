@@ -17,6 +17,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private Box fingerprints_prompt_label;
     [GtkChild] private Frame fingerprints_prompt_container;
     [GtkChild] private Grid fingerprints_prompt;
+    [GtkChild] private Box fingerprints_verified_label;
+    [GtkChild] private Frame fingerprints_verified_container;
+    [GtkChild] private Grid fingerprints_verified;
 
 
     private void set_device_trust(Row device, bool trust) {
@@ -57,9 +60,10 @@ public class ContactDetailsDialog : Gtk.Dialog {
         this.jid = jid;
 
         int i = 0;
-        foreach (Row device in plugin.db.identity_meta.with_address(jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.identity_id, "=", account.id)) {
-            if(device[plugin.db.identity_meta.identity_key_public_base64] == null)
+        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.trusted_identity, "!=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
+            if (device[plugin.db.identity_meta.identity_key_public_base64] == null) {
                 continue;
+            }
             add_fingerprint(device, i, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trusted_identity]);
 
             i++;
@@ -67,9 +71,10 @@ public class ContactDetailsDialog : Gtk.Dialog {
         }
 
         int j = 0;
-        foreach (Row device in plugin.db.identity_meta.with_address(jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.identity_id, "=", account.id)) {
-            if(device[plugin.db.identity_meta.identity_key_public_base64] == null)
+        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN)) {
+            if (device[plugin.db.identity_meta.identity_key_public_base64] == null) {
                 continue;
+            }
 
             string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
             Label lbl = new Label(res)
@@ -90,8 +95,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 add_fingerprint(device, i, Database.IdentityMetaTable.TrustLevel.TRUSTED);
                 i++;
 
-                if(j == 0)
+                if (j == 0) {
                     fingerprints_prompt.attach(new Label("No more new devices") { visible = true, valign = Align.CENTER, halign = Align.CENTER, margin = 8, hexpand = true }, 0, 0);
+                }
             });
 
             Button no = new Button() { visible = true, valign = Align.CENTER, hexpand = true};
@@ -107,8 +113,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 add_fingerprint(device, i, Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
                 i++;
 
-                if(j == 0)
+                if (j == 0) {
                     fingerprints_prompt.attach(new Label("No more new devices") { visible = true, valign = Align.CENTER, halign = Align.CENTER, margin = 8, hexpand = true }, 0, 0);
+                }
             });
 
             box.pack_start(yes);
@@ -125,6 +132,43 @@ public class ContactDetailsDialog : Gtk.Dialog {
             fingerprints_prompt_container.visible = true;
         }
 
+        int k = 0;
+        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).without_null(plugin.db.identity_meta.identity_key_public_base64).with(plugin.db.identity_meta.trusted_identity, "=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
+            string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
+            Label lbl = new Label(res)
+                { use_markup=true, justify=Justification.RIGHT, visible=true, margin = 8, halign = Align.START };
+
+            Box box = new Box(Gtk.Orientation.HORIZONTAL, 0) { visible = true, valign = Align.CENTER, hexpand = true, margin = 8 };
+
+            Button no = new Button() { visible = true, valign = Align.CENTER, halign = Align.END, hexpand = false };
+            no.image = new Image.from_icon_name("list-remove-symbolic", IconSize.BUTTON);
+
+            no.clicked.connect(() => {
+                set_device_trust(device, false);
+
+                fingerprints_verified.remove(no);
+                fingerprints_verified.remove(lbl);
+                k--;
+
+                add_fingerprint(device, i, Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
+                i++;
+
+                if (k == 0) {
+                    fingerprints_verified.attach(new Label("No more new devices") { visible = true, valign = Align.CENTER, halign = Align.CENTER, margin = 8, hexpand = true }, 0, 0);
+                }
+            });
+
+            box.pack_end(no);
+
+            fingerprints_verified.attach(lbl, 0, k);
+            fingerprints_verified.attach(box, 1, k);
+            k++;
+        }
+
+        if( k > 0 ){
+            fingerprints_verified_label.visible = true;
+            fingerprints_verified_container.visible = true;
+        }
     }
 
 }

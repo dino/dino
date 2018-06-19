@@ -80,6 +80,12 @@ public abstract interface ConversationItemPopulator : Object {
     public abstract void close(Conversation conversation);
 }
 
+public abstract interface NotificationPopulator : Object {
+    public abstract string id { get; }
+    public abstract void init(Conversation conversation, NotificationCollection summary, WidgetType type);
+    public abstract void close(Conversation conversation);
+}
+
 public abstract class MetaConversationItem : Object {
     public virtual Jid? jid { get; set; default=null; }
     public virtual string color { get; set; default=null; }
@@ -105,6 +111,9 @@ public abstract class MetaConversationNotification : Object {
 public interface ConversationItemCollection : Object {
     public signal void insert_item(MetaConversationItem item);
     public signal void remove_item(MetaConversationItem item);
+}
+
+public interface NotificationCollection : Object {
     public signal void add_meta_notification(MetaConversationNotification item);
     public signal void remove_meta_notification(MetaConversationNotification item);
 }

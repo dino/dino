@@ -102,20 +102,24 @@ public class StreamModule : XmppStreamModule {
     }
 
     public void untrust_device(Jid jid, int device_id) {
-        if(device_lists.has_key(jid) && device_lists[jid].contains(device_id))
+        if (device_lists.has_key(jid) && device_lists[jid].contains(device_id)) {
             device_lists[jid].remove(device_id);
-        if(store.contains_session(new Address(jid.bare_jid.to_string(), device_id)))
+        }
+        if (store.contains_session(new Address(jid.bare_jid.to_string(), device_id))) {
             store.delete_session(new Address(jid.bare_jid.to_string(), device_id));
+        }
     }
 
     public void trust_device(Jid jid, int device_id) {
-        if(is_ignored_device(jid, device_id)){
+        if (is_ignored_device(jid, device_id)){
             ignored_devices[jid].remove(device_id);
         }
-        if(!device_lists.has_key(jid))
+        if (!device_lists.has_key(jid)) {
             device_lists[jid] = new ArrayList<int32>();
-        if(!device_lists[jid].contains(device_id))
+        }
+        if (!device_lists[jid].contains(device_id)) {
             device_lists[jid].add(device_id);
+        }
     }
 
     private StanzaNode create_encrypted_key(uint8[] key, Address address) throws GLib.Error {

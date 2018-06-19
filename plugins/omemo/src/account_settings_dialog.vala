@@ -26,7 +26,7 @@ public class AccountSettingsDialog : Gtk.Dialog {
         int own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
 
         int i = 0;
-        foreach (Row row in plugin.db.identity_meta.with_address(account.bare_jid.to_string())) {
+        foreach (Row row in plugin.db.identity_meta.with_address(account.id, account.bare_jid.to_string())) {
             if (row[plugin.db.identity_meta.device_id] == own_id) continue;
             if (i == 0) {
                 other_list.foreach((widget) => { widget.destroy(); });
