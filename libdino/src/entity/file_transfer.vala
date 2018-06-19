@@ -23,7 +23,21 @@ public class FileTransfer : Object {
     public DateTime? local_time { get; set; }
     public Encryption encryption { get; set; }
 
-    public InputStream input_stream { get; set; }
+    private InputStream? input_stream_ = null;
+    public InputStream input_stream {
+        get {
+            if (input_stream_ == null) {
+                File file = File.new_for_path(Path.build_filename(storage_dir, path ?? file_name));
+                try {
+                    input_stream_ = file.read();
+                } catch (Error e) { }
+            }
+            return input_stream_;
+        }
+        set {
+            input_stream_ = value;
+        }
+    }
     public OutputStream output_stream { get; set; }
 
     public string file_name { get; set; }
@@ -41,9 +55,11 @@ public class FileTransfer : Object {
     public string info { get; set; }
 
     private Database? db;
+    private string storage_dir;
 
-    public FileTransfer.from_row(Database db, Qlite.Row row) {
+    public FileTransfer.from_row(Database db, Qlite.Row row, string storage_dir) {
         this.db = db;
+        this.storage_dir = storage_dir;
 
         id = row[db.file_transfer.id];
         account = db.get_account_by_id(row[db.file_transfer.account_id]); // TODO don’t have to generate acc new

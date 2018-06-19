@@ -29,6 +29,7 @@ SOURCES
     src/service/blocking_manager.vala
     src/service/chat_interaction.vala
     src/service/connection_manager.vala
+    src/service/content_item_accumulator.vala
     src/service/conversation_manager.vala
     src/service/counterpart_interaction_manager.vala
     src/service/database.vala

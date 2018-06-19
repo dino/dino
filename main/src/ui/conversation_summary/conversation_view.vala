@@ -19,11 +19,10 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     private StreamInteractor stream_interactor;
     private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>(sort_meta_items);
-    private Gee.Map<Plugins.MetaConversationItem, Gee.List<Plugins.MetaConversationItem>> meta_after_items = new Gee.HashMap<Plugins.MetaConversationItem, Gee.List<Plugins.MetaConversationItem>>();
     private Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton> item_item_skeletons = new Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton>();
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
     private Gee.List<ConversationItemSkeleton> item_skeletons = new Gee.ArrayList<ConversationItemSkeleton>();
-    private MessagePopulator message_item_populator;
+    private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
 
     private double? was_value;
@@ -39,16 +38,15 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
         scrolled.vadjustment.notify["value"].connect(on_value_notify);
 
-        message_item_populator = new MessagePopulator(stream_interactor);
+        content_populator = new ContentProvider(stream_interactor);
         subscription_notification = new SubscriptionNotitication(stream_interactor);
 
         insert_item.connect(on_insert_item);
         remove_item.connect(on_remove_item);
 
         Application app = GLib.Application.get_default() as Application;
-        app.plugin_registry.register_conversation_item_populator(new ChatStatePopulator(stream_interactor));
-        app.plugin_registry.register_conversation_item_populator(new FilePopulator(stream_interactor));
-        app.plugin_registry.register_conversation_item_populator(new DateSeparatorPopulator(stream_interactor));
+        app.plugin_registry.register_conversation_addition_populator(new ChatStatePopulator(stream_interactor));
+        app.plugin_registry.register_conversation_addition_populator(new DateSeparatorPopulator(stream_interactor));
 
         Timeout.add_seconds(60, () => {
             foreach (ConversationItemSkeleton item_skeleton in item_skeletons) {
@@ -78,7 +76,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private void initialize_for_conversation_(Conversation? conversation) {
         Dino.Application app = Dino.Application.get_default();
         if (this.conversation != null) {
-            foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
+            foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
                 populator.close(conversation);
             }
         }
@@ -90,11 +88,14 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         animate = false;
         Timeout.add(20, () => { animate = true; return false; });
 
-        foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
+        foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
         }
-        message_item_populator.init(conversation, this);
-        message_item_populator.populate_latest(conversation, 40);
+        content_populator.init(this, conversation, Plugins.WidgetType.GTK);
+        Gee.List<ContentMetaItem> items = content_populator.populate_latest(conversation, 40);
+        foreach (ContentMetaItem item in items) {
+            on_insert_item(item);
+        }
         Idle.add(() => { on_value_notify(); return false; });
 
         subscription_notification.init(conversation, this);
@@ -110,7 +111,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         }
     }
 
-    public void on_remove_item(Plugins.MetaConversationItem item) {
+    private void on_remove_item(Plugins.MetaConversationItem item) {
         lock (meta_items) {
             ConversationItemSkeleton? skeleton = item_item_skeletons[item];
             if (skeleton.items.size > 1) {
@@ -202,11 +203,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         if (index == 0) {
             Dino.Application app = Dino.Application.get_default();
             if (item_skeletons.size == 1) {
-                foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
+                foreach (Plugins.ConversationAdditionPopulator populator in app.plugin_registry.conversation_addition_populators) {
                     populator.populate_timespan(conversation, item.sort_time, new DateTime.now_utc());
                 }
             } else {
-                foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_item_populators) {
+                foreach (Plugins.ConversationAdditionPopulator populator in app.plugin_registry.conversation_addition_populators) {
                     populator.populate_timespan(conversation, item.sort_time, meta_items.higher(item).sort_time);
                 }
             }
@@ -253,7 +254,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private void load_earlier_messages() {
         was_value = scrolled.vadjustment.value;
         if (!reloading_mutex.trylock()) return;
-        if (meta_items.size > 0) message_item_populator.populate_before(conversation, meta_items.first(), 20);
+        if (meta_items.size > 0) {
+            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, meta_items.first(), 20);
+            foreach (ContentMetaItem item in items) {
+                on_insert_item(item);
+            }
+        }
     }
 
     private static int sort_meta_items(Plugins.MetaConversationItem a, Plugins.MetaConversationItem b) {
@@ -276,7 +282,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     private void clear() {
         meta_items.clear();
-        meta_after_items.clear();
         item_skeletons.clear();
         item_item_skeletons.clear();
         widgets.clear();

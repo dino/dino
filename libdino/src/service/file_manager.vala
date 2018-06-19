@@ -78,6 +78,37 @@ public class FileManager : StreamInteractionModule, Object {
         return false;
     }
 
+    public Gee.List<FileTransfer> get_latest_transfers(Account account, Jid counterpart, int n) {
+        Qlite.QueryBuilder select = db.file_transfer.select()
+                .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(counterpart))
+                .with(db.file_transfer.account_id, "=", account.id)
+                .order_by(db.file_transfer.local_time, "DESC")
+                .limit(n);
+
+        Gee.List<FileTransfer> ret = new ArrayList<FileTransfer>();
+        foreach (Qlite.Row row in select) {
+            FileTransfer file_transfer = new FileTransfer.from_row(db, row, get_storage_dir());
+            ret.insert(0, file_transfer);
+        }
+        return ret;
+    }
+
+    public Gee.List<FileTransfer> get_transfers_before(Account account, Jid counterpart, DateTime before, int n) {
+        Qlite.QueryBuilder select = db.file_transfer.select()
+                .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(counterpart))
+                .with(db.file_transfer.account_id, "=", account.id)
+                .with(db.file_transfer.local_time, "<", (long)before.to_unix())
+                .order_by(db.file_transfer.local_time, "DESC")
+                .limit(n);
+
+        Gee.List<FileTransfer> ret = new ArrayList<FileTransfer>();
+        foreach (Qlite.Row row in select) {
+            FileTransfer file_transfer = new FileTransfer.from_row(db, row, get_storage_dir());
+            ret.insert(0, file_transfer);
+        }
+        return ret;
+    }
+
     public Gee.List<FileTransfer> get_file_transfers(Account account, Jid counterpart, DateTime after, DateTime before) {
         Qlite.QueryBuilder select = db.file_transfer.select()
                 .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(counterpart))
@@ -88,11 +119,7 @@ public class FileManager : StreamInteractionModule, Object {
 
         Gee.List<FileTransfer> ret = new ArrayList<FileTransfer>();
         foreach (Qlite.Row row in select) {
-            FileTransfer file_transfer = new FileTransfer.from_row(db, row);
-            File file = File.new_for_path(Path.build_filename(get_storage_dir(), file_transfer.path ?? file_transfer.file_name));
-            try {
-                file_transfer.input_stream = file.read();
-            } catch (Error e) { }
+            FileTransfer file_transfer = new FileTransfer.from_row(db, row, get_storage_dir());
             ret.insert(0, file_transfer);
         }
         return ret;

@@ -6,7 +6,7 @@ using Xmpp;
 
 namespace Dino.Ui.ConversationSummary {
 
-class ChatStatePopulator : Plugins.ConversationItemPopulator, Object {
+class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.ConversationAdditionPopulator, Object {
 
     public string id { get { return "chat_state"; } }
 
@@ -42,8 +42,6 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Object {
     public void close(Conversation conversation) { }
 
     public void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
-
-    public void populate_between_widgets(Conversation conversation, DateTime from, DateTime to) { }
 
     private void update_chat_state(Account account, Jid jid) {
         HashMap<Jid, string>? states = stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).get_chat_states(current_conversation);

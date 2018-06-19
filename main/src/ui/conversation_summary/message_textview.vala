@@ -60,7 +60,7 @@ public class MessageTextView : TextView {
             TextIter end_iter;
             buffer.get_iter_at_offset(out start_iter, start);
             buffer.get_iter_at_offset(out end_iter, end);
-            buffer.apply_tag_by_name("semibold", start_iter, end_iter);
+            buffer.apply_tag(bold_tag, start_iter, end_iter);
         }
     }
 
@@ -125,7 +125,7 @@ public class MessageTextView : TextView {
             TextIter end_iter;
             buffer.get_iter_at_offset(out start_iter, absolute_start + start);
             buffer.get_iter_at_offset(out end_iter, absolute_start + end);
-            buffer.apply_tag_by_name("url", start_iter, end_iter);
+            buffer.apply_tag(link_tag, start_iter, end_iter);
         }
     }
 
