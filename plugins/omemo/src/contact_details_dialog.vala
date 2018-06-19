@@ -20,11 +20,12 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
 
     private void set_device_trust(Row device, bool trust) {
+        Database.IdentityMetaTable.TrustLevel trust_level = trust ? Database.IdentityMetaTable.TrustLevel.TRUSTED : Database.IdentityMetaTable.TrustLevel.UNTRUSTED;
         plugin.db.identity_meta.update()
                 .with(plugin.db.identity_meta.identity_id, "=", account.id)
                 .with(plugin.db.identity_meta.address_name, "=", device[plugin.db.identity_meta.address_name])
                 .with(plugin.db.identity_meta.device_id, "=", device[plugin.db.identity_meta.device_id])
-                .set(plugin.db.identity_meta.trusted_identity, trust).perform();
+                .set(plugin.db.identity_meta.trusted_identity, trust_level).perform();
 
         if(!trust) {
             plugin.app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).untrust_device(jid, device[plugin.db.identity_meta.device_id]);
@@ -33,11 +34,12 @@ public class ContactDetailsDialog : Gtk.Dialog {
         }
     }
 
-    private void add_fingerprint(Row device, int row, bool trust) {
+    private void add_fingerprint(Row device, int row, Database.IdentityMetaTable.TrustLevel trust) {
         string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
         Label lbl = new Label(res)
             { use_markup=true, justify=Justification.RIGHT, visible=true, margin = 8, halign = Align.START, valign = Align.CENTER };
-        Switch tgl = new Switch() {visible = true, halign = Align.END, valign = Align.CENTER, margin = 8, hexpand = true, active = trust };
+        //TODO: handle display of verified devices
+        Switch tgl = new Switch() {visible = true, halign = Align.END, valign = Align.CENTER, margin = 8, hexpand = true, active = (trust == Database.IdentityMetaTable.TrustLevel.TRUSTED) };
         tgl.state_set.connect((active) => {
             set_device_trust(device, active);
 
@@ -55,17 +57,17 @@ public class ContactDetailsDialog : Gtk.Dialog {
         this.jid = jid;
 
         int i = 0;
-        foreach (Row device in plugin.db.identity_meta.with_address(jid.to_string()).without_null(plugin.db.identity_meta.trusted_identity).with(plugin.db.identity_meta.identity_id, "=", account.id)) {
+        foreach (Row device in plugin.db.identity_meta.with_address(jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.identity_id, "=", account.id)) {
             if(device[plugin.db.identity_meta.identity_key_public_base64] == null)
                 continue;
-            add_fingerprint(device, i, device[plugin.db.identity_meta.trusted_identity]);
+            add_fingerprint(device, i, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trusted_identity]);
 
             i++;
 
         }
 
         int j = 0;
-        foreach (Row device in plugin.db.identity_meta.with_address(jid.to_string()).with_null(plugin.db.identity_meta.trusted_identity).with(plugin.db.identity_meta.identity_id, "=", account.id)) {
+        foreach (Row device in plugin.db.identity_meta.with_address(jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.identity_id, "=", account.id)) {
             if(device[plugin.db.identity_meta.identity_key_public_base64] == null)
                 continue;
 
@@ -85,7 +87,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 fingerprints_prompt.remove(lbl);
                 j--;
 
-                add_fingerprint(device, i, true);
+                add_fingerprint(device, i, Database.IdentityMetaTable.TrustLevel.TRUSTED);
                 i++;
 
                 if(j == 0)
@@ -102,7 +104,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 fingerprints_prompt.remove(lbl);
                 j--;
 
-                add_fingerprint(device, i, false);
+                add_fingerprint(device, i, Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
                 i++;
 
                 if(j == 0)

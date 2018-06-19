@@ -26,8 +26,6 @@ public class StreamModule : XmppStreamModule {
     public signal void store_created(Store store);
     public signal void device_list_loaded(Jid jid);
     public signal void bundle_fetched(Jid jid, int device_id, Bundle bundle);
-    public signal void session_started(Jid jid, int device_id);
-    public signal void session_start_failed(Jid jid, int device_id);
 
     public EncryptState encrypt(MessageStanza message, Jid self_jid) {
         EncryptState status = new EncryptState();
@@ -181,7 +179,7 @@ public class StreamModule : XmppStreamModule {
         device_list_loaded(jid);
     }
 
-    public void start_sessions_with(XmppStream stream, Jid jid) {
+    public void fetch_bundles(XmppStream stream, Jid jid) {
         if (!device_lists.has_key(jid)) {
             return;
         }
@@ -191,7 +189,7 @@ public class StreamModule : XmppStreamModule {
                 address.device_id = device_id;
                 try {
                     if (!store.contains_session(address)) {
-                        start_session_with(stream, jid, device_id);
+                        fetch_bundle(stream, jid, device_id);
                     }
                 } catch (Error e) {
                     // Ignore
@@ -201,21 +199,11 @@ public class StreamModule : XmppStreamModule {
         address.device_id = 0;
     }
 
-    public void start_session_with(XmppStream stream, Jid jid, int device_id) {
-        if (active_bundle_requests.add(jid.bare_jid.to_string() + @":$device_id")) {
-            if (Plugin.DEBUG) print(@"OMEMO: Asking for bundle from $(jid.bare_jid.to_string()):$device_id\n");
-            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid.bare_jid, @"$NODE_BUNDLES:$device_id", (stream, jid, id, node) => {
-                on_other_bundle_result(stream, jid, device_id, id, node);
-            });
-        }
-    }
-
     public void fetch_bundle(XmppStream stream, Jid jid, int device_id) {
         if (active_bundle_requests.add(jid.bare_jid.to_string() + @":$device_id")) {
             if (Plugin.DEBUG) print(@"OMEMO: Asking for bundle from $(jid.bare_jid.to_string()):$device_id\n");
             stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid.bare_jid, @"$NODE_BUNDLES:$device_id", (stream, jid, id, node) => {
-                stream.get_module(IDENTITY).active_bundle_requests.remove(jid.bare_jid.to_string() + @":$device_id");
-                bundle_fetched(jid, device_id, new Bundle(node));
+                on_other_bundle_result(stream, jid, device_id, id, node);
             });
         }
     }
@@ -240,7 +228,6 @@ public class StreamModule : XmppStreamModule {
             }
             ignored_devices[jid].add(device_id);
         }
-        //session_start_failed(jid, device_id);
     }
 
     public bool is_ignored_device(Jid jid, int32 device_id) {
@@ -261,7 +248,7 @@ public class StreamModule : XmppStreamModule {
         stream.get_module(IDENTITY).active_bundle_requests.remove(jid.bare_jid.to_string() + @":$device_id");
     }
 
-    public bool create_session_if_needed(XmppStream stream, Jid jid, int32 device_id, Bundle bundle) {
+    public bool start_session(XmppStream stream, Jid jid, int32 device_id, Bundle bundle) {
         bool fail = false;
         int32 signed_pre_key_id = bundle.signed_pre_key_id;
         ECPublicKey? signed_pre_key = bundle.signed_pre_key;
@@ -285,7 +272,6 @@ public class StreamModule : XmppStreamModule {
                     }
                     SessionBuilder builder = store.create_session_builder(address);
                     builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
-                    //stream.get_module(IDENTITY).session_started(jid, device_id);
                 } catch (Error e) {
                     fail = true;
                 }

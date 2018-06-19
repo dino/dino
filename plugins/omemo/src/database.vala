@@ -6,14 +6,27 @@ using Dino.Entities;
 namespace Dino.Plugins.Omemo {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 1;
+    private const int VERSION = 2;
 
     public class IdentityMetaTable : Table {
-        public Column<int> identity_id = new Column.Integer("identity_id") { not_null = true };
+        public enum TrustLevel {
+            VERIFIED,
+            TRUSTED,
+            UNTRUSTED,
+            UNKNOWN;
+
+            public string to_string() {
+                int val = this;
+                return val.to_string();
+            }
+        }
+
+        //Default to provide backwards compatability
+        public Column<int> identity_id = new Column.Integer("identity_id") { not_null = true, min_version = 2, default = "-1" };
         public Column<string> address_name = new Column.Text("address_name") { not_null = true };
         public Column<int> device_id = new Column.Integer("device_id") { not_null = true };
         public Column<string?> identity_key_public_base64 = new Column.Text("identity_key_public_base64");
-        public Column<bool> trusted_identity = new Column.BoolInt("trusted_identity");
+        public Column<int> trusted_identity = new Column.Integer("trusted_identity") { not_null = true, default = TrustLevel.UNKNOWN.to_string() };
         public Column<bool> now_active = new Column.BoolInt("now_active") { default = "1" };
         public Column<long> last_active = new Column.Long("last_active");
 
@@ -41,16 +54,14 @@ public class Database : Qlite.Database {
             }
         }
 
-        public int64 insert_device_bundle(int32 identity_id, string address_name, int device_id, Bundle bundle, bool? trust) {
+        public int64 insert_device_bundle(int32 identity_id, string address_name, int device_id, Bundle bundle, TrustLevel trust) {
             if (bundle == null || bundle.identity_key == null) return -1;
-            UpsertBuilder query = upsert()
+            return upsert()
                     .value(this.identity_id, identity_id, true)
                     .value(this.address_name, address_name, true)
                     .value(this.device_id, device_id, true)
-                    .value(this.identity_key_public_base64, Base64.encode(bundle.identity_key.serialize()));
-            if(trust != null)
-                    query.value(this.trusted_identity, trust);
-            return query.perform();
+                    .value(this.identity_key_public_base64, Base64.encode(bundle.identity_key.serialize()))
+                    .value(this.trusted_identity, trust).perform();
         }
     }
 

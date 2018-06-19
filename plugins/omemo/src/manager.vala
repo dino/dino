@@ -121,10 +121,10 @@ public class Manager : StreamInteractionModule, Object {
                     if (Plugin.DEBUG) print(@"OMEMO: message will be delayed: $state\n");
 
                     if (state.waiting_own_sessions > 0) {
-                        module.start_sessions_with((!)stream, conversation.account.bare_jid);
+                        module.fetch_bundles((!)stream, conversation.account.bare_jid);
                     }
                     if (state.waiting_other_sessions > 0 && message.counterpart != null) {
-                        module.start_sessions_with((!)stream, ((!)message.counterpart).bare_jid);
+                        module.fetch_bundles((!)stream, ((!)message.counterpart).bare_jid);
                     }
                     if (state.waiting_other_devicelist && message.counterpart != null) {
                         module.request_user_devicelist((!)stream, ((!)message.counterpart).bare_jid);
@@ -138,38 +138,10 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created(account, store));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect((jid) => on_device_list_loaded(account, jid));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).session_started.connect((jid, device_id) => on_session_started(account, jid, false));
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).session_start_failed.connect((jid, device_id) => on_session_started(account, jid, true));
     }
 
     private void on_stream_negotiated(Account account, XmppStream stream) {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist(stream, account.bare_jid);
-    }
-
-    private void on_session_started(Account account, Jid jid, bool failed) {
-        if (Plugin.DEBUG) print(@"OMEMO: session start between $(account.bare_jid) and $jid $(failed ? "failed" : "successful")\n");
-        HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
-        lock (message_states) {
-            foreach (Entities.Message msg in message_states.keys) {
-                if (!msg.account.equals(account)) continue;
-                MessageState state = message_states[msg];
-                if (account.bare_jid.equals(jid)) {
-                    state.waiting_own_sessions--;
-                } else if (msg.counterpart != null && msg.counterpart.equals_bare(jid)) {
-                    state.waiting_other_sessions--;
-                }
-                if (state.should_retry_now()) {
-                    send_now.add(msg);
-                    state.active_send_attempt = true;
-                }
-            }
-        }
-        foreach (Entities.Message msg in send_now) {
-            if (msg.counterpart == null) continue;
-            Entities.Conversation? conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation((!)msg.counterpart, account);
-            if (conv == null) continue;
-            stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(msg, (!)conv, true);
-        }
     }
 
     private void on_device_list_loaded(Account account, Jid jid) {
@@ -231,29 +203,20 @@ public class Manager : StreamInteractionModule, Object {
                 .with(db.identity_meta.identity_key_public_base64, "=", Base64.encode(bundle.identity_key.serialize()))
                 .count() > 0);
 
-        bool? trusted = null;
+        Database.IdentityMetaTable.TrustLevel trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
         foreach(Row row in db.identity_meta.with_address(jid.bare_jid.to_string())
                 .with(db.identity_meta.identity_id, "=", account.id)
                 .with(db.identity_meta.device_id, "=", device_id)) {
-            trusted = row[db.identity_meta.trusted_identity];
+            trusted = (Database.IdentityMetaTable.TrustLevel) row[db.identity_meta.trusted_identity];
             break;
         }
 
-        if(db.identity_meta.with_address(jid.bare_jid.to_string())
-                .with(db.identity_meta.identity_id, "=", account.id)
-                .with(db.identity_meta.device_id, "=", device_id)
-                .with_null(db.identity_meta.trusted_identity).count() > 0)
-            trusted = null;
-        
         if(untrust)
-            trusted = null;
-        else if (blind_trust && trusted == null)
-            trusted = true;
+            trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
+        else if (blind_trust && trusted == Database.IdentityMetaTable.TrustLevel.UNKNOWN)
+            trusted = Database.IdentityMetaTable.TrustLevel.TRUSTED;
 
         db.identity_meta.insert_device_bundle(account.id, jid.bare_jid.to_string(), device_id, bundle, trusted);
-
-        if(trusted == null)
-            trusted = false;
 
         XmppStream? stream = stream_interactor.get_stream(account);
         if(stream == null) return;
@@ -268,11 +231,11 @@ public class Manager : StreamInteractionModule, Object {
                 if (!msg.account.equals(account)) continue;
                 MessageState state = message_states[msg];
 
-                if (trusted != true) {
+                if (trusted != Database.IdentityMetaTable.TrustLevel.TRUSTED && trusted != Database.IdentityMetaTable.TrustLevel.VERIFIED) {
                     module.untrust_device(jid, device_id);
                 } else {
                     if(account.bare_jid.equals(jid) || (msg.counterpart != null && msg.counterpart.equals_bare(jid)))
-                        session_created = module.create_session_if_needed(stream, jid, device_id, bundle);
+                        session_created = module.start_session(stream, jid, device_id, bundle);
                 }
                 if (account.bare_jid.equals(jid) && session_created) {
                     state.waiting_own_sessions--;
