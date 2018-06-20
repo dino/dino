@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 6;
+    private const int VERSION = 7;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -54,6 +54,7 @@ public class Database : Qlite.Database {
             init({id, stanza_id, account_id, counterpart_id, our_resource, counterpart_resource, direction,
                 type_, time, local_time, body, encryption, marked});
             index("message_localtime_counterpart_idx", {local_time, counterpart_id});
+            fts({body});
         }
     }
 
@@ -206,6 +207,9 @@ public class Database : Qlite.Database {
 
     public override void migrate(long oldVersion) {
         // new table columns are added, outdated columns are still present
+        if (oldVersion < 7) {
+            message.fts_rebuild();
+        }
     }
 
     public ArrayList<Account> get_accounts() {
