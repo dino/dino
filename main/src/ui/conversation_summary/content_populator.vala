@@ -53,6 +53,18 @@ public class ContentProvider : ContentItemCollection, Object {
         }
         return ret;
     }
+
+    public Gee.List<ContentMetaItem> populate_after(Conversation conversation, Plugins.MetaConversationItem before_item, int n) {
+        Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
+        ContentMetaItem? content_meta_item = before_item as ContentMetaItem;
+        if (content_meta_item != null) {
+            Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemAccumulator.IDENTITY).populate_after(this, conversation, content_meta_item.content_item, n);
+            foreach (ContentItem item in items) {
+                ret.add(new ContentMetaItem(item, widget_factory));
+            }
+        }
+        return ret;
+    }
 }
 
 public class ContentMetaItem : Plugins.MetaConversationItem {

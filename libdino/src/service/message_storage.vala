@@ -51,7 +51,7 @@ public class MessageStorage : StreamInteractionModule, Object {
         return null;
     }
 
-    public Gee.List<Message>? get_messages_before_message(Conversation? conversation, DateTime before, int count = 20) {
+    public Gee.List<Message>? get_messages_before_message(Conversation? conversation, DateTime before, int id, int count = 20) {
 //        SortedSet<Message>? before = messages[conversation].head_set(message);
 //        if (before != null && before.size >= count) {
 //            Gee.List<Message> ret = new ArrayList<Message>(Message.equals_func);
@@ -65,9 +65,14 @@ public class MessageStorage : StreamInteractionModule, Object {
 //            }
 //            return ret;
 //        } else {
-            Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, before);
+            Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, before, null, id);
             return db_messages;
 //        }
+    }
+
+    public Gee.List<Message>? get_messages_after_message(Conversation? conversation, DateTime after, int id, int count = 20) {
+        Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, null, after, id);
+        return db_messages;
     }
 
     public Message? get_message_by_id(string stanza_id, Conversation conversation) {
@@ -100,7 +105,7 @@ public class MessageStorage : StreamInteractionModule, Object {
                 }
                 return res;
             });
-            Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), 50, null);
+            Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), 50, null, null, -1);
             messages[conversation].add_all(db_messages);
         }
     }

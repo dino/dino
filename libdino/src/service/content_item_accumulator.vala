@@ -46,50 +46,73 @@ public class ContentItemAccumulator : StreamInteractionModule, Object {
             items.add(new FileItem(transfer));
         }
 
+        Gee.List<ContentItem> ret = new ArrayList<ContentItem>();
+        if (items.size == 0) return ret;
+
         BidirIterator<ContentItem> iter = items.bidir_iterator();
         iter.last();
         int i = 0;
-        while (i < n && iter.has_previous()) {
+        while (i < n - 1 && iter.has_previous()) {
             iter.previous();
             i++;
         }
-        Gee.List<ContentItem> ret = new ArrayList<ContentItem>();
         do {
             ret.add(iter.get());
-        } while(iter.next());
+        } while (iter.next());
         return ret;
     }
 
     public Gee.List<ContentItem> populate_before(ContentItemCollection item_collection, Conversation conversation, ContentItem item, int n) {
         Gee.TreeSet<ContentItem> items = new Gee.TreeSet<ContentItem>(ContentItem.compare);
 
-        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_before_message(conversation, item.display_time, n);
+        int before_id = item as MessageItem != null ? (int)Math.floor(item.seccondary_sort_indicator) : -1;
+        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_before_message(conversation, item.display_time, before_id, n);
         if (messages != null) {
             foreach (Entities.Message message in messages) {
                 items.add(new MessageItem(message, conversation));
             }
         }
-        Gee.List<FileTransfer> transfers = stream_interactor.get_module(FileManager.IDENTITY).get_transfers_before(conversation.account, conversation.counterpart, item.display_time, n);
+        Gee.List<FileTransfer> transfers = stream_interactor.get_module(FileManager.IDENTITY).get_transfers_before(conversation.account, conversation.counterpart, item.sort_time, n);
         foreach (FileTransfer transfer in transfers) {
             items.add(new FileItem(transfer));
         }
 
+        Gee.List<ContentItem> ret = new ArrayList<ContentItem>();
+        if (items.size == 0) return ret;
+
         BidirIterator<ContentItem> iter = items.bidir_iterator();
         iter.last();
         int i = 0;
-        while (i < n && iter.has_previous()) {
+        while (i < n - 1 && iter.has_previous()) {
             iter.previous();
             i++;
         }
-        Gee.List<ContentItem> ret = new ArrayList<ContentItem>();
         do {
             ret.add(iter.get());
-        } while(iter.next());
+        } while (iter.next());
         return ret;
     }
 
-    public void populate_after(Conversation conversation, ContentItem item, int n) {
+    public Gee.List<ContentItem> populate_after(ContentItemCollection item_collection, Conversation conversation, ContentItem item, int n) {
+        Gee.TreeSet<ContentItem> items = new Gee.TreeSet<ContentItem>(ContentItem.compare);
 
+        int after_id = item as MessageItem != null ? (int)Math.floor(item.seccondary_sort_indicator) : -1;
+        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_after_message(conversation, item.sort_time, after_id, n);
+        if (messages != null) {
+            foreach (Entities.Message message in messages) {
+                items.add(new MessageItem(message, conversation));
+            }
+        }
+        Gee.List<FileTransfer> transfers = stream_interactor.get_module(FileManager.IDENTITY).get_transfers_after(conversation.account, conversation.counterpart, item.sort_time, n);
+        foreach (FileTransfer transfer in transfers) {
+            items.add(new FileItem(transfer));
+        }
+
+        Gee.List<ContentItem> ret = new ArrayList<ContentItem>();
+        foreach (ContentItem content_item in items) {
+            ret.add(content_item);
+        }
+        return ret;
     }
 
     public void add_filter(ContentFilter content_filter) {
@@ -196,7 +219,7 @@ public class FileItem : ContentItem {
         this.file_transfer = file_transfer;
 
         this.jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? file_transfer.account.bare_jid.with_resource(file_transfer.account.resourcepart) : file_transfer.counterpart;
-        this.sort_time = file_transfer.time;
+        this.sort_time = file_transfer.local_time;
         this.seccondary_sort_indicator = file_transfer.id + 0.2903;
         this.display_time = file_transfer.time;
         this.encryption = file_transfer.encryption;

@@ -236,11 +236,10 @@ public class Database : Qlite.Database {
         }
     }
 
-    public Gee.List<Message> get_messages(Xmpp.Jid jid, Account account, Message.Type? type, int count, DateTime? before) {
+    public Gee.List<Message> get_messages(Xmpp.Jid jid, Account account, Message.Type? type, int count, DateTime? before, DateTime? after, int id) {
         QueryBuilder select = message.select()
                 .with(message.counterpart_id, "=", get_jid_id(jid))
                 .with(message.account_id, "=", account.id)
-                .order_by(message.id, "DESC")
                 .limit(count);
         if (jid.resourcepart != null) {
             select.with(message.counterpart_resource, "=", jid.resourcepart);
@@ -250,6 +249,17 @@ public class Database : Qlite.Database {
         }
         if (before != null) {
             select.with(message.local_time, "<", (long) before.to_unix());
+            if (id > 0) {
+                select.with(message.id, "<", id);
+            }
+        }
+        if (after != null) {
+            select.with(message.local_time, ">", (long) after.to_unix());
+            if (id > 0) {
+                select.with(message.id, ">", id);
+            }
+        } else {
+            select.order_by(message.id, "DESC");
         }
 
         LinkedList<Message> ret = new LinkedList<Message>();

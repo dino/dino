@@ -18,7 +18,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     [GtkChild] private Stack stack;
 
     private StreamInteractor stream_interactor;
-    private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>(sort_meta_items);
+    private Gee.TreeSet<Plugins.MetaConversationItem> content_items = new Gee.TreeSet<Plugins.MetaConversationItem>(compare_meta_items);
+    private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>(compare_meta_items);
     private Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton> item_item_skeletons = new Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton>();
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
     private Gee.List<ConversationItemSkeleton> item_skeletons = new Gee.ArrayList<ConversationItemSkeleton>();
@@ -32,6 +33,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private Mutex reloading_mutex = Mutex();
     private bool animate = false;
     private bool firstLoad = true;
+    private bool at_current_content = true;
 
     public ConversationView(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -41,8 +43,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         content_populator = new ContentProvider(stream_interactor);
         subscription_notification = new SubscriptionNotitication(stream_interactor);
 
-        insert_item.connect(on_insert_item);
-        remove_item.connect(on_remove_item);
+        insert_item.connect(do_insert_item);
+        remove_item.connect(do_remove_item);
 
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_conversation_addition_populator(new ChatStatePopulator(stream_interactor));
@@ -82,49 +84,57 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         }
         this.conversation = conversation;
         stack.set_visible_child_name("void");
+
+        foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
+            populator.init(conversation, this, Plugins.WidgetType.GTK);
+        }
+        content_populator.init(this, conversation, Plugins.WidgetType.GTK);
+        subscription_notification.init(conversation, this);
+
+        display_latest();
+
+        stack.set_visible_child_name("main");
+    }
+
+    private void display_latest() {
         clear();
         was_upper = null;
         was_page_size = null;
         animate = false;
         Timeout.add(20, () => { animate = true; return false; });
 
-        foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
-            populator.init(conversation, this, Plugins.WidgetType.GTK);
-        }
-        content_populator.init(this, conversation, Plugins.WidgetType.GTK);
         Gee.List<ContentMetaItem> items = content_populator.populate_latest(conversation, 40);
         foreach (ContentMetaItem item in items) {
-            on_insert_item(item);
+            do_insert_item(item);
         }
         Idle.add(() => { on_value_notify(); return false; });
-
-        subscription_notification.init(conversation, this);
-
-        stack.set_visible_child_name("main");
     }
 
-    public void on_insert_item(Plugins.MetaConversationItem item) {
+    public void do_insert_item(Plugins.MetaConversationItem item) {
         lock (meta_items) {
             if (!item.can_merge || !merge_back(item)) {
                 insert_new(item);
             }
         }
+        if (item as ContentMetaItem != null) {
+            content_items.add(item);
+        }
+        meta_items.add(item);
     }
 
-    private void on_remove_item(Plugins.MetaConversationItem item) {
-        lock (meta_items) {
-            ConversationItemSkeleton? skeleton = item_item_skeletons[item];
-            if (skeleton.items.size > 1) {
-                skeleton.remove_meta_item(item);
-            } else {
-                widgets[item].destroy();
-                widgets.unset(item);
-                skeleton.destroy();
-                item_skeletons.remove(skeleton);
-                item_item_skeletons.unset(item);
-            }
-            meta_items.remove(item);
+    private void do_remove_item(Plugins.MetaConversationItem item) {
+        ConversationItemSkeleton? skeleton = item_item_skeletons[item];
+        if (skeleton.items.size > 1) {
+            skeleton.remove_meta_item(item);
+        } else {
+            widgets[item].destroy();
+            widgets.unset(item);
+            skeleton.destroy();
+            item_skeletons.remove(skeleton);
+            item_item_skeletons.unset(item);
         }
+        content_items.remove(item);
+        meta_items.remove(item);
     }
 
     public void add_notification(Widget widget) {
@@ -154,8 +164,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                 lower_skeleton.add_meta_item(item);
                 force_alloc_width(lower_skeleton, main.get_allocated_width());
 
+                widgets[item] = widgets[lower_start_item];
                 item_item_skeletons[item] = lower_skeleton;
-                meta_items.add(item);
 
                 return true;
             }
@@ -182,7 +192,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         item_item_skeletons[item] = item_skeleton;
         int index = lower_item != null ? item_skeletons.index_of(item_item_skeletons[lower_item]) + 1 : 0;
         item_skeletons.insert(index, item_skeleton);
-        meta_items.add(item);
 
         // Insert widget
         Widget insert = item_skeleton;
@@ -220,12 +229,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         while(i < split_skeleton.items.size) {
             Plugins.MetaConversationItem meta_item = split_skeleton.items[i];
             if (time.compare(meta_item.display_time) < 0) {
-                remove_item(meta_item);
+                do_remove_item(meta_item);
                 if (!already_divided) {
                     insert_new(meta_item);
                     already_divided = true;
                 } else {
-                    insert_item(meta_item);
+                    do_insert_item(meta_item);
                 }
             }
             i++;
@@ -235,19 +244,24 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private void on_upper_notify() {
         if (was_upper == null || scrolled.vadjustment.value >  was_upper - was_page_size - 1 ||
                 scrolled.vadjustment.value >  was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
-            scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size; // scroll down
+            if (at_current_content) {
+                scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size; // scroll down
+            }
         } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1) {
             scrolled.vadjustment.value = scrolled.vadjustment.upper - was_upper + scrolled.vadjustment.value; // stay at same content
         }
         was_upper = scrolled.vadjustment.upper;
         was_page_size = scrolled.vadjustment.page_size;
+        was_value = scrolled.vadjustment.value;
         reloading_mutex.trylock();
         reloading_mutex.unlock();
     }
 
     private void on_value_notify() {
-        if (scrolled.vadjustment.value < 200) {
+        if (scrolled.vadjustment.value < 400) {
             load_earlier_messages();
+        } else if (scrolled.vadjustment.upper - (scrolled.vadjustment.value + scrolled.vadjustment.page_size) < 400) {
+            load_later_messages();
         }
     }
 
@@ -255,14 +269,39 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         was_value = scrolled.vadjustment.value;
         if (!reloading_mutex.trylock()) return;
         if (meta_items.size > 0) {
-            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, meta_items.first(), 20);
+            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, content_items.first(), 20);
             foreach (ContentMetaItem item in items) {
-                on_insert_item(item);
+                do_insert_item(item);
             }
+        } else {
+            reloading_mutex.unlock();
         }
     }
 
-    private static int sort_meta_items(Plugins.MetaConversationItem a, Plugins.MetaConversationItem b) {
+    private void load_later_messages() {
+        if (!reloading_mutex.trylock()) return;
+        if (meta_items.size > 0 && !at_current_content) {
+            foreach (Plugins.MetaConversationItem a in content_items) {
+                ContentMetaItem b = a as ContentMetaItem;
+                MessageItem c = b.content_item as MessageItem;
+            }
+            Gee.List<ContentMetaItem> items = content_populator.populate_after(conversation, content_items.last(), 20);
+
+            ContentMetaItem b = content_items.last() as ContentMetaItem;
+            MessageItem c = b.content_item as MessageItem;
+
+            if (items.size == 0) {
+                at_current_content = true;
+            }
+            foreach (ContentMetaItem item in items) {
+                do_insert_item(item);
+            }
+        } else {
+            reloading_mutex.unlock();
+        }
+    }
+
+    private static int compare_meta_items(Plugins.MetaConversationItem a, Plugins.MetaConversationItem b) {
         int res = a.sort_time.compare(b.sort_time);
         if (res == 0) {
             if (a.seccondary_sort_indicator < b.seccondary_sort_indicator) res = -1;
@@ -281,6 +320,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     }
 
     private void clear() {
+        content_items.clear();
         meta_items.clear();
         item_skeletons.clear();
         item_item_skeletons.clear();
