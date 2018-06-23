@@ -77,7 +77,7 @@ public class FileTransfer : Object {
         }
         direction = row[db.file_transfer.direction];
         time = new DateTime.from_unix_utc(row[db.file_transfer.time]);
-        local_time = new DateTime.from_unix_utc(row[db.file_transfer.time]);
+        local_time = new DateTime.from_unix_utc(row[db.file_transfer.local_time]);
         encryption = (Encryption) row[db.file_transfer.encryption];
         file_name = row[db.file_transfer.file_name];
         path = row[db.file_transfer.path];

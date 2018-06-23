@@ -82,7 +82,7 @@ public class Message : Object {
         }
         direction = row[db.message.direction];
         time = new DateTime.from_unix_utc(row[db.message.time]);
-        local_time = new DateTime.from_unix_utc(row[db.message.time]);
+        local_time = new DateTime.from_unix_utc(row[db.message.local_time]);
         body = row[db.message.body];
         marked = (Message.Marked) row[db.message.marked];
         encryption = (Encryption) row[db.message.encryption];
