@@ -86,7 +86,7 @@ msgstr "Неверный пароль"
 
 #: main/src/ui/manage_accounts/dialog.vala:246
 msgid "Invalid TLS certificate"
-msgstr "Недействительный TSL сертификат"
+msgstr "Недействительный TSL-сертификат"
 
 #: main/src/ui/manage_accounts/dialog.vala:249
 #: main/src/ui/manage_accounts/dialog.vala:251
@@ -99,7 +99,7 @@ msgstr "Добавить аккаунт"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:45
 msgid "JID should be of the form “user@example.com”"
-msgstr ""
+msgstr "JID должен иметь форму «user@example.com»"
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
@@ -135,8 +135,8 @@ msgstr "%l∶%M %p"
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i минуту назад"
-msgstr[1] "%i минут назад"
-msgstr[2] ""
+msgstr[1] "%i минуты назад"
+msgstr[2] "%i минут назад"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:167
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
@@ -166,7 +166,7 @@ msgstr "Сохранить"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Channel"
-msgstr ""
+msgstr "Присоединиться к каналу"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
@@ -176,7 +176,7 @@ msgstr "Следующее"
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
 #: main/data/im.dino.Dino.appdata.xml:28
 msgid "Start Conversation"
-msgstr ""
+msgstr "Начать чат"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
@@ -237,25 +237,24 @@ msgstr "%a, %b %d"
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %i others"
-msgstr ""
+msgid_plural "%s, %s and %i others"
+msgstr[0] "%s, %s и %i другой"
+msgstr[1] "%s, %s и %i других"
+msgstr[2] "%s, %s и %i других"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s, %s and %s"
-msgstr ""
+msgstr "%s, %s и %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:152
 #, c-format
 msgid "%s and %s"
-msgstr ""
+msgstr "%s и %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
-#, fuzzy
 msgid "is typing…"
-msgid_plural "are typing…"
-msgstr[0] "печатает…"
-msgstr[1] "печатает…"
-msgstr[2] "печатает…"
+msgstr "печатает…"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
@@ -453,7 +452,7 @@ msgstr "Отправлять уведомления о наборе сообще
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Отправить уведомление о прочтении"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -549,7 +548,7 @@ msgstr "Добавить контакт"
 
 #: main/data/im.dino.Dino.appdata.xml:8
 msgid "Modern XMPP Client"
-msgstr ""
+msgstr "Современный XMPP-клиент"
 
 #: main/data/im.dino.Dino.appdata.xml:10
 msgid ""
@@ -557,6 +556,9 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino — это современный чат-клиент рабочего стола с открытым исходным "
+"кодом. Он сфокусирован на предоставлении заслуживающих доверия "
+"возможностей Jabber/XMPP, обеспечивая вашу конфиденциальность."
 
 #: main/data/im.dino.Dino.appdata.xml:14
 msgid ""
@@ -564,16 +566,21 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"Он поддерживает сквозное шифрование с помощью OMEMO и OpenPGP и "
+"позволяет настраивать связанные с конфиденциальностью возможности, "
+"такие как уведомления о прочтении сообщения и о наборе текста."
 
 #: main/data/im.dino.Dino.appdata.xml:18
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"Dino получает историю с сервера и синхронизирует сообщения с другими "
+"устройствами."
 
 #: main/data/im.dino.Dino.appdata.xml:24
 msgid "Main window with conversations"
-msgstr ""
+msgstr "Основное окно с чатами"
 
 #~ msgid "Send message marker"
 #~ msgstr "Отправлять маркеры сообщений"
