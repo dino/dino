@@ -3,6 +3,8 @@ using Sqlite;
 namespace Qlite {
 
 public abstract class Column<T> {
+    public const string DEFALT_TABLE_NAME = "";
+
     public string name { get; private set; }
     public string? default { get; set; }
     public int sqlite_type { get; private set; }
@@ -12,16 +14,21 @@ public abstract class Column<T> {
     public virtual bool not_null { get; set; }
     public long min_version { get; set; default = -1; }
     public long max_version { get; set; default = long.MAX; }
+    internal Table table { get; set; }
 
-    public abstract T get(Row row);
+    public abstract T get(Row row, string? table_name = DEFALT_TABLE_NAME);
 
-    public virtual bool is_null(Row row) {
+    public virtual bool is_null(Row row, string? table_name = DEFALT_TABLE_NAME) {
         return false;
     }
 
     internal abstract void bind(Statement stmt, int index, T value);
 
     public string to_string() {
+        return table == null ? name : (table.name + "." + name);
+    }
+
+    public string to_column_definition() {
         string res = name;
         switch (sqlite_type) {
             case INTEGER:
@@ -58,12 +65,12 @@ public abstract class Column<T> {
             base(name, INTEGER);
         }
 
-        public override int get(Row row) {
-            return (int) row.get_integer(name);
+        public override int get(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return (int) row.get_integer(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
-        public override bool is_null(Row row) {
-            return !row.has_integer(name);
+        public override bool is_null(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return !row.has_integer(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
         internal override void bind(Statement stmt, int index, int value) {
@@ -76,12 +83,12 @@ public abstract class Column<T> {
             base(name, INTEGER);
         }
 
-        public override long get(Row row) {
-            return (long) row.get_integer(name);
+        public override long get(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return (long) row.get_integer(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
-        public override bool is_null(Row row) {
-            return !row.has_integer(name);
+        public override bool is_null(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return !row.has_integer(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
         internal override void bind(Statement stmt, int index, long value) {
@@ -94,12 +101,12 @@ public abstract class Column<T> {
             base(name, FLOAT);
         }
 
-        public override double get(Row row) {
-            return row.get_real(name);
+        public override double get(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return row.get_real(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
-        public override bool is_null(Row row) {
-            return !row.has_real(name);
+        public override bool is_null(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return !row.has_real(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
         internal override void bind(Statement stmt, int index, double value) {
@@ -112,12 +119,12 @@ public abstract class Column<T> {
             base(name, TEXT);
         }
 
-        public override string? get(Row row) {
-            return row.get_text(name);
+        public override string? get(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return row.get_text(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
-        public override bool is_null(Row row) {
-            return get(row) == null;
+        public override bool is_null(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return get(row, table_name == DEFALT_TABLE_NAME ? table.name : table_name) == null;
         }
 
         internal override void bind(Statement stmt, int index, string? value) {
@@ -136,11 +143,11 @@ public abstract class Column<T> {
 
         public override bool not_null { get { return true; } set {} }
 
-        public override string get(Row row) {
-            return (!)row.get_text(name);
+        public override string get(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return (!)row.get_text(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
-        public override bool is_null(Row row) {
+        public override bool is_null(Row row, string? table_name = DEFALT_TABLE_NAME) {
             return false;
         }
 
@@ -154,8 +161,8 @@ public abstract class Column<T> {
             base(name, TEXT);
         }
 
-        public override bool get(Row row) {
-            return row.get_text(name) == "1";
+        public override bool get(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return row.get_text(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name) == "1";
         }
 
         internal override void bind(Statement stmt, int index, bool value) {
@@ -168,8 +175,8 @@ public abstract class Column<T> {
             base(name, INTEGER);
         }
 
-        public override bool get(Row row) {
-            return row.get_integer(name) == 1;
+        public override bool get(Row row, string? table_name = DEFALT_TABLE_NAME) {
+            return row.get_integer(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name) == 1;
         }
 
         internal override void bind(Statement stmt, int index, bool value) {

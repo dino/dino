@@ -19,6 +19,10 @@ public class Table {
     public void init(Column[] columns, string constraints = "") {
         this.columns = columns;
         this.constraints = constraints;
+
+        foreach(Column c in columns) {
+            c.table = this;
+        }
     }
 
     public void fts(Column[] columns) {
@@ -28,7 +32,7 @@ public class Table {
         string cnames = "";
         string cnews = "";
         foreach (Column c in columns) {
-            cs += @", $c";
+            cs += @", $(c.to_column_definition())";
             cnames += @", $(c.name)";
             cnews += @", new.$(c.name)";
         }
@@ -140,7 +144,7 @@ public class Table {
         for (int i = 0; i < columns.length; i++) {
             Column c = columns[i];
             if (c.min_version <= version && c.max_version >= version) {
-                sql += @"$(i > 0 ? "," : "") $c";
+                sql += @"$(i > 0 ? "," : "") $(c.to_column_definition())";
             }
         }
         sql += @"$constraints)";
@@ -163,7 +167,7 @@ public class Table {
         foreach (Column c in columns) {
             if (c.min_version <= new_version && c.max_version >= new_version && c.min_version > old_version) {
                 try {
-                    db.exec(@"ALTER TABLE $name ADD COLUMN $c");
+                    db.exec(@"ALTER TABLE $name ADD COLUMN $(c.to_column_definition())");
                 } catch (Error e) {
                     error("Qlite Error: Add columns for version");
                 }
