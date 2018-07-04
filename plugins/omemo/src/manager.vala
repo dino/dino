@@ -218,7 +218,6 @@ public class Manager : StreamInteractionModule, Object {
         if(module == null) return;
 
         HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
-        bool session_needed = false;
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
                 bool session_created = true;

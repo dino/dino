@@ -13,6 +13,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private Account account;
     private Jid jid;
 
+    private Gee.List<Widget> toggles;
+
     [GtkChild] private Grid fingerprints;
     [GtkChild] private Box fingerprints_prompt_label;
     [GtkChild] private Frame fingerprints_prompt_container;
@@ -20,6 +22,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private Box fingerprints_verified_label;
     [GtkChild] private Frame fingerprints_verified_container;
     [GtkChild] private Grid fingerprints_verified;
+    [GtkChild] private Switch key_mgmnt;
 
 
     private void set_device_trust(Row device, bool trust) {
@@ -48,6 +51,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
             return false;
         });
+        toggles.add(tgl);
 
         fingerprints.attach(lbl, 0, row);
         fingerprints.attach(tgl, 1, row);
@@ -58,6 +62,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
         this.plugin = plugin;
         this.account = account;
         this.jid = jid;
+
+        toggles = new ArrayList<Widget>();
 
         int i = 0;
         foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.trusted_identity, "!=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
@@ -90,6 +96,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 
                 fingerprints_prompt.remove(box);
                 fingerprints_prompt.remove(lbl);
+                toggles.remove(box);
                 j--;
 
                 add_fingerprint(device, i, Database.IdentityMetaTable.TrustLevel.TRUSTED);
@@ -108,6 +115,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
                 fingerprints_prompt.remove(box);
                 fingerprints_prompt.remove(lbl);
+                toggles.remove(box);
                 j--;
 
                 add_fingerprint(device, i, Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
@@ -122,6 +130,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             box.pack_start(no);
 
             box.get_style_context().add_class("linked");
+            toggles.add(box);
 
             fingerprints_prompt.attach(lbl, 0, j);
             fingerprints_prompt.attach(box, 1, j);
@@ -148,6 +157,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
                 fingerprints_verified.remove(no);
                 fingerprints_verified.remove(lbl);
+                toggles.remove(no);
                 k--;
 
                 add_fingerprint(device, i, Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
@@ -159,6 +169,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             });
 
             box.pack_end(no);
+            toggles.add(no);
 
             fingerprints_verified.attach(lbl, 0, k);
             fingerprints_verified.attach(box, 1, k);
@@ -169,6 +180,22 @@ public class ContactDetailsDialog : Gtk.Dialog {
             fingerprints_verified_label.visible = true;
             fingerprints_verified_container.visible = true;
         }
+
+        bool blind_trust = plugin.db.trust.get_blind_trust(account.id, jid.bare_jid.to_string());
+        key_mgmnt.set_active(!blind_trust);
+        foreach(Widget tgl in toggles){
+            tgl.set_sensitive(!blind_trust);
+        }
+
+        key_mgmnt.state_set.connect((active) => {
+            plugin.db.trust.update().with(plugin.db.trust.identity_id, "=", account.id).with(plugin.db.trust.address_name, "=", jid.bare_jid.to_string()).set(plugin.db.trust.blind_trust, !active).perform();
+            foreach(Widget tgl in toggles){
+                tgl.set_sensitive(active);
+            }
+
+            return false;
+        });
+
     }
 
 }

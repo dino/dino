@@ -10,6 +10,27 @@
                 <property name="margin-left">40</property>
                 <property name="margin-right">40</property>
                 <child>
+                    <object class="GtkBox">
+                        <property name="margin-top">12</property>
+                        <property name="orientation">horizontal</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="halign">start</property>
+                                <property name="hexpand">True</property>
+                                <property name="label" translatable="yes">Enable Key Management</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkSwitch" id="key_mgmnt">
+                                <property name="visible">True</property>
+                                <property name="halign">end</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkBox" id="fingerprints_prompt_label">
                         <property name="margin-top">12</property>
                         <property name="orientation">horizontal</property>
@@ -107,7 +128,8 @@
                                 </attributes>
                             </object>
                         </child>
-                        <child>
+                        <!-- TODO: implement QR code verification !-->
+                        <!--<child>
                             <object class="GtkButton" id="scan_button">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
@@ -122,7 +144,7 @@
                                     </object>
                                 </child>
                             </object>
-                        </child>
+                        </child>!-->
                     </object>
                 </child>
                 <child>
