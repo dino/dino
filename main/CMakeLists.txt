@@ -44,6 +44,7 @@ set(RESOURCE_LIST
     occupant_list.ui
     occupant_list_item.ui
     settings_dialog.ui
+    unified_main_content.ui
     unified_window_placeholder.ui
 
     theme.css

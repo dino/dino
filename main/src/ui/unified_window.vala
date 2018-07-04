@@ -16,7 +16,9 @@ public class UnifiedWindow : Window {
     private ConversationTitlebar conversation_titlebar;
     private HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
     private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
-    private Paned paned = new Paned(Orientation.HORIZONTAL) { visible=true };
+    private Paned paned;
+    private Revealer search_revealer;
+    private SearchEntry search_entry;
     private Stack stack = new Stack() { visible=true };
 
     private StreamInteractor stream_interactor;
@@ -36,8 +38,15 @@ public class UnifiedWindow : Window {
         setup_unified();
         setup_stack();
 
-        conversation_list_titlebar.search_button.bind_property("active", filterable_conversation_list.search_revealer, "reveal-child",
-                BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        conversation_titlebar.search_button.bind_property("active", search_revealer, "reveal-child", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        search_revealer.notify["child-revealed"].connect(() => {
+            if (search_revealer.child_revealed) {
+                search_entry.grab_focus();
+            } else {
+                search_entry.text = "";
+            }
+        });
+
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         focus_in_event.connect(on_focus_in_event);
@@ -56,6 +65,18 @@ public class UnifiedWindow : Window {
         check_stack();
     }
 
+    private void hide_search_results() {
+        search_revealer.get_style_context().add_class("collapsed");
+        search_revealer.valign = Align.START;
+        // TODO: Make search results box inivisble
+    }
+
+    private void show_search_results() {
+        // TODO: Make search results box visible
+        search_revealer.get_style_context().remove_class("collapsed");
+        search_revealer.valign = Align.FILL;
+    }
+
     public void on_conversation_selected(Conversation conversation) {
         if (this.conversation == null || !this.conversation.equals(conversation)) {
             this.conversation = conversation;
@@ -70,18 +91,13 @@ public class UnifiedWindow : Window {
     }
 
     private void setup_unified() {
-        chat_input = new ChatInput.View(stream_interactor) { visible=true };
-        conversation_frame = new ConversationSummary.ConversationView(stream_interactor) { visible=true };
-        filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
-
-        Grid grid = new Grid() { orientation=Orientation.VERTICAL, visible=true };
-        grid.get_style_context().add_class("dino-conversation");
-        grid.add(conversation_frame);
-        grid.add(chat_input);
-
-        paned.set_position(300);
-        paned.pack1(filterable_conversation_list, false, false);
-        paned.pack2(grid, true, false);
+        Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
+        paned = (Paned) builder.get_object("paned");
+        chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
+        conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
+        filterable_conversation_list = ((ConversationSelector.View) builder.get_object("conversation_list")).init(stream_interactor);
+        search_revealer = (Revealer) builder.get_object("search_revealer");
+        search_entry = (SearchEntry) builder.get_object("search_entry");
     }
 
     private void setup_headerbar() {

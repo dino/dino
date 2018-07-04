@@ -22,20 +22,5 @@
                 <property name="pack_type">start</property>
             </packing>
         </child>
-        <child>
-            <object class="GtkToggleButton" id="search_button">
-                <property name="visible">True</property>
-                <child>
-                    <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="icon-name">system-search-symbolic</property>
-                        <property name="icon-size">1</property>
-                    </object>
-                </child>
-            </object>
-            <packing>
-                <property name="pack_type">end</property>
-            </packing>
-        </child>
     </template>
 </interface>

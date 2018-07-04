@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <object class="GtkPaned" id="paned">
+        <property name="position">300</property>
+        <property name="orientation">horizontal</property>
+        <property name="visible">True</property>
+        <child>
+            <object class="DinoUiConversationSelectorView" id="conversation_list">
+                <property name="visible">True</property>
+            </object>
+            <packing>
+                <property name="resize">False</property>
+                <property name="shrink">False</property>
+            </packing>
+        </child>
+        <child>
+            <object class="GtkOverlay">
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="visible">True</property>
+                        <style>
+                            <class name="dino-conversation"/>
+                        </style>
+                        <child>
+                            <object class="DinoUiConversationSummaryConversationView" id="conversation_frame">
+                                <property name="visible">True</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="DinoUiChatInputView" id="chat_input">
+                                <property name="visible">True</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child type="overlay">
+                    <object class="GtkRevealer" id="search_revealer">
+                        <property name="visible">True</property>
+                        <property name="halign">end</property>
+                        <property name="transition-type">slide-left</property>
+                        <style>
+                            <class name="dino-sidebar"/>
+                        </style>
+                        <child>
+                            <object class="GtkFrame">
+                                <property name="visible">True</property>
+                                <property name="width-request">400</property>
+                                <property name="shadow-type">none</property>
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="orientation">vertical</property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <object class="GtkSearchEntry" id="search_entry">
+                                                <property name="visible">True</property>
+                                                <property name="margin">12</property>
+                                            </object>
+                                        </child>
+                                        <child><placeholder/></child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+            <packing>
+                <property name="resize">True</property>
+                <property name="shrink">False</property>
+            </packing>
+        </child>
+    </object>
+</interface>

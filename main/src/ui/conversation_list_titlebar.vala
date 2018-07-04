@@ -10,7 +10,6 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
     public signal void conversation_opened(Conversation conversation);
 
     [GtkChild] private MenuButton add_button;
-    [GtkChild] public ToggleButton search_button;
 
     private StreamInteractor stream_interactor;
 

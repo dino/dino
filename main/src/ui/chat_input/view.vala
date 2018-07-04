@@ -32,7 +32,7 @@ public class View : Box {
     [GtkChild] private Separator file_separator;
     private EncryptionButton encryption_widget = new EncryptionButton() { margin_top=3, valign=Align.START, visible=true };
 
-    public View(StreamInteractor stream_interactor) {
+    public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
         occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
@@ -70,6 +70,7 @@ public class View : Box {
         Util.force_css(frame, "* { border-radius: 3px; }");
 
         stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(on_upload_available);
+        return this;
     }
 
     public void initialize_for_conversation(Conversation conversation) {

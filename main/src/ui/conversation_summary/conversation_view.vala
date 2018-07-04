@@ -35,7 +35,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private bool firstLoad = true;
     private bool at_current_content = true;
 
-    public ConversationView(StreamInteractor stream_interactor) {
+    public ConversationView init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
         scrolled.vadjustment.notify["value"].connect(on_value_notify);
@@ -58,6 +58,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         });
 
         Util.force_base_background(this);
+        return this;
     }
 
     // Workaround GTK TextView issues: Delay first load of contents

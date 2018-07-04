@@ -17,6 +17,16 @@ window.dino-main .dino-conversation undershoot {
     background: none;
 }
 
+window.dino-main .dino-sidebar frame {
+    background: @insensitive_bg_color;
+    border-left: 1px solid @borders;
+}
+
+window.dino-main .dino-sidebar frame.collapsed {
+    border-bottom: 1px solid @borders;
+}
+
+
 window.dino-main .dino-chatinput frame box {
     background: @theme_base_color;
 }
