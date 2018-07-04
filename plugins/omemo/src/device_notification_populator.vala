@@ -26,8 +26,8 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
     public void init(Conversation conversation, NotificationCollection notification_collection, Plugins.WidgetType type) {
         current_conversation = conversation;
         this.notification_collection = notification_collection;
-        stream_interactor.module_manager.get_module(conversation.account, StreamModule.IDENTITY).device_list_loaded.connect((jid) => {
-                if (jid == conversation.counterpart && has_new_devices(conversation.counterpart) && conversation.type_ == Conversation.Type.CHAT) {
+        stream_interactor.module_manager.get_module(conversation.account, StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
+                if (jid.equals(conversation.counterpart) && has_new_devices(conversation.counterpart) && conversation.type_ == Conversation.Type.CHAT) {
                     display_notification();
                 }
             });
