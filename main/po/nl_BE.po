@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-04-28 16:15+0000\n"
-"Last-Translator: Nathan Follens <nathan@email.is>\n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2018-06-18 12:37+0000\n"
+"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/dino/"
 "translations/nl_BE/>\n"
 "Language: nl_BE\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.0.1\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
@@ -44,7 +44,7 @@ msgstr "Verwijderen"
 
 #: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select avatar"
-msgstr "Kiesd nen avatar"
+msgstr "Kiest nen avatar"
 
 #: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
@@ -164,7 +164,7 @@ msgstr "Opslaan"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Channel"
-msgstr ""
+msgstr "Deelnemen aan kanaal"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
@@ -172,9 +172,9 @@ msgstr "Volgende"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-#: main/data/im.dino.Dino.appdata.xml:28
+#: main/data/im.dino.Dino.appdata.xml.in:28
 msgid "Start Conversation"
-msgstr ""
+msgstr "Gesprek beginnen"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
@@ -194,11 +194,11 @@ msgstr "Deelnemen aan of aanmaken van groepsgesprekken verboden"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
-msgstr "Groepsgesprek besta nie"
+msgstr "Groepsgesprek bestaat niet"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
-msgstr "Aanmaken van groepsgesprek nie toegestaan"
+msgstr "Aanmaken van groepsgesprek niet toegestaan"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
@@ -206,11 +206,11 @@ msgstr "Groepsgesprek is alleen-leden"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
-msgstr "Kiesd nen anderen bijnaam"
+msgstr "Kiest nen anderen bijnaam"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
-msgstr "Groepsgesprek heefd te veel deelnemers"
+msgstr "Groepsgesprek heeft te veel deelnemers"
 
 #: main/src/ui/unified_window.vala:166
 msgid "No active accounts"
@@ -250,12 +250,12 @@ msgstr "%s en %s"
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
 msgid "is typing…"
 msgid_plural "are typing…"
-msgstr[0] "is aan’t typen…"
-msgstr[1] "zijn aan’t typen…"
+msgstr[0] "is aan het typen…"
+msgstr[1] "zijn aan het typen…"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:159
 msgid "has stopped typing"
-msgstr "is gestopt me typen"
+msgstr "is gestopt met typen"
 
 #: main/src/ui/conversation_summary/default_file_display.vala:50
 msgid "File"
@@ -279,7 +279,7 @@ msgstr "Alles selecteren"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr "Dit contact wild u toevoegen aan zijn/haar contacten"
+msgstr "Dit contact wilt u toevoegen aan zijn/haar contacten"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
@@ -349,7 +349,7 @@ msgid "Conference Details"
 msgstr "Groepsgespreksgegevens"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
-#: main/data/im.dino.Dino.appdata.xml:32
+#: main/data/im.dino.Dino.appdata.xml.in:32
 msgid "Contact Details"
 msgstr "Contactgegevens"
 
@@ -368,7 +368,7 @@ msgstr "Blijvend"
 #: main/src/ui/contact_details/muc_config_form_provider.vala:46
 msgid "The room will persist after the last occupant leaves"
 msgstr ""
-"Het groepsgesprek blijfd bestaan wanneer da’ de laatsten deelnemer het "
+"Het groepsgesprek blijft bestaan wanneer dat de laatsten deelnemer het "
 "verlaat"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:49
@@ -405,7 +405,7 @@ msgstr "Gemodereerd"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:64
 msgid "Only occupants with voice may send messages"
-msgstr "Enkel deelnemers me stem mogen berichten sturen"
+msgstr "Enkel deelnemers met stem mogen berichten sturen"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Members only"
@@ -422,7 +422,7 @@ msgstr "Berichtgeschiedenis"
 #: main/src/ui/contact_details/muc_config_form_provider.vala:72
 msgid "Maximum amount of backlog issued by the room"
 msgstr ""
-"Maximaal aantal berichten uit geschiedenis die het groepsgesprek weergeefd"
+"Maximaal aantal berichten uit geschiedenis dat het groepsgesprek weergeeft"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Room Configuration"
@@ -452,7 +452,7 @@ msgstr "Aan-het-typen-meldingen sturen"
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Leesbevestigingen sturen"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -526,6 +526,43 @@ msgstr "Afsluiten"
 msgid "Search"
 msgstr "Zoeken"
 
+#: main/data/im.dino.Dino.appdata.xml.in:8
+#, fuzzy
+msgid "Modern XMPP Chat Client"
+msgstr "Modernen XMPP-cliënt"
+
+#: main/data/im.dino.Dino.appdata.xml.in:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+"Dino is een moderne, vrije chattoepassing voor uw bureaublad. Ze biedt een "
+"eenvoudige en betrouwbare Jabber/XMPP-ervaring, met uw privacy in het "
+"achterhoofd."
+
+#: main/data/im.dino.Dino.appdata.xml.in:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+"Ze ondersteunt eind-tot-eind-versleuteling met OMEMO en OpenPGP, en laat u "
+"toe privacygerelateerde functies, gelijk leesbevestigingen en typmeldingen, "
+"in te stellen."
+
+#: main/data/im.dino.Dino.appdata.xml.in:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+"Dino haalt de geschiedenis op van de server en synchroniseert berichten met "
+"andere apparaten."
+
+#: main/data/im.dino.Dino.appdata.xml.in:24
+msgid "Main window with conversations"
+msgstr "Hoofdvenster met gesprekken"
+
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -545,34 +582,6 @@ msgstr "Alias"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Contact toevoegen"
-
-#: main/data/im.dino.Dino.appdata.xml:8
-msgid "Modern XMPP Client"
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:10
-msgid ""
-"Dino is a modern open-source chat client for the desktop. It focuses on "
-"providing a clean and reliable Jabber/XMPP experience while having your "
-"privacy in mind."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:14
-msgid ""
-"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
-"configuring privacy-related features such as read receipts and typing "
-"notifications."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:18
-msgid ""
-"Dino fetches history from the server and synchronizes messages with other "
-"devices."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:24
-msgid "Main window with conversations"
-msgstr ""
 
 #~ msgid "Send message marker"
 #~ msgstr "Berichtmarkers sturen"

@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-04-29 16:36+0000\n"
-"Last-Translator: Nathan Follens <nathan@email.is>\n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2018-06-18 12:37+0000\n"
+"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/nl_BE/>\n"
 "Language: nl_BE\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.0.1\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
@@ -31,11 +31,11 @@ msgstr "Fout in GnuPG"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "Geen sleutels beschikbaar. Genereerd der ene!"
+msgstr "Geen sleutels beschikbaar. Genereert der enen!"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "Selecteerd ne sleutel"
+msgstr "Selecteert ne sleutel"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
@@ -47,7 +47,7 @@ msgstr "GnuPG inroepen"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "Sleutel nie in sleutelbos"
+msgstr "Sleutel niet in sleutelbos"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
