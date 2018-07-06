@@ -31,7 +31,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 .with(plugin.db.identity_meta.identity_id, "=", account.id)
                 .with(plugin.db.identity_meta.address_name, "=", device[plugin.db.identity_meta.address_name])
                 .with(plugin.db.identity_meta.device_id, "=", device[plugin.db.identity_meta.device_id])
-                .set(plugin.db.identity_meta.trusted_identity, trust_level).perform();
+                .set(plugin.db.identity_meta.trust_level, trust_level).perform();
 
         if(!trust) {
             plugin.app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).untrust_device(jid, device[plugin.db.identity_meta.device_id]);
@@ -66,18 +66,18 @@ public class ContactDetailsDialog : Gtk.Dialog {
         toggles = new ArrayList<Widget>();
 
         int i = 0;
-        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.trusted_identity, "!=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
+        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
             if (device[plugin.db.identity_meta.identity_key_public_base64] == null) {
                 continue;
             }
-            add_fingerprint(device, i, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trusted_identity]);
+            add_fingerprint(device, i, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trust_level]);
 
             i++;
 
         }
 
         int j = 0;
-        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN)) {
+        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN)) {
             if (device[plugin.db.identity_meta.identity_key_public_base64] == null) {
                 continue;
             }
@@ -142,7 +142,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         }
 
         int k = 0;
-        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).without_null(plugin.db.identity_meta.identity_key_public_base64).with(plugin.db.identity_meta.trusted_identity, "=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
+        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).without_null(plugin.db.identity_meta.identity_key_public_base64).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
             string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
             Label lbl = new Label(res)
                 { use_markup=true, justify=Justification.RIGHT, visible=true, margin = 8, halign = Align.START };

@@ -202,7 +202,7 @@ public class Manager : StreamInteractionModule, Object {
                 .with(db.identity_meta.identity_key_public_base64, "=", Base64.encode(bundle.identity_key.serialize()))
                 .single().row().is_present());
 
-        Database.IdentityMetaTable.TrustLevel trusted = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with(db.identity_meta.device_id, "=", device_id).single()[db.identity_meta.trusted_identity, Database.IdentityMetaTable.TrustLevel.UNKNOWN];
+        Database.IdentityMetaTable.TrustLevel trusted = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with(db.identity_meta.device_id, "=", device_id).single()[db.identity_meta.trust_level, Database.IdentityMetaTable.TrustLevel.UNKNOWN];
 
         if(untrust) {
             trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;

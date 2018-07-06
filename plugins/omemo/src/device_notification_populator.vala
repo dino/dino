@@ -20,7 +20,7 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
     }
 
     public bool has_new_devices(Jid jid) {
-        return plugin.db.identity_meta.with_address(current_conversation.account.id, jid.bare_jid.to_string()).with(plugin.db.identity_meta.trusted_identity, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64).count() > 0;
+        return plugin.db.identity_meta.with_address(current_conversation.account.id, jid.bare_jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64).count() > 0;
     }
 
     public void init(Conversation conversation, NotificationCollection notification_collection, Plugins.WidgetType type) {

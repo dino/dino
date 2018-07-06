@@ -26,13 +26,14 @@ public class Database : Qlite.Database {
         public Column<string> address_name = new Column.Text("address_name") { not_null = true };
         public Column<int> device_id = new Column.Integer("device_id") { not_null = true };
         public Column<string?> identity_key_public_base64 = new Column.Text("identity_key_public_base64");
-        public Column<int> trusted_identity = new Column.Integer("trusted_identity") { not_null = true, default = TrustLevel.UNKNOWN.to_string() };
+        public Column<bool> trusted_identity = new Column.BoolInt("trusted_identity") { default = "0", max_version = 1 };
+        public Column<int> trust_level = new Column.Integer("trust_level") { default = TrustLevel.UNKNOWN.to_string(), min_version = 2 };
         public Column<bool> now_active = new Column.BoolInt("now_active") { default = "1" };
         public Column<long> last_active = new Column.Long("last_active");
 
         internal IdentityMetaTable(Database db) {
             base(db, "identity_meta");
-            init({identity_id, address_name, device_id, identity_key_public_base64, trusted_identity, now_active, last_active});
+            init({identity_id, address_name, device_id, identity_key_public_base64, trusted_identity, trust_level, now_active, last_active});
             index("identity_meta_idx", {identity_id, address_name, device_id}, true);
             index("identity_meta_list_idx", {identity_id, address_name});
         }
@@ -61,7 +62,7 @@ public class Database : Qlite.Database {
                     .value(this.address_name, address_name, true)
                     .value(this.device_id, device_id, true)
                     .value(this.identity_key_public_base64, Base64.encode(bundle.identity_key.serialize()))
-                    .value(this.trusted_identity, trust).perform();
+                    .value(this.trust_level, trust).perform();
         }
     }
 
@@ -159,7 +160,10 @@ public class Database : Qlite.Database {
     }
 
     public override void migrate(long oldVersion) {
-        // new table columns are added, outdated columns are still present
+        exec("DROP INDEX identity_meta_idx");
+        exec("DROP INDEX identity_meta_list_idx");
+        exec("CREATE UNIQUE INDEX identity_meta_idx ON identity_meta (identity_id, address_name, device_id)");
+        exec("CREATE INDEX identity_meta_list_idx ON identity_meta (identity_id, address_name)");
     }
 }
 
