@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-03-26 12:37+0000\n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2018-05-12 12:38+0000\n"
 "Last-Translator: Valerio Baldisserotto <svalo@libersoft.it>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
@@ -164,7 +164,7 @@ msgstr "Salva"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Channel"
-msgstr ""
+msgstr "Entra nel Canale"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
@@ -172,9 +172,9 @@ msgstr "Avanti"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-#: main/data/im.dino.Dino.appdata.xml:28
+#: main/data/im.dino.Dino.appdata.xml.in:28
 msgid "Start Conversation"
-msgstr ""
+msgstr "Inizia una Conversazione"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
@@ -349,7 +349,7 @@ msgid "Conference Details"
 msgstr "Dettagli della conferenza"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
-#: main/data/im.dino.Dino.appdata.xml:32
+#: main/data/im.dino.Dino.appdata.xml.in:32
 msgid "Contact Details"
 msgstr "Dettagli del contatto"
 
@@ -451,7 +451,7 @@ msgstr "Invia notifiche di digitazione"
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Invia ricevute di lettura"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -525,6 +525,40 @@ msgstr "Esci"
 msgid "Search"
 msgstr "Cerca"
 
+#: main/data/im.dino.Dino.appdata.xml.in:8
+#, fuzzy
+msgid "Modern XMPP Chat Client"
+msgstr "Client XMPP moderno"
+
+#: main/data/im.dino.Dino.appdata.xml.in:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml.in:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+"Support la crittografia end-to-end tramite OMEMO e OpenPGP e permette di "
+"configurare le funzioni relative alla privacy come le ricevute di lettura e "
+"le notifiche di digitazione."
+
+#: main/data/im.dino.Dino.appdata.xml.in:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+"Dino recupera la cronologia dal server e sincronizza i messaggi con gli "
+"altri dispositivi."
+
+#: main/data/im.dino.Dino.appdata.xml.in:24
+msgid "Main window with conversations"
+msgstr "La finestra principale con le conversazioni"
+
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -544,34 +578,6 @@ msgstr "Alias"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Aggiungi Contatto"
-
-#: main/data/im.dino.Dino.appdata.xml:8
-msgid "Modern XMPP Client"
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:10
-msgid ""
-"Dino is a modern open-source chat client for the desktop. It focuses on "
-"providing a clean and reliable Jabber/XMPP experience while having your "
-"privacy in mind."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:14
-msgid ""
-"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
-"configuring privacy-related features such as read receipts and typing "
-"notifications."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:18
-msgid ""
-"Dino fetches history from the server and synchronizes messages with other "
-"devices."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:24
-msgid "Main window with conversations"
-msgstr ""
 
 #~ msgid "Send message marker"
 #~ msgstr "Invia lo stato del messaggio"

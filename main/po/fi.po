@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-04-30 11:36+0000\n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2018-05-13 10:18+0000\n"
 "Last-Translator: mjlapin <muu@kapsi.fi>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
 "translations/fi/>\n"
@@ -164,7 +164,7 @@ msgstr "Tallenna"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Channel"
-msgstr ""
+msgstr "Liity kanavalle"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
@@ -172,9 +172,9 @@ msgstr "Seuraava"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-#: main/data/im.dino.Dino.appdata.xml:28
+#: main/data/im.dino.Dino.appdata.xml.in:28
 msgid "Start Conversation"
-msgstr ""
+msgstr "Aloita keskustelu"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
@@ -349,7 +349,7 @@ msgid "Conference Details"
 msgstr "Ryhmäkeskustelun yksityiskohdat"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
-#: main/data/im.dino.Dino.appdata.xml:32
+#: main/data/im.dino.Dino.appdata.xml.in:32
 msgid "Contact Details"
 msgstr "Yhteystiedot"
 
@@ -449,7 +449,7 @@ msgstr "Lähetä kirjoittamisilmoitukset"
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Lähetä lukukuittaukset"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -523,6 +523,43 @@ msgstr "Lopeta"
 msgid "Search"
 msgstr "Etsi"
 
+#: main/data/im.dino.Dino.appdata.xml.in:8
+#, fuzzy
+msgid "Modern XMPP Chat Client"
+msgstr "Moderni XMPP-asiakasohjelma"
+
+#: main/data/im.dino.Dino.appdata.xml.in:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+"Dino on nykyaikainen avoimen lähdekoodin jutteluohjelma työpöydälle. Se "
+"keskittyy tarjoamaan selkeän ja luotettavan Jabber/XMPP-kokemuksen "
+"unohtamatta yksityisyyttäsi."
+
+#: main/data/im.dino.Dino.appdata.xml.in:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+"Se tukee päästä päähän -salausta OMEMO:n ja OpenPGP:n avulla ja  "
+"mahdollistaa yksityisyyteen liittyvien ominaisuuksien, kuten lukukuittausten "
+"ja kirjoitusilmoitusten asetusten määrittämisen."
+
+#: main/data/im.dino.Dino.appdata.xml.in:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+"Dino hakee historian palvelimelta ja synkronisoi viestit muiden laitteiden "
+"kanssa."
+
+#: main/data/im.dino.Dino.appdata.xml.in:24
+msgid "Main window with conversations"
+msgstr "Keskustelut pääikkunassa"
+
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -542,34 +579,6 @@ msgstr "Alias"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Lisää yhteystieto"
-
-#: main/data/im.dino.Dino.appdata.xml:8
-msgid "Modern XMPP Client"
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:10
-msgid ""
-"Dino is a modern open-source chat client for the desktop. It focuses on "
-"providing a clean and reliable Jabber/XMPP experience while having your "
-"privacy in mind."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:14
-msgid ""
-"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
-"configuring privacy-related features such as read receipts and typing "
-"notifications."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:18
-msgid ""
-"Dino fetches history from the server and synchronizes messages with other "
-"devices."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:24
-msgid "Main window with conversations"
-msgstr ""
 
 #~ msgid "Send message marker"
 #~ msgstr "Lähetä lukukuittaus"

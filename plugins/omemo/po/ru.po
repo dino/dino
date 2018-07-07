@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-03-24 18:39+0000\n"
-"Last-Translator: ethylmorphine <desilent@icloud.com>\n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2018-05-01 23:41+0000\n"
+"Last-Translator: Alexander <ilabdsf@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 #: plugins/omemo/src/account_settings_widget.vala:45
@@ -40,7 +40,7 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d устройство OMEMO"
 msgstr[1] "%d устройства OMEMO"
-msgstr[2] ""
+msgstr[2] "%d устройств OMEMO"
 
 #: plugins/omemo/src/account_settings_dialog.vala:35
 #, c-format
