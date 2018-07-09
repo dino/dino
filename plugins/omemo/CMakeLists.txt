@@ -12,7 +12,6 @@ find_packages(OMEMO_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
-    account_settings_dialog.ui
     contact_details_dialog.ui
 )
 
@@ -28,7 +27,6 @@ compile_gresources(
 
 vala_precompile(OMEMO_VALA_C
 SOURCES
-    src/account_settings_dialog.vala
     src/account_settings_entry.vala
     src/account_settings_widget.vala
     src/bundle.vala

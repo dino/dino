@@ -98,6 +98,15 @@ public class Manager : StreamInteractionModule, Object {
                 return;
             }
             StreamModule module = (!)module_;
+
+            foreach (Row row in db.identity_meta.with_address(conversation.account.id, conversation.account.bare_jid.to_string())){
+                if(row[db.identity_meta.trust_level] == Database.IdentityMetaTable.TrustLevel.TRUSTED || row[db.identity_meta.trust_level] == Database.IdentityMetaTable.TrustLevel.VERIFIED){
+                    module.trust_device(conversation.account.bare_jid, row[db.identity_meta.device_id]);
+                } else {
+                    module.untrust_device(conversation.account.bare_jid, row[db.identity_meta.device_id]);
+                }
+            }
+
             EncryptState enc_state = module.encrypt(message_stanza, conversation.account.bare_jid);
             MessageState state;
             lock (message_states) {

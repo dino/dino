@@ -12,10 +12,15 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private Plugin plugin;
     private Account account;
     private Jid jid;
+    private bool own = false;
+    private int own_id = 0;
 
     private Gee.List<Widget> toggles;
 
     [GtkChild] private Grid fingerprints;
+    [GtkChild] private Box own_fingerprint_label;
+    [GtkChild] private Frame own_fingerprint_container;
+    [GtkChild] private Grid own_fingerprint;
     [GtkChild] private Box fingerprints_prompt_label;
     [GtkChild] private Frame fingerprints_prompt_container;
     [GtkChild] private Grid fingerprints_prompt;
@@ -33,10 +38,12 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 .with(plugin.db.identity_meta.device_id, "=", device[plugin.db.identity_meta.device_id])
                 .set(plugin.db.identity_meta.trust_level, trust_level).perform();
 
-        if(!trust) {
-            plugin.app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).untrust_device(jid, device[plugin.db.identity_meta.device_id]);
-        } else {
-            plugin.app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).trust_device(jid, device[plugin.db.identity_meta.device_id]);
+        if (!own) {
+            if(!trust) {
+                plugin.app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).untrust_device(jid, device[plugin.db.identity_meta.device_id]);
+            } else {
+                plugin.app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).trust_device(jid, device[plugin.db.identity_meta.device_id]);
+            }
         }
     }
 
@@ -65,9 +72,32 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         toggles = new ArrayList<Widget>();
 
+        if(jid.equals(account.bare_jid)) {
+            own = true;
+            own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
+            own_fingerprint_label.visible = true;
+            own_fingerprint_container.visible = true;
+            string own_b64 = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.identity_key_public_base64];
+            string fingerprint = fingerprint_from_base64(own_b64);
+            Label lbl = new Label(fingerprint_markup(fingerprint))
+                { use_markup=true, justify=Justification.RIGHT, visible=true, margin = 8, halign = Align.START };
+
+            Box box = new Box(Gtk.Orientation.HORIZONTAL, 0) { visible = true, valign = Align.CENTER, hexpand = true, margin = 8 };
+
+            Button copy = new Button() { visible = true, valign = Align.CENTER, halign = Align.END, hexpand = false };
+            copy.image = new Image.from_icon_name("edit-copy-symbolic", IconSize.BUTTON);
+            copy.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
+            box.pack_start(lbl);
+            box.pack_end(copy);
+            own_fingerprint.attach(box, 0, 0);
+        }
+
         int i = 0;
         foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(plugin.db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
             if (device[plugin.db.identity_meta.identity_key_public_base64] == null) {
+                continue;
+            }
+            if(own && device[plugin.db.identity_meta.device_id] == own_id) {
                 continue;
             }
             add_fingerprint(device, i, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trust_level]);
@@ -79,6 +109,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
         int j = 0;
         foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN)) {
             if (device[plugin.db.identity_meta.identity_key_public_base64] == null) {
+                continue;
+            }
+            if(own && device[plugin.db.identity_meta.device_id] == own_id) {
                 continue;
             }
 
@@ -143,6 +176,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         int k = 0;
         foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).without_null(plugin.db.identity_meta.identity_key_public_base64).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.VERIFIED)) {
+            if(own && device[plugin.db.identity_meta.device_id] == own_id) {
+                continue;
+            }
             string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
             Label lbl = new Label(res)
                 { use_markup=true, justify=Justification.RIGHT, visible=true, margin = 8, halign = Align.START };
