@@ -49,16 +49,8 @@
                                 <property name="width-request">400</property>
                                 <property name="shadow-type">none</property>
                                 <child>
-                                    <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
+                                    <object class="DinoUiGlobalSearch" id="search_box">
                                         <property name="visible">True</property>
-                                        <child>
-                                            <object class="GtkSearchEntry" id="search_entry">
-                                                <property name="visible">True</property>
-                                                <property name="margin">12</property>
-                                            </object>
-                                        </child>
-                                        <child><placeholder/></child>
                                     </object>
                                 </child>
                             </object>

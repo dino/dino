@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoUiGlobalSearch" parent="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="visible">True</property>
+        <child>
+            <object class="GtkSearchEntry" id="search_entry">
+                <property name="visible">True</property>
+                <property name="margin">12</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkLabel" id="entry_number_label">
+                <property name="xalign">0</property>
+                <property name="use-markup">True</property>
+                <property name="margin-left">17</property>
+                <property name="visible">True</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkScrolledWindow" id="results_scrolled">
+                <property name="expand">True</property>
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkBox" id="results_box">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">25</property>
+                        <property name="margin">10</property>
+                        <property name="visible">True</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

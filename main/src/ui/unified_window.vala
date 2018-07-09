@@ -19,6 +19,7 @@ public class UnifiedWindow : Window {
     private Paned paned;
     private Revealer search_revealer;
     private SearchEntry search_entry;
+    private GlobalSearch search_box;
     private Stack stack = new Stack() { visible=true };
 
     private StreamInteractor stream_interactor;
@@ -41,9 +42,9 @@ public class UnifiedWindow : Window {
         conversation_titlebar.search_button.bind_property("active", search_revealer, "reveal-child", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         search_revealer.notify["child-revealed"].connect(() => {
             if (search_revealer.child_revealed) {
-                search_entry.grab_focus();
+                search_box.search_entry.grab_focus();
             } else {
-                search_entry.text = "";
+                search_box.search_entry.text = "";
             }
         });
 
@@ -96,6 +97,7 @@ public class UnifiedWindow : Window {
         chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
         conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
         filterable_conversation_list = ((ConversationSelector.View) builder.get_object("conversation_list")).init(stream_interactor);
+        search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
         search_revealer = (Revealer) builder.get_object("search_revealer");
         search_entry = (SearchEntry) builder.get_object("search_entry");
     }

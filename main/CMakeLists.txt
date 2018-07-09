@@ -29,6 +29,7 @@ set(RESOURCE_LIST
     chat_input.ui
     contact_details_dialog.ui
     conversation_list_titlebar.ui
+    global_search.ui
     conversation_selector/view.ui
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
@@ -94,6 +95,7 @@ SOURCES
     src/ui/contact_details/dialog.vala
     src/ui/contact_details/muc_config_form_provider.vala
     src/ui/conversation_list_titlebar.vala
+    src/ui/global_search.vala
     src/ui/conversation_selector/chat_row.vala
     src/ui/conversation_selector/conversation_row.vala
     src/ui/conversation_selector/groupchat_pm_row.vala
@@ -110,6 +112,7 @@ SOURCES
     src/ui/conversation_summary/subscription_notification.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
+    src/ui/conversation_titlebar/search_entry.vala
     src/ui/conversation_titlebar/view.vala
     src/ui/manage_accounts/account_row.vala
     src/ui/manage_accounts/add_account_dialog.vala

@@ -1,4 +1,5 @@
 using Gee;
+using Qlite;
 
 using Dino.Entities;
 

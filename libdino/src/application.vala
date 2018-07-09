@@ -39,6 +39,7 @@ public interface Dino.Application : GLib.Application {
         FileManager.start(stream_interactor, db);
         NotificationEvents.start(stream_interactor);
         ContentItemAccumulator.start(stream_interactor);
+        SearchProcessor.start(stream_interactor, db);
 
         create_actions();
 

@@ -26,6 +26,11 @@ window.dino-main .dino-sidebar frame.collapsed {
     border-bottom: 1px solid @borders;
 }
 
+window.dino-main .dino-sidebar textview,
+window.dino-main .dino-sidebar textview text {
+    background-color: transparent;
+}
+
 
 window.dino-main .dino-chatinput frame box {
     background: @theme_base_color;
