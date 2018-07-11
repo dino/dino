@@ -34,6 +34,7 @@ SOURCES
     src/contact_details_dialog.vala
     src/database.vala
     src/device_notification_populator.vala
+    src/own_notifications.vala
     src/encrypt_state.vala
     src/encryption_list_entry.vala
     src/manager.vala

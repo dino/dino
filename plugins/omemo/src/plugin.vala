@@ -44,6 +44,7 @@ public class Plugin : RootInterface, Object {
         this.app.plugin_registry.register_notification_populator(device_notification_populator);
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
             list.add(new StreamModule());
+            new OwnNotifications(this, this.app.stream_interactor, account);
         });
         Manager.start(this.app.stream_interactor, db);
 
