@@ -21,23 +21,35 @@ public class StreamModule : XmppStreamModule {
     private ConcurrentSet<Jid> active_devicelist_requests = new ConcurrentSet<Jid>();
     private Map<Jid, ArrayList<int32>> device_lists = new HashMap<Jid, ArrayList<int32>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private Map<Jid, ArrayList<int32>> ignored_devices = new HashMap<Jid, ArrayList<int32>>(Jid.hash_bare_func, Jid.equals_bare_func);
+    private Map<Jid, Gee.List<Jid>> occupants = new HashMap<Jid, ArrayList<Jid>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private ReceivedPipelineListener received_pipeline_listener;
 
     public signal void store_created(Store store);
     public signal void device_list_loaded(Jid jid);
     public signal void bundle_fetched(Jid jid, int device_id, Bundle bundle);
 
-    public EncryptState encrypt(MessageStanza message, Jid self_jid) {
+    public EncryptState encrypt(MessageStanza message, Jid self_jid, Gee.List<Jid> recipients) {
         EncryptState status = new EncryptState();
         if (!Plugin.ensure_context()) return status;
         if (message.to == null) return status;
+
+        if(message.type_ == MessageStanza.TYPE_GROUPCHAT) {
+            occupants[message.to] = recipients;
+        }
+
         try {
             if (!device_lists.has_key(self_jid)) return status;
             status.own_list = true;
             status.own_devices = device_lists.get(self_jid).size;
-            if (!device_lists.has_key(message.to)) return status;
-            status.other_list = true;
-            status.other_devices = device_lists.get(message.to).size;
+            status.other_waiting_lists = 0;
+            status.other_devices = 0;
+            foreach (Jid recipient in recipients) {
+                if (!device_lists.has_key(recipient)) {
+                    status.other_waiting_lists++;
+                    return status;
+                }
+                status.other_devices += device_lists.get(recipient).size;
+            }
             if (status.own_devices == 0 || status.other_devices == 0) return status;
 
             uint8[] key = new uint8[16];
@@ -57,19 +69,22 @@ public class StreamModule : XmppStreamModule {
                         .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
 
             Address address = new Address(message.to.bare_jid.to_string(), 0);
-            foreach(int32 device_id in device_lists[message.to]) {
-                if (is_ignored_device(message.to, device_id)) {
-                    status.other_lost++;
-                    continue;
-                }
-                try {
-                    address.device_id = (int) device_id;
-                    StanzaNode key_node = create_encrypted_key(key, address);
-                    header.put_node(key_node);
-                    status.other_success++;
-                } catch (Error e) {
-                    if (e.code == ErrorCode.UNKNOWN) status.other_unknown++;
-                    else status.other_failure++;
+            foreach (Jid recipient in recipients) {
+                foreach(int32 device_id in device_lists[recipient]) {
+                    if (is_ignored_device(recipient, device_id)) {
+                        status.other_lost++;
+                        continue;
+                    }
+                    try {
+                        address.name = recipient.bare_jid.to_string();
+                        address.device_id = (int) device_id;
+                        StanzaNode key_node = create_encrypted_key(key, address);
+                        header.put_node(key_node);
+                        status.other_success++;
+                    } catch (Error e) {
+                        if (e.code == ErrorCode.UNKNOWN) status.other_unknown++;
+                        else status.other_failure++;
+                    }
                 }
             }
             address.name = self_jid.bare_jid.to_string();
@@ -147,9 +162,18 @@ public class StreamModule : XmppStreamModule {
     }
 
     public void request_user_devicelist(XmppStream stream, Jid jid) {
-        if (active_devicelist_requests.add(jid)) {
-            if (Plugin.DEBUG) print(@"OMEMO: requesting device list for $jid\n");
-            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
+        Gee.List<Jid> recipients;
+        if (occupants.contains(jid)) {
+            recipients = occupants.get(jid);
+        } else {
+            recipients = new ArrayList<Jid>(Jid.equals_bare_func);
+            recipients.add(jid);
+        }
+        foreach (Jid recipient in recipients) {
+            if (active_devicelist_requests.add(recipient)) {
+                if (Plugin.DEBUG) print(@"OMEMO: requesting device list for $jid\n");
+                stream.get_module(Pubsub.Module.IDENTITY).request(stream, recipient, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
+            }
         }
     }
 
@@ -184,23 +208,32 @@ public class StreamModule : XmppStreamModule {
     }
 
     public void fetch_bundles(XmppStream stream, Jid jid) {
-        if (!device_lists.has_key(jid)) {
-            return;
+        Gee.List<Jid> recipients;
+        if (occupants.contains(jid)) {
+            recipients = occupants.get(jid);
+        } else {
+            recipients = new ArrayList<Jid>(Jid.equals_bare_func);
+            recipients.add(jid);
         }
-        Address address = new Address(jid.bare_jid.to_string(), 0);
-        foreach(int32 device_id in device_lists[jid]) {
-            if (!is_ignored_device(jid, device_id)) {
-                address.device_id = device_id;
-                try {
-                    if (!store.contains_session(address)) {
-                        fetch_bundle(stream, jid, device_id);
+        foreach (Jid recipient in recipients) {
+            if (!device_lists.has_key(recipient)) {
+                return;
+            }
+            Address address = new Address(recipient.bare_jid.to_string(), 0);
+            foreach(int32 device_id in device_lists[recipient]) {
+                if (!is_ignored_device(recipient, device_id)) {
+                    address.device_id = device_id;
+                    try {
+                        if (!store.contains_session(address)) {
+                            fetch_bundle(stream, recipient, device_id);
+                        }
+                    } catch (Error e) {
+                        // Ignore
                     }
-                } catch (Error e) {
-                    // Ignore
                 }
             }
+            address.device_id = 0;
         }
-        address.device_id = 0;
     }
 
     public void fetch_bundle(XmppStream stream, Jid jid, int device_id) {

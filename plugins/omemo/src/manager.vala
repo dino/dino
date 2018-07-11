@@ -21,7 +21,7 @@ public class Manager : StreamInteractionModule, Object {
         public int waiting_other_sessions { get; set; }
         public int waiting_own_sessions { get; set; }
         public bool waiting_own_devicelist { get; set; }
-        public bool waiting_other_devicelist { get; set; }
+        public int waiting_other_devicelists { get; set; }
         public bool force_next_attempt { get; set; }
         public bool will_send_now { get; private set; }
         public bool active_send_attempt { get; set; }
@@ -37,12 +37,12 @@ public class Manager : StreamInteractionModule, Object {
             this.waiting_other_sessions = new_try.other_unknown;
             this.waiting_own_sessions = new_try.own_unknown;
             this.waiting_own_devicelist = !new_try.own_list;
-            this.waiting_other_devicelist = !new_try.other_list;
+            this.waiting_other_devicelists = new_try.other_waiting_lists;
             this.active_send_attempt = false;
             will_send_now = false;
             if (new_try.other_failure > 0 || (new_try.other_lost == new_try.other_devices && new_try.other_devices > 0)) {
                 msg.marked = Entities.Message.Marked.WONTSEND;
-            } else if (new_try.other_unknown > 0 || new_try.own_unknown > 0 || !new_try.other_list || !new_try.own_list || new_try.own_devices == 0) {
+            } else if (new_try.other_unknown > 0 || new_try.own_unknown > 0 || new_try.other_waiting_lists > 0 || !new_try.own_list || new_try.own_devices == 0) {
                 msg.marked = Entities.Message.Marked.UNSENT;
             } else if (!new_try.encrypted) {
                 msg.marked = Entities.Message.Marked.WONTSEND;
@@ -52,11 +52,11 @@ public class Manager : StreamInteractionModule, Object {
         }
 
         public bool should_retry_now() {
-            return !waiting_own_devicelist && !waiting_other_devicelist && waiting_other_sessions <= 0 && waiting_own_sessions <= 0 && !active_send_attempt;
+            return !waiting_own_devicelist && waiting_other_devicelists <= 0 && waiting_other_sessions <= 0 && waiting_own_sessions <= 0 && !active_send_attempt;
         }
 
         public string to_string() {
-            return @"MessageState (waiting=(others=$waiting_other_sessions, own=$waiting_own_sessions, other_list=$waiting_other_devicelist, own_list=$waiting_own_devicelist))";
+            return @"MessageState (waiting=(others=$waiting_other_sessions, own=$waiting_own_sessions, other_lists=$waiting_other_devicelists, own_list=$waiting_own_devicelist))";
         }
     }
 
@@ -85,6 +85,21 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
+    private Gee.List<Jid> get_occupants(Jid muc, Account account){
+        Gee.List<Jid> occupants = new ArrayList<Jid>(Jid.equals_bare_func);
+        Gee.List<Jid>? occupant_jids = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(muc, account);
+        if(occupant_jids == null) {
+            return occupants;
+        }
+        foreach (Jid occupant in occupant_jids) {
+            Jid? occupant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(occupant, account);
+            if(occupant_jid != null){
+                occupants.add(occupant_jid.bare_jid);
+            }
+        }
+        return occupants;
+    }
+
     private void on_pre_message_send(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         if (message.encryption == Encryption.OMEMO) {
             XmppStream? stream = stream_interactor.get_stream(conversation.account);
@@ -107,7 +122,19 @@ public class Manager : StreamInteractionModule, Object {
                 }
             }
 
-            EncryptState enc_state = module.encrypt(message_stanza, conversation.account.bare_jid);
+            Gee.List<Jid> recipients;
+            if (message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT) {
+                recipients = get_occupants((!)message.to.bare_jid, conversation.account);
+                if (recipients.size == 0) {
+                    message.marked = Entities.Message.Marked.WONTSEND;
+                    return;
+                }
+            } else {
+                recipients = new ArrayList<Jid>(Jid.equals_bare_func);
+                recipients.add(message_stanza.to);
+            }
+
+            EncryptState enc_state = module.encrypt(message_stanza, conversation.account.bare_jid, recipients);
             MessageState state;
             lock (message_states) {
                 if (message_states.has_key(message)) {
@@ -135,7 +162,7 @@ public class Manager : StreamInteractionModule, Object {
                     if (state.waiting_other_sessions > 0 && message.counterpart != null) {
                         module.fetch_bundles((!)stream, ((!)message.counterpart).bare_jid);
                     }
-                    if (state.waiting_other_devicelist && message.counterpart != null) {
+                    if (state.waiting_other_devicelists > 0 && message.counterpart != null) {
                         module.request_user_devicelist((!)stream, ((!)message.counterpart).bare_jid);
                     }
                 }
@@ -159,11 +186,12 @@ public class Manager : StreamInteractionModule, Object {
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
                 if (!msg.account.equals(account)) continue;
+                Gee.List<Jid> occupants = get_occupants(msg.counterpart.bare_jid, account);
                 MessageState state = message_states[msg];
                 if (account.bare_jid.equals(jid)) {
                     state.waiting_own_devicelist = false;
-                } else if (msg.counterpart != null && msg.counterpart.equals_bare(jid)) {
-                    state.waiting_other_devicelist = false;
+                } else if (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid))) {
+                    state.waiting_other_devicelists--;
                 }
                 if (state.should_retry_now()) {
                     send_now.add(msg);
@@ -187,6 +215,7 @@ public class Manager : StreamInteractionModule, Object {
         if (module == null) {
             return;
         }
+
         ArrayList<int32> device_list = module.get_device_list(jid);
         db.identity_meta.insert_device_list(account.id, jid.bare_jid.to_string(), device_list);
         int inc = 0;
@@ -229,20 +258,23 @@ public class Manager : StreamInteractionModule, Object {
         HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
+
                 bool session_created = true;
                 if (!msg.account.equals(account)) continue;
+                Gee.List<Jid> occupants = get_occupants(msg.counterpart.bare_jid, account);
+
                 MessageState state = message_states[msg];
 
                 if (trusted != Database.IdentityMetaTable.TrustLevel.TRUSTED && trusted != Database.IdentityMetaTable.TrustLevel.VERIFIED) {
                     module.untrust_device(jid, device_id);
                 } else {
-                    if(account.bare_jid.equals(jid) || (msg.counterpart != null && msg.counterpart.equals_bare(jid))) {
+                    if(account.bare_jid.equals(jid) || (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid)))) {
                         session_created = module.start_session(stream, jid, device_id, bundle);
                     }
                 }
                 if (account.bare_jid.equals(jid) && session_created) {
                     state.waiting_own_sessions--;
-                } else if (msg.counterpart != null && msg.counterpart.equals_bare(jid) && session_created) {
+                } else if (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid)) && session_created) {
                     state.waiting_other_sessions--;
                 }
                 if (state.should_retry_now()){
@@ -303,7 +335,8 @@ public class Manager : StreamInteractionModule, Object {
         if (stream == null) return false;
         StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
         if (module == null) return false;
-        return ((!)module).is_known_address(conversation.counterpart.bare_jid);
+        //return ((!)module).is_known_address(conversation.counterpart.bare_jid);
+        return true;
     }
 
     public static void start(StreamInteractor stream_interactor, Database db) {
