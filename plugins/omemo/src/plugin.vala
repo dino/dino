@@ -29,6 +29,7 @@ public class Plugin : RootInterface, Object {
     public AccountSettingsEntry settings_entry;
     public ContactDetailsProvider contact_details_provider;
     public DeviceNotificationPopulator device_notification_populator;
+    public OwnNotifications own_notifications;
 
     public void registered(Dino.Application app) {
         ensure_context();
@@ -38,6 +39,7 @@ public class Plugin : RootInterface, Object {
         this.settings_entry = new AccountSettingsEntry(this);
         this.contact_details_provider = new ContactDetailsProvider(this);
         this.device_notification_populator = new DeviceNotificationPopulator(this, this.app.stream_interactor);
+        this.own_notifications = new OwnNotifications(this, this.app.stream_interactor);
         this.app.plugin_registry.register_encryption_list_entry(list_entry);
         this.app.plugin_registry.register_account_settings_entry(settings_entry);
         this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
@@ -45,7 +47,7 @@ public class Plugin : RootInterface, Object {
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
             list.add(new StreamModule());
         });
-        Manager.start(this, this.app.stream_interactor, db);
+        Manager.start(this.app.stream_interactor, db);
 
         string locales_dir;
         if (app.search_path_generator != null) {
