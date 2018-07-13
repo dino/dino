@@ -12,6 +12,7 @@ public class Manager : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
+    private Plugin plugin;
     private Map<Entities.Message, MessageState> message_states = new HashMap<Entities.Message, MessageState>(Entities.Message.hash_func, Entities.Message.equals_func);
     private ReceivedMessageListener received_message_listener = new ReceivedMessageListener();
 
@@ -60,14 +61,26 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private Manager(StreamInteractor stream_interactor, Database db) {
+    private Manager(Plugin plugin, StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
         this.db = db;
+        this.plugin = plugin;
 
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
+
+        SimpleAction own_keys_action = new SimpleAction("own-keys", VariantType.INT32);
+        own_keys_action.activate.connect((variant) => {
+            RowOption row = plugin.app.db.account.row_with(plugin.app.db.account.id, variant.get_int32());
+            Account account = new Account.from_row(this.plugin.app.db, row.inner);
+            ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, account, account.bare_jid);
+            Gtk.Application app = plugin.app as Gtk.Application;
+            dialog.set_transient_for(app.get_active_window());
+            dialog.present();
+        });
+        plugin.app.add_action(own_keys_action);
     }
 
     private class ReceivedMessageListener : MessageListener {
@@ -147,6 +160,8 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created(account, store));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect((jid) => on_device_list_loaded(account, jid));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
+
+        new OwnNotifications(plugin, stream_interactor, account);
     }
 
     private void on_stream_negotiated(Account account, XmppStream stream) {
@@ -306,8 +321,8 @@ public class Manager : StreamInteractionModule, Object {
         return ((!)module).is_known_address(conversation.counterpart.bare_jid);
     }
 
-    public static void start(StreamInteractor stream_interactor, Database db) {
-        Manager m = new Manager(stream_interactor, db);
+    public static void start(Plugin plugin, StreamInteractor stream_interactor, Database db) {
+        Manager m = new Manager(plugin, stream_interactor, db);
         stream_interactor.add_module(m);
     }
 }
