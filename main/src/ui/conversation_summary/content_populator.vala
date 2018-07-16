@@ -19,12 +19,13 @@ public class ContentProvider : ContentItemCollection, Object {
     }
 
     public void init(Plugins.ConversationItemCollection item_collection, Conversation conversation, Plugins.WidgetType type) {
+        if (current_conversation != null) {
+            stream_interactor.get_module(ContentItemStore.IDENTITY).uninit(current_conversation, this);
+        }
         current_conversation = conversation;
         this.item_collection = item_collection;
-        stream_interactor.get_module(ContentItemAccumulator.IDENTITY).init(conversation, this);
+        stream_interactor.get_module(ContentItemStore.IDENTITY).init(conversation, this);
     }
-
-    public void close(Conversation conversation) { }
 
     public void insert_item(ContentItem item) {
         item_collection.insert_item(new ContentMetaItem(item, widget_factory));
@@ -34,7 +35,7 @@ public class ContentProvider : ContentItemCollection, Object {
 
 
     public Gee.List<ContentMetaItem> populate_latest(Conversation conversation, int n) {
-        Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemAccumulator.IDENTITY).populate_latest(this, conversation, n);
+        Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation, n);
         Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
         foreach (ContentItem item in items) {
             ret.add(new ContentMetaItem(item, widget_factory));
@@ -42,28 +43,26 @@ public class ContentProvider : ContentItemCollection, Object {
         return ret;
     }
 
-    public Gee.List<ContentMetaItem> populate_before(Conversation conversation, Plugins.MetaConversationItem before_item, int n) {
+    public Gee.List<ContentMetaItem> populate_before(Conversation conversation, ContentItem before_item, int n) {
         Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
-        ContentMetaItem? content_meta_item = before_item as ContentMetaItem;
-        if (content_meta_item != null) {
-            Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemAccumulator.IDENTITY).populate_before(this, conversation, content_meta_item.content_item, n);
-            foreach (ContentItem item in items) {
-                ret.add(new ContentMetaItem(item, widget_factory));
-            }
+        Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_before(conversation, before_item, n);
+        foreach (ContentItem item in items) {
+            ret.add(new ContentMetaItem(item, widget_factory));
         }
         return ret;
     }
 
-    public Gee.List<ContentMetaItem> populate_after(Conversation conversation, Plugins.MetaConversationItem before_item, int n) {
+    public Gee.List<ContentMetaItem> populate_after(Conversation conversation, ContentItem after_item, int n) {
         Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
-        ContentMetaItem? content_meta_item = before_item as ContentMetaItem;
-        if (content_meta_item != null) {
-            Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemAccumulator.IDENTITY).populate_after(this, conversation, content_meta_item.content_item, n);
-            foreach (ContentItem item in items) {
-                ret.add(new ContentMetaItem(item, widget_factory));
-            }
+        Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_after(conversation, after_item, n);
+        foreach (ContentItem item in items) {
+            ret.add(new ContentMetaItem(item, widget_factory));
         }
         return ret;
+    }
+
+    public ContentMetaItem get_content_meta_item(ContentItem content_item) {
+        return new ContentMetaItem(content_item, widget_factory);
     }
 }
 

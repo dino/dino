@@ -76,7 +76,15 @@ public class MessageStorage : StreamInteractionModule, Object {
         return db_messages;
     }
 
-    public Message? get_message_by_id(string stanza_id, Conversation conversation) {
+    public Message? get_message_by_id(int id, Conversation conversation) {
+        init_conversation(conversation);
+        foreach (Message message in messages[conversation]) {
+            if (message.id == id) return message;
+        }
+        return null;
+    }
+
+    public Message? get_message_by_stanza_id(string stanza_id, Conversation conversation) {
         init_conversation(conversation);
         foreach (Message message in messages[conversation]) {
             if (message.stanza_id == stanza_id) return message;

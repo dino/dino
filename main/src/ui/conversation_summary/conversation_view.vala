@@ -270,9 +270,13 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         was_value = scrolled.vadjustment.value;
         if (!reloading_mutex.trylock()) return;
         if (meta_items.size > 0) {
-            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, content_items.first(), 20);
+            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, (content_items.first() as ContentMetaItem).content_item, 20);
             foreach (ContentMetaItem item in items) {
                 do_insert_item(item);
+                if (content_items.size > 50) {
+                    do_remove_item(content_items.last());
+                    at_current_content = false;
+                }
             }
         } else {
             reloading_mutex.unlock();
@@ -286,7 +290,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                 ContentMetaItem b = a as ContentMetaItem;
                 MessageItem c = b.content_item as MessageItem;
             }
-            Gee.List<ContentMetaItem> items = content_populator.populate_after(conversation, content_items.last(), 20);
+            Gee.List<ContentMetaItem> items = content_populator.populate_after(conversation, (content_items.last() as ContentMetaItem).content_item, 20);
 
             ContentMetaItem b = content_items.last() as ContentMetaItem;
             MessageItem c = b.content_item as MessageItem;

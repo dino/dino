@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 7;
+    private const int VERSION = 8;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -31,6 +31,20 @@ public class Database : Qlite.Database {
         internal JidTable(Database db) {
             base(db, "jid");
             init({id, bare_jid});
+        }
+    }
+
+    public class ContentTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> conversation_id = new Column.Integer("conversation_id") { not_null = true };
+        public Column<long> time = new Column.Long("time") { not_null = true };
+        public Column<long> local_time = new Column.Long("local_time") { not_null = true };
+        public Column<int> content_type = new Column.Integer("content_type") { not_null = true };
+        public Column<int> foreign_id = new Column.Integer("foreign_id") { not_null = true };
+
+        internal ContentTable(Database db) {
+            base(db, "content");
+            init({id, conversation_id, time, local_time, content_type, foreign_id});
         }
     }
 
@@ -174,6 +188,7 @@ public class Database : Qlite.Database {
 
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
+    public ContentTable content { get; private set; }
     public MessageTable message { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
@@ -191,6 +206,7 @@ public class Database : Qlite.Database {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);
+        content = new ContentTable(this);
         message = new MessageTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
@@ -199,7 +215,7 @@ public class Database : Qlite.Database {
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
+        init({ account, jid, content, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
         try {
             exec("PRAGMA synchronous=0");
         } catch (Error e) { }
@@ -209,6 +225,24 @@ public class Database : Qlite.Database {
         // new table columns are added, outdated columns are still present
         if (oldVersion < 7) {
             message.fts_rebuild();
+        } else if (oldVersion < 8) {
+            exec("""
+            insert into content (conversation_id, time, local_time, content_type, foreign_id)
+            select conversation.id, message.time, message.local_time, 1, message.id
+            from message join conversation on
+                message.account_id=conversation.account_id and
+                message.counterpart_id=conversation.jid_id and
+                message.type=conversation.type+1 and
+                (message.counterpart_resource=conversation.resource or message.type != 3)
+            where
+                message.body not in (select info from file_transfer where info not null) and
+                message.id not in (select info from file_transfer where info not null)
+            union
+            select conversation.id, file_transfer.time, file_transfer.local_time, 2, file_transfer.id
+            from file_transfer join conversation on
+                file_transfer.account_id=conversation.account_id and
+                file_transfer.counterpart_id=conversation.jid_id
+            order by message.local_time, message.time""");
         }
     }
 
@@ -234,6 +268,16 @@ public class Database : Qlite.Database {
             }
             return null;
         }
+    }
+
+    public int add_content_item(Conversation conversation, DateTime time, DateTime local_time, int content_type, int foreign_id) {
+        return (int) content.insert()
+            .value(content.conversation_id, conversation.id)
+            .value(content.local_time, (long) local_time.to_unix())
+            .value(content.time, (long) time.to_unix())
+            .value(content.content_type, content_type)
+            .value(content.foreign_id, foreign_id)
+            .perform();
     }
 
     public Gee.List<Message> get_messages(Xmpp.Jid jid, Account account, Message.Type? type, int count, DateTime? before, DateTime? after, int id) {
