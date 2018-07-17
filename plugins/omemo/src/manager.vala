@@ -335,8 +335,20 @@ public class Manager : StreamInteractionModule, Object {
         if (stream == null) return false;
         StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
         if (module == null) return false;
-        //return ((!)module).is_known_address(conversation.counterpart.bare_jid);
-        return true;
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(conversation.counterpart, conversation.account)){
+            Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
+            if (flag == null) return false;
+            if (flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.NON_ANONYMOUS)) {
+                foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
+                    if (!((!)module).is_known_address(jid.bare_jid)) return false;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return ((!)module).is_known_address(conversation.counterpart.bare_jid);
+        }
     }
 
     public static void start(StreamInteractor stream_interactor, Database db) {
