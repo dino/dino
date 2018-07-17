@@ -87,14 +87,13 @@ public class Manager : StreamInteractionModule, Object {
 
     private Gee.List<Jid> get_occupants(Jid muc, Account account){
         Gee.List<Jid> occupants = new ArrayList<Jid>(Jid.equals_bare_func);
-        Gee.List<Jid>? occupant_jids = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(muc, account);
+        Gee.List<Jid>? occupant_jids = stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(muc, account);
         if(occupant_jids == null) {
             return occupants;
         }
         foreach (Jid occupant in occupant_jids) {
-            Jid? occupant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(occupant, account);
-            if(occupant_jid != null){
-                occupants.add(occupant_jid.bare_jid);
+            if(!occupant.equals(account.bare_jid)){
+                occupants.add(occupant.bare_jid);
             }
         }
         return occupants;
