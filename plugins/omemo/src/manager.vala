@@ -337,7 +337,7 @@ public class Manager : StreamInteractionModule, Object {
         if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(conversation.counterpart, conversation.account)){
             Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
             if (flag == null) return false;
-            if (flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.NON_ANONYMOUS)) {
+            if (flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.MEMBERS_ONLY)) {
                 foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
                     if (!((!)module).is_known_address(jid.bare_jid)) return false;
                 }
