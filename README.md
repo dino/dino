@@ -24,6 +24,7 @@ Build
 * libgcrypt (For the OMEMO plugin)
 * libsoup (For the HTTP files plugin)
 * SQLite3
+* fonts-noto-color-emoji (For nicer emojis)
 
 **Instructions**
 
