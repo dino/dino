@@ -98,8 +98,8 @@ public class FileMessageFilter : ContentFilter, Object {
 }
 
 private bool message_is_file(Database db, Entities.Message message) {
-    Qlite.QueryBuilder builder = db.file_transfer.select().with(db.file_transfer.info, "=", message.id.to_string());
-    Qlite.QueryBuilder builder2 = db.file_transfer.select().with(db.file_transfer.info, "=", message.body);
+    Qlite.QueryBuilder builder = db.file_transfer.select({db.file_transfer.id}).with(db.file_transfer.info, "=", message.id.to_string());
+    Qlite.QueryBuilder builder2 = db.file_transfer.select({db.file_transfer.id}).with(db.file_transfer.info, "=", message.body);
     return builder.count() > 0 || builder2.count() > 0;
 }
 

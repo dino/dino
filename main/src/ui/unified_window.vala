@@ -42,6 +42,17 @@ public class UnifiedWindow : Window {
         conversation_titlebar.search_button.bind_property("active", search_revealer, "reveal-child", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         search_revealer.notify["child-revealed"].connect(() => {
             if (search_revealer.child_revealed) {
+                if (conversation_frame.conversation != null) {
+                    switch (conversation_frame.conversation.type_) {
+                        case Conversation.Type.CHAT:
+                        case Conversation.Type.GROUPCHAT_PM:
+                            search_box.search_entry.text = @"with:$(conversation_frame.conversation.counterpart) ";
+                            break;
+                        case Conversation.Type.GROUPCHAT:
+                            search_box.search_entry.text = @"in:$(conversation_frame.conversation.counterpart) ";
+                            break;
+                    }
+                }
                 search_box.search_entry.grab_focus();
             } else {
                 search_box.search_entry.text = "";
