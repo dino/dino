@@ -45,6 +45,7 @@ SOURCES
     src/session_store.vala
     src/signed_pre_key_store.vala
     src/stream_module.vala
+    src/trust_manager.vala
     src/util.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/signal-protocol.vapi

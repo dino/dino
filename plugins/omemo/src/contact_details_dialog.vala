@@ -37,14 +37,6 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 .with(plugin.db.identity_meta.address_name, "=", device[plugin.db.identity_meta.address_name])
                 .with(plugin.db.identity_meta.device_id, "=", device[plugin.db.identity_meta.device_id])
                 .set(plugin.db.identity_meta.trust_level, trust_level).perform();
-
-        if (!own) {
-            if(!trust) {
-                plugin.app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).untrust_device(jid, device[plugin.db.identity_meta.device_id]);
-            } else {
-                plugin.app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).trust_device(jid, device[plugin.db.identity_meta.device_id]);
-            }
-        }
     }
 
     private void add_fingerprint(Row device, int row, Database.IdentityMetaTable.TrustLevel trust) {

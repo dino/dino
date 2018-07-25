@@ -16,136 +16,15 @@ private const int NUM_KEYS_TO_PUBLISH = 100;
 public class StreamModule : XmppStreamModule {
     public static Xmpp.ModuleIdentity<StreamModule> IDENTITY = new Xmpp.ModuleIdentity<StreamModule>(NS_URI, "omemo_module");
 
-    private Store store;
+    public Store store { public get; private set; }
     private ConcurrentSet<string> active_bundle_requests = new ConcurrentSet<string>();
     private ConcurrentSet<Jid> active_devicelist_requests = new ConcurrentSet<Jid>();
-    private Map<Jid, ArrayList<int32>> device_lists = new HashMap<Jid, ArrayList<int32>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private Map<Jid, ArrayList<int32>> ignored_devices = new HashMap<Jid, ArrayList<int32>>(Jid.hash_bare_func, Jid.equals_bare_func);
-    private Map<Jid, Gee.List<Jid>> occupants = new HashMap<Jid, ArrayList<Jid>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private ReceivedPipelineListener received_pipeline_listener;
 
     public signal void store_created(Store store);
-    public signal void device_list_loaded(Jid jid);
+    public signal void device_list_loaded(Jid jid, ArrayList<int32> devices);
     public signal void bundle_fetched(Jid jid, int device_id, Bundle bundle);
-
-    public EncryptState encrypt(MessageStanza message, Jid self_jid, Gee.List<Jid> recipients) {
-        EncryptState status = new EncryptState();
-        if (!Plugin.ensure_context()) return status;
-        if (message.to == null) return status;
-
-        if(message.type_ == MessageStanza.TYPE_GROUPCHAT) {
-            occupants[message.to] = recipients;
-        }
-
-        try {
-            if (!device_lists.has_key(self_jid)) return status;
-            status.own_list = true;
-            status.own_devices = device_lists.get(self_jid).size;
-            status.other_waiting_lists = 0;
-            status.other_devices = 0;
-            foreach (Jid recipient in recipients) {
-                if (!device_lists.has_key(recipient)) {
-                    status.other_waiting_lists++;
-                    return status;
-                }
-                status.other_devices += device_lists.get(recipient).size;
-            }
-            if (status.own_devices == 0 || status.other_devices == 0) return status;
-
-            uint8[] key = new uint8[16];
-            Plugin.get_context().randomize(key);
-            uint8[] iv = new uint8[16];
-            Plugin.get_context().randomize(iv);
-
-            uint8[] ciphertext = aes_encrypt(Cipher.AES_GCM_NOPADDING, key, iv, message.body.data);
-
-            StanzaNode header;
-            StanzaNode encrypted = new StanzaNode.build("encrypted", NS_URI).add_self_xmlns()
-                    .put_node(header = new StanzaNode.build("header", NS_URI)
-                        .put_attribute("sid", store.local_registration_id.to_string())
-                        .put_node(new StanzaNode.build("iv", NS_URI)
-                            .put_node(new StanzaNode.text(Base64.encode(iv)))))
-                    .put_node(new StanzaNode.build("payload", NS_URI)
-                        .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
-
-            Address address = new Address(message.to.bare_jid.to_string(), 0);
-            foreach (Jid recipient in recipients) {
-                foreach(int32 device_id in device_lists[recipient]) {
-                    if (is_ignored_device(recipient, device_id)) {
-                        status.other_lost++;
-                        continue;
-                    }
-                    try {
-                        address.name = recipient.bare_jid.to_string();
-                        address.device_id = (int) device_id;
-                        StanzaNode key_node = create_encrypted_key(key, address);
-                        header.put_node(key_node);
-                        status.other_success++;
-                    } catch (Error e) {
-                        if (e.code == ErrorCode.UNKNOWN) status.other_unknown++;
-                        else status.other_failure++;
-                    }
-                }
-            }
-            address.name = self_jid.bare_jid.to_string();
-            foreach(int32 device_id in device_lists[self_jid]) {
-                if (is_ignored_device(self_jid, device_id)) {
-                    status.own_lost++;
-                    continue;
-                }
-                if (device_id != store.local_registration_id) {
-                    address.device_id = (int) device_id;
-                    try {
-                        StanzaNode key_node = create_encrypted_key(key, address);
-                        header.put_node(key_node);
-                        status.own_success++;
-                    } catch (Error e) {
-                        if (e.code == ErrorCode.UNKNOWN) status.own_unknown++;
-                        else status.own_failure++;
-                    }
-                }
-            }
-
-            message.stanza.put_node(encrypted);
-            Xep.ExplicitEncryption.add_encryption_tag_to_message(message, NS_URI, "OMEMO");
-            message.body = "[This message is OMEMO encrypted]";
-            status.encrypted = true;
-        } catch (Error e) {
-            if (Plugin.DEBUG) print(@"OMEMO: Signal error while encrypting message: $(e.message)\n");
-        }
-        return status;
-    }
-
-    public void untrust_device(Jid jid, int device_id) {
-        if (device_lists.has_key(jid) && device_lists[jid].contains(device_id)) {
-            device_lists[jid].remove(device_id);
-        }
-        if (store.contains_session(new Address(jid.bare_jid.to_string(), device_id))) {
-            store.delete_session(new Address(jid.bare_jid.to_string(), device_id));
-        }
-    }
-
-    public void trust_device(Jid jid, int device_id) {
-        if (is_ignored_device(jid, device_id)){
-            ignored_devices[jid].remove(device_id);
-        }
-        if (!device_lists.has_key(jid)) {
-            device_lists[jid] = new ArrayList<int32>();
-        }
-        if (!device_lists[jid].contains(device_id)) {
-            device_lists[jid].add(device_id);
-        }
-    }
-
-    private StanzaNode create_encrypted_key(uint8[] key, Address address) throws GLib.Error {
-        SessionCipher cipher = store.create_session_cipher(address);
-        CiphertextMessage device_key = cipher.encrypt(key);
-        StanzaNode key_node = new StanzaNode.build("key", NS_URI)
-            .put_attribute("rid", address.device_id.to_string())
-            .put_node(new StanzaNode.text(Base64.encode(device_key.serialized)));
-        if (device_key.type == CiphertextType.PREKEY) key_node.put_attribute("prekey", "true");
-        return key_node;
-    }
 
     public override void attach(XmppStream stream) {
         if (!Plugin.ensure_context()) return;
@@ -162,18 +41,9 @@ public class StreamModule : XmppStreamModule {
     }
 
     public void request_user_devicelist(XmppStream stream, Jid jid) {
-        Gee.List<Jid> recipients;
-        if (occupants.contains(jid)) {
-            recipients = occupants.get(jid);
-        } else {
-            recipients = new ArrayList<Jid>(Jid.equals_bare_func);
-            recipients.add(jid);
-        }
-        foreach (Jid recipient in recipients) {
-            if (active_devicelist_requests.add(recipient)) {
-                if (Plugin.DEBUG) print(@"OMEMO: requesting device list for $jid\n");
-                stream.get_module(Pubsub.Module.IDENTITY).request(stream, recipient, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
-            }
+        if (active_devicelist_requests.add(jid)) {
+            if (Plugin.DEBUG) print(@"OMEMO: requesting device list for $jid\n");
+            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
         }
     }
 
@@ -197,43 +67,30 @@ public class StreamModule : XmppStreamModule {
                 publish_bundles_if_needed(stream, jid);
             }
         }
-        lock(device_lists) {
-            device_lists[jid] = new ArrayList<int32>();
-            foreach (StanzaNode device_node in node.get_subnodes("device")) {
-                device_lists[jid].add(device_node.get_attribute_int("id"));
-            }
+
+        ArrayList<int32> device_list = new ArrayList<int32>();
+        foreach (StanzaNode device_node in node.get_subnodes("device")) {
+            device_list.add(device_node.get_attribute_int("id"));
         }
         active_devicelist_requests.remove(jid);
-        device_list_loaded(jid);
+        device_list_loaded(jid, device_list);
     }
 
-    public void fetch_bundles(XmppStream stream, Jid jid) {
-        Gee.List<Jid> recipients;
-        if (occupants.contains(jid)) {
-            recipients = occupants.get(jid);
-        } else {
-            recipients = new ArrayList<Jid>(Jid.equals_bare_func);
-            recipients.add(jid);
-        }
-        foreach (Jid recipient in recipients) {
-            if (!device_lists.has_key(recipient)) {
-                return;
-            }
-            Address address = new Address(recipient.bare_jid.to_string(), 0);
-            foreach(int32 device_id in device_lists[recipient]) {
-                if (!is_ignored_device(recipient, device_id)) {
-                    address.device_id = device_id;
-                    try {
-                        if (!store.contains_session(address)) {
-                            fetch_bundle(stream, recipient, device_id);
-                        }
-                    } catch (Error e) {
-                        // Ignore
+    public void fetch_bundles(XmppStream stream, Jid jid, Gee.List<int32> devices) {
+        Address address = new Address(jid.bare_jid.to_string(), 0);
+        foreach(int32 device_id in devices) {
+            if (!is_ignored_device(jid, device_id)) {
+                address.device_id = device_id;
+                try {
+                    if (!store.contains_session(address)) {
+                        fetch_bundle(stream, jid, device_id);
                     }
+                } catch (Error e) {
+                    // Ignore
                 }
             }
-            address.device_id = 0;
         }
+        address.device_id = 0;
     }
 
     public void fetch_bundle(XmppStream stream, Jid jid, int device_id) {
@@ -243,18 +100,6 @@ public class StreamModule : XmppStreamModule {
                 on_other_bundle_result(stream, jid, device_id, id, node);
             });
         }
-    }
-
-    public ArrayList<int32> get_device_list(Jid jid) {
-        if (is_known_address(jid)) {
-            return device_lists[jid];
-        } else {
-            return new ArrayList<int32>();
-        }
-    }
-
-    public bool is_known_address(Jid jid) {
-        return device_lists.has_key(jid);
     }
 
     public void ignore_device(Jid jid, int32 device_id) {

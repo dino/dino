@@ -12,6 +12,7 @@ public class Manager : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
+    private TrustManager trust_manager;
     private Map<Entities.Message, MessageState> message_states = new HashMap<Entities.Message, MessageState>(Entities.Message.hash_func, Entities.Message.equals_func);
     private ReceivedMessageListener received_message_listener = new ReceivedMessageListener();
 
@@ -64,6 +65,8 @@ public class Manager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         this.db = db;
 
+        this.trust_manager = new TrustManager(stream_interactor, db);
+
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
@@ -85,9 +88,12 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private Gee.List<Jid> get_occupants(Jid muc, Account account){
+    private Gee.List<Jid> get_occupants(Jid jid, Account account){
         Gee.List<Jid> occupants = new ArrayList<Jid>(Jid.equals_bare_func);
-        Gee.List<Jid>? occupant_jids = stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(muc, account);
+        if(!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)){
+            occupants.add(jid);
+        }
+        Gee.List<Jid>? occupant_jids = stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(jid, account);
         if(occupant_jids == null) {
             return occupants;
         }
@@ -113,14 +119,6 @@ public class Manager : StreamInteractionModule, Object {
             }
             StreamModule module = (!)module_;
 
-            foreach (Row row in db.identity_meta.with_address(conversation.account.id, conversation.account.bare_jid.to_string())){
-                if(row[db.identity_meta.trust_level] == Database.IdentityMetaTable.TrustLevel.TRUSTED || row[db.identity_meta.trust_level] == Database.IdentityMetaTable.TrustLevel.VERIFIED){
-                    module.trust_device(conversation.account.bare_jid, row[db.identity_meta.device_id]);
-                } else {
-                    module.untrust_device(conversation.account.bare_jid, row[db.identity_meta.device_id]);
-                }
-            }
-
             Gee.List<Jid> recipients;
             if (message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT) {
                 recipients = get_occupants((!)message.to.bare_jid, conversation.account);
@@ -133,7 +131,7 @@ public class Manager : StreamInteractionModule, Object {
                 recipients.add(message_stanza.to);
             }
 
-            EncryptState enc_state = module.encrypt(message_stanza, conversation.account.bare_jid, recipients);
+            EncryptState enc_state = trust_manager.encrypt(message_stanza, conversation.account.bare_jid, recipients, stream, conversation.account);
             MessageState state;
             lock (message_states) {
                 if (message_states.has_key(message)) {
@@ -156,13 +154,17 @@ public class Manager : StreamInteractionModule, Object {
                     if (Plugin.DEBUG) print(@"OMEMO: message will be delayed: $state\n");
 
                     if (state.waiting_own_sessions > 0) {
-                        module.fetch_bundles((!)stream, conversation.account.bare_jid);
+                        module.fetch_bundles((!)stream, conversation.account.bare_jid, trust_manager.get_trusted_devices(conversation.account, conversation.account.bare_jid));
                     }
                     if (state.waiting_other_sessions > 0 && message.counterpart != null) {
-                        module.fetch_bundles((!)stream, ((!)message.counterpart).bare_jid);
+                        foreach(Jid jid in get_occupants(((!)message.counterpart).bare_jid, conversation.account)) {
+                            module.fetch_bundles((!)stream, jid, trust_manager.get_trusted_devices(conversation.account, jid));
+                        }
                     }
                     if (state.waiting_other_devicelists > 0 && message.counterpart != null) {
-                        module.request_user_devicelist((!)stream, ((!)message.counterpart).bare_jid);
+                        foreach(Jid jid in get_occupants(((!)message.counterpart).bare_jid, conversation.account)) {
+                            module.request_user_devicelist((!)stream, jid);
+                        }
                     }
                 }
             }
@@ -171,7 +173,7 @@ public class Manager : StreamInteractionModule, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created(account, store));
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect((jid) => on_device_list_loaded(account, jid));
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
     }
 
@@ -179,8 +181,33 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist(stream, account.bare_jid);
     }
 
-    private void on_device_list_loaded(Account account, Jid jid) {
+    private void on_device_list_loaded(Account account, Jid jid, ArrayList<int32> device_list) {
         if (Plugin.DEBUG) print(@"OMEMO: received device list for $(account.bare_jid) from $jid\n");
+
+        // Update meta database
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) {
+            return;
+        }
+        StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
+        if (module == null) {
+            return;
+        }
+
+        db.identity_meta.insert_device_list(account.id, jid.bare_jid.to_string(), device_list);
+        int inc = 0;
+        foreach (Row row in db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with_null(db.identity_meta.identity_key_public_base64)) {
+            module.fetch_bundle(stream, Jid.parse(row[db.identity_meta.address_name]), row[db.identity_meta.device_id]);
+            inc++;
+        }
+        if (inc > 0) {
+            if (Plugin.DEBUG) print(@"OMEMO: new bundles $inc/$(device_list.size) for $jid\n");
+        }
+
+        if (db.trust.select().with(db.trust.identity_id, "=", account.id).with(db.trust.address_name, "=", jid.bare_jid.to_string()).count() == 0) {
+            db.trust.insert().value(db.trust.identity_id, account.id).value(db.trust.address_name, jid.bare_jid.to_string()).value(db.trust.blind_trust, true).perform();
+        }
+
         HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
@@ -189,7 +216,7 @@ public class Manager : StreamInteractionModule, Object {
                 MessageState state = message_states[msg];
                 if (account.bare_jid.equals(jid)) {
                     state.waiting_own_devicelist = false;
-                } else if (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid))) {
+                } else if (msg.counterpart != null && occupants.contains(jid)) {
                     state.waiting_other_devicelists--;
                 }
                 if (state.should_retry_now()) {
@@ -205,30 +232,6 @@ public class Manager : StreamInteractionModule, Object {
             stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(msg, (!)conv, true);
         }
 
-        // Update meta database
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream == null) {
-            return;
-        }
-        StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
-        if (module == null) {
-            return;
-        }
-
-        ArrayList<int32> device_list = module.get_device_list(jid);
-        db.identity_meta.insert_device_list(account.id, jid.bare_jid.to_string(), device_list);
-        int inc = 0;
-        foreach (Row row in db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with_null(db.identity_meta.identity_key_public_base64)) {
-            module.fetch_bundle(stream, Jid.parse(row[db.identity_meta.address_name]), row[db.identity_meta.device_id]);
-            inc++;
-        }
-        if (inc > 0) {
-            if (Plugin.DEBUG) print(@"OMEMO: new bundles $inc/$(device_list.size) for $jid\n");
-        }
-
-        if (db.trust.select().with(db.trust.identity_id, "=", account.id).with(db.trust.address_name, "=", jid.bare_jid.to_string()).count() == 0) {
-            db.trust.insert().value(db.trust.identity_id, account.id).value(db.trust.address_name, jid.bare_jid.to_string()).value(db.trust.blind_trust, true).perform();
-        }
     }
 
     public void on_bundle_fetched(Account account, Jid jid, int32 device_id, Bundle bundle) {
@@ -264,9 +267,7 @@ public class Manager : StreamInteractionModule, Object {
 
                 MessageState state = message_states[msg];
 
-                if (trusted != Database.IdentityMetaTable.TrustLevel.TRUSTED && trusted != Database.IdentityMetaTable.TrustLevel.VERIFIED) {
-                    module.untrust_device(jid, device_id);
-                } else {
+                if (trusted == Database.IdentityMetaTable.TrustLevel.TRUSTED || trusted == Database.IdentityMetaTable.TrustLevel.VERIFIED) {
                     if(account.bare_jid.equals(jid) || (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid)))) {
                         session_created = module.start_session(stream, jid, device_id, bundle);
                     }
@@ -339,14 +340,14 @@ public class Manager : StreamInteractionModule, Object {
             if (flag == null) return false;
             if (flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.MEMBERS_ONLY)) {
                 foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
-                    if (!((!)module).is_known_address(jid.bare_jid)) return false;
+                    if (!trust_manager.is_known_address(conversation.account, jid.bare_jid)) return false;
                 }
                 return true;
             } else {
                 return false;
             }
         } else {
-            return ((!)module).is_known_address(conversation.counterpart.bare_jid);
+            return trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid);
         }
     }
 
