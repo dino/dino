@@ -39,7 +39,10 @@ public class UnifiedWindow : Window {
         setup_unified();
         setup_stack();
 
-        conversation_titlebar.search_button.bind_property("active", search_revealer, "reveal-child", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+        conversation_titlebar.search_button.clicked.connect(() => {
+            search_revealer.reveal_child = conversation_titlebar.search_button.active;
+        });
         search_revealer.notify["child-revealed"].connect(() => {
             if (search_revealer.child_revealed) {
                 if (conversation_frame.conversation != null) {
@@ -58,6 +61,10 @@ public class UnifiedWindow : Window {
                 search_box.search_entry.text = "";
             }
         });
+        search_box.selected_item.connect((item) => {
+            on_conversation_selected(item.conversation, false, false);
+            conversation_frame.initialize_around_message(item.conversation, item);
+        });
 
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
@@ -71,8 +78,8 @@ public class UnifiedWindow : Window {
         accounts_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("accounts", null); });
         conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
         conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });
-        filterable_conversation_list.conversation_list.conversation_selected.connect(on_conversation_selected);
-        conversation_list_titlebar.conversation_opened.connect(on_conversation_selected);
+        filterable_conversation_list.conversation_list.conversation_selected.connect((conversation) => on_conversation_selected(conversation));
+        conversation_list_titlebar.conversation_opened.connect((conversation) => on_conversation_selected(conversation));
 
         check_stack();
     }
@@ -89,15 +96,21 @@ public class UnifiedWindow : Window {
         search_revealer.valign = Align.FILL;
     }
 
-    public void on_conversation_selected(Conversation conversation) {
+    public void on_conversation_selected(Conversation conversation, bool close_search = true, bool default_initialize_conversation = true) {
         if (this.conversation == null || !this.conversation.equals(conversation)) {
             this.conversation = conversation;
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
             conversation.active = true; // only for conversation_selected
             filterable_conversation_list.conversation_list.on_conversation_selected(conversation); // only for conversation_opened
 
+            if (close_search) {
+                conversation_titlebar.search_button.active = false;
+                search_revealer.reveal_child = false;
+            }
             chat_input.initialize_for_conversation(conversation);
-            conversation_frame.initialize_for_conversation(conversation);
+            if (default_initialize_conversation) {
+                conversation_frame.initialize_for_conversation(conversation);
+            }
             conversation_titlebar.initialize_for_conversation(conversation);
         }
     }

@@ -34,6 +34,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private bool animate = false;
     private bool firstLoad = true;
     private bool at_current_content = true;
+    private bool reload_messages = true;
 
     public ConversationView init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -57,7 +58,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             return true;
         });
 
-        Util.force_base_background(this);
         return this;
     }
 
@@ -66,14 +66,71 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         if (firstLoad) {
             int timeout = firstLoad ? 1000 : 0;
             Timeout.add(timeout, () => {
+                stack.set_visible_child_name("void");
                 initialize_for_conversation_(conversation);
+                display_latest();
+                stack.set_visible_child_name("main");
                 return false;
             });
             firstLoad = false;
         } else {
+            stack.set_visible_child_name("void");
             initialize_for_conversation_(conversation);
+            display_latest();
+            stack.set_visible_child_name("main");
+        }
+    }
+
+    public void initialize_around_message(Conversation conversation, ContentItem content_item) {
+        stack.set_visible_child_name("void");
+        clear();
+        initialize_for_conversation_(conversation);
+        Gee.List<ContentMetaItem> before_items = content_populator.populate_before(conversation, content_item, 40);
+        foreach (ContentMetaItem item in before_items) {
+            do_insert_item(item);
+        }
+        ContentMetaItem meta_item = content_populator.get_content_meta_item(content_item);
+        meta_item.can_merge = false;
+        Widget w = insert_new(meta_item);
+        content_items.add(meta_item);
+        meta_items.add(meta_item);
+
+        Gee.List<ContentMetaItem> after_items = content_populator.populate_after(conversation, content_item, 40);
+        foreach (ContentMetaItem item in after_items) {
+            do_insert_item(item);
+        }
+        if (after_items.size == 40) {
+            at_current_content = false;
+        }
+        {
+            int h = 0, i = 0;
+            main.@foreach((widget) => {
+                if (i >= before_items.size) return;
+                ConversationItemSkeleton? sk = widget as ConversationItemSkeleton;
+                i += sk != null ? sk.items.size : 1;
+                int minimum_height, natural_height;
+                widget.get_preferred_height_for_width(main.get_allocated_width() - 2 * main.margin, out minimum_height, out natural_height);
+                h += minimum_height + 15;
+            });
+            print(@"height_for_w: $(h)\n");
         }
 
+        reload_messages = false;
+        Timeout.add(700, () => {
+            int h = 0, i = 0;
+            main.@foreach((widget) => {
+                if (i >= before_items.size) return;
+                ConversationItemSkeleton? sk = widget as ConversationItemSkeleton;
+                i += sk != null ? sk.items.size : 1;
+                h += widget.get_allocated_height() + 15;
+            });
+            print(@"timeout: $(h)\n");
+            scrolled.vadjustment.value = h - scrolled.vadjustment.page_size * 1/3;
+            w.get_style_context().add_class("highlight-once");
+            reload_messages = true;
+            stack.set_visible_child_name("main");
+            return false;
+        });
     }
 
     private void initialize_for_conversation_(Conversation? conversation) {
@@ -84,7 +141,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             }
         }
         this.conversation = conversation;
-        stack.set_visible_child_name("void");
 
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
@@ -92,17 +148,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         content_populator.init(this, conversation, Plugins.WidgetType.GTK);
         subscription_notification.init(conversation, this);
 
-        display_latest();
-
-        stack.set_visible_child_name("main");
+        animate = false;
+        Timeout.add(20, () => { animate = true; return false; });
     }
 
     private void display_latest() {
         clear();
-        was_upper = null;
-        was_page_size = null;
-        animate = false;
-        Timeout.add(20, () => { animate = true; return false; });
 
         Gee.List<ContentMetaItem> items = content_populator.populate_latest(conversation, 40);
         foreach (ContentMetaItem item in items) {
@@ -163,7 +214,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                     lower_start_item.encryption == item.encryption &&
                     (item.mark == Message.Marked.WONTSEND) == (lower_start_item.mark == Message.Marked.WONTSEND)) {
                 lower_skeleton.add_meta_item(item);
-                force_alloc_width(lower_skeleton, main.get_allocated_width());
+                Util.force_alloc_width(lower_skeleton, main.get_allocated_width());
 
                 widgets[item] = widgets[lower_start_item];
                 item_item_skeletons[item] = lower_skeleton;
@@ -174,7 +225,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         return false;
     }
 
-    private void insert_new(Plugins.MetaConversationItem item) {
+    private Widget insert_new(Plugins.MetaConversationItem item) {
         Plugins.MetaConversationItem? lower_item = meta_items.lower(item);
 
         // Does another skeleton need to be split?
@@ -206,7 +257,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             main.add(insert);
         }
         widgets[item] = insert;
-        force_alloc_width(insert, main.get_allocated_width());
+        Util.force_alloc_width(insert, main.get_allocated_width());
         main.reorder_child(insert, index);
 
         // If an item from the past was added, add everything between that item and the (post-)first present item
@@ -222,6 +273,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                 }
             }
         }
+        return insert;
     }
 
     private void split_at_time(ConversationItemSkeleton split_skeleton, DateTime time) {
@@ -273,10 +325,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, (content_items.first() as ContentMetaItem).content_item, 20);
             foreach (ContentMetaItem item in items) {
                 do_insert_item(item);
-                if (content_items.size > 50) {
-                    do_remove_item(content_items.last());
-                    at_current_content = false;
-                }
             }
         } else {
             reloading_mutex.unlock();
@@ -310,21 +358,14 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         int res = a.sort_time.compare(b.sort_time);
         if (res == 0) {
             if (a.seccondary_sort_indicator < b.seccondary_sort_indicator) res = -1;
-            else if (a.seccondary_sort_indicator > b.seccondary_sort_indicator) res = 1;
+                    else if (a.seccondary_sort_indicator > b.seccondary_sort_indicator) res = 1;
         }
         return res;
     }
 
-    // Workaround GTK TextView issues
-    private void force_alloc_width(Widget widget, int width) {
-        Allocation alloc = Allocation();
-        widget.get_preferred_width(out alloc.width, null);
-        widget.get_preferred_height(out alloc.height, null);
-        alloc.width = width;
-        widget.size_allocate(alloc);
-    }
-
     private void clear() {
+        was_upper = null;
+        was_page_size = null;
         content_items.clear();
         meta_items.clear();
         item_skeletons.clear();

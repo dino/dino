@@ -23,7 +23,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
         this.db = db;
     }
 
-    private QueryBuilder prepare_search(string query) {
+    private QueryBuilder prepare_search(string query, bool join_content) {
         string words = "";
         string? with = null;
         string? in_ = null;
@@ -60,7 +60,12 @@ public class SearchProcessor : StreamInteractionModule, Object {
             .order_by(db.message.id, "DESC")
             .join_with(db.jid, db.jid.id, db.message.counterpart_id)
             .join_with(db.account, db.account.id, db.message.account_id)
-            .outer_join_with(db.real_jid, db.real_jid.message_id, db.message.id);
+            .outer_join_with(db.real_jid, db.real_jid.message_id, db.message.id)
+            .with(db.account.enabled, "=", true);
+        if (join_content) {
+            rows.join_on(db.content, "message.id=contentx.foreign_id AND contentx.content_type=1")
+                .with(db.content.content_type, "=", 1);
+        }
         if (with != null) {
             if (with.index_of("/") > 0) {
                 rows.with(db.message.type_, "=", Message.Type.GROUPCHAT_PM)
@@ -85,20 +90,22 @@ public class SearchProcessor : StreamInteractionModule, Object {
         return rows;
     }
 
-    public Gee.List<Message> match_messages(string query, int offset = -1) {
-        Gee.List<Message> ret = new ArrayList<Message>(Message.equals_func);
-        var rows = prepare_search(query).limit(10);
+    public Gee.List<MessageItem> match_messages(string query, int offset = -1) {
+        Gee.List<MessageItem> ret = new ArrayList<MessageItem>();
+        var rows = prepare_search(query, true).limit(10);
         if (offset > 0) {
             rows.offset(offset);
         }
         foreach (Row row in rows) {
-            ret.add(new Message.from_row(db, row));
+            Message message = new Message.from_row(db, row);
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+            ret.add(new MessageItem(message, conversation, row[db.content.id]));
         }
         return ret;
     }
 
     public int count_match_messages(string query) {
-        return (int)prepare_search(query).select({db.message.id}).count();
+        return (int)prepare_search(query, false).select({db.message.id}).count();
     }
 }
 

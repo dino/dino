@@ -17,6 +17,22 @@ window.dino-main .dino-conversation undershoot {
     background: none;
 }
 
+@keyframes highlight {
+    from { background: alpha(@warning_color, 0.5) }
+    to { background: transparent }
+}
+
+window.dino-main .dino-conversation .highlight-once {
+    animation-duration: 3s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: 1;
+    animation-name: highlight;
+}
+
+window.dino-main .dino-conversation textview, window.dino-main .dino-conversation textview text {
+    background: transparent;
+}
+
 window.dino-main .dino-sidebar frame {
     background: @insensitive_bg_color;
     border-left: 1px solid @borders;
