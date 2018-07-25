@@ -12,6 +12,12 @@ public class GroupchatRow : ConversationRow {
         closed.connect(() => {
             stream_interactor.get_module(MucManager.IDENTITY).part(conversation.account, conversation.counterpart);
         });
+
+        stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
+            if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
+                update_name_label(subject);
+            }
+        });
     }
 
     protected override void update_message_label() {

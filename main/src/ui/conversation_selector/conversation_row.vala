@@ -62,7 +62,11 @@ public abstract class ConversationRow : ListBoxRow {
     }
 
     protected void update_name_label(string? new_name = null) {
-        name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
+        if (new_name != null) {
+          name_label.label = new_name;
+        } else {
+          name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
+        }
     }
 
     protected void update_time_label(DateTime? new_time = null) {
