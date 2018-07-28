@@ -118,8 +118,9 @@ public class TrustManager {
 
     public Gee.List<int32> get_trusted_devices(Account account, Jid jid) {
         Gee.List<int32> devices = new ArrayList<int32>();
-        foreach (Row device in db.identity_meta.with_address(account.id, jid.to_string()).with(db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).with(db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNTRUSTED).without_null(db.identity_meta.identity_key_public_base64)) {
-            devices.add(device[db.identity_meta.device_id]);
+        foreach (Row device in db.identity_meta.with_address(account.id, jid.to_string()).with(db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNTRUSTED)) {
+            if(device[db.identity_meta.trust_level] != Database.IdentityMetaTable.TrustLevel.UNKNOWN || device[db.identity_meta.identity_key_public_base64] == null)
+                devices.add(device[db.identity_meta.device_id]);
         }
         return devices;
     }

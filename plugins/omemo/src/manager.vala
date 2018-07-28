@@ -340,15 +340,20 @@ public class Manager : StreamInteractionModule, Object {
             if (flag == null) return false;
             if (flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.MEMBERS_ONLY)) {
                 foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
-                    if (!trust_manager.is_known_address(conversation.account, jid.bare_jid)) return false;
+                    if (!trust_manager.is_known_address(conversation.account, jid.bare_jid)) {
+                        module.request_user_devicelist(stream, jid.bare_jid);
+                        return false;
+                    }
                 }
                 return true;
             } else {
                 return false;
             }
-        } else {
-            return trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid);
+        } else if (!trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid)) {
+            module.request_user_devicelist(stream, conversation.counterpart.bare_jid);
+            return false;
         }
+        return true;
     }
 
     public static void start(StreamInteractor stream_interactor, Database db) {

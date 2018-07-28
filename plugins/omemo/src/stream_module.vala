@@ -33,6 +33,7 @@ public class StreamModule : XmppStreamModule {
         store_created(store);
         received_pipeline_listener = new ReceivedPipelineListener(store);
         stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_listener);
+        print("Adding filtered notification\n");
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
     }
 
@@ -63,9 +64,8 @@ public class StreamModule : XmppStreamModule {
                 if (Plugin.DEBUG) print(@"OMEMO: Not on device list, adding id\n");
                 node.put_node(new StanzaNode.build("device", NS_URI).put_attribute("id", store.local_registration_id.to_string()));
                 stream.get_module(Pubsub.Module.IDENTITY).publish(stream, jid, NODE_DEVICELIST, NODE_DEVICELIST, id, node);
-            } else {
-                publish_bundles_if_needed(stream, jid);
             }
+            publish_bundles_if_needed(stream, jid);
         }
 
         ArrayList<int32> device_list = new ArrayList<int32>();
