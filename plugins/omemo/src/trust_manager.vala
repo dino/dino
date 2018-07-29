@@ -10,10 +10,14 @@ public class TrustManager {
 
     private StreamInteractor stream_interactor;
     private Database db;
+    private ReceivedMessageListener received_message_listener;
 
     public TrustManager(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
         this.db = db;
+
+        received_message_listener = new ReceivedMessageListener(stream_interactor, db);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
     }
 
     private StanzaNode create_encrypted_key(uint8[] key, Address address, Store store) throws GLib.Error {
@@ -123,6 +127,41 @@ public class TrustManager {
                 devices.add(device[db.identity_meta.device_id]);
         }
         return devices;
+    }
+
+    private class ReceivedMessageListener : MessageListener {
+        public string[] after_actions_const = new string[]{ };
+        public override string action_group { get { return "DECRYPT"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+        private Database db;
+
+        public ReceivedMessageListener(StreamInteractor stream_interactor, Database db) {
+            this.stream_interactor = stream_interactor;
+            this.db = db;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            MessageFlag? flag = MessageFlag.get_flag(stanza);
+            if(flag != null && ((!)flag).decrypted) {
+                StanzaNode header = stanza.stanza.get_subnode("encrypted", "eu.siacs.conversations.axolotl").get_subnode("header");
+                Jid jid = message.from;
+                if(conversation.type_ == Conversation.Type.GROUPCHAT) {
+                    jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
+                }
+                Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.with_address(conversation.account.id, jid.bare_jid.to_string()).with(db.identity_meta.device_id, "=", header.get_attribute_int("sid")).single()[db.identity_meta.trust_level];
+                if (trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED) {
+                    message.body = "OMEMO message from a rejected device";
+                    message.marked = Message.Marked.WONTSEND;
+                }
+                if (trust_level == Database.IdentityMetaTable.TrustLevel.UNKNOWN) {
+                    message.body = "OMEMO message from an unknown device: "+message.body;
+                    message.marked = Message.Marked.WONTSEND;
+                }
+            }
+            return false;
+        }
     }
 }
 

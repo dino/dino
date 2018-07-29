@@ -33,7 +33,6 @@ public class StreamModule : XmppStreamModule {
         store_created(store);
         received_pipeline_listener = new ReceivedPipelineListener(store);
         stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_listener);
-        print("Adding filtered notification\n");
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
     }
 
