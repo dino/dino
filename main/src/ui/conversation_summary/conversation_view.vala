@@ -112,7 +112,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                 widget.get_preferred_height_for_width(main.get_allocated_width() - 2 * main.margin, out minimum_height, out natural_height);
                 h += minimum_height + 15;
             });
-            print(@"height_for_w: $(h)\n");
         }
 
         reload_messages = false;
@@ -124,7 +123,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                 i += sk != null ? sk.items.size : 1;
                 h += widget.get_allocated_height() + 15;
             });
-            print(@"timeout: $(h)\n");
             scrolled.vadjustment.value = h - scrolled.vadjustment.page_size * 1/3;
             w.get_style_context().add_class("highlight-once");
             reload_messages = true;
@@ -334,15 +332,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private void load_later_messages() {
         if (!reloading_mutex.trylock()) return;
         if (meta_items.size > 0 && !at_current_content) {
-            foreach (Plugins.MetaConversationItem a in content_items) {
-                ContentMetaItem b = a as ContentMetaItem;
-                MessageItem c = b.content_item as MessageItem;
-            }
             Gee.List<ContentMetaItem> items = content_populator.populate_after(conversation, (content_items.last() as ContentMetaItem).content_item, 20);
-
-            ContentMetaItem b = content_items.last() as ContentMetaItem;
-            MessageItem c = b.content_item as MessageItem;
-
             if (items.size == 0) {
                 at_current_content = true;
             }

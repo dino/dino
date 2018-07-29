@@ -1,11 +1,12 @@
 using Gee;
+using Gdk;
 using Gtk;
 
 using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class UnifiedWindow : Window {
+public class UnifiedWindow : Gtk.Window {
 
     private NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     private NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
@@ -45,25 +46,29 @@ public class UnifiedWindow : Window {
         });
         search_revealer.notify["child-revealed"].connect(() => {
             if (search_revealer.child_revealed) {
-                if (conversation_frame.conversation != null) {
-                    switch (conversation_frame.conversation.type_) {
-                        case Conversation.Type.CHAT:
-                        case Conversation.Type.GROUPCHAT_PM:
-                            search_box.search_entry.text = @"with:$(conversation_frame.conversation.counterpart) ";
-                            break;
-                        case Conversation.Type.GROUPCHAT:
-                            search_box.search_entry.text = @"in:$(conversation_frame.conversation.counterpart) ";
-                            break;
-                    }
+                if (conversation_frame.conversation != null && search_box.search_entry.text == "") {
+                    reset_search_entry();
                 }
                 search_box.search_entry.grab_focus();
-            } else {
-                search_box.search_entry.text = "";
             }
         });
         search_box.selected_item.connect((item) => {
             on_conversation_selected(item.conversation, false, false);
             conversation_frame.initialize_around_message(item.conversation, item);
+        });
+        event.connect((event) => {
+            if (event.type == EventType.BUTTON_PRESS) {
+                int dest_x, dest_y;
+                bool ret = search_box.translate_coordinates(this, 0, 0, out dest_x, out dest_y);
+                if (ret && event.button.x_root < dest_x) {
+                    close_search();
+                }
+            } else if (event.type == EventType.KEY_RELEASE) {
+                if (event.key.keyval == Gdk.Key.Escape) {
+                    close_search();
+                }
+            }
+            return false;
         });
 
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -84,28 +89,29 @@ public class UnifiedWindow : Window {
         check_stack();
     }
 
-    private void hide_search_results() {
-        search_revealer.get_style_context().add_class("collapsed");
-        search_revealer.valign = Align.START;
-        // TODO: Make search results box inivisble
+    private void reset_search_entry() {
+        if (conversation_frame.conversation != null) {
+            switch (conversation_frame.conversation.type_) {
+                case Conversation.Type.CHAT:
+                case Conversation.Type.GROUPCHAT_PM:
+                    search_box.search_entry.text = @"with:$(conversation_frame.conversation.counterpart) ";
+                    break;
+                case Conversation.Type.GROUPCHAT:
+                    search_box.search_entry.text = @"in:$(conversation_frame.conversation.counterpart) ";
+                    break;
+            }
+        }
     }
 
-    private void show_search_results() {
-        // TODO: Make search results box visible
-        search_revealer.get_style_context().remove_class("collapsed");
-        search_revealer.valign = Align.FILL;
-    }
-
-    public void on_conversation_selected(Conversation conversation, bool close_search = true, bool default_initialize_conversation = true) {
+    public void on_conversation_selected(Conversation conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
         if (this.conversation == null || !this.conversation.equals(conversation)) {
             this.conversation = conversation;
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
             conversation.active = true; // only for conversation_selected
             filterable_conversation_list.conversation_list.on_conversation_selected(conversation); // only for conversation_opened
 
-            if (close_search) {
-                conversation_titlebar.search_button.active = false;
-                search_revealer.reveal_child = false;
+            if (do_reset_search) {
+                reset_search_entry();
             }
             chat_input.initialize_for_conversation(conversation);
             if (default_initialize_conversation) {
@@ -113,6 +119,11 @@ public class UnifiedWindow : Window {
             }
             conversation_titlebar.initialize_for_conversation(conversation);
         }
+    }
+
+    private void close_search() {
+        conversation_titlebar.search_button.active = false;
+        search_revealer.reveal_child = false;
     }
 
     private void setup_unified() {

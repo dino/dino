@@ -36,6 +36,7 @@ window.dino-main .dino-conversation textview, window.dino-main .dino-conversatio
 window.dino-main .dino-sidebar frame {
     background: @insensitive_bg_color;
     border-left: 1px solid @borders;
+    border-bottom: 1px solid @borders;
 }
 
 window.dino-main .dino-sidebar frame.collapsed {
