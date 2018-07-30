@@ -11,6 +11,7 @@ namespace Xmpp.Presence {
         public signal void received_available_show(XmppStream stream, Jid jid, string show);
         public signal void received_unavailable(XmppStream stream, Presence.Stanza presence);
         public signal void received_subscription_request(XmppStream stream, Jid jid);
+        public signal void received_subscription_approval(XmppStream stream, Jid jid);
         public signal void received_unsubscription(XmppStream stream, Jid jid);
 
         public bool available_resource = true;
@@ -78,6 +79,9 @@ namespace Xmpp.Presence {
                     break;
                 case Presence.Stanza.TYPE_SUBSCRIBE:
                     received_subscription_request(stream, presence.from);
+                    break;
+                case Presence.Stanza.TYPE_SUBSCRIBED:
+                    received_subscription_approval(stream, presence.from);
                     break;
                 case Presence.Stanza.TYPE_UNSUBSCRIBE:
                     stream.get_flag(Flag.IDENTITY).remove_presence(presence.from);
