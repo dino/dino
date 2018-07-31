@@ -44,7 +44,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         content_populator = new ContentProvider(stream_interactor);
         subscription_notification = new SubscriptionNotitication(stream_interactor);
 
-        insert_item.connect(do_insert_item);
+        insert_item.connect(filter_insert_item);
         remove_item.connect(do_remove_item);
 
         Application app = GLib.Application.get_default() as Application;
@@ -160,6 +160,16 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         Idle.add(() => { on_value_notify(); return false; });
     }
 
+    public void filter_insert_item(Plugins.MetaConversationItem item) {
+        print(@"$(meta_items.last().sort_time.compare(item.sort_time))\n");
+        print(@"$(meta_items.first().sort_time.compare(item.sort_time))\n");
+        if (at_current_content && meta_items.last().sort_time.compare(item.sort_time) < 0) {
+            do_insert_item(item);
+        } else if (meta_items.last().sort_time.compare(item.sort_time) > 0 && meta_items.first().sort_time.compare(item.sort_time) < 0) {
+            do_insert_item(item);
+        }
+    }
+
     public void do_insert_item(Plugins.MetaConversationItem item) {
         lock (meta_items) {
             if (!item.can_merge || !merge_back(item)) {
@@ -174,17 +184,19 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     private void do_remove_item(Plugins.MetaConversationItem item) {
         ConversationItemSkeleton? skeleton = item_item_skeletons[item];
-        if (skeleton.items.size > 1) {
-            skeleton.remove_meta_item(item);
-        } else {
-            widgets[item].destroy();
-            widgets.unset(item);
-            skeleton.destroy();
-            item_skeletons.remove(skeleton);
-            item_item_skeletons.unset(item);
+        if (skeleton != null) {
+            if (skeleton.items.size > 1) {
+                skeleton.remove_meta_item(item);
+            } else {
+                widgets[item].destroy();
+                widgets.unset(item);
+                skeleton.destroy();
+                item_skeletons.remove(skeleton);
+                item_item_skeletons.unset(item);
+            }
+            content_items.remove(item);
+            meta_items.remove(item);
         }
-        content_items.remove(item);
-        meta_items.remove(item);
     }
 
     public void add_notification(Widget widget) {
