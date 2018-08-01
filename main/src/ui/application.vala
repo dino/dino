@@ -41,23 +41,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public void handle_uri(string jid, string query, Gee.Map<string, string> options) {
         switch (query) {
             case "join":
-                Dialog dialog = new Dialog.with_buttons(_("Join Conference"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
-                dialog.modal = true;
-                Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
-                ok_button.get_style_context().add_class("suggested-action");
-                ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor, ok_button);
-                conference_fragment.jid = jid;
-                Box content_area = dialog.get_content_area();
-                content_area.add(conference_fragment);
-                dialog.response.connect((response_id) => {
-                    if (response_id == ResponseType.OK) {
-                        stream_interactor.get_module(MucManager.IDENTITY).join(conference_fragment.account, new Jid(conference_fragment.jid), conference_fragment.nick, conference_fragment.password);
-                        dialog.destroy();
-                    } else if (response_id == ResponseType.CANCEL) {
-                        dialog.destroy();
-                    }
-                });
-                dialog.present();
+                show_join_muc_dialog(null, new Jid(jid));
                 break;
             case "message":
                 Gee.List<Account> accounts = stream_interactor.get_accounts();
@@ -94,6 +78,14 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             stream_interactor.get_module(PresenceManager.IDENTITY).deny_subscription(conversation.account, conversation.counterpart);
         });
         add_action(deny_subscription_action);
+
+        SimpleAction accept_muc_invite_action = new SimpleAction("open-muc-join", VariantType.INT32);
+        accept_muc_invite_action.activate.connect((variant) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
+            if (conversation == null) return;
+            show_join_muc_dialog(conversation.account, conversation.counterpart);
+        });
+        add_action(accept_muc_invite_action);
     }
 
     private void show_accounts_window() {
@@ -107,6 +99,29 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private void show_settings_window() {
         SettingsDialog dialog = new SettingsDialog();
         dialog.set_transient_for(get_active_window());
+        dialog.present();
+    }
+
+    private void show_join_muc_dialog(Account? account, Jid jid) {
+        Dialog dialog = new Dialog.with_buttons(_("Join Conference"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
+        dialog.modal = true;
+        Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
+        ok_button.get_style_context().add_class("suggested-action");
+        ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor, ok_button);
+        conference_fragment.jid = jid.to_string();
+        if (account != null)  {
+            conference_fragment.account = account;
+        }
+        Box content_area = dialog.get_content_area();
+        content_area.add(conference_fragment);
+        dialog.response.connect((response_id) => {
+            if (response_id == ResponseType.OK) {
+                stream_interactor.get_module(MucManager.IDENTITY).join(conference_fragment.account, new Jid(conference_fragment.jid), conference_fragment.nick, conference_fragment.password);
+                dialog.destroy();
+            } else if (response_id == ResponseType.CANCEL) {
+                dialog.destroy();
+            }
+        });
         dialog.present();
     }
 

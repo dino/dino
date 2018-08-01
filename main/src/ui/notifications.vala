@@ -74,25 +74,24 @@ public class Notifications : Object {
             notification.set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, conversation.counterpart, conversation.account)));
         } catch (Error e) { }
         notification.set_default_action_and_target_value("app.open-conversation", new Variant.int32(conversation.id));
-        notification.add_button_with_target_value(_("Accept"), "app.accept-subscription", conversation.id);
         notification.add_button_with_target_value(_("Deny"), "app.deny-subscription", conversation.id);
+        notification.add_button_with_target_value(_("Accept"), "app.accept-subscription", conversation.id);
 
         window.get_application().send_notification(conversation.id.to_string() + "-subscription", notification);
         active_ids.add(conversation.id.to_string() + "-subscription");
     }
 
     private void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
-        Notification notification = new Notification(_("Invitation received"));
-        string body;
-        if (reason != null)
-            body = _("You have been invited to room “%s” by “%s”, they said: “%s”").printf(room_jid.bare_jid.to_string(), from_jid.bare_jid.to_string(), reason);
-        else
-            body = _("You have been invited to room “%s” by “%s”.").printf(room_jid.bare_jid.to_string(), from_jid.bare_jid.to_string());
+        string display_name = Util.get_display_name(stream_interactor, from_jid, account);
+        string display_room = room_jid.bare_jid.to_string();
+        Notification notification = new Notification(_("Invitation to %s").printf(display_room));
+        string body = _("%s invited you to %s").printf(display_name, display_room);
         notification.set_body(body);
         notification.set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, from_jid, account)));
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
-        notification.add_button_with_target_value(_("Accept"), "app.accept-invite", conversation.id);
+        notification.set_default_action_and_target_value("app.open-muc-join", new Variant.int32(conversation.id));
         notification.add_button_with_target_value(_("Deny"), "app.deny-invite", conversation.id);
+        notification.add_button_with_target_value(_("Accept"), "app.open-muc-join", conversation.id);
         window.get_application().send_notification(null, notification);
     }
 
