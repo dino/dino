@@ -7,9 +7,8 @@ using Dino.Entities;
 namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/Dino/global_search.ui")]
-class GlobalSearch : Box {
+class GlobalSearch : Overlay {
     public signal void selected_item(MessageItem item);
-
     private StreamInteractor stream_interactor;
     private string search = "";
     private int loaded_results = -1;
@@ -20,6 +19,8 @@ class GlobalSearch : Box {
     [GtkChild] public ScrolledWindow results_scrolled;
     [GtkChild] public Box results_box;
     [GtkChild] public Stack results_empty_stack;
+    [GtkChild] public Frame auto_complete_overlay;
+    [GtkChild] public ListBox auto_complete_list;
 
     public GlobalSearch init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -27,6 +28,8 @@ class GlobalSearch : Box {
         search_entry.search_changed.connect(() => {
             set_search(search_entry.text);
         });
+        search_entry.notify["text"].connect_after(() => { update_auto_complete(); });
+        search_entry.notify["cursor-position"].connect_after(() => { update_auto_complete(); });
 
         results_scrolled.vadjustment.notify["value"].connect(() => {
             if (results_scrolled.vadjustment.upper - (results_scrolled.vadjustment.value + results_scrolled.vadjustment.page_size) < 100) {
@@ -44,7 +47,68 @@ class GlobalSearch : Box {
             reloading_mutex.trylock();
             reloading_mutex.unlock();
         });
+
+        event.connect((event) => {
+            if (auto_complete_overlay.visible) {
+                if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Up) {
+                    var row = auto_complete_list.get_selected_row();
+                    var index = row == null ? -1 : row.get_index() - 1;
+                    if (index == -1) index = (int)auto_complete_list.get_children().length() - 1;
+                    auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
+                    return true;
+                }
+                if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Down) {
+                    var row = auto_complete_list.get_selected_row();
+                    var index = row == null ? 0 : row.get_index() + 1;
+                    if (index == auto_complete_list.get_children().length()) index = 0;
+                    auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
+                    return true;
+                }
+                if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Tab ||
+                    event.type == Gdk.EventType.KEY_RELEASE && event.key.keyval == Gdk.Key.Return) {
+                    auto_complete_list.get_selected_row().activate();
+                    return true;
+                }
+            }
+            // TODO: Handle cursor movement in results
+            // TODO: Direct all keystrokes to text input
+            return false;
+        });
+
         return this;
+    }
+
+    private void update_auto_complete() {
+        Gee.List<SearchSuggestion> suggestions = stream_interactor.get_module(SearchProcessor.IDENTITY).suggest_auto_complete(search_entry.text, search_entry.cursor_position);
+        auto_complete_overlay.visible = suggestions.size > 0;
+        if (suggestions.size > 0) {
+            auto_complete_list.@foreach((widget) => auto_complete_list.remove(widget));
+            foreach(SearchSuggestion suggestion in suggestions) {
+                Builder builder = new Builder.from_resource("/im/dino/Dino/search_autocomplete.ui");
+                AvatarImage avatar = (AvatarImage)builder.get_object("image");
+                avatar.set_jid(stream_interactor, suggestion.jid, suggestion.account);
+                Label label = (Label)builder.get_object("label");
+                string display_name = Util.get_display_name(stream_interactor, suggestion.jid, suggestion.account);
+                if (display_name != suggestion.jid.to_string()) {
+                    label.set_markup(@"$display_name <span font_weight='light' fgalpha='80%'>$(suggestion.jid)</span>");
+                } else {
+                    label.label = display_name;
+                }
+                ListBoxRow row = new ListBoxRow() { visible = true, can_focus = false };
+                row.add((Widget)builder.get_object("root"));
+                row.activate.connect(() => {
+                    handle_suggestion(suggestion);
+                });
+                auto_complete_list.add(row);
+            }
+            auto_complete_list.select_row(auto_complete_list.get_row_at_index(0));
+        }
+    }
+
+    private void handle_suggestion(SearchSuggestion suggestion) {
+        search_entry.move_cursor(MovementStep.LOGICAL_POSITIONS, suggestion.start_index - search_entry.cursor_position, false);
+        search_entry.delete_from_cursor(DeleteType.CHARS, suggestion.end_index - suggestion.start_index);
+        search_entry.insert_at_cursor(suggestion.completion + " ");
     }
 
     private void clear_search() {

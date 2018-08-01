@@ -44,6 +44,7 @@ set(RESOURCE_LIST
     menu_encryption.ui
     occupant_list.ui
     occupant_list_item.ui
+    search_autocomplete.ui
     settings_dialog.ui
     unified_main_content.ui
     unified_window_placeholder.ui

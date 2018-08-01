@@ -23,6 +23,9 @@ public class QueryBuilder : StatementBuilder {
     // ORDER BY [...]
     private OrderingTerm[]? order_by_terms = {};
 
+    // GROUP BY [...]
+    private string? group_by_term;
+
     // LIMIT [...] OFFSET [...]
     private int limit_val;
     private int offset_val;
@@ -125,6 +128,17 @@ public class QueryBuilder : StatementBuilder {
         return this;
     }
 
+    public QueryBuilder group_by(Column[] columns) {
+        foreach(Column col in columns) {
+            if (group_by_term == null) {
+                group_by_term = col.to_string();
+            } else {
+                group_by_term += @", $col";
+            }
+        }
+        return this;
+    }
+
     public QueryBuilder limit(int limit) {
         if (this.limit_val != 0 && limit > this.limit_val) error("tried to increase an existing limit");
         this.limit_val = limit;
@@ -162,7 +176,7 @@ public class QueryBuilder : StatementBuilder {
     }
 
     internal override Statement prepare() {
-        Statement stmt = db.prepare(@"SELECT $column_selector $(table_name == null ? "" : @"FROM $((!) table_name)") $joins WHERE $selection $(OrderingTerm.all_to_string(order_by_terms)) $(limit_val > 0 ? @" LIMIT $limit_val OFFSET $offset_val" : "")");
+        Statement stmt = db.prepare(@"SELECT $column_selector $(table_name == null ? "" : @"FROM $((!) table_name)") $joins WHERE $selection $(group_by_term == null ? "" : @"GROUP BY $group_by_term") $(OrderingTerm.all_to_string(order_by_terms)) $(limit_val > 0 ? @" LIMIT $limit_val OFFSET $offset_val" : "")");
         for (int i = 0; i < selection_args.length; i++) {
             selection_args[i].bind(stmt, i+1);
         }
