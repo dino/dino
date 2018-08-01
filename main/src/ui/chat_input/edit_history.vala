@@ -8,7 +8,6 @@ namespace Dino.Ui.ChatInput {
 
 class EditHistory {
 
-    private StreamInteractor stream_interactor;
     private Conversation? conversation;
     private TextView text_input;
 
@@ -16,7 +15,6 @@ class EditHistory {
     private HashMap<Conversation, int> indices = new HashMap<Conversation, int>(Conversation.hash_func, Conversation.equals_func);
 
     public EditHistory(TextView text_input, GLib.Application application) {
-        this.stream_interactor = stream_interactor;
         this.text_input = text_input;
 
         text_input.key_press_event.connect(on_text_input_key_press);

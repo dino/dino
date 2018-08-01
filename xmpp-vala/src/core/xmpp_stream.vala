@@ -1,19 +1,19 @@
 using Gee;
 
-namespace Xmpp.Core {
+namespace Xmpp {
 
 public errordomain IOStreamError {
     READ,
     WRITE,
     CONNECT,
-    DISCONNECT
-
+    DISCONNECT,
+    TLS
 }
 
 public class XmppStream {
     public const string NS_URI = "http://etherx.jabber.org/streams";
 
-    public string remote_name;
+    public Jid remote_name;
     public XmppLog log = new XmppLog();
     public StanzaNode? features { get; private set; default = new StanzaNode.build("features", NS_URI); }
 
@@ -42,14 +42,14 @@ public class XmppStream {
         register_connection_provider(new StartTlsConnectionProvider());
     }
 
-    public void connect(string? remote_name = null) throws IOStreamError {
-        if (remote_name != null) this.remote_name = (!)remote_name;
+    public async void connect(string? remote_name = null) throws IOStreamError {
+        if (remote_name != null) this.remote_name = Jid.parse(remote_name);
         attach_negotation_modules();
         try {
             int min_priority = -1;
             ConnectionProvider? best_provider = null;
             foreach (ConnectionProvider connection_provider in connection_providers) {
-                int? priority = connection_provider.get_priority(remote_name);
+                int? priority = yield connection_provider.get_priority(this.remote_name);
                 if (priority != null && (priority < min_priority || min_priority == -1)) {
                     min_priority = priority;
                     best_provider = connection_provider;
@@ -57,17 +57,20 @@ public class XmppStream {
             }
             IOStream? stream = null;
             if (best_provider != null) {
-                stream = best_provider.connect(this);
-            } else {
-                stream = (new SocketClient()).connect(new NetworkService("xmpp-client", "tcp", this.remote_name));
+                stream = yield best_provider.connect(this);
             }
-            if (stream == null) throw new IOStreamError.CONNECT("client.connect() returned null");
+            if (stream == null) {
+                stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name.to_string()));
+            }
+            if (stream == null) {
+                throw new IOStreamError.CONNECT("client.connect() returned null");
+            }
             reset_stream((!)stream);
         } catch (Error e) {
             stderr.printf("CONNECTION LOST?\n");
             throw new IOStreamError.CONNECT(e.message);
         }
-        loop();
+        yield loop();
     }
 
     public void disconnect() throws IOStreamError {
@@ -96,11 +99,11 @@ public class XmppStream {
         return setup_needed;
     }
 
-    public StanzaNode read() throws IOStreamError {
+    public async StanzaNode read() throws IOStreamError {
         StanzaReader? reader = this.reader;
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
-            StanzaNode node = ((!)reader).read_node();
+            StanzaNode node = yield ((!)reader).read_node();
             log.node("IN", node);
             return node;
         } catch (XmlError e) {
@@ -108,12 +111,16 @@ public class XmppStream {
         }
     }
 
-    public void write(StanzaNode node) throws IOStreamError {
+    public void write(StanzaNode node) {
+        write_async.begin(node);
+    }
+
+    public async void write_async(StanzaNode node) throws IOStreamError {
         StanzaWriter? writer = this.writer;
         if (writer == null) throw new IOStreamError.WRITE("trying to write, but no stream open");
         try {
             log.node("OUT", node);
-            ((!)writer).write_node(node);
+            yield ((!)writer).write_node(node);
         } catch (XmlError e) {
             throw new IOStreamError.WRITE(e.message);
         }
@@ -144,13 +151,22 @@ public class XmppStream {
     }
 
     public XmppStream add_module(XmppStreamModule module) {
+        foreach (XmppStreamModule m in modules) {
+            if (m.get_ns() == module.get_ns() && m.get_id() == module.get_id()) {
+                print("[%p] Adding already added module: %s\n".printf(this, module.get_id()));
+                return this;
+            }
+        }
         modules.add(module);
         if (negotiation_complete) module.attach(this);
         return this;
     }
 
     public void detach_modules() {
-        foreach (XmppStreamModule module in modules) module.detach(this);
+        foreach (XmppStreamModule module in modules) {
+            if (!(module is XmppStreamNegotiationModule) && !negotiation_complete) continue;
+            module.detach(this);
+        }
     }
 
     public T? get_module<T>(ModuleIdentity<T>? identity) {
@@ -175,26 +191,30 @@ public class XmppStream {
         return false;
     }
 
-    private void setup() throws IOStreamError {
+    private async void setup() throws IOStreamError {
         StanzaNode outs = new StanzaNode.build("stream", "http://etherx.jabber.org/streams")
-                            .put_attribute("to", remote_name)
+                            .put_attribute("to", remote_name.to_string())
                             .put_attribute("version", "1.0")
                             .put_attribute("xmlns", "jabber:client")
                             .put_attribute("stream", "http://etherx.jabber.org/streams", XMLNS_URI);
         outs.has_nodes = true;
         log.node("OUT ROOT", outs);
         write(outs);
-        received_root_node(this, read_root());
+        received_root_node(this, yield read_root());
     }
 
-    private void loop() throws IOStreamError {
+    private async void loop() throws IOStreamError {
         while (true) {
             if (setup_needed) {
-                setup();
+                yield setup();
                 setup_needed = false;
             }
 
-            StanzaNode node = read();
+            StanzaNode node = yield read();
+
+            Idle.add(loop.callback);
+            yield;
+
             received_node(this, node);
 
             if (node.ns_uri == NS_URI && node.name == "features") {
@@ -230,23 +250,18 @@ public class XmppStream {
     }
 
     private bool negotiation_modules_done() throws IOStreamError {
-        if (!setup_needed) {
-            bool mandatory_outstanding = false;
-            foreach (XmppStreamModule module in modules) {
-                if (module is XmppStreamNegotiationModule) {
-                    XmppStreamNegotiationModule negotiation_module = (XmppStreamNegotiationModule) module;
-                    if (negotiation_module.mandatory_outstanding(this)) mandatory_outstanding = true;
-                }
-            }
-            if (!is_negotiation_active()) {
-                if (mandatory_outstanding) {
-                    throw new IOStreamError.CONNECT("mandatory-to-negotiate feature not negotiated");
-                } else {
-                    return true;
+        if (setup_needed) return false;
+        if (is_negotiation_active()) return false;
+
+        foreach (XmppStreamModule module in modules) {
+            if (module is XmppStreamNegotiationModule) {
+                XmppStreamNegotiationModule negotiation_module = (XmppStreamNegotiationModule) module;
+                if (negotiation_module.mandatory_outstanding(this)) {
+                    throw new IOStreamError.CONNECT("mandatory-to-negotiate feature not negotiated: " + negotiation_module.get_id());
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private void attach_non_negotation_modules() {
@@ -266,14 +281,16 @@ public class XmppStream {
         }
     }
 
-    private StanzaNode read_root() throws IOStreamError {
+    private async StanzaNode read_root() throws IOStreamError {
         StanzaReader? reader = this.reader;
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
-            StanzaNode node = ((!)reader).read_root_node();
+            StanzaNode node = yield ((!)reader).read_root_node();
             log.node("IN ROOT", node);
             return node;
-        } catch (XmlError e) {
+        } catch (XmlError.TLS e) {
+            throw new IOStreamError.TLS(e.message);
+        } catch (Error e) {
             throw new IOStreamError.READ(e.message);
         }
     }
@@ -338,19 +355,19 @@ public abstract class XmppStreamNegotiationModule : XmppStreamModule {
 }
 
 public abstract class ConnectionProvider {
-    public abstract int? get_priority(string remote_name);
-    public abstract IOStream? connect(XmppStream stream);
+    public async abstract int? get_priority(Jid remote_name);
+    public async abstract IOStream? connect(XmppStream stream);
     public abstract string get_id();
 }
 
 public class StartTlsConnectionProvider : ConnectionProvider {
     private SrvTarget? srv_target;
 
-    public override int? get_priority(string remote_name) {
+    public async override int? get_priority(Jid remote_name) {
         GLib.List<SrvTarget>? xmpp_target = null;
         try {
-            Resolver resolver = Resolver.get_default();
-            xmpp_target = resolver.lookup_service("xmpp-client", "tcp", remote_name, null);
+            GLibFixes.Resolver resolver = GLibFixes.Resolver.get_default();
+            xmpp_target = yield resolver.lookup_service_async("xmpp-client", "tcp", remote_name.to_string(), null);
         } catch (Error e) {
             return null;
         }
@@ -359,9 +376,13 @@ public class StartTlsConnectionProvider : ConnectionProvider {
         return xmpp_target.nth(0).data.get_priority();
     }
 
-    public override IOStream? connect(XmppStream stream) {
-        SocketClient client = new SocketClient();
-        return client.connect_to_host(srv_target.get_hostname(), srv_target.get_port());
+    public async override IOStream? connect(XmppStream stream) {
+        try {
+            SocketClient client = new SocketClient();
+            return yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
+        } catch (Error e) {
+            return null;
+        }
     }
 
     public override string get_id() { return "start_tls"; }

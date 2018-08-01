@@ -26,14 +26,14 @@ public class UpsertBuilder : StatementBuilder {
         return this;
     }
 
-    public UpsertBuilder value_null<T>(Column<T> column) throws DatabaseError {
-        if (column.not_null) throw new DatabaseError.ILLEGAL_QUERY(@"Can't set non-null column $(column.name) to null");
+    public UpsertBuilder value_null<T>(Column<T> column) {
+        if (column.not_null) error("Can't set non-null column %s to null", column.name);
         fields += new NullField<T>(column);
         return this;
     }
 
-    internal override Statement prepare() throws DatabaseError {
-        throw new DatabaseError.NOT_SUPPORTED("prepare() not available for upsert.");
+    internal override Statement prepare() {
+        error("prepare() not available for upsert.");
     }
 
     internal Statement prepare_update() {
@@ -98,9 +98,9 @@ public class UpsertBuilder : StatementBuilder {
         return stmt;
     }
 
-    public int64 perform() throws DatabaseError {
+    public int64 perform() {
         if (prepare_update().step() != DONE || prepare_insert().step() != DONE) {
-            throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");
+            error(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
         return db.last_insert_rowid();
     }

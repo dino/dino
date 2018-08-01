@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiAddConversationListRow" parent="GtkListBoxRow">
+    <template class="DinoUiListRow" parent="GtkListBoxRow">
         <property name="visible">True</property>
         <child>
             <object class="GtkGrid" id="outer_grid">
@@ -9,9 +9,11 @@
                 <property name="column-spacing">10</property>
                 <property name="visible">True</property>
                 <child>
-                    <object class="GtkImage" id="image">
-                        <property name="height_request">30</property>
-                        <property name="width_request">30</property>
+                    <object class="DinoUiAvatarImage" id="image">
+                        <property name="allow_gray">False</property>
+                        <property name="height">30</property>
+                        <property name="width">30</property>
+                        <property name="valign">center</property>
                         <property name="visible">True</property>
                     </object>
                 </child>

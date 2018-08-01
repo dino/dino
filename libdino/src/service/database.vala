@@ -186,7 +186,7 @@ public class Database : Qlite.Database {
     public Map<string, int> jid_table_reverse = new HashMap<string, int>();
     public Map<int, Account> account_table_cache = new HashMap<int, Account>();
 
-    public Database(string fileName) throws DatabaseError {
+    public Database(string fileName) {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);
@@ -199,7 +199,9 @@ public class Database : Qlite.Database {
         roster = new RosterTable(this);
         settings = new SettingsTable(this);
         init({ account, jid, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
-        exec("PRAGMA synchronous=0");
+        try {
+            exec("PRAGMA synchronous=0");
+        } catch (Error e) { }
     }
 
     public override void migrate(long oldVersion) {
@@ -230,7 +232,7 @@ public class Database : Qlite.Database {
         }
     }
 
-    public Gee.List<Message> get_messages(Jid jid, Account account, Message.Type? type, int count, DateTime? before) {
+    public Gee.List<Message> get_messages(Xmpp.Jid jid, Account account, Message.Type? type, int count, DateTime? before) {
         QueryBuilder select = message.select()
                 .with(message.counterpart_id, "=", get_jid_id(jid))
                 .with(message.account_id, "=", account.id)
@@ -253,11 +255,14 @@ public class Database : Qlite.Database {
         return ret;
     }
 
-    public Gee.List<Message> get_unsend_messages(Account account) {
+    public Gee.List<Message> get_unsend_messages(Account account, Xmpp.Jid? jid = null) {
         Gee.List<Message> ret = new ArrayList<Message>();
         var select = message.select()
             .with(message.account_id, "=", account.id)
             .with(message.marked, "=", (int) Message.Marked.UNSENT);
+        if (jid != null) {
+            select.with(message.counterpart_id, "=", get_jid_id(jid));
+        }
         foreach (Row row in select) {
             ret.add(new Message.from_row(this, row));
         }
@@ -268,7 +273,6 @@ public class Database : Qlite.Database {
         QueryBuilder builder = message.select()
                 .with(message.account_id, "=", account.id)
                 .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
-                .with(message.counterpart_resource, "=", query_message.counterpart.resourcepart)
                 .with(message.body, "=", query_message.body)
                 .with(message.time, "<", (long) query_message.time.add_minutes(1).to_unix())
                 .with(message.time, ">", (long) query_message.time.add_minutes(-1).to_unix());
@@ -277,14 +281,25 @@ public class Database : Qlite.Database {
         } else {
             builder.with_null(message.stanza_id);
         }
+        if (query_message.counterpart.resourcepart != null) {
+            builder.with(message.counterpart_resource, "=", query_message.counterpart.resourcepart);
+        } else {
+            builder.with_null(message.counterpart_resource);
+        }
         return builder.count() > 0;
     }
 
-    public bool contains_message_by_stanza_id(string stanza_id, Account account) {
-        return message.select()
-                .with(message.stanza_id, "=", stanza_id)
-                .with(message.account_id, "=", account.id)
-                .count() > 0;
+    public bool contains_message_by_stanza_id(Message query_message, Account account) {
+        QueryBuilder builder =  message.select()
+                .with(message.stanza_id, "=", query_message.stanza_id)
+                .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
+                .with(message.account_id, "=", account.id);
+        if (query_message.counterpart.resourcepart != null) {
+            builder.with(message.counterpart_resource, "=", query_message.counterpart.resourcepart);
+        } else {
+            builder.with_null(message.counterpart_resource);
+        }
+        return builder.count() > 0;
     }
 
     public Message? get_message_by_id(int id) {
@@ -303,7 +318,7 @@ public class Database : Qlite.Database {
         return ret;
     }
 
-    public void set_avatar_hash(Jid jid, string hash, int type) {
+    public void set_avatar_hash(Xmpp.Jid jid, string hash, int type) {
         avatar.insert().or("REPLACE")
                 .value(avatar.jid, jid.to_string())
                 .value(avatar.hash, hash)
@@ -311,10 +326,10 @@ public class Database : Qlite.Database {
                 .perform();
     }
 
-    public HashMap<Jid, string> get_avatar_hashes(int type) {
-        HashMap<Jid, string> ret = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
+    public HashMap<Xmpp.Jid, string> get_avatar_hashes(int type) {
+        HashMap<Xmpp.Jid, string> ret = new HashMap<Xmpp.Jid, string>(Xmpp.Jid.hash_func, Xmpp.Jid.equals_func);
         foreach (Row row in avatar.select({avatar.jid, avatar.hash}).with(avatar.type_, "=", type)) {
-            ret[new Jid(row[avatar.jid])] = row[avatar.hash];
+            ret[Xmpp.Jid.parse(row[avatar.jid])] = row[avatar.hash];
         }
         return ret;
     }
@@ -337,7 +352,7 @@ public class Database : Qlite.Database {
     }
 
 
-    public int get_jid_id(Jid jid_obj) {
+    public int get_jid_id(Xmpp.Jid jid_obj) {
         string bare_jid = jid_obj.bare_jid.to_string();
         if (jid_table_reverse.has_key(bare_jid)) {
             return jid_table_reverse[bare_jid];
@@ -367,7 +382,7 @@ public class Database : Qlite.Database {
         }
     }
 
-    private int add_jid(Jid jid_obj) {
+    private int add_jid(Xmpp.Jid jid_obj) {
         string bare_jid = jid_obj.bare_jid.to_string();
         int id = (int) jid.insert().value(jid.bare_jid, bare_jid).perform();
         jid_table_cache[id] = bare_jid;

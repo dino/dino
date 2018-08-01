@@ -2,7 +2,7 @@ using Gtk;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/settings_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/settings_dialog.ui")]
 class SettingsDialog : Dialog {
 
     [GtkChild] private CheckButton typing_checkbutton;

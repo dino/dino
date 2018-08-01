@@ -2,6 +2,7 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.OccupantMenu {
 public class View : Popover {
@@ -29,7 +30,7 @@ public class View : Popover {
             hide();
             Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
             acc_list.add(conversation.account);
-            AddConversation.Chat.Dialog add_chat_dialog = new AddConversation.Chat.Dialog(stream_interactor, acc_list);
+            SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
             add_chat_dialog.set_transient_for(window);
             add_chat_dialog.title = _("Invite to Conference");
             add_chat_dialog.ok_button.label = _("Invite");
@@ -94,7 +95,7 @@ public class View : Popover {
             kick_button.clicked.connect(kick_button_clicked);
         }
 
-        if (jid_menu != null) stack.remove(jid_menu);
+        if (jid_menu != null) jid_menu.destroy();
         stack.add_named(outer_box, "menu");
         stack.visible_child_name = "menu";
         jid_menu = outer_box;

@@ -15,7 +15,6 @@ public class GroupchatPmRow : ConversationRow {
             tooltip.set_custom(generate_tooltip());
             return true;
         });
-        update_avatar();
     }
 
     protected override void update_message_label() {
@@ -29,7 +28,7 @@ public class GroupchatPmRow : ConversationRow {
     }
 
     private Widget generate_tooltip() {
-        Builder builder = new Builder.from_resource("/im/dino/conversation_selector/chat_row_tooltip.ui");
+        Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_selector/chat_row_tooltip.ui");
         Box main_box = builder.get_object("main_box") as Box;
         Box inner_box = builder.get_object("inner_box") as Box;
         Label jid_label = builder.get_object("jid_label") as Label;

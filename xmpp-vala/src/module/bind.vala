@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Bind {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-bind";
 
@@ -9,7 +7,7 @@ namespace Xmpp.Bind {
 
         public string requested_resource { get; set; }
 
-        public signal void bound_to_resource(XmppStream stream, string my_jid);
+        public signal void bound_to_resource(XmppStream stream, Jid my_jid);
 
         public Module(string requested_resource) {
             this.requested_resource = requested_resource;
@@ -20,7 +18,7 @@ namespace Xmpp.Bind {
             if (flag == null || flag.finished) return;
 
             if (iq.type_ == Iq.Stanza.TYPE_RESULT) {
-                flag.my_jid = iq.stanza.get_subnode("jid", NS_URI, true).get_string_content();
+                flag.my_jid = Jid.parse(iq.stanza.get_subnode("jid", NS_URI, true).get_string_content());
                 flag.finished = true;
                 bound_to_resource(stream, flag.my_jid);
             }
@@ -62,7 +60,7 @@ namespace Xmpp.Bind {
 
     public class Flag : XmppStreamFlag {
         public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "bind");
-        public string? my_jid;
+        public Jid? my_jid;
         public bool finished = false;
 
         public override string get_ns() { return NS_URI; }

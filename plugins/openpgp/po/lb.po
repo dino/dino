@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dino-openpgp-0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2018-01-24 12:20+0000\n"
+"Last-Translator: fiaxh <weblate@mx.ax.lt>\n"
+"Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
+"plugin-openpgp/lb/>\n"
+"Language: lb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.19-dev\n"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Key publishing disabled"
+msgstr "Schlëssel Verëffentlechung ausgeschalt"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr "Feeler am GnuPG"
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
+msgid "No keys available. Generate one!"
+msgstr "Keng Schlëssele verfügbar. Generéier een!"
+
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Select key"
+msgstr "Schlëssel auswielen"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Loading…"
+msgstr "Lueden…"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Querying GnuPG"
+msgstr "GnuPG gëtt ofgefrot"
+
+#: plugins/openpgp/src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr "Schlësselen net am Schlësselbond"
+
+#: plugins/openpgp/src/contact_details_provider.vala:30
+msgid "Encryption"
+msgstr "Verschlësselung"
+
+#~ msgid "OpenPGP"
+#~ msgstr "OpenPGP"

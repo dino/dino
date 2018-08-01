@@ -59,7 +59,7 @@ namespace GPG {
         string unsupported_algorithm;
         bool wrong_key_usage;
         Recipient recipients;
-        string filename;
+        string file_name;
     }
 
     [CCode (cname = "struct _gpgme_recipient")]
@@ -464,7 +464,13 @@ namespace GPG {
         }
 
         [CCode (cname = "gpgme_data_new_from_file")]
-        public static GPGError.Error create_from_file(out Data d, string filename, int copy = 1);
+        public static GPGError.Error new_from_file(out Data d, string filename, int copy = 1);
+
+        public static Data create_from_file(string filename, int copy = 1) throws GLib.Error {
+            Data data;
+            throw_if_error(new_from_file(out data, filename, copy));
+            return data;
+        }
 
         [CCode (cname = "gpgme_data_release_and_get_mem")]
         public string release_and_get_mem(out size_t len);
@@ -475,7 +481,9 @@ namespace GPG {
 
         public long seek(long offset, int whence=0);
 
-        public DataEncoding *get_encoding();
+        public GPGError.Error set_file_name(string file_name);
+
+        public DataEncoding* get_encoding();
 
         public GPGError.Error set_encoding(DataEncoding enc);
     }

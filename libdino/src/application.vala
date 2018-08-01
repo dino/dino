@@ -31,15 +31,25 @@ public interface Dino.Application : GLib.Application {
         MessageStorage.start(stream_interactor, db);
         CounterpartInteractionManager.start(stream_interactor);
         PresenceManager.start(stream_interactor);
+        BlockingManager.start(stream_interactor);
         MucManager.start(stream_interactor);
         RosterManager.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
         FileManager.start(stream_interactor, db);
+        NotificationEvents.start(stream_interactor);
 
-        activate.connect(() => {
+        create_actions();
+
+        startup.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;
-            restore();
+            Idle.add(() => {
+                restore();
+                return false;
+            });
+        });
+        shutdown.connect(() => {
+            stream_interactor.connection_manager.make_offline_all();
         });
         open.connect((files, hint) => {
             if (files.length != 1) {
@@ -84,6 +94,17 @@ public interface Dino.Application : GLib.Application {
 
     public static unowned Application get_default() {
         return (Dino.Application) GLib.Application.get_default();
+    }
+
+    public void create_actions() {
+        SimpleAction accept_subscription_action = new SimpleAction("accept-subscription", VariantType.INT32);
+        accept_subscription_action.activate.connect((variant) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
+            if (conversation == null) return;
+            stream_interactor.get_module(PresenceManager.IDENTITY).approve_subscription(conversation.account, conversation.counterpart);
+            stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(conversation.account, conversation.counterpart);
+        });
+        add_action(accept_subscription_action);
     }
 
     protected void add_connection(Account account) {

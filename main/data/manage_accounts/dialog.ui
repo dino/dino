@@ -88,6 +88,7 @@
                                                 <child>
                                                     <object class="GtkBox">
                                                         <property name="visible">True</property>
+                                                        <property name="halign">end</property>
                                                         <child>
                                                             <object class="GtkBox">
                                                                 <property name="visible">True</property>
@@ -101,11 +102,12 @@
                                                                     <class name="image-button"/>
                                                                 </style>
                                                                 <child>
-                                                                    <object class="GtkImage" id="image">
-                                                                        <property name="height_request">50</property>
-                                                                        <property name="width_request">50</property>
+                                                                    <object class="DinoUiAvatarImage" id="image">
+                                                                        <property name="height">50</property>
+                                                                        <property name="width">50</property>
                                                                         <property name="xalign">1</property>
                                                                         <property name="visible">True</property>
+                                                                        <property name="allow_gray">False</property>
                                                                     </object>
                                                                 </child>
                                                             </object>
@@ -121,6 +123,7 @@
                                                 <child>
                                                     <object class="GtkLabel" id="jid_label">
                                                         <property name="xalign">0</property>
+                                                        <property name="yalign">1</property>
                                                         <property name="visible">True</property>
                                                         <attributes>
                                                             <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
@@ -136,6 +139,7 @@
                                                 <child>
                                                     <object class="GtkLabel" id="state_label">
                                                         <property name="xalign">0</property>
+                                                        <property name="yalign">0</property>
                                                         <property name="visible">True</property>
                                                         <style>
                                                             <class name="dim-label"/>
@@ -248,7 +252,7 @@
                                 </child>
                                 <child>
                                     <object class="GtkLabel">
-                                        <property name="label">No accounts configured</property>
+                                        <property name="label" translatable="yes">No accounts configured</property>
                                         <property name="xalign">0.5</property>
                                         <property name="yalign">0.5</property>
                                         <property name="visible">True</property>

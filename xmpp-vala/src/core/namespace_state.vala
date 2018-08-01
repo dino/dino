@@ -1,6 +1,6 @@
 using Gee;
 
-namespace Xmpp.Core {
+namespace Xmpp {
 
 public class NamespaceState {
     private HashMap<string, string> uri_to_name = new HashMap<string, string> ();

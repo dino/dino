@@ -2,10 +2,11 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.OccupantMenu{
 
-[GtkTemplate (ui = "/im/dino/occupant_list.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/occupant_list.ui")]
 public class List : Box {
 
     public signal void conversation_selected(Conversation? conversation);
@@ -25,9 +26,7 @@ public class List : Box {
         list_box.set_filter_func(filter);
         search_entry.search_changed.connect(search_changed);
 
-        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((show, jid, account) => {
-            Idle.add(() => { on_show_received(show, jid, account); return false; });
-        });
+        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_show_received);
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_updated_roster_item);
 
         initialize_for_conversation(conversation);
@@ -41,6 +40,7 @@ public class List : Box {
                 add_occupant(occupant);
             }
         }
+        list_box.invalidate_filter();
     }
 
     private void refilter() {
@@ -59,8 +59,6 @@ public class List : Box {
     public void add_occupant(Jid jid) {
         rows[jid] = new ListRow(stream_interactor, conversation.account, jid);
         list_box.add(rows[jid]);
-        list_box.invalidate_filter();
-        list_box.invalidate_sort();
     }
 
     public void remove_occupant(Jid jid) {
@@ -79,6 +77,7 @@ public class List : Box {
             } else if (show.as != Show.OFFLINE && !rows.has_key(jid)) {
                 add_occupant(jid);
             }
+            list_box.invalidate_filter();
         }
     }
 
@@ -119,10 +118,10 @@ public class List : Box {
             if (aff == affiliation) count++;
         }
 
-        Label title_label = new Label("") { margin_left=10, xalign=0, visible=true };
+        Label title_label = new Label("") { margin_start=10, xalign=0, visible=true };
         title_label.set_markup(@"<b>$(Markup.escape_text(aff_str))</b>");
 
-        Label count_label = new Label(@"$count") { xalign=0, margin_right=7, expand=true, visible=true };
+        Label count_label = new Label(@"$count") { xalign=0, margin_end=7, expand=true, visible=true };
         count_label.get_style_context().add_class("dim-label");
 
         Grid grid = new Grid() { margin_top=top?5:15, column_spacing=5, hexpand=true, visible=true };

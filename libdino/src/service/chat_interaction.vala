@@ -27,7 +27,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private ChatInteraction(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         Timeout.add_seconds(30, update_interactions);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
     }
 
@@ -124,21 +124,37 @@ public class ChatInteraction : StreamInteractionModule, Object {
         return true;
     }
 
-    private void on_message_received(Entities.Message message, Conversation conversation) {
-        if (Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null) return;
+    private class ReceivedMessageListener : MessageListener {
 
-        send_delivery_receipt(conversation, message);
-        if (is_active_focus(conversation)) {
-            check_send_read();
-            conversation.read_up_to = message;
-            send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_DISPLAYED);
-        } else {
-            send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_RECEIVED);
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
+        public override string action_group { get { return "OTHER_NODES"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+
+        public ReceivedMessageListener(StreamInteractor stream_interactor) {
+            this.stream_interactor = stream_interactor;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null) return false;
+
+            ChatInteraction outer = stream_interactor.get_module(ChatInteraction.IDENTITY);
+            outer.send_delivery_receipt(conversation, message);
+            if (outer.is_active_focus(conversation)) {
+                outer.check_send_read();
+                conversation.read_up_to = message;
+                outer.send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_DISPLAYED);
+            } else {
+                outer.send_chat_marker(conversation, message, Xep.ChatMarkers.MARKER_RECEIVED);
+            }
+            return false;
         }
     }
 
+
     private void send_chat_marker(Conversation conversation, Entities.Message message, string marker) {
-        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream != null &&
                 (marker == Xep.ChatMarkers.MARKER_RECEIVED || conversation.get_send_marker_setting() == Conversation.Setting.ON) &&
                 Xep.ChatMarkers.Module.requests_marking(message.stanza)) {
@@ -147,17 +163,17 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     private void send_delivery_receipt(Conversation conversation, Entities.Message message) {
-        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream != null && Xep.MessageDeliveryReceipts.Module.requests_receipt(message.stanza)) {
-            stream.get_module(Xep.MessageDeliveryReceipts.Module.IDENTITY).send_received(stream, message.from.to_string(), message.stanza_id);
+            stream.get_module(Xep.MessageDeliveryReceipts.Module.IDENTITY).send_received(stream, message.from, message.stanza_id);
         }
     }
 
     private void send_chat_state_notification(Conversation conversation, string state) {
-        Core.XmppStream stream = stream_interactor.get_stream(conversation.account);
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
         if (stream != null && conversation.get_send_typing_setting() == Conversation.Setting.ON &&
                 conversation.type_ != Conversation.Type.GROUPCHAT) {
-            stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart.to_string(), state);
+            stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart, state);
         }
     }
 }

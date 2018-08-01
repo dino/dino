@@ -22,7 +22,7 @@ compile_gresources(
     TARGET ${CMAKE_CURRENT_BINARY_DIR}/resources/resources.c
     TYPE EMBED_C
     RESOURCES ${RESOURCE_LIST}
-    PREFIX /im/dino
+    PREFIX /im/dino/Dino/openpgp
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
 )
 
@@ -33,7 +33,9 @@ SOURCES
     src/contact_details_provider.vala
     src/database.vala
     src/encryption_list_entry.vala
+    src/in_file_processor.vala
     src/manager.vala
+    src/out_file_processor.vala
     src/plugin.vala
     src/register_plugin.vala
     src/stream_flag.vala

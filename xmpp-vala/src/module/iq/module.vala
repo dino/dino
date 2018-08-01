@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Iq {
     private const string NS_URI = "jabber:client";
 
@@ -13,11 +11,7 @@ namespace Xmpp.Iq {
 
         public delegate void OnResult(XmppStream stream, Iq.Stanza iq);
         public void send_iq(XmppStream stream, Iq.Stanza iq, owned OnResult? listener = null) {
-            try {
-                stream.write(iq.stanza);
-            } catch (IOStreamError e) {
-                print(@"$(e.message)\n");
-            }
+            stream.write(iq.stanza);
             if (listener != null) {
                 responseListeners[iq.id] = new ResponseListener((owned) listener);
             }

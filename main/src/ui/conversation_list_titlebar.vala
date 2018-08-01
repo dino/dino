@@ -4,7 +4,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/conversation_list_titlebar.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/conversation_list_titlebar.ui")]
 public class ConversationListTitlebar : Gtk.HeaderBar {
 
     public signal void conversation_opened(Conversation conversation);
@@ -26,13 +26,9 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
     private void create_add_menu(Window window) {
         SimpleAction contacts_action = new SimpleAction("add_chat", null);
         contacts_action.activate.connect(() => {
-            AddConversation.Chat.Dialog add_chat_dialog = new AddConversation.Chat.Dialog(stream_interactor, stream_interactor.get_accounts());
+            AddChatDialog add_chat_dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
             add_chat_dialog.set_transient_for(window);
-            add_chat_dialog.title = _("Start Chat");
-            add_chat_dialog.ok_button.label = _("Start");
-            add_chat_dialog.selected.connect((account, jid) => {
-                Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
-                stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+            add_chat_dialog.added.connect((conversation) => {
                 conversation_opened(conversation);
             });
             add_chat_dialog.present();
@@ -41,14 +37,14 @@ public class ConversationListTitlebar : Gtk.HeaderBar {
 
         SimpleAction conference_action = new SimpleAction("add_conference", null);
         conference_action.activate.connect(() => {
-            AddConversation.Conference.Dialog add_conference_dialog = new AddConversation.Conference.Dialog(stream_interactor);
+            AddConferenceDialog add_conference_dialog = new AddConferenceDialog(stream_interactor);
             add_conference_dialog.set_transient_for(window);
             add_conference_dialog.conversation_opened.connect((conversation) => conversation_opened(conversation));
             add_conference_dialog.present();
         });
         GLib.Application.get_default().add_action(conference_action);
 
-        Builder builder = new Builder.from_resource("/im/dino/menu_add.ui");
+        Builder builder = new Builder.from_resource("/im/dino/Dino/menu_add.ui");
         MenuModel menu = builder.get_object("menu_add") as MenuModel;
         add_button.set_menu_model(menu);
     }

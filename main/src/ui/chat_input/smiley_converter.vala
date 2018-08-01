@@ -13,7 +13,7 @@ class SmileyConverter {
     private static HashMap<string, string> smiley_translations = new HashMap<string, string>();
 
     static construct {
-        smiley_translations[":)"] = "☺";
+        smiley_translations[":)"] = "🙂";
         smiley_translations[":D"] = "😀";
         smiley_translations[";)"] = "😉";
         smiley_translations["O:)"] = "😇";
@@ -22,7 +22,7 @@ class SmileyConverter {
         smiley_translations[":o"] = "😮";
         smiley_translations[":P"] = "😛";
         smiley_translations[";P"] = "😜";
-        smiley_translations[":("] = "☹";
+        smiley_translations[":("] = "🙁";
         smiley_translations[":'("] = "😢";
         smiley_translations[":/"] = "😕";
     }

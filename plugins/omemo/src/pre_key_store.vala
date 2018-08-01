@@ -27,26 +27,18 @@ private class BackedPreKeyStore : SimplePreKeyStore {
     }
 
     public void on_pre_key_stored(PreKeyStore.Key key) {
-        try {
-            db.pre_key.insert().or("REPLACE")
-                    .value(db.pre_key.identity_id, identity_id)
-                    .value(db.pre_key.pre_key_id, (int) key.key_id)
-                    .value(db.pre_key.record_base64, Base64.encode(key.record))
-                    .perform();
-        } catch (Error e) {
-            print(@"OMEMO: Error while updating pre key store: $(e.message)\n");
-        }
+        db.pre_key.insert().or("REPLACE")
+                .value(db.pre_key.identity_id, identity_id)
+                .value(db.pre_key.pre_key_id, (int) key.key_id)
+                .value(db.pre_key.record_base64, Base64.encode(key.record))
+                .perform();
     }
 
     public void on_pre_key_deleted(PreKeyStore.Key key) {
-        try {
-            db.pre_key.delete()
-                    .with(db.pre_key.identity_id, "=", identity_id)
-                    .with(db.pre_key.pre_key_id, "=", (int) key.key_id)
-                    .perform();
-        } catch (Error e) {
-            print(@"OMEMO: Error while updating pre key store: $(e.message)\n");
-        }
+        db.pre_key.delete()
+                .with(db.pre_key.identity_id, "=", identity_id)
+                .with(db.pre_key.pre_key_id, "=", (int) key.key_id)
+                .perform();
     }
 }
 

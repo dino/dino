@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ConversationSelector {
 
-[GtkTemplate (ui = "/im/dino/conversation_selector/view.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/conversation_selector/view.ui")]
 public class View : Box {
     public List conversation_list;
 

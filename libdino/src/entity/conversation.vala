@@ -1,3 +1,5 @@
+using Xmpp;
+
 namespace Dino.Entities {
 
 public class Conversation : Object {
@@ -11,8 +13,10 @@ public class Conversation : Object {
     }
 
     public int id { get; set; }
+    public Type type_ { get; set; }
     public Account account { get; private set; }
     public Jid counterpart { get; private set; }
+    public string? nickname { get; set; }
     public bool active { get; set; default = false; }
     private DateTime? _last_active;
     public DateTime? last_active {
@@ -25,7 +29,6 @@ public class Conversation : Object {
         }
     }
     public Encryption encryption { get; set; default = Encryption.NONE; }
-    public Type type_ { get; set; }
     public Message? read_up_to { get; set; }
 
     public enum NotifySetting { DEFAULT, ON, OFF, HIGHLIGHT }
@@ -48,14 +51,15 @@ public class Conversation : Object {
         this.db = db;
 
         id = row[db.conversation.id];
+        type_ = (Conversation.Type) row[db.conversation.type_];
         account = db.get_account_by_id(row[db.conversation.account_id]);
         string? resource = row[db.conversation.resource];
-        string jid = db.get_jid_by_id(row[db.conversation.jid_id]);
-        counterpart = resource != null ? new Jid.with_resource(jid, resource) : new Jid(jid);
+        counterpart = Jid.parse(db.get_jid_by_id(row[db.conversation.jid_id]));
+        if (type_ == Conversation.Type.GROUPCHAT_PM) counterpart = counterpart.with_resource(resource);
+        nickname = type_ == Conversation.Type.GROUPCHAT ? resource : null;
         active = row[db.conversation.active];
         int64? last_active = row[db.conversation.last_active];
         if (last_active != null) this.last_active = new DateTime.from_unix_utc(last_active);
-        type_ = (Conversation.Type) row[db.conversation.type_];
         encryption = (Encryption) row[db.conversation.encryption];
         int? read_up_to = row[db.conversation.read_up_to];
         if (read_up_to != null) this.read_up_to = db.get_message_by_id(read_up_to);
@@ -80,6 +84,9 @@ public class Conversation : Object {
         if (read_up_to != null) {
             insert.value(db.conversation.read_up_to, read_up_to.id);
         }
+        if (nickname != null) {
+            insert.value(db.conversation.resource, nickname);
+        }
         if (counterpart.is_full()) {
             insert.value(db.conversation.resource, counterpart.resourcepart);
         }
@@ -95,10 +102,10 @@ public class Conversation : Object {
     }
 
     public NotifySetting get_notification_default_setting(StreamInteractor stream_interactor) {
-        Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(account);
+        Xmpp.XmppStream? stream = stream_interactor.get_stream(account);
         if (!Application.get_default().settings.notifications) return NotifySetting.OFF;
         if (type_ == Type.GROUPCHAT) {
-            bool members_only = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY).has_room_feature(counterpart.bare_jid.to_string(), Xmpp.Xep.Muc.Feature.MEMBERS_ONLY);
+            bool members_only = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY).has_room_feature(counterpart.bare_jid, Xmpp.Xep.Muc.Feature.MEMBERS_ONLY);
             return members_only ? NotifySetting.ON : NotifySetting.HIGHLIGHT;
         }
         return NotifySetting.ON;
@@ -141,6 +148,8 @@ public class Conversation : Object {
                     update.set_null(db.conversation.read_up_to);
                 }
                 break;
+            case "nickname":
+                update.set(db.conversation.resource, nickname); break;
             case "active":
                 update.set(db.conversation.active, active); break;
             case "last-active":

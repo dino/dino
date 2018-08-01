@@ -2,23 +2,58 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-10 17:55+0200\n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2017-11-17 20:52+0000\n"
+"Last-Translator: Nathan Follens <nathan@email.is>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-omemo/"
+"nl/>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.18-dev\n"
 
-#: src/account_settings_widget.vala:35 src/account_settings_widget.vala:52
-#: src/account_settings_widget.vala:55
+#: plugins/omemo/src/account_settings_widget.vala:42
+#: plugins/omemo/src/account_settings_widget.vala:45
+#: plugins/omemo/data/account_settings_dialog.ui:19
 msgid "Own fingerprint"
 msgstr "Eigen vingerafdruk"
 
-#: src/account_settings_widget.vala:35
+#: plugins/omemo/src/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
-msgstr "Wordt bij eerste contact gegenereerd"
+msgstr "Wordt bij eerste verbinding gegenereerd"
 
-#: src/account_settings_widget.vala:55
-msgid "Database error"
-msgstr "Database fout"
+#: plugins/omemo/src/contact_details_provider.vala:31
+msgid "Encryption"
+msgstr "Versleuteling"
+
+#: plugins/omemo/src/contact_details_provider.vala:31
+#, c-format
+msgid "%d OMEMO device"
+msgid_plural "%d OMEMO devices"
+msgstr[0] "%d OMEMO-apparaat"
+msgstr[1] "%d OMEMO-apparaten"
+
+#: plugins/omemo/src/account_settings_dialog.vala:35
+#, c-format
+msgid "Unknown device (0x%.8x)"
+msgstr "Onbekend apparaat (0x%.8x)"
+
+#: plugins/omemo/data/account_settings_dialog.ui:5
+msgid "OMEMO Keys"
+msgstr "OMEMO-sleutels"
+
+#: plugins/omemo/data/account_settings_dialog.ui:88
+msgid "Other devices"
+msgstr "Andere apparaten"
+
+#: plugins/omemo/data/account_settings_dialog.ui:112
+msgid "- None -"
+msgstr "- Geen -"
+
+#~ msgid "OMEMO"
+#~ msgstr "OMEMO"
+
+#~ msgid "Database error"
+#~ msgstr "Databasefout"

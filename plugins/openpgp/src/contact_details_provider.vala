@@ -18,13 +18,16 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
             string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart);
             if (key_id != null) {
                 Label label = new Label("") { use_markup=true, justify=Justification.RIGHT, selectable=true, visible=true };
-                Gee.List<GPG.Key> keys = GPGHelper.get_keylist(key_id);
-                if (keys.size > 0) {
+                Gee.List<GPG.Key>? keys = null;
+                try {
+                    keys = GPGHelper.get_keylist(key_id);
+                } catch (Error e) { }
+                if (keys != null && keys.size > 0) {
                     label.label = markup_colorize_id(keys[0].fpr, true);
                 } else {
                     label.label = _("Key not in keychain") + "\n" + markup_colorize_id(key_id, false);
                 }
-                contact_details.add(_("Encryption"), _("OpenPGP"), "", label);
+                contact_details.add(_("Encryption"), "OpenPGP", "", label);
             }
         }
     }

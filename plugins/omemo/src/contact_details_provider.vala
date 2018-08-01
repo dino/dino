@@ -28,7 +28,7 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
             }
             if (i > 0) {
                 Label label = new Label(res) { use_markup=true, justify=Justification.RIGHT, selectable=true, visible=true };
-                contact_details.add(_("Encryption"), _("OMEMO"), n("%d OMEMO device", "%d OMEMO devices", i).printf(i), label);
+                contact_details.add(_("Encryption"), "OMEMO", n("%d OMEMO device", "%d OMEMO devices", i).printf(i), label);
             }
         }
     }

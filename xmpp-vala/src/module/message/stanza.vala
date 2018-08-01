@@ -1,10 +1,8 @@
 using Gee;
 
-using Xmpp.Core;
+namespace Xmpp {
 
-namespace Xmpp.Message {
-
-public class Stanza : Xmpp.Stanza {
+public class MessageStanza : Xmpp.Stanza {
     public const string NODE_BODY = "body";
     public const string NODE_SUBJECT = "subject";
     public const string NODE_THREAD = "thread";
@@ -40,12 +38,12 @@ public class Stanza : Xmpp.Stanza {
         set { base.type_ = value; }
     }
 
-    public Stanza(string? id = null) {
+    public MessageStanza(string? id = null) {
         base.outgoing(new StanzaNode.build("message"));
         stanza.set_attribute(ATTRIBUTE_ID, id ?? random_uuid());
     }
 
-    public Stanza.from_stanza(StanzaNode stanza_node, string my_jid) {
+    public MessageStanza.from_stanza(StanzaNode stanza_node, Jid my_jid) {
         base.incoming(stanza_node, my_jid);
     }
 

@@ -26,7 +26,7 @@ public class Loader : Object {
         this.search_paths = app.search_path_generator.get_plugin_paths();
     }
 
-    public void loadAll() {
+    public void loadAll() throws Error {
         if (Module.supported() == false) {
             throw new Error(-1, 0, "Plugins are not supported");
         }

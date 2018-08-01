@@ -1,5 +1,5 @@
 using Xmpp;
-using Xmpp.Core;
+using Xmpp;
 using Xmpp.Xep;
 
 namespace Dino.Plugins.HttpFiles {
@@ -8,22 +8,30 @@ private const string NS_URI = "urn:xmpp:http:upload";
 private const string NS_URI_0 = "urn:xmpp:http:upload:0";
 
 public class UploadStreamModule : XmppStreamModule {
-    public static Core.ModuleIdentity<UploadStreamModule> IDENTITY = new Core.ModuleIdentity<UploadStreamModule>(NS_URI, "0363_http_file_upload");
+    public static Xmpp.ModuleIdentity<UploadStreamModule> IDENTITY = new Xmpp.ModuleIdentity<UploadStreamModule>(NS_URI, "0363_http_file_upload");
 
     public signal void feature_available(XmppStream stream, long max_file_size);
+    public signal void received_url(XmppStream stream, MessageStanza message);
 
     public delegate void OnUploadOk(XmppStream stream, string url_down);
     public delegate void OnError(XmppStream stream, string error);
-    public void upload(XmppStream stream, string file_uri, owned OnUploadOk listener, owned OnError error_listener) {
-        File file = File.new_for_path(file_uri);
-        FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-        request_slot(stream, file.get_basename(), (int)file_info.get_size(), file_info.get_content_type(),
-            (stream, url_down, url_up) => {
-                uint8[] data;
-                FileUtils.get_data(file_uri, out data);
+    public void upload(XmppStream stream, InputStream input_stream, string file_name, string file_content_type, owned OnUploadOk listener, owned OnError error_listener) {
+        uint8[] buf = new uint8[256];
+        Array<uint8> data = new Array<uint8>(false, true, 0);
+        size_t len = -1;
+        do {
+            try {
+                len = input_stream.read(buf);
+            } catch (IOError error) {
+                error_listener(stream, @"HTTP upload: IOError reading stream: $(error.message)");
+            }
+            data.append_vals(buf, (uint) len);
+        } while(len > 0);
 
+        request_slot(stream, file_name, (int) data.length, file_content_type,
+            (stream, url_down, url_up) => {
                 Soup.Message message = new Soup.Message("PUT", url_up);
-                message.set_request(file_info.get_content_type(), Soup.MemoryUse.COPY, data);
+                message.set_request(file_content_type, Soup.MemoryUse.COPY, data.data);
                 Soup.Session session = new Soup.Session();
                 session.send_async.begin(message, null, (obj, res) => {
                     try {
@@ -38,7 +46,7 @@ public class UploadStreamModule : XmppStreamModule {
                     }
                 });
             },
-            error_listener);
+            (stream, error) => error_listener(stream, error));
     }
 
     private delegate void OnSlotOk(XmppStream stream, string url_get, string url_put);
@@ -109,7 +117,7 @@ public class UploadStreamModule : XmppStreamModule {
         });
     }
 
-    private bool check_ns_in_info(XmppStream stream, string jid, Xep.ServiceDiscovery.InfoResult info_result) {
+    private bool check_ns_in_info(XmppStream stream, Jid jid, Xep.ServiceDiscovery.InfoResult info_result) {
         bool ver_available = false;
         bool ver_0_available = false;
         foreach (string feature in info_result.features) {
@@ -152,14 +160,30 @@ public class UploadStreamModule : XmppStreamModule {
     }
 }
 
+public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
+
+    private const string[] after_actions_const = {"EXTRACT_MESSAGE_2"};
+
+    public override string action_group { get { return "EXTRACT_MESSAGE_2"; } }
+    public override string[] after_actions { get { return after_actions_const; } }
+
+    public override async bool run(XmppStream stream, MessageStanza message) {
+        string? oob_url = OutOfBandData.get_url_from_message(message);
+        if (oob_url != null && oob_url == message.body) {
+            stream.get_module(UploadStreamModule.IDENTITY).received_url(stream, message);
+        }
+        return true;
+    }
+}
+
 public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "service_discovery");
 
-    public string file_store_jid;
+    public Jid file_store_jid;
     public string ns_ver;
     public int? max_file_size;
 
-    public Flag(string file_store_jid, string ns_ver) {
+    public Flag(Jid file_store_jid, string ns_ver) {
         this.file_store_jid = file_store_jid;
         this.ns_ver = ns_ver;
     }

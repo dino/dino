@@ -21,10 +21,15 @@ public class UnifiedWindow : Window {
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
+    private Application app;
 
     public UnifiedWindow(Application application, StreamInteractor stream_interactor) {
-        Object(application : application, default_width : 1200, default_height : 700);
+        Object(application : application);
         this.stream_interactor = stream_interactor;
+        this.app = application;
+
+        restore_window_size();
+
 
         this.get_style_context().add_class("dino-main");
         setup_headerbar();
@@ -40,12 +45,8 @@ public class UnifiedWindow : Window {
 
         stream_interactor.account_added.connect((account) => { check_stack(true); });
         stream_interactor.account_removed.connect((account) => { check_stack(); });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect( (conversation) => {
-            Idle.add( () => { check_stack(); return false; });
-        });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect( (conversation) => {
-            Idle.add( () => { check_stack(); return false; });
-        });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(() => check_stack());
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => check_stack());
         accounts_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("accounts", null); });
         conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
         conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });
@@ -74,8 +75,8 @@ public class UnifiedWindow : Window {
         filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
 
         Grid grid = new Grid() { orientation=Orientation.VERTICAL, visible=true };
+        grid.get_style_context().add_class("dino-conversation");
         grid.add(conversation_frame);
-        grid.add(new Separator(Orientation.HORIZONTAL) { visible=true });
         grid.add(chat_input);
 
         paned.set_position(300);
@@ -124,6 +125,30 @@ public class UnifiedWindow : Window {
         }
     }
 
+    private void restore_window_size() {
+        default_width = app.settings.current_width;
+        default_height = app.settings.current_height;
+        if (app.settings.is_maximized) this.maximize();
+        if (app.settings.position_x != -1 && app.settings.position_y != -1) {
+            move(app.settings.position_x, app.settings.position_y);
+        }
+
+        delete_event.connect(() => {
+            int x, y;
+            get_position(out x, out y);
+            app.settings.position_x = x;
+            app.settings.position_y = y;
+
+            int width, height;
+            get_size(out width, out height);
+            app.settings.current_width = width;
+            app.settings.current_height = height;
+
+            app.settings.is_maximized = is_maximized;
+            return false;
+        });
+    }
+
     private bool on_focus_in_event() {
         stream_interactor.get_module(ChatInteraction.IDENTITY).on_window_focus_in(conversation);
         urgency_hint = false;
@@ -138,7 +163,7 @@ public class UnifiedWindow : Window {
 
 public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
     public NoAccountsPlaceholder() {
-        label.label = _("No accounts active");
+        label.label = _("No active accounts");
         primary_button.label = _("Manage accounts");
         secondary_button.visible = false;
     }
@@ -146,14 +171,14 @@ public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
 
 public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
     public NoConversationsPlaceholder() {
-        label.label = _("No conversation active");
-        primary_button.label = _("Start Chat");
-        secondary_button.label = _("Join Conference");
+        label.label = _("No active conversations");
+        primary_button.label = _("Start Conversation");
+        secondary_button.label = _("Join Channel");
         secondary_button.visible = true;
     }
 }
 
-[GtkTemplate (ui = "/im/dino/unified_window_placeholder.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
 public class UnifiedWindowPlaceholder : Box {
     [GtkChild] public Label label;
     [GtkChild] public Button primary_button;

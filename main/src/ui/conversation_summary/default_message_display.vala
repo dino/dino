@@ -1,4 +1,5 @@
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Ui.ConversationSummary {
 
@@ -44,9 +45,12 @@ public class MetaMessageItem : Plugins.MetaConversationItem {
     public override bool requires_avatar { get; set; default=true; }
     public override bool requires_header { get; set; default=true; }
 
-    public override Object get_widget(Plugins.WidgetType widget_type) {
+    public override Object? get_widget(Plugins.WidgetType widget_type) {
         MessageTextView text_view = new MessageTextView() { visible = true };
         text_view.add_text(message.body);
+        if (conversation.type_ == Conversation.Type.GROUPCHAT)  {
+            text_view.highlight_word(conversation.nickname);
+        }
         return text_view;
     }
 }

@@ -1,29 +1,34 @@
 using Gee;
 
-using Xmpp.Core;
 
-namespace Xmpp.Message {
+
+namespace Xmpp {
     private const string NS_URI = "jabber:client";
 
-    public class Module : XmppStreamModule {
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "message_module");
+    public class MessageModule : XmppStreamModule {
+        public static ModuleIdentity<MessageModule> IDENTITY = new ModuleIdentity<MessageModule>(NS_URI, "message_module");
 
-        public signal void pre_send_message(XmppStream stream, Message.Stanza message);
-        public signal void pre_received_message(XmppStream stream, Message.Stanza message);
-        public signal void received_message(XmppStream stream, Message.Stanza message);
+        public StanzaListenerHolder<MessageStanza> received_pipeline = new StanzaListenerHolder<MessageStanza>();
+        public StanzaListenerHolder<MessageStanza> send_pipeline = new StanzaListenerHolder<MessageStanza>();
 
-        public void send_message(XmppStream stream, Message.Stanza message) {
-            pre_send_message(stream, message);
-            stream.write(message.stanza);
+        public signal void received_message(XmppStream stream, MessageStanza message);
+
+        public void send_message(XmppStream stream, MessageStanza message) {
+            send_pipeline.run.begin(stream, message, (obj, res) => {
+                stream.write(message.stanza);
+            });
         }
 
-        public void received_message_stanza(XmppStream stream, StanzaNode node) {
-            Message.Stanza message = new Message.Stanza.from_stanza(node, stream.get_flag(Bind.Flag.IDENTITY).my_jid);
-            do {
-                message.rerun_parsing = false;
-                pre_received_message(stream, message);
-            } while(message.rerun_parsing);
-            received_message(stream, message);
+        public async void received_message_stanza_async(XmppStream stream, StanzaNode node) {
+            MessageStanza message = new MessageStanza.from_stanza(node, stream.get_flag(Bind.Flag.IDENTITY).my_jid);
+            if (!message.is_error()) {
+                yield received_pipeline.run(stream, message);
+                received_message(stream, message);
+            }
+        }
+
+        private void received_message_stanza(XmppStream stream, StanzaNode node) {
+            received_message_stanza_async.begin(stream, node);
         }
 
         public override void attach(XmppStream stream) {

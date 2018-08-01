@@ -47,7 +47,7 @@
 # Search for the valac executable in the usual system paths
 # Some distributions rename the valac to contain the major.minor in the binary name
 find_package(GObject REQUIRED)
-find_program(VALA_EXECUTABLE NAMES valac valac-0.36 valac-0.34 valac-0.32 valac-0.30)
+find_program(VALA_EXECUTABLE NAMES valac valac-0.38 valac-0.36 valac-0.34 valac-0.32)
 mark_as_advanced(VALA_EXECUTABLE)
 
 # Determine the valac version

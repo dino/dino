@@ -60,12 +60,9 @@ public static string get_conversation_display_name(StreamInteractor stream_inter
 
 public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
     if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
-        if (jid.resourcepart == account.resourcepart) {
-            return account.alias; // FIXME temporary. remove again.
-        }
         return jid.resourcepart;
     } else {
-        if (jid.bare_jid.equals(account.bare_jid.bare_jid)) {
+        if (jid.equals_bare(account.bare_jid)) {
             if (account.alias == null || account.alias == "") {
                 return account.bare_jid.to_string();
             } else {
@@ -73,7 +70,7 @@ public static string get_display_name(StreamInteractor stream_interactor, Jid ji
             }
         }
         Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
-        if (roster_item != null && roster_item.name != null) {
+        if (roster_item != null && roster_item.name != null && roster_item.name != "") {
             return roster_item.name;
         }
         return jid.bare_jid.to_string();
@@ -84,9 +81,24 @@ public static string get_message_display_name(StreamInteractor stream_interactor
     return get_display_name(stream_interactor, message.from, account);
 }
 
-public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0) {
+public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0, int width = 0, int height = 0) {
     if (scale == 0) scale = image.scale_factor;
-    image.set_from_surface(Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window()));
+    Cairo.Surface surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window());
+    if (height == 0 && width != 0) {
+        height = (int) ((double) width / pixbuf.width * pixbuf.height);
+    } else if (height != 0 && width == 0) {
+        width = (int) ((double) height / pixbuf.height * pixbuf.width);
+    }
+    if (width != 0) {
+        Cairo.Surface surface_new = new Cairo.Surface.similar_image(surface, Cairo.Format.ARGB32, width, height);
+        Cairo.Context context = new Cairo.Context(surface_new);
+        context.scale((double) width * scale / pixbuf.width, (double) height * scale / pixbuf.height);
+        context.set_source_surface(surface, 0, 0);
+        context.get_source().set_filter(Cairo.Filter.BEST);
+        context.paint();
+        surface = surface_new;
+    }
+    image.set_from_surface(surface);
 }
 
 private const string force_background_css = "%s { background-color: %s; }";

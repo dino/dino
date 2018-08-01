@@ -22,7 +22,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
             contact_details.add(_("Settings"), _("Send typing notifications"), "", combobox_typing);
 
             ComboBoxText combobox_marker = get_combobox(Dino.Application.get_default().settings.send_marker);
-            contact_details.add(_("Settings"), _("Send message marker"), "", combobox_marker);
+            contact_details.add(_("Settings"), _("Send read receipts"), "", combobox_marker);
             combobox_marker.active_id = get_setting_id(conversation.send_marker);
             combobox_marker.changed.connect(() => { conversation.send_marker = get_setting(combobox_marker.active_id); } );
 

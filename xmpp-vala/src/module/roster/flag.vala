@@ -1,14 +1,12 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Roster {
 
 public class Flag : XmppStreamFlag {
     public const string ID = "roster";
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, ID);
 
-    public HashMap<string, Item> roster_items = new HashMap<string, Item>();
+    public HashMap<Jid, Item> roster_items = new HashMap<Jid, Item>();
 
     public string? iq_id;
 
@@ -16,7 +14,7 @@ public class Flag : XmppStreamFlag {
         return roster_items.values;
     }
 
-    public Item? get_item(string jid) {
+    public Item? get_item(Jid jid) {
         return roster_items[jid];
     }
 

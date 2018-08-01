@@ -39,14 +39,14 @@ public class UpdateBuilder : StatementBuilder {
         return this;
     }
 
-    public UpdateBuilder set_null<T>(Column<T> column) throws DatabaseError {
-        if (column.not_null) throw new DatabaseError.ILLEGAL_QUERY(@"Can't set non-null column $(column.name) to null");
+    public UpdateBuilder set_null<T>(Column<T> column) {
+        if (column.not_null) error("Can't set non-null column %s to null", column.name);
         fields += new NullField<T>(column);
         return this;
     }
 
-    public UpdateBuilder where(string selection, string[] selection_args = {}) throws DatabaseError {
-        if (this.selection != "1") throw new DatabaseError.ILLEGAL_QUERY("selection was already done, but where() was called.");
+    public UpdateBuilder where(string selection, string[] selection_args = {}) {
+        if (this.selection != "1") error("selection was already done, but where() was called.");
         this.selection = selection;
         foreach (string arg in selection_args) {
             this.selection_args += new StatementBuilder.StringField(arg);
@@ -70,7 +70,7 @@ public class UpdateBuilder : StatementBuilder {
         return this;
     }
 
-    internal override Statement prepare() throws DatabaseError {
+    internal override Statement prepare() {
         string sql = "UPDATE";
         if (or_val != null) sql += @" OR $((!)or_val)";
         sql += @" $table_name SET ";
@@ -91,10 +91,10 @@ public class UpdateBuilder : StatementBuilder {
         return stmt;
     }
 
-    public void perform() throws DatabaseError {
+    public void perform() {
         if (fields.length == 0) return;
         if (prepare().step() != DONE) {
-            throw new DatabaseError.EXEC_ERROR(@"SQLite error: $(db.errcode()) - $(db.errmsg())");
+            error("SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
     }
 

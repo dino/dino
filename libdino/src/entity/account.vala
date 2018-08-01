@@ -1,4 +1,5 @@
 using Gee;
+using Xmpp;
 
 namespace Dino.Entities {
 

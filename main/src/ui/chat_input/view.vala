@@ -7,12 +7,8 @@ using Xmpp;
 
 namespace Dino.Ui.ChatInput {
 
-[GtkTemplate (ui = "/im/dino/chat_input.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/chat_input.ui")]
 public class View : Box {
-
-    [GtkChild] private ScrolledWindow scrolled;
-    [GtkChild] private TextView text_input;
-    [GtkChild] private Box box;
 
     public string text {
         owned get { return text_input.buffer.text; }
@@ -23,23 +19,57 @@ public class View : Box {
     private Conversation? conversation;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
     private int vscrollbar_min_height;
+
     private OccupantsTabCompletor occupants_tab_completor;
     private SmileyConverter smiley_converter;
     private EditHistory edit_history;
-    private EncryptionButton encryption_widget = new EncryptionButton() { yalign=0, visible=true };
+
+    [GtkChild] private Frame frame;
+    [GtkChild] private ScrolledWindow scrolled;
+    [GtkChild] private TextView text_input;
+    [GtkChild] private Box outer_box;
+    [GtkChild] private Button file_button;
+    [GtkChild] private Separator file_separator;
+    private EncryptionButton encryption_widget = new EncryptionButton() { margin_top=3, valign=Align.START, visible=true };
 
     public View(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
+
         occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
         smiley_converter = new SmileyConverter(stream_interactor, text_input);
         edit_history = new EditHistory(text_input, GLib.Application.get_default());
 
-        box.add(encryption_widget);
-        encryption_widget.get_style_context().add_class("dino-chatinput-button");
+        file_button.clicked.connect(() => {
+            PreviewFileChooserNative chooser = new PreviewFileChooserNative("Select file", get_toplevel() as Gtk.Window, FileChooserAction.OPEN, "Select", "Cancel");
+
+            //        long max_file_size = stream_interactor.get_module(Manager.IDENTITY).get_max_file_size(conversation.account);
+            //        if (max_file_size != -1) {
+            //            FileFilter filter = new FileFilter();
+            //            filter.add_custom(FileFilterFlags.URI, (filter_info) => {
+            //                File file = File.new_for_uri(filter_info.uri);
+            //                FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+            //                return file_info.get_size() <= max_file_size;
+            //            });
+            //            chooser.set_filter(filter);
+            //        }
+            if (chooser.run() == Gtk.ResponseType.ACCEPT) {
+                string uri = chooser.get_filename();
+                stream_interactor.get_module(FileManager.IDENTITY).send_file(uri, conversation);
+            }
+        });
+
         scrolled.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
+
+        encryption_widget.get_style_context().add_class("dino-chatinput-button");
+        outer_box.add(encryption_widget);
+
         text_input.key_press_event.connect(on_text_input_key_press);
         text_input.buffer.changed.connect(on_text_input_changed);
+
+        Util.force_css(frame, "* { border-radius: 3px; }");
+
+        stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(on_upload_available);
     }
 
     public void initialize_for_conversation(Conversation conversation) {
@@ -49,6 +79,10 @@ public class View : Box {
 
         if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
         this.conversation = conversation;
+
+        bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
+        file_button.visible = upload_available;
+        file_separator.visible = upload_available;
 
         text_input.buffer.changed.disconnect(on_text_input_changed);
         text_input.buffer.text = "";
@@ -76,12 +110,16 @@ public class View : Box {
                 case "/kick":
                     stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, token[1]);
                     return;
+                case "/affiliate":
+                    string[] user_role = token[1].split(" ", 2);
+                    stream_interactor.get_module(MucManager.IDENTITY).change_affiliation(conversation.account, conversation.counterpart, user_role[0].strip(), user_role[1].strip());
+                    return;
                 case "/nick":
                     stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
                     return;
                 case "/ping":
-                    Xmpp.Core.XmppStream? stream = stream_interactor.get_stream(conversation.account);
-                    stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.to_string() + "/" + token[1], null);
+                    Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                    stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.with_resource(token[1]), null);
                     return;
                 case "/topic":
                     stream_interactor.get_module(MucManager.IDENTITY).change_subject(conversation.account, conversation.counterpart, token[1]);
@@ -101,7 +139,7 @@ public class View : Box {
                     break;
             }
         }
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(text, conversation);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
     }
 
     private bool on_text_input_key_press(EventKey event) {
@@ -129,6 +167,13 @@ public class View : Box {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
         } else {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation);
+        }
+    }
+
+    private void on_upload_available(Account account) {
+        if (conversation != null && conversation.account.equals(account)) {
+            file_button.visible = true;
+            file_separator.visible = true;
         }
     }
 }

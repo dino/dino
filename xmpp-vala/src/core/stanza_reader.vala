@@ -1,18 +1,18 @@
 using Gee;
 
-namespace Xmpp.Core {
+namespace Xmpp {
 
 public const string XMLNS_URI = "http://www.w3.org/2000/xmlns/";
 public const string XML_URI = "http://www.w3.org/XML/1998/namespace";
 public const string JABBER_URI = "jabber:client";
 
 public errordomain XmlError {
-    XML_ERROR,
     NS_DICT_ERROR,
     UNSUPPORTED,
     EOF,
     BAD_XML,
-    IO_ERROR
+    IO,
+    TLS
 }
 
 public class StanzaReader {
@@ -44,30 +44,31 @@ public class StanzaReader {
         cancellable.cancel();
     }
 
-    private void update_buffer() throws XmlError {
+    private async void update_buffer() throws XmlError {
         try {
             InputStream? input = this.input;
             if (input == null) throw new XmlError.EOF("No input stream specified and end of buffer reached.");
             if (cancellable.is_cancelled()) throw new XmlError.EOF("Input stream is canceled.");
-            buffer_fill = (int) ((!)input).read(buffer, cancellable);
+            buffer_fill = (int) yield ((!)input).read_async(buffer, GLib.Priority.DEFAULT, cancellable);
             if (buffer_fill == 0) throw new XmlError.EOF("End of input stream reached.");
             buffer_pos = 0;
+        } catch (TlsError e) {
+            throw new XmlError.TLS("TlsError: %s".printf(e.message));
         } catch (GLib.IOError e) {
-            throw new XmlError.IO_ERROR("IOError in GLib: %s".printf(e.message));
-        } catch (GLib.TlsError e) {
-            throw new XmlError.IO_ERROR("TlsError in GLib: %s".printf(e.message));
+            throw new XmlError.IO("GLib.IOError: %s".printf(e.message));
         }
     }
 
-    private char read_single() throws XmlError {
+    private async char read_single() throws XmlError {
         if (buffer_pos >= buffer_fill) {
-            update_buffer();
+            yield update_buffer();
         }
-        return (char) buffer[buffer_pos++];
+        char c = (char) buffer[buffer_pos++];
+        return c;
     }
 
-    private char peek_single() throws XmlError {
-        var res = read_single();
+    private async char peek_single() throws XmlError {
+        var res = yield read_single();
         buffer_pos--;
         return res;
     }
@@ -80,53 +81,53 @@ public class StanzaReader {
         buffer_pos++;
     }
 
-    private void skip_until_non_ws() throws XmlError {
-        while (is_ws(peek_single())) {
+    private async void skip_until_non_ws() throws XmlError {
+        while (is_ws(yield peek_single())) {
             skip_single();
         }
     }
 
-    private string read_until_ws() throws XmlError {
+    private async string read_until_ws() throws XmlError {
         var res = new StringBuilder();
-        var what = peek_single();
+        var what = yield peek_single();
         while (!is_ws(what)) {
-            res.append_c(read_single());
-            what = peek_single();
+            res.append_c(yield read_single());
+            what = yield peek_single();
         }
         return res.str;
     }
 
-    private string read_until_char_or_ws(char x, char y = 0) throws XmlError {
+    private async string read_until_char_or_ws(char x, char y = 0) throws XmlError {
         var res = new StringBuilder();
-        var what = peek_single();
+        var what = yield peek_single();
         while (what != x && what != y && !is_ws(what)) {
-            res.append_c(read_single());
-            what = peek_single();
+            res.append_c(yield read_single());
+            what = yield peek_single();
         }
         return res.str;
     }
 
-    private string read_until_char(char x) throws XmlError {
+    private async string read_until_char(char x) throws XmlError {
         var res = new StringBuilder();
-        var what = peek_single();
+        var what = yield peek_single();
         while (what != x) {
-            res.append_c(read_single());
-            what = peek_single();
+            res.append_c(yield read_single());
+            what = yield peek_single();
         }
         return res.str;
     }
 
-    private StanzaAttribute read_attribute() throws XmlError {
+    private async StanzaAttribute read_attribute() throws XmlError {
         var res = new StanzaAttribute();
-        res.name = read_until_char_or_ws('=');
-        if (read_single() == '=') {
-            var quot = peek_single();
+        res.name = yield read_until_char_or_ws('=');
+        if ((yield read_single()) == '=') {
+            var quot = yield peek_single();
             if (quot == '\'' || quot == '"') {
                 skip_single();
-                res.encoded_val = read_until_char(quot);
+                res.encoded_val = yield read_until_char(quot);
                 skip_single();
             } else {
-                res.encoded_val = read_until_ws();
+                res.encoded_val = yield read_until_ws();
             }
         }
         return res;
@@ -163,17 +164,17 @@ public class StanzaReader {
         }
     }
 
-    public StanzaNode read_node_start() throws XmlError {
+    public async StanzaNode read_node_start() throws XmlError {
         var res = new StanzaNode();
         res.attributes = new ArrayList<StanzaAttribute>();
         var eof = false;
-        if (peek_single() == '<') skip_single();
-        if (peek_single() == '?') res.pseudo = true;
-        if (peek_single() == '/') {
+        if ((yield peek_single()) == '<') skip_single();
+        if ((yield peek_single()) == '?') res.pseudo = true;
+        if ((yield peek_single()) == '/') {
             eof = true;
             skip_single();
-            res.name = read_until_char_or_ws('>');
-            while (peek_single() != '>') {
+            res.name = yield read_until_char_or_ws('>');
+            while ((yield peek_single()) != '>') {
                 skip_single();
             }
             skip_single();
@@ -182,13 +183,15 @@ public class StanzaReader {
             handle_stanza_ns(res);
             return res;
         }
-        res.name = read_until_char_or_ws('>', '/');
-        skip_until_non_ws();
-        while (peek_single() != '/' && peek_single() != '>' && peek_single() != '?') {
-            res.attributes.add(read_attribute());
-            skip_until_non_ws();
+        res.name = yield read_until_char_or_ws('>', '/');
+        yield skip_until_non_ws();
+        char next_char = yield peek_single();
+        while (next_char != '/' && next_char != '>' && next_char != '?') {
+            res.attributes.add(yield read_attribute());
+            yield skip_until_non_ws();
+            next_char = yield peek_single();
         }
-        if (read_single() == '/' || res.pseudo) {
+        if ((yield read_single()) == '/' || res.pseudo) {
             res.has_nodes = false;
             skip_single();
         } else {
@@ -198,20 +201,20 @@ public class StanzaReader {
         return res;
     }
 
-    public StanzaNode read_text_node() throws XmlError {
+    public async StanzaNode read_text_node() throws XmlError {
         var res = new StanzaNode();
         res.name = "#text";
         res.ns_uri = ns_state.current_ns_uri;
-        res.encoded_val = read_until_char('<').strip();
+        res.encoded_val = (yield read_until_char('<')).strip();
         return res;
     }
 
-    public StanzaNode read_root_node() throws XmlError {
-        skip_until_non_ws();
-        if (peek_single() == '<') {
-            var res = read_node_start();
+    public async StanzaNode read_root_node() throws XmlError {
+        yield skip_until_non_ws();
+        if ((yield peek_single()) == '<') {
+            var res = yield read_node_start();
             if (res.pseudo) {
-                return read_root_node();
+                return yield read_root_node();
             }
             return res;
         } else {
@@ -219,18 +222,18 @@ public class StanzaReader {
         }
     }
 
-    public StanzaNode read_stanza_node() throws XmlError {
+    public async StanzaNode read_stanza_node() throws XmlError {
         ns_state = ns_state.push();
-        var res = read_node_start();
+        var res = yield read_node_start();
         if (res.has_nodes) {
             bool finishNodeSeen = false;
             do {
-                skip_until_non_ws();
-                if (peek_single() == '<') {
+                yield skip_until_non_ws();
+                if ((yield peek_single()) == '<') {
                     skip_single();
-                    if (peek_single() == '/') {
+                    if ((yield peek_single()) == '/') {
                         skip_single();
-                        string desc = read_until_char('>');
+                        string desc = yield read_until_char('>');
                         skip_single();
                         if (desc.contains(":")) {
                             var split = desc.split(":");
@@ -242,10 +245,10 @@ public class StanzaReader {
                         }
                         finishNodeSeen = true;
                     } else {
-                        res.sub_nodes.add(read_stanza_node());
+                        res.sub_nodes.add(yield read_stanza_node());
                     }
                 } else {
-                    res.sub_nodes.add(read_text_node());
+                    res.sub_nodes.add(yield read_text_node());
                 }
             } while (!finishNodeSeen);
             if (res.sub_nodes.size == 0) res.has_nodes = false;
@@ -254,12 +257,12 @@ public class StanzaReader {
         return res;
     }
 
-    public StanzaNode read_node() throws XmlError {
-        skip_until_non_ws();
-        if (peek_single() == '<') {
-            return read_stanza_node();
+    public async StanzaNode read_node() throws XmlError {
+        yield skip_until_non_ws();
+        if ((yield peek_single()) == '<') {
+            return yield read_stanza_node();
         } else {
-            return read_text_node();
+            return yield read_text_node();
         }
     }
 }

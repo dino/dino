@@ -1,6 +1,7 @@
 using Qlite;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Plugins.OpenPgp {
 

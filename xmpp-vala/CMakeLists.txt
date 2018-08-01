@@ -8,6 +8,8 @@ find_packages(ENGINE_PACKAGES REQUIRED
 
 vala_precompile(ENGINE_VALA_C
 SOURCES
+    "src/glib_fixes.vapi"
+
     "src/core/namespace_state.vala"
     "src/core/stanza_attribute.vala"
     "src/core/stanza_node.vala"
@@ -19,6 +21,7 @@ SOURCES
     "src/module/bind.vala"
     "src/module/iq/module.vala"
     "src/module/iq/stanza.vala"
+    "src/module/jid.vala"
     "src/module/message/module.vala"
     "src/module/message/stanza.vala"
     "src/module/presence/flag.vala"
@@ -51,10 +54,12 @@ SOURCES
     "src/module/xep/0049_private_xml_storage.vala"
     "src/module/xep/0054_vcard/module.vala"
     "src/module/xep/0060_pubsub.vala"
+    "src/module/xep/0066_out_of_band_data.vala"
     "src/module/xep/0082_date_time_profiles.vala"
     "src/module/xep/0084_user_avatars.vala"
     "src/module/xep/0085_chat_state_notifications.vala"
     "src/module/xep/0115_entitiy_capabilities.vala"
+    "src/module/xep/0191_blocking_command.vala"
     "src/module/xep/0198_stream_management.vala"
     "src/module/xep/0199_ping.vala"
     "src/module/xep/0184_message_delivery_receipts.vala"
@@ -63,6 +68,7 @@ SOURCES
     "src/module/xep/0313_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/0368_srv_records_tls.vala"
+    "src/module/xep/0380_explicit_encryption.vala"
     "src/module/xep/pixbuf_storage.vala"
 PACKAGES
     ${ENGINE_PACKAGES}

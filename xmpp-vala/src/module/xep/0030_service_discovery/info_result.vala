@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.ServiceDiscovery {
 
 public class InfoResult {
@@ -41,7 +39,6 @@ public class InfoResult {
 
     public InfoResult(Iq.Stanza iq_request) {
         iq = new Iq.Stanza.result(iq_request);
-        iq.to = iq_request.from;
         iq.stanza.put_node(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
     }
 

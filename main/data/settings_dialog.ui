@@ -31,7 +31,7 @@
                         </child>
                         <child>
                             <object class="GtkCheckButton" id="marker_checkbutton">
-                                <property name="label" translatable="yes">Send message marker</property>
+                                <property name="label" translatable="yes">Send read receipts</property>
                                 <property name="visible">True</property>
                             </object>
                             <packing>

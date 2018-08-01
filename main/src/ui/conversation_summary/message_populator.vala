@@ -10,6 +10,7 @@ public class MessagePopulator : Object {
     private StreamInteractor? stream_interactor;
     private Conversation? current_conversation;
     private Plugins.ConversationItemCollection? item_collection;
+    private HashMap<Plugins.MetaConversationItem, Message> meta_message = new HashMap<Plugins.MetaConversationItem, Message>();
 
     public MessagePopulator(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -19,12 +20,8 @@ public class MessagePopulator : Object {
         app.plugin_registry.register_message_display(new SlashmeMessageDisplay(stream_interactor));
 
 
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
-            Idle.add(() => { handle_message(message, conversation); return false; });
-        });
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
-            Idle.add(() => { handle_message(message, conversation); return false; });
-        });
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(handle_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_message);
     }
 
     public void init(Conversation conversation, Plugins.ConversationItemCollection item_collection) {
@@ -34,8 +31,17 @@ public class MessagePopulator : Object {
 
     public void close(Conversation conversation) { }
 
-    public void populate_number(Conversation conversation, DateTime from, int n) {
-        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_before(conversation, from, n);
+    public void populate_latest(Conversation conversation, int n) {
+        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation, n);
+        if (messages != null) {
+            foreach (Entities.Message message in messages) {
+                handle_message(message, conversation);
+            }
+        }
+    }
+
+    public void populate_before(Conversation conversation, Plugins.MetaConversationItem item, int n) {
+        Gee.List<Entities.Message>? messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_before_message(conversation, meta_message[item], n);
         if (messages != null) {
             foreach (Entities.Message message in messages) {
                 handle_message(message, conversation);
@@ -57,10 +63,16 @@ public class MessagePopulator : Object {
         }
         Plugins.MetaConversationItem? meta_item = best_provider.get_item(message, conversation);
         if (meta_item == null) return;
+        meta_message[meta_item] = message;
 
         meta_item.mark = message.marked;
+        WeakRef weak_meta_item = WeakRef(meta_item);
+        WeakRef weak_message = WeakRef(message);
         message.notify["marked"].connect(() => {
-            meta_item.mark = message.marked;
+            Plugins.MetaConversationItem? mi = weak_meta_item.get() as Plugins.MetaConversationItem;
+            Message? m = weak_message.get() as Message;
+            if (mi == null || m == null) return;
+            mi.mark = m.marked;
         });
         item_collection.insert_item(meta_item);
     }

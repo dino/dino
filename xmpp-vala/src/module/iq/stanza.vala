@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Iq {
 
 public class Stanza : Xmpp.Stanza {
@@ -23,6 +21,7 @@ public class Stanza : Xmpp.Stanza {
 
     public Stanza.result(Stanza request, StanzaNode? stanza_node = null) {
         this(request.id);
+        this.to = request.from;
         this.type_ = TYPE_RESULT;
         if (stanza_node != null) {
             stanza.put_node(stanza_node);
@@ -43,7 +42,7 @@ public class Stanza : Xmpp.Stanza {
             stanza.put_node(associated_child);
         }
     }
-    public Stanza.from_stanza(StanzaNode stanza_node, string? my_jid) {
+    public Stanza.from_stanza(StanzaNode stanza_node, Jid? my_jid) {
         base.incoming(stanza_node, my_jid);
     }
 }

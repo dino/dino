@@ -12,12 +12,13 @@ find_packages(MAIN_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
+    icons/dino-changes-prevent-symbolic.svg
     icons/dino-double-tick-symbolic.svg
     icons/dino-status-away.svg
     icons/dino-status-chat.svg
     icons/dino-status-dnd.svg
     icons/dino-status-online.svg
-    icons/dino-symbolic.svg
+    icons/im.dino.Dino-symbolic.svg
     icons/dino-tick-symbolic.svg
 
     add_conversation/add_contact_dialog.ui
@@ -32,7 +33,6 @@ set(RESOURCE_LIST
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
     conversation_summary/image_toolbar.ui
-    conversation_summary/message_item.ui
     conversation_summary/view.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
@@ -55,7 +55,7 @@ compile_gresources(
     TARGET ${CMAKE_CURRENT_BINARY_DIR}/resources/resources.c
     TYPE EMBED_C
     RESOURCES ${RESOURCE_LIST}
-    PREFIX /im/dino
+    PREFIX /im/dino/Dino
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
 )
 
@@ -72,22 +72,23 @@ SOURCES
     src/main.vala
 
     src/ui/application.vala
-    src/ui/add_conversation/chat/add_contact_dialog.vala
-    src/ui/add_conversation/chat/roster_list.vala
-    src/ui/add_conversation/chat/dialog.vala
-    src/ui/add_conversation/conference/add_groupchat_dialog.vala
-    src/ui/add_conversation/conference/conference_details_fragment.vala
-    src/ui/add_conversation/conference/conference_list.vala
-    src/ui/add_conversation/conference/dialog.vala
-    src/ui/add_conversation/accounts_combo_box.vala
+    src/ui/add_conversation/add_conference_dialog.vala
+    src/ui/add_conversation/add_contact_dialog.vala
+    src/ui/add_conversation/add_groupchat_dialog.vala
+    src/ui/add_conversation/conference_details_fragment.vala
+    src/ui/add_conversation/conference_list.vala
     src/ui/add_conversation/list_row.vala
+    src/ui/add_conversation/roster_list.vala
+    src/ui/add_conversation/select_contact_dialog.vala
     src/ui/add_conversation/select_jid_fragment.vala
     src/ui/avatar_generator.vala
+    src/ui/avatar_image.vala
     src/ui/chat_input/edit_history.vala
     src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
+    src/ui/contact_details/blocking_provider.vala
     src/ui/contact_details/settings_provider.vala
     src/ui/contact_details/dialog.vala
     src/ui/contact_details/muc_config_form_provider.vala
@@ -101,12 +102,15 @@ SOURCES
     src/ui/conversation_summary/chat_state_populator.vala
     src/ui/conversation_summary/conversation_item_skeleton.vala
     src/ui/conversation_summary/conversation_view.vala
+    src/ui/conversation_summary/date_separator_populator.vala
+    src/ui/conversation_summary/default_file_display.vala
     src/ui/conversation_summary/default_message_display.vala
     src/ui/conversation_summary/file_populator.vala
     src/ui/conversation_summary/image_display.vala
     src/ui/conversation_summary/message_populator.vala
     src/ui/conversation_summary/message_textview.vala
     src/ui/conversation_summary/slashme_message_display.vala
+    src/ui/conversation_summary/subscription_notification.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
     src/ui/conversation_titlebar/view.vala
@@ -119,8 +123,10 @@ SOURCES
     src/ui/occupant_menu/view.vala
     src/ui/settings_dialog.vala
     src/ui/unified_window.vala
+    src/ui/util/accounts_combo_box.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
+    src/ui/util/preview_file_chooser_native.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
@@ -144,16 +150,18 @@ if(WIN32)
 endif(WIN32)
 
 install(TARGETS dino ${TARGET_INSTALL})
-install(FILES data/im.dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
-install(FILES data/im.dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
-install(FILES data/icons/dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
-install(FILES data/icons/dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
+install(FILES data/im.dino.Dino.appdata.xml DESTINATION ${APPDATA_FILE_INSTALL_DIR})
+install(FILES data/im.dino.Dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
+install(FILES data/im.dino.Dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
+install(FILES data/icons/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
+install(FILES data/icons/im.dino.Dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
 install(FILES
     data/icons/dino-status-away.svg
     data/icons/dino-status-chat.svg
     data/icons/dino-status-dnd.svg
     data/icons/dino-status-online.svg
 
+    data/icons/dino-changes-prevent-symbolic.svg
     data/icons/dino-double-tick-symbolic.svg
     data/icons/dino-tick-symbolic.svg
 DESTINATION

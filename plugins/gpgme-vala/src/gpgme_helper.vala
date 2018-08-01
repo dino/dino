@@ -19,6 +19,21 @@ public static string encrypt_armor(string plain, Key[] keys, EncryptFlags flags)
     }
 }
 
+public static uint8[] encrypt_file(string uri, Key[] keys, EncryptFlags flags, string file_name) throws GLib.Error {
+    global_mutex.lock();
+    try {
+        initialize();
+        Data plain_data = Data.create_from_file(uri);
+        plain_data.set_file_name(file_name);
+        Context context = Context.create();
+        context.set_armor(true);
+        Data enc_data = context.op_encrypt(keys, flags, plain_data);
+        return get_uint8_from_data(enc_data);
+    } finally {
+        global_mutex.unlock();
+    }
+}
+
 public static string decrypt(string encr) throws GLib.Error {
     global_mutex.lock();
     try {
@@ -27,6 +42,25 @@ public static string decrypt(string encr) throws GLib.Error {
         Context context = Context.create();
         Data dec_data = context.op_decrypt(enc_data);
         return get_string_from_data(dec_data);
+    } finally {
+        global_mutex.unlock();
+    }
+}
+
+public class DecryptedData {
+    public uint8[] data { get; set; }
+    public string filename { get; set; }
+}
+
+public static DecryptedData decrypt_data(uint8[] data) throws GLib.Error {
+    global_mutex.lock();
+    try {
+        initialize();
+        Data enc_data = Data.create_from_memory(data, false);
+        Context context = Context.create();
+        Data dec_data = context.op_decrypt(enc_data);
+        DecryptResult* dec_res = context.op_decrypt_result();
+        return new DecryptedData() { data=get_uint8_from_data(dec_data), filename=dec_res->file_name};
     } finally {
         global_mutex.unlock();
     }
@@ -123,6 +157,20 @@ private static string get_string_from_data(Data data) {
         }
     } while (len > 0);
     return res;
+}
+
+private static uint8[] get_uint8_from_data(Data data) {
+    data.seek(0);
+    uint8[] buf = new uint8[256];
+    ssize_t? len = null;
+    Array<uint8> res = new Array<uint8>(false, true, 0);
+    do {
+        len = data.read(buf);
+        if (len > 0) {
+            res.append_vals(buf, (int)len);
+        }
+    } while (len > 0);
+    return res.data;
 }
 
 private static void initialize() {

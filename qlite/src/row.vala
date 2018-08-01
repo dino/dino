@@ -56,12 +56,12 @@ public class RowIterator {
     private Database db;
     private Statement stmt;
 
-    public RowIterator.from_query_builder(Database db, QueryBuilder query) throws DatabaseError {
+    public RowIterator.from_query_builder(Database db, QueryBuilder query) {
         this.db = db;
         this.stmt = query.prepare();
     }
 
-    public RowIterator(Database db, string sql, string[]? args = null) throws DatabaseError {
+    public RowIterator(Database db, string sql, string[]? args = null) {
         this.db = db;
         this.stmt = db.prepare(sql);
         if (args != null) {

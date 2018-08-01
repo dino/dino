@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Xep.Bookmarks {
 private const string NS_URI = "storage:bookmarks";
 
@@ -10,12 +8,16 @@ public class Module : XmppStreamModule {
 
     public signal void received_conferences(XmppStream stream, Gee.List<Conference> conferences);
 
-    public delegate void OnResult(XmppStream stream, Gee.List<Conference> conferences);
+    public delegate void OnResult(XmppStream stream, Gee.List<Conference>? conferences);
     public void get_conferences(XmppStream stream, owned OnResult listener) {
         StanzaNode get_node = new StanzaNode.build("storage", NS_URI).add_self_xmlns();
         stream.get_module(PrivateXmlStorage.Module.IDENTITY).retrieve(stream, get_node, (stream, node) => {
-            Gee.List<Conference> conferences = get_conferences_from_stanza(node);
-            listener(stream, conferences);
+            if (node == null) {
+                listener(stream, null);
+            } else {
+                Gee.List<Conference> conferences = get_conferences_from_stanza(node);
+                listener(stream, conferences);
+            }
         });
     }
 
@@ -39,7 +41,7 @@ public class Module : XmppStreamModule {
     public void replace_conference(XmppStream stream, Conference orig_conference, Conference modified_conference) {
         get_conferences(stream, (stream, conferences) => {
             foreach (Conference conference in conferences) {
-                if (conference.autojoin == orig_conference.autojoin && conference.jid == orig_conference.jid &&
+                if (conference.autojoin == orig_conference.autojoin && conference.jid.equals(orig_conference.jid) &&
                         conference.name == orig_conference.name && conference.nick == orig_conference.nick) {
                     conference.autojoin = modified_conference.autojoin;
                     conference.jid = modified_conference.jid;
@@ -56,7 +58,7 @@ public class Module : XmppStreamModule {
         get_conferences(stream, (stream, conferences) => {
             Conference? rem = null;
             foreach (Conference conference in conferences) {
-                if (conference.name == conference_remove.name && conference.jid == conference_remove.jid && conference.autojoin == conference_remove.autojoin) {
+                if (conference.name == conference_remove.name && conference.jid.equals(conference_remove.jid) && conference.autojoin == conference_remove.autojoin) {
                     rem = conference;
                     break;
                 }

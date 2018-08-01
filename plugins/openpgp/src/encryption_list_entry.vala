@@ -1,6 +1,7 @@
 using Gee;
 
 using Dino.Entities;
+using Xmpp;
 
 namespace Dino.Plugins.OpenPgp {
 
@@ -23,7 +24,9 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
     public bool can_encrypt(Entities.Conversation conversation) {
         if (conversation.type_ == Conversation.Type.CHAT) {
             string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart);
-            return key_id != null && GPGHelper.get_keylist(key_id).size > 0;
+            try {
+                return key_id != null && GPGHelper.get_keylist(key_id).size > 0;
+            } catch (Error e) { return false; }
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             Gee.List<Jid> muc_jids = new Gee.ArrayList<Jid>();
             Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);

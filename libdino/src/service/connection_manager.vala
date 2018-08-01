@@ -7,7 +7,7 @@ namespace Dino {
 
 public class ConnectionManager {
 
-    public signal void stream_opened(Account account, Core.XmppStream stream);
+    public signal void stream_opened(Account account, XmppStream stream);
     public signal void connection_state_changed(Account account, ConnectionState state);
     public signal void connection_error(Account account, ConnectionError error);
 
@@ -17,14 +17,12 @@ public class ConnectionManager {
         DISCONNECTED
     }
 
-    private ArrayList<Account> connection_todo = new ArrayList<Account>(Account.equals_func);
+    private HashSet<Account> connection_todo = new HashSet<Account>(Account.hash_func, Account.equals_func);
     private HashMap<Account, Connection> connections = new HashMap<Account, Connection>(Account.hash_func, Account.equals_func);
     private HashMap<Account, ConnectionError> connection_errors = new HashMap<Account, ConnectionError>(Account.hash_func, Account.equals_func);
-    private HashMap<Account, RecMutexWrap> connection_mutexes = new HashMap<Account, RecMutexWrap>(Account.hash_func, Account.equals_func);
 
-    private NetworkManager? network_manager;
+    private NetworkMonitor? network_monitor;
     private Login1Manager? login1;
-    private NetworkManagerDBusProperties? dbus_properties;
     private ModuleManager module_manager;
     public string? log_options;
 
@@ -33,12 +31,20 @@ public class ConnectionManager {
         public enum Source {
             CONNECTION,
             SASL,
+            TLS,
             STREAM_ERROR
+        }
+
+        public enum Reconnect {
+            NOW,
+            LATER,
+            NEVER
         }
 
         public Source source;
         public string? identifier;
-        public StreamError.Flag? flag;
+        public Reconnect reconnect_recomendation { get; set; default=Reconnect.NOW; }
+        public bool resource_rejected = false;
 
         public ConnectionError(Source source, string? identifier) {
             this.source = source;
@@ -47,47 +53,31 @@ public class ConnectionManager {
     }
 
     private class Connection {
-        public Core.XmppStream stream { get; set; }
+        public XmppStream stream { get; set; }
         public ConnectionState connection_state { get; set; default = ConnectionState.DISCONNECTED; }
         public DateTime established { get; set; }
         public DateTime last_activity { get; set; }
-        public class Connection(Core.XmppStream stream, DateTime established) {
+        public class Connection(XmppStream stream, DateTime established) {
             this.stream = stream;
             this.established = established;
         }
     }
 
-    private class RecMutexWrap {
-        public RecMutex mutex = new RecMutex();
-        public void lock() { mutex.lock(); }
-        public void unlock() { mutex.unlock(); }
-        public bool trylock() { return mutex.trylock(); }
-    }
-
     public ConnectionManager(ModuleManager module_manager) {
         this.module_manager = module_manager;
-        network_manager = get_network_manager();
-        if (network_manager != null) {
-            network_manager.StateChanged.connect(on_nm_state_changed);
+        network_monitor = GLib.NetworkMonitor.get_default();
+        if (network_monitor != null) {
+            network_monitor.network_changed.connect(on_network_changed);
+            network_monitor.notify["connectivity"].connect(on_network_changed);
         }
         login1 = get_login1();
         if (login1 != null) {
             login1.PrepareForSleep.connect(on_prepare_for_sleep);
         }
-        dbus_properties = get_dbus_properties();
-        if (dbus_properties != null) {
-            dbus_properties.properties_changed.connect((s, sv, sa) => {
-                foreach (string key in sv.get_keys()) {
-                    if (key == "PrimaryConnection") {
-                        print("primary connection changed\n");
-                        check_reconnects();
-                    }
-                }
-            });
-        }
         Timeout.add_seconds(60, () => {
             foreach (Account account in connection_todo) {
-                if (connections[account].last_activity.compare(new DateTime.now_utc().add_minutes(-1)) < 0) {
+                if (connections[account].last_activity != null &&
+                        connections[account].last_activity.compare(new DateTime.now_utc().add_minutes(-1)) < 0) {
                     check_reconnect(account);
                 }
             }
@@ -95,7 +85,7 @@ public class ConnectionManager {
         });
     }
 
-    public Core.XmppStream? get_stream(Account account) {
+    public XmppStream? get_stream(Account account) {
         if (get_state(account) == ConnectionState.CONNECTED) {
             return connections[account].stream;
         }
@@ -116,12 +106,11 @@ public class ConnectionManager {
         return null;
     }
 
-    public ArrayList<Account> get_managed_accounts() {
+    public Collection<Account> get_managed_accounts() {
         return connection_todo;
     }
 
-    public Core.XmppStream? connect(Account account) {
-        if (!connection_mutexes.contains(account)) connection_mutexes[account] = new RecMutexWrap();
+    public XmppStream? connect(Account account) {
         if (!connection_todo.contains(account)) connection_todo.add(account);
         if (!connections.has_key(account)) {
             return connect_(account);
@@ -131,29 +120,41 @@ public class ConnectionManager {
         return null;
     }
 
-    public void disconnect(Account account) {
-        change_connection_state(account, ConnectionState.DISCONNECTED);
-        connection_todo.remove(account);
-        if (connections.has_key(account)) {
-            try {
-                connections[account].stream.disconnect();
-                connections.unset(account);
-            } catch (Error e) { }
+    public void make_offline_all() {
+        foreach (Account account in connection_todo) {
+            make_offline(account);
         }
     }
 
-    private Core.XmppStream? connect_(Account account, string? resource = null) {
-        if (!connection_mutexes[account].trylock()) return null;
+    private void make_offline(Account account) {
+        Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
+        presence.type_ = Xmpp.Presence.Stanza.TYPE_UNAVAILABLE;
+        change_connection_state(account, ConnectionState.DISCONNECTED);
+        connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
+    }
 
+    public void disconnect(Account account) {
+        make_offline(account);
+        try {
+            connections[account].stream.disconnect();
+        } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
+        connection_todo.remove(account);
+        if (connections.has_key(account)) {
+            connections.unset(account);
+        }
+    }
+
+    private XmppStream? connect_(Account account, string? resource = null) {
         if (connections.has_key(account)) connections[account].stream.detach_modules();
         connection_errors.unset(account);
         if (resource == null) resource = account.resourcepart;
 
-        Core.XmppStream stream = new Core.XmppStream();
-        foreach (Core.XmppStreamModule module in module_manager.get_modules(account, resource)) {
+        XmppStream stream = new XmppStream();
+        foreach (XmppStreamModule module in module_manager.get_modules(account, resource)) {
             stream.add_module(module);
         }
-        stream.log = new Core.XmppLog(account.bare_jid.to_string(), log_options);
+        stream.log = new XmppLog(account.bare_jid.to_string(), log_options);
+        print("[%s] New connection with resource %s: %p\n".printf(account.bare_jid.to_string(), resource, stream));
 
         Connection connection = new Connection(stream, new DateTime.now_utc());
         connections[account] = connection;
@@ -162,66 +163,63 @@ public class ConnectionManager {
             change_connection_state(account, ConnectionState.CONNECTED);
         });
         stream.get_module(PlainSasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
-            set_connection_error(account, ConnectionError.Source.SASL, null);
+            set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, null));
             change_connection_state(account, ConnectionState.DISCONNECTED);
         });
         stream.received_node.connect(() => {
             connections[account].last_activity = new DateTime.now_utc();
         });
-        new Thread<void*> (null, () => {
-            try {
-                stream.connect(account.domainpart);
-            } catch (Error e) {
-                stderr.printf("Stream Error: %s\n", e.message);
-                change_connection_state(account, ConnectionState.DISCONNECTED);
-                if (!connection_todo.contains(account)) {
-                    connections.unset(account);
-                    return null;
-                }
-                StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
-                if (flag != null) {
-                    set_connection_error(account, ConnectionError.Source.STREAM_ERROR, flag.error_type);
-                }
-                interpret_connection_error(account);
-            }
-            connection_mutexes[account].unlock();
-            return null;
-        });
+        connect_async.begin(account, stream);
         stream_opened(account, stream);
 
-        connection_mutexes[account].unlock();
         return stream;
     }
 
-    private void interpret_connection_error(Account account) {
-        ConnectionError? error = connection_errors[account];
-        int wait_sec = 5;
-        if (error == null) {
-            wait_sec = 3;
-        } else if (error.source == ConnectionError.Source.STREAM_ERROR && error.flag != null) {
-            if (error.flag.resource_rejected) {
-                connect_(account, account.resourcepart + "-" + random_uuid());
+    private async void connect_async(Account account, XmppStream stream) {
+        try {
+            yield stream.connect(account.domainpart);
+        } catch (Error e) {
+            print(@"[$(account.bare_jid)] Error: $(e.message)\n");
+            change_connection_state(account, ConnectionState.DISCONNECTED);
+            if (!connection_todo.contains(account)) {
                 return;
             }
-            switch (error.flag.reconnection_recomendation) {
-                case StreamError.Flag.Reconnect.NOW:
-                    wait_sec = 5; break;
-                case StreamError.Flag.Reconnect.LATER:
-                    wait_sec = 60; break;
-                case StreamError.Flag.Reconnect.NEVER:
-                    return;
+            if (e is IOStreamError.TLS) {
+                set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, e.message) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
+                return;
             }
-        } else if (error.source == ConnectionError.Source.SASL) {
-            return;
+            StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
+            if (flag != null) {
+                set_connection_error(account, new ConnectionError(ConnectionError.Source.STREAM_ERROR, flag.error_type) { resource_rejected=flag.resource_rejected });
+            }
+
+            ConnectionError? error = connection_errors[account];
+            int wait_sec = 5;
+            if (error == null) {
+                wait_sec = 3;
+            } else if (error.source == ConnectionError.Source.STREAM_ERROR) {
+                print(@"[$(account.bare_jid)] Stream Error: $(error.identifier)\n");
+                if (error.resource_rejected) {
+                    connect_(account, account.resourcepart + "-" + random_uuid());
+                    return;
+                }
+                switch (error.reconnect_recomendation) {
+                    case ConnectionError.Reconnect.NOW:
+                        wait_sec = 5; break;
+                    case ConnectionError.Reconnect.LATER:
+                        wait_sec = 60; break;
+                    case ConnectionError.Reconnect.NEVER:
+                        return;
+                }
+            } else if (error.source == ConnectionError.Source.SASL) {
+                return;
+            }
+            print(@"[$(account.bare_jid)] Check reconnect in $wait_sec sec\n");
+            Timeout.add_seconds(wait_sec, () => {
+                check_reconnect(account);
+                return false;
+            });
         }
-        if (network_manager != null && network_manager.State != NetworkManager.CONNECTED_GLOBAL) {
-            wait_sec = 30;
-        }
-        print(@"recovering in $wait_sec\n");
-        Timeout.add_seconds(wait_sec, () => {
-            check_reconnect(account);
-            return false;
-        });
     }
 
     private void check_reconnects() {
@@ -231,11 +229,11 @@ public class ConnectionManager {
     }
 
     private void check_reconnect(Account account) {
-        if (!connection_mutexes[account].trylock()) return;
         bool acked = false;
 
-        Core.XmppStream stream = connections[account].stream;
-        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.domainpart, (stream) => {
+        XmppStream stream = connections[account].stream;
+        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.bare_jid.domain_jid, () => {
+            if (connections[account].stream != stream) return;
             acked = true;
             change_connection_state(account, ConnectionState.CONNECTED);
         });
@@ -249,16 +247,26 @@ public class ConnectionManager {
                 connections[account].stream.disconnect();
             } catch (Error e) { }
             connect_(account);
-            connection_mutexes[account].unlock();
             return false;
         });
     }
 
-    private void on_nm_state_changed(uint32 state) {
-        print("nm " + state.to_string() + "\n");
-        if (state == NetworkManager.CONNECTED_GLOBAL) {
+    private bool network_is_online() {
+        /* FIXME: We should also check for connectivity eventually. For more
+         * details on why we don't do it for now, see:
+         *
+         * - https://github.com/dino/dino/pull/236#pullrequestreview-86851793
+         * - https://bugzilla.gnome.org/show_bug.cgi?id=792240
+         */
+        return network_monitor != null && network_monitor.network_available;
+    }
+
+    private void on_network_changed() {
+        if (network_is_online()) {
+            print("Network reported online\n");
             check_reconnects();
         } else {
+            print("Network reported offline\n");
             foreach (Account account in connection_todo) {
                 change_connection_state(account, ConnectionState.DISCONNECTED);
             }
@@ -270,17 +278,15 @@ public class ConnectionManager {
             change_connection_state(account, ConnectionState.DISCONNECTED);
         }
         if (suspend) {
-            print("suspend\n");
+            print("Device suspended\n");
             foreach (Account account in connection_todo) {
-                Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
-                presence.type_ = Xmpp.Presence.Stanza.TYPE_UNAVAILABLE;
                 try {
-                    connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
+                    make_offline(account);
                     connections[account].stream.disconnect();
                 } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
             }
         } else {
-            print("un-suspend\n");
+            print("Device un-suspend\n");
             check_reconnects();
         }
     }
@@ -292,8 +298,7 @@ public class ConnectionManager {
         }
     }
 
-    private void set_connection_error(Account account, ConnectionError.Source source, string? id) {
-        ConnectionError error = new ConnectionError(source, id);
+    private void set_connection_error(Account account, ConnectionError error) {
         connection_errors[account] = error;
         connection_error(account, error);
     }

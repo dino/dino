@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiAddConversationChatAddContactDialog">
-        <property name="default_width">300</property>
+    <template class="DinoUiAddContactDialog">
+        <property name="valign">center</property>
         <property name="modal">True</property>
         <child type="titlebar">
             <object class="GtkHeaderBar">
+                <property name="title" translatable="yes">Add Contact</property>
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkButton" id="cancel_button">
@@ -119,20 +120,6 @@
                             <packing>
                                 <property name="left_attach">1</property>
                                 <property name="top_attach">2</property>
-                                <property name="width">1</property>
-                                <property name="height">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkCheckButton" id="subscribe_checkbutton">
-                                <property name="active">True</property>
-                                <property name="label" translatable="yes">Request presence updates</property>
-                                <property name="xalign">0</property>
-                                <property name="visible">True</property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">3</property>
                                 <property name="width">1</property>
                                 <property name="height">1</property>
                             </packing>

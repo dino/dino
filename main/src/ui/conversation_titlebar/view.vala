@@ -34,12 +34,9 @@ public class ConversationTitlebar : Gtk.HeaderBar {
 
 
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
-            Idle.add(() => {
-                if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                    update_subtitle(subject);
-                }
-                return false;
-            });
+            if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
+                update_subtitle(subject);
+            }
         });
     }
 

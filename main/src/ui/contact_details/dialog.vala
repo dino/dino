@@ -7,10 +7,10 @@ using Dino.Entities;
 
 namespace Dino.Ui.ContactDetails {
 
-[GtkTemplate (ui = "/im/dino/contact_details_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/contact_details_dialog.ui")]
 public class Dialog : Gtk.Dialog {
 
-    [GtkChild] public Image avatar;
+    [GtkChild] public AvatarImage avatar;
     [GtkChild] public Util.EntryLabelHybrid name_hybrid;
     [GtkChild] public Label name_label;
     [GtkChild] public Label jid_label;
@@ -42,6 +42,7 @@ public class Dialog : Gtk.Dialog {
 
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_contact_details_entry(new SettingsProvider(stream_interactor));
+        app.plugin_registry.register_contact_details_entry(new BlockingProvider(stream_interactor));
         app.plugin_registry.register_contact_details_entry(new MucConfigFormProvider(stream_interactor));
 
         foreach (Plugins.ContactDetailsProvider provider in app.plugin_registry.contact_details_entries) {
@@ -56,7 +57,7 @@ public class Dialog : Gtk.Dialog {
     private void setup_top() {
         if (conversation.type_ == Conversation.Type.CHAT) {
             name_label.visible = false;
-            jid_label.set_padding(new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1, 0);
+            jid_label.margin_start = new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1;
             name_hybrid.text = Util.get_conversation_display_name(stream_interactor, conversation);
             destroy.connect(() => {
                 if (name_hybrid.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
@@ -69,7 +70,7 @@ public class Dialog : Gtk.Dialog {
         }
         jid_label.label = conversation.counterpart.to_string();
         account_label.label = "via " + conversation.account.bare_jid.to_string();
-        Util.image_set_from_scaled_pixbuf(avatar, (new AvatarGenerator(50, 50, avatar.scale_factor)).draw_conversation(stream_interactor, conversation));
+        avatar.set_jid(stream_interactor, conversation.counterpart, conversation.account);
     }
 
     private void add_entry(string category, string label, string? description, Object wo) {
@@ -78,7 +79,7 @@ public class Dialog : Gtk.Dialog {
         add_category(category);
 
         ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
-        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_left=15, margin_right=15, margin_top=3, margin_bottom=3, visible=true };
+        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3, visible=true };
         list_row.add(row);
         Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, visible=true };
         if (description != null && description != "") {
@@ -110,13 +111,10 @@ public class Dialog : Gtk.Dialog {
         row.add(widget);
         categories[category].add(list_row);
 
-        Idle.add(() => {
-            int pref_height, pref_width;
-            get_content_area().get_preferred_height(null, out pref_height);
-            get_preferred_width(out pref_width, null);
-            resize(pref_width, int.min(500, pref_height));
-            return false;
-        });
+        int pref_height, pref_width;
+        get_content_area().get_preferred_height(null, out pref_height);
+        get_preferred_width(out pref_width, null);
+        resize(pref_width, int.min(500, pref_height));
     }
 
     private void add_category(string category) {

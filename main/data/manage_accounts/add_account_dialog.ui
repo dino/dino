@@ -8,7 +8,7 @@
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkButton" id="cancel_button">
-                        <property name="label">Cancel</property>
+                        <property name="label" translatable="yes">Cancel</property>
                         <property name="visible">True</property>
                     </object>
                     <packing>

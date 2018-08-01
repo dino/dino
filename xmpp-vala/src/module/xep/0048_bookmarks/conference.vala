@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Xep.Bookmarks {
 
 public class Conference : Object {
@@ -16,14 +14,15 @@ public class Conference : Object {
     public bool autojoin {
         get {
             string? attr = stanza_node.get_attribute(ATTRIBUTE_AUTOJOIN);
-            return attr == "true" || attr == "1"; // "1" isn't standard, but it's used
+            return attr == "true" || attr == "1";
         }
         set { stanza_node.set_attribute(ATTRIBUTE_AUTOJOIN, value.to_string()); }
     }
 
-    public string jid {
-        get { return stanza_node.get_attribute(ATTRIBUTE_JID); }
-        set { stanza_node.set_attribute(ATTRIBUTE_JID, value); }
+    private Jid jid_;
+    public Jid jid {
+        get { return jid_ ?? (jid_ = Jid.parse(stanza_node.get_attribute(ATTRIBUTE_JID))); }
+        set { stanza_node.set_attribute(ATTRIBUTE_JID, value.to_string()); }
     }
 
     public string? name {
@@ -73,7 +72,7 @@ public class Conference : Object {
         }
     }
 
-    public Conference(string jid) {
+    public Conference(Jid jid) {
         this.stanza_node = new StanzaNode.build("conference", NS_URI);
         this.jid = jid;
     }

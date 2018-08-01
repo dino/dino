@@ -1,5 +1,3 @@
-using Xmpp.Core;
-
 namespace Xmpp.Xep.StreamManagement  {
 
 public const string NS_URI = "urn:xmpp:sm:3";

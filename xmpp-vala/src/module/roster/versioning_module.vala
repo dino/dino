@@ -1,7 +1,5 @@
 using Gee;
 
-using Xmpp.Core;
-
 namespace Xmpp.Roster {
 
 public class VersioningModule : XmppStreamModule {
