@@ -2,205 +2,198 @@
 <interface>
     <template class="DinoPluginsOmemoContactDetailsDialog">
         <property name="modal">True</property>
-        <property name="title" translatable="yes">OMEMO Keys</property>
+        <property name="title">OMEMO Key Management</property>
         <property name="resizable">False</property>
         <child internal-child="vbox">
             <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="margin-left">40</property>
-                <property name="margin-right">40</property>
-                <child>
-                    <object class="GtkBox" id="own_fingerprint_label">
-                        <property name="margin-top">12</property>
-                        <property name="orientation">horizontal</property>
-                        <property name="visible">False</property>
-                        <child>
-                            <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Own fingerprint</property>
-                                <property name="xalign">0</property>
-                                <property name="yalign">1</property>
-                                <property name="hexpand">True</property>
-                                <property name="margin-bottom">2</property>
-                                <attributes>
-                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                </attributes>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkFrame" id="own_fingerprint_container">
-                        <property name="visible">False</property>
-                        <property name="margin-bottom">18</property>
-                        <child>
-                            <object class="GtkScrolledWindow">
-                                <property name="hscrollbar_policy">never</property>
-                                <property name="vscrollbar_policy">automatic</property>
-                                <property name="visible">True</property>
-                                <property name="propagate_natural_height">True</property>
-                                <child>
-                                    <object class="GtkGrid" id="own_fingerprint">
-                                        <property name="visible">True</property>
-                                        <property name="vexpand">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkBox">
-                        <property name="margin-top">12</property>
-                        <property name="orientation">horizontal</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="halign">start</property>
-                                <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">Enable Key Management</property>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkSwitch" id="key_mgmnt">
-                                <property name="visible">True</property>
-                                <property name="halign">end</property>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkBox" id="fingerprints_prompt_label">
-                        <property name="margin-top">12</property>
-                        <property name="orientation">horizontal</property>
-                        <property name="visible">False</property>
-                        <child>
-                            <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="halign">start</property>
-                                <property name="valign">center</property>
-                                <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">New Devices</property>
-                                <property name="margin-bottom">2</property>
-                                <attributes>
-                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                </attributes>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkFrame" id="fingerprints_prompt_container">
-                        <property name="visible">False</property>
-                        <property name="margin-bottom">18</property>
-                        <child>
-                            <object class="GtkScrolledWindow">
-                                <property name="hscrollbar_policy">never</property>
-                                <property name="vscrollbar_policy">automatic</property>
-                                <property name="visible">True</property>
-                                <property name="propagate_natural_height">True</property>
-                                <child>
-                                    <object class="GtkGrid" id="fingerprints_prompt">
-                                        <property name="visible">True</property>
-                                        <property name="vexpand">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkBox" id="fingerprints_verified_label">
-                        <property name="margin-top">12</property>
-                        <property name="orientation">horizontal</property>
-                        <property name="visible">False</property>
-                        <child>
-                            <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="halign">start</property>
-                                <property name="valign">center</property>
-                                <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">Verified Devices</property>
-                                <property name="margin-bottom">2</property>
-                                <attributes>
-                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                </attributes>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkFrame" id="fingerprints_verified_container">
-                        <property name="visible">False</property>
-                        <property name="margin-bottom">18</property>
-                        <child>
-                            <object class="GtkScrolledWindow">
-                                <property name="hscrollbar_policy">never</property>
-                                <property name="vscrollbar_policy">automatic</property>
-                                <property name="visible">True</property>
-                                <property name="propagate_natural_height">True</property>
-                                <child>
-                                    <object class="GtkGrid" id="fingerprints_verified">
-                                        <property name="visible">True</property>
-                                        <property name="vexpand">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkBox">
-                        <property name="margin-top">12</property>
-                        <property name="orientation">horizontal</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="halign">start</property>
-                                <property name="valign">center</property>
-                                <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">Devices</property>
-                                <property name="margin-bottom">2</property>
-                                <attributes>
-                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                </attributes>
-                            </object>
-                        </child>
-                        <!-- TODO: implement QR code verification !-->
-                        <!--<child>
-                            <object class="GtkButton" id="scan_button">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <style>
-                                    <class name="flat"/>
-                                </style>
-                                <child>
-                                    <object class="GtkImage">
-                                        <property name="icon-name">camera-photo-symbolic</property>
-                                        <property name="icon-size">1</property>
-                                        <property name="visible">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>!-->
-                    </object>
-                </child>
+                <property name="margin">12</property>
+                <property name="spacing">12</property>
                 <child>
                     <object class="GtkFrame">
                         <property name="visible">True</property>
-                        <property name="margin-bottom">18</property>
                         <child>
-                            <object class="GtkScrolledWindow">
-                                <property name="hscrollbar_policy">never</property>
-                                <property name="vscrollbar_policy">automatic</property>
+                            <object class="GtkListBox">
                                 <property name="visible">True</property>
-                                <property name="propagate_natural_height">True</property>
+                                <property name="selection-mode">none</property>
                                 <child>
-                                    <object class="GtkGrid" id="fingerprints">
+                                    <object class="GtkListBoxRow">
                                         <property name="visible">True</property>
-                                        <property name="vexpand">True</property>
+                                        <property name="activatable">False</property>
+                                        <child>
+                                            <object class="GtkBox">
+                                                <property name="visible">True</property>
+                                                <property name="orientation">horizontal</property>
+                                                <property name="margin-start">20</property>
+                                                <property name="margin-end">20</property>
+                                                <property name="margin-top">14</property>
+                                                <property name="margin-bottom">14</property>
+                                                <property name="spacing">40</property>
+                                                <child>
+                                                    <object class="GtkBox">
+                                                        <property name="visible">True</property>
+                                                        <property name="orientation">vertical</property>
+                                                        <property name="hexpand">True</property>
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="visible">True</property>
+                                                                <property name="halign">start</property>
+                                                                <property name="label" translatable="yes">Automatically accept new keys</property>
+                                                                <attributes>
+                                                                    <attribute name="scale" value="1.1"/>
+                                                                </attributes>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="visible">True</property>
+                                                                <property name="max_width_chars">1</property>
+                                                                <property name="expand">True</property>
+                                                                <property name="xalign">0</property>
+                                                                <property name="wrap">True</property>
+                                                                <property name="label" translatable="yes">When this contact adds new encryption keys to their account, automatically accept them.</property>
+                                                                <attributes>
+                                                                    <attribute name="scale" value="0.8"/>
+                                                                </attributes>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkSwitch" id="auto_accept">
+                                                        <property name="visible">True</property>
+                                                        <property name="halign">end</property>
+                                                        <property name="valign">center</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="own_fingerprint_container">
+                        <property name="visible">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">2</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">Own key</property>
+                                <attributes>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                </attributes>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkFrame">
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkListBox">
+                                        <property name="visible">True</property>
+                                        <property name="selection-mode">none</property>
+                                        <child>
+                                            <object class="GtkListBoxRow">
+                                                <property name="visible">True</property>
+                                                <property name="activatable">False</property>
+                                                <property name="hexpand">True</property>
+                                                <child>
+                                                    <object class="GtkBox">
+                                                        <property name="visible">True</property>
+                                                        <property name="margin-start">20</property>
+                                                        <property name="margin-end">20</property>
+                                                        <property name="margin-top">14</property>
+                                                        <property name="margin-bottom">14</property>
+                                                        <property name="orientation">horizontal</property>
+                                                        <property name="hexpand">True</property>
+                                                        <child>
+                                                            <object class="GtkLabel" id="own_fingerprint">
+                                                                <property name="visible">True</property>
+                                                                <property name="halign">start</property>
+                                                                <property name="justify">right</property>
+                                                                <property name="hexpand">True</property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkButton" id="copy">
+                                                                <property name="visible">True</property>
+                                                                <property name="halign">end</property>
+                                                                <child>
+                                                                    <object class="GtkImage">
+                                                                        <property name="visible">True</property>
+                                                                        <property name="icon-size">1</property>
+                                                                        <property name="icon-name">edit-copy-symbolic</property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="new_keys_container">
+                        <property name="visible">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">2</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">New keys</property>
+                                <attributes>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                </attributes>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkFrame">
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkListBox" id="new_keys">
+                                        <property name="visible">True</property>
+                                        <property name="selection-mode">none</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="keys_container">
+                        <property name="visible">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">2</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">Associated keys</property>
+                                <attributes>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                </attributes>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkFrame">
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkListBox" id="keys">
+                                        <property name="visible">True</property>
+                                        <property name="selection-mode">none</property>
                                     </object>
                                 </child>
                             </object>

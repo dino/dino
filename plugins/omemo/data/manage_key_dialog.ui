@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoPluginsOmemoManageKeyDialog">
+        <property name="modal">True</property>
+        <property name="resizable">False</property>
+        <child type="titlebar">
+            <object class="GtkHeaderBar" id="header_bar">
+                <property name="visible">True</property>
+                <property name="title">Manage Key</property>
+                <property name="show_close_button">False</property>
+                <child>
+                    <object class="GtkButton" id="cancel_button">
+                        <property name="label" translatable="yes">Cancel</property>
+                        <property name="sensitive">True</property>
+                        <property name="visible">True</property>
+                    </object>
+                    <packing>
+                        <property name="pack_type">start</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkButton" id="ok_button">
+                        <property name="has_default">True</property>
+                        <property name="can_default">True</property>
+                        <property name="label" translatable="yes">Confirm</property>
+                        <property name="sensitive">False</property>
+                        <property name="visible">True</property>
+                        <style>
+                            <class name="suggested-action"/>
+                        </style>
+                    </object>
+                    <packing>
+                        <property name="pack_type">end</property>
+                    </packing>
+                </child>
+            </object>
+        </child>
+        <child internal-child="vbox">
+            <object class="GtkBox">
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkBox" id="main_screen">
+                        <property name="visible">True</property>
+                        <property name="margin">12</property>
+                        <property name="spacing">12</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                            <object class="GtkLabel" id="main_desc">
+                                <property name="visible">True</property>
+                                <property name="wrap">True</property>
+                                <property name="xalign">0</property>
+                                <property name="max-width-chars">1</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkFrame">
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkListBox" id="main_action_list">
+                                        <property name="visible">True</property>
+                                        <property name="selection-mode">none</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="confirm_screen">
+                        <property name="visible">False</property>
+                        <property name="margin">12</property>
+                        <property name="spacing">12</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                            <object class="GtkImage" id="confirm_image">
+                                <property name="visible">True</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="confirm_title">
+                                <property name="visible">True</property>
+                                <attributes>
+                                    <attribute name="scale" value="1.1"/>
+                                </attributes>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="confirm_desc">
+                                <property name="visible">True</property>
+                                <property name="justify">center</property>
+                                <property name="wrap">True</property>
+                                <property name="max-width-chars">40</property>
+                                <attributes>
+                                    <attribute name="scale" value="0.8"/>
+                                </attributes>
+                                <style>
+                                    <class name="dim-label"/>
+                                </style>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="verify_screen">
+                        <property name="visible">False</property>
+                        <property name="margin">12</property>
+                        <property name="spacing">12</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">Compare the fingerprint, character by character, with the one shown on your contacts device.</property>
+                                <property name="wrap">True</property>
+                                <property name="xalign">0</property>
+                                <property name="max-width-chars">45</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <property name="margin-left">12</property>
+                                <property name="margin-right">12</property>
+                                <property name="spacing">12</property>
+                                <property name="hexpand">False</property>
+                                <property name="halign">center</property>
+                                <child>
+                                    <object class="GtkLabel" id="verify_label">
+                                        <property name="visible">True</property>
+                                        <property name="margin-top">12</property>
+                                        <property name="margin-bottom">12</property>
+                                        <property name="justify">right</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="verify_no">
+                                        <property name="visible">True</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="label">Not Matching</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="verify_yes">
+                                        <property name="visible">True</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="label">Matching</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

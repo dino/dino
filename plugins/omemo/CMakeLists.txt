@@ -13,6 +13,7 @@ find_packages(OMEMO_PACKAGES REQUIRED
 
 set(RESOURCE_LIST
     contact_details_dialog.ui
+    manage_key_dialog.ui
 )
 
 compile_gresources(
@@ -37,6 +38,7 @@ SOURCES
     src/own_notifications.vala
     src/encrypt_state.vala
     src/encryption_list_entry.vala
+    src/manage_key_dialog.vala
     src/manager.vala
     src/message_flag.vala
     src/plugin.vala
