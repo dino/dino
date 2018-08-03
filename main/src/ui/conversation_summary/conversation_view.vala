@@ -161,13 +161,15 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     }
 
     public void filter_insert_item(Plugins.MetaConversationItem item) {
-        print(@"$(meta_items.last().sort_time.compare(item.sort_time))\n");
-        print(@"$(meta_items.first().sort_time.compare(item.sort_time))\n");
-        if (at_current_content && meta_items.last().sort_time.compare(item.sort_time) < 0) {
-            do_insert_item(item);
-        } else if (meta_items.last().sort_time.compare(item.sort_time) > 0 && meta_items.first().sort_time.compare(item.sort_time) < 0) {
-            do_insert_item(item);
+        if (meta_items.size > 0) {
+            bool after_last = meta_items.last().sort_time.compare(item.sort_time) < 0;
+            bool within_range = meta_items.last().sort_time.compare(item.sort_time) > 0 && meta_items.first().sort_time.compare(item.sort_time) < 0;
+            bool accept = within_range || (at_current_content && after_last);
+            if (!accept) {
+                return;
+            }
         }
+        do_insert_item(item);
     }
 
     public void do_insert_item(Plugins.MetaConversationItem item) {
@@ -359,8 +361,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     private static int compare_meta_items(Plugins.MetaConversationItem a, Plugins.MetaConversationItem b) {
         int res = a.sort_time.compare(b.sort_time);
         if (res == 0) {
-            if (a.seccondary_sort_indicator < b.seccondary_sort_indicator) res = -1;
-                    else if (a.seccondary_sort_indicator > b.seccondary_sort_indicator) res = 1;
+            if (a.seccondary_sort_indicator < b.seccondary_sort_indicator) {
+                res = -1;
+            } else if (a.seccondary_sort_indicator > b.seccondary_sort_indicator) {
+                res = 1;
+            }
         }
         return res;
     }
