@@ -98,7 +98,14 @@ public class MucManager : StreamInteractionModule, Object {
 
     public Gee.List<Jid>? get_occupants(Jid jid, Account account) {
         if (is_groupchat(jid, account)) {
-            return stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(jid, account);
+            Gee.List<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
+            Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(jid, account);
+            if (full_jids != null) {
+                ret.add_all(full_jids);
+                // Remove eventual presence from bare jid
+                ret.remove(jid);
+            }
+            return ret;
         }
         return null;
     }
@@ -107,10 +114,7 @@ public class MucManager : StreamInteractionModule, Object {
         Gee.List<Jid>? occupants = get_occupants(jid, account);
         Jid? own_jid = get_own_jid(jid, account);
         if (occupants != null && own_jid != null) {
-            Gee.List<Jid> occupants_ = new ArrayList<Jid>(Jid.equals_func);
-            occupants_.add_all(occupants);
-            occupants_.remove(own_jid);
-            return occupants_;
+            occupants.remove(own_jid);
         }
         return occupants;
     }
@@ -205,6 +209,11 @@ public class MucManager : StreamInteractionModule, Object {
             if (nick != null) return muc_jid.with_resource(nick);
         }
         return null;
+    }
+
+    public bool has_avatar(Jid muc_jid, Account account) {
+        Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(muc_jid, account);
+        return full_jids != null && full_jids.contains(muc_jid);
     }
 
     private Xep.Muc.Flag? get_muc_flag(Account account) {
