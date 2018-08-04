@@ -91,13 +91,13 @@ public class UnifiedWindow : Gtk.Window {
 
     private void reset_search_entry() {
         if (conversation_frame.conversation != null) {
-            switch (conversation_frame.conversation.type_) {
+            switch (conversation.type_) {
                 case Conversation.Type.CHAT:
                 case Conversation.Type.GROUPCHAT_PM:
-                    search_box.search_entry.text = @"with:$(conversation_frame.conversation.counterpart) ";
+                    search_box.search_entry.text = @"with:$(conversation.counterpart) ";
                     break;
                 case Conversation.Type.GROUPCHAT:
-                    search_box.search_entry.text = @"in:$(conversation_frame.conversation.counterpart) ";
+                    search_box.search_entry.text = @"in:$(conversation.counterpart) ";
                     break;
             }
         }
