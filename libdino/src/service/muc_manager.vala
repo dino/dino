@@ -378,9 +378,9 @@ public class MucManager : StreamInteractionModule, Object {
                         m.marked = Message.Marked.RECEIVED;
                     }
                 }
+                // For own messages from other devices (msg is not a duplicate msg)
+                message.marked = Message.Marked.RECEIVED;
             }
-            // For own messages from other devices (msg is not a duplicate msg)
-            message.marked = Message.Marked.RECEIVED;
 
             return false;
         }
