@@ -71,6 +71,7 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
+        stream_interactor.get_module(PresenceManager.IDENTITY).mutual_subscription.connect(on_mutual_subscription);
     }
 
     private class ReceivedMessageListener : MessageListener {
@@ -169,6 +170,13 @@ public class Manager : StreamInteractionModule, Object {
                 }
             }
         }
+    }
+
+    private void on_mutual_subscription(Jid jid, Account account) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if(stream == null) return;
+
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist((!)stream, jid);
     }
 
     private void on_account_added(Account account) {
@@ -341,7 +349,6 @@ public class Manager : StreamInteractionModule, Object {
             if (flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.MEMBERS_ONLY)) {
                 foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
                     if (!trust_manager.is_known_address(conversation.account, jid.bare_jid)) {
-                        module.request_user_devicelist(stream, jid.bare_jid);
                         return false;
                     }
                 }
@@ -349,11 +356,8 @@ public class Manager : StreamInteractionModule, Object {
             } else {
                 return false;
             }
-        } else if (!trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid)) {
-            module.request_user_devicelist(stream, conversation.counterpart.bare_jid);
-            return false;
         }
-        return true;
+        return trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid);
     }
 
     public static void start(StreamInteractor stream_interactor, Database db) {
