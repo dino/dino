@@ -27,9 +27,12 @@ public class AccountSettingWidget : Plugins.AccountSettingsWidget, Box {
         btn.valign = Align.CENTER;
         btn.clicked.connect(() => {
             activated();
-            AccountSettingsDialog dialog = new AccountSettingsDialog(plugin, account);
+            ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, account, account.bare_jid);
             dialog.set_transient_for((Window) get_toplevel());
             dialog.present();
+            dialog.response.connect((response_type) => {
+                plugin.own_notifications.should_hide(account);
+            });
         });
         pack_start(btn, false);
     }

@@ -95,10 +95,12 @@ public class Table {
     public void create_table_at_version(long version) {
         ensure_init();
         string sql = @"CREATE TABLE IF NOT EXISTS $name (";
+        bool first = true;
         for (int i = 0; i < columns.length; i++) {
             Column c = columns[i];
             if (c.min_version <= version && c.max_version >= version) {
-                sql += @"$(i > 0 ? "," : "") $c";
+                sql += @"$(!first ? "," : "") $c";
+                first = false;
             }
         }
         sql += @"$constraints)";
