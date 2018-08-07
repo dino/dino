@@ -11,7 +11,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
 
     public Conversation? conversation { get; private set; }
 
-    [GtkChild] private ScrolledWindow scrolled;
+    [GtkChild] public ScrolledWindow scrolled;
     [GtkChild] private Revealer notification_revealer;
     [GtkChild] private Box notifications;
     [GtkChild] private Box main;
@@ -307,8 +307,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     }
 
     private void on_upper_notify() {
-        if (was_upper == null || scrolled.vadjustment.value >  was_upper - was_page_size - 1 ||
-                scrolled.vadjustment.value >  was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
+        if (was_upper == null || scrolled.vadjustment.value >  was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
             if (at_current_content) {
                 scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size; // scroll down
             }

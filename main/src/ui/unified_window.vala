@@ -18,6 +18,8 @@ public class UnifiedWindow : Gtk.Window {
     private HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
     private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
     private Paned paned;
+    private Revealer goto_end_revealer;
+    private Button goto_end_button;
     private Revealer search_revealer;
     private SearchEntry search_entry;
     private GlobalSearch search_box;
@@ -40,6 +42,13 @@ public class UnifiedWindow : Gtk.Window {
         setup_unified();
         setup_stack();
 
+        var vadjustment = conversation_frame.scrolled.vadjustment;
+        vadjustment.notify["value"].connect(() => {
+            goto_end_revealer.reveal_child = vadjustment.value <  vadjustment.upper - vadjustment.page_size;
+        });
+        goto_end_button.clicked.connect(() => {
+            conversation_frame.initialize_for_conversation(conversation);
+        });
 
         conversation_titlebar.search_button.clicked.connect(() => {
             search_revealer.reveal_child = conversation_titlebar.search_button.active;
@@ -55,11 +64,13 @@ public class UnifiedWindow : Gtk.Window {
         search_box.selected_item.connect((item) => {
             on_conversation_selected(item.conversation, false, false);
             conversation_frame.initialize_around_message(item.conversation, item);
+            close_search();
         });
         event.connect((event) => {
             if (event.type == EventType.BUTTON_PRESS) {
                 int dest_x, dest_y;
                 bool ret = search_box.translate_coordinates(this, 0, 0, out dest_x, out dest_y);
+                print(@"ret $(ret) button-x $(event.button.x_root) !< dest_x $(dest_x)\n");
                 if (ret && event.button.x_root < dest_x) {
                     close_search();
                 }
@@ -132,6 +143,8 @@ public class UnifiedWindow : Gtk.Window {
         chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
         conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
         filterable_conversation_list = ((ConversationSelector.View) builder.get_object("conversation_list")).init(stream_interactor);
+        goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
+        goto_end_button = (Button) builder.get_object("goto_end_button");
         search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
         search_revealer = (Revealer) builder.get_object("search_revealer");
         search_entry = (SearchEntry) builder.get_object("search_entry");
