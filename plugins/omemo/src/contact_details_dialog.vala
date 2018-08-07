@@ -33,6 +33,30 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 .set(plugin.db.identity_meta.trust_level, trust_level).perform();
     }
 
+    private void set_row(int trust, bool now_active, Image img, Label status_lbl, Label lbl, ListBoxRow lbr){
+        switch(trust) {
+            case Database.IdentityMetaTable.TrustLevel.TRUSTED:
+                img.icon_name = "emblem-ok-symbolic";
+                status_lbl.set_markup("<span color='#1A63D9'>Accepted</span>");
+                break;
+            case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
+                img.icon_name = "action-unavailable-symbolic";
+                status_lbl.set_markup("<span color='#D91900'>Rejected</span>");
+                lbl.get_style_context().add_class("dim-label");
+                break;
+            case Database.IdentityMetaTable.TrustLevel.VERIFIED:
+                img.icon_name = "security-high-symbolic";
+                status_lbl.set_markup("<span color='#1A63D9'>Verified</span>");
+                break;
+        }
+
+        if (!now_active) {
+            img.icon_name= "appointment-missed-symbolic";
+            status_lbl.set_markup("<span color='#8b8e8f'>Unused</span>");
+            lbr.activatable = false;
+        }
+    }
+
     private void add_fingerprint(Row device, Database.IdentityMetaTable.TrustLevel trust) {
         keys_container.visible = true;
 
@@ -48,26 +72,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         Label lbl = new Label(res)
             { use_markup=true, justify=Justification.RIGHT, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false };
 
-        switch(trust) {
-            case Database.IdentityMetaTable.TrustLevel.TRUSTED:
-                img.icon_name = "emblem-ok-symbolic";
-                status_lbl.set_markup("<span size='large' color='#1A63D9'>Accepted</span>");
-                break;
-            case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
-                img.icon_name = "action-unavailable-symbolic";
-                status_lbl.set_markup("<span size='large' color='#D91900'>Rejected</span>");
-                lbl.get_style_context().add_class("dim-label");
-                break;
-            case Database.IdentityMetaTable.TrustLevel.VERIFIED:
-                img.icon_name = "security-high-symbolic";
-                status_lbl.set_markup("<span size='large' color='#1A63D9'>Verified</span>");
-                break;
-        }
-
-        if (!device[plugin.db.identity_meta.now_active]) {
-            img.icon_name= "appointment-missed-symbolic";
-            status_lbl.set_markup("<span size='large' color='#8b8e8f'>Unused</span>");
-        }
+        set_row(trust, device[plugin.db.identity_meta.now_active], img, status_lbl, lbl, lbr);
 
         box.add(lbl);
         box.add(status);
@@ -84,29 +89,23 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 ManageKeyDialog manage_dialog = new ManageKeyDialog(updated_device, plugin.db);
                 manage_dialog.set_transient_for((Window) get_toplevel());
                 manage_dialog.present();
-                manage_dialog.response.connect((response) => update_row(response, img, lbl, status_lbl, device));
+                manage_dialog.response.connect((response) => {
+                    set_row(response, device[plugin.db.identity_meta.now_active], img, status_lbl, lbl, lbr);
+                    update_device(response, device);
+                });
             }
         });
     }
 
-    private void update_row(int response, Image img, Label lbl, Label status_lbl, Row device){
+    private void update_device(int response, Row device){
         switch (response) {
             case Database.IdentityMetaTable.TrustLevel.TRUSTED:
-                img.icon_name = "emblem-ok-symbolic";
-                status_lbl.set_markup("<span size='large' color='#1A63D9'>Accepted</span>");
-                lbl.get_style_context().remove_class("dim-label");
                 set_device_trust(device, true);
                 break;
             case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
-                img.icon_name = "action-unavailable-symbolic";
-                status_lbl.set_markup("<span size='large' color='#D91900'>Rejected</span>");
-                lbl.get_style_context().add_class("dim-label");
                 set_device_trust(device, false);
                 break;
             case Database.IdentityMetaTable.TrustLevel.VERIFIED:
-                img.icon_name = "security-high-symbolic";
-                status_lbl.set_markup("<span size='large' color='#1A63D9'>Verified</span>");
-                lbl.get_style_context().remove_class("dim-label");
                 plugin.db.identity_meta.update()
                     .with(plugin.db.identity_meta.identity_id, "=", account.id)
                     .with(plugin.db.identity_meta.address_name, "=", device[plugin.db.identity_meta.address_name])

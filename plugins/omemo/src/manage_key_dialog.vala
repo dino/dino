@@ -6,6 +6,8 @@ namespace Dino.Plugins.Omemo {
 [GtkTemplate (ui = "/im/dino/Dino/omemo/manage_key_dialog.ui")]
 public class ManageKeyDialog : Gtk.Dialog {
 
+    [GtkChild] private Stack manage_stack;
+
     [GtkChild] private Button cancel_button;
     [GtkChild] private Button ok_button;
 
@@ -30,22 +32,19 @@ public class ManageKeyDialog : Gtk.Dialog {
     private int current_response;
 
     private void handle_cancel() {
-        if (main_screen.visible) close();
+        if (manage_stack.get_visible_child_name() == "main") close();
 
-        if (verify_screen.visible) {
-            verify_screen.visible = false;
-            main_screen.visible = true;
+        if (manage_stack.get_visible_child_name() == "verify") {
+            manage_stack.set_visible_child_name("main");
             cancel_button.label = "Cancel";
         }
 
-        if (confirm_screen.visible) {
+        if (manage_stack.get_visible_child_name() == "confirm") {
             if (return_to_main) {
-                confirm_screen.visible = false;
-                main_screen.visible = true;
+                manage_stack.set_visible_child_name("main");
                 cancel_button.label = "Cancel";
             } else {
-                confirm_screen.visible = false;
-                verify_screen.visible = true;
+                manage_stack.set_visible_child_name("verify");
             }
         }
 
@@ -69,24 +68,20 @@ public class ManageKeyDialog : Gtk.Dialog {
 
         verify_yes.clicked.connect(() => {
             confirm_image.set_from_icon_name("security-high-symbolic", IconSize.DIALOG);
-            confirm_title.label = "Complete key verfication";
+            confirm_title.label = "Verify key";
             confirm_desc.set_markup(@"Once confirmed, any future messages sent by <b>$(device[db.identity_meta.address_name])</b> using this key will be highlighted accordingly in the chat window.");
-            return_to_main = false;
-            verify_screen.visible = false;
-            confirm_screen.visible = true;
+            manage_stack.set_visible_child_name("confirm");
             ok_button.sensitive = true;
+            return_to_main = false;
             current_response = Database.IdentityMetaTable.TrustLevel.VERIFIED;
         });
 
         verify_no.clicked.connect(() => {
-            confirm_image.set_from_icon_name("action-unavailable-symbolic", IconSize.DIALOG);
-            confirm_title.label = "Complete key rejection";
-            confirm_desc.set_markup(@"Once confirmed, any future messages sent by <b>$(device[db.identity_meta.address_name])</b> using this key will be ignored and none of your messages will be readable using this key.");
             return_to_main = false;
-            verify_screen.visible = false;
-            confirm_screen.visible = true;
-            ok_button.sensitive = true;
-            current_response = Database.IdentityMetaTable.TrustLevel.UNTRUSTED;
+            confirm_image.set_from_icon_name("dialog-warning-symbolic", IconSize.DIALOG);
+            confirm_title.label = "Fingerprints do not match";
+            confirm_desc.set_markup(@"Please verify that you are comparing the correct fingerprint. If fingerprints do not match <b>$(device[db.identity_meta.address_name])</b>'s account may be compromised and you should consider rejecting this key.");
+            manage_stack.set_visible_child_name("confirm");
         });
     }
 
@@ -162,27 +157,28 @@ public class ManageKeyDialog : Gtk.Dialog {
 
         main_action_list.row_activated.connect((row) => {
             if(row == verify) {
-                verify_screen.visible = true;
+                manage_stack.set_visible_child_name("verify");
             } else if (row == reject) {
                 confirm_image.set_from_icon_name("action-unavailable-symbolic", IconSize.DIALOG);
-                confirm_title.label = "Complete key rejection";
+                confirm_title.label = "Reject key";
                 confirm_desc.set_markup(@"Once confirmed, any future messages sent by <b>$(device[db.identity_meta.address_name])</b> using this key will be ignored and none of your messages will be readable using this key.");
-                return_to_main = true;
-                confirm_screen.visible = true;
+                manage_stack.set_visible_child_name("confirm");
                 ok_button.sensitive = true;
+                return_to_main = true;
                 current_response = Database.IdentityMetaTable.TrustLevel.UNTRUSTED;
             } else if (row == accept) {
                 confirm_image.set_from_icon_name("emblem-ok-symbolic", IconSize.DIALOG);
-                confirm_title.label = "Complete key acception";
+                confirm_title.label = "Accept key";
                 confirm_desc.set_markup(@"Once confirmed this key will be usable by <b>$(device[db.identity_meta.address_name])</b> to receive and send messages.");
-                return_to_main = true;
-                confirm_screen.visible = true;
+                manage_stack.set_visible_child_name("confirm");
                 ok_button.sensitive = true;
+                return_to_main = true;
                 current_response = Database.IdentityMetaTable.TrustLevel.TRUSTED;
             }
             cancel_button.label = "Back";
-            main_screen.visible = false;
         });
+
+        manage_stack.set_visible_child_name("main");
     }
 
     private void setup_verify_screen() {
