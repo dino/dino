@@ -110,6 +110,7 @@
                                                         <property name="margin-start">20</property>
                                                         <property name="margin-end">20</property>
                                                         <property name="margin-top">14</property>
+                                                        <property name="spacing">40</property>
                                                         <property name="margin-bottom">14</property>
                                                         <property name="orientation">horizontal</property>
                                                         <property name="hexpand">True</property>
@@ -122,14 +123,38 @@
                                                             </object>
                                                         </child>
                                                         <child>
-                                                            <object class="GtkButton" id="copy">
+                                                            <object class="GtkBox">
                                                                 <property name="visible">True</property>
-                                                                <property name="halign">end</property>
+                                                                <property name="orientation">horizontal</property>
+                                                                <property name="hexpand">True</property>
+                                                                <property name="spacing">5</property>
                                                                 <child>
-                                                                    <object class="GtkImage">
+                                                                    <object class="GtkButton" id="show_qrcode">
                                                                         <property name="visible">True</property>
-                                                                        <property name="icon-size">1</property>
-                                                                        <property name="icon-name">edit-copy-symbolic</property>
+                                                                        <property name="halign">start</property>
+                                                                        <property name="hexpand">True</property>
+                                                                        <child>
+                                                                            <object class="GtkImage">
+                                                                                <property name="visible">True</property>
+                                                                                <property name="halign">end</property>
+                                                                                <property name="icon-name">camera-photo-symbolic</property>
+                                                                                <property name="icon-size">1</property>
+                                                                            </object>
+                                                                        </child>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
+                                                                    <object class="GtkButton" id="copy">
+                                                                        <property name="visible">True</property>
+                                                                        <property name="halign">end</property>
+                                                                        <property name="hexpand">True</property>
+                                                                        <child>
+                                                                            <object class="GtkImage">
+                                                                                <property name="visible">True</property>
+                                                                                <property name="icon-size">1</property>
+                                                                                <property name="icon-name">edit-copy-symbolic</property>
+                                                                            </object>
+                                                                        </child>
                                                                     </object>
                                                                 </child>
                                                             </object>
@@ -203,4 +228,21 @@
             </object>
         </child>
     </template>
+    <object class="GtkPopover" id="qrcode_popover">
+        <property name="visible">False</property>
+        <property name="relative-to">show_qrcode</property>
+        <property name="position">left</property>
+        <property name="modal">True</property>
+        <child>
+            <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="margin">10</property>
+                <child>
+                    <object class="GtkImage" id="qrcode">
+                        <property name="visible">True</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
 </interface>

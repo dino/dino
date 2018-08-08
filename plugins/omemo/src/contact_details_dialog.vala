@@ -3,6 +3,8 @@ using Xmpp;
 using Gee;
 using Qlite;
 using Dino.Entities;
+using Qrencode;
+using Gdk;
 
 namespace Dino.Plugins.Omemo {
 
@@ -23,6 +25,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private ListBox keys;
     [GtkChild] private Switch auto_accept;
     [GtkChild] private Button copy;
+    [GtkChild] private Button show_qrcode;
+    [GtkChild] private Image qrcode;
+    [GtkChild] private Popover qrcode_popover;
 
     private void set_device_trust(Row device, bool trust) {
         Database.IdentityMetaTable.TrustLevel trust_level = trust ? Database.IdentityMetaTable.TrustLevel.TRUSTED : Database.IdentityMetaTable.TrustLevel.UNTRUSTED;
@@ -87,7 +92,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             if(row == lbr) {
                 Row updated_device = plugin.db.identity_meta.with_address(device[plugin.db.identity_meta.identity_id], device[plugin.db.identity_meta.address_name]).with(plugin.db.identity_meta.device_id, "=", device[plugin.db.identity_meta.device_id]).single().row().inner;
                 ManageKeyDialog manage_dialog = new ManageKeyDialog(updated_device, plugin.db);
-                manage_dialog.set_transient_for((Window) get_toplevel());
+                manage_dialog.set_transient_for((Gtk.Window) get_toplevel());
                 manage_dialog.present();
                 manage_dialog.response.connect((response) => {
                     set_row(response, device[plugin.db.identity_meta.now_active], img, status_lbl, lbl, lbr);
@@ -184,6 +189,12 @@ public class ContactDetailsDialog : Gtk.Dialog {
             own_fingerprint.set_markup(fingerprint_markup(fingerprint));
 
             copy.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
+
+            int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
+            Pixbuf pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2).to_pixbuf();
+            pixbuf = pixbuf.scale_simple(150, 150, InterpType.NEAREST);
+            qrcode.set_from_pixbuf(pixbuf);
+            show_qrcode.clicked.connect(qrcode_popover.popup);
         }
 
         new_keys.set_header_func((row, before_row) => {
