@@ -70,8 +70,9 @@ public class UnifiedWindow : Gtk.Window {
             if (event.type == EventType.BUTTON_PRESS) {
                 int dest_x, dest_y;
                 bool ret = search_box.translate_coordinates(this, 0, 0, out dest_x, out dest_y);
-                print(@"ret $(ret) button-x $(event.button.x_root) !< dest_x $(dest_x)\n");
-                if (ret && event.button.x_root < dest_x) {
+                int geometry_x, geometry_y, geometry_width, geometry_height;
+                this.get_window().get_geometry(out geometry_x, out geometry_y, out geometry_width, out geometry_height);
+                if (ret && event.button.x_root - geometry_x < dest_x || event.button.y_root - geometry_y < dest_y) {
                     close_search();
                 }
             } else if (event.type == EventType.KEY_RELEASE) {
