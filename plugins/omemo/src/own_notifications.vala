@@ -26,7 +26,7 @@ public class OwnNotifications {
     }
 
     public bool has_new_devices(Jid jid) {
-        return plugin.db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64).count() > 0;
+        return plugin.db.identity_meta.get_new_devices(account.id, jid.bare_jid.to_string()).count() > 0;
     }
 
     private void display_notification() {

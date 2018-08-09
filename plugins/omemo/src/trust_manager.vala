@@ -20,6 +20,21 @@ public class TrustManager {
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
     }
 
+    public void set_blind_trust(Account account, Jid jid, bool blind_trust) {
+        db.trust.update()
+            .with(db.trust.identity_id, "=", account.id)
+            .with(db.trust.address_name, "=", jid.bare_jid.to_string())
+            .set(db.trust.blind_trust, blind_trust);
+    }
+
+    public void set_device_trust(Account account, Jid jid, int device_id, Database.IdentityMetaTable.TrustLevel trust_level) {
+        db.identity_meta.update()
+            .with(db.identity_meta.identity_id, "=", account.id)
+            .with(db.identity_meta.address_name, "=", jid.bare_jid.to_string())
+            .with(db.identity_meta.device_id, "=", device_id)
+            .set(db.identity_meta.trust_level, trust_level).perform();
+    }
+
     private StanzaNode create_encrypted_key(uint8[] key, Address address, Store store) throws GLib.Error {
         SessionCipher cipher = store.create_session_cipher(address);
         CiphertextMessage device_key = cipher.encrypt(key);
@@ -38,6 +53,7 @@ public class TrustManager {
         StreamModule module = stream.get_module(StreamModule.IDENTITY);
 
         try {
+            //Check we have the bundles and device lists needed to send the message
             if (!is_known_address(account, self_jid)) return status;
             status.own_list = true;
             status.own_devices = get_trusted_devices(account, self_jid).size;
@@ -46,12 +62,13 @@ public class TrustManager {
             foreach (Jid recipient in recipients) {
                 if (!is_known_address(account, recipient)) {
                     status.other_waiting_lists++;
-                    return status;
                 }
+                if (status.other_waiting_lists > 0) return status;
                 status.other_devices += get_trusted_devices(account, recipient).size;
             }
             if (status.own_devices == 0 || status.other_devices == 0) return status;
 
+            //Create a key and use it to encrypt the message
             uint8[] key = new uint8[16];
             Plugin.get_context().randomize(key);
             uint8[] iv = new uint8[16];
@@ -68,6 +85,7 @@ public class TrustManager {
                     .put_node(new StanzaNode.build("payload", NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
 
+            //Encrypt the key for each recipient's device individually
             Address address = new Address(message.to.bare_jid.to_string(), 0);
             foreach (Jid recipient in recipients) {
                 foreach(int32 device_id in get_trusted_devices(account, recipient)) {
@@ -122,7 +140,7 @@ public class TrustManager {
 
     public Gee.List<int32> get_trusted_devices(Account account, Jid jid) {
         Gee.List<int32> devices = new ArrayList<int32>();
-        foreach (Row device in db.identity_meta.with_address(account.id, jid.to_string()).with(db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNTRUSTED).with(db.identity_meta.now_active, "=", true)) {
+        foreach (Row device in db.identity_meta.get_trusted_devices(account.id, jid.bare_jid.to_string())) {
             if(device[db.identity_meta.trust_level] != Database.IdentityMetaTable.TrustLevel.UNKNOWN || device[db.identity_meta.identity_key_public_base64] == null)
                 devices.add(device[db.identity_meta.device_id]);
         }
@@ -150,7 +168,7 @@ public class TrustManager {
                 if(conversation.type_ == Conversation.Type.GROUPCHAT) {
                     jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
                 }
-                Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.with_address(conversation.account.id, jid.bare_jid.to_string()).with(db.identity_meta.device_id, "=", header.get_attribute_int("sid")).single()[db.identity_meta.trust_level];
+                Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.get_device(conversation.account.id, jid.bare_jid.to_string(), header.get_attribute_int("sid"))[db.identity_meta.trust_level];
                 if (trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED) {
                     message.body = "OMEMO message from a rejected device";
                     message.marked = Message.Marked.WONTSEND;

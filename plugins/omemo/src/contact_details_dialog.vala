@@ -18,15 +18,15 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private int own_id = 0;
 
     [GtkChild] private Box own_fingerprint_container;
-    [GtkChild] private Label own_fingerprint;
+    [GtkChild] private Label own_fingerprint_label;
     [GtkChild] private Box new_keys_container;
-    [GtkChild] private ListBox new_keys;
+    [GtkChild] private ListBox new_keys_listbox;
     [GtkChild] private Box keys_container;
-    [GtkChild] private ListBox keys;
-    [GtkChild] private Switch auto_accept;
-    [GtkChild] private Button copy;
-    [GtkChild] private Button show_qrcode;
-    [GtkChild] private Image qrcode;
+    [GtkChild] private ListBox keys_listbox;
+    [GtkChild] private Switch auto_accept_switch;
+    [GtkChild] private Button copy_button;
+    [GtkChild] private Button show_qrcode_button;
+    [GtkChild] private Image qrcode_image;
     [GtkChild] private Popover qrcode_popover;
 
     public ContactDetailsDialog(Plugin plugin, Account account, Jid jid) {
@@ -38,6 +38,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
         (get_header_bar() as HeaderBar).set_subtitle(jid.bare_jid.to_string());
 
 
+         // Dialog opened from the account settings menu
+         // Show the fingerprint for this device separately with buttons for a qrcode and to copy
         if(jid.equals(account.bare_jid)) {
             own = true;
             own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
@@ -46,51 +48,44 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
             string own_b64 = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.identity_key_public_base64];
             string fingerprint = fingerprint_from_base64(own_b64);
-            own_fingerprint.set_markup(fingerprint_markup(fingerprint));
+            own_fingerprint_label.set_markup(fingerprint_markup(fingerprint));
 
-            copy.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
+            copy_button.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
 
             int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
             Pixbuf pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2).to_pixbuf();
             pixbuf = pixbuf.scale_simple(150, 150, InterpType.NEAREST);
-            qrcode.set_from_pixbuf(pixbuf);
-            show_qrcode.clicked.connect(qrcode_popover.popup);
+            qrcode_image.set_from_pixbuf(pixbuf);
+            show_qrcode_button.clicked.connect(qrcode_popover.popup);
         }
 
-        new_keys.set_header_func((row, before_row) => {
-            if (row.get_header() == null && before_row != null) {
-                row.set_header(new Separator(Orientation.HORIZONTAL));
-            }
-        });
+        new_keys_listbox.set_header_func(header_function);
 
-        keys.set_header_func((row, before_row) => {
-            if (row.get_header() == null && before_row != null) {
-                row.set_header(new Separator(Orientation.HORIZONTAL));
-            }
-        });
+        keys_listbox.set_header_func(header_function);
 
-        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
+        //Show any new devices for which the user must decide whether to accept or reject
+        foreach (Row device in plugin.db.identity_meta.get_new_devices(account.id, jid.to_string())) {
             add_new_fingerprint(device);
         }
 
-        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
+        //Show the normal devicelist
+        foreach (Row device in plugin.db.identity_meta.get_known_devices(account.id, jid.to_string())) {
             if(own && device[plugin.db.identity_meta.device_id] == own_id) {
                 continue;
             }
             add_fingerprint(device, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trust_level]);
-
         }
 
-        auto_accept.set_active(plugin.db.trust.get_blind_trust(account.id, jid.bare_jid.to_string()));
+        auto_accept_switch.set_active(plugin.db.trust.get_blind_trust(account.id, jid.bare_jid.to_string()));
 
-        auto_accept.state_set.connect((active) => {
-            plugin.db.trust.update().with(plugin.db.trust.identity_id, "=", account.id).with(plugin.db.trust.address_name, "=", jid.bare_jid.to_string()).set(plugin.db.trust.blind_trust, active).perform();
+        auto_accept_switch.state_set.connect((active) => {
+            plugin.trust_manager.set_blind_trust(account, jid, active);
 
             if (active) {
                 new_keys_container.visible = false;
 
-                foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
-                    set_device_trust(device, true);
+                foreach (Row device in plugin.db.identity_meta.get_new_devices(account.id, jid.to_string())) {
+                    plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.TRUSTED);
                     add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.TRUSTED);
                 }
             }
@@ -100,13 +95,10 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
     }
 
-    private void set_device_trust(Row device, bool trust) {
-        Database.IdentityMetaTable.TrustLevel trust_level = trust ? Database.IdentityMetaTable.TrustLevel.TRUSTED : Database.IdentityMetaTable.TrustLevel.UNTRUSTED;
-        plugin.db.identity_meta.update()
-                .with(plugin.db.identity_meta.identity_id, "=", account.id)
-                .with(plugin.db.identity_meta.address_name, "=", device[plugin.db.identity_meta.address_name])
-                .with(plugin.db.identity_meta.device_id, "=", device[plugin.db.identity_meta.device_id])
-                .set(plugin.db.identity_meta.trust_level, trust_level).perform();
+    private void header_function(ListBoxRow row, ListBoxRow? before) {
+        if (row.get_header() == null && before != null) {
+            row.set_header(new Separator(Orientation.HORIZONTAL));
+        }
     }
 
     private void set_row(int trust, bool now_active, Image img, Label status_lbl, Label lbl, ListBoxRow lbr){
@@ -139,7 +131,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         ListBoxRow lbr = new ListBoxRow() { visible = true, activatable = true, hexpand = true };
         Box box = new Box(Gtk.Orientation.HORIZONTAL, 40) { visible = true, margin_start = 20, margin_end = 20, margin_top = 14, margin_bottom = 14, hexpand = true };
 
-        Box status = new Box(Gtk.Orientation.HORIZONTAL, 5) { visible = true, hexpand = true };
+        Box status_box = new Box(Gtk.Orientation.HORIZONTAL, 5) { visible = true, hexpand = true };
         Label status_lbl = new Label(null) { visible = true, hexpand = true, xalign = 0 };
 
         Image img = new Image() { visible = true, halign = Align.END, icon_size = IconSize.BUTTON };
@@ -151,17 +143,18 @@ public class ContactDetailsDialog : Gtk.Dialog {
         set_row(trust, device[plugin.db.identity_meta.now_active], img, status_lbl, lbl, lbr);
 
         box.add(lbl);
-        box.add(status);
+        box.add(status_box);
 
-        status.add(status_lbl);
-        status.add(img);
+        status_box.add(status_lbl);
+        status_box.add(img);
 
         lbr.add(box);
-        keys.add(lbr);
+        keys_listbox.add(lbr);
 
-        keys.row_activated.connect((row) => {
+        //Row clicked - pull the most up to date device info from the database and show the manage window
+        keys_listbox.row_activated.connect((row) => {
             if(row == lbr) {
-                Row updated_device = plugin.db.identity_meta.with_address(device[plugin.db.identity_meta.identity_id], device[plugin.db.identity_meta.address_name]).with(plugin.db.identity_meta.device_id, "=", device[plugin.db.identity_meta.device_id]).single().row().inner;
+                Row updated_device = plugin.db.identity_meta.get_device(device[plugin.db.identity_meta.identity_id], device[plugin.db.identity_meta.address_name], device[plugin.db.identity_meta.device_id]);
                 ManageKeyDialog manage_dialog = new ManageKeyDialog(updated_device, plugin.db);
                 manage_dialog.set_transient_for((Gtk.Window) get_toplevel());
                 manage_dialog.present();
@@ -176,19 +169,15 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private void update_device(int response, Row device){
         switch (response) {
             case Database.IdentityMetaTable.TrustLevel.TRUSTED:
-                set_device_trust(device, true);
+                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.TRUSTED);
                 break;
             case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
-                set_device_trust(device, false);
+                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
                 break;
             case Database.IdentityMetaTable.TrustLevel.VERIFIED:
-                plugin.db.identity_meta.update()
-                    .with(plugin.db.identity_meta.identity_id, "=", account.id)
-                    .with(plugin.db.identity_meta.address_name, "=", device[plugin.db.identity_meta.address_name])
-                    .with(plugin.db.identity_meta.device_id, "=", device[plugin.db.identity_meta.device_id])
-                    .set(plugin.db.identity_meta.trust_level, Database.IdentityMetaTable.TrustLevel.VERIFIED).perform();
-                plugin.db.trust.update().with(plugin.db.trust.identity_id, "=", account.id).with(plugin.db.trust.address_name, "=", jid.bare_jid.to_string()).set(plugin.db.trust.blind_trust, false).perform();
-                auto_accept.set_active(false);
+                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.VERIFIED);
+                plugin.trust_manager.set_blind_trust(account, jid, false);
+                auto_accept_switch.set_active(false);
                 break;
         }
     }
@@ -199,28 +188,28 @@ public class ContactDetailsDialog : Gtk.Dialog {
         ListBoxRow lbr = new ListBoxRow() { visible = true, activatable = false, hexpand = true };
         Box box = new Box(Gtk.Orientation.HORIZONTAL, 40) { visible = true, margin_start = 20, margin_end = 20, margin_top = 14, margin_bottom = 14, hexpand = true };
 
-        Box control = new Box(Gtk.Orientation.HORIZONTAL, 0) { visible = true, hexpand = true };
+        Box control_box = new Box(Gtk.Orientation.HORIZONTAL, 0) { visible = true, hexpand = true };
 
-        Button yes = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        yes.image = new Image.from_icon_name("emblem-ok-symbolic", IconSize.BUTTON);
-        yes.get_style_context().add_class("suggested-action");
+        Button yes_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
+        yes_button.image = new Image.from_icon_name("emblem-ok-symbolic", IconSize.BUTTON);
+        yes_button.get_style_context().add_class("suggested-action");
 
-        Button no = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        no.image = new Image.from_icon_name("action-unavailable-symbolic", IconSize.BUTTON);
-        no.get_style_context().add_class("destructive-action");
+        Button no_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
+        no_button.image = new Image.from_icon_name("action-unavailable-symbolic", IconSize.BUTTON);
+        no_button.get_style_context().add_class("destructive-action");
 
-        yes.clicked.connect(() => {
-            set_device_trust(device, true);
+        yes_button.clicked.connect(() => {
+            plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.TRUSTED);
             add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.TRUSTED);
-            new_keys.remove(lbr);
-            if (new_keys.get_children().length() < 1) new_keys_container.visible = false;
+            new_keys_listbox.remove(lbr);
+            if (new_keys_listbox.get_children().length() < 1) new_keys_container.visible = false;
         });
 
-        no.clicked.connect(() => {
-            set_device_trust(device, false);
+        no_button.clicked.connect(() => {
+            plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
             add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
-            new_keys.remove(lbr);
-            if (new_keys.get_children().length() < 1) new_keys_container.visible = false;
+            new_keys_listbox.remove(lbr);
+            if (new_keys_listbox.get_children().length() < 1) new_keys_container.visible = false;
         });
 
         string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
@@ -230,14 +219,14 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         box.add(lbl);
 
-        control.add(yes);
-        control.add(no);
-        control.get_style_context().add_class("linked");
+        control_box.add(yes_button);
+        control_box.add(no_button);
+        control_box.get_style_context().add_class("linked");
 
-        box.add(control);
+        box.add(control_box);
 
         lbr.add(box);
-        new_keys.add(lbr);
+        new_keys_listbox.add(lbr);
     }
 }
 

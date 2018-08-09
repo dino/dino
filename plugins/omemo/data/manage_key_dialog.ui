@@ -50,7 +50,7 @@
                                 <property name="orientation">vertical</property>
                                 <property name="valign">center</property>
                                 <child>
-                                    <object class="GtkLabel" id="main_desc">
+                                    <object class="GtkLabel" id="main_desc_label">
                                         <property name="visible">True</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
@@ -83,7 +83,7 @@
                                 <child>
                                     <object class="GtkLabel">
                                         <property name="visible">True</property>
-                                        <property name="label">Compare the fingerprint, character by character, with the one shown on your contacts device.</property>
+                                        <property name="label" translatable="yes">Compare the fingerprint, character by character, with the one shown on your contacts device.</property>
                                         <property name="wrap">True</property>
                                         <property name="xalign">0</property>
                                         <property name="max-width-chars">45</property>
@@ -107,17 +107,17 @@
                                             </object>
                                         </child>
                                         <child>
-                                            <object class="GtkButton" id="verify_no">
+                                            <object class="GtkButton" id="verify_no_button">
                                                 <property name="visible">True</property>
                                                 <property name="hexpand">True</property>
-                                                <property name="label">Not Matching</property>
+                                                <property name="label" translatable="yes">Not Matching</property>
                                             </object>
                                         </child>
                                         <child>
-                                            <object class="GtkButton" id="verify_yes">
+                                            <object class="GtkButton" id="verify_yes_button">
                                                 <property name="visible">True</property>
                                                 <property name="hexpand">True</property>
-                                                <property name="label">Matching</property>
+                                                <property name="label" translatable="yes">Matching</property>
                                             </object>
                                         </child>
                                     </object>
@@ -140,7 +140,7 @@
                                     </object>
                                 </child>
                                 <child>
-                                    <object class="GtkLabel" id="confirm_title">
+                                    <object class="GtkLabel" id="confirm_title_label">
                                         <property name="visible">True</property>
                                         <attributes>
                                             <attribute name="scale" value="1.1"/>
@@ -148,7 +148,7 @@
                                     </object>
                                 </child>
                                 <child>
-                                    <object class="GtkLabel" id="confirm_desc">
+                                    <object class="GtkLabel" id="confirm_desc_label">
                                         <property name="visible">True</property>
                                         <property name="justify">center</property>
                                         <property name="wrap">True</property>

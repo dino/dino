@@ -25,11 +25,7 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
             }
 
             if (i > 0) {
-                Button btn = new Button();
-                btn.image = new Image.from_icon_name("view-list-symbolic", IconSize.BUTTON);
-                btn.relief = ReliefStyle.NONE;
-                btn.visible = true;
-                btn.valign = Align.CENTER;
+                Button btn = new Button.from_icon_name("view-list-symbolic") { visible = true, valign = Align.CENTER, relief = ReliefStyle.NONE };
                 btn.clicked.connect(() => {
                     btn.activate();
                     ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, conversation.counterpart);

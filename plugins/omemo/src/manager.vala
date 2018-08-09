@@ -61,11 +61,10 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private Manager(StreamInteractor stream_interactor, Database db) {
+    private Manager(StreamInteractor stream_interactor, Database db, TrustManager trust_manager) {
         this.stream_interactor = stream_interactor;
         this.db = db;
-
-        this.trust_manager = new TrustManager(stream_interactor, db);
+        this.trust_manager = trust_manager;
 
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.account_added.connect(on_account_added);
@@ -120,6 +119,7 @@ public class Manager : StreamInteractionModule, Object {
             }
             StreamModule module = (!)module_;
 
+            //Get a list of everyone for whom the message should be encrypted
             Gee.List<Jid> recipients;
             if (message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT) {
                 recipients = get_occupants((!)message.to.bare_jid, conversation.account);
@@ -132,6 +132,7 @@ public class Manager : StreamInteractionModule, Object {
                 recipients.add(message_stanza.to);
             }
 
+            //Attempt to encrypt the message
             EncryptState enc_state = trust_manager.encrypt(message_stanza, conversation.account.bare_jid, recipients, stream, conversation.account);
             MessageState state;
             lock (message_states) {
@@ -147,6 +148,7 @@ public class Manager : StreamInteractionModule, Object {
                 }
             }
 
+            //Encryption failed - need to fetch more information
             if (!state.will_send_now) {
                 if (message.marked == Entities.Message.Marked.WONTSEND) {
                     if (Plugin.DEBUG) print(@"OMEMO: message was not sent: $state\n");
@@ -192,7 +194,6 @@ public class Manager : StreamInteractionModule, Object {
     private void on_device_list_loaded(Account account, Jid jid, ArrayList<int32> device_list) {
         if (Plugin.DEBUG) print(@"OMEMO: received device list for $(account.bare_jid) from $jid\n");
 
-        // Update meta database
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) {
             return;
@@ -202,9 +203,12 @@ public class Manager : StreamInteractionModule, Object {
             return;
         }
 
+        //Update meta database
         db.identity_meta.insert_device_list(account.id, jid.bare_jid.to_string(), device_list);
+
+        //Fetch the bundle for each new device
         int inc = 0;
-        foreach (Row row in db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with_null(db.identity_meta.identity_key_public_base64)) {
+        foreach (Row row in db.identity_meta.get_unknown_devices(account.id, jid.bare_jid.to_string())) {
             module.fetch_bundle(stream, Jid.parse(row[db.identity_meta.address_name]), row[db.identity_meta.device_id]);
             inc++;
         }
@@ -212,10 +216,12 @@ public class Manager : StreamInteractionModule, Object {
             if (Plugin.DEBUG) print(@"OMEMO: new bundles $inc/$(device_list.size) for $jid\n");
         }
 
+        //Create an entry for the jid in the account table if one does not exist already
         if (db.trust.select().with(db.trust.identity_id, "=", account.id).with(db.trust.address_name, "=", jid.bare_jid.to_string()).count() == 0) {
             db.trust.insert().value(db.trust.identity_id, account.id).value(db.trust.address_name, jid.bare_jid.to_string()).value(db.trust.blind_trust, true).perform();
         }
 
+        //Get all messages that needed the devicelist and determine if we can now send them
         HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
@@ -245,12 +251,18 @@ public class Manager : StreamInteractionModule, Object {
     public void on_bundle_fetched(Account account, Jid jid, int32 device_id, Bundle bundle) {
         bool blind_trust = db.trust.get_blind_trust(account.id, jid.bare_jid.to_string());
 
+        //If we don't blindly trust new devices and we haven't seen this key before then don't trust it
         bool untrust = !(blind_trust || db.identity_meta.with_address(account.id, jid.bare_jid.to_string())
                 .with(db.identity_meta.device_id, "=", device_id)
                 .with(db.identity_meta.identity_key_public_base64, "=", Base64.encode(bundle.identity_key.serialize()))
                 .single().row().is_present());
 
-        Database.IdentityMetaTable.TrustLevel trusted = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.with_address(account.id, jid.bare_jid.to_string()).with(db.identity_meta.device_id, "=", device_id).single()[db.identity_meta.trust_level, Database.IdentityMetaTable.TrustLevel.UNKNOWN];
+        //Get trust information from the database if the device id is known
+        Row device = db.identity_meta.get_device(account.id, jid.bare_jid.to_string(), device_id);
+        Database.IdentityMetaTable.TrustLevel trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
+        if (device != null) {
+            trusted = (Database.IdentityMetaTable.TrustLevel) device[db.identity_meta.trust_level];
+        }
 
         if(untrust) {
             trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
@@ -258,6 +270,7 @@ public class Manager : StreamInteractionModule, Object {
             trusted = Database.IdentityMetaTable.TrustLevel.TRUSTED;
         }
 
+        //Update the database with the appropriate trust information
         db.identity_meta.insert_device_bundle(account.id, jid.bare_jid.to_string(), device_id, bundle, trusted);
 
         XmppStream? stream = stream_interactor.get_stream(account);
@@ -265,6 +278,7 @@ public class Manager : StreamInteractionModule, Object {
         StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
         if(module == null) return;
 
+        //Get all messages waiting on the bundle and determine if they can now be sent
         HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
@@ -360,8 +374,8 @@ public class Manager : StreamInteractionModule, Object {
         return trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid);
     }
 
-    public static void start(StreamInteractor stream_interactor, Database db) {
-        Manager m = new Manager(stream_interactor, db);
+    public static void start(StreamInteractor stream_interactor, Database db, TrustManager trust_manager) {
+        Manager m = new Manager(stream_interactor, db, trust_manager);
         stream_interactor.add_module(m);
     }
 }

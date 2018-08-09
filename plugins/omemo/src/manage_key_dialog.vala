@@ -12,18 +12,18 @@ public class ManageKeyDialog : Gtk.Dialog {
     [GtkChild] private Button ok_button;
 
     [GtkChild] private Box main_screen;
-    [GtkChild] private Label main_desc;
+    [GtkChild] private Label main_desc_label;
     [GtkChild] private ListBox main_action_list;
 
     [GtkChild] private Box confirm_screen;
     [GtkChild] private Image confirm_image;
-    [GtkChild] private Label confirm_title;
-    [GtkChild] private Label confirm_desc;
+    [GtkChild] private Label confirm_title_label;
+    [GtkChild] private Label confirm_desc_label;
 
     [GtkChild] private Box verify_screen;
     [GtkChild] private Label verify_label;
-    [GtkChild] private Button verify_yes;
-    [GtkChild] private Button verify_no;
+    [GtkChild] private Button verify_yes_button;
+    [GtkChild] private Button verify_no_button;
 
     private Row device;
     private Database db;
@@ -46,21 +46,21 @@ public class ManageKeyDialog : Gtk.Dialog {
             close();
         });
 
-        verify_yes.clicked.connect(() => {
+        verify_yes_button.clicked.connect(() => {
             confirm_image.set_from_icon_name("security-high-symbolic", IconSize.DIALOG);
-            confirm_title.label = "Verify key";
-            confirm_desc.set_markup(@"Once confirmed, any future messages sent by <b>$(device[db.identity_meta.address_name])</b> using this key will be highlighted accordingly in the chat window.");
+            confirm_title_label.label = "Verify key";
+            confirm_desc_label.set_markup(@"Once confirmed, any future messages sent by <b>$(device[db.identity_meta.address_name])</b> using this key will be highlighted accordingly in the chat window.");
             manage_stack.set_visible_child_name("confirm");
             ok_button.sensitive = true;
             return_to_main = false;
             current_response = Database.IdentityMetaTable.TrustLevel.VERIFIED;
         });
 
-        verify_no.clicked.connect(() => {
+        verify_no_button.clicked.connect(() => {
             return_to_main = false;
             confirm_image.set_from_icon_name("dialog-warning-symbolic", IconSize.DIALOG);
-            confirm_title.label = "Fingerprints do not match";
-            confirm_desc.set_markup(@"Please verify that you are comparing the correct fingerprint. If fingerprints do not match <b>$(device[db.identity_meta.address_name])</b>'s account may be compromised and you should consider rejecting this key.");
+            confirm_title_label.label = "Fingerprints do not match";
+            confirm_desc_label.set_markup(@"Please verify that you are comparing the correct fingerprint. If fingerprints do not match <b>$(device[db.identity_meta.address_name])</b>'s account may be compromised and you should consider rejecting this key.");
             manage_stack.set_visible_child_name("confirm");
         });
     }
@@ -132,44 +132,45 @@ public class ManageKeyDialog : Gtk.Dialog {
             }
         });
 
-        ListBoxRow verify = new ListBoxRow() { visible = true };
-        verify.add(make_action_box("Verify Key Fingerprint", "Compare this key's fingerprint with the fingerprint displayed on the contact's device."));
-        ListBoxRow reject = new ListBoxRow() { visible = true };
-        reject.add(make_action_box("Reject Key", "Stop accepting this key during communication with its associated contact."));
-        ListBoxRow accept = new ListBoxRow() {visible = true };
-        accept.add(make_action_box("Accept Key", "Start accepting this key during communication with its assoicated contact"));
+        ListBoxRow verify_row = new ListBoxRow() { visible = true };
+        verify_row.add(make_action_box("Verify Key Fingerprint", "Compare this key's fingerprint with the fingerprint displayed on the contact's device."));
+        ListBoxRow reject_row = new ListBoxRow() { visible = true };
+        reject_row.add(make_action_box("Reject Key", "Stop accepting this key during communication with its associated contact."));
+        ListBoxRow accept_row = new ListBoxRow() {visible = true };
+        accept_row.add(make_action_box("Accept Key", "Start accepting this key during communication with its assoicated contact"));
 
         switch((Database.IdentityMetaTable.TrustLevel) device[db.identity_meta.trust_level]) {
             case Database.IdentityMetaTable.TrustLevel.TRUSTED:
-                main_desc.set_markup(@"This key is currently <span color='#1A63D9'>accepted</span>. This means it can be used by <b>$(device[db.identity_meta.address_name])</b> to receive and send messages.");
-                main_action_list.add(verify);
-                main_action_list.add(reject);
+                main_desc_label.set_markup(@"This key is currently <span color='#1A63D9'>accepted</span>. This means it can be used by <b>$(device[db.identity_meta.address_name])</b> to receive and send messages.");
+                main_action_list.add(verify_row);
+                main_action_list.add(reject_row);
                 break;
             case Database.IdentityMetaTable.TrustLevel.VERIFIED:
-                main_desc.set_markup(@"This key is currently <span color='#1A63D9'>verified</span>. This means it can be used by <b>$(device[db.identity_meta.address_name])</b> to receive and send messages. Additionaly it has been verified out-of-band to match the key on the contact's device.");
-                main_action_list.add(reject);
+                main_desc_label.set_markup(@"This key is currently <span color='#1A63D9'>verified</span>. This means it can be used by <b>$(device[db.identity_meta.address_name])</b> to receive and send messages. Additionaly it has been verified out-of-band to match the key on the contact's device.");
+                main_action_list.add(reject_row);
                 break;
             case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
-                main_desc.set_markup(@"This key is currently <span color='#D91900'>rejected</span>. This means it cannot be used by <b>$(device[db.identity_meta.address_name])</b> to receive messages, and any messages sent by it will be ignored");
-                main_action_list.add(accept);
+                main_desc_label.set_markup(@"This key is currently <span color='#D91900'>rejected</span>. This means it cannot be used by <b>$(device[db.identity_meta.address_name])</b> to receive messages, and any messages sent by it will be ignored");
+                main_action_list.add(accept_row);
                 break;
         }
 
+        //Row clicked - go to appropriate screen
         main_action_list.row_activated.connect((row) => {
-            if(row == verify) {
+            if(row == verify_row) {
                 manage_stack.set_visible_child_name("verify");
-            } else if (row == reject) {
+            } else if (row == reject_row) {
                 confirm_image.set_from_icon_name("action-unavailable-symbolic", IconSize.DIALOG);
-                confirm_title.label = "Reject key";
-                confirm_desc.set_markup(@"Once confirmed, any future messages sent by <b>$(device[db.identity_meta.address_name])</b> using this key will be ignored and none of your messages will be readable using this key.");
+                confirm_title_label.label = "Reject key";
+                confirm_desc_label.set_markup(@"Once confirmed, any future messages sent by <b>$(device[db.identity_meta.address_name])</b> using this key will be ignored and none of your messages will be readable using this key.");
                 manage_stack.set_visible_child_name("confirm");
                 ok_button.sensitive = true;
                 return_to_main = true;
                 current_response = Database.IdentityMetaTable.TrustLevel.UNTRUSTED;
-            } else if (row == accept) {
+            } else if (row == accept_row) {
                 confirm_image.set_from_icon_name("emblem-ok-symbolic", IconSize.DIALOG);
-                confirm_title.label = "Accept key";
-                confirm_desc.set_markup(@"Once confirmed this key will be usable by <b>$(device[db.identity_meta.address_name])</b> to receive and send messages.");
+                confirm_title_label.label = "Accept key";
+                confirm_desc_label.set_markup(@"Once confirmed this key will be usable by <b>$(device[db.identity_meta.address_name])</b> to receive and send messages.");
                 manage_stack.set_visible_child_name("confirm");
                 ok_button.sensitive = true;
                 return_to_main = true;

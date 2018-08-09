@@ -64,6 +64,34 @@ public class Database : Qlite.Database {
                     .value(this.identity_key_public_base64, Base64.encode(bundle.identity_key.serialize()))
                     .value(this.trust_level, trust).perform();
         }
+
+        public QueryBuilder get_trusted_devices(int identity_id, string address_name) {
+            return this.with_address(identity_id, address_name)
+                .with(this.trust_level, "!=", TrustLevel.UNTRUSTED)
+                .with(this.now_active, "=", true);
+        }
+
+        public QueryBuilder get_known_devices(int identity_id, string address_name) {
+            return this.with_address(identity_id, address_name)
+                .with(this.trust_level, "!=", TrustLevel.UNKNOWN)
+                .without_null(this.identity_key_public_base64);
+        }
+
+        public QueryBuilder get_unknown_devices(int identity_id, string address_name) {
+            return this.with_address(identity_id, address_name)
+                .with_null(this.identity_key_public_base64);
+        }
+
+        public QueryBuilder get_new_devices(int identity_id, string address_name) {
+            return this.with_address(identity_id, address_name)
+                .with(this.trust_level, "=", TrustLevel.UNKNOWN)
+                .without_null(this.identity_key_public_base64);
+        }
+
+        public Row? get_device(int identity_id, string address_name, int device_id) {
+            return this.with_address(identity_id, address_name)
+                .with(this.device_id, "=", device_id).single().row().inner;
+        }
     }
 
 
@@ -160,10 +188,12 @@ public class Database : Qlite.Database {
     }
 
     public override void migrate(long oldVersion) {
-        exec("DROP INDEX identity_meta_idx");
-        exec("DROP INDEX identity_meta_list_idx");
-        exec("CREATE UNIQUE INDEX identity_meta_idx ON identity_meta (identity_id, address_name, device_id)");
-        exec("CREATE INDEX identity_meta_list_idx ON identity_meta (identity_id, address_name)");
+        if(oldVersion == 1) {
+            exec("DROP INDEX identity_meta_idx");
+            exec("DROP INDEX identity_meta_list_idx");
+            exec("CREATE UNIQUE INDEX identity_meta_idx ON identity_meta (identity_id, address_name, device_id)");
+            exec("CREATE INDEX identity_meta_list_idx ON identity_meta (identity_id, address_name)");
+        }
     }
 }
 
