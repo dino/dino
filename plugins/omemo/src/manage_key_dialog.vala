@@ -31,26 +31,6 @@ public class ManageKeyDialog : Gtk.Dialog {
     private bool return_to_main;
     private int current_response;
 
-    private void handle_cancel() {
-        if (manage_stack.get_visible_child_name() == "main") close();
-
-        if (manage_stack.get_visible_child_name() == "verify") {
-            manage_stack.set_visible_child_name("main");
-            cancel_button.label = "Cancel";
-        }
-
-        if (manage_stack.get_visible_child_name() == "confirm") {
-            if (return_to_main) {
-                manage_stack.set_visible_child_name("main");
-                cancel_button.label = "Cancel";
-            } else {
-                manage_stack.set_visible_child_name("verify");
-            }
-        }
-
-        ok_button.sensitive = false;
-    }
-
     public ManageKeyDialog(Row device, Database db) {
         Object(use_header_bar : 1); 
 
@@ -83,6 +63,26 @@ public class ManageKeyDialog : Gtk.Dialog {
             confirm_desc.set_markup(@"Please verify that you are comparing the correct fingerprint. If fingerprints do not match <b>$(device[db.identity_meta.address_name])</b>'s account may be compromised and you should consider rejecting this key.");
             manage_stack.set_visible_child_name("confirm");
         });
+    }
+
+    private void handle_cancel() {
+        if (manage_stack.get_visible_child_name() == "main") close();
+
+        if (manage_stack.get_visible_child_name() == "verify") {
+            manage_stack.set_visible_child_name("main");
+            cancel_button.label = "Cancel";
+        }
+
+        if (manage_stack.get_visible_child_name() == "confirm") {
+            if (return_to_main) {
+                manage_stack.set_visible_child_name("main");
+                cancel_button.label = "Cancel";
+            } else {
+                manage_stack.set_visible_child_name("verify");
+            }
+        }
+
+        ok_button.sensitive = false;
     }
 
     private Box make_action_box(string title, string desc){

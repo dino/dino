@@ -29,6 +29,77 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private Image qrcode;
     [GtkChild] private Popover qrcode_popover;
 
+    public ContactDetailsDialog(Plugin plugin, Account account, Jid jid) {
+        Object(use_header_bar : 1);
+        this.plugin = plugin;
+        this.account = account;
+        this.jid = jid;
+
+        (get_header_bar() as HeaderBar).set_subtitle(jid.bare_jid.to_string());
+
+
+        if(jid.equals(account.bare_jid)) {
+            own = true;
+            own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
+
+            own_fingerprint_container.visible = true;
+
+            string own_b64 = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.identity_key_public_base64];
+            string fingerprint = fingerprint_from_base64(own_b64);
+            own_fingerprint.set_markup(fingerprint_markup(fingerprint));
+
+            copy.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
+
+            int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
+            Pixbuf pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2).to_pixbuf();
+            pixbuf = pixbuf.scale_simple(150, 150, InterpType.NEAREST);
+            qrcode.set_from_pixbuf(pixbuf);
+            show_qrcode.clicked.connect(qrcode_popover.popup);
+        }
+
+        new_keys.set_header_func((row, before_row) => {
+            if (row.get_header() == null && before_row != null) {
+                row.set_header(new Separator(Orientation.HORIZONTAL));
+            }
+        });
+
+        keys.set_header_func((row, before_row) => {
+            if (row.get_header() == null && before_row != null) {
+                row.set_header(new Separator(Orientation.HORIZONTAL));
+            }
+        });
+
+        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
+            add_new_fingerprint(device);
+        }
+
+        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
+            if(own && device[plugin.db.identity_meta.device_id] == own_id) {
+                continue;
+            }
+            add_fingerprint(device, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trust_level]);
+
+        }
+
+        auto_accept.set_active(plugin.db.trust.get_blind_trust(account.id, jid.bare_jid.to_string()));
+
+        auto_accept.state_set.connect((active) => {
+            plugin.db.trust.update().with(plugin.db.trust.identity_id, "=", account.id).with(plugin.db.trust.address_name, "=", jid.bare_jid.to_string()).set(plugin.db.trust.blind_trust, active).perform();
+
+            if (active) {
+                new_keys_container.visible = false;
+
+                foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
+                    set_device_trust(device, true);
+                    add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.TRUSTED);
+                }
+            }
+
+            return false;
+        });
+
+    }
+
     private void set_device_trust(Row device, bool trust) {
         Database.IdentityMetaTable.TrustLevel trust_level = trust ? Database.IdentityMetaTable.TrustLevel.TRUSTED : Database.IdentityMetaTable.TrustLevel.UNTRUSTED;
         plugin.db.identity_meta.update()
@@ -168,78 +239,6 @@ public class ContactDetailsDialog : Gtk.Dialog {
         lbr.add(box);
         new_keys.add(lbr);
     }
-
-    public ContactDetailsDialog(Plugin plugin, Account account, Jid jid) {
-        Object(use_header_bar : 1);
-        this.plugin = plugin;
-        this.account = account;
-        this.jid = jid;
-
-        (get_header_bar() as HeaderBar).set_subtitle(jid.bare_jid.to_string());
-
-
-        if(jid.equals(account.bare_jid)) {
-            own = true;
-            own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
-
-            own_fingerprint_container.visible = true;
-
-            string own_b64 = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.identity_key_public_base64];
-            string fingerprint = fingerprint_from_base64(own_b64);
-            own_fingerprint.set_markup(fingerprint_markup(fingerprint));
-
-            copy.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
-
-            int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
-            Pixbuf pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2).to_pixbuf();
-            pixbuf = pixbuf.scale_simple(150, 150, InterpType.NEAREST);
-            qrcode.set_from_pixbuf(pixbuf);
-            show_qrcode.clicked.connect(qrcode_popover.popup);
-        }
-
-        new_keys.set_header_func((row, before_row) => {
-            if (row.get_header() == null && before_row != null) {
-                row.set_header(new Separator(Orientation.HORIZONTAL));
-            }
-        });
-
-        keys.set_header_func((row, before_row) => {
-            if (row.get_header() == null && before_row != null) {
-                row.set_header(new Separator(Orientation.HORIZONTAL));
-            }
-        });
-
-        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
-            add_new_fingerprint(device);
-        }
-
-        foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "!=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
-            if(own && device[plugin.db.identity_meta.device_id] == own_id) {
-                continue;
-            }
-            add_fingerprint(device, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trust_level]);
-
-        }
-
-        auto_accept.set_active(plugin.db.trust.get_blind_trust(account.id, jid.bare_jid.to_string()));
-
-        auto_accept.state_set.connect((active) => {
-            plugin.db.trust.update().with(plugin.db.trust.identity_id, "=", account.id).with(plugin.db.trust.address_name, "=", jid.bare_jid.to_string()).set(plugin.db.trust.blind_trust, active).perform();
-
-            if (active) {
-                new_keys_container.visible = false;
-
-                foreach (Row device in plugin.db.identity_meta.with_address(account.id, jid.to_string()).with(plugin.db.identity_meta.trust_level, "=", Database.IdentityMetaTable.TrustLevel.UNKNOWN).without_null(plugin.db.identity_meta.identity_key_public_base64)) {
-                    set_device_trust(device, true);
-                    add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.TRUSTED);
-                }
-            }
-
-            return false;
-        });
-
-    }
-
 }
 
 }
