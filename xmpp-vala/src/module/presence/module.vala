@@ -15,12 +15,8 @@ namespace Xmpp.Presence {
         public signal void received_subscription_request(XmppStream stream, Jid jid);
         public signal void received_subscription_approval(XmppStream stream, Jid jid);
         public signal void received_unsubscription(XmppStream stream, Jid jid);
-        public signal void mutual_subscription(XmppStream stream, Jid jid);
 
         public bool available_resource = true;
-
-        private Gee.List<Jid> subscriptions = new ArrayList<Jid>(Jid.equals_bare_func);
-        private Gee.List<Jid> subscribers = new ArrayList<Jid>(Jid.equals_bare_func);
 
         public void request_subscription(XmppStream stream, Jid bare_jid) {
             Presence.Stanza presence = new Presence.Stanza();
@@ -34,8 +30,6 @@ namespace Xmpp.Presence {
             presence.to = bare_jid;
             presence.type_ = Presence.Stanza.TYPE_SUBSCRIBED;
             send_presence(stream, presence);
-            subscribers.add(bare_jid);
-            if (subscriptions.contains(bare_jid)) mutual_subscription(stream, bare_jid);
         }
 
         public void deny_subscription(XmppStream stream, Jid bare_jid) {
@@ -47,7 +41,6 @@ namespace Xmpp.Presence {
             presence.to = bare_jid;
             presence.type_ = Presence.Stanza.TYPE_UNSUBSCRIBED;
             send_presence(stream, presence);
-            subscribers.remove(bare_jid);
         }
 
         public void unsubscribe(XmppStream stream, Jid bare_jid) {
@@ -55,7 +48,6 @@ namespace Xmpp.Presence {
             presence.to = bare_jid;
             presence.type_ = Presence.Stanza.TYPE_UNSUBSCRIBE;
             send_presence(stream, presence);
-            subscriptions.remove(bare_jid);
         }
 
         public void send_presence(XmppStream stream, Presence.Stanza presence) {
@@ -92,16 +84,12 @@ namespace Xmpp.Presence {
                     break;
                 case Presence.Stanza.TYPE_SUBSCRIBED:
                     received_subscription_approval(stream, presence.from);
-                    subscriptions.add(presence.from);
-                    if (subscribers.contains(presence.from)) mutual_subscription(stream, presence.from);
                     break;
                 case Presence.Stanza.TYPE_UNSUBSCRIBE:
                     stream.get_flag(Flag.IDENTITY).remove_presence(presence.from);
                     received_unsubscription(stream, presence.from);
-                    subscribers.remove(presence.from);
                     break;
                 case Presence.Stanza.TYPE_UNSUBSCRIBED:
-                    subscriptions.remove(presence.from);
                     break;
             }
         }

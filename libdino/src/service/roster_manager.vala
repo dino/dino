@@ -11,6 +11,7 @@ public class RosterManager : StreamInteractionModule, Object {
 
     public signal void removed_roster_item(Account account, Jid jid, Roster.Item roster_item);
     public signal void updated_roster_item(Account account, Jid jid, Roster.Item roster_item);
+    public signal void mutual_subscription(Account account, Jid jid);
 
     private StreamInteractor stream_interactor;
     private Database db;
@@ -65,6 +66,10 @@ public class RosterManager : StreamInteractionModule, Object {
         });
         stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).item_updated.connect_after( (stream, roster_item) => {
             on_roster_item_updated(account, roster_item);
+        });
+
+        stream_interactor.module_manager.get_module(account, Roster.Module.IDENTITY).mutual_subscription.connect_after( (stream, jid) => {
+            mutual_subscription(account, jid);
         });
     }
 

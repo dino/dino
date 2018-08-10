@@ -70,7 +70,7 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
-        stream_interactor.get_module(PresenceManager.IDENTITY).mutual_subscription.connect(on_mutual_subscription);
+        stream_interactor.get_module(RosterManager.IDENTITY).mutual_subscription.connect(on_mutual_subscription);
     }
 
     private class ReceivedMessageListener : MessageListener {
@@ -174,7 +174,7 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_mutual_subscription(Jid jid, Account account) {
+    private void on_mutual_subscription(Account account, Jid jid) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if(stream == null) return;
 
