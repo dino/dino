@@ -30,8 +30,8 @@ public class OwnNotifications {
     }
 
     private void display_notification() {
-        Notification notification = new Notification("Trust decision required");
-        notification.set_body(@"A new OMEMO device has been added for the account $(account.bare_jid)");
+        Notification notification = new Notification(_("Trust decision required"));
+        notification.set_body(_("A new OMEMO device has been added for the account %s").printf("$(account.jid.bare_jid)"));
         plugin.app.send_notification(account.id.to_string()+"-new-device", notification);
     }
 }

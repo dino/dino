@@ -170,11 +170,11 @@ public class TrustManager {
                 }
                 Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.get_device(conversation.account.id, jid.bare_jid.to_string(), header.get_attribute_int("sid"))[db.identity_meta.trust_level];
                 if (trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED) {
-                    message.body = "OMEMO message from a rejected device";
+                    message.body = _("OMEMO message from a rejected device");
                     message.marked = Message.Marked.WONTSEND;
                 }
                 if (trust_level == Database.IdentityMetaTable.TrustLevel.UNKNOWN) {
-                    message.body = "OMEMO message from an unknown device: "+message.body;
+                    message.body = _("OMEMO message from an unknown device: ")+message.body;
                     message.marked = Message.Marked.WONTSEND;
                 }
             }

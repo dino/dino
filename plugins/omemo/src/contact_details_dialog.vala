@@ -105,22 +105,22 @@ public class ContactDetailsDialog : Gtk.Dialog {
         switch(trust) {
             case Database.IdentityMetaTable.TrustLevel.TRUSTED:
                 img.icon_name = "emblem-ok-symbolic";
-                status_lbl.set_markup("<span color='#1A63D9'>Accepted</span>");
+                status_lbl.set_markup("<span color='#1A63D9'>%s</span>".printf(_("Accepted")));
                 break;
             case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
                 img.icon_name = "action-unavailable-symbolic";
-                status_lbl.set_markup("<span color='#D91900'>Rejected</span>");
+                status_lbl.set_markup("<span color='#D91900'>%s</span>".printf(_("Rejected")));
                 lbl.get_style_context().add_class("dim-label");
                 break;
             case Database.IdentityMetaTable.TrustLevel.VERIFIED:
                 img.icon_name = "security-high-symbolic";
-                status_lbl.set_markup("<span color='#1A63D9'>Verified</span>");
+                status_lbl.set_markup("<span color='#1A63D9'>%s</span>".printf(_("Verified")));
                 break;
         }
 
         if (!now_active) {
             img.icon_name= "appointment-missed-symbolic";
-            status_lbl.set_markup("<span color='#8b8e8f'>Unused</span>");
+            status_lbl.set_markup("<span color='#8b8e8f'>%s</span>".printf(_("Unused")));
             lbr.activatable = false;
         }
     }
