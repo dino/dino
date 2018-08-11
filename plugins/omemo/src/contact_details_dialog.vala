@@ -106,6 +106,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             case Database.IdentityMetaTable.TrustLevel.TRUSTED:
                 img.icon_name = "emblem-ok-symbolic";
                 status_lbl.set_markup("<span color='#1A63D9'>%s</span>".printf(_("Accepted")));
+                lbl.get_style_context().remove_class("dim-label");
                 break;
             case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
                 img.icon_name = "action-unavailable-symbolic";
@@ -115,6 +116,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             case Database.IdentityMetaTable.TrustLevel.VERIFIED:
                 img.icon_name = "security-high-symbolic";
                 status_lbl.set_markup("<span color='#1A63D9'>%s</span>".printf(_("Verified")));
+                lbl.get_style_context().remove_class("dim-label");
                 break;
         }
 
