@@ -32,7 +32,7 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
             Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
             if (occupants != null) muc_jids.add_all(occupants);
             Gee.List<Jid>? offline_members = stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account);
-            if (occupants != null) muc_jids.add_all(offline_members);
+            if (offline_members != null) muc_jids.add_all(offline_members);
 
             foreach (Jid jid in muc_jids) {
                 string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, jid);
