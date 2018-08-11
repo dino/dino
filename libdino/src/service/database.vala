@@ -282,8 +282,29 @@ public class Database : Qlite.Database {
     }
 
     public Gee.List<Message> get_messages(Xmpp.Jid jid, Account account, Message.Type? type, int count, DateTime? before, DateTime? after, int id) {
-        QueryBuilder select = message.select()
-                .with(message.counterpart_id, "=", get_jid_id(jid))
+        QueryBuilder select = message.select();
+
+        if (before != null) {
+            if (id > 0) {
+                select.where(@"local_time < ? OR (local_time = ? AND id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
+            } else {
+                select.with(message.id, "<", id);
+            }
+        }
+        if (after != null) {
+            if (id > 0) {
+                select.where(@"local_time > ? OR (local_time = ? AND id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
+            } else {
+                select.with(message.local_time, ">", (long) after.to_unix());
+            }
+            if (id > 0) {
+                select.with(message.id, ">", id);
+            }
+        } else {
+            select.order_by(message.id, "DESC");
+        }
+
+        select.with(message.counterpart_id, "=", get_jid_id(jid))
                 .with(message.account_id, "=", account.id)
                 .limit(count);
         if (jid.resourcepart != null) {
@@ -291,20 +312,6 @@ public class Database : Qlite.Database {
         }
         if (type != null) {
             select.with(message.type_, "=", (int) type);
-        }
-        if (before != null) {
-            select.with(message.local_time, "<", (long) before.to_unix());
-            if (id > 0) {
-                select.with(message.id, "<", id);
-            }
-        }
-        if (after != null) {
-            select.with(message.local_time, ">", (long) after.to_unix());
-            if (id > 0) {
-                select.with(message.id, ">", id);
-            }
-        } else {
-            select.order_by(message.id, "DESC");
         }
 
         LinkedList<Message> ret = new LinkedList<Message>();
