@@ -316,9 +316,11 @@ public class Manager : StreamInteractionModule, Object {
     private void on_store_created(Account account, Store store) {
         Qlite.Row? row = db.identity.row_with(db.identity.account_id, account.id).inner;
         int identity_id = -1;
+        bool publish_identity = false;
 
         if (row == null) {
             // OMEMO not yet initialized, starting with empty base
+            publish_identity = true;
             try {
                 store.identity_key_store.local_registration_id = Random.int_range(1, int32.MAX);
 
@@ -349,14 +351,21 @@ public class Manager : StreamInteractionModule, Object {
         } else {
             print(@"OMEMO: store for $(account.bare_jid) is not persisted!");
         }
+
+        // Generated new device ID, ensure this gets added to the devicelist
+        if (publish_identity) {
+            XmppStream? stream = stream_interactor.get_stream(account);
+            if (stream == null) return;
+            StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
+            if(module == null) return;
+            module.request_user_devicelist(stream, account.bare_jid);
+        }
     }
 
 
     public bool can_encrypt(Entities.Conversation conversation) {
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return false;
-        StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
-        if (module == null) return false;
         if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(conversation.counterpart, conversation.account)){
             Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
             if (flag == null) return false;
