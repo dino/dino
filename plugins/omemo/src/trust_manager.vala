@@ -24,7 +24,7 @@ public class TrustManager {
         db.trust.update()
             .with(db.trust.identity_id, "=", account.id)
             .with(db.trust.address_name, "=", jid.bare_jid.to_string())
-            .set(db.trust.blind_trust, blind_trust);
+            .set(db.trust.blind_trust, blind_trust).perform();
     }
 
     public void set_device_trust(Account account, Jid jid, int device_id, Database.IdentityMetaTable.TrustLevel trust_level) {
