@@ -141,16 +141,16 @@ public class ManageKeyDialog : Gtk.Dialog {
 
         switch((Database.IdentityMetaTable.TrustLevel) device[db.identity_meta.trust_level]) {
             case Database.IdentityMetaTable.TrustLevel.TRUSTED:
-                main_desc_label.set_markup(_("This key is currently %saccepted%s. This means it can be used by %s to receive and send messages.").printf("<span color='#1A63D9'>", "</span>", @"<b>$(device[db.identity_meta.address_name])</b>"));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("accepted")+"</span>")+" "+_("This means it can be used by %s to receive and send messages.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(verify_row);
                 main_action_list.add(reject_row);
                 break;
             case Database.IdentityMetaTable.TrustLevel.VERIFIED:
-                main_desc_label.set_markup(_("This key is currently %sverified%s. This means it can be used by %s to receive and send messages. Additionally it has been verified out-of-band to match the key on the contact's device.").printf("<span color='#1A63D9'>", "</span>", @"<b>$(device[db.identity_meta.address_name])</b>"));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("verified")+"</span>")+" "+_("This means it can be used by %s to receive and send messages. Additionally it has been verified to match the key on the contact's device.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(reject_row);
                 break;
             case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
-                main_desc_label.set_markup(_("This key is currently %srejected%s. This means it cannot be used by %s to receive messages, and any messages sent by it will be ignored").printf("<span color='#D91900'>", "</span>", @"<b>$(device[db.identity_meta.address_name])</b>"));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#D91900'>"+_("rejected")+"</span>")+" "+_("This means it cannot be used by %s to receive messages, and any messages sent by it will be ignored").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(accept_row);
                 break;
         }
