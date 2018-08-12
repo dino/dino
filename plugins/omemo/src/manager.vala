@@ -203,12 +203,15 @@ public class Manager : StreamInteractionModule, Object {
             return;
         }
 
+        int identity_id = db.identity.get_id(account.id);
+        if (identity_id < 0) return;
+
         //Update meta database
-        db.identity_meta.insert_device_list(account.id, jid.bare_jid.to_string(), device_list);
+        db.identity_meta.insert_device_list(identity_id, jid.bare_jid.to_string(), device_list);
 
         //Fetch the bundle for each new device
         int inc = 0;
-        foreach (Row row in db.identity_meta.get_unknown_devices(account.id, jid.bare_jid.to_string())) {
+        foreach (Row row in db.identity_meta.get_unknown_devices(identity_id, jid.bare_jid.to_string())) {
             module.fetch_bundle(stream, Jid.parse(row[db.identity_meta.address_name]), row[db.identity_meta.device_id]);
             inc++;
         }
@@ -217,8 +220,8 @@ public class Manager : StreamInteractionModule, Object {
         }
 
         //Create an entry for the jid in the account table if one does not exist already
-        if (db.trust.select().with(db.trust.identity_id, "=", account.id).with(db.trust.address_name, "=", jid.bare_jid.to_string()).count() == 0) {
-            db.trust.insert().value(db.trust.identity_id, account.id).value(db.trust.address_name, jid.bare_jid.to_string()).value(db.trust.blind_trust, true).perform();
+        if (db.trust.select().with(db.trust.identity_id, "=", identity_id).with(db.trust.address_name, "=", jid.bare_jid.to_string()).count() == 0) {
+            db.trust.insert().value(db.trust.identity_id, identity_id).value(db.trust.address_name, jid.bare_jid.to_string()).value(db.trust.blind_trust, true).perform();
         }
 
         //Get all messages that needed the devicelist and determine if we can now send them
@@ -249,16 +252,19 @@ public class Manager : StreamInteractionModule, Object {
     }
 
     public void on_bundle_fetched(Account account, Jid jid, int32 device_id, Bundle bundle) {
-        bool blind_trust = db.trust.get_blind_trust(account.id, jid.bare_jid.to_string());
+        int identity_id = db.identity.get_id(account.id);
+        if (identity_id < 0) return;
+
+        bool blind_trust = db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string());
 
         //If we don't blindly trust new devices and we haven't seen this key before then don't trust it
-        bool untrust = !(blind_trust || db.identity_meta.with_address(account.id, jid.bare_jid.to_string())
+        bool untrust = !(blind_trust || db.identity_meta.with_address(identity_id, jid.bare_jid.to_string())
                 .with(db.identity_meta.device_id, "=", device_id)
                 .with(db.identity_meta.identity_key_public_base64, "=", Base64.encode(bundle.identity_key.serialize()))
                 .single().row().is_present());
 
         //Get trust information from the database if the device id is known
-        Row device = db.identity_meta.get_device(account.id, jid.bare_jid.to_string(), device_id);
+        Row device = db.identity_meta.get_device(identity_id, jid.bare_jid.to_string(), device_id);
         Database.IdentityMetaTable.TrustLevel trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
         if (device != null) {
             trusted = (Database.IdentityMetaTable.TrustLevel) device[db.identity_meta.trust_level];
@@ -271,7 +277,7 @@ public class Manager : StreamInteractionModule, Object {
         }
 
         //Update the database with the appropriate trust information
-        db.identity_meta.insert_device_bundle(account.id, jid.bare_jid.to_string(), device_id, bundle, trusted);
+        db.identity_meta.insert_device_bundle(identity_id, jid.bare_jid.to_string(), device_id, bundle, trusted);
 
         XmppStream? stream = stream_interactor.get_stream(account);
         if(stream == null) return;

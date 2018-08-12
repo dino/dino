@@ -21,15 +21,18 @@ public class TrustManager {
     }
 
     public void set_blind_trust(Account account, Jid jid, bool blind_trust) {
+        int identity_id = db.identity.get_id(account.id);
+        if (identity_id < 0) return;
         db.trust.update()
-            .with(db.trust.identity_id, "=", account.id)
+            .with(db.trust.identity_id, "=", identity_id)
             .with(db.trust.address_name, "=", jid.bare_jid.to_string())
             .set(db.trust.blind_trust, blind_trust).perform();
     }
 
     public void set_device_trust(Account account, Jid jid, int device_id, Database.IdentityMetaTable.TrustLevel trust_level) {
+        int identity_id = db.identity.get_id(account.id);
         db.identity_meta.update()
-            .with(db.identity_meta.identity_id, "=", account.id)
+            .with(db.identity_meta.identity_id, "=", identity_id)
             .with(db.identity_meta.address_name, "=", jid.bare_jid.to_string())
             .with(db.identity_meta.device_id, "=", device_id)
             .set(db.identity_meta.trust_level, trust_level).perform();
@@ -135,12 +138,16 @@ public class TrustManager {
     }
 
     public bool is_known_address(Account account, Jid jid) {
-        return db.identity_meta.with_address(account.id, jid.to_string()).count() > 0;
+        int identity_id = db.identity.get_id(account.id);
+        if (identity_id < 0) return false;
+        return db.identity_meta.with_address(identity_id, jid.to_string()).count() > 0;
     }
 
     public Gee.List<int32> get_trusted_devices(Account account, Jid jid) {
         Gee.List<int32> devices = new ArrayList<int32>();
-        foreach (Row device in db.identity_meta.get_trusted_devices(account.id, jid.bare_jid.to_string())) {
+        int identity_id = db.identity.get_id(account.id);
+        if (identity_id < 0) return devices;
+        foreach (Row device in db.identity_meta.get_trusted_devices(identity_id, jid.bare_jid.to_string())) {
             if(device[db.identity_meta.trust_level] != Database.IdentityMetaTable.TrustLevel.UNKNOWN || device[db.identity_meta.identity_key_public_base64] == null)
                 devices.add(device[db.identity_meta.device_id]);
         }
@@ -163,12 +170,14 @@ public class TrustManager {
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
             MessageFlag? flag = MessageFlag.get_flag(stanza);
             if(flag != null && ((!)flag).decrypted) {
+                int identity_id = db.identity.get_id(conversation.account.id);
+                if (identity_id < 0) return false;
                 StanzaNode header = stanza.stanza.get_subnode("encrypted", "eu.siacs.conversations.axolotl").get_subnode("header");
                 Jid jid = message.from;
                 if(conversation.type_ == Conversation.Type.GROUPCHAT) {
                     jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
                 }
-                Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.get_device(conversation.account.id, jid.bare_jid.to_string(), header.get_attribute_int("sid"))[db.identity_meta.trust_level];
+                Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.get_device(identity_id, jid.bare_jid.to_string(), header.get_attribute_int("sid"))[db.identity_meta.trust_level];
                 if (trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED) {
                     message.body = _("OMEMO message from a rejected device");
                     message.marked = Message.Marked.WONTSEND;

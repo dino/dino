@@ -17,8 +17,11 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, WidgetType type) {
         if (conversation.type_ == Conversation.Type.CHAT && type == WidgetType.GTK) {
 
+            int identity_id = plugin.db.identity.get_id(conversation.account.id);
+            if (identity_id < 0) return;
+
             int i = 0;
-            foreach (Row row in plugin.db.identity_meta.with_address(conversation.account.id, conversation.counterpart.to_string())) {
+            foreach (Row row in plugin.db.identity_meta.with_address(identity_id, conversation.counterpart.to_string())) {
                 if (row[plugin.db.identity_meta.identity_key_public_base64] != null) {
                     i++;
                 }

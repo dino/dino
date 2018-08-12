@@ -26,7 +26,10 @@ public class OwnNotifications {
     }
 
     public bool has_new_devices(Jid jid) {
-        return plugin.db.identity_meta.get_new_devices(account.id, jid.bare_jid.to_string()).count() > 0;
+        int identity_id = plugin.db.identity.get_id(account.id);
+        if (identity_id < 0) return false;
+
+        return plugin.db.identity_meta.get_new_devices(identity_id, jid.bare_jid.to_string()).count() > 0;
     }
 
     private void display_notification() {

@@ -43,7 +43,7 @@ public class Database : Qlite.Database {
         }
 
         public void insert_device_list(int32 identity_id, string address_name, ArrayList<int32> devices) {
-            update().with(this.address_name, "=", address_name).set(now_active, false).perform();
+            update().with(this.identity_id, "=", identity_id).with(this.address_name, "=", address_name).set(now_active, false).perform();
             foreach (int32 device_id in devices) {
                 upsert()
                         .value(this.identity_id, identity_id, true)
@@ -123,6 +123,13 @@ public class Database : Qlite.Database {
         internal IdentityTable(Database db) {
             base(db, "identity");
             init({id, account_id, device_id, identity_key_private_base64, identity_key_public_base64});
+        }
+
+        public int get_id(int account_id) {
+            int id = -1;
+            Row? row = this.row_with(this.account_id, account_id).inner;
+            if (row != null) id = ((!)row)[this.id];
+            return id;
         }
     }
 

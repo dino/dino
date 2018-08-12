@@ -37,6 +37,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         (get_header_bar() as HeaderBar).set_subtitle(jid.bare_jid.to_string());
 
+        int identity_id = plugin.db.identity.get_id(account.id);
+        if (identity_id < 0) return;
 
          // Dialog opened from the account settings menu
          // Show the fingerprint for this device separately with buttons for a qrcode and to copy
@@ -64,19 +66,19 @@ public class ContactDetailsDialog : Gtk.Dialog {
         keys_listbox.set_header_func(header_function);
 
         //Show any new devices for which the user must decide whether to accept or reject
-        foreach (Row device in plugin.db.identity_meta.get_new_devices(account.id, jid.to_string())) {
+        foreach (Row device in plugin.db.identity_meta.get_new_devices(identity_id, jid.to_string())) {
             add_new_fingerprint(device);
         }
 
         //Show the normal devicelist
-        foreach (Row device in plugin.db.identity_meta.get_known_devices(account.id, jid.to_string())) {
+        foreach (Row device in plugin.db.identity_meta.get_known_devices(identity_id, jid.to_string())) {
             if(own && device[plugin.db.identity_meta.device_id] == own_id) {
                 continue;
             }
             add_fingerprint(device, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trust_level]);
         }
 
-        auto_accept_switch.set_active(plugin.db.trust.get_blind_trust(account.id, jid.bare_jid.to_string()));
+        auto_accept_switch.set_active(plugin.db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string()));
 
         auto_accept_switch.state_set.connect((active) => {
             plugin.trust_manager.set_blind_trust(account, jid, active);
@@ -84,7 +86,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             if (active) {
                 new_keys_container.visible = false;
 
-                foreach (Row device in plugin.db.identity_meta.get_new_devices(account.id, jid.to_string())) {
+                foreach (Row device in plugin.db.identity_meta.get_new_devices(identity_id, jid.to_string())) {
                     plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.TRUSTED);
                     add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.TRUSTED);
                 }
