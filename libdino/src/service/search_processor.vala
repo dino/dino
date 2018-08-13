@@ -63,7 +63,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
             .outer_join_with(db.real_jid, db.real_jid.message_id, db.message.id)
             .with(db.account.enabled, "=", true);
         if (join_content) {
-            rows.join_on(db.content, "message.id=contentx.foreign_id AND contentx.content_type=1")
+            rows.join_on(db.content, "message.id=content_item.foreign_id AND content_item.content_type=1")
                 .with(db.content.content_type, "=", 1);
         }
         if (with != null) {
@@ -226,7 +226,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
 
     public Gee.List<MessageItem> match_messages(string query, int offset = -1) {
         Gee.List<MessageItem> ret = new ArrayList<MessageItem>();
-        QueryBuilder rows = prepare_search(query, false).limit(10);
+        QueryBuilder rows = prepare_search(query, true).limit(10);
         if (offset > 0) {
             rows.offset(offset);
         }

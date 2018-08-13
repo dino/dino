@@ -43,7 +43,7 @@ public class Database : Qlite.Database {
         public Column<int> foreign_id = new Column.Integer("foreign_id") { not_null = true };
 
         internal ContentTable(Database db) {
-            base(db, "contentx");
+            base(db, "content_item");
             init({id, conversation_id, time, local_time, content_type, foreign_id});
             unique({content_type, foreign_id}, "IGNORE");
         }
@@ -228,7 +228,7 @@ public class Database : Qlite.Database {
             message.fts_rebuild();
         } else if (oldVersion < 8) {
             exec("""
-            insert into contentx (conversation_id, time, local_time, content_type, foreign_id)
+            insert into content_item (conversation_id, time, local_time, content_type, foreign_id)
             select conversation.id, message.time, message.local_time, 1, message.id
             from message join conversation on
                 message.account_id=conversation.account_id and
