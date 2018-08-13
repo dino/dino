@@ -126,10 +126,9 @@ public class ContentItemStore : StreamInteractionModule, Object {
         }
     }
 
-    private void insert_file_transfer(FileTransfer file_transfer) {
+    private void insert_file_transfer(FileTransfer file_transfer, Conversation conversation) {
         FileItem item = new FileItem(file_transfer, -1);
         if (!discard(item)) {
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart, file_transfer.account);
             item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id);
 
             if (collection_conversations.has_key(conversation)) {

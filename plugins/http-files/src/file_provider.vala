@@ -90,7 +90,7 @@ public class FileProvider : Dino.FileProvider, Object {
                             file_transfer.state = FileTransfer.State.NOT_STARTED;
                             file_transfer.provider = 0;
                             file_transfer.info = message.id.to_string();
-                            file_incoming(file_transfer);
+                            file_incoming(file_transfer, conversation);
                             success = true;
                             Idle.add((owned)callback);
                         });

@@ -239,11 +239,15 @@ public class Database : Qlite.Database {
                 message.body not in (select info from file_transfer where info not null) and
                 message.id not in (select info from file_transfer where info not null)
             union
-            select conversation.id, file_transfer.time, file_transfer.local_time, 2, file_transfer.id
-            from file_transfer join conversation on
+            select conversation.id, message.time, message.local_time, 2, file_transfer.id
+            from file_transfer
+            join message on
+                file_transfer.info=message.id
+            join conversation on
                 file_transfer.account_id=conversation.account_id and
-                file_transfer.counterpart_id=conversation.jid_id
-            order by message.local_time, message.time""");
+                file_transfer.counterpart_id=conversation.jid_id and
+                message.type=conversation.type+1 and
+                (message.counterpart_resource=conversation.resource or message.type != 3)""");
         }
     }
 

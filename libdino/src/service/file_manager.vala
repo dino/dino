@@ -11,7 +11,7 @@ public class FileManager : StreamInteractionModule, Object {
     public string id { get { return IDENTITY.id; } }
 
     public signal void upload_available(Account account);
-    public signal void received_file(FileTransfer file_transfer);
+    public signal void received_file(FileTransfer file_transfer, Conversation conversation);
 
     private StreamInteractor stream_interactor;
     private Database db;
@@ -68,7 +68,7 @@ public class FileManager : StreamInteractionModule, Object {
                 file_sender.send_file(conversation, file_transfer);
             }
         }
-        received_file(file_transfer);
+        received_file(file_transfer, conversation);
     }
 
     public bool is_upload_available(Conversation conversation) {
@@ -134,7 +134,7 @@ public class FileManager : StreamInteractionModule, Object {
         outgoing_processors.add(processor);
     }
 
-    private void handle_incomming_file(FileTransfer file_transfer) {
+    private void handle_incomming_file(FileTransfer file_transfer, Conversation conversation) {
         foreach (IncommingFileProcessor processor in incomming_processors) {
             if (processor.can_process(file_transfer)) {
                 processor.process(file_transfer);
@@ -148,7 +148,7 @@ public class FileManager : StreamInteractionModule, Object {
         } catch (Error e) { }
 
         file_transfer.persist(db);
-        received_file(file_transfer);
+        received_file(file_transfer, conversation);
     }
 
     private void save_file(FileTransfer file_transfer) {
@@ -169,7 +169,7 @@ public class FileManager : StreamInteractionModule, Object {
 }
 
 public interface FileProvider : Object {
-    public signal void file_incoming(FileTransfer file_transfer);
+    public signal void file_incoming(FileTransfer file_transfer, Conversation conversation);
 }
 
 public interface FileSender : Object {
