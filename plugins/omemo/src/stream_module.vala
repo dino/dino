@@ -20,7 +20,6 @@ public class StreamModule : XmppStreamModule {
     private ConcurrentSet<string> active_bundle_requests = new ConcurrentSet<string>();
     private ConcurrentSet<Jid> active_devicelist_requests = new ConcurrentSet<Jid>();
     private Map<Jid, ArrayList<int32>> ignored_devices = new HashMap<Jid, ArrayList<int32>>(Jid.hash_bare_func, Jid.equals_bare_func);
-    private ReceivedPipelineListener received_pipeline_listener;
 
     public signal void store_created(Store store);
     public signal void device_list_loaded(Jid jid, ArrayList<int32> devices);
@@ -31,13 +30,10 @@ public class StreamModule : XmppStreamModule {
 
         this.store = Plugin.get_context().create_store();
         store_created(store);
-        received_pipeline_listener = new ReceivedPipelineListener(store);
-        stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_listener);
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
     }
 
     public override void detach(XmppStream stream) {
-        stream.get_module(MessageModule.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
     }
 
     public void request_user_devicelist(XmppStream stream, Jid jid) {
@@ -270,82 +266,6 @@ public class StreamModule : XmppStreamModule {
 
     public override string get_id() {
         return IDENTITY.id;
-    }
-}
-
-
-public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
-
-    private const string[] after_actions_const = {"EXTRACT_MESSAGE_2"};
-
-    public override string action_group { get { return "ENCRYPT_BODY"; } }
-    public override string[] after_actions { get { return after_actions_const; } }
-
-    private Store store;
-
-    public ReceivedPipelineListener(Store store) {
-        this.store = store;
-    }
-
-    public override async bool run(XmppStream stream, MessageStanza message) {
-        StanzaNode? _encrypted = message.stanza.get_subnode("encrypted", NS_URI);
-        if (_encrypted == null || MessageFlag.get_flag(message) != null || message.from == null) return false;
-        StanzaNode encrypted = (!)_encrypted;
-        if (!Plugin.ensure_context()) return false;
-        MessageFlag flag = new MessageFlag();
-        message.add_flag(flag);
-        StanzaNode? _header = encrypted.get_subnode("header");
-        if (_header == null) return false;
-        StanzaNode header = (!)_header;
-        if (header.get_attribute_int("sid") <= 0) return false;
-        foreach (StanzaNode key_node in header.get_subnodes("key")) {
-            if (key_node.get_attribute_int("rid") == store.local_registration_id) {
-                try {
-                    string? payload = encrypted.get_deep_string_content("payload");
-                    string? iv_node = header.get_deep_string_content("iv");
-                    string? key_node_content = key_node.get_string_content();
-                    if (payload == null || iv_node == null || key_node_content == null) continue;
-                    uint8[] key;
-                    uint8[] ciphertext = Base64.decode((!)payload);
-                    uint8[] iv = Base64.decode((!)iv_node);
-                    Address address = new Address(message.from.bare_jid.to_string(), header.get_attribute_int("sid"));
-                    if (key_node.get_attribute_bool("prekey")) {
-                        PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
-                        SessionCipher cipher = store.create_session_cipher(address);
-                        key = cipher.decrypt_pre_key_signal_message(msg);
-                    } else {
-                        SignalMessage msg = Plugin.get_context().deserialize_signal_message(Base64.decode((!)key_node_content));
-                        SessionCipher cipher = store.create_session_cipher(address);
-                        key = cipher.decrypt_signal_message(msg);
-                    }
-                    address.device_id = 0; // TODO: Hack to have address obj live longer
-
-                    if (key.length >= 32) {
-                        int authtaglength = key.length - 16;
-                        uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
-                        uint8[] new_key = new uint8[16];
-                        Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
-                        Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
-                        Memory.copy(new_key, key, 16);
-                        ciphertext = new_ciphertext;
-                        key = new_key;
-                    }
-
-                    message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
-                    flag.decrypted = true;
-                } catch (Error e) {
-                    if (Plugin.DEBUG) print(@"OMEMO: Signal error while decrypting message: $(e.message)\n");
-                }
-            }
-        }
-        return false;
-    }
-
-    private string arr_to_str(uint8[] arr) {
-        // null-terminate the array
-        uint8[] rarr = new uint8[arr.length+1];
-        Memory.copy(rarr, arr, arr.length);
-        return (string)rarr;
     }
 }
 
