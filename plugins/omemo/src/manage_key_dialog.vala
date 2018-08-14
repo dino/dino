@@ -11,16 +11,13 @@ public class ManageKeyDialog : Gtk.Dialog {
     [GtkChild] private Button cancel_button;
     [GtkChild] private Button ok_button;
 
-    [GtkChild] private Box main_screen;
     [GtkChild] private Label main_desc_label;
     [GtkChild] private ListBox main_action_list;
 
-    [GtkChild] private Box confirm_screen;
     [GtkChild] private Image confirm_image;
     [GtkChild] private Label confirm_title_label;
     [GtkChild] private Label confirm_desc_label;
 
-    [GtkChild] private Box verify_screen;
     [GtkChild] private Label verify_label;
     [GtkChild] private Button verify_yes_button;
     [GtkChild] private Button verify_no_button;
@@ -103,27 +100,6 @@ public class ManageKeyDialog : Gtk.Dialog {
 
         return box;
     }   
-
-    private Box make_trust_screen(string icon_name, string title, string desc) {
-        Box box = new Box(Orientation.VERTICAL, 12) { margin = 12, spacing = 12 };
-        Image icon = new Image.from_icon_name(icon_name, IconSize.DIALOG) { visible = true };
-        box.add(icon);
-        Label lbl_title = new Label(title) { visible = true };
-        Label lbl_desc = new Label(desc) { visible = true, use_markup = true, max_width_chars = 1, wrap = true, justify = Justification.CENTER };
-
-        Pango.AttrList title_attrs = new Pango.AttrList();
-        title_attrs.insert(Pango.attr_scale_new(1.1));
-        lbl_title.attributes = title_attrs;
-        Pango.AttrList desc_attrs = new Pango.AttrList();
-        desc_attrs.insert(Pango.attr_scale_new(0.8));
-        lbl_desc.attributes = desc_attrs;
-        lbl_desc.get_style_context().add_class("dim-label");
-
-        box.add(lbl_title);
-        box.add(lbl_desc);
-
-        return box;
-    }
 
     private void setup_main_screen() {
         main_action_list.set_header_func((row, before_row) => {

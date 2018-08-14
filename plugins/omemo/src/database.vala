@@ -196,10 +196,15 @@ public class Database : Qlite.Database {
 
     public override void migrate(long oldVersion) {
         if(oldVersion == 1) {
-            exec("DROP INDEX identity_meta_idx");
-            exec("DROP INDEX identity_meta_list_idx");
-            exec("CREATE UNIQUE INDEX identity_meta_idx ON identity_meta (identity_id, address_name, device_id)");
-            exec("CREATE INDEX identity_meta_list_idx ON identity_meta (identity_id, address_name)");
+            try {
+                exec("DROP INDEX identity_meta_idx");
+                exec("DROP INDEX identity_meta_list_idx");
+                exec("CREATE UNIQUE INDEX identity_meta_idx ON identity_meta (identity_id, address_name, device_id)");
+                exec("CREATE INDEX identity_meta_list_idx ON identity_meta (identity_id, address_name)");
+            } catch (Error e) {
+                stderr.printf("Failed to migrate OMEMO database\n");
+                Process.exit(-1);
+            }
         }
     }
 }
