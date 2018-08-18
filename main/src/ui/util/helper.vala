@@ -3,6 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 using Xmpp;
+using Xmpp.Xep;
 
 namespace Dino.Ui.Util {
 
@@ -18,20 +19,22 @@ private const string[] material_colors_500 = {"F44336", "E91E63", "9C27B0", "673
 private const string[] material_colors_300 = {"E57373", "F06292", "BA68C8", "9575CD", "7986CB", "64B5F6", "4FC3F7", "4DD0E1", "4DB6AC", "81C784", "AED581", "DCE775", "FFD54F", "FFB74D", "FF8A65", "A1887F"};
 private const string[] material_colors_200 = {"EF9A9A", "F48FB1", "CE93D8", "B39DDB", "9FA8DA", "90CAF9", "81D4FA", "80DEEA", "80CBC4", "A5D6A7", "C5E1A5", "E6EE9C", "FFE082", "FFCC80", "FFAB91", "BCAAA4"};
 
+public static string get_consistent_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, bool dark_theme = false) {
+    uint8[] rgb;
+    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid.bare_jid, account) && jid.resourcepart != null) {
+        rgb = ConsistentColor.string_to_rgb(jid.resourcepart);
+    } else {
+        rgb = ConsistentColor.string_to_rgb(jid.bare_jid.to_string());
+    }
+    return "%.2x%.2x%.2x".printf(rgb[0], rgb[1], rgb[2]);
+}
+
 public static string get_avatar_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, Conversation? conversation = null) {
-    uint hash = get_relevant_jid(stream_interactor, account, jid, conversation).to_string().hash();
-    return material_colors_300[hash % material_colors_300.length];
-//    return tango_colors_light[name.hash() % tango_colors_light.length];
+    return get_consistent_hex_color(stream_interactor, account, get_relevant_jid(stream_interactor, account, jid, conversation));
 }
 
 public static string get_name_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, bool dark_theme = false, Conversation? conversation = null) {
-    uint hash = get_relevant_jid(stream_interactor, account, jid, conversation).to_string().hash();
-    if (dark_theme) {
-        return material_colors_300[hash % material_colors_300.length];
-    } else {
-        return material_colors_500[hash % material_colors_500.length];
-    }
-//    return tango_colors_medium[name.hash() % tango_colors_medium.length];
+    return get_consistent_hex_color(stream_interactor, account, get_relevant_jid(stream_interactor, account, jid, conversation), dark_theme);
 }
 
 private static Jid get_relevant_jid(StreamInteractor stream_interactor, Account account, Jid jid, Conversation? conversation = null) {
