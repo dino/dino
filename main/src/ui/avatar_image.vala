@@ -18,6 +18,8 @@ public class AvatarImage : Misc {
     private bool gray;
     private Jid[] current_jids;
     private Gdk.Pixbuf[] current_avatars;
+    private Cairo.ImageSurface? cached_surface;
+    private static int8 use_image_surface = -1;
 
     public AvatarImage() {
         can_focus = false;
@@ -78,9 +80,30 @@ public class AvatarImage : Misc {
                             hex_color.length > 6 ? (double) hex_color.substring(6, 2).to_long(null, 16) / 255 : 1);
     }
 
-    public override bool draw(Cairo.Context ctx) {
+    public override bool draw(Cairo.Context ctx_in) {
         if (text_only == null && (current_jids == null || current_avatars == null || current_jids.length == 0)) return false;
-        double radius = 3;
+
+        Cairo.Context ctx = ctx_in;
+        int width = this.width, height = this.height, base_factor = 1;
+        if (use_image_surface == -1) {
+            // TODO: detect if we have to buffer in image surface
+            use_image_surface = 1;
+        }
+        if (use_image_surface == 1) {
+            ctx_in.scale(1f/scale_factor, 1f/scale_factor);
+            if (cached_surface != null) {
+                ctx_in.set_source_surface(cached_surface, 0, 0);
+                ctx_in.paint();
+                return true;
+            }
+            width *= scale_factor;
+            height *= scale_factor;
+            base_factor *= scale_factor;
+            cached_surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, width, height);
+            ctx = new Cairo.Context(cached_surface);
+        }
+
+        double radius = 3 * base_factor;
         double degrees = Math.PI / 180.0;
         ctx.new_sub_path();
         ctx.arc(width - radius, radius, radius, -90 * degrees, 0 * degrees);
@@ -91,23 +114,23 @@ public class AvatarImage : Misc {
         ctx.clip();
 
         if (text_only != null) {
-            ctx.set_source_surface(sub_surface(ctx, -1, width, height), 0, 0);
+            ctx.set_source_surface(sub_surface(ctx, -1, width, height, base_factor), 0, 0);
             ctx.paint();
         } else if (current_jids.length == 4 || with_plus) {
             Cairo.Surface buffer = new Cairo.Surface.similar(ctx.get_target(), Cairo.Content.COLOR_ALPHA, width, height);
             Cairo.Context bufctx = new Cairo.Context(buffer);
             bufctx.scale(0.5, 0.5);
-            bufctx.set_source_surface(sub_surface(ctx, 0, width - 1, height - 1, 2), 0, 0);
+            bufctx.set_source_surface(sub_surface(ctx, 0, width - 1, height - 1, 2 * base_factor), 0, 0);
             bufctx.paint();
-            bufctx.set_source_surface(sub_surface(ctx, 1, width - 1, height - 1, 2), width + 1, 0);
+            bufctx.set_source_surface(sub_surface(ctx, 1, width - 1, height - 1, 2 * base_factor), width + 1, 0);
             bufctx.paint();
-            bufctx.set_source_surface(sub_surface(ctx, 2, width - 1, height - 1, 2), 0, height + 1);
+            bufctx.set_source_surface(sub_surface(ctx, 2, width - 1, height - 1, 2 * base_factor), 0, height + 1);
             bufctx.paint();
             if (with_plus) {
-                bufctx.set_source_surface(sub_surface(ctx, -1, width - 1, height - 1, 2), width + 1, height + 1);
+                bufctx.set_source_surface(sub_surface(ctx, -1, width - 1, height - 1, 2 * base_factor), width + 1, height + 1);
                 bufctx.paint();
             } else {
-                bufctx.set_source_surface(sub_surface(ctx, 3, width - 1, height - 1, 2), width + 1, height + 1);
+                bufctx.set_source_surface(sub_surface(ctx, 3, width - 1, height - 1, 2 * base_factor), width + 1, height + 1);
                 bufctx.paint();
             }
 
@@ -117,11 +140,11 @@ public class AvatarImage : Misc {
             Cairo.Surface buffer = new Cairo.Surface.similar(ctx.get_target(), Cairo.Content.COLOR_ALPHA, width, height);
             Cairo.Context bufctx = new Cairo.Context(buffer);
             bufctx.scale(0.5, 0.5);
-            bufctx.set_source_surface(sub_surface(ctx, 0, width - 1, height - 1, 2), 0, 0);
+            bufctx.set_source_surface(sub_surface(ctx, 0, width - 1, height - 1, 2 * base_factor), 0, 0);
             bufctx.paint();
-            bufctx.set_source_surface(sub_surface(ctx, 1, width - 1, height * 2, 2), width + 1, 0);
+            bufctx.set_source_surface(sub_surface(ctx, 1, width - 1, height * 2, 2 * base_factor), width + 1, 0);
             bufctx.paint();
-            bufctx.set_source_surface(sub_surface(ctx, 2, width - 1 , height - 1, 2), 0, height + 1);
+            bufctx.set_source_surface(sub_surface(ctx, 2, width - 1 , height - 1, 2 * base_factor), 0, height + 1);
             bufctx.paint();
 
             ctx.set_source_surface(buffer, 0, 0);
@@ -130,15 +153,15 @@ public class AvatarImage : Misc {
             Cairo.Surface buffer = new Cairo.Surface.similar(ctx.get_target(), Cairo.Content.COLOR_ALPHA, width, height);
             Cairo.Context bufctx = new Cairo.Context(buffer);
             bufctx.scale(0.5, 0.5);
-            bufctx.set_source_surface(sub_surface(ctx, 0, width - 1, height * 2, 2), 0, 0);
+            bufctx.set_source_surface(sub_surface(ctx, 0, width - 1, height * 2, 2 * base_factor), 0, 0);
             bufctx.paint();
-            bufctx.set_source_surface(sub_surface(ctx, 1, width - 1, height * 2, 2), width + 1, 0);
+            bufctx.set_source_surface(sub_surface(ctx, 1, width - 1, height * 2, 2 * base_factor), width + 1, 0);
             bufctx.paint();
 
             ctx.set_source_surface(buffer, 0, 0);
             ctx.paint();
         } else if (current_jids.length == 1) {
-            ctx.set_source_surface(sub_surface(ctx, 0, width, height), 0, 0);
+            ctx.set_source_surface(sub_surface(ctx, 0, width, height, base_factor), 0, 0);
             ctx.paint();
         } else {
             assert_not_reached();
@@ -155,6 +178,11 @@ public class AvatarImage : Misc {
             ctx.set_source_rgba(1, 1, 1, 0.7);
             ctx.rectangle(0, 0, width, height);
             ctx.fill();
+        }
+
+        if (use_image_surface == 1) {
+            ctx_in.set_source_surface(ctx.get_target(), 0, 0);
+            ctx_in.paint();
         }
 
         return true;
@@ -276,6 +304,7 @@ public class AvatarImage : Misc {
         assert(jids.length > 0);
         assert(jids.length < 5);
         assert(!with_plus || jids.length == 3);
+        this.cached_surface = null;
         this.text_only = null;
         this.gray = gray && allow_gray;
         this.with_plus = with_plus;
