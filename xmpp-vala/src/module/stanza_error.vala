@@ -36,6 +36,10 @@ namespace Xmpp {
             get { return error_node.get_attribute("by"); }
         }
 
+        public string? text {
+            get { return error_node.get_deep_string_content("urn:ietf:params:xml:ns:xmpp-stanzas:text"); }
+        }
+
         public string condition {
             get {
                 Gee.List<StanzaNode> subnodes = error_node.sub_nodes;
@@ -57,7 +61,7 @@ namespace Xmpp {
         }
 
         public StanzaNode stanza;
-        private StanzaNode error_node;
+        public StanzaNode error_node;
 
         public ErrorStanza.from_stanza(StanzaNode stanza) {
             this.stanza = stanza;

@@ -78,7 +78,7 @@ public class DataForm {
             return ret;
         }
 
-        internal string get_value_string() {
+        public string get_value_string() {
             Gee.List<string> values = get_values();
             return values.size > 0 ? values[0] : "";
         }
@@ -197,7 +197,7 @@ public class DataForm {
 
     // TODO text-multi
 
-    internal DataForm.from_node(StanzaNode node, XmppStream stream, owned OnResult listener) {
+    internal DataForm.from_node(StanzaNode node, XmppStream stream, owned OnResult? listener = null) {
         this.stanza_node = node;
         this.stream = stream;
         this.on_result = (owned)listener;

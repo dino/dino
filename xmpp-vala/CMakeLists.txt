@@ -55,6 +55,7 @@ SOURCES
     "src/module/xep/0054_vcard/module.vala"
     "src/module/xep/0060_pubsub.vala"
     "src/module/xep/0066_out_of_band_data.vala"
+    "src/module/xep/0077_in_band_registration.vala"
     "src/module/xep/0082_date_time_profiles.vala"
     "src/module/xep/0084_user_avatars.vala"
     "src/module/xep/0085_chat_state_notifications.vala"

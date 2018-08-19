@@ -124,6 +124,7 @@ SOURCES
     src/ui/settings_dialog.vala
     src/ui/unified_window.vala
     src/ui/util/accounts_combo_box.vala
+    src/ui/util/data_forms.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
     src/ui/util/preview_file_chooser_native.vala

@@ -76,6 +76,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.Ping.Module());
             module_map[account].add(new Xep.DelayedDelivery.Module());
             module_map[account].add(new StreamError.Module());
+            module_map[account].add(new Xep.InBandRegistration.Module());
             initialize_account_modules(account, module_map[account]);
         }
     }
