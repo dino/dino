@@ -125,7 +125,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public bool is_groupchat_occupant(Jid jid, Account account) {
-        return is_groupchat(jid.bare_jid, account) && jid.is_full();
+        return is_groupchat(jid.bare_jid, account) && jid.resourcepart != null;
     }
 
     public void get_bookmarks(Account account, owned Xep.Bookmarks.Module.OnResult listener) {
