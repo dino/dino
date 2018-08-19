@@ -162,7 +162,7 @@ public class ConnectionManager {
         stream.attached_modules.connect((stream) => {
             change_connection_state(account, ConnectionState.CONNECTED);
         });
-        stream.get_module(PlainSasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
+        stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, null));
             change_connection_state(account, ConnectionState.DISCONNECTED);
         });
