@@ -12,6 +12,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void enter_error(Account account, Jid jid, Xep.Muc.MucEnterError error);
     public signal void left(Account account, Jid jid);
     public signal void subject_set(Account account, Jid jid, string? subject);
+    public signal void room_name_set(Account account, Jid jid, string? room_name);
     public signal void bookmarks_updated(Account account, Gee.List<Xep.Bookmarks.Conference> conferences);
 
     private StreamInteractor stream_interactor;
@@ -42,7 +43,7 @@ public class MucManager : StreamInteractionModule, Object {
             Entities.Message? last_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
             if (last_message != null) history_since = last_message.time;
         }
-        
+
         stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since);
     }
 
@@ -241,6 +242,9 @@ public class MucManager : StreamInteractionModule, Object {
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).subject_set.connect( (stream, subject, jid) => {
             subject_set(account, jid, subject);
+        });
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_name_set.connect( (stream, jid, room_name) => {
+            room_name_set(account, jid, room_name);
         });
         stream_interactor.module_manager.get_module(account, Xep.Bookmarks.Module.IDENTITY).received_conferences.connect( (stream, conferences) => {
             sync_autojoin_active(account, conferences);

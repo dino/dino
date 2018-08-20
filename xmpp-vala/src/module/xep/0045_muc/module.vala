@@ -60,7 +60,7 @@ public class Module : XmppStreamModule {
     public signal void received_occupant_jid(XmppStream stream, Jid jid, Jid? real_jid);
     public signal void received_occupant_role(XmppStream stream, Jid jid, Role? role);
     public signal void subject_set(XmppStream stream, string? subject, Jid jid);
-    public signal void room_configuration_changed(XmppStream stream, Jid jid, StatusCode code);
+    public signal void room_name_set(XmppStream stream, Jid jid, string? room_name);
 
     public signal void room_entered(XmppStream stream, Jid jid, string nick);
     public signal void room_enter_error(XmppStream stream, Jid jid, MucEnterError? error); // TODO "?" shoudln't be necessary (vala bug), remove someday
@@ -207,6 +207,16 @@ public class Module : XmppStreamModule {
                 stream.get_flag(Flag.IDENTITY).set_muc_subject(message.from, subject);
                 subject_set(stream, subject, message.from);
             }
+
+            StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_USER);
+            if (x_node != null) {
+              StanzaNode? status_node = x_node.get_subnode("status", NS_URI_USER);
+              if (status_node != null && status_node.get_attribute_int("code") == 104) {
+                  // room configuration has changed (e.g. room name)
+                  // https://xmpp.org/extensions/xep-0045.html#roomconfig-notify
+                  query_room_info(stream, message.from.bare_jid);
+              }
+            }
         }
     }
 
@@ -320,6 +330,7 @@ public class Module : XmppStreamModule {
                 foreach (ServiceDiscovery.Identity identity in query_result.identities) {
                     if (identity.category == "conference") {
                         stream.get_flag(Flag.IDENTITY).set_room_name(jid, identity.name);
+                        room_name_set(stream, jid, identity.name);
                     }
                 }
 
