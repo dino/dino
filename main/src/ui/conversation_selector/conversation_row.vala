@@ -61,7 +61,7 @@ public abstract class ConversationRow : ListBoxRow {
         update_read();
     }
 
-    protected void update_name_label(string? new_name = null) {
+    protected void update_name_label() {
         name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
     }
 

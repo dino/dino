@@ -59,7 +59,13 @@ public static string get_conversation_display_name(StreamInteractor stream_inter
 }
 
 public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
-    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
+    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
+        string room_name = stream_interactor.get_module(MucManager.IDENTITY).get_room_name(account, jid);
+        if (room_name != null) {
+            return room_name;
+        }
+        return jid.bare_jid.to_string();
+    } else if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
         return jid.resourcepart;
     } else {
         if (jid.equals_bare(account.bare_jid)) {
