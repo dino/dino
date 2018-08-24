@@ -51,6 +51,7 @@ public class UnifiedWindow : Window {
         conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
         conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });
         filterable_conversation_list.conversation_list.conversation_selected.connect(on_conversation_selected);
+        conversation_list_titlebar.search_button.toggled.connect(filterable_conversation_list.clear_search_string);
         conversation_list_titlebar.conversation_opened.connect(on_conversation_selected);
 
         check_stack();
