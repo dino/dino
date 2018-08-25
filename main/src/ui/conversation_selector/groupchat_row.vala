@@ -18,6 +18,13 @@ public class GroupchatRow : ConversationRow {
                 update_name_label();
             }
         });
+
+        stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, room_name) => {
+            if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
+                // the conversation display name may change if no room name is set
+                update_name_label();
+            }
+        });
     }
 
     protected override void update_message_label() {

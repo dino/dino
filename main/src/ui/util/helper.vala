@@ -53,18 +53,26 @@ public static string color_for_show(string show) {
 
 public static string get_conversation_display_name(StreamInteractor stream_interactor, Conversation conversation) {
     if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-        return conversation.counterpart.resourcepart + " from " + get_display_name(stream_interactor, conversation.counterpart.bare_jid, conversation.account);
+        return conversation.counterpart.resourcepart + " from " + get_display_name(stream_interactor, conversation.counterpart, conversation.account);
     }
     return get_display_name(stream_interactor, conversation.counterpart, conversation.account);
 }
 
 public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
-    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
+    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account) ||
+        stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_pm(jid, account)) {
         string room_name = stream_interactor.get_module(MucManager.IDENTITY).get_room_name(account, jid);
-        if (room_name != null) {
+        // only return room name if it's not null and not the localpart of the rooms jid
+        if (room_name != null && room_name != jid.localpart) {
             return room_name;
         }
-        return jid.bare_jid.to_string();
+        // use subject if room name is not set
+        string room_subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(jid, account);
+        if (room_subject != null) {
+            return room_subject;
+        }
+        // use jid localpart if both room name and subject are not set
+        return jid.localpart;
     } else if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
         return jid.resourcepart;
     } else {

@@ -35,35 +35,36 @@ public class ConversationTitlebar : Gtk.HeaderBar {
 
         stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_title();
+                update_titlebar();
             }
         });
 
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_subtitle();
+                update_titlebar();
             }
         });
     }
 
     public void initialize_for_conversation(Conversation conversation) {
         this.conversation = conversation;
-        update_title();
-        update_subtitle();
+        update_titlebar();
 
         foreach (Plugins.ConversationTitlebarWidget widget in widgets) {
             widget.set_conversation(conversation);
         }
     }
 
-    private void update_title() {
-        set_title(Util.get_conversation_display_name(stream_interactor, conversation));
-    }
+    private void update_titlebar() {
+        string conversation_display_name = Util.get_conversation_display_name(stream_interactor, conversation);
+        set_title(conversation_display_name);
 
-    private void update_subtitle() {
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             string groupchat_subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
-            set_subtitle(groupchat_subject);
+            set_subtitle(groupchat_subject != conversation_display_name ? groupchat_subject : null);
+        } else {
+            // unset subtitle for non-groupchat conversations
+            set_subtitle(null);
         }
     }
 }

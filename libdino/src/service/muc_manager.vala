@@ -129,6 +129,11 @@ public class MucManager : StreamInteractionModule, Object {
         return is_groupchat(jid.bare_jid, account) && jid.is_full();
     }
 
+    public bool is_groupchat_pm(Jid jid, Account account) {
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
+        return jid.is_full() && conversation != null && conversation.type_ == Conversation.Type.GROUPCHAT_PM;
+    }
+
     public void get_bookmarks(Account account, owned Xep.Bookmarks.Module.OnResult listener) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) stream.get_module(Xep.Bookmarks.Module.IDENTITY).get_conferences(stream, (owned)listener);
