@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-03-24 18:39+0000\n"
-"Last-Translator: ethylmorphine <desilent@icloud.com>\n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2018-07-01 09:42+0000\n"
+"Last-Translator: nvlgit <nvlbox@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/"
 "translations/ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.1-dev\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
@@ -99,7 +99,7 @@ msgstr "Добавить аккаунт"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:45
 msgid "JID should be of the form “user@example.com”"
-msgstr ""
+msgstr "JID должен быть в виде «user@example.com»"
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
@@ -135,8 +135,8 @@ msgstr "%l∶%M %p"
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i минуту назад"
-msgstr[1] "%i минут назад"
-msgstr[2] ""
+msgstr[1] "%i минуты назад"
+msgstr[2] "%i минут назад"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:167
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
@@ -166,7 +166,7 @@ msgstr "Сохранить"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
 msgid "Join Channel"
-msgstr ""
+msgstr "Войти в канал"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 msgid "Next"
@@ -174,9 +174,9 @@ msgstr "Следующее"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
-#: main/data/im.dino.Dino.appdata.xml:28
+#: main/data/im.dino.Dino.appdata.xml.in:28
 msgid "Start Conversation"
-msgstr ""
+msgstr "Начать чат"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
@@ -235,19 +235,19 @@ msgid "%a, %b %d"
 msgstr "%a, %b %d"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
-#, c-format
+#, fuzzy, c-format
 msgid "%s, %s and %i others"
-msgstr ""
+msgstr "%s, %s и %i других"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s, %s and %s"
-msgstr ""
+msgstr "%s, %s и %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:152
 #, c-format
 msgid "%s and %s"
-msgstr ""
+msgstr "%s и %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
 #, fuzzy
@@ -353,7 +353,7 @@ msgid "Conference Details"
 msgstr "Информация о конференции"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
-#: main/data/im.dino.Dino.appdata.xml:32
+#: main/data/im.dino.Dino.appdata.xml.in:32
 msgid "Contact Details"
 msgstr "Информация о контакте"
 
@@ -453,7 +453,7 @@ msgstr "Отправлять уведомления о наборе сообще
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Отправлять уведомления о прочтении"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -527,6 +527,37 @@ msgstr "Выйти"
 msgid "Search"
 msgstr "Поиск"
 
+#: main/data/im.dino.Dino.appdata.xml.in:8
+#, fuzzy
+msgid "Modern XMPP Chat Client"
+msgstr "Современный XMPP-клиент"
+
+#: main/data/im.dino.Dino.appdata.xml.in:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml.in:14
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml.in:18
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+"Dino загружает историю с сервера и синхронизирует сообщения с другими "
+"устройствами."
+
+#: main/data/im.dino.Dino.appdata.xml.in:24
+msgid "Main window with conversations"
+msgstr "Главное окно с чатами"
+
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -546,34 +577,6 @@ msgstr "Псевдоним"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Добавить контакт"
-
-#: main/data/im.dino.Dino.appdata.xml:8
-msgid "Modern XMPP Client"
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:10
-msgid ""
-"Dino is a modern open-source chat client for the desktop. It focuses on "
-"providing a clean and reliable Jabber/XMPP experience while having your "
-"privacy in mind."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:14
-msgid ""
-"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
-"configuring privacy-related features such as read receipts and typing "
-"notifications."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:18
-msgid ""
-"Dino fetches history from the server and synchronizes messages with other "
-"devices."
-msgstr ""
-
-#: main/data/im.dino.Dino.appdata.xml:24
-msgid "Main window with conversations"
-msgstr ""
 
 #~ msgid "Send message marker"
 #~ msgstr "Отправлять маркеры сообщений"

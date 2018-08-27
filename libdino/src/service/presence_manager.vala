@@ -10,6 +10,7 @@ public class PresenceManager : StreamInteractionModule, Object {
 
     public signal void show_received(Show show, Jid jid, Account account);
     public signal void received_subscription_request(Jid jid, Account account);
+    public signal void received_subscription_approval(Jid jid, Account account);
 
     private StreamInteractor stream_interactor;
     private HashMap<Jid, HashMap<Jid, ArrayList<Show>>> shows = new HashMap<Jid, HashMap<Jid, ArrayList<Show>>>(Jid.hash_bare_func, Jid.equals_bare_func);
@@ -93,6 +94,9 @@ public class PresenceManager : StreamInteractionModule, Object {
                 subscription_requests.add(jid);
             }
             received_subscription_request(jid, account);
+        });
+        stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_subscription_approval.connect((stream, jid) => {
+            received_subscription_approval(jid, account);
         });
     }
 

@@ -40,6 +40,7 @@ SOURCES
     src/service/muc_manager.vala
     src/service/notification_events.vala
     src/service/presence_manager.vala
+    src/service/registration.vala
     src/service/roster_manager.vala
     src/service/stream_interactor.vala
     src/service/util.vala

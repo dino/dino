@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-01 00:23+0200\n"
-"PO-Revision-Date: 2018-04-29 16:36+0000\n"
-"Last-Translator: Nathan Follens <nathan@email.is>\n"
+"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"PO-Revision-Date: 2018-06-18 12:37+0000\n"
+"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/nl_BE/>\n"
 "Language: nl_BE\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.0.1\n"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 #: plugins/omemo/src/account_settings_widget.vala:45
@@ -27,7 +27,7 @@ msgstr "Eigen vingerafdruk"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
-msgstr "Word bij d’eerste verbinding gegenereerd"
+msgstr "Wordt bij de eerste verbinding gegenereerd"
 
 #: plugins/omemo/src/contact_details_provider.vala:31
 msgid "Encryption"

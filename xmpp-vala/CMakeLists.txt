@@ -55,6 +55,7 @@ SOURCES
     "src/module/xep/0054_vcard/module.vala"
     "src/module/xep/0060_pubsub.vala"
     "src/module/xep/0066_out_of_band_data.vala"
+    "src/module/xep/0077_in_band_registration.vala"
     "src/module/xep/0082_date_time_profiles.vala"
     "src/module/xep/0084_user_avatars.vala"
     "src/module/xep/0085_chat_state_notifications.vala"
@@ -68,6 +69,7 @@ SOURCES
     "src/module/xep/0313_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/0368_srv_records_tls.vala"
+    "src/module/xep/0380_explicit_encryption.vala"
     "src/module/xep/pixbuf_storage.vala"
 PACKAGES
     ${ENGINE_PACKAGES}

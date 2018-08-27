@@ -20,8 +20,9 @@ public class QueryBuilder : StatementBuilder {
     // ORDER BY [...]
     private OrderingTerm[]? order_by_terms = {};
 
-    // LIMIT [...]
+    // LIMIT [...] OFFSET [...]
     private int limit_val;
+    private int offset_val;
 
     internal QueryBuilder(Database db) {
         base(db);
@@ -98,8 +99,20 @@ public class QueryBuilder : StatementBuilder {
     }
 
     public QueryBuilder limit(int limit) {
+        if (this.limit_val != 0 && limit > this.limit_val) error("tried to increase an existing limit");
         this.limit_val = limit;
         return this;
+    }
+
+    public QueryBuilder offset(int offset) {
+        if (this.limit_val == 0) error("limit required before offset");
+        this.offset_val = offset;
+        return this;
+    }
+
+    public QueryBuilder single() {
+        this.single_result = true;
+        return limit(1);
     }
 
     public int64 count() {
@@ -117,12 +130,12 @@ public class QueryBuilder : StatementBuilder {
         return new RowOption(row_());
     }
 
-    public T get<T>(Column<T> field) {
-        return row()[field];
+    public T get<T>(Column<T> field, T def = null) {
+        return row().get(field, def);
     }
 
     internal override Statement prepare() {
-        Statement stmt = db.prepare(@"SELECT $column_selector $(table_name == null ? "" : @"FROM $((!) table_name)") WHERE $selection $(OrderingTerm.all_to_string(order_by_terms)) $(limit_val > 0 ? @" LIMIT $limit_val" : "")");
+        Statement stmt = db.prepare(@"SELECT $column_selector $(table_name == null ? "" : @"FROM $((!) table_name)") WHERE $selection $(OrderingTerm.all_to_string(order_by_terms)) $(limit_val > 0 ? @" LIMIT $limit_val OFFSET $offset_val" : "")");
         for (int i = 0; i < selection_args.length; i++) {
             selection_args[i].bind(stmt, i+1);
         }

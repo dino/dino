@@ -178,8 +178,8 @@ public class AvatarImage : Misc {
             stream_interactor.connection_manager.connection_state_changed.connect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
         }
-        if (muc_manager.is_groupchat(jid_, account)) {
-            // Groupchat
+        if (muc_manager.is_groupchat(jid_, account) && !muc_manager.has_avatar(jid_, account)) {
+            // Groupchat without avatar
             Gee.List<Jid>? occupants = muc_manager.get_other_occupants(jid_, account);
             jid = jid_;
             if (occupants == null || occupants.size == 0) {
@@ -211,7 +211,7 @@ public class AvatarImage : Misc {
                 }
             }
         } else {
-            // Single user
+            // Single user or MUC with vcard avatar
             this.jid = jid_;
             if (force_update || current_jids.length != 1 || !current_jids[0].equals(jid) || gray != (allow_gray && (!is_counterpart_online(jid) || !is_self_online()))) {
                 set_jids_(new Jid[] { jid }, false, !is_counterpart_online(jid) || !is_self_online());
