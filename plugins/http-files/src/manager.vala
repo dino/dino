@@ -40,6 +40,11 @@ public class Manager : StreamInteractionModule, FileSender, Object {
                     message.encryption = Encryption.NONE;
                     stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(message, conversation);
                     file_transfer.info = message.id.to_string();
+
+                    ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+                    if (content_item != null) {
+                        stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
+                    }
                 },
                 (stream, error_str) => {
                     print(@"Failed getting upload url + $error_str\n");

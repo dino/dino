@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 8;
+    private const int VERSION = 9;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -34,17 +34,19 @@ public class Database : Qlite.Database {
         }
     }
 
-    public class ContentTable : Table {
+    public class ContentItemTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> conversation_id = new Column.Integer("conversation_id") { not_null = true };
         public Column<long> time = new Column.Long("time") { not_null = true };
         public Column<long> local_time = new Column.Long("local_time") { not_null = true };
         public Column<int> content_type = new Column.Integer("content_type") { not_null = true };
         public Column<int> foreign_id = new Column.Integer("foreign_id") { not_null = true };
+        public Column<bool> hide = new Column.BoolInt("hide") { default = "0", not_null = true, min_version = 9 };
 
-        internal ContentTable(Database db) {
+        internal ContentItemTable(Database db) {
             base(db, "content_item");
-            init({id, conversation_id, time, local_time, content_type, foreign_id});
+            init({id, conversation_id, time, local_time, content_type, foreign_id, hide});
+            index("contentitem_localtime_counterpart_idx", {local_time, conversation_id});
             unique({content_type, foreign_id}, "IGNORE");
         }
     }
@@ -189,7 +191,7 @@ public class Database : Qlite.Database {
 
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
-    public ContentTable content { get; private set; }
+    public ContentItemTable content_item { get; private set; }
     public MessageTable message { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
@@ -207,7 +209,7 @@ public class Database : Qlite.Database {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);
-        content = new ContentTable(this);
+        content_item = new ContentItemTable(this);
         message = new MessageTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
@@ -216,7 +218,7 @@ public class Database : Qlite.Database {
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, content, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
+        init({ account, jid, content_item, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
         try {
             exec("PRAGMA synchronous=0");
         } catch (Error e) { }
@@ -226,10 +228,11 @@ public class Database : Qlite.Database {
         // new table columns are added, outdated columns are still present
         if (oldVersion < 7) {
             message.fts_rebuild();
-        } else if (oldVersion < 8) {
+        }
+        if (oldVersion < 8) {
             exec("""
-            insert into content_item (conversation_id, time, local_time, content_type, foreign_id)
-            select conversation.id, message.time, message.local_time, 1, message.id
+            insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
+            select conversation.id, message.time, message.local_time, 1, message.id, 0
             from message join conversation on
                 message.account_id=conversation.account_id and
                 message.counterpart_id=conversation.jid_id and
@@ -239,7 +242,7 @@ public class Database : Qlite.Database {
                 message.body not in (select info from file_transfer where info not null) and
                 message.id not in (select info from file_transfer where info not null)
             union
-            select conversation.id, message.time, message.local_time, 2, file_transfer.id
+            select conversation.id, message.time, message.local_time, 2, file_transfer.id, 0
             from file_transfer
             join message on
                 file_transfer.info=message.id
@@ -248,6 +251,19 @@ public class Database : Qlite.Database {
                 file_transfer.counterpart_id=conversation.jid_id and
                 message.type=conversation.type+1 and
                 (message.counterpart_resource=conversation.resource or message.type != 3)""");
+        }
+        if (oldVersion < 9) {
+            exec("""
+            insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
+            select conversation.id, message.time, message.local_time, 1, message.id, 1
+            from message join conversation on
+                message.account_id=conversation.account_id and
+                message.counterpart_id=conversation.jid_id and
+                message.type=conversation.type+1 and
+                (message.counterpart_resource=conversation.resource or message.type != 3)
+            where
+                message.body in (select info from file_transfer where info not null) or
+                message.id in (select info from file_transfer where info not null)""");
         }
     }
 
@@ -275,13 +291,14 @@ public class Database : Qlite.Database {
         }
     }
 
-    public int add_content_item(Conversation conversation, DateTime time, DateTime local_time, int content_type, int foreign_id) {
-        return (int) content.insert()
-            .value(content.conversation_id, conversation.id)
-            .value(content.local_time, (long) local_time.to_unix())
-            .value(content.time, (long) time.to_unix())
-            .value(content.content_type, content_type)
-            .value(content.foreign_id, foreign_id)
+    public int add_content_item(Conversation conversation, DateTime time, DateTime local_time, int content_type, int foreign_id, bool hide) {
+        return (int) content_item.insert()
+            .value(content_item.conversation_id, conversation.id)
+            .value(content_item.local_time, (long) local_time.to_unix())
+            .value(content_item.time, (long) time.to_unix())
+            .value(content_item.content_type, content_type)
+            .value(content_item.foreign_id, foreign_id)
+            .value(content_item.hide, hide)
             .perform();
     }
 

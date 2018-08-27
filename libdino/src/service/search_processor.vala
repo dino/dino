@@ -63,8 +63,8 @@ public class SearchProcessor : StreamInteractionModule, Object {
             .outer_join_with(db.real_jid, db.real_jid.message_id, db.message.id)
             .with(db.account.enabled, "=", true);
         if (join_content) {
-            rows.join_on(db.content, "message.id=content_item.foreign_id AND content_item.content_type=1")
-                .with(db.content.content_type, "=", 1);
+            rows.join_on(db.content_item, "message.id=content_item.foreign_id AND content_item.content_type=1")
+                .with(db.content_item.content_type, "=", 1);
         }
         if (with != null) {
             if (with.index_of("/") > 0) {
@@ -233,7 +233,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
         foreach (Row row in rows) {
             Message message = new Message.from_row(db, row);
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
-            ret.add(new MessageItem(message, conversation, row[db.content.id]));
+            ret.add(new MessageItem(message, conversation, row[db.content_item.id]));
         }
         return ret;
     }

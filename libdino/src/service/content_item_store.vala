@@ -26,8 +26,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         this.db = db;
 
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_new_message);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_new_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => insert_message(message, conversation));
         stream_interactor.get_module(FileManager.IDENTITY).received_file.connect(insert_file_transfer);
     }
 
@@ -43,8 +42,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
         Gee.TreeSet<ContentItem> items = new Gee.TreeSet<ContentItem>(ContentItem.compare);
 
         foreach (var row in select) {
-            int provider = row[db.content.content_type];
-            int foreign_id = row[db.content.foreign_id];
+            int provider = row[db.content_item.content_type];
+            int foreign_id = row[db.content_item.foreign_id];
             switch (provider) {
                 case 1:
                     RowOption row_option = db.message.select().with(db.message.id, "=", foreign_id).row();
@@ -53,15 +52,15 @@ public class ContentItemStore : StreamInteractionModule, Object {
                         if (message == null) {
                             message = new Message.from_row(db, row_option.inner);
                         }
-                        items.add(new MessageItem(message, conversation, row[db.content.id]));
+                        items.add(new MessageItem(message, conversation, row[db.content_item.id]));
                     }
                     break;
                 case 2:
                     RowOption row_option = db.file_transfer.select().with(db.file_transfer.id, "=", foreign_id).row();
                     if (row_option.is_present()) {
-                        string storage_dir = stream_interactor.get_module(FileManager.IDENTITY).get_storage_dir();
+                        string storage_dir = FileManager.get_storage_dir();
                         FileTransfer file_transfer = new FileTransfer.from_row(db, row_option.inner, storage_dir);
-                        items.add(new FileItem(file_transfer, row[db.content.id]));
+                        items.add(new FileItem(file_transfer, row[db.content_item.id]));
                     }
                     break;
             }
@@ -74,11 +73,22 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return ret;
     }
 
+    public ContentItem? get_item(Conversation conversation, int type, int foreign_id) {
+        QueryBuilder select = db.content_item.select()
+            .with(db.content_item.content_type, "=", type)
+            .with(db.content_item.foreign_id, "=", foreign_id);
+
+        Gee.List<ContentItem> item = get_items_from_query(select, conversation);
+
+        return item.size > 0 ? item[0] : null;
+    }
+
     public Gee.List<ContentItem> get_latest(Conversation conversation, int count) {
-        QueryBuilder select = db.content.select()
-            .with(db.content.conversation_id, "=", conversation.id)
-            .order_by(db.content.local_time, "DESC")
-            .order_by(db.content.time, "DESC")
+        QueryBuilder select = db.content_item.select()
+            .with(db.content_item.conversation_id, "=", conversation.id)
+            .with(db.content_item.hide, "=", false)
+            .order_by(db.content_item.local_time, "DESC")
+            .order_by(db.content_item.time, "DESC")
             .limit(count);
 
         return get_items_from_query(select, conversation);
@@ -87,11 +97,12 @@ public class ContentItemStore : StreamInteractionModule, Object {
     public Gee.List<ContentItem> get_before(Conversation conversation, ContentItem item, int count) {
         long local_time = (long) item.sort_time.to_unix();
         long time = (long) item.display_time.to_unix();
-        QueryBuilder select = db.content.select()
+        QueryBuilder select = db.content_item.select()
             .where(@"local_time < ? OR (local_time = ? AND time < ?) OR (local_time = ? AND time = ? AND id < ?)", { local_time.to_string(), local_time.to_string(), time.to_string(), local_time.to_string(), time.to_string(), item.id.to_string() })
-            .with(db.content.conversation_id, "=", conversation.id)
-            .order_by(db.content.local_time, "DESC")
-            .order_by(db.content.time, "DESC")
+            .with(db.content_item.conversation_id, "=", conversation.id)
+            .with(db.content_item.hide, "=", false)
+            .order_by(db.content_item.local_time, "DESC")
+            .order_by(db.content_item.time, "DESC")
             .limit(count);
 
         return get_items_from_query(select, conversation);
@@ -100,11 +111,12 @@ public class ContentItemStore : StreamInteractionModule, Object {
     public Gee.List<ContentItem> get_after(Conversation conversation, ContentItem item, int count) {
         long local_time = (long) item.sort_time.to_unix();
         long time = (long) item.display_time.to_unix();
-        QueryBuilder select = db.content.select()
+        QueryBuilder select = db.content_item.select()
             .where(@"local_time > ? OR (local_time = ? AND time > ?) OR (local_time = ? AND time = ? AND id > ?)", { local_time.to_string(), local_time.to_string(), time.to_string(), local_time.to_string(), time.to_string(), item.id.to_string() })
-            .with(db.content.conversation_id, "=", conversation.id)
-            .order_by(db.content.local_time, "ASC")
-            .order_by(db.content.time, "ASC")
+            .with(db.content_item.conversation_id, "=", conversation.id)
+            .with(db.content_item.hide, "=", false)
+            .order_by(db.content_item.local_time, "ASC")
+            .order_by(db.content_item.time, "ASC")
             .limit(count);
 
         return get_items_from_query(select, conversation);
@@ -114,11 +126,10 @@ public class ContentItemStore : StreamInteractionModule, Object {
         filters.add(content_filter);
     }
 
-    private void on_new_message(Message message, Conversation conversation) {
+    public void insert_message(Message message, Conversation conversation, bool hide = false) {
         MessageItem item = new MessageItem(message, conversation, -1);
+        item.id = db.add_content_item(conversation, message.time, message.local_time, 1, message.id, hide);
         if (!discard(item)) {
-            item.id = db.add_content_item(conversation, message.time, message.local_time, 1, message.id);
-
             if (collection_conversations.has_key(conversation)) {
                 collection_conversations.get(conversation).insert_item(item);
             }
@@ -129,13 +140,20 @@ public class ContentItemStore : StreamInteractionModule, Object {
     private void insert_file_transfer(FileTransfer file_transfer, Conversation conversation) {
         FileItem item = new FileItem(file_transfer, -1);
         if (!discard(item)) {
-            item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id);
+            item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id, false);
 
             if (collection_conversations.has_key(conversation)) {
                 collection_conversations.get(conversation).insert_item(item);
             }
             new_item(item, conversation);
         }
+    }
+
+    public void set_item_hide(ContentItem content_item, bool hide) {
+        db.content_item.update()
+            .with(db.content_item.id, "=", content_item.id)
+            .set(db.content_item.hide, hide)
+            .perform();
     }
 
     private bool discard(ContentItem content_item) {
@@ -167,12 +185,12 @@ public abstract class ContentItem : Object {
     public Encryption? encryption { get; set; default=null; }
     public Entities.Message.Marked? mark { get; set; default=null; }
 
-    public ContentItem(int id, string ty, Jid jid, DateTime sort_time, double seccondary_sort_indicator, DateTime display_time, Encryption encryption, Entities.Message.Marked mark) {
+    public ContentItem(int id, string ty, Jid jid, DateTime sort_time, DateTime display_time, Encryption encryption, Entities.Message.Marked mark) {
         this.id = id;
         this.type_ = ty;
         this.jid = jid;
         this.sort_time = sort_time;
-        this.seccondary_sort_indicator = seccondary_sort_indicator;
+        this.seccondary_sort_indicator = id;
         this.display_time = display_time;
         this.encryption = encryption;
         this.mark = mark;
@@ -197,7 +215,7 @@ public class MessageItem : ContentItem {
     public Conversation conversation;
 
     public MessageItem(Message message, Conversation conversation, int id) {
-        base(id, TYPE, message.from, message.local_time, message.id + 0.0845, message.time, message.encryption, message.marked);
+        base(id, TYPE, message.from, message.local_time, message.time, message.encryption, message.marked);
         this.message = message;
         this.conversation = conversation;
 
@@ -218,7 +236,7 @@ public class FileItem : ContentItem {
 
     public FileItem(FileTransfer file_transfer, int id) {
         Jid jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? file_transfer.account.bare_jid.with_resource(file_transfer.account.resourcepart) : file_transfer.counterpart;
-        base(id, TYPE, jid, file_transfer.local_time, file_transfer.id + 0.0845, file_transfer.time, file_transfer.encryption, file_to_message_state(file_transfer.state));
+        base(id, TYPE, jid, file_transfer.local_time, file_transfer.time, file_transfer.encryption, file_to_message_state(file_transfer.state));
 
         this.file_transfer = file_transfer;
 

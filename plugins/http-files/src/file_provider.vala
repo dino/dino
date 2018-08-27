@@ -26,8 +26,8 @@ public class FileProvider : Dino.FileProvider, Object {
 
     private class ReceivedMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ };
-        public override string action_group { get { return "DECRYPT"; } }
+        public string[] after_actions_const = new string[]{ "STORE" };
+        public override string action_group { get { return ""; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
         private FileProvider outer;
@@ -91,6 +91,12 @@ public class FileProvider : Dino.FileProvider, Object {
                             file_transfer.provider = 0;
                             file_transfer.info = message.id.to_string();
                             file_incoming(file_transfer, conversation);
+
+                            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+                            if (content_item != null) {
+                                stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
+                            }
+
                             success = true;
                             Idle.add((owned)callback);
                         });
