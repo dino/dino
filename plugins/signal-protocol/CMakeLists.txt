@@ -105,7 +105,7 @@ set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/libsignal-protocol-c/src
 add_definitions(${CFLAGS})
 add_library(signal-protocol-vala ${SIGNAL_PROTOCOL_VALA_C} ${CMAKE_CURRENT_SOURCE_DIR}/src/signal_helper.c)
 add_dependencies(signal-protocol-vala signal-protocol-vapi)
-target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} gcrypt signal-protocol-c m)
+target_link_libraries(signal-protocol-vala ${SIGNAL_PROTOCOL_PACKAGES} signal-protocol-c m)
 set_property(TARGET signal-protocol-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(BUILD_TESTS)

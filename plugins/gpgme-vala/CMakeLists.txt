@@ -47,6 +47,6 @@ set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_definitions(${CFLAGS})
 add_library(gpgme-vala ${GPGME_VALA_C} src/gpgme_fix.c)
 add_dependencies(gpgme-vala gpgme-vapi)
-target_link_libraries(gpgme-vala ${GPGME_VALA_PACKAGES} gpgme)
+target_link_libraries(gpgme-vala ${GPGME_VALA_PACKAGES})
 set_property(TARGET gpgme-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 
