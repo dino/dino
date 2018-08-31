@@ -176,7 +176,7 @@ public class DefaultSkeletonHeader : Box {
         return datetime.format(format);
     }
 
-    public virtual string get_relative_time(DateTime datetime) {
+    public static string get_relative_time(DateTime datetime) {
         DateTime now = new DateTime.now_local();
         TimeSpan timespan = now.difference(datetime);
         if (timespan > 365 * TimeSpan.DAY) {

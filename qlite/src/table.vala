@@ -8,6 +8,8 @@ public class Table {
     protected Column[]? columns;
     private string constraints = "";
     private string[] post_statements = {};
+    private string[] create_statements = {};
+    internal Column[]? fts_columns;
 
     public Table(Database db, string name) {
         this.db = db;
@@ -17,6 +19,37 @@ public class Table {
     public void init(Column[] columns, string constraints = "") {
         this.columns = columns;
         this.constraints = constraints;
+
+        foreach(Column c in columns) {
+            c.table = this;
+        }
+    }
+
+    public void fts(Column[] columns) {
+        if (fts_columns != null) error("Only one FTS index may be used per table.");
+        fts_columns = columns;
+        string cs = "";
+        string cnames = "";
+        string cnews = "";
+        foreach (Column c in columns) {
+            cs += @", $(c.to_column_definition())";
+            cnames += @", $(c.name)";
+            cnews += @", new.$(c.name)";
+        }
+        add_create_statement(@"CREATE VIRTUAL TABLE IF NOT EXISTS _fts_$name USING fts4(tokenize=unicode61, content=\"$name\"$cs)");
+        add_post_statement(@"CREATE TRIGGER IF NOT EXISTS _fts_bu_$(name) BEFORE UPDATE ON $name BEGIN DELETE FROM _fts_$name WHERE docid=old.rowid; END");
+        add_post_statement(@"CREATE TRIGGER IF NOT EXISTS _fts_bd_$(name) BEFORE DELETE ON $name BEGIN DELETE FROM _fts_$name WHERE docid=old.rowid; END");
+        add_post_statement(@"CREATE TRIGGER IF NOT EXISTS _fts_au_$(name) AFTER UPDATE ON $name BEGIN INSERT INTO _fts_$name(docid$cnames) VALUES(new.rowid$cnews); END");
+        add_post_statement(@"CREATE TRIGGER IF NOT EXISTS _fts_ai_$(name) AFTER INSERT ON $name BEGIN INSERT INTO _fts_$name(docid$cnames) VALUES(new.rowid$cnews); END");
+    }
+
+    public void fts_rebuild() {
+        if (fts_columns == null) error("FTS not available on this table.");
+        try {
+            db.exec(@"INSERT INTO _fts_$name(_fts_$name) VALUES('rebuild');");
+        } catch (Error e) {
+            error("Qlite Error: Rebuilding FTS index");
+        }
     }
 
     public void unique(Column[] columns, string? on_conflict = null) {
@@ -35,6 +68,10 @@ public class Table {
 
     public void add_post_statement(string stmt) {
         post_statements += stmt;
+    }
+
+    public void add_create_statement(string stmt) {
+        create_statements += stmt;
     }
 
     public void index(string index_name, Column[] columns, bool unique = false) {
@@ -56,6 +93,15 @@ public class Table {
     public QueryBuilder select(Column[]? columns = null) {
         ensure_init();
         return db.select(columns).from(this);
+    }
+
+    private MatchQueryBuilder match_query() {
+        ensure_init();
+        return db.match_query(this);
+    }
+
+    public MatchQueryBuilder match(Column<string> column, string query) {
+        return match_query().match(column, query);
     }
 
     public InsertBuilder insert() {
@@ -98,7 +144,7 @@ public class Table {
         for (int i = 0; i < columns.length; i++) {
             Column c = columns[i];
             if (c.min_version <= version && c.max_version >= version) {
-                sql += @"$(i > 0 ? "," : "") $c";
+                sql += @"$(i > 0 ? "," : "") $(c.to_column_definition())";
             }
         }
         sql += @"$constraints)";
@@ -107,6 +153,13 @@ public class Table {
         } catch (Error e) {
             error("Qlite Error: Create table at version");
         }
+        foreach (string stmt in create_statements) {
+            try {
+                db.exec(stmt);
+            } catch (Error e) {
+                error("Qlite Error: Create table at version");
+            }
+        }
     }
 
     public void add_columns_for_version(long old_version, long new_version) {
@@ -114,7 +167,7 @@ public class Table {
         foreach (Column c in columns) {
             if (c.min_version <= new_version && c.max_version >= new_version && c.min_version > old_version) {
                 try {
-                    db.exec(@"ALTER TABLE $name ADD COLUMN $c");
+                    db.exec(@"ALTER TABLE $name ADD COLUMN $(c.to_column_definition())");
                 } catch (Error e) {
                     error("Qlite Error: Add columns for version");
                 }

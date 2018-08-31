@@ -6,7 +6,7 @@ using Xmpp;
 
 namespace Dino.Ui.ConversationSummary {
 
-class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Object {
+class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Plugins.ConversationAdditionPopulator, Object {
 
     public string id { get { return "date_separator"; } }
 
@@ -34,8 +34,6 @@ class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Object {
     }
 
     public void populate_timespan(Conversation conversation, DateTime after, DateTime before) { }
-
-    public void populate_between_widgets(Conversation conversation, DateTime from, DateTime to) { }
 
     private void on_insert_item(Plugins.MetaConversationItem item) {
         if (item.display_time == null) return;

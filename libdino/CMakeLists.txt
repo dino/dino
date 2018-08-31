@@ -29,6 +29,7 @@ SOURCES
     src/service/blocking_manager.vala
     src/service/chat_interaction.vala
     src/service/connection_manager.vala
+    src/service/content_item_store.vala
     src/service/conversation_manager.vala
     src/service/counterpart_interaction_manager.vala
     src/service/database.vala
@@ -42,6 +43,7 @@ SOURCES
     src/service/presence_manager.vala
     src/service/registration.vala
     src/service/roster_manager.vala
+    src/service/search_processor.vala
     src/service/stream_interactor.vala
     src/service/util.vala
 

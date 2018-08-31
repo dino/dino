@@ -10,15 +10,21 @@ public class QueryBuilder : StatementBuilder {
     private Column[] columns = {};
 
     // FROM [...]
-    private Table? table;
-    private string? table_name;
+    protected Table? table;
+    protected string? table_name;
+
+    // JOIN [...]
+    private string joins = "";
 
     // WHERE [...]
-    private string selection = "1";
-    private StatementBuilder.AbstractField[] selection_args = {};
+    protected string selection = "1";
+    internal StatementBuilder.AbstractField[] selection_args = {};
 
     // ORDER BY [...]
     private OrderingTerm[]? order_by_terms = {};
+
+    // GROUP BY [...]
+    private string? group_by_term;
 
     // LIMIT [...] OFFSET [...]
     private int limit_val;
@@ -30,12 +36,12 @@ public class QueryBuilder : StatementBuilder {
 
     public QueryBuilder select(Column[] columns = {}) {
         this.columns = columns;
-        if (columns.length == 0) {
+        if (columns.length != 0) {
             for (int i = 0; i < columns.length; i++) {
                 if (column_selector == "*") {
-                    column_selector = columns[0].name;
+                    column_selector = columns[i].to_string();
                 } else {
-                    column_selector += ", " + columns[i].name;
+                    column_selector += ", " + columns[i].to_string();
                 }
             }
         } else {
@@ -50,21 +56,45 @@ public class QueryBuilder : StatementBuilder {
         return this;
     }
 
-    public QueryBuilder from(Table table) {
+    public virtual QueryBuilder from(Table table) {
         if (this.table_name != null) error("cannot use from() multiple times.");
         this.table = table;
         this.table_name = table.name;
         return this;
     }
 
-    public QueryBuilder from_name(string table) {
+    public virtual QueryBuilder from_name(string table) {
         this.table_name = table;
         return this;
     }
 
+    public QueryBuilder outer_join_with<T>(Table table, Column<T> lhs, Column<T> rhs, string? as = null) {
+        return outer_join_on(table, @"$lhs = $rhs", as);
+    }
+
+    public QueryBuilder outer_join_on(Table table, string on, string? as = null) {
+        if (as == null) as = table.name;
+        joins += @" LEFT OUTER JOIN $(table.name) AS $as ON $on";
+        return this;
+    }
+
+    public QueryBuilder join_with<T>(Table table, Column<T> lhs, Column<T> rhs, string? as = null) {
+        return join_on(table, @"$lhs = $rhs", as);
+    }
+
+    public QueryBuilder join_on(Table table, string on, string? as = null) {
+        if (as == null) as = table.name;
+        joins += @" JOIN $(table.name) AS $as ON $on";
+        return this;
+    }
+
+    internal QueryBuilder join_name(string table_name, string on) {
+        joins += @" JOIN $table_name ON $on";
+        return this;
+    }
+
     public QueryBuilder where(string selection, string[] selection_args = {}) {
-        if (this.selection != "1") error("selection was already done, but where() was called.");
-        this.selection = selection;
+        this.selection = @"($(this.selection)) AND ($selection)";
         foreach (string arg in selection_args) {
             this.selection_args += new StatementBuilder.StringField(arg);
         }
@@ -74,17 +104,17 @@ public class QueryBuilder : StatementBuilder {
     public QueryBuilder with<T>(Column<T> column, string comp, T value) {
         if ((column.unique || column.primary_key) && comp == "=") single_result = true;
         selection_args += new Field<T>(column, value);
-        selection = @"($selection) AND $(column.name) $comp ?";
+        selection = @"($selection) AND $column $comp ?";
         return this;
     }
 
     public QueryBuilder with_null<T>(Column<T> column) {
-        selection = @"($selection) AND $(column.name) ISNULL";
+        selection = @"($selection) AND $column ISNULL";
         return this;
     }
 
     public QueryBuilder without_null<T>(Column<T> column) {
-        selection = @"($selection) AND $(column.name) NOT NULL";
+        selection = @"($selection) AND $column NOT NULL";
         return this;
     }
 
@@ -95,6 +125,17 @@ public class QueryBuilder : StatementBuilder {
 
     public QueryBuilder order_by_name(string name, string dir) {
         order_by_terms += new OrderingTerm.by_name(name, dir);
+        return this;
+    }
+
+    public QueryBuilder group_by(Column[] columns) {
+        foreach(Column col in columns) {
+            if (group_by_term == null) {
+                group_by_term = col.to_string();
+            } else {
+                group_by_term += @", $col";
+            }
+        }
         return this;
     }
 
@@ -135,7 +176,7 @@ public class QueryBuilder : StatementBuilder {
     }
 
     internal override Statement prepare() {
-        Statement stmt = db.prepare(@"SELECT $column_selector $(table_name == null ? "" : @"FROM $((!) table_name)") WHERE $selection $(OrderingTerm.all_to_string(order_by_terms)) $(limit_val > 0 ? @" LIMIT $limit_val OFFSET $offset_val" : "")");
+        Statement stmt = db.prepare(@"SELECT $column_selector $(table_name == null ? "" : @"FROM $((!) table_name)") $joins WHERE $selection $(group_by_term == null ? "" : @"GROUP BY $group_by_term") $(OrderingTerm.all_to_string(order_by_terms)) $(limit_val > 0 ? @" LIMIT $limit_val OFFSET $offset_val" : "")");
         for (int i = 0; i < selection_args.length; i++) {
             selection_args[i].bind(stmt, i+1);
         }
@@ -147,13 +188,13 @@ public class QueryBuilder : StatementBuilder {
     }
 
     class OrderingTerm {
-        Column column;
+        Column? column;
         string column_name;
         string dir;
 
         public OrderingTerm(Column column, string dir) {
             this.column = column;
-            this.column_name = column.name;
+            this.column_name = column.to_string();
             this.dir = dir;
         }
 
@@ -174,6 +215,23 @@ public class QueryBuilder : StatementBuilder {
             }
             return res;
         }
+    }
+}
+
+public class MatchQueryBuilder : QueryBuilder {
+    internal MatchQueryBuilder(Database db, Table table) {
+        base(db);
+        if (table.fts_columns == null) error("MATCH query on non FTS table");
+        from(table);
+        join_name(@"_fts_$table_name", @"_fts_$table_name.docid = $table_name.rowid");
+    }
+
+    public MatchQueryBuilder match(Column<string> column, string match) {
+        if (table == null) error("MATCH must occur after FROM statement");
+        if (!(column in table.fts_columns)) error("MATCH selection on non FTS column");
+        selection_args += new StatementBuilder.StringField(match);
+        selection = @"($selection) AND _fts_$table_name.$(column.name) MATCH ?";
+        return this;
     }
 }
 

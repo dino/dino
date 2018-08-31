@@ -118,10 +118,6 @@ public static void force_background(Gtk.Widget widget, string color, string sele
     force_css(widget, force_background_css.printf(selector, color));
 }
 
-public static void force_base_background(Gtk.Widget widget, string selector = "*") {
-    force_background(widget, "@theme_base_color", selector);
-}
-
 public static void force_color(Gtk.Widget widget, string color, string selector = "*") {
     force_css(widget, force_color_css.printf(selector, color));
 }
@@ -140,6 +136,15 @@ public static bool is_24h_format() {
     string settings_format = settings.get_string("clock-format");
     string p_format = (new DateTime.now_utc()).format("%p");
     return settings_format == "24h" || p_format == " ";
+}
+
+// Workaround GTK TextView issues
+public static void force_alloc_width(Widget widget, int width) {
+    Allocation alloc = Allocation();
+    widget.get_preferred_width(out alloc.width, null);
+    widget.get_preferred_height(out alloc.height, null);
+    alloc.width = width;
+    widget.size_allocate(alloc);
 }
 
 }

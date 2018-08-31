@@ -24,7 +24,6 @@ public class MessageTextView : TextView {
         motion_notify_event.connect(change_cursor_over_url);
 
         update_display_style();
-        Util.force_base_background(this, "textview, text:not(:selected)");
         style_updated.connect(update_display_style);
         populate_popup.connect(populate_context_menu);
     }
@@ -60,7 +59,7 @@ public class MessageTextView : TextView {
             TextIter end_iter;
             buffer.get_iter_at_offset(out start_iter, start);
             buffer.get_iter_at_offset(out end_iter, end);
-            buffer.apply_tag_by_name("semibold", start_iter, end_iter);
+            buffer.apply_tag(bold_tag, start_iter, end_iter);
         }
     }
 
@@ -125,7 +124,7 @@ public class MessageTextView : TextView {
             TextIter end_iter;
             buffer.get_iter_at_offset(out start_iter, absolute_start + start);
             buffer.get_iter_at_offset(out end_iter, absolute_start + end);
-            buffer.apply_tag_by_name("url", start_iter, end_iter);
+            buffer.apply_tag(link_tag, start_iter, end_iter);
         }
     }
 

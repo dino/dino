@@ -81,28 +81,25 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     }
 }
 
-public class FileMessageFilterDisplay : Plugins.MessageDisplayProvider, Object {
-    public string id { get; set; default="file_message_filter"; }
-    public double priority { get; set; default=10; }
-
+public class FileMessageFilter : ContentFilter, Object {
     public Database db;
 
-    public FileMessageFilterDisplay(Dino.Database db) {
+    public FileMessageFilter(Dino.Database db) {
         this.db = db;
     }
 
-    public bool can_display(Entities.Message? message) {
-        return message_is_file(db, message);
-    }
-
-    public Plugins.MetaConversationItem? get_item(Entities.Message message, Conversation conversation) {
-        return null;
+    public bool discard(ContentItem content_item) {
+        if (content_item.type_ == MessageItem.TYPE) {
+            MessageItem message_item = content_item as MessageItem;
+            return message_is_file(db, message_item.message);
+        }
+        return false;
     }
 }
 
 private bool message_is_file(Database db, Entities.Message message) {
-    Qlite.QueryBuilder builder = db.file_transfer.select().with(db.file_transfer.info, "=", message.id.to_string());
-    Qlite.QueryBuilder builder2 = db.file_transfer.select().with(db.file_transfer.info, "=", message.body);
+    Qlite.QueryBuilder builder = db.file_transfer.select({db.file_transfer.id}).with(db.file_transfer.info, "=", message.id.to_string());
+    Qlite.QueryBuilder builder2 = db.file_transfer.select({db.file_transfer.id}).with(db.file_transfer.info, "=", message.body);
     return builder.count() > 0 || builder2.count() > 0;
 }
 

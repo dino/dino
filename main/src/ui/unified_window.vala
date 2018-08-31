@@ -1,11 +1,12 @@
 using Gee;
+using Gdk;
 using Gtk;
 
 using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class UnifiedWindow : Window {
+public class UnifiedWindow : Gtk.Window {
 
     private NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     private NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
@@ -16,7 +17,12 @@ public class UnifiedWindow : Window {
     private ConversationTitlebar conversation_titlebar;
     private HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
     private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
-    private Paned paned = new Paned(Orientation.HORIZONTAL) { visible=true };
+    private Paned paned;
+    private Revealer goto_end_revealer;
+    private Button goto_end_button;
+    private Revealer search_revealer;
+    private SearchEntry search_entry;
+    private GlobalSearch search_box;
     private Stack stack = new Stack() { visible=true };
 
     private StreamInteractor stream_interactor;
@@ -36,8 +42,47 @@ public class UnifiedWindow : Window {
         setup_unified();
         setup_stack();
 
-        conversation_list_titlebar.search_button.bind_property("active", filterable_conversation_list.search_revealer, "reveal-child",
-                BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        var vadjustment = conversation_frame.scrolled.vadjustment;
+        vadjustment.notify["value"].connect(() => {
+            goto_end_revealer.reveal_child = vadjustment.value <  vadjustment.upper - vadjustment.page_size;
+        });
+        goto_end_button.clicked.connect(() => {
+            conversation_frame.initialize_for_conversation(conversation);
+        });
+
+        conversation_titlebar.search_button.clicked.connect(() => {
+            search_revealer.reveal_child = conversation_titlebar.search_button.active;
+        });
+        search_revealer.notify["child-revealed"].connect(() => {
+            if (search_revealer.child_revealed) {
+                if (conversation_frame.conversation != null && search_box.search_entry.text == "") {
+                    reset_search_entry();
+                }
+                search_box.search_entry.grab_focus();
+            }
+        });
+        search_box.selected_item.connect((item) => {
+            on_conversation_selected(item.conversation, false, false);
+            conversation_frame.initialize_around_message(item.conversation, item);
+            close_search();
+        });
+        event.connect((event) => {
+            if (event.type == EventType.BUTTON_PRESS) {
+                int dest_x, dest_y;
+                bool ret = search_box.translate_coordinates(this, 0, 0, out dest_x, out dest_y);
+                int geometry_x, geometry_y, geometry_width, geometry_height;
+                this.get_window().get_geometry(out geometry_x, out geometry_y, out geometry_width, out geometry_height);
+                if (ret && event.button.x_root - geometry_x < dest_x || event.button.y_root - geometry_y < dest_y) {
+                    close_search();
+                }
+            } else if (event.type == EventType.KEY_RELEASE) {
+                if (event.key.keyval == Gdk.Key.Escape) {
+                    close_search();
+                }
+            }
+            return false;
+        });
+
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         focus_in_event.connect(on_focus_in_event);
@@ -50,38 +95,60 @@ public class UnifiedWindow : Window {
         accounts_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("accounts", null); });
         conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
         conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });
-        filterable_conversation_list.conversation_list.conversation_selected.connect(on_conversation_selected);
-        conversation_list_titlebar.conversation_opened.connect(on_conversation_selected);
+        filterable_conversation_list.conversation_list.conversation_selected.connect((conversation) => on_conversation_selected(conversation));
+        conversation_list_titlebar.conversation_opened.connect((conversation) => on_conversation_selected(conversation));
 
         check_stack();
     }
 
-    public void on_conversation_selected(Conversation conversation) {
+    private void reset_search_entry() {
+        if (conversation_frame.conversation != null) {
+            switch (conversation.type_) {
+                case Conversation.Type.CHAT:
+                case Conversation.Type.GROUPCHAT_PM:
+                    search_box.search_entry.text = @"with:$(conversation.counterpart) ";
+                    break;
+                case Conversation.Type.GROUPCHAT:
+                    search_box.search_entry.text = @"in:$(conversation.counterpart) ";
+                    break;
+            }
+        }
+    }
+
+    public void on_conversation_selected(Conversation conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
         if (this.conversation == null || !this.conversation.equals(conversation)) {
             this.conversation = conversation;
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
             conversation.active = true; // only for conversation_selected
             filterable_conversation_list.conversation_list.on_conversation_selected(conversation); // only for conversation_opened
 
+            if (do_reset_search) {
+                reset_search_entry();
+            }
             chat_input.initialize_for_conversation(conversation);
-            conversation_frame.initialize_for_conversation(conversation);
+            if (default_initialize_conversation) {
+                conversation_frame.initialize_for_conversation(conversation);
+            }
             conversation_titlebar.initialize_for_conversation(conversation);
         }
     }
 
+    private void close_search() {
+        conversation_titlebar.search_button.active = false;
+        search_revealer.reveal_child = false;
+    }
+
     private void setup_unified() {
-        chat_input = new ChatInput.View(stream_interactor) { visible=true };
-        conversation_frame = new ConversationSummary.ConversationView(stream_interactor) { visible=true };
-        filterable_conversation_list = new ConversationSelector.View(stream_interactor) { visible=true };
-
-        Grid grid = new Grid() { orientation=Orientation.VERTICAL, visible=true };
-        grid.get_style_context().add_class("dino-conversation");
-        grid.add(conversation_frame);
-        grid.add(chat_input);
-
-        paned.set_position(300);
-        paned.pack1(filterable_conversation_list, false, false);
-        paned.pack2(grid, true, false);
+        Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
+        paned = (Paned) builder.get_object("paned");
+        chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
+        conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
+        filterable_conversation_list = ((ConversationSelector.View) builder.get_object("conversation_list")).init(stream_interactor);
+        goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
+        goto_end_button = (Button) builder.get_object("goto_end_button");
+        search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
+        search_revealer = (Revealer) builder.get_object("search_revealer");
+        search_entry = (SearchEntry) builder.get_object("search_entry");
     }
 
     private void setup_headerbar() {
