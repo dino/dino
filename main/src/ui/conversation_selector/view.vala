@@ -25,6 +25,10 @@ public class View : Box {
         search_entry.set_text("");
     }
 
+    public void clear_search_string() {
+        search_entry.set_text("");
+    }
+
     private void refilter() {
         string[]? values = null;
         string str = search_entry.get_text ();
