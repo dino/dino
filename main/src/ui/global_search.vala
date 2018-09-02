@@ -160,7 +160,7 @@ class GlobalSearch : Overlay {
 
             string display_name = Util.get_conversation_display_name(stream_interactor, item.conversation);
             string title = item.message.type_ == Message.Type.GROUPCHAT ? _("In %s").printf(display_name) : _("With %s").printf(display_name);
-            Box header_box = new Box(Orientation.HORIZONTAL, 10) { margin_left=7, visible=true };
+            Box header_box = new Box(Orientation.HORIZONTAL, 10) { margin_start=7, visible=true };
             header_box.add(new Label(@"<b>$(Markup.escape_text(title))</b>") { ellipsize=EllipsizeMode.END, xalign=0, use_markup=true, visible=true });
             header_box.add(date_label);
 
@@ -223,7 +223,7 @@ class GlobalSearch : Overlay {
 
     private Grid get_context_message_widget(MessageItem item) {
         Grid grid = get_skeleton(item);
-        grid.margin_left = 7;
+        grid.margin_start = 7;
         Label label = new Label(item.message.body.replace("\n", "").replace("\r", "")) { ellipsize=EllipsizeMode.MIDDLE, xalign=0, visible=true };
         grid.attach(label, 1, 1, 1, 1);
         grid.opacity = 0.55;
@@ -231,7 +231,7 @@ class GlobalSearch : Overlay {
     }
 
     private Grid get_skeleton(MessageItem item) {
-        AvatarImage image = new AvatarImage() { height=32, width=32, margin_right=7, valign=Align.START, visible=true, allow_gray = false };
+        AvatarImage image = new AvatarImage() { height=32, width=32, margin_end=7, valign=Align.START, visible=true, allow_gray = false };
         image.set_jid(stream_interactor, item.jid, item.message.account);
         Grid grid = new Grid() { row_homogeneous=false, visible=true };
         grid.attach(image, 0, 0, 1, 2);

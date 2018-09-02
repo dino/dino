@@ -26,7 +26,6 @@ public class ContentItemStore : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         this.db = db;
 
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => insert_message(message, conversation));
         stream_interactor.get_module(FileManager.IDENTITY).received_file.connect(insert_file_transfer);
     }
 
@@ -180,7 +179,6 @@ public abstract class ContentItem : Object {
     public string type_ { get; set; }
     public Jid? jid { get; set; default=null; }
     public DateTime? sort_time { get; set; default=null; }
-    public double seccondary_sort_indicator { get; set; }
     public DateTime? display_time { get; set; default=null; }
     public Encryption? encryption { get; set; default=null; }
     public Entities.Message.Marked? mark { get; set; default=null; }
@@ -190,7 +188,6 @@ public abstract class ContentItem : Object {
         this.type_ = ty;
         this.jid = jid;
         this.sort_time = sort_time;
-        this.seccondary_sort_indicator = id;
         this.display_time = display_time;
         this.encryption = encryption;
         this.mark = mark;
@@ -202,7 +199,7 @@ public abstract class ContentItem : Object {
             res = a.display_time.compare(b.display_time);
         }
         if (res == 0) {
-            res = a.seccondary_sort_indicator - b.seccondary_sort_indicator > 0 ? 1 : -1;
+            res = a.id - b.id > 0 ? 1 : -1;
         }
         return res;
     }

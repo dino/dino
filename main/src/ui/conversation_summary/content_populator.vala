@@ -78,7 +78,7 @@ public class ContentMetaItem : Plugins.MetaConversationItem {
     public ContentMetaItem(ContentItem content_item, ContentItemWidgetFactory widget_factory) {
         this.jid = content_item.jid;
         this.sort_time = content_item.sort_time;
-        this.seccondary_sort_indicator = content_item.seccondary_sort_indicator;
+        this.seccondary_sort_indicator = content_item.id;
         this.display_time = content_item.display_time;
         this.encryption = content_item.encryption;
         this.mark = content_item.mark;
