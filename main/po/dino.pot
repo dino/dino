@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-05 09:22-0600\n"
+"POT-Creation-Date: 2018-09-07 00:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,7 +52,6 @@ msgstr ""
 #: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
-#: main/data/manage_accounts/add_account_dialog.ui:11
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
@@ -91,12 +90,38 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:22
+#: main/src/ui/manage_accounts/add_account_dialog.vala:55
 msgid "Add Account"
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:45
+#: main/src/ui/manage_accounts/add_account_dialog.vala:135
 msgid "JID should be of the form “user@example.com”"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:171
+msgid "No response from server"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:177
+#, c-format
+msgid "Register on %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:180
+msgid "The server requires to sign up through a website"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:182
+msgid "Open Registration"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:198
+msgid "Register"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#, c-format
+msgid "Check %s for information on how to sign up"
 msgstr ""
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
@@ -105,13 +130,13 @@ msgid "Me"
 msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_row.vala:154
-#: main/src/ui/conversation_summary/date_separator_populator.vala:102
+#: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_row.vala:158
-#: main/src/ui/conversation_summary/date_separator_populator.vala:93
+#: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr ""
 
@@ -156,21 +181,23 @@ msgid "Add"
 msgstr ""
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
-#: main/data/manage_accounts/add_account_dialog.ui:21
+#: main/data/manage_accounts/add_account_dialog.ui:119
 msgid "Save"
 msgstr ""
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+#: main/src/ui/unified_window.vala:243 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr ""
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
+#: main/data/manage_accounts/add_account_dialog.ui:228
+#: main/data/manage_accounts/add_account_dialog.ui:308
 msgid "Next"
 msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
+#: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:28
 msgid "Start Conversation"
 msgstr ""
@@ -211,68 +238,68 @@ msgstr ""
 msgid "Too many occupants in room"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:166
+#: main/src/ui/unified_window.vala:233
 msgid "No active accounts"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:167
+#: main/src/ui/unified_window.vala:234
 msgid "Manage accounts"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:174
+#: main/src/ui/unified_window.vala:241
 msgid "No active conversations"
 msgstr ""
 
-#: main/src/ui/conversation_summary/date_separator_populator.vala:87
+#: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
 msgstr ""
 
-#: main/src/ui/conversation_summary/date_separator_populator.vala:100
+#: main/src/ui/conversation_summary/date_separator_populator.vala:98
 msgid "%a, %b %d"
 msgstr ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#: main/src/ui/conversation_summary/chat_state_populator.vala:146
 #, c-format
 msgid "%s, %s and %i others"
 msgstr ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %s"
 msgstr ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:152
+#: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s and %s"
 msgstr ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+#: main/src/ui/conversation_summary/chat_state_populator.vala:155
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] ""
 msgstr[1] ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:159
+#: main/src/ui/conversation_summary/chat_state_populator.vala:157
 msgid "has stopped typing"
 msgstr ""
 
-#: main/src/ui/conversation_summary/default_file_display.vala:50
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
 msgid "File"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:41
+#: main/src/ui/conversation_summary/message_textview.vala:40
 msgid "Message too long"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:94
+#: main/src/ui/conversation_summary/message_textview.vala:93
 msgid "Copy Link Address"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:102
+#: main/src/ui/conversation_summary/message_textview.vala:101
 msgid "Copy"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:107
+#: main/src/ui/conversation_summary/message_textview.vala:106
 msgid "Select All"
 msgstr ""
 
@@ -343,11 +370,26 @@ msgstr ""
 msgid "Kick"
 msgstr ""
 
+#: main/src/ui/global_search.vala:134
+#, c-format
+msgid "%i search results"
+msgstr ""
+
+#: main/src/ui/global_search.vala:162
+#, c-format
+msgid "In %s"
+msgstr ""
+
+#: main/src/ui/global_search.vala:162
+#, c-format
+msgid "With %s"
+msgstr ""
+
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr ""
 
-#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:32
 msgid "Contact Details"
 msgstr ""
@@ -386,7 +428,7 @@ msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:73
+#: main/data/manage_accounts/add_account_dialog.ui:62
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
@@ -428,7 +470,7 @@ msgstr ""
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:10
+#: main/data/menu_app.ui:11
 msgid "Settings"
 msgstr ""
 
@@ -493,12 +535,12 @@ msgstr ""
 msgid "Convert smileys to emojis"
 msgstr ""
 
-#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:6
+#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:7
 msgid "Accounts"
 msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:200
-#: main/data/manage_accounts/add_account_dialog.ui:102
+#: main/data/manage_accounts/add_account_dialog.ui:83
 msgid "Local alias"
 msgstr ""
 
@@ -510,16 +552,33 @@ msgstr ""
 msgid "Add an account"
 msgstr ""
 
+#: main/data/manage_accounts/add_account_dialog.ui:109
+#: main/data/manage_accounts/add_account_dialog.ui:146
+msgid "Create account"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:158
+msgid "Choose a public server"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:187
+msgid "Or specify a server address"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:207
+msgid "Sign in instead"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:288
+msgid "Pick another server"
+msgstr ""
+
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr ""
 
-#: main/data/menu_app.ui:16
+#: main/data/menu_app.ui:17
 msgid "Quit"
-msgstr ""
-
-#: main/data/conversation_selector/view.ui:14
-msgid "Search"
 msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
@@ -568,4 +627,20 @@ msgstr ""
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
+msgstr ""
+
+#: main/data/global_search.ui:37
+msgid "No active search"
+msgstr ""
+
+#: main/data/global_search.ui:52
+msgid "Type to start a search"
+msgstr ""
+
+#: main/data/global_search.ui:85
+msgid "No matching messages"
+msgstr ""
+
+#: main/data/global_search.ui:100
+msgid "Check the spelling or try to remove filters"
 msgstr ""

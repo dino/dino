@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-05 09:22-0600\n"
-"PO-Revision-Date: 2018-05-12 12:38+0000\n"
+"POT-Creation-Date: 2018-09-07 00:02+0200\n"
+"PO-Revision-Date: 2018-09-05 17:20+0000\n"
 "Last-Translator: Valerio Baldisserotto <svalo@libersoft.it>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.2-dev\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
@@ -53,7 +53,6 @@ msgstr "Seleziona"
 #: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
-#: main/data/manage_accounts/add_account_dialog.ui:11
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
@@ -92,13 +91,39 @@ msgstr "Il certificato TLS non è valido"
 msgid "Error"
 msgstr "Errore"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:22
+#: main/src/ui/manage_accounts/add_account_dialog.vala:55
 msgid "Add Account"
 msgstr "Aggiungi un account"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:45
+#: main/src/ui/manage_accounts/add_account_dialog.vala:135
 msgid "JID should be of the form “user@example.com”"
 msgstr "Il JID dovrebbe essere nella forma \"utente@example.com\""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:171
+msgid "No response from server"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:177
+#, c-format
+msgid "Register on %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:180
+msgid "The server requires to sign up through a website"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:182
+msgid "Open Registration"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:198
+msgid "Register"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#, c-format
+msgid "Check %s for information on how to sign up"
+msgstr ""
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
@@ -106,13 +131,13 @@ msgid "Me"
 msgstr "Io"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:154
-#: main/src/ui/conversation_summary/date_separator_populator.vala:102
+#: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%d %b"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:158
-#: main/src/ui/conversation_summary/date_separator_populator.vala:93
+#: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Ieri"
 
@@ -157,21 +182,23 @@ msgid "Add"
 msgstr "Aggiungi"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
-#: main/data/manage_accounts/add_account_dialog.ui:21
+#: main/data/manage_accounts/add_account_dialog.ui:119
 msgid "Save"
 msgstr "Salva"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+#: main/src/ui/unified_window.vala:243 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Entra nel Canale"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
+#: main/data/manage_accounts/add_account_dialog.ui:228
+#: main/data/manage_accounts/add_account_dialog.ui:308
 msgid "Next"
 msgstr "Avanti"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
+#: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:28
 msgid "Start Conversation"
 msgstr "Inizia una Conversazione"
@@ -212,68 +239,68 @@ msgstr "Scegli un soprannome differente"
 msgid "Too many occupants in room"
 msgstr "La stanza ha troppi occupanti"
 
-#: main/src/ui/unified_window.vala:166
+#: main/src/ui/unified_window.vala:233
 msgid "No active accounts"
 msgstr "Nessun account attivo"
 
-#: main/src/ui/unified_window.vala:167
+#: main/src/ui/unified_window.vala:234
 msgid "Manage accounts"
 msgstr "Gestisci accounts"
 
-#: main/src/ui/unified_window.vala:174
+#: main/src/ui/unified_window.vala:241
 msgid "No active conversations"
 msgstr "Nessuna conversazione attiva"
 
-#: main/src/ui/conversation_summary/date_separator_populator.vala:87
+#: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
 msgstr "Oggi"
 
-#: main/src/ui/conversation_summary/date_separator_populator.vala:100
+#: main/src/ui/conversation_summary/date_separator_populator.vala:98
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#: main/src/ui/conversation_summary/chat_state_populator.vala:146
 #, c-format
 msgid "%s, %s and %i others"
 msgstr "%s, %s e %i altri"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %s"
 msgstr "%s, %s, e %s"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:152
+#: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s and %s"
 msgstr "%s e %s"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+#: main/src/ui/conversation_summary/chat_state_populator.vala:155
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "sta scrivendo…"
 msgstr[1] "stanno scrivendo…"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:159
+#: main/src/ui/conversation_summary/chat_state_populator.vala:157
 msgid "has stopped typing"
 msgstr "ha smesso di scrivere"
 
-#: main/src/ui/conversation_summary/default_file_display.vala:50
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
 msgid "File"
 msgstr "File"
 
-#: main/src/ui/conversation_summary/message_textview.vala:41
+#: main/src/ui/conversation_summary/message_textview.vala:40
 msgid "Message too long"
 msgstr "Messaggio troppo lungo"
 
-#: main/src/ui/conversation_summary/message_textview.vala:94
+#: main/src/ui/conversation_summary/message_textview.vala:93
 msgid "Copy Link Address"
 msgstr "Copia l'indirizzo del collegamento"
 
-#: main/src/ui/conversation_summary/message_textview.vala:102
+#: main/src/ui/conversation_summary/message_textview.vala:101
 msgid "Copy"
 msgstr "Copia"
 
-#: main/src/ui/conversation_summary/message_textview.vala:107
+#: main/src/ui/conversation_summary/message_textview.vala:106
 msgid "Select All"
 msgstr "Seleziona Tutto"
 
@@ -344,11 +371,26 @@ msgstr "Inizia una conversazione privata"
 msgid "Kick"
 msgstr "Espelli"
 
+#: main/src/ui/global_search.vala:134
+#, c-format
+msgid "%i search results"
+msgstr ""
+
+#: main/src/ui/global_search.vala:162
+#, c-format
+msgid "In %s"
+msgstr ""
+
+#: main/src/ui/global_search.vala:162
+#, c-format
+msgid "With %s"
+msgstr ""
+
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "Dettagli della conferenza"
 
-#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:32
 msgid "Contact Details"
 msgstr "Dettagli del contatto"
@@ -387,7 +429,7 @@ msgstr "Chi può scoprire i veri JIDs?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:73
+#: main/data/manage_accounts/add_account_dialog.ui:62
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
@@ -429,7 +471,7 @@ msgstr "Configurazione della stanza"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:10
+#: main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -496,12 +538,12 @@ msgstr "Notifica quando arriva un nuovo messaggio"
 msgid "Convert smileys to emojis"
 msgstr "Trasforma smileys in emojis"
 
-#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:6
+#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:7
 msgid "Accounts"
 msgstr "Account"
 
 #: main/data/manage_accounts/dialog.ui:200
-#: main/data/manage_accounts/add_account_dialog.ui:102
+#: main/data/manage_accounts/add_account_dialog.ui:83
 msgid "Local alias"
 msgstr "Alias locale"
 
@@ -513,22 +555,38 @@ msgstr "Nessun account configurato"
 msgid "Add an account"
 msgstr "Aggiungi un account"
 
+#: main/data/manage_accounts/add_account_dialog.ui:109
+#: main/data/manage_accounts/add_account_dialog.ui:146
+msgid "Create account"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:158
+msgid "Choose a public server"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:187
+msgid "Or specify a server address"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:207
+msgid "Sign in instead"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:288
+msgid "Pick another server"
+msgstr ""
+
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Non cifrato"
 
-#: main/data/menu_app.ui:16
+#: main/data/menu_app.ui:17
 msgid "Quit"
 msgstr "Esci"
 
-#: main/data/conversation_selector/view.ui:14
-msgid "Search"
-msgstr "Cerca"
-
 #: main/data/im.dino.Dino.appdata.xml.in:8
-#, fuzzy
 msgid "Modern XMPP Chat Client"
-msgstr "Client XMPP moderno"
+msgstr "Client di chat moderno per XMPP"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -536,6 +594,9 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino è un client di chat per il desktop, moderno e open-source. Si concentra "
+"nel fornire un'esperienza Jabber/XMPP pulita e affidabile tenendo presente "
+"la tua privacy."
 
 #: main/data/im.dino.Dino.appdata.xml.in:14
 msgid ""
@@ -578,6 +639,25 @@ msgstr "Alias"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Aggiungi Contatto"
+
+#: main/data/global_search.ui:37
+msgid "No active search"
+msgstr ""
+
+#: main/data/global_search.ui:52
+msgid "Type to start a search"
+msgstr ""
+
+#: main/data/global_search.ui:85
+msgid "No matching messages"
+msgstr ""
+
+#: main/data/global_search.ui:100
+msgid "Check the spelling or try to remove filters"
+msgstr ""
+
+#~ msgid "Search"
+#~ msgstr "Cerca"
 
 #~ msgid "Send message marker"
 #~ msgstr "Invia lo stato del messaggio"

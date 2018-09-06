@@ -1,50 +1,54 @@
-# Catalan translation for dino-openpgp.
-# This file is distributed under the same license as the dino package.
-# Jordi Mallach <jordi@mallach.net>, 2018.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: dino-openpgp 20180123\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-07 00:02+0200\n"
-"PO-Revision-Date: 2018-01-24 11:24+0100\n"
-"Last-Translator: Jordi Mallach <jordi@mallach.net>\n"
-"Language-Team: Catalan <ca@dodds.net>\n"
-"Language: ca\n"
+"PO-Revision-Date: 2018-08-31 08:38+0000\n"
+"Last-Translator: notramo <notramo@vipmail.hu>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/dino/plugin-"
+"openpgp/hu/>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.2-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr "Publicació de claus inhabilitada"
+msgstr "A kulcs publikálása kikapcsolva"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
-msgstr "S'ha produït un error al GnuPG"
+msgstr "Hiba a GnuPG-ben"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "No hi ha claus disponibles. Genereu una!"
+msgstr "Nincs elérhető kulcs. Generálj egyet!"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "Seleccioneu una clau"
+msgstr "Válassz kulcsot"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
-msgstr "S'està carregant…"
+msgstr "Betöltés…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr "S'està consultant al GnuPG"
+msgstr "A GnuPG lekérése"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "La clau no està al clauer"
+msgstr "A kulcs nincs a kulcstartóban"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "Xifratge"
+msgstr "Titkosítás"
