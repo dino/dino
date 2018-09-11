@@ -61,7 +61,10 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         if (subtitle != null) {
             set_subtitle(subtitle);
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            string subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
+            string? subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
+            if (subject != null) {
+                subject = (new Regex("\\s+")).replace_literal(subject, -1, 0, " ");
+            }
             set_subtitle(subject != "" ? subject : null);
         } else {
             set_subtitle(null);
