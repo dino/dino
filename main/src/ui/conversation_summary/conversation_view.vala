@@ -132,14 +132,20 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
     }
 
     private void initialize_for_conversation_(Conversation? conversation) {
+        // Deinitialize old conversation
         Dino.Application app = Dino.Application.get_default();
         if (this.conversation != null) {
             foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
                 populator.close(conversation);
             }
         }
+
+        // Clear data structures
+        clear_notifications();
         this.conversation = conversation;
 
+
+        // Init for new conversation
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
         }
@@ -378,6 +384,9 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         item_item_skeletons.clear();
         widgets.clear();
         main.@foreach((widget) => { widget.destroy(); });
+    }
+
+    private void clear_notifications() {
         notifications.@foreach((widget) => { widget.destroy(); });
         notification_revealer.transition_duration = 0;
         notification_revealer.set_reveal_child(false);
