@@ -11,6 +11,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
     public signal void notify_message(Message message, Conversation conversation);
     public signal void notify_subscription_request(Conversation conversation);
+    public signal void notify_connection_error(Account account, ConnectionManager.ConnectionError error);
 
     private StreamInteractor stream_interactor;
 
@@ -39,6 +40,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
             }
             mam_potential_new[account].clear();
         });
+        stream_interactor.connection_manager.connection_error.connect((account, error) => notify_connection_error(account, error));
     }
 
     private void on_message_received(Entities.Message message, Conversation conversation) {

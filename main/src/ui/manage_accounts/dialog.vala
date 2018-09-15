@@ -215,15 +215,6 @@ public class Dialog : Gtk.Dialog {
         if (error != null) {
             state_label.label = get_connection_error_description(error);
             state_label.get_style_context().add_class("is_error");
-
-            if (error.source == ConnectionManager.ConnectionError.Source.SASL ||
-                    error.source == ConnectionManager.ConnectionError.Source.TLS ||
-                    error.reconnect_recomendation == ConnectionManager.ConnectionError.Reconnect.NEVER) {
-                active_switch.state_set.disconnect(change_account_state);
-                active_switch.active = false;
-                active_switch.state_set.connect(change_account_state);
-            }
-
         } else {
             ConnectionManager.ConnectionState state = stream_interactor.connection_manager.get_state(account);
             switch (state) {
