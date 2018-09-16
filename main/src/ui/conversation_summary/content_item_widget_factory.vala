@@ -59,6 +59,8 @@ public class MessageItemWidgetGenerator : WidgetGenerator, Object {
         if (markup_text.length > 10000) {
             markup_text = markup_text.substring(0, 10000) + " [" + _("Message too long") + "]";
         }
+        Gtk.drag_dest_unset(label);
+
         if (message_item.message.body.has_prefix("/me")) {
             markup_text = markup_text.substring(3);
         }
