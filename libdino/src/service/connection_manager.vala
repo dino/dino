@@ -121,7 +121,7 @@ public class ConnectionManager {
     }
 
     public void make_offline_all() {
-        foreach (Account account in connection_todo) {
+        foreach (Account account in connections.keys) {
             make_offline(account);
         }
     }
@@ -134,13 +134,17 @@ public class ConnectionManager {
     }
 
     public void disconnect(Account account) {
-        make_offline(account);
-        try {
-            connections[account].stream.disconnect();
-        } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
-        connection_todo.remove(account);
         if (connections.has_key(account)) {
-            connections.unset(account);
+            make_offline(account);
+            try {
+                connections[account].stream.disconnect();
+            } catch (Error e) {
+                warning(@"Error disconnecting stream  $(e.message)\n");
+            }
+            connection_todo.remove(account);
+            if (connections.has_key(account)) {
+                connections.unset(account);
+            }
         }
     }
 
@@ -283,7 +287,9 @@ public class ConnectionManager {
                 try {
                     make_offline(account);
                     connections[account].stream.disconnect();
-                } catch (Error e) { print(@"on_prepare_for_sleep error  $(e.message)\n"); }
+                } catch (Error e) {
+                    warning(@"Error disconnecting stream  $(e.message)\n");
+                }
             }
         } else {
             print("Device un-suspend\n");
