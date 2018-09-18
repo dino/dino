@@ -133,6 +133,7 @@
                                                 <property name="orientation">vertical</property>
                                                 <property name="spacing">25</property>
                                                 <property name="margin">10</property>
+                                                <property name="valign">start</property>
                                                 <property name="visible">True</property>
                                             </object>
                                         </child>

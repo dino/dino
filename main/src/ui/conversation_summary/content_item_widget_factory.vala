@@ -1,6 +1,7 @@
 using Gee;
 using Gdk;
 using Gtk;
+using Xmpp;
 
 using Dino.Entities;
 
@@ -51,33 +52,36 @@ public class MessageItemWidgetGenerator : WidgetGenerator, Object {
         Conversation conversation = message_item.conversation;
         Message message = message_item.message;
 
-        MessageTextView text_view = new MessageTextView() { vexpand=true, visible = true };
-
+        Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, vexpand=true, visible=true };
+        string markup_text = message.body;
+        if (markup_text.length > 10000) {
+            markup_text = markup_text.substring(0, 10000) + " [" + _("Message too long") + "]";
+        }
         if (message_item.message.body.has_prefix("/me")) {
-            text_view.add_text(message.body.substring(3));
-        } else {
-            text_view.add_text(message.body);
+            markup_text = markup_text.substring(3);
         }
-        if (conversation.type_ == Conversation.Type.GROUPCHAT)  {
-            text_view.highlight_word(conversation.nickname);
+        markup_text = Markup.escape_text(markup_text);
+
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            markup_text = Util.make_word_bold_markup(markup_text, conversation.nickname);
         }
+
         if (message_item.message.body.has_prefix("/me")) {
             string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
-            string color = Util.get_name_hex_color(stream_interactor, conversation.account, conversation.counterpart, Util.is_dark_theme(text_view));
-            TextTag nick_tag = text_view.buffer.create_tag(null, foreground: @"#$color");
-            TextIter iter;
-            text_view.buffer.get_start_iter(out iter);
-            text_view.buffer.insert_with_tags(ref iter, display_name, display_name.length, nick_tag);
-
-            text_view.style_updated.connect(() => update_style(stream_interactor, message, conversation, nick_tag, text_view));
-            text_view.realize.connect(() => update_style(stream_interactor, message, conversation, nick_tag, text_view));
+            update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text);
+            label.realize.connect(() => update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text));
+            label.style_updated.connect(() => update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text));
         }
-        return text_view;
+
+        markup_text = Util.make_link_markup(markup_text);
+
+        label.label = markup_text;
+        return label;
     }
 
-    public static void update_style(StreamInteractor stream_interactor, Message message, Conversation conversation, TextTag nick_tag, TextView text_view) {
-        string color = Util.get_name_hex_color(stream_interactor, conversation.account, message.real_jid ?? message.from, Util.is_dark_theme(text_view));
-        nick_tag.foreground = "#" + color;
+    public static void update_me_style(StreamInteractor stream_interactor, Jid jid, string display_name, Account account, Label label, string action_text) {
+        string color = Util.get_name_hex_color(stream_interactor, account, jid, Util.is_dark_theme(label));
+        label.label = @"<span color=\"#$(color)\">$(Markup.escape_text(display_name))</span>" + action_text;
     }
 }
 

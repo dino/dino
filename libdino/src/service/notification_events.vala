@@ -52,7 +52,6 @@ public class NotificationEvents : StreamInteractionModule, Object {
             return;
         }
         if (!should_notify_message(message, conversation)) return;
-        if (!should_notify_message(message, conversation)) return;
         if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus()) return;
         notify_message(message, conversation);
     }
@@ -62,7 +61,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
         if (notify == Conversation.NotifySetting.OFF) return false;
         Jid? nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
         if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null) {
-        return Regex.match_simple("""\b""" + Regex.escape_string(nick.resourcepart) + """\b""", message.body, RegexCompileFlags.CASELESS);
+            return Regex.match_simple("\\b" + Regex.escape_string(nick.resourcepart) + "\\b", message.body, RegexCompileFlags.CASELESS);
         }
         return true;
     }

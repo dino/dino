@@ -61,24 +61,20 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
         return this;
     }
 
-    // Workaround GTK TextView issues: Delay first load of contents
     public void initialize_for_conversation(Conversation? conversation) {
+        // Workaround for rendering issues
         if (firstLoad) {
-            int timeout = firstLoad ? 1000 : 0;
-            Timeout.add(timeout, () => {
-                stack.set_visible_child_name("void");
-                initialize_for_conversation_(conversation);
-                display_latest();
-                stack.set_visible_child_name("main");
+            main.visible = false;
+            Idle.add(() => {
+                main.visible=true;
                 return false;
             });
             firstLoad = false;
-        } else {
-            stack.set_visible_child_name("void");
-            initialize_for_conversation_(conversation);
-            display_latest();
-            stack.set_visible_child_name("main");
         }
+        stack.set_visible_child_name("void");
+        initialize_for_conversation_(conversation);
+        display_latest();
+        stack.set_visible_child_name("main");
     }
 
     public void initialize_around_message(Conversation conversation, ContentItem content_item) {
@@ -232,7 +228,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
                     lower_start_item.encryption == item.encryption &&
                     (item.mark == Message.Marked.WONTSEND) == (lower_start_item.mark == Message.Marked.WONTSEND)) {
                 lower_skeleton.add_meta_item(item);
-                Util.force_alloc_width(lower_skeleton, main.get_allocated_width());
 
                 widgets[item] = widgets[lower_start_item];
                 item_item_skeletons[item] = lower_skeleton;
@@ -275,7 +270,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection {
             main.add(insert);
         }
         widgets[item] = insert;
-        Util.force_alloc_width(insert, main.get_allocated_width());
         main.reorder_child(insert, index);
 
         // If an item from the past was added, add everything between that item and the (post-)first present item

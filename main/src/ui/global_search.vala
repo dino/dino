@@ -148,7 +148,6 @@ class GlobalSearch : Overlay {
             }
 
             Widget match_widget = get_match_message_widget(item);
-            Util.force_alloc_width(match_widget, results_empty_stack.get_allocated_width() - results_box.margin * 2);
             context_box.add(match_widget);
 
             if (after_message != null && after_message.size > 0) {
@@ -188,30 +187,39 @@ class GlobalSearch : Overlay {
                 text = text.substring(0, 25) + " … " + text.substring(index - 50, 50) + text.substring(index, 100) + " … " + text.substring(text.length - 25, 25);
             }
         }
-        TextView tv = new TextView() { wrap_mode=Gtk.WrapMode.WORD_CHAR, hexpand=true, visible=true };
-        tv.buffer.text = text;
-        TextTag link_tag = tv.buffer.create_tag("hit", background: "yellow");
+        Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, vexpand=true, visible=true };
+        string markup_text = Markup.escape_text(text);
 
+        // Build regex containing all keywords
+        string regex_str = "(";
         Gee.List<string> keywords = get_keywords(Regex.escape_string(search.down()));
+        bool first = true;
         foreach (string keyword in keywords) {
-            Regex url_regex = new Regex(keyword.down());
-            MatchInfo match_info;
-            url_regex.match(text.down(), 0, out match_info);
-            for (; match_info.matches(); match_info.next()) {
-                int start;
-                int end;
-                match_info.fetch_pos(0, out start, out end);
-                start = text[0:start].char_count();
-                end = text[0:end].char_count();
-                TextIter start_iter;
-                TextIter end_iter;
-                tv.buffer.get_iter_at_offset(out start_iter, start);
-                tv.buffer.get_iter_at_offset(out end_iter, end);
-                tv.buffer.apply_tag(link_tag, start_iter, end_iter);
+            if (first) {
+                first = false;
+            } else {
+                regex_str += "|";
             }
+            regex_str += "\\b" + keyword;
         }
+        regex_str += ")";
 
-        grid.attach(tv, 1, 1, 1, 1);
+        // Color the keywords
+        int elongated_by = 0;
+        Regex highlight_regex = new Regex(regex_str);
+        MatchInfo match_info;
+        string markup_text_bak = markup_text.down();
+        highlight_regex.match(markup_text_bak, 0, out match_info);
+        for (; match_info.matches(); match_info.next()) {
+            int start, end;
+            match_info.fetch_pos(0, out start, out end);
+            markup_text = markup_text[0:start+elongated_by] + "<span bgcolor=\"yellow\">" + markup_text[start+elongated_by:end+elongated_by] + "</span>" + markup_text[end+elongated_by:markup_text.length];
+            elongated_by += "<span bgcolor=\"yellow\">".length + "</span>".length;
+        }
+        markup_text_bak += ""; // We need markup_text_bak to live until here because url_regex.match does not copy the string
+
+        label.label = markup_text;
+        grid.attach(label, 1, 1, 1, 1);
 
         Button button = new Button() { relief=ReliefStyle.NONE, visible=true };
         button.clicked.connect(() => {

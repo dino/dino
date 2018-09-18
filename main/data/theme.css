@@ -29,10 +29,6 @@ window.dino-main .dino-conversation .highlight-once {
     animation-name: highlight;
 }
 
-window.dino-main .dino-conversation textview, window.dino-main .dino-conversation textview text {
-    background: transparent;
-}
-
 window.dino-main .dino-sidebar > frame {
     background: @insensitive_bg_color;
     border-left: 1px solid @borders;
@@ -49,11 +45,6 @@ window.dino-main .dino-sidebar frame.auto-complete {
 
 window.dino-main .dino-sidebar frame.auto-complete list > row {
     transition: none;
-}
-
-window.dino-main .dino-sidebar textview,
-window.dino-main .dino-sidebar textview text {
-    background-color: transparent;
 }
 
 window.dino-main .dino-chatinput frame box {
