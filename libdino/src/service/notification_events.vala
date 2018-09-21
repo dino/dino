@@ -16,7 +16,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
 
     private HashMap<Account, HashMap<Conversation, Entities.Message>> mam_potential_new = new HashMap<Account, HashMap<Conversation, Entities.Message>>(Account.hash_func, Account.equals_func);
-    private Gee.List<Account> synced_accounts = new ArrayList<Account>();
+    private Gee.List<Account> synced_accounts = new ArrayList<Account>(Account.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         NotificationEvents m = new NotificationEvents(stream_interactor);
