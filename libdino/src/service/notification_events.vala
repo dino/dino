@@ -49,7 +49,6 @@ public class NotificationEvents : StreamInteractionModule, Object {
                 mam_potential_new[conversation.account] = new HashMap<Conversation, Entities.Message>(Conversation.hash_func, Conversation.equals_func);
             }
             mam_potential_new[conversation.account][conversation] = message;
-            return;
         }
         if (!should_notify_message(message, conversation)) return;
         if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus()) return;
