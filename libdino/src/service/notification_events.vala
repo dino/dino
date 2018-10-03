@@ -44,11 +44,13 @@ public class NotificationEvents : StreamInteractionModule, Object {
     }
 
     private void on_message_received(Entities.Message message, Conversation conversation) {
-        if (!synced_accounts.contains(conversation.account)) {
+        bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null;
+        if (!synced_accounts.contains(conversation.account) && is_mam_message) {
             if (!mam_potential_new.has_key(conversation.account)) {
                 mam_potential_new[conversation.account] = new HashMap<Conversation, Entities.Message>(Conversation.hash_func, Conversation.equals_func);
             }
             mam_potential_new[conversation.account][conversation] = message;
+            return;
         }
         if (!should_notify_message(message, conversation)) return;
         if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus()) return;
