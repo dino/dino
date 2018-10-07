@@ -9,7 +9,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     public string id { get { return IDENTITY.id; } }
 
     public signal void received_state(Account account, Jid jid, string state);
-    public signal void received_marker(Account account, Jid jid, Entities.Message message, string marker);
+    public signal void received_marker(Account account, Jid jid, Entities.Message message, Entities.Message.Marked marker);
     public signal void received_message_received(Account account, Jid jid, Entities.Message message);
     public signal void received_message_displayed(Account account, Jid jid, Entities.Message message);
 
@@ -69,12 +69,12 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
             if (marker != Xep.ChatMarkers.MARKER_DISPLAYED && marker != Xep.ChatMarkers.MARKER_ACKNOWLEDGED) return;
             Conversation? conversation = stream_interactor.get_module(MessageStorage.IDENTITY).get_conversation_for_stanza_id(account, stanza_id);
             if (conversation == null) return;
-            Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(stanza_id, conversation);
+            Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
             if (message == null) return;
             conversation.read_up_to = message;
         } else {
             foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations(jid, account)) {
-                Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(stanza_id, conversation);
+                Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
                 if (message != null) {
                     switch (marker) {
                         case Xep.ChatMarkers.MARKER_RECEIVED:

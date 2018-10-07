@@ -4,6 +4,7 @@ namespace Xmpp.Tls {
     public class Module : XmppStreamNegotiationModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "tls_module");
 
+        public signal void invalid_certificate(TlsCertificate peer_cert, TlsCertificateFlags errors);
         public bool require { get; set; default = true; }
         public bool server_supports_tls = false;
         public bool server_requires_tls = false;
@@ -27,6 +28,7 @@ namespace Xmpp.Tls {
                     var conn = TlsClientConnection.new(io_stream, identity);
                     stream.reset_stream(conn);
 
+                    conn.accept_certificate.connect(on_invalid_certificate);
                     var flag = stream.get_flag(Flag.IDENTITY);
                     flag.peer_certificate = conn.get_peer_certificate();
                     flag.finished = true;
@@ -54,6 +56,19 @@ namespace Xmpp.Tls {
                 }
                 stream.add_flag(new Flag());
             }
+        }
+
+        public static bool on_invalid_certificate(TlsCertificate peer_cert, TlsCertificateFlags errors) {
+            string error_str = "";
+            foreach (var f in new TlsCertificateFlags[]{TlsCertificateFlags.UNKNOWN_CA, TlsCertificateFlags.BAD_IDENTITY,
+                    TlsCertificateFlags.NOT_ACTIVATED, TlsCertificateFlags.EXPIRED, TlsCertificateFlags.REVOKED,
+                    TlsCertificateFlags.INSECURE, TlsCertificateFlags.GENERIC_ERROR, TlsCertificateFlags.VALIDATE_ALL}) {
+                if (f in errors) {
+                    error_str += @"$(f), ";
+                }
+            }
+            warning(@"Tls Certificate Errors: $(error_str)");
+            return false;
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {

@@ -118,10 +118,6 @@ public static void force_background(Gtk.Widget widget, string color, string sele
     force_css(widget, force_background_css.printf(selector, color));
 }
 
-public static void force_base_background(Gtk.Widget widget, string selector = "*") {
-    force_background(widget, "@theme_base_color", selector);
-}
-
 public static void force_color(Gtk.Widget widget, string color, string selector = "*") {
     force_css(widget, force_color_css.printf(selector, color));
 }
@@ -140,6 +136,41 @@ public static bool is_24h_format() {
     string settings_format = settings.get_string("clock-format");
     string p_format = (new DateTime.now_utc()).format("%p");
     return settings_format == "24h" || p_format == " ";
+}
+
+public static string make_word_bold_markup(string s, string word) {
+    string ret = s;
+    int elongated_by = 0;
+    Regex highlight_regex = new Regex("\\b" + Regex.escape_string(word.down()) + "\\b");
+    MatchInfo match_info;
+    string markup_text_bak = s.down();
+    highlight_regex.match(markup_text_bak, 0, out match_info);
+    for (; match_info.matches(); match_info.next()) {
+        int start, end;
+        match_info.fetch_pos(0, out start, out end);
+        ret = ret[0:start+elongated_by] + "<b>" + ret[start+elongated_by:end+elongated_by] + "</b>" + ret[end+elongated_by:ret.length];
+        elongated_by += 7;
+    }
+    markup_text_bak += ""; // We need markup_text_bak to live until here because url_regex.match does not copy the string
+    return ret;
+}
+
+public static string make_link_markup(string s) {
+    string ret = s;
+    Regex url_regex = new Regex("""(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))""");
+    int elongated_by = 0;
+    MatchInfo match_info;
+    string markup_text_bak = ret.down();
+    url_regex.match(markup_text_bak, 0, out match_info);
+    for (; match_info.matches(); match_info.next()) {
+        int start, end;
+        match_info.fetch_pos(0, out start, out end);
+        string link = ret[start+elongated_by:end+elongated_by];
+        ret = ret[0:start+elongated_by] + "<a href=\"" + link + "\">" + link + "</a>" + ret[end+elongated_by:ret.length];
+        elongated_by += 15 + link.length;
+    }
+    markup_text_bak += ""; // We need markup_text_bak to live until here because url_regex.match does not copy the string
+    return ret;
 }
 
 }

@@ -1,4 +1,5 @@
 using Gee;
+using Qlite;
 
 using Dino.Entities;
 
@@ -27,6 +28,7 @@ public class MessageStorage : StreamInteractionModule, Object {
         message.persist(db);
         init_conversation(conversation);
         messages[conversation].add(message);
+        stream_interactor.get_module(ContentItemStore.IDENTITY).insert_message(message, conversation);
     }
 
     public Gee.List<Message> get_messages(Conversation conversation, int count = 50) {
@@ -51,26 +53,47 @@ public class MessageStorage : StreamInteractionModule, Object {
         return null;
     }
 
-    public Gee.List<Message>? get_messages_before_message(Conversation? conversation, Message message, int count = 20) {
-        SortedSet<Message>? before = messages[conversation].head_set(message);
-        if (before != null && before.size >= count) {
-            Gee.List<Message> ret = new ArrayList<Message>(Message.equals_func);
-            Iterator<Message> iter = before.iterator();
-            iter.next();
-            for (int from_index = before.size - count; iter.has_next() && from_index > 0; from_index--) iter.next();
-            while(iter.has_next()) {
-                Message m = iter.get();
-                ret.add(m);
-                iter.next();
-            }
-            return ret;
-        } else {
-            Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, message.local_time);
-            return db_messages;
+    public Gee.List<MessageItem> get_messages_before_message(Conversation? conversation, DateTime before, int id, int count = 20) {
+//        SortedSet<Message>? before = messages[conversation].head_set(message);
+//        if (before != null && before.size >= count) {
+//            Gee.List<Message> ret = new ArrayList<Message>(Message.equals_func);
+//            Iterator<Message> iter = before.iterator();
+//            iter.next();
+//            for (int from_index = before.size - count; iter.has_next() && from_index > 0; from_index--) iter.next();
+//            while(iter.has_next()) {
+//                Message m = iter.get();
+//                ret.add(m);
+//                iter.next();
+//            }
+//            return ret;
+//        } else {
+        Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, before, null, id);
+        Gee.List<MessageItem> ret = new ArrayList<MessageItem>();
+        foreach (Message message in db_messages) {
+            ret.add(new MessageItem(message, conversation, -1));
         }
+        return ret;
+//        }
     }
 
-    public Message? get_message_by_id(string stanza_id, Conversation conversation) {
+    public Gee.List<MessageItem> get_messages_after_message(Conversation? conversation, DateTime after, int id, int count = 20) {
+        Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, null, after, id);
+        Gee.List<MessageItem> ret = new ArrayList<MessageItem>();
+        foreach (Message message in db_messages) {
+            ret.add(new MessageItem(message, conversation, -1));
+        }
+        return ret;
+    }
+
+    public Message? get_message_by_id(int id, Conversation conversation) {
+        init_conversation(conversation);
+        foreach (Message message in messages[conversation]) {
+            if (message.id == id) return message;
+        }
+        return null;
+    }
+
+    public Message? get_message_by_stanza_id(string stanza_id, Conversation conversation) {
         init_conversation(conversation);
         foreach (Message message in messages[conversation]) {
             if (message.stanza_id == stanza_id) return message;
@@ -100,7 +123,7 @@ public class MessageStorage : StreamInteractionModule, Object {
                 }
                 return res;
             });
-            Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), 50, null);
+            Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), 50, null, null, -1);
             messages[conversation].add_all(db_messages);
         }
     }

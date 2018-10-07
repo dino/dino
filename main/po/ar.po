@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-05 09:22-0600\n"
-"PO-Revision-Date: 2018-04-13 17:34+0000\n"
+"POT-Creation-Date: 2018-09-07 00:02+0200\n"
+"PO-Revision-Date: 2018-08-29 08:34+0000\n"
 "Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.2-dev\n"
 
 #: main/src/ui/notifications.vala:70
 msgid "Subscription request"
@@ -37,7 +37,7 @@ msgstr "رفض"
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
 msgid "Remove account %s?"
-msgstr ""
+msgstr "إزالة الحساب %s ؟"
 
 #: main/src/ui/manage_accounts/dialog.vala:129
 msgid "Remove"
@@ -49,12 +49,11 @@ msgstr "اختيار الصورة الرمزية"
 
 #: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Select"
-msgstr ""
+msgstr "اختيار"
 
 #: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
-#: main/data/manage_accounts/add_account_dialog.ui:11
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
@@ -93,12 +92,38 @@ msgstr "شهادة TLS غير صالحة"
 msgid "Error"
 msgstr "خطأ"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:22
+#: main/src/ui/manage_accounts/add_account_dialog.vala:55
 msgid "Add Account"
 msgstr "إضافة حساب"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:45
+#: main/src/ui/manage_accounts/add_account_dialog.vala:135
 msgid "JID should be of the form “user@example.com”"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:171
+msgid "No response from server"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:177
+#, c-format
+msgid "Register on %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:180
+msgid "The server requires to sign up through a website"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:182
+msgid "Open Registration"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:198
+msgid "Register"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#, c-format
+msgid "Check %s for information on how to sign up"
 msgstr ""
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
@@ -107,25 +132,25 @@ msgid "Me"
 msgstr "أنا"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:154
-#: main/src/ui/conversation_summary/date_separator_populator.vala:102
-#, fuzzy, no-c-format
+#: main/src/ui/conversation_summary/date_separator_populator.vala:100
+#, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:158
-#: main/src/ui/conversation_summary/date_separator_populator.vala:93
+#: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "البارحة"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:161
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:162
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
@@ -135,11 +160,11 @@ msgstr "%l∶%M %p"
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[1] "منذ دقيقة"
+msgstr[2] "منذ دقيقتين"
+msgstr[3] "منذ %i دقائق"
+msgstr[4] "منذ %i دقائق"
+msgstr[5] "منذ %i دقائق"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:167
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
@@ -148,7 +173,7 @@ msgstr "الآن"
 
 #: main/src/ui/application.vala:44
 msgid "Join Conference"
-msgstr ""
+msgstr "الإنضمام إلى فريق محادثة"
 
 #: main/src/ui/application.vala:44
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
@@ -162,24 +187,26 @@ msgid "Add"
 msgstr "إضافة"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
-#: main/data/manage_accounts/add_account_dialog.ui:21
+#: main/data/manage_accounts/add_account_dialog.ui:119
 msgid "Save"
 msgstr "حفظ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:176 main/data/menu_add.ui:12
+#: main/src/ui/unified_window.vala:243 main/data/menu_add.ui:13
 msgid "Join Channel"
-msgstr ""
+msgstr "الإلتحاق بقناة"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
+#: main/data/manage_accounts/add_account_dialog.ui:228
+#: main/data/manage_accounts/add_account_dialog.ui:308
 msgid "Next"
 msgstr "التالي"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:175 main/data/menu_add.ui:6
+#: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:28
 msgid "Start Conversation"
-msgstr ""
+msgstr "الشروع في محادثة"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
@@ -187,11 +214,11 @@ msgstr "إبدأ"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
-msgstr ""
+msgstr "في طريق الإلتحاق …"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:138
 msgid "Password required to enter room"
-msgstr ""
+msgstr "كلمة السر مطلوبة للدخول إلى غرفة المحادثة"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Banned from joining or creating conference"
@@ -199,60 +226,60 @@ msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:145
 msgid "Room does not exist"
-msgstr ""
+msgstr "غرفة المحادثة غير موجودة"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:147
 msgid "Not allowed to create room"
-msgstr ""
+msgstr "ليس لديك تسريح لإنشاء غرفة محادثة"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Members-only room"
-msgstr ""
+msgstr "الغرفة خاصة بأعضائها فقط"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:152
 msgid "Choose a different nick"
-msgstr ""
+msgstr "إختر إسما مستعارا آخر"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:154
 msgid "Too many occupants in room"
-msgstr ""
+msgstr "غرفة المحادثة مكتضة"
 
-#: main/src/ui/unified_window.vala:166
+#: main/src/ui/unified_window.vala:233
 msgid "No active accounts"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:167
+#: main/src/ui/unified_window.vala:234
 msgid "Manage accounts"
-msgstr ""
+msgstr "إدارة الحسابات"
 
-#: main/src/ui/unified_window.vala:174
+#: main/src/ui/unified_window.vala:241
 msgid "No active conversations"
 msgstr ""
 
-#: main/src/ui/conversation_summary/date_separator_populator.vala:87
+#: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
-msgstr ""
+msgstr "اليوم"
 
-#: main/src/ui/conversation_summary/date_separator_populator.vala:100
+#: main/src/ui/conversation_summary/date_separator_populator.vala:98
 msgid "%a, %b %d"
-msgstr ""
+msgstr "%a, %b %d"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#: main/src/ui/conversation_summary/chat_state_populator.vala:146
 #, c-format
 msgid "%s, %s and %i others"
 msgstr ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %s"
-msgstr ""
+msgstr "%s, %s و %s"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:152
+#: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s and %s"
-msgstr ""
+msgstr "%s و %s"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+#: main/src/ui/conversation_summary/chat_state_populator.vala:155
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] ""
@@ -262,27 +289,27 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:159
+#: main/src/ui/conversation_summary/chat_state_populator.vala:157
 msgid "has stopped typing"
-msgstr ""
+msgstr "توقفَ عن الكتابة"
 
-#: main/src/ui/conversation_summary/default_file_display.vala:50
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
 msgid "File"
-msgstr ""
+msgstr "ملف"
 
-#: main/src/ui/conversation_summary/message_textview.vala:41
+#: main/src/ui/conversation_summary/message_textview.vala:40
 msgid "Message too long"
-msgstr ""
+msgstr "الرسالة طويلة جدًا"
 
-#: main/src/ui/conversation_summary/message_textview.vala:94
+#: main/src/ui/conversation_summary/message_textview.vala:93
 msgid "Copy Link Address"
-msgstr ""
+msgstr "نسخ العنوان"
 
-#: main/src/ui/conversation_summary/message_textview.vala:102
+#: main/src/ui/conversation_summary/message_textview.vala:101
 msgid "Copy"
-msgstr ""
+msgstr "نسخ"
 
-#: main/src/ui/conversation_summary/message_textview.vala:107
+#: main/src/ui/conversation_summary/message_textview.vala:106
 msgid "Select All"
 msgstr ""
 
@@ -293,86 +320,101 @@ msgstr ""
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr ""
+msgstr "%x, %H∶%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr ""
+msgstr "%x, %l∶%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr ""
+msgstr "%b %d, %H∶%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr ""
+msgstr "%b %d, %l∶%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr ""
+msgstr "%a, %H∶%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr ""
+msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/occupant_menu/list.vala:106
 msgid "Owner"
-msgstr ""
+msgstr "المالك"
 
 #: main/src/ui/occupant_menu/list.vala:108
 msgid "Admin"
-msgstr ""
+msgstr "المدير"
 
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Member"
-msgstr ""
+msgstr "عضو"
 
 #: main/src/ui/occupant_menu/list.vala:112
 msgid "User"
-msgstr ""
+msgstr "مستخدِم"
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:36
 msgid "Invite"
-msgstr ""
+msgstr "دعوة"
 
 #: main/src/ui/occupant_menu/view.vala:35
 msgid "Invite to Conference"
-msgstr ""
+msgstr "دعوة إلى فريق محادثة"
 
 #: main/src/ui/occupant_menu/view.vala:85
 msgid "Start private conversation"
-msgstr ""
+msgstr "الشروع في محادثة خاصة"
 
 #: main/src/ui/occupant_menu/view.vala:93
 msgid "Kick"
+msgstr "طرد"
+
+#: main/src/ui/global_search.vala:134
+#, c-format
+msgid "%i search results"
+msgstr ""
+
+#: main/src/ui/global_search.vala:162
+#, c-format
+msgid "In %s"
+msgstr ""
+
+#: main/src/ui/global_search.vala:162
+#, c-format
+msgid "With %s"
 msgstr ""
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr ""
+msgstr "تفاصيل فريق المحادثة"
 
-#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:6
+#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:32
 msgid "Contact Details"
-msgstr ""
+msgstr "تفاصيل عن المُراسل"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:39
 msgid "Name of the room"
-msgstr ""
+msgstr "إسم غرفة المحادثة"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:42
 msgid "Description of the room"
-msgstr ""
+msgstr "وصف غرفة المحادثة"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:45
 msgid "Persistent"
-msgstr ""
+msgstr "دائمة"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:46
 msgid "The room will persist after the last occupant leaves"
@@ -396,11 +438,11 @@ msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:73
+#: main/data/manage_accounts/add_account_dialog.ui:62
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
-msgstr ""
+msgstr "كلمة السر"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Password required for room entry, if any"
@@ -408,7 +450,7 @@ msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Moderated"
-msgstr ""
+msgstr "تحت الإشراف"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:64
 msgid "Only occupants with voice may send messages"
@@ -416,15 +458,15 @@ msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Members only"
-msgstr ""
+msgstr "الأعضاء فقط"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:68
 msgid "Only members may enter the room"
-msgstr ""
+msgstr "يمكن للأعضاء فقط الإلتحاق بالغرفة"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "Message history"
-msgstr ""
+msgstr "إدارة التأريخ"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:72
 msgid "Maximum amount of backlog issued by the room"
@@ -432,19 +474,19 @@ msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Room Configuration"
-msgstr ""
+msgstr "إعدادات الغرفة"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:10
+#: main/data/menu_app.ui:11
 msgid "Settings"
-msgstr ""
+msgstr "الإعدادات"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr ""
+msgstr "حظر"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
@@ -463,11 +505,11 @@ msgstr ""
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
 msgid "Notifications"
-msgstr ""
+msgstr "الإشعارات"
 
 #: main/src/ui/contact_details/settings_provider.vala:39
 msgid "Local Settings"
-msgstr ""
+msgstr "الإعدادات المحلية"
 
 #: main/src/ui/contact_details/settings_provider.vala:74
 #: main/src/ui/contact_details/settings_provider.vala:114
@@ -493,7 +535,7 @@ msgstr ""
 
 #: main/data/settings_dialog.ui:7
 msgid "Preferences"
-msgstr ""
+msgstr "التفضيلات"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -503,12 +545,12 @@ msgstr ""
 msgid "Convert smileys to emojis"
 msgstr ""
 
-#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:6
+#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:7
 msgid "Accounts"
-msgstr ""
+msgstr "الحسابات"
 
 #: main/data/manage_accounts/dialog.ui:200
-#: main/data/manage_accounts/add_account_dialog.ui:102
+#: main/data/manage_accounts/add_account_dialog.ui:83
 msgid "Local alias"
 msgstr ""
 
@@ -518,19 +560,36 @@ msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
+msgstr "إضافة حساب"
+
+#: main/data/manage_accounts/add_account_dialog.ui:109
+#: main/data/manage_accounts/add_account_dialog.ui:146
+msgid "Create account"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:158
+msgid "Choose a public server"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:187
+msgid "Or specify a server address"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:207
+msgid "Sign in instead"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:288
+msgid "Pick another server"
 msgstr ""
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr ""
+msgstr "غير مشفّرة"
 
-#: main/data/menu_app.ui:16
+#: main/data/menu_app.ui:17
 msgid "Quit"
-msgstr ""
-
-#: main/data/conversation_selector/view.ui:14
-msgid "Search"
-msgstr ""
+msgstr "الخروج"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -558,18 +617,18 @@ msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Main window with conversations"
-msgstr ""
+msgstr "النافذة الرئيسية بالمُحادثات"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
 msgid "Account"
-msgstr ""
+msgstr "الحساب"
 
 #: main/data/add_conversation/conference_details_fragment.ui:123
 #: main/data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
-msgstr ""
+msgstr "الإسم المستعار"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:175
 #: main/data/add_conversation/add_contact_dialog.ui:102
@@ -578,7 +637,26 @@ msgstr ""
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
+msgstr "إضافة مُراسِل"
+
+#: main/data/global_search.ui:37
+msgid "No active search"
 msgstr ""
+
+#: main/data/global_search.ui:52
+msgid "Type to start a search"
+msgstr ""
+
+#: main/data/global_search.ui:85
+msgid "No matching messages"
+msgstr ""
+
+#: main/data/global_search.ui:100
+msgid "Check the spelling or try to remove filters"
+msgstr ""
+
+#~ msgid "Search"
+#~ msgstr "البحث"
 
 #~ msgid "Start Chat"
 #~ msgstr "إبدأ الدردشة"

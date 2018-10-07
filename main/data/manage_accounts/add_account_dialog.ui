@@ -143,7 +143,7 @@
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <object class="GtkLabel">
-                                                        <property name="label" translatable="yes">Create Account</property>
+                                                        <property name="label" translatable="yes">Create account</property>
                                                         <property name="margin-bottom">20</property>
                                                         <property name="visible">True</property>
                                                         <attributes>

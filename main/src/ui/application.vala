@@ -32,7 +32,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 window = new UnifiedWindow(this, stream_interactor);
                 notifications = new Notifications(stream_interactor, window);
                 notifications.start();
-                notifications.conversation_selected.connect(window.on_conversation_selected);
+                notifications.conversation_selected.connect((conversation) => window.on_conversation_selected(conversation));
             }
             window.present();
         });

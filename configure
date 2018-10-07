@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 OPTS=`getopt -o "h" --long \
 help,fetch-only,no-debug,disable-fast-vapi,with-tests,\
@@ -103,8 +103,8 @@ EOF
 while true; do
     case "$1" in
         --prefix ) PREFIX="$2"; shift; shift ;;
-        --enable-plugin ) if [ "$ENABLED_PLUGINS" == "" ]; then ENABLED_PLUGINS="$2"; else ENABLED_PLUGINS="ENABLED_PLUGINS;$2"; fi; shift; shift ;;
-        --disable-plugin ) if [ "$DISABLED_PLUGINS" == "" ]; then DISABLED_PLUGINS="$2"; else DISABLED_PLUGINS="DISABLED_PLUGINS;$2"; fi; shift; shift ;;
+        --enable-plugin ) if [ -z "$ENABLED_PLUGINS" ]; then ENABLED_PLUGINS="$2"; else ENABLED_PLUGINS="$ENABLED_PLUGINS;$2"; fi; shift; shift ;;
+        --disable-plugin ) if [ -z "$DISABLED_PLUGINS" ]; then DISABLED_PLUGINS="$2"; else DISABLED_PLUGINS="$DISABLED_PLUGINS;$2"; fi; shift; shift ;;
         --valac ) VALA_EXECUTABLE="$2"; shift; shift ;;
         --valac-flags ) VALAC_FLAGS="$2"; shift; shift ;;
         --lib-suffix ) LIB_SUFFIX="$2"; shift; shift ;;
@@ -130,8 +130,8 @@ while true; do
         # Ignore for autotools compat
         --host | --build ) shift; shift ;;
         --disable-dependency-tracking | --enable-dependency-tracking ) shift ;;
-	# Ignore for debian compat
-	--disable-silent-rules | --disable-maintainer-mode ) shift ;;
+        # Ignore for debian compat
+        --disable-silent-rules | --disable-maintainer-mode ) shift ;;
         -h | --help ) help; exit 0 ;;
         -- ) shift; break ;;
         * ) break ;;
@@ -145,7 +145,7 @@ else
     for i in $(cat .gitmodules | grep -n submodule | awk -F ':' '{print $1}') $(wc -l .gitmodules | awk '{print $1}'); do
         if ! [ $tmp -eq 0 ]; then
             name=$(cat .gitmodules | head -n $tmp | tail -n 1 | awk -F '"' '{print $2}')
-            def=$(cat .gitmodules | head -n $i | tail -n $(($i-$tmp)) | awk -F ' ' '{print $1 $2 $3}')
+            def=$(cat .gitmodules | head -n $i | tail -n $(expr "$i" - "$tmp") | awk -F ' ' '{print $1 $2 $3}')
             path=$(echo "$def" | grep '^path=' | awk -F '=' '{print $2}')
             url=$(echo "$def" | grep '^url=' | awk -F '=' '{print $2}')
             branch=$(echo "$def" | grep '^branch=' | awk -F '=' '{print $2}')
@@ -161,14 +161,15 @@ else
                     echo "Failed retrieving missing files: $res"
                     exit 5
                 fi
-                if [[ "$branch" != "" ]]; then
-                    pushd "$path" > /dev/null
+                if [ -n "$branch" ]; then
+                    olddir="$(pwd)"
+                    cd "$path"
                     res=$(git checkout "$branch" 2>&1)
                     if ! [ $? -eq 0 ]; then
                         echo "Failed retrieving missing files: $res"
                         exit 5
                     fi
-                    popd > /dev/null
+                    cd "$olddir"
                 fi
                 echo "Submodule path '$path': checked out '$branch' (via git clone)"
             fi
@@ -177,7 +178,7 @@ else
     done
 fi
 
-if [[ "$FETCH_ONLY" == "yes" ]]; then exit 0; fi
+if [ "$FETCH_ONLY" = "yes" ]; then exit 0; fi
 
 if [ ! -x "$(which cmake 2>/dev/null)" ]
 then
@@ -196,7 +197,7 @@ if [ -x "$ninja_bin" ]; then
         cmake_type="Ninja"
         exec_bin="$ninja_bin"
         exec_command="$exec_bin"
-    elif [[ "/usr/sbin/ninja" == "$ninja_bin" ]]; then
+    elif [ "/usr/sbin/ninja" = "$ninja_bin" ]; then
         echo "-- Ninja at $ninja_bin is not usable. Did you install 'ninja' instead of 'ninja-build'?"
     fi
 fi
@@ -257,7 +258,7 @@ cmake -G "$cmake_type" \
     -DLIB_INSTALL_DIR="$LIBDIR" \
     .. || exit 9
 
-if [ "$cmake_type" == "Ninja" ]
+if [ "$cmake_type" = "Ninja" ]
 then
 cat << EOF > Makefile
 default:

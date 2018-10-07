@@ -19,7 +19,7 @@ public class Plugin : RootInterface, Object {
         });
 
         app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(file_provider);
-        app.plugin_registry.register_message_display(new FileMessageFilterDisplay(app.db));
+        app.stream_interactor.get_module(ContentItemStore.IDENTITY).add_filter(new FileMessageFilter(app.db));
     }
 
     public void shutdown() {

@@ -180,7 +180,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     private class StoreMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT" };
         public override string action_group { get { return "STORE"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 

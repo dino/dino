@@ -53,7 +53,6 @@ public class DataForm {
         public string? label {
             get { return node.get_attribute("label", NS_URI); }
             set { node.set_attribute("label", value); }
-            default = null;
         }
         public virtual Type? type_ { get; internal set; default=null; }
         public string? var {

@@ -29,6 +29,7 @@ set(RESOURCE_LIST
     chat_input.ui
     contact_details_dialog.ui
     conversation_list_titlebar.ui
+    global_search.ui
     conversation_selector/view.ui
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
@@ -43,7 +44,9 @@ set(RESOURCE_LIST
     menu_encryption.ui
     occupant_list.ui
     occupant_list_item.ui
+    search_autocomplete.ui
     settings_dialog.ui
+    unified_main_content.ui
     unified_window_placeholder.ui
 
     theme.css
@@ -93,6 +96,7 @@ SOURCES
     src/ui/contact_details/dialog.vala
     src/ui/contact_details/muc_config_form_provider.vala
     src/ui/conversation_list_titlebar.vala
+    src/ui/global_search.vala
     src/ui/conversation_selector/chat_row.vala
     src/ui/conversation_selector/conversation_row.vala
     src/ui/conversation_selector/groupchat_pm_row.vala
@@ -100,19 +104,15 @@ SOURCES
     src/ui/conversation_selector/list.vala
     src/ui/conversation_selector/view.vala
     src/ui/conversation_summary/chat_state_populator.vala
+    src/ui/conversation_summary/content_item_widget_factory.vala
+    src/ui/conversation_summary/content_populator.vala
     src/ui/conversation_summary/conversation_item_skeleton.vala
     src/ui/conversation_summary/conversation_view.vala
     src/ui/conversation_summary/date_separator_populator.vala
-    src/ui/conversation_summary/default_file_display.vala
-    src/ui/conversation_summary/default_message_display.vala
-    src/ui/conversation_summary/file_populator.vala
-    src/ui/conversation_summary/image_display.vala
-    src/ui/conversation_summary/message_populator.vala
-    src/ui/conversation_summary/message_textview.vala
-    src/ui/conversation_summary/slashme_message_display.vala
     src/ui/conversation_summary/subscription_notification.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
+    src/ui/conversation_titlebar/search_entry.vala
     src/ui/conversation_titlebar/view.vala
     src/ui/manage_accounts/account_row.vala
     src/ui/manage_accounts/add_account_dialog.vala

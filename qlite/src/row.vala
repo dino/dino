@@ -10,15 +10,21 @@ public class Row {
 
     internal Row(Statement stmt) {
         for (int i = 0; i < stmt.column_count(); i++) {
+            string column_name;
+            if (stmt.column_origin_name(i) != null) {
+                column_name = @"$(stmt.column_table_name(i)).$(stmt.column_origin_name(i))";
+            } else {
+                column_name = stmt.column_name(i);
+            }
             switch(stmt.column_type(i)) {
                 case TEXT:
-                    text_map[stmt.column_name(i)] = stmt.column_text(i);
+                    text_map[column_name] = stmt.column_text(i);
                     break;
                 case INTEGER:
-                    int_map[stmt.column_name(i)] = (long) stmt.column_int64(i);
+                    int_map[column_name] = (long) stmt.column_int64(i);
                     break;
                 case FLOAT:
-                    real_map[stmt.column_name(i)] = stmt.column_double(i);
+                    real_map[column_name] = stmt.column_double(i);
                     break;
             }
         }
@@ -28,27 +34,54 @@ public class Row {
         return field[this];
     }
 
-    public string? get_text(string field) {
-        if (text_map.has_key(field)) {
-            return text_map[field];
+    private string field_name(string field, string? table) {
+        if (table != null) {
+            return @"$table.$field";
+        } else {
+            return field;
+        }
+    }
+
+    public string? get_text(string field, string? table = null) {
+        if (text_map.has_key(field_name(field, table))) {
+            return text_map[field_name(field, table)];
         }
         return null;
     }
 
-    public long get_integer(string field) {
-        return int_map[field];
+    public long get_integer(string field, string? table = null) {
+        return int_map[field_name(field, table)];
     }
 
-    public bool has_integer(string field) {
-        return int_map.has_key(field);
+    public bool has_integer(string field, string? table = null) {
+        return int_map.has_key(field_name(field, table));
     }
 
-    public double get_real(string field, double def = 0) {
-        return real_map[field] ?? def;
+    public double get_real(string field, string? table = null, double def = 0) {
+        return real_map[field_name(field, table)] ?? def;
     }
 
-    public bool has_real(string field) {
-        return real_map.has_key(field) && real_map[field] != null;
+    public bool has_real(string field, string? table = null) {
+        return real_map.has_key(field_name(field, table)) && real_map[field_name(field, table)] != null;
+    }
+
+    public string to_string() {
+        string ret = "{";
+
+        foreach (string key in text_map.keys) {
+            if (ret.length > 1) ret += ", ";
+            ret = @"$ret$key: \"$(text_map[key])\"";
+        }
+        foreach (string key in int_map.keys) {
+            if (ret.length > 1) ret += ", ";
+            ret = @"$ret$key: $(int_map[key])";
+        }
+        foreach (string key in real_map.keys) {
+            if (ret.length > 1) ret += ", ";
+            ret = @"$ret$key: $(real_map[key])";
+        }
+
+        return ret + "}";
     }
 }
 

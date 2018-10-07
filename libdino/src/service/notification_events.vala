@@ -11,11 +11,12 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
     public signal void notify_message(Message message, Conversation conversation);
     public signal void notify_subscription_request(Conversation conversation);
+    public signal void notify_connection_error(Account account, ConnectionManager.ConnectionError error);
 
     private StreamInteractor stream_interactor;
 
     private HashMap<Account, HashMap<Conversation, Entities.Message>> mam_potential_new = new HashMap<Account, HashMap<Conversation, Entities.Message>>(Account.hash_func, Account.equals_func);
-    private Gee.List<Account> synced_accounts = new ArrayList<Account>();
+    private Gee.List<Account> synced_accounts = new ArrayList<Account>(Account.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         NotificationEvents m = new NotificationEvents(stream_interactor);
@@ -39,6 +40,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
             }
             mam_potential_new[account].clear();
         });
+        stream_interactor.connection_manager.connection_error.connect((account, error) => notify_connection_error(account, error));
     }
 
     private void on_message_received(Entities.Message message, Conversation conversation) {
@@ -50,7 +52,6 @@ public class NotificationEvents : StreamInteractionModule, Object {
             return;
         }
         if (!should_notify_message(message, conversation)) return;
-        if (!should_notify_message(message, conversation)) return;
         if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus()) return;
         notify_message(message, conversation);
     }
@@ -60,7 +61,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
         if (notify == Conversation.NotifySetting.OFF) return false;
         Jid? nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
         if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null) {
-        return Regex.match_simple("""\b""" + Regex.escape_string(nick.resourcepart) + """\b""", message.body, RegexCompileFlags.CASELESS);
+            return Regex.match_simple("\\b" + Regex.escape_string(nick.resourcepart) + "\\b", message.body, RegexCompileFlags.CASELESS);
         }
         return true;
     }

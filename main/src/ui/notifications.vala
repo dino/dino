@@ -43,6 +43,7 @@ public class Notifications : Object {
     public void start() {
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_message.connect(notify_message);
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_subscription_request.connect(notify_subscription_request);
+        stream_interactor.get_module(NotificationEvents.IDENTITY).notify_connection_error.connect(notify_connection_error);
     }
 
     private void notify_message(Entities.Message message, Conversation conversation) {
@@ -77,6 +78,19 @@ public class Notifications : Object {
         notification.add_button_with_target_value(_("Deny"), "app.deny-subscription", conversation.id);
         window.get_application().send_notification(conversation.id.to_string() + "-subscription", notification);
         active_ids.add(conversation.id.to_string() + "-subscription");
+    }
+
+    private void notify_connection_error(Account account, ConnectionManager.ConnectionError error) {
+        Notification notification = new Notification(_("Failed connecting to %s").printf(account.bare_jid.domainpart));
+        switch (error.source) {
+            case ConnectionManager.ConnectionError.Source.SASL:
+                notification.set_body("Wrong password");
+                break;
+            case ConnectionManager.ConnectionError.Source.TLS:
+                notification.set_body("Invalid TLS certificate");
+                break;
+        }
+        window.get_application().send_notification(account.id.to_string() + "-connection-error", notification);
     }
 
     private Icon get_pixbuf_icon(Cairo.ImageSurface surface) throws Error {

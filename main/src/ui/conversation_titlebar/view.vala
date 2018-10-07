@@ -11,6 +11,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
     private Window window;
     private Conversation? conversation;
     private Gee.List<Plugins.ConversationTitlebarWidget> widgets = new ArrayList<Plugins.ConversationTitlebarWidget>();
+    public GlobalSearchButton search_button = new GlobalSearchButton() { visible = true };
 
     public ConversationTitlebar(StreamInteractor stream_interactor, Window window) {
         this.stream_interactor = stream_interactor;
@@ -19,9 +20,11 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         this.get_style_context().add_class("dino-right");
         show_close_button = true;
         hexpand = true;
+        search_button.set_image(new Gtk.Image.from_icon_name("system-search-symbolic", Gtk.IconSize.MENU) { visible = true });
 
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
+        app.plugin_registry.register_contact_titlebar_entry(new SearchMenuEntry(search_button));
         app.plugin_registry.register_contact_titlebar_entry(new OccupantsEntry(stream_interactor, window));
 
         foreach(var e in app.plugin_registry.conversation_titlebar_entries) {
@@ -58,7 +61,10 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         if (subtitle != null) {
             set_subtitle(subtitle);
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            string subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
+            string? subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
+            if (subject != null) {
+                subject = (new Regex("\\s+")).replace_literal(subject, -1, 0, " ");
+            }
             set_subtitle(subject != "" ? subject : null);
         } else {
             set_subtitle(null);
