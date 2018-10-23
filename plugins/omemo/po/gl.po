@@ -8,51 +8,51 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-23 23:56+0200\n"
-"PO-Revision-Date: 2018-06-18 12:37+0000\n"
-"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
-"Language-Team: Flemish <https://hosted.weblate.org/projects/dino/plugin-"
-"omemo/nl_BE/>\n"
-"Language: nl_BE\n"
+"PO-Revision-Date: 2018-09-29 03:26+0000\n"
+"Last-Translator: Xosé M <xosem@disroot.org>\n"
+"Language-Team: Galician <https://hosted.weblate.org/projects/dino/plugin-"
+"omemo/gl/>\n"
+"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.2-dev\n"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 #: plugins/omemo/src/account_settings_widget.vala:45
 #: plugins/omemo/data/account_settings_dialog.ui:19
 msgid "Own fingerprint"
-msgstr "Eigen vingerafdruk"
+msgstr "Pegada propia"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
-msgstr "Wordt bij de eerste verbinding gegenereerd"
+msgstr "Crearase na primeira conexión"
 
 #: plugins/omemo/src/contact_details_provider.vala:31
 msgid "Encryption"
-msgstr "Versleuteling"
+msgstr "Cifrado"
 
 #: plugins/omemo/src/contact_details_provider.vala:31
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
-msgstr[0] "%d OMEMO-apparaat"
-msgstr[1] "%d OMEMO-apparaten"
+msgstr[0] "%d dispositivo OMEMO"
+msgstr[1] "%d dispositivos OMEMO"
 
 #: plugins/omemo/src/account_settings_dialog.vala:35
 #, c-format
 msgid "Unknown device (0x%.8x)"
-msgstr "Onbekend apparaat (0x%.8x)"
+msgstr "Dispositivo descoñecido (0x%.8x)"
 
 #: plugins/omemo/data/account_settings_dialog.ui:5
 msgid "OMEMO Keys"
-msgstr "OMEMO-sleutels"
+msgstr "Chaves OMEMO"
 
 #: plugins/omemo/data/account_settings_dialog.ui:88
 msgid "Other devices"
-msgstr "Andere apparaten"
+msgstr "Outros dispositivos"
 
 #: plugins/omemo/data/account_settings_dialog.ui:112
 msgid "- None -"
-msgstr "- Geen -"
+msgstr "-Nada-"

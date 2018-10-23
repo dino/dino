@@ -8,51 +8,56 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-23 23:56+0200\n"
-"PO-Revision-Date: 2018-06-18 12:37+0000\n"
-"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
-"Language-Team: Flemish <https://hosted.weblate.org/projects/dino/plugin-"
-"omemo/nl_BE/>\n"
-"Language: nl_BE\n"
+"PO-Revision-Date: 2018-10-23 17:22+0000\n"
+"Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
+"Language-Team: Arabic <https://hosted.weblate.org/projects/dino/plugin-omemo/"
+"ar/>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Weblate 3.3-dev\n"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 #: plugins/omemo/src/account_settings_widget.vala:45
 #: plugins/omemo/data/account_settings_dialog.ui:19
 msgid "Own fingerprint"
-msgstr "Eigen vingerafdruk"
+msgstr "بصمتك الخاصة"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
-msgstr "Wordt bij de eerste verbinding gegenereerd"
+msgstr "سيتم توليدها عند أول اتصال"
 
 #: plugins/omemo/src/contact_details_provider.vala:31
 msgid "Encryption"
-msgstr "Versleuteling"
+msgstr "التشفير"
 
 #: plugins/omemo/src/contact_details_provider.vala:31
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
-msgstr[0] "%d OMEMO-apparaat"
-msgstr[1] "%d OMEMO-apparaten"
+msgstr[0] ""
+msgstr[1] "%d جهاز أوميمو"
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] "%d أجهزة أوميمو"
 
 #: plugins/omemo/src/account_settings_dialog.vala:35
 #, c-format
 msgid "Unknown device (0x%.8x)"
-msgstr "Onbekend apparaat (0x%.8x)"
+msgstr "جهاز مجهول (0x%.8x)"
 
 #: plugins/omemo/data/account_settings_dialog.ui:5
 msgid "OMEMO Keys"
-msgstr "OMEMO-sleutels"
+msgstr "مفاتيح أوميمو"
 
 #: plugins/omemo/data/account_settings_dialog.ui:88
 msgid "Other devices"
-msgstr "Andere apparaten"
+msgstr "أجهزة أخرى"
 
 #: plugins/omemo/data/account_settings_dialog.ui:112
 msgid "- None -"
-msgstr "- Geen -"
+msgstr "- لا شيء -"

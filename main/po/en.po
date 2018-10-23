@@ -2,24 +2,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-07 00:02+0200\n"
+"POT-Creation-Date: 2018-10-23 23:56+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:71
 msgid "Subscription request"
 msgstr ""
 
-#: main/src/ui/notifications.vala:76
+#: main/src/ui/notifications.vala:77
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr ""
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:78
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
+msgstr ""
+
+#: main/src/ui/notifications.vala:84
+#, c-format
+msgid "Failed connecting to %s"
 msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:126
@@ -55,28 +60,28 @@ msgstr ""
 msgid "All files"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:222
 msgid "Connecting…"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:233
+#: main/src/ui/manage_accounts/dialog.vala:224
 msgid "Connected"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:226
 msgid "Disconnected"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:244
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Wrong password"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:246
+#: main/src/ui/manage_accounts/dialog.vala:237
 msgid "Invalid TLS certificate"
 msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:249
-#: main/src/ui/manage_accounts/dialog.vala:251
+#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr ""
 
@@ -188,7 +193,7 @@ msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:28
+#: main/data/im.dino.Dino.appdata.xml.in:19
 msgid "Start Conversation"
 msgstr ""
 
@@ -273,24 +278,12 @@ msgstr[1] ""
 msgid "has stopped typing"
 msgstr ""
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
-msgid "File"
-msgstr ""
-
-#: main/src/ui/conversation_summary/message_textview.vala:40
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
 msgid "Message too long"
 msgstr ""
 
-#: main/src/ui/conversation_summary/message_textview.vala:93
-msgid "Copy Link Address"
-msgstr ""
-
-#: main/src/ui/conversation_summary/message_textview.vala:101
-msgid "Copy"
-msgstr ""
-
-#: main/src/ui/conversation_summary/message_textview.vala:106
-msgid "Select All"
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+msgid "File"
 msgstr ""
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
@@ -365,12 +358,12 @@ msgstr ""
 msgid "%i search results"
 msgstr ""
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
 msgstr ""
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
 msgstr ""
@@ -380,7 +373,7 @@ msgid "Conference Details"
 msgstr ""
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:32
+#: main/data/im.dino.Dino.appdata.xml.in:23
 msgid "Contact Details"
 msgstr ""
 
@@ -571,31 +564,31 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:7
 msgid "Modern XMPP Chat Client"
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:10
+#: main/data/im.dino.Dino.appdata.xml.in:9
 msgid ""
 "Dino is a modern open-source chat client for the desktop. It focuses on "
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:14
+#: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:18
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:24
+#: main/data/im.dino.Dino.appdata.xml.in:15
 msgid "Main window with conversations"
 msgstr ""
 

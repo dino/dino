@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-07 00:02+0200\n"
-"PO-Revision-Date: 2018-07-11 18:50+0000\n"
+"POT-Creation-Date: 2018-10-23 23:56+0200\n"
+"PO-Revision-Date: 2018-09-24 12:24+0000\n"
 "Last-Translator: Nathan Follens <nthn@unseen.is>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/translations/"
 "nl/>\n"
@@ -17,21 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.1-dev\n"
+"X-Generator: Weblate 3.2-dev\n"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:71
 msgid "Subscription request"
 msgstr "Abonneringsverzoek"
 
-#: main/src/ui/notifications.vala:76
+#: main/src/ui/notifications.vala:77
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Toestaan"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:78
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Afwijzen"
+
+#: main/src/ui/notifications.vala:84
+#, c-format
+msgid "Failed connecting to %s"
+msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -66,28 +71,28 @@ msgstr "Afbeeldingen"
 msgid "All files"
 msgstr "Alle bestanden"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:222
 msgid "Connecting…"
 msgstr "Verbinding maken…"
 
-#: main/src/ui/manage_accounts/dialog.vala:233
+#: main/src/ui/manage_accounts/dialog.vala:224
 msgid "Connected"
 msgstr "Verbonden"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:226
 msgid "Disconnected"
 msgstr "Verbinding verbroken"
 
-#: main/src/ui/manage_accounts/dialog.vala:244
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Wrong password"
 msgstr "Verkeerd wachtwoord"
 
-#: main/src/ui/manage_accounts/dialog.vala:246
+#: main/src/ui/manage_accounts/dialog.vala:237
 msgid "Invalid TLS certificate"
 msgstr "Ongeldig TLS-certificaat"
 
-#: main/src/ui/manage_accounts/dialog.vala:249
-#: main/src/ui/manage_accounts/dialog.vala:251
+#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr "Fout"
 
@@ -101,29 +106,29 @@ msgstr "JID moet de vorm ‘gebruiker@voorbeeld.be’ volgen"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:171
 msgid "No response from server"
-msgstr ""
+msgstr "Geen antwoord van server"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:177
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "Registreren bij %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "De server vereist registratie via een website"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:182
 msgid "Open Registration"
-msgstr ""
+msgstr "Open registratie"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:198
 msgid "Register"
-msgstr ""
+msgstr "Registreren"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "Bekijk %s voor meer informatie over hoe te registreren"
 
 #: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
 #: main/src/ui/conversation_selector/chat_row.vala:30
@@ -199,7 +204,7 @@ msgstr "Volgende"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:28
+#: main/data/im.dino.Dino.appdata.xml.in:19
 msgid "Start Conversation"
 msgstr "Gesprek beginnen"
 
@@ -284,25 +289,13 @@ msgstr[1] "zijn aan het typen…"
 msgid "has stopped typing"
 msgstr "is gestopt met typen"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
-msgid "File"
-msgstr "Bestand"
-
-#: main/src/ui/conversation_summary/message_textview.vala:40
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
 msgid "Message too long"
 msgstr "Bericht te lang"
 
-#: main/src/ui/conversation_summary/message_textview.vala:93
-msgid "Copy Link Address"
-msgstr "Verwijzingsadres kopiëren"
-
-#: main/src/ui/conversation_summary/message_textview.vala:101
-msgid "Copy"
-msgstr "Kopiëren"
-
-#: main/src/ui/conversation_summary/message_textview.vala:106
-msgid "Select All"
-msgstr "Alles selecteren"
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+msgid "File"
+msgstr "Bestand"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -374,24 +367,24 @@ msgstr "Schoppen"
 #: main/src/ui/global_search.vala:134
 #, c-format
 msgid "%i search results"
-msgstr ""
+msgstr "%i zoekresultaten"
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "In %s"
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "Met %s"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "Groepsgespreksgegevens"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:32
+#: main/data/im.dino.Dino.appdata.xml.in:23
 msgid "Contact Details"
 msgstr "Contactgegevens"
 
@@ -557,23 +550,23 @@ msgstr "Account toevoegen"
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146
 msgid "Create account"
-msgstr ""
+msgstr "Account aanmaken"
 
 #: main/data/manage_accounts/add_account_dialog.ui:158
 msgid "Choose a public server"
-msgstr ""
+msgstr "Kies een openbare server"
 
 #: main/data/manage_accounts/add_account_dialog.ui:187
 msgid "Or specify a server address"
-msgstr ""
+msgstr "Of voer een serveradres in"
 
 #: main/data/manage_accounts/add_account_dialog.ui:207
 msgid "Sign in instead"
-msgstr ""
+msgstr "Inloggen"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Pick another server"
-msgstr ""
+msgstr "Kies een andere server"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -583,11 +576,11 @@ msgstr "Onversleuteld"
 msgid "Quit"
 msgstr "Afsluiten"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:7
 msgid "Modern XMPP Chat Client"
 msgstr "Moderne XMPP-chatcliënt"
 
-#: main/data/im.dino.Dino.appdata.xml.in:10
+#: main/data/im.dino.Dino.appdata.xml.in:9
 msgid ""
 "Dino is a modern open-source chat client for the desktop. It focuses on "
 "providing a clean and reliable Jabber/XMPP experience while having your "
@@ -597,7 +590,7 @@ msgstr ""
 "eenvoudige en betrouwbare Jabber/XMPP-ervaring, met uw privacy in het "
 "achterhoofd."
 
-#: main/data/im.dino.Dino.appdata.xml.in:14
+#: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
@@ -607,7 +600,7 @@ msgstr ""
 "toe privacy-gerelateerde functies, zoals leesbevestigingen en typmeldingen, "
 "in te stellen."
 
-#: main/data/im.dino.Dino.appdata.xml.in:18
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
@@ -615,7 +608,7 @@ msgstr ""
 "Dino haalt de geschiedenis op van de server en synchroniseert berichten met "
 "andere apparaten."
 
-#: main/data/im.dino.Dino.appdata.xml.in:24
+#: main/data/im.dino.Dino.appdata.xml.in:15
 msgid "Main window with conversations"
 msgstr "Hoofdvenster met gesprekken"
 
@@ -641,19 +634,28 @@ msgstr "Contact toevoegen"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "Geen actieve zoekopdracht"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "Typ om te beginnen zoeken"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "Geen overeenkomende berichten"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Controleer de spelling of probeer filters te verwijderen"
+
+#~ msgid "Copy Link Address"
+#~ msgstr "Verwijzingsadres kopiëren"
+
+#~ msgid "Copy"
+#~ msgstr "Kopiëren"
+
+#~ msgid "Select All"
+#~ msgstr "Alles selecteren"
 
 #~ msgid "Search"
 #~ msgstr "Zoeken"

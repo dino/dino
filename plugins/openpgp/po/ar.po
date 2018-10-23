@@ -8,48 +8,48 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-23 23:56+0200\n"
-"PO-Revision-Date: 2018-03-23 18:26+0000\n"
-"Last-Translator: ethylmorphine <desilent@icloud.com>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
-"openpgp/ru/>\n"
-"Language: ru\n"
+"PO-Revision-Date: 2018-10-23 17:22+0000\n"
+"Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
+"Language-Team: Arabic <https://hosted.weblate.org/projects/dino/plugin-"
+"openpgp/ar/>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Weblate 3.3-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr "Публикация ключа отключена"
+msgstr "نشر المفاتيح معطل"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
-msgstr "Ошибка в GnuPG"
+msgstr "خطأ في GnuPG"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "Нет доступных ключей. Стоит сгенерировать!"
+msgstr "لا مفتاح متوفر. قم بتوليد واحد !"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "Выбрать ключ"
+msgstr "اختيار مفتاح"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
-msgstr "Загрузка…"
+msgstr "جارٍ التحميل…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr "Запрос GnuPG"
+msgstr "استعلام GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "Нет ключа в связке"
+msgstr "المفتاح ليس في سلسلة المفاتيح"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "Шифрование"
+msgstr "التشفير"
