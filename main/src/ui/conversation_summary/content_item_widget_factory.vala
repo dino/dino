@@ -60,10 +60,11 @@ public class MessageItemWidgetGenerator : WidgetGenerator, Object {
         if (message_item.message.body.has_prefix("/me")) {
             markup_text = markup_text.substring(3);
         }
-        markup_text = Markup.escape_text(markup_text);
 
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            markup_text = Util.make_word_bold_markup(markup_text, conversation.nickname);
+            markup_text = Util.parse_add_markup(markup_text, conversation.nickname, true, true);
+        } else {
+            markup_text = Util.parse_add_markup(markup_text, null, true, true);
         }
 
         if (message_item.message.body.has_prefix("/me")) {
@@ -72,8 +73,6 @@ public class MessageItemWidgetGenerator : WidgetGenerator, Object {
             label.realize.connect(() => update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text));
             label.style_updated.connect(() => update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text));
         }
-
-        markup_text = Util.make_link_markup(markup_text);
 
         label.label = markup_text;
         return label;
