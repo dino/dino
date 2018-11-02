@@ -61,7 +61,7 @@ public static string get_conversation_display_name(StreamInteractor stream_inter
 public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
     if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
         string room_name = stream_interactor.get_module(MucManager.IDENTITY).get_room_name(account, jid);
-        if (room_name != null) {
+        if (room_name != null && room_name != jid.localpart) {
             return room_name;
         }
         return jid.bare_jid.to_string();

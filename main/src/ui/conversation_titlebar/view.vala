@@ -44,7 +44,7 @@ public class ConversationTitlebar : Gtk.HeaderBar {
 
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_subtitle();
+                update_subtitle(subject);
             }
         });
     }
@@ -63,10 +63,14 @@ public class ConversationTitlebar : Gtk.HeaderBar {
         set_title(Util.get_conversation_display_name(stream_interactor, conversation));
     }
 
-    private void update_subtitle() {
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            string groupchat_subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
-            set_subtitle(groupchat_subject);
+    private void update_subtitle(string? subtitle = null) {
+        if (subtitle != null) {
+            set_subtitle(subtitle);
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            string subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
+            set_subtitle(subject != "" ? subject : null);
+        } else {
+            set_subtitle(null);
         }
     }
 }
