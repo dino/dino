@@ -35,7 +35,7 @@ public class ContentProvider : ContentItemCollection, Object {
 
 
     public Gee.List<ContentMetaItem> populate_latest(Conversation conversation, int n) {
-        Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation, n);
+        Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_n_latest(conversation, n);
         Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
         foreach (ContentItem item in items) {
             ret.add(new ContentMetaItem(item, widget_factory));

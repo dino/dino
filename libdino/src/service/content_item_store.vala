@@ -82,7 +82,15 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return item.size > 0 ? item[0] : null;
     }
 
-    public Gee.List<ContentItem> get_latest(Conversation conversation, int count) {
+    public ContentItem? get_latest(Conversation conversation) {
+        Gee.List<ContentItem> items = get_n_latest(conversation, 1);
+        if (items.size > 0) {
+            return items.get(0);
+        }
+        return null;
+    }
+
+    public Gee.List<ContentItem> get_n_latest(Conversation conversation, int count) {
         QueryBuilder select = db.content_item.select()
             .with(db.content_item.conversation_id, "=", conversation.id)
             .with(db.content_item.hide, "=", false)

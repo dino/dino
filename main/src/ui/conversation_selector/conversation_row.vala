@@ -3,13 +3,14 @@ using Gdk;
 using Gtk;
 using Pango;
 
+using Dino;
 using Dino.Entities;
 using Xmpp;
 
 namespace Dino.Ui.ConversationSelector {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_selector/conversation_row.ui")]
-public abstract class ConversationRow : ListBoxRow {
+public class ConversationRow : ListBoxRow {
 
     public signal void closed();
 
@@ -27,7 +28,7 @@ public abstract class ConversationRow : ListBoxRow {
 
     protected const int AVATAR_SIZE = 40;
 
-    protected Message? last_message;
+    protected ContentItem? last_content_item;
     protected bool read = true;
 
 
@@ -41,21 +42,66 @@ public abstract class ConversationRow : ListBoxRow {
         this.conversation = conversation;
         this.stream_interactor = stream_interactor;
 
+        switch (conversation.type_) {
+            case Conversation.Type.CHAT:
+                stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
+                    if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
+                        update_name_label();
+                    }
+                });
+                break;
+            case Conversation.Type.GROUPCHAT:
+                closed.connect(() => {
+                    stream_interactor.get_module(MucManager.IDENTITY).part(conversation.account, conversation.counterpart);
+                });
+                stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
+                    if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
+                        update_name_label();
+                    }
+                });
+                break;
+            case Conversation.Type.GROUPCHAT_PM:
+                break;
+        }
+
+        // Set tooltip
+        switch (conversation.type_) {
+            case Conversation.Type.CHAT:
+                has_tooltip = true;
+                query_tooltip.connect ((x, y, keyboard_tooltip, tooltip) => {
+                    tooltip.set_custom(generate_tooltip());
+                    return true;
+                });
+                break;
+            case Conversation.Type.GROUPCHAT:
+                has_tooltip = true;
+                set_tooltip_text(conversation.counterpart.bare_jid.to_string());
+                break;
+            case Conversation.Type.GROUPCHAT_PM:
+                break;
+        }
+
+        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((item, c) => {
+            if (conversation.equals(c)) {
+                content_item_received(item);
+            }
+        });
+        last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
+
         x_button.clicked.connect(close_conversation);
         image.set_jid(stream_interactor, conversation.counterpart, conversation.account);
         conversation.notify["read-up-to"].connect(update_read);
 
         update_name_label();
-        message_received();
-
+        content_item_received();
     }
 
     public void update() {
         update_time_label();
     }
 
-    public void message_received(Entities.Message? m = null) {
-        last_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation) ?? m;
+    public void content_item_received(ContentItem? ci = null) {
+        last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation) ?? ci;
         update_message_label();
         update_time_label();
         update_read();
@@ -66,20 +112,52 @@ public abstract class ConversationRow : ListBoxRow {
     }
 
     protected void update_time_label(DateTime? new_time = null) {
-        if (last_message != null) {
+        if (last_content_item != null) {
             time_label.visible = true;
-            time_label.label = get_relative_time(last_message.time.to_local());
+            time_label.label = get_relative_time(last_content_item.display_time.to_local());
         }
     }
 
-    protected virtual void update_message_label() {
-        if (last_message != null) {
+    protected void update_message_label() {
+        if (last_content_item != null) {
+            switch (last_content_item.type_) {
+                case MessageItem.TYPE:
+                    MessageItem message_item = last_content_item as MessageItem;
+                    Message last_message = message_item.message;
+
+                    if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                        nick_label.label = Util.get_message_display_name(stream_interactor, last_message, conversation.account) + ": ";
+                    } else {
+                        nick_label.label = last_message.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
+                    }
+
+                    message_label.label = Markup.escape_text((new Regex("\\s+")).replace_literal(last_message.body, -1, 0, " "));
+                    break;
+                case FileItem.TYPE:
+                    FileItem file_item = last_content_item as FileItem;
+                    FileTransfer transfer = file_item.file_transfer;
+
+                    if (conversation.type_ != Conversation.Type.GROUPCHAT) {
+                        nick_label.label = transfer.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
+                    }
+
+                    if (transfer.direction == Message.DIRECTION_SENT) {
+                        message_label.label = "<i>" + (transfer.mime_type.has_prefix("image") ? _("Image sent") : _("File sent") ) + "</i>";
+                    } else {
+                        message_label.label = "<i>" +(transfer.mime_type.has_prefix("image") ? _("Image received") : _("File received") ) + "</i>";
+                    }
+                    break;
+            }
+            nick_label.visible = true;
             message_label.visible = true;
-            message_label.label = (new Regex("\\s+")).replace_literal(last_message.body, -1, 0, " ");
         }
     }
 
     protected void update_read() {
+        MessageItem? message_item = last_content_item as MessageItem;
+        if (message_item == null) return;
+        Message last_message = message_item.message;
+
         bool read_was = read;
         read = last_message == null || (conversation.read_up_to != null && last_message.equals(conversation.read_up_to));
         if (read == read_was) return;
@@ -141,6 +219,23 @@ public abstract class ConversationRow : ListBoxRow {
             time_revealer.set_reveal_child(true);
             xbutton_revealer.set_reveal_child(false);
         }
+    }
+
+    private Widget generate_tooltip() {
+        Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_selector/chat_row_tooltip.ui");
+        Box main_box = builder.get_object("main_box") as Box;
+        Box inner_box = builder.get_object("inner_box") as Box;
+        Label jid_label = builder.get_object("jid_label") as Label;
+
+        jid_label.label = conversation.counterpart.to_string();
+
+        Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
+        if (full_jids != null) {
+            for (int i = 0; i < full_jids.size; i++) {
+                inner_box.add(get_fulljid_box(full_jids[i]));
+            }
+        }
+        return main_box;
     }
 
     private static string get_relative_time(DateTime datetime) {

@@ -80,6 +80,7 @@
                                         </child>
                                         <child>
                                             <object class="GtkLabel" id="message_label">
+                                                <property name="use_markup">True</property>
                                                 <property name="max_width_chars">1</property>
                                                 <property name="ellipsize">end</property>
                                                 <property name="expand">True</property>
