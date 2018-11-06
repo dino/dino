@@ -37,8 +37,8 @@ public interface Dino.Application : GLib.Application {
         ConversationManager.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
         FileManager.start(stream_interactor, db);
-        NotificationEvents.start(stream_interactor);
         ContentItemStore.start(stream_interactor, db);
+        NotificationEvents.start(stream_interactor);
         SearchProcessor.start(stream_interactor, db);
 
         create_actions();

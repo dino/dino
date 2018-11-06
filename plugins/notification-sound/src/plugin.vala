@@ -9,7 +9,7 @@ public class Plugin : RootInterface, Object {
         this.app = app;
         Canberra.Context.create(out sound_context);
 
-        app.stream_interactor.get_module(NotificationEvents.IDENTITY).notify_message.connect((message, conversation) => {
+        app.stream_interactor.get_module(NotificationEvents.IDENTITY).notify_content_item.connect((item, conversation) => {
             sound_context.play(0, Canberra.PROP_EVENT_ID, "message-new-instant", Canberra.PROP_EVENT_DESCRIPTION, "New Dino message");
         });
     }
