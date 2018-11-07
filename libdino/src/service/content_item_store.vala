@@ -27,6 +27,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
         this.db = db;
 
         stream_interactor.get_module(FileManager.IDENTITY).received_file.connect(insert_file_transfer);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(announce_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(announce_message);
     }
 
     public void init(Conversation conversation, ContentItemCollection item_collection) {
@@ -136,19 +138,28 @@ public class ContentItemStore : StreamInteractionModule, Object {
     public void insert_message(Message message, Conversation conversation, bool hide = false) {
         MessageItem item = new MessageItem(message, conversation, -1);
         item.id = db.add_content_item(conversation, message.time, message.local_time, 1, message.id, hide);
-        if (!discard(item)) {
-            if (collection_conversations.has_key(conversation)) {
-                collection_conversations.get(conversation).insert_item(item);
+    }
+
+    private void announce_message(Message message, Conversation conversation) {
+        QueryBuilder select = db.content_item.select();
+        select.with(db.content_item.foreign_id, "=", message.id);
+        select.with(db.content_item.content_type, "=", 1);
+        foreach (Row row in select) {
+            MessageItem item = new MessageItem(message, conversation, row[db.content_item.id]);
+            if (!discard(item)) {
+                if (collection_conversations.has_key(conversation)) {
+                    collection_conversations.get(conversation).insert_item(item);
+                }
+                new_item(item, conversation);
             }
-            new_item(item, conversation);
+            break;
         }
     }
 
     private void insert_file_transfer(FileTransfer file_transfer, Conversation conversation) {
         FileItem item = new FileItem(file_transfer, -1);
+        item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id, false);
         if (!discard(item)) {
-            item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id, false);
-
             if (collection_conversations.has_key(conversation)) {
                 collection_conversations.get(conversation).insert_item(item);
             }
