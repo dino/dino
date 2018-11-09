@@ -14,7 +14,6 @@ public class Manager : StreamInteractionModule, Object {
     private Database db;
     private TrustManager trust_manager;
     private Map<Entities.Message, MessageState> message_states = new HashMap<Entities.Message, MessageState>(Entities.Message.hash_func, Entities.Message.equals_func);
-    private ReceivedMessageListener received_message_listener = new ReceivedMessageListener();
 
     private class MessageState {
         public Entities.Message msg { get; private set; }
@@ -68,24 +67,8 @@ public class Manager : StreamInteractionModule, Object {
 
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
         stream_interactor.get_module(RosterManager.IDENTITY).mutual_subscription.connect(on_mutual_subscription);
-    }
-
-    private class ReceivedMessageListener : MessageListener {
-
-        public string[] after_actions_const = new string[]{ };
-        public override string action_group { get { return "DECRYPT"; } }
-        public override string[] after_actions { get { return after_actions_const; } }
-
-        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            MessageFlag? flag = MessageFlag.get_flag(stanza);
-            if (flag != null && ((!)flag).decrypted) {
-                message.encryption = Encryption.OMEMO;
-            }
-            return false;
-        }
     }
 
     private Gee.List<Jid> get_occupants(Jid jid, Account account){

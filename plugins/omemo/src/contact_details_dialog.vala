@@ -123,7 +123,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         }
 
         if (!now_active) {
-            img.icon_name= "appointment-missed-symbolic";
+            img.icon_name = "appointment-missed-symbolic";
             status_lbl.set_markup("<span color='#8b8e8f'>%s</span>".printf(_("Unused")));
             lbr.activatable = false;
         }

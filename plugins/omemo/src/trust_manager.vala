@@ -10,14 +10,19 @@ public class TrustManager {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private ReceivedMessageListener received_message_listener;
+    private DecryptMessageListener decrypt_message_listener;
+    private TagMessageListener tag_message_listener;
+
+    private HashMap<Message, int> message_device_id_map = new HashMap<Message, int>(Message.hash_func, Message.equals_func);
 
     public TrustManager(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
         this.db = db;
 
-        received_message_listener = new ReceivedMessageListener(stream_interactor, db);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
+        decrypt_message_listener = new DecryptMessageListener(stream_interactor, db, message_device_id_map);
+        tag_message_listener = new TagMessageListener(stream_interactor, db, message_device_id_map);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(decrypt_message_listener);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(tag_message_listener);
     }
 
     public void set_blind_trust(Account account, Jid jid, bool blind_trust) {
@@ -36,6 +41,23 @@ public class TrustManager {
             .with(db.identity_meta.address_name, "=", jid.bare_jid.to_string())
             .with(db.identity_meta.device_id, "=", device_id)
             .set(db.identity_meta.trust_level, trust_level).perform();
+        string selection = null;
+        string[] selection_args = {};
+        var app_db = Application.get_default().db;
+        foreach (Row row in db.content_item_meta.with_device(identity_id, jid.bare_jid.to_string(), device_id).with(db.content_item_meta.trusted_when_received, "=", false)) {
+            if (selection == null) {
+                selection = @"$(app_db.content_item.id) = ?";
+            } else {
+                selection += @" OR $(app_db.content_item.id) = ?";
+            }
+            selection_args += row[db.content_item_meta.content_item_id].to_string();
+        }
+        if (selection != null) {
+            app_db.content_item.update()
+                .set(app_db.content_item.hide, trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED || trust_level == Database.IdentityMetaTable.TrustLevel.UNKNOWN)
+                .where(selection, selection_args)
+                .perform();
+        }
     }
 
     private StanzaNode create_encrypted_key(uint8[] key, Address address, Store store) throws GLib.Error {
@@ -154,17 +176,69 @@ public class TrustManager {
         return devices;
     }
 
-    private class ReceivedMessageListener : MessageListener {
+    private class TagMessageListener : MessageListener {
+        public string[] after_actions_const = new string[]{ "STORE" };
+        public override string action_group { get { return "DECRYPT_TAG"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+        private Database db;
+        private HashMap<Message, int> message_device_id_map;
+
+        public TagMessageListener(StreamInteractor stream_interactor, Database db, HashMap<Message, int> message_device_id_map) {
+            this.stream_interactor = stream_interactor;
+            this.db = db;
+            this.message_device_id_map = message_device_id_map;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            int device_id = 0;
+            if (message_device_id_map.has_key(message)) {
+                device_id = message_device_id_map[message];
+                message_device_id_map.unset(message);
+            }
+
+            // TODO: Handling of files
+
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+
+            if (content_item != null && device_id != 0) {
+                Jid jid = content_item.jid;
+                if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                    jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
+                }
+
+                int identity_id = db.identity.get_id(conversation.account.id);
+                Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.get_device(identity_id, jid.bare_jid.to_string(), device_id)[db.identity_meta.trust_level];
+                if (trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED || trust_level == Database.IdentityMetaTable.TrustLevel.UNKNOWN) {
+                    stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
+                }
+
+                db.content_item_meta.insert()
+                    .value(db.content_item_meta.content_item_id, content_item.id)
+                    .value(db.content_item_meta.identity_id, identity_id)
+                    .value(db.content_item_meta.address_name, jid.bare_jid.to_string())
+                    .value(db.content_item_meta.device_id, device_id)
+                    .value(db.content_item_meta.trusted_when_received, trust_level != Database.IdentityMetaTable.TrustLevel.UNTRUSTED)
+                    .perform();
+            }
+            return false;
+        }
+    }
+
+    private class DecryptMessageListener : MessageListener {
         public string[] after_actions_const = new string[]{ };
         public override string action_group { get { return "DECRYPT"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
         private StreamInteractor stream_interactor;
         private Database db;
+        private HashMap<Message, int> message_device_id_map;
 
-        public ReceivedMessageListener(StreamInteractor stream_interactor, Database db) {
+        public DecryptMessageListener(StreamInteractor stream_interactor, Database db, HashMap<Message, int> message_device_id_map) {
             this.stream_interactor = stream_interactor;
             this.db = db;
+            this.message_device_id_map = message_device_id_map;
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
@@ -205,7 +279,7 @@ public class TrustManager {
                             SessionCipher cipher = store.create_session_cipher(address);
                             key = cipher.decrypt_signal_message(msg);
                         }   
-                        address.device_id = 0; // TODO: Hack to have address obj live longer
+                        //address.device_id = 0; // TODO: Hack to have address obj live longer
 
                         if (key.length >= 32) {
                             int authtaglength = key.length - 16; 
@@ -219,20 +293,9 @@ public class TrustManager {
                         }
 
                         message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
+                        message_device_id_map[message] = address.device_id;
+                        message.encryption = Encryption.OMEMO;
                         flag.decrypted = true;
-
-                        int identity_id = db.identity.get_id(conversation.account.id);
-                        if (identity_id < 0) return false;
-
-                        Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.get_device(identity_id, jid.bare_jid.to_string(), header.get_attribute_int("sid"))[db.identity_meta.trust_level];
-                        if (trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED) {
-                            message.body = _("OMEMO message from a rejected device");
-                            message.marked = Message.Marked.WONTSEND;
-                        }
-                        if (trust_level == Database.IdentityMetaTable.TrustLevel.UNKNOWN) {
-                            message.body = _("OMEMO message from an unknown device: ")+message.body;
-                            message.marked = Message.Marked.WONTSEND;
-                        }
                     } catch (Error e) {
                         if (Plugin.DEBUG) print(@"OMEMO: Signal error while decrypting message: $(e.message)\n");
                     }

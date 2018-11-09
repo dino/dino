@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino.Plugins.Omemo {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 2;
+    private const int VERSION = 4;
 
     public class IdentityMetaTable : Table {
         public enum TrustLevel {
@@ -57,11 +57,17 @@ public class Database : Qlite.Database {
 
         public int64 insert_device_bundle(int32 identity_id, string address_name, int device_id, Bundle bundle, TrustLevel trust) {
             if (bundle == null || bundle.identity_key == null) return -1;
+            // Do not replace identity_key if it was known before, it should never change!
+            string identity_key = Base64.encode(bundle.identity_key.serialize());
+            RowOption row = with_address(identity_id, address_name).with(this.device_id, "=", device_id).single().row();
+            if (row.is_present() && row[identity_key_public_base64] != null && row[identity_key_public_base64] != identity_key) {
+                error("Tried to change the identity key for a known device id. Likely an attack.");
+            }
             return upsert()
                     .value(this.identity_id, identity_id, true)
                     .value(this.address_name, address_name, true)
                     .value(this.device_id, device_id, true)
-                    .value(this.identity_key_public_base64, Base64.encode(bundle.identity_key.serialize()))
+                    .value(this.identity_key_public_base64, identity_key)
                     .value(this.trust_level, trust).perform();
         }
 
@@ -173,12 +179,38 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class ContentItemMetaTable : Table {
+        public Column<int> content_item_id = new Column.Integer("message_id") { primary_key = true };
+        public Column<int> identity_id = new Column.Integer("identity_id") { not_null = true };
+        public Column<string> address_name = new Column.Text("address_name") { not_null = true };
+        public Column<int> device_id = new Column.Integer("device_id") { not_null = true };
+        public Column<bool> trusted_when_received = new Column.BoolInt("trusted_when_received") { not_null = true, default = "1" };
+
+        internal ContentItemMetaTable(Database db) {
+            base(db, "content_item_meta");
+            init({content_item_id, identity_id, address_name, device_id, trusted_when_received});
+            index("content_item_meta_device_idx", {identity_id, device_id, address_name});
+        }
+
+        public RowOption with_content_item(ContentItem item) {
+            return row_with(content_item_id, item.id);
+        }
+
+        public QueryBuilder with_device(int identity_id, string address_name, int device_id) {
+            return select()
+                .with(this.identity_id, "=", identity_id)
+                .with(this.address_name, "=", address_name)
+                .with(this.device_id, "=", device_id);
+        }
+    }
+
     public IdentityMetaTable identity_meta { get; private set; }
     public TrustTable trust { get; private set; }
     public IdentityTable identity { get; private set; }
     public SignedPreKeyTable signed_pre_key { get; private set; }
     public PreKeyTable pre_key { get; private set; }
     public SessionTable session { get; private set; }
+    public ContentItemMetaTable content_item_meta { get; private set; }
 
     public Database(string fileName) {
         base(fileName, VERSION);
@@ -188,7 +220,8 @@ public class Database : Qlite.Database {
         signed_pre_key = new SignedPreKeyTable(this);
         pre_key = new PreKeyTable(this);
         session = new SessionTable(this);
-        init({identity_meta, trust, identity, signed_pre_key, pre_key, session});
+        content_item_meta = new ContentItemMetaTable(this);
+        init({identity_meta, trust, identity, signed_pre_key, pre_key, session, content_item_meta});
         try {
             exec("PRAGMA synchronous=0");
         } catch (Error e) { }

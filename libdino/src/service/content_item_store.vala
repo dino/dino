@@ -144,6 +144,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         QueryBuilder select = db.content_item.select();
         select.with(db.content_item.foreign_id, "=", message.id);
         select.with(db.content_item.content_type, "=", 1);
+        select.with(db.content_item.hide, "=", false);
         foreach (Row row in select) {
             MessageItem item = new MessageItem(message, conversation, row[db.content_item.id]);
             if (!discard(item)) {
@@ -165,6 +166,10 @@ public class ContentItemStore : StreamInteractionModule, Object {
             }
             new_item(item, conversation);
         }
+    }
+
+    public bool get_item_hide(ContentItem content_item) {
+        return db.content_item.row_with(db.content_item.id, content_item.id)[db.content_item.hide, false];
     }
 
     public void set_item_hide(ContentItem content_item, bool hide) {
