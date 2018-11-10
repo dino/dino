@@ -35,7 +35,7 @@ public class OwnNotifications {
     private void display_notification() {
         Notification notification = new Notification(_("OMEMO trust decision required"));
         notification.set_default_action_and_target_value("app.own-keys", new Variant.int32(account.id));
-        notification.set_body(_("Did you add a new device for account %s").printf(@"$(account.bare_jid.to_string())"));
+        notification.set_body(_("Did you add a new device for account %s?").printf(@"$(account.bare_jid.to_string())"));
         plugin.app.send_notification(account.id.to_string()+"-new-device", notification);
     }
 }

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-23 23:56+0200\n"
+"POT-Creation-Date: 2018-11-10 17:37+0100\n"
 "PO-Revision-Date: 2018-09-10 03:24+0000\n"
 "Last-Translator: Rhagni Oliveira <rhagni@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/dino/"
@@ -18,21 +18,41 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.2-dev\n"
 
-#: main/src/ui/notifications.vala:71
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "Image sent"
+msgstr ""
+
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "File sent"
+msgstr ""
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "Image received"
+msgstr ""
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "File received"
+msgstr ""
+
+#: main/src/ui/notifications.vala:87
 msgid "Subscription request"
 msgstr "Pedido de assinatura"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:93
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Aceitar"
 
-#: main/src/ui/notifications.vala:78
+#: main/src/ui/notifications.vala:94
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Negar"
 
-#: main/src/ui/notifications.vala:84
+#: main/src/ui/notifications.vala:100
 #, c-format
 msgid "Failed connecting to %s"
 msgstr ""
@@ -129,35 +149,35 @@ msgstr "Registrar"
 msgid "Check %s for information on how to sign up"
 msgstr "Verifique %s para informação de como se inscrever"
 
-#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
-#: main/src/ui/conversation_selector/chat_row.vala:30
+#: main/src/ui/conversation_selector/conversation_row.vala:131
+#: main/src/ui/conversation_selector/conversation_row.vala:141
 msgid "Me"
 msgstr "Eu"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:154
+#: main/src/ui/conversation_selector/conversation_row.vala:249
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:158
+#: main/src/ui/conversation_selector/conversation_row.vala:253
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Ontem"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:161
+#: main/src/ui/conversation_selector/conversation_row.vala:256
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:162
+#: main/src/ui/conversation_selector/conversation_row.vala:257
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:165
+#: main/src/ui/conversation_selector/conversation_row.vala:260
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -165,7 +185,7 @@ msgid_plural "%i mins ago"
 msgstr[0] "%i min atrás"
 msgstr[1] "%i min atrás"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:167
+#: main/src/ui/conversation_selector/conversation_row.vala:262
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Agora há pouco"
@@ -203,7 +223,7 @@ msgstr "Próximo"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:19
+#: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Iniciar conversa"
 
@@ -383,7 +403,7 @@ msgid "Conference Details"
 msgstr "Detalhes da Conferência"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:23
+#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Detalhes do contato"
 
@@ -574,11 +594,11 @@ msgstr "Não-criptografado"
 msgid "Quit"
 msgstr "Sair"
 
-#: main/data/im.dino.Dino.appdata.xml.in:7
+#: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
 msgstr "Moderno cliente de chat XMPP"
 
-#: main/data/im.dino.Dino.appdata.xml.in:9
+#: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
 "Dino is a modern open-source chat client for the desktop. It focuses on "
 "providing a clean and reliable Jabber/XMPP experience while having your "
@@ -588,7 +608,7 @@ msgstr ""
 "uma transparente e confiável experiência Jabber/XMPP, tendo em mente a sua "
 "privacidade."
 
-#: main/data/im.dino.Dino.appdata.xml.in:10
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
@@ -598,7 +618,7 @@ msgstr ""
 "privacidade—características relacionadas às notificações de leitura, "
 "recebimento e escrita."
 
-#: main/data/im.dino.Dino.appdata.xml.in:11
+#: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
@@ -606,7 +626,7 @@ msgstr ""
 "Dino obtém o histórico do servidor e sincroniza mensagens com outros "
 "dispositivos."
 
-#: main/data/im.dino.Dino.appdata.xml.in:15
+#: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
 msgstr "Janela principal com as conversas"
 

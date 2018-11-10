@@ -15,7 +15,7 @@
   <summary xml:lang="lb">Modernen XMPP Chat Client</summary>
   <summary xml:lang="it">Client di chat moderno per XMPP</summary>
   <summary xml:lang="hu">Modern XMPP Üzenetküldő</summary>
-  <summary xml:lang="gl">Cliente moderno para conversas XMPP</summary>
+  <summary xml:lang="gl">Cliente moderno para parolas XMPP</summary>
   <summary xml:lang="fr">Client XMPP moderne</summary>
   <summary xml:lang="eu">XMPP txat bezero modernoa</summary>
   <summary xml:lang="es">Cliente de XMPP moderno</summary>
@@ -33,7 +33,7 @@
     <p xml:lang="lb">Dino ass e modernen, quell-offene Chat Client fir den Desktop. Hien biet eng opgeraumt a robust Jabber/XMPP Erfarung a leet ee Schwéierpunkt op Privatsphär.</p>
     <p xml:lang="it">Dino è un client di chat per il desktop, moderno e open-source. Si concentra nel fornire un'esperienza Jabber/XMPP pulita e affidabile tenendo presente la tua privacy.</p>
     <p xml:lang="hu">A Dino egy modern, nyílt forráskódú üzenetküldő alkalmazás asztali rendszerekre, ami a hangsúlyt a letisztult és megbízható Jabber/XMPP élményre helyezi, miközben a magánszféra megőrzését is fontosnak tartja.</p>
-    <p xml:lang="gl">Dino é un cliente moderno e de código aberto para o escritorio. Orientado a proporcionar unha experiencia Jabber/XMPP limpa e fiable tendo a intimidade presente.</p>
+    <p xml:lang="gl">Dino é un cliente moderno e de código aberto para o escritorio. Orientado a fornecer unha experiencia Jabber/XMPP limpa e fiábel tendo a privacidade e seguranza presentes.</p>
     <p xml:lang="fr">Dino est un client de chat libre et moderne pour le bureau. Il tente de fournir une expérience Jabber/XMPP simple et fiable tout en ayant toujours à l’esprit votre vie privée.</p>
     <p xml:lang="fi">Dino on nykyaikainen avoimen lähdekoodin jutteluohjelma työpöydälle. Se keskittyy tarjoamaan selkeän ja luotettavan Jabber/XMPP-kokemuksen unohtamatta yksityisyyttäsi.</p>
     <p xml:lang="eu">Dino mahaigainerako iturburu irekiko txat bezero moderno bat da. Jabber/XMPP esperientzia garbi eta fidagarri bat ematen du zure pribatutasuna kontuan hartzeaz gain.</p>
@@ -51,7 +51,7 @@
     <p xml:lang="lb">Hien ënnerstëtz Enn-zu-Enn Verschlësselung mat OMEMO an OpenPGP an enthält Privatsphäre-Astellungen zu Liesbestätegungen an Tipp-Benoriichtegungen.</p>
     <p xml:lang="it">Support la crittografia end-to-end tramite OMEMO e OpenPGP e permette di configurare le funzioni relative alla privacy come le ricevute di lettura e le notifiche di digitazione.</p>
     <p xml:lang="hu">Támogatja a végponttól-végpontig titkosítást az OMEMO és az OpenPGP által, és magánszférához kötődő beállítási lehetőségeket is biztosít, mint például a kézbesítési, vagy gépelési értesítések küldése.</p>
-    <p xml:lang="gl">Soporta o cifrado de extremo-a-extremo con OMEMO e OpenPGP e permite configurar características orientadas a intimidade tales como confirmación de lectura e notificacións de escritura.</p>
+    <p xml:lang="gl">Suporta o cifrado de punto-a-punto con OMEMO e OpenPGP e permite configurar trazos orientados á privacidade tales coma confirmación de lectura e notificacións de escritura.</p>
     <p xml:lang="fr">Il prend en charge le chiffrement de bout en bout avec OMEMO et OpenPGP et permet de configurer les fonctions liées à la vie privée telles que l’accusé de réception et les notifications de frappe.</p>
     <p xml:lang="fi">Se tukee päästä päähän -salausta OMEMO:n ja OpenPGP:n avulla ja  mahdollistaa yksityisyyteen liittyvien ominaisuuksien, kuten lukukuittausten ja kirjoitusilmoitusten asetusten määrittämisen.</p>
     <p xml:lang="eu">Amaieratik amaierarako enkriptazioa onartzen du OMEMO eta OpenPGPrekin eta pribatutasun ezaugarriak konfiguratzea baimentzen du irakurtze markak eta idazketa jakinarazpenak bezala.</p>
@@ -70,7 +70,7 @@
     <p xml:lang="lb">Dino rifft  Gespréichverläf vum Server of a synchroniséiert Noriichte mat anere Geräter.</p>
     <p xml:lang="it">Dino recupera la cronologia dal server e sincronizza i messaggi con gli altri dispositivi.</p>
     <p xml:lang="hu">A Dino lekéri a chat előzményeket a szerverről, és szinkronizálja az üzeneteket a többi eszközzel.</p>
-    <p xml:lang="gl">Dino obtén o histórico desde o servidor e sincroniza as mensaxes con outros dispositivos.</p>
+    <p xml:lang="gl">Dino obtén o histórico dende o servidor e sincroniza as mensaxes con outros dispositivos.</p>
     <p xml:lang="fr">Dino récupère l’historique du serveur et synchronise les messages avec d'autres appareils.</p>
     <p xml:lang="fi">Dino hakee historian palvelimelta ja synkronisoi viestit muiden laitteiden kanssa.</p>
     <p xml:lang="eu">Dinok zerbitzaritik hartzen du historia eta beste gailuekin mezuak sinkronizatzen ditu.</p>
@@ -93,7 +93,7 @@
       <caption xml:lang="lb">Haaptfënster mat den Conversatiounen</caption>
       <caption xml:lang="it">La finestra principale con le conversazioni</caption>
       <caption xml:lang="hu">A fő ablak a beszélgetésekkel</caption>
-      <caption xml:lang="gl">Xanela principal con conversas</caption>
+      <caption xml:lang="gl">Lapela principal con parolas</caption>
       <caption xml:lang="fr">Fenêtre principale avec des conversations</caption>
       <caption xml:lang="fi">Keskustelut pääikkunassa</caption>
       <caption xml:lang="eu">Leiho nagusia elkarrizketekin</caption>
@@ -116,7 +116,7 @@
       <caption xml:lang="lb">Konversatioun starten</caption>
       <caption xml:lang="it">Inizia una Conversazione</caption>
       <caption xml:lang="hu">Csevegés kezdeményezése</caption>
-      <caption xml:lang="gl">Iniciar Conversa</caption>
+      <caption xml:lang="gl">Comezar parola</caption>
       <caption xml:lang="fr">Commencer une discussion</caption>
       <caption xml:lang="fi">Aloita keskustelu</caption>
       <caption xml:lang="eu">Elkarrizketa hasi</caption>
