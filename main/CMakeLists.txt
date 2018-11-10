@@ -14,6 +14,7 @@ find_packages(MAIN_PACKAGES REQUIRED
 set(RESOURCE_LIST
     icons/dino-changes-prevent-symbolic.svg
     icons/dino-double-tick-symbolic.svg
+    icons/dino-qr-code-symbolic.svg
     icons/dino-status-away.svg
     icons/dino-status-chat.svg
     icons/dino-status-dnd.svg
@@ -161,6 +162,7 @@ install(FILES
 
     data/icons/dino-changes-prevent-symbolic.svg
     data/icons/dino-double-tick-symbolic.svg
+    data/icons/dino-qr-code-symbolic.svg
     data/icons/dino-tick-symbolic.svg
 DESTINATION
     ${ICON_INSTALL_DIR}/hicolor/scalable/status

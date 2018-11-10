@@ -45,7 +45,7 @@
                                                             </object>
                                                         </child>
                                                         <child>
-                                                            <object class="GtkLabel">
+                                                            <object class="GtkLabel" id="automatically_accept_new_descr">
                                                                 <property name="visible">True</property>
                                                                 <property name="max_width_chars">1</property>
                                                                 <property name="expand">True</property>
@@ -136,8 +136,7 @@
                                                                         <child>
                                                                             <object class="GtkImage">
                                                                                 <property name="visible">True</property>
-                                                                                <property name="halign">end</property>
-                                                                                <property name="icon-name">camera-photo-symbolic</property>
+                                                                                <property name="icon-name">dino-qr-code-symbolic</property>
                                                                                 <property name="icon-size">1</property>
                                                                             </object>
                                                                         </child>

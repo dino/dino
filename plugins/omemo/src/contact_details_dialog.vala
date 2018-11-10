@@ -17,6 +17,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private bool own = false;
     private int own_id = 0;
 
+    [GtkChild] private Label automatically_accept_new_descr;
     [GtkChild] private Box own_fingerprint_container;
     [GtkChild] private Label own_fingerprint_label;
     [GtkChild] private Box new_keys_container;
@@ -45,6 +46,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
         if(jid.equals(account.bare_jid)) {
             own = true;
             own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
+
+            automatically_accept_new_descr.label = _("When you add new encryption keys to your account, automatically accept them.");
 
             own_fingerprint_container.visible = true;
 
