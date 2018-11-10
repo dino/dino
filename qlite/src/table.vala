@@ -48,7 +48,7 @@ public class Table {
         try {
             db.exec(@"INSERT INTO _fts_$name(_fts_$name) VALUES('rebuild');");
         } catch (Error e) {
-            error("Qlite Error: Rebuilding FTS index");
+            error(@"Qlite Error: Rebuilding FTS index: $(e.message)");
         }
     }
 
@@ -141,23 +141,25 @@ public class Table {
     public void create_table_at_version(long version) {
         ensure_init();
         string sql = @"CREATE TABLE IF NOT EXISTS $name (";
+        bool first = true;
         for (int i = 0; i < columns.length; i++) {
             Column c = columns[i];
             if (c.min_version <= version && c.max_version >= version) {
-                sql += @"$(i > 0 ? "," : "") $(c.to_column_definition())";
+                sql += @"$(!first ? "," : "") $(c.to_column_definition())";
+                first = false;
             }
         }
         sql += @"$constraints)";
         try {
             db.exec(sql);
         } catch (Error e) {
-            error("Qlite Error: Create table at version");
+            error(@"Qlite Error: Create table at version: $(e.message)");
         }
         foreach (string stmt in create_statements) {
             try {
                 db.exec(stmt);
             } catch (Error e) {
-                error("Qlite Error: Create table at version");
+                error(@"Qlite Error: Create table at version: $(e.message)");
             }
         }
     }
@@ -169,7 +171,7 @@ public class Table {
                 try {
                     db.exec(@"ALTER TABLE $name ADD COLUMN $(c.to_column_definition())");
                 } catch (Error e) {
-                    error("Qlite Error: Add columns for version");
+                    error(@"Qlite Error: Add columns for version: $(e.message)");
                 }
             }
         }
@@ -197,7 +199,7 @@ public class Table {
                 db.exec(@"INSERT INTO $name ($column_list) SELECT $column_list FROM _$(name)_$old_version");
                 db.exec(@"DROP TABLE _$(name)_$old_version");
             } catch (Error e) {
-                error("Qlite Error: Delete volumns for version change");
+                error(@"Qlite Error: Delete columns for version change: $(e.message)");
             }
         }
     }
@@ -207,7 +209,7 @@ public class Table {
             try {
                 db.exec(stmt);
             } catch (Error e) {
-                error("Qlite Error: Post");
+                error(@"Qlite Error: Post: $(e.message)");
             }
         }
     }

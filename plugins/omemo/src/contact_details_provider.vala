@@ -1,4 +1,5 @@
 using Gtk;
+using Gee;
 using Qlite;
 using Dino.Entities;
 
@@ -15,20 +16,30 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
 
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, WidgetType type) {
         if (conversation.type_ == Conversation.Type.CHAT && type == WidgetType.GTK) {
-            string res = "";
+
+            int identity_id = plugin.db.identity.get_id(conversation.account.id);
+            if (identity_id < 0) return;
+
             int i = 0;
-            foreach (Row row in plugin.db.identity_meta.with_address(conversation.counterpart.to_string())) {
+            foreach (Row row in plugin.db.identity_meta.with_address(identity_id, conversation.counterpart.to_string())) {
                 if (row[plugin.db.identity_meta.identity_key_public_base64] != null) {
-                    if (i != 0) {
-                        res += "\n\n";
-                    }
-                    res += fingerprint_markup(fingerprint_from_base64(row[plugin.db.identity_meta.identity_key_public_base64]));
                     i++;
                 }
             }
+
             if (i > 0) {
-                Label label = new Label(res) { use_markup=true, justify=Justification.RIGHT, selectable=true, visible=true };
-                contact_details.add(_("Encryption"), "OMEMO", n("%d OMEMO device", "%d OMEMO devices", i).printf(i), label);
+                Button btn = new Button.from_icon_name("view-list-symbolic") { visible = true, valign = Align.CENTER, relief = ReliefStyle.NONE };
+                btn.clicked.connect(() => {
+                    btn.activate();
+                    ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, conversation.counterpart);
+                    dialog.set_transient_for((Window) btn.get_toplevel());
+                    dialog.response.connect((response_type) => {
+                        plugin.device_notification_populator.should_hide();
+                    });
+                    dialog.present();
+                });
+
+                contact_details.add(_("Encryption"), "OMEMO", n("%d OMEMO device", "%d OMEMO devices", i).printf(i), btn);
             }
         }
     }

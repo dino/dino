@@ -375,6 +375,10 @@ public class Store : Object {
         return throw_by_code(Protocol.Session.contains_session(native_context, other)) == 1;
     }
 
+    public void delete_session(Address address) throws Error {
+        throw_by_code(Protocol.Session.delete_session(native_context, address));
+    }
+
     public SessionRecord load_session(Address other) throws Error {
         SessionRecord record;
         throw_by_code(Protocol.Session.load_session(native_context, out record, other));

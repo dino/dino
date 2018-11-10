@@ -22,6 +22,7 @@ Build
 * GPGME (For the OpenPGP plugin)
 * libgee-0.8 (≥ 0.10)
 * libgcrypt (For the OMEMO plugin)
+* libqrencode3 (For the OMEMO plugin)
 * libsoup (For the HTTP files plugin)
 * SQLite3
 

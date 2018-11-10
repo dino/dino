@@ -11,6 +11,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     public signal void pre_get_roster(XmppStream stream, Iq.Stanza iq);
     public signal void item_removed(XmppStream stream, Item item, Iq.Stanza iq);
     public signal void item_updated(XmppStream stream, Item item, Iq.Stanza iq);
+    public signal void mutual_subscription(XmppStream stream, Jid jid);
 
     public bool interested_resource = true;
 
@@ -55,8 +56,12 @@ public class Module : XmppStreamModule, Iq.Handler {
                 item_removed(stream, item, iq);
                 break;
             default:
+                bool is_new = false;
+                Item old = flag.get_item(item.jid);
+                is_new = item.subscription == Item.SUBSCRIPTION_BOTH && (old == null || old.subscription == Item.SUBSCRIPTION_BOTH);
                 flag.roster_items[item.jid] = item;
                 item_updated(stream, item,  iq);
+                if(is_new) mutual_subscription(stream, item.jid);
                 break;
         }
     }
