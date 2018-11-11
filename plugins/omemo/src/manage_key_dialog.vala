@@ -57,7 +57,7 @@ public class ManageKeyDialog : Gtk.Dialog {
             return_to_main = false;
             confirm_image.set_from_icon_name("dialog-warning-symbolic", IconSize.DIALOG);
             confirm_title_label.label = _("Fingerprints do not match");
-            confirm_desc_label.set_markup(_("Please verify that you are comparing the correct fingerprint. If fingerprints do not match %s's account may be compromised and you should consider rejecting this key.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+            confirm_desc_label.set_markup(_("Please verify that you are comparing the correct fingerprint. If fingerprints do not match, %s's account may be compromised and you should consider rejecting this key.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
             manage_stack.set_visible_child_name("confirm");
         });
     }
@@ -126,7 +126,7 @@ public class ManageKeyDialog : Gtk.Dialog {
                 main_action_list.add(reject_row);
                 break;
             case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
-                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#D91900'>"+_("rejected")+"</span>")+" "+_("This means it cannot be used by %s to receive messages, and any messages sent by it will be ignored").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#D91900'>"+_("rejected")+"</span>")+" "+_("This means it cannot be used by %s to receive messages, and any messages sent by it will be ignored.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(accept_row);
                 break;
         }
