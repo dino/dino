@@ -113,7 +113,7 @@ public class ManageKeyDialog : Gtk.Dialog {
         ListBoxRow reject_row = new ListBoxRow() { visible = true };
         reject_row.add(make_action_box(_("Reject Key"), _("Stop accepting this key during communication with its associated contact.")));
         ListBoxRow accept_row = new ListBoxRow() {visible = true };
-        accept_row.add(make_action_box(_("Accept Key"), _("Start accepting this key during communication with its assoicated contact")));
+        accept_row.add(make_action_box(_("Accept Key"), _("Start accepting this key during communication with its associated contact")));
 
         switch((Database.IdentityMetaTable.TrustLevel) device[db.identity_meta.trust_level]) {
             case Database.IdentityMetaTable.TrustLevel.TRUSTED:
