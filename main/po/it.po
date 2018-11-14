@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
-"PO-Revision-Date: 2018-10-25 13:52+0000\n"
-"Last-Translator: Valerio Baldisserotto <svalo@libersoft.it>\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-11-13 16:07+0000\n"
+"Last-Translator: Valerio Baldisserotto <code@valo.space>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
 "Language: it\n"
@@ -22,22 +22,23 @@ msgstr ""
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "Image sent"
-msgstr ""
+msgstr "Immagine inviata"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
+#, fuzzy
 msgid "File sent"
-msgstr ""
+msgstr "File inviato"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "Image received"
-msgstr ""
+msgstr "Immagine ricevuta"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "File received"
-msgstr ""
+msgstr "File ricevuto"
 
 #: main/src/ui/notifications.vala:87
 msgid "Subscription request"
@@ -567,6 +568,10 @@ msgstr "Nessun account configurato"
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "Aggiungi un account"
+
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
 
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146

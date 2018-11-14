@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
-"PO-Revision-Date: 2018-10-22 04:29+0000\n"
-"Last-Translator: Jean-Baptiste <jean-baptiste@holcroft.fr>\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-11-13 16:07+0000\n"
+"Last-Translator: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
 "Language: fr\n"
@@ -22,22 +22,22 @@ msgstr ""
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "Image sent"
-msgstr ""
+msgstr "Image envoyée"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "File sent"
-msgstr ""
+msgstr "Fichier envoyé"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "Image received"
-msgstr ""
+msgstr "Image reçue"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "File received"
-msgstr ""
+msgstr "Fichier reçu"
 
 #: main/src/ui/notifications.vala:87
 msgid "Subscription request"
@@ -56,7 +56,7 @@ msgstr "Refuser"
 #: main/src/ui/notifications.vala:100
 #, c-format
 msgid "Failed connecting to %s"
-msgstr ""
+msgstr "Échec de la connexion à %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -457,9 +457,8 @@ msgid "Moderated"
 msgstr "Modéré"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:64
-#, fuzzy
 msgid "Only occupants with voice may send messages"
-msgstr "Seuls les membres ayant voix peu"
+msgstr "Seuls les occupants n’étant pas visiteurs peuvent envoyer des messages"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Members only"
@@ -566,6 +565,10 @@ msgstr "Aucun compte configuré"
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "Ajouter un compte"
+
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
 
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146

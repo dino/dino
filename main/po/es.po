@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
-"PO-Revision-Date: 2018-09-29 07:35+0000\n"
-"Last-Translator: Bonber Rash <bonber@protonmail.com>\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-11-14 19:24+0000\n"
+"Last-Translator: sergio <srg.dev@posteo.net>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/"
 "translations/es/>\n"
 "Language: es\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.3-dev\n"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "Image sent"
-msgstr ""
+msgstr "Imagen enviada"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "File sent"
-msgstr ""
+msgstr "Archivo enviado"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "Image received"
-msgstr ""
+msgstr "Imagen recibida"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "File received"
-msgstr ""
+msgstr "Archivo recibido"
 
 #: main/src/ui/notifications.vala:87
 msgid "Subscription request"
@@ -56,7 +56,7 @@ msgstr "Denegar"
 #: main/src/ui/notifications.vala:100
 #, c-format
 msgid "Failed connecting to %s"
-msgstr ""
+msgstr "Fallo conectando con %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -89,7 +89,7 @@ msgstr "Imágenes"
 
 #: main/src/ui/manage_accounts/dialog.vala:165
 msgid "All files"
-msgstr "Todos los ficheros"
+msgstr "Todos los archivos"
 
 #: main/src/ui/manage_accounts/dialog.vala:222
 msgid "Connecting…"
@@ -135,7 +135,7 @@ msgstr "Registrado en %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 msgid "The server requires to sign up through a website"
-msgstr "El servidor requiere registrarse a través de un sitio web"
+msgstr "El servidor requiere registro a través de un sitio web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:182
 msgid "Open Registration"
@@ -214,7 +214,7 @@ msgstr "Guardar"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:243 main/data/menu_add.ui:13
 msgid "Join Channel"
-msgstr "Unirse a canal"
+msgstr "Unirse a Conversación en grupo"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
 #: main/data/manage_accounts/add_account_dialog.ui:228
@@ -226,11 +226,11 @@ msgstr "Siguiente"
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
-msgstr "Iniciar conversación"
+msgstr "Iniciar Conversación"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:86
 msgid "Start"
-msgstr "Iniciar Conversación"
+msgstr "Iniciar"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:108
 msgid "Joining…"
@@ -320,7 +320,7 @@ msgstr "Archivo"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr "Esta persona quiere añadirle a su lista de contactos"
+msgstr "Esta persona quiere añadirte a su lista de contactos"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
@@ -388,7 +388,7 @@ msgstr "Expulsar"
 #: main/src/ui/global_search.vala:134
 #, c-format
 msgid "%i search results"
-msgstr "%i resultados de la busqueda"
+msgstr "%i resultados de la búsqueda"
 
 #: main/src/ui/global_search.vala:161
 #, c-format
@@ -569,6 +569,10 @@ msgstr "No hay cuentas activas"
 msgid "Add an account"
 msgstr "Añadir una cuenta"
 
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
+
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146
 msgid "Create account"
@@ -608,7 +612,7 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino es un cliente de conversaciones moderno y libre para escritorio. Está "
+"Dino es un cliente de mensajería moderno y libre para escritorio. Está "
 "enfocado en proveer una experiencia Jabber/XMPP limpia y confiable teniendo "
 "tu privacidad en mente."
 
@@ -656,11 +660,11 @@ msgstr "Añadir contacto"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr "Busqueda no activa"
+msgstr "Búsqueda no activa"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr "Escribe para empezar una busqueda"
+msgstr "Escribe para empezar una búsqueda"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"

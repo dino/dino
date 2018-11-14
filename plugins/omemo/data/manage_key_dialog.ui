@@ -6,7 +6,7 @@
         <child type="titlebar">
             <object class="GtkHeaderBar" id="header_bar">
                 <property name="visible">True</property>
-                <property name="title">Manage Key</property>
+                <property name="title" translatable="yes">Manage Key</property>
                 <property name="show_close_button">False</property>
                 <child>
                     <object class="GtkButton" id="cancel_button">
@@ -110,7 +110,7 @@
                                             <object class="GtkButton" id="verify_no_button">
                                                 <property name="visible">True</property>
                                                 <property name="hexpand">True</property>
-                                                <property name="label" translatable="yes">Not Matching</property>
+                                                <property name="label" translatable="yes">Not matching</property>
                                             </object>
                                         </child>
                                         <child>

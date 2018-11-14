@@ -2,7 +2,7 @@
 <interface>
     <template class="DinoPluginsOmemoContactDetailsDialog">
         <property name="modal">True</property>
-        <property name="title">OMEMO Key Management</property>
+        <property name="title" translatable="yes">OMEMO Key Management</property>
         <property name="resizable">False</property>
         <child internal-child="vbox">
             <object class="GtkBox">

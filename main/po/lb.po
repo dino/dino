@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Luxembourgish (Dino)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
-"PO-Revision-Date: 2018-09-10 00:23+0000\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-11-13 16:07+0000\n"
 "Last-Translator: Dennis Fink <dennis.fink@c3l.lu>\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "translations/lb/>\n"
@@ -12,27 +12,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.3-dev\n"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "Image sent"
-msgstr ""
+msgstr "Bild geschéckt"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "File sent"
-msgstr ""
+msgstr "Datei geschéckt"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "Image received"
-msgstr ""
+msgstr "Bild kritt"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "File received"
-msgstr ""
+msgstr "Datei kritt"
 
 #: main/src/ui/notifications.vala:87
 msgid "Subscription request"
@@ -51,7 +51,7 @@ msgstr "Verweigeren"
 #: main/src/ui/notifications.vala:100
 #, c-format
 msgid "Failed connecting to %s"
-msgstr ""
+msgstr "Feeler beim connectéieren op %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -560,6 +560,10 @@ msgstr "Keng Kontoe konfiguréiert"
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "Ee Konto bäisetzen"
+
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
 
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146

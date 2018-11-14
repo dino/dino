@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
 "PO-Revision-Date: 2018-10-24 22:22+0000\n"
 "Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
@@ -574,6 +574,10 @@ msgstr "لم يتم إعداد أي حساب بعد"
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "إضافة حساب"
+
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
 
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146

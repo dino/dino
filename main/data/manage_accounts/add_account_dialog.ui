@@ -27,7 +27,7 @@
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <object class="GtkLabel">
-                                                        <property name="label">Sign in</property>
+                                                        <property name="label" translatable="yes">Sign in</property>
                                                         <property name="margin-bottom">10</property>
                                                         <property name="visible">True</property>
                                                         <attributes>

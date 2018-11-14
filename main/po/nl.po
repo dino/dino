@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
-"PO-Revision-Date: 2018-09-24 12:24+0000\n"
-"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-11-14 19:24+0000\n"
+"Last-Translator: flevop <flevopolder2@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/translations/"
 "nl/>\n"
 "Language: nl\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.3-dev\n"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "Image sent"
-msgstr ""
+msgstr "Afbeelding verzonden"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "File sent"
-msgstr ""
+msgstr "Bestand verzonden"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "Image received"
-msgstr ""
+msgstr "Afbeelding ontvangen"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "File received"
-msgstr ""
+msgstr "Bestand ontvangen"
 
 #: main/src/ui/notifications.vala:87
 msgid "Subscription request"
@@ -56,7 +56,7 @@ msgstr "Afwijzen"
 #: main/src/ui/notifications.vala:100
 #, c-format
 msgid "Failed connecting to %s"
-msgstr ""
+msgstr "Verbinden met %s mislukt"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -81,7 +81,7 @@ msgstr "Selecteren"
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
-msgstr "Annuleren"
+msgstr "Annuleer"
 
 #: main/src/ui/manage_accounts/dialog.vala:161
 msgid "Images"
@@ -567,6 +567,10 @@ msgstr "Geen accounts ingesteld"
 msgid "Add an account"
 msgstr "Account toevoegen"
 
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr "Inloggen"
+
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146
 msgid "Create account"
@@ -581,6 +585,7 @@ msgid "Or specify a server address"
 msgstr "Of voer een serveradres in"
 
 #: main/data/manage_accounts/add_account_dialog.ui:207
+#, fuzzy
 msgid "Sign in instead"
 msgstr "Inloggen"
 

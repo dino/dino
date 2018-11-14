@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
-"PO-Revision-Date: 2018-11-06 14:01+0000\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-11-13 16:07+0000\n"
 "Last-Translator: fiaxh <weblate@mx.ax.lt>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
@@ -17,22 +17,22 @@ msgstr ""
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "Image sent"
-msgstr ""
+msgstr "Bild gesendet"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_row.vala:145
 msgid "File sent"
-msgstr ""
+msgstr "Datei gesendet"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "Image received"
-msgstr ""
+msgstr "Bild empfangen"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_row.vala:147
 msgid "File received"
-msgstr ""
+msgstr "Datei empfangen"
 
 #: main/src/ui/notifications.vala:87
 msgid "Subscription request"
@@ -562,6 +562,11 @@ msgstr "Keine Konten konfiguriert"
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "Konto hinzufügen"
+
+#: main/data/manage_accounts/add_account_dialog.ui:30
+#, fuzzy
+msgid "Sign in"
+msgstr "Anmelden"
 
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146

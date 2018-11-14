@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -563,6 +563,10 @@ msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
 msgstr ""
 
 #: main/data/manage_accounts/add_account_dialog.ui:109

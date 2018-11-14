@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
 "PO-Revision-Date: 2018-05-01 23:41+0000\n"
 "Last-Translator: Alexander <ilabdsf@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
@@ -56,7 +56,7 @@ msgstr ""
 #, c-format
 msgid ""
 "Please verify that you are comparing the correct fingerprint. If "
-"fingerprints do not match %s's account may be compromised and you should "
+"fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
 
@@ -67,8 +67,9 @@ msgid "Cancel"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
-msgid "Verify Key Fingerprint"
-msgstr ""
+#, fuzzy
+msgid "Verify key fingerprint"
+msgstr "Отпечаток этого устройства"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
 msgid ""
@@ -77,7 +78,8 @@ msgid ""
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:114
-msgid "Reject Key"
+#: plugins/omemo/src/manage_key_dialog.vala:140
+msgid "Reject key"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:114
@@ -86,12 +88,13 @@ msgid ""
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
-msgid "Accept Key"
+#: plugins/omemo/src/manage_key_dialog.vala:148
+msgid "Accept key"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
-"Start accepting this key during communication with its assoicated contact"
+"Start accepting this key during communication with its associated contact."
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
@@ -106,6 +109,7 @@ msgid "accepted"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
+#: plugins/omemo/src/manage_key_dialog.vala:125
 #, c-format
 msgid "This means it can be used by %s to receive and send messages."
 msgstr ""
@@ -115,10 +119,8 @@ msgid "verified"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:125
-#, c-format
 msgid ""
-"This means it can be used by %s to receive and send messages. Additionally "
-"it has been verified to match the key on the contact's device."
+"Additionally it has been verified to match the key on the contact's device."
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:129
@@ -129,11 +131,7 @@ msgstr ""
 #, c-format
 msgid ""
 "This means it cannot be used by %s to receive messages, and any messages "
-"sent by it will be ignored"
-msgstr ""
-
-#: plugins/omemo/src/manage_key_dialog.vala:140
-msgid "Reject key"
+"sent by it will be ignored."
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:141
@@ -141,10 +139,6 @@ msgstr ""
 msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "ignored and none of your messages will be readable using this key."
-msgstr ""
-
-#: plugins/omemo/src/manage_key_dialog.vala:148
-msgid "Accept key"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:149
@@ -199,6 +193,11 @@ msgstr[0] "%d устройство OMEMO"
 msgstr[1] "%d устройства OMEMO"
 msgstr[2] "%d устройств OMEMO"
 
+#: plugins/omemo/data/contact_details_dialog.ui:5
+#, fuzzy
+msgid "OMEMO Key Management"
+msgstr "Ключи OMEMO"
+
 #: plugins/omemo/data/contact_details_dialog.ui:41
 msgid "Automatically accept new keys"
 msgstr ""
@@ -221,6 +220,10 @@ msgstr ""
 msgid "Associated keys"
 msgstr ""
 
+#: plugins/omemo/data/manage_key_dialog.ui:9
+msgid "Manage Key"
+msgstr ""
+
 #: plugins/omemo/data/manage_key_dialog.ui:25
 msgid "Confirm"
 msgstr ""
@@ -232,7 +235,7 @@ msgid ""
 msgstr ""
 
 #: plugins/omemo/data/manage_key_dialog.ui:113
-msgid "Not Matching"
+msgid "Not matching"
 msgstr ""
 
 #: plugins/omemo/data/manage_key_dialog.ui:120
@@ -241,9 +244,6 @@ msgstr ""
 
 #~ msgid "Unknown device (0x%.8x)"
 #~ msgstr "Неизвестное устройство (0x%.8x)"
-
-#~ msgid "OMEMO Keys"
-#~ msgstr "Ключи OMEMO"
 
 #~ msgid "Other devices"
 #~ msgstr "Другие устройства"

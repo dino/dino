@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-10 17:37+0100\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
 "PO-Revision-Date: 2018-10-12 10:27+0000\n"
 "Last-Translator: Nathan Follens <nthn@unseen.is>\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/dino/"
@@ -568,6 +568,11 @@ msgstr "Geen accounts ingesteld"
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "Account toevoegen"
+
+#: main/data/manage_accounts/add_account_dialog.ui:30
+#, fuzzy
+msgid "Sign in"
+msgstr "Inloggen"
 
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146

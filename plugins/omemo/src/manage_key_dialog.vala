@@ -109,11 +109,11 @@ public class ManageKeyDialog : Gtk.Dialog {
         });
 
         ListBoxRow verify_row = new ListBoxRow() { visible = true };
-        verify_row.add(make_action_box(_("Verify Key Fingerprint"), _("Compare this key's fingerprint with the fingerprint displayed on the contact's device.")));
+        verify_row.add(make_action_box(_("Verify key fingerprint"), _("Compare this key's fingerprint with the fingerprint displayed on the contact's device.")));
         ListBoxRow reject_row = new ListBoxRow() { visible = true };
-        reject_row.add(make_action_box(_("Reject Key"), _("Stop accepting this key during communication with its associated contact.")));
+        reject_row.add(make_action_box(_("Reject key"), _("Stop accepting this key during communication with its associated contact.")));
         ListBoxRow accept_row = new ListBoxRow() {visible = true };
-        accept_row.add(make_action_box(_("Accept Key"), _("Start accepting this key during communication with its associated contact")));
+        accept_row.add(make_action_box(_("Accept key"), _("Start accepting this key during communication with its associated contact")));
 
         switch((Database.IdentityMetaTable.TrustLevel) device[db.identity_meta.trust_level]) {
             case Database.IdentityMetaTable.TrustLevel.TRUSTED:
@@ -122,7 +122,7 @@ public class ManageKeyDialog : Gtk.Dialog {
                 main_action_list.add(reject_row);
                 break;
             case Database.IdentityMetaTable.TrustLevel.VERIFIED:
-                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("verified")+"</span>")+" "+_("This means it can be used by %s to receive and send messages. Additionally it has been verified to match the key on the contact's device.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("verified")+"</span>")+" "+_("This means it can be used by %s to receive and send messages.") + " " + _("Additionally it has been verified to match the key on the contact's device.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(reject_row);
                 break;
             case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
