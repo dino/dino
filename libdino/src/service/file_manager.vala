@@ -16,7 +16,7 @@ public class FileManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private Gee.List<FileSender> file_senders = new ArrayList<FileSender>();
-    private Gee.List<IncommingFileProcessor> incomming_processors = new ArrayList<IncommingFileProcessor>();
+    public Gee.List<IncommingFileProcessor> incomming_processors = new ArrayList<IncommingFileProcessor>();
     private Gee.List<OutgoingFileProcessor> outgoing_processors = new ArrayList<OutgoingFileProcessor>();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
@@ -116,7 +116,7 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     public void add_provider(FileProvider file_provider) {
-        file_provider.file_incoming.connect(handle_incomming_file);
+        file_provider.file_incoming.connect((file_transfer, conversation) => { handle_incomming_file.begin(file_provider, file_transfer, conversation); });
     }
 
     public void add_sender(FileSender file_sender) {
@@ -134,13 +134,18 @@ public class FileManager : StreamInteractionModule, Object {
         outgoing_processors.add(processor);
     }
 
-    private void handle_incomming_file(FileTransfer file_transfer, Conversation conversation) {
-        foreach (IncommingFileProcessor processor in incomming_processors) {
-            if (processor.can_process(file_transfer)) {
-                processor.process(file_transfer);
-            }
-        }
-        save_file(file_transfer);
+    public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
+        Jid relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account) ?? conversation.counterpart;
+        bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
+        return file_transfer.direction == FileTransfer.DIRECTION_SENT || in_roster;
+    }
+
+    private async void handle_incomming_file(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
+        if (!is_sender_trustworthy(file_transfer, conversation)) return;
+
+        string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
+        File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
+        yield file_provider.download(file_transfer, file);
 
         try {
             FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
@@ -170,6 +175,7 @@ public class FileManager : StreamInteractionModule, Object {
 
 public interface FileProvider : Object {
     public signal void file_incoming(FileTransfer file_transfer, Conversation conversation);
+    public abstract async void download(FileTransfer file_transfer, File file);
 }
 
 public interface FileSender : Object {

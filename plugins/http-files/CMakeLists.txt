@@ -13,7 +13,6 @@ SOURCES
     src/manager.vala
     src/plugin.vala
     src/register_plugin.vala
-    src/upload_stream_module.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi

@@ -23,6 +23,7 @@ public class OutFileProcessor : OutgoingFileProcessor, Object {
             file_transfer.encryption = Encryption.PGP;
             file_transfer.server_file_name = Xmpp.random_uuid() + ".pgp";
         } catch (Error e) {
+            warning(@"PGP file encryption error: $(e.message)\n");
             file_transfer.state = FileTransfer.State.FAILED;
         }
     }
