@@ -181,11 +181,11 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     }
 
     if (parse_text_markup) {
-        string[] markup_string = new string[]{"`", "_", "*"};
-        string[] convenience_tag = new string[]{"tt", "i", "b"};
+        string[] markup_string = new string[]{"```", "`", "_", "*"};
+        string[] convenience_tag = new string[]{"tt", "tt", "i", "b"};
 
         for (int i = 0; i < markup_string.length; i++) {
-            Regex regex = new Regex(Regex.escape_string(markup_string[i]) + ".+" + Regex.escape_string(markup_string[i]));
+            Regex regex = new Regex(Regex.escape_string(markup_string[i]) + "(.|\\R)+" + Regex.escape_string(markup_string[i]));
             MatchInfo match_info;
             regex.match(s.down(), 0, out match_info);
             if (match_info.matches()) {
