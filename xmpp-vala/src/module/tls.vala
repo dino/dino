@@ -58,7 +58,7 @@ namespace Xmpp.Tls {
             }
         }
 
-        public static bool on_invalid_certificate(TlsCertificate peer_cert, TlsCertificateFlags errors) {
+        public bool on_invalid_certificate(TlsCertificate peer_cert, TlsCertificateFlags errors) {
             string error_str = "";
             foreach (var f in new TlsCertificateFlags[]{TlsCertificateFlags.UNKNOWN_CA, TlsCertificateFlags.BAD_IDENTITY,
                     TlsCertificateFlags.NOT_ACTIVATED, TlsCertificateFlags.EXPIRED, TlsCertificateFlags.REVOKED,
@@ -68,6 +68,7 @@ namespace Xmpp.Tls {
                 }
             }
             warning(@"Tls Certificate Errors: $(error_str)");
+            invalid_certificate(peer_cert, errors);
             return false;
         }
 

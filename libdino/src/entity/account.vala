@@ -44,6 +44,8 @@ public class Account : Object {
     }
 
     public void persist(Database db) {
+        if (id > 0) return;
+
         this.db = db;
         id = (int) db.account.insert()
                 .value(db.account.bare_jid, bare_jid.to_string())

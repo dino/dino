@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino {
 
-public class ConnectionManager {
+public class ConnectionManager : Object {
 
     public signal void stream_opened(Account account, XmppStream stream);
     public signal void connection_state_changed(Account account, ConnectionState state);
@@ -133,7 +133,7 @@ public class ConnectionManager {
         connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
     }
 
-    public void disconnect(Account account) {
+    public void disconnect_account(Account account) {
         if (connections.has_key(account)) {
             make_offline(account);
             try {

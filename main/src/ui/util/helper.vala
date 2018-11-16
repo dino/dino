@@ -70,7 +70,7 @@ public static string get_display_name(StreamInteractor stream_interactor, Jid ji
     } else {
         if (jid.equals_bare(account.bare_jid)) {
             if (account.alias == null || account.alias == "") {
-                return account.bare_jid.to_string();
+                return _("Me");
             } else {
                 return account.alias;
             }

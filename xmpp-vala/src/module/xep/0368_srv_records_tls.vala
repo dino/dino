@@ -38,7 +38,7 @@ public class TlsConnectionProvider : ConnectionProvider {
         try {
             IOStream? io_stream = yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
             TlsConnection tls_connection = TlsClientConnection.new(io_stream, new NetworkAddress(stream.remote_name.to_string(), srv_target.get_port()));
-            tls_connection.accept_certificate.connect(Tls.Module.on_invalid_certificate);
+            tls_connection.accept_certificate.connect(stream.get_module(Tls.Module.IDENTITY).on_invalid_certificate);
             stream.add_flag(new Tls.Flag() { finished=true });
             return tls_connection;
         } catch (Error e) {

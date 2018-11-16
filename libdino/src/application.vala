@@ -40,6 +40,7 @@ public interface Dino.Application : GLib.Application {
         ContentItemStore.start(stream_interactor, db);
         NotificationEvents.start(stream_interactor);
         SearchProcessor.start(stream_interactor, db);
+        Register.start(stream_interactor, db);
 
         create_actions();
 
@@ -110,11 +111,11 @@ public interface Dino.Application : GLib.Application {
     }
 
     protected void add_connection(Account account) {
-        stream_interactor.connect(account);
+        stream_interactor.connect_account(account);
     }
 
     protected void remove_connection(Account account) {
-        stream_interactor.disconnect(account);
+        stream_interactor.disconnect_account(account);
     }
 
     private void restore() {
