@@ -198,8 +198,8 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     }
 
     if (parse_text_markup) {
-        string[] markup_string = new string[]{"`", "_", "*"};
-        string[] convenience_tag = new string[]{"tt", "i", "b"};
+        string[] markup_string = new string[]{"`", "_", "*", "~"};
+        string[] convenience_tag = new string[]{"tt", "i", "b", "s"};
 
         for (int i = 0; i < markup_string.length; i++) {
             Regex regex = new Regex("(?=" + Regex.escape_string(markup_string[i]) + ")" +
