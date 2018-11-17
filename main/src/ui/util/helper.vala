@@ -202,7 +202,9 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
         string[] convenience_tag = new string[]{"tt", "i", "b"};
 
         for (int i = 0; i < markup_string.length; i++) {
-            Regex regex = new Regex("(?=" + Regex.escape_string(markup_string[i]) + ").+?" + Regex.escape_string(markup_string[i]));
+            Regex regex = new Regex("(?=" + Regex.escape_string(markup_string[i]) + ")" +
+                                """(?!.*<\/?[""" + string.joinv("", convenience_tag) + """]+>.*?""" + Regex.escape_string(markup_string[i]) + ")" + /* Don't match something that already has a tag in the middle */
+                                ".+?" + Regex.escape_string(markup_string[i]));
 
             s = regex.replace_eval(s, -1, 0, 0, (mi, s) => {
                 int start, end;
