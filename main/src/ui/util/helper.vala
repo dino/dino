@@ -144,40 +144,57 @@ public static bool is_24h_format() {
     return settings_format == "24h" || p_format == " ";
 }
 
-public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup, bool already_escaped_ = false) {
-    string s = s_;
-    bool already_escaped = already_escaped_;
+public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup) {
+    Gee.ArrayList<int> start_url_pos = new Gee.ArrayList<int>();
+    Gee.ArrayList<int> end_url_pos = new Gee.ArrayList<int>();
+    string s = Markup.escape_text(s_);
 
     if (parse_links) {
-        Regex url_regex = new Regex("""(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))""");
-        MatchInfo match_info;
-        url_regex.match(s.down(), 0, out match_info);
-        if (match_info.matches())  {
-            int start, end;
-            match_info.fetch_pos(0, out start, out end);
-            string link = s[start:end];
-            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                "<a href=\"" + Markup.escape_text(link) + "\">" + parse_add_markup(link, highlight_word, false, false, already_escaped) + "</a>" +
-                parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
-        }
-    }
+        Regex url_regex = new Regex("""(?i)((https?|ftp|magnet|tel)+):(?:\/\/(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$'()*+,;=]|%[0-9A-F]{2})*)(?::(\d*))?(\/(?:[a-z0-9-._~!$&'()+,;=:@/]|%[0-9A-F]{2})*)?|(\/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?""");
 
-    if (!already_escaped) {
-        s = Markup.escape_text(s);
-        already_escaped = true;
+        s = url_regex.replace_eval(s, -1, 0, 0, (mi, s) => {
+            string url = mi.fetch(0);
+
+            s.append_printf("<a href=\"%s\">%s</a>", Markup.escape_text(url), url);
+            return false;
+        });
+
+        // Now find all the URLs without replacing anything
+        s = url_regex.replace_eval(s, -1, 0, 0, (mi, s) => {
+            int start, end;
+            mi.fetch_pos(0, out start, out end);
+            start_url_pos.add(start);
+            end_url_pos.add(end);
+
+            s.append_printf("%s", mi.fetch(0));
+
+            return false;
+        });
     }
 
     if (highlight_word != null) {
         Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b");
-        MatchInfo match_info;
-        highlight_regex.match(s.down(), 0, out match_info);
-        if (match_info.matches()) {
+
+        s = highlight_regex.replace_eval(s, -1, 0, 0, (mi, s) => {
             int start, end;
-            match_info.fetch_pos(0, out start, out end);
-            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                "<b>" + s[start:end] + "</b>" +
-                parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
-        }
+            mi.fetch_pos(0, out start, out end);
+
+
+            for (int x = 0; x < start_url_pos.size; x++) {
+                // Check to see if this match starts within an URL
+                if (start > start_url_pos.get(x) && start < end_url_pos.get(x)) {
+                    s.append_printf("%s", mi.fetch(0));
+                    return false;
+                }
+                // Check to see if this match ends within an URL
+                if (end > start_url_pos.get(x) && end < end_url_pos.get(x)) {
+                    s.append_printf("%s", mi.fetch(0));
+                    return false;
+                }
+            }
+            s.append_printf("<b>%s</b>", mi.fetch(0));
+            return false;
+        });
     }
 
     if (parse_text_markup) {
@@ -185,18 +202,27 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
         string[] convenience_tag = new string[]{"tt", "i", "b"};
 
         for (int i = 0; i < markup_string.length; i++) {
-            Regex regex = new Regex(Regex.escape_string(markup_string[i]) + ".+" + Regex.escape_string(markup_string[i]));
-            MatchInfo match_info;
-            regex.match(s.down(), 0, out match_info);
-            if (match_info.matches()) {
+            Regex regex = new Regex("(?=" + Regex.escape_string(markup_string[i]) + ").+?" + Regex.escape_string(markup_string[i]));
+
+            s = regex.replace_eval(s, -1, 0, 0, (mi, s) => {
                 int start, end;
-                match_info.fetch_pos(0, out start, out end);
-                start += markup_string[i].length;
-                end -= markup_string[i].length;
-                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                    @"<$(convenience_tag[i])>" + s[start:end] + @"</$(convenience_tag[i])>" +
-                    parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
-            }
+                mi.fetch_pos(0, out start, out end);
+
+                for (int x = 0; x < start_url_pos.size; x++) {
+                    // Check to see if this match starts within an URL
+                    if (start > start_url_pos.get(x) && start < end_url_pos.get(x)) {
+                        s.append_printf("%s", mi.fetch(0));
+                        return false;
+                    }
+                   // Check to see if this match ends within an URL
+                    if (end > start_url_pos.get(x) && end < end_url_pos.get(x)) {
+                        s.append_printf("%s", mi.fetch(0));
+                        return false;
+                    }
+                }
+                s.append_printf("<%s>%s</%s>", convenience_tag[i], mi.fetch(0), convenience_tag[i]);
+                return false;
+            });
         }
     }
 
