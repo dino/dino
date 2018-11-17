@@ -168,7 +168,9 @@ public class ConnectionManager : Object {
         });
         stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, null));
-            change_connection_state(account, ConnectionState.DISCONNECTED);
+        });
+        stream.get_module(Tls.Module.IDENTITY).invalid_certificate.connect(() => {
+            set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, null) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
         });
         stream.received_node.connect(() => {
             connections[account].last_activity = new DateTime.now_utc();
@@ -186,10 +188,6 @@ public class ConnectionManager : Object {
             print(@"[$(account.bare_jid)] Error: $(e.message)\n");
             change_connection_state(account, ConnectionState.DISCONNECTED);
             if (!connection_todo.contains(account)) {
-                return;
-            }
-            if (e is IOStreamError.TLS) {
-                set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, e.message) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
                 return;
             }
             StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
