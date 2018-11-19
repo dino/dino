@@ -245,7 +245,7 @@ public class UnifiedWindow : Gtk.Window {
 public class WelcomePlceholder : UnifiedWindowPlaceholder {
     public WelcomePlceholder() {
         title_label.label = _("Welcome to Dino!");
-        label.label = _("Communicate happieness.");
+        label.label = _("Communicate happiness.");
         primary_button.label = _("Setup account");
         title_label.visible = true;
         secondary_button.visible = false;
