@@ -137,7 +137,11 @@ public class ConversationRow : ListBoxRow {
                     FileItem file_item = last_content_item as FileItem;
                     FileTransfer transfer = file_item.file_transfer;
 
-                    if (conversation.type_ != Conversation.Type.GROUPCHAT) {
+                    if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                        // TODO properly display nick for oneself
+                        string nick = transfer.direction == Message.DIRECTION_SENT ? _("Me") : Util.get_display_name(stream_interactor, file_item.file_transfer.counterpart, conversation.account);
+                        nick_label.label = nick + ": ";
+                    } else {
                         nick_label.label = transfer.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
 
