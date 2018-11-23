@@ -9,6 +9,7 @@ find_packages(OMEMO_PACKAGES REQUIRED
     GModule
     GObject
     GTK3
+    Soup
 )
 
 set(RESOURCE_LIST
@@ -38,6 +39,7 @@ SOURCES
     src/own_notifications.vala
     src/encrypt_state.vala
     src/encryption_list_entry.vala
+    src/file_provider.vala
     src/manage_key_dialog.vala
     src/manager.vala
     src/message_flag.vala

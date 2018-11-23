@@ -49,6 +49,8 @@ public class Plugin : RootInterface, Object {
             list.add(new StreamModule());
             this.own_notifications = new OwnNotifications(this, this.app.stream_interactor, account);
         });
+
+        app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(new FileProvider(app.stream_interactor, app.db));
         Manager.start(this.app.stream_interactor, db, trust_manager);
 
         SimpleAction own_keys_action = new SimpleAction("own-keys", VariantType.INT32);

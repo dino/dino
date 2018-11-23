@@ -3,11 +3,12 @@ using Gtk;
 
 using Dino.Entities;
 using Xmpp;
+using Signal;
 
-namespace Dino.Plugins.HttpFiles {
+namespace Dino.Plugins.Omemo {
 
 public class FileProvider : Dino.FileProvider, Object {
-    public string id { get { return "http"; } }
+    public string id { get { return "aesgcm"; } }
 
     private StreamInteractor stream_interactor;
     private Dino.Database dino_db;
@@ -18,12 +19,9 @@ public class FileProvider : Dino.FileProvider, Object {
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.dino_db = dino_db;
-        this.url_regex = new Regex("""^(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$""");
+        this.url_regex = new Regex("""^aesgcm://(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$""");
 
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(this));
-        stream_interactor.get_module(Manager.IDENTITY).uploaded.connect((file_transfer, url) => {
-            ignore_once.add(url);
-        });
     }
 
     private class ReceivedMessageListener : MessageListener {
@@ -41,17 +39,18 @@ public class FileProvider : Dino.FileProvider, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            if (outer.url_regex.match(message.body)) {
-                string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(message.stanza);
-                if (oob_url != null && oob_url == message.body) {
-                    yield outer.on_file_message(message, conversation);
-                }
+            if (message.body.has_prefix("aesgcm://") && outer.url_regex.match(message.body)) {
+                yield outer.on_file_message(message, conversation);
             }
             return false;
         }
     }
 
     private async void on_file_message(Entities.Message message, Conversation conversation) {
+        MatchInfo match_info;
+        this.url_regex.match(message.body, 0, out match_info);
+        string url_without_hash = match_info.fetch(1);
+
         FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
         file_transfer.counterpart = message.counterpart;
@@ -60,7 +59,7 @@ public class FileProvider : Dino.FileProvider, Object {
         file_transfer.time = message.time;
         file_transfer.local_time = message.local_time;
         file_transfer.direction = message.direction;
-        file_transfer.file_name = message.body.substring(message.body.last_index_of("/") + 1);
+        file_transfer.file_name = url_without_hash.substring(url_without_hash.last_index_of("/") + 1);
         file_transfer.mime_type = null;
         file_transfer.size = -1;
         file_transfer.state = FileTransfer.State.NOT_STARTED;
@@ -85,9 +84,7 @@ public class FileProvider : Dino.FileProvider, Object {
             yield session.send_async(head_message, null);
 
             string? content_type = null, content_length = null;
-            print(url_body + ":\n");
             head_message.response_headers.foreach((name, val) => {
-                print(name + " " + val + "\n");
                 if (name == "Content-Type") content_type = val;
                 if (name == "Content-Length") content_length = val;
             });
@@ -96,24 +93,15 @@ public class FileProvider : Dino.FileProvider, Object {
         }
     }
 
-    public async void download(FileTransfer file_transfer, File file_) {
+    public async void download(FileTransfer file_transfer, File file) {
         try {
-            File file = file_;
             string url_body = dino_db.message.select({dino_db.message.body}).with(dino_db.message.id, "=", int.parse(file_transfer.info))[dino_db.message.body];
+            string url = "https://" + url_body.substring(9);
             var session = new Soup.Session();
-            Soup.Request request = session.request(url_body);
+            Soup.Request request = session.request(url);
 
-            file_transfer.input_stream = yield request.send_async(null);
-
-            foreach (IncommingFileProcessor processor in stream_interactor.get_module(FileManager.IDENTITY).incomming_processors) {
-                if (processor.can_process(file_transfer)) {
-                    processor.process(file_transfer);
-                }
-            }
-
-            if (file_transfer.encryption == Encryption.PGP || file.get_path().has_suffix(".pgp")) {
-                file = File.new_for_path(file.get_path().substring(0, file.get_path().length - 4));
-            }
+            file_transfer.input_stream = decrypt_file(yield request.send_async(null), url_body);
+            file_transfer.encryption = Encryption.OMEMO;
 
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
             os.splice(file_transfer.input_stream, 0);
@@ -125,6 +113,42 @@ public class FileProvider : Dino.FileProvider, Object {
         } catch (Error e) {
             file_transfer.state = FileTransfer.State.FAILED;
         }
+    }
+
+    public InputStream? decrypt_file(InputStream input_stream, string url) {
+        // Decode IV and key
+        MatchInfo match_info;
+        this.url_regex.match(url, 0, out match_info);
+        uint8[] iv_and_key = hex_to_bin(match_info.fetch(2).up());
+        uint8[] iv, key;
+        if (iv_and_key.length == 44) {
+            iv = iv_and_key[0:12];
+            key = iv_and_key[12:44];
+        } else {
+            iv = iv_and_key[0:16];
+            key = iv_and_key[16:48];
+        }
+
+        // Read data
+        uint8[] buf = new uint8[256];
+        Array<uint8> data = new Array<uint8>(false, true, 0);
+        size_t len = -1;
+        do {
+            len = input_stream.read(buf);
+            data.append_vals(buf, (uint) len);
+        } while(len > 0);
+
+        // Decrypt
+        return new MemoryInputStream.from_data(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, data.data));
+    }
+
+    private uint8[] hex_to_bin(string hex) {
+        uint8[] bin = new uint8[hex.length / 2];
+        const string HEX = "0123456789ABCDEF";
+        for (int i = 0; i < hex.length / 2; i++) {
+            bin[i] = (uint8) (HEX.index_of_char(hex[i*2]) << 4) | HEX.index_of_char(hex[i*2+1]);
+        }
+        return bin;
     }
 }
 

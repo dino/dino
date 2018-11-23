@@ -1,6 +1,7 @@
 using Gee;
 using Gdk;
 using Gtk;
+using Pango;
 using Xmpp;
 
 using Dino.Entities;
@@ -191,7 +192,7 @@ public class FileItemWidgetGenerator : WidgetGenerator, Object {
         main_box.add(content_type_image);
 
         Box right_box = new Box(Orientation.VERTICAL, 0) { visible=true };
-        Label name_label = new Label(file_transfer.file_name) { xalign=0, yalign=0, visible=true};
+        Label name_label = new Label(file_transfer.file_name) { ellipsize=EllipsizeMode.END, xalign=0, yalign=0, visible=true};
         right_box.add(name_label);
         Label mime_label = new Label("<span size='small'>" + _("File") + ": " + file_transfer.mime_type + "</span>") { use_markup=true, xalign=0, yalign=1, visible=true};
         mime_label.get_style_context().add_class("dim-label");
