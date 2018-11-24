@@ -11,7 +11,7 @@ protected class ConferenceList : FilterableList {
     public signal void conversation_selected(Conversation? conversation);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Account, Gee.List<Xep.Bookmarks.Conference>> lists = new HashMap<Account, Gee.List<Xep.Bookmarks.Conference>>();
+    private HashMap<Account, Gee.List<Xep.Bookmarks.Conference>> lists = new HashMap<Account, Gee.List<Xep.Bookmarks.Conference>>(Account.hash_func, Account.equals_func);
 
     public ConferenceList(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;

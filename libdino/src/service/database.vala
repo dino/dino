@@ -268,7 +268,7 @@ public class Database : Qlite.Database {
     }
 
     public ArrayList<Account> get_accounts() {
-        ArrayList<Account> ret = new ArrayList<Account>();
+        ArrayList<Account> ret = new ArrayList<Account>(Account.equals_func);
         foreach(Row row in account.select()) {
             Account account = new Account.from_row(this, row);
             ret.add(account);
