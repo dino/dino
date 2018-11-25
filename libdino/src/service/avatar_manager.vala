@@ -73,6 +73,14 @@ public class AvatarManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public bool has_avatar(Account account, Jid jid) {
+        Jid jid_ = jid;
+        if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
+            jid_ = jid.bare_jid;
+        }
+        return user_avatars[jid_] != null || vcard_avatars[jid_] != null;
+    }
+
     public void publish(Account account, string file) {
         try {
             Pixbuf pixbuf = new Pixbuf.from_file(file);
