@@ -212,11 +212,6 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
-    public bool has_avatar(Jid muc_jid, Account account) {
-        Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(muc_jid, account);
-        return full_jids != null && full_jids.contains(muc_jid);
-    }
-
     private Xep.Muc.Flag? get_muc_flag(Account account) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
