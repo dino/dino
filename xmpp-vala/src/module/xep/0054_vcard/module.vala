@@ -25,6 +25,9 @@ public class Module : XmppStreamModule {
     public override string get_id() { return IDENTITY.id; }
 
     private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
+        if (presence.type_ != Presence.Stanza.TYPE_AVAILABLE) {
+            return;
+        }
         StanzaNode? update_node = presence.stanza.get_subnode("x", NS_URI_UPDATE);
         if (update_node == null) return;
         StanzaNode? photo_node = update_node.get_subnode("photo", NS_URI_UPDATE);
