@@ -40,7 +40,8 @@ namespace Xmpp.Xep.UserAvatars {
 
         public void on_pupsub_event(XmppStream stream, Jid jid, string id, StanzaNode? node) {
             StanzaNode? info_node = node.get_subnode("info", NS_URI_METADATA);
-            if (info_node == null || info_node.get_attribute("type") != "image/png") return;
+            string? type = info_node == null ? null : info_node.get_attribute("type");
+            if (type != "image/png" && type != "image/jpeg") return;
             if (storage.has_image(id)) {
                 stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
             } else {
@@ -52,8 +53,16 @@ namespace Xmpp.Xep.UserAvatars {
         public override string get_id() { return IDENTITY.id; }
 
         private void on_pubsub_data_response(XmppStream stream, Jid jid, string? id, StanzaNode? node) {
-            if (node == null) return;
-            storage.store(id, Base64.decode(node.get_string_content()));
+            if (node == null || id == null) {
+                return;
+            }
+            uint8[] image = Base64.decode(node.get_string_content());
+            string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, image);
+            if (sha1 != id) {
+                warning("sha sum did not match for avatar from "+jid.to_string()+" expected="+id+", actual="+sha1);
+                return;
+            }
+            storage.store(id, image);
             stream.get_module(Module.IDENTITY).received_avatar(stream, jid, id);
         }
     }
