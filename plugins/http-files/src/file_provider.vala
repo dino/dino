@@ -63,16 +63,18 @@ public class FileProvider : Dino.FileProvider, Object {
         file_transfer.info = message.id.to_string();
 
         if (stream_interactor.get_module(FileManager.IDENTITY).is_sender_trustworthy(file_transfer, conversation)) {
-            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
-            if (content_item != null) {
-                stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
-            }
             yield get_meta_info(file_transfer);
+            if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
+                ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+                if (content_item != null) {
+                    stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
+                }
+            }
             file_incoming(file_transfer, conversation);
         }
     }
 
-    private async void get_meta_info(FileTransfer file_transfer) {
+    public async void get_meta_info(FileTransfer file_transfer) {
         string url_body = dino_db.message.select({dino_db.message.body}).with(dino_db.message.id, "=", int.parse(file_transfer.info))[dino_db.message.body];
         var session = new Soup.Session();
         var head_message = new Soup.Message("HEAD", url_body);

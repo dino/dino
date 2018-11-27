@@ -143,17 +143,23 @@ public class FileManager : StreamInteractionModule, Object {
     private async void handle_incomming_file(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
         if (!is_sender_trustworthy(file_transfer, conversation)) return;
 
-        string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
-        File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
-        yield file_provider.download(file_transfer, file);
+        if (file_transfer.size == -1) {
+            file_provider.get_meta_info(file_transfer);
+        }
 
-        try {
-            FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
-            file_transfer.mime_type = file_info.get_content_type();
-        } catch (Error e) { }
+        if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
+            string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
+            File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
+            yield file_provider.download(file_transfer, file);
 
-        file_transfer.persist(db);
-        received_file(file_transfer, conversation);
+            try {
+                FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
+                file_transfer.mime_type = file_info.get_content_type();
+            } catch (Error e) { }
+
+            file_transfer.persist(db);
+            received_file(file_transfer, conversation);
+        }
     }
 
     private void save_file(FileTransfer file_transfer) {
@@ -175,6 +181,7 @@ public class FileManager : StreamInteractionModule, Object {
 
 public interface FileProvider : Object {
     public signal void file_incoming(FileTransfer file_transfer, Conversation conversation);
+    public abstract async void get_meta_info(FileTransfer file_transfer);
     public abstract async void download(FileTransfer file_transfer, File file);
 }
 

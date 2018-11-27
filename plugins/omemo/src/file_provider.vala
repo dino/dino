@@ -65,36 +65,43 @@ public class FileProvider : Dino.FileProvider, Object {
         file_transfer.info = message.id.to_string();
 
         if (stream_interactor.get_module(FileManager.IDENTITY).is_sender_trustworthy(file_transfer, conversation)) {
-            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
-            if (content_item != null) {
-                stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
-            }
             yield get_meta_info(file_transfer);
+            if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
+                ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+                if (content_item != null) {
+                    stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
+                }
+            }
             file_incoming(file_transfer, conversation);
         }
     }
 
-    private async void get_meta_info(FileTransfer file_transfer) {
+    public async void get_meta_info(FileTransfer file_transfer) {
         string url_body = dino_db.message.select({dino_db.message.body}).with(dino_db.message.id, "=", int.parse(file_transfer.info))[dino_db.message.body];
+        string url = this.aesgcm_to_https_link(url_body);
         var session = new Soup.Session();
-        var head_message = new Soup.Message("HEAD", url_body);
+        var head_message = new Soup.Message("HEAD", url);
         if (head_message != null) {
             yield session.send_async(head_message, null);
 
-            string? content_type = null, content_length = null;
-            head_message.response_headers.foreach((name, val) => {
-                if (name == "Content-Type") content_type = val;
-                if (name == "Content-Length") content_length = val;
-            });
-            file_transfer.mime_type = content_type;
-            file_transfer.size = int.parse(content_length);
+            if (head_message.status_code >= 200 && head_message.status_code < 300) {
+                string? content_type = null, content_length = null;
+                head_message.response_headers.foreach((name, val) => {
+                    if (name == "Content-Type") content_type = val;
+                    if (name == "Content-Length") content_length = val;
+                });
+                file_transfer.mime_type = content_type;
+                file_transfer.size = int.parse(content_length);
+            } else {
+                warning("HTTP HEAD download status code " + head_message.status_code.to_string());
+            }
         }
     }
 
     public async void download(FileTransfer file_transfer, File file) {
         try {
             string url_body = dino_db.message.select({dino_db.message.body}).with(dino_db.message.id, "=", int.parse(file_transfer.info))[dino_db.message.body];
-            string url = "https://" + url_body.substring(9);
+            string url = this.aesgcm_to_https_link(url_body);
             var session = new Soup.Session();
             Soup.Request request = session.request(url);
 
@@ -148,6 +155,12 @@ public class FileProvider : Dino.FileProvider, Object {
             bin[i] = (uint8) (HEX.index_of_char(hex[i*2]) << 4) | HEX.index_of_char(hex[i*2+1]);
         }
         return bin;
+    }
+
+    private string aesgcm_to_https_link(string aesgcm_link) {
+        MatchInfo match_info;
+        this.url_regex.match(aesgcm_link, 0, out match_info);
+        return "https://" + match_info.fetch(1);
     }
 }
 

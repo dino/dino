@@ -46,7 +46,7 @@ public class AesGcmFileSender : StreamInteractionModule, FileSender, Object {
         foreach (uint8 byte in iv) iv_and_key += byte.to_string("%02x");
         foreach (uint8 byte in key) iv_and_key += byte.to_string("%02x");
 
-        stream_interactor.module_manager.get_module(file_transfer.account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).request_slot(stream, file_transfer.server_file_name, (int) data.length, file_transfer.mime_type,
+        stream_interactor.module_manager.get_module(file_transfer.account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).request_slot(stream, file_transfer.server_file_name, (int) ciphertext.length, file_transfer.mime_type,
             (stream, url_down, url_up) => {
                 Soup.Message message = new Soup.Message("PUT", url_up);
                 message.set_request(file_transfer.mime_type, Soup.MemoryUse.COPY, ciphertext);
@@ -69,7 +69,7 @@ public class AesGcmFileSender : StreamInteractionModule, FileSender, Object {
                                 stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
                             }
                         } else {
-                            warning("HTTP status code " + message.status_code.to_string());
+                            warning("HTTP upload status code " + message.status_code.to_string());
                             file_transfer.state = FileTransfer.State.FAILED;
                         }
                     } catch (Error e) {
