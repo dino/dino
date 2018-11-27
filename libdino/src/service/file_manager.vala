@@ -42,7 +42,7 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.direction = FileTransfer.DIRECTION_SENT;
         file_transfer.time = new DateTime.now_utc();
         file_transfer.local_time = new DateTime.now_utc();
-        file_transfer.encryption = Encryption.NONE;
+        file_transfer.encryption = conversation.encryption;
         try {
             File file = File.new_for_path(uri);
             FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);

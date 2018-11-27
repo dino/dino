@@ -71,7 +71,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
             upload(stream, file_transfer,
                 (stream, url_down) => {
                     uploaded(file_transfer, url_down);
-                    file_transfer.info = url_down;
+                    file_transfer.info = url_down; // store the message content temporarily so the message gets filtered out
                     Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(url_down, conversation);
                     message.encryption = Encryption.NONE;
                     stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(message, conversation);
@@ -91,7 +91,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     }
 
     public bool can_send(Conversation conversation, FileTransfer file_transfer) {
-        return true;
+        return file_transfer.encryption != Encryption.OMEMO;
     }
 
     public bool is_upload_available(Conversation conversation) {
@@ -116,7 +116,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     }
 
     private void check_add_oob(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (message_is_file(db, message)) {
+        if (message_is_file(db, message) && message.body.has_prefix("http")) {
             Xep.OutOfBandData.add_url_to_message(message_stanza, message_stanza.body);
         }
     }

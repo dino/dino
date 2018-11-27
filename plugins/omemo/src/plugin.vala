@@ -51,6 +51,7 @@ public class Plugin : RootInterface, Object {
         });
 
         app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(new FileProvider(app.stream_interactor, app.db));
+        this.app.stream_interactor.get_module(FileManager.IDENTITY).add_sender(new AesGcmFileSender(app.stream_interactor));
         Manager.start(this.app.stream_interactor, db, trust_manager);
 
         SimpleAction own_keys_action = new SimpleAction("own-keys", VariantType.INT32);

@@ -14,8 +14,6 @@ public class FileProvider : Dino.FileProvider, Object {
     private Dino.Database dino_db;
     private Regex url_regex;
 
-    private Gee.List<string> ignore_once = new ArrayList<string>();
-
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.dino_db = dino_db;
@@ -139,7 +137,8 @@ public class FileProvider : Dino.FileProvider, Object {
         } while(len > 0);
 
         // Decrypt
-        return new MemoryInputStream.from_data(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, data.data));
+        uint8[] cleartext = Signal.aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, data.data);
+        return new MemoryInputStream.from_data(cleartext);
     }
 
     private uint8[] hex_to_bin(string hex) {

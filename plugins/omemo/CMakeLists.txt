@@ -40,6 +40,7 @@ SOURCES
     src/encrypt_state.vala
     src/encryption_list_entry.vala
     src/file_provider.vala
+    src/file_sender.vala
     src/manage_key_dialog.vala
     src/manager.vala
     src/message_flag.vala

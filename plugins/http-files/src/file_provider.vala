@@ -13,17 +13,12 @@ public class FileProvider : Dino.FileProvider, Object {
     private Dino.Database dino_db;
     private Regex url_regex;
 
-    private Gee.List<string> ignore_once = new ArrayList<string>();
-
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.dino_db = dino_db;
         this.url_regex = new Regex("""^(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$""");
 
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(this));
-        stream_interactor.get_module(Manager.IDENTITY).uploaded.connect((file_transfer, url) => {
-            ignore_once.add(url);
-        });
     }
 
     private class ReceivedMessageListener : MessageListener {
