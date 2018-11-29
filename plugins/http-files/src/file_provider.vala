@@ -89,7 +89,9 @@ public class FileProvider : Dino.FileProvider, Object {
                 if (name == "Content-Length") content_length = val;
             });
             file_transfer.mime_type = content_type;
-            file_transfer.size = int.parse(content_length);
+            if (content_length != null) {
+                file_transfer.size = int.parse(content_length);
+            }
         }
     }
 
