@@ -68,7 +68,7 @@ add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE
 add_library(omemo SHARED ${OMEMO_VALA_C} ${OMEMO_GRESOURCES_TARGET})
 add_dependencies(omemo ${GETTEXT_PACKAGE}-translations)
 if(APPLE)
-    target_link_libraries(omemo libdino signal-protocol-vala ${OMEMO_PACKAGES} ${GCrypt_LIBRARY})
+    target_link_libraries(omemo libdino signal-protocol-vala qrencode ${OMEMO_PACKAGES} ${GCrypt_LIBRARY})
 else()
     target_link_libraries(omemo libdino signal-protocol-vala qrencode ${OMEMO_PACKAGES})
 endif()
