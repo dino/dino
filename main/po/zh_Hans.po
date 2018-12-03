@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-07 00:02+0200\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
 "PO-Revision-Date: 2018-05-09 10:35+0000\n"
 "Last-Translator: fiaxh <weblate@mx.ax.lt>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -19,19 +19,44 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.0-dev\n"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "Image sent"
+msgstr ""
+
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "File sent"
+msgstr ""
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "Image received"
+msgstr ""
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "File received"
+msgstr ""
+
+#: main/src/ui/notifications.vala:87
 msgid "Subscription request"
 msgstr "订阅请求"
 
-#: main/src/ui/notifications.vala:76
+#: main/src/ui/notifications.vala:93
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "接受"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:94
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "拒绝"
+
+#: main/src/ui/notifications.vala:100
+#, c-format
+msgid "Failed connecting to %s"
+msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -66,28 +91,28 @@ msgstr "图片"
 msgid "All files"
 msgstr "所有文件"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:222
 msgid "Connecting…"
 msgstr "连接中…"
 
-#: main/src/ui/manage_accounts/dialog.vala:233
+#: main/src/ui/manage_accounts/dialog.vala:224
 msgid "Connected"
 msgstr "已连接"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:226
 msgid "Disconnected"
 msgstr "已断开连接"
 
-#: main/src/ui/manage_accounts/dialog.vala:244
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Wrong password"
 msgstr "密码错误"
 
-#: main/src/ui/manage_accounts/dialog.vala:246
+#: main/src/ui/manage_accounts/dialog.vala:237
 msgid "Invalid TLS certificate"
 msgstr "无效的 TLS 证书"
 
-#: main/src/ui/manage_accounts/dialog.vala:249
-#: main/src/ui/manage_accounts/dialog.vala:251
+#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr "错误"
 
@@ -125,42 +150,42 @@ msgstr ""
 msgid "Check %s for information on how to sign up"
 msgstr ""
 
-#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
-#: main/src/ui/conversation_selector/chat_row.vala:30
+#: main/src/ui/conversation_selector/conversation_row.vala:131
+#: main/src/ui/conversation_selector/conversation_row.vala:141
 msgid "Me"
 msgstr "我"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:154
+#: main/src/ui/conversation_selector/conversation_row.vala:249
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%_m 月 %_d 日"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:158
+#: main/src/ui/conversation_selector/conversation_row.vala:253
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "昨天"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:161
+#: main/src/ui/conversation_selector/conversation_row.vala:256
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:162
+#: main/src/ui/conversation_selector/conversation_row.vala:257
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:165
+#: main/src/ui/conversation_selector/conversation_row.vala:260
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i 分钟以前"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:167
+#: main/src/ui/conversation_selector/conversation_row.vala:262
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "刚刚"
@@ -198,7 +223,7 @@ msgstr "下一个"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:28
+#: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "开始聊天"
 
@@ -282,25 +307,13 @@ msgstr[0] "正在输入…"
 msgid "has stopped typing"
 msgstr "已经停止输入"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
-msgid "File"
-msgstr "文件"
-
-#: main/src/ui/conversation_summary/message_textview.vala:40
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
 msgid "Message too long"
 msgstr "消息太长"
 
-#: main/src/ui/conversation_summary/message_textview.vala:93
-msgid "Copy Link Address"
-msgstr "复制链接地址"
-
-#: main/src/ui/conversation_summary/message_textview.vala:101
-msgid "Copy"
-msgstr "复制"
-
-#: main/src/ui/conversation_summary/message_textview.vala:106
-msgid "Select All"
-msgstr "全选"
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+msgid "File"
+msgstr "文件"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -374,12 +387,12 @@ msgstr "踢出"
 msgid "%i search results"
 msgstr ""
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
 msgstr ""
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
 msgstr ""
@@ -389,7 +402,7 @@ msgid "Conference Details"
 msgstr "聊天室详情"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:32
+#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "联系人详情"
 
@@ -551,6 +564,10 @@ msgstr "没有配置账户"
 msgid "Add an account"
 msgstr "添加新账号"
 
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
+
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146
 msgid "Create account"
@@ -594,7 +611,7 @@ msgstr ""
 "Dino 是一个现代的开源聊天桌面客户端。它致力于提供一个清爽又可靠的 Jabber/"
 "XMPP 体验，同时又保护您的隐私。"
 
-#: main/data/im.dino.Dino.appdata.xml.in:14
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
@@ -603,13 +620,13 @@ msgstr ""
 "它支持 OMEMO 和 OpenPGP 端对端加密并允许配置隐私相关的特性比如已读回执和输入"
 "提醒。"
 
-#: main/data/im.dino.Dino.appdata.xml.in:18
+#: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr "Dino 从服务器获取消息并和其他设备同步。"
 
-#: main/data/im.dino.Dino.appdata.xml.in:24
+#: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
 msgstr "带有对话的主窗口"
 
@@ -648,6 +665,15 @@ msgstr ""
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr ""
+
+#~ msgid "Copy Link Address"
+#~ msgstr "复制链接地址"
+
+#~ msgid "Copy"
+#~ msgstr "复制"
+
+#~ msgid "Select All"
+#~ msgstr "全选"
 
 #~ msgid "Search"
 #~ msgstr "搜索"

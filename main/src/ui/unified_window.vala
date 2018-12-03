@@ -8,6 +8,7 @@ namespace Dino.Ui {
 
 public class UnifiedWindow : Gtk.Window {
 
+    private WelcomePlceholder welcome_placeholder = new WelcomePlceholder() { visible=true };
     private NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     private NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
     private ChatInput.View chat_input;
@@ -28,11 +29,13 @@ public class UnifiedWindow : Gtk.Window {
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
     private Application app;
+    private Database db;
 
-    public UnifiedWindow(Application application, StreamInteractor stream_interactor) {
+    public UnifiedWindow(Application application, StreamInteractor stream_interactor, Database db) {
         Object(application : application);
-        this.stream_interactor = stream_interactor;
         this.app = application;
+        this.stream_interactor = stream_interactor;
+        this.db = db;
 
         restore_window_size();
 
@@ -92,6 +95,11 @@ public class UnifiedWindow : Gtk.Window {
         stream_interactor.account_removed.connect((account) => { check_stack(); });
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(() => check_stack());
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => check_stack());
+        welcome_placeholder.primary_button.clicked.connect(() => {
+            ManageAccounts.AddAccountDialog dialog = new ManageAccounts.AddAccountDialog(stream_interactor);
+            dialog.set_transient_for(app.get_active_window());
+            dialog.present();
+        });
         accounts_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("accounts", null); });
         conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
         conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });
@@ -173,6 +181,7 @@ public class UnifiedWindow : Gtk.Window {
 
     private void setup_stack() {
         stack.add_named(paned, "main");
+        stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
         stack.add_named(conversations_placeholder, "conversations_placeholder");
         add(stack);
@@ -181,8 +190,13 @@ public class UnifiedWindow : Gtk.Window {
     private void check_stack(bool know_exists = false) {
         ArrayList<Account> accounts = stream_interactor.get_accounts();
         if (!know_exists && accounts.size == 0) {
-            stack.set_visible_child_name("accounts_placeholder");
-            set_titlebar(placeholder_headerbar);
+            if (db.get_accounts().size == 0) {
+                stack.set_visible_child_name("welcome_placeholder");
+                set_titlebar(placeholder_headerbar);
+            } else {
+                stack.set_visible_child_name("accounts_placeholder");
+                set_titlebar(placeholder_headerbar);
+            }
         } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
             stack.set_visible_child_name("conversations_placeholder");
             set_titlebar(placeholder_headerbar);
@@ -228,25 +242,40 @@ public class UnifiedWindow : Gtk.Window {
     }
 }
 
+public class WelcomePlceholder : UnifiedWindowPlaceholder {
+    public WelcomePlceholder() {
+        title_label.label = _("Welcome to Dino!");
+        label.label = _("Communicate happiness.");
+        primary_button.label = _("Setup account");
+        title_label.visible = true;
+        secondary_button.visible = false;
+    }
+}
+
 public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
     public NoAccountsPlaceholder() {
-        label.label = _("No active accounts");
+        title_label.label = _("No active accounts");
         primary_button.label = _("Manage accounts");
+        title_label.visible = true;
+        label.visible = false;
         secondary_button.visible = false;
     }
 }
 
 public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
     public NoConversationsPlaceholder() {
-        label.label = _("No active conversations");
+        title_label.label = _("No active conversations");
         primary_button.label = _("Start Conversation");
         secondary_button.label = _("Join Channel");
+        title_label.visible = true;
+        label.visible = false;
         secondary_button.visible = true;
     }
 }
 
 [GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
 public class UnifiedWindowPlaceholder : Box {
+    [GtkChild] public Label title_label;
     [GtkChild] public Label label;
     [GtkChild] public Button primary_button;
     [GtkChild] public Button secondary_button;

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-07 00:02+0200\n"
-"PO-Revision-Date: 2018-07-11 08:17+0000\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-11-13 16:07+0000\n"
 "Last-Translator: Licaon Kter <licaon.kter@protonmail.com>\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
 "translations/ro/>\n"
@@ -18,21 +18,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 3.1-dev\n"
+"X-Generator: Weblate 3.3-dev\n"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "Image sent"
+msgstr "Imagine trimisă"
+
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "File sent"
+msgstr "Fișier trimis"
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "Image received"
+msgstr "Imagine primitä"
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "File received"
+msgstr "Fișier primit"
+
+#: main/src/ui/notifications.vala:87
 msgid "Subscription request"
 msgstr "Cerere de abonare"
 
-#: main/src/ui/notifications.vala:76
+#: main/src/ui/notifications.vala:93
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Acceptă"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:94
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Refuză"
+
+#: main/src/ui/notifications.vala:100
+#, c-format
+msgid "Failed connecting to %s"
+msgstr "Eroare la conectarea cu %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -67,28 +92,28 @@ msgstr "Imagini"
 msgid "All files"
 msgstr "Toate fișierele"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:222
 msgid "Connecting…"
 msgstr "Conectare…"
 
-#: main/src/ui/manage_accounts/dialog.vala:233
+#: main/src/ui/manage_accounts/dialog.vala:224
 msgid "Connected"
 msgstr "Conectat"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:226
 msgid "Disconnected"
 msgstr "Deconectat"
 
-#: main/src/ui/manage_accounts/dialog.vala:244
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Wrong password"
 msgstr "Parolă greșită"
 
-#: main/src/ui/manage_accounts/dialog.vala:246
+#: main/src/ui/manage_accounts/dialog.vala:237
 msgid "Invalid TLS certificate"
 msgstr "Certificat TLS invalid"
 
-#: main/src/ui/manage_accounts/dialog.vala:249
-#: main/src/ui/manage_accounts/dialog.vala:251
+#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr "Eroare"
 
@@ -102,59 +127,59 @@ msgstr "JID trebuie să fie de forma “utilizator@exemplu.ro”"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:171
 msgid "No response from server"
-msgstr ""
+msgstr "Nici un răspuns de la server"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:177
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "Înregistrare pe %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "Serverul necesită înregistrarea printr-un site web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:182
 msgid "Open Registration"
-msgstr ""
+msgstr "Deschis pentru înregistrare"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:198
 msgid "Register"
-msgstr ""
+msgstr "Înregistrează-te"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "Aflați pe %s informații despre cum se face înregistrarea"
 
-#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
-#: main/src/ui/conversation_selector/chat_row.vala:30
+#: main/src/ui/conversation_selector/conversation_row.vala:131
+#: main/src/ui/conversation_selector/conversation_row.vala:141
 msgid "Me"
 msgstr "Eu"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:154
+#: main/src/ui/conversation_selector/conversation_row.vala:249
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:158
+#: main/src/ui/conversation_selector/conversation_row.vala:253
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Ieri"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:161
+#: main/src/ui/conversation_selector/conversation_row.vala:256
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:162
+#: main/src/ui/conversation_selector/conversation_row.vala:257
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:165
+#: main/src/ui/conversation_selector/conversation_row.vala:260
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -163,7 +188,7 @@ msgstr[0] "Acum %i minut"
 msgstr[1] "Acum %i minute"
 msgstr[2] "Acum %i de minute"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:167
+#: main/src/ui/conversation_selector/conversation_row.vala:262
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Chiar acum"
@@ -201,7 +226,7 @@ msgstr "Următorul"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:28
+#: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Pornește o conversație"
 
@@ -287,25 +312,13 @@ msgstr[2] "tastează…"
 msgid "has stopped typing"
 msgstr "s-a oprit din scris"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
-msgid "File"
-msgstr "Fișier"
-
-#: main/src/ui/conversation_summary/message_textview.vala:40
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
 msgid "Message too long"
 msgstr "Mesaj prea lung"
 
-#: main/src/ui/conversation_summary/message_textview.vala:93
-msgid "Copy Link Address"
-msgstr "Copiază adresa legăturii"
-
-#: main/src/ui/conversation_summary/message_textview.vala:101
-msgid "Copy"
-msgstr "Copiere"
-
-#: main/src/ui/conversation_summary/message_textview.vala:106
-msgid "Select All"
-msgstr "Selectează tot"
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+msgid "File"
+msgstr "Fișier"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -377,24 +390,24 @@ msgstr "Dă afară"
 #: main/src/ui/global_search.vala:134
 #, c-format
 msgid "%i search results"
-msgstr ""
+msgstr "%i rezultate la căutare"
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "În %s"
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "Cu %s"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "Detalii conferință"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:32
+#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Detalii contact"
 
@@ -556,26 +569,30 @@ msgstr "Nici un cont configurat"
 msgid "Add an account"
 msgstr "Adaugă un cont"
 
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
+
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146
 msgid "Create account"
-msgstr ""
+msgstr "Creează cont"
 
 #: main/data/manage_accounts/add_account_dialog.ui:158
 msgid "Choose a public server"
-msgstr ""
+msgstr "Alegeți un server public"
 
 #: main/data/manage_accounts/add_account_dialog.ui:187
 msgid "Or specify a server address"
-msgstr ""
+msgstr "Sau specificați adresa serverului"
 
 #: main/data/manage_accounts/add_account_dialog.ui:207
 msgid "Sign in instead"
-msgstr ""
+msgstr "Înapoi la conectare"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Pick another server"
-msgstr ""
+msgstr "Alege alt server"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -599,7 +616,7 @@ msgstr ""
 "Se concentrează să furnizeze o experiență Jabber/XMPP clară și fiabilă, "
 "ținând cont de confidențialitatea dumneavoastră."
 
-#: main/data/im.dino.Dino.appdata.xml.in:14
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
@@ -609,7 +626,7 @@ msgstr ""
 "și permite configurarea caracteristicilor legate de confidențialitate precum "
 "trimiterea notificărilor de primire și tastare."
 
-#: main/data/im.dino.Dino.appdata.xml.in:18
+#: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
@@ -617,7 +634,7 @@ msgstr ""
 "Dino preia istoricul discuțiilor de pe server și sincronizează mesajele cu "
 "celelalte dispozitive."
 
-#: main/data/im.dino.Dino.appdata.xml.in:24
+#: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
 msgstr "Fereastra principală de conversații"
 
@@ -643,19 +660,28 @@ msgstr "Adaugă contact"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "Nici o căutare activă"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "Tastați ceva pentru a porni căutarea"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "Nici un mesaj nu se potrivește"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Verificați ortografia sau încercați să eliminați filtre"
+
+#~ msgid "Copy Link Address"
+#~ msgstr "Copiază adresa legăturii"
+
+#~ msgid "Copy"
+#~ msgstr "Copiere"
+
+#~ msgid "Select All"
+#~ msgstr "Selectează tot"
 
 #~ msgid "Search"
 #~ msgstr "Căutare"

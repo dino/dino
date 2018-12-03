@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-07 00:02+0200\n"
-"PO-Revision-Date: 2018-09-02 14:12+0000\n"
-"Last-Translator: account1 <surajchawla61@gmail.com>\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-11-13 16:07+0000\n"
+"Last-Translator: Aitor Beriain <beriain@bitmessage.ch>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
 "eu/>\n"
 "Language: eu\n"
@@ -17,21 +17,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.3-dev\n"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "Image sent"
+msgstr "Irudia bidali da"
+
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "File sent"
+msgstr "Fitxategia bidali da"
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "Image received"
+msgstr "Irudia jaso da"
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "File received"
+msgstr "Fitxategia jaso da"
+
+#: main/src/ui/notifications.vala:87
 msgid "Subscription request"
 msgstr "Harpidetzaren eskaera"
 
-#: main/src/ui/notifications.vala:76
+#: main/src/ui/notifications.vala:93
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Onartu"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:94
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Ukatu"
+
+#: main/src/ui/notifications.vala:100
+#, c-format
+msgid "Failed connecting to %s"
+msgstr "Huts %s(e)ra konektatzerakoan"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -66,28 +91,28 @@ msgstr "Irudiak"
 msgid "All files"
 msgstr "Fitxategi guztiak"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:222
 msgid "Connecting…"
 msgstr "Konektatzen…"
 
-#: main/src/ui/manage_accounts/dialog.vala:233
+#: main/src/ui/manage_accounts/dialog.vala:224
 msgid "Connected"
 msgstr "Konektatuta"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:226
 msgid "Disconnected"
 msgstr "Ez konektatuta"
 
-#: main/src/ui/manage_accounts/dialog.vala:244
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Wrong password"
 msgstr "Pasahitz okerra"
 
-#: main/src/ui/manage_accounts/dialog.vala:246
+#: main/src/ui/manage_accounts/dialog.vala:237
 msgid "Invalid TLS certificate"
 msgstr "TLS ziurtagiri ez balidouna"
 
-#: main/src/ui/manage_accounts/dialog.vala:249
-#: main/src/ui/manage_accounts/dialog.vala:251
+#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr "Akatsa"
 
@@ -101,59 +126,59 @@ msgstr "JIDak \"erabiltzailea@eredua.com\" itxura izan beharko luke"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:171
 msgid "No response from server"
-msgstr ""
+msgstr "Erantzunik ez zerbitzaritik"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:177
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "Izena eman hemen: %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "Zerbitzariak webgune baten bidez izena ematea eskatzen du"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:182
 msgid "Open Registration"
-msgstr ""
+msgstr "Izen emate irekia"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:198
 msgid "Register"
-msgstr ""
+msgstr "Izena eman"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "Ikusi %s izena ematearen inguruko informazioa lortzeko"
 
-#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
-#: main/src/ui/conversation_selector/chat_row.vala:30
+#: main/src/ui/conversation_selector/conversation_row.vala:131
+#: main/src/ui/conversation_selector/conversation_row.vala:141
 msgid "Me"
 msgstr "Ni"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:154
+#: main/src/ui/conversation_selector/conversation_row.vala:249
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:158
+#: main/src/ui/conversation_selector/conversation_row.vala:253
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Atzo"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:161
+#: main/src/ui/conversation_selector/conversation_row.vala:256
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:162
+#: main/src/ui/conversation_selector/conversation_row.vala:257
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:165
+#: main/src/ui/conversation_selector/conversation_row.vala:260
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -161,7 +186,7 @@ msgid_plural "%i mins ago"
 msgstr[0] "orain dela min %i"
 msgstr[1] "orain dela %i min"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:167
+#: main/src/ui/conversation_selector/conversation_row.vala:262
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Orain"
@@ -199,7 +224,7 @@ msgstr "Hurrengoa"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:28
+#: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Elkarrizketa hasi"
 
@@ -284,25 +309,13 @@ msgstr[1] "idazten ari dira…"
 msgid "has stopped typing"
 msgstr "idazteari utzi dio"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
-msgid "File"
-msgstr "Fitxategia"
-
-#: main/src/ui/conversation_summary/message_textview.vala:40
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
 msgid "Message too long"
 msgstr "Mezu luzeegia"
 
-#: main/src/ui/conversation_summary/message_textview.vala:93
-msgid "Copy Link Address"
-msgstr "Loturaren helbidea kopiatu"
-
-#: main/src/ui/conversation_summary/message_textview.vala:101
-msgid "Copy"
-msgstr "Kopiatu"
-
-#: main/src/ui/conversation_summary/message_textview.vala:106
-msgid "Select All"
-msgstr "Dena hautatu"
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+msgid "File"
+msgstr "Fitxategia"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -374,24 +387,24 @@ msgstr "Kanporatu"
 #: main/src/ui/global_search.vala:134
 #, c-format
 msgid "%i search results"
-msgstr ""
+msgstr "Bilaketaren emaitzak: %i"
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "hemen %s"
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "%s(r)ekin"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "Konferentziaren xehetasunak"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:32
+#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Kontaktuaren xehetasunak"
 
@@ -555,26 +568,30 @@ msgstr "Ez dago konfiguratutako konturik"
 msgid "Add an account"
 msgstr "Kontu bat gehitu"
 
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
+
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146
 msgid "Create account"
-msgstr ""
+msgstr "Kontua sortu"
 
 #: main/data/manage_accounts/add_account_dialog.ui:158
 msgid "Choose a public server"
-msgstr ""
+msgstr "Zerbitzari publiko bat hautatu"
 
 #: main/data/manage_accounts/add_account_dialog.ui:187
 msgid "Or specify a server address"
-msgstr ""
+msgstr "Edo zerbitzari baten helbidea zehaztu"
 
 #: main/data/manage_accounts/add_account_dialog.ui:207
 msgid "Sign in instead"
-msgstr ""
+msgstr "Saioa hasi"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Pick another server"
-msgstr ""
+msgstr "Beste zerbitzari bat hartu"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -598,7 +615,7 @@ msgstr ""
 "esperientzia garbi eta fidagarri bat ematen du zure pribatutasuna kontuan "
 "hartzeaz gain."
 
-#: main/data/im.dino.Dino.appdata.xml.in:14
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
@@ -608,7 +625,7 @@ msgstr ""
 "pribatutasun ezaugarriak konfiguratzea baimentzen du irakurtze markak eta "
 "idazketa jakinarazpenak bezala."
 
-#: main/data/im.dino.Dino.appdata.xml.in:18
+#: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
@@ -616,7 +633,7 @@ msgstr ""
 "Dinok zerbitzaritik hartzen du historia eta beste gailuekin mezuak "
 "sinkronizatzen ditu."
 
-#: main/data/im.dino.Dino.appdata.xml.in:24
+#: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
 msgstr "Leiho nagusia elkarrizketekin"
 
@@ -642,19 +659,28 @@ msgstr "Kontaktua gehitu"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "Ez dago bilaketa aktiborik"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "Idatzi bilatzen hasteko"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "Ez dago bat egiten duen mezurik"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Ortografia egiaztatu edo saiatu iragazkiak kentzen"
+
+#~ msgid "Copy Link Address"
+#~ msgstr "Loturaren helbidea kopiatu"
+
+#~ msgid "Copy"
+#~ msgstr "Kopiatu"
+
+#~ msgid "Select All"
+#~ msgstr "Dena hautatu"
 
 #~ msgid "Search"
 #~ msgstr "Bilatu"

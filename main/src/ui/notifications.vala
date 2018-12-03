@@ -41,20 +41,36 @@ public class Notifications : Object {
     }
 
     public void start() {
-        stream_interactor.get_module(NotificationEvents.IDENTITY).notify_message.connect(notify_message);
+        stream_interactor.get_module(NotificationEvents.IDENTITY).notify_content_item.connect(notify_content_item);
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_subscription_request.connect(notify_subscription_request);
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_connection_error.connect(notify_connection_error);
     }
 
-    private void notify_message(Entities.Message message, Conversation conversation) {
+    private void notify_content_item(ContentItem content_item, Conversation conversation) {
         if (!notifications.has_key(conversation)) {
             notifications[conversation] = new Notification("");
             notifications[conversation].set_default_action_and_target_value("app.open-conversation", new Variant.int32(conversation.id));
         }
         string display_name = Util.get_conversation_display_name(stream_interactor, conversation);
-        string text = message.body;
+        string text = "";
+        switch (content_item.type_) {
+            case MessageItem.TYPE:
+                Message message = (content_item as MessageItem).message;
+                text = message.body;
+                break;
+            case FileItem.TYPE:
+                FileItem file_item = content_item as FileItem;
+                FileTransfer transfer = file_item.file_transfer;
+
+                if (transfer.direction == Message.DIRECTION_SENT) {
+                    text = transfer.mime_type.has_prefix("image") ? _("Image sent") : _("File sent");
+                } else {
+                    text = transfer.mime_type.has_prefix("image") ? _("Image received") : _("File received");
+                }
+                break;
+        }
         if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(conversation.counterpart, conversation.account)) {
-            string muc_occupant = Util.get_display_name(stream_interactor, message.from, conversation.account);
+            string muc_occupant = Util.get_display_name(stream_interactor, content_item.jid, conversation.account);
             text = @"$muc_occupant: $text";
         }
         notifications[conversation].set_title(display_name);

@@ -1,5 +1,6 @@
 using Gee;
 using Gtk;
+using Pango;
 
 using Dino.Entities;
 using Xmpp;
@@ -16,13 +17,28 @@ public class AddAccountDialog : Gtk.Dialog {
     [GtkChild] private Revealer notification_revealer;
     [GtkChild] private Label notification_label;
 
-    // Sign in
-    [GtkChild] private Box sign_in_box;
+    // Sign in - JID
+    [GtkChild] private Box sign_in_jid_box;
+    [GtkChild] private Label sign_in_jid_error_label;
     [GtkChild] private Entry jid_entry;
-    [GtkChild] private Entry alias_entry;
+    [GtkChild] private Stack sign_in_jid_continue_stack;
+    [GtkChild] private Button sign_in_jid_continue_button;
+    [GtkChild] private Button sign_in_jid_serverlist_button;
+
+    // Sign in - TLS error
+    [GtkChild] private Box sign_in_tls_box;
+    [GtkChild] private Label sign_in_tls_label;
+    [GtkChild] private Stack sign_in_password_continue_stack;
+    [GtkChild] private Button sign_in_tls_back_button;
+
+    // Sign in - Password
+    [GtkChild] private Box sign_in_password_box;
+    [GtkChild] private Label sign_in_password_title;
+    [GtkChild] private Label sign_in_password_error_label;
+
     [GtkChild] private Entry password_entry;
-    [GtkChild] private Button sign_in_continue;
-    [GtkChild] private Button serverlist_button;
+    [GtkChild] private Button sign_in_password_continue_button;
+    [GtkChild] private Button sign_in_password_back_button;
 
     // Select Server
     [GtkChild] private Box create_account_box;
@@ -41,24 +57,41 @@ public class AddAccountDialog : Gtk.Dialog {
     [GtkChild] private Stack register_form_continue_stack;
     [GtkChild] private Button register_form_continue;
 
+    // Success
+    [GtkChild] private Box success_box;
+    [GtkChild] private Label success_description;
+    [GtkChild] private Button success_continue_button;
+
     private static string[] server_list = new string[]{
         "5222.de",
         "jabber.fr",
         "movim.eu",
         "yax.im"
     };
+
+    private StreamInteractor stream_interactor;
     private HashMap<ListBoxRow, string> list_box_jids = new HashMap<ListBoxRow, string>();
     private Jid? server_jid = null;
     private Xep.InBandRegistration.Form? form = null;
 
     public AddAccountDialog(StreamInteractor stream_interactor) {
+        this.stream_interactor = stream_interactor;
         this.title = _("Add Account");
 
-        // Sign in
+        // Sign in - Jid
+        Util.force_error_color(sign_in_jid_error_label);
         jid_entry.changed.connect(on_jid_entry_changed);
-        jid_entry.focus_out_event.connect(on_jid_entry_focus_out_event);
-        sign_in_continue.clicked.connect(on_sign_in_continue_clicked);
-        serverlist_button.clicked.connect(show_select_server);
+        sign_in_jid_continue_button.clicked.connect(on_sign_in_jid_continue_button_clicked);
+        sign_in_jid_serverlist_button.clicked.connect(show_select_server);
+
+        // Sign in - TLS error
+        sign_in_tls_back_button.clicked.connect(show_sign_in_jid);
+
+        // Sign in - Password
+        Util.force_error_color(sign_in_password_error_label);
+        password_entry.changed.connect(() => { sign_in_password_continue_button.set_sensitive(password_entry.text.length > 0); });
+        sign_in_password_continue_button.clicked.connect(on_sign_in_password_continue_button_clicked);
+        sign_in_password_back_button.clicked.connect(show_sign_in_jid);
 
         // Select Server
         server_entry.changed.connect(() => {
@@ -66,7 +99,7 @@ public class AddAccountDialog : Gtk.Dialog {
             select_server_continue.sensitive = jid != null && jid.localpart == null && jid.resourcepart == null;
         });
         select_server_continue.clicked.connect(on_select_server_continue);
-        login_button.clicked.connect(show_sign_in);
+        login_button.clicked.connect(show_sign_in_jid);
 
         foreach (string server in server_list) {
             ListBoxRow list_box_row = new ListBoxRow() { visible=true };
@@ -79,16 +112,49 @@ public class AddAccountDialog : Gtk.Dialog {
         register_form_continue.clicked.connect(on_register_form_continue_clicked);
         register_form_back.clicked.connect(show_select_server);
 
-        show_sign_in();
+        // Success
+        success_continue_button.clicked.connect(() => close());
+
+        show_sign_in_jid();
     }
 
-    private void show_sign_in() {
-        sign_in_box.visible = true;
-        stack.visible_child_name = "login";
+    private void show_sign_in_jid() {
+        sign_in_jid_box.visible = true;
+        stack.visible_child_name = "login_jid";
+        sign_in_tls_box.visible = false;
+        sign_in_password_box.visible = false;
         create_account_box.visible = false;
         register_box.visible = false;
-        set_default(sign_in_continue);
-        animate_window_resize(sign_in_box);
+        success_box.visible = false;
+        set_default(sign_in_jid_continue_button);
+
+        sign_in_jid_error_label.label = "";
+        animate_window_resize(sign_in_jid_box);
+    }
+
+    private void show_tls_error() {
+        sign_in_tls_box.visible = true;
+        stack.visible_child_name = "tls_error";
+        sign_in_jid_box.visible = false;
+        sign_in_password_box.visible = false;
+        create_account_box.visible = false;
+        register_box.visible = false;
+        success_box.visible = false;
+    }
+
+    private void show_sign_in_password() {
+        sign_in_password_box.visible = true;
+        stack.visible_child_name = "login_password";
+        sign_in_jid_box.visible = false;
+        sign_in_tls_box.visible = false;
+        create_account_box.visible = false;
+        register_box.visible = false;
+        success_box.visible = false;
+        set_default(sign_in_password_continue_button);
+
+        sign_in_password_error_label.label = "";
+        sign_in_password_title.label = _("Sign in to %s").printf(jid_entry.text);
+        animate_window_resize(sign_in_password_box);
     }
 
     private void show_select_server() {
@@ -102,8 +168,10 @@ public class AddAccountDialog : Gtk.Dialog {
 
         create_account_box.visible = true;
         stack.visible_child_name = "server";
-        sign_in_box.visible = false;
+        sign_in_jid_box.visible = false;
+        sign_in_tls_box.visible = false;
         register_box.visible = false;
+        success_box.visible = false;
 
         animate_window_resize(create_account_box);
     }
@@ -111,40 +179,88 @@ public class AddAccountDialog : Gtk.Dialog {
     private void show_register_form() {
         register_box.visible = true;
         stack.visible_child_name = "form";
-        sign_in_box.visible = false;
+        sign_in_jid_box.visible = false;
+        sign_in_tls_box.visible = false;
+        sign_in_password_box.visible = false;
         create_account_box.visible = false;
+        success_box.visible = false;
 
         set_default(register_form_continue);
         animate_window_resize(register_box);
     }
 
+    private void show_success() {
+        success_box.visible = true;
+        stack.visible_child_name = "success";
+        sign_in_jid_box.visible = false;
+        sign_in_tls_box.visible = false;
+        sign_in_password_box.visible = false;
+        create_account_box.visible = false;
+        register_box.visible = false;
+        success_description.label = _("You can now start using %s").printf("<b>" + Markup.escape_text(jid_entry.text) + "</b>");
+
+        set_default(success_continue_button);
+    }
+
     private void on_jid_entry_changed() {
         Jid? jid = Jid.parse(jid_entry.text);
         if (jid != null && jid.localpart != null && jid.resourcepart == null) {
-            sign_in_continue.set_sensitive(true);
+            sign_in_jid_continue_button.set_sensitive(true);
             jid_entry.secondary_icon_name = null;
         } else {
-            sign_in_continue.set_sensitive(false);
+            sign_in_jid_continue_button.set_sensitive(false);
         }
     }
 
-    private bool on_jid_entry_focus_out_event() {
-        Jid? jid = Jid.parse(jid_entry.text);
-        if (jid == null || jid.localpart == null || jid.resourcepart != null) {
-            jid_entry.secondary_icon_name = "dialog-warning-symbolic";
-            jid_entry.set_icon_tooltip_text(EntryIconPosition.SECONDARY, _("JID should be of the form “user@example.com”"));
+    private async void on_sign_in_jid_continue_button_clicked() {
+        Jid jid = new Jid(jid_entry.get_text());
+        sign_in_jid_continue_stack.visible_child_name = "spinner";
+        Register.ServerAvailabilityReturn server_status = yield stream_interactor.get_module(Register.IDENTITY).check_server_availability(jid);
+        sign_in_jid_continue_stack.visible_child_name = "label";
+        if (server_status.available) {
+            show_sign_in_password();
         } else {
-            jid_entry.secondary_icon_name = null;
+            if (server_status.error_flags != null) {
+                string error_desc = "The server could not prove that it is %s.".printf("<b>" + jid.domainpart + "</b>");
+                if (TlsCertificateFlags.UNKNOWN_CA in server_status.error_flags) {
+                    error_desc += " " + "Its security certificate is not trusted by your computer's operating system.";
+                } else if (TlsCertificateFlags.BAD_IDENTITY in server_status.error_flags) {
+                    error_desc += " " + "Its security certificate is issued to another domain.";
+                } else if (TlsCertificateFlags.NOT_ACTIVATED in server_status.error_flags) {
+                    error_desc += " " + "Its security certificate will only become valid in the future.";
+                } else if (TlsCertificateFlags.EXPIRED in server_status.error_flags) {
+                    error_desc += " " + "Its security certificate is expired.";
+                }
+                sign_in_tls_label.label = error_desc;
+                show_tls_error();
+            } else {
+                sign_in_jid_error_label.label = _("Could not connect to %s").printf(jid.domainpart);
+            }
         }
-        return false;
     }
 
-    private void on_sign_in_continue_clicked() {
+    private async void on_sign_in_password_continue_button_clicked() {
         Jid jid = new Jid(jid_entry.get_text());
         string password = password_entry.get_text();
-        string alias = alias_entry.get_text();
-        store_account(jid, password, alias);
-        close();
+        Account account = new Account(jid, null, password, null);
+
+        sign_in_password_continue_stack.visible_child_name = "spinner";
+        ConnectionManager.ConnectionError.Source? error = yield stream_interactor.get_module(Register.IDENTITY).add_check_account(account);
+        sign_in_password_continue_stack.visible_child_name = "label";
+
+        if (error != null) {
+            switch (error) {
+                case ConnectionManager.ConnectionError.Source.SASL:
+                    sign_in_password_error_label.label = _("Wrong username or password");
+                    break;
+                default:
+                    sign_in_password_error_label.label = "Something went wrong";
+                    break;
+            }
+        } else {
+            show_success();
+            added(account);
+        }
     }
 
     private void on_select_server_continue() {
@@ -209,7 +325,7 @@ public class AddAccountDialog : Gtk.Dialog {
             try {
                 AppInfo.launch_default_for_uri(form.oob, null);
             } catch (Error e) { }
-            show_sign_in();
+            show_sign_in_jid();
             return;
         }
 
@@ -227,16 +343,12 @@ public class AddAccountDialog : Gtk.Dialog {
                     case "password": password = field.get_value_string(); break;
                 }
             }
-            store_account(new Jid(username + "@" + server_jid.domainpart), password, "");
-            close();
+            Account account = new Account(new Jid(username + "@" + server_jid.domainpart), null, password, null);
+            show_success();
+            added(account);
         } else {
             display_notification(error);
         }
-    }
-
-    private void store_account(Jid jid, string password, string? alias) {
-        Account account = new Account(jid, null, password, alias);
-        added(account);
     }
 
     private void display_notification(string text) {

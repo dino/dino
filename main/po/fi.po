@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-07 00:02+0200\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
 "PO-Revision-Date: 2018-05-13 10:18+0000\n"
 "Last-Translator: mjlapin <muu@kapsi.fi>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
@@ -19,19 +19,44 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.0-dev\n"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "Image sent"
+msgstr ""
+
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "File sent"
+msgstr ""
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "Image received"
+msgstr ""
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "File received"
+msgstr ""
+
+#: main/src/ui/notifications.vala:87
 msgid "Subscription request"
 msgstr "Yhteyspyyntö"
 
-#: main/src/ui/notifications.vala:76
+#: main/src/ui/notifications.vala:93
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Hyväksy"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:94
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Hylkää"
+
+#: main/src/ui/notifications.vala:100
+#, c-format
+msgid "Failed connecting to %s"
+msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -66,28 +91,28 @@ msgstr "Kuvat"
 msgid "All files"
 msgstr "Kaikki tiedostot"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:222
 msgid "Connecting…"
 msgstr "Yhdistää…"
 
-#: main/src/ui/manage_accounts/dialog.vala:233
+#: main/src/ui/manage_accounts/dialog.vala:224
 msgid "Connected"
 msgstr "Yhdistetty"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:226
 msgid "Disconnected"
 msgstr "Ei yhdistetty"
 
-#: main/src/ui/manage_accounts/dialog.vala:244
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Wrong password"
 msgstr "Väärä salasana"
 
-#: main/src/ui/manage_accounts/dialog.vala:246
+#: main/src/ui/manage_accounts/dialog.vala:237
 msgid "Invalid TLS certificate"
 msgstr "TLS-varmenne ei kelpaa"
 
-#: main/src/ui/manage_accounts/dialog.vala:249
-#: main/src/ui/manage_accounts/dialog.vala:251
+#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr "Virhe"
 
@@ -125,35 +150,35 @@ msgstr ""
 msgid "Check %s for information on how to sign up"
 msgstr ""
 
-#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
-#: main/src/ui/conversation_selector/chat_row.vala:30
+#: main/src/ui/conversation_selector/conversation_row.vala:131
+#: main/src/ui/conversation_selector/conversation_row.vala:141
 msgid "Me"
 msgstr "Minä"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:154
+#: main/src/ui/conversation_selector/conversation_row.vala:249
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%d. %b"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:158
+#: main/src/ui/conversation_selector/conversation_row.vala:253
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Eilen"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:161
+#: main/src/ui/conversation_selector/conversation_row.vala:256
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:162
+#: main/src/ui/conversation_selector/conversation_row.vala:257
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:165
+#: main/src/ui/conversation_selector/conversation_row.vala:260
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -161,7 +186,7 @@ msgid_plural "%i mins ago"
 msgstr[0] "%i min sitten"
 msgstr[1] "%i min sitten"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:167
+#: main/src/ui/conversation_selector/conversation_row.vala:262
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Juuri nyt"
@@ -199,7 +224,7 @@ msgstr "Seuraava"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:28
+#: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Aloita keskustelu"
 
@@ -284,25 +309,13 @@ msgstr[1] "kirjoittavat…"
 msgid "has stopped typing"
 msgstr "on lakannut kirjoittamasta"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
-msgid "File"
-msgstr "Tiedosto"
-
-#: main/src/ui/conversation_summary/message_textview.vala:40
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
 msgid "Message too long"
 msgstr "Viesti liian pitkä"
 
-#: main/src/ui/conversation_summary/message_textview.vala:93
-msgid "Copy Link Address"
-msgstr "Kopioi linkin osoite"
-
-#: main/src/ui/conversation_summary/message_textview.vala:101
-msgid "Copy"
-msgstr "Kopioi"
-
-#: main/src/ui/conversation_summary/message_textview.vala:106
-msgid "Select All"
-msgstr "Valitse kaikki"
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+msgid "File"
+msgstr "Tiedosto"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -376,12 +389,12 @@ msgstr "Potkaise pihalle"
 msgid "%i search results"
 msgstr ""
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
 msgstr ""
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
 msgstr ""
@@ -391,7 +404,7 @@ msgid "Conference Details"
 msgstr "Ryhmäkeskustelun yksityiskohdat"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:32
+#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Yhteystiedot"
 
@@ -553,6 +566,10 @@ msgstr "Ei asetettuja tilejä"
 msgid "Add an account"
 msgstr "Lisää tili"
 
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
+
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146
 msgid "Create account"
@@ -597,7 +614,7 @@ msgstr ""
 "keskittyy tarjoamaan selkeän ja luotettavan Jabber/XMPP-kokemuksen "
 "unohtamatta yksityisyyttäsi."
 
-#: main/data/im.dino.Dino.appdata.xml.in:14
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
@@ -607,7 +624,7 @@ msgstr ""
 "mahdollistaa yksityisyyteen liittyvien ominaisuuksien, kuten lukukuittausten "
 "ja kirjoitusilmoitusten asetusten määrittämisen."
 
-#: main/data/im.dino.Dino.appdata.xml.in:18
+#: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
@@ -615,7 +632,7 @@ msgstr ""
 "Dino hakee historian palvelimelta ja synkronisoi viestit muiden laitteiden "
 "kanssa."
 
-#: main/data/im.dino.Dino.appdata.xml.in:24
+#: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
 msgstr "Keskustelut pääikkunassa"
 
@@ -654,6 +671,15 @@ msgstr ""
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr ""
+
+#~ msgid "Copy Link Address"
+#~ msgstr "Kopioi linkin osoite"
+
+#~ msgid "Copy"
+#~ msgstr "Kopioi"
+
+#~ msgid "Select All"
+#~ msgstr "Valitse kaikki"
 
 #~ msgid "Search"
 #~ msgstr "Etsi"

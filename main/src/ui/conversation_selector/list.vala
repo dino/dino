@@ -67,7 +67,6 @@ public class List : ListBox {
 
     private void on_message_received(Entities.Message message, Conversation conversation) {
         if (rows.has_key(conversation)) {
-            rows[conversation].message_received(message);
             invalidate_sort();
         }
     }
@@ -75,19 +74,13 @@ public class List : ListBox {
     private void add_conversation(Conversation conversation) {
         ConversationRow row;
         if (!rows.has_key(conversation)) {
-            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                row = new GroupchatRow(stream_interactor, conversation);
-            } else if (conversation.type_ == Conversation.Type.GROUPCHAT_PM){
-                row = new GroupchatPmRow(stream_interactor, conversation);
-            } else {
-                row = new ChatRow(stream_interactor, conversation);
-            }
+            row = new ConversationRow(stream_interactor, conversation);
             rows[conversation] = row;
             add(row);
             row.closed.connect(() => { select_next_conversation(conversation); });
             row.main_revealer.set_reveal_child(true);
         }
-        //invalidate_sort();
+        invalidate_sort();
     }
 
     private void select_next_conversation(Conversation conversation) {

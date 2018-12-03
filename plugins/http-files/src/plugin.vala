@@ -14,10 +14,6 @@ public class Plugin : RootInterface, Object {
 
         file_provider = new FileProvider(app.stream_interactor, app.db);
 
-        app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
-            list.add(new UploadStreamModule());
-        });
-
         app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(file_provider);
         app.stream_interactor.get_module(ContentItemStore.IDENTITY).add_filter(new FileMessageFilter(app.db));
     }

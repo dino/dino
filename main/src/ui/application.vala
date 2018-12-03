@@ -29,7 +29,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         activate.connect(() => {
             if (window == null) {
                 create_set_app_menu();
-                window = new UnifiedWindow(this, stream_interactor);
+                window = new UnifiedWindow(this, stream_interactor, db);
                 notifications = new Notifications(stream_interactor, window);
                 notifications.start();
                 notifications.conversation_selected.connect((conversation) => window.on_conversation_selected(conversation));

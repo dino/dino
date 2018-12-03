@@ -82,6 +82,12 @@ public abstract interface ConversationAdditionPopulator : ConversationItemPopula
     public virtual void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 }
 
+public abstract interface NotificationPopulator : Object {
+    public abstract string id { get; }
+    public abstract void init(Conversation conversation, NotificationCollection summary, WidgetType type);
+    public abstract void close(Conversation conversation);
+}
+
 public abstract class MetaConversationItem : Object {
     public virtual string populator_id { get; set; }
     public virtual Jid? jid { get; set; default=null; }
@@ -99,9 +105,18 @@ public abstract class MetaConversationItem : Object {
     public abstract Object? get_widget(WidgetType type);
 }
 
+public abstract class MetaConversationNotification : Object {
+    public abstract Object? get_widget(WidgetType type);
+}
+
 public interface ConversationItemCollection : Object {
     public signal void insert_item(MetaConversationItem item);
     public signal void remove_item(MetaConversationItem item);
+}
+
+public interface NotificationCollection : Object {
+    public signal void add_meta_notification(MetaConversationNotification item);
+    public signal void remove_meta_notification(MetaConversationNotification item);
 }
 
 }

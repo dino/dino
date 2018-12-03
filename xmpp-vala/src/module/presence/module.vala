@@ -1,3 +1,5 @@
+using Gee;
+
 namespace Xmpp.Presence {
     private const string NS_URI = "jabber:client";
 
@@ -86,6 +88,8 @@ namespace Xmpp.Presence {
                 case Presence.Stanza.TYPE_UNSUBSCRIBE:
                     stream.get_flag(Flag.IDENTITY).remove_presence(presence.from);
                     received_unsubscription(stream, presence.from);
+                    break;
+                case Presence.Stanza.TYPE_UNSUBSCRIBED:
                     break;
             }
         }

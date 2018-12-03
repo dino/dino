@@ -7,17 +7,9 @@
   <name>Dino</name>
   <summary>Modern XMPP Chat Client</summary>
   <description>
-    <p>
-      Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable
-      Jabber/XMPP experience while having your privacy in mind.
-    </p>
-    <p>
-      It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features
-      such as read receipts and typing notifications.
-    </p>
-    <p>
-      Dino fetches history from the server and synchronizes messages with other devices.
-    </p>
+    <p>Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable Jabber/XMPP experience while having your privacy in mind.</p>
+    <p>It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features such as read receipts and typing notifications.</p>
+    <p>Dino fetches history from the server and synchronizes messages with other devices.</p>
   </description>
   <screenshots>
     <screenshot type="default">

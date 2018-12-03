@@ -2,55 +2,20 @@ using Xmpp;
 using Xmpp;
 using Xmpp.Xep;
 
-namespace Dino.Plugins.HttpFiles {
+namespace Xmpp.Xep.HttpFileUpload {
 
 private const string NS_URI = "urn:xmpp:http:upload";
 private const string NS_URI_0 = "urn:xmpp:http:upload:0";
 
-public class UploadStreamModule : XmppStreamModule {
-    public static Xmpp.ModuleIdentity<UploadStreamModule> IDENTITY = new Xmpp.ModuleIdentity<UploadStreamModule>(NS_URI, "0363_http_file_upload");
+public class Module : XmppStreamModule {
+    public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0363_http_file_upload");
 
     public signal void feature_available(XmppStream stream, long max_file_size);
     public signal void received_url(XmppStream stream, MessageStanza message);
 
-    public delegate void OnUploadOk(XmppStream stream, string url_down);
+    public delegate void OnSlotOk(XmppStream stream, string url_get, string url_put);
     public delegate void OnError(XmppStream stream, string error);
-    public void upload(XmppStream stream, InputStream input_stream, string file_name, string file_content_type, owned OnUploadOk listener, owned OnError error_listener) {
-        uint8[] buf = new uint8[256];
-        Array<uint8> data = new Array<uint8>(false, true, 0);
-        size_t len = -1;
-        do {
-            try {
-                len = input_stream.read(buf);
-            } catch (IOError error) {
-                error_listener(stream, @"HTTP upload: IOError reading stream: $(error.message)");
-            }
-            data.append_vals(buf, (uint) len);
-        } while(len > 0);
-
-        request_slot(stream, file_name, (int) data.length, file_content_type,
-            (stream, url_down, url_up) => {
-                Soup.Message message = new Soup.Message("PUT", url_up);
-                message.set_request(file_content_type, Soup.MemoryUse.COPY, data.data);
-                Soup.Session session = new Soup.Session();
-                session.send_async.begin(message, null, (obj, res) => {
-                    try {
-                        session.send_async.end(res);
-                        if (message.status_code >= 200 && message.status_code < 300) {
-                            listener(stream, url_down);
-                        } else {
-                            error_listener(stream, "HTTP status code " + message.status_code.to_string());
-                        }
-                    } catch (Error e) {
-                        error_listener(stream, e.message);
-                    }
-                });
-            },
-            (stream, error) => error_listener(stream, error));
-    }
-
-    private delegate void OnSlotOk(XmppStream stream, string url_get, string url_put);
-    private void request_slot(XmppStream stream, string filename, int file_size, string? content_type, owned OnSlotOk listener, owned OnError error_listener) {
+    public void request_slot(XmppStream stream, string filename, int file_size, string? content_type, owned OnSlotOk listener, owned OnError error_listener) {
         Flag? flag = stream.get_flag(Flag.IDENTITY);
         if (flag == null) return;
 
@@ -73,7 +38,7 @@ public class UploadStreamModule : XmppStreamModule {
         Iq.Stanza iq = new Iq.Stanza.get(request_node) { to=flag.file_store_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
             if (iq.is_error()) {
-                error_listener(stream, "Error getting upload/download url");
+                error_listener(stream, "Error getting upload/download url (Error Iq)");
                 return;
             }
             string? url_get = null, url_put = null;
@@ -170,14 +135,14 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
     public override async bool run(XmppStream stream, MessageStanza message) {
         string? oob_url = OutOfBandData.get_url_from_message(message);
         if (oob_url != null && oob_url == message.body) {
-            stream.get_module(UploadStreamModule.IDENTITY).received_url(stream, message);
+            stream.get_module(Module.IDENTITY).received_url(stream, message);
         }
         return true;
     }
 }
 
 public class Flag : XmppStreamFlag {
-    public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "service_discovery");
+    public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "http_file_upload");
 
     public Jid file_store_jid;
     public string ns_ver;

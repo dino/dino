@@ -18,6 +18,12 @@ public class FileTransfer : Object {
     public Account account { get; set; }
     public Jid counterpart { get; set; }
     public Jid ourpart { get; set; }
+    public Jid? from {
+        get { return direction == DIRECTION_SENT ? ourpart : counterpart; }
+    }
+    public Jid? to {
+        get { return direction == DIRECTION_SENT ? counterpart : ourpart; }
+    }
     public bool direction { get; set; }
     public DateTime time { get; set; }
     public DateTime? local_time { get; set; }
@@ -47,7 +53,7 @@ public class FileTransfer : Object {
         set { server_file_name_ = value; }
     }
     public string path { get; set; }
-    public string mime_type { get; set; }
+    public string? mime_type { get; set; }
     public int size { get; set; }
 
     public State state { get; set; }

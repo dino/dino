@@ -27,6 +27,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
         this.db = db;
 
         stream_interactor.get_module(FileManager.IDENTITY).received_file.connect(insert_file_transfer);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(announce_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(announce_message);
     }
 
     public void init(Conversation conversation, ContentItemCollection item_collection) {
@@ -82,7 +84,15 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return item.size > 0 ? item[0] : null;
     }
 
-    public Gee.List<ContentItem> get_latest(Conversation conversation, int count) {
+    public ContentItem? get_latest(Conversation conversation) {
+        Gee.List<ContentItem> items = get_n_latest(conversation, 1);
+        if (items.size > 0) {
+            return items.get(0);
+        }
+        return null;
+    }
+
+    public Gee.List<ContentItem> get_n_latest(Conversation conversation, int count) {
         QueryBuilder select = db.content_item.select()
             .with(db.content_item.conversation_id, "=", conversation.id)
             .with(db.content_item.hide, "=", false)
@@ -128,6 +138,28 @@ public class ContentItemStore : StreamInteractionModule, Object {
     public void insert_message(Message message, Conversation conversation, bool hide = false) {
         MessageItem item = new MessageItem(message, conversation, -1);
         item.id = db.add_content_item(conversation, message.time, message.local_time, 1, message.id, hide);
+    }
+
+    private void announce_message(Message message, Conversation conversation) {
+        QueryBuilder select = db.content_item.select();
+        select.with(db.content_item.foreign_id, "=", message.id);
+        select.with(db.content_item.content_type, "=", 1);
+        select.with(db.content_item.hide, "=", false);
+        foreach (Row row in select) {
+            MessageItem item = new MessageItem(message, conversation, row[db.content_item.id]);
+            if (!discard(item)) {
+                if (collection_conversations.has_key(conversation)) {
+                    collection_conversations.get(conversation).insert_item(item);
+                }
+                new_item(item, conversation);
+            }
+            break;
+        }
+    }
+
+    private void insert_file_transfer(FileTransfer file_transfer, Conversation conversation) {
+        FileItem item = new FileItem(file_transfer, -1);
+        item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id, false);
         if (!discard(item)) {
             if (collection_conversations.has_key(conversation)) {
                 collection_conversations.get(conversation).insert_item(item);
@@ -136,16 +168,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
         }
     }
 
-    private void insert_file_transfer(FileTransfer file_transfer, Conversation conversation) {
-        FileItem item = new FileItem(file_transfer, -1);
-        if (!discard(item)) {
-            item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id, false);
-
-            if (collection_conversations.has_key(conversation)) {
-                collection_conversations.get(conversation).insert_item(item);
-            }
-            new_item(item, conversation);
-        }
+    public bool get_item_hide(ContentItem content_item) {
+        return db.content_item.row_with(db.content_item.id, content_item.id)[db.content_item.hide, false];
     }
 
     public void set_item_hide(ContentItem content_item, bool hide) {

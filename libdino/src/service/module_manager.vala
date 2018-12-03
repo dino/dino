@@ -6,7 +6,7 @@ using Xmpp;
 namespace Dino {
 
 public class ModuleManager {
-    private HashMap<Account, ArrayList<XmppStreamModule>> module_map = new HashMap<Account, ArrayList<XmppStreamModule>>();
+    private HashMap<Account, ArrayList<XmppStreamModule>> module_map = new HashMap<Account, ArrayList<XmppStreamModule>>(Account.hash_func, Account.equals_func);
 
     private EntityCapabilitiesStorage entity_capabilities_storage;
 
@@ -77,6 +77,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.DelayedDelivery.Module());
             module_map[account].add(new StreamError.Module());
             module_map[account].add(new Xep.InBandRegistration.Module());
+            module_map[account].add(new Xep.HttpFileUpload.Module());
             initialize_account_modules(account, module_map[account]);
         }
     }

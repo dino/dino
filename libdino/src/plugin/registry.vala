@@ -8,6 +8,7 @@ public class Registry {
     internal ArrayList<ContactDetailsProvider> contact_details_entries = new ArrayList<ContactDetailsProvider>();
     internal Map<string, TextCommand> text_commands = new HashMap<string, TextCommand>();
     internal Gee.List<ConversationAdditionPopulator> conversation_addition_populators = new ArrayList<ConversationAdditionPopulator>();
+    internal Gee.List<NotificationPopulator> notification_populators = new ArrayList<NotificationPopulator>();
     internal Gee.Collection<ConversationTitlebarEntry> conversation_titlebar_entries = new Gee.TreeSet<ConversationTitlebarEntry>((a, b) => {
         if (a.order < b.order) {
             return -1;
@@ -75,6 +76,16 @@ public class Registry {
                 if (p.id == populator.id) return false;
             }
             conversation_addition_populators.add(populator);
+            return true;
+        }
+    }
+
+    public bool register_notification_populator(NotificationPopulator populator) {
+        lock (notification_populators) {
+            foreach(NotificationPopulator p in notification_populators) {
+                if (p.id == populator.id) return false;
+            }
+            notification_populators.add(populator);
             return true;
         }
     }

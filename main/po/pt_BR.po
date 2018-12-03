@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-07 00:02+0200\n"
-"PO-Revision-Date: 2018-06-14 20:43+0000\n"
-"Last-Translator: 5lm31d5 <jeanrk15@gmail.com>\n"
+"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"PO-Revision-Date: 2018-09-10 03:24+0000\n"
+"Last-Translator: Rhagni Oliveira <rhagni@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/dino/"
 "translations/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -16,21 +16,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.2-dev\n"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "Image sent"
+msgstr ""
+
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_row.vala:145
+msgid "File sent"
+msgstr ""
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "Image received"
+msgstr ""
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+msgid "File received"
+msgstr ""
+
+#: main/src/ui/notifications.vala:87
 msgid "Subscription request"
 msgstr "Pedido de assinatura"
 
-#: main/src/ui/notifications.vala:76
+#: main/src/ui/notifications.vala:93
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Aceitar"
 
-#: main/src/ui/notifications.vala:77
+#: main/src/ui/notifications.vala:94
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Negar"
+
+#: main/src/ui/notifications.vala:100
+#, c-format
+msgid "Failed connecting to %s"
+msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -65,28 +90,28 @@ msgstr "Imagens"
 msgid "All files"
 msgstr "Todos os arquivos"
 
-#: main/src/ui/manage_accounts/dialog.vala:231
+#: main/src/ui/manage_accounts/dialog.vala:222
 msgid "Connecting…"
 msgstr "Conectando…"
 
-#: main/src/ui/manage_accounts/dialog.vala:233
+#: main/src/ui/manage_accounts/dialog.vala:224
 msgid "Connected"
 msgstr "Conectado"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:226
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: main/src/ui/manage_accounts/dialog.vala:244
+#: main/src/ui/manage_accounts/dialog.vala:235
 msgid "Wrong password"
 msgstr "Senha incorreta"
 
-#: main/src/ui/manage_accounts/dialog.vala:246
+#: main/src/ui/manage_accounts/dialog.vala:237
 msgid "Invalid TLS certificate"
 msgstr "Certificado TLS inválido"
 
-#: main/src/ui/manage_accounts/dialog.vala:249
-#: main/src/ui/manage_accounts/dialog.vala:251
+#: main/src/ui/manage_accounts/dialog.vala:240
+#: main/src/ui/manage_accounts/dialog.vala:242
 msgid "Error"
 msgstr "Erro"
 
@@ -96,20 +121,20 @@ msgstr "Adicionar conta"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:135
 msgid "JID should be of the form “user@example.com”"
-msgstr ""
+msgstr "O Jabber ID deve estar no formato \"usuário@exemplo.com\""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:171
 msgid "No response from server"
-msgstr ""
+msgstr "Sem resposta do servidor"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:177
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "Registre-se em %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "O servidor requer que se inscreva através de um site"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:182
 msgid "Open Registration"
@@ -117,42 +142,42 @@ msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:198
 msgid "Register"
-msgstr ""
+msgstr "Registrar"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "Verifique %s para informação de como se inscrever"
 
-#: main/src/ui/conversation_selector/groupchat_pm_row.vala:24
-#: main/src/ui/conversation_selector/chat_row.vala:30
+#: main/src/ui/conversation_selector/conversation_row.vala:131
+#: main/src/ui/conversation_selector/conversation_row.vala:141
 msgid "Me"
 msgstr "Eu"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:154
+#: main/src/ui/conversation_selector/conversation_row.vala:249
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:158
+#: main/src/ui/conversation_selector/conversation_row.vala:253
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Ontem"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:161
+#: main/src/ui/conversation_selector/conversation_row.vala:256
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:162
+#: main/src/ui/conversation_selector/conversation_row.vala:257
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:165
+#: main/src/ui/conversation_selector/conversation_row.vala:260
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -160,7 +185,7 @@ msgid_plural "%i mins ago"
 msgstr[0] "%i min atrás"
 msgstr[1] "%i min atrás"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:167
+#: main/src/ui/conversation_selector/conversation_row.vala:262
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Agora há pouco"
@@ -198,7 +223,7 @@ msgstr "Próximo"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
 #: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:28
+#: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Iniciar conversa"
 
@@ -261,48 +286,35 @@ msgstr "%a, %b %d"
 #: main/src/ui/conversation_summary/chat_state_populator.vala:146
 #, c-format
 msgid "%s, %s and %i others"
-msgstr ""
+msgstr "%s, %s e outros %i"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %s"
-msgstr ""
+msgstr "%s, %s e %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s and %s"
-msgstr ""
+msgstr "%s e %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:155
-#, fuzzy
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "está digitando…"
-msgstr[1] "está digitando…"
+msgstr[1] "estão digitando…"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
 msgid "has stopped typing"
 msgstr "parou de digitar"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:193
-msgid "File"
-msgstr "Arquivo"
-
-#: main/src/ui/conversation_summary/message_textview.vala:40
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
 msgid "Message too long"
 msgstr "Mensagem muito longa"
 
-#: main/src/ui/conversation_summary/message_textview.vala:93
-msgid "Copy Link Address"
-msgstr "Copiar endereço do link"
-
-#: main/src/ui/conversation_summary/message_textview.vala:101
-msgid "Copy"
-msgstr "Copiar"
-
-#: main/src/ui/conversation_summary/message_textview.vala:106
-msgid "Select All"
-msgstr "Selecionar tudo"
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+msgid "File"
+msgstr "Arquivo"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -374,24 +386,24 @@ msgstr "Kick"
 #: main/src/ui/global_search.vala:134
 #, c-format
 msgid "%i search results"
-msgstr ""
+msgstr "%i resultado(s) da busca"
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "Em %s"
 
-#: main/src/ui/global_search.vala:162
+#: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "Com %s"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "Detalhes da Conferência"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:32
+#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Detalhes do contato"
 
@@ -491,7 +503,7 @@ msgstr "Enviar notificação ao digitar"
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Enviar confirmação de leitura"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -553,26 +565,30 @@ msgstr "Nenhuma conta configurada"
 msgid "Add an account"
 msgstr "Adicionar conta"
 
+#: main/data/manage_accounts/add_account_dialog.ui:30
+msgid "Sign in"
+msgstr ""
+
 #: main/data/manage_accounts/add_account_dialog.ui:109
 #: main/data/manage_accounts/add_account_dialog.ui:146
 msgid "Create account"
-msgstr ""
+msgstr "Criar conta"
 
 #: main/data/manage_accounts/add_account_dialog.ui:158
 msgid "Choose a public server"
-msgstr ""
+msgstr "Escolha um servidor publico"
 
 #: main/data/manage_accounts/add_account_dialog.ui:187
 msgid "Or specify a server address"
-msgstr ""
+msgstr "Ou especifique um endereço de servidor"
 
 #: main/data/manage_accounts/add_account_dialog.ui:207
 msgid "Sign in instead"
-msgstr ""
+msgstr "Entrar em vez disso"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Pick another server"
-msgstr ""
+msgstr "Escolha outro servidor"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -584,7 +600,7 @@ msgstr "Sair"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
-msgstr ""
+msgstr "Moderno cliente de chat XMPP"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -592,23 +608,31 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino é um moderno chat de código aberto para desktop. Ele é focado em prover "
+"uma transparente e confiável experiência Jabber/XMPP, tendo em mente a sua "
+"privacidade."
 
-#: main/data/im.dino.Dino.appdata.xml.in:14
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"Suporte criptografia ponta a ponta com OMEMO e OpenPGP e permite configurar "
+"privacidade—características relacionadas às notificações de leitura, "
+"recebimento e escrita."
 
-#: main/data/im.dino.Dino.appdata.xml.in:18
+#: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"Dino obtém o histórico do servidor e sincroniza mensagens com outros "
+"dispositivos."
 
-#: main/data/im.dino.Dino.appdata.xml.in:24
+#: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
-msgstr ""
+msgstr "Janela principal com as conversas"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
@@ -632,19 +656,28 @@ msgstr "Adicionar contato"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "Sem busca ativa"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "Escreva para iniciar a busca"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "Sem mensagens correspondentes"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Verifique a grafia ou tente remover filtros"
+
+#~ msgid "Copy Link Address"
+#~ msgstr "Copiar endereço do link"
+
+#~ msgid "Copy"
+#~ msgstr "Copiar"
+
+#~ msgid "Select All"
+#~ msgstr "Selecionar tudo"
 
 #~ msgid "Search"
 #~ msgstr "Pesquisar"

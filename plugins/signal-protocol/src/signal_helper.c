@@ -222,7 +222,7 @@ int signal_vala_encrypt(signal_buffer **output,
     int algo, mode;
     if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_UNKNOWN;
 
-    if (iv_len != 16) return SG_ERR_UNKNOWN;
+    if (iv_len != 16 && iv_len != 12) return SG_ERR_UNKNOWN;
 
     gcry_cipher_hd_t ctx = {0};
 
@@ -283,7 +283,7 @@ int signal_vala_decrypt(signal_buffer **output,
     if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_UNKNOWN;
     if (ciphertext_len == 0) return SG_ERR_UNKNOWN;
 
-    if (iv_len != 16) return SG_ERR_UNKNOWN;
+    if (iv_len != 16 && iv_len != 12) return SG_ERR_UNKNOWN;
 
     gcry_cipher_hd_t ctx = {0};
 

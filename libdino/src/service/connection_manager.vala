@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino {
 
-public class ConnectionManager {
+public class ConnectionManager : Object {
 
     public signal void stream_opened(Account account, XmppStream stream);
     public signal void connection_state_changed(Account account, ConnectionState state);
@@ -133,7 +133,7 @@ public class ConnectionManager {
         connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
     }
 
-    public void disconnect(Account account) {
+    public void disconnect_account(Account account) {
         if (connections.has_key(account)) {
             make_offline(account);
             try {
@@ -168,7 +168,9 @@ public class ConnectionManager {
         });
         stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, null));
-            change_connection_state(account, ConnectionState.DISCONNECTED);
+        });
+        stream.get_module(Tls.Module.IDENTITY).invalid_certificate.connect(() => {
+            set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, null) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
         });
         stream.received_node.connect(() => {
             connections[account].last_activity = new DateTime.now_utc();
@@ -186,10 +188,6 @@ public class ConnectionManager {
             print(@"[$(account.bare_jid)] Error: $(e.message)\n");
             change_connection_state(account, ConnectionState.DISCONNECTED);
             if (!connection_todo.contains(account)) {
-                return;
-            }
-            if (e is IOStreamError.TLS) {
-                set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, e.message) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
                 return;
             }
             StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);

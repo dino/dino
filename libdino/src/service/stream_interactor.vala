@@ -5,7 +5,7 @@ using Dino.Entities;
 
 namespace Dino {
 
-public class StreamInteractor {
+public class StreamInteractor : Object {
 
     public signal void account_added(Account account);
     public signal void account_removed(Account account);
@@ -23,14 +23,14 @@ public class StreamInteractor {
         connection_manager.stream_opened.connect(on_stream_opened);
     }
 
-    public void connect(Account account) {
+    public void connect_account(Account account) {
         module_manager.initialize(account);
         account_added(account);
         connection_manager.connect(account);
     }
 
-    public void disconnect(Account account) {
-        connection_manager.disconnect(account);
+    public void disconnect_account(Account account) {
+        connection_manager.disconnect_account(account);
         account_removed(account);
     }
 

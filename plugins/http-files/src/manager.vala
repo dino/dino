@@ -29,13 +29,49 @@ public class Manager : StreamInteractionModule, FileSender, Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(check_add_oob);
     }
 
+    public delegate void OnUploadOk(XmppStream stream, string url_down);
+    public delegate void OnError(XmppStream stream, string error);
+    public void upload(XmppStream stream, FileTransfer file_transfer, owned OnUploadOk listener, owned OnError error_listener) {
+        uint8[] buf = new uint8[256];
+        Array<uint8> data = new Array<uint8>(false, true, 0);
+        size_t len = -1;
+        do {
+            try {
+                len = file_transfer.input_stream.read(buf);
+            } catch (IOError error) {
+                error_listener(stream, @"HTTP upload: IOError reading stream: $(error.message)");
+            }
+            data.append_vals(buf, (uint) len);
+        } while(len > 0);
+
+        stream_interactor.module_manager.get_module(file_transfer.account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).request_slot(stream, file_transfer.server_file_name, (int) data.length, file_transfer.mime_type,
+            (stream, url_down, url_up) => {
+                Soup.Message message = new Soup.Message("PUT", url_up);
+                message.set_request(file_transfer.mime_type, Soup.MemoryUse.COPY, data.data);
+                Soup.Session session = new Soup.Session();
+                session.send_async.begin(message, null, (obj, res) => {
+                    try {
+                        session.send_async.end(res);
+                        if (message.status_code >= 200 && message.status_code < 300) {
+                            listener(stream, url_down);
+                        } else {
+                            error_listener(stream, "HTTP status code " + message.status_code.to_string());
+                        }
+                    } catch (Error e) {
+                        error_listener(stream, e.message);
+                    }
+                });
+            },
+            (stream, error) => error_listener(stream, error));
+    }
+
     public void send_file(Conversation conversation, FileTransfer file_transfer) {
         Xmpp.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream != null) {
-            stream_interactor.module_manager.get_module(file_transfer.account, UploadStreamModule.IDENTITY).upload(stream, file_transfer.input_stream, file_transfer.server_file_name, file_transfer.mime_type,
+            upload(stream, file_transfer,
                 (stream, url_down) => {
                     uploaded(file_transfer, url_down);
-                    file_transfer.info = url_down;
+                    file_transfer.info = url_down; // store the message content temporarily so the message gets filtered out
                     Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(url_down, conversation);
                     message.encryption = Encryption.NONE;
                     stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(message, conversation);
@@ -55,7 +91,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     }
 
     public bool can_send(Conversation conversation, FileTransfer file_transfer) {
-        return true;
+        return file_transfer.encryption != Encryption.OMEMO;
     }
 
     public bool is_upload_available(Conversation conversation) {
@@ -71,7 +107,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     }
 
     private void on_stream_negotiated(Account account, XmppStream stream) {
-        stream_interactor.module_manager.get_module(account, UploadStreamModule.IDENTITY).feature_available.connect((stream, max_file_size) => {
+        stream_interactor.module_manager.get_module(account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).feature_available.connect((stream, max_file_size) => {
             lock (max_file_sizes) {
                 max_file_sizes[account] = max_file_size;
             }
@@ -80,7 +116,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
     }
 
     private void check_add_oob(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (message_is_file(db, message)) {
+        if (message_is_file(db, message) && message.body.has_prefix("http")) {
             Xep.OutOfBandData.add_url_to_message(message_stanza, message_stanza.body);
         }
     }

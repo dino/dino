@@ -206,7 +206,7 @@ public class AvatarImage : Misc {
             stream_interactor.connection_manager.connection_state_changed.connect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
         }
-        if (muc_manager.is_groupchat(jid_, account) && !muc_manager.has_avatar(jid_, account)) {
+        if (muc_manager.is_groupchat(jid_, account) && avatar_manager.get_avatar(account, jid_) == null) {
             // Groupchat without avatar
             Gee.List<Jid>? occupants = muc_manager.get_other_occupants(jid_, account);
             jid = jid_;
