@@ -60,9 +60,24 @@ public static string get_conversation_display_name(StreamInteractor stream_inter
 
 public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
     if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
-        string room_name = stream_interactor.get_module(MucManager.IDENTITY).get_room_name(account, jid);
+        MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
+        string room_name = muc_manager.get_room_name(account, jid);
         if (room_name != null && room_name != jid.localpart) {
             return room_name;
+        }
+        if (muc_manager.is_private_room(account, jid)) {
+            Gee.List<Jid>? other_occupants = muc_manager.get_other_offline_members(jid, account);
+            if (other_occupants != null && other_occupants.size > 0) {
+                var builder = new StringBuilder ();
+                foreach(Jid occupant in other_occupants) {
+
+                    if (builder.len != 0) {
+                        builder.append(", ");
+                    }
+                    builder.append(get_display_name(stream_interactor, occupant, account).split(" ")[0]);
+                }
+                return builder.str;
+            }
         }
         return jid.bare_jid.to_string();
     } else if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {

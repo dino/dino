@@ -59,6 +59,11 @@ public class ConversationRow : ListBoxRow {
                         update_name_label();
                     }
                 });
+                stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
+                    if (conversation != null && conversation.counterpart.equals_bare(room.bare_jid) && conversation.account.equals(account)) {
+                        update_name_label();
+                    }
+                });
                 break;
             case Conversation.Type.GROUPCHAT_PM:
                 break;

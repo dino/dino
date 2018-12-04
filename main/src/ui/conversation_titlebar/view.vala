@@ -42,6 +42,12 @@ public class ConversationTitlebar : Gtk.HeaderBar {
             }
         });
 
+        stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
+            if (conversation != null && conversation.counterpart.equals_bare(room.bare_jid) && conversation.account.equals(account)) {
+                update_title();
+            }
+        });
+
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                 update_subtitle(subject);

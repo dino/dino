@@ -381,6 +381,7 @@ public class Module : XmppStreamModule {
                 if (jid_ != null && affiliation_ != null) {
                     stream.get_flag(Flag.IDENTITY).set_offline_member(iq.from, jid_, parse_affiliation(affiliation_));
                     ret_jids.add(jid_);
+                    received_occupant_jid(stream, iq.from, jid_);
                 }
             }
             if (listener != null) listener(stream, ret_jids);
