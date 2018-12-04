@@ -13,6 +13,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void left(Account account, Jid jid);
     public signal void subject_set(Account account, Jid jid, string? subject);
     public signal void room_name_set(Account account, Jid jid, string? room_name);
+    public signal void private_room_occupant_updated(Account account, Jid room, Jid occupant);
     public signal void bookmarks_updated(Account account, Gee.List<Xep.Bookmarks.Conference> conferences);
 
     private StreamInteractor stream_interactor;
@@ -95,6 +96,19 @@ public class MucManager : StreamInteractionModule, Object {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) return stream.get_module(Xep.Muc.Module.IDENTITY).kick_possible(stream, occupant);
         return false;
+    }
+
+    //the term `private room` is a short hand for members-only+non-anonymous rooms
+    public bool is_private_room(Account account, Jid jid) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) {
+            return false;
+        }
+        Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
+        if (flag == null) {
+            return false;
+        }
+        return flag.has_room_feature(jid, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(jid, Xep.Muc.Feature.MEMBERS_ONLY);
     }
 
     public Gee.List<Jid>? get_occupants(Jid jid, Account account) {
@@ -203,6 +217,14 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
+     public Gee.List<Jid>? get_other_offline_members(Jid jid, Account account) {
+        Gee.List<Jid>? occupants = get_offline_members(jid, account);
+        if (occupants != null) {
+            occupants.remove(account.bare_jid);
+        }
+        return occupants;
+    }
+
     public Jid? get_own_jid(Jid muc_jid, Account account) {
         Xep.Muc.Flag? flag = get_muc_flag(account);
         if (flag != null) {
@@ -240,6 +262,11 @@ public class MucManager : StreamInteractionModule, Object {
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_name_set.connect( (stream, jid, room_name) => {
             room_name_set(account, jid, room_name);
+        });
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).received_occupant_jid.connect( (stream, room, occupant) => {
+            if (is_private_room(account, room.bare_jid)) {
+                private_room_occupant_updated(account, room, occupant);
+            }
         });
         stream_interactor.module_manager.get_module(account, Xep.Bookmarks.Module.IDENTITY).received_conferences.connect( (stream, conferences) => {
             sync_autojoin_active(account, conferences);

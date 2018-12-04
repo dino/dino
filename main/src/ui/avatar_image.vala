@@ -194,6 +194,7 @@ public class AvatarImage : Misc {
             stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.disconnect(on_received_avatar);
             stream_interactor.connection_manager.connection_state_changed.disconnect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.disconnect(on_roster_updated);
+            stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.disconnect(on_occupant_updated);
         }
     }
 
@@ -205,10 +206,16 @@ public class AvatarImage : Misc {
             stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect(on_received_avatar);
             stream_interactor.connection_manager.connection_state_changed.connect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
+            stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect(on_occupant_updated);
         }
         if (muc_manager.is_groupchat(jid_, account) && avatar_manager.get_avatar(account, jid_) == null) {
             // Groupchat without avatar
-            Gee.List<Jid>? occupants = muc_manager.get_other_occupants(jid_, account);
+            Gee.List<Jid>? occupants;
+            if (muc_manager.is_private_room(account, jid_)) {
+                occupants = muc_manager.get_other_offline_members(jid_, account);
+            } else {
+                occupants = muc_manager.get_other_occupants(jid_, account);
+            }
             jid = jid_;
             if (occupants == null || occupants.size == 0) {
                 if (force_update || current_jids.length != 1 || !current_jids[0].equals(jid_) || gray != (allow_gray && (occupants == null || !is_self_online()))) {
@@ -289,6 +296,12 @@ public class AvatarImage : Misc {
     private void on_roster_updated(Account account, Jid jid, Roster.Item roster_item) {
         if (!account.equals(this.account)) return;
         if (!jid.equals_bare(this.jid)) return;
+        set_jid(stream_interactor, this.jid, account, true);
+    }
+
+    private void on_occupant_updated(Account account, Jid room, Jid occupant) {
+        if (!account.equals(this.account)) return;
+        if (!room.equals_bare(this.jid)) return;
         set_jid(stream_interactor, this.jid, account, true);
     }
 
