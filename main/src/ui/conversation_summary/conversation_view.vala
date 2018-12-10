@@ -381,15 +381,15 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     }
 
     private static int compare_meta_items(Plugins.MetaConversationItem a, Plugins.MetaConversationItem b) {
-        int res = a.sort_time.compare(b.sort_time);
-        if (res == 0) {
-            if (a.seccondary_sort_indicator < b.seccondary_sort_indicator) {
-                res = -1;
-            } else if (a.seccondary_sort_indicator > b.seccondary_sort_indicator) {
-                res = 1;
+        int cmp1 = a.sort_time.compare(b.sort_time);
+        if (cmp1 == 0) {
+            double cmp2 = a.seccondary_sort_indicator - b.seccondary_sort_indicator;
+            if (cmp2 == 0) {
+                return (int) (a.tertiary_sort_indicator - b.tertiary_sort_indicator);
             }
+            return (int) cmp2;
         }
-        return res;
+        return cmp1;
     }
 
     private void clear() {
