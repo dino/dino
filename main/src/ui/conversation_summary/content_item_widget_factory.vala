@@ -3,6 +3,7 @@ using Gdk;
 using Gtk;
 using Pango;
 using Xmpp;
+using Unicode;
 
 using Dino.Entities;
 
@@ -73,6 +74,12 @@ public class MessageItemWidgetGenerator : WidgetGenerator, Object {
             update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text);
             label.realize.connect(() => update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text));
             label.style_updated.connect(() => update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text));
+        }
+
+        int only_emoji_count = Util.get_only_emoji_count(markup_text);
+        if (only_emoji_count != -1) {
+            string size_str = only_emoji_count < 5 ? "xx-large" : "large";
+            markup_text = @"<span size=\'$size_str\'>" + markup_text + "</span>";
         }
 
         label.label = markup_text;

@@ -203,4 +203,46 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     return s;
 }
 
+public int get_only_emoji_count(string markup_text) {
+    int emoji_no = 0;
+    int index_ref = 0;
+    unichar curchar = 0, altchar = 0;
+    bool last_was_emoji = false, last_was_modifier_base = false, last_was_keycap = false;
+    while (markup_text.get_next_char(ref index_ref, out curchar)) {
+        if (last_was_emoji && last_was_keycap && curchar == 0x20E3) {
+            // keycap sequence
+            continue;
+        }
+
+        last_was_keycap = false;
+
+        if (last_was_emoji && curchar == 0x200D && markup_text.get_next_char(ref index_ref, out curchar)) {
+            // zero width joiner
+            last_was_emoji = false;
+            emoji_no--;
+        }
+
+        if (last_was_emoji && last_was_modifier_base && Unicode.has_binary_property(curchar, Unicode.EMOJI_MODIFIER)) {
+            // still an emoji, but no longer a modifier base
+            last_was_modifier_base = false;
+        } else if (Unicode.has_binary_property(curchar, Unicode.EMOJI_PRESENTATION)) {
+            if (Unicode.has_binary_property(curchar, Unicode.EMOJI_MODIFIER_BASE)) {
+                last_was_modifier_base = true;
+            }
+            emoji_no++;
+            last_was_emoji = true;
+        } else if (curchar == ' ') {
+            last_was_emoji = false;
+        } else if (markup_text.get_next_char(ref index_ref, out altchar) && altchar == 0xFE0F) {
+            // U+FE0F = VARIATION SELECTOR-16
+            emoji_no++;
+            last_was_emoji = true;
+            last_was_keycap = (curchar >= 0x30 && curchar <= 0x39) || curchar == 0x23 || curchar == 0x2A;
+        } else {
+            return -1;
+        }
+    }
+    return emoji_no;
+}
+
 }
