@@ -58,7 +58,7 @@ public static string get_conversation_display_name(StreamInteractor stream_inter
     return get_display_name(stream_interactor, conversation.counterpart, conversation.account);
 }
 
-public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account) {
+public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account, bool fallback_to_localpart = false) {
     if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
         MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
         string room_name = muc_manager.get_room_name(account, jid);
@@ -74,7 +74,7 @@ public static string get_display_name(StreamInteractor stream_interactor, Jid ji
                     if (builder.len != 0) {
                         builder.append(", ");
                     }
-                    builder.append(get_display_name(stream_interactor, occupant, account).split(" ")[0]);
+                    builder.append(get_display_name(stream_interactor, occupant, account, true).split(" ")[0]);
                 }
                 return builder.str;
             }
@@ -94,7 +94,7 @@ public static string get_display_name(StreamInteractor stream_interactor, Jid ji
         if (roster_item != null && roster_item.name != null && roster_item.name != "") {
             return roster_item.name;
         }
-        return jid.bare_jid.to_string();
+        return fallback_to_localpart ? jid.localpart : jid.bare_jid.to_string();
     }
 }
 
