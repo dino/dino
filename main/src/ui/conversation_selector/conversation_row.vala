@@ -258,7 +258,7 @@ public class ConversationRow : ListBoxRow {
              return datetime.format(_("%b %d"));
          } else if (timespan > 2 * TimeSpan.DAY) {
              return datetime.format("%a");
-         } else if (timespan > 1 * TimeSpan.DAY) {
+         } else if (datetime.get_day_of_month() != now.get_day_of_month()) {
              return _("Yesterday");
          } else if (timespan > 9 * TimeSpan.MINUTE) {
              return datetime.format(Util.is_24h_format() ?
