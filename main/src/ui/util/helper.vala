@@ -237,11 +237,11 @@ public int get_only_emoji_count(string markup_text) {
             emoji_no--;
         }
 
-        if (last_was_emoji && last_was_modifier_base && Unicode.has_binary_property(curchar, Unicode.EMOJI_MODIFIER)) {
+        if (last_was_emoji && last_was_modifier_base && Unicode.has_binary_property(curchar, Unicode.Property.EMOJI_MODIFIER)) {
             // still an emoji, but no longer a modifier base
             last_was_modifier_base = false;
-        } else if (Unicode.has_binary_property(curchar, Unicode.EMOJI_PRESENTATION)) {
-            if (Unicode.has_binary_property(curchar, Unicode.EMOJI_MODIFIER_BASE)) {
+        } else if (Unicode.has_binary_property(curchar, Unicode.Property.EMOJI_PRESENTATION)) {
+            if (Unicode.has_binary_property(curchar, Unicode.Property.EMOJI_MODIFIER_BASE)) {
                 last_was_modifier_base = true;
             }
             emoji_no++;

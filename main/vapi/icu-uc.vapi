@@ -1,6 +1,6 @@
 namespace Unicode {
   [CCode (cprefix = "UCHAR_", cheader_filename = "unicode/uchar.h")]
-  enum Property {
+  public enum Property {
     EMOJI,
     EMOJI_PRESENTATION,
     EMOJI_MODIFIER,
@@ -8,5 +8,5 @@ namespace Unicode {
   }
 
   [CCode (cname = "u_hasBinaryProperty", cheader_filename = "unicode/uchar.h")]
-  bool has_binary_property(unichar c, Property p);
+  public bool has_binary_property(unichar c, Property p);
 }
