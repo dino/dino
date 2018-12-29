@@ -58,7 +58,6 @@ public class FileProvider : Dino.FileProvider, Object {
         file_transfer.local_time = message.local_time;
         file_transfer.direction = message.direction;
         file_transfer.file_name = url_without_hash.substring(url_without_hash.last_index_of("/") + 1);
-        file_transfer.mime_type = null;
         file_transfer.size = -1;
         file_transfer.state = FileTransfer.State.NOT_STARTED;
         file_transfer.provider = 0;

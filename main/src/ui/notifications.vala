@@ -62,10 +62,11 @@ public class Notifications : Object {
                 FileItem file_item = content_item as FileItem;
                 FileTransfer transfer = file_item.file_transfer;
 
+                bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
                 if (transfer.direction == Message.DIRECTION_SENT) {
-                    text = transfer.mime_type.has_prefix("image") ? _("Image sent") : _("File sent");
+                    text = file_is_image ? _("Image sent") : _("File sent");
                 } else {
-                    text = transfer.mime_type.has_prefix("image") ? _("Image received") : _("File received");
+                    text = file_is_image ? _("Image received") : _("File received");
                 }
                 break;
         }

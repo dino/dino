@@ -150,10 +150,11 @@ public class ConversationRow : ListBoxRow {
                         nick_label.label = transfer.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
 
+                    bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
                     if (transfer.direction == Message.DIRECTION_SENT) {
-                        message_label.label = "<i>" + (transfer.mime_type.has_prefix("image") ? _("Image sent") : _("File sent") ) + "</i>";
+                        message_label.label = "<i>" + (file_is_image ? _("Image sent") : _("File sent") ) + "</i>";
                     } else {
-                        message_label.label = "<i>" +(transfer.mime_type.has_prefix("image") ? _("Image received") : _("File received") ) + "</i>";
+                        message_label.label = "<i>" + (file_is_image ? _("Image received") : _("File received") ) + "</i>";
                     }
                     break;
             }

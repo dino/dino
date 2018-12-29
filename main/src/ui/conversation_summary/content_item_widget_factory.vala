@@ -194,7 +194,7 @@ public class FileItemWidgetGenerator : WidgetGenerator, Object {
 
     private Widget getDefaultWidget(FileTransfer file_transfer) {
         Box main_box = new Box(Orientation.HORIZONTAL, 4) { halign=Align.START, visible=true };
-        string? icon_name = ContentType.get_generic_icon_name(file_transfer.mime_type);
+        string? icon_name = file_transfer.mime_type != null ? ContentType.get_generic_icon_name(file_transfer.mime_type) : null;
         Image content_type_image = new Image.from_icon_name(icon_name, IconSize.DND) { visible=true };
         main_box.add(content_type_image);
 
