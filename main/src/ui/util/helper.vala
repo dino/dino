@@ -79,7 +79,6 @@ public static string get_display_name(StreamInteractor stream_interactor, Jid ji
                 return builder.str;
             }
         }
-        return jid.bare_jid.to_string();
     } else if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
         return jid.resourcepart;
     } else {
@@ -94,7 +93,13 @@ public static string get_display_name(StreamInteractor stream_interactor, Jid ji
         if (roster_item != null && roster_item.name != null && roster_item.name != "") {
             return roster_item.name;
         }
-        return fallback_to_localpart ? jid.localpart : jid.bare_jid.to_string();
+    }
+
+    // Fallback to bare_jid / localpart
+    if (fallback_to_localpart && jid.localpart != null) {
+        return jid.localpart;
+    } else {
+        return jid.bare_jid.to_string();
     }
 }
 
