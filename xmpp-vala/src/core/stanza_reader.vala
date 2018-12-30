@@ -223,38 +223,45 @@ public class StanzaReader {
     }
 
     public async StanzaNode read_stanza_node() throws XmlError {
-        ns_state = ns_state.push();
-        var res = yield read_node_start();
-        if (res.has_nodes) {
-            bool finishNodeSeen = false;
-            do {
-                yield skip_until_non_ws();
-                if ((yield peek_single()) == '<') {
-                    skip_single();
-                    if ((yield peek_single()) == '/') {
+        try {
+            ns_state = ns_state.push();
+            var res = yield read_node_start();
+            if (res.has_nodes) {
+                bool finish_node_seen = false;
+                do {
+                    yield skip_until_non_ws();
+                    if ((yield peek_single()) == '<') {
                         skip_single();
-                        string desc = yield read_until_char('>');
-                        skip_single();
-                        if (desc.contains(":")) {
-                            var split = desc.split(":");
-                            if (split[0] != ns_state.find_name((!)res.ns_uri)) throw new XmlError.BAD_XML("");
-                            if (split[1] != res.name) throw new XmlError.BAD_XML("");
+                        if ((yield peek_single()) == '/') {
+                            skip_single();
+                            string desc = yield read_until_char('>');
+                            skip_single();
+                            if (desc.contains(":")) {
+                                var split = desc.split(":");
+                                if (split[0] != ns_state.find_name((!)res.ns_uri)) throw new XmlError.BAD_XML("");
+                                if (split[1] != res.name) throw new XmlError.BAD_XML("");
+                            } else {
+                                if (ns_state.current_ns_uri != res.ns_uri) throw new XmlError.BAD_XML("");
+                                if (desc != res.name) throw new XmlError.BAD_XML("");
+                            }
+                            finish_node_seen = true;
                         } else {
-                            if (ns_state.current_ns_uri != res.ns_uri) throw new XmlError.BAD_XML("");
-                            if (desc != res.name) throw new XmlError.BAD_XML("");
+                            res.sub_nodes.add(yield read_stanza_node());
                         }
-                        finishNodeSeen = true;
                     } else {
-                        res.sub_nodes.add(yield read_stanza_node());
+                        res.sub_nodes.add(yield read_text_node());
                     }
-                } else {
-                    res.sub_nodes.add(yield read_text_node());
-                }
-            } while (!finishNodeSeen);
-            if (res.sub_nodes.size == 0) res.has_nodes = false;
+                } while (!finish_node_seen);
+                if (res.sub_nodes.size == 0) res.has_nodes = false;
+            }
+            ns_state = ns_state.pop();
+            return res;
+        } catch (XmlError e) {
+            uint8[] buffer_cpy = buffer.copy();
+            buffer_cpy += '\0';
+            warning("XmlError at: %s".printf((string)buffer_cpy) + "\n");
+            throw e;
         }
-        ns_state = ns_state.pop();
-        return res;
     }
 
     public async StanzaNode read_node() throws XmlError {

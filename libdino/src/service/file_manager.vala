@@ -144,7 +144,7 @@ public class FileManager : StreamInteractionModule, Object {
         if (!is_sender_trustworthy(file_transfer, conversation)) return;
 
         if (file_transfer.size == -1) {
-            file_provider.get_meta_info(file_transfer);
+            yield file_provider.get_meta_info(file_transfer);
         }
 
         if (file_transfer.size >= 0 && file_transfer.size < 5000000) {

@@ -232,6 +232,7 @@ public class ConnectionManager : Object {
 
     private void check_reconnect(Account account) {
         bool acked = false;
+        DateTime? last_activity_was = connections[account].last_activity != null ? connections[account].last_activity : null;
 
         XmppStream stream = connections[account].stream;
         stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.bare_jid.domain_jid, () => {
@@ -240,10 +241,13 @@ public class ConnectionManager : Object {
             change_connection_state(account, ConnectionState.CONNECTED);
         });
 
-        Timeout.add_seconds(5, () => {
+        Timeout.add_seconds(10, () => {
             if (connections[account].stream != stream) return false;
             if (acked) return false;
+            if (connections[account].last_activity != last_activity_was) return false;
 
+            // Reconnect. Nothing gets through the stream.
+            print(@"[$(account.bare_jid)] Ping timeouted. Reconnecting\n");
             change_connection_state(account, ConnectionState.DISCONNECTED);
             try {
                 connections[account].stream.disconnect();
