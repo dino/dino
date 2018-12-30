@@ -123,6 +123,10 @@ msgstr ""
 msgid "JID should be of the form “user@example.com”"
 msgstr ""
 
+#: main/src/ui/manage_accounts/add_account_dialog.vala:156
+msgid "Sign in to %s"
+msgstr ""
+
 #: main/src/ui/manage_accounts/add_account_dialog.vala:171
 msgid "No response from server"
 msgstr ""
@@ -147,6 +151,11 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "Check %s for information on how to sign up"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#, c-format
+msgid "You can now start using %s"
 msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_row.vala:131
@@ -213,6 +222,18 @@ msgstr ""
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:243 main/data/menu_add.ui:13
 msgid "Join Channel"
+msgstr ""
+
+#: main/src/ui/unified_window.vala:247
+msgid "Welcome to Dino!"
+msgstr ""
+
+#: main/src/ui/unified_window.vala:248
+msgid "Communicate happiness."
+msgstr ""
+
+#: main/src/ui/unified_window.vala:249
+msgid "Setup account"
 msgstr ""
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
@@ -578,6 +599,10 @@ msgstr ""
 msgid "Choose a public server"
 msgstr ""
 
+#: main/data/manage_accounts/add_account_dialog.ui:175
+msgid "Back"
+msgstr ""
+
 #: main/data/manage_accounts/add_account_dialog.ui:187
 msgid "Or specify a server address"
 msgstr ""
@@ -588,6 +613,18 @@ msgstr ""
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Pick another server"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:289
+msgid "Connect"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:544
+msgid "All set up!"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:579
+msgid "Finish"
 msgstr ""
 
 #: main/data/menu_encryption.ui:14
