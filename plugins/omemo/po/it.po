@@ -2,9 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
 "PO-Revision-Date: 2018-11-13 16:07+0000\n"
-"Last-Translator: Valerio Baldisserotto <code@valo.space>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/it/>\n"
 "Language: it\n"
@@ -94,10 +93,8 @@ msgstr "Chiave accettata"
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
-"Start accepting this key during communication with its associated contact."
+"Start accepting this key during communication with its associated contact"
 msgstr ""
-"Inizia ad accettare questa chiave durante le comunicazioni col contatto "
-"associato"
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 #: plugins/omemo/src/manage_key_dialog.vala:125
@@ -161,19 +158,19 @@ msgstr ""
 "Quando aggiungi nuove chiavi di cifratura al tuo account, accettale "
 "automaticamente."
 
-#: plugins/omemo/src/contact_details_dialog.vala:113
+#: plugins/omemo/src/contact_details_dialog.vala:124
 msgid "Accepted"
 msgstr "Accettata"
 
-#: plugins/omemo/src/contact_details_dialog.vala:118
+#: plugins/omemo/src/contact_details_dialog.vala:129
 msgid "Rejected"
 msgstr "Rifiutata"
 
-#: plugins/omemo/src/contact_details_dialog.vala:123
+#: plugins/omemo/src/contact_details_dialog.vala:134
 msgid "Verified"
 msgstr "Verificata"
 
-#: plugins/omemo/src/contact_details_dialog.vala:130
+#: plugins/omemo/src/contact_details_dialog.vala:141
 msgid "Unused"
 msgstr "Inutilizzata"
 
@@ -245,6 +242,12 @@ msgstr "Non corrispondenti"
 #: plugins/omemo/data/manage_key_dialog.ui:120
 msgid "Matching"
 msgstr "Corrispondenti"
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Inizia ad accettare questa chiave durante le comunicazioni col contatto "
+#~ "associato"
 
 #~ msgid "Reject Key"
 #~ msgstr "Rifiuta la chiave"

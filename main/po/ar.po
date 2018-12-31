@@ -7,9 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
-"PO-Revision-Date: 2018-10-24 22:22+0000\n"
-"Last-Translator: ButterflyOfFire <ButterflyOfFire@protonmail.com>\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"PO-Revision-Date: 2018-12-17 22:08+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
 "Language: ar\n"
@@ -18,43 +17,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_row.vala:145
+#: main/src/ui/notifications.vala:67
+#: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "Image sent"
-msgstr ""
+msgstr "تم إرسال الصورة"
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_row.vala:145
+#: main/src/ui/notifications.vala:67
+#: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "File sent"
-msgstr ""
+msgstr "تم إرسال الملف"
 
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_row.vala:147
+#: main/src/ui/notifications.vala:69
+#: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "Image received"
-msgstr ""
+msgstr "تم استلام الصورة"
 
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_row.vala:147
+#: main/src/ui/notifications.vala:69
+#: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "File received"
-msgstr ""
+msgstr "تم استلام الملف"
 
-#: main/src/ui/notifications.vala:87
+#: main/src/ui/notifications.vala:88
 msgid "Subscription request"
 msgstr "طلب اشتراك"
 
-#: main/src/ui/notifications.vala:93
+#: main/src/ui/notifications.vala:94
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "قبول"
 
-#: main/src/ui/notifications.vala:94
+#: main/src/ui/notifications.vala:95
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "رفض"
 
-#: main/src/ui/notifications.vala:100
+#: main/src/ui/notifications.vala:101
 #, c-format
 msgid "Failed connecting to %s"
 msgstr "فشل الاتصال بـ %s"
@@ -117,69 +116,86 @@ msgstr "شهادة TLS غير صالحة"
 msgid "Error"
 msgstr "خطأ"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:55
+#: main/src/ui/manage_accounts/add_account_dialog.vala:79
 msgid "Add Account"
 msgstr "إضافة حساب"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:135
-msgid "JID should be of the form “user@example.com”"
-msgstr "يجب أن يكون JID على شكل “user@example.com”"
+#: main/src/ui/manage_accounts/add_account_dialog.vala:156
+#, c-format
+msgid "Sign in to %s"
+msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:171
+#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#, c-format
+msgid "You can now start using %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:237
+#, c-format
+msgid "Could not connect to %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:254
+msgid "Wrong username or password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
 msgstr "لا ردّ مِن طرف الخادم"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:177
+#: main/src/ui/manage_accounts/add_account_dialog.vala:293
 #, c-format
 msgid "Register on %s"
 msgstr "قم بالتسجيل على %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:180
+#: main/src/ui/manage_accounts/add_account_dialog.vala:296
 msgid "The server requires to sign up through a website"
 msgstr "يتطلب الخادم التسجيل من خلال موقع ويب"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:182
+#: main/src/ui/manage_accounts/add_account_dialog.vala:298
 msgid "Open Registration"
 msgstr "التسجيلات مفتوحة"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:198
+#: main/src/ui/manage_accounts/add_account_dialog.vala:314
 msgid "Register"
 msgstr "إنشاء حساب"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#: main/src/ui/manage_accounts/add_account_dialog.vala:316
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "إطّلع على %s للمزيد من المعلومات حول التسجيل"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:131
-#: main/src/ui/conversation_selector/conversation_row.vala:141
+#: main/src/ui/conversation_selector/conversation_row.vala:136
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+#: main/src/ui/conversation_selector/conversation_row.vala:150
+#: main/src/ui/util/helper.vala:87
 msgid "Me"
 msgstr "أنا"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:249
+#: main/src/ui/conversation_selector/conversation_row.vala:259
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:253
+#: main/src/ui/conversation_selector/conversation_row.vala:263
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "البارحة"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:256
+#: main/src/ui/conversation_selector/conversation_row.vala:266
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:257
+#: main/src/ui/conversation_selector/conversation_row.vala:267
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:260
+#: main/src/ui/conversation_selector/conversation_row.vala:270
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -191,7 +207,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] "منذ %i دقائق"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:262
+#: main/src/ui/conversation_selector/conversation_row.vala:272
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "الآن"
@@ -212,23 +228,23 @@ msgid "Add"
 msgstr "إضافة"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
-#: main/data/manage_accounts/add_account_dialog.ui:119
 msgid "Save"
 msgstr "حفظ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:243 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "الإلتحاق بقناة"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
-#: main/data/manage_accounts/add_account_dialog.ui:228
-#: main/data/manage_accounts/add_account_dialog.ui:308
+#: main/data/manage_accounts/add_account_dialog.ui:99
+#: main/data/manage_accounts/add_account_dialog.ui:411
+#: main/data/manage_accounts/add_account_dialog.ui:491
 msgid "Next"
 msgstr "التالي"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "الشروع في محادثة"
@@ -269,15 +285,27 @@ msgstr "إختر إسما مستعارا آخر"
 msgid "Too many occupants in room"
 msgstr "غرفة المحادثة مكتضة"
 
-#: main/src/ui/unified_window.vala:233
+#: main/src/ui/unified_window.vala:247
+msgid "Welcome to Dino!"
+msgstr ""
+
+#: main/src/ui/unified_window.vala:248
+msgid "Communicate happiness."
+msgstr ""
+
+#: main/src/ui/unified_window.vala:249
+msgid "Setup account"
+msgstr ""
+
+#: main/src/ui/unified_window.vala:257
 msgid "No active accounts"
 msgstr "ليس هناك أية حسابات نشطة"
 
-#: main/src/ui/unified_window.vala:234
+#: main/src/ui/unified_window.vala:258
 msgid "Manage accounts"
 msgstr "إدارة الحسابات"
 
-#: main/src/ui/unified_window.vala:241
+#: main/src/ui/unified_window.vala:267
 msgid "No active conversations"
 msgstr "ليس هناك أية محادثات نشطة"
 
@@ -318,11 +346,11 @@ msgstr[5] "يكتبون…"
 msgid "has stopped typing"
 msgstr "توقفَ عن الكتابة"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:60
 msgid "Message too long"
 msgstr "الرسالة طويلة جدًا"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
 msgid "File"
 msgstr "ملف"
 
@@ -447,11 +475,11 @@ msgstr "استكشاف مُعرّفي JID الحقيقيين"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Who may discover real JIDs?"
-msgstr ""
+msgstr "من يمكنهم استكشاف مُعرّفي JID الحقيقيين؟"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:62
+#: main/data/manage_accounts/add_account_dialog.ui:212
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
@@ -563,7 +591,6 @@ msgid "Accounts"
 msgstr "الحسابات"
 
 #: main/data/manage_accounts/dialog.ui:200
-#: main/data/manage_accounts/add_account_dialog.ui:83
 msgid "Local alias"
 msgstr "اللقب المحلي"
 
@@ -575,30 +602,51 @@ msgstr "لم يتم إعداد أي حساب بعد"
 msgid "Add an account"
 msgstr "إضافة حساب"
 
-#: main/data/manage_accounts/add_account_dialog.ui:30
+#: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "إنشاء حساب"
 
-#: main/data/manage_accounts/add_account_dialog.ui:109
-#: main/data/manage_accounts/add_account_dialog.ui:146
+#: main/data/manage_accounts/add_account_dialog.ui:78
+#: main/data/manage_accounts/add_account_dialog.ui:329
 msgid "Create account"
 msgstr "إنشاء حساب"
 
-#: main/data/manage_accounts/add_account_dialog.ui:158
+#: main/data/manage_accounts/add_account_dialog.ui:153
+msgid "Could not establish a secure connection"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:175
+#: main/data/manage_accounts/add_account_dialog.ui:268
+msgid "Back"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:289
+msgid "Connect"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
 msgstr "إختر خادمًا عموميًا"
 
-#: main/data/manage_accounts/add_account_dialog.ui:187
+#: main/data/manage_accounts/add_account_dialog.ui:370
 msgid "Or specify a server address"
 msgstr "أو قم بإدخال عنوان خادم"
 
-#: main/data/manage_accounts/add_account_dialog.ui:207
+#: main/data/manage_accounts/add_account_dialog.ui:390
 msgid "Sign in instead"
 msgstr "قم بتسجيل الدخول بدلاً من ذلك"
 
-#: main/data/manage_accounts/add_account_dialog.ui:288
+#: main/data/manage_accounts/add_account_dialog.ui:471
 msgid "Pick another server"
 msgstr "إختيار سيرفر آخَر"
+
+#: main/data/manage_accounts/add_account_dialog.ui:544
+msgid "All set up!"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:579
+msgid "Finish"
+msgstr ""
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -675,6 +723,9 @@ msgstr "لا توجد رسائل متطابقة"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "تحقق مِن التدقيق الإملائي أو حاول إزالة فلاتر"
+
+#~ msgid "JID should be of the form “user@example.com”"
+#~ msgstr "يجب أن يكون JID على شكل “user@example.com”"
 
 #~ msgid "Copy Link Address"
 #~ msgstr "نسخ العنوان"

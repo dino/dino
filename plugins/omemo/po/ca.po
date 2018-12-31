@@ -6,9 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo 20180123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
 "PO-Revision-Date: 2018-01-24 11:21+0100\n"
-"Last-Translator: Jordi Mallach <jordi@mallach.net>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -90,7 +89,7 @@ msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
-"Start accepting this key during communication with its associated contact."
+"Start accepting this key during communication with its associated contact"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
@@ -152,19 +151,19 @@ msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 
-#: plugins/omemo/src/contact_details_dialog.vala:113
+#: plugins/omemo/src/contact_details_dialog.vala:124
 msgid "Accepted"
 msgstr ""
 
-#: plugins/omemo/src/contact_details_dialog.vala:118
+#: plugins/omemo/src/contact_details_dialog.vala:129
 msgid "Rejected"
 msgstr ""
 
-#: plugins/omemo/src/contact_details_dialog.vala:123
+#: plugins/omemo/src/contact_details_dialog.vala:134
 msgid "Verified"
 msgstr ""
 
-#: plugins/omemo/src/contact_details_dialog.vala:130
+#: plugins/omemo/src/contact_details_dialog.vala:141
 msgid "Unused"
 msgstr ""
 

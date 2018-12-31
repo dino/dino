@@ -7,9 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
 "PO-Revision-Date: 2018-11-13 16:07+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/nb_NO/>\n"
 "Language: nb\n"
@@ -102,10 +101,8 @@ msgstr "Godta nøkkel"
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
-"Start accepting this key during communication with its associated contact."
+"Start accepting this key during communication with its associated contact"
 msgstr ""
-"Begynn å godta denne nøkkelen under kommunikasjon med dens tilknyttede "
-"kontakt."
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 #: plugins/omemo/src/manage_key_dialog.vala:125
@@ -177,19 +174,19 @@ msgid ""
 msgstr ""
 "Når du legger nye krypteringsnøkler til kontoen din, godta dem automatisk."
 
-#: plugins/omemo/src/contact_details_dialog.vala:113
+#: plugins/omemo/src/contact_details_dialog.vala:124
 msgid "Accepted"
 msgstr "Godtatt"
 
-#: plugins/omemo/src/contact_details_dialog.vala:118
+#: plugins/omemo/src/contact_details_dialog.vala:129
 msgid "Rejected"
 msgstr "Avslått"
 
-#: plugins/omemo/src/contact_details_dialog.vala:123
+#: plugins/omemo/src/contact_details_dialog.vala:134
 msgid "Verified"
 msgstr "Bekreftet"
 
-#: plugins/omemo/src/contact_details_dialog.vala:130
+#: plugins/omemo/src/contact_details_dialog.vala:141
 msgid "Unused"
 msgstr "Ubrukt"
 
@@ -267,6 +264,12 @@ msgstr "Samsvarer ikke"
 #: plugins/omemo/data/manage_key_dialog.ui:120
 msgid "Matching"
 msgstr "Samsvarer"
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Begynn å godta denne nøkkelen under kommunikasjon med dens tilknyttede "
+#~ "kontakt."
 
 #~ msgid "Reject Key"
 #~ msgstr "Avslå nøkkel"

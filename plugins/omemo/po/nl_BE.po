@@ -7,9 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
-"PO-Revision-Date: 2018-06-18 12:37+0000\n"
-"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"PO-Revision-Date: 2018-12-26 15:08+0000\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/nl_BE/>\n"
 "Language: nl_BE\n"
@@ -17,28 +16,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: plugins/omemo/src/device_notification_populator.vala:74
 msgid "Manage"
-msgstr ""
+msgstr "Beheren"
 
 #: plugins/omemo/src/device_notification_populator.vala:84
 msgid "This contact has new devices"
-msgstr ""
+msgstr "Dit contact heeft nieuwe apparaten"
 
 #: plugins/omemo/src/own_notifications.vala:36
 msgid "OMEMO trust decision required"
-msgstr ""
+msgstr "OMEMO-vertrouwenskeuze vereist"
 
 #: plugins/omemo/src/own_notifications.vala:38
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr ""
+msgstr "Gebruikt ge een nieuw apparaat met account %s?"
 
 #: plugins/omemo/src/manage_key_dialog.vala:48
 msgid "Verify key"
-msgstr ""
+msgstr "Sleutel verifiëren"
 
 #: plugins/omemo/src/manage_key_dialog.vala:49
 #, c-format
@@ -93,7 +92,7 @@ msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
-"Start accepting this key during communication with its associated contact."
+"Start accepting this key during communication with its associated contact"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
@@ -155,19 +154,19 @@ msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 
-#: plugins/omemo/src/contact_details_dialog.vala:113
+#: plugins/omemo/src/contact_details_dialog.vala:124
 msgid "Accepted"
 msgstr ""
 
-#: plugins/omemo/src/contact_details_dialog.vala:118
+#: plugins/omemo/src/contact_details_dialog.vala:129
 msgid "Rejected"
 msgstr ""
 
-#: plugins/omemo/src/contact_details_dialog.vala:123
+#: plugins/omemo/src/contact_details_dialog.vala:134
 msgid "Verified"
 msgstr ""
 
-#: plugins/omemo/src/contact_details_dialog.vala:130
+#: plugins/omemo/src/contact_details_dialog.vala:141
 msgid "Unused"
 msgstr ""
 

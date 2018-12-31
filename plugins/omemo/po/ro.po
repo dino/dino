@@ -7,9 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
-"PO-Revision-Date: 2018-11-13 16:07+0000\n"
-"Last-Translator: Licaon Kter <licaon.kter@protonmail.com>\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"PO-Revision-Date: 2018-11-17 14:07+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ro/>\n"
 "Language: ro\n"
@@ -72,9 +71,8 @@ msgid "Cancel"
 msgstr "Anulare"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
-#, fuzzy
 msgid "Verify key fingerprint"
-msgstr "Verificare amprentä cheie"
+msgstr "Verificare amprentă cheie"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
 msgid ""
@@ -101,8 +99,8 @@ msgstr "Acceptare cheie"
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
-"Start accepting this key during communication with its associated contact."
-msgstr "Acceptä această cheie în timpul comunicärii cu acest contact asociat"
+"Start accepting this key during communication with its associated contact"
+msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 #: plugins/omemo/src/manage_key_dialog.vala:125
@@ -128,13 +126,11 @@ msgid "verified"
 msgstr "verificată"
 
 #: plugins/omemo/src/manage_key_dialog.vala:125
-#, fuzzy
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
-"Acesta înseamnă că poate fi folositä de %s ca să primească și să trimită "
-"mesaje. În plus, a fost verificată cä se potrivește cu cheia de pe "
-"dispozitivul contactului."
+"În plus, a fost verificată că se potrivește cu cheia de pe dispozitivul "
+"contactului."
 
 #: plugins/omemo/src/manage_key_dialog.vala:129
 msgid "rejected"
@@ -146,8 +142,8 @@ msgid ""
 "This means it cannot be used by %s to receive messages, and any messages "
 "sent by it will be ignored."
 msgstr ""
-"Aceasta înseamnă că nu poate fi folositä de %s ca să primească mesaje, iar "
-"orice mesaj trimis cu ea v-a fi ignorat"
+"Aceasta înseamnă că nu poate fi folosită de %s ca să primească mesaje, iar "
+"orice mesaj trimis cu ea v-a fi ignorat."
 
 #: plugins/omemo/src/manage_key_dialog.vala:141
 #, c-format
@@ -178,19 +174,19 @@ msgstr ""
 "Când adäugați chei de criptare noi pentru acest cont, acestea vor fi "
 "acceptate în mod automat."
 
-#: plugins/omemo/src/contact_details_dialog.vala:113
+#: plugins/omemo/src/contact_details_dialog.vala:124
 msgid "Accepted"
 msgstr "Acceptată"
 
-#: plugins/omemo/src/contact_details_dialog.vala:118
+#: plugins/omemo/src/contact_details_dialog.vala:129
 msgid "Rejected"
 msgstr "Respinsă"
 
-#: plugins/omemo/src/contact_details_dialog.vala:123
+#: plugins/omemo/src/contact_details_dialog.vala:134
 msgid "Verified"
 msgstr "Verificată"
 
-#: plugins/omemo/src/contact_details_dialog.vala:130
+#: plugins/omemo/src/contact_details_dialog.vala:141
 msgid "Unused"
 msgstr "Neutilizatä"
 
@@ -216,9 +212,8 @@ msgstr[1] "%d dispozitive OMEMO"
 msgstr[2] "%d de dispozitive OMEMO"
 
 #: plugins/omemo/data/contact_details_dialog.ui:5
-#, fuzzy
 msgid "OMEMO Key Management"
-msgstr "Chei OMEMO"
+msgstr "Administrare chei OMEMO"
 
 #: plugins/omemo/data/contact_details_dialog.ui:41
 msgid "Automatically accept new keys"
@@ -245,9 +240,8 @@ msgid "Associated keys"
 msgstr "Chei asociate"
 
 #: plugins/omemo/data/manage_key_dialog.ui:9
-#, fuzzy
 msgid "Manage Key"
-msgstr "Gestionare"
+msgstr "Gestionare cheie"
 
 #: plugins/omemo/data/manage_key_dialog.ui:25
 msgid "Confirm"
@@ -268,6 +262,11 @@ msgstr "Nu se potrivesc"
 #: plugins/omemo/data/manage_key_dialog.ui:120
 msgid "Matching"
 msgstr "Se potrivesc"
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Acceptă această cheie în timpul comunicării cu acest contact asociat."
 
 #~ msgid "Reject Key"
 #~ msgstr "Respingere cheie"

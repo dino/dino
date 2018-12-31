@@ -7,9 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
-"PO-Revision-Date: 2018-11-14 19:24+0000\n"
-"Last-Translator: sergio <srg.dev@posteo.net>\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"PO-Revision-Date: 2018-12-31 07:08+0000\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/"
 "translations/es/>\n"
 "Language: es\n"
@@ -17,43 +16,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_row.vala:145
+#: main/src/ui/notifications.vala:67
+#: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "Image sent"
 msgstr "Imagen enviada"
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_row.vala:145
+#: main/src/ui/notifications.vala:67
+#: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "File sent"
 msgstr "Archivo enviado"
 
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_row.vala:147
+#: main/src/ui/notifications.vala:69
+#: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "Image received"
 msgstr "Imagen recibida"
 
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_row.vala:147
+#: main/src/ui/notifications.vala:69
+#: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "File received"
 msgstr "Archivo recibido"
 
-#: main/src/ui/notifications.vala:87
+#: main/src/ui/notifications.vala:88
 msgid "Subscription request"
 msgstr "Solicitud de suscripción"
 
-#: main/src/ui/notifications.vala:93
+#: main/src/ui/notifications.vala:94
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Aceptar"
 
-#: main/src/ui/notifications.vala:94
+#: main/src/ui/notifications.vala:95
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Denegar"
 
-#: main/src/ui/notifications.vala:100
+#: main/src/ui/notifications.vala:101
 #, c-format
 msgid "Failed connecting to %s"
 msgstr "Fallo conectando con %s"
@@ -116,69 +115,86 @@ msgstr "Certificado TLS no válido"
 msgid "Error"
 msgstr "Error"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:55
+#: main/src/ui/manage_accounts/add_account_dialog.vala:79
 msgid "Add Account"
 msgstr "Añadir Cuenta"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:135
-msgid "JID should be of the form “user@example.com”"
-msgstr "El JID debe tener la forma \"usuario@ejemplo.com\""
+#: main/src/ui/manage_accounts/add_account_dialog.vala:156
+#, c-format
+msgid "Sign in to %s"
+msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:171
+#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#, c-format
+msgid "You can now start using %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:237
+#, c-format
+msgid "Could not connect to %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:254
+msgid "Wrong username or password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
 msgstr "No hay respuesta del servidor"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:177
+#: main/src/ui/manage_accounts/add_account_dialog.vala:293
 #, c-format
 msgid "Register on %s"
-msgstr "Registrado en %s"
+msgstr "Registrarte en %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:180
+#: main/src/ui/manage_accounts/add_account_dialog.vala:296
 msgid "The server requires to sign up through a website"
 msgstr "El servidor requiere registro a través de un sitio web"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:182
+#: main/src/ui/manage_accounts/add_account_dialog.vala:298
 msgid "Open Registration"
 msgstr "Registro abierto"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:198
+#: main/src/ui/manage_accounts/add_account_dialog.vala:314
 msgid "Register"
 msgstr "Registro"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#: main/src/ui/manage_accounts/add_account_dialog.vala:316
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Mira %s para mas información sobre el registro"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:131
-#: main/src/ui/conversation_selector/conversation_row.vala:141
+#: main/src/ui/conversation_selector/conversation_row.vala:136
+#: main/src/ui/conversation_selector/conversation_row.vala:147
+#: main/src/ui/conversation_selector/conversation_row.vala:150
+#: main/src/ui/util/helper.vala:87
 msgid "Me"
 msgstr "Yo"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:249
+#: main/src/ui/conversation_selector/conversation_row.vala:259
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%d %b"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:253
+#: main/src/ui/conversation_selector/conversation_row.vala:263
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Ayer"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:256
+#: main/src/ui/conversation_selector/conversation_row.vala:266
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:257
+#: main/src/ui/conversation_selector/conversation_row.vala:267
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:260
+#: main/src/ui/conversation_selector/conversation_row.vala:270
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, c-format
 msgid "%i min ago"
@@ -186,7 +202,7 @@ msgid_plural "%i mins ago"
 msgstr[0] "hace %i min"
 msgstr[1] "hace %i mins"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:262
+#: main/src/ui/conversation_selector/conversation_row.vala:272
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "Ahora"
@@ -207,23 +223,23 @@ msgid "Add"
 msgstr "Añadir"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
-#: main/data/manage_accounts/add_account_dialog.ui:119
 msgid "Save"
 msgstr "Guardar"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:243 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Unirse a Conversación en grupo"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:48
-#: main/data/manage_accounts/add_account_dialog.ui:228
-#: main/data/manage_accounts/add_account_dialog.ui:308
+#: main/data/manage_accounts/add_account_dialog.ui:99
+#: main/data/manage_accounts/add_account_dialog.ui:411
+#: main/data/manage_accounts/add_account_dialog.ui:491
 msgid "Next"
 msgstr "Siguiente"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Iniciar Conversación"
@@ -265,15 +281,27 @@ msgstr "Elige un alias diferente"
 msgid "Too many occupants in room"
 msgstr "La conversación tiene demasiados ocupantes"
 
-#: main/src/ui/unified_window.vala:233
+#: main/src/ui/unified_window.vala:247
+msgid "Welcome to Dino!"
+msgstr ""
+
+#: main/src/ui/unified_window.vala:248
+msgid "Communicate happiness."
+msgstr ""
+
+#: main/src/ui/unified_window.vala:249
+msgid "Setup account"
+msgstr ""
+
+#: main/src/ui/unified_window.vala:257
 msgid "No active accounts"
 msgstr "No hay cuentas activas"
 
-#: main/src/ui/unified_window.vala:234
+#: main/src/ui/unified_window.vala:258
 msgid "Manage accounts"
 msgstr "Gestionar cuentas"
 
-#: main/src/ui/unified_window.vala:241
+#: main/src/ui/unified_window.vala:267
 msgid "No active conversations"
 msgstr "No hay conversaciones activa"
 
@@ -310,17 +338,17 @@ msgstr[1] "están escribiendo…"
 msgid "has stopped typing"
 msgstr "ha dejado de escribir"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:60
 msgid "Message too long"
 msgstr "Mensaje demasiado largo"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
 msgid "File"
 msgstr "Archivo"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr "Esta persona quiere añadirte a su lista de contactos"
+msgstr "A este contacto le gustaría añadirte a su lista de contactos"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
 #, no-c-format
@@ -443,7 +471,7 @@ msgstr "¿Quién puede ver los JIDs reales?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:62
+#: main/data/manage_accounts/add_account_dialog.ui:212
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
@@ -557,7 +585,6 @@ msgid "Accounts"
 msgstr "Cuentas"
 
 #: main/data/manage_accounts/dialog.ui:200
-#: main/data/manage_accounts/add_account_dialog.ui:83
 msgid "Local alias"
 msgstr "Alias local"
 
@@ -569,30 +596,51 @@ msgstr "No hay cuentas activas"
 msgid "Add an account"
 msgstr "Añadir una cuenta"
 
-#: main/data/manage_accounts/add_account_dialog.ui:30
+#: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "Iniciar Sesión"
 
-#: main/data/manage_accounts/add_account_dialog.ui:109
-#: main/data/manage_accounts/add_account_dialog.ui:146
+#: main/data/manage_accounts/add_account_dialog.ui:78
+#: main/data/manage_accounts/add_account_dialog.ui:329
 msgid "Create account"
 msgstr "Crear cuenta"
 
-#: main/data/manage_accounts/add_account_dialog.ui:158
+#: main/data/manage_accounts/add_account_dialog.ui:153
+msgid "Could not establish a secure connection"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:175
+#: main/data/manage_accounts/add_account_dialog.ui:268
+msgid "Back"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:289
+msgid "Connect"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
 msgstr "Escoger un servidor publico"
 
-#: main/data/manage_accounts/add_account_dialog.ui:187
+#: main/data/manage_accounts/add_account_dialog.ui:370
 msgid "Or specify a server address"
 msgstr "O especifica la dirección del servidor"
 
-#: main/data/manage_accounts/add_account_dialog.ui:207
+#: main/data/manage_accounts/add_account_dialog.ui:390
 msgid "Sign in instead"
-msgstr "Inicio de sesión requerido"
+msgstr "Volver a Iniciar sesión"
 
-#: main/data/manage_accounts/add_account_dialog.ui:288
+#: main/data/manage_accounts/add_account_dialog.ui:471
 msgid "Pick another server"
 msgstr "Escoge otro servidor"
+
+#: main/data/manage_accounts/add_account_dialog.ui:544
+msgid "All set up!"
+msgstr ""
+
+#: main/data/manage_accounts/add_account_dialog.ui:579
+msgid "Finish"
+msgstr ""
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -673,6 +721,9 @@ msgstr "Sin mensajes que coincidan"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Verifique la ortografía o intente eliminar los filtros"
+
+#~ msgid "JID should be of the form “user@example.com”"
+#~ msgstr "El JID debe tener la forma \"usuario@ejemplo.com\""
 
 #~ msgid "Copy Link Address"
 #~ msgstr "Copiar dirección del enlace"

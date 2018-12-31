@@ -2,9 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
-"PO-Revision-Date: 2018-11-14 19:24+0000\n"
-"Last-Translator: flevop <flevopolder2@gmail.com>\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"PO-Revision-Date: 2018-12-26 15:08+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "nl/>\n"
 "Language: nl\n"
@@ -12,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: plugins/omemo/src/device_notification_populator.vala:74
 msgid "Manage"
@@ -24,7 +23,7 @@ msgstr "Dit contact heeft nieuwe apparaten"
 
 #: plugins/omemo/src/own_notifications.vala:36
 msgid "OMEMO trust decision required"
-msgstr "OMEMO vertrouwenskeuze noodzakelijk"
+msgstr "OMEMO-vertrouwenskeuze vereist"
 
 #: plugins/omemo/src/own_notifications.vala:38
 #, c-format
@@ -63,12 +62,11 @@ msgstr ""
 #: plugins/omemo/src/manage_key_dialog.vala:76
 #: plugins/omemo/data/manage_key_dialog.ui:13
 msgid "Cancel"
-msgstr "Annuleer"
+msgstr "Annuleren"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
-#, fuzzy
 msgid "Verify key fingerprint"
-msgstr "Verifieer Sleutel Vingerafdruk"
+msgstr "Verifieer vingerafdruk van sleutel"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
 msgid ""
@@ -84,7 +82,6 @@ msgid "Reject key"
 msgstr "Sleutel afwijzen"
 
 #: plugins/omemo/src/manage_key_dialog.vala:114
-#, fuzzy
 msgid ""
 "Stop accepting this key during communication with its associated contact."
 msgstr ""
@@ -97,11 +94,9 @@ msgid "Accept key"
 msgstr "Sleutel accepteren"
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
-#, fuzzy
 msgid ""
-"Start accepting this key during communication with its associated contact."
+"Start accepting this key during communication with its associated contact"
 msgstr ""
-"Accepteer deze sleutel tijdens communicatie met het bijbehorende contact"
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 #: plugins/omemo/src/manage_key_dialog.vala:125
@@ -174,19 +169,19 @@ msgstr ""
 "Nieuwe encryptiesleutels die aan het account worden toegevoegd automatisch "
 "accepteren."
 
-#: plugins/omemo/src/contact_details_dialog.vala:113
+#: plugins/omemo/src/contact_details_dialog.vala:124
 msgid "Accepted"
 msgstr "Geaccepteerd"
 
-#: plugins/omemo/src/contact_details_dialog.vala:118
+#: plugins/omemo/src/contact_details_dialog.vala:129
 msgid "Rejected"
 msgstr "Afgewezen"
 
-#: plugins/omemo/src/contact_details_dialog.vala:123
+#: plugins/omemo/src/contact_details_dialog.vala:134
 msgid "Verified"
 msgstr "Geverifieerd"
 
-#: plugins/omemo/src/contact_details_dialog.vala:130
+#: plugins/omemo/src/contact_details_dialog.vala:141
 msgid "Unused"
 msgstr "Ongebruikt"
 
@@ -263,6 +258,12 @@ msgstr "Komen niet overeen"
 #: plugins/omemo/data/manage_key_dialog.ui:120
 msgid "Matching"
 msgstr "Overeenkomend"
+
+#, fuzzy
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Accepteer deze sleutel tijdens communicatie met het bijbehorende contact"
 
 #~ msgid "Reject Key"
 #~ msgstr "Sleutel Afwijzen"

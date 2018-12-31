@@ -2,9 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
-"PO-Revision-Date: 2018-11-14 19:24+0000\n"
-"Last-Translator: Dennis Fink <dennis.fink@c3l.lu>\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"PO-Revision-Date: 2018-11-17 14:07+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/lb/>\n"
 "Language: lb\n"
@@ -41,10 +40,12 @@ msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"Wann konforméiert, all zukünfteg Messagen déi vum %s mat dësem Schlëssel "
+"geschéckt ginn, ginn deementspriechend am Chatfenster markéiert."
 
 #: plugins/omemo/src/manage_key_dialog.vala:59
 msgid "Fingerprints do not match"
-msgstr "Fangerofdréck stemmen net iwwerteneen"
+msgstr "Fangerofdréck stëmmen net iwwerteneen"
 
 #: plugins/omemo/src/manage_key_dialog.vala:60
 #, c-format
@@ -53,6 +54,10 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
+"Wann ech gelift iwwerpréif, ob's du mat dem "
+"korrekte Fangerofdrock vergläichs. Wann Fangerofdréck net iwwerteneestëmmen, "
+"dann ass dem %s säi Konto villäicht kompromettéiert an du solls dëse "
+"Schlëssel verweigeren."
 
 #: plugins/omemo/src/manage_key_dialog.vala:70
 #: plugins/omemo/src/manage_key_dialog.vala:76
@@ -61,9 +66,8 @@ msgid "Cancel"
 msgstr "Ofbriechen"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
-#, fuzzy
 msgid "Verify key fingerprint"
-msgstr "Verifizéier Schlëssel Fangerofdrock"
+msgstr "Iwwerpréif Schlëssel Fangerofdrock"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
 msgid ""
@@ -92,7 +96,7 @@ msgstr "Schlëssel acceptéieren"
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
-"Start accepting this key during communication with its associated contact."
+"Start accepting this key during communication with its associated contact"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
@@ -111,6 +115,8 @@ msgstr "akzeptéiert"
 #, c-format
 msgid "This means it can be used by %s to receive and send messages."
 msgstr ""
+"Dat bedeit, dass et vum %s ka benotzt gi fir Messagen ze empfänken an ze "
+"verschécken."
 
 #: plugins/omemo/src/manage_key_dialog.vala:125
 msgid "verified"
@@ -120,6 +126,8 @@ msgstr "verifizéiert"
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
+"De Schlëssel ass zousätzlech iwwerpréift gi mam Schlëssel um Gerät vum "
+"Kontakt iwwerteneen ze stëmmen."
 
 #: plugins/omemo/src/manage_key_dialog.vala:129
 msgid "rejected"
@@ -131,6 +139,8 @@ msgid ""
 "This means it cannot be used by %s to receive messages, and any messages "
 "sent by it will be ignored."
 msgstr ""
+"Dat bedeit, dass dëse Schlëssel net ka vum %s benotz gi fir Messagen ze "
+"empfänken an all Message déi geschéckt gi ginn ignoréiert."
 
 #: plugins/omemo/src/manage_key_dialog.vala:141
 #, c-format
@@ -138,12 +148,17 @@ msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "ignored and none of your messages will be readable using this key."
 msgstr ""
+"Wann confirméiert, all zukünfteg Message déi vum %s mat dësem Schlëssel "
+"geschéckt ginn, ginn ignoréiert a keng vun dengem Messagë wäerte liesbar "
+"sinn."
 
 #: plugins/omemo/src/manage_key_dialog.vala:149
 #, c-format
 msgid ""
 "Once confirmed this key will be usable by %s to receive and send messages."
 msgstr ""
+"Wann konforméiert ass de Schlëssel vum %s benotzbar fir Messagen ze "
+"empfänken an ze schécken."
 
 #: plugins/omemo/src/manage_key_dialog.vala:155
 msgid "Back"
@@ -153,20 +168,22 @@ msgstr "Zeréck"
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
+"Wann s du nei Schlëssele bei däin Account bäifüügs, déi automatesch "
+"akzeptéieren."
 
-#: plugins/omemo/src/contact_details_dialog.vala:113
+#: plugins/omemo/src/contact_details_dialog.vala:124
 msgid "Accepted"
 msgstr "Akzeptéiert"
 
-#: plugins/omemo/src/contact_details_dialog.vala:118
+#: plugins/omemo/src/contact_details_dialog.vala:129
 msgid "Rejected"
 msgstr "Ofgeleent"
 
-#: plugins/omemo/src/contact_details_dialog.vala:123
+#: plugins/omemo/src/contact_details_dialog.vala:134
 msgid "Verified"
 msgstr "Verifizéiert"
 
-#: plugins/omemo/src/contact_details_dialog.vala:130
+#: plugins/omemo/src/contact_details_dialog.vala:141
 msgid "Unused"
 msgstr "Onbenotzt"
 
@@ -191,9 +208,8 @@ msgstr[0] "%d OMEMO Gerät"
 msgstr[1] "%d OMEMO Geräter"
 
 #: plugins/omemo/data/contact_details_dialog.ui:5
-#, fuzzy
 msgid "OMEMO Key Management"
-msgstr "OMEMO Schlësselen"
+msgstr "OMEMO Schlësselenverwaltung"
 
 #: plugins/omemo/data/contact_details_dialog.ui:41
 msgid "Automatically accept new keys"
@@ -204,6 +220,8 @@ msgid ""
 "When this contact adds new encryption keys to their account, automatically "
 "accept them."
 msgstr ""
+"Wann dëse Kontakt néi Schlësselen zu sengem Konto bäifüügt, déi automatesch "
+"akzeptéieren."
 
 #: plugins/omemo/data/contact_details_dialog.ui:89
 msgid "Own key"
@@ -218,9 +236,8 @@ msgid "Associated keys"
 msgstr "Zougehéiereg Schlësselen"
 
 #: plugins/omemo/data/manage_key_dialog.ui:9
-#, fuzzy
 msgid "Manage Key"
-msgstr "Verwalten"
+msgstr "Schlëssel verwalten"
 
 #: plugins/omemo/data/manage_key_dialog.ui:25
 msgid "Confirm"
@@ -231,15 +248,22 @@ msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contacts device."
 msgstr ""
+"Vergläich de Fangerofdrock, Zeeche fir Zeechen, mat dem den um Gerät vum "
+"Kontakt ugewise gëtt."
 
 #: plugins/omemo/data/manage_key_dialog.ui:113
-#, fuzzy
 msgid "Not matching"
 msgstr "Stemmt net iwwerteneen"
 
 #: plugins/omemo/data/manage_key_dialog.ui:120
 msgid "Matching"
 msgstr "Stemmt iwwerteneen"
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Dëse Schlëssel wärend der Kommunikatioun mat sengem verbonne Kontakt "
+#~ "akzeptéieren."
 
 #~ msgid "Reject Key"
 #~ msgstr "Schlëssel verweigeren"

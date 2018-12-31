@@ -7,9 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
-"PO-Revision-Date: 2018-09-29 03:26+0000\n"
-"Last-Translator: Xosé M <xosem@disroot.org>\n"
+"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"PO-Revision-Date: 2018-11-17 14:07+0000\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/gl/>\n"
 "Language: gl\n"
@@ -17,28 +16,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.3-dev\n"
 
 #: plugins/omemo/src/device_notification_populator.vala:74
 msgid "Manage"
-msgstr ""
+msgstr "Xestionar"
 
 #: plugins/omemo/src/device_notification_populator.vala:84
 msgid "This contact has new devices"
-msgstr ""
+msgstr "Este contacto ten novos dispositivos"
 
 #: plugins/omemo/src/own_notifications.vala:36
 msgid "OMEMO trust decision required"
-msgstr ""
+msgstr "Precisa decidir sobre a confianza OMEMO"
 
 #: plugins/omemo/src/own_notifications.vala:38
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr ""
+msgstr "Engadeu un novo dispositivo para a conta %s?"
 
 #: plugins/omemo/src/manage_key_dialog.vala:48
 msgid "Verify key"
-msgstr ""
+msgstr "Validar chave"
 
 #: plugins/omemo/src/manage_key_dialog.vala:49
 #, c-format
@@ -46,10 +45,12 @@ msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"Unha vez confirmada, as futuras mensaxes enviadas por %s utilizando esta "
+"chave será resaltada acorde na ventá de conversa."
 
 #: plugins/omemo/src/manage_key_dialog.vala:59
 msgid "Fingerprints do not match"
-msgstr ""
+msgstr "Non coinciden as pegadas dixitais"
 
 #: plugins/omemo/src/manage_key_dialog.vala:60
 #, c-format
@@ -58,42 +59,48 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
+"Por favor, comprobe que está coparando a pegada correcta. Si as pegadas "
+"dixitais non coinciden, a conta de %s podería estar comprometida e debería "
+"considerar rexeitar esta chave."
 
 #: plugins/omemo/src/manage_key_dialog.vala:70
 #: plugins/omemo/src/manage_key_dialog.vala:76
 #: plugins/omemo/data/manage_key_dialog.ui:13
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
-#, fuzzy
 msgid "Verify key fingerprint"
-msgstr "Pegada propia"
+msgstr "Validar a chave de pegada dixital"
 
 #: plugins/omemo/src/manage_key_dialog.vala:112
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
+"Compare a pegada dixital de esta chave coa pegada mostrada no dispositivo do "
+"contacto."
 
 #: plugins/omemo/src/manage_key_dialog.vala:114
 #: plugins/omemo/src/manage_key_dialog.vala:140
 msgid "Reject key"
-msgstr ""
+msgstr "Rexeitar chave"
 
 #: plugins/omemo/src/manage_key_dialog.vala:114
 msgid ""
 "Stop accepting this key during communication with its associated contact."
 msgstr ""
+"Deixar de aceptar esta chave durante a comunicación co contacto asociado a "
+"ela."
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 #: plugins/omemo/src/manage_key_dialog.vala:148
 msgid "Accept key"
-msgstr ""
+msgstr "Aceptar chave"
 
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
-"Start accepting this key during communication with its associated contact."
+"Start accepting this key during communication with its associated contact"
 msgstr ""
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
@@ -101,30 +108,32 @@ msgstr ""
 #: plugins/omemo/src/manage_key_dialog.vala:129
 #, c-format
 msgid "This key is currently %s."
-msgstr ""
+msgstr "Esta chave está actualmente %s."
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 msgid "accepted"
-msgstr ""
+msgstr "aceptada"
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 #: plugins/omemo/src/manage_key_dialog.vala:125
 #, c-format
 msgid "This means it can be used by %s to receive and send messages."
 msgstr ""
+"Esto significa que pode ser utilizada por %s para recibir e enviar mensaxes."
 
 #: plugins/omemo/src/manage_key_dialog.vala:125
 msgid "verified"
-msgstr ""
+msgstr "verficada"
 
 #: plugins/omemo/src/manage_key_dialog.vala:125
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
+"Adicionalmente foi validada e coincide coa chave no dispositivo do contacto."
 
 #: plugins/omemo/src/manage_key_dialog.vala:129
 msgid "rejected"
-msgstr ""
+msgstr "rexeitada"
 
 #: plugins/omemo/src/manage_key_dialog.vala:129
 #, c-format
@@ -132,6 +141,8 @@ msgid ""
 "This means it cannot be used by %s to receive messages, and any messages "
 "sent by it will be ignored."
 msgstr ""
+"Esto significa que non pode ser utilizada por %s para recibir mensaxes, e "
+"calquer mensaxe enviada con ela será ignorado."
 
 #: plugins/omemo/src/manage_key_dialog.vala:141
 #, c-format
@@ -139,37 +150,43 @@ msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "ignored and none of your messages will be readable using this key."
 msgstr ""
+"Unha vez confirmada, calquer mensaxe futura enviada por %s utilizando esta "
+"chave será ignorada e ningunha das súas mensaxes serán lexibles usando esta "
+"chave."
 
 #: plugins/omemo/src/manage_key_dialog.vala:149
 #, c-format
 msgid ""
 "Once confirmed this key will be usable by %s to receive and send messages."
 msgstr ""
+"Unha vez confirmada esta chave será utilizable por %s para recibir e enviar "
+"mensaxes."
 
 #: plugins/omemo/src/manage_key_dialog.vala:155
 msgid "Back"
-msgstr ""
+msgstr "Atrás"
 
 #: plugins/omemo/src/contact_details_dialog.vala:50
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
+"Cando engade novas chaves de cifrado a súa conta, aceptalas automáticamente."
 
-#: plugins/omemo/src/contact_details_dialog.vala:113
+#: plugins/omemo/src/contact_details_dialog.vala:124
 msgid "Accepted"
-msgstr ""
+msgstr "Aceptada"
 
-#: plugins/omemo/src/contact_details_dialog.vala:118
+#: plugins/omemo/src/contact_details_dialog.vala:129
 msgid "Rejected"
-msgstr ""
+msgstr "Rexeitada"
 
-#: plugins/omemo/src/contact_details_dialog.vala:123
+#: plugins/omemo/src/contact_details_dialog.vala:134
 msgid "Verified"
-msgstr ""
+msgstr "Validada"
 
-#: plugins/omemo/src/contact_details_dialog.vala:130
+#: plugins/omemo/src/contact_details_dialog.vala:141
 msgid "Unused"
-msgstr ""
+msgstr "Sen usar"
 
 #: plugins/omemo/src/account_settings_widget.vala:42
 #: plugins/omemo/src/account_settings_widget.vala:45
@@ -192,53 +209,61 @@ msgstr[0] "%d dispositivo OMEMO"
 msgstr[1] "%d dispositivos OMEMO"
 
 #: plugins/omemo/data/contact_details_dialog.ui:5
-#, fuzzy
 msgid "OMEMO Key Management"
-msgstr "Chaves OMEMO"
+msgstr "Xestión das chaves OMEMO"
 
 #: plugins/omemo/data/contact_details_dialog.ui:41
 msgid "Automatically accept new keys"
-msgstr ""
+msgstr "Aceptar automáticamente novas chaves"
 
 #: plugins/omemo/data/contact_details_dialog.ui:54
 msgid ""
 "When this contact adds new encryption keys to their account, automatically "
 "accept them."
 msgstr ""
+"Cando este contacto engade novas chaves de cifrado a súa conta, aceptalas "
+"automáticamente."
 
 #: plugins/omemo/data/contact_details_dialog.ui:89
 msgid "Own key"
-msgstr ""
+msgstr "Chave propia"
 
 #: plugins/omemo/data/contact_details_dialog.ui:180
 msgid "New keys"
-msgstr ""
+msgstr "Novas chaves"
 
 #: plugins/omemo/data/contact_details_dialog.ui:216
 msgid "Associated keys"
-msgstr ""
+msgstr "Chaves asociadas"
 
 #: plugins/omemo/data/manage_key_dialog.ui:9
 msgid "Manage Key"
-msgstr ""
+msgstr "Xestionar chave"
 
 #: plugins/omemo/data/manage_key_dialog.ui:25
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
 
 #: plugins/omemo/data/manage_key_dialog.ui:86
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contacts device."
 msgstr ""
+"Comparar pegada dixital, caracter a caracter, coa mostrada no dispositivo do "
+"seu contacto."
 
 #: plugins/omemo/data/manage_key_dialog.ui:113
 msgid "Not matching"
-msgstr ""
+msgstr "Non coinciden"
 
 #: plugins/omemo/data/manage_key_dialog.ui:120
 msgid "Matching"
-msgstr ""
+msgstr "Coinciden"
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Comezar a aceptar esta chave nas comunicacións co contacto asociado a ela."
 
 #~ msgid "Unknown device (0x%.8x)"
 #~ msgstr "Dispositivo descoñecido (0x%.8x)"

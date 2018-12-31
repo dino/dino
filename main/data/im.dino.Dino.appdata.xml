@@ -37,7 +37,7 @@
     <p xml:lang="fr">Dino est un client de chat libre et moderne pour le bureau. Il tente de fournir une expérience Jabber/XMPP simple et fiable tout en ayant toujours à l’esprit votre vie privée.</p>
     <p xml:lang="fi">Dino on nykyaikainen avoimen lähdekoodin jutteluohjelma työpöydälle. Se keskittyy tarjoamaan selkeän ja luotettavan Jabber/XMPP-kokemuksen unohtamatta yksityisyyttäsi.</p>
     <p xml:lang="eu">Dino mahaigainerako iturburu irekiko txat bezero moderno bat da. Jabber/XMPP esperientzia garbi eta fidagarri bat ematen du zure pribatutasuna kontuan hartzeaz gain.</p>
-    <p xml:lang="es">Dino es un cliente de conversaciones moderno y libre para escritorio. Está enfocado en proveer una experiencia Jabber/XMPP limpia y confiable teniendo tu privacidad en mente.</p>
+    <p xml:lang="es">Dino es un cliente de mensajería moderno y libre para escritorio. Está enfocado en proveer una experiencia Jabber/XMPP limpia y confiable teniendo tu privacidad en mente.</p>
     <p xml:lang="de">Dino ist ein moderner, quelloffener Chat Client. Er bietet eine aufgeräumte und robuste Jabber/XMPP Erfahrung und legt einen Schwerpunkt auf Privatsphäre.</p>
     <p xml:lang="ca">Dino és un client de xat lliure i modern per a l'escriptori. Està centrat en proveir una experiència neta i fiable de Jabber/XMPP, sempre tenint en compte la vostra privacitat.</p>
     <p xml:lang="ar">دينو برنامج حديث ومفتوح المصدر للدردشة صُمّم لسطح المكتب. ويُركّز علي تقديم تجربة نظيفة وموثوق منها لجابر/XMPP مع أخذ خصوصيتكم بعين الإعتبار.</p>
@@ -120,7 +120,7 @@
       <caption xml:lang="fr">Commencer une discussion</caption>
       <caption xml:lang="fi">Aloita keskustelu</caption>
       <caption xml:lang="eu">Elkarrizketa hasi</caption>
-      <caption xml:lang="es">Iniciar conversación</caption>
+      <caption xml:lang="es">Iniciar Conversación</caption>
       <caption xml:lang="de">Unterhaltung starten</caption>
       <caption xml:lang="ar">الشروع في محادثة</caption>
       <image height="900" width="1600">https://dino.im/img/appdata/start_chat.png</image>
