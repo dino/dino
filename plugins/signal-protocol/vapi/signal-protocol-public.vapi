@@ -137,6 +137,7 @@ namespace Signal {
     [CCode (cname = "session_record", cprefix = "session_record_", cheader_filename = "signal/signal_protocol_types.h")]
     public class SessionRecord : TypeBase {
         public SessionState state { get; }
+        public Buffer user_record { get; }
     }
 
     [Compact]

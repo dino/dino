@@ -62,11 +62,11 @@ namespace Signal {
         public void* user_data;
     }
     [CCode (has_target = false)]
-    public delegate int LoadSessionFunc(out Buffer buffer, Address address, void* user_data);
+    public delegate int LoadSessionFunc(out Buffer record, out Buffer user_record, Address address, void* user_data);
     [CCode (has_target = false)]
     public delegate int GetSubDeviceSessionsFunc(out IntList sessions, char[] name, void* user_data);
     [CCode (has_target = false)]
-    public delegate int StoreSessionFunc(Address address, uint8[] record, void* user_data);
+    public delegate int StoreSessionFunc(Address address, uint8[] record, uint8[] user_record, void* user_data);
     [CCode (has_target = false)]
     public delegate int ContainsSessionFunc(Address address, void* user_data);
     [CCode (has_target = false)]
@@ -134,9 +134,9 @@ namespace Signal {
         void* user_data;
     }
     [CCode (has_target = false)]
-    public delegate int StoreSenderKeyFunc(SenderKeyName sender_key_name, uint8[] record, void* user_data);
+    public delegate int StoreSenderKeyFunc(SenderKeyName sender_key_name, uint8[] record, uint8[] user_record, void* user_data);
     [CCode (has_target = false)]
-    public delegate int LoadSenderKeyFunc(out Buffer record, SenderKeyName sender_key_name, void* user_data);
+    public delegate int LoadSenderKeyFunc(out Buffer record, out Buffer user_record, SenderKeyName sender_key_name, void* user_data);
 
     [CCode (has_target = false)]
     public delegate int DestroyFunc(void* user_data);

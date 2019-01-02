@@ -142,21 +142,22 @@ public class Store : Object {
         return 0;
     }
 
-    static int ss_load_session_func(out Buffer? buffer, Address address, void* user_data) {
+    static int ss_load_session_func(out Buffer? record, out Buffer? user_record, Address address, void* user_data) {
         Store store = (Store) user_data;
         uint8[]? res = null;
         try {
             res = store.session_store.load_session(address);
         } catch (Error e) {
-            buffer = null;
+            record = null;
             return e.code;
         }
         if (res == null) {
-            buffer = null;
+            record = null;
             return 0;
         }
-        buffer = new Buffer.from((!)res);
-        if (buffer == null) return ErrorCode.NOMEM;
+        record = new Buffer.from((!)res);
+        user_record = null; // No support for user_record
+        if (record == null) return ErrorCode.NOMEM;
         return 1;
     }
 
@@ -171,7 +172,8 @@ public class Store : Object {
         return 0;
     }
 
-    static int ss_store_session_func(Address address, uint8[] record, void* user_data) {
+    static int ss_store_session_func(Address address, uint8[] record, uint8[] user_record, void* user_data) {
+        // Ignoring user_record
         Store store = (Store) user_data;
         return catch_to_code(() => {
             store.session_store.store_session(address, record);
