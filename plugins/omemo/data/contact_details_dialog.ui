@@ -35,7 +35,7 @@
                                                         <property name="orientation">vertical</property>
                                                         <property name="hexpand">True</property>
                                                         <child>
-                                                            <object class="GtkLabel">
+                                                            <object class="GtkLabel" id="automatically_accept_new_keys">
                                                                 <property name="visible">True</property>
                                                                 <property name="halign">start</property>
                                                                 <property name="label" translatable="yes">Automatically accept new keys</property>
@@ -83,7 +83,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
                         <child>
-                            <object class="GtkLabel">
+                            <object class="GtkLabel" id="own_key_label">
                                 <property name="visible">True</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">Own key</property>
@@ -174,7 +174,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
                         <child>
-                            <object class="GtkLabel">
+                            <object class="GtkLabel" id="new_keys_label">
                                 <property name="visible">True</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">New keys</property>
@@ -210,7 +210,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
                         <child>
-                            <object class="GtkLabel">
+                            <object class="GtkLabel" id="keys_label">
                                 <property name="visible">True</property>
                                 <property name="halign">start</property>
                                 <property name="label" translatable="yes">Associated keys</property>

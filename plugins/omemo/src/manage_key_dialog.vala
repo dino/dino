@@ -11,6 +11,7 @@ public class ManageKeyDialog : Gtk.Dialog {
     [GtkChild] private Button cancel_button;
     [GtkChild] private Button ok_button;
 
+    [GtkChild] private Label compare_fingerprint_label;
     [GtkChild] private Label main_desc_label;
     [GtkChild] private ListBox main_action_list;
 
@@ -31,18 +32,24 @@ public class ManageKeyDialog : Gtk.Dialog {
     public ManageKeyDialog(Row device, Database db) {
         Object(use_header_bar : 1); 
 
+        this.title = _("Manage Key");
         this.device = device;
         this.db = db;
 
         setup_main_screen();
         setup_verify_screen();
 
+        cancel_button.label = _("Cancel");
         cancel_button.clicked.connect(handle_cancel);
+        ok_button.label = _("Confirm");
         ok_button.clicked.connect(() => {
             response(current_response);
             close();
         });
 
+        compare_fingerprint_label.label = _("Compare the fingerprint, character by character, with the one shown on your contacts device.");
+
+        verify_yes_button.label = _("Matching");
         verify_yes_button.clicked.connect(() => {
             confirm_image.set_from_icon_name("security-high-symbolic", IconSize.DIALOG);
             confirm_title_label.label = _("Verify key");
@@ -53,6 +60,7 @@ public class ManageKeyDialog : Gtk.Dialog {
             current_response = Database.IdentityMetaTable.TrustLevel.VERIFIED;
         });
 
+        verify_no_button.label = _("Not matching");
         verify_no_button.clicked.connect(() => {
             return_to_main = false;
             confirm_image.set_from_icon_name("dialog-warning-symbolic", IconSize.DIALOG);

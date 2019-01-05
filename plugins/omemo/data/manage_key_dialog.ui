@@ -81,7 +81,7 @@
                                 <property name="orientation">vertical</property>
                                 <property name="valign">center</property>
                                 <child>
-                                    <object class="GtkLabel">
+                                    <object class="GtkLabel" id="compare_fingerprint_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">Compare the fingerprint, character by character, with the one shown on your contacts device.</property>
                                         <property name="wrap">True</property>

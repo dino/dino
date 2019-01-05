@@ -17,7 +17,11 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private bool own = false;
     private int own_id = 0;
 
+    [GtkChild] private Label automatically_accept_new_keys;
     [GtkChild] private Label automatically_accept_new_descr;
+    [GtkChild] private Label own_key_label;
+    [GtkChild] private Label new_keys_label;
+    [GtkChild] private Label keys_label;
     [GtkChild] private Box own_fingerprint_container;
     [GtkChild] private Label own_fingerprint_label;
     [GtkChild] private Box new_keys_container;
@@ -35,11 +39,17 @@ public class ContactDetailsDialog : Gtk.Dialog {
         this.plugin = plugin;
         this.account = account;
         this.jid = jid;
+        this.title = _("OMEMO Key Management");
 
         (get_header_bar() as HeaderBar).set_subtitle(jid.bare_jid.to_string());
 
         int identity_id = plugin.db.identity.get_id(account.id);
         if (identity_id < 0) return;
+
+        automatically_accept_new_keys.label = _("Automatically accept new keys");
+        automatically_accept_new_descr.label = _("When this contact adds new encryption keys to their account, automatically accept them.");
+        new_keys_label.label = _("New keys");
+        keys_label.label = _("Associated keys");
 
          // Dialog opened from the account settings menu
          // Show the fingerprint for this device separately with buttons for a qrcode and to copy
@@ -48,6 +58,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
 
             automatically_accept_new_descr.label = _("When you add new encryption keys to your account, automatically accept them.");
+            own_key_label.label = _("Own key");
 
             own_fingerprint_container.visible = true;
 
