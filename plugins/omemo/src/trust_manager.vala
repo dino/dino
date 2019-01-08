@@ -205,7 +205,7 @@ public class TrustManager {
             if (content_item != null && device_id != 0) {
                 Jid jid = content_item.jid;
                 if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                    jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
+                    jid = message.real_jid;
                 }
 
                 int identity_id = db.identity.get_id(conversation.account.id);
@@ -253,7 +253,8 @@ public class TrustManager {
             StanzaNode? _header = encrypted.get_subnode("header");
             if (_header == null) return false;
             StanzaNode header = (!)_header;
-            if (header.get_attribute_int("sid") <= 0) return false;
+            int sid = header.get_attribute_int("sid");
+            if (sid <= 0) return false;
             foreach (StanzaNode key_node in header.get_subnodes("key")) {
                 if (key_node.get_attribute_int("rid") == store.local_registration_id) {
                     try {
@@ -264,38 +265,59 @@ public class TrustManager {
                         uint8[] key;
                         uint8[] ciphertext = Base64.decode((!)payload);
                         uint8[] iv = Base64.decode((!)iv_node);
-                        Jid jid = stanza.from;
-                        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                            jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
-                        }
-
-                        Address address = new Address(jid.bare_jid.to_string(), header.get_attribute_int("sid"));
-                        if (key_node.get_attribute_bool("prekey")) {
-                            PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
-                            SessionCipher cipher = store.create_session_cipher(address);
-                            key = cipher.decrypt_pre_key_signal_message(msg);
+                        Gee.List<Jid> possible_jids = new ArrayList<Jid>();
+                        if (conversation.type_ == Conversation.Type.CHAT) {
+                            possible_jids.add(stanza.from);
                         } else {
-                            SignalMessage msg = Plugin.get_context().deserialize_signal_message(Base64.decode((!)key_node_content));
-                            SessionCipher cipher = store.create_session_cipher(address);
-                            key = cipher.decrypt_signal_message(msg);
-                        }   
-                        //address.device_id = 0; // TODO: Hack to have address obj live longer
-
-                        if (key.length >= 32) {
-                            int authtaglength = key.length - 16; 
-                            uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
-                            uint8[] new_key = new uint8[16];
-                            Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
-                            Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
-                            Memory.copy(new_key, key, 16);
-                            ciphertext = new_ciphertext;
-                            key = new_key;
+                            Jid? real_jid = message.real_jid;
+                            if (real_jid != null) {
+                                possible_jids.add(real_jid);
+                            } else {
+                                foreach (Row row in db.identity_meta.get_with_device_id(sid)) {
+                                    possible_jids.add(new Jid(row[db.identity_meta.address_name]));
+                                }
+                            }
                         }
 
-                        message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
-                        message_device_id_map[message] = address.device_id;
-                        message.encryption = Encryption.OMEMO;
-                        flag.decrypted = true;
+                        foreach (Jid possible_jid in possible_jids) {
+                            try {
+                                Address address = new Address(possible_jid.bare_jid.to_string(), header.get_attribute_int("sid"));
+                                if (key_node.get_attribute_bool("prekey")) {
+                                    PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
+                                    SessionCipher cipher = store.create_session_cipher(address);
+                                    key = cipher.decrypt_pre_key_signal_message(msg);
+                                } else {
+                                    SignalMessage msg = Plugin.get_context().deserialize_signal_message(Base64.decode((!)key_node_content));
+                                    SessionCipher cipher = store.create_session_cipher(address);
+                                    key = cipher.decrypt_signal_message(msg);
+                                }
+                                //address.device_id = 0; // TODO: Hack to have address obj live longer
+
+                                if (key.length >= 32) {
+                                    int authtaglength = key.length - 16;
+                                    uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
+                                    uint8[] new_key = new uint8[16];
+                                    Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
+                                    Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
+                                    Memory.copy(new_key, key, 16);
+                                    ciphertext = new_ciphertext;
+                                    key = new_key;
+                                }
+
+                                message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
+                                message_device_id_map[message] = address.device_id;
+                                message.encryption = Encryption.OMEMO;
+                                flag.decrypted = true;
+                            } catch (Error e) {
+                                continue;
+                            }
+
+                            // If we figured out which real jid a message comes from due to
+                            if (conversation.type_ == Conversation.Type.GROUPCHAT && message.real_jid == null) {
+                                message.real_jid = possible_jid;
+                            }
+                            break;
+                        }
                     } catch (Error e) {
                         if (Plugin.DEBUG) print(@"OMEMO: Signal error while decrypting message: $(e.message)\n");
                     }

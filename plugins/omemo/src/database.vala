@@ -98,6 +98,10 @@ public class Database : Qlite.Database {
             return this.with_address(identity_id, address_name)
                 .with(this.device_id, "=", device_id).single().row().inner;
         }
+
+        public QueryBuilder get_with_device_id(int device_id) {
+            return select().with(this.device_id, "=", device_id);
+        }
     }
 
 
