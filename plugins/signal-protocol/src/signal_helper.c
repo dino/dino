@@ -228,9 +228,17 @@ int signal_vala_encrypt(signal_buffer **output,
 
     if (gcry_cipher_open(&ctx, algo, mode, 0)) return SG_ERR_UNKNOWN;
 
+    signal_buffer* padded = 0;
+    signal_buffer* out_buf = 0;
     goto no_error;
 error:
     gcry_cipher_close(ctx);
+    if (padded != 0) {
+        signal_buffer_bzero_free(padded);
+    }
+    if (out_buf != 0) {
+        signal_buffer_free(out_buf);
+    }
     return SG_ERR_UNKNOWN;
 no_error:
 
@@ -255,19 +263,30 @@ no_error:
     }
 
     size_t padded_len = plaintext_len + pad_len;
-    uint8_t padded[padded_len];
-    memset(padded + plaintext_len, pad_len, pad_len);
-    memcpy(padded, plaintext, plaintext_len);
-
-    uint8_t out_buf[padded_len + tag_len];
-
-    if (gcry_cipher_encrypt(ctx, out_buf, padded_len, padded, padded_len)) goto error;
-
-    if (tag_len > 0) {
-        if (gcry_cipher_gettag(ctx, out_buf + padded_len, tag_len)) goto error;
+    padded = signal_buffer_alloc(padded_len);
+    if (padded == 0) {
+        goto error;
     }
 
-    *output = signal_buffer_create(out_buf, padded_len + tag_len);
+    memset(signal_buffer_data(padded) + plaintext_len, pad_len, pad_len);
+    memcpy(signal_buffer_data(padded), plaintext, plaintext_len);
+
+    out_buf = signal_buffer_alloc(padded_len + tag_len);
+    if (out_buf == 0) {
+        goto error;
+    }
+
+    if (gcry_cipher_encrypt(ctx, signal_buffer_data(out_buf), padded_len, signal_buffer_data(padded), padded_len)) goto error;
+
+    if (tag_len > 0) {
+        if (gcry_cipher_gettag(ctx, signal_buffer_data(out_buf) + padded_len, tag_len)) goto error;
+    }
+
+    *output = out_buf;
+    out_buf = 0;
+
+    signal_buffer_bzero_free(padded);
+    padded = 0;
 
     gcry_cipher_close(ctx);
     return SG_SUCCESS;
@@ -280,6 +299,7 @@ int signal_vala_decrypt(signal_buffer **output,
         const uint8_t *ciphertext, size_t ciphertext_len,
         void *user_data) {
     int algo, mode;
+    *output = 0;
     if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_UNKNOWN;
     if (ciphertext_len == 0) return SG_ERR_UNKNOWN;
 
@@ -289,9 +309,13 @@ int signal_vala_decrypt(signal_buffer **output,
 
     if (gcry_cipher_open(&ctx, algo, mode, 0)) return SG_ERR_UNKNOWN;
 
+    signal_buffer* out_buf = 0;
     goto no_error;
 error:
     gcry_cipher_close(ctx);
+    if (out_buf != 0) {
+        signal_buffer_bzero_free(output);
+    }
     return SG_ERR_UNKNOWN;
 no_error:
 
@@ -312,24 +336,30 @@ no_error:
             tag_len = 16;
             break;
         default:
-            return SG_ERR_UNKNOWN;
+            goto error;
     }
 
     size_t padded_len = ciphertext_len - tag_len;
-    uint8_t out_buf[padded_len];
+    out_buf = signal_buffer_alloc(padded_len);
+    if (out_buf == 0) {
+        goto error;
+    }
 
-    if (gcry_cipher_decrypt(ctx, out_buf, padded_len, ciphertext, padded_len)) goto error;
+    if (gcry_cipher_decrypt(ctx, signal_buffer_data(out_buf), signal_buffer_len(out_buf), ciphertext, padded_len)) goto error;
 
     if (tag_len > 0) {
         if (gcry_cipher_checktag(ctx, ciphertext + padded_len, tag_len)) goto error;
     }
 
     if (pkcs_pad) {
-        uint8_t pad_len = out_buf[padded_len - 1];
+        uint8_t pad_len = signal_buffer_data(out_buf)[padded_len - 1];
         if (pad_len > 16 || pad_len > padded_len) goto error;
-        *output = signal_buffer_create(out_buf, padded_len - pad_len);
+        *output = signal_buffer_create(signal_buffer_data(out_buf), padded_len - pad_len);
+        signal_buffer_bzero_free(out_buf);
+        out_buf = 0;
     } else {
-        *output = signal_buffer_create(out_buf, padded_len);
+        *output = out_buf;
+        out_buf = 0;
     }
 
     gcry_cipher_close(ctx);
