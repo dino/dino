@@ -142,41 +142,19 @@ done
 if [ -d ".git" ]; then
     git submodule update --init 2>/dev/null
 else
-    tmp=0
-    for i in $(cat .gitmodules | grep -n submodule | awk -F ':' '{print $1}') $(wc -l .gitmodules | awk '{print $1}'); do
-        if ! [ $tmp -eq 0 ]; then
-            name=$(cat .gitmodules | head -n $tmp | tail -n 1 | awk -F '"' '{print $2}')
-            def=$(cat .gitmodules | head -n $i | tail -n $(expr "$i" - "$tmp") | awk -F ' ' '{print $1 $2 $3}')
-            path=$(echo "$def" | grep '^path=' | awk -F '=' '{print $2}')
-            url=$(echo "$def" | grep '^url=' | awk -F '=' '{print $2}')
-            branch=$(echo "$def" | grep '^branch=' | awk -F '=' '{print $2}')
+    path=$(git config --file .gitmodules --get-regexp path|cut -d" " -f2)
+    url=$(git config --file .gitmodules --get-regexp url|cut -d" " -f2)
+    branch=$(git config --file .gitmodules --get-regexp branch|cut -d" " -f2)
 
-            if ! ls "$path"/* >/dev/null 2>/dev/null; then
-                git=$(which git)
-                if ! [ $? -eq 0 ] || ! [ -x $git ]; then
-                    echo "Failed retrieving missing files"
-                    exit 5
-                fi
-                res=$(git clone "$url" "$path" 2>&1)
-                if ! [ $? -eq 0 ] || ! [ -d $path ]; then
-                    echo "Failed retrieving missing files: $res"
-                    exit 5
-                fi
-                if [ -n "$branch" ]; then
-                    olddir="$(pwd)"
-                    cd "$path"
-                    res=$(git checkout "$branch" 2>&1)
-                    if ! [ $? -eq 0 ]; then
-                        echo "Failed retrieving missing files: $res"
-                        exit 5
-                    fi
-                    cd "$olddir"
-                fi
-                echo "Submodule path '$path': checked out '$branch' (via git clone)"
-            fi
+    if ! ls "$path"/* >/dev/null 2>/dev/null; then
+        ! command -v git > /dev/null && echo "Missing git command" >&2 && exit 5
+
+        if ! git clone --quiet --branch "$branch" "$url" "$path" > /dev/null; then
+            echo "Failed retrieving libsignal-protocol-c"
+            exit 5
         fi
-        tmp=$i
-    done
+        echo "Submodule path '$path': checked out '$branch' (via git clone)"
+    fi
 fi
 
 if [ "$FETCH_ONLY" = "yes" ]; then exit 0; fi
