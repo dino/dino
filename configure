@@ -1,6 +1,6 @@
 #!/bin/sh
 
-OPTS=`getopt -o "h" --long \
+if ! OPTS=$(getopt -o "h" --long \
 help,fetch-only,no-debug,disable-fast-vapi,with-tests,\
 enable-plugin:,disable-plugin:,\
 prefix:,program-prefix:,exec-prefix:,lib-suffix:,\
@@ -8,9 +8,10 @@ bindir:,libdir:,includedir:,datadir:,\
 host:,build:,\
 sbindir:,sysconfdir:,libexecdir:,localstatedir:,sharedstatedir:,mandir:,infodir:,\
 enable-dependency-tracking,disable-dependency-tracking,\
-disable-silent-rules,disable-maintainer-mode\
- -n './configure' -- "$@"`
-if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+disable-silent-rules,disable-maintainer-mode -n './configure' -- "$@")
+then
+    echo "Failed parsing options." >&2 && exit 1
+fi
 
 eval set -- "$OPTS"
 
