@@ -102,6 +102,7 @@ EOF
 }
 
 while true; do
+    # shellcheck disable=SC2034
     case "$1" in
         --prefix ) PREFIX="$2"; shift; shift ;;
         --enable-plugin ) if [ -z "$ENABLED_PLUGINS" ]; then ENABLED_PLUGINS="$2"; else ENABLED_PLUGINS="$ENABLED_PLUGINS;$2"; fi; shift; shift ;;
