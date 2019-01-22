@@ -4,6 +4,7 @@ find_packages(ENGINE_PACKAGES REQUIRED
     GIO
     GLib
     GObject
+    GSasl
     ICU
 )
 
@@ -110,6 +111,7 @@ DEFINITIONS
     ${ENGINE_DEFINITIONS}
 OPTIONS
     ${ENGINE_EXTRA_OPTIONS}
+    --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi
 )
 
 add_custom_target(xmpp-vala-vapi
