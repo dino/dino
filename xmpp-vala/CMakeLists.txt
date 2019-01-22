@@ -4,6 +4,7 @@ find_packages(ENGINE_PACKAGES REQUIRED
     GIO
     GLib
     GObject
+    GSasl
 )
 
 vala_precompile(ENGINE_VALA_C
@@ -78,6 +79,8 @@ GENERATE_VAPI
     xmpp-vala
 GENERATE_HEADER
     xmpp-vala
+OPTIONS
+    --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi
 )
 
 add_custom_target(xmpp-vala-vapi
