@@ -229,6 +229,6 @@ namespace Gsasl {
 	public static Gsasl.Result nonce ([CCode (array_length_type = "size_t")] uint8[] data);
 	public static Gsasl.Result md5 ([CCode (array_length_type = "size_t")] uint8[] in, out uint8 @out[16]);
 	public static Gsasl.Result hmac_md5 ([CCode (array_length_type = "size_t")] uint8[] key, [CCode (array_length_type = "size_t")] uint8[] in, uint8 outhash[16]);
-	public static Gsasl.Result sha1 ([CCode (array_length_type = "size_t")] uint8[] in, out uint8 @out[20]);
-	public static Gsasl.Result hmac_sha1 ([CCode (array_length_type = "size_t")] uint8[] key, [CCode (array_length_type = "size_t")] uint8[] in, uint8 outhash[20]);
+	public static Gsasl.Result sha1 ([CCode (array_length_type = "size_t")] uint8[] in, [CCode (array_length = false)] out uint8 @out[20]);
+	public static Gsasl.Result hmac_sha1 ([CCode (array_length_type = "size_t")] uint8[] key, [CCode (array_length_type = "size_t")] uint8[] in, [CCode (array_length = false)] out uint8 outhash[20]);
 }

@@ -1,3 +1,5 @@
+using Gsasl;
+
 namespace Xmpp.Sasl {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-sasl";
 
@@ -45,14 +47,6 @@ namespace Xmpp.Sasl {
         }
 
         private static size_t SHA1_SIZE = 20;
-
-        private static uint8[] sha1(uint8[] data) {
-            Checksum checksum = new Checksum(ChecksumType.SHA1);
-            checksum.update(data, data.length);
-            uint8[] res = new uint8[SHA1_SIZE];
-            checksum.get_digest(res, ref SHA1_SIZE);
-            return res;
-        }
 
         private static uint8[] hmac_sha1(uint8[] key, uint8[] data) {
             Hmac hmac = new Hmac(ChecksumType.SHA1, key);
@@ -136,12 +130,16 @@ namespace Xmpp.Sasl {
                         if (!server_nonce.has_prefix(flag.client_nonce)) return;
                         string client_final_message_bare = @"c=biws,r=$server_nonce";
                         uint8[] salted_password = pbkdf2_sha1(flag.password, salt, iterations);
-                        uint8[] client_key = hmac_sha1(salted_password, (uint8[]) "Client Key".to_utf8());
-                        uint8[] stored_key = sha1(client_key);
+                        uint8[] client_key = new uint8[SHA1_SIZE];
+                        if (Gsasl.hmac_sha1(salted_password, (uint8[]) "Client Key".to_utf8(), out client_key) != Gsasl.Result.OK) return;
+                        uint8[] stored_key = new uint8[SHA1_SIZE];
+                        if (Gsasl.sha1(client_key, out stored_key) != Gsasl.Result.OK) return;
                         string auth_message = @"n=$(flag.name),r=$(flag.client_nonce),$challenge,$client_final_message_bare";
-                        uint8[] client_signature = hmac_sha1(stored_key, (uint8[]) auth_message.to_utf8());
+                        uint8[] client_signature = new uint8[SHA1_SIZE];
+                        if (Gsasl.hmac_sha1(stored_key, (uint8[]) auth_message.to_utf8(), out client_signature) != Gsasl.Result.OK) return;
                         uint8[] client_proof = xor(client_key, client_signature);
-                        uint8[] server_key = hmac_sha1(salted_password, (uint8[]) "Server Key".to_utf8());
+                        uint8[] server_key = new uint8[SHA1_SIZE];
+                        if (Gsasl.hmac_sha1(salted_password, (uint8[]) "Server Key".to_utf8(), out server_key) != Gsasl.Result.OK) return;
                         flag.server_signature = hmac_sha1(server_key, (uint8[]) auth_message.to_utf8());
                         string client_final_message = @"$client_final_message_bare,p=$(Base64.encode(client_proof))";
                         stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
