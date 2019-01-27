@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiConversationListTitlebar" parent="GtkHeaderBar">
+    <template class="DinoUiConversationListTitlebar" parent="GtkBox">
         <property name="hexpand">False</property>
-        <property name="show_close_button">True</property>
         <property name="visible">True</property>
         <style>
-            <class name="dino-left"/>
+            <class name="dino-header-left"/>
         </style>
         <child>
-            <object class="GtkMenuButton" id="add_button">
+            <object class="GtkBox">
+                <property name="margin">5</property>
+                <property name="hexpand">True</property>
                 <property name="visible">True</property>
                 <child>
-                    <object class="GtkImage">
+                    <object class="GtkMenuButton" id="add_button">
+                        <property name="relief">none</property>
                         <property name="visible">True</property>
-                        <property name="icon-name">list-add-symbolic</property>
-                        <property name="icon-size">1</property>
+                        <child>
+                            <object class="GtkImage">
+                                <property name="visible">True</property>
+                                <property name="icon-name">list-add-symbolic</property>
+                                <property name="icon-size">1</property>
+                            </object>
+                        </child>
                     </object>
+                    <packing>
+                        <property name="pack_type">start</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkMenuButton" id="menu_button">
+                        <property name="relief">none</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkImage">
+                                <property name="visible">True</property>
+                                <property name="icon-name">open-menu-symbolic</property>
+                                <property name="icon-size">1</property>
+                            </object>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="pack_type">end</property>
+                    </packing>
                 </child>
             </object>
-            <packing>
-                <property name="pack_type">start</property>
-            </packing>
         </child>
     </template>
 </interface>

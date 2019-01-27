@@ -1,82 +1,66 @@
 using Gtk;
 using Gee;
+using Pango;
 
 using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class ConversationTitlebar : Gtk.HeaderBar {
+public class ConversationTitlebar : Gtk.Box {
+
+    public string? title {
+        get { return title_label.label; }
+        set { this.title_label.label = value; }
+    }
+
+    public string? subtitle {
+        get { return subtitle_label.label; }
+        set {
+            this.subtitle_label.label = "<span size='small'>" + value + "</span>";
+            this.subtitle_label.visible = (value != null);
+        }
+    }
 
     private StreamInteractor stream_interactor;
-    private Window window;
     private Conversation? conversation;
-    private Gee.List<Plugins.ConversationTitlebarWidget> widgets = new ArrayList<Plugins.ConversationTitlebarWidget>();
+
+    private Box content_box = new Box(Orientation.HORIZONTAL, 0) { margin=5, margin_start=15, margin_end=5, hexpand=true, visible=true };
+    private Label title_label = new Label("") { visible=true };
+    private Label subtitle_label = new Label("") { use_markup=true, ellipsize=EllipsizeMode.END, visible=false };
     public GlobalSearchButton search_button = new GlobalSearchButton() { visible = true };
 
-    public ConversationTitlebar(StreamInteractor stream_interactor, Window window) {
-        this.stream_interactor = stream_interactor;
-        this.window = window;
+    construct {
+        this.add(content_box);
 
-        this.get_style_context().add_class("dino-right");
-        show_close_button = true;
+        Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true, visible=true };
+        content_box.add(titles_box);
+
+        titles_box.add(title_label);
+        subtitle_label.attributes = new AttrList();
+        subtitle_label.get_style_context().add_class("dim-label");
+        titles_box.add(subtitle_label);
+
+        Box placeholder_box = new Box(Orientation.VERTICAL, 0) { visible=true };
+        placeholder_box.add(new Label("") { xalign=0, visible=true });
+        placeholder_box.add(new Label("<span size='small'> </span>") { use_markup=true, xalign=0, visible=true });
+        content_box.add(placeholder_box);
+    }
+
+    public ConversationTitlebar(StreamInteractor stream_interactor) {
+        this.stream_interactor = stream_interactor;
+
+        this.get_style_context().add_class("dino-header-right");
         hexpand = true;
         search_button.set_image(new Gtk.Image.from_icon_name("system-search-symbolic", Gtk.IconSize.MENU) { visible = true });
 
         Application app = GLib.Application.get_default() as Application;
-        app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
-        app.plugin_registry.register_contact_titlebar_entry(new SearchMenuEntry(search_button));
-        app.plugin_registry.register_contact_titlebar_entry(new OccupantsEntry(stream_interactor, window));
-
         foreach(var e in app.plugin_registry.conversation_titlebar_entries) {
             Plugins.ConversationTitlebarWidget widget = e.get_widget(Plugins.WidgetType.GTK);
             if (widget != null) {
-                widgets.add(widget);
-                pack_end((Gtk.Widget)widget);
+                Button gtk_widget = (Gtk.Button)widget;
+                gtk_widget.relief = ReliefStyle.NONE;
+                content_box.add(gtk_widget);
             }
-        }
-
-
-        stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
-            if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_title();
-            }
-        });
-
-        stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
-            if (conversation != null && conversation.counterpart.equals_bare(room.bare_jid) && conversation.account.equals(account)) {
-                update_title();
-            }
-        });
-
-        stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
-            if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_subtitle(subject);
-            }
-        });
-    }
-
-    public void initialize_for_conversation(Conversation conversation) {
-        this.conversation = conversation;
-        update_title();
-        update_subtitle();
-
-        foreach (Plugins.ConversationTitlebarWidget widget in widgets) {
-            widget.set_conversation(conversation);
-        }
-    }
-
-    private void update_title() {
-        set_title(Util.get_conversation_display_name(stream_interactor, conversation));
-    }
-
-    private void update_subtitle(string? subtitle = null) {
-        if (subtitle != null) {
-            set_subtitle(subtitle);
-        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            string subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
-            set_subtitle(subject != "" ? subject : null);
-        } else {
-            set_subtitle(null);
         }
     }
 }

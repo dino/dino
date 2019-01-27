@@ -4,8 +4,8 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/Dino/conversation_list_titlebar.ui")]
-public class ConversationListTitlebar : Gtk.Box {
+[GtkTemplate (ui = "/im/dino/Dino/conversation_list_titlebar_csd.ui")]
+public class ConversationListTitlebarCsd : Gtk.HeaderBar {
 
     public signal void conversation_opened(Conversation conversation);
 
@@ -14,8 +14,12 @@ public class ConversationListTitlebar : Gtk.Box {
 
     private StreamInteractor stream_interactor;
 
-    public ConversationListTitlebar(StreamInteractor stream_interactor, Window window) {
+    public ConversationListTitlebarCsd(StreamInteractor stream_interactor, Window window) {
         this.stream_interactor = stream_interactor;
+
+        custom_title = new Label("Dino") { visible = true, hexpand = true, xalign = 0 };
+        custom_title.get_style_context().add_class("title");
+
         create_add_menu(window);
     }
 

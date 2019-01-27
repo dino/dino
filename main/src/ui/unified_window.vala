@@ -8,22 +8,53 @@ namespace Dino.Ui {
 
 public class UnifiedWindow : Gtk.Window {
 
-    private WelcomePlceholder welcome_placeholder = new WelcomePlceholder() { visible=true };
-    private NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
-    private NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
-    private ChatInput.View chat_input;
-    private ConversationListTitlebar conversation_list_titlebar;
-    private ConversationSelector.View filterable_conversation_list;
-    private ConversationSummary.ConversationView conversation_frame;
-    private ConversationTitlebar conversation_titlebar;
-    private HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
-    private Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
-    private Paned paned;
-    private Revealer goto_end_revealer;
-    private Button goto_end_button;
-    private Revealer search_revealer;
-    private SearchEntry search_entry;
-    private GlobalSearch search_box;
+    public signal void conversation_selected(Conversation conversation);
+
+    public new string? title {
+        get {
+            return Util.use_csd() ? conversation_titlebar_csd.title : conversation_titlebar.title;
+        }
+        set {
+            if (Util.use_csd()) {
+                conversation_titlebar_csd.title = value;
+            } else {
+                conversation_titlebar.title = value;
+            }
+        }
+    }
+
+    public string? subtitle {
+        get {
+            return Util.use_csd() ? conversation_titlebar_csd.subtitle : conversation_titlebar.subtitle;
+        }
+        set {
+            if (Util.use_csd()) {
+                conversation_titlebar_csd.subtitle = value;
+            } else {
+                conversation_titlebar.subtitle = value;
+            }
+        }
+    }
+
+    public WelcomePlceholder welcome_placeholder = new WelcomePlceholder() { visible=true };
+    public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
+    public NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
+    public ChatInput.View chat_input;
+    public ConversationListTitlebar conversation_list_titlebar;
+    public ConversationListTitlebarCsd conversation_list_titlebar_csd;
+    public ConversationSelector.View filterable_conversation_list;
+    public ConversationSummary.ConversationView conversation_frame;
+    public ConversationTitlebar conversation_titlebar;
+    public ConversationTitlebarCsd conversation_titlebar_csd;
+    public HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
+    public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL, visible=true };
+    public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
+    public Paned paned;
+    public Revealer goto_end_revealer;
+    public Button goto_end_button;
+    public Revealer search_revealer;
+    public SearchEntry search_entry;
+    public GlobalSearch search_box;
     private Stack stack = new Stack() { visible=true };
 
     private StreamInteractor stream_interactor;
@@ -37,118 +68,34 @@ public class UnifiedWindow : Gtk.Window {
         this.stream_interactor = stream_interactor;
         this.db = db;
 
-        restore_window_size();
-
-
         this.get_style_context().add_class("dino-main");
         setup_headerbar();
         setup_unified();
         setup_stack();
 
-        var vadjustment = conversation_frame.scrolled.vadjustment;
-        vadjustment.notify["value"].connect(() => {
-            goto_end_revealer.reveal_child = vadjustment.value <  vadjustment.upper - vadjustment.page_size;
-        });
-        goto_end_button.clicked.connect(() => {
-            conversation_frame.initialize_for_conversation(conversation);
-        });
-
-        conversation_titlebar.search_button.clicked.connect(() => {
-            search_revealer.reveal_child = conversation_titlebar.search_button.active;
-        });
-        search_revealer.notify["child-revealed"].connect(() => {
-            if (search_revealer.child_revealed) {
-                if (conversation_frame.conversation != null && search_box.search_entry.text == "") {
-                    reset_search_entry();
-                }
-                search_box.search_entry.grab_focus();
-            }
-        });
-        search_box.selected_item.connect((item) => {
-            on_conversation_selected(item.conversation, false, false);
-            conversation_frame.initialize_around_message(item.conversation, item);
-            close_search();
-        });
-        event.connect((event) => {
-            if (event.type == EventType.BUTTON_PRESS) {
-                int dest_x, dest_y;
-                bool ret = search_box.translate_coordinates(this, 0, 0, out dest_x, out dest_y);
-                int geometry_x, geometry_y, geometry_width, geometry_height;
-                this.get_window().get_geometry(out geometry_x, out geometry_y, out geometry_width, out geometry_height);
-                if (ret && event.button.x_root - geometry_x < dest_x || event.button.y_root - geometry_y < dest_y) {
-                    close_search();
-                }
-            } else if (event.type == EventType.KEY_RELEASE) {
-                if (event.key.keyval == Gdk.Key.Escape) {
-                    close_search();
-                }
-            }
-            return false;
-        });
-
-        paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-
-        focus_in_event.connect(on_focus_in_event);
-        focus_out_event.connect(on_focus_out_event);
-
         stream_interactor.account_added.connect((account) => { check_stack(true); });
         stream_interactor.account_removed.connect((account) => { check_stack(); });
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(() => check_stack());
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => check_stack());
-        welcome_placeholder.primary_button.clicked.connect(() => {
-            ManageAccounts.AddAccountDialog dialog = new ManageAccounts.AddAccountDialog(stream_interactor);
-            dialog.set_transient_for(app.get_active_window());
-            dialog.present();
-        });
-        accounts_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("accounts", null); });
-        conversations_placeholder.primary_button.clicked.connect(() => { get_application().activate_action("add_chat", null); });
-        conversations_placeholder.secondary_button.clicked.connect(() => { get_application().activate_action("add_conference", null); });
-        filterable_conversation_list.conversation_list.conversation_selected.connect((conversation) => on_conversation_selected(conversation));
-        conversation_list_titlebar.conversation_opened.connect((conversation) => on_conversation_selected(conversation));
+
+        paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         check_stack();
-    }
-
-    private void reset_search_entry() {
-        if (conversation_frame.conversation != null) {
-            switch (conversation.type_) {
-                case Conversation.Type.CHAT:
-                case Conversation.Type.GROUPCHAT_PM:
-                    search_box.search_entry.text = @"with:$(conversation.counterpart) ";
-                    break;
-                case Conversation.Type.GROUPCHAT:
-                    search_box.search_entry.text = @"in:$(conversation.counterpart) ";
-                    break;
-            }
-        }
     }
 
     public void on_conversation_selected(Conversation conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
         if (this.conversation == null || !this.conversation.equals(conversation)) {
             this.conversation = conversation;
-            stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
-            conversation.active = true; // only for conversation_selected
-            filterable_conversation_list.conversation_list.on_conversation_selected(conversation); // only for conversation_opened
+            conversation_selected(conversation);
 
-            if (do_reset_search) {
-                reset_search_entry();
-            }
-            chat_input.initialize_for_conversation(conversation);
-            if (default_initialize_conversation) {
-                conversation_frame.initialize_for_conversation(conversation);
-            }
-            conversation_titlebar.initialize_for_conversation(conversation);
+
         }
-    }
-
-    private void close_search() {
-        conversation_titlebar.search_button.active = false;
-        search_revealer.reveal_child = false;
     }
 
     private void setup_unified() {
         Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
         paned = (Paned) builder.get_object("paned");
+        box.add(paned);
         chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
         conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
         filterable_conversation_list = ((ConversationSelector.View) builder.get_object("conversation_list")).init(stream_interactor);
@@ -160,27 +107,36 @@ public class UnifiedWindow : Gtk.Window {
     }
 
     private void setup_headerbar() {
-        conversation_titlebar = new ConversationTitlebar(stream_interactor, this) { visible=true };
-        conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
-        headerbar_paned.pack1(conversation_list_titlebar, false, false);
-        headerbar_paned.pack2(conversation_titlebar, true, false);
+        if (Util.use_csd()) {
+            conversation_titlebar_csd = new ConversationTitlebarCsd(stream_interactor, this) { visible=true };
+            conversation_list_titlebar_csd = new ConversationListTitlebarCsd(stream_interactor, this) { visible=true };
+            headerbar_paned.pack1(conversation_list_titlebar_csd, false, false);
+            headerbar_paned.pack2(conversation_titlebar_csd, true, false);
 
-        // Distribute start/end decoration_layout buttons to left/right headerbar. Ensure app menu fallback.
-        Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
-        if (gtk_settings != null) {
-            if (!gtk_settings.gtk_decoration_layout.contains("menu")) {
-                gtk_settings.gtk_decoration_layout = "menu:" + gtk_settings.gtk_decoration_layout;
+            // Distribute start/end decoration_layout buttons to left/right headerbar. Ensure app menu fallback.
+            Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
+            if (gtk_settings != null) {
+                if (!gtk_settings.gtk_decoration_layout.contains("menu")) {
+                    gtk_settings.gtk_decoration_layout = "menu:" + gtk_settings.gtk_decoration_layout;
+                }
+                string[] decoration_layout = gtk_settings.gtk_decoration_layout.split(":");
+                if (decoration_layout.length == 2) {
+                    conversation_list_titlebar_csd.decoration_layout = decoration_layout[0] + ":";
+                    conversation_titlebar_csd.decoration_layout = ":" + decoration_layout[1];
+                }
             }
-            string[] decoration_layout = gtk_settings.gtk_decoration_layout.split(":");
-            if (decoration_layout.length == 2) {
-                conversation_list_titlebar.decoration_layout = decoration_layout[0] + ":";
-                conversation_titlebar.decoration_layout = ":" + decoration_layout[1];
-            }
+        } else {
+            conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
+            conversation_titlebar = new ConversationTitlebar(stream_interactor) { visible=true };
+            headerbar_paned.pack1(conversation_list_titlebar, false, false);
+            headerbar_paned.pack2(conversation_titlebar, true, false);
+
+            box.add(headerbar_paned);
         }
     }
 
     private void setup_stack() {
-        stack.add_named(paned, "main");
+        stack.add_named(box, "main");
         stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
         stack.add_named(conversations_placeholder, "conversations_placeholder");
@@ -192,53 +148,23 @@ public class UnifiedWindow : Gtk.Window {
         if (!know_exists && accounts.size == 0) {
             if (db.get_accounts().size == 0) {
                 stack.set_visible_child_name("welcome_placeholder");
-                set_titlebar(placeholder_headerbar);
             } else {
                 stack.set_visible_child_name("accounts_placeholder");
+            }
+            if (Util.use_csd()) {
                 set_titlebar(placeholder_headerbar);
             }
         } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
             stack.set_visible_child_name("conversations_placeholder");
-            set_titlebar(placeholder_headerbar);
+            if (Util.use_csd()) {
+                set_titlebar(placeholder_headerbar);
+            }
         } else {
             stack.set_visible_child_name("main");
-            set_titlebar(headerbar_paned);
+            if (Util.use_csd()) {
+                set_titlebar(headerbar_paned);
+            }
         }
-    }
-
-    private void restore_window_size() {
-        default_width = app.settings.current_width;
-        default_height = app.settings.current_height;
-        if (app.settings.is_maximized) this.maximize();
-        if (app.settings.position_x != -1 && app.settings.position_y != -1) {
-            move(app.settings.position_x, app.settings.position_y);
-        }
-
-        delete_event.connect(() => {
-            int x, y;
-            get_position(out x, out y);
-            app.settings.position_x = x;
-            app.settings.position_y = y;
-
-            int width, height;
-            get_size(out width, out height);
-            app.settings.current_width = width;
-            app.settings.current_height = height;
-
-            app.settings.is_maximized = is_maximized;
-            return false;
-        });
-    }
-
-    private bool on_focus_in_event() {
-        stream_interactor.get_module(ChatInteraction.IDENTITY).on_window_focus_in(conversation);
-        urgency_hint = false;
-        return false;
-    }
-
-    private bool on_focus_out_event() {
-        stream_interactor.get_module(ChatInteraction.IDENTITY).on_window_focus_out(conversation);
-        return false;
     }
 }
 

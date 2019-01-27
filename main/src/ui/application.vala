@@ -7,6 +7,7 @@ using Xmpp;
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private Notifications notifications;
     private UnifiedWindow window;
+    private UnifiedWindowController controller;
 
     public Database db { get; set; }
     public Dino.Entities.Settings settings { get; set; }
@@ -28,8 +29,10 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         activate.connect(() => {
             if (window == null) {
-                create_set_app_menu();
+                controller = new UnifiedWindowController(this, stream_interactor, db);
                 window = new UnifiedWindow(this, stream_interactor, db);
+                controller.set_window(window);
+
                 notifications = new Notifications(stream_interactor, window);
                 notifications.start();
                 notifications.conversation_selected.connect((conversation) => window.on_conversation_selected(conversation));
@@ -79,6 +82,19 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     }
 
     private void create_actions() {
+        SimpleAction accounts_action = new SimpleAction("accounts", null);
+        accounts_action.activate.connect(show_accounts_window);
+        add_action(accounts_action);
+
+        SimpleAction settings_action = new SimpleAction("settings", null);
+        settings_action.activate.connect(show_settings_window);
+        add_action(settings_action);
+
+        SimpleAction quit_action = new SimpleAction("quit", null);
+        quit_action.activate.connect(quit);
+        add_action(quit_action);
+        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
+
         SimpleAction open_conversation_action = new SimpleAction("open-conversation", VariantType.INT32);
         open_conversation_action.activate.connect((variant) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
@@ -94,6 +110,26 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             stream_interactor.get_module(PresenceManager.IDENTITY).deny_subscription(conversation.account, conversation.counterpart);
         });
         add_action(deny_subscription_action);
+
+        SimpleAction contacts_action = new SimpleAction("add_chat", null);
+        contacts_action.activate.connect(() => {
+            AddChatDialog add_chat_dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
+            add_chat_dialog.set_transient_for(window);
+            add_chat_dialog.added.connect((conversation) => {
+                window.on_conversation_selected(conversation);
+            });
+            add_chat_dialog.present();
+        });
+        add_action(contacts_action);
+
+        SimpleAction conference_action = new SimpleAction("add_conference", null);
+        conference_action.activate.connect(() => {
+            AddConferenceDialog add_conference_dialog = new AddConferenceDialog(stream_interactor);
+            add_conference_dialog.set_transient_for(window);
+            add_conference_dialog.conversation_opened.connect(conversation => controller.select_conversation(conversation));
+            add_conference_dialog.present();
+        });
+        add_action(conference_action);
     }
 
     private void show_accounts_window() {
@@ -108,26 +144,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SettingsDialog dialog = new SettingsDialog();
         dialog.set_transient_for(get_active_window());
         dialog.present();
-    }
-
-    private void create_set_app_menu() {
-        SimpleAction accounts_action = new SimpleAction("accounts", null);
-        accounts_action.activate.connect(show_accounts_window);
-        add_action(accounts_action);
-
-        SimpleAction settings_action = new SimpleAction("settings", null);
-        settings_action.activate.connect(show_settings_window);
-        add_action(settings_action);
-
-        SimpleAction quit_action = new SimpleAction("quit", null);
-        quit_action.activate.connect(quit);
-        add_action(quit_action);
-        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
-
-        Builder builder = new Builder.from_resource("/im/dino/Dino/menu_app.ui");
-        MenuModel menu = builder.get_object("menu_app") as MenuModel;
-
-        set_app_menu(menu);
     }
 }
 

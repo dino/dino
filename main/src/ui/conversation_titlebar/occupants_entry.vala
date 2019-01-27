@@ -8,17 +8,19 @@ class OccupantsEntry : Plugins.ConversationTitlebarEntry, Object {
     public string id { get { return "occupants"; } }
 
     StreamInteractor stream_interactor;
-    Window window;
+    OccupantsWidget widget;
 
-    public OccupantsEntry(StreamInteractor stream_interactor, Window window) {
+    public OccupantsEntry(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-        this.window = window;
     }
 
     public double order { get { return 3; } }
     public Plugins.ConversationTitlebarWidget? get_widget(Plugins.WidgetType type) {
         if (type == Plugins.WidgetType.GTK) {
-            return new OccupantsWidget(stream_interactor, window) { visible=true };
+            if (widget == null) {
+                widget = new OccupantsWidget(stream_interactor) { visible=true };
+            }
+            return widget;
         }
         return null;
     }
@@ -28,14 +30,12 @@ class OccupantsWidget : MenuButton, Plugins.ConversationTitlebarWidget {
 
     private Conversation? conversation;
     private StreamInteractor stream_interactor;
-    private Window window;
     private OccupantMenu.View menu = null;
 
-    public OccupantsWidget(StreamInteractor stream_interactor, Window window) {
+    public OccupantsWidget(StreamInteractor stream_interactor) {
         image = new Image.from_icon_name("system-users-symbolic", IconSize.MENU);
 
         this.stream_interactor = stream_interactor;
-        this.window = window;
         set_use_popover(true);
     }
 
@@ -44,7 +44,7 @@ class OccupantsWidget : MenuButton, Plugins.ConversationTitlebarWidget {
 
         visible = conversation.type_ == Conversation.Type.GROUPCHAT;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            OccupantMenu.View new_menu = new OccupantMenu.View(stream_interactor, window, conversation);
+            OccupantMenu.View new_menu = new OccupantMenu.View(stream_interactor, conversation);
             set_popover(new_menu);
             if (menu != null) menu.destroy();
             menu = new_menu;

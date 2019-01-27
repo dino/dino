@@ -264,4 +264,8 @@ public int get_only_emoji_count(string markup_text) {
     return emoji_no;
 }
 
+public bool use_csd() {
+    return Environment.get_variable("GTK_CSD") != "0";
+}
+
 }

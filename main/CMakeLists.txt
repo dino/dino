@@ -32,6 +32,7 @@ set(RESOURCE_LIST
     chat_input.ui
     contact_details_dialog.ui
     conversation_list_titlebar.ui
+    conversation_list_titlebar_csd.ui
     global_search.ui
     conversation_selector/view.ui
     conversation_selector/chat_row_tooltip.ui
@@ -100,6 +101,7 @@ SOURCES
     src/ui/contact_details/dialog.vala
     src/ui/contact_details/muc_config_form_provider.vala
     src/ui/conversation_list_titlebar.vala
+    src/ui/conversation_list_titlebar_csd.vala
     src/ui/global_search.vala
     src/ui/conversation_selector/conversation_row.vala
     src/ui/conversation_selector/list.vala
@@ -115,6 +117,7 @@ SOURCES
     src/ui/conversation_titlebar/occupants_entry.vala
     src/ui/conversation_titlebar/search_entry.vala
     src/ui/conversation_titlebar/view.vala
+    src/ui/conversation_titlebar/view_csd.vala
     src/ui/manage_accounts/account_row.vala
     src/ui/manage_accounts/add_account_dialog.vala
     src/ui/manage_accounts/dialog.vala
@@ -124,6 +127,7 @@ SOURCES
     src/ui/occupant_menu/view.vala
     src/ui/settings_dialog.vala
     src/ui/unified_window.vala
+    src/ui/unified_window_controller.vala
     src/ui/util/accounts_combo_box.vala
     src/ui/util/data_forms.vala
     src/ui/util/helper.vala

@@ -3,6 +3,14 @@
  * It provides sane defaults for things that are very Dino-specific.
  */
 
+window.dino-main .dino-header-right {
+    background: @theme_base_color;
+}
+
+window.dino-main .dino-header-left {
+    background: @insensitive_bg_color;
+}
+
 window.dino-main headerbar.dino-left label.title {
     opacity: 0;
     font-size: 0;

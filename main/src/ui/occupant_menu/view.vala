@@ -15,7 +15,7 @@ public class View : Popover {
     private ListBox invite_list;
     private Box? jid_menu = null;
 
-    public View(StreamInteractor stream_interactor, Window window, Conversation conversation) {
+    public View(StreamInteractor stream_interactor, Conversation conversation) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
 
@@ -31,7 +31,7 @@ public class View : Popover {
             Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
             acc_list.add(conversation.account);
             SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
-            add_chat_dialog.set_transient_for(window);
+            add_chat_dialog.set_transient_for((Window) get_toplevel());
             add_chat_dialog.title = _("Invite to Conference");
             add_chat_dialog.ok_button.label = _("Invite");
             add_chat_dialog.selected.connect((account, jid) => {

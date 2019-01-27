@@ -11,9 +11,9 @@ public class Registry {
     internal Gee.List<NotificationPopulator> notification_populators = new ArrayList<NotificationPopulator>();
     internal Gee.Collection<ConversationTitlebarEntry> conversation_titlebar_entries = new Gee.TreeSet<ConversationTitlebarEntry>((a, b) => {
         if (a.order < b.order) {
-            return -1;
-        } else if (a.order > b.order) {
             return 1;
+        } else if (a.order > b.order) {
+            return -1;
         } else {
             return 0;
         }

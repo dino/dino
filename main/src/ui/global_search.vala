@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/Dino/global_search.ui")]
-class GlobalSearch : Overlay {
+public class GlobalSearch : Overlay {
     public signal void selected_item(MessageItem item);
     private StreamInteractor stream_interactor;
     private string search = "";
