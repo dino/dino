@@ -121,7 +121,7 @@ namespace Gsasl {
 		ALLOW_UNASSIGNED
 	}
 
-	[Compact, CCode (cname = "Gsasl", lower_case_cprefix = "gsasl_", destroy_function = "gsasl_done")]
+	[Compact, CCode (cname = "Gsasl", lower_case_cprefix = "gsasl_", destroy_function = "gsasl_done", has_copy_function = false)]
 	public class Context {
 		private Context ();
 		public static Gsasl.Result init (out Gsasl.Context ctx);
@@ -141,20 +141,17 @@ namespace Gsasl {
 
 		public Gsasl.Result client_mechlist (out string mechlist);
 		public Gsasl.Result client_support_p (string name);
-		public unowned string client_suggest_mechanism (string mechlist);
+		public unowned string? client_suggest_mechanism (string mechlist);
 
 		public Gsasl.Result server_mechlist (out string mechlist);
 		public Gsasl.Result server_support_p (string name);
 
-		public Gsasl.Result client_start (string mech);
-		public Gsasl.Result server_start ();
+		public Gsasl.Result client_start (string mech, out Session? session);
+		public Gsasl.Result server_start (string mech, out Session? session);
 	}
 
-	[CCode (cname = "Gsasl_session", lower_case_cprefix = "gsasl_", destroy_function = "gsasl_finish")]
-	public struct Session {
-		[CCode (cname = "gsasl_client_start", instance_pos = -1)]
-		public Session (Gsasl.Context context, string mech);
-
+	[CCode (cname = "Gsasl_session", lower_case_cprefix = "gsasl_", free_function = "gsasl_finish", has_copy_function = false), Compact]
+	public class Session {
 		public void* hook {
 			[CCode (cname = "gsasl_session_hook_set")] get;
 			[CCode (cname = "gsasl_session_hook_get")] set;
@@ -174,7 +171,7 @@ namespace Gsasl {
 		public unowned string get_property_fast (Gsasl.Property prop);
 
 		public Gsasl.Result step ([CCode (array_length_type = "size_t")] uint[] input, [CCode (array_length_type = "size_t")] out uint8[] output);
-		public Gsasl.Result step64 (string b64input, out string b64output);
+		public Gsasl.Result step64 (string? b64input, out string b64output);
 
 		public Gsasl.Result encode ([CCode (array_length_type = "size_t")] uint8[] input, [CCode (array_length_type = "size_t")] out uint8[] output);
 		public Gsasl.Result decode ([CCode (array_length_type = "size_t")] uint8[] input, [CCode (array_length_type = "size_t")] out uint8[] output);

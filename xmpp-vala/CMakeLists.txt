@@ -118,6 +118,7 @@ add_custom_target(xmpp-vala-vapi
 DEPENDS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.deps
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/libgsasl.vapi
 )
 
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="xmpp-vala")

@@ -167,6 +167,9 @@ public class ConnectionManager : Object {
         stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, null));
         });
+        stream.get_module(Sasl.Module.IDENTITY).sasl_error.connect((stream, description) => {
+            set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, description));
+        });
         stream.get_module(Tls.Module.IDENTITY).invalid_certificate.connect(() => {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, null) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
         });
