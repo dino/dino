@@ -152,12 +152,11 @@ public class Dialog : Gtk.Dialog {
     private void show_select_avatar() {
         PreviewFileChooserNative chooser = new PreviewFileChooserNative(_("Select avatar"), this, FileChooserAction.OPEN, _("Select"), _("Cancel"));
         FileFilter filter = new FileFilter();
-        filter.add_pattern("*.png");
-        filter.add_pattern("*.jpg");
-        filter.add_pattern("*.jpeg");
-        filter.add_pattern("*.gif");
-        filter.add_pattern("*.svg");
-        filter.add_pattern("*.bmp");
+        foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
+            foreach (string mime_type in pixbuf_format.get_mime_types()) {
+                filter.add_mime_type(mime_type);
+            }
+        }
         filter.set_filter_name(_("Images"));
         chooser.add_filter(filter);
 
