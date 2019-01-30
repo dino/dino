@@ -14,6 +14,7 @@ public class XmppStream {
     public const string NS_URI = "http://etherx.jabber.org/streams";
 
     public Jid remote_name;
+    public string remote_hostname;
     public XmppLog log = new XmppLog();
     public StanzaNode? features { get; private set; default = new StanzaNode.build("features", NS_URI); }
 
@@ -64,11 +65,16 @@ public class XmppStream {
             }
             IOStream? stream = null;
             if (best_provider != null) {
-                stream = yield best_provider.connect(this);
+                stream = yield best_provider.connect(this, out remote_hostname);
             }
             if (stream == null) {
                 debug("Connecting to %s, xmpp-client, tcp (fallback)", this.remote_name.to_string());
                 stream = yield (new SocketClient()).connect_to_host_async(this.remote_name.to_string(), 5222);
+                GLibFixes.Resolver resolver = GLibFixes.Resolver.get_default();
+                GLib.List<SrvTarget>? xmpp_target = yield resolver.lookup_service_async("xmpp-client", "tcp", this.remote_name.to_string(), null);
+                SrvTarget? srv_target = xmpp_target.nth(0).data;
+                remote_hostname = srv_target.get_hostname();
+                stream = yield (new SocketClient()).connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
             }
             if (stream == null) {
                 throw new IOStreamError.CONNECT("client.connect() returned null");
@@ -380,7 +386,7 @@ public abstract class XmppStreamNegotiationModule : XmppStreamModule {
 
 public abstract class ConnectionProvider {
     public async abstract int? get_priority(Jid remote_name);
-    public async abstract IOStream? connect(XmppStream stream);
+    public async abstract IOStream? connect(XmppStream stream, out string hostname);
     public abstract string get_id();
 }
 
@@ -400,11 +406,12 @@ public class StartTlsConnectionProvider : ConnectionProvider {
         return xmpp_target.nth(0).data.get_priority();
     }
 
-    public async override IOStream? connect(XmppStream stream) {
+    public async override IOStream? connect(XmppStream stream, out string hostname) {
         try {
             SocketClient client = new SocketClient();
-            debug("Connecting to %s %i (starttls)", srv_target.get_hostname(), srv_target.get_port());
-            return yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
+            hostname = srv_target.get_hostname();
+            debug("Connecting to %s %i (starttls)", hostname, srv_target.get_port());
+            return yield client.connect_to_host_async(hostname, srv_target.get_port());
         } catch (Error e) {
             return null;
         }

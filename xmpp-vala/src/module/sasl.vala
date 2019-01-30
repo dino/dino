@@ -89,6 +89,7 @@ namespace Xmpp.Sasl {
                 return;
             }
             flag.sasl_session.set_property(Gsasl.Property.AUTHID, name);
+            flag.sasl_session.set_property(Gsasl.Property.HOSTNAME, stream.remote_hostname);
             flag.sasl_session.set_property(Gsasl.Property.SERVICE, "xmpp");
             flag.sasl_session.set_property(Gsasl.Property.PASSWORD, password);
             string output;
