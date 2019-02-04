@@ -257,8 +257,8 @@ public class StanzaReader {
             ns_state = ns_state.pop();
             return res;
         } catch (XmlError e) {
-            uint8[] buffer_cpy = buffer.copy();
-            buffer_cpy += '\0';
+            uint8[] buffer_cpy = new uint8[buffer.length + 1];
+            Memory.copy(buffer_cpy, buffer, buffer.length);
             warning("XmlError at: %s".printf((string)buffer_cpy) + "\n");
             throw e;
         }
