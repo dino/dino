@@ -121,6 +121,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             add_chat_dialog.present();
         });
         add_action(contacts_action);
+        set_accels_for_action("app.add_chat", new string[]{"<Ctrl>T"});
 
         SimpleAction conference_action = new SimpleAction("add_conference", null);
         conference_action.activate.connect(() => {
@@ -130,6 +131,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             add_conference_dialog.present();
         });
         add_action(conference_action);
+        set_accels_for_action("app.add_conference", new string[]{"<Ctrl>G"});
     }
 
     private void show_accounts_window() {
