@@ -34,6 +34,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             if (state == ConnectionManager.ConnectionState.CONNECTED) send_unsent_messages(account);
         });
         received_pipeline.connect(new DeduplicateMessageListener(db));
+        received_pipeline.connect(new FilterMessageListener());
         received_pipeline.connect(new StoreMessageListener(stream_interactor));
         received_pipeline.connect(new MamMessageListener(stream_interactor));
         received_pipeline.connect(new SlackMessageListener());
@@ -74,8 +75,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
     }
 
     private async void on_message_received(Account account, Xmpp.MessageStanza message_stanza) {
-        if (message_stanza.body == null) return;
-
         Entities.Message message = yield parse_message_stanza(account, message_stanza);
 
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
@@ -178,9 +177,20 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
-    private class StoreMessageListener : MessageListener {
+    private class FilterMessageListener : MessageListener {
 
         public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT" };
+        public override string action_group { get { return "FILTER_EMPTY"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            return (message.body == null);
+        }
+    }
+
+    private class StoreMessageListener : MessageListener {
+
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT", "FILTER_EMPTY" };
         public override string action_group { get { return "STORE"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
@@ -191,6 +201,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (message.body == null) return true;
             stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
             return false;
         }
