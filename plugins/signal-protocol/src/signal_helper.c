@@ -1,5 +1,4 @@
 #include <signal_helper.h>
-#include <signal_protocol_internal.h>
 
 #include <gcrypt.h>
 
@@ -78,7 +77,10 @@ session_signed_pre_key* session_signed_pre_key_new(uint32_t id, uint64_t timesta
     return res;
 }
 
-
+int signal_vala_randomize(uint8_t *data, size_t len) {
+    gcry_randomize(data, len, GCRY_STRONG_RANDOM);
+    return SG_SUCCESS;
+}
 
 int signal_vala_random_generator(uint8_t *data, size_t len, void *user_data) {
     gcry_randomize(data, len, GCRY_STRONG_RANDOM);

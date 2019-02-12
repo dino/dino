@@ -20,6 +20,7 @@ int32_t signal_protocol_address_get_device_id(signal_protocol_address* self);
 session_pre_key* session_pre_key_new(uint32_t pre_key_id, ec_key_pair* pair, int* err);
 session_signed_pre_key* session_signed_pre_key_new(uint32_t id, uint64_t timestamp, ec_key_pair* pair, uint8_t* key, int key_len, int* err);
 
+int signal_vala_randomize(uint8_t *data, size_t len);
 int signal_vala_random_generator(uint8_t *data, size_t len, void *user_data);
 int signal_vala_hmac_sha256_init(void **hmac_context, const uint8_t *key, size_t key_len, void *user_data);
 int signal_vala_hmac_sha256_update(void *hmac_context, const uint8_t *data, size_t data_len, void *user_data);

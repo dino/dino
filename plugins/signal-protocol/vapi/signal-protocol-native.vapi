@@ -269,6 +269,6 @@ namespace Signal {
 
     [CCode (cname = "setup_signal_vala_crypto_provider", cheader_filename = "signal_helper.h")]
     public static void setup_crypto_provider(NativeContext context);
-    [CCode (cname = "signal_crypto_random", cheader_filename = "signal_protocol_internal.h")]
-    public static int native_random(NativeContext context, uint8[] data);
+    [CCode (cname = "signal_vala_randomize", cheader_filename = "signal_helper.h")]
+    public static int native_random(uint8[] data);
 }

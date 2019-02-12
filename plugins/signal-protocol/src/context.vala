@@ -30,7 +30,7 @@ public class Context {
     }
 
     public void randomize(uint8[] data) throws Error {
-        throw_by_code(Signal.native_random(native_context, data));
+        throw_by_code(Signal.native_random(data));
     }
 
     public SignedPreKeyRecord generate_signed_pre_key(IdentityKeyPair identity_key_pair, int32 id, uint64 timestamp = 0) throws Error {
