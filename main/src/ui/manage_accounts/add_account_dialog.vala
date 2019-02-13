@@ -215,7 +215,7 @@ public class AddAccountDialog : Gtk.Dialog {
     private async void on_sign_in_jid_continue_button_clicked() {
         Jid jid = new Jid(jid_entry.get_text());
         sign_in_jid_continue_stack.visible_child_name = "spinner";
-        Register.ServerAvailabilityReturn server_status = yield stream_interactor.get_module(Register.IDENTITY).check_server_availability(jid);
+        Register.ServerAvailabilityReturn server_status = yield Register.check_server_availability(jid);
         sign_in_jid_continue_stack.visible_child_name = "label";
         if (server_status.available) {
             show_sign_in_password();

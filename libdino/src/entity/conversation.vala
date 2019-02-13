@@ -105,10 +105,12 @@ public class Conversation : Object {
         Xmpp.XmppStream? stream = stream_interactor.get_stream(account);
         if (!Application.get_default().settings.notifications) return NotifySetting.OFF;
         if (type_ == Type.GROUPCHAT) {
-            Xmpp.Xep.Muc.Flag flag = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY);
+            Xmpp.Xep.Muc.Flag? flag = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY);
             if (flag != null) {
                 bool members_only = flag.has_room_feature(counterpart.bare_jid, Xmpp.Xep.Muc.Feature.MEMBERS_ONLY);
                 return members_only ? NotifySetting.ON : NotifySetting.HIGHLIGHT;
+            } else {
+                return NotifySetting.OFF;
             }
         }
         return NotifySetting.ON;

@@ -232,7 +232,7 @@ public class ConnectionManager : Object {
 
     private void check_reconnect(Account account) {
         bool acked = false;
-        DateTime? last_activity_was = connections[account].last_activity != null ? connections[account].last_activity : null;
+        DateTime? last_activity_was = connections[account].last_activity;
 
         XmppStream stream = connections[account].stream;
         stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.bare_jid.domain_jid, () => {

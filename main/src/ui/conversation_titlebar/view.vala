@@ -22,7 +22,6 @@ public class ConversationTitlebar : Gtk.Box {
     }
 
     private StreamInteractor stream_interactor;
-    private Conversation? conversation;
 
     private Box content_box = new Box(Orientation.HORIZONTAL, 0) { margin=5, margin_start=15, margin_end=5, hexpand=true, visible=true };
     private Label title_label = new Label("") { visible=true };

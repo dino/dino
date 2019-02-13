@@ -195,7 +195,7 @@ public class Dialog : Gtk.Dialog {
         active_switch.set_active(account.enabled);
         jid_label.label = account.bare_jid.to_string();
 
-        alias_hybrid.text = account.alias;
+        alias_hybrid.text = account.alias ?? "";
         password_hybrid.entry.input_purpose = InputPurpose.PASSWORD;
         password_hybrid.text = account.password;
 

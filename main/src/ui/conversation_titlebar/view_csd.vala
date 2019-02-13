@@ -9,7 +9,6 @@ public class ConversationTitlebarCsd : Gtk.HeaderBar {
 
     private StreamInteractor stream_interactor;
     private Window window;
-    private Conversation? conversation;
 
     public ConversationTitlebarCsd(StreamInteractor stream_interactor, Window window) {
         this.stream_interactor = stream_interactor;
