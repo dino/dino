@@ -44,7 +44,6 @@ public class FileTransfer : Object {
             input_stream_ = value;
         }
     }
-    public OutputStream output_stream { get; set; }
 
     public string file_name { get; set; }
     private string? server_file_name_ = null;

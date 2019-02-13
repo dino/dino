@@ -106,14 +106,14 @@ public class FileProvider : Dino.FileProvider, Object {
             var session = new Soup.Session();
             Soup.Request request = session.request(url);
 
-            file_transfer.input_stream = decrypt_file(yield request.send_async(null), url_body);
+            file_transfer.input_stream = yield decrypt_file(yield request.send_async(null), url_body);
             file_transfer.encryption = Encryption.OMEMO;
 
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            os.splice(file_transfer.input_stream, 0);
+            yield os.splice_async(file_transfer.input_stream, 0);
             os.close();
             file_transfer.path = file.get_basename();
-            file_transfer.input_stream = file.read();
+            file_transfer.input_stream = yield file.read_async();
 
             file_transfer.state = FileTransfer.State.COMPLETE;
         } catch (Error e) {
@@ -121,7 +121,7 @@ public class FileProvider : Dino.FileProvider, Object {
         }
     }
 
-    public InputStream? decrypt_file(InputStream input_stream, string url) {
+    public async InputStream? decrypt_file(InputStream input_stream, string url) {
         // Decode IV and key
         MatchInfo match_info;
         this.url_regex.match(url, 0, out match_info);
@@ -140,7 +140,7 @@ public class FileProvider : Dino.FileProvider, Object {
         Array<uint8> data = new Array<uint8>(false, true, 0);
         size_t len = -1;
         do {
-            len = input_stream.read(buf);
+            len = yield input_stream.read_async(buf);
             data.append_vals(buf, (uint) len);
         } while(len > 0);
 

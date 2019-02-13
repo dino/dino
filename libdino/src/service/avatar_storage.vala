@@ -17,7 +17,7 @@ public class AvatarStorage : Xep.PixbufStorage, Object {
         try {
             if (file.query_exists()) file.delete(); //TODO y?
             DataOutputStream fos = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
-            fos.write(data);
+            fos.write_async.begin(data);
         } catch (Error e) {
             // Ignore: we failed in storing, so we refuse to display later...
         }

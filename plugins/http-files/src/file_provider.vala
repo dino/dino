@@ -114,10 +114,10 @@ public class FileProvider : Dino.FileProvider, Object {
             }
 
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            os.splice(file_transfer.input_stream, 0);
+            yield os.splice_async(file_transfer.input_stream, 0);
             os.close();
             file_transfer.path = file.get_basename();
-            file_transfer.input_stream = file.read();
+            file_transfer.input_stream = yield file.read_async();
 
             file_transfer.state = FileTransfer.State.COMPLETE;
         } catch (Error e) {

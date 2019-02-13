@@ -34,7 +34,7 @@ public class FileManager : StreamInteractionModule, Object {
         DirUtils.create_with_parents(get_storage_dir(), 0700);
     }
 
-    public void send_file(string uri, Conversation conversation) {
+    public async void send_file(string uri, Conversation conversation) {
         FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
         file_transfer.counterpart = conversation.counterpart;
@@ -49,11 +49,11 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.file_name = file_info.get_display_name();
             file_transfer.mime_type = file_info.get_content_type();
             file_transfer.size = (int)file_info.get_size();
-            file_transfer.input_stream = file.read();
+            file_transfer.input_stream = yield file.read_async();
         } catch (Error e) {
             file_transfer.state = FileTransfer.State.FAILED;
         }
-        save_file(file_transfer);
+        yield save_file(file_transfer);
 
         file_transfer.persist(db);
 
@@ -162,16 +162,16 @@ public class FileManager : StreamInteractionModule, Object {
         }
     }
 
-    private void save_file(FileTransfer file_transfer) {
+    private async void save_file(FileTransfer file_transfer) {
         try {
             string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            os.splice(file_transfer.input_stream, 0);
+            yield os.splice_async(file_transfer.input_stream, 0);
             os.close();
             file_transfer.state = FileTransfer.State.COMPLETE;
             file_transfer.path = filename;
-            file_transfer.input_stream = file.read();
+            file_transfer.input_stream = yield file.read_async();
         } catch (Error e) {
             file_transfer.state = FileTransfer.State.FAILED;
         }

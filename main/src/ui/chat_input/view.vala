@@ -54,7 +54,7 @@ public class View : Box {
             //        }
             if (chooser.run() == Gtk.ResponseType.ACCEPT) {
                 string uri = chooser.get_filename();
-                stream_interactor.get_module(FileManager.IDENTITY).send_file(uri, conversation);
+                stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(uri, conversation);
             }
         });
 
