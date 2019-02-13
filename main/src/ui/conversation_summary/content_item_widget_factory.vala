@@ -107,11 +107,17 @@ public class FileItemWidgetGenerator : WidgetGenerator, Object {
     public Object get_widget(ContentItem item) {
         FileItem file_item = item as FileItem;
         FileTransfer transfer = file_item.file_transfer;
-        if (transfer.mime_type != null && transfer.mime_type.has_prefix("image")) {
-            return getImageWidget(transfer);
-        } else {
-            return getDefaultWidget(transfer);
+
+        if (transfer.mime_type != null) {
+            foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
+                foreach (string mime_type in pixbuf_format.get_mime_types()) {
+                    if (mime_type == transfer.mime_type)
+                        return getImageWidget(transfer);
+                    }
+            }
         }
+
+        return getDefaultWidget(transfer);
     }
 
     private Widget getImageWidget(FileTransfer file_transfer) {
@@ -122,6 +128,8 @@ public class FileItemWidgetGenerator : WidgetGenerator, Object {
         } catch (Error error) {
             return null;
         }
+
+        pixbuf = pixbuf.apply_embedded_orientation();
 
         int max_scaled_height = MAX_HEIGHT * image.scale_factor;
         if (pixbuf.height > max_scaled_height) {
