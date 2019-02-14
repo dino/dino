@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Luxembourgish (Dino)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
-"PO-Revision-Date: 2018-11-17 14:07+0000\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"PO-Revision-Date: 2019-01-05 11:06+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "translations/lb/>\n"
 "Language: lb\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
@@ -69,7 +69,7 @@ msgstr "Avatar auswielen"
 msgid "Select"
 msgstr "Auswielen"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
@@ -77,36 +77,36 @@ msgstr "Auswielen"
 msgid "Cancel"
 msgstr "Ofbriechen"
 
-#: main/src/ui/manage_accounts/dialog.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:160
 msgid "Images"
 msgstr "Biller"
 
-#: main/src/ui/manage_accounts/dialog.vala:165
+#: main/src/ui/manage_accounts/dialog.vala:164
 msgid "All files"
 msgstr "All Dateien"
 
-#: main/src/ui/manage_accounts/dialog.vala:222
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connecting…"
 msgstr "Verbannen…"
 
-#: main/src/ui/manage_accounts/dialog.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Connected"
 msgstr "Verbonnen"
 
-#: main/src/ui/manage_accounts/dialog.vala:226
+#: main/src/ui/manage_accounts/dialog.vala:225
 msgid "Disconnected"
 msgstr "Getrennt"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Wrong password"
 msgstr "Falsch Passwuert"
 
-#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Invalid TLS certificate"
 msgstr "Invaliden TLS Zertifikat"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
-#: main/src/ui/manage_accounts/dialog.vala:242
+#: main/src/ui/manage_accounts/dialog.vala:239
+#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "Feeler"
 
@@ -131,7 +131,7 @@ msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:254
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Falsche Benotzernumm oder Passwuert"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
@@ -202,11 +202,11 @@ msgstr[1] "%i Minutten hier"
 msgid "Just now"
 msgstr "Just elo"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 msgid "Join Conference"
 msgstr "Konferenz bäitrieden"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
@@ -222,7 +222,7 @@ msgid "Save"
 msgstr "Späicheren"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Kanal bäitrieden"
 
@@ -234,7 +234,7 @@ msgid "Next"
 msgstr "Nächst"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Konversatioun starten"
@@ -275,27 +275,27 @@ msgstr "Wiel een anere Spëtznumm"
 msgid "Too many occupants in room"
 msgstr "De Raum huet ze vill Benotzer"
 
-#: main/src/ui/unified_window.vala:247
+#: main/src/ui/unified_window.vala:173
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Wëllkomm bei Dino!"
 
-#: main/src/ui/unified_window.vala:248
+#: main/src/ui/unified_window.vala:174
 msgid "Communicate happiness."
 msgstr ""
 
-#: main/src/ui/unified_window.vala:249
-msgid "Setup account"
-msgstr ""
+#: main/src/ui/unified_window.vala:175
+msgid "Set up account"
+msgstr "Konto opsetzen"
 
-#: main/src/ui/unified_window.vala:257
+#: main/src/ui/unified_window.vala:183
 msgid "No active accounts"
 msgstr "Keng Kontoen aktiv"
 
-#: main/src/ui/unified_window.vala:258
+#: main/src/ui/unified_window.vala:184
 msgid "Manage accounts"
 msgstr "Kontoe managen"
 
-#: main/src/ui/unified_window.vala:267
+#: main/src/ui/unified_window.vala:193
 msgid "No active conversations"
 msgstr "Keng Conversatiounen aktiv"
 
@@ -336,7 +336,7 @@ msgstr "huet opgehalen ze tippen"
 msgid "Message too long"
 msgstr "Noriicht ze laang"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:212
 msgid "File"
 msgstr "Datei"
 
@@ -599,16 +599,16 @@ msgstr "Account kreéieren"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "Konnt keng geséchert Verbindung opbauen"
 
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:268
 msgid "Back"
-msgstr ""
+msgstr "Zeréck"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
-msgstr ""
+msgstr "Connectéieren"
 
 #: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
@@ -637,10 +637,6 @@ msgstr ""
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Onverschlësselt"
-
-#: main/data/menu_app.ui:17
-msgid "Quit"
-msgstr "Zoumaachen"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -712,6 +708,9 @@ msgstr "Keng Message fonnt"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Iwwerpréif Schreifweis oder läsch Filteren"
+
+#~ msgid "Quit"
+#~ msgstr "Zoumaachen"
 
 #~ msgid "JID should be of the form “user@example.com”"
 #~ msgstr "JID sollt folgend Form hunn „user@example.com“"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
-"PO-Revision-Date: 2018-11-17 14:07+0000\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"PO-Revision-Date: 2019-01-19 14:20+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
@@ -74,7 +74,7 @@ msgstr "Choisir un avatar"
 msgid "Select"
 msgstr "Choisir"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
@@ -82,36 +82,36 @@ msgstr "Choisir"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: main/src/ui/manage_accounts/dialog.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:160
 msgid "Images"
 msgstr "Images"
 
-#: main/src/ui/manage_accounts/dialog.vala:165
+#: main/src/ui/manage_accounts/dialog.vala:164
 msgid "All files"
 msgstr "Tous les fichiers"
 
-#: main/src/ui/manage_accounts/dialog.vala:222
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connecting…"
 msgstr "Connexion…"
 
-#: main/src/ui/manage_accounts/dialog.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Connected"
 msgstr "Connecté"
 
-#: main/src/ui/manage_accounts/dialog.vala:226
+#: main/src/ui/manage_accounts/dialog.vala:225
 msgid "Disconnected"
 msgstr "Déconnecté"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Wrong password"
 msgstr "Mauvais mot de passe"
 
-#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Invalid TLS certificate"
 msgstr "Certificat TLS invalide"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
-#: main/src/ui/manage_accounts/dialog.vala:242
+#: main/src/ui/manage_accounts/dialog.vala:239
+#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "Erreur"
 
@@ -122,21 +122,21 @@ msgstr "Ajouter un compte"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:156
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Se connecter à %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "You can now start using %s"
-msgstr ""
+msgstr "Vous pouvez maintenant utiliser %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:237
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "N'a pas pu se connecter à %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:254
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Nom d'utilisateur ou mot de passe incorrect"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
@@ -207,11 +207,11 @@ msgstr[1] "Il y a %i minutes"
 msgid "Just now"
 msgstr "À l’instant"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 msgid "Join Conference"
 msgstr "Rejoindre une conférence"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
@@ -227,7 +227,7 @@ msgid "Save"
 msgstr "Sauver"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Rejoindre un salon"
 
@@ -239,7 +239,7 @@ msgid "Next"
 msgstr "Suivant"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Commencer une discussion"
@@ -280,27 +280,27 @@ msgstr "Choisissez un autre pseudo"
 msgid "Too many occupants in room"
 msgstr "Trop de participants dans ce salon"
 
-#: main/src/ui/unified_window.vala:247
+#: main/src/ui/unified_window.vala:173
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Bienvenue dans Dino !"
 
-#: main/src/ui/unified_window.vala:248
+#: main/src/ui/unified_window.vala:174
 msgid "Communicate happiness."
-msgstr ""
+msgstr "Communiquer avec bonheur."
 
-#: main/src/ui/unified_window.vala:249
-msgid "Setup account"
-msgstr ""
+#: main/src/ui/unified_window.vala:175
+msgid "Set up account"
+msgstr "Configurer le compte"
 
-#: main/src/ui/unified_window.vala:257
+#: main/src/ui/unified_window.vala:183
 msgid "No active accounts"
 msgstr "Aucun compte actif"
 
-#: main/src/ui/unified_window.vala:258
+#: main/src/ui/unified_window.vala:184
 msgid "Manage accounts"
 msgstr "Gérer les comptes"
 
-#: main/src/ui/unified_window.vala:267
+#: main/src/ui/unified_window.vala:193
 msgid "No active conversations"
 msgstr "Aucune discussion en cours"
 
@@ -341,7 +341,7 @@ msgstr "a arrêté d’écrire"
 msgid "Message too long"
 msgstr "Message trop long"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:212
 msgid "File"
 msgstr "Fichier"
 
@@ -604,16 +604,16 @@ msgstr "Créer un compte"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "N'a pas pu établir une connexion sécurisée"
 
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:268
 msgid "Back"
-msgstr ""
+msgstr "Retour"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
-msgstr ""
+msgstr "Connexion"
 
 #: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
@@ -633,19 +633,15 @@ msgstr "Choisissez un autre serveur"
 
 #: main/data/manage_accounts/add_account_dialog.ui:544
 msgid "All set up!"
-msgstr ""
+msgstr "Tout est prêt !"
 
 #: main/data/manage_accounts/add_account_dialog.ui:579
 msgid "Finish"
-msgstr ""
+msgstr "Terminer"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Non-chiffré"
-
-#: main/data/menu_app.ui:17
-msgid "Quit"
-msgstr "Quitter"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -718,6 +714,9 @@ msgstr "Aucun message correspondant"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Vérifiez l’orthographe ou essayez de supprimer des filtres"
+
+#~ msgid "Quit"
+#~ msgstr "Quitter"
 
 #~ msgid "JID should be of the form “user@example.com”"
 #~ msgstr "Le JID doit être de la forme « utilisateur@example.com »"

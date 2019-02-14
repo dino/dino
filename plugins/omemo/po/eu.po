@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
-"PO-Revision-Date: 2018-11-17 14:07+0000\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"PO-Revision-Date: 2019-01-05 11:06+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "eu/>\n"
 "Language: eu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: plugins/omemo/src/device_notification_populator.vala:74
 msgid "Manage"
@@ -102,6 +102,8 @@ msgstr "Gakoa onartu"
 msgid ""
 "Start accepting this key during communication with its associated contact"
 msgstr ""
+"Hasi gako hau onartzen lotuta dagoen kontaktuarekin hitz egiten duzun "
+"bitartean"
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 #: plugins/omemo/src/manage_key_dialog.vala:125

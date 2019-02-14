@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
-"PO-Revision-Date: 2018-11-17 14:07+0000\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"PO-Revision-Date: 2019-01-05 11:06+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
 "translations/ro/>\n"
 "Language: ro\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
@@ -75,7 +75,7 @@ msgstr "Selectare avatar"
 msgid "Select"
 msgstr "Selectare"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
@@ -83,36 +83,36 @@ msgstr "Selectare"
 msgid "Cancel"
 msgstr "Anulare"
 
-#: main/src/ui/manage_accounts/dialog.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:160
 msgid "Images"
 msgstr "Imagini"
 
-#: main/src/ui/manage_accounts/dialog.vala:165
+#: main/src/ui/manage_accounts/dialog.vala:164
 msgid "All files"
 msgstr "Toate fișierele"
 
-#: main/src/ui/manage_accounts/dialog.vala:222
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connecting…"
 msgstr "Conectare…"
 
-#: main/src/ui/manage_accounts/dialog.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Connected"
 msgstr "Conectat"
 
-#: main/src/ui/manage_accounts/dialog.vala:226
+#: main/src/ui/manage_accounts/dialog.vala:225
 msgid "Disconnected"
 msgstr "Deconectat"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Wrong password"
 msgstr "Parolă greșită"
 
-#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Invalid TLS certificate"
 msgstr "Certificat TLS invalid"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
-#: main/src/ui/manage_accounts/dialog.vala:242
+#: main/src/ui/manage_accounts/dialog.vala:239
+#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "Eroare"
 
@@ -123,21 +123,21 @@ msgstr "Adaugă un cont"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:156
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Autentificare în %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "You can now start using %s"
-msgstr ""
+msgstr "Acum puteți utiliza %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:237
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Nu s-a putut face conectarea la %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:254
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Nume utilizator sau parolă greșite"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
@@ -209,11 +209,11 @@ msgstr[2] "Acum %i de minute"
 msgid "Just now"
 msgstr "Chiar acum"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 msgid "Join Conference"
 msgstr "Alătură-te unei conferințe"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
@@ -229,7 +229,7 @@ msgid "Save"
 msgstr "Salvare"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Alătură-te canalului"
 
@@ -241,7 +241,7 @@ msgid "Next"
 msgstr "Următorul"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Pornește o conversație"
@@ -282,27 +282,27 @@ msgstr "Alegeți un nume diferit"
 msgid "Too many occupants in room"
 msgstr "Discuția are prea mulți membrii"
 
-#: main/src/ui/unified_window.vala:247
+#: main/src/ui/unified_window.vala:173
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Bine ați venit la Dino!"
 
-#: main/src/ui/unified_window.vala:248
+#: main/src/ui/unified_window.vala:174
 msgid "Communicate happiness."
 msgstr ""
 
-#: main/src/ui/unified_window.vala:249
-msgid "Setup account"
-msgstr ""
+#: main/src/ui/unified_window.vala:175
+msgid "Set up account"
+msgstr "Configurare cont"
 
-#: main/src/ui/unified_window.vala:257
+#: main/src/ui/unified_window.vala:183
 msgid "No active accounts"
 msgstr "Nici un cont activ"
 
-#: main/src/ui/unified_window.vala:258
+#: main/src/ui/unified_window.vala:184
 msgid "Manage accounts"
 msgstr "Administrare conturi"
 
-#: main/src/ui/unified_window.vala:267
+#: main/src/ui/unified_window.vala:193
 msgid "No active conversations"
 msgstr "Nici o conversație activă"
 
@@ -344,7 +344,7 @@ msgstr "s-a oprit din scris"
 msgid "Message too long"
 msgstr "Mesaj prea lung"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:212
 msgid "File"
 msgstr "Fișier"
 
@@ -607,16 +607,16 @@ msgstr "Creează cont"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "Nu s-a putut stabili o conexiune securizată"
 
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:268
 msgid "Back"
-msgstr ""
+msgstr "Înapoi"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
-msgstr ""
+msgstr "Conectare"
 
 #: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
@@ -636,19 +636,15 @@ msgstr "Alege alt server"
 
 #: main/data/manage_accounts/add_account_dialog.ui:544
 msgid "All set up!"
-msgstr ""
+msgstr "Gata!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:579
 msgid "Finish"
-msgstr ""
+msgstr "Finalizare"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Necriptat"
-
-#: main/data/menu_app.ui:17
-msgid "Quit"
-msgstr "Ieșire"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -721,6 +717,9 @@ msgstr "Nici un mesaj nu se potrivește"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Verificați ortografia sau încercați să eliminați filtre"
+
+#~ msgid "Quit"
+#~ msgstr "Ieșire"
 
 #~ msgid "JID should be of the form “user@example.com”"
 #~ msgstr "JID trebuie să fie de forma “utilizator@exemplu.ro”"

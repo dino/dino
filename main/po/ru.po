@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
-"PO-Revision-Date: 2018-07-01 09:42+0000\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"PO-Revision-Date: 2019-02-04 12:09+0000\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/"
 "translations/ru/>\n"
 "Language: ru\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.1-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "Image sent"
-msgstr ""
+msgstr "Изображение отправлено"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "File sent"
-msgstr ""
+msgstr "Файл отправлен"
 
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "Image received"
-msgstr ""
+msgstr "Получено изображение"
 
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "File received"
-msgstr ""
+msgstr "Получен файл"
 
 #: main/src/ui/notifications.vala:88
 msgid "Subscription request"
@@ -56,7 +56,7 @@ msgstr "Отклонить"
 #: main/src/ui/notifications.vala:101
 #, c-format
 msgid "Failed connecting to %s"
-msgstr ""
+msgstr "Не удалось соединение с %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -75,44 +75,44 @@ msgstr "Выбрать аватар"
 msgid "Select"
 msgstr "Выбрать"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
-msgstr "Отменить"
+msgstr "Отмена"
 
-#: main/src/ui/manage_accounts/dialog.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:160
 msgid "Images"
 msgstr "Изображения"
 
-#: main/src/ui/manage_accounts/dialog.vala:165
+#: main/src/ui/manage_accounts/dialog.vala:164
 msgid "All files"
 msgstr "Все файлы"
 
-#: main/src/ui/manage_accounts/dialog.vala:222
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connecting…"
 msgstr "Подключение…"
 
-#: main/src/ui/manage_accounts/dialog.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Connected"
 msgstr "Подключено"
 
-#: main/src/ui/manage_accounts/dialog.vala:226
+#: main/src/ui/manage_accounts/dialog.vala:225
 msgid "Disconnected"
 msgstr "Отключено"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Wrong password"
 msgstr "Неверный пароль"
 
-#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Invalid TLS certificate"
 msgstr "Недействительный TSL сертификат"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
-#: main/src/ui/manage_accounts/dialog.vala:242
+#: main/src/ui/manage_accounts/dialog.vala:239
+#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "Ошибка"
 
@@ -128,29 +128,29 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "You can now start using %s"
-msgstr ""
+msgstr "Теперь вы можете использовать %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:237
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Не удалось подключиться к %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:254
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Неправильный логин или пароль"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
-msgstr ""
+msgstr "Нет ответа от сервера"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:293
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "Регистрация в %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "Сервер требует авторизацию через сайт"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:298
 msgid "Open Registration"
@@ -209,11 +209,11 @@ msgstr[2] "%i минут назад"
 msgid "Just now"
 msgstr "Только что"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 msgid "Join Conference"
 msgstr "Войти в конференцию"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
@@ -229,7 +229,7 @@ msgid "Save"
 msgstr "Сохранить"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Войти в канал"
 
@@ -241,7 +241,7 @@ msgid "Next"
 msgstr "Следующее"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Начать чат"
@@ -282,27 +282,27 @@ msgstr "Выберите другой никнейм"
 msgid "Too many occupants in room"
 msgstr "Слишком много посетителей в комнате"
 
-#: main/src/ui/unified_window.vala:247
+#: main/src/ui/unified_window.vala:173
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Добро пожаловать в Dino!"
 
-#: main/src/ui/unified_window.vala:248
+#: main/src/ui/unified_window.vala:174
 msgid "Communicate happiness."
 msgstr ""
 
-#: main/src/ui/unified_window.vala:249
-msgid "Setup account"
+#: main/src/ui/unified_window.vala:175
+msgid "Set up account"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:257
+#: main/src/ui/unified_window.vala:183
 msgid "No active accounts"
 msgstr "Нет активных аккаунтов"
 
-#: main/src/ui/unified_window.vala:258
+#: main/src/ui/unified_window.vala:184
 msgid "Manage accounts"
 msgstr "Управление аккаунтами"
 
-#: main/src/ui/unified_window.vala:267
+#: main/src/ui/unified_window.vala:193
 msgid "No active conversations"
 msgstr "Нет активных чатов"
 
@@ -345,7 +345,7 @@ msgstr "перестал печатать"
 msgid "Message too long"
 msgstr "Сообщение слишком длинное"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:212
 msgid "File"
 msgstr "Файл"
 
@@ -424,12 +424,12 @@ msgstr ""
 #: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "В %s"
 
 #: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "С %s"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
@@ -599,21 +599,21 @@ msgstr "Добавить аккаунт"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "Войти"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:329
 msgid "Create account"
-msgstr ""
+msgstr "Создать аккаунт"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "Не удалось установить защищённое соединение"
 
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:268
 msgid "Back"
-msgstr ""
+msgstr "Назад"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
@@ -637,19 +637,15 @@ msgstr ""
 
 #: main/data/manage_accounts/add_account_dialog.ui:544
 msgid "All set up!"
-msgstr ""
+msgstr "Настройка завершена!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:579
 msgid "Finish"
-msgstr ""
+msgstr "Закончить"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Не шифровать"
-
-#: main/data/menu_app.ui:17
-msgid "Quit"
-msgstr "Выйти"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 #, fuzzy
@@ -662,6 +658,9 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino - это современный клиент для чатов с открытым исходным кодом, "
+"направленный на  надёжное и приватное использование Jabber/XMPP на "
+"персональных компьютерах."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -669,6 +668,8 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"Он поддерживает сквозное шифрование через OMEMO и OpenPGP и позволяет "
+"настраивать такие функции, как уведомления о прочтении и наборе сообщений."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
@@ -704,19 +705,22 @@ msgstr "Добавить контакт"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "Нет активного поиска"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "Введите текст, чтобы начать поиск"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "Нет подходящих сообщений"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Проверьте словари или попробуйте изменить критерии поиска"
+
+#~ msgid "Quit"
+#~ msgstr "Выйти"
 
 #~ msgid "JID should be of the form “user@example.com”"
 #~ msgstr "JID должен быть в виде «user@example.com»"

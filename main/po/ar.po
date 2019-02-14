@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
-"PO-Revision-Date: 2018-12-17 22:08+0000\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"PO-Revision-Date: 2019-01-30 16:09+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
 "Language: ar\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
@@ -75,7 +75,7 @@ msgstr "اختيار الصورة الرمزية"
 msgid "Select"
 msgstr "اختيار"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
@@ -83,36 +83,36 @@ msgstr "اختيار"
 msgid "Cancel"
 msgstr "إلغاء"
 
-#: main/src/ui/manage_accounts/dialog.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:160
 msgid "Images"
 msgstr "الصور"
 
-#: main/src/ui/manage_accounts/dialog.vala:165
+#: main/src/ui/manage_accounts/dialog.vala:164
 msgid "All files"
 msgstr "كافة الملفات"
 
-#: main/src/ui/manage_accounts/dialog.vala:222
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connecting…"
 msgstr "الإتصال جارٍ …"
 
-#: main/src/ui/manage_accounts/dialog.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Connected"
 msgstr "متصل"
 
-#: main/src/ui/manage_accounts/dialog.vala:226
+#: main/src/ui/manage_accounts/dialog.vala:225
 msgid "Disconnected"
 msgstr "غير متصل"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Wrong password"
 msgstr "كلمة المرور خاطئة"
 
-#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Invalid TLS certificate"
 msgstr "شهادة TLS غير صالحة"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
-#: main/src/ui/manage_accounts/dialog.vala:242
+#: main/src/ui/manage_accounts/dialog.vala:239
+#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "خطأ"
 
@@ -123,21 +123,21 @@ msgstr "إضافة حساب"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:156
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "الإتصال بـ %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "You can now start using %s"
-msgstr ""
+msgstr "بإمكانك الآن الشروع في استخدام %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:237
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "لا يمكن الإتصال بـ %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:254
 msgid "Wrong username or password"
-msgstr ""
+msgstr "اسم المستخدم أو كلمة السر غير صحيحة"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
@@ -200,23 +200,23 @@ msgstr "%l∶%M %p"
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] ""
+msgstr[0] "منذ دقيقة"
 msgstr[1] "منذ %i د"
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] "منذ %i دقائق"
+msgstr[2] "منذ دقيقتين"
+msgstr[3] "منذ %i د"
+msgstr[4] "منذ %i دقائق"
+msgstr[5] "منذ %i دقيقة"
 
 #: main/src/ui/conversation_selector/conversation_row.vala:272
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
 msgid "Just now"
 msgstr "الآن"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 msgid "Join Conference"
 msgstr "الإنضمام إلى فريق محادثة"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
@@ -232,7 +232,7 @@ msgid "Save"
 msgstr "حفظ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "الإلتحاق بقناة"
 
@@ -244,7 +244,7 @@ msgid "Next"
 msgstr "التالي"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "الشروع في محادثة"
@@ -285,27 +285,27 @@ msgstr "إختر إسما مستعارا آخر"
 msgid "Too many occupants in room"
 msgstr "غرفة المحادثة مكتضة"
 
-#: main/src/ui/unified_window.vala:247
+#: main/src/ui/unified_window.vala:173
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "مرحبا بكم على دينو!"
 
-#: main/src/ui/unified_window.vala:248
+#: main/src/ui/unified_window.vala:174
 msgid "Communicate happiness."
-msgstr ""
+msgstr "أنشر السعادة."
 
-#: main/src/ui/unified_window.vala:249
-msgid "Setup account"
-msgstr ""
+#: main/src/ui/unified_window.vala:175
+msgid "Set up account"
+msgstr "تهيئة الحساب"
 
-#: main/src/ui/unified_window.vala:257
+#: main/src/ui/unified_window.vala:183
 msgid "No active accounts"
 msgstr "ليس هناك أية حسابات نشطة"
 
-#: main/src/ui/unified_window.vala:258
+#: main/src/ui/unified_window.vala:184
 msgid "Manage accounts"
 msgstr "إدارة الحسابات"
 
-#: main/src/ui/unified_window.vala:267
+#: main/src/ui/unified_window.vala:193
 msgid "No active conversations"
 msgstr "ليس هناك أية محادثات نشطة"
 
@@ -350,7 +350,7 @@ msgstr "توقفَ عن الكتابة"
 msgid "Message too long"
 msgstr "الرسالة طويلة جدًا"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:212
 msgid "File"
 msgstr "ملف"
 
@@ -495,7 +495,7 @@ msgstr "تحت الإشراف"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:64
 msgid "Only occupants with voice may send messages"
-msgstr ""
+msgstr "إلا المشاركون الذين يتمتعون بحق الكتابة يمكنهم ارسال الرسائل"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Members only"
@@ -511,7 +511,7 @@ msgstr "إدارة التأريخ"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:72
 msgid "Maximum amount of backlog issued by the room"
-msgstr ""
+msgstr "الحد الأقصى للسجِل المؤرَّخ الصادر عن فريق المحادثة"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Room Configuration"
@@ -613,16 +613,16 @@ msgstr "إنشاء حساب"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "لا يمكن إنشاء اتصال آمن"
 
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:268
 msgid "Back"
-msgstr ""
+msgstr "العودة"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
-msgstr ""
+msgstr "اتصل"
 
 #: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
@@ -642,19 +642,15 @@ msgstr "إختيار سيرفر آخَر"
 
 #: main/data/manage_accounts/add_account_dialog.ui:544
 msgid "All set up!"
-msgstr ""
+msgstr "لقد أعددت كل شيء!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:579
 msgid "Finish"
-msgstr ""
+msgstr "أنهي"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "غير مشفّرة"
-
-#: main/data/menu_app.ui:17
-msgid "Quit"
-msgstr "الخروج"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -723,6 +719,9 @@ msgstr "لا توجد رسائل متطابقة"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "تحقق مِن التدقيق الإملائي أو حاول إزالة فلاتر"
+
+#~ msgid "Quit"
+#~ msgstr "الخروج"
 
 #~ msgid "JID should be of the form “user@example.com”"
 #~ msgstr "يجب أن يكون JID على شكل “user@example.com”"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
-"PO-Revision-Date: 2018-12-31 07:08+0000\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"PO-Revision-Date: 2019-01-05 11:06+0000\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/es/>\n"
 "Language: es\n"
@@ -99,7 +99,7 @@ msgstr "Aceptar clave"
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
 "Start accepting this key during communication with its associated contact"
-msgstr ""
+msgstr "Aceptar esta clave durante la comunicación con este contacto"
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 #: plugins/omemo/src/manage_key_dialog.vala:125
@@ -141,7 +141,7 @@ msgid ""
 "sent by it will be ignored."
 msgstr ""
 "Esto significa que no puede ser usada por %s para recibir mensajes, y "
-"cualquier mensaje enviado por esta clave será ignorado."
+"cualquier mensaje enviado con esta clave será ignorado."
 
 #: plugins/omemo/src/manage_key_dialog.vala:141
 #, c-format

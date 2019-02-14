@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
 "PO-Revision-Date: 2018-05-10 14:38+0200\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/dino/"
 "translations/ca/>\n"
@@ -72,7 +72,7 @@ msgstr "Seleccioneu l'àvatar"
 msgid "Select"
 msgstr "Selecciona"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
@@ -80,36 +80,36 @@ msgstr "Selecciona"
 msgid "Cancel"
 msgstr "Cancel·la"
 
-#: main/src/ui/manage_accounts/dialog.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:160
 msgid "Images"
 msgstr "Imatges"
 
-#: main/src/ui/manage_accounts/dialog.vala:165
+#: main/src/ui/manage_accounts/dialog.vala:164
 msgid "All files"
 msgstr "Tots els fitxers"
 
-#: main/src/ui/manage_accounts/dialog.vala:222
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connecting…"
 msgstr "S'està connectant…"
 
-#: main/src/ui/manage_accounts/dialog.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Connected"
 msgstr "Connectat"
 
-#: main/src/ui/manage_accounts/dialog.vala:226
+#: main/src/ui/manage_accounts/dialog.vala:225
 msgid "Disconnected"
 msgstr "Desconnectat"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Wrong password"
 msgstr "Contrasenya incorrecta"
 
-#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Invalid TLS certificate"
 msgstr "El certificat TLS és invàlid"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
-#: main/src/ui/manage_accounts/dialog.vala:242
+#: main/src/ui/manage_accounts/dialog.vala:239
+#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "Error"
 
@@ -205,11 +205,11 @@ msgstr[1] "fa %i minuts"
 msgid "Just now"
 msgstr "Ara mateix"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 msgid "Join Conference"
 msgstr "Uneix-te a la conferència"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
@@ -225,7 +225,7 @@ msgid "Save"
 msgstr "Desa"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr ""
 
@@ -237,7 +237,7 @@ msgid "Next"
 msgstr "Següent"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr ""
@@ -278,27 +278,27 @@ msgstr "Seleccioneu un sobrenom diferent"
 msgid "Too many occupants in room"
 msgstr "Massa ocupants a la sala"
 
-#: main/src/ui/unified_window.vala:247
+#: main/src/ui/unified_window.vala:173
 msgid "Welcome to Dino!"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:248
+#: main/src/ui/unified_window.vala:174
 msgid "Communicate happiness."
 msgstr ""
 
-#: main/src/ui/unified_window.vala:249
-msgid "Setup account"
+#: main/src/ui/unified_window.vala:175
+msgid "Set up account"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:257
+#: main/src/ui/unified_window.vala:183
 msgid "No active accounts"
 msgstr "No hi ha cap compte actiu"
 
-#: main/src/ui/unified_window.vala:258
+#: main/src/ui/unified_window.vala:184
 msgid "Manage accounts"
 msgstr "Gestiona els comptes"
 
-#: main/src/ui/unified_window.vala:267
+#: main/src/ui/unified_window.vala:193
 msgid "No active conversations"
 msgstr "Cap conversa activa"
 
@@ -339,7 +339,7 @@ msgstr "ha parat d'escriure"
 msgid "Message too long"
 msgstr "El missatge és massa llarg"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:212
 msgid "File"
 msgstr "Fitxer"
 
@@ -642,10 +642,6 @@ msgstr ""
 msgid "Unencrypted"
 msgstr "Sense xifrar"
 
-#: main/data/menu_app.ui:17
-msgid "Quit"
-msgstr "Surt"
-
 #: main/data/im.dino.Dino.appdata.xml.in:8
 #, fuzzy
 msgid "Modern XMPP Chat Client"
@@ -718,6 +714,9 @@ msgstr ""
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr ""
+
+#~ msgid "Quit"
+#~ msgstr "Surt"
 
 #~ msgid "Copy Link Address"
 #~ msgstr "Copia l'adreça de l'enllaç"

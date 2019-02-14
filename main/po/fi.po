@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-31 16:26+0100\n"
+"POT-Creation-Date: 2019-02-14 21:12+0100\n"
 "PO-Revision-Date: 2018-05-13 10:18+0000\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
 "translations/fi/>\n"
@@ -74,7 +74,7 @@ msgstr "Valitse keskustelukuvake"
 msgid "Select"
 msgstr "Valitse"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
+#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
@@ -82,36 +82,36 @@ msgstr "Valitse"
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: main/src/ui/manage_accounts/dialog.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:160
 msgid "Images"
 msgstr "Kuvat"
 
-#: main/src/ui/manage_accounts/dialog.vala:165
+#: main/src/ui/manage_accounts/dialog.vala:164
 msgid "All files"
 msgstr "Kaikki tiedostot"
 
-#: main/src/ui/manage_accounts/dialog.vala:222
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connecting…"
 msgstr "Yhdistää…"
 
-#: main/src/ui/manage_accounts/dialog.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Connected"
 msgstr "Yhdistetty"
 
-#: main/src/ui/manage_accounts/dialog.vala:226
+#: main/src/ui/manage_accounts/dialog.vala:225
 msgid "Disconnected"
 msgstr "Ei yhdistetty"
 
-#: main/src/ui/manage_accounts/dialog.vala:235
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Wrong password"
 msgstr "Väärä salasana"
 
-#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Invalid TLS certificate"
 msgstr "TLS-varmenne ei kelpaa"
 
-#: main/src/ui/manage_accounts/dialog.vala:240
-#: main/src/ui/manage_accounts/dialog.vala:242
+#: main/src/ui/manage_accounts/dialog.vala:239
+#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "Virhe"
 
@@ -207,11 +207,11 @@ msgstr[1] "%i min sitten"
 msgid "Just now"
 msgstr "Juuri nyt"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 msgid "Join Conference"
 msgstr "Liity ryhmäkeskusteluun"
 
-#: main/src/ui/application.vala:44
+#: main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:63
 #: main/src/ui/add_conversation/conference_details_fragment.vala:133
 msgid "Join"
@@ -227,7 +227,7 @@ msgid "Save"
 msgstr "Tallenna"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:269 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Liity kanavalle"
 
@@ -239,7 +239,7 @@ msgid "Next"
 msgstr "Seuraava"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:268 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Aloita keskustelu"
@@ -280,27 +280,27 @@ msgstr "Valitse jokin muu nimimerkki"
 msgid "Too many occupants in room"
 msgstr "Liikaa käyttäjiä huoneessa"
 
-#: main/src/ui/unified_window.vala:247
+#: main/src/ui/unified_window.vala:173
 msgid "Welcome to Dino!"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:248
+#: main/src/ui/unified_window.vala:174
 msgid "Communicate happiness."
 msgstr ""
 
-#: main/src/ui/unified_window.vala:249
-msgid "Setup account"
+#: main/src/ui/unified_window.vala:175
+msgid "Set up account"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:257
+#: main/src/ui/unified_window.vala:183
 msgid "No active accounts"
 msgstr "Ei aktiivisia tilejä"
 
-#: main/src/ui/unified_window.vala:258
+#: main/src/ui/unified_window.vala:184
 msgid "Manage accounts"
 msgstr "Hallitse tilejä"
 
-#: main/src/ui/unified_window.vala:267
+#: main/src/ui/unified_window.vala:193
 msgid "No active conversations"
 msgstr "Ei aktiivisia keskusteluja"
 
@@ -341,7 +341,7 @@ msgstr "on lakannut kirjoittamasta"
 msgid "Message too long"
 msgstr "Viesti liian pitkä"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:204
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:212
 msgid "File"
 msgstr "Tiedosto"
 
@@ -643,10 +643,6 @@ msgstr ""
 msgid "Unencrypted"
 msgstr "Salaamaton"
 
-#: main/data/menu_app.ui:17
-msgid "Quit"
-msgstr "Lopeta"
-
 #: main/data/im.dino.Dino.appdata.xml.in:8
 #, fuzzy
 msgid "Modern XMPP Chat Client"
@@ -719,6 +715,9 @@ msgstr ""
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr ""
+
+#~ msgid "Quit"
+#~ msgstr "Lopeta"
 
 #~ msgid "JID should be of the form “user@example.com”"
 #~ msgstr "Anna JID muodossa \"user@example.com\""
