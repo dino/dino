@@ -126,7 +126,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
     private class ReceivedMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "FILTER_EMPTY" };
         public override string action_group { get { return "OTHER_NODES"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
