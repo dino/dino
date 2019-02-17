@@ -37,7 +37,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         received_pipeline.connect(new FilterMessageListener());
         received_pipeline.connect(new StoreMessageListener(stream_interactor));
         received_pipeline.connect(new MamMessageListener(stream_interactor));
-        received_pipeline.connect(new SlackMessageListener());
     }
 
     public Entities.Message send_text(string text, Conversation conversation) {
@@ -225,34 +224,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
             Xep.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) : null;
             if (is_mam_message || (mam_flag != null && mam_flag.cought_up == true)) {
                 conversation.account.mam_earliest_synced = message.local_time;
-            }
-            return false;
-        }
-    }
-
-    private class SlackMessageListener : MessageListener {
-
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
-        public override string action_group { get { return "SLACK"; } }
-        public override string[] after_actions { get { return after_actions_const; } }
-
-        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            // Slack non-standard behavior
-            Account account = conversation.account;
-            if (account.domainpart.index_of("xmpp.slack.com") == account.domainpart.length - 14) {
-                if (message.counterpart.equals_bare(account.bare_jid)) {
-                    // Ignore messages from us, because we neither know which conversation they belong to, nor can match
-                    // them to one of our send messages because of timestamp mismatches.
-                    return true;
-                }
-                if (message.direction == Entities.Message.DIRECTION_RECEIVED && stanza.type_ == "chat" && message.body.index_of("["+account.localpart+"] ") == 0) {
-                    // That is the best thing we can do, although allowing for attacks.
-                    message.direction = Entities.Message.DIRECTION_SENT;
-                    message.body = message.body.substring(account.localpart.length + 3);
-                }
-                if (stanza.stanza.get_attribute("ts") != null) {
-                    message.time = new DateTime.from_unix_utc((int64) double.parse(stanza.stanza.get_attribute("ts")));
-                }
             }
             return false;
         }
