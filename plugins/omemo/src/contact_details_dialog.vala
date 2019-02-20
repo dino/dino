@@ -31,12 +31,14 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private Popover qrcode_popover;
 
     public ContactDetailsDialog(Plugin plugin, Account account, Jid jid) {
-        Object(use_header_bar : 1);
+        Object(use_header_bar : Environment.get_variable("GTK_CSD") != "0" ? 1 : 0);
         this.plugin = plugin;
         this.account = account;
         this.jid = jid;
 
-        (get_header_bar() as HeaderBar).set_subtitle(jid.bare_jid.to_string());
+        if (Environment.get_variable("GTK_CSD") != "0") {
+            (get_header_bar() as HeaderBar).set_subtitle(jid.bare_jid.to_string());
+        }
 
         int identity_id = plugin.db.identity.get_id(account.id);
         if (identity_id < 0) return;

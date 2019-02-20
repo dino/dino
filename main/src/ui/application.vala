@@ -134,6 +134,10 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         set_accels_for_action("app.add_conference", new string[]{"<Ctrl>G"});
     }
 
+    public bool use_csd() {
+        return Environment.get_variable("GTK_CSD") != "0";
+    }
+
     private void show_accounts_window() {
         ManageAccounts.Dialog dialog = new ManageAccounts.Dialog(stream_interactor, db);
         dialog.set_transient_for(get_active_window());

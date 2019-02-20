@@ -78,7 +78,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     public Dialog(StreamInteractor stream_interactor, Database db) {
-        Object(use_header_bar : 1);
+        Object(use_header_bar : Util.use_csd() ? 1 : 0);
         this.db = db;
         this.stream_interactor = stream_interactor;
         foreach (Account account in db.get_accounts()) {

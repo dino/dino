@@ -30,12 +30,14 @@ public class Dialog : Gtk.Dialog {
     }
 
     public Dialog(StreamInteractor stream_interactor, Conversation conversation) {
-        Object(use_header_bar : 1);
+        Object(use_header_bar : Util.use_csd() ? 1 : 0);
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
 
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
-        (get_header_bar() as HeaderBar).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+        if (Util.use_csd()) {
+            (get_header_bar() as HeaderBar).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+        }
         setup_top();
 
         contact_details.add.connect(add_entry);
