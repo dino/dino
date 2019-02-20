@@ -132,7 +132,7 @@ include(${VALA_USE_FILE})
 include(MultiFind)
 include(GlibCompileResourcesSupport)
 
-set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} --thread --target-glib=${GLib_GLOBAL_VERSION}")
+set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} --target-glib=${GLib_GLOBAL_VERSION}")
 
 add_subdirectory(qlite)
 add_subdirectory(xmpp-vala)
