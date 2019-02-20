@@ -247,7 +247,9 @@ public class TrustManager {
             StanzaNode? _encrypted = stanza.stanza.get_subnode("encrypted", NS_URI);
             if (_encrypted == null || MessageFlag.get_flag(stanza) != null || stanza.from == null) return false;
             StanzaNode encrypted = (!)_encrypted;
-            if (message.body == null) message.body = "[This message is OMEMO encrypted]";
+            if (message.body == null && Xep.ExplicitEncryption.get_encryption_tag(stanza) == NS_URI) {
+                message.body = "[This message is OMEMO encrypted]"; // TODO temporary
+            };
             if (!Plugin.ensure_context()) return false;
             MessageFlag flag = new MessageFlag();
             stanza.add_flag(flag);
