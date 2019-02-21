@@ -11,13 +11,14 @@
                 <child>
                     <object class="GtkBox">
                         <property name="orientation">horizontal</property>
-                        <property name="margin">7</property>
-                        <property name="margin-right">14</property>
+                        <property name="margin">10</property>
+                        <property name="margin-start">7</property>
+                        <property name="margin-end">14</property>
                         <property name="visible">True</property>
                         <child>
                             <object class="DinoUiAvatarImage" id="image">
-                                <property name="height">40</property>
-                                <property name="width">40</property>
+                                <property name="height">35</property>
+                                <property name="width">35</property>
                                 <property name="valign">center</property>
                                 <property name="visible">True</property>
                             </object>
@@ -29,6 +30,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <object class="GtkBox">
+                                        <property name="valign">start</property>
                                         <property name="visible">True</property>
                                         <property name="orientation">horizontal</property>
                                         <child>
@@ -62,6 +64,7 @@
                                 </child>
                                 <child>
                                     <object class="GtkBox">
+                                        <property name="valign">end</property>
                                         <property name="visible">True</property>
                                         <property name="orientation">horizontal</property>
                                         <child>
