@@ -165,7 +165,7 @@ public class Manager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created(account, store));
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created.begin(account, store));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
     }
@@ -302,7 +302,12 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_store_created(Account account, Store store) {
+    private async void on_store_created(Account account, Store store) {
+        // If the account is not yet persisted, wait for that and then continue - without identity.account_id the entry isn't worth much.
+        if (account.id == -1) {
+            account.notify["id"].connect(() => on_store_created.callback());
+            yield;
+        }
         Qlite.Row? row = db.identity.row_with(db.identity.account_id, account.id).inner;
         int identity_id = -1;
         bool publish_identity = false;
