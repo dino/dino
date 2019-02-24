@@ -2,6 +2,7 @@ using Gsasl;
 
 namespace Xmpp.Sasl {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-sasl";
+    private const string HOSTNAME_NS_URI = "urn:xmpp:domain-based-name:1";
 
     private class Flag : XmppStreamFlag {
         public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "sasl");
@@ -44,6 +45,15 @@ namespace Xmpp.Sasl {
                 return;
             if (node.name == "success") {
                 Flag flag = stream.get_flag(Flag.IDENTITY);
+                if (node.get_string_content() != null) {
+                    string output;
+                    Gsasl.Result result = flag.sasl_session.step64(node.get_string_content(), out output);
+                    if (result != Gsasl.Result.OK) {
+                        stream.remove_flag(stream.get_flag(Flag.IDENTITY));
+                        sasl_error(stream, result.description());
+                        return;
+                    }
+                }
                 stream.require_setup();
                 flag.finished = true;
             } else if (node.name == "failure") {
@@ -75,6 +85,8 @@ namespace Xmpp.Sasl {
                 supported_mechanisms += mechanism.get_string_content();
             }
 
+            var hostname = mechanisms.get_subnode("hostname", HOSTNAME_NS_URI);
+
             string? suggested_mechanism = this.sasl_context.client_suggest_mechanism(string.joinv(" ", supported_mechanisms));
             if (suggested_mechanism == null) {
                 stderr.printf("No supported mechanism provided by server at %s. Offered: %s\n", stream.remote_name.to_string(), string.joinv(",", supported_mechanisms));
@@ -89,7 +101,9 @@ namespace Xmpp.Sasl {
                 return;
             }
             flag.sasl_session.set_property(Gsasl.Property.AUTHID, name);
-            flag.sasl_session.set_property(Gsasl.Property.HOSTNAME, stream.remote_hostname);
+            if (hostname != null) {
+                flag.sasl_session.set_property(Gsasl.Property.HOSTNAME, hostname.get_string_content());
+            }
             flag.sasl_session.set_property(Gsasl.Property.SERVICE, "xmpp");
             flag.sasl_session.set_property(Gsasl.Property.PASSWORD, password);
             string output;
