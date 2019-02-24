@@ -8,6 +8,7 @@ namespace Xmpp.Sasl {
         public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "sasl");
         public Gsasl.Session? sasl_session;
         public bool finished = false;
+        public bool sasl_needs_more = true;
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
@@ -45,7 +46,7 @@ namespace Xmpp.Sasl {
                 return;
             if (node.name == "success") {
                 Flag flag = stream.get_flag(Flag.IDENTITY);
-                if (node.get_string_content() != null) {
+                if (flag.sasl_needs_more) {
                     string output;
                     Gsasl.Result result = flag.sasl_session.step64(node.get_string_content(), out output);
                     if (result != Gsasl.Result.OK) {
@@ -70,6 +71,7 @@ namespace Xmpp.Sasl {
                 }
                 stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
                             .put_node(new StanzaNode.text(output)));
+                flag.sasl_needs_more = (result == Gsasl.Result.NEEDS_MORE);
             }
         }
 
