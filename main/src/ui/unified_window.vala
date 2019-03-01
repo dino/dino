@@ -28,10 +28,11 @@ public class UnifiedWindow : Gtk.Window {
             return Util.use_csd() ? conversation_titlebar_csd.subtitle : conversation_titlebar.subtitle;
         }
         set {
+            string? new_subtitle = value == null ? null : (new Regex("\\s+")).replace_literal(value, -1, 0, " ");
             if (Util.use_csd()) {
-                conversation_titlebar_csd.subtitle = value;
+                conversation_titlebar_csd.subtitle = new_subtitle;
             } else {
-                conversation_titlebar.subtitle = value;
+                conversation_titlebar.subtitle = new_subtitle;
             }
         }
     }

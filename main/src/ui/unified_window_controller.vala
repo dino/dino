@@ -147,7 +147,7 @@ public class UnifiedWindowController : Object {
     }
 
     private void update_conversation_topic(string? subtitle = null) {
-        if (conversation_topic != null) {
+        if (subtitle != null) {
             conversation_topic = subtitle;
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             string subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
