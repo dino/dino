@@ -99,7 +99,12 @@ public class TrustManager {
             uint8[] iv = new uint8[16];
             Plugin.get_context().randomize(iv);
 
-            uint8[] ciphertext = aes_encrypt(Cipher.AES_GCM_NOPADDING, key, iv, message.body.data);
+            uint8[] aes_encrypt_result = aes_encrypt(Cipher.AES_GCM_NOPADDING, key, iv, message.body.data);
+            uint8[] ciphertext = aes_encrypt_result[0:aes_encrypt_result.length-16];
+            uint8[] tag = aes_encrypt_result[aes_encrypt_result.length-16:aes_encrypt_result.length];
+            uint8[] keytag = new uint8[key.length + tag.length];
+            Memory.copy(keytag, key, key.length);
+            Memory.copy((uint8*)keytag + key.length, tag, tag.length);
 
             StanzaNode header;
             StanzaNode encrypted = new StanzaNode.build("encrypted", NS_URI).add_self_xmlns()
@@ -121,7 +126,7 @@ public class TrustManager {
                     try {
                         address.name = recipient.bare_jid.to_string();
                         address.device_id = (int) device_id;
-                        StanzaNode key_node = create_encrypted_key(key, address, module.store);
+                        StanzaNode key_node = create_encrypted_key(keytag, address, module.store);
                         header.put_node(key_node);
                         status.other_success++;
                     } catch (Error e) {
@@ -139,7 +144,7 @@ public class TrustManager {
                 if (device_id != module.store.local_registration_id) {
                     address.device_id = (int) device_id;
                     try {
-                        StanzaNode key_node = create_encrypted_key(key, address, module.store);
+                        StanzaNode key_node = create_encrypted_key(keytag, address, module.store);
                         header.put_node(key_node);
                         status.own_success++;
                     } catch (Error e) {
