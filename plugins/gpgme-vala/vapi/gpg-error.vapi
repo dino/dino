@@ -1,4 +1,4 @@
-/* gcrypt.vapi
+/* gpg-error.vapi
  *
  * Copyright:
  *   2008 Jiqing Qiang
