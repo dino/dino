@@ -78,6 +78,13 @@ OPTIONS
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\"  -DG_LOG_DOMAIN="OMEMO")
 add_library(omemo SHARED ${OMEMO_VALA_C} ${OMEMO_GRESOURCES_TARGET})
 add_dependencies(omemo ${GETTEXT_PACKAGE}-translations)
+if(UNIX AND APPLE)
+    # for some reason, Dino on OS X can't load plugins named .dylib,
+    # even though that's the native dlopen()able extension on OS X.
+    add_custom_command(OUTPUT omemo.so COMMAND ${CMAKE_COMMAND} -E create_symlink omemo.dylib ${CMAKE_BINARY_DIR}/plugins/omemo.so)
+    add_custom_target(omemo-symlink-workaround DEPENDS omemo.so)
+    add_dependencies(omemo omemo-symlink-workaround)
+endif(UNIX AND APPLE)
 target_link_libraries(omemo libdino signal-protocol-vala crypto-vala ${OMEMO_PACKAGES})
 set_target_properties(omemo PROPERTIES PREFIX "")
 set_target_properties(omemo PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
