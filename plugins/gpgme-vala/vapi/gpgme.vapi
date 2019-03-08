@@ -505,11 +505,13 @@ namespace GPG {
     [CCode (cname = "gpgme_get_engine_information")]
     public GPGError.Error get_engine_information(out EngineInfo engine_info);
 
-    [CCode (cname = "gpgme_strerror_r")]
-    public int strerror_r(GPGError.Error err, uint8[] buf);
+    public int strerror_r(GPGError.Error err, uint8[] buf) {
+        return err.strerror_r(buf);
+    }
 
-    [CCode (cname = "gpgme_strerror")]
-    public unowned string strerror(GPGError.Error err);
+    public unowned string strerror(GPGError.Error err) {
+        return err.to_string();
+    }
 
     private void throw_if_error(GPGError.Error error) throws GLib.Error {
         if (error.code != GPGError.ErrorCode.NO_ERROR) {
