@@ -46,7 +46,8 @@ namespace Xmpp.Xep.EntityCapabilities {
         private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
             StanzaNode? c_node = presence.stanza.get_subnode("c", NS_URI);
             if (c_node != null) {
-                string ver_attribute = c_node.get_attribute("ver", NS_URI);
+                string? ver_attribute = c_node.get_attribute("ver", NS_URI);
+                if (ver_attribute == null) return;
                 Gee.List<string> capabilities = storage.get_features(ver_attribute);
                 if (capabilities.size == 0) {
                     stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
