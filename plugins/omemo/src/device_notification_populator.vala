@@ -17,6 +17,8 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
     public DeviceNotificationPopulator(Plugin plugin, StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         this.plugin = plugin;
+
+        stream_interactor.account_added.connect(on_account_added);
     }
 
     public bool has_new_devices(Jid jid) {
@@ -28,11 +30,6 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
     public void init(Conversation conversation, NotificationCollection notification_collection, Plugins.WidgetType type) {
         current_conversation = conversation;
         this.notification_collection = notification_collection;
-        stream_interactor.module_manager.get_module(conversation.account, StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
-                if (jid.equals(conversation.counterpart) && has_new_devices(conversation.counterpart) && conversation.type_ == Conversation.Type.CHAT) {
-                    display_notification();
-                }
-            });
         if (has_new_devices(conversation.counterpart) && conversation.type_ == Conversation.Type.CHAT) {
             display_notification();
         }
@@ -43,7 +40,7 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
     }
 
     private void display_notification() {
-        if(notification == null) {
+        if (notification == null) {
             notification = new ConversationNotification(plugin, current_conversation.account, current_conversation.counterpart);
             notification.should_hide.connect(should_hide);
             notification_collection.add_meta_notification(notification);
@@ -55,6 +52,14 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
             notification_collection.remove_meta_notification(notification);
             notification = null;
         }
+    }
+
+    private void on_account_added(Account account) {
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
+            if (jid.equals(current_conversation.counterpart) && has_new_devices(current_conversation.counterpart)) {
+                display_notification();
+            }
+        });
     }
 }
 
