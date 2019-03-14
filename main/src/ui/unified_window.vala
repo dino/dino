@@ -28,7 +28,7 @@ public class UnifiedWindow : Gtk.Window {
             return Util.use_csd() ? conversation_titlebar_csd.subtitle : conversation_titlebar.subtitle;
         }
         set {
-            string? new_subtitle = value == null ? null : (new Regex("\\s+")).replace_literal(value, -1, 0, " ");
+            string? new_subtitle = value == null ? null : (/\s+/).replace_literal(value, -1, 0, " ");
             if (Util.use_csd()) {
                 conversation_titlebar_csd.subtitle = new_subtitle;
             } else {

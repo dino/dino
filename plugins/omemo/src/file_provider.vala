@@ -17,7 +17,7 @@ public class FileProvider : Dino.FileProvider, Object {
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.dino_db = dino_db;
-        this.url_regex = new Regex("""^aesgcm://(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$""");
+        this.url_regex = /^aesgcm:\/\/(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$/;
 
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(this));
     }

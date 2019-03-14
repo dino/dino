@@ -110,7 +110,7 @@ public class ConnectionManager : Object {
         return connection_todo;
     }
 
-    public XmppStream? connect(Account account) {
+    public XmppStream? connect_account(Account account) {
         if (!connection_todo.contains(account)) connection_todo.add(account);
         if (!connections.has_key(account)) {
             return connect_(account);

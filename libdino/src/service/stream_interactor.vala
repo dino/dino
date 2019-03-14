@@ -26,7 +26,7 @@ public class StreamInteractor : Object {
     public void connect_account(Account account) {
         module_manager.initialize(account);
         account_added(account);
-        connection_manager.connect(account);
+        connection_manager.connect_account(account);
     }
 
     public void disconnect_account(Account account) {
