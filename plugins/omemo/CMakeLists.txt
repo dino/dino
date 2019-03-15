@@ -66,7 +66,7 @@ OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi
 )
 
-add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\"  -DG_LOG_DOMAIN="OMEMO")
 add_library(omemo SHARED ${OMEMO_VALA_C} ${OMEMO_GRESOURCES_TARGET})
 add_dependencies(omemo ${GETTEXT_PACKAGE}-translations)
 target_link_libraries(omemo libdino signal-protocol-vala ${OMEMO_PACKAGES})

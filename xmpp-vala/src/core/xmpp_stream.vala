@@ -67,7 +67,7 @@ public class XmppStream {
             }
             reset_stream((!)stream);
         } catch (Error e) {
-            stderr.printf("CONNECTION LOST?\n");
+            debug("[%p] Could not connect to server", this);
             throw new IOStreamError.CONNECT(e.message);
         }
         yield loop();
@@ -153,7 +153,7 @@ public class XmppStream {
     public XmppStream add_module(XmppStreamModule module) {
         foreach (XmppStreamModule m in modules) {
             if (m.get_ns() == module.get_ns() && m.get_id() == module.get_id()) {
-                print("[%p] Adding already added module: %s\n".printf(this, module.get_id()));
+                warning("[%p] Adding already added module: %s\n", this, module.get_id());
                 return this;
             }
         }
@@ -221,7 +221,7 @@ public class XmppStream {
                 features = node;
                 received_features_node(this);
             } else if (node.ns_uri == NS_URI && node.name == "stream" && node.pseudo) {
-                print("disconnect\n");
+                debug("[%p] Server closed stream", this);
                 disconnect();
                 return;
             } else if (node.ns_uri == JABBER_URI) {

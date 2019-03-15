@@ -134,10 +134,10 @@ public class Manager : StreamInteractionModule, Object {
             //Encryption failed - need to fetch more information
             if (!state.will_send_now) {
                 if (message.marked == Entities.Message.Marked.WONTSEND) {
-                    if (Plugin.DEBUG) print(@"OMEMO: message was not sent: $state\n");
+                    debug("message was not sent: %s", state.to_string());
                     message_states.unset(message);
                 } else {
-                    if (Plugin.DEBUG) print(@"OMEMO: message will be delayed: $state\n");
+                    debug("message will be delayed: %s", state.to_string());
 
                     if (state.waiting_own_sessions > 0) {
                         module.fetch_bundles((!)stream, conversation.account.bare_jid, trust_manager.get_trusted_devices(conversation.account, conversation.account.bare_jid));
@@ -175,7 +175,7 @@ public class Manager : StreamInteractionModule, Object {
     }
 
     private void on_device_list_loaded(Account account, Jid jid, ArrayList<int32> device_list) {
-        if (Plugin.DEBUG) print(@"OMEMO: received device list for $(account.bare_jid) from $jid\n");
+        debug("received device list for %s from %s", account.bare_jid.to_string(), jid.to_string());
 
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) {
@@ -199,7 +199,7 @@ public class Manager : StreamInteractionModule, Object {
             inc++;
         }
         if (inc > 0) {
-            if (Plugin.DEBUG) print(@"OMEMO: new bundles $inc/$(device_list.size) for $jid\n");
+            debug("new bundles %i/%i for %s", inc, device_list.size, jid.to_string());
         }
 
         //Create an entry for the jid in the account table if one does not exist already
@@ -343,7 +343,7 @@ public class Manager : StreamInteractionModule, Object {
             store.pre_key_store = new BackedPreKeyStore(db, identity_id);
             store.session_store = new BackedSessionStore(db, identity_id);
         } else {
-            print(@"OMEMO: store for $(account.bare_jid) is not persisted!");
+            warning("store for %s is not persisted!", account.bare_jid.to_string());
         }
 
         // Generated new device ID, ensure this gets added to the devicelist

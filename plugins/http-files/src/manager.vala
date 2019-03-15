@@ -83,7 +83,7 @@ public class Manager : StreamInteractionModule, FileSender, Object {
                     }
                 },
                 (stream, error_str) => {
-                    print(@"Failed getting upload url + $error_str\n");
+                    warning("Failed getting upload url: %s", error_str);
                     file_transfer.state = FileTransfer.State.FAILED;
                 }
             );

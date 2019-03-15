@@ -21,7 +21,7 @@ private class BackedSessionStore : SimpleSessionStore {
                 addr.device_id = 0;
             }
         } catch (Error e) {
-            print(@"OMEMO: Error while initializing session store: $(e.message)\n");
+            print("Error while initializing session store: %s", e.message);
         }
 
         session_stored.connect(on_session_stored);

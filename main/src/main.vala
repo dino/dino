@@ -22,7 +22,7 @@ void main(string[] args) {
         app.run(args);
         loader.shutdown();
     } catch (Error e) {
-        print(@"Fatal error: $(e.message)\n");
+        warning(@"Fatal error: $(e.message)");
     }
 }
 

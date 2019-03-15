@@ -24,7 +24,7 @@ namespace Dino.Plugins.OpenPgp {
             if (own_key_id != null) {
                 try {
                     own_key = GPGHelper.get_private_key(own_key_id);
-                    if (own_key == null) print("PRIV KEY NULL\n");
+                    if (own_key == null) warning("Can't get PGP private key");
                 } catch (Error e) { }
                 if (own_key != null) {
                     signed_status = gpg_sign("", own_key);

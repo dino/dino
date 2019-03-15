@@ -159,7 +159,7 @@ public class TrustManager {
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;
         } catch (Error e) {
-            if (Plugin.DEBUG) print(@"OMEMO: Signal error while encrypting message: $(e.message)\n");
+            warning(@"Signal error while encrypting message: $(e.message)\n");
         }
         return status;
     }
@@ -327,7 +327,7 @@ public class TrustManager {
                             break;
                         }
                     } catch (Error e) {
-                        if (Plugin.DEBUG) print(@"OMEMO: Signal error while decrypting message: $(e.message)\n");
+                        warning(@"Signal error while decrypting message: $(e.message)\n");
                     }
                 }
             }

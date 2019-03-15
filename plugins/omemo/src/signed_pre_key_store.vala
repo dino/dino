@@ -19,7 +19,7 @@ private class BackedSignedPreKeyStore : SimpleSignedPreKeyStore {
                 store_signed_pre_key(row[db.signed_pre_key.signed_pre_key_id], Base64.decode(row[db.signed_pre_key.record_base64]));
             }
         } catch (Error e) {
-            print(@"OMEMO: Error while initializing signed pre key store: $(e.message)\n");
+            print("Error while initializing signed pre key store: %s", e.message);
         }
 
         signed_pre_key_stored.connect(on_signed_pre_key_stored);

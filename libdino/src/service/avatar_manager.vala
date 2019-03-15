@@ -91,7 +91,7 @@ public class AvatarManager : StreamInteractionModule, Object {
                 on_user_avatar_received(account, account.bare_jid, Base64.encode(buffer));
             }
         } catch (Error e) {
-            print("error " + e.message + "\n");
+            warning(e.message);
         }
     }
 

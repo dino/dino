@@ -38,7 +38,7 @@ public class StreamModule : XmppStreamModule {
 
     public void request_user_devicelist(XmppStream stream, Jid jid) {
         if (active_devicelist_requests.add(jid)) {
-            if (Plugin.DEBUG) print(@"OMEMO: requesting device list for $jid\n");
+            debug("requesting device list for %s", jid.to_string());
             stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
         }
     }
@@ -56,7 +56,7 @@ public class StreamModule : XmppStreamModule {
                 }
             }
             if (!am_on_devicelist) {
-                if (Plugin.DEBUG) print(@"OMEMO: Not on device list, adding id\n");
+                debug(@"Not on device list, adding id");
                 node.put_node(new StanzaNode.build("device", NS_URI).put_attribute("id", store.local_registration_id.to_string()));
                 stream.get_module(Pubsub.Module.IDENTITY).publish(stream, jid, NODE_DEVICELIST, NODE_DEVICELIST, id, node);
             }
@@ -90,7 +90,7 @@ public class StreamModule : XmppStreamModule {
 
     public void fetch_bundle(XmppStream stream, Jid jid, int device_id) {
         if (active_bundle_requests.add(jid.bare_jid.to_string() + @":$device_id")) {
-            if (Plugin.DEBUG) print(@"OMEMO: Asking for bundle from $(jid.bare_jid.to_string()):$device_id\n");
+            debug(@"Asking for bundle from %s: %i", jid.bare_jid.to_string(), device_id);
             stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid.bare_jid, @"$NODE_BUNDLES:$device_id", (stream, jid, id, node) => {
                 on_other_bundle_result(stream, jid, device_id, id, node);
             });
@@ -233,7 +233,7 @@ public class StreamModule : XmppStreamModule {
                 publish_bundles(stream, (!)signed_pre_key_record, identity_key_pair, pre_key_records, (int32) store.local_registration_id);
             }
         } catch (Error e) {
-            if (Plugin.DEBUG) print(@"Unexpected error while publishing bundle: $(e.message)\n");
+            warning(@"Unexpected error while publishing bundle: $(e.message)\n");
         }
         stream.get_module(IDENTITY).active_bundle_requests.remove(jid.bare_jid.to_string() + @":$(store.local_registration_id)");
     }

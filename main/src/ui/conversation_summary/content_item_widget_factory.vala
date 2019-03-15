@@ -166,7 +166,7 @@ public class FileItemWidgetGenerator : WidgetGenerator, Object {
             try{
                 AppInfo.launch_default_for_uri(file_transfer.get_file().get_uri(), null);
             } catch (Error err) {
-                print("Tried to open file://" + file_transfer.get_file().get_path() + " " + err.message + "\n");
+                info("Could not to open file://%s: %s", file_transfer.get_file().get_path(), err.message);
             }
         });
 
