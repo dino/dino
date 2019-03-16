@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "PO-Revision-Date: 2019-01-07 18:06+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "translations/nb_NO/>\n"
@@ -227,7 +227,7 @@ msgid "Save"
 msgstr "Lagre"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Ta del i kanal"
 
@@ -239,7 +239,7 @@ msgid "Next"
 msgstr "Neste"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Start samtale"
@@ -280,27 +280,23 @@ msgstr "Velg et annet kallenavn"
 msgid "Too many occupants in room"
 msgstr "Rommet har for mange deltagere"
 
-#: main/src/ui/unified_window.vala:173
+#: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
 msgstr "Velkommen til Dino."
 
-#: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr "Kommuniser glede."
-
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
 msgstr "Sett opp konto"
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr "Ingen kontoer aktive"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr "Behandle kontoer"
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr "Ingen kontoer aktive"
 
@@ -512,7 +508,7 @@ msgstr "Rom-oppsett"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Innstillinger"
 
@@ -564,10 +560,6 @@ msgstr "Bare når nevnt"
 #, c-format
 msgid "Default: %s"
 msgstr "Forvalg: %s"
-
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "Innstillinger"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -714,6 +706,12 @@ msgstr "Ingen samsvarende meldinger"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Sjekk stavingen eller prøv å fjerne filter"
+
+#~ msgid "Communicate happiness."
+#~ msgstr "Kommuniser glede."
+
+#~ msgid "Preferences"
+#~ msgstr "Innstillinger"
 
 #~ msgid "Quit"
 #~ msgstr "Avslutt"

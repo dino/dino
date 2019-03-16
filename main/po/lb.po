@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Luxembourgish (Dino)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
-"PO-Revision-Date: 2019-01-05 11:06+0000\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
+"PO-Revision-Date: 2019-02-26 08:17+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "translations/lb/>\n"
 "Language: lb\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
@@ -117,17 +117,17 @@ msgstr "Account bäisetzen"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:156
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Bei %s umellen"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "You can now start using %s"
-msgstr ""
+msgstr "Du kanns elo %s benotzen"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:237
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Konnt net op %s connectéieren"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:254
 msgid "Wrong username or password"
@@ -222,7 +222,7 @@ msgid "Save"
 msgstr "Späicheren"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Kanal bäitrieden"
 
@@ -234,7 +234,7 @@ msgid "Next"
 msgstr "Nächst"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Konversatioun starten"
@@ -275,27 +275,23 @@ msgstr "Wiel een anere Spëtznumm"
 msgid "Too many occupants in room"
 msgstr "De Raum huet ze vill Benotzer"
 
-#: main/src/ui/unified_window.vala:173
+#: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
 msgstr "Wëllkomm bei Dino!"
 
-#: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr ""
-
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
 msgstr "Konto opsetzen"
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr "Keng Kontoen aktiv"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr "Kontoe managen"
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr "Keng Conversatiounen aktiv"
 
@@ -507,7 +503,7 @@ msgstr "Raum Astellungen"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Astellungen"
 
@@ -559,10 +555,6 @@ msgstr "Nëmme wann erwäänt"
 #, c-format
 msgid "Default: %s"
 msgstr "Standard: %s"
-
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "Astellungen"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -628,11 +620,11 @@ msgstr "Anere Server auswielen"
 
 #: main/data/manage_accounts/add_account_dialog.ui:544
 msgid "All set up!"
-msgstr ""
+msgstr "Alles ageriicht!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:579
 msgid "Finish"
-msgstr ""
+msgstr "Ofschléissen"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -708,6 +700,12 @@ msgstr "Keng Message fonnt"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Iwwerpréif Schreifweis oder läsch Filteren"
+
+#~ msgid "Communicate happiness."
+#~ msgstr "Gléck kommunizéieren."
+
+#~ msgid "Preferences"
+#~ msgstr "Astellungen"
 
 #~ msgid "Quit"
 #~ msgstr "Zoumaachen"

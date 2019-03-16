@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -217,7 +217,7 @@ msgid "Save"
 msgstr ""
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr ""
 
@@ -229,7 +229,7 @@ msgid "Next"
 msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr ""
@@ -270,27 +270,23 @@ msgstr ""
 msgid "Too many occupants in room"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:173
+#: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr ""
-
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr ""
 
@@ -502,7 +498,7 @@ msgstr ""
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr ""
 
@@ -553,10 +549,6 @@ msgstr ""
 #: main/src/ui/contact_details/settings_provider.vala:115
 #, c-format
 msgid "Default: %s"
-msgstr ""
-
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
 msgstr ""
 
 #: main/data/settings_dialog.ui:46

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
-"PO-Revision-Date: 2018-11-17 14:07+0000\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
+"PO-Revision-Date: 2019-02-26 08:17+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/lb/>\n"
 "Language: lb\n"
@@ -11,13 +11,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 
-#: plugins/omemo/src/device_notification_populator.vala:74
+#: plugins/omemo/src/device_notification_populator.vala:79
 msgid "Manage"
 msgstr "Verwalten"
 
-#: plugins/omemo/src/device_notification_populator.vala:84
+#: plugins/omemo/src/device_notification_populator.vala:89
 msgid "This contact has new devices"
 msgstr "Dëse Kontakt huet nei Geräter"
 
@@ -97,7 +97,7 @@ msgstr "Schlëssel acceptéieren"
 #: plugins/omemo/src/manage_key_dialog.vala:116
 msgid ""
 "Start accepting this key during communication with its associated contact"
-msgstr ""
+msgstr "Dëse Schlëssel wärend de Conversatioun mat sengem Kontakt benotzen"
 
 #: plugins/omemo/src/manage_key_dialog.vala:120
 #: plugins/omemo/src/manage_key_dialog.vala:125
@@ -164,26 +164,26 @@ msgstr ""
 msgid "Back"
 msgstr "Zeréck"
 
-#: plugins/omemo/src/contact_details_dialog.vala:50
+#: plugins/omemo/src/contact_details_dialog.vala:52
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Wann s du nei Schlëssele bei däin Account bäifüügs, déi automatesch "
 "akzeptéieren."
 
-#: plugins/omemo/src/contact_details_dialog.vala:124
+#: plugins/omemo/src/contact_details_dialog.vala:126
 msgid "Accepted"
 msgstr "Akzeptéiert"
 
-#: plugins/omemo/src/contact_details_dialog.vala:129
+#: plugins/omemo/src/contact_details_dialog.vala:131
 msgid "Rejected"
 msgstr "Ofgeleent"
 
-#: plugins/omemo/src/contact_details_dialog.vala:134
+#: plugins/omemo/src/contact_details_dialog.vala:136
 msgid "Verified"
 msgstr "Verifizéiert"
 
-#: plugins/omemo/src/contact_details_dialog.vala:141
+#: plugins/omemo/src/contact_details_dialog.vala:143
 msgid "Unused"
 msgstr "Onbenotzt"
 

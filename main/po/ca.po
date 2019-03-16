@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "PO-Revision-Date: 2018-05-10 14:38+0200\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/dino/"
 "translations/ca/>\n"
@@ -225,7 +225,7 @@ msgid "Save"
 msgstr "Desa"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr ""
 
@@ -237,7 +237,7 @@ msgid "Next"
 msgstr "Següent"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr ""
@@ -278,27 +278,23 @@ msgstr "Seleccioneu un sobrenom diferent"
 msgid "Too many occupants in room"
 msgstr "Massa ocupants a la sala"
 
-#: main/src/ui/unified_window.vala:173
+#: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr ""
-
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr "No hi ha cap compte actiu"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr "Gestiona els comptes"
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr "Cap conversa activa"
 
@@ -510,7 +506,7 @@ msgstr "Configuració de la sala"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Preferències"
 
@@ -563,10 +559,6 @@ msgstr "Només quan rebeu una menció"
 #, c-format
 msgid "Default: %s"
 msgstr "Per defecte: %s"
-
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "Preferències"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -714,6 +706,9 @@ msgstr ""
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr ""
+
+#~ msgid "Preferences"
+#~ msgstr "Preferències"
 
 #~ msgid "Quit"
 #~ msgstr "Surt"

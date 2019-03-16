@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "PO-Revision-Date: 2019-01-19 14:20+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
@@ -227,7 +227,7 @@ msgid "Save"
 msgstr "Sauver"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Rejoindre un salon"
 
@@ -239,7 +239,7 @@ msgid "Next"
 msgstr "Suivant"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Commencer une discussion"
@@ -280,27 +280,23 @@ msgstr "Choisissez un autre pseudo"
 msgid "Too many occupants in room"
 msgstr "Trop de participants dans ce salon"
 
-#: main/src/ui/unified_window.vala:173
+#: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
 msgstr "Bienvenue dans Dino !"
 
-#: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr "Communiquer avec bonheur."
-
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
 msgstr "Configurer le compte"
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr "Aucun compte actif"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr "Gérer les comptes"
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr "Aucune discussion en cours"
 
@@ -512,7 +508,7 @@ msgstr "Configuration du salon"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -564,10 +560,6 @@ msgstr "Seulement quand mentionné"
 #, c-format
 msgid "Default: %s"
 msgstr "Par défaut : %s"
-
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "Préférences"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -714,6 +706,12 @@ msgstr "Aucun message correspondant"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Vérifiez l’orthographe ou essayez de supprimer des filtres"
+
+#~ msgid "Communicate happiness."
+#~ msgstr "Communiquer avec bonheur."
+
+#~ msgid "Preferences"
+#~ msgstr "Préférences"
 
 #~ msgid "Quit"
 #~ msgstr "Quitter"

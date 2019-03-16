@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "PO-Revision-Date: 2019-02-02 14:09+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
@@ -226,7 +226,7 @@ msgid "Save"
 msgstr "保存"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "加入频道"
 
@@ -238,7 +238,7 @@ msgid "Next"
 msgstr "下一个"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "开始聊天"
@@ -279,27 +279,23 @@ msgstr "选择一个不同的昵称"
 msgid "Too many occupants in room"
 msgstr "房间内人数过多"
 
-#: main/src/ui/unified_window.vala:173
+#: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
 msgstr "欢迎来到 Dino！"
 
-#: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr "沟通快乐。"
-
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
 msgstr "设置帐户"
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr "没有激活的帐号"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr "管理帐号"
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr "没有激活的会话"
 
@@ -510,7 +506,7 @@ msgstr "房间配置"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "设置"
 
@@ -562,10 +558,6 @@ msgstr "只有被提到时"
 #, c-format
 msgid "Default: %s"
 msgstr "默认：%s"
-
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "选项"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -708,6 +700,12 @@ msgstr "无匹配的消息"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "检查拼写或尝试移除过滤器"
+
+#~ msgid "Communicate happiness."
+#~ msgstr "沟通快乐。"
+
+#~ msgid "Preferences"
+#~ msgstr "选项"
 
 #~ msgid "Quit"
 #~ msgstr "退出"

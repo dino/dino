@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "PO-Revision-Date: 2019-01-05 11:06+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "eu/>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.4-dev\n"
 
-#: plugins/omemo/src/device_notification_populator.vala:74
+#: plugins/omemo/src/device_notification_populator.vala:79
 msgid "Manage"
 msgstr "Kudeatu"
 
-#: plugins/omemo/src/device_notification_populator.vala:84
+#: plugins/omemo/src/device_notification_populator.vala:89
 msgid "This contact has new devices"
 msgstr "Kontaktu honek gailu berriak ditu"
 
@@ -169,26 +169,26 @@ msgstr ""
 msgid "Back"
 msgstr "Atzera"
 
-#: plugins/omemo/src/contact_details_dialog.vala:50
+#: plugins/omemo/src/contact_details_dialog.vala:52
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Zure kontura enkriptazio gako berriak gehitzen dituzunean, automatikoki "
 "onartu."
 
-#: plugins/omemo/src/contact_details_dialog.vala:124
+#: plugins/omemo/src/contact_details_dialog.vala:126
 msgid "Accepted"
 msgstr "Onartuta"
 
-#: plugins/omemo/src/contact_details_dialog.vala:129
+#: plugins/omemo/src/contact_details_dialog.vala:131
 msgid "Rejected"
 msgstr "Ukatuta"
 
-#: plugins/omemo/src/contact_details_dialog.vala:134
+#: plugins/omemo/src/contact_details_dialog.vala:136
 msgid "Verified"
 msgstr "Egiaztatuta"
 
-#: plugins/omemo/src/contact_details_dialog.vala:141
+#: plugins/omemo/src/contact_details_dialog.vala:143
 msgid "Unused"
 msgstr "Ez erabilita"
 

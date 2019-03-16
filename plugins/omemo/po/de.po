@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "PO-Revision-Date: 2019-01-27 13:04+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "de/>\n"
@@ -13,11 +13,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.5-dev\n"
 
-#: plugins/omemo/src/device_notification_populator.vala:74
+#: plugins/omemo/src/device_notification_populator.vala:79
 msgid "Manage"
 msgstr "Verwalten"
 
-#: plugins/omemo/src/device_notification_populator.vala:84
+#: plugins/omemo/src/device_notification_populator.vala:89
 msgid "This contact has new devices"
 msgstr "Dieser Kontakt hat neue Geräte"
 
@@ -165,26 +165,26 @@ msgstr ""
 msgid "Back"
 msgstr "Zurück"
 
-#: plugins/omemo/src/contact_details_dialog.vala:50
+#: plugins/omemo/src/contact_details_dialog.vala:52
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Wenn du einen neuen Schüssel zu deinem Account hinzufügst, wir dieser "
 "automatisch akzeptiert."
 
-#: plugins/omemo/src/contact_details_dialog.vala:124
+#: plugins/omemo/src/contact_details_dialog.vala:126
 msgid "Accepted"
 msgstr "Akzeptiert"
 
-#: plugins/omemo/src/contact_details_dialog.vala:129
+#: plugins/omemo/src/contact_details_dialog.vala:131
 msgid "Rejected"
 msgstr "Abgelehnt"
 
-#: plugins/omemo/src/contact_details_dialog.vala:134
+#: plugins/omemo/src/contact_details_dialog.vala:136
 msgid "Verified"
 msgstr "Überprüft"
 
-#: plugins/omemo/src/contact_details_dialog.vala:141
+#: plugins/omemo/src/contact_details_dialog.vala:143
 msgid "Unused"
 msgstr "Unbenutzt"
 

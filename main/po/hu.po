@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
-"PO-Revision-Date: 2018-08-31 14:13+0000\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
+"PO-Revision-Date: 2019-02-26 08:17+0000\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/dino/"
 "translations/hu/>\n"
 "Language: hu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
@@ -31,12 +31,12 @@ msgstr ""
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "Image received"
-msgstr ""
+msgstr "Kép érkezett"
 
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "File received"
-msgstr ""
+msgstr "Fájl érkezett"
 
 #: main/src/ui/notifications.vala:88
 msgid "Subscription request"
@@ -122,7 +122,7 @@ msgstr "Fiók hozzáadása"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:156
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Jelentkezzen be a %s-ba"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
@@ -227,7 +227,7 @@ msgid "Save"
 msgstr "Mentés"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Csatlakozás csatornához"
 
@@ -239,7 +239,7 @@ msgid "Next"
 msgstr "Következő"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Csevegés kezdeményezése"
@@ -280,27 +280,23 @@ msgstr "Válassz egy másik becenevet"
 msgid "Too many occupants in room"
 msgstr "Túl sok résztvevő van a szobában"
 
-#: main/src/ui/unified_window.vala:173
+#: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr ""
-
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
 msgstr ""
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr "Nincs aktív fiók"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr "Fiókok kezelése"
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr "Nincs aktív beszélgetés"
 
@@ -512,7 +508,7 @@ msgstr "Szoba beállítása"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Beállítások"
 
@@ -565,10 +561,6 @@ msgstr "Csak ha említenek"
 #, c-format
 msgid "Default: %s"
 msgstr "Alapértelmezett: %s"
-
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "Beállítások"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -715,6 +707,9 @@ msgstr ""
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr ""
+
+#~ msgid "Preferences"
+#~ msgstr "Beállítások"
 
 #~ msgid "Quit"
 #~ msgstr "Kilépés"

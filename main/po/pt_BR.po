@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
-"PO-Revision-Date: 2018-09-10 03:24+0000\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
+"PO-Revision-Date: 2019-02-18 13:18+0000\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/dino/"
 "translations/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -15,27 +15,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "Image sent"
-msgstr ""
+msgstr "imagem enviada"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "File sent"
-msgstr ""
+msgstr "arquivo enviado"
 
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "Image received"
-msgstr ""
+msgstr "imagem recebida"
 
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "File received"
-msgstr ""
+msgstr "arquivo recebido"
 
 #: main/src/ui/notifications.vala:88
 msgid "Subscription request"
@@ -54,7 +54,7 @@ msgstr "Negar"
 #: main/src/ui/notifications.vala:101
 #, c-format
 msgid "Failed connecting to %s"
-msgstr ""
+msgstr "Falha ao se conectar com %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -121,21 +121,21 @@ msgstr "Adicionar conta"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:156
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Registrar-se em %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "You can now start using %s"
-msgstr ""
+msgstr "Agora você pode começar a usar %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:237
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Não foi possível se conectar com %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:254
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Nome ou Senha errada"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
@@ -152,7 +152,7 @@ msgstr "O servidor requer que se inscreva através de um site"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:298
 msgid "Open Registration"
-msgstr ""
+msgstr "Aberto para se Registrar"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:314
 msgid "Register"
@@ -226,7 +226,7 @@ msgid "Save"
 msgstr "Salvar"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Juntar-se a um canal"
 
@@ -238,7 +238,7 @@ msgid "Next"
 msgstr "Próximo"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Iniciar conversa"
@@ -279,27 +279,23 @@ msgstr "Escolha um apelido diferente"
 msgid "Too many occupants in room"
 msgstr "Número máximo da sala"
 
-#: main/src/ui/unified_window.vala:173
-msgid "Welcome to Dino!"
-msgstr ""
-
 #: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr ""
+msgid "Welcome to Dino!"
+msgstr "Seja bem vindo ao Dino!"
 
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
-msgstr ""
+msgstr "Configurar a conta"
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr "Nenhuma conta ativa"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr "Gerenciar contas"
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr "Nenhuma conversa ativa"
 
@@ -511,7 +507,7 @@ msgstr "Configuração da sala"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Configurações"
 
@@ -564,10 +560,6 @@ msgstr "Somente quando mencionado"
 msgid "Default: %s"
 msgstr "Padrão: %s"
 
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "Preferências"
-
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
 msgstr "Notificar quando uma nova mensagem chegar"
@@ -594,7 +586,7 @@ msgstr "Adicionar conta"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "Registrar"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:329
@@ -603,16 +595,16 @@ msgstr "Criar conta"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "Não foi possível estabelecer uma conexão segura"
 
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:268
 msgid "Back"
-msgstr ""
+msgstr "Voltar"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
-msgstr ""
+msgstr "Conectar"
 
 #: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
@@ -632,11 +624,11 @@ msgstr "Escolha outro servidor"
 
 #: main/data/manage_accounts/add_account_dialog.ui:544
 msgid "All set up!"
-msgstr ""
+msgstr "Tudo configurado!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:579
 msgid "Finish"
-msgstr ""
+msgstr "Finalizado"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -713,6 +705,12 @@ msgstr "Sem mensagens correspondentes"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Verifique a grafia ou tente remover filtros"
+
+#~ msgid "Communicate happiness."
+#~ msgstr "Comunique-se alegremente."
+
+#~ msgid "Preferences"
+#~ msgstr "Preferências"
 
 #~ msgid "Quit"
 #~ msgstr "Sair"

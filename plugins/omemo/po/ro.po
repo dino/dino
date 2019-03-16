@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "PO-Revision-Date: 2019-01-05 11:06+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ro/>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "20)) ? 1 : 2;\n"
 "X-Generator: Weblate 3.4-dev\n"
 
-#: plugins/omemo/src/device_notification_populator.vala:74
+#: plugins/omemo/src/device_notification_populator.vala:79
 msgid "Manage"
 msgstr "Gestionare"
 
-#: plugins/omemo/src/device_notification_populator.vala:84
+#: plugins/omemo/src/device_notification_populator.vala:89
 msgid "This contact has new devices"
 msgstr "Acest contact are dispozitive noi"
 
@@ -168,26 +168,26 @@ msgstr ""
 msgid "Back"
 msgstr "Înapoi"
 
-#: plugins/omemo/src/contact_details_dialog.vala:50
+#: plugins/omemo/src/contact_details_dialog.vala:52
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Când adäugați chei de criptare noi pentru acest cont, acestea vor fi "
 "acceptate în mod automat."
 
-#: plugins/omemo/src/contact_details_dialog.vala:124
+#: plugins/omemo/src/contact_details_dialog.vala:126
 msgid "Accepted"
 msgstr "Acceptată"
 
-#: plugins/omemo/src/contact_details_dialog.vala:129
+#: plugins/omemo/src/contact_details_dialog.vala:131
 msgid "Rejected"
 msgstr "Respinsă"
 
-#: plugins/omemo/src/contact_details_dialog.vala:134
+#: plugins/omemo/src/contact_details_dialog.vala:136
 msgid "Verified"
 msgstr "Verificată"
 
-#: plugins/omemo/src/contact_details_dialog.vala:141
+#: plugins/omemo/src/contact_details_dialog.vala:143
 msgid "Unused"
 msgstr "Neutilizatä"
 

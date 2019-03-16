@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-14 21:12+0100\n"
+"POT-Creation-Date: 2019-03-16 14:38+0100\n"
 "PO-Revision-Date: 2019-01-30 16:09+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
@@ -232,7 +232,7 @@ msgid "Save"
 msgstr "حفظ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "الإلتحاق بقناة"
 
@@ -244,7 +244,7 @@ msgid "Next"
 msgstr "التالي"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:194 main/data/menu_add.ui:7
+#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "الشروع في محادثة"
@@ -285,27 +285,23 @@ msgstr "إختر إسما مستعارا آخر"
 msgid "Too many occupants in room"
 msgstr "غرفة المحادثة مكتضة"
 
-#: main/src/ui/unified_window.vala:173
+#: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
 msgstr "مرحبا بكم على دينو!"
 
-#: main/src/ui/unified_window.vala:174
-msgid "Communicate happiness."
-msgstr "أنشر السعادة."
-
-#: main/src/ui/unified_window.vala:175
+#: main/src/ui/unified_window.vala:176
 msgid "Set up account"
 msgstr "تهيئة الحساب"
 
-#: main/src/ui/unified_window.vala:183
+#: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
 msgstr "ليس هناك أية حسابات نشطة"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:185
 msgid "Manage accounts"
 msgstr "إدارة الحسابات"
 
-#: main/src/ui/unified_window.vala:193
+#: main/src/ui/unified_window.vala:194
 msgid "No active conversations"
 msgstr "ليس هناك أية محادثات نشطة"
 
@@ -521,7 +517,7 @@ msgstr "إعدادات الغرفة"
 #: main/src/ui/contact_details/settings_provider.vala:22
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "الإعدادات"
 
@@ -573,10 +569,6 @@ msgstr "فقط عندما يُشار إليّ"
 #, c-format
 msgid "Default: %s"
 msgstr "إفتراضي: %s"
-
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
-msgstr "التفضيلات"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -719,6 +711,12 @@ msgstr "لا توجد رسائل متطابقة"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "تحقق مِن التدقيق الإملائي أو حاول إزالة فلاتر"
+
+#~ msgid "Communicate happiness."
+#~ msgstr "أنشر السعادة."
+
+#~ msgid "Preferences"
+#~ msgstr "التفضيلات"
 
 #~ msgid "Quit"
 #~ msgstr "الخروج"
