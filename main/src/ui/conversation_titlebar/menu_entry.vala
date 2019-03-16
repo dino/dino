@@ -42,6 +42,11 @@ class MenuWidget : Button, Plugins.ConversationTitlebarWidget {
 
     public new void set_conversation(Conversation conversation) {
         this.conversation = conversation;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            tooltip_text = "Channel details";
+        } else {
+            tooltip_text = "Conversation details";
+        }
     }
 }
 

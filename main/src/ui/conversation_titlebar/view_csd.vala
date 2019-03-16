@@ -28,7 +28,6 @@ public class ConversationTitlebarCsd : Gtk.HeaderBar {
         }
         foreach (var w in widgets) {
             Button gtk_widget = (Gtk.Button)w;
-            gtk_widget.relief = ReliefStyle.NONE;
             this.pack_end(gtk_widget);
         }
     }

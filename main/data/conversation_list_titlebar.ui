@@ -13,6 +13,7 @@
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkMenuButton" id="add_button">
+                        <property name="tooltip_text" translatable="yes">Start Conversation</property>
                         <property name="relief">none</property>
                         <property name="visible">True</property>
                         <child>

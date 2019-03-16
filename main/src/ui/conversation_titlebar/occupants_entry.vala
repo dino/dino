@@ -34,6 +34,7 @@ class OccupantsWidget : MenuButton, Plugins.ConversationTitlebarWidget {
 
     public OccupantsWidget(StreamInteractor stream_interactor) {
         image = new Image.from_icon_name("system-users-symbolic", IconSize.MENU);
+        tooltip_text = _("Members");
 
         this.stream_interactor = stream_interactor;
         set_use_popover(true);
