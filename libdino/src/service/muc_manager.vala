@@ -396,13 +396,11 @@ public class MucManager : StreamInteractionModule, Object {
                 }
             }
             Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.counterpart.bare_jid, conversation.account);
-            if (own_muc_jid != null && message.from.equals(own_muc_jid)) {
-                Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
-                foreach (Entities.Message m in messages) { // TODO not here
-                    if (m.equals(message)) {
-                        // For own messages from this device (msg is a duplicate)
-                        m.marked = Message.Marked.RECEIVED;
-                    }
+            if (stanza.id != null && own_muc_jid != null && message.from.equals(own_muc_jid)) {
+                Entities.Message? m = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza.id, conversation);
+                if (m != null) {
+                    // For own messages from this device (msg is a duplicate)
+                    m.marked = Message.Marked.RECEIVED;
                 }
                 // For own messages from other devices (msg is not a duplicate msg)
                 message.marked = Message.Marked.RECEIVED;
