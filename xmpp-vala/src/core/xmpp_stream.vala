@@ -23,7 +23,7 @@ public class XmppStream {
 
     public Gee.List<XmppStreamFlag> flags { get; private set; default=new ArrayList<XmppStreamFlag>(); }
     public Gee.List<XmppStreamModule> modules { get; private set; default=new ArrayList<XmppStreamModule>(); }
-    private Gee.List<ConnectionProvider> connection_providers = new ArrayList<ConnectionProvider>();
+    private Gee.List<ServiceLookuper> service_lookupers = new ArrayList<ServiceLookuper>();
     public bool negotiation_complete { get; set; default=false; }
     private bool setup_needed = false;
     private bool non_negotiation_modules_attached = false;
@@ -39,32 +39,37 @@ public class XmppStream {
     public signal void attached_modules(XmppStream stream);
 
     public XmppStream() {
-        register_connection_provider(new StartTlsConnectionProvider());
+        register_service_lookuper(new StartTlsServiceLookuper());
     }
 
     public async void connect(string? remote_name = null) throws IOStreamError {
         if (remote_name != null) this.remote_name = Jid.parse(remote_name);
         attach_negotation_modules();
         try {
-            int min_priority = -1;
-            ConnectionProvider? best_provider = null;
-            foreach (ConnectionProvider connection_provider in connection_providers) {
-                int? priority = yield connection_provider.get_priority(this.remote_name);
-                if (priority != null && (priority < min_priority || min_priority == -1)) {
-                    min_priority = priority;
-                    best_provider = connection_provider;
+            GLib.List<ConnectionProvider>? providers = new GLib.List<ConnectionProvider>();
+            foreach (ServiceLookuper service_lookuper in service_lookupers) {
+                providers.concat(yield service_lookuper.lookup(this.remote_name));
+            }
+            providers.sort((a, b) => { return a.get_priority() - b.get_priority(); });
+
+            ConnectionProvider? provider = null;
+            IOStream? stream = null;
+            for (int i = 0; i < providers.length(); i++) {
+                provider = providers.nth(i).data;
+
+                stream = yield provider.connect(this);
+                if (stream != null) {
+                    break;
                 }
             }
-            IOStream? stream = null;
-            if (best_provider != null) {
-                stream = yield best_provider.connect(this);
-            }
+
             if (stream == null) {
                 stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name.to_string()));
             }
             if (stream == null) {
                 throw new IOStreamError.CONNECT("client.connect() returned null");
             }
+
             reset_stream((!)stream);
         } catch (Error e) {
             debug("[%p] Could not connect to server", this);
@@ -177,8 +182,8 @@ public class XmppStream {
         return null;
     }
 
-    public void register_connection_provider(ConnectionProvider connection_provider) {
-        connection_providers.add(connection_provider);
+    public void register_service_lookuper(ServiceLookuper service_lookuper) {
+        service_lookupers.add(service_lookuper);
     }
 
     public bool is_negotiation_active() {
@@ -354,32 +359,68 @@ public abstract class XmppStreamNegotiationModule : XmppStreamModule {
     public abstract bool negotiation_active(XmppStream stream);
 }
 
-public abstract class ConnectionProvider {
-    public async abstract int? get_priority(Jid remote_name);
-    public async abstract IOStream? connect(XmppStream stream);
-    public abstract string get_id();
+public abstract class ServiceLookuper {
+    public async abstract GLib.List<ConnectionProvider>? lookup(Jid remote_name);
 }
 
-public class StartTlsConnectionProvider : ConnectionProvider {
-    private SrvTarget? srv_target;
+public abstract class ConnectionProvider {
+    public abstract int? get_priority();
+    public abstract string get_id();
+    public async abstract IOStream? connect(XmppStream stream);
 
-    public async override int? get_priority(Jid remote_name) {
-        GLib.List<SrvTarget>? xmpp_target = null;
+    protected const uint timeout = 7;
+}
+
+public class StartTlsServiceLookuper : ServiceLookuper {
+    private GLib.List<SrvTarget>? xmpp_targets;
+
+    public async override GLib.List<ConnectionProvider>? lookup(Jid remote_name) {
+        GLib.List<StartTlsConnectionProvider> providers = new GLib.List<StartTlsConnectionProvider>();
+
         try {
             GLibFixes.Resolver resolver = GLibFixes.Resolver.get_default();
-            xmpp_target = yield resolver.lookup_service_async("xmpp-client", "tcp", remote_name.to_string(), null);
+            xmpp_targets = yield resolver.lookup_service_async("xmpp-client", "tcp", remote_name.to_string(), null);
         } catch (Error e) {
             return null;
         }
-        xmpp_target.sort((a, b) => { return a.get_priority() - b.get_priority(); });
-        srv_target = xmpp_target.nth(0).data;
-        return xmpp_target.nth(0).data.get_priority();
+
+        SrvTarget? target = null;
+        for (int i = 0; i < xmpp_targets.length(); i++) {
+            target = xmpp_targets.nth(i).data;
+            StartTlsConnectionProvider? provider = new StartTlsConnectionProvider(target.get_hostname(), target.get_port());
+            provider.set_priority(target.get_priority());
+            providers.append(provider);
+        }
+
+        return providers;
+    }
+}
+
+public class StartTlsConnectionProvider : ConnectionProvider {
+    private int priority;
+    private string hostname;
+    private uint16 port;
+
+    public StartTlsConnectionProvider(string hostname, uint16 port) {
+        this.hostname = hostname;
+        this.port = port;
+    }
+
+    public override int? get_priority() {
+        return this.priority;
+    }
+
+    public void set_priority(int priority) {
+        this.priority = priority;
     }
 
     public async override IOStream? connect(XmppStream stream) {
         try {
             SocketClient client = new SocketClient();
-            return yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
+            client.set_timeout(timeout);
+            IOStream? io_stream = yield client.connect_to_host_async(this.hostname, this.port);
+            ((SocketConnection)io_stream).get_socket().set_timeout(0); // Back to zero if succeeded
+            return io_stream;
         } catch (Error e) {
             return null;
         }
