@@ -142,6 +142,15 @@ public class UnifiedWindowController : Object {
         }
     }
 
+    public void loop_conversations(bool backwards = false) {
+        Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations();
+        conversations.sort((a, b) => { return b.last_active.compare(a.last_active); });
+        int index = conversations.index_of(this.conversation);
+        index += backwards ? -1 : 1;
+        select_conversation(conversations.get(index % conversations.size));
+    }
+
+
     private void update_conversation_display_name() {
         conversation_display_name = Util.get_conversation_display_name(stream_interactor, conversation);
     }
