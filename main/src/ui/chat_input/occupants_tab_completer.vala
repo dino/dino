@@ -92,7 +92,7 @@ class OccupantsTabCompletor {
         for (int i = messages.size - 1; i > 0; i--) {
             string resourcepart = messages[i].from.resourcepart;
             Jid? own_nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
-            if (resourcepart != null && resourcepart != "" && resourcepart != own_nick.resourcepart && !ret.contains(resourcepart)) {
+            if (resourcepart != null && resourcepart != "" && own_nick != null && resourcepart != own_nick.resourcepart && !ret.contains(resourcepart)) {
                 ret.add(resourcepart);
             }
         }
