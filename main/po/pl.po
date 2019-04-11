@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-16 14:38+0100\n"
-"PO-Revision-Date: 2018-09-25 09:34+0000\n"
+"PO-Revision-Date: 2019-04-11 14:57+0200\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/dino/translations/"
 "pl/>\n"
 "Language: pl\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "Image sent"
-msgstr ""
+msgstr "Wysłano obraz"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_row.vala:155
 msgid "File sent"
-msgstr ""
+msgstr "Wysłano plik"
 
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "Image received"
-msgstr ""
+msgstr "Odebrano obraz"
 
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_row.vala:157
 msgid "File received"
-msgstr ""
+msgstr "Odebrano plik"
 
 #: main/src/ui/notifications.vala:88
 msgid "Subscription request"
@@ -56,7 +56,7 @@ msgstr "Odmów"
 #: main/src/ui/notifications.vala:101
 #, c-format
 msgid "Failed connecting to %s"
-msgstr ""
+msgstr "Nie udało się połączyć z %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:126
 #, c-format
@@ -93,7 +93,7 @@ msgstr "Wszystkie pliki"
 
 #: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connecting…"
-msgstr "Próba łączenia…"
+msgstr "Łączenie…"
 
 #: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Connected"
@@ -123,21 +123,21 @@ msgstr "Dodaj konto"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:156
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Zaloguj się do %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:200
 #, c-format
 msgid "You can now start using %s"
-msgstr ""
+msgstr "Możesz teraz korzystać z %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:237
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Nie udało się połączyć z %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:254
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Błędna nazwa użytkownika lub hasło"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:287
 msgid "No response from server"
@@ -284,11 +284,11 @@ msgstr "Zbyt duża liczba osób w pokoju"
 
 #: main/src/ui/unified_window.vala:174
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Witaj w Dino!"
 
 #: main/src/ui/unified_window.vala:176
 msgid "Set up account"
-msgstr ""
+msgstr "Ustaw konto"
 
 #: main/src/ui/unified_window.vala:184
 msgid "No active accounts"
@@ -326,11 +326,10 @@ msgid "%s and %s"
 msgstr "%s i %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:155
-#, fuzzy
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "pisze…"
-msgstr[1] "pisze…"
+msgstr[1] "piszą…"
 msgstr[2] "pisze…"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:157
@@ -533,7 +532,7 @@ msgstr "Wyślij informację o pisaniu"
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Wyślij informację o odczytaniu"
 
 #: main/src/ui/contact_details/settings_provider.vala:30
 #: main/src/ui/contact_details/settings_provider.vala:39
@@ -548,13 +547,13 @@ msgstr "Ustawienia lokalne"
 #: main/src/ui/contact_details/settings_provider.vala:114
 #: main/src/ui/contact_details/settings_provider.vala:116
 msgid "On"
-msgstr "Na"
+msgstr "Włączone"
 
 #: main/src/ui/contact_details/settings_provider.vala:76
 #: main/src/ui/contact_details/settings_provider.vala:114
 #: main/src/ui/contact_details/settings_provider.vala:117
 msgid "Off"
-msgstr "Wyłącz"
+msgstr "Wyłączone"
 
 #: main/src/ui/contact_details/settings_provider.vala:78
 msgid "Only when mentioned"
@@ -592,7 +591,7 @@ msgstr "Dodaj konto"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "Zaloguj się"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:329
@@ -601,16 +600,16 @@ msgstr "Załóż konto"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "Nie można było nawiązać bezpiecznego połączenia"
 
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:268
 msgid "Back"
-msgstr ""
+msgstr "Wstecz"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
-msgstr ""
+msgstr "Połącz"
 
 #: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
@@ -618,11 +617,11 @@ msgstr "Wybierz serwer publiczny"
 
 #: main/data/manage_accounts/add_account_dialog.ui:370
 msgid "Or specify a server address"
-msgstr "Lub specjalny adres serwera"
+msgstr "lub wprowadź adres serwera"
 
 #: main/data/manage_accounts/add_account_dialog.ui:390
 msgid "Sign in instead"
-msgstr ""
+msgstr "Zaloguj się"
 
 #: main/data/manage_accounts/add_account_dialog.ui:471
 msgid "Pick another server"
@@ -630,11 +629,11 @@ msgstr "Wybierz kolejny serwer"
 
 #: main/data/manage_accounts/add_account_dialog.ui:544
 msgid "All set up!"
-msgstr ""
+msgstr "Wszystko gra!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:579
 msgid "Finish"
-msgstr ""
+msgstr "Zakończ"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
@@ -642,7 +641,7 @@ msgstr "Nieszyfrowany"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
-msgstr "Nowoczesny klient Chatu XMPP"
+msgstr "Nowoczesny komunikator XMPP"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -650,9 +649,8 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino jest nowoczesnym klientem chat z otwartym źródłem w wersji na "
-"komputery. Skupia się na prostej obsłudze Jabber/XMPP dbając o twoją "
-"prywatność."
+"Dino jest nowoczesnym, otwartym komunikatorem. Skupia się na prostej "
+"obsłudze sieci Jabber/XMPP dbając o twoją prywatność."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -660,12 +658,17 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"Dino obsługuje szyfrowanie end-to-end za pomocą OMEMO i OpenPGP, a także "
+"daje kontrolę nad funkcjami wpływającymi na prywatność, takimi jak "
+"powiadomienia o pisaniu czy odczytaniu wiadomości."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"Dino pobiera historię rozmów z serwera i synchronizuje wiadomości z innymi "
+"urządzeniami."
 
 #: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
@@ -693,7 +696,7 @@ msgstr "Dodaj kontakt"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "Brak aktywnego wyszukiwania"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
@@ -701,11 +704,11 @@ msgstr "Zacznij pisać aby wyszukać"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "Brak pasujących wiadomości"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Sprawdź pisownię i spróbuj wyłączyć filtry"
 
 #~ msgid "Preferences"
 #~ msgstr "Preferencje"
