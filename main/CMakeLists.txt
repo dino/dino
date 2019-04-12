@@ -34,7 +34,6 @@ set(RESOURCE_LIST
     conversation_list_titlebar.ui
     conversation_list_titlebar_csd.ui
     global_search.ui
-    conversation_selector/view.ui
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
     conversation_summary/image_toolbar.ui
@@ -105,7 +104,6 @@ SOURCES
     src/ui/global_search.vala
     src/ui/conversation_selector/conversation_row.vala
     src/ui/conversation_selector/list.vala
-    src/ui/conversation_selector/view.vala
     src/ui/conversation_summary/chat_state_populator.vala
     src/ui/conversation_summary/content_item_widget_factory.vala
     src/ui/conversation_summary/content_populator.vala

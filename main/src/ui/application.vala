@@ -134,12 +134,12 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         set_accels_for_action("app.add_conference", new string[]{"<Ctrl>G"});
 
         SimpleAction loop_conversations_action = new SimpleAction("loop_conversations", null);
-        loop_conversations_action.activate.connect(() => {controller.loop_conversations(false);});
+        loop_conversations_action.activate.connect(() => { window.loop_conversations(false); });
         add_action(loop_conversations_action);
         set_accels_for_action("app.loop_conversations", new string[]{"<Ctrl>Tab"});
 
         SimpleAction loop_conversations_bw_action = new SimpleAction("loop_conversations_bw", null);
-        loop_conversations_bw_action.activate.connect(() => {controller.loop_conversations(true);});
+        loop_conversations_bw_action.activate.connect(() => { window.loop_conversations(true); });
         add_action(loop_conversations_bw_action);
         set_accels_for_action("app.loop_conversations_bw", new string[]{"<Ctrl><Shift>Tab"});
     }

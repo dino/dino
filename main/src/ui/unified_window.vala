@@ -43,7 +43,7 @@ public class UnifiedWindow : Gtk.Window {
     public ChatInput.View chat_input;
     public ConversationListTitlebar conversation_list_titlebar;
     public ConversationListTitlebarCsd conversation_list_titlebar_csd;
-    public ConversationSelector.View filterable_conversation_list;
+    public ConversationSelector.List filterable_conversation_list;
     public ConversationSummary.ConversationView conversation_frame;
     public ConversationTitlebar conversation_titlebar;
     public ConversationTitlebarCsd conversation_titlebar_csd;
@@ -88,8 +88,6 @@ public class UnifiedWindow : Gtk.Window {
         if (this.conversation == null || !this.conversation.equals(conversation)) {
             this.conversation = conversation;
             conversation_selected(conversation);
-
-
         }
     }
 
@@ -99,7 +97,7 @@ public class UnifiedWindow : Gtk.Window {
         box.add(paned);
         chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
         conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
-        filterable_conversation_list = ((ConversationSelector.View) builder.get_object("conversation_list")).init(stream_interactor);
+        filterable_conversation_list = ((ConversationSelector.List) builder.get_object("conversation_list")).init(stream_interactor);
         goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
         goto_end_button = (Button) builder.get_object("goto_end_button");
         search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
@@ -166,6 +164,10 @@ public class UnifiedWindow : Gtk.Window {
                 set_titlebar(headerbar_paned);
             }
         }
+    }
+
+    public void loop_conversations(bool backwards) {
+        filterable_conversation_list.loop_conversations(backwards);
     }
 }
 

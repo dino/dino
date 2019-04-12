@@ -14,13 +14,8 @@ public class List : ListBox {
     private string[]? filter_values;
     private HashMap<Conversation, ConversationRow> rows = new HashMap<Conversation, ConversationRow>(Conversation.hash_func, Conversation.equals_func);
 
-    public List(StreamInteractor stream_interactor) {
+    public List init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-
-        get_style_context().add_class("sidebar");
-        set_filter_func(filter);
-        set_header_func(header);
-        set_sort_func(sort);
 
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(add_conversation);
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(remove_conversation);
@@ -34,6 +29,17 @@ public class List : ListBox {
         foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations()) {
             add_conversation(conversation);
         }
+        return this;
+    }
+
+    construct {
+        this.stream_interactor = stream_interactor;
+
+        get_style_context().add_class("sidebar");
+        set_filter_func(filter);
+        set_header_func(header);
+        set_sort_func(sort);
+
         realize.connect(() => {
             ListBoxRow? first_row = get_row_at_index(0);
             if (first_row != null) {
@@ -77,34 +83,41 @@ public class List : ListBox {
             row = new ConversationRow(stream_interactor, conversation);
             rows[conversation] = row;
             add(row);
-            row.closed.connect(() => { select_next_conversation(conversation); });
+            row.closed.connect(() => { select_fallback_conversation(conversation); });
             row.main_revealer.set_reveal_child(true);
         }
         invalidate_sort();
     }
 
-    private void select_next_conversation(Conversation conversation) {
+    private void select_fallback_conversation(Conversation conversation) {
         if (get_selected_row() == rows[conversation]) {
             int index = rows[conversation].get_index();
-            ListBoxRow? index_p1 = get_row_at_index(index + 1);
-            if (index_p1 != null) {
-                select_row(index_p1);
-                row_activated(index_p1);
-            } else if (index > 0) {
-                ListBoxRow? index_m1 = get_row_at_index(index - 1);
-                if (index_m1 != null) {
-                    select_row(index_m1);
-                    row_activated(index_m1);
-                }
+            ListBoxRow? next_select_row = get_row_at_index(index + 1);
+            if (next_select_row == null) {
+                next_select_row = get_row_at_index(index - 1);
+            }
+            if (next_select_row != null) {
+                select_row(next_select_row);
+                row_activated(next_select_row);
             }
         }
     }
 
     private void remove_conversation(Conversation conversation) {
-        select_next_conversation(conversation);
+        select_fallback_conversation(conversation);
         if (rows.has_key(conversation) && !conversation.active) {
             remove(rows[conversation]);
             rows.unset(conversation);
+        }
+    }
+
+    public void loop_conversations(bool backwards) {
+        int index = get_selected_row().get_index();
+        int new_index = ((index + (backwards ? -1 : 1)) + rows.size) % rows.size;
+        ListBoxRow? next_select_row = get_row_at_index(new_index);
+        if (next_select_row != null) {
+            select_row(next_select_row);
+            row_activated(next_select_row);
         }
     }
 

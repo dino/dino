@@ -79,7 +79,7 @@ public class UnifiedWindowController : Object {
         window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("accounts", null); });
         window.conversations_placeholder.primary_button.clicked.connect(() => { app.activate_action("add_chat", null); });
         window.conversations_placeholder.secondary_button.clicked.connect(() => { app.activate_action("add_conference", null); });
-        window.filterable_conversation_list.conversation_list.conversation_selected.connect((conversation) => select_conversation(conversation));
+        window.filterable_conversation_list.conversation_selected.connect((conversation) => select_conversation(conversation));
 
         var vadjustment = window.conversation_frame.scrolled.vadjustment;
         vadjustment.notify["value"].connect(() => {
@@ -131,7 +131,7 @@ public class UnifiedWindowController : Object {
 
         stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
         conversation.active = true; // only for conversation_selected
-        window.filterable_conversation_list.conversation_list.on_conversation_selected(conversation); // only for conversation_opened
+        window.filterable_conversation_list.on_conversation_selected(conversation); // only for conversation_opened
 
         if (do_reset_search) {
             reset_search_entry();
@@ -141,15 +141,6 @@ public class UnifiedWindowController : Object {
             window.conversation_frame.initialize_for_conversation(conversation);
         }
     }
-
-    public void loop_conversations(bool backwards = false) {
-        Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations();
-        conversations.sort((a, b) => { return b.last_active.compare(a.last_active); });
-        int index = conversations.index_of(this.conversation);
-        index += backwards ? -1 : 1;
-        select_conversation(conversations.get(index % conversations.size));
-    }
-
 
     private void update_conversation_display_name() {
         conversation_display_name = Util.get_conversation_display_name(stream_interactor, conversation);
