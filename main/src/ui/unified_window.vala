@@ -10,43 +10,16 @@ public class UnifiedWindow : Gtk.Window {
 
     public signal void conversation_selected(Conversation conversation);
 
-    public new string? title {
-        get {
-            return Util.use_csd() ? conversation_titlebar_csd.title : conversation_titlebar.title;
-        }
-        set {
-            if (Util.use_csd()) {
-                conversation_titlebar_csd.title = value;
-            } else {
-                conversation_titlebar.title = value;
-            }
-        }
-    }
-
-    public string? subtitle {
-        get {
-            return Util.use_csd() ? conversation_titlebar_csd.subtitle : conversation_titlebar.subtitle;
-        }
-        set {
-            string? new_subtitle = value == null ? null : (/\s+/).replace_literal(value, -1, 0, " ");
-            if (Util.use_csd()) {
-                conversation_titlebar_csd.subtitle = new_subtitle;
-            } else {
-                conversation_titlebar.subtitle = new_subtitle;
-            }
-        }
-    }
+    public new string? title { get; set; }
+    public string? subtitle { get; set; }
 
     public WelcomePlceholder welcome_placeholder = new WelcomePlceholder() { visible=true };
     public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     public NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
     public ChatInput.View chat_input;
-    public ConversationListTitlebar conversation_list_titlebar;
-    public ConversationListTitlebarCsd conversation_list_titlebar_csd;
-    public ConversationSelector.List filterable_conversation_list;
+    public ConversationSelector conversation_selector;
     public ConversationSummary.ConversationView conversation_frame;
     public ConversationTitlebar conversation_titlebar;
-    public ConversationTitlebarCsd conversation_titlebar_csd;
     public HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
     public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL, visible=true };
     public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
@@ -74,12 +47,14 @@ public class UnifiedWindow : Gtk.Window {
         setup_unified();
         setup_stack();
 
+        this.bind_property("title", conversation_titlebar, "title");
+        this.bind_property("subtitle", conversation_titlebar, "subtitle");
+        paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
         stream_interactor.account_added.connect((account) => { check_stack(true); });
         stream_interactor.account_removed.connect((account) => { check_stack(); });
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(() => check_stack());
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => check_stack());
-
-        paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         check_stack();
     }
@@ -97,7 +72,7 @@ public class UnifiedWindow : Gtk.Window {
         box.add(paned);
         chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
         conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
-        filterable_conversation_list = ((ConversationSelector.List) builder.get_object("conversation_list")).init(stream_interactor);
+        conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
         goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
         goto_end_button = (Button) builder.get_object("goto_end_button");
         search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
@@ -107,9 +82,11 @@ public class UnifiedWindow : Gtk.Window {
 
     private void setup_headerbar() {
         if (Util.use_csd()) {
-            conversation_titlebar_csd = new ConversationTitlebarCsd(stream_interactor, this) { visible=true };
-            conversation_list_titlebar_csd = new ConversationListTitlebarCsd(stream_interactor, this) { visible=true };
+            ConversationListTitlebarCsd conversation_list_titlebar_csd = new ConversationListTitlebarCsd(stream_interactor, this) { visible=true };
             headerbar_paned.pack1(conversation_list_titlebar_csd, false, false);
+
+            ConversationTitlebarCsd conversation_titlebar_csd = new ConversationTitlebarCsd() { visible=true };
+            conversation_titlebar = conversation_titlebar_csd;
             headerbar_paned.pack2(conversation_titlebar_csd, true, false);
 
             // Distribute start/end decoration_layout buttons to left/right headerbar. Ensure app menu fallback.
@@ -125,9 +102,10 @@ public class UnifiedWindow : Gtk.Window {
                 }
             }
         } else {
-            conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
-            conversation_titlebar = new ConversationTitlebar(stream_interactor) { visible=true };
+            ConversationListTitlebar conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
             headerbar_paned.pack1(conversation_list_titlebar, false, false);
+
+            conversation_titlebar = new ConversationTitlebarNoCsd() { visible=true };
             headerbar_paned.pack2(conversation_titlebar, true, false);
 
             box.add(headerbar_paned);
@@ -167,7 +145,7 @@ public class UnifiedWindow : Gtk.Window {
     }
 
     public void loop_conversations(bool backwards) {
-        filterable_conversation_list.loop_conversations(backwards);
+        conversation_selector.loop_conversations(backwards);
     }
 }
 

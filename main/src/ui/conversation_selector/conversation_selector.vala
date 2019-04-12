@@ -4,17 +4,17 @@ using Gtk;
 using Xmpp;
 using Dino.Entities;
 
-namespace Dino.Ui.ConversationSelector {
+namespace Dino.Ui {
 
-public class List : ListBox {
+public class ConversationSelector : ListBox {
 
     public signal void conversation_selected(Conversation conversation);
 
     private StreamInteractor stream_interactor;
     private string[]? filter_values;
-    private HashMap<Conversation, ConversationRow> rows = new HashMap<Conversation, ConversationRow>(Conversation.hash_func, Conversation.equals_func);
+    private HashMap<Conversation, ConversationSelectorRow> rows = new HashMap<Conversation, ConversationSelectorRow>(Conversation.hash_func, Conversation.equals_func);
 
-    public List init(StreamInteractor stream_interactor) {
+    public ConversationSelector init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(add_conversation);
@@ -22,7 +22,7 @@ public class List : ListBox {
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_received);
         Timeout.add_seconds(60, () => {
-            foreach (ConversationRow row in rows.values) row.update();
+            foreach (ConversationSelectorRow row in rows.values) row.update();
             return true;
         });
 
@@ -50,8 +50,8 @@ public class List : ListBox {
     }
 
     public override void row_activated(ListBoxRow r) {
-        if (r.get_type().is_a(typeof(ConversationRow))) {
-            ConversationRow row = r as ConversationRow;
+        ConversationSelectorRow? row = r as ConversationSelectorRow;
+        if (row != null) {
             conversation_selected(row.conversation);
         }
     }
@@ -78,9 +78,9 @@ public class List : ListBox {
     }
 
     private void add_conversation(Conversation conversation) {
-        ConversationRow row;
+        ConversationSelectorRow row;
         if (!rows.has_key(conversation)) {
-            row = new ConversationRow(stream_interactor, conversation);
+            row = new ConversationSelectorRow(stream_interactor, conversation);
             rows[conversation] = row;
             add(row);
             row.closed.connect(() => { select_fallback_conversation(conversation); });
@@ -130,8 +130,8 @@ public class List : ListBox {
     }
 
     private bool filter(ListBoxRow r) {
-        if (r.get_type().is_a(typeof(ConversationRow))) {
-            ConversationRow row = r as ConversationRow;
+        ConversationSelectorRow? row = r as ConversationSelectorRow;
+        if (row != null) {
             if (filter_values != null && filter_values.length != 0) {
                 foreach (string filter in filter_values) {
                     if (!(Util.get_conversation_display_name(stream_interactor, row.conversation).down().contains(filter.down()) ||
@@ -145,8 +145,8 @@ public class List : ListBox {
     }
 
     private int sort(ListBoxRow row1, ListBoxRow row2) {
-        ConversationRow cr1 = row1 as ConversationRow;
-        ConversationRow cr2 = row2 as ConversationRow;
+        ConversationSelectorRow cr1 = row1 as ConversationSelectorRow;
+        ConversationSelectorRow cr2 = row2 as ConversationSelectorRow;
         if (cr1 != null && cr2 != null) {
             Conversation c1 = cr1.conversation;
             Conversation c2 = cr2.conversation;

@@ -6,7 +6,12 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class ConversationTitlebar : Gtk.Box {
+public interface ConversationTitlebar: Widget {
+    public abstract string? subtitle { get; set; }
+    public abstract string? title { get; set; }
+}
+
+public class ConversationTitlebarNoCsd : ConversationTitlebar, Gtk.Box {
 
     public string? title {
         get { return title_label.label; }
@@ -20,8 +25,6 @@ public class ConversationTitlebar : Gtk.Box {
             this.subtitle_label.visible = (value != null);
         }
     }
-
-    private StreamInteractor stream_interactor;
 
     private Box content_box = new Box(Orientation.HORIZONTAL, 0) { margin=5, margin_start=15, margin_end=5, hexpand=true, visible=true };
     private Label title_label = new Label("") { visible=true };
@@ -45,9 +48,7 @@ public class ConversationTitlebar : Gtk.Box {
         content_box.add(placeholder_box);
     }
 
-    public ConversationTitlebar(StreamInteractor stream_interactor) {
-        this.stream_interactor = stream_interactor;
-
+    public ConversationTitlebarNoCsd() {
         this.get_style_context().add_class("dino-header-right");
         hexpand = true;
         search_button.set_image(new Gtk.Image.from_icon_name("system-search-symbolic", Gtk.IconSize.MENU) { visible = true });
@@ -60,6 +61,31 @@ public class ConversationTitlebar : Gtk.Box {
                 gtk_widget.relief = ReliefStyle.NONE;
                 content_box.add(gtk_widget);
             }
+        }
+    }
+}
+
+public class ConversationTitlebarCsd : ConversationTitlebar, Gtk.HeaderBar {
+
+    public new string? title { get { return this.get_title(); } set { base.set_title(value); } }
+    public new string? subtitle { get { return this.get_subtitle(); } set { base.set_subtitle(value); } }
+
+    public ConversationTitlebarCsd() {
+        this.get_style_context().add_class("dino-right");
+        show_close_button = true;
+        hexpand = true;
+
+        Application app = GLib.Application.get_default() as Application;
+        ArrayList<Plugins.ConversationTitlebarWidget> widgets = new ArrayList<Plugins.ConversationTitlebarWidget>();
+        foreach(var e in app.plugin_registry.conversation_titlebar_entries) {
+            Plugins.ConversationTitlebarWidget widget = e.get_widget(Plugins.WidgetType.GTK);
+            if (widget != null) {
+                widgets.insert(0, widget);
+            }
+        }
+        foreach (var w in widgets) {
+            Button gtk_widget = (Gtk.Button)w;
+            this.pack_end(gtk_widget);
         }
     }
 }

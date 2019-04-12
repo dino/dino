@@ -102,8 +102,8 @@ SOURCES
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_list_titlebar_csd.vala
     src/ui/global_search.vala
-    src/ui/conversation_selector/conversation_row.vala
-    src/ui/conversation_selector/list.vala
+    src/ui/conversation_selector/conversation_selector_row.vala
+    src/ui/conversation_selector/conversation_selector.vala
     src/ui/conversation_summary/chat_state_populator.vala
     src/ui/conversation_summary/content_item_widget_factory.vala
     src/ui/conversation_summary/content_populator.vala
@@ -114,8 +114,7 @@ SOURCES
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
     src/ui/conversation_titlebar/search_entry.vala
-    src/ui/conversation_titlebar/view.vala
-    src/ui/conversation_titlebar/view_csd.vala
+    src/ui/conversation_titlebar/conversation_titlebar.vala
     src/ui/manage_accounts/account_row.vala
     src/ui/manage_accounts/add_account_dialog.vala
     src/ui/manage_accounts/dialog.vala

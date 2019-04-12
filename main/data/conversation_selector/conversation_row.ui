@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiConversationSelectorConversationRow">
+    <template class="DinoUiConversationSelectorRow">
         <property name="visible">True</property>
         <child>
             <object class="GtkRevealer" id="main_revealer">

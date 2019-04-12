@@ -7,10 +7,10 @@ using Dino;
 using Dino.Entities;
 using Xmpp;
 
-namespace Dino.Ui.ConversationSelector {
+namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_selector/conversation_row.ui")]
-public class ConversationRow : ListBoxRow {
+public class ConversationSelectorRow : ListBoxRow {
 
     public signal void closed();
 
@@ -38,7 +38,7 @@ public class ConversationRow : ListBoxRow {
         name_label.attributes = new AttrList();
     }
 
-    public ConversationRow(StreamInteractor stream_interactor, Conversation conversation) {
+    public ConversationSelectorRow(StreamInteractor stream_interactor, Conversation conversation) {
         this.conversation = conversation;
         this.stream_interactor = stream_interactor;
 

@@ -79,7 +79,7 @@ public class UnifiedWindowController : Object {
         window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("accounts", null); });
         window.conversations_placeholder.primary_button.clicked.connect(() => { app.activate_action("add_chat", null); });
         window.conversations_placeholder.secondary_button.clicked.connect(() => { app.activate_action("add_conference", null); });
-        window.filterable_conversation_list.conversation_selected.connect((conversation) => select_conversation(conversation));
+        window.conversation_selector.conversation_selected.connect((conversation) => select_conversation(conversation));
 
         var vadjustment = window.conversation_frame.scrolled.vadjustment;
         vadjustment.notify["value"].connect(() => {
@@ -131,7 +131,7 @@ public class UnifiedWindowController : Object {
 
         stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
         conversation.active = true; // only for conversation_selected
-        window.filterable_conversation_list.on_conversation_selected(conversation); // only for conversation_opened
+        window.conversation_selector.on_conversation_selected(conversation); // only for conversation_opened
 
         if (do_reset_search) {
             reset_search_entry();
@@ -148,10 +148,14 @@ public class UnifiedWindowController : Object {
 
     private void update_conversation_topic(string? subtitle = null) {
         if (subtitle != null) {
-            conversation_topic = subtitle;
+            conversation_topic = (/\s+/).replace_literal(subtitle, -1, 0, " ");
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            string subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
-            conversation_topic = subject != "" ? subject : null;
+            string? subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
+            if (subject != null) {
+                conversation_topic =  (/\s+/).replace_literal(subject, -1, 0, " ");
+            } else {
+                conversation_topic = null;
+            }
         } else {
             conversation_topic = null;
         }
