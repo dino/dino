@@ -26,7 +26,7 @@ public class View : Box {
 
     [GtkChild] private Frame frame;
     [GtkChild] private ScrolledWindow scrolled;
-    [GtkChild] private TextView text_input;
+    [GtkChild] public TextView text_input;
     [GtkChild] private Box outer_box;
     [GtkChild] private Button file_button;
     [GtkChild] private Separator file_separator;

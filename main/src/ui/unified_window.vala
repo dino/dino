@@ -72,6 +72,20 @@ public class UnifiedWindow : Gtk.Window {
         box.add(paned);
         chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
         conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
+        conversation_frame.key_press_event.connect((event) => {
+            // Don't forward / change focus on Control / Alt
+            if (event.keyval == Gdk.Key.Control_L || event.keyval == Gdk.Key.Control_R ||
+                    event.keyval == Gdk.Key.Alt_L || event.keyval == Gdk.Key.Alt_R) {
+                return false;
+            }
+            // Don't forward / change focus on Control + ...
+            if ((event.state & ModifierType.CONTROL_MASK) > 0) {
+                return false;
+            }
+            chat_input.text_input.key_press_event(event);
+            chat_input.text_input.grab_focus();
+            return true;
+        });
         conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
         goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
         goto_end_button = (Button) builder.get_object("goto_end_button");
