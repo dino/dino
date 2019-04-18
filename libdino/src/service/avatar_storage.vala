@@ -12,12 +12,12 @@ public class AvatarStorage : Xep.PixbufStorage, Object {
         DirUtils.create_with_parents(folder, 0700);
     }
 
-    public void store(string id, uint8[] data) {
+    public void store(string id, Bytes data) {
         File file = File.new_for_path(Path.build_filename(folder, id));
         try {
             if (file.query_exists()) file.delete(); //TODO y?
             DataOutputStream fos = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
-            fos.write_async.begin(data);
+            fos.write_bytes_async.begin(data);
         } catch (Error e) {
             // Ignore: we failed in storing, so we refuse to display later...
         }

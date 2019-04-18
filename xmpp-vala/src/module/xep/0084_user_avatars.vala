@@ -56,8 +56,8 @@ namespace Xmpp.Xep.UserAvatars {
             if (node == null || id == null) {
                 return;
             }
-            uint8[] image = Base64.decode(node.get_string_content());
-            string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, image);
+            Bytes image = new Bytes.take(Base64.decode(node.get_string_content()));
+            string sha1 = Checksum.compute_for_bytes(ChecksumType.SHA1, image);
             if (sha1 != id) {
                 warning("sha sum did not match for avatar from "+jid.to_string()+" expected="+id+", actual="+sha1);
                 return;
