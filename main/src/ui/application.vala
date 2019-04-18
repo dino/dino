@@ -66,7 +66,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 Gee.List<Account> accounts = stream_interactor.get_accounts();
                 if (accounts.size == 1) {
                     Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(new Jid(jid), accounts[0], Conversation.Type.CHAT);
-                    stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+                    stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
                     window.on_conversation_selected(conversation);
                 } else {
                     AddChatDialog dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());

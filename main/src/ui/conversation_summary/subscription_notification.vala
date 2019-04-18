@@ -16,7 +16,7 @@ public class SubscriptionNotitication : Object {
 
         stream_interactor.get_module(PresenceManager.IDENTITY).received_subscription_request.connect((jid, account) => {
             Conversation relevant_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
-            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(relevant_conversation, true);
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(relevant_conversation);
             if (conversation != null && account.equals(conversation.account) && jid.equals(conversation.counterpart)) {
                 show_notification();
             }

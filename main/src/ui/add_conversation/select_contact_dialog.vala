@@ -86,7 +86,7 @@ public class AddChatDialog : SelectContactDialog {
         ok_button.label = _("Start");
         selected.connect((account, jid) => {
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
-            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
             added(conversation);
         });
     }

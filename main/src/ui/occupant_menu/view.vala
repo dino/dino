@@ -106,7 +106,7 @@ public class View : Popover {
         if (list_row == null) return;
 
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(list_row.jid, list_row.account, Conversation.Type.GROUPCHAT_PM);
-        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
     }
 
     private void kick_button_clicked() {

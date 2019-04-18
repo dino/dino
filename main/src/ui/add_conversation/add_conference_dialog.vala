@@ -141,7 +141,7 @@ public class AddConferenceDialog : Gtk.Dialog {
     private void on_joined(Account account, Jid jid, string nick) {
         if (account.equals(details_fragment.account) && jid.equals_bare(new Jid(details_fragment.jid))) {
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
-            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
             conversation_opened(conversation);
             close();
         }

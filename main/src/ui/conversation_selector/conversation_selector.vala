@@ -68,6 +68,7 @@ public class ConversationSelector : ListBox {
         if (!rows.has_key(conversation)) {
             add_conversation(conversation);
         }
+        rows[conversation].grab_focus();
         this.select_row(rows[conversation]);
     }
 
