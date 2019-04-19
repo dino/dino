@@ -46,29 +46,48 @@ public class AvatarManager : StreamInteractionModule, Object {
         modules.add(new Xep.VCard.Module(avatar_storage));
     }
 
-    private Pixbuf? get_avatar_by_hash(string hash) {
+    private async Pixbuf? get_avatar_by_hash(string hash) {
         if (cached_pixbuf.has_key(hash)) {
             return cached_pixbuf[hash];
         }
-        Pixbuf? image = avatar_storage.get_image(hash);
+        Pixbuf? image = yield avatar_storage.get_image(hash);
         if (image != null) {
             cached_pixbuf[hash] = image;
         }
         return image;
     }
 
-    public Pixbuf? get_avatar(Account account, Jid jid) {
+    public bool has_avatar(Account account, Jid jid) {
+        string? hash = get_avatar_hash(account, jid);
+        if (hash != null) {
+            if (cached_pixbuf.has_key(hash)) {
+                return true;
+            }
+            return avatar_storage.has_image(hash);
+        }
+        return false;
+    }
+
+    public async Pixbuf? get_avatar(Account account, Jid jid) {
+        string? hash = get_avatar_hash(account, jid);
+        if (hash != null) {
+            return yield get_avatar_by_hash(hash);
+        }
+        return null;
+    }
+
+    private string? get_avatar_hash(Account account, Jid jid) {
         Jid jid_ = jid;
         if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
             jid_ = jid.bare_jid;
         }
         string? user_avatars_id = user_avatars[jid_];
         if (user_avatars_id != null) {
-            return get_avatar_by_hash(user_avatars_id);
+            return user_avatars_id;
         }
         string? vcard_avatars_id = vcard_avatars[jid_];
         if (vcard_avatars_id != null) {
-            return get_avatar_by_hash(vcard_avatars_id);
+            return vcard_avatars_id;
         }
         return null;
     }
@@ -118,10 +137,12 @@ public class AvatarManager : StreamInteractionModule, Object {
             user_avatars[jid] = id;
             db.set_avatar_hash(jid, id, Source.USER_AVATARS);
         }
-        Pixbuf? avatar = avatar_storage.get_image(id);
-        if (avatar != null) {
-            received_avatar(avatar, jid, account);
-        }
+        avatar_storage.get_image.begin(id, (obj, res) => {
+            Pixbuf? avatar = avatar_storage.get_image.end(res);
+            if (avatar != null) {
+                received_avatar(avatar, jid, account);
+            }
+        });
     }
 
     private void on_vcard_avatar_received(Account account, Jid jid, string id) {
@@ -131,10 +152,12 @@ public class AvatarManager : StreamInteractionModule, Object {
                 db.set_avatar_hash(jid, id, Source.VCARD);
             }
         }
-        Pixbuf? avatar = avatar_storage.get_image(id);
-        if (avatar != null) {
-            received_avatar(avatar, jid, account);
-        }
+        avatar_storage.get_image.begin(id, (obj, res) => {
+            Pixbuf? avatar = avatar_storage.get_image.end(res);
+            if (avatar != null) {
+                received_avatar(avatar, jid, account);
+            }
+        });
     }
 }
 

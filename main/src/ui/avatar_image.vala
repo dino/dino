@@ -208,7 +208,7 @@ public class AvatarImage : Misc {
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
             stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect(on_occupant_updated);
         }
-        if (muc_manager.is_groupchat(jid_, account) && avatar_manager.get_avatar(account, jid_) == null) {
+        if (muc_manager.is_groupchat(jid_, account) && !avatar_manager.has_avatar(account, jid_)) {
             // Groupchat without avatar
             Gee.List<Jid>? occupants;
             if (muc_manager.is_private_room(account, jid_)) {
@@ -321,19 +321,27 @@ public class AvatarImage : Misc {
         this.text_only = null;
         this.gray = gray && allow_gray;
         this.with_plus = with_plus;
-        this.current_jids = jids;
-        this.current_avatars = new Gdk.Pixbuf[jids.length];
-        for (int i = 0; i < current_jids.length; ++i) {
-            Jid? real_jid = muc_manager.get_real_jid(current_jids[i], account);
+
+        set_jids_async.begin(jids);
+    }
+
+    public async void set_jids_async(Jid[] jids) {
+        Jid[] jids_ = jids;
+        Gdk.Pixbuf[] avatars = new Gdk.Pixbuf[jids.length];
+        for (int i = 0; i < jids_.length; ++i) {
+            Jid? real_jid = muc_manager.get_real_jid(jids_[i], account);
             if (real_jid != null) {
-                current_avatars[i] = avatar_manager.get_avatar(account, real_jid);
-                if (current_avatars[i] != null) {
-                    current_jids[i] = real_jid;
+                avatars[i] = yield avatar_manager.get_avatar(account, real_jid);
+                if (avatars[i] != null) {
+                    jids_[i] = real_jid;
                     continue;
                 }
             }
-            current_avatars[i] = avatar_manager.get_avatar(account, current_jids[i]);
+            avatars[i] = yield avatar_manager.get_avatar(account, jids_[i]);
         }
+        this.current_avatars = avatars;
+        this.current_jids = jids_;
+
         queue_draw();
     }
 

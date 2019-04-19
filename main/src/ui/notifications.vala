@@ -41,12 +41,12 @@ public class Notifications : Object {
     }
 
     public void start() {
-        stream_interactor.get_module(NotificationEvents.IDENTITY).notify_content_item.connect(notify_content_item);
+        stream_interactor.get_module(NotificationEvents.IDENTITY).notify_content_item.connect((content_item, conversation) => notify_content_item.begin(content_item, conversation));
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_subscription_request.connect(notify_subscription_request);
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_connection_error.connect(notify_connection_error);
     }
 
-    private void notify_content_item(ContentItem content_item, Conversation conversation) {
+    private async void notify_content_item(ContentItem content_item, Conversation conversation) {
         if (!notifications.has_key(conversation)) {
             notifications[conversation] = new Notification("");
             notifications[conversation].set_default_action_and_target_value("app.open-conversation", new Variant.int32(conversation.id));
@@ -77,18 +77,20 @@ public class Notifications : Object {
         notifications[conversation].set_title(display_name);
         notifications[conversation].set_body(text);
         try {
-            notifications[conversation].set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_conversation(stream_interactor, conversation)));
+            Cairo.ImageSurface conversation_avatar = yield (new AvatarGenerator(40, 40)).draw_conversation(stream_interactor, conversation);
+            notifications[conversation].set_icon(get_pixbuf_icon(conversation_avatar));
         } catch (Error e) { }
         window.get_application().send_notification(conversation.id.to_string(), notifications[conversation]);
         active_conversation_ids.add(conversation.id.to_string());
         window.urgency_hint = true;
     }
 
-    private void notify_subscription_request(Conversation conversation) {
+    private async void notify_subscription_request(Conversation conversation) {
         Notification notification = new Notification(_("Subscription request"));
         notification.set_body(conversation.counterpart.to_string());
         try {
-            notification.set_icon(get_pixbuf_icon((new AvatarGenerator(40, 40)).draw_jid(stream_interactor, conversation.counterpart, conversation.account)));
+            Cairo.ImageSurface jid_avatar = yield (new AvatarGenerator(40, 40)).draw_jid(stream_interactor, conversation.counterpart, conversation.account);
+            notification.set_icon(get_pixbuf_icon(jid_avatar));
         } catch (Error e) { }
         notification.set_default_action_and_target_value("app.open-conversation", new Variant.int32(conversation.id));
         notification.add_button_with_target_value(_("Accept"), "app.accept-subscription", conversation.id);

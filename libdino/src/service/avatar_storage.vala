@@ -28,9 +28,24 @@ public class AvatarStorage : Xep.PixbufStorage, Object {
         return file.query_exists();
     }
 
-    public Pixbuf? get_image(string id) {
+    public async Pixbuf? get_image(string id) {
         try {
-            return new Pixbuf.from_file(Path.build_filename(folder, id));
+            File file = File.new_for_path(Path.build_filename(folder, id));
+            FileInputStream stream = yield file.read_async();
+
+            uint8 fbuf[100];
+            size_t size;
+
+            Checksum checksum = new Checksum (ChecksumType.SHA1);
+            while ((size = yield stream.read_async(fbuf)) > 0) {
+                checksum.update(fbuf, size);
+            }
+
+            if (checksum.get_string() != id) {
+                FileUtils.remove(file.get_path());
+            }
+            stream.seek(0, SeekType.SET);
+            return yield new Pixbuf.from_stream_async(stream);
         } catch (Error e) {
             return null;
         }

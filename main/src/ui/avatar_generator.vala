@@ -26,31 +26,31 @@ public class AvatarGenerator {
         this.scale_factor = scale_factor;
     }
 
-    public ImageSurface draw_jid(StreamInteractor stream_interactor, Jid jid_, Account account) {
+    public async ImageSurface draw_jid(StreamInteractor stream_interactor, Jid jid_, Account account) {
         Jid? jid = jid_;
         this.stream_interactor = stream_interactor;
         Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, account);
-        if (real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, real_jid) != null) {
+        if (real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).has_avatar(account, real_jid)) {
             jid = real_jid;
         }
-        ImageSurface surface = crop_corners(draw_tile(jid, account, width * scale_factor, height * scale_factor), 3 * scale_factor);
+        ImageSurface surface = crop_corners(yield draw_tile(jid, account, width * scale_factor, height * scale_factor), 3 * scale_factor);
         surface.set_device_scale(scale_factor, scale_factor);
         return surface;
     }
 
-    public ImageSurface draw_message(StreamInteractor stream_interactor, Message message) {
-        if (message.real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(message.account, message.real_jid) != null) {
-            return draw_jid(stream_interactor, message.real_jid, message.account);
+    public async ImageSurface draw_message(StreamInteractor stream_interactor, Message message) {
+        if (message.real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).has_avatar(message.account, message.real_jid)) {
+            return yield draw_jid(stream_interactor, message.real_jid, message.account);
         }
-        return draw_jid(stream_interactor, message.from, message.account);
+        return yield draw_jid(stream_interactor, message.from, message.account);
     }
 
-    public ImageSurface draw_conversation(StreamInteractor stream_interactor, Conversation conversation) {
-        return draw_jid(stream_interactor, conversation.counterpart, conversation.account);
+    public async ImageSurface draw_conversation(StreamInteractor stream_interactor, Conversation conversation) {
+        return yield draw_jid(stream_interactor, conversation.counterpart, conversation.account);
     }
 
-    public ImageSurface draw_account(StreamInteractor stream_interactor, Account account) {
-        return draw_jid(stream_interactor, account.bare_jid, account);
+    public async ImageSurface draw_account(StreamInteractor stream_interactor, Account account) {
+        return yield draw_jid(stream_interactor, account.bare_jid, account);
     }
 
     public ImageSurface draw_text(string text) {
@@ -76,23 +76,23 @@ public class AvatarGenerator {
         return (int)Math.ceil(scale_factor/2.0);
     }
 
-    private void add_tile_to_pixbuf(Pixbuf pixbuf, Jid jid, Account account, int width, int height, int x, int y) {
-        Pixbuf tile = pixbuf_get_from_surface(draw_chat_tile(jid, account, width, height), 0, 0, width, height);
+    private async void add_tile_to_pixbuf(Pixbuf pixbuf, Jid jid, Account account, int width, int height, int x, int y) {
+        Pixbuf tile = pixbuf_get_from_surface(yield draw_chat_tile(jid, account, width, height), 0, 0, width, height);
         tile.copy_area(0, 0, width, height, pixbuf, x, y);
     }
 
-    private ImageSurface draw_tile(Jid jid, Account account, int width, int height) {
+    private async ImageSurface draw_tile(Jid jid, Account account, int width, int height) {
         ImageSurface surface;
         if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
-            surface = draw_groupchat_tile(jid, account, width, height);
+            surface = yield draw_groupchat_tile(jid, account, width, height);
         } else {
-            surface = draw_chat_tile(jid, account, width, height);
+            surface = yield draw_chat_tile(jid, account, width, height);
         }
         return surface;
     }
 
-    private ImageSurface draw_chat_tile(Jid jid, Account account, int width, int height) {
-        Pixbuf? pixbuf = stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, jid);
+    private async ImageSurface draw_chat_tile(Jid jid, Account account, int width, int height) {
+        Pixbuf? pixbuf = yield stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, jid);
         if (pixbuf != null) {
             double desired_ratio = (double) width / height;
             double avatar_ratio = (double) pixbuf.width / pixbuf.height;
@@ -117,35 +117,35 @@ public class AvatarGenerator {
         }
     }
 
-    private ImageSurface draw_groupchat_tile(Jid jid, Account account, int width, int height) {
+    private async ImageSurface draw_groupchat_tile(Jid jid, Account account, int width, int height) {
         Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(jid, account);
         if (stateless || occupants == null || occupants.size == 0) {
-            return draw_chat_tile(jid, account, width, height);
+            return yield draw_chat_tile(jid, account, width, height);
         }
 
         for (int i = 0; i < occupants.size && i < 4; i++) {
             Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(occupants[i], account);
-            if (real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).get_avatar(account, real_jid) != null) {
+            if (real_jid != null && stream_interactor.get_module(AvatarManager.IDENTITY).has_avatar(account, real_jid)) {
                 occupants[i] = real_jid;
             }
         }
         Pixbuf pixbuf = initialize_pixbuf(width, height);
         if (occupants.size == 1 || occupants.size == 2 || occupants.size == 3) {
-            add_tile_to_pixbuf(pixbuf, occupants[0], account, width / 2 - get_right_border(), height, 0, 0);
+            yield add_tile_to_pixbuf(pixbuf, occupants[0], account, width / 2 - get_right_border(), height, 0, 0);
             if (occupants.size == 1) {
-                add_tile_to_pixbuf(pixbuf, account.bare_jid, account, width / 2 - get_left_border(), height, width / 2 + get_left_border(), 0);
+                yield add_tile_to_pixbuf(pixbuf, account.bare_jid, account, width / 2 - get_left_border(), height, width / 2 + get_left_border(), 0);
             } else if (occupants.size == 2) {
-                add_tile_to_pixbuf(pixbuf, occupants[1], account, width / 2 - get_left_border(), height, width / 2 + get_left_border(), 0);
+                yield add_tile_to_pixbuf(pixbuf, occupants[1], account, width / 2 - get_left_border(), height, width / 2 + get_left_border(), 0);
             } else if (occupants.size == 3) {
-                add_tile_to_pixbuf(pixbuf, occupants[1], account, width / 2 - get_left_border(), height / 2 - get_right_border(), width / 2 + get_left_border(), 0);
-                add_tile_to_pixbuf(pixbuf, occupants[2], account, width / 2 - get_left_border(), height / 2 - get_left_border(), width / 2 + get_left_border(), height / 2 + get_left_border());
+                yield add_tile_to_pixbuf(pixbuf, occupants[1], account, width / 2 - get_left_border(), height / 2 - get_right_border(), width / 2 + get_left_border(), 0);
+                yield add_tile_to_pixbuf(pixbuf, occupants[2], account, width / 2 - get_left_border(), height / 2 - get_left_border(), width / 2 + get_left_border(), height / 2 + get_left_border());
             }
         } else if (occupants.size >= 4) {
-            add_tile_to_pixbuf(pixbuf, occupants[0], account, width / 2 - get_right_border(), height / 2 - get_right_border(), 0, 0);
-            add_tile_to_pixbuf(pixbuf, occupants[1], account, width / 2 - get_left_border(), height / 2 - get_right_border(), width / 2 + get_left_border(), 0);
-            add_tile_to_pixbuf(pixbuf, occupants[2], account, width / 2 - get_right_border(), height / 2 - get_left_border(), 0, height / 2 + get_left_border());
+            yield add_tile_to_pixbuf(pixbuf, occupants[0], account, width / 2 - get_right_border(), height / 2 - get_right_border(), 0, 0);
+            yield add_tile_to_pixbuf(pixbuf, occupants[1], account, width / 2 - get_left_border(), height / 2 - get_right_border(), width / 2 + get_left_border(), 0);
+            yield add_tile_to_pixbuf(pixbuf, occupants[2], account, width / 2 - get_right_border(), height / 2 - get_left_border(), 0, height / 2 + get_left_border());
             if (occupants.size == 4) {
-                add_tile_to_pixbuf(pixbuf, occupants[3], account, width / 2 - get_left_border(), height / 2 - get_left_border(), width / 2 + get_left_border(), height / 2 + get_left_border());
+                yield add_tile_to_pixbuf(pixbuf, occupants[3], account, width / 2 - get_left_border(), height / 2 - get_left_border(), width / 2 + get_left_border(), height / 2 + get_left_border());
             } else if (occupants.size > 4) {
                 ImageSurface plus_surface = draw_colored_rectangle_text("555753", "+", width / 2 - get_left_border(), height / 2 - get_left_border());
                 if (greyscale) plus_surface = convert_to_greyscale(plus_surface);
