@@ -141,6 +141,10 @@ public class DefaultSkeletonHeader : Box {
                 Util.force_error_color(received_image);
                 Util.force_error_color(encryption_image);
                 Util.force_error_color(time_label);
+                string error_text = _("Unable to send message");
+                received_image.tooltip_text = error_text;
+                encryption_image.tooltip_text = error_text;
+                time_label.tooltip_text = error_text;
                 return;
             } else if (item.mark != Message.Marked.READ) {
                 all_read = false;

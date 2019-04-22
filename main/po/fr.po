@@ -182,6 +182,10 @@ msgstr "%d %b"
 msgid "Yesterday"
 msgstr "Hier"
 
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:144
+msgid "Unable to send message"
+msgstr "Impossible d'envoyer le message"
+
 #: main/src/ui/conversation_selector/conversation_row.vala:266
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
 #, no-c-format
