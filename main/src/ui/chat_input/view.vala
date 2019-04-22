@@ -24,6 +24,7 @@ public class View : Box {
     private SmileyConverter smiley_converter;
     private EditHistory edit_history;
 
+    [GtkChild] protected AvatarImage image;
     [GtkChild] private Frame frame;
     [GtkChild] private ScrolledWindow scrolled;
     [GtkChild] public TextView text_input;
@@ -80,6 +81,8 @@ public class View : Box {
 
         if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
         this.conversation = conversation;
+
+        image.set_jid(stream_interactor, conversation.account.bare_jid, conversation.account);
 
         bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
         file_button.visible = upload_available;
