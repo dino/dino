@@ -83,6 +83,7 @@ public class View : Box {
         this.conversation = conversation;
 
         image.set_jid(stream_interactor, conversation.account.bare_jid, conversation.account);
+        image.tooltip_text = conversation.account.display_name;
 
         bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
         file_button.visible = upload_available;
