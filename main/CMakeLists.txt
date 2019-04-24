@@ -35,6 +35,7 @@ set(RESOURCE_LIST
     conversation_list_titlebar_csd.ui
     global_search.ui
     conversation_selector/chat_row_tooltip.ui
+    conversation_selector/conversation_account_separator.ui
     conversation_selector/conversation_row.ui
     conversation_summary/image_toolbar.ui
     conversation_summary/view.ui
@@ -102,6 +103,7 @@ SOURCES
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_list_titlebar_csd.vala
     src/ui/global_search.vala
+    src/ui/conversation_selector/conversation_selector_account_sep.vala
     src/ui/conversation_selector/conversation_selector_row.vala
     src/ui/conversation_selector/conversation_selector.vala
     src/ui/conversation_summary/chat_state_populator.vala

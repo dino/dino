@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoUiConversationSelectorAccountSep">
+        <property name="visible">True</property>
+        <child>
+            <object class="GtkRevealer" id="main_revealer">
+                <property name="transition-type">slide-down</property>
+                <property name="transition-duration">200</property>
+                <property name="reveal-child">False</property>
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="margin">10</property>
+                        <property name="margin-start">7</property>
+                        <property name="margin-end">14</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="valign">start</property>
+                                <property name="visible">True</property>
+                                <property name="orientation">horizontal</property>
+                                <child>
+                                    <object class="GtkLabel" id="name_label">
+                                        <property name="max_width_chars">1</property>
+                                        <property name="ellipsize">end</property>
+                                        <property name="expand">True</property>
+                                        <property name="margin-right">7</property>
+                                        <property name="xalign">0</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>
