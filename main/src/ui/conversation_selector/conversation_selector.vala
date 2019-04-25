@@ -13,9 +13,22 @@ public class ConversationSelector : ListBox {
     private StreamInteractor stream_interactor;
     private string[]? filter_values;
     private HashMap<Conversation, ConversationSelectorRow> rows = new HashMap<Conversation, ConversationSelectorRow>(Conversation.hash_func, Conversation.equals_func);
+    private Viewport? viewport;
+    private ScrolledWindow? scrolledwindow;
+    private Window window;
+    private Adjustment vadj;
 
-    public ConversationSelector init(StreamInteractor stream_interactor) {
+    public ConversationSelector init(StreamInteractor stream_interactor, Window window) {
         this.stream_interactor = stream_interactor;
+        this.window = window;
+
+        viewport = this.get_parent() as Viewport;
+        if (viewport != null) {
+            scrolledwindow = viewport.get_parent() as ScrolledWindow;
+            if (scrolledwindow != null) {
+                vadj = scrolledwindow.get_vadjustment();
+            }
+        }
 
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(add_conversation);
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(remove_conversation);
@@ -53,6 +66,24 @@ public class ConversationSelector : ListBox {
         ConversationSelectorRow? row = r as ConversationSelectorRow;
         if (row != null) {
             conversation_selected(row.conversation);
+            scroll_viewport(row);
+        }
+    }
+
+    private void scroll_viewport(ConversationSelectorRow row) {
+        if (scrolledwindow != null) {
+            int row_x;
+            int row_y;
+            row.translate_coordinates(this, 0, 0, out row_x, out row_y);
+            int row_bottom = row_y + row.get_allocated_height();
+            double y = vadj.value;
+            double bottom = y + vadj.page_size;
+
+            if (row_y < y) {
+                vadj.set_value((double)row_y);
+            } else {
+                vadj.set_value((double)row_bottom - vadj.page_size);
+            }
         }
     }
 

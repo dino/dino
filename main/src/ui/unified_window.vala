@@ -86,7 +86,7 @@ public class UnifiedWindow : Gtk.Window {
             chat_input.text_input.grab_focus();
             return true;
         });
-        conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
+        conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor, this);
         goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
         goto_end_button = (Button) builder.get_object("goto_end_button");
         search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
