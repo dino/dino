@@ -45,7 +45,7 @@ public class AvatarStorage : Xep.PixbufStorage, Object {
                 FileUtils.remove(file.get_path());
             }
             stream.seek(0, SeekType.SET);
-            return yield new Pixbuf.from_stream_async(stream);
+            return yield new Pixbuf.from_stream_async(stream, null);
         } catch (Error e) {
             return null;
         }
