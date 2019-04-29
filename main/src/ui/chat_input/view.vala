@@ -112,8 +112,12 @@ public class View : Box {
                     stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, token[1]);
                     return;
                 case "/affiliate":
-                    string[] user_role = token[1].split(" ", 2);
-                    stream_interactor.get_module(MucManager.IDENTITY).change_affiliation(conversation.account, conversation.counterpart, user_role[0].strip(), user_role[1].strip());
+                    if (token.length > 1) {
+                        string[] user_role = token[1].split(" ", 2);
+                        if (user_role.length == 2) {
+                            stream_interactor.get_module(MucManager.IDENTITY).change_affiliation(conversation.account, conversation.counterpart, user_role[0].strip(), user_role[1].strip());
+                        }
+                    }
                     return;
                 case "/nick":
                     stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
