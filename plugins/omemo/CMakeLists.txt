@@ -30,29 +30,33 @@ compile_gresources(
 
 vala_precompile(OMEMO_VALA_C
 SOURCES
-    src/account_settings_entry.vala
-    src/account_settings_widget.vala
-    src/bundle.vala
-    src/contact_details_provider.vala
-    src/contact_details_dialog.vala
-    src/database.vala
-    src/device_notification_populator.vala
-    src/own_notifications.vala
-    src/encrypt_state.vala
-    src/encryption_list_entry.vala
-    src/file_provider.vala
-    src/file_sender.vala
-    src/manage_key_dialog.vala
-    src/manager.vala
-    src/message_flag.vala
     src/plugin.vala
-    src/pre_key_store.vala
     src/register_plugin.vala
-    src/session_store.vala
-    src/signed_pre_key_store.vala
-    src/stream_module.vala
-    src/trust_manager.vala
-    src/util.vala
+
+    src/file_transfer/file_provider.vala
+    src/file_transfer/file_sender.vala
+
+    src/logic/database.vala
+    src/logic/encrypt_state.vala
+    src/logic/manager.vala
+    src/logic/pre_key_store.vala
+    src/logic/session_store.vala
+    src/logic/signed_pre_key_store.vala
+    src/logic/trust_manager.vala
+
+    src/protocol/bundle.vala
+    src/protocol/message_flag.vala
+    src/protocol/stream_module.vala
+
+    src/ui/account_settings_entry.vala
+    src/ui/account_settings_widget.vala
+    src/ui/contact_details_provider.vala
+    src/ui/contact_details_dialog.vala
+    src/ui/device_notification_populator.vala
+    src/ui/own_notifications.vala
+    src/ui/encryption_list_entry.vala
+    src/ui/manage_key_dialog.vala
+    src/ui/util.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/signal-protocol.vapi
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
