@@ -111,6 +111,10 @@ public class MucManager : StreamInteractionModule, Object {
         return flag.has_room_feature(jid, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(jid, Xep.Muc.Feature.MEMBERS_ONLY);
     }
 
+    public bool is_public_room(Account account, Jid jid) {
+        return is_groupchat(jid, account) && !is_private_room(account, jid);
+    }
+
     public Gee.List<Jid>? get_occupants(Jid jid, Account account) {
         if (is_groupchat(jid, account)) {
             Gee.List<Jid> ret = new ArrayList<Jid>(Jid.equals_func);

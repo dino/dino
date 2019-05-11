@@ -171,9 +171,13 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
     private void send_chat_state_notification(Conversation conversation, string state) {
         XmppStream stream = stream_interactor.get_stream(conversation.account);
-        if (stream != null && conversation.get_send_typing_setting() == Conversation.Setting.ON &&
-                conversation.type_ != Conversation.Type.GROUPCHAT) {
-            stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart, state);
+        if (stream != null && conversation.get_send_typing_setting() == Conversation.Setting.ON) {
+            if (conversation.type_ != Conversation.Type.GROUPCHAT) {
+                stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart, Xmpp.MessageStanza.TYPE_CHAT, state);
+            }
+            if (stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart)) {
+                stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart, Xmpp.MessageStanza.TYPE_GROUPCHAT, state);
+            }
         }
     }
 }

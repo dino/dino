@@ -52,6 +52,14 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
         if (conversation == null) return;
 
+        // Don't show our own typing notification in MUCs
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, account);
+            if (own_muc_jid != null && own_muc_jid.equals(jid)) {
+                return;
+            }
+        }
+
         if (!chat_states.has_key(conversation)) {
             chat_states[conversation] = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
         }

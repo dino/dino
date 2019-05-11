@@ -21,11 +21,12 @@ public class Module : XmppStreamModule {
     /**
     * "A message stanza that does not contain standard messaging content [...] SHOULD be a state other than <active/>" (0085, 5.6)
     */
-    public void send_state(XmppStream stream, Jid jid, string state) {
-        MessageStanza message = new MessageStanza();
-        message.to = jid;
-        message.type_ = MessageStanza.TYPE_CHAT;
+    public void send_state(XmppStream stream, Jid jid, string message_type, string state) {
+        MessageStanza message = new MessageStanza() { to=jid, type_=message_type };
         message.stanza.put_node(new StanzaNode.build(state, NS_URI).add_self_xmlns());
+
+        MessageProcessingHints.set_message_hint(message, MessageProcessingHints.HINT_NO_STORE);
+
         stream.get_module(MessageModule.IDENTITY).send_message(stream, message);
     }
 
