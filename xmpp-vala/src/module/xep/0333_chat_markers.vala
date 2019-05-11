@@ -44,7 +44,6 @@ public class Module : XmppStreamModule {
     public override string get_id() { return IDENTITY.id; }
 
     private void on_received_message(XmppStream stream, MessageStanza message) {
-        if (message.type_ != MessageStanza.TYPE_CHAT) return;
         Gee.List<StanzaNode> nodes = message.stanza.get_all_subnodes();
         foreach (StanzaNode node in nodes) {
             if (node.ns_uri == NS_URI && node.name in MARKERS) {

@@ -64,8 +64,18 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     }
 
     private void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id) {
+
+        // Check if the marker comes from ourselves (own jid or our jid in a MUC)
         bool own_marker = account.bare_jid.to_string() == jid.bare_jid.to_string();
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
+            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, account);
+            if (own_muc_jid != null && own_muc_jid.equals(jid)) {
+                own_marker = true;
+            }
+        }
+
         if (own_marker) {
+            // If we received a display marker from ourselves (other device), set the conversation read up to that message.
             if (marker != Xep.ChatMarkers.MARKER_DISPLAYED && marker != Xep.ChatMarkers.MARKER_ACKNOWLEDGED) return;
             Conversation? conversation = stream_interactor.get_module(MessageStorage.IDENTITY).get_conversation_for_stanza_id(account, stanza_id);
             if (conversation == null) return;
@@ -73,15 +83,18 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
             if (message == null) return;
             conversation.read_up_to = message;
         } else {
+            // We received a marker from someone else. Search the respective message and mark it.
             foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations(jid, account)) {
                 Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
                 if (message != null) {
                     switch (marker) {
                         case Xep.ChatMarkers.MARKER_RECEIVED:
+                            // If we got a received marker, mark the respective message received.
                             received_message_received(account, jid, message);
                             message.marked = Entities.Message.Marked.RECEIVED;
                             break;
                         case Xep.ChatMarkers.MARKER_DISPLAYED:
+                            // If we got a display marker, set all messages up to that message as read (if we know they've been received).
                             received_message_displayed(account, jid, message);
                             Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
                             foreach (Entities.Message m in messages) {
@@ -92,6 +105,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
                             break;
                     }
                 } else {
+                    // We might get a marker before the actual message (on catchup). Save the marker.
                     if (marker_wo_message.has_key(stanza_id) &&
                         marker_wo_message[stanza_id] == Xep.ChatMarkers.MARKER_DISPLAYED && marker == Xep.ChatMarkers.MARKER_RECEIVED) {
                         return;
