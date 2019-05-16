@@ -70,6 +70,8 @@ public class NotificationEvents : StreamInteractionModule, Object {
                 break;
             case FileItem.TYPE:
                 FileTransfer file_transfer = (content_item as FileItem).file_transfer;
+                // Don't notify on file transfers in a groupchat set to "mention only"
+                if (notify == Conversation.NotifySetting.HIGHLIGHT) return false;
                 if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return false;
                 break;
         }
