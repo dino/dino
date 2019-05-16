@@ -44,7 +44,12 @@ public class NotificationEvents : StreamInteractionModule, Object {
     }
 
     private void on_content_item_received(ContentItem item, Conversation conversation) {
-        if (!synced_accounts.contains(conversation.account)) {
+        bool is_mam_message = true;
+        if (item.type_ == MessageItem.TYPE) {
+            // If this message is not for MAM, always notify
+            is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag((item as MessageItem).message.stanza) != null;
+        }
+        if (!synced_accounts.contains(conversation.account) && is_mam_message) {
             if (!mam_potential_new.has_key(conversation.account)) {
                 mam_potential_new[conversation.account] = new HashMap<Conversation, ContentItem>(Conversation.hash_func, Conversation.equals_func);
             }
@@ -65,6 +70,8 @@ public class NotificationEvents : StreamInteractionModule, Object {
                 break;
             case FileItem.TYPE:
                 FileTransfer file_transfer = (content_item as FileItem).file_transfer;
+                // Don't notify on file transfers in a groupchat set to "mention only"
+                if (notify == Conversation.NotifySetting.HIGHLIGHT) return false;
                 if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return false;
                 break;
         }
