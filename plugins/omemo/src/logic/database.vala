@@ -9,18 +9,6 @@ public class Database : Qlite.Database {
     private const int VERSION = 4;
 
     public class IdentityMetaTable : Table {
-        public enum TrustLevel {
-            VERIFIED,
-            TRUSTED,
-            UNTRUSTED,
-            UNKNOWN;
-
-            public string to_string() {
-                int val = this;
-                return val.to_string();
-            }
-        }
-
         //Default to provide backwards compatability
         public Column<int> identity_id = new Column.Integer("identity_id") { not_null = true, min_version = 2, default = "-1" };
         public Column<string> address_name = new Column.Text("address_name") { not_null = true };

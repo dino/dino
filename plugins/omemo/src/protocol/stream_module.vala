@@ -84,7 +84,7 @@ public class StreamModule : XmppStreamModule {
                 }
             }
         }
-        address.device_id = 0;
+        address.device_id = 0; // TODO: Hack to have address obj live longer
     }
 
     public void fetch_bundle(XmppStream stream, Jid jid, int device_id) {

@@ -91,7 +91,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             if(own && device[plugin.db.identity_meta.device_id] == own_id) {
                 continue;
             }
-            add_fingerprint(device, (Database.IdentityMetaTable.TrustLevel) device[plugin.db.identity_meta.trust_level]);
+            add_fingerprint(device, (TrustLevel) device[plugin.db.identity_meta.trust_level]);
         }
 
         auto_accept_switch.set_active(plugin.db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string()));
@@ -103,8 +103,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
                 new_keys_container.visible = false;
 
                 foreach (Row device in plugin.db.identity_meta.get_new_devices(identity_id, jid.to_string())) {
-                    plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.TRUSTED);
-                    add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.TRUSTED);
+                    plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.TRUSTED);
+                    add_fingerprint(device, TrustLevel.TRUSTED);
                 }
             }
 
@@ -121,17 +121,17 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
     private void set_row(int trust, bool now_active, Image img, Label status_lbl, Label lbl, ListBoxRow lbr){
         switch(trust) {
-            case Database.IdentityMetaTable.TrustLevel.TRUSTED:
+            case TrustLevel.TRUSTED:
                 img.icon_name = "emblem-ok-symbolic";
                 status_lbl.set_markup("<span color='#1A63D9'>%s</span>".printf(_("Accepted")));
                 lbl.get_style_context().remove_class("dim-label");
                 break;
-            case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
+            case TrustLevel.UNTRUSTED:
                 img.icon_name = "action-unavailable-symbolic";
                 status_lbl.set_markup("<span color='#D91900'>%s</span>".printf(_("Rejected")));
                 lbl.get_style_context().add_class("dim-label");
                 break;
-            case Database.IdentityMetaTable.TrustLevel.VERIFIED:
+            case TrustLevel.VERIFIED:
                 img.icon_name = "security-high-symbolic";
                 status_lbl.set_markup("<span color='#1A63D9'>%s</span>".printf(_("Verified")));
                 lbl.get_style_context().remove_class("dim-label");
@@ -145,7 +145,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         }
     }
 
-    private void add_fingerprint(Row device, Database.IdentityMetaTable.TrustLevel trust) {
+    private void add_fingerprint(Row device, TrustLevel trust) {
         keys_container.visible = true;
 
         ListBoxRow lbr = new ListBoxRow() { visible = true, activatable = true, hexpand = true };
@@ -188,14 +188,14 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
     private void update_device(int response, Row device){
         switch (response) {
-            case Database.IdentityMetaTable.TrustLevel.TRUSTED:
-                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.TRUSTED);
+            case TrustLevel.TRUSTED:
+                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.TRUSTED);
                 break;
-            case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
-                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
+            case TrustLevel.UNTRUSTED:
+                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.UNTRUSTED);
                 break;
-            case Database.IdentityMetaTable.TrustLevel.VERIFIED:
-                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.VERIFIED);
+            case TrustLevel.VERIFIED:
+                plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.VERIFIED);
                 plugin.trust_manager.set_blind_trust(account, jid, false);
                 auto_accept_switch.set_active(false);
                 break;
@@ -219,15 +219,15 @@ public class ContactDetailsDialog : Gtk.Dialog {
         no_button.get_style_context().add_class("destructive-action");
 
         yes_button.clicked.connect(() => {
-            plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.TRUSTED);
-            add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.TRUSTED);
+            plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.TRUSTED);
+            add_fingerprint(device, TrustLevel.TRUSTED);
             new_keys_listbox.remove(lbr);
             if (new_keys_listbox.get_children().length() < 1) new_keys_container.visible = false;
         });
 
         no_button.clicked.connect(() => {
-            plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
-            add_fingerprint(device, Database.IdentityMetaTable.TrustLevel.UNTRUSTED);
+            plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.UNTRUSTED);
+            add_fingerprint(device, TrustLevel.UNTRUSTED);
             new_keys_listbox.remove(lbr);
             if (new_keys_listbox.get_children().length() < 1) new_keys_container.visible = false;
         });

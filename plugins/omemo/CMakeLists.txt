@@ -32,6 +32,7 @@ vala_precompile(OMEMO_VALA_C
 SOURCES
     src/plugin.vala
     src/register_plugin.vala
+    src/trust_level.vala
 
     src/file_transfer/file_provider.vala
     src/file_transfer/file_sender.vala

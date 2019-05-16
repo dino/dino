@@ -34,13 +34,15 @@ public class TrustManager {
             .set(db.trust.blind_trust, blind_trust).perform();
     }
 
-    public void set_device_trust(Account account, Jid jid, int device_id, Database.IdentityMetaTable.TrustLevel trust_level) {
+    public void set_device_trust(Account account, Jid jid, int device_id, TrustLevel trust_level) {
         int identity_id = db.identity.get_id(account.id);
         db.identity_meta.update()
             .with(db.identity_meta.identity_id, "=", identity_id)
             .with(db.identity_meta.address_name, "=", jid.bare_jid.to_string())
             .with(db.identity_meta.device_id, "=", device_id)
             .set(db.identity_meta.trust_level, trust_level).perform();
+
+        // Hide messages from untrusted or unknown devices
         string selection = null;
         string[] selection_args = {};
         var app_db = Application.get_default().db;
@@ -54,7 +56,7 @@ public class TrustManager {
         }
         if (selection != null) {
             app_db.content_item.update()
-                .set(app_db.content_item.hide, trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED || trust_level == Database.IdentityMetaTable.TrustLevel.UNKNOWN)
+                .set(app_db.content_item.hide, trust_level == TrustLevel.UNTRUSTED || trust_level == TrustLevel.UNKNOWN)
                 .where(selection, selection_args)
                 .perform();
         }
@@ -135,6 +137,8 @@ public class TrustManager {
                     }
                 }
             }
+
+            // Encrypt the key for each own device
             address.name = self_jid.bare_jid.to_string();
             foreach(int32 device_id in get_trusted_devices(account, self_jid)) {
                 if (module.is_ignored_device(self_jid, device_id)) {
@@ -175,7 +179,7 @@ public class TrustManager {
         int identity_id = db.identity.get_id(account.id);
         if (identity_id < 0) return devices;
         foreach (Row device in db.identity_meta.get_trusted_devices(identity_id, jid.bare_jid.to_string())) {
-            if(device[db.identity_meta.trust_level] != Database.IdentityMetaTable.TrustLevel.UNKNOWN || device[db.identity_meta.identity_key_public_base64] == null)
+            if(device[db.identity_meta.trust_level] != TrustLevel.UNKNOWN || device[db.identity_meta.identity_key_public_base64] == null)
                 devices.add(device[db.identity_meta.device_id]);
         }
         return devices;
@@ -214,8 +218,8 @@ public class TrustManager {
                 }
 
                 int identity_id = db.identity.get_id(conversation.account.id);
-                Database.IdentityMetaTable.TrustLevel trust_level = (Database.IdentityMetaTable.TrustLevel) db.identity_meta.get_device(identity_id, jid.bare_jid.to_string(), device_id)[db.identity_meta.trust_level];
-                if (trust_level == Database.IdentityMetaTable.TrustLevel.UNTRUSTED || trust_level == Database.IdentityMetaTable.TrustLevel.UNKNOWN) {
+                TrustLevel trust_level = (TrustLevel) db.identity_meta.get_device(identity_id, jid.bare_jid.to_string(), device_id)[db.identity_meta.trust_level];
+                if (trust_level == TrustLevel.UNTRUSTED || trust_level == TrustLevel.UNKNOWN) {
                     stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
                 }
 
@@ -224,7 +228,7 @@ public class TrustManager {
                     .value(db.content_item_meta.identity_id, identity_id)
                     .value(db.content_item_meta.address_name, jid.bare_jid.to_string())
                     .value(db.content_item_meta.device_id, device_id)
-                    .value(db.content_item_meta.trusted_when_received, trust_level != Database.IdentityMetaTable.TrustLevel.UNTRUSTED)
+                    .value(db.content_item_meta.trusted_when_received, trust_level != TrustLevel.UNTRUSTED)
                     .perform();
             }
             return false;
@@ -281,6 +285,7 @@ public class TrustManager {
                             if (real_jid != null) {
                                 possible_jids.add(real_jid);
                             } else {
+                                // If we don't know the device name (MUC history w/o MAM), test decryption with all keys with fitting device id
                                 foreach (Row row in db.identity_meta.get_with_device_id(sid)) {
                                     possible_jids.add(new Jid(row[db.identity_meta.address_name]));
                                 }
@@ -320,7 +325,7 @@ public class TrustManager {
                                 continue;
                             }
 
-                            // If we figured out which real jid a message comes from due to
+                            // If we figured out which real jid a message comes from due to decryption working, save it
                             if (conversation.type_ == Conversation.Type.GROUPCHAT && message.real_jid == null) {
                                 message.real_jid = possible_jid;
                             }

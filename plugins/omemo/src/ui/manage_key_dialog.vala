@@ -50,7 +50,7 @@ public class ManageKeyDialog : Gtk.Dialog {
             manage_stack.set_visible_child_name("confirm");
             ok_button.sensitive = true;
             return_to_main = false;
-            current_response = Database.IdentityMetaTable.TrustLevel.VERIFIED;
+            current_response = TrustLevel.VERIFIED;
         });
 
         verify_no_button.clicked.connect(() => {
@@ -115,17 +115,17 @@ public class ManageKeyDialog : Gtk.Dialog {
         ListBoxRow accept_row = new ListBoxRow() {visible = true };
         accept_row.add(make_action_box(_("Accept key"), _("Start accepting this key during communication with its associated contact")));
 
-        switch((Database.IdentityMetaTable.TrustLevel) device[db.identity_meta.trust_level]) {
-            case Database.IdentityMetaTable.TrustLevel.TRUSTED:
+        switch((TrustLevel) device[db.identity_meta.trust_level]) {
+            case TrustLevel.TRUSTED:
                 main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("accepted")+"</span>")+" "+_("This means it can be used by %s to receive and send messages.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(verify_row);
                 main_action_list.add(reject_row);
                 break;
-            case Database.IdentityMetaTable.TrustLevel.VERIFIED:
+            case TrustLevel.VERIFIED:
                 main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("verified")+"</span>")+" "+_("This means it can be used by %s to receive and send messages.") + " " + _("Additionally it has been verified to match the key on the contact's device.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(reject_row);
                 break;
-            case Database.IdentityMetaTable.TrustLevel.UNTRUSTED:
+            case TrustLevel.UNTRUSTED:
                 main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#D91900'>"+_("rejected")+"</span>")+" "+_("This means it cannot be used by %s to receive messages, and any messages sent by it will be ignored.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(accept_row);
                 break;
@@ -142,7 +142,7 @@ public class ManageKeyDialog : Gtk.Dialog {
                 manage_stack.set_visible_child_name("confirm");
                 ok_button.sensitive = true;
                 return_to_main = true;
-                current_response = Database.IdentityMetaTable.TrustLevel.UNTRUSTED;
+                current_response = TrustLevel.UNTRUSTED;
             } else if (row == accept_row) {
                 confirm_image.set_from_icon_name("emblem-ok-symbolic", IconSize.DIALOG);
                 confirm_title_label.label = _("Accept key");
@@ -150,7 +150,7 @@ public class ManageKeyDialog : Gtk.Dialog {
                 manage_stack.set_visible_child_name("confirm");
                 ok_button.sensitive = true;
                 return_to_main = true;
-                current_response = Database.IdentityMetaTable.TrustLevel.TRUSTED;
+                current_response = TrustLevel.TRUSTED;
             }
             cancel_button.label = _("Back");
         });

@@ -248,15 +248,15 @@ public class Manager : StreamInteractionModule, Object {
 
         //Get trust information from the database if the device id is known
         Row device = db.identity_meta.get_device(identity_id, jid.bare_jid.to_string(), device_id);
-        Database.IdentityMetaTable.TrustLevel trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
+        TrustLevel trusted = TrustLevel.UNKNOWN;
         if (device != null) {
-            trusted = (Database.IdentityMetaTable.TrustLevel) device[db.identity_meta.trust_level];
+            trusted = (TrustLevel) device[db.identity_meta.trust_level];
         }
 
         if(untrust) {
-            trusted = Database.IdentityMetaTable.TrustLevel.UNKNOWN;
-        } else if (blind_trust && trusted == Database.IdentityMetaTable.TrustLevel.UNKNOWN) {
-            trusted = Database.IdentityMetaTable.TrustLevel.TRUSTED;
+            trusted = TrustLevel.UNKNOWN;
+        } else if (blind_trust && trusted == TrustLevel.UNKNOWN) {
+            trusted = TrustLevel.TRUSTED;
         }
 
         //Update the database with the appropriate trust information
@@ -278,7 +278,7 @@ public class Manager : StreamInteractionModule, Object {
 
                 MessageState state = message_states[msg];
 
-                if (trusted == Database.IdentityMetaTable.TrustLevel.TRUSTED || trusted == Database.IdentityMetaTable.TrustLevel.VERIFIED) {
+                if (trusted == TrustLevel.TRUSTED || trusted == TrustLevel.VERIFIED) {
                     if(account.bare_jid.equals(jid) || (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid)))) {
                         session_created = module.start_session(stream, jid, device_id, bundle);
                     }
@@ -366,6 +366,7 @@ public class Manager : StreamInteractionModule, Object {
             if (flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.MEMBERS_ONLY)) {
                 foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
                     if (!trust_manager.is_known_address(conversation.account, jid.bare_jid)) {
+                        debug(@"Can't enable OMEMO for $(conversation.counterpart): missing keys for $(jid.bare_jid)");
                         return false;
                     }
                 }
