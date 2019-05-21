@@ -171,7 +171,7 @@ public class ConnectionManager : Object {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, null) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
         });
         stream.received_node.connect(() => {
-            connections[account].last_activity = new DateTime.now_utc();
+            connection.last_activity = new DateTime.now_utc();
         });
         connect_async.begin(account, stream);
         stream_opened(account, stream);

@@ -37,7 +37,7 @@ public class FileProvider : Dino.FileProvider, Object {
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
             if (outer.url_regex.match(message.body)) {
-                string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(message.stanza);
+                string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(stanza);
                 if (oob_url != null && oob_url == message.body) {
                     yield outer.on_file_message(message, conversation);
                 }

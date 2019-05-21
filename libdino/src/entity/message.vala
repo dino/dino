@@ -52,7 +52,6 @@ public class Message : Object {
             marked_ = value;
         }
     }
-    public Xmpp.MessageStanza stanza { get; set; }
 
     private Database? db;
 

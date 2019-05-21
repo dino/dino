@@ -102,27 +102,31 @@ public class Conversation : Object {
     }
 
     public NotifySetting get_notification_default_setting(StreamInteractor stream_interactor) {
-        Xmpp.XmppStream? stream = stream_interactor.get_stream(account);
         if (!Application.get_default().settings.notifications) return NotifySetting.OFF;
+
         if (type_ == Type.GROUPCHAT) {
-            Xmpp.Xep.Muc.Flag? flag = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY);
-            if (flag != null) {
-                bool members_only = flag.has_room_feature(counterpart.bare_jid, Xmpp.Xep.Muc.Feature.MEMBERS_ONLY);
-                return members_only ? NotifySetting.ON : NotifySetting.HIGHLIGHT;
+            if (stream_interactor.get_module(MucManager.IDENTITY).is_private_room(this.account, this.counterpart)) {
+                return NotifySetting.ON;
             } else {
-                return NotifySetting.OFF;
+                return NotifySetting.HIGHLIGHT;
             }
         }
         return NotifySetting.ON;
     }
 
-    public Setting get_send_typing_setting() {
+    public Setting get_send_typing_setting(StreamInteractor stream_interactor) {
         if (send_typing != Setting.DEFAULT) return send_typing;
+
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_public_room(this.account, this.counterpart)) return Setting.OFF;
+
         return Application.get_default().settings.send_typing ? Setting.ON : Setting.OFF;
     }
 
-    public Setting get_send_marker_setting() {
+    public Setting get_send_marker_setting(StreamInteractor stream_interactor) {
         if (send_marker != Setting.DEFAULT) return send_marker;
+
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_public_room(this.account, this.counterpart)) return Setting.OFF;
+
         return Application.get_default().settings.send_marker ? Setting.ON : Setting.OFF;
     }
 

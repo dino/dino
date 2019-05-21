@@ -56,7 +56,7 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
-            if (jid.equals(current_conversation.counterpart) && has_new_devices(current_conversation.counterpart)) {
+            if (current_conversation != null && jid.equals(current_conversation.counterpart) && has_new_devices(current_conversation.counterpart)) {
                 display_notification();
             }
         });

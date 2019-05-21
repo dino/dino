@@ -393,7 +393,7 @@ public class MucManager : StreamInteractionModule, Object {
             if (conversation.type_ != Conversation.Type.GROUPCHAT) return false;
             XmppStream stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) return false;
-            if (Xep.DelayedDelivery.MessageFlag.get_flag(message.stanza) == null) {
+            if (Xep.DelayedDelivery.MessageFlag.get_flag(stanza) == null) {
                 Jid? real_jid = stream.get_flag(Xep.Muc.Flag.IDENTITY).get_real_jid(message.counterpart);
                 if (real_jid != null && !real_jid.equals(message.counterpart)) {
                     message.real_jid = real_jid.bare_jid;

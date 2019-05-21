@@ -104,7 +104,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
         new_message.counterpart = counterpart_override ?? (new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
-        new_message.stanza = message;
 
         Xep.MessageArchiveManagement.MessageFlag? mam_message_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
         if (mam_message_flag != null) new_message.local_time = mam_message_flag.server_time;
@@ -271,7 +270,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
                 stream.get_module(Xmpp.MessageModule.IDENTITY).send_message(stream, new_message);
                 message.stanza_id = new_message.id;
-                message.stanza = new_message;
             } else {
                 message.marked = Entities.Message.Marked.UNSENT;
             }
