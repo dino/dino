@@ -44,12 +44,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
     }
 
     private void on_content_item_received(ContentItem item, Conversation conversation) {
-        bool is_mam_message = true;
-        if (item.type_ == MessageItem.TYPE) {
-            // If this message is not for MAM, always notify
-            is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag((item as MessageItem).message.stanza) != null;
-        }
-        if (!synced_accounts.contains(conversation.account) && is_mam_message) {
+        if (!synced_accounts.contains(conversation.account)) {
             if (!mam_potential_new.has_key(conversation.account)) {
                 mam_potential_new[conversation.account] = new HashMap<Conversation, ContentItem>(Conversation.hash_func, Conversation.equals_func);
             }
