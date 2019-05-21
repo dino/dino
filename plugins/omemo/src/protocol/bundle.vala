@@ -5,7 +5,7 @@ using Xmpp;
 namespace Dino.Plugins.Omemo {
 
 public class Bundle {
-    private StanzaNode? node;
+    public StanzaNode? node;
 
     public Bundle(StanzaNode? node) {
         this.node = node;

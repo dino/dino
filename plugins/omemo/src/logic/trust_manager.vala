@@ -62,7 +62,7 @@ public class TrustManager {
         }
     }
 
-    private StanzaNode create_encrypted_key(uint8[] key, Address address, Store store) throws GLib.Error {
+    private StanzaNode create_encrypted_key_node(uint8[] key, Address address, Store store) throws GLib.Error {
         SessionCipher cipher = store.create_session_cipher(address);
         CiphertextMessage device_key = cipher.encrypt(key);
         StanzaNode key_node = new StanzaNode.build("key", NS_URI)
@@ -108,9 +108,9 @@ public class TrustManager {
             Memory.copy(keytag, key, key.length);
             Memory.copy((uint8*)keytag + key.length, tag, tag.length);
 
-            StanzaNode header;
-            StanzaNode encrypted = new StanzaNode.build("encrypted", NS_URI).add_self_xmlns()
-                    .put_node(header = new StanzaNode.build("header", NS_URI)
+            StanzaNode header_node;
+            StanzaNode encrypted_node = new StanzaNode.build("encrypted", NS_URI).add_self_xmlns()
+                    .put_node(header_node = new StanzaNode.build("header", NS_URI)
                         .put_attribute("sid", module.store.local_registration_id.to_string())
                         .put_node(new StanzaNode.build("iv", NS_URI)
                             .put_node(new StanzaNode.text(Base64.encode(iv)))))
@@ -128,8 +128,8 @@ public class TrustManager {
                     try {
                         address.name = recipient.bare_jid.to_string();
                         address.device_id = (int) device_id;
-                        StanzaNode key_node = create_encrypted_key(keytag, address, module.store);
-                        header.put_node(key_node);
+                        StanzaNode key_node = create_encrypted_key_node(keytag, address, module.store);
+                        header_node.put_node(key_node);
                         status.other_success++;
                     } catch (Error e) {
                         if (e.code == ErrorCode.UNKNOWN) status.other_unknown++;
@@ -148,8 +148,8 @@ public class TrustManager {
                 if (device_id != module.store.local_registration_id) {
                     address.device_id = (int) device_id;
                     try {
-                        StanzaNode key_node = create_encrypted_key(keytag, address, module.store);
-                        header.put_node(key_node);
+                        StanzaNode key_node = create_encrypted_key_node(keytag, address, module.store);
+                        header_node.put_node(key_node);
                         status.own_success++;
                     } catch (Error e) {
                         if (e.code == ErrorCode.UNKNOWN) status.own_unknown++;
@@ -158,7 +158,7 @@ public class TrustManager {
                 }
             }
 
-            message.stanza.put_node(encrypted);
+            message.stanza.put_node(encrypted_node);
             Xep.ExplicitEncryption.add_encryption_tag_to_message(message, NS_URI, "OMEMO");
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;

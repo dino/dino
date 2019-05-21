@@ -358,23 +358,21 @@ public class Manager : StreamInteractionModule, Object {
 
 
     public bool can_encrypt(Entities.Conversation conversation) {
-        XmppStream? stream = stream_interactor.get_stream(conversation.account);
-        if (stream == null) return false;
-        if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(conversation.counterpart, conversation.account)){
-            Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-            if (flag == null) return false;
-            if (flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.MEMBERS_ONLY)) {
-                foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
-                    if (!trust_manager.is_known_address(conversation.account, jid.bare_jid)) {
-                        debug(@"Can't enable OMEMO for $(conversation.counterpart): missing keys for $(jid.bare_jid)");
-                        return false;
-                    }
-                }
-                return true;
-            } else {
-                return false;
-            }
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_public_room(conversation.account, conversation.counterpart)){
+            debug("Can't enable OMEMO for %s: Room not members-only or non-anonymous", conversation.counterpart.to_string());
+            return false;
         }
+
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart)){
+            foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
+                if (!trust_manager.is_known_address(conversation.account, jid.bare_jid)) {
+                    debug("Can't enable OMEMO for %s: missing keys for %s", conversation.counterpart.to_string(), jid.bare_jid.to_string());
+                    return false;
+                }
+            }
+            return true;
+        }
+
         return trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid);
     }
 
