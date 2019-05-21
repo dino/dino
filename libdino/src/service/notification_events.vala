@@ -44,7 +44,15 @@ public class NotificationEvents : StreamInteractionModule, Object {
     }
 
     private void on_content_item_received(ContentItem item, Conversation conversation) {
-        if (!synced_accounts.contains(conversation.account)) {
+
+        // Don't wait for MAM sync on servers without MAM
+        bool mam_available = true;
+        XmppStream? stream = stream_interactor.get_stream(conversation.account);
+        if (stream != null) {
+            mam_available = stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) != null;
+        }
+
+        if (mam_available && !synced_accounts.contains(conversation.account)) {
             if (!mam_potential_new.has_key(conversation.account)) {
                 mam_potential_new[conversation.account] = new HashMap<Conversation, ContentItem>(Conversation.hash_func, Conversation.equals_func);
             }
