@@ -316,7 +316,7 @@ int signal_vala_decrypt(signal_buffer **output,
 error:
     gcry_cipher_close(ctx);
     if (out_buf != 0) {
-        signal_buffer_bzero_free(output);
+        signal_buffer_bzero_free(out_buf);
     }
     return SG_ERR_UNKNOWN;
 no_error:
