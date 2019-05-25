@@ -111,8 +111,11 @@ public abstract class MetaConversationNotification : Object {
 }
 
 public interface ConversationItemCollection : Object {
-    public signal void insert_item(MetaConversationItem item);
-    public signal void remove_item(MetaConversationItem item);
+    public signal void inserted_item(MetaConversationItem item);
+    public signal void removed_item(MetaConversationItem item);
+
+    public abstract void insert_item(MetaConversationItem item);
+    public abstract void remove_item(MetaConversationItem item);
 }
 
 public interface NotificationCollection : Object {

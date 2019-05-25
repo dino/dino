@@ -23,19 +23,19 @@ class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Plugins.Conver
     public void init(Conversation conversation, Plugins.ConversationItemCollection item_collection, Plugins.WidgetType type) {
         current_conversation = conversation;
         this.item_collection = item_collection;
-        item_collection.insert_item.connect(on_insert_item);
+        item_collection.inserted_item.connect(on_inserted_item);
         this.insert_times = new TreeSet<DateTime>((a, b) => {
             return a.compare(b);
         });
     }
 
     public void close(Conversation conversation) {
-        item_collection.insert_item.disconnect(on_insert_item);
+        item_collection.inserted_item.disconnect(on_inserted_item);
     }
 
     public void populate_timespan(Conversation conversation, DateTime after, DateTime before) { }
 
-    private void on_insert_item(Plugins.MetaConversationItem item) {
+    private void on_inserted_item(Plugins.MetaConversationItem item) {
         if (item.display_time == null) return;
 
         DateTime time = item.sort_time.to_local();

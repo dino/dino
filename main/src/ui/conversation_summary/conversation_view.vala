@@ -44,8 +44,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         content_populator = new ContentProvider(stream_interactor);
         subscription_notification = new SubscriptionNotitication(stream_interactor);
 
-        insert_item.connect(filter_insert_item);
-        remove_item.connect(do_remove_item);
         add_meta_notification.connect(on_add_meta_notification);
         remove_meta_notification.connect(on_remove_meta_notification);
 
@@ -171,7 +169,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         Idle.add(() => { on_value_notify(); return false; });
     }
 
-    public void filter_insert_item(Plugins.MetaConversationItem item) {
+    public void insert_item(Plugins.MetaConversationItem item) {
         if (meta_items.size > 0) {
             bool after_last = meta_items.last().sort_time.compare(item.sort_time) < 0;
             bool within_range = meta_items.last().sort_time.compare(item.sort_time) > 0 && meta_items.first().sort_time.compare(item.sort_time) < 0;
@@ -193,9 +191,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             content_items.add(item);
         }
         meta_items.add(item);
+
+        inserted_item(item);
     }
 
-    private void do_remove_item(Plugins.MetaConversationItem item) {
+    private void remove_item(Plugins.MetaConversationItem item) {
         ConversationItemSkeleton? skeleton = item_item_skeletons[item];
         if (skeleton != null) {
             if (skeleton.items.size > 1) {
@@ -210,6 +210,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             content_items.remove(item);
             meta_items.remove(item);
         }
+
+        removed_item(item);
     }
 
     public void on_add_meta_notification(Plugins.MetaConversationNotification notification) {
@@ -317,7 +319,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         while(i < split_skeleton.items.size) {
             Plugins.MetaConversationItem meta_item = split_skeleton.items[i];
             if (time.compare(meta_item.display_time) < 0) {
-                do_remove_item(meta_item);
+                remove_item(meta_item);
                 if (!already_divided) {
                     insert_new(meta_item);
                     already_divided = true;
