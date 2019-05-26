@@ -11,8 +11,11 @@ public class EncryptionButton : MenuButton {
     private RadioButton? button_unencrypted;
     private Map<RadioButton, Plugins.EncryptionListEntry> encryption_radios = new HashMap<RadioButton, Plugins.EncryptionListEntry>();
     private string? current_icon;
+    private StreamInteractor stream_interactor;
 
-    public EncryptionButton() {
+    public EncryptionButton(StreamInteractor stream_interactor) {
+        this.stream_interactor = stream_interactor;
+
         relief = ReliefStyle.NONE;
         use_popover = true;
         image = new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON);
@@ -72,6 +75,9 @@ public class EncryptionButton : MenuButton {
         this.conversation = conversation;
         update_encryption_menu_state();
         update_encryption_menu_icon();
+
+        visible = !stream_interactor.get_module(MucManager.IDENTITY).is_public_room(conversation.account, conversation.counterpart) ||
+                conversation.encryption != Encryption.NONE;
     }
 }
 

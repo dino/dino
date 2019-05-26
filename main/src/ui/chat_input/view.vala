@@ -30,7 +30,7 @@ public class View : Box {
     [GtkChild] private Box outer_box;
     [GtkChild] private Button file_button;
     [GtkChild] private Separator file_separator;
-    private EncryptionButton encryption_widget = new EncryptionButton() { margin_top=3, valign=Align.START, visible=true };
+    private EncryptionButton encryption_widget;
 
     public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -38,6 +38,7 @@ public class View : Box {
         occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
         smiley_converter = new SmileyConverter(stream_interactor, text_input);
         edit_history = new EditHistory(text_input, GLib.Application.get_default());
+        encryption_widget = new EncryptionButton(stream_interactor) { margin_top=3, valign=Align.START, visible=true };
 
         file_button.clicked.connect(() => {
             PreviewFileChooserNative chooser = new PreviewFileChooserNative("Select file", get_toplevel() as Gtk.Window, FileChooserAction.OPEN, "Select", "Cancel");
