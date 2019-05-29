@@ -71,7 +71,12 @@ public class AvatarManager : StreamInteractionModule, Object {
     }
 
     public async Pixbuf? get_avatar(Account account, Jid jid) {
-        string? hash = get_avatar_hash(account, jid);
+        Jid jid_ = jid;
+        if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
+            jid_ = jid.bare_jid;
+        }
+
+        string? hash = get_avatar_hash(account, jid_);
         if (hash != null) {
             return yield get_avatar_by_hash(hash);
         }

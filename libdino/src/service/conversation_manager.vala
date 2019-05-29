@@ -14,7 +14,7 @@ public class ConversationManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
 
-    private HashMap<Account, HashMap<Jid, Conversation>> conversations = new HashMap<Account, HashMap<Jid, Conversation>>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, HashMap<Jid, Gee.List<Conversation>>> conversations = new HashMap<Account, HashMap<Jid, Gee.List<Conversation>>>(Account.hash_func, Account.equals_func);
 
     public static void start(StreamInteractor stream_interactor, Database db) {
         ConversationManager m = new ConversationManager(stream_interactor, db);
@@ -33,15 +33,19 @@ public class ConversationManager : StreamInteractionModule, Object {
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
         assert(conversations.has_key(account));
         Jid store_jid = type == Conversation.Type.GROUPCHAT ? jid.bare_jid : jid;
-        if (conversations[account].has_key(store_jid)) {
-            conversations[account][store_jid].type_ = type;
-            return conversations[account][store_jid];
-        } else {
-            Conversation conversation = new Conversation(jid, account, type);
-            add_conversation(conversation);
-            conversation.persist(db);
-            return conversation;
+
+        // Do we already have a conversation for this jid?
+        foreach (var conversation in conversations[account][store_jid]) {
+            if (conversation.type_ == type) {
+                return conversation;
+            }
         }
+
+        // Create a new converation
+        Conversation conversation = new Conversation(jid, account, type);
+        add_conversation(conversation);
+        conversation.persist(db);
+        return conversation;
     }
 
     public Conversation? get_conversation_for_message(Entities.Message message) {
@@ -68,17 +72,27 @@ public class ConversationManager : StreamInteractionModule, Object {
         return ret;
     }
 
-    public Conversation? get_conversation(Jid jid, Account account) {
+    public Conversation? get_conversation(Jid jid, Account account, Conversation.Type? type = null) {
         if (conversations.has_key(account)) {
-            return conversations[account][jid];
+            if (conversations[account].has_key(jid)) {
+                foreach (var conversation in conversations[account][jid]) {
+                    if (type == null || conversation.type_ == type) {
+                        return conversation;
+                    }
+                }
+            }
         }
         return null;
     }
 
     public Conversation? get_conversation_by_id(int id) {
-        foreach (HashMap<Jid, Conversation> hm in conversations.values) {
-            foreach (Conversation conversation in hm.values) {
-                if (conversation.id == id) return conversation;
+        foreach (HashMap<Jid, Gee.List<Conversation>> hm in conversations.values) {
+            foreach (Gee.List<Conversation> hm2 in hm.values) {
+                foreach (Conversation conversation in hm2) {
+                    if (conversation.id == id) {
+                        return conversation;
+                    }
+                }
             }
         }
         return null;
@@ -88,8 +102,10 @@ public class ConversationManager : StreamInteractionModule, Object {
         Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
         foreach (Account account_ in conversations.keys) {
             if (account != null && !account_.equals(account)) continue;
-            foreach (Conversation conversation in conversations[account_].values) {
-                if(conversation.active) ret.add(conversation);
+            foreach (Gee.List<Conversation> list in conversations[account_].values) {
+                foreach (var conversation in list) {
+                    if(conversation.active) ret.add(conversation);
+                }
             }
         }
         return ret;
@@ -112,7 +128,7 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        conversations[account] = new HashMap<Jid, Conversation>(Jid.hash_func, Jid.equals_func);
+        conversations[account] = new HashMap<Jid, ArrayList<Conversation>>(Jid.hash_func, Jid.equals_func);
         foreach (Conversation conversation in db.get_conversations(account)) {
             add_conversation(conversation);
         }
@@ -153,7 +169,12 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     private void add_conversation(Conversation conversation) {
-        conversations[conversation.account][conversation.counterpart] = conversation;
+        if (!conversations[conversation.account].has_key(conversation.counterpart)) {
+            conversations[conversation.account][conversation.counterpart] = new ArrayList<Conversation>(Conversation.equals_func);
+        }
+
+        conversations[conversation.account][conversation.counterpart].add(conversation);
+
         if (conversation.active) {
             conversation_activated(conversation);
         }

@@ -136,7 +136,7 @@ public class Conversation : Object {
     }
 
     public static bool equals_func(Conversation conversation1, Conversation conversation2) {
-        return conversation1.counterpart.equals(conversation2.counterpart) && conversation1.account.equals(conversation2.account);
+        return conversation1.counterpart.equals(conversation2.counterpart) && conversation1.account.equals(conversation2.account) && conversation1.type_ == conversation2.type_;
     }
 
     public static uint hash_func(Conversation conversation) {
