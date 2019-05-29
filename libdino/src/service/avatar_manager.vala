@@ -53,6 +53,8 @@ public class AvatarManager : StreamInteractionModule, Object {
         Pixbuf? image = yield avatar_storage.get_image(hash);
         if (image != null) {
             cached_pixbuf[hash] = image;
+        } else {
+            db.avatar.delete().with(db.avatar.hash, "=", hash).perform();
         }
         return image;
     }
@@ -77,15 +79,11 @@ public class AvatarManager : StreamInteractionModule, Object {
     }
 
     private string? get_avatar_hash(Account account, Jid jid) {
-        Jid jid_ = jid;
-        if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
-            jid_ = jid.bare_jid;
-        }
-        string? user_avatars_id = user_avatars[jid_];
+        string? user_avatars_id = user_avatars[jid];
         if (user_avatars_id != null) {
             return user_avatars_id;
         }
-        string? vcard_avatars_id = vcard_avatars[jid_];
+        string? vcard_avatars_id = vcard_avatars[jid];
         if (vcard_avatars_id != null) {
             return vcard_avatars_id;
         }
@@ -122,13 +120,17 @@ public class AvatarManager : StreamInteractionModule, Object {
             on_vcard_avatar_received(account, jid, id)
         );
 
-        user_avatars = db.get_avatar_hashes(Source.USER_AVATARS);
-        foreach (Jid jid in user_avatars.keys) {
-            on_user_avatar_received(account, jid, user_avatars[jid]);
+        foreach (var entry in db.get_avatar_hashes(Source.USER_AVATARS).entries) {
+            on_user_avatar_received(account, entry.key, entry.value);
         }
-        vcard_avatars = db.get_avatar_hashes(Source.VCARD);
-        foreach (Jid jid in vcard_avatars.keys) {
-            on_vcard_avatar_received(account, jid, vcard_avatars[jid]);
+        foreach (var entry in db.get_avatar_hashes(Source.VCARD).entries) {
+            // FIXME: remove. temporary to remove falsely saved avatars.
+            if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(entry.key, account)) {
+                db.avatar.delete().with(db.avatar.jid, "=", entry.key.to_string()).perform();
+                continue;
+            }
+
+            on_vcard_avatar_received(account, entry.key, entry.value);
         }
     }
 
@@ -148,7 +150,7 @@ public class AvatarManager : StreamInteractionModule, Object {
     private void on_vcard_avatar_received(Account account, Jid jid, string id) {
         if (!vcard_avatars.has_key(jid) || vcard_avatars[jid] != id) {
             vcard_avatars[jid] = id;
-            if (!jid.is_full()) { // don't save muc avatars
+            if (!jid.is_full()) { // don't save MUC occupant avatars
                 db.set_avatar_hash(jid, id, Source.VCARD);
             }
         }

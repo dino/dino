@@ -26,15 +26,15 @@ public interface Dino.Application : GLib.Application {
         this.settings = new Dino.Entities.Settings.from_db(db);
         this.stream_interactor = new StreamInteractor(db);
 
-        AvatarManager.start(stream_interactor, db);
         MessageProcessor.start(stream_interactor, db);
         MessageStorage.start(stream_interactor, db);
         CounterpartInteractionManager.start(stream_interactor);
         PresenceManager.start(stream_interactor);
         BlockingManager.start(stream_interactor);
-        MucManager.start(stream_interactor);
-        RosterManager.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
+        MucManager.start(stream_interactor);
+        AvatarManager.start(stream_interactor, db);
+        RosterManager.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
         FileManager.start(stream_interactor, db);
         ContentItemStore.start(stream_interactor, db);
