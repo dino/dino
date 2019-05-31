@@ -249,7 +249,7 @@ public class ConversationSelectorRow : ListBoxRow {
     }
 
     private static string get_relative_time(DateTime datetime) {
-         DateTime now = new DateTime.now_utc();
+         DateTime now = new DateTime.now_local();
          TimeSpan timespan = now.difference(datetime);
          if (timespan > 365 * TimeSpan.DAY) {
              return datetime.get_year().to_string();
