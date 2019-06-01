@@ -33,8 +33,6 @@ public class ConversationSelector : ListBox {
     }
 
     construct {
-        this.stream_interactor = stream_interactor;
-
         get_style_context().add_class("sidebar");
         set_filter_func(filter);
         set_header_func(header);

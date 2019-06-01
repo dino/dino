@@ -178,6 +178,7 @@ public class FileItemWidgetGenerator : WidgetGenerator, Object {
         grid.attach(image, 0, 0, 1, 1);
 
         EventBox event_box = new EventBox() { halign=Align.START, visible=true };
+        event_box.events = EventMask.POINTER_MOTION_MASK;
         event_box.add(grid);
         event_box.enter_notify_event.connect(() => { toolbar_revealer.reveal_child = true; return false; });
         event_box.leave_notify_event.connect(() => { toolbar_revealer.reveal_child = false; return false; });

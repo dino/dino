@@ -7,22 +7,25 @@ using Dino.Entities;
 
 namespace Dino.Ui.ConversationSummary {
 
-public class ConversationItemSkeleton : Box {
+public class ConversationItemSkeleton : EventBox {
 
     private AvatarImage image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true, allow_gray = false };
 
+    public bool show_skeleton { get; set; }
+    public bool last_group_item { get; set; }
+
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
-    public ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
+    public Plugins.MetaConversationItem item;
 
-    private Grid grid = new Grid() { visible=true };
-    private HashMap<Plugins.MetaConversationItem, Widget> item_widgets = new HashMap<Plugins.MetaConversationItem, Widget>();
+    private Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
+    private Box header_content_box = new Box(Orientation.VERTICAL, 0) { visible=true };
     private DefaultSkeletonHeader default_header;
 
     public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.conversation = conversation;
         this.stream_interactor = stream_interactor;
-        Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
+        this.get_style_context().add_class("message-box");
 
         if (item.requires_avatar) {
             image.set_jid(stream_interactor, item.jid, conversation.account);
@@ -34,30 +37,44 @@ public class ConversationItemSkeleton : Box {
                 default_header.name_label.visible = false;
                 default_header.dot_label.visible = false;
             }
-            grid.attach(default_header, 0, 0, 1, 1);
+            header_content_box.add(default_header);
         }
-        add_meta_item(item);
 
-        image_content_box.add(grid);
-        this.add(image_content_box);
-    }
-
-    public void add_meta_item(Plugins.MetaConversationItem item) {
-        items.add(item);
+        // add item
+        this.item = item;
         if (default_header != null) {
             default_header.add_item(item);
         }
         Widget? widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
+        widget.valign = Align.END;
         if (widget != null) {
-            grid.attach(widget, 0, items.size, 1, 1);
-            item_widgets[item] = widget;
+            header_content_box.add(widget);
         }
-    }
 
-    public void remove_meta_item(Plugins.MetaConversationItem item) {
-        item_widgets[item].destroy();
-        item_widgets.unset(item);
-        items.remove(item);
+        image_content_box.add(header_content_box);
+        this.add(image_content_box);
+
+        if (item.get_type().is_a(typeof(ContentMetaItem))) {
+            this.motion_notify_event.connect((event) => {
+                this.set_state_flags(StateFlags.PRELIGHT, false);
+                return false;
+            });
+            this.enter_notify_event.connect((event) => {
+                this.set_state_flags(StateFlags.PRELIGHT, false);
+                return false;
+            });
+            this.leave_notify_event.connect((event) => {
+                this.unset_state_flags(StateFlags.PRELIGHT);
+                return false;
+            });
+        }
+
+        this.notify["show-skeleton"].connect(update_margin);
+        this.notify["last-group-item"].connect(update_margin);
+
+        this.show_skeleton = true;
+        this.last_group_item = true;
+        update_margin();
     }
 
     public void update_time() {
@@ -65,13 +82,29 @@ public class ConversationItemSkeleton : Box {
             default_header.update_time();
         }
     }
+
+    public void update_margin() {
+        image.visible = this.show_skeleton;
+        if (default_header != null) {
+            default_header.visible = this.show_skeleton;
+        }
+        image_content_box.margin_start = this.show_skeleton ? 15 : 58;
+
+        if (this.show_skeleton && this.last_group_item) {
+            image_content_box.margin_top = 8;
+            image_content_box.margin_bottom = 8;
+        } else {
+            image_content_box.margin_top = 4;
+            image_content_box.margin_bottom = 4;
+        }
+    }
 }
 
 public class DefaultSkeletonHeader : Box {
     private Box box = new Box(Orientation.HORIZONTAL, 4) { visible=true };
-    public Label name_label = new Label("") { use_markup=true, xalign=0, visible=true };
-    public Label time_label = new Label("") { use_markup=true, xalign=0, visible=true };
-    public Label dot_label = new Label("<span size='small'>·</span>") { use_markup=true, xalign=0, visible=true };
+    public Label name_label = new Label("") { use_markup=true, valign=Align.START, xalign=0, visible=true };
+    public Label time_label = new Label("") { use_markup=true, valign=Align.START, xalign=0, visible=true };
+    public Label dot_label = new Label("<span size='small'>·</span>") { use_markup=true, valign=Align.START, xalign=0, visible=true };
     public Image encryption_image = new Image();
     public Image received_image = new Image();
 

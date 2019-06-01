@@ -5,8 +5,8 @@ using Xmpp;
 namespace Dino.Ui {
 
 public class AvatarImage : Misc {
-    public int height { get; set; default = 32; }
-    public int width { get; set; default = 32; }
+    public int height { get; set; default = 35; }
+    public int width { get; set; default = 35; }
     public bool allow_gray { get; set; default = true; }
     public Account account { get; private set; }
     public StreamInteractor stream_interactor { get; set; }

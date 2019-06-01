@@ -98,26 +98,19 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         if (after_items.size == 40) {
             at_current_content = false;
         }
-        {
-            int h = 0, i = 0;
-            main.@foreach((widget) => {
-                if (i >= before_items.size) return;
-                ConversationItemSkeleton? sk = widget as ConversationItemSkeleton;
-                i += sk != null ? sk.items.size : 1;
-                int minimum_height, natural_height;
-                widget.get_preferred_height_for_width(main.get_allocated_width() - 2 * main.margin, out minimum_height, out natural_height);
-                h += minimum_height + 15;
-            });
-        }
 
+        // Compute where to jump to for centered message, jump, highlight.
         reload_messages = false;
         Timeout.add(700, () => {
             int h = 0, i = 0;
+            bool @break = false;
             main.@foreach((widget) => {
-                if (i >= before_items.size) return;
-                ConversationItemSkeleton? sk = widget as ConversationItemSkeleton;
-                i += sk != null ? sk.items.size : 1;
-                h += widget.get_allocated_height() + 15;
+                if (widget == w || @break) {
+                    @break = true;
+                    return;
+                }
+                h += widget.get_allocated_height();
+                i++;
             });
             scrolled.vadjustment.value = h - scrolled.vadjustment.page_size * 1/3;
             w.get_style_context().add_class("highlight-once");
@@ -183,14 +176,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
     public void do_insert_item(Plugins.MetaConversationItem item) {
         lock (meta_items) {
-            if (!item.can_merge || !merge_back(item)) {
-                insert_new(item);
+            insert_new(item);
+            if (item as ContentMetaItem != null) {
+                content_items.add(item);
             }
+            meta_items.add(item);
         }
-        if (item as ContentMetaItem != null) {
-            content_items.add(item);
-        }
-        meta_items.add(item);
 
         inserted_item(item);
     }
@@ -198,15 +189,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private void remove_item(Plugins.MetaConversationItem item) {
         ConversationItemSkeleton? skeleton = item_item_skeletons[item];
         if (skeleton != null) {
-            if (skeleton.items.size > 1) {
-                skeleton.remove_meta_item(item);
-            } else {
-                widgets[item].destroy();
-                widgets.unset(item);
-                skeleton.destroy();
-                item_skeletons.remove(skeleton);
-                item_item_skeletons.unset(item);
-            }
+            widgets[item].destroy();
+            widgets.unset(item);
+            skeleton.destroy();
+            item_skeletons.remove(skeleton);
+            item_item_skeletons.unset(item);
+
             content_items.remove(item);
             meta_items.remove(item);
         }
@@ -242,40 +230,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         widget.destroy();
     }
 
-    private bool merge_back(Plugins.MetaConversationItem item) {
-        Plugins.MetaConversationItem? lower_item = meta_items.lower(item);
-        if (lower_item != null) {
-            ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
-            Plugins.MetaConversationItem lower_start_item = lower_skeleton.items[0];
-            if (lower_start_item.can_merge &&
-                    item.display_time.difference(lower_start_item.display_time) < TimeSpan.MINUTE &&
-                    lower_start_item.jid.equals(item.jid) &&
-                    lower_start_item.encryption == item.encryption &&
-                    (item.mark == Message.Marked.WONTSEND) == (lower_start_item.mark == Message.Marked.WONTSEND)) {
-                lower_skeleton.add_meta_item(item);
-
-                widgets[item] = widgets[lower_start_item];
-                item_item_skeletons[item] = lower_skeleton;
-
-                return true;
-            }
-        }
-        return false;
-    }
-
     private Widget insert_new(Plugins.MetaConversationItem item) {
         Plugins.MetaConversationItem? lower_item = meta_items.lower(item);
-
-        // Does another skeleton need to be split?
-        if (lower_item != null) {
-            ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
-            if (lower_skeleton.items.size > 1) {
-                Plugins.MetaConversationItem lower_end_item = lower_skeleton.items[lower_skeleton.items.size - 1];
-                if (item.sort_time.compare(lower_end_item.sort_time) < 0) {
-                    split_at_time(lower_skeleton, item.sort_time);
-                }
-            }
-        }
 
         // Fill datastructure
         ConversationItemSkeleton item_skeleton = new ConversationItemSkeleton(stream_interactor, conversation, item) { visible=true };
@@ -297,6 +253,19 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         widgets[item] = insert;
         main.reorder_child(insert, index);
 
+        if (lower_item != null) {
+            ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
+            Plugins.MetaConversationItem lower_start_item = lower_skeleton.item;
+            if (item.display_time != null && lower_start_item.display_time != null &&
+                    item.display_time.difference(lower_start_item.display_time) < TimeSpan.MINUTE &&
+                    lower_start_item.jid.equals(item.jid) &&
+                    lower_start_item.encryption == item.encryption &&
+                    (item.mark == Message.Marked.WONTSEND) == (lower_start_item.mark == Message.Marked.WONTSEND)) {
+                item_skeleton.show_skeleton = false;
+                lower_skeleton.last_group_item = false;
+            }
+        }
+
         // If an item from the past was added, add everything between that item and the (post-)first present item
         if (index == 0) {
             Dino.Application app = Dino.Application.get_default();
@@ -311,24 +280,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             }
         }
         return insert;
-    }
-
-    private void split_at_time(ConversationItemSkeleton split_skeleton, DateTime time) {
-        bool already_divided = false;
-        int i = 0;
-        while(i < split_skeleton.items.size) {
-            Plugins.MetaConversationItem meta_item = split_skeleton.items[i];
-            if (time.compare(meta_item.display_time) < 0) {
-                remove_item(meta_item);
-                if (!already_divided) {
-                    insert_new(meta_item);
-                    already_divided = true;
-                } else {
-                    do_insert_item(meta_item);
-                }
-            }
-            i++;
-        }
     }
 
     private void on_upper_notify() {

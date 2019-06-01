@@ -19,14 +19,13 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <object class="GtkBox">
-                                        <property name="margin">15</property>
                                         <property name="orientation">vertical</property>
                                         <property name="visible">True</property>
                                         <child>
                                             <object class="GtkBox" id="main">
+                                                <property name="margin-bottom">15</property>
                                                 <property name="expand">False</property>
                                                 <property name="orientation">vertical</property>
-                                                <property name="spacing">15</property>
                                                 <property name="visible">True</property>
                                             </object>
                                         </child>
