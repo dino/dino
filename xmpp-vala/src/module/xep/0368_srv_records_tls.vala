@@ -36,6 +36,7 @@ public class TlsConnectionProvider : ConnectionProvider {
     public async override IOStream? connect(XmppStream stream) {
         SocketClient client = new SocketClient();
         try {
+            debug("Connecting to %s %i (tls)", srv_target.get_hostname(), srv_target.get_port());
             IOStream? io_stream = yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
             TlsConnection tls_connection = TlsClientConnection.new(io_stream, new NetworkAddress(stream.remote_name.to_string(), srv_target.get_port()));
             tls_connection.accept_certificate.connect(stream.get_module(Tls.Module.IDENTITY).on_invalid_certificate);

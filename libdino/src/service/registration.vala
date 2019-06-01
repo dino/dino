@@ -75,42 +75,53 @@ public class Register : StreamInteractionModule, Object{
                 Idle.add((owned)callback);
             }
         });
-        Timeout.add_seconds(5, () => {
+
+        stream.connect.begin(jid.domainpart, (_, res) => {
+            try {
+                stream.connect.end(res);
+            } catch (Error e) {
+                debug("Error connecting to stream: %s", e.message);
+            }
             if (callback != null) {
                 Idle.add((owned)callback);
             }
-            return false;
         });
 
-        stream.connect.begin(jid.domainpart);
         yield;
+
         try {
             stream.disconnect();
         } catch (Error e) {}
         return ret;
     }
 
-    public static async Xep.InBandRegistration.Form get_registration_form(Jid jid) {
+    public static async Xep.InBandRegistration.Form? get_registration_form(Jid jid) {
         XmppStream stream = new XmppStream();
         stream.add_module(new Tls.Module());
         stream.add_module(new Iq.Module());
         stream.add_module(new Xep.SrvRecordsTls.Module());
         stream.add_module(new Xep.InBandRegistration.Module());
-        stream.connect.begin(jid.bare_jid.to_string());
 
         Xep.InBandRegistration.Form? form = null;
         SourceFunc callback = get_registration_form.callback;
+
         stream.stream_negotiated.connect(() => {
             if (callback != null) {
                 Idle.add((owned)callback);
             }
         });
-        Timeout.add_seconds(5, () => {
+
+        stream.connect.begin(jid.domainpart, (_, res) => {
+            try {
+                stream.connect.end(res);
+            } catch (Error e) {
+                debug("Error connecting to stream: %s", e.message);
+            }
             if (callback != null) {
                 Idle.add((owned)callback);
             }
-            return false;
         });
+
         yield;
         if (stream.negotiation_complete) {
             form = yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).get_from_server(stream, jid);

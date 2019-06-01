@@ -60,6 +60,7 @@ public class XmppStream {
                 stream = yield best_provider.connect(this);
             }
             if (stream == null) {
+                debug("Connecting to %s, xmpp-client, tcp (fallback)", this.remote_name.to_string());
                 stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name.to_string()));
             }
             if (stream == null) {
@@ -67,9 +68,10 @@ public class XmppStream {
             }
             reset_stream((!)stream);
         } catch (Error e) {
-            debug("[%p] Could not connect to server", this);
+            debug("[%p] Could not connect to server: %s", this, e.message);
             throw new IOStreamError.CONNECT(e.message);
         }
+        debug("Connected to %s", remote_name);
         yield loop();
     }
 
@@ -379,6 +381,7 @@ public class StartTlsConnectionProvider : ConnectionProvider {
     public async override IOStream? connect(XmppStream stream) {
         try {
             SocketClient client = new SocketClient();
+            debug("Connecting to %s %i (starttls)", srv_target.get_hostname(), srv_target.get_port());
             return yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
         } catch (Error e) {
             return null;
