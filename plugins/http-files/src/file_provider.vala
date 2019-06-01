@@ -103,7 +103,7 @@ public class FileProvider : Dino.FileProvider, Object {
 
             file_transfer.input_stream = yield request.send_async(null);
 
-            foreach (IncommingFileProcessor processor in stream_interactor.get_module(FileManager.IDENTITY).incomming_processors) {
+            foreach (IncomingFileProcessor processor in stream_interactor.get_module(FileManager.IDENTITY).incoming_processors) {
                 if (processor.can_process(file_transfer)) {
                     processor.process(file_transfer);
                 }

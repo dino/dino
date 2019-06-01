@@ -77,7 +77,7 @@ public class ModuleIdentity<T> : Object {
     }
 
     public bool matches(StreamInteractionModule module) {
-        return module.id== id;
+        return module.id == id;
     }
 }
 

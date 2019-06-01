@@ -1,6 +1,5 @@
 using Gee;
 using Xmpp;
-using Xmpp;
 using Xmpp.Xep;
 using Signal;
 
