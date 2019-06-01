@@ -67,8 +67,8 @@ namespace Xmpp.Iq {
                         }
                     }
                 } else {
-                    Iq.Stanza unaviable_error =  new Iq.Stanza.error(iq, new StanzaNode.build("service-unaviable", "urn:ietf:params:xml:ns:xmpp-stanzas").add_self_xmlns());
-                    send_iq(stream, unaviable_error);
+                    Iq.Stanza unavailable_error = new Iq.Stanza.error(iq, new StanzaNode.build("service-unavailable", "urn:ietf:params:xml:ns:xmpp-stanzas").add_self_xmlns());
+                    send_iq(stream, unavailable_error);
                 }
             }
         }
