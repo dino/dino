@@ -2,7 +2,7 @@ using Dino.Entities;
 
 namespace Dino.Plugins.OpenPgp {
 
-public class InFileProcessor : IncommingFileProcessor, Object {
+public class InFileProcessor : IncomingFileProcessor, Object {
     public bool can_process(FileTransfer file_transfer) {
         return file_transfer.file_name.has_suffix("pgp") || file_transfer.mime_type == "application/pgp-encrypted";
     }

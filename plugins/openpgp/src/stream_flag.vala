@@ -1,7 +1,6 @@
 using Gee;
 
 using Xmpp;
-using Xmpp;
 
 namespace Dino.Plugins.OpenPgp {
 

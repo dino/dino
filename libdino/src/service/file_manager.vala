@@ -16,7 +16,7 @@ public class FileManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private Gee.List<FileSender> file_senders = new ArrayList<FileSender>();
-    public Gee.List<IncommingFileProcessor> incomming_processors = new ArrayList<IncommingFileProcessor>();
+    public Gee.List<IncomingFileProcessor> incoming_processors = new ArrayList<IncomingFileProcessor>();
     private Gee.List<OutgoingFileProcessor> outgoing_processors = new ArrayList<OutgoingFileProcessor>();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
@@ -116,7 +116,7 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     public void add_provider(FileProvider file_provider) {
-        file_provider.file_incoming.connect((file_transfer, conversation) => { handle_incomming_file.begin(file_provider, file_transfer, conversation); });
+        file_provider.file_incoming.connect((file_transfer, conversation) => { handle_incoming_file.begin(file_provider, file_transfer, conversation); });
     }
 
     public void add_sender(FileSender file_sender) {
@@ -126,8 +126,8 @@ public class FileManager : StreamInteractionModule, Object {
         });
     }
 
-    public void add_incomming_processor(IncommingFileProcessor processor) {
-        incomming_processors.add(processor);
+    public void add_incoming_processor(IncomingFileProcessor processor) {
+        incoming_processors.add(processor);
     }
 
     public void add_outgoing_processor(OutgoingFileProcessor processor) {
@@ -140,7 +140,7 @@ public class FileManager : StreamInteractionModule, Object {
         return file_transfer.direction == FileTransfer.DIRECTION_SENT || in_roster;
     }
 
-    private async void handle_incomming_file(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
+    private async void handle_incoming_file(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
         if (!is_sender_trustworthy(file_transfer, conversation)) return;
 
         if (file_transfer.size == -1) {
@@ -192,7 +192,7 @@ public interface FileSender : Object {
     public abstract void send_file(Conversation conversation, FileTransfer file_transfer);
 }
 
-public interface IncommingFileProcessor : Object {
+public interface IncomingFileProcessor : Object {
     public abstract bool can_process(FileTransfer file_transfer);
     public abstract void process(FileTransfer file_transfer);
 }

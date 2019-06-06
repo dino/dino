@@ -1,5 +1,4 @@
 using Xmpp;
-using Xmpp;
 using Xmpp.Xep;
 
 namespace Xmpp.Xep.HttpFileUpload {

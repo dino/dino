@@ -30,7 +30,7 @@ public class Plugin : Plugins.RootInterface, Object {
 
         Manager.start(app.stream_interactor, db);
         app.stream_interactor.get_module(FileManager.IDENTITY).add_outgoing_processor(new OutFileProcessor(app.stream_interactor));
-        app.stream_interactor.get_module(FileManager.IDENTITY).add_incomming_processor(new InFileProcessor());
+        app.stream_interactor.get_module(FileManager.IDENTITY).add_incoming_processor(new InFileProcessor());
 
         internationalize(GETTEXT_PACKAGE, app.search_path_generator.get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR));
     }
