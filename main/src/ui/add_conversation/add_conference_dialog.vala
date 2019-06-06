@@ -23,7 +23,7 @@ public class AddConferenceDialog : Gtk.Dialog {
     private StreamInteractor stream_interactor;
 
     public AddConferenceDialog(StreamInteractor stream_interactor) {
-        Object(use_header_bar : 1);
+        Object(use_header_bar : Util.use_csd() ? 1 : 0);
         this.title = _("Join Channel");
         this.modal = true;
         this.stream_interactor = stream_interactor;
@@ -41,56 +41,65 @@ public class AddConferenceDialog : Gtk.Dialog {
     }
 
     private void show_jid_add_view() {
-        if (cancel_image.get_parent() != null) cancel_button.remove(cancel_image);
-        cancel_button.add(cancel_label);
-        cancel_button.clicked.disconnect(show_jid_add_view);
-        cancel_button.clicked.connect(on_cancel);
-        ok_button.label = _("Next");
-        ok_button.sensitive = select_fragment.done;
-        ok_button.clicked.disconnect(on_ok_button_clicked);
-        ok_button.clicked.connect(on_next_button_clicked);
-        details_fragment.notify["done"].disconnect(set_ok_sensitive_from_details);
-        select_fragment.notify["done"].connect(set_ok_sensitive_from_select);
+        // Rewire headerbar (if CSD)
+        if (Util.use_csd()) {
+            if (cancel_image.get_parent() != null) cancel_button.remove(cancel_image);
+            cancel_button.add(cancel_label);
+            cancel_button.clicked.disconnect(show_jid_add_view);
+            cancel_button.clicked.connect(on_cancel);
+            ok_button.label = _("Next");
+            ok_button.sensitive = select_fragment.done;
+            ok_button.clicked.disconnect(on_ok_button_clicked);
+            ok_button.clicked.connect(on_next_button_clicked);
+            details_fragment.notify["done"].disconnect(set_ok_sensitive_from_details);
+            select_fragment.notify["done"].connect(set_ok_sensitive_from_select);
+        }
+
         stack.transition_type = StackTransitionType.SLIDE_RIGHT;
         stack.set_visible_child_name("select");
     }
 
     private void show_conference_details_view() {
-        if (cancel_label.get_parent() != null) cancel_button.remove(cancel_label);
-        cancel_button.add(cancel_image);
-        cancel_button.clicked.disconnect(on_cancel);
-        cancel_button.clicked.connect(show_jid_add_view);
-        ok_button.label = _("Join");
-        ok_button.sensitive = details_fragment.done;
-        ok_button.clicked.disconnect(on_next_button_clicked);
-        ok_button.clicked.connect(on_ok_button_clicked);
-        select_fragment.notify["done"].disconnect(set_ok_sensitive_from_select);
-        details_fragment.notify["done"].connect(set_ok_sensitive_from_details);
+        // Rewire headerbar (if CSD)
+        if (Util.use_csd()) {
+            if (cancel_label.get_parent() != null) cancel_button.remove(cancel_label);
+            cancel_button.add(cancel_image);
+            cancel_button.clicked.disconnect(on_cancel);
+            cancel_button.clicked.connect(show_jid_add_view);
+            ok_button.label = _("Join");
+            ok_button.sensitive = details_fragment.done;
+            ok_button.clicked.disconnect(on_next_button_clicked);
+            ok_button.clicked.connect(on_ok_button_clicked);
+            select_fragment.notify["done"].disconnect(set_ok_sensitive_from_select);
+            details_fragment.notify["done"].connect(set_ok_sensitive_from_details);
+        }
+
         stack.transition_type = StackTransitionType.SLIDE_LEFT;
         stack.set_visible_child_name("details");
         animate_window_resize();
     }
 
     private void setup_headerbar() {
-        HeaderBar header_bar = get_header_bar() as HeaderBar;
-        header_bar.show_close_button = false;
+        cancel_button = new Button() { visible=true };
 
-        cancel_button = new Button();
-        header_bar.pack_start(cancel_button);
-        cancel_button.visible = true;
-
-        ok_button = new Button();
-        header_bar.pack_end(ok_button);
+        ok_button = new Button() { can_focus=true, can_default=true, visible=true };
         ok_button.get_style_context().add_class("suggested-action");
-        ok_button.visible = true;
-        ok_button.can_focus = true;
-        ok_button.can_default = true;
-        ok_button.has_default = true;
+
+        if (Util.use_csd()) {
+            HeaderBar header_bar = get_header_bar() as HeaderBar;
+            header_bar.show_close_button = false;
+
+            header_bar.pack_start(cancel_button);
+            header_bar.pack_end(ok_button);
+
+            ok_button.has_default = true;
+        }
     }
 
     private void setup_jid_add_view() {
         conference_list = new ConferenceList(stream_interactor);
         conference_list.row_activated.connect(() => { ok_button.clicked(); });
+
         select_fragment = new SelectJidFragment(stream_interactor, conference_list, stream_interactor.get_accounts());
         select_fragment.add_jid.connect((row) => {
             AddGroupchatDialog dialog = new AddGroupchatDialog(stream_interactor);
@@ -101,12 +110,51 @@ public class AddConferenceDialog : Gtk.Dialog {
             ConferenceListRow conference_row = row as ConferenceListRow;
             stream_interactor.get_module(MucManager.IDENTITY).remove_bookmark(conference_row.account, conference_row.bookmark);
         });
-        stack.add_named(select_fragment, "select");
+
+        Box wrap_box = new Box(Orientation.VERTICAL, 0) { visible=true };
+        wrap_box.add(select_fragment);
+        stack.add_named(wrap_box, "select");
+
+        if (!Util.use_csd()) {
+            Box box = new Box(Orientation.HORIZONTAL, 5) { halign=Align.END, margin_bottom=15, margin_start=80, margin_end=80, visible=true };
+
+            Button ok_button = new Button() { label=_("Next"), sensitive=false, halign = Align.END, can_focus=true, can_default=true, visible=true };
+            ok_button.get_style_context().add_class("suggested-action");
+            ok_button.clicked.connect(on_next_button_clicked);
+            select_fragment.notify["done"].connect(() => { ok_button.sensitive = select_fragment.done; });
+            Button cancel_button = new Button() { label=_("Cancel"), halign=Align.START, visible=true };
+            cancel_button.clicked.connect(on_cancel);
+            box.add(cancel_button);
+            box.add(ok_button);
+            wrap_box.add(box);
+
+            ok_button.has_default = true;
+        }
     }
 
     private void setup_conference_details_view() {
-        details_fragment = new ConferenceDetailsFragment(stream_interactor, ok_button);
-        stack.add_named(details_fragment, "details");
+        details_fragment = new ConferenceDetailsFragment(stream_interactor) { ok_button=ok_button };
+
+        Box wrap_box = new Box(Orientation.VERTICAL, 0) { visible=true };
+        wrap_box.add(details_fragment);
+
+        if (!Util.use_csd()) {
+            Box box = new Box(Orientation.HORIZONTAL, 5) { halign=Align.END, margin_bottom=15, margin_start=80, margin_end=80, visible=true };
+
+            Button ok_button = new Button() { label=_("Join"), halign = Align.END, can_focus=true, can_default=true, visible=true };
+            ok_button.get_style_context().add_class("suggested-action");
+            ok_button.clicked.connect(on_ok_button_clicked);
+            details_fragment.notify["done"].connect(() => { ok_button.sensitive = select_fragment.done; });
+            details_fragment.ok_button = ok_button;
+
+            Button cancel_button = new Button() { label=_("Back"), halign=Align.START, visible=true };
+            cancel_button.clicked.connect(show_jid_add_view);
+            box.add(cancel_button);
+            box.add(ok_button);
+
+            wrap_box.add(box);
+        }
+        stack.add_named(wrap_box, "details");
     }
 
     private void set_ok_sensitive_from_select() {

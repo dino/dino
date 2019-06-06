@@ -80,9 +80,21 @@ protected class ConferenceDetailsFragment : Box {
     [GtkChild] private Label notification_label;
 
     private StreamInteractor stream_interactor;
-    private Button ok_button;
+    private Button ok_button_;
+    public Button ok_button {
+        get { return ok_button_; }
+        set {
+            if (value != null) {
+                value.clicked.connect(() => {
+                    ok_button.label = _("Joining…");
+                    ok_button.sensitive = false;
+                });
+                ok_button_ = value;
+            }
+        }
+    }
 
-    public ConferenceDetailsFragment(StreamInteractor stream_interactor, Button ok_button) {
+    public ConferenceDetailsFragment(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         this.ok_button = ok_button;
 
@@ -104,10 +116,6 @@ protected class ConferenceDetailsFragment : Box {
 
         stream_interactor.get_module(MucManager.IDENTITY).enter_error.connect(on_enter_error);
         notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
-        ok_button.clicked.connect(() => {
-            ok_button.label = _("Joining…");
-            ok_button.sensitive = false;
-        });
 
         clear();
     }

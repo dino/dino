@@ -19,14 +19,14 @@ public class SelectContactDialog : Gtk.Dialog {
     private Gee.List<Account> accounts;
 
     public SelectContactDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
-        Object(use_header_bar : 1);
+        Object(use_header_bar : Util.use_csd() ? 1 : 0);
         modal = true;
 
         this.stream_interactor = stream_interactor;
         this.accounts = accounts;
 
-        setup_headerbar();
         setup_view();
+        setup_headerbar();
     }
 
     public void set_filter(string str) {
@@ -34,19 +34,31 @@ public class SelectContactDialog : Gtk.Dialog {
     }
 
     private void setup_headerbar() {
-        HeaderBar header_bar = get_header_bar() as HeaderBar;
-        header_bar.show_close_button = false;
-
         Button cancel_button = new Button();
         cancel_button.set_label(_("Cancel"));
         cancel_button.visible = true;
-        header_bar.pack_start(cancel_button);
 
         ok_button = new Button();
         ok_button.get_style_context().add_class("suggested-action");
         ok_button.sensitive = false;
         ok_button.visible = true;
-        header_bar.pack_end(ok_button);
+
+        if (Util.use_csd()) {
+            HeaderBar header_bar = get_header_bar() as HeaderBar;
+            header_bar.show_close_button = false;
+
+            header_bar.pack_start(cancel_button);
+            header_bar.pack_end(ok_button);
+        } else {
+            Box box = new Box(Orientation.HORIZONTAL, 5) { halign=Align.END, margin_bottom=15, margin_start=80, margin_end=80, visible=true };
+
+            cancel_button.halign = Align.START;
+            ok_button.halign = Align.END;
+            box.add(cancel_button);
+            box.add(ok_button);
+
+            get_content_area().add(box);
+        }
 
         cancel_button.clicked.connect(() => { close(); });
         ok_button.clicked.connect(() => {

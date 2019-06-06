@@ -48,7 +48,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 dialog.modal = true;
                 Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
                 ok_button.get_style_context().add_class("suggested-action");
-                ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor, ok_button);
+                ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor) { ok_button=ok_button };
                 conference_fragment.jid = jid;
                 Box content_area = dialog.get_content_area();
                 content_area.add(conference_fragment);
