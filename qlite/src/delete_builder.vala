@@ -53,7 +53,7 @@ public class DeleteBuilder : StatementBuilder {
 
     public void perform() {
         if (prepare().step() != DONE) {
-            error(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
+            critical(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
     }
 

@@ -74,7 +74,7 @@ public class InsertBuilder : StatementBuilder {
 
     public int64 perform() {
         if (prepare().step() != DONE) {
-            error(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
+            critical(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
         return db.last_insert_rowid();
     }
