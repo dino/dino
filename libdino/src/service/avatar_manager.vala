@@ -23,6 +23,7 @@ public class AvatarManager : StreamInteractionModule, Object {
     private HashMap<Jid, string> vcard_avatars = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
     private AvatarStorage avatar_storage = new AvatarStorage(get_storage_dir());
     private HashMap<string, Pixbuf> cached_pixbuf = new HashMap<string, Pixbuf>();
+    private HashMap<string, Gee.List<SourceFuncWrapper>> pending_pixbuf = new HashMap<string, Gee.List<SourceFuncWrapper>>();
     private const int MAX_PIXEL = 192;
 
     public static void start(StreamInteractor stream_interactor, Database db) {
@@ -50,11 +51,20 @@ public class AvatarManager : StreamInteractionModule, Object {
         if (cached_pixbuf.has_key(hash)) {
             return cached_pixbuf[hash];
         }
+        if (pending_pixbuf.has_key(hash)) {
+            pending_pixbuf[hash].add(new SourceFuncWrapper(get_avatar_by_hash.callback));
+            yield;
+            return cached_pixbuf[hash];
+        }
+        pending_pixbuf[hash] = new ArrayList<SourceFuncWrapper>();
         Pixbuf? image = yield avatar_storage.get_image(hash);
         if (image != null) {
             cached_pixbuf[hash] = image;
         } else {
             db.avatar.delete().with(db.avatar.hash, "=", hash).perform();
+        }
+        foreach (SourceFuncWrapper sfw in pending_pixbuf[hash]) {
+            sfw.sfun();
         }
         return image;
     }

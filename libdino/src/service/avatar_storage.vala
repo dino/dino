@@ -33,7 +33,7 @@ public class AvatarStorage : Xep.PixbufStorage, Object {
             File file = File.new_for_path(Path.build_filename(folder, id));
             FileInputStream stream = yield file.read_async();
 
-            uint8 fbuf[100];
+            uint8 fbuf[1024];
             size_t size;
 
             Checksum checksum = new Checksum (ChecksumType.SHA1);
