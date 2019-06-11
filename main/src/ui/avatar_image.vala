@@ -40,11 +40,11 @@ public class AvatarImage : Misc {
         Cairo.Surface buffer = new Cairo.Surface.similar(ctx.get_target(), Cairo.Content.COLOR_ALPHA, width, height);
         Cairo.Context bufctx = new Cairo.Context(buffer);
         if (idx == -1 || current_avatars[idx] == null) {
-            set_source_hex_color(bufctx, gray || idx == -1 ? "555753" : Util.get_avatar_hex_color(stream_interactor, account, current_jids[idx]));
+            set_source_hex_color(bufctx, gray || idx == -1 || current_jids[idx] == null ? "555753" : Util.get_avatar_hex_color(stream_interactor, account, current_jids[idx]));
             bufctx.rectangle(0, 0, width, height);
             bufctx.fill();
 
-            string text = text_only ?? (idx == -1 ? "…" : Util.get_display_name(stream_interactor, current_jids[idx], account).get_char(0).toupper().to_string());
+            string text = text_only ?? (idx == -1 || current_jids[idx] == null ? "…" : Util.get_display_name(stream_interactor, current_jids[idx], account).get_char(0).toupper().to_string());
             bufctx.select_font_face(get_pango_context().get_font_description().get_family(), Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
             bufctx.set_font_size(width / font_factor < 40 ? font_factor * 17 : font_factor * 25);
             Cairo.TextExtents extents;
