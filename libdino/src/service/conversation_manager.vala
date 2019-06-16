@@ -35,9 +35,11 @@ public class ConversationManager : StreamInteractionModule, Object {
         Jid store_jid = type == Conversation.Type.GROUPCHAT ? jid.bare_jid : jid;
 
         // Do we already have a conversation for this jid?
-        foreach (var conversation in conversations[account][store_jid]) {
-            if (conversation.type_ == type) {
-                return conversation;
+        if (conversations[account].has_key(store_jid)) {
+            foreach (var conversation in conversations[account][store_jid]) {
+                if (conversation.type_ == type) {
+                    return conversation;
+                }
             }
         }
 

@@ -46,8 +46,8 @@ public class ConversationItemSkeleton : EventBox {
             default_header.add_item(item);
         }
         Widget? widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
-        widget.valign = Align.END;
         if (widget != null) {
+            widget.valign = Align.END;
             header_content_box.add(widget);
         }
 
