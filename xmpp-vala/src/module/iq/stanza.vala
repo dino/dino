@@ -30,17 +30,14 @@ public class Stanza : Xmpp.Stanza {
 
     public Stanza.set(StanzaNode stanza_node, string? id = null) {
         this(id);
-        type_ = TYPE_SET;
+        this.type_ = TYPE_SET;
         stanza.put_node(stanza_node);
     }
 
-    public Stanza.error(Stanza request, StanzaNode error_stanza, StanzaNode? associated_child = null) {
+    public Stanza.error(Stanza request, ErrorStanza error_stanza) {
         this(request.id);
         this.type_ = TYPE_ERROR;
-        stanza.put_node(error_stanza);
-        if (associated_child != null) {
-            stanza.put_node(associated_child);
-        }
+        stanza.put_node(error_stanza.error_node);
     }
     public Stanza.from_stanza(StanzaNode stanza_node, Jid? my_jid) {
         base.incoming(stanza_node, my_jid);
