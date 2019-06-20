@@ -83,8 +83,14 @@ namespace Xmpp.Iq {
     }
 
     public interface Handler : Object {
-        public abstract void on_iq_get(XmppStream stream, Iq.Stanza iq);
-        public abstract void on_iq_set(XmppStream stream, Iq.Stanza iq);
+        public virtual void on_iq_get(XmppStream stream, Iq.Stanza iq) {
+            Iq.Stanza bad_request = new Iq.Stanza.error(iq, new ErrorStanza.bad_request("unexpected IQ get for this namespace"));
+            stream.get_module(Module.IDENTITY).send_iq(stream, bad_request);
+        }
+        public virtual void on_iq_set(XmppStream stream, Iq.Stanza iq) {
+            Iq.Stanza bad_request = new Iq.Stanza.error(iq, new ErrorStanza.bad_request("unexpected IQ set for this namespace"));
+            stream.get_module(Module.IDENTITY).send_iq(stream, bad_request);
+        }
     }
 
 }
