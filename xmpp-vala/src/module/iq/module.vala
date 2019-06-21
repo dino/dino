@@ -67,7 +67,7 @@ namespace Xmpp.Iq {
                         }
                     }
                 } else {
-                    Iq.Stanza unavailable_error = new Iq.Stanza.error(iq, new StanzaNode.build("service-unavailable", "urn:ietf:params:xml:ns:xmpp-stanzas").add_self_xmlns());
+                    Iq.Stanza unavailable_error = new Iq.Stanza.error(iq, new ErrorStanza.service_unavailable());
                     send_iq(stream, unavailable_error);
                 }
             }
@@ -83,8 +83,14 @@ namespace Xmpp.Iq {
     }
 
     public interface Handler : Object {
-        public abstract void on_iq_get(XmppStream stream, Iq.Stanza iq);
-        public abstract void on_iq_set(XmppStream stream, Iq.Stanza iq);
+        public virtual void on_iq_get(XmppStream stream, Iq.Stanza iq) {
+            Iq.Stanza bad_request = new Iq.Stanza.error(iq, new ErrorStanza.bad_request("unexpected IQ get for this namespace"));
+            stream.get_module(Module.IDENTITY).send_iq(stream, bad_request);
+        }
+        public virtual void on_iq_set(XmppStream stream, Iq.Stanza iq) {
+            Iq.Stanza bad_request = new Iq.Stanza.error(iq, new ErrorStanza.bad_request("unexpected IQ set for this namespace"));
+            stream.get_module(Module.IDENTITY).send_iq(stream, bad_request);
+        }
     }
 
 }

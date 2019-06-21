@@ -66,8 +66,6 @@ public class Module : XmppStreamModule, Iq.Handler {
         }
     }
 
-    public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
-
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
         stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI_INFO, this);

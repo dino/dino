@@ -45,7 +45,6 @@ public class Module : XmppStreamModule, Iq.Handler {
         return stream.has_flag(Flag.IDENTITY);
     }
 
-    private void on_iq_get(XmppStream stream, Iq.Stanza iq) { }
     private void on_iq_set(XmppStream stream, Iq.Stanza iq) {
         StanzaNode? block_node = iq.stanza.get_subnode("block", NS_URI);
         StanzaNode? unblock_node = iq.stanza.get_subnode("unblock", NS_URI);
