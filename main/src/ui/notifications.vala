@@ -82,7 +82,12 @@ public class Notifications : Object {
         } catch (Error e) { }
         window.get_application().send_notification(conversation.id.to_string(), notifications[conversation]);
         active_conversation_ids.add(conversation.id.to_string());
-        window.urgency_hint = true;
+
+        // Don't set urgency hint in GNOME, produces "Window is active" notification
+        var desktop_env = Environment.get_variable("XDG_CURRENT_DESKTOP");
+        if (desktop_env == null || !desktop_env.down().contains("gnome")) {
+            window.urgency_hint = true;
+        }
     }
 
     private async void notify_subscription_request(Conversation conversation) {
