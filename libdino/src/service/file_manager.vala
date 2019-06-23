@@ -65,8 +65,8 @@ public class FileManager : StreamInteractionModule, Object {
 
         foreach (FileSender file_sender in file_senders) {
             if (file_sender.can_send(conversation, file_transfer)) {
-                // TODO(hrxi): Currently, this tries to send the file with every transfer available, but it should probably only select one.
                 file_sender.send_file(conversation, file_transfer);
+                return;
             }
         }
         received_file(file_transfer, conversation);
@@ -121,7 +121,9 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     public void add_sender(FileSender file_sender) {
-        file_senders.add(file_sender);
+        // Order file_senders in reverse order of adding them -- HTTP is added
+        // later than Jingle.
+        file_senders.insert(0, file_sender);
         file_sender.upload_available.connect((account) => {
             upload_available(account);
         });
