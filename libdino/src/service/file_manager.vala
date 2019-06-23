@@ -65,6 +65,7 @@ public class FileManager : StreamInteractionModule, Object {
 
         foreach (FileSender file_sender in file_senders) {
             if (file_sender.can_send(conversation, file_transfer)) {
+                // TODO(hrxi): Currently, this tries to send the file with every transfer available, but it should probably only select one.
                 file_sender.send_file(conversation, file_transfer);
             }
         }

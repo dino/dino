@@ -18,7 +18,7 @@ public class MessageStanza : Xmpp.Stanza {
     public string body {
         get {
             StanzaNode? body_node = stanza.get_subnode(NODE_BODY);
-            return body_node == null? null : body_node.get_string_content();
+            return body_node == null ? null : body_node.get_string_content();
         }
         set {
             StanzaNode? body_node = stanza.get_subnode(NODE_BODY);

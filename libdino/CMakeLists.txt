@@ -35,6 +35,7 @@ SOURCES
     src/service/database.vala
     src/service/entity_capabilities_storage.vala
     src/service/file_manager.vala
+    src/service/jingle_file_manager.vala
     src/service/message_processor.vala
     src/service/message_storage.vala
     src/service/module_manager.vala
