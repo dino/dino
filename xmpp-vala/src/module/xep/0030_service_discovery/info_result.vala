@@ -39,7 +39,12 @@ public class InfoResult {
 
     public InfoResult(Iq.Stanza iq_request) {
         iq = new Iq.Stanza.result(iq_request);
-        iq.stanza.put_node(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
+        string? node = iq_request.stanza.get_subnode("query", NS_URI_INFO).get_attribute("node");
+        StanzaNode query = new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns();
+        if (node != null) {
+            query.set_attribute("node", node);
+        }
+        iq.stanza.put_node(query);
     }
 
     private InfoResult.from_iq(Iq.Stanza iq) {
