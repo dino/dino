@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-16 14:38+0100\n"
-"PO-Revision-Date: 2019-02-04 12:09+0000\n"
+"POT-Creation-Date: 2019-07-04 16:27+0200\n"
+"PO-Revision-Date: 2019-04-18 03:04+0000\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ru/>\n"
 "Language: ru\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.5-dev\n"
+"X-Generator: Weblate 3.6-dev\n"
 
 #: plugins/omemo/src/device_notification_populator.vala:79
 msgid "Manage"
-msgstr ""
+msgstr "Настроить"
 
 #: plugins/omemo/src/device_notification_populator.vala:89
 msgid "This contact has new devices"
-msgstr ""
+msgstr "Этот контакт воспользовался новым устройством"
 
 #: plugins/omemo/src/own_notifications.vala:36
 msgid "OMEMO trust decision required"
@@ -34,11 +34,11 @@ msgstr ""
 #: plugins/omemo/src/own_notifications.vala:38
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr ""
+msgstr "Вы добавляли аккаунт %s на новое устройство?"
 
 #: plugins/omemo/src/manage_key_dialog.vala:48
 msgid "Verify key"
-msgstr ""
+msgstr "Подтвердить ключ"
 
 #: plugins/omemo/src/manage_key_dialog.vala:49
 #, c-format
@@ -46,6 +46,8 @@ msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"После подтверждения все последующие сообщения, отправленные с %s при помощи "
+"этого ключа, будут соответственно подсвечены в окне чата."
 
 #: plugins/omemo/src/manage_key_dialog.vala:59
 msgid "Fingerprints do not match"
@@ -133,6 +135,8 @@ msgid ""
 "This means it cannot be used by %s to receive messages, and any messages "
 "sent by it will be ignored."
 msgstr ""
+"Это значит, что %s не может отправлять сообщения — все они будут "
+"игнорироваться."
 
 #: plugins/omemo/src/manage_key_dialog.vala:141
 #, c-format

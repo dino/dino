@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-16 14:38+0100\n"
-"PO-Revision-Date: 2019-01-14 14:19+0000\n"
+"POT-Creation-Date: 2019-07-04 16:27+0200\n"
+"PO-Revision-Date: 2019-05-11 09:48+0000\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.7-dev\n"
 
 #: plugins/omemo/src/device_notification_populator.vala:79
 msgid "Manage"
@@ -33,11 +33,11 @@ msgstr "需要 OMEMO 信任決策"
 #: plugins/omemo/src/own_notifications.vala:38
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr ""
+msgstr "是否為帳戶 %s 添加新設備？"
 
 #: plugins/omemo/src/manage_key_dialog.vala:48
 msgid "Verify key"
-msgstr ""
+msgstr "驗證金鑰"
 
 #: plugins/omemo/src/manage_key_dialog.vala:49
 #, c-format

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-16 14:38+0100\n"
-"PO-Revision-Date: 2019-02-08 05:09+0000\n"
+"POT-Creation-Date: 2019-07-04 16:27+0200\n"
+"PO-Revision-Date: 2019-05-17 16:48+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
 "Language: de\n"
@@ -11,43 +11,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.5-dev\n"
+"X-Generator: Weblate 3.7-dev\n"
 
 #: main/src/ui/notifications.vala:67
-#: main/src/ui/conversation_selector/conversation_row.vala:155
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "Image sent"
 msgstr "Bild gesendet"
 
 #: main/src/ui/notifications.vala:67
-#: main/src/ui/conversation_selector/conversation_row.vala:155
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "File sent"
 msgstr "Datei gesendet"
 
 #: main/src/ui/notifications.vala:69
-#: main/src/ui/conversation_selector/conversation_row.vala:157
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "Image received"
 msgstr "Bild empfangen"
 
 #: main/src/ui/notifications.vala:69
-#: main/src/ui/conversation_selector/conversation_row.vala:157
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "File received"
 msgstr "Datei empfangen"
 
-#: main/src/ui/notifications.vala:88
+#: main/src/ui/notifications.vala:94
 msgid "Subscription request"
 msgstr "Kontaktanfrage"
 
-#: main/src/ui/notifications.vala:94
+#: main/src/ui/notifications.vala:101
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Annehmen"
 
-#: main/src/ui/notifications.vala:95
+#: main/src/ui/notifications.vala:102
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Ablehnen"
 
-#: main/src/ui/notifications.vala:101
+#: main/src/ui/notifications.vala:108
 #, c-format
 msgid "Failed connecting to %s"
 msgstr "Verbindung zu %s fehlgeschlagen"
@@ -71,7 +71,8 @@ msgstr "Auswählen"
 
 #: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
-#: main/src/ui/add_conversation/select_contact_dialog.vala:41
+#: main/src/ui/add_conversation/add_conference_dialog.vala:125
+#: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
@@ -159,46 +160,46 @@ msgstr "Registrieren"
 msgid "Check %s for information on how to sign up"
 msgstr "Eventuell sind auf %s Informationen zur Registrierung zu finden"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:136
-#: main/src/ui/conversation_selector/conversation_row.vala:147
-#: main/src/ui/conversation_selector/conversation_row.vala:150
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:136
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:147
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:150
 #: main/src/ui/util/helper.vala:87
 msgid "Me"
 msgstr "Ich"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:259
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:259
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%d. %b"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:263
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:263
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Gestern"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:266
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:266
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:229
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:267
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:267
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:230
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:270
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:234
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "vor %i min"
 msgstr[1] "vor %i min"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:272
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:272
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:236
 msgid "Just now"
 msgstr "Gerade eben"
 
@@ -207,8 +208,9 @@ msgid "Join Conference"
 msgstr "Konferenz beitreten"
 
 #: main/src/ui/application.vala:47
-#: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:133
+#: main/src/ui/add_conversation/add_conference_dialog.vala:69
+#: main/src/ui/add_conversation/add_conference_dialog.vala:144
+#: main/src/ui/add_conversation/conference_details_fragment.vala:141
 msgid "Join"
 msgstr "Beitreten"
 
@@ -222,76 +224,85 @@ msgid "Save"
 msgstr "Speichern"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:196 main/data/menu_add.ui:13
+#: main/src/ui/unified_window.vala:190 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Kanal beitreten"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:48
+#: main/src/ui/add_conversation/add_conference_dialog.vala:50
+#: main/src/ui/add_conversation/add_conference_dialog.vala:121
 #: main/data/manage_accounts/add_account_dialog.ui:99
 #: main/data/manage_accounts/add_account_dialog.ui:411
 #: main/data/manage_accounts/add_account_dialog.ui:491
 msgid "Next"
 msgstr "Weiter"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:195 main/data/menu_add.ui:7
+#: main/src/ui/add_conversation/add_conference_dialog.vala:150
+#: main/data/manage_accounts/add_account_dialog.ui:175
+#: main/data/manage_accounts/add_account_dialog.ui:268
+msgid "Back"
+msgstr "Zurück"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/src/ui/unified_window.vala:189
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
 msgstr "Unterhaltung starten"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:86
+#: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
 msgstr "Starten"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:108
+#: main/src/ui/add_conversation/conference_details_fragment.vala:89
 msgid "Joining…"
 msgstr "Beitreten…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:138
+#: main/src/ui/add_conversation/conference_details_fragment.vala:146
 msgid "Password required to enter room"
 msgstr "Raum erfordert Passwort"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:143
+#: main/src/ui/add_conversation/conference_details_fragment.vala:151
 msgid "Banned from joining or creating conference"
 msgstr "Beitreten oder erstellen der Konferenz verboten"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:145
+#: main/src/ui/add_conversation/conference_details_fragment.vala:153
 msgid "Room does not exist"
 msgstr "Raum existiert nicht"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:147
+#: main/src/ui/add_conversation/conference_details_fragment.vala:155
 msgid "Not allowed to create room"
 msgstr "Raum erzeugen verboten"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:149
+#: main/src/ui/add_conversation/conference_details_fragment.vala:157
 msgid "Members-only room"
-msgstr "Raum nur für Mittglieder"
+msgstr "Raum nur für Mitglieder"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:152
+#: main/src/ui/add_conversation/conference_details_fragment.vala:160
 msgid "Choose a different nick"
 msgstr "Wähle einen anderen Spitznamen"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:154
+#: main/src/ui/add_conversation/conference_details_fragment.vala:162
 msgid "Too many occupants in room"
 msgstr "Zu viele Nutzer im Raum"
 
-#: main/src/ui/unified_window.vala:174
+#: main/src/ui/unified_window.vala:168
 msgid "Welcome to Dino!"
 msgstr "Willkommen bei Dino!"
 
-#: main/src/ui/unified_window.vala:176
+#: main/src/ui/unified_window.vala:170
 msgid "Set up account"
 msgstr "Konto einrichten"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:178
 msgid "No active accounts"
 msgstr "Keine Konten aktiv"
 
-#: main/src/ui/unified_window.vala:185
+#: main/src/ui/unified_window.vala:179
 msgid "Manage accounts"
 msgstr "Konten verwalten"
 
-#: main/src/ui/unified_window.vala:194
+#: main/src/ui/unified_window.vala:188
 msgid "No active conversations"
 msgstr "Keine Unterhaltung aktiv"
 
@@ -332,7 +343,7 @@ msgstr "hat aufgehört zu tippen"
 msgid "Message too long"
 msgstr "Nachricht zu lang"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:212
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:213
 msgid "File"
 msgstr "Datei"
 
@@ -340,32 +351,32 @@ msgstr "Datei"
 msgid "This contact would like to add you to their contact list"
 msgstr "Dieser Kontakt will dich zu seiner Kontaktliste hinzufügen"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:217
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:218
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:221
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d. %b, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:222
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d. %b, %l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:225
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:226
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
@@ -501,9 +512,7 @@ msgid "Room Configuration"
 msgstr "Raum Konfiguration"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
-#: main/src/ui/contact_details/settings_provider.vala:22
-#: main/src/ui/contact_details/settings_provider.vala:25
-#: main/src/ui/contact_details/settings_provider.vala:30
+#: main/src/ui/contact_details/settings_provider.vala:12
 #: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Einstellungen"
@@ -517,46 +526,54 @@ msgid "Communication and status updates in either direction are blocked"
 msgstr ""
 "Kommunikation und Statusaktualisierungen sind in beide Richtungen blockiert"
 
-#: main/src/ui/contact_details/settings_provider.vala:22
+#: main/src/ui/contact_details/settings_provider.vala:13
+msgid "Local Settings"
+msgstr "Lokale Einstellungen"
+
+#: main/src/ui/contact_details/settings_provider.vala:28
 #: main/data/settings_dialog.ui:22
 msgid "Send typing notifications"
 msgstr "Tippbenachrichtigungen senden"
 
-#: main/src/ui/contact_details/settings_provider.vala:25
+#: main/src/ui/contact_details/settings_provider.vala:33
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
 msgstr "Lesebestätigungen senden"
 
-#: main/src/ui/contact_details/settings_provider.vala:30
-#: main/src/ui/contact_details/settings_provider.vala:39
+#: main/src/ui/contact_details/settings_provider.vala:38
+#: main/src/ui/contact_details/settings_provider.vala:47
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: main/src/ui/contact_details/settings_provider.vala:39
-msgid "Local Settings"
-msgstr "Lokale Einstellungen"
-
-#: main/src/ui/contact_details/settings_provider.vala:74
-#: main/src/ui/contact_details/settings_provider.vala:114
-#: main/src/ui/contact_details/settings_provider.vala:116
+#: main/src/ui/contact_details/settings_provider.vala:82
+#: main/src/ui/contact_details/settings_provider.vala:122
+#: main/src/ui/contact_details/settings_provider.vala:124
 msgid "On"
 msgstr "An"
 
-#: main/src/ui/contact_details/settings_provider.vala:76
-#: main/src/ui/contact_details/settings_provider.vala:114
-#: main/src/ui/contact_details/settings_provider.vala:117
+#: main/src/ui/contact_details/settings_provider.vala:84
+#: main/src/ui/contact_details/settings_provider.vala:122
+#: main/src/ui/contact_details/settings_provider.vala:125
 msgid "Off"
 msgstr "Aus"
 
-#: main/src/ui/contact_details/settings_provider.vala:78
+#: main/src/ui/contact_details/settings_provider.vala:86
 msgid "Only when mentioned"
 msgstr "Nur bei Erwähnung"
 
-#: main/src/ui/contact_details/settings_provider.vala:80
-#: main/src/ui/contact_details/settings_provider.vala:115
+#: main/src/ui/contact_details/settings_provider.vala:88
+#: main/src/ui/contact_details/settings_provider.vala:123
 #, c-format
 msgid "Default: %s"
 msgstr "Standard: %s"
+
+#: main/src/ui/conversation_titlebar/search_entry.vala:11
+msgid "Search messages"
+msgstr ""
+
+#: main/src/ui/conversation_titlebar/occupants_entry.vala:37
+msgid "Members"
+msgstr ""
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -594,11 +611,6 @@ msgstr "Konto erstellen"
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
 msgstr "Es konnte keine sichere Verbindung hergestellt werden"
-
-#: main/data/manage_accounts/add_account_dialog.ui:175
-#: main/data/manage_accounts/add_account_dialog.ui:268
-msgid "Back"
-msgstr "Zurück"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
