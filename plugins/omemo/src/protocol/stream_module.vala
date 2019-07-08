@@ -32,8 +32,7 @@ public class StreamModule : XmppStreamModule {
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
     }
 
-    public override void detach(XmppStream stream) {
-    }
+    public override void detach(XmppStream stream) {}
 
     public void request_user_devicelist(XmppStream stream, Jid jid) {
         if (active_devicelist_requests.add(jid)) {
@@ -55,7 +54,7 @@ public class StreamModule : XmppStreamModule {
                 }
             }
             if (!am_on_devicelist) {
-                debug(@"Not on device list, adding id");
+                debug("Not on device list, adding id");
                 node.put_node(new StanzaNode.build("device", NS_URI).put_attribute("id", store.local_registration_id.to_string()));
                 stream.get_module(Pubsub.Module.IDENTITY).publish(stream, jid, NODE_DEVICELIST, NODE_DEVICELIST, id, node);
             }
@@ -89,7 +88,7 @@ public class StreamModule : XmppStreamModule {
 
     public void fetch_bundle(XmppStream stream, Jid jid, int device_id) {
         if (active_bundle_requests.add(jid.bare_jid.to_string() + @":$device_id")) {
-            debug(@"Asking for bundle from %s: %i", jid.bare_jid.to_string(), device_id);
+            debug("Asking for bundle from %s: %i", jid.bare_jid.to_string(), device_id);
             stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid.bare_jid, @"$NODE_BUNDLES:$device_id", (stream, jid, id, node) => {
                 on_other_bundle_result(stream, jid, device_id, id, node);
             });
@@ -116,6 +115,7 @@ public class StreamModule : XmppStreamModule {
     private void on_other_bundle_result(XmppStream stream, Jid jid, int device_id, string? id, StanzaNode? node) {
         if (node == null) {
             // Device not registered, shouldn't exist
+            debug("Ignoring device %s (%i): No bundle", jid.bare_jid.to_string(), device_id);
             stream.get_module(IDENTITY).ignore_device(jid, device_id);
         } else {
             Bundle bundle = new Bundle(node);
@@ -149,12 +149,14 @@ public class StreamModule : XmppStreamModule {
                     SessionBuilder builder = store.create_session_builder(address);
                     builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
                 } catch (Error e) {
+                    debug("Can't create session with %s (%i): %s", jid.bare_jid.to_string(), device_id, e.message);
                     fail = true;
                 }
                 address.device_id = 0; // TODO: Hack to have address obj live longer
             }
         }
         if (fail) {
+            debug("Ignoring device %s (%i): Bad bundle: %s", jid.bare_jid.to_string(), device_id, bundle.node.to_string());
             stream.get_module(IDENTITY).ignore_device(jid, device_id);
         }
         return true;
