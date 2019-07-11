@@ -45,9 +45,9 @@ public class JingleFileManager : StreamInteractionModule, FileProvider, FileSend
             file_transfer.local_time = new DateTime.now_utc();
             file_transfer.direction = FileTransfer.DIRECTION_RECEIVED;
             file_transfer.file_name = jingle_file_transfer.file_name;
-            file_transfer.size = (int)jingle_file_transfer.size; // TODO(hrxi): remove cast
+            file_transfer.size = (int)jingle_file_transfer.size;
             file_transfer.state = FileTransfer.State.NOT_STARTED;
-            file_transfer.provider = 0; // TODO(hrxi): what is this?
+            file_transfer.provider = 1;
             file_transfer.info = id;
             file_transfers[id] = jingle_file_transfer;
 
@@ -56,7 +56,8 @@ public class JingleFileManager : StreamInteractionModule, FileProvider, FileSend
     }
 
     async void get_meta_info(FileTransfer file_transfer) {
-        // TODO(hrxi): what is this function?
+        // In Jingle, all the metadata is provided up-front, so there's no more
+        // metadata to get.
     }
     async void download(FileTransfer file_transfer, File file_) {
         // TODO(hrxi) What should happen if `stream == null`?
@@ -112,7 +113,7 @@ public class JingleFileManager : StreamInteractionModule, FileProvider, FileSend
             if (!stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
                 continue;
             }
-            stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).offer_file_stream(stream, full_jid, file_transfer.input_stream, file_transfer.file_name, file_transfer.size);
+            stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).offer_file_stream.begin(stream, full_jid, file_transfer.input_stream, file_transfer.file_name, file_transfer.size);
             return;
         }
     }

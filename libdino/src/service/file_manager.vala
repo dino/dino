@@ -66,7 +66,7 @@ public class FileManager : StreamInteractionModule, Object {
         foreach (FileSender file_sender in file_senders) {
             if (file_sender.can_send(conversation, file_transfer)) {
                 file_sender.send_file(conversation, file_transfer);
-                return;
+                break;
             }
         }
         received_file(file_transfer, conversation);
