@@ -156,7 +156,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     private class DeduplicateMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "MUC" };
+        public string[] after_actions_const = new string[]{ "FILTER_EMPTY", "MUC" };
         public override string action_group { get { return "DEDUPLICATE"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
@@ -177,7 +177,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     private class FilterMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT" };
+        public string[] after_actions_const = new string[]{ "DECRYPT" };
         public override string action_group { get { return "FILTER_EMPTY"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 

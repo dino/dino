@@ -67,7 +67,7 @@ public class Message : Object {
         stanza_id = row[db.message.stanza_id];
         type_ = (Message.Type) row[db.message.type_];
 
-        counterpart = Jid.parse(db.get_jid_by_id(row[db.message.counterpart_id]));
+        counterpart = db.get_jid_by_id(row[db.message.counterpart_id]);
         string counterpart_resource = row[db.message.counterpart_resource];
         if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
 
@@ -85,7 +85,7 @@ public class Message : Object {
         body = row[db.message.body];
         marked = (Message.Marked) row[db.message.marked];
         encryption = (Encryption) row[db.message.encryption];
-        string? real_jid_str = db.real_jid.select({db.real_jid.real_jid}).with(db.real_jid.message_id, "=", id)[db.real_jid.real_jid];
+        string? real_jid_str = row[db.real_jid.real_jid];
         if (real_jid_str != null) real_jid = new Jid(real_jid_str);
 
         notify.connect(on_update);

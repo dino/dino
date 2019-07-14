@@ -70,9 +70,8 @@ public class FileTransfer : Object {
         id = row[db.file_transfer.id];
         account = db.get_account_by_id(row[db.file_transfer.account_id]); // TODO don’t have to generate acc new
 
-        string counterpart_jid = db.get_jid_by_id(row[db.file_transfer.counterpart_id]);
+        counterpart = db.get_jid_by_id(row[db.file_transfer.counterpart_id]);
         string counterpart_resource = row[db.file_transfer.counterpart_resource];
-        counterpart = Jid.parse(counterpart_jid);
         if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
 
         string our_resource = row[db.file_transfer.our_resource];

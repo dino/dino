@@ -54,7 +54,7 @@ public class Conversation : Object {
         type_ = (Conversation.Type) row[db.conversation.type_];
         account = db.get_account_by_id(row[db.conversation.account_id]);
         string? resource = row[db.conversation.resource];
-        counterpart = Jid.parse(db.get_jid_by_id(row[db.conversation.jid_id]));
+        counterpart = db.get_jid_by_id(row[db.conversation.jid_id]);
         if (type_ == Conversation.Type.GROUPCHAT_PM) counterpart = counterpart.with_resource(resource);
         nickname = type_ == Conversation.Type.GROUPCHAT ? resource : null;
         active = row[db.conversation.active];
