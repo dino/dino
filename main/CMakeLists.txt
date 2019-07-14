@@ -33,6 +33,7 @@ set(RESOURCE_LIST
     contact_details_dialog.ui
     conversation_list_titlebar.ui
     conversation_list_titlebar_csd.ui
+    emojichooser.ui
     global_search.ui
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
@@ -134,6 +135,7 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
     ${CMAKE_BINARY_DIR}/exports/dino_internal.vapi
+    vapi/emojichooser.vapi
 PACKAGES
     ${MAIN_PACKAGES}
     ${MAIN_EXTRA_PACKAGES}
@@ -144,8 +146,9 @@ OPTIONS
 )
 
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
-add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET})
+add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c)
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
+target_include_directories(dino PRIVATE src)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})
 
 if(WIN32)
