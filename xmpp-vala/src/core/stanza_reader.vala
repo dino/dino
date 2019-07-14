@@ -63,14 +63,14 @@ public class StanzaReader {
         if (buffer_pos >= buffer_fill) {
             yield update_buffer();
         }
-        char c = (char) buffer[buffer_pos++];
-        return c;
+        return (char) buffer[buffer_pos++];
     }
 
     private async char peek_single() throws XmlError {
-        var res = yield read_single();
-        buffer_pos--;
-        return res;
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        return (char) buffer[buffer_pos];
     }
 
     private bool is_ws(uint8 what) {
@@ -82,37 +82,55 @@ public class StanzaReader {
     }
 
     private async void skip_until_non_ws() throws XmlError {
-        while (is_ws(yield peek_single())) {
-            skip_single();
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        while (is_ws(buffer[buffer_pos])) {
+            buffer_pos++;
+            if (buffer_pos >= buffer_fill) {
+                yield update_buffer();
+            }
         }
     }
 
     private async string read_until_ws() throws XmlError {
         var res = new StringBuilder();
-        var what = yield peek_single();
-        while (!is_ws(what)) {
-            res.append_c(yield read_single());
-            what = yield peek_single();
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        while (!is_ws(buffer[buffer_pos])) {
+            res.append_c((char) buffer[buffer_pos++]);
+            if (buffer_pos >= buffer_fill) {
+                yield update_buffer();
+            }
         }
         return res.str;
     }
 
     private async string read_until_char_or_ws(char x, char y = 0) throws XmlError {
         var res = new StringBuilder();
-        var what = yield peek_single();
-        while (what != x && what != y && !is_ws(what)) {
-            res.append_c(yield read_single());
-            what = yield peek_single();
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        while (buffer[buffer_pos] != x && buffer[buffer_pos] != y && !is_ws(buffer[buffer_pos])) {
+            res.append_c((char) buffer[buffer_pos++]);
+            if (buffer_pos >= buffer_fill) {
+                yield update_buffer();
+            }
         }
         return res.str;
     }
 
     private async string read_until_char(char x) throws XmlError {
         var res = new StringBuilder();
-        var what = yield peek_single();
-        while (what != x) {
-            res.append_c(yield read_single());
-            what = yield peek_single();
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        while (buffer[buffer_pos] != x) {
+            res.append_c((char) buffer[buffer_pos++]);
+            if (buffer_pos >= buffer_fill) {
+                yield update_buffer();
+            }
         }
         return res.str;
     }
