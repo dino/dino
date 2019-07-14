@@ -1,21 +1,299 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-         xmlns:foaf="http://xmlns.com/foaf/0.1/"
-         xmlns="http://usefulinc.com/ns/doap#">
-
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns="http://usefulinc.com/ns/doap#">
   <name>Dino</name>
   <short-name>dino</short-name>
-  <shortdesc xml:lang="en">Modern Jabber/XMPP Client</shortdesc>
+  <shortdesc xml:lang="en">Modern XMPP Chat Client</shortdesc>
+  <shortdesc xml:lang="zh-Hans">现代 XMPP 聊天客户端</shortdesc>
+  <shortdesc xml:lang="ru">Современный чат-клиент на XMPP</shortdesc>
+  <shortdesc xml:lang="ro">Client XMPP de discuții modern</shortdesc>
+  <shortdesc xml:lang="pt">Moderno cliente de chat XMPP</shortdesc>
+  <shortdesc xml:lang="pl">Nowoczesny komunikator XMPP</shortdesc>
+  <shortdesc xml:lang="nl">Moderne XMPP-chatcliënt</shortdesc>
+  <shortdesc xml:lang="nb">Moderne XMPP-sludreklient</shortdesc>
+  <shortdesc xml:lang="lb">Modernen XMPP Chat Client</shortdesc>
+  <shortdesc xml:lang="ja">現代的な XMPP チャット クライアント</shortdesc>
+  <shortdesc xml:lang="it">Client di chat moderno per XMPP</shortdesc>
+  <shortdesc xml:lang="hu">Modern XMPP Üzenetküldő</shortdesc>
+  <shortdesc xml:lang="gl">Cliente moderno para parolas XMPP</shortdesc>
+  <shortdesc xml:lang="fr">Client XMPP moderne</shortdesc>
+  <shortdesc xml:lang="eu">XMPP txat bezero modernoa</shortdesc>
+  <shortdesc xml:lang="es">Cliente de XMPP moderno</shortdesc>
+  <shortdesc xml:lang="de">Moderner XMPP Chat Client</shortdesc>
+  <shortdesc xml:lang="ar">تطبيق حديث للدردشة عبر XMPP</shortdesc>
   <description xml:lang="en">
-    Dino is an instant messaging client for the
-    Jabber/XMPP network, providing a unique and modern user experience
-    based on the latest technology from the GNOME project.
+    Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable Jabber/XMPP experience while having your privacy in mind.
+    It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features such as read receipts and typing notifications.
+    Dino fetches history from the server and synchronizes messages with other devices.
   </description>
-
-  <homepage rdf:resource="https://dino.im/" />
-  <bug-database rdf:resource="https://github.com/dino/dino/issues" />
-  <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
+  <description xml:lang="zh-Hans">
+    Dino 是一个现代的开源聊天桌面客户端。它致力于提供一个清爽又可靠的 Jabber/XMPP 体验，同时又保护您的隐私。
+    它支持 OMEMO 和 OpenPGP 端对端加密并允许配置隐私相关的特性比如已读回执和输入提醒。
+    Dino 从服务器获取消息并和其他设备同步。
+  </description>
+  <description xml:lang="ru">
+    Dino - это современный клиент для чатов с открытым исходным кодом, направленный на  надёжное и приватное использование Jabber/XMPP на персональных компьютерах.
+    Он поддерживает сквозное шифрование через OMEMO и OpenPGP и позволяет настраивать такие функции, как уведомления о прочтении и наборе сообщений.
+    Dino загружает историю с сервера и синхронизирует сообщения с другими устройствами.
+  </description>
+  <description xml:lang="ro">
+    Dino este un client de chat modern, cu sursă deschisă, pentru calculatoare. Se concentrează să furnizeze o experiență Jabber/XMPP clară și fiabilă, ținând cont de confidențialitatea dumneavoastră.
+    Suportă criptare de la un capăt la altul prin intermediul OMEMO și OpenPGP, și permite configurarea caracteristicilor legate de confidențialitate precum trimiterea notificărilor de primire și tastare.
+    Dino preia istoricul discuțiilor de pe server și sincronizează mesajele cu celelalte dispozitive.
+  </description>
+  <description xml:lang="pt">
+    Dino é um moderno chat de código aberto para desktop. Ele é focado em prover uma transparente e confiável experiência Jabber/XMPP, tendo em mente a sua privacidade.
+    Suporte criptografia ponta a ponta com OMEMO e OpenPGP e permite configurar privacidade—características relacionadas às notificações de leitura, recebimento e escrita.
+    Dino obtém o histórico do servidor e sincroniza mensagens com outros dispositivos.
+  </description>
+  <description xml:lang="pl">
+    Dino jest nowoczesnym, otwartym komunikatorem. Skupia się na prostej obsłudze sieci Jabber/XMPP dbając o twoją prywatność.
+    Dino obsługuje szyfrowanie end-to-end za pomocą OMEMO i OpenPGP, a także daje kontrolę nad funkcjami wpływającymi na prywatność, takimi jak powiadomienia o pisaniu czy odczytaniu wiadomości.
+    Dino pobiera historię rozmów z serwera i synchronizuje wiadomości z innymi urządzeniami.
+  </description>
+  <description xml:lang="nl">
+    Dino is een moderne, vrije chattoepassing voor uw bureaublad. Ze biedt een eenvoudige en betrouwbare Jabber/XMPP-ervaring, met uw privacy in het achterhoofd.
+    Ze ondersteunt eind-tot-eind-versleuteling met OMEMO en OpenPGP, en staat u toe privacy-gerelateerde functies, zoals leesbevestigingen en typmeldingen, in te stellen.
+    Dino haalt de geschiedenis op van de server en synchroniseert berichten met andere apparaten.
+  </description>
+  <description xml:lang="nb">
+    Dino er en moderne friporg-sludringsklient for skrivebordet. Det fokuserer på rask og pålitelig XMPP-opplevelse, samtidig som det hegner om personvernet.
+    Det støtter ende-til-ende -kryptering med OMEMO og OpenPGP, og tillater oppsett av personvernsrelaterte funksjoner som meldingskvitteringer og skrivevarsling.
+    Dino henter historikk fra tjeneren og synkroniserer meldinger med andre enheter.
+  </description>
+  <description xml:lang="lb">
+    Dino ass e modernen, quell-offene Chat Client fir den Desktop. Hien biet eng opgeraumt a robust Jabber/XMPP Erfarung a leet ee Schwéierpunkt op Privatsphär.
+    Hien ënnerstëtz Enn-zu-Enn Verschlësselung mat OMEMO an OpenPGP an enthält Privatsphäre-Astellungen zu Liesbestätegungen an Tipp-Benoriichtegungen.
+    Dino rifft  Gespréichverläf vum Server of a synchroniséiert Noriichte mat anere Geräter.
+  </description>
+  <description xml:lang="it">
+    Dino è un client di chat per il desktop, moderno e open-source. Si concentra nel fornire un'esperienza Jabber/XMPP pulita e affidabile tenendo presente la tua privacy.
+    Support la crittografia end-to-end tramite OMEMO e OpenPGP e permette di configurare le funzioni relative alla privacy come le ricevute di lettura e le notifiche di digitazione.
+    Dino recupera la cronologia dal server e sincronizza i messaggi con gli altri dispositivi.
+  </description>
+  <description xml:lang="hu">
+    A Dino egy modern, nyílt forráskódú üzenetküldő alkalmazás asztali rendszerekre, ami a hangsúlyt a letisztult és megbízható Jabber/XMPP élményre helyezi, miközben a magánszféra megőrzését is fontosnak tartja.
+    Támogatja a végponttól-végpontig titkosítást az OMEMO és az OpenPGP által, és magánszférához kötődő beállítási lehetőségeket is biztosít, mint például a kézbesítési, vagy gépelési értesítések küldése.
+    A Dino lekéri a chat előzményeket a szerverről, és szinkronizálja az üzeneteket a többi eszközzel.
+  </description>
+  <description xml:lang="gl">
+    Dino é un cliente moderno e de código aberto para o escritorio. Orientado a fornecer unha experiencia Jabber/XMPP limpa e fiábel tendo a privacidade e seguranza presentes.
+    Suporta o cifrado de punto-a-punto con OMEMO e OpenPGP e permite configurar trazos orientados á privacidade tales coma confirmación de lectura e notificacións de escritura.
+    Dino obtén o histórico dende o servidor e sincroniza as mensaxes con outros dispositivos.
+  </description>
+  <description xml:lang="fr">
+    Dino est un client de chat libre et moderne pour le bureau. Il tente de fournir une expérience Jabber/XMPP simple et fiable tout en ayant toujours à l’esprit votre vie privée.
+    Il prend en charge le chiffrement de bout en bout avec OMEMO et OpenPGP et permet de configurer les fonctions liées à la vie privée telles que l’accusé de réception et les notifications de frappe.
+    Dino récupère l’historique du serveur et synchronise les messages avec d'autres appareils.
+  </description>
+  <description xml:lang="fi">
+    Dino on nykyaikainen avoimen lähdekoodin jutteluohjelma työpöydälle. Se keskittyy tarjoamaan selkeän ja luotettavan Jabber/XMPP-kokemuksen unohtamatta yksityisyyttäsi.
+    Se tukee päästä päähän -salausta OMEMO:n ja OpenPGP:n avulla ja  mahdollistaa yksityisyyteen liittyvien ominaisuuksien, kuten lukukuittausten ja kirjoitusilmoitusten asetusten määrittämisen.
+    Dino hakee historian palvelimelta ja synkronisoi viestit muiden laitteiden kanssa.
+  </description>
+  <description xml:lang="eu">
+    Dino mahaigainerako iturburu irekiko txat bezero moderno bat da. Jabber/XMPP esperientzia garbi eta fidagarri bat ematen du zure pribatutasuna kontuan hartzeaz gain.
+    Amaieratik amaierarako enkriptazioa onartzen du OMEMO eta OpenPGPrekin eta pribatutasun ezaugarriak konfiguratzea baimentzen du irakurtze markak eta idazketa jakinarazpenak bezala.
+    Dinok zerbitzaritik hartzen du historia eta beste gailuekin mezuak sinkronizatzen ditu.
+  </description>
+  <description xml:lang="es">
+    Dino es un cliente de mensajería moderno y libre para escritorio. Está enfocado en proveer una experiencia Jabber/XMPP limpia y confiable teniendo tu privacidad en mente.
+    Soporta cifrado de extremo a extremo a través de OMEMO y OpenPGP y permite configurar las características relacionadas con la privacidad, como confirmaciones de lectura y notificaciones de escritura.
+    Dino recupera los mensajes desde el servidor y sincroniza los mensajes con otros dispositivos.
+  </description>
+  <description xml:lang="de">
+    Dino ist ein moderner, quelloffener Chat Client. Er bietet eine aufgeräumte und robuste Jabber/XMPP Erfahrung und legt einen Schwerpunkt auf Privatsphäre.
+    Er unterstützt Ende-zu-Ende Verschlüsselung mit OMEMO und OpenPGP und enthält Privatsphäre-Einstellungen zu Lesebestätigungen und Tippbenachrichtigungen.
+    Dino ruft Gesprächsverläufe vom Server ab und synchronisiert Nachrichten mit anderen Geräten.
+  </description>
+  <description xml:lang="ca">
+    Dino és un client de xat lliure i modern per a l'escriptori. Està centrat en proveir una experiència neta i fiable de Jabber/XMPP, sempre tenint en compte la vostra privacitat.
+    Implementa xifratge punt a punt amb OMEMO i OpenPGP, i permet configurar funcionalitats relacionades amb la privacitat com per exemple rebuts de lectura i notificacions d'escriptura.
+    Dino recupera l'historial del servidor i sincronitza els missatges amb altres dispositius.
+  </description>
+  <description xml:lang="ar">
+    دينو برنامج حديث ومفتوح المصدر للدردشة صُمّم لسطح المكتب. ويُركّز علي تقديم تجربة نظيفة وموثوق منها لجابر/XMPP مع أخذ خصوصيتكم بعين الإعتبار.
+    وهو يدعم التشفير بواسطة OMEMO و OpenPGP يسمح بإعداد ميزات الخصوصية كالإيصالات المقروءة والإخطارات عند الكتابة.
+    يقوم دينو بجلب السِجلّ مِن السيرفر ثم يُزامِن الرسائل مع الأجهزة الأخرى.
+  </description>
+  <homepage rdf:resource="https://dino.im/"/>
+  <wiki rdf:resource="https://github.com/dino/dino/wiki"/>
+  <bug-database rdf:resource="https://github.com/dino/dino/issues"/>
+  <category rdf:resource="http://api.gnome.org/doap-extensions#apps"/>
+  <license rdf:resource="http://usefulinc.com/doap/licenses/gplv3"/>
   <programming-language>Vala</programming-language>
-
+  <os>Linux</os>
+  <os>FreeBSD</os>
+  <repository>
+    <GitRepository>
+      <location rdf:resource="https://github.com/dino/dino.git"/>
+      <browse rdf:resource="https://github.com/dino/dino/"/>
+    </GitRepository>
+  </repository>
+  <implements rdf:resource="https://xmpp.org/rfcs/rfc6120.html"/>
+  <implements rdf:resource="https://xmpp.org/rfcs/rfc6121.html"/>
+  <implements rdf:resource="https://xmpp.org/rfcs/rfc6122.html"/>
+  <implements rdf:resource="https://xmpp.org/rfcs/rfc7590.html"/>
+  <software xmlns="https://linkmauve.fr/ns/xmpp-doap#">
+    <Client>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0004.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0027.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0030.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0045.html"/>
+          <status>partial</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0049.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0054.html"/>
+          <status>partial</status>
+          <note>Only for viewing avatars</note>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0060.html"/>
+          <status>partial</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0066.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0077.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0082.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0084.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0085.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0115.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0163.html"/>
+          <status>partial</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0184.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0191.html"/>
+          <status>partial</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0198.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0199.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0203.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0280.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0313.html"/>
+          <status>partial</status>
+          <note>Not for MUCs</note>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0333.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0363.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0368.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0380.html"/>
+          <status>partial</status>
+          <note>Only for outgoing messages</note>
+        </SupportedXep>
+      </supports>
+      <supports>
+        <SupportedXep>
+          <xep rdf:resource="https://xmpp.org/extensions/xep-0384.html"/>
+          <status>complete</status>
+        </SupportedXep>
+      </supports>
+    </Client>
+  </software>
 </Project>
