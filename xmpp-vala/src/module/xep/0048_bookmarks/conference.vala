@@ -36,7 +36,7 @@ public class Conference : Object {
     public string? nick {
         get {
             StanzaNode? nick_node = stanza_node.get_subnode(NODE_NICK);
-            return nick_node == null? null : nick_node.get_string_content();
+            return nick_node == null ? null : nick_node.get_string_content();
         }
         set {
             StanzaNode? nick_node = stanza_node.get_subnode(NODE_NICK);
@@ -56,7 +56,7 @@ public class Conference : Object {
     public string? password {
         get {
             StanzaNode? password_node = stanza_node.get_subnode(NODE_PASSWORD);
-            return password_node == null? null : password_node.get_string_content();
+            return password_node == null ? null : password_node.get_string_content();
         }
         set {
             StanzaNode? password_node = stanza_node.get_subnode(NODE_PASSWORD);

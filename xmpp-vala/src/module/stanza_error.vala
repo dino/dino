@@ -82,14 +82,17 @@ namespace Xmpp {
         public ErrorStanza.bad_request(string? human_readable = null) {
             this.build(TYPE_MODIFY, CONDITION_BAD_REQUEST, human_readable, null);
         }
-        public ErrorStanza.feature_not_implemented(StanzaNode? application_condition = null) {
-            this.build(TYPE_MODIFY, CONDITION_FEATURE_NOT_IMPLEMENTED, null, application_condition);
+        public ErrorStanza.feature_not_implemented(string? human_readable = null) {
+            this.build(TYPE_MODIFY, CONDITION_FEATURE_NOT_IMPLEMENTED, human_readable, null);
         }
         public ErrorStanza.item_not_found(StanzaNode? application_condition = null) {
             this.build(TYPE_CANCEL, CONDITION_ITEM_NOT_FOUND, null, application_condition);
         }
         public ErrorStanza.not_acceptable(string? human_readable = null) {
             this.build(TYPE_MODIFY, CONDITION_NOT_ACCEPTABLE, human_readable, null);
+        }
+        public ErrorStanza.not_allowed(string? human_readable = null) {
+            this.build(TYPE_CANCEL, CONDITION_NOT_ALLOWED, human_readable, null);
         }
         public ErrorStanza.service_unavailable() {
             this.build(TYPE_CANCEL, CONDITION_SERVICE_UNAVAILABLE, null, null);

@@ -53,6 +53,7 @@ public class FileTransfer : Object {
     }
     public string path { get; set; }
     public string? mime_type { get; set; }
+    // TODO(hrxi): expand to 64 bit
     public int size { get; set; }
 
     public State state { get; set; }
