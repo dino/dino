@@ -37,7 +37,7 @@ public class Module : XmppStreamModule, Iq.Handler {
                 stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, new ErrorStanza.not_acceptable("unexpected IBB connection")));
                 return;
             }
-            if (conn.state != WAITING_FOR_CONNECT) {
+            if (conn.state != Connection.State.WAITING_FOR_CONNECT) {
                 stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, new ErrorStanza.bad_request("IBB open for already open connection")));
                 return;
             }
@@ -212,7 +212,7 @@ public class Connection : IOStream {
                 }
                 return read;
             }
-            if (state == DISCONNECTED) {
+            if (state == Connection.State.DISCONNECTED) {
                 return 0;
             }
             set_read_callback(read_async.callback, cancellable, io_priority);
@@ -221,7 +221,7 @@ public class Connection : IOStream {
     }
 
     public async ssize_t write_async(uint8[]? buffer, int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
-        while (state == WAITING_FOR_CONNECT || state == CONNECTING) {
+        while (state == State.WAITING_FOR_CONNECT || state == State.CONNECTING) {
             if (cancellable != null) {
                 cancellable.set_error_if_cancelled();
             }
@@ -229,7 +229,7 @@ public class Connection : IOStream {
             yield;
         }
         throw_if_closed();
-        assert(state == CONNECTED);
+        assert(state == State.CONNECTED);
         // TODO(hrxi): merging?
         int seq = local_seq;
         local_seq = (local_seq + 1) % SEQ_MODULUS;
@@ -293,28 +293,28 @@ public class Connection : IOStream {
     }
     delegate void OnClose(bool success);
     private bool close_impl(Cancellable? cancellable = null, OnClose? on_close = null) {
-        if (state == DISCONNECTING || state == DISCONNECTED || state == ERROR) {
+        if (state == State.DISCONNECTING || state == State.DISCONNECTED || state == State.ERROR) {
             on_close(true);
             return true;
         }
-        if (state == WAITING_FOR_CONNECT) {
-            state = DISCONNECTED;
+        if (state == State.WAITING_FOR_CONNECT) {
+            state = State.DISCONNECTED;
             stream.get_flag(Flag.IDENTITY).remove_connection(this);
             trigger_read_callback();
             on_close(true);
             return true;
         }
-        state = DISCONNECTING;
+        state = State.DISCONNECTING;
         StanzaNode close = new StanzaNode.build("close", NS_URI)
             .add_self_xmlns()
             .put_attribute("sid", sid);
         Iq.Stanza iq = new Iq.Stanza.set(close) { to=receiver_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-            assert(state == DISCONNECTING);
+            assert(state == State.DISCONNECTING);
             if (iq.is_error()) {
                 set_error("disconnecting failed");
             } else {
-                state = DISCONNECTED;
+                state = State.DISCONNECTED;
             }
             stream.get_flag(Flag.IDENTITY).remove_connection(this);
             trigger_read_callback();
@@ -340,12 +340,12 @@ public class Connection : IOStream {
 
             Iq.Stanza iq = new Iq.Stanza.set(open) { to=receiver_full_jid };
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-                if (conn.state != CONNECTING) {
-                    assert(conn.state != CONNECTED);
+                if (conn.state != State.CONNECTING) {
+                    assert(conn.state != State.CONNECTED);
                     return;
                 }
                 if (!iq.is_error()) {
-                    conn.state = CONNECTED;
+                    conn.state = State.CONNECTED;
                     stream.get_flag(Flag.IDENTITY).add_connection(conn);
                     conn.trigger_write_callback();
                 } else {
@@ -359,29 +359,29 @@ public class Connection : IOStream {
     }
 
     void throw_if_error() throws IOError {
-        if (state == ERROR) {
+        if (state == State.ERROR) {
             throw new IOError.FAILED(error);
         }
     }
 
     void throw_if_closed() throws IOError {
         throw_if_error();
-        if (state == DISCONNECTING || state == DISCONNECTED) {
+        if (state == State.DISCONNECTING || state == State.DISCONNECTED) {
             throw new IOError.CLOSED("can't read/write on a closed connection");
         }
     }
 
     void set_error(string error) {
-        if (state != WAITING_FOR_CONNECT && state != DISCONNECTING && state != DISCONNECTED && state != ERROR) {
+        if (state != State.WAITING_FOR_CONNECT && state != State.DISCONNECTING && state != State.DISCONNECTED && state != State.ERROR) {
             close_async.begin();
         }
-        state = ERROR;
+        state = State.ERROR;
         this.error = error;
         stream.get_flag(Flag.IDENTITY).remove_connection(this);
     }
 
     public void handle_open(XmppStream stream, StanzaNode open, Iq.Stanza iq) {
-        assert(state == WAITING_FOR_CONNECT);
+        assert(state == State.WAITING_FOR_CONNECT);
         int block_size = open.get_attribute_int("block-size");
         string? stanza = open.get_attribute("stanza");
         if (block_size < 0 || (stanza != null && stanza != "iq" && stanza != "message")) {
@@ -400,12 +400,12 @@ public class Connection : IOStream {
             return;
         }
         this.block_size = block_size;
-        state = CONNECTED;
+        state = State.CONNECTED;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
         trigger_write_callback();
     }
     public void handle_data(XmppStream stream, StanzaNode data, Iq.Stanza iq) {
-        assert(state == CONNECTED);
+        assert(state == State.CONNECTED);
         if (input_closed) {
             set_error("unexpected data");
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, new ErrorStanza.not_allowed("unexpected data")));
@@ -434,12 +434,12 @@ public class Connection : IOStream {
         }
     }
     public void handle_close(XmppStream stream, StanzaNode close, Iq.Stanza iq) {
-        assert(state == CONNECTED);
+        assert(state == State.CONNECTED);
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
         stream.get_flag(Flag.IDENTITY).remove_connection(this);
         input_closed = true;
         output_closed = true;
-        state = DISCONNECTED;
+        state = State.DISCONNECTED;
 
         trigger_read_callback();
     }

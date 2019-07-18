@@ -82,7 +82,10 @@ public class JingleFileSender : FileSender, Object {
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return false;
 
-        foreach (Jid full_jid in stream.get_flag(Presence.Flag.IDENTITY).get_resources(conversation.counterpart)) {
+        Gee.List<Jid>? resources = stream.get_flag(Presence.Flag.IDENTITY).get_resources(conversation.counterpart);
+        if (resources == null) return false;
+
+        foreach (Jid full_jid in resources) {
             if (stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
                 return true;
             }
@@ -91,6 +94,8 @@ public class JingleFileSender : FileSender, Object {
     }
 
     public bool can_send(Conversation conversation, FileTransfer file_transfer) {
+        if (conversation.encryption != Encryption.NONE) return false;
+
         XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream == null) return false;
 

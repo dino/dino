@@ -317,7 +317,7 @@ public class Session {
     public signal void accepted(XmppStream stream);
 
     public Session.initiate_sent(string sid, Type type, TransportParameters transport, Jid peer_full_jid, string content_name) {
-        this.state = INITIATE_SENT;
+        this.state = State.INITIATE_SENT;
         this.sid = sid;
         this.type_ = type;
         this.peer_full_jid = peer_full_jid;
@@ -327,7 +327,7 @@ public class Session {
     }
 
     public Session.initiate_received(string sid, Type type, TransportParameters? transport, Jid peer_full_jid, string content_name) {
-        this.state = INITIATE_RECEIVED;
+        this.state = State.INITIATE_RECEIVED;
         this.sid = sid;
         this.type_ = type;
         this.peer_full_jid = peer_full_jid;
@@ -339,7 +339,7 @@ public class Session {
     public void handle_iq_set(XmppStream stream, string action, StanzaNode jingle, Iq.Stanza iq) throws IqError {
         switch (action) {
             case "session-accept":
-                if (state != INITIATE_SENT) {
+                if (state != State.INITIATE_SENT) {
                     throw new IqError.OUT_OF_ORDER("got session-accept while not waiting for one");
                 }
                 handle_session_accept(stream, jingle, iq);
@@ -392,7 +392,7 @@ public class Session {
         conn = transport.create_transport_connection(stream, peer_full_jid, Role.INITIATOR);
         transport = null;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
-        state = ACTIVE;
+        state = State.ACTIVE;
         accepted(stream);
     }
     void handle_session_terminate(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
@@ -401,7 +401,7 @@ public class Session {
     }
 
     public void accept(XmppStream stream, StanzaNode description) {
-        if (state != INITIATE_RECEIVED) {
+        if (state != State.INITIATE_RECEIVED) {
             return; // TODO(hrxi): what to do?
         }
         StanzaNode jingle = new StanzaNode.build("jingle", NS_URI)
@@ -420,11 +420,11 @@ public class Session {
         conn = transport.create_transport_connection(stream, peer_full_jid, Role.RESPONDER);
         transport = null;
 
-        state = ACTIVE;
+        state = State.ACTIVE;
     }
 
     public void reject(XmppStream stream) {
-        if (state != INITIATE_RECEIVED) {
+        if (state != State.INITIATE_RECEIVED) {
             return; // TODO(hrxi): what to do?
         }
         StanzaNode reason = new StanzaNode.build("reason", NS_URI)
@@ -442,18 +442,18 @@ public class Session {
     }
 
     public void close_connection(XmppStream stream) {
-        if (state != ACTIVE) {
+        if (state != State.ACTIVE) {
             return; // TODO(hrxi): what to do?
         }
         conn.close();
     }
 
     public void terminate(XmppStream stream, StanzaNode reason) {
-        if (state != INITIATE_SENT && state != INITIATE_RECEIVED && state != ACTIVE) {
+        if (state != State.INITIATE_SENT && state != State.INITIATE_RECEIVED && state != State.ACTIVE) {
             // TODO(hrxi): what to do?
             return;
         }
-        if (state == ACTIVE) {
+        if (state == State.ACTIVE) {
             conn.close();
         }
 
@@ -465,7 +465,7 @@ public class Session {
         Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
 
-        state = ENDED;
+        state = State.ENDED;
         // Immediately remove the session from the open sessions as per the
         // XEP, don't wait for confirmation.
         stream.get_flag(Flag.IDENTITY).remove_session(sid);
