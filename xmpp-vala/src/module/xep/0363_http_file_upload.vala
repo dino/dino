@@ -6,6 +6,10 @@ namespace Xmpp.Xep.HttpFileUpload {
 private const string NS_URI = "urn:xmpp:http:upload";
 private const string NS_URI_0 = "urn:xmpp:http:upload:0";
 
+public errordomain HttpFileTransferError {
+    SLOT_REQUEST
+}
+
 public class Module : XmppStreamModule {
     public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0363_http_file_upload");
 
@@ -14,9 +18,15 @@ public class Module : XmppStreamModule {
 
     public delegate void OnSlotOk(XmppStream stream, string url_get, string url_put);
     public delegate void OnError(XmppStream stream, string error);
-    public void request_slot(XmppStream stream, string filename, int file_size, string? content_type, owned OnSlotOk listener, owned OnError error_listener) {
+    public struct SlotResult {
+        public string url_get { get; set; }
+        public string url_put { get; set; }
+    }
+    public async SlotResult request_slot(XmppStream stream, string filename, int file_size, string? content_type) throws HttpFileTransferError {
         Flag? flag = stream.get_flag(Flag.IDENTITY);
-        if (flag == null) return;
+        if (flag == null) {
+            throw new HttpFileTransferError.SLOT_REQUEST("No flag");
+        }
 
         StanzaNode? request_node = null;
         switch (flag.ns_ver) {
@@ -34,10 +44,17 @@ public class Module : XmppStreamModule {
                 }
                 break;
         }
+
+        SourceFunc callback = request_slot.callback;
+        var slot_result = SlotResult();
+
         Iq.Stanza iq = new Iq.Stanza.get(request_node) { to=flag.file_store_jid };
+
+        HttpFileTransferError? e = null;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
             if (iq.is_error()) {
-                error_listener(stream, "Error getting upload/download url (Error Iq)");
+                e = new HttpFileTransferError.SLOT_REQUEST("Error getting upload/download url (Error Iq)");
+                Idle.add((owned) callback);
                 return;
             }
             string? url_get = null, url_put = null;
@@ -49,10 +66,23 @@ public class Module : XmppStreamModule {
                 url_put = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":put");
             }
             if (url_get == null || url_put == null) {
-                error_listener(stream, "Error getting upload/download url");
+                e = new HttpFileTransferError.SLOT_REQUEST("Error getting upload/download url: %s".printf(iq.stanza.to_string()));
+                Idle.add((owned) callback);
+                return;
             }
-            listener(stream, url_get, url_put);
+
+            slot_result.url_get = url_get;
+            slot_result.url_put = url_put;
+
+            Idle.add((owned) callback);
         });
+        yield;
+
+        if (e != null) {
+            throw e;
+        }
+
+        return slot_result;
     }
 
     public override void attach(XmppStream stream) {

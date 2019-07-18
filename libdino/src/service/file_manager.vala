@@ -16,8 +16,9 @@ public class FileManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private Gee.List<FileSender> file_senders = new ArrayList<FileSender>();
-    public Gee.List<IncomingFileProcessor> incoming_processors = new ArrayList<IncomingFileProcessor>();
-    private Gee.List<OutgoingFileProcessor> outgoing_processors = new ArrayList<OutgoingFileProcessor>();
+    private Gee.List<FileEncryptor> file_encryptors = new ArrayList<FileEncryptor>();
+    private Gee.List<FileDecryptor> file_decryptors = new ArrayList<FileDecryptor>();
+    private Gee.List<FileProvider> file_providers = new ArrayList<FileProvider>();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
         FileManager m = new FileManager(stream_interactor, db);
@@ -32,6 +33,9 @@ public class FileManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         this.db = db;
         DirUtils.create_with_parents(get_storage_dir(), 0700);
+
+        this.add_provider(new JingleFileProvider(stream_interactor));
+        this.add_sender(new JingleFileSender(stream_interactor));
     }
 
     public async void send_file(string uri, Conversation conversation) {
@@ -43,6 +47,7 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.time = new DateTime.now_utc();
         file_transfer.local_time = new DateTime.now_utc();
         file_transfer.encryption = conversation.encryption;
+
         try {
             File file = File.new_for_path(uri);
             FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
@@ -50,26 +55,79 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.mime_type = file_info.get_content_type();
             file_transfer.size = (int)file_info.get_size();
             file_transfer.input_stream = yield file.read_async();
+
+            yield save_file(file_transfer);
+
+            file_transfer.persist(db);
+            received_file(file_transfer, conversation);
         } catch (Error e) {
             file_transfer.state = FileTransfer.State.FAILED;
+            warning("Error saving outgoing file: %s", e.message);
+            return;
         }
-        yield save_file(file_transfer);
 
-        file_transfer.persist(db);
+        try {
+            var file_meta = new FileMeta();
+            file_meta.size = file_transfer.size;
+            file_meta.mime_type = file_transfer.mime_type;
 
-        foreach (OutgoingFileProcessor processor in outgoing_processors) {
-            if (processor.can_process(conversation, file_transfer)) {
-                processor.process(conversation, file_transfer);
+            bool encrypted = false;
+            foreach (FileEncryptor file_encryptor in file_encryptors) {
+                if (file_encryptor.can_encrypt_file(conversation, file_transfer)) {
+                    file_meta = file_encryptor.encrypt_file(conversation, file_transfer);
+                    encrypted = true;
+                    break;
+                }
+            }
+            if (conversation.encryption != Encryption.NONE && !encrypted) {
+                throw new FileSendError.ENCRYPTION_FAILED("File was not encrypted");
+            }
+
+            FileSendData file_send_data = null;
+            foreach (FileSender file_sender in file_senders) {
+                if (file_sender.can_send(conversation, file_transfer)) {
+                    file_send_data = yield file_sender.prepare_send_file(conversation, file_transfer);
+                    break;
+                }
+            }
+
+            foreach (FileEncryptor file_encryptor in file_encryptors) {
+                if (file_encryptor.can_encrypt_file(conversation, file_transfer)) {
+                    file_send_data = file_encryptor.preprocess_send_file(conversation, file_transfer, file_send_data, file_meta);
+                    break;
+                }
+            }
+
+            bool sent = false;
+            foreach (FileSender file_sender in file_senders) {
+                if (file_sender.can_send(conversation, file_transfer)) {
+                    yield file_sender.send_file(conversation, file_transfer, file_send_data);
+                    sent = true;
+                    break;
+                }
+            }
+            if (!sent) {
+                throw new FileSendError.UPLOAD_FAILED("File was not sent");
+            }
+
+            conversation.last_active = file_transfer.time;
+        } catch (Error e) {
+            warning("Send file error: %s", e.message);
+            file_transfer.state = FileTransfer.State.FAILED;
+        }
+    }
+
+    public async void download_file(FileTransfer file_transfer) {
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
+
+        FileProvider? file_provider = null;
+        foreach (FileProvider fp in file_providers) {
+            if (file_transfer.provider == fp.get_id()) {
+                file_provider = fp;
             }
         }
 
-        foreach (FileSender file_sender in file_senders) {
-            if (file_sender.can_send(conversation, file_transfer)) {
-                file_sender.send_file(conversation, file_transfer);
-                break;
-            }
-        }
-        received_file(file_transfer, conversation);
+        yield download_file_internal(file_provider, file_transfer, conversation);
     }
 
     public bool is_upload_available(Conversation conversation) {
@@ -117,24 +175,28 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     public void add_provider(FileProvider file_provider) {
-        file_provider.file_incoming.connect((file_transfer, conversation) => { handle_incoming_file.begin(file_provider, file_transfer, conversation); });
-    }
-
-    public void add_sender(FileSender file_sender) {
-        // Order file_senders in reverse order of adding them -- HTTP is added
-        // later than Jingle.
-        file_senders.insert(0, file_sender);
-        file_sender.upload_available.connect((account) => {
-            upload_available(account);
+        file_providers.add(file_provider);
+        file_provider.file_incoming.connect((info, from, time, local_time, conversation, receive_data, file_meta) => {
+            handle_incoming_file.begin(file_provider, info, from, time, local_time, conversation, receive_data, file_meta);
         });
     }
 
-    public void add_incoming_processor(IncomingFileProcessor processor) {
-        incoming_processors.add(processor);
+    public void add_sender(FileSender file_sender) {
+        file_senders.add(file_sender);
+        file_sender.upload_available.connect((account) => {
+            upload_available(account);
+        });
+        file_senders.sort((a, b) => {
+            return (int) (b.get_priority() - a.get_priority());
+        });
     }
 
-    public void add_outgoing_processor(OutgoingFileProcessor processor) {
-        outgoing_processors.add(processor);
+    public void add_file_encryptor(FileEncryptor encryptor) {
+        file_encryptors.add(encryptor);
+    }
+
+    public void add_file_decryptor(FileDecryptor decryptor) {
+        file_decryptors.add(decryptor);
     }
 
     public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
@@ -143,29 +205,124 @@ public class FileManager : StreamInteractionModule, Object {
         return file_transfer.direction == FileTransfer.DIRECTION_SENT || in_roster;
     }
 
-    private async void handle_incoming_file(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
-        if (!is_sender_trustworthy(file_transfer, conversation)) return;
+    private async FileMeta get_file_meta(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation, FileReceiveData receive_data_) throws FileReceiveError {
+        FileReceiveData receive_data = receive_data_;
+        FileMeta file_meta = file_provider.get_file_meta(file_transfer);
 
-        if (file_transfer.size == -1) {
-            yield file_provider.get_meta_info(file_transfer);
+        if (file_meta.size == -1) {
+            foreach (FileDecryptor file_decryptor in file_decryptors) {
+                if (file_decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
+                    receive_data = file_decryptor.prepare_get_meta_info(conversation, file_transfer, receive_data);
+                    break;
+                }
+            }
+
+            file_meta = yield file_provider.get_meta_info(file_transfer, receive_data, file_meta);
+
+            file_transfer.size = (int)file_meta.size;
+            file_transfer.file_name = file_meta.file_name;
+            file_transfer.mime_type = file_meta.mime_type;
         }
+        return file_meta;
+    }
 
-        if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
-            string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
+    private async void download_file_internal(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
+        try {
+            // Get meta info
+            FileReceiveData receive_data = file_provider.get_file_receive_data(file_transfer);
+            foreach (FileDecryptor file_decryptor in file_decryptors) {
+                if (file_decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
+                    receive_data = file_decryptor.prepare_get_meta_info(conversation, file_transfer, receive_data);
+                    break;
+                }
+            }
+            FileMeta file_meta = yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
+
+
+            InputStream? input_stream = null;
+
+            // Download and decrypt file
+            file_transfer.state = FileTransfer.State.IN_PROGRESS;
+
+            foreach (FileDecryptor file_decryptor in file_decryptors) {
+                if (file_decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
+                    file_meta = file_decryptor.prepare_download_file(conversation, file_transfer, receive_data, file_meta);
+                    break;
+                }
+            }
+
+            input_stream = yield file_provider.download(file_transfer, receive_data, file_meta);
+
+            foreach (FileDecryptor file_decryptor in file_decryptors) {
+                if (file_decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
+                    input_stream = yield file_decryptor.decrypt_file(input_stream, conversation, file_transfer, receive_data);
+                    break;
+                }
+            }
+
+            // Save file
+            string filename = Random.next_int().to_string("%x") + "_" + file_meta.file_name;
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
-            yield file_provider.download(file_transfer, file);
 
-            try {
-                FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
-                file_transfer.mime_type = file_info.get_content_type();
-            } catch (Error e) { }
+            if (file_transfer.encryption == Encryption.PGP || file.get_path().has_suffix(".pgp")) {
+                file = File.new_for_path(file.get_path().substring(0, file.get_path().length - 4));
+            }
 
-            file_transfer.persist(db);
-            received_file(file_transfer, conversation);
+            OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
+            yield os.splice_async(input_stream, 0);
+            os.close();
+            file_transfer.size = (int)file_meta.size;
+            file_transfer.file_name = file_meta.file_name;
+            file_transfer.path = file.get_basename();
+            file_transfer.input_stream = yield file.read_async();
+
+            FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
+            file_transfer.mime_type = file_info.get_content_type();
+
+            file_transfer.state = FileTransfer.State.COMPLETE;
+        } catch (Error e) {
+            warning("Error downloading file: %s", e.message);
+            file_transfer.state = FileTransfer.State.FAILED;
         }
     }
 
-    private async void save_file(FileTransfer file_transfer) {
+    private async void handle_incoming_file(FileProvider file_provider, string info, Jid from, DateTime time, DateTime local_time, Conversation conversation, FileReceiveData receive_data, FileMeta file_meta) {
+        FileTransfer file_transfer = new FileTransfer();
+        file_transfer.account = conversation.account;
+        file_transfer.direction = from.bare_jid.equals(conversation.account.bare_jid) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
+        file_transfer.counterpart = file_transfer.direction == FileTransfer.DIRECTION_RECEIVED ? from : conversation.counterpart;
+        if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+            file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
+        } else {
+            file_transfer.ourpart = conversation.account.bare_jid.with_resource(conversation.account.resourcepart);
+        }
+        file_transfer.time = time;
+        file_transfer.local_time = local_time;
+        file_transfer.provider = file_provider.get_id();
+        file_transfer.file_name = file_meta.file_name;
+        file_transfer.size = (int)file_meta.size;
+        file_transfer.info = info;
+
+        file_transfer.persist(db);
+
+        if (is_sender_trustworthy(file_transfer, conversation)) {
+            try {
+                yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
+
+                if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
+                    yield download_file_internal(file_provider, file_transfer, conversation);
+                }
+            } catch (Error e) {
+                warning("Error downloading file: %s", e.message);
+                file_transfer.state = FileTransfer.State.FAILED;
+            }
+        }
+
+        conversation.last_active = file_transfer.time;
+        received_file(file_transfer, conversation);
+    }
+
+    private async void save_file(FileTransfer file_transfer) throws FileSendError {
         try {
             string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
@@ -176,33 +333,84 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.path = filename;
             file_transfer.input_stream = yield file.read_async();
         } catch (Error e) {
-            file_transfer.state = FileTransfer.State.FAILED;
+            throw new FileSendError.SAVE_FAILED("Saving file error: %s".printf(e.message));
         }
     }
+}
 
+public errordomain FileSendError {
+    ENCRYPTION_FAILED,
+    UPLOAD_FAILED,
+    SAVE_FAILED
+}
+
+public errordomain FileReceiveError {
+    GET_METADATA_FAILED,
+    DECRYPTION_FAILED,
+    DOWNLOAD_FAILED
+}
+
+public class FileMeta {
+    public int64 size = -1;
+    public string? mime_type = null;
+    public string? file_name = null;
+    public Encryption encryption = Encryption.NONE;
+}
+
+public class HttpFileMeta : FileMeta {
+    public Message message;
+}
+
+public class FileSendData { }
+
+public class HttpFileSendData : FileSendData {
+    public string url_down { get; set; }
+    public string url_up { get; set; }
+
+    public bool encrypt_message { get; set; default=true; }
+}
+
+public class FileReceiveData { }
+
+public class HttpFileReceiveData : FileReceiveData {
+    public string url { get; set; }
 }
 
 public interface FileProvider : Object {
-    public signal void file_incoming(FileTransfer file_transfer, Conversation conversation);
-    public abstract async void get_meta_info(FileTransfer file_transfer);
-    public abstract async void download(FileTransfer file_transfer, File file);
+    public signal void file_incoming(string info, Jid from, DateTime time, DateTime local_time, Conversation conversation, FileReceiveData receive_data, FileMeta file_meta);
+
+    public abstract FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError;
+    public abstract FileReceiveData? get_file_receive_data(FileTransfer file_transfer);
+
+    public abstract async FileMeta get_meta_info(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError;
+    public abstract async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError;
+
+    public abstract int get_id();
 }
 
 public interface FileSender : Object {
     public signal void upload_available(Account account);
+
     public abstract bool is_upload_available(Conversation conversation);
     public abstract bool can_send(Conversation conversation, FileTransfer file_transfer);
-    public abstract void send_file(Conversation conversation, FileTransfer file_transfer);
+    public abstract async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer) throws FileSendError;
+    public abstract async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data) throws FileSendError;
+
+    public abstract int get_id();
+    public abstract float get_priority();
 }
 
-public interface IncomingFileProcessor : Object {
-    public abstract bool can_process(FileTransfer file_transfer);
-    public abstract void process(FileTransfer file_transfer);
+public interface FileEncryptor : Object {
+    public abstract bool can_encrypt_file(Conversation conversation, FileTransfer file_transfer);
+    public abstract FileMeta encrypt_file(Conversation conversation, FileTransfer file_transfer) throws FileSendError;
+    public abstract FileSendData? preprocess_send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data, FileMeta file_meta) throws FileSendError;
 }
 
-public interface OutgoingFileProcessor : Object {
-    public abstract bool can_process(Conversation conversation, FileTransfer file_transfer);
-    public abstract void process(Conversation conversation, FileTransfer file_transfer);
+public interface FileDecryptor : Object {
+    public abstract FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data);
+    public abstract FileMeta prepare_download_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta);
+    public abstract bool can_decrypt_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data);
+    public abstract async InputStream decrypt_file(InputStream encrypted_stream, Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) throws FileReceiveError;
 }
 
 }

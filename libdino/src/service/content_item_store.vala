@@ -257,18 +257,24 @@ public class FileItem : ContentItem {
 
     public FileItem(FileTransfer file_transfer, int id) {
         Jid jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? file_transfer.account.bare_jid.with_resource(file_transfer.account.resourcepart) : file_transfer.counterpart;
-        base(id, TYPE, jid, file_transfer.local_time, file_transfer.time, file_transfer.encryption, file_to_message_state(file_transfer.state));
+        Entities.Message.Marked mark = Entities.Message.Marked.NONE;
+        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+            mark = file_to_message_state(file_transfer.state);
+        }
+        base(id, TYPE, jid, file_transfer.local_time, file_transfer.time, file_transfer.encryption, mark);
 
         this.file_transfer = file_transfer;
 
-        file_transfer.notify["state"].connect_after(() => {
-            this.mark = file_to_message_state(file_transfer.state);
-        });
+        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+            file_transfer.notify["state"].connect_after(() => {
+                this.mark = file_to_message_state(file_transfer.state);
+            });
+        }
     }
 
     private static Entities.Message.Marked file_to_message_state(FileTransfer.State state) {
         switch (state) {
-            case FileTransfer.State.IN_PROCESS:
+            case FileTransfer.State.IN_PROGRESS:
                 return Entities.Message.Marked.UNSENT;
             case FileTransfer.State.COMPLETE:
                 return Entities.Message.Marked.NONE;

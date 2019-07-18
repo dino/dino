@@ -62,11 +62,13 @@ public class Module : Jingle.ContentType, XmppStreamModule {
 }
 
 public class Parameters : Jingle.ContentParameters, Object {
+
     Module parent;
     string? media_type;
     public string? name { get; private set; }
     public int64 size { get; private set; }
     public StanzaNode original_description { get; private set; }
+
     public Parameters(Module parent, StanzaNode original_description, string? media_type, string? name, int64? size) {
         this.parent = parent;
         this.original_description = original_description;
@@ -74,6 +76,7 @@ public class Parameters : Jingle.ContentParameters, Object {
         this.name = name;
         this.size = size;
     }
+
     public static Parameters parse(Module parent, StanzaNode description) throws Jingle.IqError {
         Gee.List<StanzaNode> files = description.get_subnodes("file", NS_URI);
         if (files.size != 1) {
@@ -98,7 +101,8 @@ public class Parameters : Jingle.ContentParameters, Object {
 
         return new Parameters(parent, description, media_type, name, size);
     }
-    void on_session_initiate(XmppStream stream, Jingle.Session session) {
+
+    public void on_session_initiate(XmppStream stream, Jingle.Session session) {
         parent.file_incoming(stream, new FileTransfer(session, this));
     }
 }
@@ -122,6 +126,7 @@ public class FileTransfer : Object {
         session.accept(stream, parameters.original_description);
         session.conn.output_stream.close();
     }
+
     public void reject(XmppStream stream) {
         session.reject(stream);
     }

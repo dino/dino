@@ -11,7 +11,6 @@ public class ConversationSelector : ListBox {
     public signal void conversation_selected(Conversation conversation);
 
     private StreamInteractor stream_interactor;
-    private string[]? filter_values;
     private HashMap<Conversation, ConversationSelectorRow> rows = new HashMap<Conversation, ConversationSelectorRow>(Conversation.hash_func, Conversation.equals_func);
 
     public ConversationSelector init(StreamInteractor stream_interactor) {
@@ -19,8 +18,7 @@ public class ConversationSelector : ListBox {
 
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(add_conversation);
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(remove_conversation);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(on_message_received);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_received);
+        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(on_content_item_received);
         Timeout.add_seconds(60, () => {
             foreach (ConversationSelectorRow row in rows.values) row.update();
             return true;
@@ -34,7 +32,6 @@ public class ConversationSelector : ListBox {
 
     construct {
         get_style_context().add_class("sidebar");
-        set_filter_func(filter);
         set_header_func(header);
         set_sort_func(sort);
 
@@ -54,14 +51,6 @@ public class ConversationSelector : ListBox {
         }
     }
 
-    public void set_filter_values(string[]? values) {
-        if (filter_values == values) {
-            return;
-        }
-        filter_values = values;
-        invalidate_filter();
-    }
-
     public void on_conversation_selected(Conversation conversation) {
         if (!rows.has_key(conversation)) {
             add_conversation(conversation);
@@ -70,7 +59,7 @@ public class ConversationSelector : ListBox {
         this.select_row(rows[conversation]);
     }
 
-    private void on_message_received(Entities.Message message, Conversation conversation) {
+    private void on_content_item_received(ContentItem item, Conversation conversation) {
         if (rows.has_key(conversation)) {
             invalidate_sort();
         }
@@ -126,21 +115,6 @@ public class ConversationSelector : ListBox {
         } else if (row.get_header() != null && before_row == null) {
             row.set_header(null);
         }
-    }
-
-    private bool filter(ListBoxRow r) {
-        ConversationSelectorRow? row = r as ConversationSelectorRow;
-        if (row != null) {
-            if (filter_values != null && filter_values.length != 0) {
-                foreach (string filter in filter_values) {
-                    if (!(Util.get_conversation_display_name(stream_interactor, row.conversation).down().contains(filter.down()) ||
-                            row.conversation.counterpart.to_string().down().contains(filter.down()))) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
     }
 
     private int sort(ListBoxRow row1, ListBoxRow row2) {

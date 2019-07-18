@@ -111,6 +111,7 @@ SOURCES
     src/ui/conversation_summary/conversation_item_skeleton.vala
     src/ui/conversation_summary/conversation_view.vala
     src/ui/conversation_summary/date_separator_populator.vala
+    src/ui/conversation_summary/file_widget.vala
     src/ui/conversation_summary/subscription_notification.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala

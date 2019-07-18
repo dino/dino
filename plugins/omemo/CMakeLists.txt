@@ -34,8 +34,8 @@ SOURCES
     src/register_plugin.vala
     src/trust_level.vala
 
-    src/file_transfer/file_provider.vala
-    src/file_transfer/file_sender.vala
+    src/file_transfer/file_decryptor.vala
+    src/file_transfer/file_encryptor.vala
 
     src/logic/database.vala
     src/logic/encrypt_state.vala
