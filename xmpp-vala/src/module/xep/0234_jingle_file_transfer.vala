@@ -162,7 +162,7 @@ public class FileTransfer : Object {
         this.stream = new FileTransferInputStream(session.conn.input_stream, parameters.size);
     }
 
-    public void accept(XmppStream stream) {
+    public void accept(XmppStream stream) throws IOError {
         session.accept(stream, parameters.original_description);
         session.conn.output_stream.close();
     }

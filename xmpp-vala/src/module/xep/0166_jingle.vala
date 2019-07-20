@@ -11,7 +11,9 @@ public errordomain IqError {
     BAD_REQUEST,
     NOT_ACCEPTABLE,
     NOT_IMPLEMENTED,
+    UNSUPPORTED_INFO,
     OUT_OF_ORDER,
+    RESOURCE_CONSTRAINT,
 }
 
 void send_iq_error(IqError iq_error, XmppStream stream, Iq.Stanza iq) {
@@ -22,9 +24,14 @@ void send_iq_error(IqError iq_error, XmppStream stream, Iq.Stanza iq) {
         error = new ErrorStanza.not_acceptable(iq_error.message);
     } else if (iq_error is IqError.NOT_IMPLEMENTED) {
         error = new ErrorStanza.feature_not_implemented(iq_error.message);
+    } else if (iq_error is IqError.UNSUPPORTED_INFO) {
+        StanzaNode unsupported_info = new StanzaNode.build("unsupported-info", ERROR_NS_URI).add_self_xmlns();
+        error = new ErrorStanza.build(ErrorStanza.TYPE_CANCEL, ErrorStanza.CONDITION_FEATURE_NOT_IMPLEMENTED, iq_error.message, unsupported_info);
     } else if (iq_error is IqError.OUT_OF_ORDER) {
         StanzaNode out_of_order = new StanzaNode.build("out-of-order", ERROR_NS_URI).add_self_xmlns();
         error = new ErrorStanza.build(ErrorStanza.TYPE_MODIFY, ErrorStanza.CONDITION_UNEXPECTED_REQUEST, iq_error.message, out_of_order);
+    } else if (iq_error is IqError.RESOURCE_CONSTRAINT) {
+        error = new ErrorStanza.resource_constraint(iq_error.message);
     } else {
         assert_not_reached();
     }
@@ -40,7 +47,7 @@ public errordomain Error {
     TRANSPORT_ERROR,
 }
 
-StanzaNode get_single_node_anyns(StanzaNode parent, string node_name) throws IqError {
+StanzaNode? get_single_node_anyns(StanzaNode parent, string node_name) throws IqError {
     StanzaNode? result = null;
     foreach (StanzaNode child in parent.get_all_subnodes()) {
         if (child.name == node_name) {
@@ -50,10 +57,49 @@ StanzaNode get_single_node_anyns(StanzaNode parent, string node_name) throws IqE
             result = child;
         }
     }
-    if (result == null) {
-        throw new IqError.BAD_REQUEST(@"missing $(node_name) node");
-    }
     return result;
+}
+
+class ContentNode {
+    public Role creator;
+    public string name;
+    public StanzaNode? description;
+    public StanzaNode? transport;
+}
+
+ContentNode get_single_content_node(StanzaNode jingle) throws IqError {
+    Gee.List<StanzaNode> contents = jingle.get_subnodes("content");
+    if (contents.size == 0) {
+        throw new IqError.BAD_REQUEST("missing content node");
+    }
+    if (contents.size > 1) {
+        throw new IqError.NOT_IMPLEMENTED("can't process multiple content nodes");
+    }
+    StanzaNode content = contents[0];
+    string? creator_str = content.get_attribute("creator");
+    // Vala can't typecheck the ternary operator here.
+    Role? creator = null;
+    if (creator_str != null) {
+        creator = Role.parse(creator_str);
+    } else {
+        // TODO(hrxi): now, is the creator attribute optional or not (XEP-0166
+        // Jingle)?
+        creator = Role.INITIATOR;
+    }
+
+    string? name = content.get_attribute("name");
+    StanzaNode? description = get_single_node_anyns(content, "description");
+    StanzaNode? transport = get_single_node_anyns(content, "transport");
+    if (name == null || creator == null) {
+        throw new IqError.BAD_REQUEST("missing name or creator");
+    }
+
+    return new ContentNode() {
+        creator=creator,
+        name=name,
+        description=description,
+        transport=transport
+    };
 }
 
 public class Module : XmppStreamModule, Iq.Handler {
@@ -88,16 +134,21 @@ public class Module : XmppStreamModule, Iq.Handler {
         return transports[ns_uri];
     }
     public Transport? select_transport(XmppStream stream, TransportType type, Jid receiver_full_jid) {
+        Transport? result = null;
         foreach (Transport transport in transports.values) {
             if (transport.transport_type() != type) {
                 continue;
             }
-            // TODO(hrxi): prioritization
             if (transport.is_transport_available(stream, receiver_full_jid)) {
-                return transport;
+                if (result != null) {
+                    if (result.transport_priority() >= transport.transport_priority()) {
+                        continue;
+                    }
+                }
+                result = transport;
             }
         }
-        return null;
+        return result;
     }
 
     private bool is_jingle_available(XmppStream stream, Jid full_jid) {
@@ -121,8 +172,8 @@ public class Module : XmppStreamModule, Iq.Handler {
         if (my_jid == null) {
             throw new Error.GENERAL("Couldn't determine own JID");
         }
-        TransportParameters transport_params = transport.create_transport_parameters();
-        Session session = new Session.initiate_sent(random_uuid(), type, transport_params, receiver_full_jid, content_name, stream);
+        TransportParameters transport_params = transport.create_transport_parameters(stream, my_jid, receiver_full_jid);
+        Session session = new Session.initiate_sent(random_uuid(), type, transport_params, my_jid, receiver_full_jid, content_name, stream);
         StanzaNode content = new StanzaNode.build("content", NS_URI)
             .put_attribute("creator", "initiator")
             .put_attribute("name", content_name)
@@ -146,38 +197,31 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public void handle_session_initiate(XmppStream stream, string sid, StanzaNode jingle, Iq.Stanza iq) throws IqError {
-        Gee.List<StanzaNode> contents = jingle.get_subnodes("content");
-        if (contents.size == 0) {
-            throw new IqError.BAD_REQUEST("missing content node");
+        ContentNode content = get_single_content_node(jingle);
+        if (content.description == null || content.transport == null) {
+            throw new IqError.BAD_REQUEST("missing description or transport node");
         }
-        if (contents.size > 1) {
-            throw new IqError.NOT_IMPLEMENTED("can't process multiple content nodes");
+        Jid? my_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid;
+        if (my_jid == null) {
+            throw new IqError.RESOURCE_CONSTRAINT("Couldn't determine own JID");
         }
-        StanzaNode content = contents[0];
-        string? name = content.get_attribute("name");
-        StanzaNode description = get_single_node_anyns(content, "description");
-        StanzaNode transport_node = get_single_node_anyns(content, "transport");
-        if (name == null) {
-            throw new IqError.BAD_REQUEST("missing name");
-        }
-
-        Transport? transport = get_transport(transport_node.ns_uri);
+        Transport? transport = get_transport(content.transport.ns_uri);
         TransportParameters? transport_params = null;
         if (transport != null) {
-            transport_params = transport.parse_transport_parameters(transport_node);
+            transport_params = transport.parse_transport_parameters(stream, my_jid, iq.from, content.transport);
         } else {
             // terminate the session below
         }
 
-        ContentType? content_type = get_content_type(description.ns_uri);
+        ContentType? content_type = get_content_type(content.description.ns_uri);
         if (content_type == null) {
             // TODO(hrxi): how do we signal an unknown content type?
             throw new IqError.NOT_IMPLEMENTED("unknown content type");
         }
-        ContentParameters content_params = content_type.parse_content_parameters(description);
+        ContentParameters content_params = content_type.parse_content_parameters(content.description);
 
         TransportType type = content_type.content_type_transport_type();
-        Session session = new Session.initiate_received(sid, type, transport_params, iq.from, name, stream);
+        Session session = new Session.initiate_received(sid, type, transport_params, my_jid, iq.from, content.name, stream);
         stream.get_flag(Flag.IDENTITY).add_session(session);
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
 
@@ -254,15 +298,20 @@ public interface Transport : Object {
     public abstract string transport_ns_uri();
     public abstract bool is_transport_available(XmppStream stream, Jid full_jid);
     public abstract TransportType transport_type();
-    public abstract TransportParameters create_transport_parameters();
-    public abstract TransportParameters parse_transport_parameters(StanzaNode transport) throws IqError;
+    public abstract int transport_priority();
+    public abstract TransportParameters create_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid);
+    public abstract TransportParameters parse_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws IqError;
 }
 
+
+// Gets a null `stream` if connection setup was unsuccessful and another
+// transport method should be tried.
 public interface TransportParameters : Object {
     public abstract string transport_ns_uri();
     public abstract StanzaNode to_transport_stanza_node();
-    public abstract void update_transport(StanzaNode transport) throws IqError;
-    public abstract IOStream create_transport_connection(XmppStream stream, Jid peer_full_jid, Role role);
+    public abstract void on_transport_accept(StanzaNode transport) throws IqError;
+    public abstract void on_transport_info(StanzaNode transport) throws IqError;
+    public abstract void create_transport_connection(XmppStream stream, Session session);
 }
 
 public enum Role {
@@ -275,6 +324,14 @@ public enum Role {
             case RESPONDER: return "responder";
         }
         assert_not_reached();
+    }
+
+    public static Role parse(string role) throws IqError {
+        switch (role) {
+            case "initiator": return INITIATOR;
+            case "responder": return RESPONDER;
+        }
+        throw new IqError.BAD_REQUEST(@"invalid role $(role)");
     }
 }
 
@@ -290,11 +347,12 @@ public interface ContentParameters : Object {
 
 
 public class Session {
-    // INITIATE_SENT -> ACTIVE -> ENDED
-    // INITIATE_RECEIVED -> ACTIVE -> ENDED
+    // INITIATE_SENT -> CONNECTING -> ACTIVE -> ENDED
+    // INITIATE_RECEIVED -> CONNECTING -> ACTIVE -> ENDED
     public enum State {
         INITIATE_SENT,
         INITIATE_RECEIVED,
+        CONNECTING,
         ACTIVE,
         ENDED,
     }
@@ -303,38 +361,39 @@ public class Session {
 
     public string sid { get; private set; }
     public Type type_ { get; private set; }
+    public Jid local_full_jid { get; private set; }
     public Jid peer_full_jid { get; private set; }
+    public Role content_creator { get; private set; }
     public string content_name { get; private set; }
 
-    // INITIATE_SENT | INITIATE_RECEIVED
+    private Connection connection;
+    public IOStream conn { get { return connection; } }
+
+    // INITIATE_SENT | INITIATE_RECEIVED | CONNECTING
     TransportParameters? transport = null;
-
-    // ACTIVE
-    private Connection? connection;
-    public IOStream? conn { get { return connection; } }
-
-    // Only interesting in INITIATE_SENT.
-    // Signals that the session has been accepted by the peer.
-    public signal void accepted(XmppStream stream);
 
     XmppStream hack;
 
-    public Session.initiate_sent(string sid, Type type, TransportParameters transport, Jid peer_full_jid, string content_name, XmppStream hack) {
+    public Session.initiate_sent(string sid, Type type, TransportParameters transport, Jid local_full_jid, Jid peer_full_jid, string content_name, XmppStream hack) {
         this.state = State.INITIATE_SENT;
         this.sid = sid;
         this.type_ = type;
+        this.local_full_jid = local_full_jid;
         this.peer_full_jid = peer_full_jid;
+        this.content_creator = Role.INITIATOR;
         this.content_name = content_name;
         this.transport = transport;
         this.connection = new Connection(this);
         this.hack = hack;
     }
 
-    public Session.initiate_received(string sid, Type type, TransportParameters? transport, Jid peer_full_jid, string content_name, XmppStream hack) {
+    public Session.initiate_received(string sid, Type type, TransportParameters? transport, Jid local_full_jid, Jid peer_full_jid, string content_name, XmppStream hack) {
         this.state = State.INITIATE_RECEIVED;
         this.sid = sid;
         this.type_ = type;
+        this.local_full_jid = local_full_jid;
         this.peer_full_jid = peer_full_jid;
+        this.content_creator = Role.INITIATOR;
         this.content_name = content_name;
         this.transport = transport;
         this.connection = new Connection(this);
@@ -352,6 +411,9 @@ public class Session {
             case "session-terminate":
                 handle_session_terminate(stream, jingle, iq);
                 break;
+            case "transport-info":
+                handle_transport_info(stream, jingle, iq);
+                return;
             case "content-accept":
             case "content-add":
             case "content-modify":
@@ -359,7 +421,6 @@ public class Session {
             case "content-remove":
             case "security-info":
             case "transport-accept":
-            case "transport-info":
             case "transport-reject":
             case "transport-replace":
                 throw new IqError.NOT_IMPLEMENTED(@"$(action) is not implemented");
@@ -379,36 +440,83 @@ public class Session {
         if (!responder.is_full()) {
             throw new IqError.BAD_REQUEST("invalid responder JID");
         }
-        Gee.List<StanzaNode> contents = jingle.get_subnodes("content");
-        if (contents.size == 0) {
-            // TODO(hrxi): here and below, should we terminate the session?
-            throw new IqError.BAD_REQUEST("missing content node");
+        ContentNode content = get_single_content_node(jingle);
+        verify_content(content);
+        if (content.description == null || content.transport == null) {
+            throw new IqError.BAD_REQUEST("missing description or transport node");
         }
-        if (contents.size > 1) {
-            throw new IqError.NOT_IMPLEMENTED("can't process multiple content nodes");
-        }
-        StanzaNode content = contents[0];
-        StanzaNode description = get_single_node_anyns(content, "description");
-        StanzaNode transport_node = get_single_node_anyns(content, "transport");
-        if (transport_node.ns_uri != transport.transport_ns_uri()) {
+        if (content.transport.ns_uri != transport.transport_ns_uri()) {
             throw new IqError.BAD_REQUEST("session-accept with unnegotiated transport method");
         }
-        transport.update_transport(transport_node);
-        connection.set_inner(transport.create_transport_connection(stream, peer_full_jid, Role.INITIATOR));
-        transport = null;
+        transport.on_transport_accept(content.transport);
+        StanzaNode description = content.description; // TODO(hrxi): handle this :P
+        state = State.CONNECTING;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
-        state = State.ACTIVE;
-        accepted(stream);
+        transport.create_transport_connection(stream, this);
+    }
+    void connection_created(XmppStream stream, IOStream? conn) {
+        if (state != State.CONNECTING) {
+            return;
+        }
+        if (conn != null) {
+            state = State.ACTIVE;
+            transport = null;
+            connection.set_inner(conn);
+        } else {
+            // TODO(hrxi): try negotiating other transports…
+            StanzaNode reason = new StanzaNode.build("reason", NS_URI)
+                .put_node(new StanzaNode.build("failed-transport", NS_URI));
+            terminate(stream, reason, "failed transport");
+        }
     }
     void handle_session_terminate(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
         connection.on_terminated_by_jingle("remote terminated jingle session");
-        state = ENDED;
+        state = State.ENDED;
         stream.get_flag(Flag.IDENTITY).remove_session(sid);
 
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
         // TODO(hrxi): also handle presence type=unavailable
     }
-
+    void handle_transport_info(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
+        if (state != State.INITIATE_RECEIVED && state != State.INITIATE_SENT && state != State.CONNECTING) {
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+            throw new IqError.UNSUPPORTED_INFO("transport-info unsupported after connection setup");
+        }
+        ContentNode content = get_single_content_node(jingle);
+        verify_content(content);
+        if (content.description != null || content.transport == null) {
+            throw new IqError.BAD_REQUEST("unexpected description node or missing transport node");
+        }
+        transport.on_transport_info(content.transport);
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+    }
+    void verify_content(ContentNode content) throws IqError {
+        if (content.name != content_name || content.creator != content_creator) {
+            throw new IqError.BAD_REQUEST("unknown content");
+        }
+    }
+    public void set_transport_connection(XmppStream stream, IOStream? conn) {
+        if (state != State.CONNECTING) {
+            return;
+        }
+        connection_created(stream, conn);
+    }
+    public void send_transport_info(XmppStream stream, StanzaNode transport) {
+        if (state != State.CONNECTING) {
+            return;
+        }
+        StanzaNode jingle = new StanzaNode.build("jingle", NS_URI)
+            .add_self_xmlns()
+            .put_attribute("action", "transport-info")
+            .put_attribute("sid", sid)
+            .put_node(new StanzaNode.build("content", NS_URI)
+                .put_attribute("creator", "initiator")
+                .put_attribute("name", content_name)
+                .put_node(transport)
+            );
+        Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
+    }
     public void accept(XmppStream stream, StanzaNode description) {
         if (state != State.INITIATE_RECEIVED) {
             return; // TODO(hrxi): what to do?
@@ -426,10 +534,8 @@ public class Session {
         Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
 
-        connection.set_inner(transport.create_transport_connection(stream, peer_full_jid, Role.RESPONDER));
-        transport = null;
-
-        state = State.ACTIVE;
+        state = State.CONNECTING;
+        transport.create_transport_connection(stream, this);
     }
 
     public void reject(XmppStream stream) {
@@ -607,7 +713,6 @@ public class Connection : IOStream {
         try {
             return yield inner.input_stream.read_async(buffer, io_priority, cancellable);
         } catch (IOError e) {
-            print("read_async error\n");
             handle_connection_error(e);
             throw e;
         }
@@ -617,7 +722,6 @@ public class Connection : IOStream {
         try {
             return yield inner.output_stream.write_async(buffer, io_priority, cancellable);
         } catch (IOError e) {
-            print("write_async error\n");
             handle_connection_error(e);
             throw e;
         }
@@ -641,7 +745,6 @@ public class Connection : IOStream {
         try {
             result = yield inner.input_stream.close_async(io_priority, cancellable);
         } catch (IOError e) {
-            print("input_stream.close_async error\n");
             if (error == null) {
                 error = e;
             }
@@ -649,7 +752,6 @@ public class Connection : IOStream {
         try {
             result = (yield close_if_both_closed(io_priority, cancellable)) && result;
         } catch (IOError e) {
-            print("close_if_both_closed error\n");
             if (error == null) {
                 error = e;
             }
@@ -679,7 +781,6 @@ public class Connection : IOStream {
         try {
             result = yield inner.output_stream.close_async(io_priority, cancellable);
         } catch (IOError e) {
-            print("output_stream.close_async error\n");
             if (error == null) {
                 error = e;
             }
@@ -687,7 +788,6 @@ public class Connection : IOStream {
         try {
             result = (yield close_if_both_closed(io_priority, cancellable)) && result;
         } catch (IOError e) {
-            print("close_if_both_closed error\n");
             if (error == null) {
                 error = e;
             }
