@@ -75,7 +75,7 @@ namespace Xmpp {
                 error_node.put_node(new StanzaNode.build("text", ERROR_NS_URI)
                     .add_self_xmlns()
                     .put_attribute("xml:lang", "en")
-                    .put_node(new StanzaNode.text(text))
+                    .put_node(new StanzaNode.text(human_readable))
                 );
             }
         }
@@ -93,6 +93,9 @@ namespace Xmpp {
         }
         public ErrorStanza.not_allowed(string? human_readable = null) {
             this.build(TYPE_CANCEL, CONDITION_NOT_ALLOWED, human_readable, null);
+        }
+        public ErrorStanza.resource_constraint(string? human_readable = null) {
+            this.build(TYPE_WAIT, CONDITION_RESOURCE_CONSTRAINT, human_readable, null);
         }
         public ErrorStanza.service_unavailable() {
             this.build(TYPE_CANCEL, CONDITION_SERVICE_UNAVAILABLE, null, null);
