@@ -269,8 +269,7 @@ public class FileManager : StreamInteractionModule, Object {
             }
 
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            yield os.splice_async(input_stream, 0);
-            os.close();
+            yield os.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE|OutputStreamSpliceFlags.CLOSE_TARGET);
             file_transfer.size = (int)file_meta.size;
             file_transfer.file_name = file_meta.file_name;
             file_transfer.path = file.get_basename();
@@ -327,8 +326,7 @@ public class FileManager : StreamInteractionModule, Object {
             string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            yield os.splice_async(file_transfer.input_stream, 0);
-            os.close();
+            yield os.splice_async(file_transfer.input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE|OutputStreamSpliceFlags.CLOSE_TARGET);
             file_transfer.state = FileTransfer.State.COMPLETE;
             file_transfer.path = filename;
             file_transfer.input_stream = yield file.read_async();
