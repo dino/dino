@@ -39,7 +39,7 @@ public class Module : XmppStreamModule {
         }
         StanzaNode query_node = new StanzaNode.build("query", NS_VER(stream)).add_self_xmlns().put_node(data_form.get_submit_node());
         Iq.Stanza iq = new Iq.Stanza.set(query_node);
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => { page_through_results(stream, iq, on_finished); });
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => { page_through_results(stream, iq, (owned)on_finished); });
     }
 
     public override void attach(XmppStream stream) {
@@ -69,7 +69,7 @@ public class Module : XmppStreamModule {
                     )
                 )
             );
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, paging_iq, (stream, iq) => { page_through_results(stream, iq, on_finished); });
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, paging_iq, (stream, iq) => { page_through_results(stream, iq, (owned)on_finished); });
     }
 
     private void query_availability(XmppStream stream) {

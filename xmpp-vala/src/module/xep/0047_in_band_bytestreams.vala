@@ -149,25 +149,25 @@ public class Connection : IOStream {
         output = new Output(this);
     }
 
-    public void set_read_callback(SourceFunc callback, Cancellable? cancellable, int io_priority) throws IOError {
+    public void set_read_callback(owned SourceFunc callback, Cancellable? cancellable, int io_priority) throws IOError {
         if (read_callback != null) {
             throw new IOError.PENDING("only one async read is permitted at a time on an in-band bytestream");
         }
         if (cancellable != null) {
             read_callback_cancellable_id = cancellable.connect(trigger_read_callback);
         }
-        read_callback = callback;
+        read_callback = (owned)callback;
         read_callback_cancellable = cancellable;
         read_callback_priority = io_priority;
     }
-    public void set_write_callback(SourceFunc callback, Cancellable? cancellable, int io_priority) throws IOError {
+    public void set_write_callback(owned SourceFunc callback, Cancellable? cancellable, int io_priority) throws IOError {
         if (write_callback != null) {
             throw new IOError.PENDING("only one async write is permitted at a time on an in-band bytestream");
         }
         if (cancellable != null) {
             write_callback_cancellable_id = cancellable.connect(trigger_write_callback);
         }
-        write_callback = callback;
+        write_callback = (owned)callback;
         write_callback_cancellable = cancellable;
         write_callback_priority = io_priority;
     }
