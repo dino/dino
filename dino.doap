@@ -72,9 +72,6 @@
       Hien ënnerstëtz Enn-zu-Enn Verschlësselung mat OMEMO an OpenPGP an enthält Privatsphäre-Astellungen zu Liesbestätegungen an Tipp-Benoriichtegungen.
       Dino rifft  Gespréichverläf vum Server of a synchroniséiert Noriichte mat anere Geräter.
     </description>
-    <description xml:lang="ja">
-      Dino はサーバーから履歴を取得し、ほかのデバイスとメッセージを同期します。
-    </description>
     <description xml:lang="it">
       Dino è un client di chat per il desktop, moderno e open-source. Si concentra nel fornire un'esperienza Jabber/XMPP pulita e affidabile tenendo presente la tua privacy.
       Support la crittografia end-to-end tramite OMEMO e OpenPGP e permette di configurare le funzioni relative alla privacy come le ricevute di lettura e le notifiche di digitazione.
@@ -109,8 +106,6 @@
       Dino es un cliente de mensajería moderno y libre para escritorio. Está enfocado en proveer una experiencia Jabber/XMPP limpia y confiable teniendo tu privacidad en mente.
       Soporta cifrado de extremo a extremo a través de OMEMO y OpenPGP y permite configurar las características relacionadas con la privacidad, como confirmaciones de lectura y notificaciones de escritura.
       Dino recupera los mensajes desde el servidor y sincroniza los mensajes con otros dispositivos.
-    </description>
-    <description xml:lang="eo">
     </description>
     <description xml:lang="de">
       Dino ist ein moderner, quelloffener Chat Client. Er bietet eine aufgeräumte und robuste Jabber/XMPP Erfahrung und legt einen Schwerpunkt auf Privatsphäre.
