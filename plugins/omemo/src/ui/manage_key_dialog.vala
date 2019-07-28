@@ -122,7 +122,7 @@ public class ManageKeyDialog : Gtk.Dialog {
                 main_action_list.add(reject_row);
                 break;
             case TrustLevel.VERIFIED:
-                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("verified")+"</span>")+" "+_("This means it can be used by %s to receive and send messages.") + " " + _("Additionally it has been verified to match the key on the contact's device.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("verified")+"</span>")+" "+_("This means it can be used by %s to receive and send messages.").printf(@"<b>$(device[db.identity_meta.address_name])</b>") + " " + _("Additionally it has been verified to match the key on the contact's device."));
                 main_action_list.add(reject_row);
                 break;
             case TrustLevel.UNTRUSTED:
