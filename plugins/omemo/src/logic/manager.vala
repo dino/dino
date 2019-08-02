@@ -149,7 +149,7 @@ public class Manager : StreamInteractionModule, Object {
                     }
                     if (state.waiting_other_devicelists > 0 && message.counterpart != null) {
                         foreach(Jid jid in get_occupants(((!)message.counterpart).bare_jid, conversation.account)) {
-                            module.request_user_devicelist((!)stream, jid);
+                            module.request_user_devicelist.begin((!)stream, jid);
                         }
                     }
                 }
@@ -161,7 +161,7 @@ public class Manager : StreamInteractionModule, Object {
         XmppStream? stream = stream_interactor.get_stream(account);
         if(stream == null) return;
 
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist((!)stream, jid);
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist.begin((!)stream, jid);
     }
 
     private void on_account_added(Account account) {
@@ -171,7 +171,7 @@ public class Manager : StreamInteractionModule, Object {
     }
 
     private void on_stream_negotiated(Account account, XmppStream stream) {
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist(stream, account.bare_jid);
+        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist.begin(stream, account.bare_jid);
     }
 
     private void on_device_list_loaded(Account account, Jid jid, ArrayList<int32> device_list) {
@@ -352,7 +352,7 @@ public class Manager : StreamInteractionModule, Object {
             if (stream == null) return;
             StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
             if(module == null) return;
-            module.request_user_devicelist(stream, account.bare_jid);
+            module.request_user_devicelist.begin(stream, account.bare_jid);
         }
     }
 
@@ -374,6 +374,27 @@ public class Manager : StreamInteractionModule, Object {
         }
 
         return trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid);
+    }
+
+    public async bool ensure_get_keys_for_conversation(Conversation conversation) {
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart)) {
+            foreach (Jid offline_member in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
+                bool ok = yield ensure_get_keys_for_jid(conversation.account, offline_member);
+                if (!ok) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return yield ensure_get_keys_for_jid(conversation.account, conversation.counterpart.bare_jid);
+    }
+
+    public async bool ensure_get_keys_for_jid(Account account, Jid jid) {
+        if (trust_manager.is_known_address(account, jid)) return true;
+        XmppStream? stream = stream_interactor.get_stream(account);
+        var device_list = yield stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist((!)stream, jid);
+        return device_list.size > 0;
     }
 
     public static void start(StreamInteractor stream_interactor, Database db, TrustManager trust_manager) {

@@ -22,9 +22,8 @@
  *
  */
 
-[CCode (lower_case_cprefix = "gpgme_", cheader_filename = "gpgme.h")]
+[CCode (lower_case_cprefix = "gpgme_", cheader_filename = "gpgme.h,gpgme_fix.h")]
 namespace GPG {
-    [CCode (cheader_filename = "gpgme_fix.h")]
     public static GLib.RecMutex global_mutex;
 
     [CCode (cname = "struct _gpgme_engine_info")]

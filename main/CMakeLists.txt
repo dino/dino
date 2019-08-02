@@ -80,6 +80,17 @@ SOURCES
     src/main.vala
 
     src/ui/application.vala
+    src/ui/avatar_generator.vala
+    src/ui/avatar_image.vala
+    src/ui/chat_input_controller.vala
+    src/ui/conversation_list_titlebar.vala
+    src/ui/conversation_list_titlebar_csd.vala
+    src/ui/global_search.vala
+    src/ui/notifications.vala
+    src/ui/settings_dialog.vala
+    src/ui/unified_window.vala
+    src/ui/unified_window_controller.vala
+
     src/ui/add_conversation/add_conference_dialog.vala
     src/ui/add_conversation/add_contact_dialog.vala
     src/ui/add_conversation/add_groupchat_dialog.vala
@@ -89,22 +100,21 @@ SOURCES
     src/ui/add_conversation/roster_list.vala
     src/ui/add_conversation/select_contact_dialog.vala
     src/ui/add_conversation/select_jid_fragment.vala
-    src/ui/avatar_generator.vala
-    src/ui/avatar_image.vala
+
     src/ui/chat_input/edit_history.vala
     src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
+
     src/ui/contact_details/blocking_provider.vala
     src/ui/contact_details/settings_provider.vala
     src/ui/contact_details/dialog.vala
     src/ui/contact_details/muc_config_form_provider.vala
-    src/ui/conversation_list_titlebar.vala
-    src/ui/conversation_list_titlebar_csd.vala
-    src/ui/global_search.vala
+
     src/ui/conversation_selector/conversation_selector_row.vala
     src/ui/conversation_selector/conversation_selector.vala
+
     src/ui/conversation_summary/chat_state_populator.vala
     src/ui/conversation_summary/content_item_widget_factory.vala
     src/ui/conversation_summary/content_populator.vala
@@ -113,20 +123,20 @@ SOURCES
     src/ui/conversation_summary/date_separator_populator.vala
     src/ui/conversation_summary/file_widget.vala
     src/ui/conversation_summary/subscription_notification.vala
+
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
     src/ui/conversation_titlebar/search_entry.vala
     src/ui/conversation_titlebar/conversation_titlebar.vala
+
     src/ui/manage_accounts/account_row.vala
     src/ui/manage_accounts/add_account_dialog.vala
     src/ui/manage_accounts/dialog.vala
-    src/ui/notifications.vala
+
     src/ui/occupant_menu/list.vala
     src/ui/occupant_menu/list_row.vala
     src/ui/occupant_menu/view.vala
-    src/ui/settings_dialog.vala
-    src/ui/unified_window.vala
-    src/ui/unified_window_controller.vala
+
     src/ui/util/accounts_combo_box.vala
     src/ui/util/data_forms.vala
     src/ui/util/helper.vala

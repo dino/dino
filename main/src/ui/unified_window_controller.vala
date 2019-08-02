@@ -19,6 +19,8 @@ public class UnifiedWindowController : Object {
 
     private SearchMenuEntry search_menu_entry = new SearchMenuEntry();
 
+    private ChatInputController chat_input_controller;
+
     public UnifiedWindowController(Application application, StreamInteractor stream_interactor, Database db) {
         this.app = application;
         this.stream_interactor = stream_interactor;
@@ -49,6 +51,8 @@ public class UnifiedWindowController : Object {
 
     public void set_window(UnifiedWindow window) {
         this.window = window;
+
+        this.chat_input_controller = new ChatInputController(window.chat_input, stream_interactor);
 
         this.bind_property("conversation-display-name", window, "title");
         this.bind_property("conversation-topic", window, "subtitle");
@@ -136,6 +140,7 @@ public class UnifiedWindowController : Object {
         if (do_reset_search) {
             reset_search_entry();
         }
+        chat_input_controller.set_conversation(conversation);
         window.chat_input.initialize_for_conversation(conversation);
         if (default_initialize_conversation) {
             window.conversation_frame.initialize_for_conversation(conversation);

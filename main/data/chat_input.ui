@@ -3,15 +3,15 @@
     <requires lib="gtk+" version="3.22"/>
     <template class="DinoUiChatInputView">
         <property name="hexpand">True</property>
-        <property name="orientation">horizontal</property>
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <style>
             <class name="dino-chatinput"/>
         </style>
         <child>
             <object class="GtkFrame" id="frame">
-                <property name="margin">12</property>
-                <property name="margin_top">0</property>
+                <property name="margin_start">14</property>
+                <property name="margin_end">14</property>
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkBox" id="outer_box">
@@ -63,6 +63,21 @@
                         </child>
                     </object>
                 </child>
+            </object>
+        </child>
+        <child>
+            <object class="GtkLabel" id="chat_input_status">
+                <property name="xalign">0</property>
+                <property name="margin_bottom">3</property>
+                <property name="margin_start">14</property>
+                <property name="margin_end">14</property>
+                <property name="visible">True</property>
+                <attributes>
+                    <attribute name="scale" value="0.8"/>
+                </attributes>
+                <style>
+                    <class name="chat-input-status"/>
+                </style>
             </object>
         </child>
     </template>

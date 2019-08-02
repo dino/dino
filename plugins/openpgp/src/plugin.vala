@@ -19,7 +19,7 @@ public class Plugin : Plugins.RootInterface, Object {
     public void registered(Dino.Application app) {
         this.app = app;
         this.db = new Database(Path.build_filename(Application.get_storage_dir(), "pgp.db"));
-        this.list_entry = new EncryptionListEntry(app.stream_interactor);
+        this.list_entry = new EncryptionListEntry(app.stream_interactor, db);
         this.settings_entry = new AccountSettingsEntry(this);
         this.contact_details_provider = new ContactDetailsProvider(app.stream_interactor);
 

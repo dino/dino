@@ -7,6 +7,8 @@ namespace Dino.Ui {
 
 public class EncryptionButton : MenuButton {
 
+    public signal void encryption_changed(Plugins.EncryptionListEntry? encryption_entry);
+
     private Conversation? conversation;
     private RadioButton? button_unencrypted;
     private Map<RadioButton, Plugins.EncryptionListEntry> encryption_radios = new HashMap<RadioButton, Plugins.EncryptionListEntry>();
@@ -25,38 +27,45 @@ public class EncryptionButton : MenuButton {
         popover = builder.get_object("menu_encryption") as PopoverMenu;
         Box encryption_box = builder.get_object("encryption_box") as Box;
         button_unencrypted = builder.get_object("button_unencrypted") as RadioButton;
-        button_unencrypted.toggled.connect(encryption_changed);
+        button_unencrypted.toggled.connect(encryption_button_toggled);
 
         Application app = GLib.Application.get_default() as Application;
         foreach (var e in app.plugin_registry.encryption_list_entries) {
             RadioButton btn = new RadioButton.with_label(button_unencrypted.get_group(), e.name);
             encryption_radios[btn] = e;
-            btn.toggled.connect(encryption_changed);
+            btn.toggled.connect(encryption_button_toggled);
             btn.visible = true;
             encryption_box.pack_end(btn, false);
         }
         clicked.connect(update_encryption_menu_state);
     }
 
-    private void encryption_changed() {
+    private void encryption_button_toggled() {
         foreach (RadioButton e in encryption_radios.keys) {
             if (e.get_active()) {
                 conversation.encryption = encryption_radios[e].encryption;
+                encryption_changed(encryption_radios[e]);
                 update_encryption_menu_icon();
                 return;
             }
         }
+
+        // Selected unencrypted
         conversation.encryption = Encryption.NONE;
         update_encryption_menu_icon();
+        encryption_changed(null);
     }
 
     private void update_encryption_menu_state() {
         foreach (RadioButton e in encryption_radios.keys) {
-            e.set_sensitive(encryption_radios[e].can_encrypt(conversation));
-            if (conversation.encryption == encryption_radios[e].encryption) e.set_active(true);
+            if (conversation.encryption == encryption_radios[e].encryption) {
+                e.set_active(true);
+                encryption_changed(encryption_radios[e]);
+            }
         }
         if (conversation.encryption == Encryption.NONE) {
             button_unencrypted.set_active(true);
+            encryption_changed(null);
         }
     }
 

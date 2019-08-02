@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui.ChatInput {
 
-class EditHistory {
+public class EditHistory {
 
     private Conversation? conversation;
     private TextView text_input;

@@ -13,7 +13,7 @@ namespace Dino.Ui.ChatInput {
  * - At the start (with ",") and in the middle of a text
  * - Backwards tabbing
  */
-class OccupantsTabCompletor {
+public class OccupantsTabCompletor {
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;

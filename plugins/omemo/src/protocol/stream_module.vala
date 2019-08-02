@@ -17,7 +17,7 @@ public class StreamModule : XmppStreamModule {
 
     public Store store { public get; private set; }
     private ConcurrentSet<string> active_bundle_requests = new ConcurrentSet<string>();
-    private ConcurrentSet<Jid> active_devicelist_requests = new ConcurrentSet<Jid>();
+    private HashMap<Jid, Future<ArrayList<int32>>> active_devicelist_requests = new HashMap<Jid, Future<ArrayList<int32>>>(Jid.hash_func, Jid.equals_func);
     private Map<Jid, ArrayList<int32>> ignored_devices = new HashMap<Jid, ArrayList<int32>>(Jid.hash_bare_func, Jid.equals_bare_func);
 
     public signal void store_created(Store store);
@@ -29,22 +29,40 @@ public class StreamModule : XmppStreamModule {
 
         this.store = Plugin.get_context().create_store();
         store_created(store);
-        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
+        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => parse_device_list(stream, jid, id, node));
     }
 
     public override void detach(XmppStream stream) {}
 
-    public void request_user_devicelist(XmppStream stream, Jid jid) {
-        if (active_devicelist_requests.add(jid)) {
-            debug("requesting device list for %s", jid.to_string());
-            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node) => on_devicelist(stream, jid, id, node));
+    public async ArrayList<int32> request_user_devicelist(XmppStream stream, Jid jid) {
+        var future = active_devicelist_requests[jid];
+        if (future == null) {
+            var promise = new Promise<ArrayList<int32>?>();
+            future = promise.future;
+            active_devicelist_requests[jid] = future;
+
+            stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid, NODE_DEVICELIST, (stream, jid, id, node) => {
+                ArrayList<int32> device_list = parse_device_list(stream, jid, id, node);
+                promise.set_value(device_list);
+                active_devicelist_requests.unset(jid);
+            });
+        }
+
+        try {
+            ArrayList<int32> device_list = yield future.wait_async();
+            return device_list;
+        } catch (FutureError error) {
+            warning("Future error when waiting for device list: %s", error.message);
+            return new ArrayList<int32>();
         }
     }
 
-    public void on_devicelist(XmppStream stream, Jid jid, string? id, StanzaNode? node_) {
+    public ArrayList<int32> parse_device_list(XmppStream stream, Jid jid, string? id, StanzaNode? node_) {
+        ArrayList<int32> device_list = new ArrayList<int32>();
+
         StanzaNode node = node_ ?? new StanzaNode.build("list", NS_URI).add_self_xmlns();
         Jid? my_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid;
-        if (my_jid == null) return;
+        if (my_jid == null) return device_list;
         if (jid.equals_bare(my_jid) && store.local_registration_id != 0) {
             bool am_on_devicelist = false;
             foreach (StanzaNode device_node in node.get_subnodes("device")) {
@@ -61,12 +79,12 @@ public class StreamModule : XmppStreamModule {
             publish_bundles_if_needed(stream, jid);
         }
 
-        ArrayList<int32> device_list = new ArrayList<int32>();
         foreach (StanzaNode device_node in node.get_subnodes("device")) {
             device_list.add(device_node.get_attribute_int("id"));
         }
-        active_devicelist_requests.remove(jid);
         device_list_loaded(jid, device_list);
+
+        return device_list;
     }
 
     public void fetch_bundles(XmppStream stream, Jid jid, Gee.List<int32> devices) {

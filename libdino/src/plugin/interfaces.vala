@@ -25,7 +25,7 @@ public interface EncryptionListEntry : Object {
     public abstract Entities.Encryption encryption { get; }
     public abstract string name { get; }
 
-    public abstract bool can_encrypt(Conversation conversation);
+    public abstract void encryption_activated(Entities.Conversation conversation, Plugins.SetInputFieldStatus callback);
 }
 
 public abstract class AccountSettingsEntry : Object {
@@ -121,6 +121,31 @@ public interface ConversationItemCollection : Object {
 public interface NotificationCollection : Object {
     public signal void add_meta_notification(MetaConversationNotification item);
     public signal void remove_meta_notification(MetaConversationNotification item);
+}
+
+public delegate void SetInputFieldStatus(InputFieldStatus field_status);
+public class InputFieldStatus : Object {
+    public enum MessageType {
+        NONE,
+        INFO,
+        WARNING,
+        ERROR
+    }
+    public enum InputState {
+        NORMAL,
+        DISABLED,
+        NO_SEND
+    }
+
+    public string? message;
+    public MessageType message_type;
+    public InputState input_state;
+
+    public InputFieldStatus(string? message, MessageType message_type, InputState input_state) {
+        this.message = message;
+        this.message_type = message_type;
+        this.input_state = input_state;
+    }
 }
 
 }

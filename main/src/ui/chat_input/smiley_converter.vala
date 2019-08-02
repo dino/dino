@@ -8,7 +8,6 @@ namespace Dino.Ui.ChatInput {
 
 class SmileyConverter {
 
-    private StreamInteractor stream_interactor;
     private TextView text_input;
     private static HashMap<string, string> smiley_translations = new HashMap<string, string>();
 
@@ -27,8 +26,7 @@ class SmileyConverter {
         smiley_translations[":/"] = "😕";
     }
 
-    public SmileyConverter(StreamInteractor stream_interactor, TextView text_input) {
-        this.stream_interactor = stream_interactor;
+    public SmileyConverter(TextView text_input) {
         this.text_input = text_input;
 
         text_input.key_press_event.connect(on_text_input_key_press);

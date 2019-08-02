@@ -77,6 +77,10 @@ window.dino-main .dino-chatinput frame box {
     background: transparent;
 }
 
+window.dino-main button.dino-attach-button {
+    min-width: 24px; /* Make button the same with as avatars */
+}
+
 window.dino-main button.dino-chatinput-button {
     border: none;
     background: transparent;
@@ -102,4 +106,52 @@ window.dino-main button.dino-chatinput-button:checked {
 
 window.dino-main button.dino-chatinput-button:checked:backdrop {
     color: alpha(@theme_unfocused_selected_bg_color, 0.8);
+}
+
+
+.dino-chatinput textview, .dino-chatinput textview text {
+    background-color: transparent;
+}
+
+/*Chat input warning*/
+
+box.dino-input-warning frame border {
+    border-color: @warning_color;
+}
+
+box.dino-input-warning frame separator {
+    background-color: @warning_color;
+    border: none;
+}
+
+box.dino-input-warning label {
+    color: mix(@warning_color, @theme_fg_color, 0.5);
+}
+
+/*Chat input error*/
+
+box.dino-input-error frame border {
+    border-color: @error_color;
+}
+
+box.dino-input-error frame separator {
+    background-color: @error_color;
+    border: none;
+}
+
+box.dino-input-error label {
+    color: @error_color;
+}
+
+@keyframes input-error-highlight {
+    0% { color: mix(@error_color, @theme_fg_color, 0.3);}
+    30% { color: @error_color; text-shadow: 0px 0px 2px alpha(@error_color, 0.4); }
+    100% { color: mix(@error_color, @theme_fg_color, 0.3); }
+}
+
+box.dino-input-error label.input-status-highlight-once {
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-name: input-error-highlight;
 }
