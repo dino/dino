@@ -39,7 +39,11 @@ public class JingleFileProvider : FileProvider, Object {
         if (jingle_file_transfer == null) {
             throw new FileReceiveError.DOWNLOAD_FAILED("Transfer data not available anymore");
         }
-        jingle_file_transfer.accept(stream);
+        try {
+            jingle_file_transfer.accept(stream);
+        } catch (IOError e) {
+            throw new FileReceiveError.DOWNLOAD_FAILED("Establishing connection did not work");
+        }
         return jingle_file_transfer.stream;
     }
 
