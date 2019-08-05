@@ -60,9 +60,8 @@ public class Module : XmppStreamModule, Iq.Handler {
 }
 
 public class Connection : IOStream {
-    // TODO(hrxi): Fix reference cycle
     public class Input : InputStream {
-        private Connection connection;
+        private weak Connection connection;
         public Input(Connection connection) {
             this.connection = connection;
         }
@@ -73,14 +72,14 @@ public class Connection : IOStream {
             return yield connection.read_async(buffer, io_priority, cancellable);
         }
         public override bool close(Cancellable? cancellable = null) throws IOError {
-            return connection.close_read(cancellable);
+            throw new IOError.NOT_SUPPORTED("can't do non-async closes on in-band bytestreams");
         }
         public override async bool close_async(int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
             return yield connection.close_read_async(io_priority, cancellable);
         }
     }
     public class Output : OutputStream {
-        private Connection connection;
+        private weak Connection connection;
         public Output(Connection connection) {
             this.connection = connection;
         }
@@ -91,7 +90,7 @@ public class Connection : IOStream {
             return yield connection.write_async(buffer, io_priority, cancellable);
         }
         public override bool close(Cancellable? cancellable = null) throws IOError {
-            return connection.close_write(cancellable);
+            throw new IOError.NOT_SUPPORTED("can't do non-async closes on in-band bytestreams");
         }
         public override async bool close_async(int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
             return yield connection.close_write_async(io_priority, cancellable);
@@ -263,26 +262,12 @@ public class Connection : IOStream {
         return buffer.length;
     }
 
-    public bool close_read(Cancellable? cancellable = null) {
-        input_closed = true;
-        if (!output_closed) {
-            return true;
-        }
-        return close_impl(cancellable);
-    }
     public async bool close_read_async(int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
         input_closed = true;
         if (!output_closed) {
             return true;
         }
         return yield close_async_impl(io_priority, cancellable);
-    }
-    public bool close_write(Cancellable? cancellable = null) {
-        output_closed = true;
-        if (!input_closed) {
-            return true;
-        }
-        return close_impl(cancellable);
     }
     public async bool close_write_async(int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
         output_closed = true;
@@ -292,7 +277,7 @@ public class Connection : IOStream {
         return yield close_async_impl(io_priority, cancellable);
     }
     delegate void OnClose(bool success);
-    private bool close_impl(Cancellable? cancellable = null, OnClose? on_close = null) {
+    private bool close_impl(Cancellable? cancellable, OnClose on_close) {
         if (state == State.DISCONNECTING || state == State.DISCONNECTED || state == State.ERROR) {
             on_close(true);
             return true;
