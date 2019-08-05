@@ -172,6 +172,7 @@ class Parameters : Jingle.TransportParameters, Object {
 
     string? waiting_for_activation_cid = null;
     SourceFunc waiting_for_activation_callback;
+    bool waiting_for_activation_error = false;
 
     private static string calculate_dstaddr(string sid, Jid first_jid, Jid second_jid) {
         string hashed = sid + first_jid.to_string() + second_jid.to_string();
@@ -200,7 +201,6 @@ class Parameters : Jingle.TransportParameters, Object {
             throw new Jingle.IqError.BAD_REQUEST("too long dstaddr");
         }
         Parameters result = new Parameters(Jingle.Role.RESPONDER, sid, local_full_jid, peer_full_jid, dstaddr);
-        //result.remote_candidates.add(new Candidate("b", "0.0.0.0", new Jid("a@b/c"), 1234, 2000000000, CandidateType.PROXY));
         foreach (StanzaNode candidate in transport.get_subnodes("candidate", NS_URI)) {
             result.remote_candidates.add(Candidate.parse(candidate));
         }
@@ -237,10 +237,12 @@ class Parameters : Jingle.TransportParameters, Object {
         StanzaNode? candidate_error = transport.get_subnode("candidate-error", NS_URI);
         StanzaNode? candidate_used = transport.get_subnode("candidate-used", NS_URI);
         StanzaNode? activated = transport.get_subnode("activated", NS_URI);
+        StanzaNode? proxy_error = transport.get_subnode("proxy-error", NS_URI);
         int num_children = 0;
         if (candidate_error != null) { num_children += 1; }
         if (candidate_used != null) { num_children += 1; }
         if (activated != null) { num_children += 1; }
+        if (proxy_error != null) { num_children += 1; }
         if (num_children == 0) {
             throw new Jingle.IqError.UNSUPPORTED_INFO("unknown transport-info");
         } else if (num_children > 1) {
@@ -262,6 +264,9 @@ class Parameters : Jingle.TransportParameters, Object {
                 throw new Jingle.IqError.BAD_REQUEST("missing cid");
             }
             handle_activated(cid);
+        }
+        if (proxy_error != null) {
+            handle_proxy_error();
         }
     }
     private void handle_remote_candidate(string? cid) throws Jingle.IqError {
@@ -290,6 +295,15 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         Idle.add((owned)waiting_for_activation_callback);
         waiting_for_activation_cid = null;
+    }
+    private void handle_proxy_error() throws Jingle.IqError {
+        if (waiting_for_activation_cid == null) {
+            throw new Jingle.IqError.BAD_REQUEST("unexpected proxy error message");
+        }
+        Idle.add((owned)waiting_for_activation_callback);
+        waiting_for_activation_cid = null;
+        waiting_for_activation_error = true;
+
     }
     private void try_completing_negotiation() {
         if (!remote_sent_selected_candidate || !local_determined_selected_candidate) {
@@ -346,7 +360,11 @@ class Parameters : Jingle.TransportParameters, Object {
         if (strong == null) {
             return;
         }
-        strong.set_transport_connection(hack, conn);
+        if (!waiting_for_activation_error) {
+            strong.set_transport_connection(hack, conn);
+        } else {
+            strong.set_transport_connection(hack, null);
+        }
     }
     public async void connect_to_local_candidate(Candidate candidate) {
         try {

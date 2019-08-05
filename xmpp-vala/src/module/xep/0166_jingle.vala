@@ -139,10 +139,13 @@ public class Module : XmppStreamModule, Iq.Handler {
         }
         return transports[ns_uri];
     }
-    public Transport? select_transport(XmppStream stream, TransportType type, Jid receiver_full_jid) {
+    public Transport? select_transport(XmppStream stream, TransportType type, Jid receiver_full_jid, Set<string> blacklist) {
         Transport? result = null;
         foreach (Transport transport in transports.values) {
             if (transport.transport_type() != type) {
+                continue;
+            }
+            if (transport.transport_ns_uri() in blacklist) {
                 continue;
             }
             if (transport.is_transport_available(stream, receiver_full_jid)) {
@@ -163,14 +166,14 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public bool is_available(XmppStream stream, TransportType type, Jid full_jid) {
-        return is_jingle_available(stream, full_jid) && select_transport(stream, type, full_jid) != null;
+        return is_jingle_available(stream, full_jid) && select_transport(stream, type, full_jid, Set.empty()) != null;
     }
 
     public Session create_session(XmppStream stream, TransportType type, Jid receiver_full_jid, Senders senders, string content_name, StanzaNode description) throws Error {
         if (!is_jingle_available(stream, receiver_full_jid)) {
             throw new Error.NO_SHARED_PROTOCOLS("No Jingle support");
         }
-        Transport? transport = select_transport(stream, type, receiver_full_jid);
+        Transport? transport = select_transport(stream, type, receiver_full_jid, Set.empty());
         if (transport == null) {
             throw new Error.NO_SHARED_PROTOCOLS("No suitable transports");
         }
@@ -369,11 +372,13 @@ public interface ContentParameters : Object {
 
 
 public class Session {
-    // INITIATE_SENT -> CONNECTING -> ACTIVE -> ENDED
-    // INITIATE_RECEIVED -> CONNECTING -> ACTIVE -> ENDED
+    // INITIATE_SENT -> CONNECTING -> [REPLACING_TRANSPORT -> CONNECTING ->]... ACTIVE -> ENDED
+    // INITIATE_RECEIVED -> CONNECTING -> [WAITING_FOR_TRANSPORT_REPLACE -> CONNECTING ->].. ACTIVE -> ENDED
     public enum State {
         INITIATE_SENT,
+        REPLACING_TRANSPORT,
         INITIATE_RECEIVED,
+        WAITING_FOR_TRANSPORT_REPLACE,
         CONNECTING,
         ACTIVE,
         ENDED,
@@ -381,8 +386,9 @@ public class Session {
 
     public State state { get; private set; }
 
+    public Role role { get; private set; }
     public string sid { get; private set; }
-    public Type type_ { get; private set; }
+    public TransportType type_ { get; private set; }
     public Jid local_full_jid { get; private set; }
     public Jid peer_full_jid { get; private set; }
     public Role content_creator { get; private set; }
@@ -392,25 +398,30 @@ public class Session {
     public IOStream conn { get { return connection; } }
 
     // INITIATE_SENT | INITIATE_RECEIVED | CONNECTING
+    Set<string> tried_transport_methods = new HashSet<string>();
     TransportParameters? transport = null;
 
     SessionTerminate session_terminate_handler;
 
-    public Session.initiate_sent(string sid, Type type, TransportParameters transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
+    public Session.initiate_sent(string sid, TransportType type, TransportParameters transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
         this.state = State.INITIATE_SENT;
+        this.role = Role.INITIATOR;
         this.sid = sid;
         this.type_ = type;
         this.local_full_jid = local_full_jid;
         this.peer_full_jid = peer_full_jid;
         this.content_creator = Role.INITIATOR;
         this.content_name = content_name;
+        this.tried_transport_methods = new HashSet<string>();
+        this.tried_transport_methods.add(transport.transport_ns_uri());
         this.transport = transport;
         this.connection = new Connection(this);
         this.session_terminate_handler = (owned)session_terminate_handler;
     }
 
-    public Session.initiate_received(string sid, Type type, TransportParameters? transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
+    public Session.initiate_received(string sid, TransportType type, TransportParameters? transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
         this.state = State.INITIATE_RECEIVED;
+        this.role = Role.RESPONDER;
         this.sid = sid;
         this.type_ = type;
         this.local_full_jid = local_full_jid;
@@ -418,39 +429,87 @@ public class Session {
         this.content_creator = Role.INITIATOR;
         this.content_name = content_name;
         this.transport = transport;
+        this.tried_transport_methods = new HashSet<string>();
+        if (transport != null) {
+            this.tried_transport_methods.add(transport.transport_ns_uri());
+        }
         this.connection = new Connection(this);
         this.session_terminate_handler = (owned)session_terminate_handler;
     }
 
     public void handle_iq_set(XmppStream stream, string action, StanzaNode jingle, Iq.Stanza iq) throws IqError {
+        // Validate action.
         switch (action) {
             case "session-accept":
-                if (state != State.INITIATE_SENT) {
-                    throw new IqError.OUT_OF_ORDER("got session-accept while not waiting for one");
-                }
-                handle_session_accept(stream, jingle, iq);
-                break;
             case "session-terminate":
-                handle_session_terminate(stream, jingle, iq);
-                break;
+            case "transport-accept":
+            case "transport-reject":
+            case "transport-replace":
             case "transport-info":
-                handle_transport_info(stream, jingle, iq);
-                return;
+                break;
             case "content-accept":
             case "content-add":
             case "content-modify":
             case "content-reject":
             case "content-remove":
             case "security-info":
-            case "transport-accept":
-            case "transport-reject":
-            case "transport-replace":
-                throw new IqError.NOT_IMPLEMENTED(@"$(action) is not implemented");
             default:
                 throw new IqError.BAD_REQUEST("invalid action");
         }
+        ContentNode? content = null;
+        StanzaNode? transport = null;
+        // Do some pre-processing.
+        if (action != "session-terminate") {
+            content = get_single_content_node(jingle);
+            verify_content(content);
+            switch (action) {
+                case "transport-accept":
+                case "transport-reject":
+                case "transport-replace":
+                case "transport-info":
+                    switch (state) {
+                        case State.INITIATE_SENT:
+                        case State.REPLACING_TRANSPORT:
+                        case State.INITIATE_RECEIVED:
+                        case State.WAITING_FOR_TRANSPORT_REPLACE:
+                        case State.CONNECTING:
+                            break;
+                        default:
+                            throw new IqError.OUT_OF_ORDER("transport-* unsupported after connection setup");
+                    }
+                    // TODO(hrxi): What to do with description nodes?
+                    if (content.transport == null) {
+                        throw new IqError.BAD_REQUEST("missing transport node");
+                    }
+                    transport = content.transport;
+                    break;
+            }
+        }
+        switch (action) {
+            case "session-accept":
+                if (state != State.INITIATE_SENT) {
+                    throw new IqError.OUT_OF_ORDER("got session-accept while not waiting for one");
+                }
+                handle_session_accept(stream, content, jingle, iq);
+                break;
+            case "session-terminate":
+                handle_session_terminate(stream, jingle, iq);
+                break;
+            case "transport-accept":
+                handle_transport_accept(stream, transport, jingle, iq);
+                break;
+            case "transport-reject":
+                handle_transport_reject(stream, jingle, iq);
+                break;
+            case "transport-replace":
+                handle_transport_replace(stream, transport, jingle, iq);
+                break;
+            case "transport-info":
+                handle_transport_info(stream, transport, jingle, iq);
+                break;
+        }
     }
-    void handle_session_accept(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
+    void handle_session_accept(XmppStream stream, ContentNode content, StanzaNode jingle, Iq.Stanza iq) throws IqError {
         string? responder_str = jingle.get_attribute("responder");
         Jid responder;
         if (responder_str != null) {
@@ -462,8 +521,6 @@ public class Session {
         if (!responder.is_full()) {
             throw new IqError.BAD_REQUEST("invalid responder JID");
         }
-        ContentNode content = get_single_content_node(jingle);
-        verify_content(content);
         if (content.description == null || content.transport == null) {
             throw new IqError.BAD_REQUEST("missing description or transport node");
         }
@@ -472,8 +529,9 @@ public class Session {
         }
         transport.on_transport_accept(content.transport);
         StanzaNode description = content.description; // TODO(hrxi): handle this :P
-        state = State.CONNECTING;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+
+        state = State.CONNECTING;
         transport.create_transport_connection(stream, this);
     }
     void connection_created(XmppStream stream, IOStream? conn) {
@@ -483,12 +541,14 @@ public class Session {
         if (conn != null) {
             state = State.ACTIVE;
             transport = null;
+            tried_transport_methods.clear();
             connection.set_inner(conn);
         } else {
-            // TODO(hrxi): try negotiating other transports…
-            StanzaNode reason = new StanzaNode.build("reason", NS_URI)
-                .put_node(new StanzaNode.build("failed-transport", NS_URI));
-            terminate(reason, "failed transport");
+            if (role == Role.INITIATOR) {
+                select_new_transport(stream);
+            } else {
+                state = State.WAITING_FOR_TRANSPORT_REPLACE;
+            }
         }
     }
     void handle_session_terminate(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
@@ -499,17 +559,88 @@ public class Session {
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
         // TODO(hrxi): also handle presence type=unavailable
     }
-    void handle_transport_info(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
-        if (state != State.INITIATE_RECEIVED && state != State.INITIATE_SENT && state != State.CONNECTING) {
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
-            throw new IqError.UNSUPPORTED_INFO("transport-info unsupported after connection setup");
+    void select_new_transport(XmppStream stream) {
+        Transport? new_transport = stream.get_module(Module.IDENTITY).select_transport(stream, type_, peer_full_jid, tried_transport_methods);
+        if (new_transport == null) {
+            StanzaNode reason = new StanzaNode.build("reason", NS_URI)
+                .put_node(new StanzaNode.build("failed-transport", NS_URI));
+            terminate(reason, "failed transport");
+            return;
         }
-        ContentNode content = get_single_content_node(jingle);
-        verify_content(content);
-        if (content.description != null || content.transport == null) {
-            throw new IqError.BAD_REQUEST("unexpected description node or missing transport node");
+        tried_transport_methods.add(new_transport.transport_ns_uri());
+        transport = new_transport.create_transport_parameters(stream, local_full_jid, peer_full_jid);
+        StanzaNode jingle = new StanzaNode.build("jingle", NS_URI)
+            .add_self_xmlns()
+            .put_attribute("action", "transport-replace")
+            .put_attribute("sid", sid)
+            .put_node(new StanzaNode.build("content", NS_URI)
+                .put_attribute("creator", "initiator")
+                .put_attribute("name", content_name)
+                .put_node(transport.to_transport_stanza_node())
+            );
+        Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
+        state = State.REPLACING_TRANSPORT;
+    }
+    void handle_transport_accept(XmppStream stream, StanzaNode transport_node, StanzaNode jingle, Iq.Stanza iq) throws IqError {
+        if (state != State.REPLACING_TRANSPORT) {
+            throw new IqError.OUT_OF_ORDER("no outstanding transport-replace request");
         }
-        transport.on_transport_info(content.transport);
+        if (transport_node.ns_uri != transport.transport_ns_uri()) {
+            throw new IqError.BAD_REQUEST("transport-accept with unnegotiated transport method");
+        }
+        transport.on_transport_accept(transport_node);
+        state = State.CONNECTING;
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+        transport.create_transport_connection(stream, this);
+    }
+    void handle_transport_reject(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
+        if (state != State.REPLACING_TRANSPORT) {
+            throw new IqError.OUT_OF_ORDER("no outstanding transport-replace request");
+        }
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+        select_new_transport(stream);
+    }
+    void handle_transport_replace(XmppStream stream, StanzaNode transport_node, StanzaNode jingle, Iq.Stanza iq) throws IqError {
+        Transport? transport = stream.get_module(Module.IDENTITY).get_transport(transport_node.ns_uri);
+        TransportParameters? parameters = null;
+        if (transport != null) {
+            // Just parse the transport info for the errors.
+            parameters = transport.parse_transport_parameters(stream, local_full_jid, peer_full_jid, transport_node);
+        }
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+        if (state != State.WAITING_FOR_TRANSPORT_REPLACE || transport == null) {
+            StanzaNode jingle_response = new StanzaNode.build("jingle", NS_URI)
+                .add_self_xmlns()
+                .put_attribute("action", "transport-reject")
+                .put_attribute("sid", sid)
+                .put_node(new StanzaNode.build("content", NS_URI)
+                    .put_attribute("creator", "initiator")
+                    .put_attribute("name", content_name)
+                    .put_node(transport_node)
+                );
+            Iq.Stanza iq_response = new Iq.Stanza.set(jingle_response) { to=peer_full_jid };
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq_response);
+            return;
+        }
+        this.transport = parameters;
+        StanzaNode jingle_response = new StanzaNode.build("jingle", NS_URI)
+            .add_self_xmlns()
+            .put_attribute("action", "transport-accept")
+            .put_attribute("sid", sid)
+            .put_node(new StanzaNode.build("content", NS_URI)
+                .put_attribute("creator", "initiator")
+                .put_attribute("name", content_name)
+                .put_node(this.transport.to_transport_stanza_node())
+            );
+        Iq.Stanza iq_response = new Iq.Stanza.set(jingle_response) { to=peer_full_jid };
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq_response);
+
+        state = State.CONNECTING;
+        this.transport.create_transport_connection(stream, this);
+    }
+    void handle_transport_info(XmppStream stream, StanzaNode transport, StanzaNode jingle, Iq.Stanza iq) throws IqError {
+        this.transport.on_transport_info(transport);
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
     }
     void verify_content(ContentNode content) throws IqError {
