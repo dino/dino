@@ -35,7 +35,7 @@ void send_iq_error(IqError iq_error, XmppStream stream, Iq.Stanza iq) {
     } else {
         assert_not_reached();
     }
-    stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, error));
+    stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, error) { to=iq.from });
 }
 
 public errordomain Error {
@@ -274,7 +274,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         if (action == "session-initiate") {
             if (session != null) {
                 // TODO(hrxi): Info leak if other clients use predictable session IDs?
-                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, new ErrorStanza.build(ErrorStanza.TYPE_MODIFY, ErrorStanza.CONDITION_CONFLICT, "session ID already in use", null)));
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, new ErrorStanza.build(ErrorStanza.TYPE_MODIFY, ErrorStanza.CONDITION_CONFLICT, "session ID already in use", null)) { to=iq.from });
                 return;
             }
             handle_session_initiate(stream, sid, jingle, iq);
@@ -282,7 +282,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         }
         if (session == null) {
             StanzaNode unknown_session = new StanzaNode.build("unknown-session", ERROR_NS_URI).add_self_xmlns();
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, new ErrorStanza.item_not_found(unknown_session)));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.error(iq, new ErrorStanza.item_not_found(unknown_session)) { to=iq.from });
             return;
         }
         session.handle_iq_set(stream, action, jingle, iq);
