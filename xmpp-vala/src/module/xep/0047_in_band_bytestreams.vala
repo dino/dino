@@ -14,7 +14,9 @@ public class Module : XmppStreamModule, Iq.Handler {
         stream.add_flag(new Flag());
         stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, this);
     }
-    public override void detach(XmppStream stream) { }
+    public override void detach(XmppStream stream) {
+        stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI, this);
+    }
 
     public void on_iq_set(XmppStream stream, Iq.Stanza iq) {
         // the iq module ensures that there's only one child node

@@ -117,7 +117,9 @@ public class Module : XmppStreamModule, Iq.Handler {
         stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, this);
         current_stream = stream;
     }
-    public override void detach(XmppStream stream) { }
+    public override void detach(XmppStream stream) {
+        stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI, this);
+    }
 
     public void register_content_type(ContentType content_type) {
         content_types[content_type.content_type_ns_uri()] = content_type;
