@@ -159,6 +159,7 @@ class Parameters : Jingle.TransportParameters, Object {
     public Gee.List<Candidate> local_candidates = new ArrayList<Candidate>();
     public Gee.List<Candidate> remote_candidates = new ArrayList<Candidate>();
 
+    Jid local_full_jid;
     Jid peer_full_jid;
 
     bool remote_sent_selected_candidate = false;
@@ -182,6 +183,7 @@ class Parameters : Jingle.TransportParameters, Object {
         this.local_dstaddr = calculate_dstaddr(sid, local_full_jid, peer_full_jid);
         this.remote_dstaddr = remote_dstaddr ?? calculate_dstaddr(sid, peer_full_jid, local_full_jid);
 
+        this.local_full_jid = local_full_jid;
         this.peer_full_jid = peer_full_jid;
     }
     public Parameters.create(Jid local_full_jid, Jid peer_full_jid, string sid) {
@@ -224,7 +226,12 @@ class Parameters : Jingle.TransportParameters, Object {
         return transport;
     }
     public void on_transport_accept(StanzaNode transport) throws Jingle.IqError {
-        throw new Jingle.IqError.BAD_REQUEST("blurb");
+        Parameters other = Parameters.parse(local_full_jid, peer_full_jid, transport);
+        if (other.sid != sid) {
+            throw new Jingle.IqError.BAD_REQUEST("invalid sid");
+        }
+        remote_candidates = other.remote_candidates;
+        remote_dstaddr = other.remote_dstaddr;
     }
     public void on_transport_info(StanzaNode transport) throws Jingle.IqError {
         StanzaNode? candidate_error = transport.get_subnode("candidate-error", NS_URI);
