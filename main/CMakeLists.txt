@@ -24,6 +24,15 @@ set(RESOURCE_LIST
     icons/im.dino.Dino-symbolic.svg
     icons/dino-tick-symbolic.svg
 
+    icons/dino-file-document-symbolic.svg
+    icons/dino-file-download-symbolic.svg
+    icons/dino-file-image-symbolic.svg
+    icons/dino-file-music-symbolic.svg
+    icons/dino-file-pdf-symbolic.svg
+    icons/dino-file-symbolic.svg
+    icons/dino-file-table-symbolic.svg
+    icons/dino-file-video-symbolic.svg
+
     add_conversation/add_contact_dialog.ui
     add_conversation/add_groupchat_dialog.ui
     add_conversation/conference_details_fragment.ui

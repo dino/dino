@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-    <path fill="#000000" d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H11V13H9V11M15,11H17V13H19V11H21V13H19V15H21V19H19V21H17V19H13V21H11V17H15V15H17V13H15V11M19,19V15H17V19H19M15,3H21V9H15V3M17,5V7H19V5H17M3,3H9V9H3V3M5,5V7H7V5H5M3,15H9V21H3V15M5,17V19H7V17H5Z" />
+<svg version="1.1" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+  <path d="m0 8h2v2h-2v-2"/>
+  <path d="m8 0h2v4h-2v-4"/>
+  <path d="m12 8v2 2h2 2v-2h-2v-2h-2z"/>
+  <path d="m16 10h2v-2h-2z"/>
+  <path d="m12 0v6h6v-6h-6zm2 2h2v2h-2v-2z"/>
+  <path d="m0 0v6h6v-6h-6zm2 2h2v2h-2v-2z"/>
+  <path d="m0 12v6h6v-6h-6zm2 2h2v2h-2v-2z"/>
+  <path d="m8 6v2h-2-2v2h2 2 2v-2-2h-2z"/>
+  <path d="m8 12v2h2 2v-2h-2-2z"/>
+  <path d="m8 16h2v2h-2v-2"/>
+  <path d="m12 14v2 2h2 2v-2h-2v-2h-2z"/>
+  <path d="m16 14h2v2h-2v-2"/>
 </svg>

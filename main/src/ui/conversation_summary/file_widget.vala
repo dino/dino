@@ -23,7 +23,6 @@ public class FileWidget : Box {
 
     // default box
     private Box main_box;
-    private string? icon_name;
     private Image content_type_image;
     private Image download_image;
     private Spinner spinner;
@@ -135,10 +134,11 @@ public class FileWidget : Box {
     }
 
     private Widget getDefaultWidget(FileTransfer file_transfer) {
-        main_box = new Box(Orientation.HORIZONTAL, 4) { halign=Align.FILL, hexpand=true, visible=true };
-        icon_name = ContentType.get_generic_icon_name(file_transfer.mime_type ?? "application/octet-stream");
-        content_type_image = new Image.from_icon_name(icon_name + "-symbolic", IconSize.DND) { visible=true };
-        download_image = new Image.from_icon_name("folder-download-symbolic", IconSize.MENU) { visible=true };
+        string icon_name = get_file_icon_name(file_transfer.mime_type);
+
+        main_box = new Box(Orientation.HORIZONTAL, 10) { halign=Align.FILL, hexpand=true, visible=true };
+        content_type_image = new Image.from_icon_name(icon_name, IconSize.DND) { opacity=0.5, visible=true };
+        download_image = new Image.from_icon_name("dino-file-download-symbolic", IconSize.DND) { opacity=0.7, visible=true };
         spinner = new Spinner() { active=true, visible=true };
 
         EventBox stack_event_box = new EventBox() { visible=true };
@@ -173,10 +173,9 @@ public class FileWidget : Box {
             Timeout.add(20, () => {
                 if (pointer_inside) {
                     event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
+                    content_type_image.opacity = 0.7;
                     if (file_transfer.state == FileTransfer.State.NOT_STARTED) {
                         image_stack.set_visible_child_name("download_image");
-                    } else if (file_transfer.state == FileTransfer.State.COMPLETE) {
-                        content_type_image.opacity = 1;
                     }
                 }
                 return false;
@@ -191,10 +190,9 @@ public class FileWidget : Box {
             Timeout.add(20, () => {
                 if (!pointer_inside) {
                     event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.XTERM));
+                    content_type_image.opacity = 0.5;
                     if (file_transfer.state == FileTransfer.State.NOT_STARTED) {
                         image_stack.set_visible_child_name("content_type_image");
-                    } else if (file_transfer.state == FileTransfer.State.COMPLETE) {
-                        content_type_image.opacity = 0.5;
                     }
                 }
                 return false;
@@ -249,14 +247,11 @@ public class FileWidget : Box {
             state = State.IMAGE;
         }
 
-        content_type_image.opacity = 0.5;
-
-        var mime_split = (file_transfer.mime_type ?? "").split("/");
-        var mime_caps = mime_split.length == 2 ? mime_split[1].up() : file_transfer.mime_type;
+        string? mime_description = file_transfer.mime_type != null ? ContentType.get_description(file_transfer.mime_type) : null;
 
         switch (file_transfer.state) {
             case FileTransfer.State.COMPLETE:
-                mime_label.label = "<span size='small'>" + _("%s file").printf(mime_caps) + "</span>";
+                mime_label.label = "<span size='small'>" + mime_description + "</span>";
                 image_stack.set_visible_child_name("content_type_image");
                 break;
             case FileTransfer.State.IN_PROGRESS:
@@ -264,8 +259,8 @@ public class FileWidget : Box {
                 image_stack.set_visible_child_name("spinner");
                 break;
             case FileTransfer.State.NOT_STARTED:
-                if (mime_caps != null) {
-                    mime_label.label = "<span size='small'>" + _("%s file offered: %s").printf(mime_caps, get_size_string(file_transfer.size)) + "</span>";
+                if (mime_description != null) {
+                    mime_label.label = "<span size='small'>" + _("%s offered: %s").printf(mime_description, get_size_string(file_transfer.size)) + "</span>";
                 } else if (file_transfer.size != -1) {
                     mime_label.label = "<span size='small'>" + _("File offered: %s").printf(get_size_string(file_transfer.size)) + "</span>";
                 } else {
@@ -277,6 +272,22 @@ public class FileWidget : Box {
                 mime_label.label = "<span size='small' foreground=\"#f44336\">" + _("File transfer failed") + "</span>";
                 image_stack.set_visible_child_name("content_type_image");
                 break;
+        }
+    }
+
+    private static string get_file_icon_name(string? mime_type) {
+        if (mime_type == null) return "dino-file-symbolic";
+
+        string generic_icon_name = ContentType.get_generic_icon_name(mime_type) ?? "";
+        switch (generic_icon_name) {
+            case "audio-x-generic": return "dino-file-music-symbolic";
+            case "image-x-generic": return "dino-file-image-symbolic";
+            case "text-x-generic": return "dino-file-document-symbolic";
+            case "text-x-generic-template": return "dino-file-document-symbolic";
+            case "video-x-generic": return "dino-file-video-symbolic";
+            case "x-office-document": return "dino-file-document-symbolic";
+            case "x-office-spreadsheet": return "dino-file-table-symbolic";
+            default: return "dino-file-symbolic";
         }
     }
 
