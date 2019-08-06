@@ -102,16 +102,20 @@ ContentNode get_single_content_node(StanzaNode jingle) throws IqError {
     };
 }
 
+// This module can only be attached to one stream at a time.
 public class Module : XmppStreamModule, Iq.Handler {
     public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0166_jingle");
 
     private HashMap<string, ContentType> content_types = new HashMap<string, ContentType>();
     private HashMap<string, Transport> transports = new HashMap<string, Transport>();
 
+    private XmppStream? current_stream = null;
+
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI, this);
+        current_stream = stream;
     }
     public override void detach(XmppStream stream) { }
 
@@ -173,7 +177,7 @@ public class Module : XmppStreamModule, Iq.Handler {
             throw new Error.GENERAL("Couldn't determine own JID");
         }
         TransportParameters transport_params = transport.create_transport_parameters(stream, my_jid, receiver_full_jid);
-        Session session = new Session.initiate_sent(random_uuid(), type, transport_params, my_jid, receiver_full_jid, content_name, stream);
+        Session session = new Session.initiate_sent(random_uuid(), type, transport_params, my_jid, receiver_full_jid, content_name, send_terminate_and_remove_session);
         StanzaNode content = new StanzaNode.build("content", NS_URI)
             .put_attribute("creator", "initiator")
             .put_attribute("name", content_name)
@@ -221,18 +225,32 @@ public class Module : XmppStreamModule, Iq.Handler {
         ContentParameters content_params = content_type.parse_content_parameters(content.description);
 
         TransportType type = content_type.content_type_transport_type();
-        Session session = new Session.initiate_received(sid, type, transport_params, my_jid, iq.from, content.name, stream);
+        Session session = new Session.initiate_received(sid, type, transport_params, my_jid, iq.from, content.name, send_terminate_and_remove_session);
         stream.get_flag(Flag.IDENTITY).add_session(session);
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
 
         if (transport == null || transport.transport_type() != type) {
             StanzaNode reason = new StanzaNode.build("reason", NS_URI)
                 .put_node(new StanzaNode.build("unsupported-transports", NS_URI));
-            session.terminate(stream, reason, "unsupported transports");
+            session.terminate(reason, "unsupported transports");
             return;
         }
 
         content_params.on_session_initiate(stream, session);
+    }
+
+    private void send_terminate_and_remove_session(Jid to, string sid, StanzaNode reason) {
+        StanzaNode jingle = new StanzaNode.build("jingle", NS_URI)
+            .add_self_xmlns()
+            .put_attribute("action", "session-terminate")
+            .put_attribute("sid", sid)
+            .put_node(reason);
+        Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=to };
+        current_stream.get_module(Iq.Module.IDENTITY).send_iq(current_stream, iq);
+
+        // Immediately remove the session from the open sessions as per the
+        // XEP, don't wait for confirmation.
+        current_stream.get_flag(Flag.IDENTITY).remove_session(sid);
     }
 
     public void on_iq_set(XmppStream stream, Iq.Stanza iq) {
@@ -293,6 +311,8 @@ public enum Senders {
         assert_not_reached();
     }
 }
+
+public delegate void SessionTerminate(Jid to, string sid, StanzaNode reason);
 
 public interface Transport : Object {
     public abstract string transport_ns_uri();
@@ -372,9 +392,9 @@ public class Session {
     // INITIATE_SENT | INITIATE_RECEIVED | CONNECTING
     TransportParameters? transport = null;
 
-    XmppStream hack;
+    SessionTerminate session_terminate_handler;
 
-    public Session.initiate_sent(string sid, Type type, TransportParameters transport, Jid local_full_jid, Jid peer_full_jid, string content_name, XmppStream hack) {
+    public Session.initiate_sent(string sid, Type type, TransportParameters transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
         this.state = State.INITIATE_SENT;
         this.sid = sid;
         this.type_ = type;
@@ -384,10 +404,10 @@ public class Session {
         this.content_name = content_name;
         this.transport = transport;
         this.connection = new Connection(this);
-        this.hack = hack;
+        this.session_terminate_handler = (owned)session_terminate_handler;
     }
 
-    public Session.initiate_received(string sid, Type type, TransportParameters? transport, Jid local_full_jid, Jid peer_full_jid, string content_name, XmppStream hack) {
+    public Session.initiate_received(string sid, Type type, TransportParameters? transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
         this.state = State.INITIATE_RECEIVED;
         this.sid = sid;
         this.type_ = type;
@@ -397,7 +417,7 @@ public class Session {
         this.content_name = content_name;
         this.transport = transport;
         this.connection = new Connection(this);
-        this.hack = hack;
+        this.session_terminate_handler = (owned)session_terminate_handler;
     }
 
     public void handle_iq_set(XmppStream stream, string action, StanzaNode jingle, Iq.Stanza iq) throws IqError {
@@ -466,7 +486,7 @@ public class Session {
             // TODO(hrxi): try negotiating other transports…
             StanzaNode reason = new StanzaNode.build("reason", NS_URI)
                 .put_node(new StanzaNode.build("failed-transport", NS_URI));
-            terminate(stream, reason, "failed transport");
+            terminate(reason, "failed transport");
         }
     }
     void handle_session_terminate(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
@@ -544,7 +564,7 @@ public class Session {
         }
         StanzaNode reason = new StanzaNode.build("reason", NS_URI)
             .put_node(new StanzaNode.build("decline", NS_URI));
-        terminate(stream, reason, "declined");
+        terminate(reason, "declined");
     }
 
     public void set_application_error(XmppStream stream, StanzaNode? application_reason = null) {
@@ -553,7 +573,7 @@ public class Session {
         if (application_reason != null) {
             reason.put_node(application_reason);
         }
-        terminate(stream, reason, "application error");
+        terminate(reason, "application error");
     }
 
     public void on_connection_error(IOError error) {
@@ -563,15 +583,15 @@ public class Session {
             .put_node(new StanzaNode.build("text", NS_URI)
                 .put_node(new StanzaNode.text(error.message))
             );
-        terminate(hack, reason, "transport error: $(error.message)");
+        terminate(reason, "transport error: $(error.message)");
     }
     public void on_connection_close() {
         StanzaNode reason = new StanzaNode.build("reason", NS_URI)
             .put_node(new StanzaNode.build("success", NS_URI));
-        terminate(hack, reason, "success");
+        terminate(reason, "success");
     }
 
-    public void terminate(XmppStream stream, StanzaNode reason, string? local_reason) {
+    public void terminate(StanzaNode reason, string? local_reason) {
         if (state == State.ENDED) {
             return;
         }
@@ -583,18 +603,8 @@ public class Session {
             }
         }
 
-        StanzaNode jingle = new StanzaNode.build("jingle", NS_URI)
-            .add_self_xmlns()
-            .put_attribute("action", "session-terminate")
-            .put_attribute("sid", sid)
-            .put_node(reason);
-        Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
-
+        session_terminate_handler(peer_full_jid, sid, reason);
         state = State.ENDED;
-        // Immediately remove the session from the open sessions as per the
-        // XEP, don't wait for confirmation.
-        stream.get_flag(Flag.IDENTITY).remove_session(sid);
     }
 }
 
