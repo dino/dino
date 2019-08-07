@@ -1,32 +1,15 @@
 ![Dino](https://cdn.rawgit.com/fiaxh/3cb1391c5a94443098d004b4bf7c712c/raw/62f6a5e7de8402a0a89ffc73e8d1ed170054051c/dino-writing.svg)
 =======
 
-![screenshots](https://i.imgur.com/1KqLqDV.png)
+![screenshots](https://dino.im/img/screenshot-main.png)
+
+Installation
+------------
+Have a look at the [prebuilt packages](https://github.com/dino/dino/wiki/Distribution-Packages).
 
 Build
 -----
-
-**Build-time dependencies**
-
-* CMake
-* C compiler
-* gettext
-* ninja(-build) (recommend)
-* valac (≥ 0.34)
-
-**Run-time dependencies**
-
-* GLib (≥ 2.38)
-* glib-networking
-* GTK (≥ 3.22)
-* GPGME (For the OpenPGP plugin)
-* libgee-0.8 (≥ 0.10)
-* libgcrypt (For the OMEMO plugin)
-* libqrencode3 (For the OMEMO plugin)
-* libsoup (For the HTTP files plugin)
-* SQLite3
-
-**Instructions**
+Make sure to install all [dependencies](https://github.com/dino/dino/wiki/Build#dependencies).
 
     ./configure
     make
@@ -34,14 +17,20 @@ Build
 
 Resources
 ---------
-Join our conference room at [chat@dino.im](xmpp:chat@dino.im?join)
+- Check out the [Dino website](https://dino.im).
+- Join our XMPP conference room at `chat@dino.im`.
+- The [wiki](https://github.com/dino/dino/wiki) provides additional information.
 
-Please refer to [the wiki](https://github.com/dino/dino/wiki) for further information or check out our [website](https://dino.im).
+Contribute
+----------
+- Pull requests are welcome. Please discuss bigger changes in the conference room first.
+- Look at [how to debug](https://github.com/dino/dino/wiki/Debugging) Dino before you report a bug.
+- Help [translating](https://hosted.weblate.org/projects/dino/) Dino into your language.
 
 License
 -------
     Dino - Modern Jabber/XMPP Client using GTK+/Vala
-    Copyright (C) 2017 Dino contributors
+    Copyright (C) 2016-2019 Dino contributors
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
