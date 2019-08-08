@@ -18,7 +18,7 @@ namespace Xmpp.Xep.UserAvatars {
             string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, image);
             StanzaNode data_node = new StanzaNode.build("data", NS_URI_DATA).add_self_xmlns()
                     .put_node(new StanzaNode.text(Base64.encode(image)));
-            stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_DATA, NS_URI_DATA, sha1, data_node);
+            stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_DATA, sha1, data_node);
 
             StanzaNode metadata_node = new StanzaNode.build("metadata", NS_URI_METADATA).add_self_xmlns();
             StanzaNode info_node = new StanzaNode.build("info", NS_URI_METADATA)
@@ -28,7 +28,7 @@ namespace Xmpp.Xep.UserAvatars {
                 .put_attribute("height", height.to_string())
                 .put_attribute("type", "image/png");
             metadata_node.put_node(info_node);
-            stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_METADATA, NS_URI_METADATA, sha1, metadata_node);
+            stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_METADATA, sha1, metadata_node);
         }
 
         public override void attach(XmppStream stream) {

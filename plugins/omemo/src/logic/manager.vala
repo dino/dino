@@ -71,6 +71,13 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.get_module(RosterManager.IDENTITY).mutual_subscription.connect(on_mutual_subscription);
     }
 
+    public void clear_device_list(Account account) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) return;
+
+        stream.get_module(StreamModule.IDENTITY).clear_device_list(stream);
+    }
+
     private Gee.List<Jid> get_occupants(Jid jid, Account account){
         Gee.List<Jid> occupants = new ArrayList<Jid>(Jid.equals_bare_func);
         if(!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)){
@@ -234,7 +241,7 @@ public class Manager : StreamInteractionModule, Object {
 
     }
 
-    public void on_bundle_fetched(Account account, Jid jid, int32 device_id, Bundle bundle) {
+    private void on_bundle_fetched(Account account, Jid jid, int32 device_id, Bundle bundle) {
         int identity_id = db.identity.get_id(account.id);
         if (identity_id < 0) return;
 
@@ -354,26 +361,6 @@ public class Manager : StreamInteractionModule, Object {
             if(module == null) return;
             module.request_user_devicelist.begin(stream, account.bare_jid);
         }
-    }
-
-
-    public bool can_encrypt(Entities.Conversation conversation) {
-        if (stream_interactor.get_module(MucManager.IDENTITY).is_public_room(conversation.account, conversation.counterpart)){
-            debug("Can't enable OMEMO for %s: Room not members-only or non-anonymous", conversation.counterpart.to_string());
-            return false;
-        }
-
-        if (stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart)){
-            foreach(Jid jid in stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account)) {
-                if (!trust_manager.is_known_address(conversation.account, jid.bare_jid)) {
-                    debug("Can't enable OMEMO for %s: missing keys for %s", conversation.counterpart.to_string(), jid.bare_jid.to_string());
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        return trust_manager.is_known_address(conversation.account, conversation.counterpart.bare_jid);
     }
 
     public async bool ensure_get_keys_for_conversation(Conversation conversation) {

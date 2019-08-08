@@ -3,6 +3,13 @@ using Gee;
 namespace Xmpp.Xep.Pubsub {
     private const string NS_URI = "http://jabber.org/protocol/pubsub";
     private const string NS_URI_EVENT = NS_URI + "#event";
+    private const string NS_URI_OWNER = NS_URI + "#owner";
+
+    public const string ACCESS_MODEL_AUTHORIZE = "authorize";
+    public const string ACCESS_MODEL_OPEN = "open";
+    public const string ACCESS_MODEL_PRESENCE = "presence";
+    public const string ACCESS_MODEL_ROSTER = "roster";
+    public const string ACCESS_MODEL_WHITELIST = "whitelist";
 
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0060_pubsub_module");
@@ -27,7 +34,7 @@ namespace Xmpp.Xep.Pubsub {
             });
         }
 
-        public void publish(XmppStream stream, Jid? jid, string node_id, string node, string? item_id, StanzaNode content) {
+        public void publish(XmppStream stream, Jid? jid, string node_id, string? item_id, StanzaNode content, string? access_model=null) {
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI).add_self_xmlns();
             StanzaNode publish_node = new StanzaNode.build("publish", NS_URI).put_attribute("node", node_id);
             pubsub_node.put_node(publish_node);
@@ -35,6 +42,30 @@ namespace Xmpp.Xep.Pubsub {
             if (item_id != null) items_node.put_attribute("id", item_id);
             items_node.put_node(content);
             publish_node.put_node(items_node);
+
+            if (access_model != null) {
+                StanzaNode publish_options_node = new StanzaNode.build("publish-options", NS_URI);
+                pubsub_node.put_node(publish_options_node);
+
+                DataForms.DataForm data_form = new DataForms.DataForm();
+                DataForms.DataForm.HiddenField form_type_field = new DataForms.DataForm.HiddenField() { var="FORM_TYPE" };
+                form_type_field.set_value_string(NS_URI + "#publish-options");
+                data_form.add_field(form_type_field);
+                DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="pubsub#access_model" };
+                field.set_value_string(access_model);
+                data_form.add_field(field);
+                publish_options_node.put_node(data_form.get_submit_node());
+            }
+
+            Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
+        }
+
+        public void delete_node(XmppStream stream, Jid? jid, string node_id) {
+            StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI_OWNER).add_self_xmlns();
+            StanzaNode publish_node = new StanzaNode.build("delete", NS_URI_OWNER).put_attribute("node", node_id);
+            pubsub_node.put_node(publish_node);
+
             Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
         }
