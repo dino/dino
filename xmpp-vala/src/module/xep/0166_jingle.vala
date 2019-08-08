@@ -397,6 +397,8 @@ public class Session {
     private Connection connection;
     public IOStream conn { get { return connection; } }
 
+    public bool terminate_on_connection_close { get; set; }
+
     // INITIATE_SENT | INITIATE_RECEIVED | CONNECTING
     Set<string> tried_transport_methods = new HashSet<string>();
     TransportParameters? transport = null;
@@ -417,6 +419,7 @@ public class Session {
         this.transport = transport;
         this.connection = new Connection(this);
         this.session_terminate_handler = (owned)session_terminate_handler;
+        this.terminate_on_connection_close = true;
     }
 
     public Session.initiate_received(string sid, TransportType type, TransportParameters? transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
@@ -435,6 +438,7 @@ public class Session {
         }
         this.connection = new Connection(this);
         this.session_terminate_handler = (owned)session_terminate_handler;
+        this.terminate_on_connection_close = true;
     }
 
     public void handle_iq_set(XmppStream stream, string action, StanzaNode jingle, Iq.Stanza iq) throws IqError {
@@ -719,9 +723,11 @@ public class Session {
         terminate(reason, "transport error: $(error.message)");
     }
     public void on_connection_close() {
-        StanzaNode reason = new StanzaNode.build("reason", NS_URI)
-            .put_node(new StanzaNode.build("success", NS_URI));
-        terminate(reason, "success");
+        if (terminate_on_connection_close) {
+            StanzaNode reason = new StanzaNode.build("reason", NS_URI)
+                .put_node(new StanzaNode.build("success", NS_URI));
+            terminate(reason, "success");
+        }
     }
 
     public void terminate(StanzaNode reason, string? local_reason) {

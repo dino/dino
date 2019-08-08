@@ -45,6 +45,7 @@ public class Module : Jingle.ContentType, XmppStreamModule {
 
         Jingle.Session session = stream.get_module(Jingle.Module.IDENTITY)
             .create_session(stream, Jingle.TransportType.STREAMING, receiver_full_jid, Jingle.Senders.INITIATOR, "a-file-offer", description); // TODO(hrxi): Why "a-file-offer"?
+        session.terminate_on_connection_close = false;
 
         yield session.conn.input_stream.close_async();
 
