@@ -838,10 +838,15 @@ public class Connection : IOStream {
                 return;
             }
             SourceFunc callback = wait_and_check_for_errors.callback;
-            ulong id = cancellable.connect(() => callback());
+            ulong id = 0;
+            if (cancellable != null) {
+                id = cancellable.connect(() => callback());
+            }
             callbacks.add(new OnSetInnerCallback() { callback=(owned)callback, io_priority=io_priority});
             yield;
-            cancellable.disconnect(id);
+            if (cancellable != null) {
+                cancellable.disconnect(id);
+            }
         }
     }
     private void handle_connection_error(IOError error) {
