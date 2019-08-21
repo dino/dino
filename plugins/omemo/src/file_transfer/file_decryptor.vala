@@ -15,7 +15,7 @@ public class OmemoFileDecryptor : FileDecryptor, Object {
     public FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) assert(false);
-//        if ((receive_data as OmemoHttpFileReceiveData) != null) return receive_data;
+        if ((receive_data as OmemoHttpFileReceiveData) != null) return receive_data;
 
         var omemo_http_receive_data = new OmemoHttpFileReceiveData();
         omemo_http_receive_data.url = aesgcm_to_https_link(http_receive_data.url);

@@ -22,7 +22,7 @@ public class Module : XmppStreamModule {
         public string url_get { get; set; }
         public string url_put { get; set; }
     }
-    public async SlotResult request_slot(XmppStream stream, string filename, int file_size, string? content_type) throws HttpFileTransferError {
+    public async SlotResult request_slot(XmppStream stream, string filename, int64 file_size, string? content_type) throws HttpFileTransferError {
         Flag? flag = stream.get_flag(Flag.IDENTITY);
         if (flag == null) {
             throw new HttpFileTransferError.SLOT_REQUEST("No flag");

@@ -62,7 +62,7 @@ public class FileProvider : Dino.FileProvider, Object {
         receive_data.url = message.body;
 
         var file_meta = new HttpFileMeta();
-        file_meta.file_name = Uri.unescape_string(message.body.substring(message.body.last_index_of("/") + 1));
+        file_meta.file_name = extract_file_name_from_url(message.body);
         file_meta.message = message;
 
         file_incoming(additional_info, message.from, message.time, message.local_time, conversation, receive_data, file_meta);
@@ -121,11 +121,7 @@ public class FileProvider : Dino.FileProvider, Object {
         file_meta.size = file_transfer.size;
         file_meta.mime_type = file_transfer.mime_type;
 
-        // Extract file name from URL
-        file_meta.file_name = Uri.unescape_string(message.body.substring(message.body.last_index_of("/") + 1));
-        if (file_meta.file_name.contains("#")) {
-            file_meta.file_name = file_meta.file_name.substring(0, file_meta.file_name.last_index_of("#"));
-        }
+        file_meta.file_name = extract_file_name_from_url(message.body);
 
         file_meta.message = message;
 
@@ -143,6 +139,14 @@ public class FileProvider : Dino.FileProvider, Object {
         receive_data.url = message.body;
 
         return receive_data;
+    }
+
+    private string extract_file_name_from_url(string url) {
+        string ret = Uri.unescape_string(url.substring(url.last_index_of("/") + 1));
+        if (ret.contains("#")) {
+            ret = ret.substring(0, ret.last_index_of("#"));
+        }
+        return ret;
     }
 
     public int get_id() { return 0; }

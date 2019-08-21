@@ -86,7 +86,7 @@ public class FileManager : StreamInteractionModule, Object {
             FileSendData file_send_data = null;
             foreach (FileSender file_sender in file_senders) {
                 if (file_sender.can_send(conversation, file_transfer)) {
-                    file_send_data = yield file_sender.prepare_send_file(conversation, file_transfer);
+                    file_send_data = yield file_sender.prepare_send_file(conversation, file_transfer, file_meta);
                     break;
                 }
             }
@@ -393,7 +393,7 @@ public interface FileSender : Object {
 
     public abstract bool is_upload_available(Conversation conversation);
     public abstract bool can_send(Conversation conversation, FileTransfer file_transfer);
-    public abstract async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer) throws FileSendError;
+    public abstract async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer, FileMeta file_meta) throws FileSendError;
     public abstract async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data) throws FileSendError;
 
     public abstract int get_id();

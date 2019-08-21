@@ -17,7 +17,7 @@ public class HttpFileSender : FileSender, Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(check_add_oob);
     }
 
-    public async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer) throws FileSendError {
+    public async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer, FileMeta file_meta) throws FileSendError {
         HttpFileSendData send_data = new HttpFileSendData();
         if (send_data == null) return null;
 
@@ -25,7 +25,7 @@ public class HttpFileSender : FileSender, Object {
         if (stream == null) return null;
 
         try {
-            var slot_result = yield stream_interactor.module_manager.get_module(file_transfer.account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).request_slot(stream, file_transfer.server_file_name, file_transfer.size, file_transfer.mime_type);
+            var slot_result = yield stream_interactor.module_manager.get_module(file_transfer.account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).request_slot(stream, file_transfer.server_file_name, file_meta.size, file_meta.mime_type);
             send_data.url_down = slot_result.url_get;
             send_data.url_up = slot_result.url_put;
         } catch (Xep.HttpFileUpload.HttpFileTransferError e) {

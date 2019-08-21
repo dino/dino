@@ -107,7 +107,7 @@ public class JingleFileSender : FileSender, Object {
         return false;
     }
 
-    public async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer) throws FileSendError {
+    public async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer, FileMeta file_meta) throws FileSendError {
         return new FileSendData();
     }
 
