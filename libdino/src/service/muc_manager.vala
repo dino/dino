@@ -15,6 +15,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void room_name_set(Account account, Jid jid, string? room_name);
     public signal void private_room_occupant_updated(Account account, Jid room, Jid occupant);
     public signal void bookmarks_updated(Account account, Gee.List<Xep.Bookmarks.Conference> conferences);
+    public signal void invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason);
 
     private StreamInteractor stream_interactor;
     private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
@@ -263,6 +264,9 @@ public class MucManager : StreamInteractionModule, Object {
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).subject_set.connect( (stream, subject, jid) => {
             subject_set(account, jid, subject);
+        });
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).invite_received.connect( (stream, room_jid, from_jid, password, reason) => {
+            invite_received(account, room_jid, from_jid, password, reason);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_name_set.connect( (stream, jid, room_name) => {
             room_name_set(account, jid, room_name);

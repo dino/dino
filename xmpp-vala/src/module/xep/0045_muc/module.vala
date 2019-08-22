@@ -61,11 +61,18 @@ public class Module : XmppStreamModule {
     public signal void received_occupant_role(XmppStream stream, Jid jid, Role? role);
     public signal void subject_set(XmppStream stream, string? subject, Jid jid);
     public signal void room_name_set(XmppStream stream, Jid jid, string? room_name);
+    public signal void invite_received(XmppStream stream, Jid room_jid, Jid from_jid, string? password, string? reason);
 
     public signal void room_entered(XmppStream stream, Jid jid, string nick);
     public signal void room_enter_error(XmppStream stream, Jid jid, MucEnterError? error); // TODO "?" shoudln't be necessary (vala bug), remove someday
     public signal void self_removed_from_room(XmppStream stream, Jid jid, StatusCode code);
     public signal void removed_from_room(XmppStream stream, Jid jid, StatusCode? code);
+
+    private ReceivedPipelineListener received_pipeline_listener;
+
+    public Module() {
+        received_pipeline_listener = new ReceivedPipelineListener(this);
+    }
 
     public void enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since) {
         Presence.Stanza presence = new Presence.Stanza();
@@ -175,6 +182,7 @@ public class Module : XmppStreamModule {
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
         stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
+        stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_listener);
         stream.get_module(Presence.Module.IDENTITY).received_presence.connect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.connect(on_received_unavailable);
@@ -191,6 +199,7 @@ public class Module : XmppStreamModule {
 
     public override void detach(XmppStream stream) {
         stream.get_module(MessageModule.IDENTITY).received_message.disconnect(on_received_message);
+        stream.get_module(MessageModule.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
         stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.disconnect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.disconnect(on_received_unavailable);
@@ -426,6 +435,45 @@ public class Module : XmppStreamModule {
                 role = Role.NONE; break;
         }
         return role;
+    }
+}
+
+public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
+
+    private const string[] after_actions_const = {"EXTRACT_MESSAGE_2"};
+
+    public override string action_group { get { return ""; } }
+    public override string[] after_actions { get { return after_actions_const; } }
+
+    Module outer;
+
+    public ReceivedPipelineListener(Module outer) {
+        this.outer = outer;
+    }
+
+    public override async bool run(XmppStream stream, MessageStanza message) {
+        if (message.type_ == MessageStanza.TYPE_NORMAL) {
+            StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_USER);
+            if (x_node != null) {
+                StanzaNode? invite_node = x_node.get_subnode("invite", NS_URI_USER);
+                string? password = null;
+                StanzaNode? password_node = x_node.get_subnode("password", NS_URI_USER);
+                if (password_node != null)
+                password = password_node.get_string_content();
+                if (invite_node != null) {
+                    string? from_jid = invite_node.get_attribute("from");
+                    if (from_jid != null) {
+                        StanzaNode? reason_node = invite_node.get_subnode("reason", NS_URI_USER);
+                        string? reason = null;
+                        if (reason_node != null)
+                        reason = reason_node.get_string_content();
+                        outer.invite_received(stream, message.from, new Jid(from_jid), password, reason);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 

@@ -44,6 +44,7 @@ public class Notifications : Object {
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_content_item.connect((content_item, conversation) => notify_content_item.begin(content_item, conversation));
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_subscription_request.connect(notify_subscription_request);
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_connection_error.connect(notify_connection_error);
+        stream_interactor.get_module(NotificationEvents.IDENTITY).notify_muc_invite.connect(on_invite_received);
     }
 
     private async void notify_content_item(ContentItem content_item, Conversation conversation) {
@@ -115,6 +116,23 @@ public class Notifications : Object {
                 break;
         }
         window.get_application().send_notification(account.id.to_string() + "-connection-error", notification);
+    }
+
+    private async void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
+        string display_name = Util.get_display_name(stream_interactor, from_jid, account);
+        string display_room = room_jid.bare_jid.to_string();
+        Notification notification = new Notification(_("Invitation to %s").printf(display_room));
+        string body = _("%s invited you to %s").printf(display_name, display_room);
+        notification.set_body(body);
+
+        Cairo.ImageSurface jid_avatar = yield (new AvatarGenerator(40, 40)).draw_jid(stream_interactor, from_jid, account);
+        notification.set_icon(get_pixbuf_icon(jid_avatar));
+
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
+        notification.set_default_action_and_target_value("app.open-muc-join", new Variant.int32(conversation.id));
+        notification.add_button_with_target_value(_("Deny"), "app.deny-invite", conversation.id);
+        notification.add_button_with_target_value(_("Accept"), "app.open-muc-join", conversation.id);
+        window.get_application().send_notification(null, notification);
     }
 
     private Icon get_pixbuf_icon(Cairo.ImageSurface surface) throws Error {

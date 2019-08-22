@@ -12,6 +12,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
     public signal void notify_content_item(ContentItem content_item, Conversation conversation);
     public signal void notify_subscription_request(Conversation conversation);
     public signal void notify_connection_error(Account account, ConnectionManager.ConnectionError error);
+    public signal void notify_muc_invite(Account account, Jid room_jid, Jid from_jid, string? password, string? reason);
 
     private StreamInteractor stream_interactor;
 
@@ -28,6 +29,8 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
         stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(on_content_item_received);
         stream_interactor.get_module(PresenceManager.IDENTITY).received_subscription_request.connect(on_received_subscription_request);
+        stream_interactor.get_module(MucManager.IDENTITY).invite_received.connect((account, room_jid, from_jid, password, reason) => notify_muc_invite(account, room_jid, from_jid, password, reason));
+        stream_interactor.connection_manager.connection_error.connect((account, error) => notify_connection_error(account, error));
         stream_interactor.get_module(MessageProcessor.IDENTITY).history_synced.connect((account) => {
             synced_accounts.add(account);
             if (!mam_potential_new.has_key(account)) return;
@@ -40,7 +43,6 @@ public class NotificationEvents : StreamInteractionModule, Object {
             }
             mam_potential_new[account].clear();
         });
-        stream_interactor.connection_manager.connection_error.connect((account, error) => notify_connection_error(account, error));
     }
 
     private void on_content_item_received(ContentItem item, Conversation conversation) {

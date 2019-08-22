@@ -166,7 +166,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
         if (oob_url != null && oob_url == message.body) {
             stream.get_module(Module.IDENTITY).received_url(stream, message);
         }
-        return true;
+        return false;
     }
 }
 
