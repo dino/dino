@@ -70,12 +70,14 @@ public class AddAccountDialog : Gtk.Dialog {
     };
 
     private StreamInteractor stream_interactor;
+    private Database db;
     private HashMap<ListBoxRow, string> list_box_jids = new HashMap<ListBoxRow, string>();
     private Jid? server_jid = null;
     private Xep.InBandRegistration.Form? form = null;
 
-    public AddAccountDialog(StreamInteractor stream_interactor) {
+    public AddAccountDialog(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
+        this.db = db;
         this.title = _("Add Account");
 
         // Sign in - Jid
@@ -258,8 +260,8 @@ public class AddAccountDialog : Gtk.Dialog {
                     break;
             }
         } else {
+            add_activate_account(account);
             show_success();
-            added(account);
         }
     }
 
@@ -343,9 +345,9 @@ public class AddAccountDialog : Gtk.Dialog {
                     case "password": password = field.get_value_string(); break;
                 }
             }
-            Account account = new Account(new Jid(username + "@" + server_jid.domainpart), null, password, null);
+            Account account = new Account(new Jid.components(username, server_jid.domainpart, null), null, password, null);
+            add_activate_account(account);
             show_success();
-            added(account);
         } else {
             display_notification(error);
         }
@@ -358,6 +360,13 @@ public class AddAccountDialog : Gtk.Dialog {
             notification_revealer.set_reveal_child(false);
             return false;
         });
+    }
+
+    private void add_activate_account(Account account) {
+        account.enabled = true;
+        account.persist(db);
+        stream_interactor.connect_account(account);
+        added(account);
     }
 
     private void animate_window_resize(Widget widget) { // TODO code duplication

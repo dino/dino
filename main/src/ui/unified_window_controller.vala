@@ -76,7 +76,7 @@ public class UnifiedWindowController : Object {
         });
 
         window.welcome_placeholder.primary_button.clicked.connect(() => {
-            ManageAccounts.AddAccountDialog dialog = new ManageAccounts.AddAccountDialog(stream_interactor);
+            ManageAccounts.AddAccountDialog dialog = new ManageAccounts.AddAccountDialog(stream_interactor, db);
             dialog.set_transient_for(app.get_active_window());
             dialog.present();
         });

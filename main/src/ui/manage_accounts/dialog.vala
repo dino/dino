@@ -108,10 +108,9 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void show_add_account_dialog() {
-        AddAccountDialog add_account_dialog = new AddAccountDialog(stream_interactor);
+        AddAccountDialog add_account_dialog = new AddAccountDialog(stream_interactor, db);
         add_account_dialog.set_transient_for(this);
         add_account_dialog.added.connect((account) => {
-            account.persist(db);
             AccountRow account_item = add_account(account);
             account_list.select_row(account_item);
             account_list.queue_draw();
