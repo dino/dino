@@ -720,7 +720,7 @@ public class Session {
             .put_node(new StanzaNode.build("text", NS_URI)
                 .put_node(new StanzaNode.text(error.message))
             );
-        terminate(reason, "transport error: $(error.message)");
+        terminate(reason, @"transport error: $(error.message)");
     }
     public void on_connection_close() {
         if (terminate_on_connection_close) {

@@ -332,8 +332,9 @@ class Parameters : Jingle.TransportParameters, Object {
             } else if (local.priority > remote.priority) {
                 remote_wins = false;
             } else {
-                // equal priority -> XEP-0260 says that the initiator wins
-                remote_wins = role != Jingle.Role.INITIATOR;
+                // equal priority -> XEP-0260 says that the candidate offered
+                // by the initiator wins, so the one that the remote chose
+                remote_wins = role == Jingle.Role.INITIATOR;
             }
         }
 
