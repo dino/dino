@@ -380,8 +380,11 @@ public class Manager : StreamInteractionModule, Object {
     public async bool ensure_get_keys_for_jid(Account account, Jid jid) {
         if (trust_manager.is_known_address(account, jid)) return true;
         XmppStream? stream = stream_interactor.get_stream(account);
-        var device_list = yield stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist((!)stream, jid);
-        return device_list.size > 0;
+        if (stream != null) {
+            var device_list = yield stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist(stream, jid);
+            return device_list.size > 0;
+        }
+        return true; // TODO wait for stream?
     }
 
     public static void start(StreamInteractor stream_interactor, Database db, TrustManager trust_manager) {
