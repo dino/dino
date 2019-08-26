@@ -24,6 +24,19 @@ public class Module : Jingle.ContentType, XmppStreamModule {
     public Jingle.ContentParameters parse_content_parameters(StanzaNode description) throws Jingle.IqError {
         return Parameters.parse(this, description);
     }
+    public void handle_content_session_info(XmppStream stream, Jingle.Session session, StanzaNode info, Iq.Stanza iq) throws Jingle.IqError {
+        switch (info.name) {
+            case "received":
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+                break;
+            case "checksum":
+                // TODO(hrxi): handle hash
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+                break;
+            default:
+                throw new Jingle.IqError.UNSUPPORTED_INFO(@"unsupported file transfer info $(info.name)");
+        }
+    }
 
     public signal void file_incoming(XmppStream stream, FileTransfer file_transfer);
 

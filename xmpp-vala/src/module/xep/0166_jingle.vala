@@ -47,12 +47,16 @@ public errordomain Error {
     TRANSPORT_ERROR,
 }
 
-StanzaNode? get_single_node_anyns(StanzaNode parent, string node_name) throws IqError {
+StanzaNode? get_single_node_anyns(StanzaNode parent, string? node_name = null) throws IqError {
     StanzaNode? result = null;
     foreach (StanzaNode child in parent.get_all_subnodes()) {
-        if (child.name == node_name) {
+        if (node_name == null || child.name == node_name) {
             if (result != null) {
-                throw new IqError.BAD_REQUEST(@"multiple $(node_name) nodes");
+                if (node_name != null) {
+                    throw new IqError.BAD_REQUEST(@"multiple $(node_name) nodes");
+                } else {
+                    throw new IqError.BAD_REQUEST(@"expected single subnode");
+                }
             }
             result = child;
         }
@@ -364,6 +368,7 @@ public interface ContentType : Object {
     public abstract string content_type_ns_uri();
     public abstract TransportType content_type_transport_type();
     public abstract ContentParameters parse_content_parameters(StanzaNode description) throws IqError;
+    public abstract void handle_content_session_info(XmppStream stream, Session session, StanzaNode info, Iq.Stanza iq) throws IqError;
 }
 
 public interface ContentParameters : Object {
@@ -445,25 +450,28 @@ public class Session {
         // Validate action.
         switch (action) {
             case "session-accept":
+            case "session-info":
             case "session-terminate":
             case "transport-accept":
+            case "transport-info":
             case "transport-reject":
             case "transport-replace":
-            case "transport-info":
                 break;
             case "content-accept":
             case "content-add":
             case "content-modify":
             case "content-reject":
             case "content-remove":
+            case "description-info":
             case "security-info":
+                throw new IqError.NOT_IMPLEMENTED(@"$(action) is not implemented");
             default:
                 throw new IqError.BAD_REQUEST("invalid action");
         }
         ContentNode? content = null;
         StanzaNode? transport = null;
         // Do some pre-processing.
-        if (action != "session-terminate") {
+        if (action != "session-info" && action != "session-terminate") {
             content = get_single_content_node(jingle);
             verify_content(content);
             switch (action) {
@@ -495,6 +503,9 @@ public class Session {
                     throw new IqError.OUT_OF_ORDER("got session-accept while not waiting for one");
                 }
                 handle_session_accept(stream, content, jingle, iq);
+                break;
+            case "session-info":
+                handle_session_info(stream, jingle, iq);
                 break;
             case "session-terminate":
                 handle_session_terminate(stream, jingle, iq);
@@ -562,6 +573,19 @@ public class Session {
 
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
         // TODO(hrxi): also handle presence type=unavailable
+    }
+    void handle_session_info(XmppStream stream, StanzaNode jingle, Iq.Stanza iq) throws IqError {
+        StanzaNode? info = get_single_node_anyns(jingle);
+        if (info == null) {
+            // Jingle session ping
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+            return;
+        }
+        ContentType? content_type = stream.get_module(Module.IDENTITY).get_content_type(info.ns_uri);
+        if (content_type == null) {
+            throw new IqError.UNSUPPORTED_INFO("unknown session-info namespace");
+        }
+        content_type.handle_content_session_info(stream, this, info, iq);
     }
     void select_new_transport(XmppStream stream) {
         Transport? new_transport = stream.get_module(Module.IDENTITY).select_transport(stream, type_, peer_full_jid, tried_transport_methods);

@@ -477,6 +477,8 @@ class Parameters : Jingle.TransportParameters, Object {
             throw new IOError.PROXY_FAILED("wanted port 00 00, got %02x %02x".printf(read_buffer[5+dstaddr.length], read_buffer[5+dstaddr.length+1]));
         }
 
+        conn.get_socket().set_timeout(0);
+
         return conn;
     }
     public async void try_connecting_to_candidates(XmppStream stream, Jingle.Session session) throws Error {
