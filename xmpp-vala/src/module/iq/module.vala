@@ -67,7 +67,8 @@ namespace Xmpp.Iq {
                         }
                     }
                 } else {
-                    Iq.Stanza unavailable_error = new Iq.Stanza.error(iq, new ErrorStanza.service_unavailable());
+                    // Send error if we don't handle the NS of the IQ get/set payload (RFC6120 10.3.3 (2))
+                    Iq.Stanza unavailable_error = new Iq.Stanza.error(iq, new ErrorStanza.service_unavailable()) { to=iq.from };
                     send_iq(stream, unavailable_error);
                 }
             }
