@@ -93,7 +93,7 @@ public class ConversationSelector : ListBox {
 
     private void remove_conversation(Conversation conversation) {
         select_fallback_conversation(conversation);
-        if (rows.has_key(conversation) && !conversation.active) {
+        if (rows.has_key(conversation)) {
             remove(rows[conversation]);
             rows.unset(conversation);
         }

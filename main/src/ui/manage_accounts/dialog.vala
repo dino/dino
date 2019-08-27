@@ -173,7 +173,6 @@ public class Dialog : Gtk.Dialog {
     private bool change_account_state(bool state) {
         selected_account.enabled = state;
         if (state) {
-            if (selected_account.enabled) account_disabled(selected_account);
             account_enabled(selected_account);
         } else {
             account_disabled(selected_account);
