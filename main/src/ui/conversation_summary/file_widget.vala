@@ -269,7 +269,7 @@ public class FileWidget : Box {
                 image_stack.set_visible_child_name("content_type_image");
                 break;
             case FileTransfer.State.FAILED:
-                mime_label.label = "<span size='small' foreground=\"#f44336\">" + _("File transfer failed") + "</span>";
+                mime_label.label = "<span size='small' foreground=\"#f44336\">" + _("Could not transfer file") + "</span>";
                 image_stack.set_visible_child_name("content_type_image");
                 break;
         }
