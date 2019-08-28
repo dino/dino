@@ -8,46 +8,45 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 14:18+0200\n"
-"PO-Revision-Date: 2019-01-14 14:19+0000\n"
-"Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
-"dino/plugin-openpgp/zh_Hant/>\n"
-"Language: zh_Hant\n"
+"PO-Revision-Date: 2019-08-14 11:23+0000\n"
+"Language-Team: none\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.8-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr "金鑰發佈已被禁用"
+msgstr "Nyckelpublicering inaktiverad"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
-msgstr "GnuPG 錯誤"
+msgstr "Fel i GnuPG"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "沒有可用的金鑰。生成一個!"
+msgstr "Inga nycklar tillgängliga. Generera en!"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "選擇金鑰"
+msgstr "Välj nyckel"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
-msgstr "載入中…"
+msgstr "Laddar…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr "正在查詢 GnuPG"
+msgstr "Frågar GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "密鑰不在密鑰串中"
+msgstr "Nyckeln finns inte i nyckelknippan"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "加密"
+msgstr "Kryptering"

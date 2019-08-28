@@ -7,10 +7,12 @@
   <name>Dino</name>
   <summary>Modern XMPP Chat Client</summary>
   <summary xml:lang="zh_Hans">现代 XMPP 聊天客户端</summary>
+  <summary xml:lang="sv">Modern XMPP-chattklient</summary>
   <summary xml:lang="ru">Современный чат-клиент на XMPP</summary>
   <summary xml:lang="ro">Client XMPP de discuții modern</summary>
   <summary xml:lang="pt_BR">Moderno cliente de chat XMPP</summary>
   <summary xml:lang="pl">Nowoczesny komunikator XMPP</summary>
+  <summary xml:lang="oc">Client XMPP modèrn</summary>
   <summary xml:lang="nl_BE">Modernen XMPP-chatcliënt</summary>
   <summary xml:lang="nl">Moderne XMPP-chatcliënt</summary>
   <summary xml:lang="nb">Moderne XMPP-sludreklient</summary>
@@ -27,6 +29,7 @@
   <description>
     <p>Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable Jabber/XMPP experience while having your privacy in mind.</p>
     <p xml:lang="zh_Hans">Dino 是一个现代的开源聊天桌面客户端。它致力于提供一个清爽又可靠的 Jabber/XMPP 体验，同时又保护您的隐私。</p>
+    <p xml:lang="sv">Dino är en moden chattklient för skrivbordet med öppen källkod. Den erbjuder en elegant och pålitligt upplevelse av Jabber/XMPP samtidigt som den ser efter din integritet.</p>
     <p xml:lang="ru">Dino - это современный клиент для чатов с открытым исходным кодом, направленный на  надёжное и приватное использование Jabber/XMPP на персональных компьютерах.</p>
     <p xml:lang="ro">Dino este un client de chat modern, cu sursă deschisă, pentru calculatoare. Se concentrează să furnizeze o experiență Jabber/XMPP clară și fiabilă, ținând cont de confidențialitatea dumneavoastră.</p>
     <p xml:lang="pt_BR">Dino é um moderno chat de código aberto para desktop. Ele é focado em prover uma transparente e confiável experiência Jabber/XMPP, tendo em mente a sua privacidade.</p>
@@ -47,6 +50,7 @@
     <p xml:lang="ar">دينو برنامج حديث ومفتوح المصدر للدردشة صُمّم لسطح المكتب. ويُركّز علي تقديم تجربة نظيفة وموثوق منها لجابر/XMPP مع أخذ خصوصيتكم بعين الإعتبار.</p>
     <p>It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features such as read receipts and typing notifications.</p>
     <p xml:lang="zh_Hans">它支持 OMEMO 和 OpenPGP 端对端加密并允许配置隐私相关的特性比如已读回执和输入提醒。</p>
+    <p xml:lang="sv">Dino stödjer end-to-end-kryptering med OMEMO och OpenPGP och tillåter konfigurering av funktioner med integritetspåverkan som läsbekräftelser och skriftaviseringar.</p>
     <p xml:lang="ru">Он поддерживает сквозное шифрование через OMEMO и OpenPGP и позволяет настраивать такие функции, как уведомления о прочтении и наборе сообщений.</p>
     <p xml:lang="ro">Suportă criptare de la un capăt la altul prin intermediul OMEMO și OpenPGP, și permite configurarea caracteristicilor legate de confidențialitate precum trimiterea notificărilor de primire și tastare.</p>
     <p xml:lang="pt_BR">Suporte criptografia ponta a ponta com OMEMO e OpenPGP e permite configurar privacidade—características relacionadas às notificações de leitura, recebimento e escrita.</p>
@@ -67,6 +71,7 @@
     <p xml:lang="ar">وهو يدعم التشفير بواسطة OMEMO و OpenPGP يسمح بإعداد ميزات الخصوصية كالإيصالات المقروءة والإخطارات عند الكتابة.</p>
     <p>Dino fetches history from the server and synchronizes messages with other devices.</p>
     <p xml:lang="zh_Hans">Dino 从服务器获取消息并和其他设备同步。</p>
+    <p xml:lang="sv">Dino hämtar historik från servern och synkroniserar meddelanden med andra enheter.</p>
     <p xml:lang="ru">Dino загружает историю с сервера и синхронизирует сообщения с другими устройствами.</p>
     <p xml:lang="ro">Dino preia istoricul discuțiilor de pe server și sincronizează mesajele cu celelalte dispozitive.</p>
     <p xml:lang="pt_BR">Dino obtém o histórico do servidor e sincroniza mensagens com outros dispositivos.</p>
@@ -91,6 +96,7 @@
     <screenshot type="default">
       <caption>Main window with conversations</caption>
       <caption xml:lang="zh_Hans">带有对话的主窗口</caption>
+      <caption xml:lang="sv">Huvudfönster med konversationer</caption>
       <caption xml:lang="ru">Главное окно с чатами</caption>
       <caption xml:lang="ro">Fereastra principală de conversații</caption>
       <caption xml:lang="pt_BR">Janela principal com as conversas</caption>
@@ -115,10 +121,12 @@
     <screenshot>
       <caption>Start Conversation</caption>
       <caption xml:lang="zh_Hans">开始聊天</caption>
+      <caption xml:lang="sv">Starta Chatt</caption>
       <caption xml:lang="ru">Начать чат</caption>
       <caption xml:lang="ro">Pornește o conversație</caption>
       <caption xml:lang="pt_BR">Iniciar conversa</caption>
       <caption xml:lang="pl">Rozpocznij rozmowę</caption>
+      <caption xml:lang="oc">Començar la discussion</caption>
       <caption xml:lang="nl_BE">Gesprek beginnen</caption>
       <caption xml:lang="nl">Gesprek beginnen</caption>
       <caption xml:lang="nb">Start samtale</caption>
@@ -138,10 +146,12 @@
     <screenshot>
       <caption>Contact Details</caption>
       <caption xml:lang="zh_Hans">联系人详情</caption>
+      <caption xml:lang="sv">Kontaktdetaljer</caption>
       <caption xml:lang="ru">Информация о контакте</caption>
       <caption xml:lang="ro">Detalii contact</caption>
       <caption xml:lang="pt_BR">Detalhes do contato</caption>
       <caption xml:lang="pl">Szczegóły kontaktu</caption>
+      <caption xml:lang="oc">Detalhs del contacte</caption>
       <caption xml:lang="nl_BE">Contactgegevens</caption>
       <caption xml:lang="nl">Contactgegevens</caption>
       <caption xml:lang="nb">Kontaktdetaljer</caption>

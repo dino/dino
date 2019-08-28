@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-04 16:27+0200\n"
-"PO-Revision-Date: 2019-02-02 14:09+0000\n"
+"POT-Creation-Date: 2019-08-28 14:18+0200\n"
+"PO-Revision-Date: 2019-07-09 01:01+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -16,65 +16,75 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.5-dev\n"
+"X-Generator: Weblate 3.8-dev\n"
 
-#: main/src/ui/notifications.vala:67
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "Image sent"
 msgstr "图片已发送"
 
-#: main/src/ui/notifications.vala:67
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "File sent"
 msgstr "文件已发送"
 
-#: main/src/ui/notifications.vala:69
+#: main/src/ui/notifications.vala:70
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "Image received"
 msgstr "图片已接收"
 
-#: main/src/ui/notifications.vala:69
+#: main/src/ui/notifications.vala:70
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "File received"
 msgstr "文件已接收"
 
-#: main/src/ui/notifications.vala:94
+#: main/src/ui/notifications.vala:95
 msgid "Subscription request"
 msgstr "订阅请求"
 
-#: main/src/ui/notifications.vala:101
+#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:134
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "接受"
 
-#: main/src/ui/notifications.vala:102
+#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:133
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "拒绝"
 
-#: main/src/ui/notifications.vala:108
+#: main/src/ui/notifications.vala:109
 #, c-format
 msgid "Failed connecting to %s"
 msgstr "连接 %s 失败"
 
-#: main/src/ui/manage_accounts/dialog.vala:126
+#: main/src/ui/notifications.vala:124
+#, c-format
+msgid "Invitation to %s"
+msgstr ""
+
+#: main/src/ui/notifications.vala:125
+#, c-format
+msgid "%s invited you to %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
 msgstr "移除账户 %s？"
 
-#: main/src/ui/manage_accounts/dialog.vala:129
+#: main/src/ui/manage_accounts/dialog.vala:128
 msgid "Remove"
 msgstr "移除"
 
-#: main/src/ui/manage_accounts/dialog.vala:153
+#: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select avatar"
 msgstr "选择头像"
 
-#: main/src/ui/manage_accounts/dialog.vala:153
+#: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
 msgstr "选择"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:158
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/add_conference_dialog.vala:125
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
@@ -83,84 +93,84 @@ msgstr "选择"
 msgid "Cancel"
 msgstr "取消"
 
-#: main/src/ui/manage_accounts/dialog.vala:160
+#: main/src/ui/manage_accounts/dialog.vala:159
 msgid "Images"
 msgstr "图片"
 
-#: main/src/ui/manage_accounts/dialog.vala:164
+#: main/src/ui/manage_accounts/dialog.vala:163
 msgid "All files"
 msgstr "所有文件"
 
-#: main/src/ui/manage_accounts/dialog.vala:221
+#: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
 msgstr "连接中…"
 
-#: main/src/ui/manage_accounts/dialog.vala:223
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connected"
 msgstr "已连接"
 
-#: main/src/ui/manage_accounts/dialog.vala:225
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Disconnected"
 msgstr "已断开连接"
 
-#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "密码错误"
 
-#: main/src/ui/manage_accounts/dialog.vala:236
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr "无效的 TLS 证书"
 
+#: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
-#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "错误"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:79
+#: main/src/ui/manage_accounts/add_account_dialog.vala:81
 msgid "Add Account"
 msgstr "添加帐号"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:156
+#: main/src/ui/manage_accounts/add_account_dialog.vala:158
 #, c-format
 msgid "Sign in to %s"
 msgstr "登录到%s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#: main/src/ui/manage_accounts/add_account_dialog.vala:202
 #, c-format
 msgid "You can now start using %s"
 msgstr "您现在可以开始使用%s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:237
+#: main/src/ui/manage_accounts/add_account_dialog.vala:239
 #, c-format
 msgid "Could not connect to %s"
 msgstr "无法连接到%s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:254
+#: main/src/ui/manage_accounts/add_account_dialog.vala:256
 msgid "Wrong username or password"
 msgstr "错误的用户名或密码"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:287
+#: main/src/ui/manage_accounts/add_account_dialog.vala:289
 msgid "No response from server"
 msgstr "服务器未响应"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:293
+#: main/src/ui/manage_accounts/add_account_dialog.vala:295
 #, c-format
 msgid "Register on %s"
 msgstr "在 %s 注册"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:298
 msgid "The server requires to sign up through a website"
 msgstr "服务器要求在网站上注册"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:298
+#: main/src/ui/manage_accounts/add_account_dialog.vala:300
 msgid "Open Registration"
 msgstr "开放注册"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:314
+#: main/src/ui/manage_accounts/add_account_dialog.vala:316
 msgid "Register"
 msgstr "注册"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:316
+#: main/src/ui/manage_accounts/add_account_dialog.vala:318
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "检查 %s 以获取如何注册的信息"
@@ -207,11 +217,11 @@ msgstr[0] "%i 分钟以前"
 msgid "Just now"
 msgstr "刚刚"
 
-#: main/src/ui/application.vala:47
+#: main/src/ui/application.vala:158
 msgid "Join Conference"
 msgstr "加入群聊"
 
-#: main/src/ui/application.vala:47
+#: main/src/ui/application.vala:158
 #: main/src/ui/add_conversation/add_conference_dialog.vala:69
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
 #: main/src/ui/add_conversation/conference_details_fragment.vala:141
@@ -310,6 +320,29 @@ msgstr "管理帐号"
 msgid "No active conversations"
 msgstr "没有激活的会话"
 
+#: main/src/ui/conversation_summary/file_widget.vala:258
+#, c-format
+msgid "Downloading %s…"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:263
+#, c-format
+msgid "%s offered: %s"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:265
+#, c-format
+msgid "File offered: %s"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:267
+msgid "File offered"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:272
+msgid "File transfer failed"
+msgstr ""
+
 #: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
 msgstr "今天"
@@ -345,10 +378,6 @@ msgstr "已经停止输入"
 #: main/src/ui/conversation_summary/content_item_widget_factory.vala:60
 msgid "Message too long"
 msgstr "消息太长"
-
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:213
-msgid "File"
-msgstr "文件"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -570,11 +599,11 @@ msgstr "默认：%s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 msgid "Search messages"
-msgstr ""
+msgstr "搜索消息"
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
-msgstr ""
+msgstr "成员"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -712,6 +741,9 @@ msgstr "无匹配的消息"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "检查拼写或尝试移除过滤器"
+
+#~ msgid "File"
+#~ msgstr "文件"
 
 #~ msgid "Communicate happiness."
 #~ msgstr "沟通快乐。"

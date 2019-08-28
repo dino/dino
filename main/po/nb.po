@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-04 16:27+0200\n"
-"PO-Revision-Date: 2019-01-07 18:06+0000\n"
+"POT-Creation-Date: 2019-08-28 14:18+0200\n"
+"PO-Revision-Date: 2019-07-09 01:01+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "translations/nb_NO/>\n"
 "Language: nb\n"
@@ -16,65 +16,75 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.8-dev\n"
 
-#: main/src/ui/notifications.vala:67
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "Image sent"
 msgstr "Bilde sendt"
 
-#: main/src/ui/notifications.vala:67
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "File sent"
 msgstr "Fil sendt"
 
-#: main/src/ui/notifications.vala:69
+#: main/src/ui/notifications.vala:70
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "Image received"
 msgstr "Bilde mottatt"
 
-#: main/src/ui/notifications.vala:69
+#: main/src/ui/notifications.vala:70
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "File received"
 msgstr "Fil mottatt"
 
-#: main/src/ui/notifications.vala:94
+#: main/src/ui/notifications.vala:95
 msgid "Subscription request"
 msgstr "Abonnementsforespørsel"
 
-#: main/src/ui/notifications.vala:101
+#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:134
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Godta"
 
-#: main/src/ui/notifications.vala:102
+#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:133
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Nekt"
 
-#: main/src/ui/notifications.vala:108
+#: main/src/ui/notifications.vala:109
 #, c-format
 msgid "Failed connecting to %s"
 msgstr "Klarte ikke å koble til %s"
 
-#: main/src/ui/manage_accounts/dialog.vala:126
+#: main/src/ui/notifications.vala:124
+#, c-format
+msgid "Invitation to %s"
+msgstr ""
+
+#: main/src/ui/notifications.vala:125
+#, c-format
+msgid "%s invited you to %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
 msgstr "Fjern konto %s?"
 
-#: main/src/ui/manage_accounts/dialog.vala:129
+#: main/src/ui/manage_accounts/dialog.vala:128
 msgid "Remove"
 msgstr "Fjern"
 
-#: main/src/ui/manage_accounts/dialog.vala:153
+#: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select avatar"
 msgstr "Velg avatar"
 
-#: main/src/ui/manage_accounts/dialog.vala:153
+#: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
 msgstr "Velg"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:158
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/add_conference_dialog.vala:125
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
@@ -83,84 +93,84 @@ msgstr "Velg"
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: main/src/ui/manage_accounts/dialog.vala:160
+#: main/src/ui/manage_accounts/dialog.vala:159
 msgid "Images"
 msgstr "Bilder"
 
-#: main/src/ui/manage_accounts/dialog.vala:164
+#: main/src/ui/manage_accounts/dialog.vala:163
 msgid "All files"
 msgstr "Alle filer"
 
-#: main/src/ui/manage_accounts/dialog.vala:221
+#: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
 msgstr "Kobler til…"
 
-#: main/src/ui/manage_accounts/dialog.vala:223
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connected"
 msgstr "Tilkoblet"
 
-#: main/src/ui/manage_accounts/dialog.vala:225
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Disconnected"
 msgstr "Frakoblet"
 
-#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "Feil passord"
 
-#: main/src/ui/manage_accounts/dialog.vala:236
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr "Ugyldig TLS-sertifikat"
 
+#: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
-#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "Feil"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:79
+#: main/src/ui/manage_accounts/add_account_dialog.vala:81
 msgid "Add Account"
 msgstr "Legg til konto"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:156
+#: main/src/ui/manage_accounts/add_account_dialog.vala:158
 #, c-format
 msgid "Sign in to %s"
 msgstr "Logg inn på %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#: main/src/ui/manage_accounts/add_account_dialog.vala:202
 #, c-format
 msgid "You can now start using %s"
 msgstr "Du kan nå begynne å bruke %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:237
+#: main/src/ui/manage_accounts/add_account_dialog.vala:239
 #, c-format
 msgid "Could not connect to %s"
 msgstr "Kunne ikke koble til %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:254
+#: main/src/ui/manage_accounts/add_account_dialog.vala:256
 msgid "Wrong username or password"
 msgstr "Feil brukernavn eller passord"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:287
+#: main/src/ui/manage_accounts/add_account_dialog.vala:289
 msgid "No response from server"
 msgstr "Inget svar fra tjener"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:293
+#: main/src/ui/manage_accounts/add_account_dialog.vala:295
 #, c-format
 msgid "Register on %s"
 msgstr "Registrer på %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:298
 msgid "The server requires to sign up through a website"
 msgstr "Tjeneren krever at man logger inn via en nettside"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:298
+#: main/src/ui/manage_accounts/add_account_dialog.vala:300
 msgid "Open Registration"
 msgstr "Åpne registrering"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:314
+#: main/src/ui/manage_accounts/add_account_dialog.vala:316
 msgid "Register"
 msgstr "Registrer"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:316
+#: main/src/ui/manage_accounts/add_account_dialog.vala:318
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Se %s for å lære hvordan du registrerer deg"
@@ -208,11 +218,11 @@ msgstr[1] "%i minutter siden"
 msgid "Just now"
 msgstr "Akkurat nå"
 
-#: main/src/ui/application.vala:47
+#: main/src/ui/application.vala:158
 msgid "Join Conference"
 msgstr "Ta del i konferanse"
 
-#: main/src/ui/application.vala:47
+#: main/src/ui/application.vala:158
 #: main/src/ui/add_conversation/add_conference_dialog.vala:69
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
 #: main/src/ui/add_conversation/conference_details_fragment.vala:141
@@ -311,6 +321,29 @@ msgstr "Behandle kontoer"
 msgid "No active conversations"
 msgstr "Ingen kontoer aktive"
 
+#: main/src/ui/conversation_summary/file_widget.vala:258
+#, c-format
+msgid "Downloading %s…"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:263
+#, c-format
+msgid "%s offered: %s"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:265
+#, c-format
+msgid "File offered: %s"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:267
+msgid "File offered"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:272
+msgid "File transfer failed"
+msgstr ""
+
 #: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
 msgstr "I dag"
@@ -347,10 +380,6 @@ msgstr "har tatt pause i skrivinga"
 #: main/src/ui/conversation_summary/content_item_widget_factory.vala:60
 msgid "Message too long"
 msgstr "Meldingen er for lang"
-
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:213
-msgid "File"
-msgstr "Fil"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -572,11 +601,11 @@ msgstr "Forvalg: %s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 msgid "Search messages"
-msgstr ""
+msgstr "Søk i meldinger"
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
-msgstr ""
+msgstr "Medlemmer"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -718,6 +747,9 @@ msgstr "Ingen samsvarende meldinger"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Sjekk stavingen eller prøv å fjerne filter"
+
+#~ msgid "File"
+#~ msgstr "Fil"
 
 #~ msgid "Communicate happiness."
 #~ msgstr "Kommuniser glede."

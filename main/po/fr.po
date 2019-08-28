@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-04 16:27+0200\n"
-"PO-Revision-Date: 2019-01-19 14:20+0000\n"
+"POT-Creation-Date: 2019-08-28 14:18+0200\n"
+"PO-Revision-Date: 2019-08-14 11:23+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
 "Language: fr\n"
@@ -16,65 +16,75 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.8-dev\n"
 
-#: main/src/ui/notifications.vala:67
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "Image sent"
 msgstr "Image envoyée"
 
-#: main/src/ui/notifications.vala:67
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "File sent"
 msgstr "Fichier envoyé"
 
-#: main/src/ui/notifications.vala:69
+#: main/src/ui/notifications.vala:70
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "Image received"
 msgstr "Image reçue"
 
-#: main/src/ui/notifications.vala:69
+#: main/src/ui/notifications.vala:70
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "File received"
 msgstr "Fichier reçu"
 
-#: main/src/ui/notifications.vala:94
+#: main/src/ui/notifications.vala:95
 msgid "Subscription request"
 msgstr "Demande d’abonnement"
 
-#: main/src/ui/notifications.vala:101
+#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:134
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Accepter"
 
-#: main/src/ui/notifications.vala:102
+#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:133
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Refuser"
 
-#: main/src/ui/notifications.vala:108
+#: main/src/ui/notifications.vala:109
 #, c-format
 msgid "Failed connecting to %s"
 msgstr "Échec de la connexion à %s"
 
-#: main/src/ui/manage_accounts/dialog.vala:126
+#: main/src/ui/notifications.vala:124
+#, c-format
+msgid "Invitation to %s"
+msgstr ""
+
+#: main/src/ui/notifications.vala:125
+#, c-format
+msgid "%s invited you to %s"
+msgstr ""
+
+#: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
 msgstr "Supprimer le compte %s ?"
 
-#: main/src/ui/manage_accounts/dialog.vala:129
+#: main/src/ui/manage_accounts/dialog.vala:128
 msgid "Remove"
 msgstr "Supprimer"
 
-#: main/src/ui/manage_accounts/dialog.vala:153
+#: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select avatar"
 msgstr "Choisir un avatar"
 
-#: main/src/ui/manage_accounts/dialog.vala:153
+#: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
 msgstr "Choisir"
 
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:47
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:158
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/add_conference_dialog.vala:125
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
@@ -83,84 +93,84 @@ msgstr "Choisir"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: main/src/ui/manage_accounts/dialog.vala:160
+#: main/src/ui/manage_accounts/dialog.vala:159
 msgid "Images"
 msgstr "Images"
 
-#: main/src/ui/manage_accounts/dialog.vala:164
+#: main/src/ui/manage_accounts/dialog.vala:163
 msgid "All files"
 msgstr "Tous les fichiers"
 
-#: main/src/ui/manage_accounts/dialog.vala:221
+#: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
 msgstr "Connexion…"
 
-#: main/src/ui/manage_accounts/dialog.vala:223
+#: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connected"
 msgstr "Connecté"
 
-#: main/src/ui/manage_accounts/dialog.vala:225
+#: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Disconnected"
 msgstr "Déconnecté"
 
-#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "Mauvais mot de passe"
 
-#: main/src/ui/manage_accounts/dialog.vala:236
+#: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr "Certificat TLS invalide"
 
+#: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
-#: main/src/ui/manage_accounts/dialog.vala:241
 msgid "Error"
 msgstr "Erreur"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:79
+#: main/src/ui/manage_accounts/add_account_dialog.vala:81
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:156
+#: main/src/ui/manage_accounts/add_account_dialog.vala:158
 #, c-format
 msgid "Sign in to %s"
 msgstr "Se connecter à %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:200
+#: main/src/ui/manage_accounts/add_account_dialog.vala:202
 #, c-format
 msgid "You can now start using %s"
 msgstr "Vous pouvez maintenant utiliser %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:237
+#: main/src/ui/manage_accounts/add_account_dialog.vala:239
 #, c-format
 msgid "Could not connect to %s"
 msgstr "N'a pas pu se connecter à %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:254
+#: main/src/ui/manage_accounts/add_account_dialog.vala:256
 msgid "Wrong username or password"
 msgstr "Nom d'utilisateur ou mot de passe incorrect"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:287
+#: main/src/ui/manage_accounts/add_account_dialog.vala:289
 msgid "No response from server"
 msgstr "Pas de réponse du serveur"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:293
+#: main/src/ui/manage_accounts/add_account_dialog.vala:295
 #, c-format
 msgid "Register on %s"
 msgstr "S’inscrire sur %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:298
 msgid "The server requires to sign up through a website"
 msgstr "Ce serveur nécessite de s’inscrire depuis son site web"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:298
+#: main/src/ui/manage_accounts/add_account_dialog.vala:300
 msgid "Open Registration"
 msgstr "Inscription ouverte"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:314
+#: main/src/ui/manage_accounts/add_account_dialog.vala:316
 msgid "Register"
 msgstr "S’inscrire"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:316
+#: main/src/ui/manage_accounts/add_account_dialog.vala:318
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Consultez %s pour plus d’informations sur comment s’inscrire"
@@ -208,11 +218,11 @@ msgstr[1] "Il y a %i minutes"
 msgid "Just now"
 msgstr "À l’instant"
 
-#: main/src/ui/application.vala:47
+#: main/src/ui/application.vala:158
 msgid "Join Conference"
 msgstr "Rejoindre une conférence"
 
-#: main/src/ui/application.vala:47
+#: main/src/ui/application.vala:158
 #: main/src/ui/add_conversation/add_conference_dialog.vala:69
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
 #: main/src/ui/add_conversation/conference_details_fragment.vala:141
@@ -311,6 +321,29 @@ msgstr "Gérer les comptes"
 msgid "No active conversations"
 msgstr "Aucune discussion en cours"
 
+#: main/src/ui/conversation_summary/file_widget.vala:258
+#, c-format
+msgid "Downloading %s…"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:263
+#, c-format
+msgid "%s offered: %s"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:265
+#, c-format
+msgid "File offered: %s"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:267
+msgid "File offered"
+msgstr ""
+
+#: main/src/ui/conversation_summary/file_widget.vala:272
+msgid "File transfer failed"
+msgstr ""
+
 #: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
 msgstr "Aujourd’hui"
@@ -347,10 +380,6 @@ msgstr "a arrêté d’écrire"
 #: main/src/ui/conversation_summary/content_item_widget_factory.vala:60
 msgid "Message too long"
 msgstr "Message trop long"
-
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:213
-msgid "File"
-msgstr "Fichier"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -572,11 +601,11 @@ msgstr "Par défaut : %s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 msgid "Search messages"
-msgstr ""
+msgstr "Rechercher des messages"
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
-msgstr ""
+msgstr "Membres"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -718,6 +747,9 @@ msgstr "Aucun message correspondant"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Vérifiez l’orthographe ou essayez de supprimer des filtres"
+
+#~ msgid "File"
+#~ msgstr "Fichier"
 
 #~ msgid "Communicate happiness."
 #~ msgstr "Communiquer avec bonheur."
