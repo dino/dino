@@ -24,6 +24,19 @@ public class Module : Jingle.ContentType, XmppStreamModule {
     public Jingle.ContentParameters parse_content_parameters(StanzaNode description) throws Jingle.IqError {
         return Parameters.parse(this, description);
     }
+    public void handle_content_session_info(XmppStream stream, Jingle.Session session, StanzaNode info, Iq.Stanza iq) throws Jingle.IqError {
+        switch (info.name) {
+            case "received":
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+                break;
+            case "checksum":
+                // TODO(hrxi): handle hash
+                stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+                break;
+            default:
+                throw new Jingle.IqError.UNSUPPORTED_INFO(@"unsupported file transfer info $(info.name)");
+        }
+    }
 
     public signal void file_incoming(XmppStream stream, FileTransfer file_transfer);
 
@@ -45,13 +58,9 @@ public class Module : Jingle.ContentType, XmppStreamModule {
 
         Jingle.Session session = stream.get_module(Jingle.Module.IDENTITY)
             .create_session(stream, Jingle.TransportType.STREAMING, receiver_full_jid, Jingle.Senders.INITIATOR, "a-file-offer", description); // TODO(hrxi): Why "a-file-offer"?
+        session.terminate_on_connection_close = false;
 
-        SourceFunc callback = offer_file_stream.callback;
-        session.accepted.connect((stream) => {
-            session.conn.input_stream.close();
-            Idle.add((owned) callback);
-        });
-        yield;
+        yield session.conn.input_stream.close_async();
 
         // TODO(hrxi): catch errors
         yield session.conn.output_stream.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE|OutputStreamSpliceFlags.CLOSE_TARGET);
@@ -69,7 +78,7 @@ public class Parameters : Jingle.ContentParameters, Object {
     public int64 size { get; private set; }
     public StanzaNode original_description { get; private set; }
 
-    public Parameters(Module parent, StanzaNode original_description, string? media_type, string? name, int64? size) {
+    public Parameters(Module parent, StanzaNode original_description, string? media_type, string? name, int64 size) {
         this.parent = parent;
         this.original_description = original_description;
         this.media_type = media_type;
@@ -91,12 +100,15 @@ public class Parameters : Jingle.ContentParameters, Object {
         string? size_raw = size_node != null ? size_node.get_string_content() : null;
         // TODO(hrxi): For some reason, the ?:-expression does not work due to a type error.
         //int64? size = size_raw != null ? int64.parse(size_raw) : null; // TODO(hrxi): this has no error handling
-        int64 size = -1;
-        if (size_raw != null) {
-            size = int64.parse(size_raw);
-            if (size < 0) {
-                throw new Jingle.IqError.BAD_REQUEST("negative file size is invalid");
-            }
+        if (size_raw == null) {
+            // Jingle file transfers (XEP-0234) theoretically SHOULD send a
+            // file size, however, we do require it in order to reliably find
+            // the end of the file transfer.
+            throw new Jingle.IqError.BAD_REQUEST("file offer without file size");
+        }
+        int64 size = int64.parse(size_raw);
+        if (size < 0) {
+            throw new Jingle.IqError.BAD_REQUEST("negative file size is invalid");
         }
 
         return new Parameters(parent, description, media_type, name, size);
@@ -104,6 +116,47 @@ public class Parameters : Jingle.ContentParameters, Object {
 
     public void on_session_initiate(XmppStream stream, Jingle.Session session) {
         parent.file_incoming(stream, new FileTransfer(session, this));
+    }
+}
+
+// Does nothing except wrapping an input stream to signal EOF after reading
+// `max_size` bytes.
+private class FileTransferInputStream : InputStream {
+    InputStream inner;
+    int64 remaining_size;
+    public FileTransferInputStream(InputStream inner, int64 max_size) {
+        this.inner = inner;
+        this.remaining_size = max_size;
+    }
+    private ssize_t update_remaining(ssize_t read) {
+        this.remaining_size -= read;
+        return read;
+    }
+    public override ssize_t read(uint8[] buffer_, Cancellable? cancellable = null) throws IOError {
+        unowned uint8[] buffer = buffer_;
+        if (remaining_size <= 0) {
+            return 0;
+        }
+        if (buffer.length > remaining_size) {
+            buffer = buffer[0:remaining_size];
+        }
+        return update_remaining(inner.read(buffer, cancellable));
+    }
+    public override async ssize_t read_async(uint8[]? buffer_, int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
+        unowned uint8[] buffer = buffer_;
+        if (remaining_size <= 0) {
+            return 0;
+        }
+        if (buffer.length > remaining_size) {
+            buffer = buffer[0:remaining_size];
+        }
+        return update_remaining(yield inner.read_async(buffer, io_priority, cancellable));
+    }
+    public override bool close(Cancellable? cancellable = null) throws IOError {
+        return inner.close(cancellable);
+    }
+    public override async bool close_async(int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
+        return yield inner.close_async(io_priority, cancellable);
     }
 }
 
@@ -115,14 +168,15 @@ public class FileTransfer : Object {
     public string? file_name { get { return parameters.name; } }
     public int64 size { get { return parameters.size; } }
 
-    public InputStream? stream { get { return session.conn != null ? session.conn.input_stream : null; } }
+    public InputStream? stream { get; private set; }
 
     public FileTransfer(Jingle.Session session, Parameters parameters) {
         this.session = session;
         this.parameters = parameters;
+        this.stream = new FileTransferInputStream(session.conn.input_stream, parameters.size);
     }
 
-    public void accept(XmppStream stream) {
+    public void accept(XmppStream stream) throws IOError {
         session.accept(stream, parameters.original_description);
         session.conn.output_stream.close();
     }
