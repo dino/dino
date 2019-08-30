@@ -180,7 +180,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private void send_chat_state_notification(Conversation conversation, string state) {
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream != null && conversation.get_send_typing_setting(stream_interactor) == Conversation.Setting.ON) {
-            string message_type = conversation.type_ == Conversation.Type.GROUPCHAT ? Xmpp.MessageStanza.TYPE_GROUPCHAT : Xmpp.MessageStanza.TYPE_GROUPCHAT;
+            string message_type = conversation.type_ == Conversation.Type.GROUPCHAT ? Xmpp.MessageStanza.TYPE_GROUPCHAT : Xmpp.MessageStanza.TYPE_CHAT;
             stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart, message_type, state);
         }
     }
