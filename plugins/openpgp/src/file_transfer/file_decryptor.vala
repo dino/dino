@@ -35,7 +35,7 @@ public class PgpFileDecryptor : FileDecryptor, Object {
             }
             return new MemoryInputStream.from_data(clear_data.data, GLib.free);
         } catch (Error e) {
-            throw new FileReceiveError.DECRYPTION_FAILED("PGP file decrypt error: %s".printf(e.message));
+            throw new FileReceiveError.DECRYPTION_FAILED("PGP file decryption error: %s".printf(e.message));
         }
     }
 }

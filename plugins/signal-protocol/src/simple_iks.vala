@@ -3,8 +3,8 @@ using Gee;
 namespace Signal {
 
 public class SimpleIdentityKeyStore : IdentityKeyStore {
-    public override uint8[] identity_key_private { get; set; }
-    public override uint8[] identity_key_public { get; set; }
+    public override Bytes identity_key_private { get; set; }
+    public override Bytes identity_key_public { get; set; }
     public override uint32 local_registration_id { get; set; }
     private Map<string, Map<int, IdentityKeyStore.TrustedIdentity>> trusted_identities = new HashMap<string, Map<int, IdentityKeyStore.TrustedIdentity>>();
 

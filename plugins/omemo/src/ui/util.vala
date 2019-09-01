@@ -1,3 +1,5 @@
+using Xmpp.Util;
+
 namespace Dino.Plugins.Omemo {
 
 public static string fingerprint_from_base64(string b64) {
@@ -19,7 +21,7 @@ public static string fingerprint_markup(string s) {
     for (int i = 0; i < s.length; i += 4) {
         string four_chars = s.substring(i, 4).down();
 
-        int raw = (int) four_chars.to_long(null, 16);
+        int raw = (int) from_hex(four_chars);
         uint8[] bytes = {(uint8) ((raw >> 8) & 0xff - 128), (uint8) (raw & 0xff - 128)};
 
         Checksum checksum = new Checksum(ChecksumType.SHA1);

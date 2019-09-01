@@ -188,15 +188,19 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     }
 
     if (highlight_word != null) {
-        Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b");
-        MatchInfo match_info;
-        highlight_regex.match(s.down(), 0, out match_info);
-        if (match_info.matches()) {
-            int start, end;
-            match_info.fetch_pos(0, out start, out end);
-            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                "<b>" + s[start:end] + "</b>" +
-                parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+        try {
+            Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b");
+            MatchInfo match_info;
+            highlight_regex.match(s.down(), 0, out match_info);
+            if (match_info.matches()) {
+                int start, end;
+                match_info.fetch_pos(0, out start, out end);
+                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                    "<b>" + s[start:end] + "</b>" +
+                    parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+            }
+        } catch (RegexError e) {
+            assert_not_reached();
         }
     }
 
@@ -206,15 +210,19 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
 
         for (int i = 0; i < markup_string.length; i++) {
             string markup_esc = Regex.escape_string(markup_string[i]);
-            Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S.*?\\S|\\S)" + markup_esc + "($|\\s)");
-            MatchInfo match_info;
-            regex.match(s.down(), 0, out match_info);
-            if (match_info.matches()) {
-                int start, end;
-                match_info.fetch_pos(2, out start, out end);
-                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                    @"<$(convenience_tag[i])>" + s[start:end] + @"</$(convenience_tag[i])>" +
-                    parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+            try {
+                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S.*?\\S|\\S)" + markup_esc + "($|\\s)");
+                MatchInfo match_info;
+                regex.match(s.down(), 0, out match_info);
+                if (match_info.matches()) {
+                    int start, end;
+                    match_info.fetch_pos(2, out start, out end);
+                    return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                        @"<$(convenience_tag[i])>" + s[start:end] + @"</$(convenience_tag[i])>" +
+                        parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+                }
+            } catch (RegexError e) {
+                assert_not_reached();
             }
         }
     }

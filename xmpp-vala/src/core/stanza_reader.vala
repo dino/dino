@@ -52,8 +52,6 @@ public class StanzaReader {
             buffer_fill = (int) yield ((!)input).read_async(buffer, GLib.Priority.DEFAULT, cancellable);
             if (buffer_fill == 0) throw new XmlError.EOF("End of input stream reached.");
             buffer_pos = 0;
-        } catch (TlsError e) {
-            throw new XmlError.TLS("TlsError: %s".printf(e.message));
         } catch (GLib.IOError e) {
             throw new XmlError.IO("GLib.IOError: %s".printf(e.message));
         }

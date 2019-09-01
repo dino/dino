@@ -1,8 +1,8 @@
 namespace Signal {
 
 public abstract class IdentityKeyStore : Object {
-    public abstract uint8[] identity_key_private { get; set; }
-    public abstract uint8[] identity_key_public { get; set; }
+    public abstract Bytes identity_key_private { get; set; }
+    public abstract Bytes identity_key_public { get; set; }
     public abstract uint32 local_registration_id { get; set; }
 
     public signal void trusted_identity_added(TrustedIdentity id);
@@ -112,8 +112,8 @@ public class Store : Object {
 
     static int iks_get_identity_key_pair(out Buffer public_data, out Buffer private_data, void* user_data) {
         Store store = (Store) user_data;
-        public_data = new Buffer.from(store.identity_key_store.identity_key_public);
-        private_data = new Buffer.from(store.identity_key_store.identity_key_private);
+        public_data = new Buffer.from(store.identity_key_store.identity_key_public.get_data());
+        private_data = new Buffer.from(store.identity_key_store.identity_key_private.get_data());
         return 0;
     }
 

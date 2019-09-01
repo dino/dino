@@ -236,40 +236,50 @@ public class Database : Qlite.Database {
             message.fts_rebuild();
         }
         if (oldVersion < 8) {
-            exec("""
-            insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
-            select conversation.id, message.time, message.local_time, 1, message.id, 0
-            from message join conversation on
-                message.account_id=conversation.account_id and
-                message.counterpart_id=conversation.jid_id and
-                message.type=conversation.type+1 and
-                (message.counterpart_resource=conversation.resource or message.type != 3)
-            where
-                message.body not in (select info from file_transfer where info not null) and
-                message.id not in (select info from file_transfer where info not null)
-            union
-            select conversation.id, message.time, message.local_time, 2, file_transfer.id, 0
-            from file_transfer
-            join message on
-                file_transfer.info=message.id
-            join conversation on
-                file_transfer.account_id=conversation.account_id and
-                file_transfer.counterpart_id=conversation.jid_id and
-                message.type=conversation.type+1 and
-                (message.counterpart_resource=conversation.resource or message.type != 3)""");
+            try {
+                exec("""
+                insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
+                select conversation.id, message.time, message.local_time, 1, message.id, 0
+                from message join conversation on
+                    message.account_id=conversation.account_id and
+                    message.counterpart_id=conversation.jid_id and
+                    message.type=conversation.type+1 and
+                    (message.counterpart_resource=conversation.resource or message.type != 3)
+                where
+                    message.body not in (select info from file_transfer where info not null) and
+                    message.id not in (select info from file_transfer where info not null)
+                union
+                select conversation.id, message.time, message.local_time, 2, file_transfer.id, 0
+                from file_transfer
+                join message on
+                    file_transfer.info=message.id
+                join conversation on
+                    file_transfer.account_id=conversation.account_id and
+                    file_transfer.counterpart_id=conversation.jid_id and
+                    message.type=conversation.type+1 and
+                    (message.counterpart_resource=conversation.resource or message.type != 3)""");
+            } catch (Error e) {
+                stderr.printf("Failed to upgrade to database version 8: %s\n", e.message);
+                Process.exit(-1);
+            }
         }
         if (oldVersion < 9) {
-            exec("""
-            insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
-            select conversation.id, message.time, message.local_time, 1, message.id, 1
-            from message join conversation on
-                message.account_id=conversation.account_id and
-                message.counterpart_id=conversation.jid_id and
-                message.type=conversation.type+1 and
-                (message.counterpart_resource=conversation.resource or message.type != 3)
-            where
-                message.body in (select info from file_transfer where info not null) or
-                message.id in (select info from file_transfer where info not null)""");
+            try {
+                exec("""
+                insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
+                select conversation.id, message.time, message.local_time, 1, message.id, 1
+                from message join conversation on
+                    message.account_id=conversation.account_id and
+                    message.counterpart_id=conversation.jid_id and
+                    message.type=conversation.type+1 and
+                    (message.counterpart_resource=conversation.resource or message.type != 3)
+                where
+                    message.body in (select info from file_transfer where info not null) or
+                    message.id in (select info from file_transfer where info not null)""");
+            } catch (Error e) {
+                stderr.printf("Failed to upgrade to database version 8: %s\n", e.message);
+                Process.exit(-1);
+            }
         }
     }
 

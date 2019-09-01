@@ -153,11 +153,19 @@ public class UnifiedWindowController : Object {
 
     private void update_conversation_topic(string? subtitle = null) {
         if (subtitle != null) {
-            conversation_topic = (/\s+/).replace_literal(subtitle, -1, 0, " ");
+            try {
+                conversation_topic = (/\s+/).replace_literal(subtitle, -1, 0, " ");
+            } catch (RegexError e) {
+                assert_not_reached();
+            }
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             string? subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
             if (subject != null) {
-                conversation_topic =  (/\s+/).replace_literal(subject, -1, 0, " ");
+                try {
+                    conversation_topic =  (/\s+/).replace_literal(subject, -1, 0, " ");
+                } catch (RegexError e) {
+                    assert_not_reached();
+                }
             } else {
                 conversation_topic = null;
             }

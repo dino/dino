@@ -543,7 +543,7 @@ public class Session {
             throw new IqError.BAD_REQUEST("session-accept with unnegotiated transport method");
         }
         transport.on_transport_accept(content.transport);
-        StanzaNode description = content.description; // TODO(hrxi): handle this :P
+        // TODO(hrxi): handle content.description :)
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
 
         state = State.CONNECTING;

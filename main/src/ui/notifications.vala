@@ -125,8 +125,10 @@ public class Notifications : Object {
         string body = _("%s invited you to %s").printf(display_name, display_room);
         notification.set_body(body);
 
-        Cairo.ImageSurface jid_avatar = yield (new AvatarGenerator(40, 40)).draw_jid(stream_interactor, from_jid, account);
-        notification.set_icon(get_pixbuf_icon(jid_avatar));
+        try {
+            Cairo.ImageSurface jid_avatar = yield (new AvatarGenerator(40, 40)).draw_jid(stream_interactor, from_jid, account);
+            notification.set_icon(get_pixbuf_icon(jid_avatar));
+        } catch (Error e) { }
 
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
         notification.set_default_action_and_target_value("app.open-muc-join", new Variant.int32(conversation.id));
