@@ -15,7 +15,7 @@ public abstract class StatementBuilder {
         public T value;
         public Column<T>? column;
 
-        public AbstractField(T value) {
+        AbstractField(T value) {
             this.value = value;
         }
 

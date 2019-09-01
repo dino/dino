@@ -207,7 +207,7 @@ public abstract class ContentItem : Object {
     public Encryption? encryption { get; set; default=null; }
     public Entities.Message.Marked? mark { get; set; default=null; }
 
-    public ContentItem(int id, string ty, Jid jid, DateTime sort_time, DateTime display_time, Encryption encryption, Entities.Message.Marked mark) {
+    ContentItem(int id, string ty, Jid jid, DateTime sort_time, DateTime display_time, Encryption encryption, Entities.Message.Marked mark) {
         this.id = id;
         this.type_ = ty;
         this.jid = jid;

@@ -55,7 +55,7 @@ public abstract class Column<T> {
         return res;
     }
 
-    public Column(string name, int type) {
+    Column(string name, int type) {
         this.name = name;
         this.sqlite_type = type;
     }
