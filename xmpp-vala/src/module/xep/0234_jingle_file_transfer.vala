@@ -56,8 +56,13 @@ public class Module : Jingle.ContentType, XmppStreamModule {
                 .put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(size.to_string()))));
                 // TODO(hrxi): Add the mandatory hash field
 
-        Jingle.Session session = stream.get_module(Jingle.Module.IDENTITY)
-            .create_session(stream, Jingle.TransportType.STREAMING, receiver_full_jid, Jingle.Senders.INITIATOR, "a-file-offer", description); // TODO(hrxi): Why "a-file-offer"?
+        Jingle.Session session;
+        try {
+            session = stream.get_module(Jingle.Module.IDENTITY)
+                .create_session(stream, Jingle.TransportType.STREAMING, receiver_full_jid, Jingle.Senders.INITIATOR, "a-file-offer", description); // TODO(hrxi): Why "a-file-offer"?
+        } catch (Jingle.Error e) {
+            throw new IOError.FAILED(@"couldn't create Jingle session: $(e.message)");
+        }
         session.terminate_on_connection_close = false;
 
         yield session.conn.input_stream.close_async();

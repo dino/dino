@@ -326,22 +326,22 @@ public class Manager : StreamInteractionModule, Object {
                 store.identity_key_store.local_registration_id = Random.int_range(1, int32.MAX);
 
                 Signal.ECKeyPair key_pair = Plugin.get_context().generate_key_pair();
-                store.identity_key_store.identity_key_private = key_pair.private.serialize();
-                store.identity_key_store.identity_key_public = key_pair.public.serialize();
+                store.identity_key_store.identity_key_private = new Bytes(key_pair.private.serialize());
+                store.identity_key_store.identity_key_public = new Bytes(key_pair.public.serialize());
 
                 identity_id = (int) db.identity.insert().or("REPLACE")
                         .value(db.identity.account_id, account.id)
                         .value(db.identity.device_id, (int) store.local_registration_id)
-                        .value(db.identity.identity_key_private_base64, Base64.encode(store.identity_key_store.identity_key_private))
-                        .value(db.identity.identity_key_public_base64, Base64.encode(store.identity_key_store.identity_key_public))
+                        .value(db.identity.identity_key_private_base64, Base64.encode(store.identity_key_store.identity_key_private.get_data()))
+                        .value(db.identity.identity_key_public_base64, Base64.encode(store.identity_key_store.identity_key_public.get_data()))
                         .perform();
             } catch (Error e) {
                 // Ignore error
             }
         } else {
             store.identity_key_store.local_registration_id = ((!)row)[db.identity.device_id];
-            store.identity_key_store.identity_key_private = Base64.decode(((!)row)[db.identity.identity_key_private_base64]);
-            store.identity_key_store.identity_key_public = Base64.decode(((!)row)[db.identity.identity_key_public_base64]);
+            store.identity_key_store.identity_key_private = new Bytes(Base64.decode(((!)row)[db.identity.identity_key_private_base64]));
+            store.identity_key_store.identity_key_public = new Bytes(Base64.decode(((!)row)[db.identity.identity_key_public_base64]));
             identity_id = ((!)row)[db.identity.id];
         }
 

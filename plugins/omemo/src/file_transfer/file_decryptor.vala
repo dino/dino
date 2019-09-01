@@ -38,36 +38,40 @@ public class OmemoFileDecryptor : FileDecryptor, Object {
         return this.url_regex.match(http_file_receive.url) || (receive_data as OmemoHttpFileReceiveData) != null;
     }
 
-    public async InputStream decrypt_file(InputStream encrypted_stream, Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) {
-        OmemoHttpFileReceiveData? omemo_http_receive_data = receive_data as OmemoHttpFileReceiveData;
-        if (omemo_http_receive_data == null) assert(false);
+    public async InputStream decrypt_file(InputStream encrypted_stream, Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) throws FileReceiveError {
+        try {
+            OmemoHttpFileReceiveData? omemo_http_receive_data = receive_data as OmemoHttpFileReceiveData;
+            if (omemo_http_receive_data == null) assert(false);
 
-        // Decode IV and key
-        MatchInfo match_info;
-        this.url_regex.match(omemo_http_receive_data.original_url, 0, out match_info);
-        uint8[] iv_and_key = hex_to_bin(match_info.fetch(2).up());
-        uint8[] iv, key;
-        if (iv_and_key.length == 44) {
-            iv = iv_and_key[0:12];
-            key = iv_and_key[12:44];
-        } else {
-            iv = iv_and_key[0:16];
-            key = iv_and_key[16:48];
+            // Decode IV and key
+            MatchInfo match_info;
+            this.url_regex.match(omemo_http_receive_data.original_url, 0, out match_info);
+            uint8[] iv_and_key = hex_to_bin(match_info.fetch(2).up());
+            uint8[] iv, key;
+            if (iv_and_key.length == 44) {
+                iv = iv_and_key[0:12];
+                key = iv_and_key[12:44];
+            } else {
+                iv = iv_and_key[0:16];
+                key = iv_and_key[16:48];
+            }
+
+            // Read data
+            uint8[] buf = new uint8[256];
+            Array<uint8> data = new Array<uint8>(false, true, 0);
+            size_t len = -1;
+            do {
+                len = yield encrypted_stream.read_async(buf);
+                data.append_vals(buf, (uint) len);
+            } while(len > 0);
+
+            // Decrypt
+            uint8[] cleartext = Signal.aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, data.data);
+            file_transfer.encryption = Encryption.OMEMO;
+            return new MemoryInputStream.from_data(cleartext);
+        } catch (Error e) {
+            throw new FileReceiveError.DECRYPTION_FAILED("OMEMO file decryption error: %s".printf(e.message));
         }
-
-        // Read data
-        uint8[] buf = new uint8[256];
-        Array<uint8> data = new Array<uint8>(false, true, 0);
-        size_t len = -1;
-        do {
-            len = yield encrypted_stream.read_async(buf);
-            data.append_vals(buf, (uint) len);
-        } while(len > 0);
-
-        // Decrypt
-        uint8[] cleartext = Signal.aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, data.data);
-        file_transfer.encryption = Encryption.OMEMO;
-        return new MemoryInputStream.from_data(cleartext);
     }
 
     private uint8[] hex_to_bin(string hex) {

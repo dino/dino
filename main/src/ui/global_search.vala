@@ -206,27 +206,31 @@ public class GlobalSearch : Overlay {
 
         // Color the keywords
         int elongated_by = 0;
-        Regex highlight_regex = new Regex(regex_str);
-        MatchInfo match_info;
-        string markup_text_bak = markup_text.down();
-        highlight_regex.match(markup_text_bak, 0, out match_info);
-        for (; match_info.matches(); match_info.next()) {
-            int start, end;
-            match_info.fetch_pos(0, out start, out end);
-            markup_text = markup_text[0:start+elongated_by] + "<span bgcolor=\"yellow\">" + markup_text[start+elongated_by:end+elongated_by] + "</span>" + markup_text[end+elongated_by:markup_text.length];
-            elongated_by += "<span bgcolor=\"yellow\">".length + "</span>".length;
+        try {
+            Regex highlight_regex = new Regex(regex_str);
+            MatchInfo match_info;
+            string markup_text_bak = markup_text.down();
+            highlight_regex.match(markup_text_bak, 0, out match_info);
+            for (; match_info.matches(); match_info.next()) {
+                int start, end;
+                match_info.fetch_pos(0, out start, out end);
+                markup_text = markup_text[0:start+elongated_by] + "<span bgcolor=\"yellow\">" + markup_text[start+elongated_by:end+elongated_by] + "</span>" + markup_text[end+elongated_by:markup_text.length];
+                elongated_by += "<span bgcolor=\"yellow\">".length + "</span>".length;
+            }
+            markup_text_bak += ""; // We need markup_text_bak to live until here because url_regex.match does not copy the string
+
+            label.label = markup_text;
+            grid.attach(label, 1, 1, 1, 1);
+
+            Button button = new Button() { relief=ReliefStyle.NONE, visible=true };
+            button.clicked.connect(() => {
+                selected_item(item);
+            });
+            button.add(grid);
+            return button;
+        } catch (RegexError e) {
+            assert_not_reached();
         }
-        markup_text_bak += ""; // We need markup_text_bak to live until here because url_regex.match does not copy the string
-
-        label.label = markup_text;
-        grid.attach(label, 1, 1, 1, 1);
-
-        Button button = new Button() { relief=ReliefStyle.NONE, visible=true };
-        button.clicked.connect(() => {
-            selected_item(item);
-        });
-        button.add(grid);
-        return button;
     }
 
     private Grid get_context_message_widget(MessageItem item) {

@@ -79,6 +79,8 @@ SOURCES
     "src/module/xep/0368_srv_records_tls.vala"
     "src/module/xep/0380_explicit_encryption.vala"
     "src/module/xep/pixbuf_storage.vala"
+
+    "src/util.vala"
 PACKAGES
     ${ENGINE_PACKAGES}
 GENERATE_VAPI
@@ -110,6 +112,7 @@ if(BUILD_TESTS)
         "tests/testcase.vala"
 
         "tests/stanza.vala"
+        "tests/util.vala"
     CUSTOM_VAPIS
         ${CMAKE_BINARY_DIR}/exports/xmpp-vala_internal.vapi
     PACKAGES

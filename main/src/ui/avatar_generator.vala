@@ -5,6 +5,7 @@ using Gtk;
 
 using Dino.Entities;
 using Xmpp;
+using Xmpp.Util;
 
 namespace Dino.Ui {
 
@@ -259,10 +260,10 @@ public class AvatarGenerator {
     }
 
     private static void set_source_hex_color(Context ctx, string hex_color) {
-        ctx.set_source_rgba((double) hex_color.substring(0, 2).to_long(null, 16) / 255,
-                            (double) hex_color.substring(2, 2).to_long(null, 16) / 255,
-                            (double) hex_color.substring(4, 2).to_long(null, 16) / 255,
-                            hex_color.length > 6 ? (double) hex_color.substring(6, 2).to_long(null, 16) / 255 : 1);
+        ctx.set_source_rgba((double) from_hex(hex_color.substring(0, 2)) / 255,
+                            (double) from_hex(hex_color.substring(2, 2)) / 255,
+                            (double) from_hex(hex_color.substring(4, 2)) / 255,
+                            hex_color.length > 6 ? (double) from_hex(hex_color.substring(6, 2)) / 255 : 1);
     }
 }
 
