@@ -470,7 +470,7 @@ class Parameters : Jingle.TransportParameters, Object {
             throw new IOError.PROXY_FAILED("wanted %02x for length, got %02x".printf(dstaddr.length, read_buffer[4]));
         }
         if (!bytes_equal(read_buffer[5:5+dstaddr.length], dstaddr.data)) {
-            string repr = ((string)read_buffer[5:5+dstaddr.length]).make_valid().escape();
+            string repr = ((string)read_buffer[5:5+dstaddr.length]).escape(); // TODO call make_valid() once glib>=2.52 becomes widespread
             throw new IOError.PROXY_FAILED(@"wanted dstaddr $(dstaddr), got $(repr)");
         }
         if (read_buffer[5+dstaddr.length] != 0x00 || read_buffer[5+dstaddr.length+1] != 0x00) {

@@ -8,6 +8,7 @@ namespace Xmpp.Xep.EntityCapabilities {
 
         private string own_ver_hash;
         private Storage storage;
+        private Regex sha1_base64_regex = /^[A-Za-z0-9+\/]{27}=$/;
 
         public Module(Storage storage) {
             this.storage = storage;
@@ -15,7 +16,7 @@ namespace Xmpp.Xep.EntityCapabilities {
 
         private string get_own_hash(XmppStream stream) {
             if (own_ver_hash == null) {
-                own_ver_hash = compute_hash(stream.get_module(ServiceDiscovery.Module.IDENTITY).identities, stream.get_flag(ServiceDiscovery.Flag.IDENTITY).features);
+                own_ver_hash = compute_hash(stream.get_module(ServiceDiscovery.Module.IDENTITY).identities, stream.get_flag(ServiceDiscovery.Flag.IDENTITY).features, new ArrayList<DataForms.DataForm>());
             }
             return own_ver_hash;
         }
@@ -47,7 +48,7 @@ namespace Xmpp.Xep.EntityCapabilities {
             StanzaNode? c_node = presence.stanza.get_subnode("c", NS_URI);
             if (c_node != null) {
                 string? ver_attribute = c_node.get_attribute("ver", NS_URI);
-                if (ver_attribute == null) return;
+                if (ver_attribute == null || !sha1_base64_regex.match(ver_attribute)) return;
                 Gee.List<string> capabilities = storage.get_features(ver_attribute);
                 if (capabilities.size == 0) {
                     stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
@@ -61,13 +62,19 @@ namespace Xmpp.Xep.EntityCapabilities {
 
         private void store_entity_result(XmppStream stream, string entity, ServiceDiscovery.InfoResult? query_result) {
             if (query_result == null) return;
-            if (compute_hash(query_result.identities, query_result.features) == entity) {
+
+            Gee.List<DataForms.DataForm> data_forms = new ArrayList<DataForms.DataForm>();
+            foreach (StanzaNode node in query_result.iq.stanza.get_deep_subnodes(ServiceDiscovery.NS_URI_INFO + ":query", DataForms.NS_URI + ":x")) {
+                data_forms.add(DataForms.DataForm.create_from_node(stream, node, (stream, node) => {}));
+            }
+
+            if (compute_hash(query_result.identities, query_result.features, data_forms) == entity) {
                 storage.store_features(entity, query_result.features);
                 stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(query_result.iq.from, query_result.features);
             }
         }
 
-        private static string compute_hash(Gee.List<ServiceDiscovery.Identity> identities, Gee.List<string> features) {
+        private static string compute_hash(Gee.List<ServiceDiscovery.Identity> identities, Gee.List<string> features, Gee.List<DataForms.DataForm> data_forms) {
             identities.sort(compare_identities);
             features.sort();
 
@@ -80,6 +87,25 @@ namespace Xmpp.Xep.EntityCapabilities {
             }
             foreach (string feature in features) {
                 s += feature + "<";
+            }
+
+            data_forms.sort(compare_data_forms);
+            foreach (DataForms.DataForm data_form in data_forms) {
+                if (data_form.form_type == null) {
+                    // If [..] the FORM_TYPE field is not of type "hidden" or the form does not include a FORM_TYPE field, ignore the form but continue processing. (XEP-0115)
+                    continue;
+                }
+                s += data_form.form_type + "<";
+
+                data_form.fields.sort(compare_data_fields);
+                foreach (DataForms.DataForm.Field field in data_form.fields) {
+                    s += field.var + "<";
+                    Gee.List<string> values = field.get_values();
+                    values.sort();
+                    foreach (string value in values) {
+                        s += value + "<";
+                    }
+                }
             }
 
             Checksum c = new Checksum(ChecksumType.SHA1);
@@ -97,6 +123,20 @@ namespace Xmpp.Xep.EntityCapabilities {
             int type_comp = a.type_.collate(b.type_);
             if (type_comp != 0) return type_comp;
             // TODO lang
+            return 0;
+        }
+
+        private static int compare_data_forms(DataForms.DataForm a, DataForms.DataForm b) {
+            if (a.form_type != null && b.form_type != null) {
+                return a.form_type.collate(b.form_type);
+            }
+            return 0;
+        }
+
+        private static int compare_data_fields(DataForms.DataForm.Field a, DataForms.DataForm.Field b) {
+            if (a.var != null && b.var != null) {
+                return a.var.collate(b.var);
+            }
             return 0;
         }
     }

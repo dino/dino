@@ -8,6 +8,7 @@ public class DataForm {
 
     public StanzaNode stanza_node { get; set; }
     public Gee.List<Field> fields = new ArrayList<Field>();
+    public string? form_type = null;
 
     public XmppStream stream;
     public OnResult on_result;
@@ -210,7 +211,12 @@ public class DataForm {
                 case "fixed":
                     fields.add(new FixedField(field_node)); break;
                 case "hidden":
-                    fields.add(new HiddenField.from_node(field_node)); break;
+                    HiddenField field = new HiddenField.from_node(field_node);
+                    if (field.var == "FORM_TYPE") {
+                        this.form_type = field.get_value_string();
+                        break;
+                    }
+                    fields.add(field); break;
                 case "jid-multi":
                     fields.add(new JidMultiField(field_node)); break;
                 case "list-single":
