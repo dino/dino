@@ -18,7 +18,6 @@ public class EncryptionButton : MenuButton {
     public EncryptionButton(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        relief = ReliefStyle.NONE;
         use_popover = true;
         image = new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON);
         get_style_context().add_class("flat");

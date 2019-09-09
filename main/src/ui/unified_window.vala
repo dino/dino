@@ -71,21 +71,9 @@ public class UnifiedWindow : Gtk.Window {
         paned = (Paned) builder.get_object("paned");
         box.add(paned);
         chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
+        chat_input.key_press_event.connect(forward_key_press_to_chat_input);
         conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
-        conversation_frame.key_press_event.connect((event) => {
-            // Don't forward / change focus on Control / Alt
-            if (event.keyval == Gdk.Key.Control_L || event.keyval == Gdk.Key.Control_R ||
-                    event.keyval == Gdk.Key.Alt_L || event.keyval == Gdk.Key.Alt_R) {
-                return false;
-            }
-            // Don't forward / change focus on Control + ...
-            if ((event.state & ModifierType.CONTROL_MASK) > 0) {
-                return false;
-            }
-            chat_input.text_input.key_press_event(event);
-            chat_input.text_input.grab_focus();
-            return true;
-        });
+        conversation_frame.key_press_event.connect(forward_key_press_to_chat_input);
         conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
         goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
         goto_end_button = (Button) builder.get_object("goto_end_button");
@@ -124,6 +112,7 @@ public class UnifiedWindow : Gtk.Window {
 
             box.add(headerbar_paned);
         }
+        headerbar_paned.key_press_event.connect(forward_key_press_to_chat_input);
     }
 
     private void setup_stack() {
@@ -156,6 +145,21 @@ public class UnifiedWindow : Gtk.Window {
                 set_titlebar(headerbar_paned);
             }
         }
+    }
+
+    private bool forward_key_press_to_chat_input(EventKey event) {
+        // Don't forward / change focus on Control / Alt
+        if (event.keyval == Gdk.Key.Control_L || event.keyval == Gdk.Key.Control_R ||
+                event.keyval == Gdk.Key.Alt_L || event.keyval == Gdk.Key.Alt_R) {
+            return false;
+        }
+        // Don't forward / change focus on Control + ...
+        if ((event.state & ModifierType.CONTROL_MASK) > 0) {
+            return false;
+        }
+        chat_input.text_input.key_press_event(event);
+        chat_input.text_input.grab_focus();
+        return true;
     }
 
     public void loop_conversations(bool backwards) {

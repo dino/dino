@@ -42,7 +42,7 @@ public class View : Box {
         occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
         smiley_converter = new SmileyConverter(text_input);
         edit_history = new EditHistory(text_input, GLib.Application.get_default());
-        encryption_widget = new EncryptionButton(stream_interactor) { margin_top=3, valign=Align.START, visible=true };
+        encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
 
         file_button.clicked.connect(() => {
             PreviewFileChooserNative chooser = new PreviewFileChooserNative("Select file", get_toplevel() as Gtk.Window, FileChooserAction.OPEN, "Select", "Cancel");
@@ -57,6 +57,19 @@ public class View : Box {
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
 
         encryption_widget.get_style_context().add_class("dino-chatinput-button");
+
+        MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
+        emoji_button.get_style_context().add_class("flat");
+        emoji_button.get_style_context().add_class("dino-chatinput-button");
+        emoji_button.image = new Image.from_icon_name("dino-emoticon-symbolic", IconSize.BUTTON) { visible=true };
+
+        EmojiChooser chooser = new EmojiChooser();
+        chooser.emoji_picked.connect((emoji) => {
+            text_input.buffer.insert_at_cursor(emoji, emoji.data.length);
+        });
+        emoji_button.set_popover(chooser);
+
+        outer_box.add(emoji_button);
         outer_box.add(encryption_widget);
 
         text_input.key_press_event.connect(on_text_input_key_press);

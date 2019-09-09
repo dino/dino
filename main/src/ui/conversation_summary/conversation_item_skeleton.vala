@@ -89,6 +89,7 @@ public class ConversationItemSkeleton : EventBox {
             default_header.visible = this.show_skeleton;
         }
         image_content_box.margin_start = this.show_skeleton ? 15 : 58;
+        image_content_box.margin_end = 15;
 
         if (this.show_skeleton && this.last_group_item) {
             image_content_box.margin_top = 8;
