@@ -94,11 +94,16 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
     public override string[] after_actions { get { return after_actions_const; } }
 
     public override async bool run(XmppStream stream, MessageStanza message) {
-        //        if (message.from != stream.remote_name) return;
         if (stream.get_flag(Flag.IDENTITY) == null) return false;
 
         StanzaNode? message_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", Xmpp.NS_URI + ":message");
         if (message_node != null) {
+            // MAM messages must come from our server // TODO or a MUC server
+            if (!message.from.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)) {
+                warning("Received alledged MAM message from %s, ignoring", message.from.to_string());
+                return true;
+            }
+
             StanzaNode? forward_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", DelayedDelivery.NS_URI + ":delay");
             DateTime? datetime = DelayedDelivery.Module.get_time_for_node(forward_node);
             message.add_flag(new MessageFlag(datetime));
