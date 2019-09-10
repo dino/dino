@@ -30,6 +30,7 @@ public class StreamModule : XmppStreamModule {
         this.store = Plugin.get_context().create_store();
         store_created(store);
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => parse_device_list(stream, jid, id, node));
+
     }
 
     public override void detach(XmppStream stream) {}

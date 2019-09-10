@@ -72,6 +72,70 @@ public class TrustManager {
         return key_node;
     }
 
+    internal EncryptState encrypt_key(StanzaNode header_node, uint8[] keytag, Jid self_jid, Gee.List<Jid> recipients, XmppStream stream, Account account) throws Error {
+        EncryptState status = new EncryptState();
+        StreamModule module = stream.get_module(StreamModule.IDENTITY);
+
+        //Check we have the bundles and device lists needed to send the message
+        if (!is_known_address(account, self_jid)) return status;
+        status.own_list = true;
+        status.own_devices = get_trusted_devices(account, self_jid).size;
+        status.other_waiting_lists = 0;
+        status.other_devices = 0;
+        foreach (Jid recipient in recipients) {
+            if (!is_known_address(account, recipient)) {
+                status.other_waiting_lists++;
+            }
+            if (status.other_waiting_lists > 0) return status;
+            status.other_devices += get_trusted_devices(account, recipient).size;
+        }
+        if (status.own_devices == 0 || status.other_devices == 0) return status;
+
+
+        //Encrypt the key for each recipient's device individually
+        Address address = new Address("", 0);
+        foreach (Jid recipient in recipients) {
+            foreach(int32 device_id in get_trusted_devices(account, recipient)) {
+                if (module.is_ignored_device(recipient, device_id)) {
+                    status.other_lost++;
+                    continue;
+                }
+                try {
+                    address.name = recipient.bare_jid.to_string();
+                    address.device_id = (int) device_id;
+                    StanzaNode key_node = create_encrypted_key_node(keytag, address, module.store);
+                    header_node.put_node(key_node);
+                    status.other_success++;
+                } catch (Error e) {
+                    if (e.code == ErrorCode.UNKNOWN) status.other_unknown++;
+                    else status.other_failure++;
+                }
+            }
+        }
+
+        // Encrypt the key for each own device
+        address.name = self_jid.bare_jid.to_string();
+        foreach(int32 device_id in get_trusted_devices(account, self_jid)) {
+            if (module.is_ignored_device(self_jid, device_id)) {
+                status.own_lost++;
+                continue;
+            }
+            if (device_id != module.store.local_registration_id) {
+                address.device_id = (int) device_id;
+                try {
+                    StanzaNode key_node = create_encrypted_key_node(keytag, address, module.store);
+                    header_node.put_node(key_node);
+                    status.own_success++;
+                } catch (Error e) {
+                    if (e.code == ErrorCode.UNKNOWN) status.own_unknown++;
+                    else status.own_failure++;
+                }
+            }
+        }
+
+        return status;
+    }
+
     public EncryptState encrypt(MessageStanza message, Jid self_jid, Gee.List<Jid> recipients, XmppStream stream, Account account) {
         EncryptState status = new EncryptState();
         if (!Plugin.ensure_context()) return status;
@@ -80,21 +144,6 @@ public class TrustManager {
         StreamModule module = stream.get_module(StreamModule.IDENTITY);
 
         try {
-            //Check we have the bundles and device lists needed to send the message
-            if (!is_known_address(account, self_jid)) return status;
-            status.own_list = true;
-            status.own_devices = get_trusted_devices(account, self_jid).size;
-            status.other_waiting_lists = 0;
-            status.other_devices = 0;
-            foreach (Jid recipient in recipients) {
-                if (!is_known_address(account, recipient)) {
-                    status.other_waiting_lists++;
-                }
-                if (status.other_waiting_lists > 0) return status;
-                status.other_devices += get_trusted_devices(account, recipient).size;
-            }
-            if (status.own_devices == 0 || status.other_devices == 0) return status;
-
             //Create a key and use it to encrypt the message
             uint8[] key = new uint8[16];
             Plugin.get_context().randomize(key);
@@ -117,46 +166,7 @@ public class TrustManager {
                     .put_node(new StanzaNode.build("payload", NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
 
-            //Encrypt the key for each recipient's device individually
-            Address address = new Address(message.to.bare_jid.to_string(), 0);
-            foreach (Jid recipient in recipients) {
-                foreach(int32 device_id in get_trusted_devices(account, recipient)) {
-                    if (module.is_ignored_device(recipient, device_id)) {
-                        status.other_lost++;
-                        continue;
-                    }
-                    try {
-                        address.name = recipient.bare_jid.to_string();
-                        address.device_id = (int) device_id;
-                        StanzaNode key_node = create_encrypted_key_node(keytag, address, module.store);
-                        header_node.put_node(key_node);
-                        status.other_success++;
-                    } catch (Error e) {
-                        if (e.code == ErrorCode.UNKNOWN) status.other_unknown++;
-                        else status.other_failure++;
-                    }
-                }
-            }
-
-            // Encrypt the key for each own device
-            address.name = self_jid.bare_jid.to_string();
-            foreach(int32 device_id in get_trusted_devices(account, self_jid)) {
-                if (module.is_ignored_device(self_jid, device_id)) {
-                    status.own_lost++;
-                    continue;
-                }
-                if (device_id != module.store.local_registration_id) {
-                    address.device_id = (int) device_id;
-                    try {
-                        StanzaNode key_node = create_encrypted_key_node(keytag, address, module.store);
-                        header_node.put_node(key_node);
-                        status.own_success++;
-                    } catch (Error e) {
-                        if (e.code == ErrorCode.UNKNOWN) status.own_unknown++;
-                        else status.own_failure++;
-                    }
-                }
-            }
+            status = encrypt_key(header_node, keytag, self_jid, recipients, stream, account);
 
             message.stanza.put_node(encrypted_node);
             Xep.ExplicitEncryption.add_encryption_tag_to_message(message, NS_URI, "OMEMO");
