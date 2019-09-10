@@ -20,11 +20,12 @@ public class ConversationItemSkeleton : EventBox {
 
     private Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
     private Box header_content_box = new Box(Orientation.VERTICAL, 0) { visible=true };
-    private DefaultSkeletonHeader default_header;
+    private ItemMetaDataHeader metadata_header;
 
     public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
-        this.conversation = conversation;
         this.stream_interactor = stream_interactor;
+        this.conversation = conversation;
+        this.item = item;
         this.get_style_context().add_class("message-box");
 
         if (item.requires_avatar) {
@@ -32,19 +33,14 @@ public class ConversationItemSkeleton : EventBox {
             image_content_box.add(image);
         }
         if (item.display_time != null) {
-            default_header = new DefaultSkeletonHeader(stream_interactor, conversation, item) { visible=true };
+            metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
             if (!item.requires_header) {
-                default_header.name_label.visible = false;
-                default_header.dot_label.visible = false;
+                metadata_header.name_label.visible = false;
+                metadata_header.dot_label.visible = false;
             }
-            header_content_box.add(default_header);
+            header_content_box.add(metadata_header);
         }
 
-        // add item
-        this.item = item;
-        if (default_header != null) {
-            default_header.add_item(item);
-        }
         Widget? widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
         if (widget != null) {
             widget.valign = Align.END;
@@ -78,15 +74,15 @@ public class ConversationItemSkeleton : EventBox {
     }
 
     public void update_time() {
-        if (default_header != null) {
-            default_header.update_time();
+        if (metadata_header != null) {
+            metadata_header.update_time();
         }
     }
 
     public void update_margin() {
         image.visible = this.show_skeleton;
-        if (default_header != null) {
-            default_header.visible = this.show_skeleton;
+        if (metadata_header != null) {
+            metadata_header.visible = this.show_skeleton;
         }
         image_content_box.margin_start = this.show_skeleton ? 15 : 58;
         image_content_box.margin_end = 15;
@@ -101,40 +97,26 @@ public class ConversationItemSkeleton : EventBox {
     }
 }
 
-public class DefaultSkeletonHeader : Box {
-    private Box box = new Box(Orientation.HORIZONTAL, 4) { visible=true };
-    public Label name_label = new Label("") { use_markup=true, valign=Align.START, xalign=0, visible=true };
-    public Label time_label = new Label("") { use_markup=true, valign=Align.START, xalign=0, visible=true };
-    public Label dot_label = new Label("<span size='small'>·</span>") { use_markup=true, valign=Align.START, xalign=0, visible=true };
-    public Image encryption_image = new Image();
-    public Image received_image = new Image();
+[GtkTemplate (ui = "/im/dino/Dino/conversation_summary/item_metadata_header.ui")]
+public class ItemMetaDataHeader : Box {
+    [GtkChild] public Label name_label;
+    [GtkChild] public Label dot_label;
+    [GtkChild] public Label time_label;
+    [GtkChild] public Image encryption_image;
+    [GtkChild] public Image received_image;
+
+    public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON", 17, 12);
 
     private StreamInteractor stream_interactor;
     private Conversation conversation;
     private Plugins.MetaConversationItem item;
     private ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
 
-    public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON", 17, 12);
-    public virtual string TEXT_SIZE { get { return "small"; } }
-
-    construct {
-        time_label.get_style_context().add_class("dim-label");
-        dot_label.get_style_context().add_class("dim-label");
-        encryption_image.opacity = 0.4;
-        received_image.opacity = 0.4;
-    }
-
-    public DefaultSkeletonHeader(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
+    public ItemMetaDataHeader(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
         this.item = item;
-
-        box.add(name_label);
-        box.add(dot_label);
-        box.add(time_label);
-        box.add(received_image);
-        box.add(encryption_image);
-        this.add(box);
+        items.add(item);
 
         update_name_label();
         name_label.style_updated.connect(update_name_label);
@@ -143,25 +125,21 @@ public class DefaultSkeletonHeader : Box {
             encryption_image.set_from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER);
         }
         update_time();
-        add_item(item);
-    }
 
-    public void add_item(Plugins.MetaConversationItem item) {
-        items.add(item);
         item.notify["mark"].connect_after(update_received_mark);
         update_received_mark();
     }
 
     public void update_time() {
         if (item.display_time != null) {
-            time_label.label = @"<span size='$TEXT_SIZE'>" + get_relative_time(item.display_time.to_local()) + "</span>";
+            time_label.label = get_relative_time(item.display_time.to_local()).to_string();
         }
     }
 
     private void update_name_label() {
-        string display_name = Util.get_display_name(stream_interactor, item.jid, conversation.account);
+        string display_name = Markup.escape_text(Util.get_display_name(stream_interactor, item.jid, conversation.account));
         string color = Util.get_name_hex_color(stream_interactor, conversation.account, item.jid, Util.is_dark_theme(name_label));
-        name_label.label = @"<span size='$TEXT_SIZE' foreground=\"#$color\">$display_name</span>";
+        name_label.label = @"<span foreground=\"#$color\">$display_name</span>";
     }
 
     private void update_received_mark() {

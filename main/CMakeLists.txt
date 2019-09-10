@@ -47,6 +47,7 @@ set(RESOURCE_LIST
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
     conversation_summary/image_toolbar.ui
+    conversation_summary/item_metadata_header.ui
     conversation_summary/view.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui

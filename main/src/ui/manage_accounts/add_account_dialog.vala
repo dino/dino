@@ -295,7 +295,7 @@ public class AddAccountDialog : Gtk.Dialog {
         register_title.label = _("Register on %s").printf(server.to_string());
 
         if (form.oob != null) {
-            form_box.add(new Label(_("The server requires to sign up through a website")){ use_markup=true, visible=true } );
+            form_box.add(new Label(_("The server requires to sign up through a website")){ visible=true } );
             form_box.add(new Label(@"<a href=\"$(form.oob)\">$(form.oob)</a>") { use_markup=true, visible=true });
             register_form_continue_label.label = _("Open Registration");
             register_form_continue.visible = true;

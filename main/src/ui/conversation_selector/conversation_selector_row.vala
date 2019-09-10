@@ -136,6 +136,7 @@ public class ConversationSelectorRow : ListBoxRow {
                         nick_label.label = last_message.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
 
+                    name_label.attributes.filter((attr) => attr.equal(attr_style_new(Pango.Style.ITALIC)));
                     message_label.label = Util.summarize_whitespaces_to_space(last_message.body);
                     break;
                 case FileItem.TYPE:
@@ -151,10 +152,11 @@ public class ConversationSelectorRow : ListBoxRow {
                     }
 
                     bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
+                    message_label.attributes.insert(attr_style_new(Pango.Style.ITALIC));
                     if (transfer.direction == Message.DIRECTION_SENT) {
-                        message_label.label = "<i>" + (file_is_image ? _("Image sent") : _("File sent") ) + "</i>";
+                        message_label.label = (file_is_image ? _("Image sent") : _("File sent") );
                     } else {
-                        message_label.label = "<i>" + (file_is_image ? _("Image received") : _("File received") ) + "</i>";
+                        message_label.label = (file_is_image ? _("Image received") : _("File received") );
                     }
                     break;
             }
