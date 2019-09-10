@@ -259,8 +259,7 @@ public class Database : Qlite.Database {
                     message.type=conversation.type+1 and
                     (message.counterpart_resource=conversation.resource or message.type != 3)""");
             } catch (Error e) {
-                stderr.printf("Failed to upgrade to database version 8: %s\n", e.message);
-                Process.exit(-1);
+                error("Failed to upgrade to database version 8: %s", e.message);
             }
         }
         if (oldVersion < 9) {
@@ -277,8 +276,7 @@ public class Database : Qlite.Database {
                     message.body in (select info from file_transfer where info not null) or
                     message.id in (select info from file_transfer where info not null)""");
             } catch (Error e) {
-                stderr.printf("Failed to upgrade to database version 8: %s\n", e.message);
-                Process.exit(-1);
+                error("Failed to upgrade to database version 9: %s", e.message);
             }
         }
     }
