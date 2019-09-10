@@ -47,6 +47,10 @@ public class Module : XmppStreamModule, Iq.Handler {
     public void on_iq_set(XmppStream stream, Iq.Stanza iq) {
         StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI);
         if (query_node == null) return;
+        if (!iq.from.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)) {
+            warning("Received alledged roster push from %s, ignoring", iq.from.to_string());
+            return;
+        }
 
         Flag flag = stream.get_flag(Flag.IDENTITY);
         Item item = new Item.from_stanza_node(query_node.get_subnode("item", NS_URI));
