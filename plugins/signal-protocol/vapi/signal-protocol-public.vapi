@@ -220,9 +220,8 @@ namespace Signal {
         [CCode (cname = "ec_public_key_serialize_")]
         public uint8[] serialize() {
             Buffer buffer;
-            try {
-                throw_by_code(serialize_(out buffer));
-            } catch (GLib.Error e) {
+            int code = serialize_(out buffer);
+            if (code < 0 && code > MIN_ERROR_CODE) {
                 // Can only throw for invalid arguments or out of memory.
                 GLib.assert_not_reached();
             }
@@ -240,9 +239,8 @@ namespace Signal {
         [CCode (cname = "ec_private_key_serialize_")]
         public uint8[] serialize() throws GLib.Error {
             Buffer buffer;
-            try {
-                throw_by_code(serialize_(out buffer));
-            } catch (GLib.Error e) {
+            int code = serialize_(out buffer);
+            if (code < 0 && code > MIN_ERROR_CODE) {
                 // Can only throw for invalid arguments or out of memory.
                 GLib.assert_not_reached();
             }

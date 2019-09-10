@@ -272,6 +272,14 @@ public int get_only_emoji_count(string markup_text) {
     return emoji_no;
 }
 
+public string summarize_whitespaces_to_space(string s) {
+    try {
+        return (/\s+/).replace_literal(s, -1, 0, " ");
+    } catch (RegexError e) {
+        assert_not_reached();
+    }
+}
+
 public bool use_csd() {
     return (GLib.Application.get_default() as Application).use_csd();
 }

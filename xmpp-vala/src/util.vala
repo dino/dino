@@ -1,27 +1,17 @@
 namespace Xmpp.Util {
 
-// Parse a number from a hexadecimal representation.
-//
-// Skips any whitespace at the start of the string, parses as many valid
-// characters as hexadecimal digits as possible (possibly zero) and returns
-// them as an integer value.
-//
-// ```
-// // 0x0
-// print("0x%lx\n", from_hex(""));
-//
-// // 0x123abc
-// print("0x%lx\n", from_hex("123abc"));
-//
-// // 0x0
-// print("0x%lx\n", from_hex("0x123abc"));
-//
-// // 0xa
-// print("0x%lx\n", from_hex("A quick brown fox jumps over the lazy dog."));
-//
-// // 0xfeed
-// print("0x%lx\n", from_hex("   FEED ME   "));
-// ```
+ /**
+  * Parse a number from a hexadecimal representation.
+  *
+  * Skips any whitespace at the start of the string, parses as many valid
+  * characters as hexadecimal digits as possible (possibly zero) and returns
+  * them as an integer value.
+  *
+  * ```
+  * // 0xa
+  * print("0x%lx\n", from_hex("A quick brown fox jumps over the lazy dog."));
+  * ```
+  */
 
 public long from_hex(string numeral) {
     long result = 0;

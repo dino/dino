@@ -136,11 +136,7 @@ public class ConversationSelectorRow : ListBoxRow {
                         nick_label.label = last_message.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
 
-                    try {
-                        message_label.label = Markup.escape_text((/\s+/).replace_literal(last_message.body, -1, 0, " "));
-                    } catch (RegexError e) {
-                        assert_not_reached();
-                    }
+                    message_label.label = Util.summarize_whitespaces_to_space(last_message.body);
                     break;
                 case FileItem.TYPE:
                     FileItem file_item = last_content_item as FileItem;
