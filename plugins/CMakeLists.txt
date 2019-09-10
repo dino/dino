@@ -8,6 +8,7 @@ if(PLUGIN_ENABLED_openpgp)
 endif(PLUGIN_ENABLED_openpgp)
 
 if(PLUGIN_ENABLED_omemo)
+  add_subdirectory(crypto-vala)
   add_subdirectory(omemo)
   add_subdirectory(signal-protocol)
 endif(PLUGIN_ENABLED_omemo)
