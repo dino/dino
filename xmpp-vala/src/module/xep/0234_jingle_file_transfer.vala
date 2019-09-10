@@ -48,18 +48,24 @@ public class Module : Jingle.ContentType, XmppStreamModule {
         return stream.get_module(Jingle.Module.IDENTITY).is_available(stream, Jingle.TransportType.STREAMING, full_jid);
     }
 
-    public async void offer_file_stream(XmppStream stream, Jid receiver_full_jid, InputStream input_stream, string basename, int64 size) throws IOError {
+    public async void offer_file_stream(XmppStream stream, Jid receiver_full_jid, InputStream input_stream, string basename, int64 size, string? precondition_name = null, Object? precondition_options = null) throws IOError {
+        StanzaNode file_node;
         StanzaNode description = new StanzaNode.build("description", NS_URI)
             .add_self_xmlns()
-            .put_node(new StanzaNode.build("file", NS_URI)
-                .put_node(new StanzaNode.build("name", NS_URI).put_node(new StanzaNode.text(basename)))
-                .put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(size.to_string()))));
+            .put_node(file_node = new StanzaNode.build("file", NS_URI)
+                .put_node(new StanzaNode.build("name", NS_URI).put_node(new StanzaNode.text(basename))));
                 // TODO(hrxi): Add the mandatory hash field
+
+        if (size > 0) {
+            file_node.put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(size.to_string())));
+        } else {
+            warning("Sending file %s without size, likely going to cause problems down the road...", basename);
+        }
 
         Jingle.Session session;
         try {
             session = stream.get_module(Jingle.Module.IDENTITY)
-                .create_session(stream, Jingle.TransportType.STREAMING, receiver_full_jid, Jingle.Senders.INITIATOR, "a-file-offer", description); // TODO(hrxi): Why "a-file-offer"?
+                .create_session(stream, Jingle.TransportType.STREAMING, receiver_full_jid, Jingle.Senders.INITIATOR, "a-file-offer", description, precondition_name, precondition_options); // TODO(hrxi): Why "a-file-offer"?
         } catch (Jingle.Error e) {
             throw new IOError.FAILED(@"couldn't create Jingle session: $(e.message)");
         }
@@ -172,13 +178,14 @@ public class FileTransfer : Object {
     public Jid peer { get { return session.peer_full_jid; } }
     public string? file_name { get { return parameters.name; } }
     public int64 size { get { return parameters.size; } }
+    public Jingle.SecurityParameters? security { get { return session.security; } }
 
     public InputStream? stream { get; private set; }
 
     public FileTransfer(Jingle.Session session, Parameters parameters) {
         this.session = session;
         this.parameters = parameters;
-        this.stream = new FileTransferInputStream(session.conn.input_stream, parameters.size);
+        this.stream = new FileTransferInputStream(session.conn.input_stream, size);
     }
 
     public void accept(XmppStream stream) throws IOError {

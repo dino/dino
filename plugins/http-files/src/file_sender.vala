@@ -35,11 +35,11 @@ public class HttpFileSender : FileSender, Object {
         return send_data;
     }
 
-    public async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data) throws FileSendError {
+    public async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data, FileMeta file_meta) throws FileSendError {
         HttpFileSendData? send_data = file_send_data as HttpFileSendData;
         if (send_data == null) return;
 
-        yield upload(file_transfer, send_data);
+        yield upload(file_transfer, send_data, file_meta);
 
         file_transfer.info = send_data.url_down; // store the message content temporarily so the message gets filtered out
 
@@ -62,6 +62,10 @@ public class HttpFileSender : FileSender, Object {
         return file_transfer.size < max_file_sizes[conversation.account];
     }
 
+    public bool can_encrypt(Conversation conversation, FileTransfer file_transfer) {
+        return false;
+    }
+
     public bool is_upload_available(Conversation conversation) {
         lock (max_file_sizes) {
             return max_file_sizes.has_key(conversation.account);
@@ -74,24 +78,27 @@ public class HttpFileSender : FileSender, Object {
         }
     }
 
-    private async void upload(FileTransfer file_transfer, HttpFileSendData file_send_data) throws FileSendError {
+    private static void transfer_more_bytes(InputStream stream, Soup.MessageBody body) {
+        uint8[] bytes = new uint8[4096];
+        ssize_t read = stream.read(bytes);
+        if (read == 0) {
+            body.complete();
+            return;
+        }
+        bytes.length = (int)read;
+        body.append_buffer(new Soup.Buffer.take(bytes));
+    }
+
+    private async void upload(FileTransfer file_transfer, HttpFileSendData file_send_data, FileMeta file_meta) throws FileSendError {
         Xmpp.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream == null) return;
 
-        uint8[] buf = new uint8[256];
-        Array<uint8> data = new Array<uint8>(false, true, 0);
-        size_t len = -1;
-        do {
-            try {
-                len = file_transfer.input_stream.read(buf);
-            } catch (IOError e) {
-                throw new FileSendError.UPLOAD_FAILED("HTTP upload: IOError reading stream: %s".printf(e.message));
-            }
-            data.append_vals(buf, (uint) len);
-        } while(len > 0);
-
         Soup.Message message = new Soup.Message("PUT", file_send_data.url_up);
-        message.set_request(file_transfer.mime_type, Soup.MemoryUse.COPY, data.data);
+        message.request_headers.set_content_type(file_meta.mime_type, null);
+        message.request_headers.set_content_length(file_meta.size);
+        message.request_body.set_accumulate(false);
+        message.wrote_headers.connect(() => transfer_more_bytes(file_transfer.input_stream, message.request_body));
+        message.wrote_chunk.connect(() => transfer_more_bytes(file_transfer.input_stream, message.request_body));
         Soup.Session session = new Soup.Session();
         try {
             yield session.send_async(message);

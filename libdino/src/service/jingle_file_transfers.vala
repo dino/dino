@@ -6,6 +6,56 @@ using Dino.Entities;
 
 namespace Dino {
 
+public interface JingleFileEncryptionHelper : Object {
+    public abstract bool can_transfer(Conversation conversation);
+    public abstract bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid = null);
+    public abstract string? get_precondition_name(Conversation conversation, FileTransfer file_transfer);
+    public abstract Object? get_precondition_options(Conversation conversation, FileTransfer file_transfer);
+    public abstract FileMeta complete_meta(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta, Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer);
+}
+
+public class JingleFileEncryptionHelperTransferOnly : JingleFileEncryptionHelper, Object  {
+    public bool can_transfer(Conversation conversation) {
+        return true;
+    }
+    public bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid) {
+        return false;
+    }
+    public string? get_precondition_name(Conversation conversation, FileTransfer file_transfer) {
+        return null;
+    }
+    public Object? get_precondition_options(Conversation conversation, FileTransfer file_transfer) {
+        return null;
+    }
+    public FileMeta complete_meta(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta, Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer) {
+        return file_meta;
+    }
+}
+
+public class JingleFileHelperRegistry {
+    private static JingleFileHelperRegistry INSTANCE;
+    public static JingleFileHelperRegistry instance { get {
+        if (INSTANCE == null) {
+            INSTANCE = new JingleFileHelperRegistry();
+            INSTANCE.add_encryption_helper(Encryption.NONE, new JingleFileEncryptionHelperTransferOnly());
+        }
+        return INSTANCE;
+    } }
+
+    internal HashMap<Encryption, JingleFileEncryptionHelper> encryption_helpers = new HashMap<Encryption, JingleFileEncryptionHelper>();
+
+    public void add_encryption_helper(Encryption encryption, JingleFileEncryptionHelper helper) {
+        encryption_helpers[encryption] = helper;
+    }
+
+    public JingleFileEncryptionHelper? get_encryption_helper(Encryption encryption) {
+        if (encryption_helpers.has_key(encryption)) {
+            return encryption_helpers[encryption];
+        }
+        return null;
+    }
+}
+
 public class JingleFileProvider : FileProvider, Object {
 
     private StreamInteractor stream_interactor;
@@ -29,7 +79,15 @@ public class JingleFileProvider : FileProvider, Object {
     }
 
     public async FileMeta get_meta_info(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError {
-        return file_meta;
+        Xmpp.Xep.JingleFileTransfer.FileTransfer? jingle_file_transfer = file_transfers[file_transfer.info];
+        if (jingle_file_transfer == null) {
+            throw new FileReceiveError.DOWNLOAD_FAILED("Transfer data not available anymore");
+        }
+        FileMeta meta = file_meta;
+        foreach (JingleFileEncryptionHelper helper in JingleFileHelperRegistry.instance.encryption_helpers.values) {
+            meta = helper.complete_meta(file_transfer, receive_data, meta, jingle_file_transfer);
+        }
+        return meta;
     }
 
     public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError {
@@ -38,6 +96,9 @@ public class JingleFileProvider : FileProvider, Object {
         Xmpp.Xep.JingleFileTransfer.FileTransfer? jingle_file_transfer = file_transfers[file_transfer.info];
         if (jingle_file_transfer == null) {
             throw new FileReceiveError.DOWNLOAD_FAILED("Transfer data not available anymore");
+        }
+        foreach (JingleFileEncryptionHelper helper in JingleFileHelperRegistry.instance.encryption_helpers.values) {
+            helper.complete_meta(file_transfer, receive_data, file_meta, jingle_file_transfer);
         }
         try {
             jingle_file_transfer.accept(stream);
@@ -83,6 +144,10 @@ public class JingleFileSender : FileSender, Object {
     }
 
     public bool is_upload_available(Conversation conversation) {
+        JingleFileEncryptionHelper? helper = JingleFileHelperRegistry.instance.get_encryption_helper(conversation.encryption);
+        if (helper == null) return false;
+        if (!helper.can_transfer(conversation)) return false;
+
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return false;
 
@@ -98,32 +163,46 @@ public class JingleFileSender : FileSender, Object {
     }
 
     public bool can_send(Conversation conversation, FileTransfer file_transfer) {
-        if (conversation.encryption != Encryption.NONE) return false;
+        // No file specific restrictions apply to Jingle file transfers
+        return is_upload_available(conversation);
+    }
 
-        XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
-        if (stream == null) return false;
-
-        foreach (Jid full_jid in stream.get_flag(Presence.Flag.IDENTITY).get_resources(conversation.counterpart)) {
-            if (stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
-                return true;
-            }
-        }
-        return false;
+    public bool can_encrypt(Conversation conversation, FileTransfer file_transfer) {
+        JingleFileEncryptionHelper? helper = JingleFileHelperRegistry.instance.get_encryption_helper(file_transfer.encryption);
+        if (helper == null) return false;
+        return helper.can_encrypt(conversation, file_transfer);
     }
 
     public async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer, FileMeta file_meta) throws FileSendError {
+        if (file_meta is HttpFileMeta) {
+            throw new FileSendError.UPLOAD_FAILED("Cannot upload http file meta over Jingle");
+        }
         return new FileSendData();
     }
 
-    public async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data) throws FileSendError {
-        // TODO(hrxi) What should happen if `stream == null`?
+    public async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data, FileMeta file_meta) throws FileSendError {
         XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
+        if (stream == null) throw new FileSendError.UPLOAD_FAILED("No stream available");
+        JingleFileEncryptionHelper? helper = JingleFileHelperRegistry.instance.get_encryption_helper(file_transfer.encryption);
+        bool must_encrypt = helper != null && helper.can_encrypt(conversation, file_transfer);
         foreach (Jid full_jid in stream.get_flag(Presence.Flag.IDENTITY).get_resources(conversation.counterpart)) {
             // TODO(hrxi): Prioritization of transports (and resources?).
             if (!stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
                 continue;
             }
-            stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).offer_file_stream.begin(stream, full_jid, file_transfer.input_stream, file_transfer.file_name, file_transfer.size);
+            if (must_encrypt && !helper.can_encrypt(conversation, file_transfer, full_jid)) {
+                continue;
+            }
+            string? precondition_name = null;
+            Object? precondition_options = null;
+            if (must_encrypt) {
+                precondition_name = helper.get_precondition_name(conversation, file_transfer);
+                precondition_options = helper.get_precondition_options(conversation, file_transfer);
+                if (precondition_name == null) {
+                    throw new FileSendError.ENCRYPTION_FAILED("Should have created a precondition, but did not");
+                }
+            }
+            yield stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).offer_file_stream(stream, full_jid, file_transfer.input_stream, file_transfer.server_file_name, file_meta.size, precondition_name, precondition_options);
             return;
         }
     }

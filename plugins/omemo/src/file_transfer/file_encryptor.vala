@@ -1,6 +1,7 @@
 using Gee;
 using Gtk;
 
+using Crypto;
 using Dino.Entities;
 using Xmpp;
 using Signal;
@@ -22,29 +23,28 @@ public class OmemoFileEncryptor : Dino.FileEncryptor, Object {
         var omemo_http_file_meta = new OmemoHttpFileMeta();
 
         try {
-            uint8[] buf = new uint8[256];
-            Array<uint8> data = new Array<uint8>(false, true, 0);
-            size_t len = -1;
-            do {
-                len = file_transfer.input_stream.read(buf);
-                data.append_vals(buf, (uint) len);
-            } while(len > 0);
-
             //Create a key and use it to encrypt the file
             uint8[] iv = new uint8[16];
             Plugin.get_context().randomize(iv);
             uint8[] key = new uint8[32];
             Plugin.get_context().randomize(key);
-            uint8[] ciphertext = aes_encrypt(Cipher.AES_GCM_NOPADDING, key, iv, data.data);
+
+            SymmetricCipher cipher = new SymmetricCipher("AES-GCM");
+            cipher.set_key(key);
+            cipher.set_iv(iv);
 
             omemo_http_file_meta.iv = iv;
             omemo_http_file_meta.key = key;
-            omemo_http_file_meta.size = ciphertext.length;
-            omemo_http_file_meta.mime_type = "pgp";
-            file_transfer.input_stream = new MemoryInputStream.from_data(ciphertext, GLib.free);
-        } catch (Error error) {
-            throw new FileSendError.ENCRYPTION_FAILED("HTTP upload: Error encrypting stream: %s".printf(error.message));
+            omemo_http_file_meta.size = file_transfer.size;
+            omemo_http_file_meta.mime_type = "omemo";
+            file_transfer.input_stream = new ConverterInputStream(file_transfer.input_stream, new SymmetricCipherEncrypter((owned) cipher));
+        } catch (Crypto.Error error) {
+            throw new FileSendError.ENCRYPTION_FAILED("OMEMO file encryption error: %s".printf(error.message));
+        } catch (GLib.Error error) {
+            throw new FileSendError.ENCRYPTION_FAILED("OMEMO file encryption error: %s".printf(error.message));
         }
+
+        debug("Encrypting file %s as %s", file_transfer.file_name, file_transfer.server_file_name);
 
         return omemo_http_file_meta;
     }

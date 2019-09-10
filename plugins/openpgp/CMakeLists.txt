@@ -53,7 +53,7 @@ GRESOURCES
     ${OPENPGP_GRESOURCES_XML}
 )
 
-add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
+add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="OpenPGP" -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_library(openpgp SHARED ${OPENPGP_VALA_C} ${OPENPGP_GRESOURCES_TARGET})
 add_dependencies(openpgp ${GETTEXT_PACKAGE}-translations)
 target_link_libraries(openpgp libdino gpgme-vala ${OPENPGP_PACKAGES})

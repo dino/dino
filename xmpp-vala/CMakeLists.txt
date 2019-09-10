@@ -78,6 +78,7 @@ SOURCES
     "src/module/xep/0363_http_file_upload.vala"
     "src/module/xep/0368_srv_records_tls.vala"
     "src/module/xep/0380_explicit_encryption.vala"
+    "src/module/xep/0391_jingle_encrypted_transports.vala"
     "src/module/xep/pixbuf_storage.vala"
 
     "src/util.vala"
@@ -95,7 +96,7 @@ DEPENDS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.deps
 )
 
-add_definitions(${VALA_CFLAGS})
+add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="xmpp-vala")
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
 add_dependencies(xmpp-vala xmpp-vala-vapi)
 target_link_libraries(xmpp-vala ${ENGINE_PACKAGES})

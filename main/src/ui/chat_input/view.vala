@@ -57,6 +57,7 @@ public class View : Box {
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
 
         encryption_widget.get_style_context().add_class("dino-chatinput-button");
+        encryption_widget.encryption_changed.connect(update_file_transfer_availability);
 
         // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
         if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
@@ -83,15 +84,17 @@ public class View : Box {
         return this;
     }
 
-    public void initialize_for_conversation(Conversation conversation) {
-
-
-        if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
-        this.conversation = conversation;
-
+    private void update_file_transfer_availability() {
         bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
         file_button.visible = upload_available;
         file_separator.visible = upload_available;
+    }
+
+    public void initialize_for_conversation(Conversation conversation) {
+        if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
+        this.conversation = conversation;
+
+        update_file_transfer_availability();
 
         text_input.buffer.text = "";
         if (entry_cache.has_key(conversation)) {

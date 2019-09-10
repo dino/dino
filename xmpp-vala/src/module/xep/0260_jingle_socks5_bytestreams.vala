@@ -287,6 +287,7 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         remote_sent_selected_candidate = true;
         remote_selected_candidate = candidate;
+        debug("Remote selected candidate %s", candidate.cid);
         try_completing_negotiation();
     }
     private void handle_activated(string cid) throws Jingle.IqError {
@@ -353,6 +354,7 @@ class Parameters : Jingle.TransportParameters, Object {
         }
     }
     public async void wait_for_remote_activation(Candidate candidate, SocketConnection conn) {
+        debug("Waiting for remote activation of %s", candidate.cid);
         waiting_for_activation_cid = candidate.cid;
         waiting_for_activation_callback = wait_for_remote_activation.callback;
         yield;
@@ -368,6 +370,7 @@ class Parameters : Jingle.TransportParameters, Object {
         }
     }
     public async void connect_to_local_candidate(Candidate candidate) {
+        debug("Connecting to candidate %s", candidate.cid);
         try {
             SocketConnection conn = yield connect_to_socks5(candidate, local_dstaddr);
 
@@ -420,6 +423,7 @@ class Parameters : Jingle.TransportParameters, Object {
         SocketClient socket_client = new SocketClient() { timeout=3 };
 
         string address = @"[$(candidate.host)]:$(candidate.port)";
+        debug("Connecting to SOCKS5 server at %s", address);
 
         size_t written;
         size_t read;
@@ -500,6 +504,7 @@ class Parameters : Jingle.TransportParameters, Object {
                 local_determined_selected_candidate = true;
                 local_selected_candidate = candidate;
                 local_selected_candidate_conn = conn;
+                debug("Selected candidate %s", candidate.cid);
                 session.send_transport_info(stream, new StanzaNode.build("transport", NS_URI)
                     .add_self_xmlns()
                     .put_attribute("sid", sid)
@@ -522,6 +527,8 @@ class Parameters : Jingle.TransportParameters, Object {
             .put_attribute("sid", sid)
             .put_node(new StanzaNode.build("candidate-error", NS_URI))
         );
+        // Try remote candidates
+        try_completing_negotiation();
     }
     public void create_transport_connection(XmppStream stream, Jingle.Session session) {
         this.session = session;

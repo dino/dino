@@ -43,6 +43,7 @@ public errordomain Error {
     BAD_REQUEST,
     INVALID_PARAMETERS,
     UNSUPPORTED_TRANSPORT,
+    UNSUPPORTED_SECURITY,
     NO_SHARED_PROTOCOLS,
     TRANSPORT_ERROR,
 }
@@ -69,6 +70,7 @@ class ContentNode {
     public string name;
     public StanzaNode? description;
     public StanzaNode? transport;
+    public StanzaNode? security;
 }
 
 ContentNode get_single_content_node(StanzaNode jingle) throws IqError {
@@ -94,6 +96,7 @@ ContentNode get_single_content_node(StanzaNode jingle) throws IqError {
     string? name = content.get_attribute("name");
     StanzaNode? description = get_single_node_anyns(content, "description");
     StanzaNode? transport = get_single_node_anyns(content, "transport");
+    StanzaNode? security = get_single_node_anyns(content, "security");
     if (name == null || creator == null) {
         throw new IqError.BAD_REQUEST("missing name or creator");
     }
@@ -102,7 +105,8 @@ ContentNode get_single_content_node(StanzaNode jingle) throws IqError {
         creator=creator,
         name=name,
         description=description,
-        transport=transport
+        transport=transport,
+        security=security
     };
 }
 
@@ -112,6 +116,7 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     private HashMap<string, ContentType> content_types = new HashMap<string, ContentType>();
     private HashMap<string, Transport> transports = new HashMap<string, Transport>();
+    private HashMap<string, SecurityPrecondition> security_preconditions = new HashMap<string, SecurityPrecondition>();
 
     private XmppStream? current_stream = null;
 
@@ -163,6 +168,16 @@ public class Module : XmppStreamModule, Iq.Handler {
         }
         return result;
     }
+    public void register_security_precondition(SecurityPrecondition precondition) {
+        security_preconditions[precondition.security_ns_uri()] = precondition;
+    }
+    public SecurityPrecondition? get_security_precondition(string? ns_uri) {
+        if (ns_uri == null) return null;
+        if (!security_preconditions.has_key(ns_uri)) {
+            return null;
+        }
+        return security_preconditions[ns_uri];
+    }
 
     private bool is_jingle_available(XmppStream stream, Jid full_jid) {
         bool? has_jingle = stream.get_flag(ServiceDiscovery.Flag.IDENTITY).has_entity_feature(full_jid, NS_URI);
@@ -173,7 +188,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         return is_jingle_available(stream, full_jid) && select_transport(stream, type, full_jid, Set.empty()) != null;
     }
 
-    public Session create_session(XmppStream stream, TransportType type, Jid receiver_full_jid, Senders senders, string content_name, StanzaNode description) throws Error {
+    public Session create_session(XmppStream stream, TransportType type, Jid receiver_full_jid, Senders senders, string content_name, StanzaNode description, string? precondition_name = null, Object? precondation_options = null) throws Error {
         if (!is_jingle_available(stream, receiver_full_jid)) {
             throw new Error.NO_SHARED_PROTOCOLS("No Jingle support");
         }
@@ -181,18 +196,26 @@ public class Module : XmppStreamModule, Iq.Handler {
         if (transport == null) {
             throw new Error.NO_SHARED_PROTOCOLS("No suitable transports");
         }
+        SecurityPrecondition? precondition = get_security_precondition(precondition_name);
+        if (precondition_name != null && precondition == null) {
+            throw new Error.UNSUPPORTED_SECURITY("No suitable security precondiiton found");
+        }
         Jid? my_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid;
         if (my_jid == null) {
             throw new Error.GENERAL("Couldn't determine own JID");
         }
         TransportParameters transport_params = transport.create_transport_parameters(stream, my_jid, receiver_full_jid);
-        Session session = new Session.initiate_sent(random_uuid(), type, transport_params, my_jid, receiver_full_jid, content_name, send_terminate_and_remove_session);
+        SecurityParameters? security_params = precondition != null ? precondition.create_security_parameters(stream, my_jid, receiver_full_jid, precondation_options) : null;
+        Session session = new Session.initiate_sent(random_uuid(), type, transport_params, security_params, my_jid, receiver_full_jid, content_name, send_terminate_and_remove_session);
         StanzaNode content = new StanzaNode.build("content", NS_URI)
             .put_attribute("creator", "initiator")
             .put_attribute("name", content_name)
             .put_attribute("senders", senders.to_string())
             .put_node(description)
             .put_node(transport_params.to_transport_stanza_node());
+        if (security_params != null) {
+            content.put_node(security_params.to_security_stanza_node(stream, my_jid, receiver_full_jid));
+        }
         StanzaNode jingle = new StanzaNode.build("jingle", NS_URI)
             .add_self_xmlns()
             .put_attribute("action", "session-initiate")
@@ -233,8 +256,17 @@ public class Module : XmppStreamModule, Iq.Handler {
         }
         ContentParameters content_params = content_type.parse_content_parameters(content.description);
 
+        SecurityPrecondition? precondition = content.security != null ? get_security_precondition(content.security.ns_uri) : null;
+        SecurityParameters? security_params = null;
+        if (precondition != null) {
+            debug("Using precondition %s", precondition.security_ns_uri());
+            security_params = precondition.parse_security_parameters(stream, my_jid, iq.from, content.security);
+        } else if (content.security != null) {
+            throw new IqError.NOT_IMPLEMENTED("unknown security precondition");
+        }
+
         TransportType type = content_type.content_type_transport_type();
-        Session session = new Session.initiate_received(sid, type, transport_params, my_jid, iq.from, content.name, send_terminate_and_remove_session);
+        Session session = new Session.initiate_received(sid, type, transport_params, security_params, my_jid, iq.from, content.name, send_terminate_and_remove_session);
         stream.get_flag(Flag.IDENTITY).add_session(session);
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
 
@@ -328,7 +360,7 @@ public interface Transport : Object {
     public abstract bool is_transport_available(XmppStream stream, Jid full_jid);
     public abstract TransportType transport_type();
     public abstract int transport_priority();
-    public abstract TransportParameters create_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid);
+    public abstract TransportParameters create_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid) throws Error;
     public abstract TransportParameters parse_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws IqError;
 }
 
@@ -375,6 +407,17 @@ public interface ContentParameters : Object {
     public abstract void on_session_initiate(XmppStream stream, Session session);
 }
 
+public interface SecurityPrecondition : Object {
+    public abstract string security_ns_uri();
+    public abstract SecurityParameters? create_security_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, Object options) throws Jingle.Error;
+    public abstract SecurityParameters? parse_security_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, StanzaNode security) throws IqError;
+}
+
+public interface SecurityParameters : Object {
+    public abstract string security_ns_uri();
+    public abstract StanzaNode to_security_stanza_node(XmppStream stream, Jid local_full_jid, Jid peer_full_jid);
+    public abstract IOStream wrap_stream(IOStream stream);
+}
 
 public class Session {
     // INITIATE_SENT -> CONNECTING -> [REPLACING_TRANSPORT -> CONNECTING ->]... ACTIVE -> ENDED
@@ -398,6 +441,7 @@ public class Session {
     public Jid peer_full_jid { get; private set; }
     public Role content_creator { get; private set; }
     public string content_name { get; private set; }
+    public SecurityParameters? security { get; private set; }
 
     private Connection connection;
     public IOStream conn { get { return connection; } }
@@ -410,7 +454,7 @@ public class Session {
 
     SessionTerminate session_terminate_handler;
 
-    public Session.initiate_sent(string sid, TransportType type, TransportParameters transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
+    public Session.initiate_sent(string sid, TransportType type, TransportParameters transport, SecurityParameters? security, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
         this.state = State.INITIATE_SENT;
         this.role = Role.INITIATOR;
         this.sid = sid;
@@ -422,12 +466,13 @@ public class Session {
         this.tried_transport_methods = new HashSet<string>();
         this.tried_transport_methods.add(transport.transport_ns_uri());
         this.transport = transport;
+        this.security = security;
         this.connection = new Connection(this);
         this.session_terminate_handler = (owned)session_terminate_handler;
         this.terminate_on_connection_close = true;
     }
 
-    public Session.initiate_received(string sid, TransportType type, TransportParameters? transport, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
+    public Session.initiate_received(string sid, TransportType type, TransportParameters? transport, SecurityParameters? security, Jid local_full_jid, Jid peer_full_jid, string content_name, owned SessionTerminate session_terminate_handler) {
         this.state = State.INITIATE_RECEIVED;
         this.role = Role.RESPONDER;
         this.sid = sid;
@@ -437,6 +482,7 @@ public class Session {
         this.content_creator = Role.INITIATOR;
         this.content_name = content_name;
         this.transport = transport;
+        this.security = security;
         this.tried_transport_methods = new HashSet<string>();
         if (transport != null) {
             this.tried_transport_methods.add(transport.transport_ns_uri());
@@ -557,7 +603,12 @@ public class Session {
             state = State.ACTIVE;
             transport = null;
             tried_transport_methods.clear();
-            connection.set_inner(conn);
+            if (security != null) {
+                connection.set_inner(security.wrap_stream(conn));
+            } else {
+                connection.set_inner(conn);
+            }
+
         } else {
             if (role == Role.INITIATOR) {
                 select_new_transport(stream);
@@ -913,6 +964,7 @@ public class Connection : IOStream {
         return true;
     }
     public async bool close_read_async(int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
+        debug("Closing Jingle input stream");
         yield wait_and_check_for_errors(io_priority, cancellable);
         if (read_closed) {
             return true;

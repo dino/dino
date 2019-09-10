@@ -1,5 +1,6 @@
 using Dino.Entities;
 
+using Crypto;
 using Signal;
 
 namespace Dino.Plugins.Omemo {
@@ -56,20 +57,17 @@ public class OmemoFileDecryptor : FileDecryptor, Object {
                 key = iv_and_key[16:48];
             }
 
-            // Read data
-            uint8[] buf = new uint8[256];
-            Array<uint8> data = new Array<uint8>(false, true, 0);
-            size_t len = -1;
-            do {
-                len = yield encrypted_stream.read_async(buf);
-                data.append_vals(buf, (uint) len);
-            } while(len > 0);
-
-            // Decrypt
-            uint8[] cleartext = Signal.aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, data.data);
             file_transfer.encryption = Encryption.OMEMO;
-            return new MemoryInputStream.from_data(cleartext);
-        } catch (Error e) {
+            debug("Decrypting file %s from %s", file_transfer.file_name, file_transfer.server_file_name);
+
+            SymmetricCipher cipher = new SymmetricCipher("AES-GCM");
+            cipher.set_key(key);
+            cipher.set_iv(iv);
+            return new ConverterInputStream(encrypted_stream, new SymmetricCipherDecrypter((owned) cipher));
+
+        } catch (Crypto.Error e) {
+            throw new FileReceiveError.DECRYPTION_FAILED("OMEMO file decryption error: %s".printf(e.message));
+        } catch (GLib.Error e) {
             throw new FileReceiveError.DECRYPTION_FAILED("OMEMO file decryption error: %s".printf(e.message));
         }
     }
