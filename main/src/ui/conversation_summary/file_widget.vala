@@ -37,42 +37,54 @@ public class FileWidget : Box {
         this.stream_interactor = stream_interactor;
         this.file_transfer = file_transfer;
 
+        load_widget.begin();
+    }
+
+    private async void load_widget() {
         if (show_image()) {
-            content =  getImageWidget(file_transfer);
+            content = yield get_image_widget(file_transfer);
             if (content != null) {
                 this.state = State.IMAGE;
                 this.add(content);
                 return;
             }
         }
-
-        content = getDefaultWidget(file_transfer);
+        content = get_default_widget(file_transfer);
         this.state = State.DEFAULT;
         this.add(content);
     }
 
-    private Widget? getImageWidget(FileTransfer file_transfer) {
+    private async Widget? get_image_widget(FileTransfer file_transfer) {
         Image image = new Image() { halign=Align.START, visible = true };
-        Gdk.Pixbuf pixbuf;
-        try {
-            pixbuf = new Gdk.Pixbuf.from_file(file_transfer.get_file().get_path());
-        } catch (Error error) {
-            warning("Can't load picture %s", file_transfer.get_file().get_path());
+
+        // Load, scale and set the image
+        new Thread<void*> (null, () => {
+            Gdk.Pixbuf pixbuf;
+            try {
+                pixbuf = new Gdk.Pixbuf.from_file(file_transfer.get_file().get_path());
+            } catch (Error error) {
+                warning("Can't load picture %s", file_transfer.get_file().get_path());
+                return null;
+            }
+
+            pixbuf = pixbuf.apply_embedded_orientation();
+
+            int max_scaled_height = MAX_HEIGHT * image.scale_factor;
+            if (pixbuf.height > max_scaled_height) {
+                pixbuf = pixbuf.scale_simple((int) ((double) max_scaled_height / pixbuf.height * pixbuf.width), max_scaled_height, Gdk.InterpType.BILINEAR);
+            }
+            int max_scaled_width = MAX_WIDTH * image.scale_factor;
+            if (pixbuf.width > max_scaled_width) {
+                pixbuf = pixbuf.scale_simple(max_scaled_width, (int) ((double) max_scaled_width / pixbuf.width * pixbuf.height), Gdk.InterpType.BILINEAR);
+            }
+            pixbuf = crop_corners(pixbuf, 3 * image.get_scale_factor());
+            Util.image_set_from_scaled_pixbuf(image, pixbuf);
+
+            Idle.add(get_image_widget.callback);
             return null;
-        }
+        });
+        yield;
 
-        pixbuf = pixbuf.apply_embedded_orientation();
-
-        int max_scaled_height = MAX_HEIGHT * image.scale_factor;
-        if (pixbuf.height > max_scaled_height) {
-            pixbuf = pixbuf.scale_simple((int) ((double) max_scaled_height / pixbuf.height * pixbuf.width), max_scaled_height, Gdk.InterpType.BILINEAR);
-        }
-        int max_scaled_width = MAX_WIDTH * image.scale_factor;
-        if (pixbuf.width > max_scaled_width) {
-            pixbuf = pixbuf.scale_simple(max_scaled_width, (int) ((double) max_scaled_width / pixbuf.width * pixbuf.height), Gdk.InterpType.BILINEAR);
-        }
-        pixbuf = crop_corners(pixbuf, 3 * image.get_scale_factor());
-        Util.image_set_from_scaled_pixbuf(image, pixbuf);
         Util.force_css(image, "* { box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.1); margin: 2px; border-radius: 3px; }");
 
         Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_summary/image_toolbar.ui");
@@ -133,7 +145,7 @@ public class FileWidget : Box {
         return Gdk.pixbuf_get_from_surface(ctx.get_target(), 0, 0, pixbuf.width, pixbuf.height);
     }
 
-    private Widget getDefaultWidget(FileTransfer file_transfer) {
+    private Widget get_default_widget(FileTransfer file_transfer) {
         string icon_name = get_file_icon_name(file_transfer.mime_type);
 
         main_box = new Box(Orientation.HORIZONTAL, 10) { halign=Align.FILL, hexpand=true, visible=true };
@@ -235,15 +247,15 @@ public class FileWidget : Box {
         file_transfer.notify["path"].connect(update_file_info);
         file_transfer.notify["state"].connect(update_file_info);
         file_transfer.notify["mime-type"].connect(update_file_info);
-        update_file_info();
+        update_file_info.begin();
 
         return event_box;
     }
 
-    private void update_file_info() {
+    private async void update_file_info() {
         if (file_transfer.state == FileTransfer.State.COMPLETE && show_image() && state != State.IMAGE) {
             this.remove(content);
-            this.add(getImageWidget(file_transfer));
+            this.add(yield get_image_widget(file_transfer));
             state = State.IMAGE;
         }
 
