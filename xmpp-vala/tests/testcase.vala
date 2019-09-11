@@ -27,7 +27,7 @@ public abstract class Gee.TestCase : Object {
 
     public delegate void TestMethod ();
 
-    public TestCase (string name) {
+    protected TestCase (string name) {
         this.suite = new GLib.TestSuite (name);
     }
 
