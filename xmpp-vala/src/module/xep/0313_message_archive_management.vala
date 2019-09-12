@@ -100,7 +100,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
         if (message_node != null) {
             // MAM messages must come from our server // TODO or a MUC server
             if (!message.from.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)) {
-                warning("Received alledged MAM message from %s, ignoring", message.from.to_string());
+                warning("Received alleged MAM message from %s, ignoring", message.from.to_string());
                 return true;
             }
 
