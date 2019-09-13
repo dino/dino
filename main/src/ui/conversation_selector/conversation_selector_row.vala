@@ -136,7 +136,7 @@ public class ConversationSelectorRow : ListBoxRow {
                         nick_label.label = last_message.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
 
-                    name_label.attributes.filter((attr) => attr.equal(attr_style_new(Pango.Style.ITALIC)));
+                    message_label.attributes.filter((attr) => attr.equal(attr_style_new(Pango.Style.ITALIC)));
                     message_label.label = Util.summarize_whitespaces_to_space(last_message.body);
                     break;
                 case FileItem.TYPE:

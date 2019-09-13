@@ -151,7 +151,7 @@ public class FileWidget : Box {
         main_box = new Box(Orientation.HORIZONTAL, 10) { halign=Align.FILL, hexpand=true, visible=true };
         content_type_image = new Image.from_icon_name(icon_name, IconSize.DND) { opacity=0.5, visible=true };
         download_image = new Image.from_icon_name("dino-file-download-symbolic", IconSize.DND) { opacity=0.7, visible=true };
-        spinner = new Spinner() { active=true, visible=true };
+        spinner = new Spinner() { visible=true };
 
         EventBox stack_event_box = new EventBox() { visible=true };
         image_stack = new Stack() { transition_type = StackTransitionType.CROSSFADE, transition_duration=50, valign=Align.CENTER, visible=true };
@@ -259,6 +259,8 @@ public class FileWidget : Box {
             state = State.IMAGE;
         }
 
+        spinner.active = false; // A hidden spinning spinner still uses CPU. Deactivate asap
+
         string? mime_description = file_transfer.mime_type != null ? ContentType.get_description(file_transfer.mime_type) : null;
 
         switch (file_transfer.state) {
@@ -268,6 +270,7 @@ public class FileWidget : Box {
                 break;
             case FileTransfer.State.IN_PROGRESS:
                 mime_label.label = "<span size='small'>" + _("Downloading %s…").printf(get_size_string(file_transfer.size)) + "</span>";
+                spinner.active = true;
                 image_stack.set_visible_child_name("spinner");
                 break;
             case FileTransfer.State.NOT_STARTED:
