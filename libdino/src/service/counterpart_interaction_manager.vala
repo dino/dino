@@ -89,6 +89,8 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
             if (conversation == null) return;
             Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
             if (message == null) return;
+            // Don't move read marker backwards because we get old info from another client
+            if (conversation.read_up_to.local_time.compare(message.local_time) > 0) return;
             conversation.read_up_to = message;
         } else {
             // We received a marker from someone else. Search the respective message and mark it.

@@ -166,13 +166,10 @@ public class ConversationSelectorRow : ListBoxRow {
     }
 
     protected void update_read() {
-        MessageItem? message_item = last_content_item as MessageItem;
-        if (message_item == null) return;
-        Message last_message = message_item.message;
+        bool current_read_status = !stream_interactor.get_module(ChatInteraction.IDENTITY).has_unread(conversation);
+        if (read == current_read_status) return;
+        read = current_read_status;
 
-        bool read_was = read;
-        read = last_message == null || (conversation.read_up_to != null && last_message.equals(conversation.read_up_to));
-        if (read == read_was) return;
         if (read) {
             name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
             time_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
