@@ -58,18 +58,22 @@ public class View : Box {
 
         encryption_widget.get_style_context().add_class("dino-chatinput-button");
 
-        MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
-        emoji_button.get_style_context().add_class("flat");
-        emoji_button.get_style_context().add_class("dino-chatinput-button");
-        emoji_button.image = new Image.from_icon_name("dino-emoticon-symbolic", IconSize.BUTTON) { visible=true };
+        // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
+        if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
+            MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
+            emoji_button.get_style_context().add_class("flat");
+            emoji_button.get_style_context().add_class("dino-chatinput-button");
+            emoji_button.image = new Image.from_icon_name("dino-emoticon-symbolic", IconSize.BUTTON) { visible=true };
 
-        EmojiChooser chooser = new EmojiChooser();
-        chooser.emoji_picked.connect((emoji) => {
-            text_input.buffer.insert_at_cursor(emoji, emoji.data.length);
-        });
-        emoji_button.set_popover(chooser);
+            EmojiChooser chooser = new EmojiChooser();
+            chooser.emoji_picked.connect((emoji) => {
+                text_input.buffer.insert_at_cursor(emoji, emoji.data.length);
+            });
+            emoji_button.set_popover(chooser);
 
-        outer_box.add(emoji_button);
+            outer_box.add(emoji_button);
+        }
+
         outer_box.add(encryption_widget);
 
         text_input.key_press_event.connect(on_text_input_key_press);
