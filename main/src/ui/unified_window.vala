@@ -20,6 +20,8 @@ public class UnifiedWindow : Gtk.Window {
     public ConversationSelector conversation_selector;
     public ConversationSummary.ConversationView conversation_frame;
     public ConversationTitlebar conversation_titlebar;
+    public ConversationTitlebarCsd conversation_titlebar_csd;
+    public ConversationListTitlebarCsd conversation_list_titlebar_csd;
     public HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
     public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL, visible=true };
     public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
@@ -44,6 +46,8 @@ public class UnifiedWindow : Gtk.Window {
 
         this.get_style_context().add_class("dino-main");
         setup_headerbar();
+        Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
+        this.realize.connect(set_window_buttons);
         setup_unified();
         setup_stack();
 
@@ -84,25 +88,12 @@ public class UnifiedWindow : Gtk.Window {
 
     private void setup_headerbar() {
         if (Util.use_csd()) {
-            ConversationListTitlebarCsd conversation_list_titlebar_csd = new ConversationListTitlebarCsd(stream_interactor, this) { visible=true };
+            conversation_list_titlebar_csd = new ConversationListTitlebarCsd(stream_interactor, this) { visible=true };
             headerbar_paned.pack1(conversation_list_titlebar_csd, false, false);
 
-            ConversationTitlebarCsd conversation_titlebar_csd = new ConversationTitlebarCsd() { visible=true };
+            conversation_titlebar_csd = new ConversationTitlebarCsd() { visible=true };
             conversation_titlebar = conversation_titlebar_csd;
             headerbar_paned.pack2(conversation_titlebar_csd, true, false);
-
-            // Distribute start/end decoration_layout buttons to left/right headerbar. Ensure app menu fallback.
-            Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
-            if (gtk_settings != null) {
-                if (!gtk_settings.gtk_decoration_layout.contains("menu")) {
-                    gtk_settings.gtk_decoration_layout = "menu:" + gtk_settings.gtk_decoration_layout;
-                }
-                string[] decoration_layout = gtk_settings.gtk_decoration_layout.split(":");
-                if (decoration_layout.length == 2) {
-                    conversation_list_titlebar_csd.decoration_layout = decoration_layout[0] + ":";
-                    conversation_titlebar_csd.decoration_layout = ":" + decoration_layout[1];
-                }
-            }
         } else {
             ConversationListTitlebar conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
             headerbar_paned.pack1(conversation_list_titlebar, false, false);
@@ -113,6 +104,16 @@ public class UnifiedWindow : Gtk.Window {
             box.add(headerbar_paned);
         }
         headerbar_paned.key_press_event.connect(forward_key_press_to_chat_input);
+    }
+
+    private void set_window_buttons() {
+        if (!Util.use_csd()) return;
+        Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
+        if (gtk_settings == null) return;
+
+        string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
+        this.conversation_list_titlebar_csd.decoration_layout = buttons[0] + ":";
+        this.conversation_titlebar_csd.decoration_layout = ((buttons.length == 2) ? ":" + buttons[1] : "");
     }
 
     private void setup_stack() {
