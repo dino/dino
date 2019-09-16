@@ -22,7 +22,7 @@ public class SymmetricCipher {
             case GCrypt.Cipher.Mode.POLY1305: return "POLY1305";
             case GCrypt.Cipher.Mode.OCB: return "OCB";
             case GCrypt.Cipher.Mode.CFB8: return "CFB8";
-            case GCrypt.Cipher.Mode.XTS: return "XTS";
+            // case GCrypt.Cipher.Mode.XTS: return "XTS"; // Not supported in gcrypt < 1.8
         }
         return "NONE";
     }
