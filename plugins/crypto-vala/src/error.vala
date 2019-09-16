@@ -5,7 +5,7 @@ public errordomain Error {
     GCRYPT
 }
 
-internal void may_throw_gcrypt_error(GCrypt.Error e) throws GLib.Error {
+internal void may_throw_gcrypt_error(GCrypt.Error e) throws Error {
     if (((int)e) != 0) {
         throw new Crypto.Error.GCRYPT(e.to_string());
     }

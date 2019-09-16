@@ -39,7 +39,7 @@ public class Module : XmppStreamModule, SecurityPrecondition {
         string cipher = jet_options.cipher_uri;
         string type = jet_options.type_uri;
         if (!envelop_encodings.has_key(type) || !ciphers.has_key(cipher)) {
-            throw new IqError.NOT_IMPLEMENTED("JET cipher or type unknown");
+            throw new Jingle.Error.UNSUPPORTED_SECURITY("JET cipher or type unknown");
         }
         EnvelopEncoding encoding = envelop_encodings[type];
         return new SecurityParameters(ciphers[cipher], encoding, ciphers[cipher].generate_random_secret(), jet_options);

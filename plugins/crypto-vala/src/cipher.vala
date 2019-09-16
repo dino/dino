@@ -11,18 +11,18 @@ public class SymmetricCipher {
 
     private static unowned string mode_to_string(GCrypt.Cipher.Mode mode) {
         switch (mode) {
-            case ECB: return "ECB";
-            case CFB: return "CFB";
-            case CBC: return "CBC";
-            case STREAM: return "STREAM";
-            case OFB: return "OFB";
-            case CTR: return "CTR";
-            case AESWRAP: return "AESWRAP";
-            case GCM: return "GCM";
-            case POLY1305: return "POLY1305";
-            case OCB: return "OCB";
-            case CFB8: return "CFB8";
-            case XTS: return "XTS";
+            case GCrypt.Cipher.Mode.ECB: return "ECB";
+            case GCrypt.Cipher.Mode.CFB: return "CFB";
+            case GCrypt.Cipher.Mode.CBC: return "CBC";
+            case GCrypt.Cipher.Mode.STREAM: return "STREAM";
+            case GCrypt.Cipher.Mode.OFB: return "OFB";
+            case GCrypt.Cipher.Mode.CTR: return "CTR";
+            case GCrypt.Cipher.Mode.AESWRAP: return "AESWRAP";
+            case GCrypt.Cipher.Mode.GCM: return "GCM";
+            case GCrypt.Cipher.Mode.POLY1305: return "POLY1305";
+            case GCrypt.Cipher.Mode.OCB: return "OCB";
+            case GCrypt.Cipher.Mode.CFB8: return "CFB8";
+            case GCrypt.Cipher.Mode.XTS: return "XTS";
         }
         return "NONE";
     }
