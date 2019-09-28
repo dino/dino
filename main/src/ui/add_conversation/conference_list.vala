@@ -2,6 +2,7 @@ using Gee;
 using Gtk;
 
 using Xmpp;
+using Xmpp.Xep.Bookmarks;
 using Dino.Entities;
 
 namespace Dino.Ui {
@@ -11,7 +12,8 @@ protected class ConferenceList : FilterableList {
     public signal void conversation_selected(Conversation? conversation);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Account, Gee.List<Xep.Bookmarks.Conference>> lists = new HashMap<Account, Gee.List<Xep.Bookmarks.Conference>>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, Set<Conference>> lists = new HashMap<Account, Set<Conference>>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, HashMap<Jid, Widget>> widgets = new HashMap<Account, HashMap<Jid, Widget>>(Account.hash_func, Account.equals_func);
 
     public ConferenceList(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -26,20 +28,42 @@ protected class ConferenceList : FilterableList {
         });
 
         foreach (Account account in stream_interactor.get_accounts()) {
-            stream_interactor.get_module(MucManager.IDENTITY).get_bookmarks(account, (stream, conferences) => { on_conference_bookmarks_received(stream, account, conferences); });
+            stream_interactor.get_module(MucManager.IDENTITY).get_bookmarks.begin(account, (_, res) => {
+                Set<Conference>? conferences = stream_interactor.get_module(MucManager.IDENTITY).get_bookmarks.end(res);
+                set_bookmarks(account, conferences);
+            });
+        }
+
+        stream_interactor.get_module(MucManager.IDENTITY).conference_added.connect(add_conference);
+        stream_interactor.get_module(MucManager.IDENTITY).conference_removed.connect(remove_conference);
+    }
+
+    private void add_conference(Account account, Conference conference) {
+        if (!widgets.has_key(account)) {
+            widgets[account] = new HashMap<Jid, Widget>(Jid.hash_func, Jid.equals_func);
+        }
+        var widget = new ConferenceListRow(stream_interactor, conference, account);
+        widgets[account][conference.jid] = widget;
+        add(widget);
+    }
+
+    private void remove_conference(Account account, Jid jid) {
+        if (widgets.has_key(account) && widgets[account].has_key(jid)) {
+            widgets[account][jid].destroy();
+            widgets[account].unset(jid);
         }
     }
 
     public void refresh_conferences() {
         @foreach((widget) => { remove(widget); });
         foreach (Account account in lists.keys) {
-            foreach (Xep.Bookmarks.Conference conference in lists[account]) {
-                add(new ConferenceListRow(stream_interactor, conference, account));
+            foreach (Conference conference in lists[account]) {
+                add_conference(account, conference);
             }
         }
     }
 
-    private void on_conference_bookmarks_received(XmppStream stream, Account account, Gee.List<Xep.Bookmarks.Conference>? conferences) {
+    private void set_bookmarks(Account account, Set<Conference>? conferences) {
         if (conferences == null) {
             lists.unset(account);
         } else {
@@ -78,9 +102,9 @@ protected class ConferenceList : FilterableList {
 
 internal class ConferenceListRow : ListRow {
 
-    public Xep.Bookmarks.Conference bookmark;
+    public Conference bookmark;
 
-    public ConferenceListRow(StreamInteractor stream_interactor, Xep.Bookmarks.Conference bookmark, Account account) {
+    public ConferenceListRow(StreamInteractor stream_interactor, Conference bookmark, Account account) {
         this.jid = bookmark.jid;
         this.account = account;
         this.bookmark = bookmark;

@@ -21,6 +21,24 @@ namespace Xmpp.Xep.Pubsub {
             event_listeners[node] = new EventListenerDelegate((owned)listener);
         }
 
+        public async Gee.List<StanzaNode>? request_all(XmppStream stream, Jid jid, string node) { // TODO multiple nodes gehen auch
+            Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
+            request_iq.to = jid;
+
+            Gee.List<StanzaNode>? ret = null;
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, request_iq, (stream, iq) => {
+                StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);
+                if (event_node == null) return;
+                StanzaNode items_node = event_node.get_subnode("items", NS_URI);
+                if (items_node == null) return;
+                ret = items_node.get_subnodes("item", NS_URI);
+                Idle.add(request_all.callback);
+            });
+            yield;
+
+            return ret;
+        }
+
         public delegate void OnResult(XmppStream stream, Jid jid, string? id, StanzaNode? node);
         public void request(XmppStream stream, Jid jid, string node, owned OnResult listener) { // TODO multiple nodes gehen auch
             Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
@@ -34,7 +52,7 @@ namespace Xmpp.Xep.Pubsub {
             });
         }
 
-        public void publish(XmppStream stream, Jid? jid, string node_id, string? item_id, StanzaNode content, string? access_model=null) {
+        public async bool publish(XmppStream stream, Jid? jid, string node_id, string? item_id, StanzaNode content, string? access_model=null, int? max_items = null) {
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI).add_self_xmlns();
             StanzaNode publish_node = new StanzaNode.build("publish", NS_URI).put_attribute("node", node_id);
             pubsub_node.put_node(publish_node);
@@ -43,7 +61,7 @@ namespace Xmpp.Xep.Pubsub {
             items_node.put_node(content);
             publish_node.put_node(items_node);
 
-            if (access_model != null) {
+            if (access_model != null || max_items != null) {
                 StanzaNode publish_options_node = new StanzaNode.build("publish-options", NS_URI);
                 pubsub_node.put_node(publish_options_node);
 
@@ -51,14 +69,44 @@ namespace Xmpp.Xep.Pubsub {
                 DataForms.DataForm.HiddenField form_type_field = new DataForms.DataForm.HiddenField() { var="FORM_TYPE" };
                 form_type_field.set_value_string(NS_URI + "#publish-options");
                 data_form.add_field(form_type_field);
-                DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="pubsub#access_model" };
-                field.set_value_string(access_model);
-                data_form.add_field(field);
+                if (access_model != null) {
+                    DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="pubsub#access_model" };
+                    field.set_value_string(access_model);
+                    data_form.add_field(field);
+                }
+                if (max_items != null) {
+                    DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="pubsub#max_items" };
+                    field.set_value_string(max_items.to_string());
+                    data_form.add_field(field);
+                }
                 publish_options_node.put_node(data_form.get_submit_node());
             }
 
             Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
+            bool ok = true;
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, result_iq) => {
+                ok = !result_iq.is_error();
+                Idle.add(publish.callback);
+            });
+            yield;
+
+            return ok;
+        }
+
+        public async bool retract_item(XmppStream stream, Jid? jid, string node_id, string item_id) {
+            StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI).add_self_xmlns()
+                .put_node(new StanzaNode.build("retract", NS_URI).put_attribute("node", node_id).put_attribute("notify", "true")
+                    .put_node(new StanzaNode.build("item", NS_URI).put_attribute("id", item_id)));
+
+            Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
+            bool ok = true;
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, result_iq) => {
+                ok = !result_iq.is_error();
+                Idle.add(retract_item.callback);
+            });
+            yield;
+
+            return ok;
         }
 
         public void delete_node(XmppStream stream, Jid? jid, string node_id) {
@@ -82,14 +130,30 @@ namespace Xmpp.Xep.Pubsub {
         public override string get_id() { return IDENTITY.id; }
 
         private void on_received_message(XmppStream stream, MessageStanza message) {
-            StanzaNode event_node = message.stanza.get_subnode("event", NS_URI_EVENT); if (event_node == null) return;
-            StanzaNode items_node = event_node.get_subnode("items", NS_URI_EVENT); if (items_node == null) return;
-            StanzaNode item_node = items_node.get_subnode("item", NS_URI_EVENT); if (item_node == null) return;
+            StanzaNode event_node = message.stanza.get_subnode("event", NS_URI_EVENT);
+            if (event_node == null) return;
+            StanzaNode items_node = event_node.get_subnode("items", NS_URI_EVENT);
+            if (items_node == null) return;
             string node = items_node.get_attribute("node", NS_URI_EVENT);
-            string id = item_node.get_attribute("id", NS_URI_EVENT);
-            if (event_listeners.has_key(node)) {
-                event_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0]);
+
+            StanzaNode? item_node = items_node.get_subnode("item", NS_URI_EVENT);
+            if (item_node != null) {
+                string id = item_node.get_attribute("id", NS_URI_EVENT);
+
+                if (event_listeners.has_key(node)) {
+                    event_listeners[node].on_result(stream, message.from, id, item_node);
+                }
             }
+
+            StanzaNode? retract_node = items_node.get_subnode("retract", NS_URI_EVENT);
+            if (retract_node != null) {
+                string id = retract_node.get_attribute("id", NS_URI_EVENT);
+
+                if (event_listeners.has_key(node)) {
+                    event_listeners[node].on_result(stream, message.from, id, retract_node);
+                }
+            }
+
         }
     }
 

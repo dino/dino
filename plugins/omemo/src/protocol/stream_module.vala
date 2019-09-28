@@ -75,7 +75,7 @@ public class StreamModule : XmppStreamModule {
             if (!am_on_devicelist) {
                 debug("Not on device list, adding id");
                 node.put_node(new StanzaNode.build("device", NS_URI).put_attribute("id", store.local_registration_id.to_string()));
-                stream.get_module(Pubsub.Module.IDENTITY).publish(stream, jid, NODE_DEVICELIST, id, node, Xmpp.Xep.Pubsub.ACCESS_MODEL_OPEN);
+                stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, jid, NODE_DEVICELIST, id, node, Xmpp.Xep.Pubsub.ACCESS_MODEL_OPEN);
             }
             publish_bundles_if_needed(stream, jid);
         }
@@ -281,7 +281,7 @@ public class StreamModule : XmppStreamModule {
         }
         bundle.put_node(prekeys);
 
-        stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, @"$NODE_BUNDLES:$device_id", "1", bundle, Xmpp.Xep.Pubsub.ACCESS_MODEL_OPEN);
+        stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, null, @"$NODE_BUNDLES:$device_id", "1", bundle, Xmpp.Xep.Pubsub.ACCESS_MODEL_OPEN);
     }
 
     public override string get_ns() {

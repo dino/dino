@@ -62,6 +62,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.ServiceDiscovery.Module.with_identity("client", "pc"));
             module_map[account].add(new Xep.PrivateXmlStorage.Module());
             module_map[account].add(new Xep.Bookmarks.Module());
+            module_map[account].add(new Xep.Bookmarks2.Module());
             module_map[account].add(new Presence.Module());
             module_map[account].add(new Xmpp.MessageModule());
             module_map[account].add(new Xep.MessageArchiveManagement.Module());

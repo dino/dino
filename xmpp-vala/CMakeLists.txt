@@ -19,6 +19,8 @@ SOURCES
     "src/core/xmpp_stream.vala"
 
     "src/module/bind.vala"
+    "src/module/bookmarks_provider.vala"
+    "src/module/conference.vala"
     "src/module/iq/module.vala"
     "src/module/iq/stanza.vala"
     "src/module/jid.vala"
@@ -39,6 +41,9 @@ SOURCES
     "src/module/tls.vala"
     "src/module/util.vala"
 
+    "src/module/xep/0048_bookmarks.vala"
+    "src/module/xep/0048_conference.vala"
+    "src/module/xep/0402_bookmarks2.vala"
     "src/module/xep/0004_data_forms.vala"
     "src/module/xep/0030_service_discovery/flag.vala"
     "src/module/xep/0030_service_discovery/identity.vala"
@@ -50,8 +55,6 @@ SOURCES
     "src/module/xep/0045_muc/module.vala"
     "src/module/xep/0045_muc/status_code.vala"
     "src/module/xep/0047_in_band_bytestreams.vala"
-    "src/module/xep/0048_bookmarks/conference.vala"
-    "src/module/xep/0048_bookmarks/module.vala"
     "src/module/xep/0049_private_xml_storage.vala"
     "src/module/xep/0054_vcard/module.vala"
     "src/module/xep/0060_pubsub.vala"

@@ -19,7 +19,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     [GtkChild] private Entry nick_entry;
 
     private StreamInteractor stream_interactor;
-    private Xmpp.Xep.Bookmarks.Conference? edit_conference = null;
+    private Conference? edit_conference = null;
     private bool alias_entry_changed = false;
 
     public AddGroupchatDialog(StreamInteractor stream_interactor) {
@@ -36,7 +36,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         nick_entry.key_release_event.connect(check_ok);
     }
 
-    public AddGroupchatDialog.for_conference(StreamInteractor stream_interactor, Account account, Xmpp.Xep.Bookmarks.Conference conference) {
+    public AddGroupchatDialog.for_conference(StreamInteractor stream_interactor, Account account, Conference conference) {
         this(stream_interactor);
         edit_conference = conference;
         ok_button.label = _("Save");
@@ -65,7 +65,8 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     }
 
     private void on_ok_button_clicked() {
-        Xmpp.Xep.Bookmarks.Conference conference = new Xmpp.Xep.Bookmarks.Conference(Jid.parse(jid_entry.text));
+        Conference conference = new Conference();
+        conference.jid = Jid.parse(jid_entry.text);
         conference.nick = nick_entry.text != "" ? nick_entry.text : null;
         conference.name = alias_entry.text;
         if (edit_conference == null) {
