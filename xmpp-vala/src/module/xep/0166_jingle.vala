@@ -601,14 +601,13 @@ public class Session {
         }
         if (conn != null) {
             state = State.ACTIVE;
-            transport = null;
             tried_transport_methods.clear();
             if (security != null) {
                 connection.set_inner(security.wrap_stream(conn));
             } else {
                 connection.set_inner(conn);
             }
-
+            transport = null;
         } else {
             if (role == Role.INITIATOR) {
                 select_new_transport(stream);
