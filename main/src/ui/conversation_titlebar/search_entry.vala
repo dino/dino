@@ -25,6 +25,7 @@ public class SearchMenuEntry : Plugins.ConversationTitlebarEntry, Object {
 
 public class GlobalSearchButton : Plugins.ConversationTitlebarWidget, Gtk.ToggleButton {
     public new void set_conversation(Conversation conversation) { }
+    public new void unset_conversation() { }
 }
 
 }

@@ -143,6 +143,7 @@ public class ConversationManager : StreamInteractionModule, Object {
                 if(conversation.active) conversation_deactivated(conversation);
             }
         }
+        conversations.unset(account);
     }
 
     private class MessageListener : Dino.MessageListener {

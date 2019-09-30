@@ -32,6 +32,8 @@ public class UnifiedWindow : Gtk.Window {
     public SearchEntry search_entry;
     public GlobalSearch search_box;
     private Stack stack = new Stack() { visible=true };
+    private Stack left_stack;
+    private Stack right_stack;
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
@@ -74,6 +76,8 @@ public class UnifiedWindow : Gtk.Window {
         Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
         paned = (Paned) builder.get_object("paned");
         box.add(paned);
+        left_stack = (Stack) builder.get_object("left_stack");
+        right_stack = (Stack) builder.get_object("right_stack");
         chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
         chat_input.key_press_event.connect(forward_key_press_to_chat_input);
         conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
@@ -84,6 +88,8 @@ public class UnifiedWindow : Gtk.Window {
         search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
         search_revealer = (Revealer) builder.get_object("search_revealer");
         search_entry = (SearchEntry) builder.get_object("search_entry");
+        Image conversation_list_placeholder_image = (Image) builder.get_object("conversation_list_placeholder_image");
+        conversation_list_placeholder_image.set_from_pixbuf(new Pixbuf.from_resource("/im/dino/Dino/icons/dino-conversation-list-placeholder-arrow.svg"));
     }
 
     private void setup_headerbar() {
@@ -136,11 +142,16 @@ public class UnifiedWindow : Gtk.Window {
                 set_titlebar(placeholder_headerbar);
             }
         } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
-            stack.set_visible_child_name("conversations_placeholder");
+            stack.set_visible_child_name("main");
+            left_stack.set_visible_child_name("placeholder");
+            right_stack.set_visible_child_name("placeholder");
             if (Util.use_csd()) {
-                set_titlebar(placeholder_headerbar);
+                set_titlebar(headerbar_paned);
             }
         } else {
+            left_stack.set_visible_child_name("content");
+            right_stack.set_visible_child_name("content");
+
             stack.set_visible_child_name("main");
             if (Util.use_csd()) {
                 set_titlebar(headerbar_paned);
@@ -171,7 +182,7 @@ public class UnifiedWindow : Gtk.Window {
 public class WelcomePlceholder : UnifiedWindowPlaceholder {
     public WelcomePlceholder() {
         title_label.label = _("Welcome to Dino!");
-        label.label = "Communicating happiness.";
+        label.label = "Create or log in to your account to get started.";
         primary_button.label = _("Set up account");
         title_label.visible = true;
         secondary_button.visible = false;

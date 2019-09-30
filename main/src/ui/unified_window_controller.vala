@@ -43,6 +43,8 @@ public class UnifiedWindowController : Object {
                 update_conversation_topic(subject);
             }
         });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(check_unset_conversation);
+        stream_interactor.account_removed.connect(check_unset_conversation);
 
         app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
         app.plugin_registry.register_contact_titlebar_entry(search_menu_entry);
@@ -120,7 +122,7 @@ public class UnifiedWindowController : Object {
         restore_window_size();
     }
 
-    public void select_conversation(Conversation conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
+    public void select_conversation(Conversation? conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
         this.conversation = conversation;
 
         update_conversation_display_name();
@@ -144,6 +146,26 @@ public class UnifiedWindowController : Object {
         window.chat_input.initialize_for_conversation(conversation);
         if (default_initialize_conversation) {
             window.conversation_frame.initialize_for_conversation(conversation);
+        }
+    }
+
+    private void check_unset_conversation() {
+        if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
+            unset_conversation();
+        }
+    }
+
+    private void unset_conversation() {
+        this.conversation = null;
+
+        conversation_display_name = null;
+        conversation_topic = null;
+
+        foreach(var e in this.app.plugin_registry.conversation_titlebar_entries) {
+            Plugins.ConversationTitlebarWidget widget = e.get_widget(Plugins.WidgetType.GTK);
+            if (widget != null) {
+                widget.unset_conversation();
+            }
         }
     }
 

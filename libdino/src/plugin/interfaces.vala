@@ -70,6 +70,7 @@ public interface ConversationTitlebarEntry : Object {
 
 public interface ConversationTitlebarWidget : Object {
     public abstract void set_conversation(Conversation conversation);
+    public abstract void unset_conversation();
 }
 
 public abstract interface ConversationItemPopulator : Object {

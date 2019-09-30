@@ -5,14 +5,56 @@
         <property name="orientation">horizontal</property>
         <property name="visible">True</property>
         <child>
-            <object class="GtkScrolledWindow" id="scrolled">
-                <property name="expand">True</property>
-                <property name="hscrollbar_policy">never</property>
+            <object class="GtkStack" id="left_stack">
                 <property name="visible">True</property>
                 <child>
-                    <object class="DinoUiConversationSelector" id="conversation_list">
+                    <object class="GtkScrolledWindow" id="scrolled">
+                        <property name="expand">True</property>
+                        <property name="hscrollbar_policy">never</property>
                         <property name="visible">True</property>
+                        <child>
+                            <object class="DinoUiConversationSelector" id="conversation_list">
+                                <property name="visible">True</property>
+                            </object>
+                        </child>
                     </object>
+                    <packing>
+                        <property name="name">content</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="margin">20</property>
+                        <property name="spacing">10</property>
+                        <property name="valign">start</property>
+                        <property name="halign">start</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkImage" id="conversation_list_placeholder_image">
+                                <property name="visible">True</property>
+                                <property name="valign">start</property>
+                                <style>
+                                    <class name="dim-label"/>
+                                </style>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="wrap">True</property>
+                                <property name="margin-top">70</property>
+                                <property name="margin-right">50</property>
+                                <property name="visible">True</property>
+                                <property name="valign">end</property>
+                                <property name="label">Click here to start a conversation or join a channel</property>
+                                <style>
+                                    <class name="dim-label"/>
+                                </style>
+                            </object>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="name">placeholder</property>
+                    </packing>
                 </child>
             </object>
             <packing>
@@ -24,54 +66,99 @@
             <object class="GtkOverlay">
                 <property name="visible">True</property>
                 <child>
-                    <object class="GtkOverlay">
+                    <object class="GtkStack" id="right_stack">
                         <property name="visible">True</property>
                         <child>
-                            <object class="GtkBox">
-                                <property name="orientation">vertical</property>
+                            <object class="GtkOverlay">
                                 <property name="visible">True</property>
-                                <style>
-                                    <class name="dino-conversation"/>
-                                </style>
                                 <child>
-                                    <object class="DinoUiConversationSummaryConversationView" id="conversation_frame">
-                                        <property name="visible">True</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="DinoUiChatInputView" id="chat_input">
-                                        <property name="visible">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                        <child type="overlay">
-                            <object class="GtkRevealer" id="goto_end_revealer">
-                                <property name="halign">end</property>
-                                <property name="valign">end</property>
-                                <property name="transition-type">crossfade</property>
-                                <property name="visible">True</property>
-                                <property name="margin-end">30</property>
-                                <property name="margin-bottom">70</property>
-                                <child>
-                                    <object class="GtkButton" id="goto_end_button">
-                                        <property name="vexpand">False</property>
-                                        <property name="halign">end</property>
-                                        <property name="valign">end</property>
+                                    <object class="GtkBox">
+                                        <property name="orientation">vertical</property>
                                         <property name="visible">True</property>
                                         <style>
-                                            <class name="circular"/>
+                                            <class name="dino-conversation"/>
                                         </style>
                                         <child>
-                                            <object class="GtkImage">
-                                                <property name="icon-name">go-down-symbolic</property>
-                                                <property name="icon-size">1</property>
+                                            <object class="DinoUiConversationSummaryConversationView" id="conversation_frame">
+                                                <property name="visible">True</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="DinoUiChatInputView" id="chat_input">
                                                 <property name="visible">True</property>
                                             </object>
                                         </child>
                                     </object>
                                 </child>
+                                <child type="overlay">
+                                    <object class="GtkRevealer" id="goto_end_revealer">
+                                        <property name="halign">end</property>
+                                        <property name="valign">end</property>
+                                        <property name="transition-type">crossfade</property>
+                                        <property name="visible">True</property>
+                                        <property name="margin-end">30</property>
+                                        <property name="margin-bottom">70</property>
+                                        <child>
+                                            <object class="GtkButton" id="goto_end_button">
+                                                <property name="vexpand">False</property>
+                                                <property name="halign">end</property>
+                                                <property name="valign">end</property>
+                                                <property name="visible">True</property>
+                                                <style>
+                                                    <class name="circular"/>
+                                                </style>
+                                                <child>
+                                                    <object class="GtkImage">
+                                                        <property name="icon-name">go-down-symbolic</property>
+                                                        <property name="icon-size">1</property>
+                                                        <property name="visible">True</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
                             </object>
+                            <packing>
+                                <property name="name">content</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <property name="expand">True</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="icon-name">im.dino.Dino-symbolic</property>
+                                        <property name="pixel-size">144</property>
+                                        <property name="margin-bottom">30</property>
+                                        <property name="visible">True</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="label">You have no open chats</property>
+                                        <property name="xalign">0.5</property>
+                                        <property name="yalign">0.5</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                        <attributes>
+                                            <attribute name="scale" value="1.2"/>
+                                        </attributes>
+                                    </object>
+                                </child>
+                            </object>
+                            <packing>
+                                <property name="name">placeholder</property>
+                            </packing>
                         </child>
                     </object>
                 </child>

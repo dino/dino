@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14.423mm" height="25.742mm" version="1.1" viewBox="0 0 14.422716 25.741774" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" overflow="visible" orient="auto">
+      <path transform="scale(.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill-rule="evenodd" stroke="#000" stroke-linejoin="round" stroke-width=".625"/>
+    </marker>
+  </defs>
+  <g transform="translate(-76.236 -40.41)">
+    <path d="m77.066 41.011c1.1174 11.205 6.3598 21.407 13.389 24.939" fill="none" marker-start="url(#a)" stroke="#000" stroke-linecap="round" stroke-width=".4"/>
+  </g>
+</svg>

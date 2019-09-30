@@ -18,7 +18,7 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
     public Plugins.ConversationTitlebarWidget? get_widget(Plugins.WidgetType type) {
         if (type == Plugins.WidgetType.GTK) {
             if (widget == null) {
-                widget = new MenuWidget(stream_interactor) { visible=true };
+                widget = new MenuWidget(stream_interactor) { visible=true, sensitive=false };
             }
             return widget;
         }
@@ -41,6 +41,7 @@ class MenuWidget : Button, Plugins.ConversationTitlebarWidget {
     }
 
     public new void set_conversation(Conversation conversation) {
+        this.sensitive = true;
         this.conversation = conversation;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             tooltip_text = "Channel details";
@@ -48,6 +49,11 @@ class MenuWidget : Button, Plugins.ConversationTitlebarWidget {
             tooltip_text = "Conversation details";
         }
     }
+
+    public new void unset_conversation() {
+        this.sensitive = false;
+    }
+
 }
 
 }

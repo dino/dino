@@ -18,7 +18,7 @@ class OccupantsEntry : Plugins.ConversationTitlebarEntry, Object {
     public Plugins.ConversationTitlebarWidget? get_widget(Plugins.WidgetType type) {
         if (type == Plugins.WidgetType.GTK) {
             if (widget == null) {
-                widget = new OccupantsWidget(stream_interactor) { visible=true };
+                widget = new OccupantsWidget(stream_interactor);
             }
             return widget;
         }
@@ -50,6 +50,10 @@ class OccupantsWidget : MenuButton, Plugins.ConversationTitlebarWidget {
             if (menu != null) menu.destroy();
             menu = new_menu;
         }
+    }
+
+    public new void unset_conversation() {
+        visible = false;
     }
 }
 

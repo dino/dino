@@ -14,6 +14,7 @@ find_packages(MAIN_PACKAGES REQUIRED
 
 set(RESOURCE_LIST
     icons/dino-changes-prevent-symbolic.svg
+    icons/dino-conversation-list-placeholder-arrow.svg
     icons/dino-double-tick-symbolic.svg
     icons/dino-emoticon-symbolic.svg
     icons/dino-qr-code-symbolic.svg
