@@ -14,11 +14,19 @@ namespace Xmpp.Xep.Pubsub {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0060_pubsub_module");
 
-        private HashMap<string, EventListenerDelegate> event_listeners = new HashMap<string, EventListenerDelegate>();
+        private HashMap<string, ItemListenerDelegate> item_listeners = new HashMap<string, ItemListenerDelegate>();
+        private HashMap<string, RetractListenerDelegate> retract_listeners = new HashMap<string, RetractListenerDelegate>();
 
-        public void add_filtered_notification(XmppStream stream, string node, owned EventListenerDelegate.ResultFunc listener) {
+        public void add_filtered_notification(XmppStream stream, string node,
+                owned ItemListenerDelegate.ResultFunc? item_listener,
+                owned RetractListenerDelegate.ResultFunc? retract_listener) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature_notify(stream, node);
-            event_listeners[node] = new EventListenerDelegate((owned)listener);
+            if (item_listener != null) {
+                item_listeners[node] = new ItemListenerDelegate((owned)item_listener);
+            }
+            if (retract_listener != null) {
+                retract_listeners[node] = new RetractListenerDelegate((owned)retract_listener);
+            }
         }
 
         public async Gee.List<StanzaNode>? request_all(XmppStream stream, Jid jid, string node) { // TODO multiple nodes gehen auch
@@ -140,8 +148,8 @@ namespace Xmpp.Xep.Pubsub {
             if (item_node != null) {
                 string id = item_node.get_attribute("id", NS_URI_EVENT);
 
-                if (event_listeners.has_key(node)) {
-                    event_listeners[node].on_result(stream, message.from, id, item_node);
+                if (item_listeners.has_key(node)) {
+                    item_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0]);
                 }
             }
 
@@ -149,20 +157,30 @@ namespace Xmpp.Xep.Pubsub {
             if (retract_node != null) {
                 string id = retract_node.get_attribute("id", NS_URI_EVENT);
 
-                if (event_listeners.has_key(node)) {
-                    event_listeners[node].on_result(stream, message.from, id, retract_node);
+                if (retract_listeners.has_key(node)) {
+                    retract_listeners[node].on_result(stream, message.from, id);
                 }
             }
 
         }
     }
 
-    public class EventListenerDelegate {
+    public class ItemListenerDelegate {
         public delegate void ResultFunc(XmppStream stream, Jid jid, string id, StanzaNode? node);
         public ResultFunc on_result { get; private owned set; }
 
-        public EventListenerDelegate(owned ResultFunc on_result) {
+        public ItemListenerDelegate(owned ResultFunc on_result) {
             this.on_result = (owned) on_result;
         }
     }
+
+    public class RetractListenerDelegate {
+        public delegate void ResultFunc(XmppStream stream, Jid jid, string id);
+        public ResultFunc on_result { get; private owned set; }
+
+        public RetractListenerDelegate(owned ResultFunc on_result) {
+            this.on_result = (owned) on_result;
+        }
+    }
+
 }

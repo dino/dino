@@ -32,7 +32,7 @@ namespace Xmpp.Xep.UserAvatars {
         }
 
         public override void attach(XmppStream stream) {
-            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_event);
+            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_event, null);
         }
 
         public override void detach(XmppStream stream) { }
@@ -59,7 +59,7 @@ namespace Xmpp.Xep.UserAvatars {
             Bytes image = new Bytes.take(Base64.decode(node.get_string_content()));
             string sha1 = Checksum.compute_for_bytes(ChecksumType.SHA1, image);
             if (sha1 != id) {
-                warning("sha sum did not match for avatar from "+jid.to_string()+" expected="+id+", actual="+sha1);
+                warning("sha sum did not match for avatar from %s expected=%s actual=%s", jid.to_string(), id, sha1);
                 return;
             }
             storage.store(id, image);

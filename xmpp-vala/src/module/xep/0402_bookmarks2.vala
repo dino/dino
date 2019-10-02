@@ -18,7 +18,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
 
             hm = new HashMap<Jid, Conference>(Jid.hash_func, Jid.equals_func);
             foreach (StanzaNode item_node in items) {
-                Conference? conference = parse_item_node(item_node, item_node.get_attribute("id"));
+                Conference? conference = parse_item_node(item_node.sub_nodes[0], item_node.get_attribute("id"));
                 if (conference == null) continue;
                 hm[conference.jid] = conference;
             }
@@ -56,33 +56,31 @@ public class Module : BookmarksProvider, XmppStreamModule {
                     conference.jid.to_string());
     }
 
-    private void on_pupsub_event(XmppStream stream, Jid jid, string id, StanzaNode? node) {
-        if (node.name == "item") {
-            Conference conference = parse_item_node(node, id);
-            Flag? flag = stream.get_flag(Flag.IDENTITY);
-            if (flag != null) {
-                flag.conferences[conference.jid] = conference;
-            }
-            conference_added(stream, conference);
-        } else if (node.name == "retract") {
-            string jid_str = node.get_attribute("id");
-            Jid jid_parsed = Jid.parse(jid_str);
-            Flag? flag = stream.get_flag(Flag.IDENTITY);
-            if (flag != null) {
-                flag.conferences.unset(jid_parsed);
-            }
-            conference_removed(stream, jid_parsed);
+    private void on_pupsub_item(XmppStream stream, Jid jid, string id, StanzaNode? node) {
+        Conference conference = parse_item_node(node, id);
+        Flag? flag = stream.get_flag(Flag.IDENTITY);
+        if (flag != null) {
+            flag.conferences[conference.jid] = conference;
         }
+        conference_added(stream, conference);
     }
 
-    private Conference? parse_item_node(StanzaNode item_node, string id) {
+    private void on_pupsub_retract(XmppStream stream, Jid jid, string id) {
+        Jid jid_parsed = Jid.parse(id);
+        Flag? flag = stream.get_flag(Flag.IDENTITY);
+        if (flag != null) {
+            flag.conferences.unset(jid_parsed);
+        }
+        conference_removed(stream, jid_parsed);
+    }
+
+    private Conference? parse_item_node(StanzaNode conference_node, string id) {
         Conference conference = new Conference();
         Jid? jid_parsed = Jid.parse(id);
         if (jid_parsed == null || jid_parsed.resourcepart != null) return null;
         conference.jid = jid_parsed;
 
-        StanzaNode? conference_node = item_node.get_subnode("conference", NS_URI);
-        if (conference_node == null) return null;
+        if (conference_node.name != "conference" || conference_node.ns_uri != NS_URI) return null;
 
         conference.name = conference_node.get_attribute("name", NS_URI);
         conference.autojoin = conference_node.get_attribute("autojoin", NS_URI) == "true";
@@ -91,7 +89,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI, on_pupsub_event);
+        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI, on_pupsub_item, on_pupsub_retract);
     }
 
     public override void detach(XmppStream stream) { }
