@@ -225,6 +225,27 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
                 assert_not_reached();
             }
         }
+
+        // Quotes are handled differently, since `>` is not matched
+        try {
+            // Match a whole line only
+            Regex regex = new Regex("(?:^|\n)(&gt; ?)(.+(?:$|\n))");
+            MatchInfo match_info;
+            regex.match(s.down().strip(), 0, out match_info);
+            if (match_info.matches()) {
+                int markup_start, markup_end, qoute_start, quote_end;
+                match_info.fetch_pos(1, out markup_start, out markup_end);
+                match_info.fetch_pos(2, out qoute_start, out quote_end);
+                return parse_add_markup(s[0:markup_start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                    "<span weight=\"light\" style=\"italic\">" +
+                    "  " + s[markup_start:markup_end] +
+                    parse_add_markup(s[qoute_start:quote_end], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                    "</span>" +
+                    parse_add_markup(s[quote_end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+            }
+        } catch (RegexError e) {
+            assert_not_reached();
+        }
     }
 
     return s;
