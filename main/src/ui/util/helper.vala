@@ -223,8 +223,8 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
             assert_not_reached();
         }
 
-        string[] markup_string = new string[]{"`", "_", "*"};
-        string[] convenience_tag = new string[]{"tt", "i", "b"};
+        string[] markup_string = new string[]{"`", "_", "*", "~"};
+        string[] convenience_tag = new string[]{"tt", "i", "b", "s"};
 
         for (int i = 0; i < markup_string.length; i++) {
             string markup_esc = Regex.escape_string(markup_string[i]);
