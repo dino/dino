@@ -343,6 +343,24 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     }
 
     if (parse_text_markup) {
+        // Try to match preformatted code blocks first
+        try {
+            Regex regex = new Regex("(?:^|\n)(```(?:(?!\n\n|```)(?:.|\n))+(?:$|```|\n\n))");
+            MatchInfo match_info;
+            regex.match(s.down().strip(), 0, out match_info);
+            if (match_info.matches()) {
+                int start, end;
+                match_info.fetch_pos(1, out start, out end);
+                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                    "<tt>" +
+                    s[start:end] +
+                    "</tt>" +
+                    parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+            }
+        } catch (RegexError e) {
+            assert_not_reached();
+        }
+
         string[] markup_string = new string[]{"`", "_", "*"};
         string[] convenience_tag = new string[]{"tt", "i", "b"};
 
