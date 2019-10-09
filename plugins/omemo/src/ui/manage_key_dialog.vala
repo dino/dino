@@ -6,6 +6,7 @@ namespace Dino.Plugins.Omemo {
 [GtkTemplate (ui = "/im/dino/Dino/omemo/manage_key_dialog.ui")]
 public class ManageKeyDialog : Gtk.Dialog {
 
+    [GtkChild] private HeaderBar headerbar;
     [GtkChild] private Stack manage_stack;
 
     [GtkChild] private Button cancel_button;
@@ -19,6 +20,7 @@ public class ManageKeyDialog : Gtk.Dialog {
     [GtkChild] private Label confirm_desc_label;
 
     [GtkChild] private Label verify_label;
+    [GtkChild] private Label compare_fingerprint_label;
     [GtkChild] private Button verify_yes_button;
     [GtkChild] private Button verify_no_button;
 
@@ -27,6 +29,16 @@ public class ManageKeyDialog : Gtk.Dialog {
 
     private bool return_to_main;
     private int current_response;
+
+    construct {
+        // If we set the strings in the .ui file, they don't get translated
+        headerbar.title = _("Manage Key");
+        compare_fingerprint_label.label = _("Compare the fingerprint, character by character, with the one shown on your contacts device.");
+        verify_no_button.label = _("Not matching");
+        verify_yes_button.label = _("Matching");
+        cancel_button.label = _("Cancel");
+        ok_button.label = _("Confirm");
+    }
 
     public ManageKeyDialog(Row device, Database db) {
         Object(use_header_bar : Environment.get_variable("GTK_CSD") != "0" ? 1 : 0);

@@ -4,13 +4,11 @@
         <property name="modal">True</property>
         <property name="resizable">False</property>
         <child type="titlebar">
-            <object class="GtkHeaderBar" id="header_bar">
+            <object class="GtkHeaderBar" id="headerbar">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes">Manage Key</property>
                 <property name="show_close_button">False</property>
                 <child>
                     <object class="GtkButton" id="cancel_button">
-                        <property name="label" translatable="yes">Cancel</property>
                         <property name="sensitive">True</property>
                         <property name="visible">True</property>
                     </object>
@@ -22,7 +20,6 @@
                     <object class="GtkButton" id="ok_button">
                         <property name="has_default">True</property>
                         <property name="can_default">True</property>
-                        <property name="label" translatable="yes">Confirm</property>
                         <property name="sensitive">False</property>
                         <property name="visible">True</property>
                         <style>
@@ -81,11 +78,10 @@
                                 <property name="orientation">vertical</property>
                                 <property name="valign">center</property>
                                 <child>
-                                    <object class="GtkLabel">
+                                    <object class="GtkLabel" id="compare_fingerprint_label">
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Compare the fingerprint, character by character, with the one shown on your contacts device.</property>
                                         <property name="wrap">True</property>
-                                        <property name="xalign">0</property>
+                                        <property name="xalign">0.5</property>
                                         <property name="max-width-chars">45</property>
                                     </object>
                                 </child>
@@ -110,14 +106,12 @@
                                             <object class="GtkButton" id="verify_no_button">
                                                 <property name="visible">True</property>
                                                 <property name="hexpand">True</property>
-                                                <property name="label" translatable="yes">Not matching</property>
                                             </object>
                                         </child>
                                         <child>
                                             <object class="GtkButton" id="verify_yes_button">
                                                 <property name="visible">True</property>
                                                 <property name="hexpand">True</property>
-                                                <property name="label" translatable="yes">Matching</property>
                                             </object>
                                         </child>
                                     </object>

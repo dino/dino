@@ -17,7 +17,11 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private bool own = false;
     private int own_id = 0;
 
+    [GtkChild] private Label automatically_accept_new_label;
     [GtkChild] private Label automatically_accept_new_descr;
+    [GtkChild] private Label own_key_label;
+    [GtkChild] private Label new_keys_label;
+    [GtkChild] private Label associated_keys_label;
     [GtkChild] private Box own_fingerprint_container;
     [GtkChild] private Label own_fingerprint_label;
     [GtkChild] private Box new_keys_container;
@@ -29,6 +33,16 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private Button show_qrcode_button;
     [GtkChild] private Image qrcode_image;
     [GtkChild] private Popover qrcode_popover;
+
+    construct {
+        // If we set the strings in the .ui file, they don't get translated
+        title = _("OMEMO Key Management");
+        automatically_accept_new_label.label = _("Automatically accept new keys");
+        automatically_accept_new_descr.label = _("When this contact adds new encryption keys to their account, automatically accept them.");
+        own_key_label.label = _("Own key");
+        new_keys_label.label = _("New keys");
+        associated_keys_label.label = _("Associated keys");
+    }
 
     public ContactDetailsDialog(Plugin plugin, Account account, Jid jid) {
         Object(use_header_bar : Environment.get_variable("GTK_CSD") != "0" ? 1 : 0);
