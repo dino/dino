@@ -82,8 +82,8 @@ public class ChatInputController : Object {
 
         string text = chat_input.text_input.buffer.text;
         chat_input.text_input.buffer.text = "";
-        if (chat_input.text.has_prefix("/")) {
-            string[] token = chat_input.text.split(" ", 2);
+        if (text.has_prefix("/")) {
+            string[] token = text.split(" ", 2);
             switch(token[0]) {
                 case "/me":
                     // Just send as is.

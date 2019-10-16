@@ -10,7 +10,7 @@ namespace Dino.Ui.ChatInput {
 [GtkTemplate (ui = "/im/dino/Dino/chat_input.ui")]
 public class View : Box {
 
-    public signal void send_text(string text);
+    public signal void send_text();
 
     public string text {
         owned get { return text_input.buffer.text; }
@@ -138,7 +138,7 @@ public class View : Box {
             if ((event.state & ModifierType.SHIFT_MASK) > 0) {
                 text_input.buffer.insert_at_cursor("\n", 1);
             } else if (this.text != "") {
-                send_text(this.text);
+                send_text();
                 edit_history.reset_history();
             }
             return true;

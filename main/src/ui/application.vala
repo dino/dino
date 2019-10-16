@@ -155,7 +155,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     }
 
     private void show_join_muc_dialog(Account? account, Jid jid) {
-        Dialog dialog = new Dialog.with_buttons(_("Join Conference"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
+        Dialog dialog = new Dialog.with_buttons(_("Join Channel"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
         dialog.modal = true;
         Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
         ok_button.get_style_context().add_class("suggested-action");
