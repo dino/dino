@@ -35,7 +35,7 @@ public class OmemoFileEncryptor : Dino.FileEncryptor, Object {
 
             omemo_http_file_meta.iv = iv;
             omemo_http_file_meta.key = key;
-            omemo_http_file_meta.size = file_transfer.size;
+            omemo_http_file_meta.size = file_transfer.size + 16;
             omemo_http_file_meta.mime_type = "omemo";
             file_transfer.input_stream = new ConverterInputStream(file_transfer.input_stream, new SymmetricCipherEncrypter((owned) cipher));
         } catch (Crypto.Error error) {
