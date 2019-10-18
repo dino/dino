@@ -86,9 +86,15 @@ public class GlobalSearch : Overlay {
             foreach(SearchSuggestion suggestion in suggestions) {
                 Builder builder = new Builder.from_resource("/im/dino/Dino/search_autocomplete.ui");
                 AvatarImage avatar = (AvatarImage)builder.get_object("image");
-                avatar.set_jid(stream_interactor, suggestion.jid, suggestion.account);
                 Label label = (Label)builder.get_object("label");
-                string display_name = Util.get_display_name(stream_interactor, suggestion.jid, suggestion.account);
+                string display_name;
+                if (suggestion.conversation.type_ == Conversation.Type.GROUPCHAT && !suggestion.conversation.counterpart.equals(suggestion.jid) || suggestion.conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
+                    display_name = Util.get_participant_display_name(stream_interactor, suggestion.conversation, suggestion.jid);
+                    avatar.set_conversation_participant(stream_interactor, suggestion.conversation, suggestion.jid);
+                } else {
+                    display_name = Util.get_conversation_display_name(stream_interactor, suggestion.conversation);
+                    avatar.set_conversation(stream_interactor, suggestion.conversation);
+                }
                 if (display_name != suggestion.jid.to_string()) {
                     label.set_markup(@"$display_name <span font_weight='light' fgalpha='80%'>$(suggestion.jid)</span>");
                 } else {
@@ -188,7 +194,6 @@ public class GlobalSearch : Overlay {
             }
         }
         Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, vexpand=true, visible=true };
-        string markup_text = Markup.escape_text(text);
 
         // Build regex containing all keywords
         string regex_str = "(";
@@ -205,19 +210,19 @@ public class GlobalSearch : Overlay {
         regex_str += ")";
 
         // Color the keywords
+        string markup_text = "";
         try {
-            int elongated_by = 0;
-            Regex highlight_regex = new Regex(regex_str);
+            Regex highlight_regex = new Regex(regex_str, RegexCompileFlags.CASELESS);
             MatchInfo match_info;
-            string markup_text_bak = markup_text.down();
-            highlight_regex.match(markup_text_bak, 0, out match_info);
+            highlight_regex.match(text, 0, out match_info);
+            int last_end = 0;
             for (; match_info.matches(); match_info.next()) {
                 int start, end;
                 match_info.fetch_pos(0, out start, out end);
-                markup_text = markup_text[0:start+elongated_by] + "<span bgcolor=\"yellow\">" + markup_text[start+elongated_by:end+elongated_by] + "</span>" + markup_text[end+elongated_by:markup_text.length];
-                elongated_by += "<span bgcolor=\"yellow\">".length + "</span>".length;
+                markup_text += Markup.escape_text(text[last_end:start]) + "<span bgcolor=\"yellow\">" + Markup.escape_text(text[start:end]) + "</span>";
+                last_end = end;
             }
-            markup_text_bak += ""; // We need markup_text_bak to live until here because url_regex.match does not copy the string
+            markup_text += Markup.escape_text(text[last_end:text.length]);
         } catch (RegexError e) {
             assert_not_reached();
         }
@@ -244,11 +249,11 @@ public class GlobalSearch : Overlay {
 
     private Grid get_skeleton(MessageItem item) {
         AvatarImage image = new AvatarImage() { height=32, width=32, margin_end=7, valign=Align.START, visible=true, allow_gray = false };
-        image.set_jid(stream_interactor, item.jid, item.message.account);
+        image.set_conversation_participant(stream_interactor, item.conversation, item.jid);
         Grid grid = new Grid() { row_homogeneous=false, visible=true };
         grid.attach(image, 0, 0, 1, 2);
 
-        string display_name = Util.get_display_name(stream_interactor, item.jid, item.message.account);
+        string display_name = Util.get_participant_display_name(stream_interactor, item.conversation, item.jid);
         string color = Util.get_name_hex_color(stream_interactor, item.message.account, item.jid, false); // TODO Util.is_dark_theme(name_label)
         Label name_label = new Label("") { use_markup=true, xalign=0, visible=true };
         name_label.label = @"<span size='small' foreground=\"#$color\">$display_name</span>";

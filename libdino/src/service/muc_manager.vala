@@ -142,8 +142,8 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public bool is_groupchat(Jid jid, Account account) {
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
-        return !jid.is_full() && conversation != null && conversation.type_ == Conversation.Type.GROUPCHAT;
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account, Conversation.Type.GROUPCHAT);
+        return !jid.is_full() && conversation != null;
     }
 
     public bool is_groupchat_occupant(Jid jid, Account account) {

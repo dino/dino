@@ -91,7 +91,7 @@ SOURCES
     src/main.vala
 
     src/ui/application.vala
-    src/ui/avatar_generator.vala
+    src/ui/avatar_drawer.vala
     src/ui/avatar_image.vala
     src/ui/chat_input_controller.vala
     src/ui/conversation_list_titlebar.vala

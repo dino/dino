@@ -72,7 +72,7 @@ public class Dialog : Gtk.Dialog {
         }
         jid_label.label = conversation.counterpart.to_string();
         account_label.label = "via " + conversation.account.bare_jid.to_string();
-        avatar.set_jid(stream_interactor, conversation.counterpart, conversation.account);
+        avatar.set_conversation(stream_interactor, conversation);
     }
 
     private void add_entry(string category, string label, string? description, Object wo) {

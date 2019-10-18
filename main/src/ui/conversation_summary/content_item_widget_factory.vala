@@ -70,7 +70,7 @@ public class MessageItemWidgetGenerator : WidgetGenerator, Object {
         }
 
         if (message_item.message.body.has_prefix("/me")) {
-            string display_name = Util.get_message_display_name(stream_interactor, message, conversation.account);
+            string display_name = Util.get_participant_display_name(stream_interactor, conversation, message.from);
             update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text);
             label.realize.connect(() => update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text));
             label.style_updated.connect(() => update_me_style(stream_interactor, message.real_jid ?? message.from, display_name, conversation.account, label, markup_text));

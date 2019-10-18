@@ -182,14 +182,14 @@ public class Dialog : Gtk.Dialog {
 
     private void on_received_avatar(Pixbuf pixbuf, Jid jid, Account account) {
         if (selected_account.equals(account) && jid.equals(account.bare_jid)) {
-            image.set_jid(stream_interactor, account.bare_jid, account);
+            image.set_conversation(stream_interactor, new Conversation(account.bare_jid, account, Conversation.Type.CHAT));
         }
     }
 
     private void populate_grid_data(Account account) {
         active_switch.state_set.disconnect(change_account_state);
 
-        image.set_jid(stream_interactor, account.bare_jid, account);
+        image.set_conversation(stream_interactor, new Conversation(account.bare_jid, account, Conversation.Type.CHAT));
         active_switch.set_active(account.enabled);
         jid_label.label = account.bare_jid.to_string();
 

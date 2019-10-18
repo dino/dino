@@ -105,7 +105,7 @@ public class View : Popover {
         ListRow? list_row = list.list_box.get_selected_row() as ListRow;
         if (list_row == null) return;
 
-        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(list_row.jid, list_row.account, Conversation.Type.GROUPCHAT_PM);
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(list_row.jid, list_row.conversation.account, Conversation.Type.GROUPCHAT_PM);
         stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
     }
 

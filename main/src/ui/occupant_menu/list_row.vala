@@ -11,15 +11,15 @@ public class ListRow : ListBoxRow {
     [GtkChild] private AvatarImage image;
     [GtkChild] public Label name_label;
 
-    public Account? account;
+    public Conversation? conversation;
     public Jid? jid;
 
-    public ListRow(StreamInteractor stream_interactor, Account account, Jid jid) {
-        this.account = account;
+    public ListRow(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
+        this.conversation = conversation;
         this.jid = jid;
 
-        name_label.label = Util.get_display_name(stream_interactor, jid, account);
-        image.set_jid(stream_interactor, jid, account);
+        name_label.label = Util.get_participant_display_name(stream_interactor, conversation, jid);
+        image.set_conversation_participant(stream_interactor, conversation, jid);
     }
 
     public ListRow.label(string c, string text) {

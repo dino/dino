@@ -29,7 +29,7 @@ public class ConversationItemSkeleton : EventBox {
         this.get_style_context().add_class("message-box");
 
         if (item.requires_avatar) {
-            image.set_jid(stream_interactor, item.jid, conversation.account);
+            image.set_conversation_participant(stream_interactor, conversation, item.jid);
             image_content_box.add(image);
         }
         if (item.display_time != null) {
@@ -137,7 +137,7 @@ public class ItemMetaDataHeader : Box {
     }
 
     private void update_name_label() {
-        string display_name = Markup.escape_text(Util.get_display_name(stream_interactor, item.jid, conversation.account));
+        string display_name = Markup.escape_text(Util.get_participant_display_name(stream_interactor, conversation, item.jid));
         string color = Util.get_name_hex_color(stream_interactor, conversation.account, item.jid, Util.is_dark_theme(name_label));
         name_label.label = @"<span foreground=\"#$color\">$display_name</span>";
     }

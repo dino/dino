@@ -94,7 +94,7 @@ public class ConversationSelectorRow : ListBoxRow {
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
         x_button.clicked.connect(close_conversation);
-        image.set_jid(stream_interactor, conversation.counterpart, conversation.account);
+        image.set_conversation(stream_interactor, conversation);
         conversation.notify["read-up-to"].connect(update_read);
 
         update_name_label();
@@ -131,7 +131,7 @@ public class ConversationSelectorRow : ListBoxRow {
                     Message last_message = message_item.message;
 
                     if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                        nick_label.label = Util.get_message_display_name(stream_interactor, last_message, conversation.account) + ": ";
+                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, last_message.from, true) + ": ";
                     } else {
                         nick_label.label = last_message.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
@@ -145,8 +145,7 @@ public class ConversationSelectorRow : ListBoxRow {
 
                     if (conversation.type_ == Conversation.Type.GROUPCHAT) {
                         // TODO properly display nick for oneself
-                        string nick = transfer.direction == Message.DIRECTION_SENT ? _("Me") : Util.get_display_name(stream_interactor, file_item.file_transfer.counterpart, conversation.account);
-                        nick_label.label = nick + ": ";
+                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, file_item.file_transfer.counterpart, true) + ": ";
                     } else {
                         nick_label.label = transfer.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }

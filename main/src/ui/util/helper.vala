@@ -12,14 +12,14 @@ private const string[] material_colors_500 = {"F44336", "E91E63", "9C27B0", "673
 private const string[] material_colors_300 = {"E57373", "F06292", "BA68C8", "9575CD", "7986CB", "64B5F6", "4FC3F7", "4DD0E1", "4DB6AC", "81C784", "AED581", "DCE775", "FFD54F", "FFB74D", "FF8A65", "A1887F"};
 private const string[] material_colors_200 = {"EF9A9A", "F48FB1", "CE93D8", "B39DDB", "9FA8DA", "90CAF9", "81D4FA", "80DEEA", "80CBC4", "A5D6A7", "C5E1A5", "E6EE9C", "FFE082", "FFCC80", "FFAB91", "BCAAA4"};
 
-public static string get_avatar_hex_color(StreamInteractor stream_interactor, Account account, Jid jid) {
-    uint hash = get_relevant_jid(stream_interactor, account, jid).to_string().hash();
+public static string get_avatar_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, Conversation? conversation = null) {
+    uint hash = get_relevant_jid(stream_interactor, account, jid, conversation).to_string().hash();
     return material_colors_300[hash % material_colors_300.length];
 //    return tango_colors_light[name.hash() % tango_colors_light.length];
 }
 
-public static string get_name_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, bool dark_theme = false) {
-    uint hash = get_relevant_jid(stream_interactor, account, jid).to_string().hash();
+public static string get_name_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, bool dark_theme = false, Conversation? conversation = null) {
+    uint hash = get_relevant_jid(stream_interactor, account, jid, conversation).to_string().hash();
     if (dark_theme) {
         return material_colors_300[hash % material_colors_300.length];
     } else {
@@ -28,8 +28,9 @@ public static string get_name_hex_color(StreamInteractor stream_interactor, Acco
 //    return tango_colors_medium[name.hash() % tango_colors_medium.length];
 }
 
-private static Jid get_relevant_jid(StreamInteractor stream_interactor, Account account, Jid jid) {
-    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid.bare_jid, account)) {
+private static Jid get_relevant_jid(StreamInteractor stream_interactor, Account account, Jid jid, Conversation? conversation = null) {
+    Conversation conversation_ = conversation ?? stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid.bare_jid, account);
+    if (conversation_ != null && conversation_.type_ == Conversation.Type.GROUPCHAT) {
         Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, account);
         if (real_jid != null) {
             return real_jid.bare_jid;
@@ -51,60 +52,141 @@ public static string color_for_show(string show) {
     }
 }
 
+public static async AvatarDrawer get_conversation_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation) {
+    return yield get_conversation_participants_avatar_drawer(stream_interactor, conversation, new Jid[0]);
+}
+
+public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, Jid[] jids) {
+    AvatarManager avatar_manager = stream_interactor.get_module(AvatarManager.IDENTITY);
+    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
+    if (conversation.type_ != Conversation.Type.GROUPCHAT) {
+        Jid jid = jids.length == 1 ? jids[0] : conversation.counterpart;
+        Jid avatar_jid = jid;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
+        return new AvatarDrawer().tile(yield avatar_manager.get_avatar(conversation.account, avatar_jid), jids.length == 1 ?
+                get_participant_display_name(stream_interactor, conversation, jid) :
+                get_conversation_display_name(stream_interactor, conversation),
+                    Util.get_avatar_hex_color(stream_interactor, conversation.account, jid, conversation));
+    }
+    if (jids.length > 0) {
+        AvatarDrawer drawer = new AvatarDrawer();
+        for (int i = 0; i < (jids.length <= 4 ? jids.length : 3); i++) {
+            Jid avatar_jid = jids[i];
+            Gdk.Pixbuf? part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
+            if (part_avatar == null && avatar_jid.equals_bare(conversation.counterpart) && muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
+                avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
+                part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
+            }
+            drawer.tile(part_avatar, get_participant_display_name(stream_interactor, conversation, jids[i]),
+                        Util.get_avatar_hex_color(stream_interactor, conversation.account, jids[i], conversation));
+        }
+        if (jids.length > 4) {
+            drawer.plus();
+        }
+        return drawer;
+    }
+    Gdk.Pixbuf? room_avatar = yield avatar_manager.get_avatar(conversation.account, conversation.counterpart);
+    Gee.List<Jid>? occupants = muc_manager.get_other_offline_members(conversation.counterpart, conversation.account);
+    if (room_avatar != null || !muc_manager.is_private_room(conversation.account, conversation.counterpart) || occupants == null || occupants.size == 0) {
+        return new AvatarDrawer().tile(room_avatar, "#", Util.get_avatar_hex_color(stream_interactor, conversation.account, conversation.counterpart, conversation));
+    }
+    AvatarDrawer drawer = new AvatarDrawer();
+    for (int i = 0; i < (occupants.size <= 4 ? occupants.size : 3); i++) {
+        Jid jid = occupants[i];
+        Jid avatar_jid = jid;
+        Gdk.Pixbuf? part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
+        if (part_avatar == null && avatar_jid.equals_bare(conversation.counterpart) && muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
+            avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
+            part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
+        }
+        drawer.tile(part_avatar, get_participant_display_name(stream_interactor, conversation, jid),
+                    Util.get_avatar_hex_color(stream_interactor, conversation.account, jid, conversation));
+    }
+    if (occupants.size > 4) {
+        drawer.plus();
+    }
+    return drawer;
+}
+
 public static string get_conversation_display_name(StreamInteractor stream_interactor, Conversation conversation) {
+    if (conversation.type_ == Conversation.Type.CHAT) {
+        string? display_name = get_real_display_name(stream_interactor, conversation.account, conversation.counterpart);
+        if (display_name != null) return display_name;
+        return conversation.counterpart.to_string();
+    }
+    if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+        return get_groupchat_display_name(stream_interactor, conversation.account, conversation.counterpart);
+    }
     if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-        return conversation.counterpart.resourcepart + " from " + get_display_name(stream_interactor, conversation.counterpart.bare_jid, conversation.account);
+        return _("%s from %s").printf(get_occupant_display_name(stream_interactor, conversation.account, conversation.counterpart), get_groupchat_display_name(stream_interactor, conversation.account, conversation.counterpart.bare_jid));
     }
-    return get_display_name(stream_interactor, conversation.counterpart, conversation.account);
+    return conversation.counterpart.to_string();
 }
 
-public static string get_display_name(StreamInteractor stream_interactor, Jid jid, Account account, bool fallback_to_localpart = false) {
-    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid, account)) {
-        MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
-        string room_name = muc_manager.get_room_name(account, jid);
-        if (room_name != null && room_name != jid.localpart) {
-            return room_name;
+public static string get_participant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid participant, bool me_is_me = false) {
+    if (me_is_me) {
+        if (conversation.account.bare_jid.equals_bare(participant) ||
+                (conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) &&
+                        conversation.nickname != null && participant.equals_bare(conversation.counterpart) && conversation.nickname == participant.resourcepart) {
+            return _("Me");
         }
-        if (muc_manager.is_private_room(account, jid)) {
-            Gee.List<Jid>? other_occupants = muc_manager.get_other_offline_members(jid, account);
-            if (other_occupants != null && other_occupants.size > 0) {
-                var builder = new StringBuilder ();
-                foreach(Jid occupant in other_occupants) {
+    }
+    if (conversation.type_ == Conversation.Type.CHAT) {
+        return get_real_display_name(stream_interactor, conversation.account, participant, me_is_me) ?? participant.bare_jid.to_string();
+    }
+    if ((conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) && conversation.counterpart.equals_bare(participant)) {
+        return get_occupant_display_name(stream_interactor, conversation.account, participant);
+    }
+    return participant.bare_jid.to_string();
+}
 
-                    if (builder.len != 0) {
-                        builder.append(", ");
-                    }
-                    builder.append(get_display_name(stream_interactor, occupant, account, true).split(" ")[0]);
+private static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
+    if (me_is_me && jid.equals_bare(account.bare_jid)) {
+        return _("Me");
+    }
+    if (jid.equals_bare(account.bare_jid) && account.alias != null && account.alias.length != 0) {
+        return account.alias;
+    }
+    Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
+    if (roster_item != null && roster_item.name != null && roster_item.name != "") {
+        return roster_item.name;
+    }
+    return null;
+}
+
+private static string get_groupchat_display_name(StreamInteractor stream_interactor, Account account, Jid jid) {
+    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
+    string room_name = muc_manager.get_room_name(account, jid);
+    if (room_name != null && room_name != jid.localpart) {
+        return room_name;
+    }
+    if (muc_manager.is_private_room(account, jid)) {
+        Gee.List<Jid>? other_occupants = muc_manager.get_other_offline_members(jid, account);
+        if (other_occupants != null && other_occupants.size > 0) {
+            var builder = new StringBuilder ();
+            foreach(Jid occupant in other_occupants) {
+                if (builder.len != 0) {
+                    builder.append(", ");
                 }
-                return builder.str;
+                builder.append((get_real_display_name(stream_interactor, account, occupant) ?? occupant.localpart).split(" ")[0]);
             }
-        }
-    } else if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
-        return jid.resourcepart;
-    } else {
-        if (jid.equals_bare(account.bare_jid)) {
-            if (account.alias == null || account.alias == "") {
-                return _("Me");
-            } else {
-                return account.alias;
-            }
-        }
-        Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
-        if (roster_item != null && roster_item.name != null && roster_item.name != "") {
-            return roster_item.name;
+            return builder.str;
         }
     }
-
-    // Fallback to bare_jid / localpart
-    if (fallback_to_localpart && jid.localpart != null) {
-        return jid.localpart;
-    } else {
-        return jid.bare_jid.to_string();
-    }
+    return jid.to_string();
 }
 
-public static string get_message_display_name(StreamInteractor stream_interactor, Entities.Message message, Account account) {
-    return get_display_name(stream_interactor, message.from, account);
+private static string get_occupant_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
+    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
+    /* TODO: MUC Real JID
+    if (muc_manager.is_private_room(account, jid.bare_jid)) {
+        Jid? real_jid = muc_manager.get_real_jid(jid, account);
+        if (real_jid != null) {
+            string? display_name = get_real_display_name(stream_interactor, account, real_jid, me_is_me);
+            if (display_name != null) return display_name;
+        }
+    }*/
+    return jid.resourcepart ?? jid.to_string();
 }
 
 public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0, int width = 0, int height = 0) {

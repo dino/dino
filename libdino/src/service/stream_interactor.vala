@@ -58,6 +58,13 @@ public class StreamInteractor : Object {
         return null;
     }
 
+    public T? get<T>() {
+        foreach (StreamInteractionModule module in modules) {
+            if (module.get_type() == typeof(T)) return (T?) module;
+        }
+        return null;
+    }
+
     private void on_stream_opened(Account account, XmppStream stream) {
         stream.stream_negotiated.connect( (stream) => {
             stream_negotiated(account, stream);

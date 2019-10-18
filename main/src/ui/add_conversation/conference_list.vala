@@ -118,7 +118,7 @@ internal class ConferenceListRow : ListRow {
             via_label.visible = false;
         }
 
-        image.set_jid(stream_interactor, jid, account);
+        image.set_conversation(stream_interactor, new Conversation(jid, account, Conversation.Type.GROUPCHAT));
     }
 }
 

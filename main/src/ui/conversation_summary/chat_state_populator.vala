@@ -135,11 +135,11 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
     private void update() {
         if (image == null || label == null) return;
 
-        image.set_jids(stream_interactor, jids.to_array(), conversation.account, true);
+        image.set_conversation_participants(stream_interactor, conversation, jids.to_array());
 
         Gee.List<string> display_names = new ArrayList<string>();
         foreach (Jid jid in jids) {
-            display_names.add(Util.get_display_name(stream_interactor, jid, conversation.account));
+            display_names.add(Util.get_participant_display_name(stream_interactor, conversation, jid));
         }
         string new_text = "";
         if (jids.size > 3) {
