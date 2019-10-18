@@ -32,6 +32,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 controller = new UnifiedWindowController(this, stream_interactor, db);
                 window = new UnifiedWindow(this, stream_interactor, db);
                 controller.set_window(window);
+                if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.delete_event.connect(window.hide_on_delete);
 
                 notifications = new Notifications(stream_interactor, window);
                 notifications.start();
