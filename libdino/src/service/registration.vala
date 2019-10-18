@@ -56,6 +56,7 @@ public class Register : StreamInteractionModule, Object{
 
     public static async ServerAvailabilityReturn check_server_availability(Jid jid) {
         XmppStream stream = new XmppStream();
+        stream.log = new XmppLog(jid.to_string(), Application.print_xmpp);
         stream.add_module(new Tls.Module());
         stream.add_module(new Iq.Module());
         stream.add_module(new Xep.SrvRecordsTls.Module());
@@ -97,6 +98,7 @@ public class Register : StreamInteractionModule, Object{
 
     public static async Xep.InBandRegistration.Form? get_registration_form(Jid jid) {
         XmppStream stream = new XmppStream();
+        stream.log = new XmppLog(jid.to_string(), Application.print_xmpp);
         stream.add_module(new Tls.Module());
         stream.add_module(new Iq.Module());
         stream.add_module(new Xep.SrvRecordsTls.Module());

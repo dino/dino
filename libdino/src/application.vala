@@ -8,7 +8,7 @@ public interface Dino.Application : GLib.Application {
     public abstract Plugins.Registry plugin_registry { get; set; }
     public abstract SearchPathGenerator? search_path_generator { get; set; }
 
-    static string print_xmpp;
+    internal static string print_xmpp;
 
     private const OptionEntry[] options = {
         { "print-xmpp", 0, 0, OptionArg.STRING, ref print_xmpp, "Print XMPP stanzas identified by DESC to stderr", "DESC" },
