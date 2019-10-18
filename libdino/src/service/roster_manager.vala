@@ -33,10 +33,12 @@ public class RosterManager : StreamInteractionModule, Object {
     }
 
     public Collection<Roster.Item> get_roster(Account account) {
+        if (roster_stores[account] == null) return new ArrayList<Roster.Item>();
         return roster_stores[account].get_roster();
     }
 
     public Roster.Item? get_roster_item(Account account, Jid jid) {
+        if (roster_stores[account] == null) return null;
         return roster_stores[account].get_item(jid);
     }
 
