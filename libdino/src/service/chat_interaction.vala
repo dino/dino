@@ -177,6 +177,9 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
             ChatInteraction outer = stream_interactor.get_module(ChatInteraction.IDENTITY);
             outer.send_delivery_receipt(message, stanza, conversation);
+
+            // Send chat marker
+            if (message.direction == Entities.Message.DIRECTION_SENT) return false;
             if (outer.is_active_focus(conversation)) {
                 outer.check_send_read();
                 conversation.read_up_to = message;
@@ -208,15 +211,21 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     private void send_delivery_receipt(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+        if (message.direction == Entities.Message.DIRECTION_SENT) return;
+        if (!Xep.MessageDeliveryReceipts.Module.requests_receipt(stanza)) return;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) return;
+
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
-        if (stream != null && conversation.type_ != Conversation.Type.GROUPCHAT && Xep.MessageDeliveryReceipts.Module.requests_receipt(stanza)) {
+        if (stream != null) {
             stream.get_module(Xep.MessageDeliveryReceipts.Module.IDENTITY).send_received(stream, message.from, message.stanza_id);
         }
     }
 
     private void send_chat_state_notification(Conversation conversation, string state) {
+        if (conversation.get_send_typing_setting(stream_interactor) != Conversation.Setting.ON) return;
+
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
-        if (stream != null && conversation.get_send_typing_setting(stream_interactor) == Conversation.Setting.ON) {
+        if (stream != null) {
             string message_type = conversation.type_ == Conversation.Type.GROUPCHAT ? Xmpp.MessageStanza.TYPE_GROUPCHAT : Xmpp.MessageStanza.TYPE_CHAT;
             stream.get_module(Xep.ChatStateNotifications.Module.IDENTITY).send_state(stream, conversation.counterpart, message_type, state);
         }

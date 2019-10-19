@@ -134,12 +134,12 @@ public class DataForm {
     public class HiddenField : Field {
         public HiddenField() {
             base();
-            type_ = Type.HIDDEN;;
+            type_ = Type.HIDDEN;
             node.put_attribute("type", "hidden");
         }
         public HiddenField.from_node(StanzaNode node) {
             base.from_node(node);
-            type_ = Type.HIDDEN;;
+            type_ = Type.HIDDEN;
         }
     }
 
@@ -160,7 +160,7 @@ public class DataForm {
         }
         public ListSingleField(StanzaNode node) {
             base.from_node(node);
-            type_ = Type.LIST_SINGLE;;
+            type_ = Type.LIST_SINGLE;
         }
     }
 

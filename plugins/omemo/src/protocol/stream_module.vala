@@ -211,7 +211,7 @@ public class StreamModule : XmppStreamModule {
                 }
             }
             identity_key = bundle.identity_key;
-            signed_pre_key_id = bundle.signed_pre_key_id;;
+            signed_pre_key_id = bundle.signed_pre_key_id;
             signed_pre_key = bundle.signed_pre_key;
         }
 
