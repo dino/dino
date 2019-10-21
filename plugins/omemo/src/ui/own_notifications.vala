@@ -15,21 +15,14 @@ public class OwnNotifications {
         this.plugin = plugin;
         this.account = account;
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
-            if (jid.equals(account.bare_jid) && has_new_devices(account.bare_jid)) {
+            if (jid.equals(account.bare_jid) && plugin.has_new_devices(account, account.bare_jid)) {
                 display_notification();
             }
         });
 
-        if (has_new_devices(account.bare_jid)) {
+        if (plugin.has_new_devices(account, account.bare_jid)) {
             display_notification();
         }
-    }
-
-    public bool has_new_devices(Jid jid) {
-        int identity_id = plugin.db.identity.get_id(account.id);
-        if (identity_id < 0) return false;
-
-        return plugin.db.identity_meta.get_new_devices(identity_id, jid.bare_jid.to_string()).count() > 0;
     }
 
     private void display_notification() {

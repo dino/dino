@@ -21,16 +21,10 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
         stream_interactor.account_added.connect(on_account_added);
     }
 
-    public bool has_new_devices(Jid jid) {
-        int identity_id = plugin.db.identity.get_id(current_conversation.account.id);
-        if (identity_id < 0) return false;
-        return plugin.db.identity_meta.get_new_devices(identity_id, jid.bare_jid.to_string()).count() > 0;
-    }
-
     public void init(Conversation conversation, NotificationCollection notification_collection, Plugins.WidgetType type) {
         current_conversation = conversation;
         this.notification_collection = notification_collection;
-        if (has_new_devices(conversation.counterpart) && conversation.type_ == Conversation.Type.CHAT) {
+        if (plugin.has_new_devices(conversation.account, conversation.counterpart) && conversation.type_ == Conversation.Type.CHAT) {
             display_notification();
         }
     }
@@ -48,7 +42,7 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
     }
 
     public void should_hide() {
-        if (!has_new_devices(current_conversation.counterpart) && notification != null){
+        if (!plugin.has_new_devices(current_conversation.account, current_conversation.counterpart) && notification != null){
             notification_collection.remove_meta_notification(notification);
             notification = null;
         }
@@ -56,7 +50,7 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
-            if (current_conversation != null && jid.equals(current_conversation.counterpart) && has_new_devices(current_conversation.counterpart)) {
+            if (current_conversation != null && jid.equals(current_conversation.counterpart) && plugin.has_new_devices(current_conversation.account, current_conversation.counterpart)) {
                 display_notification();
             }
         });

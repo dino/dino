@@ -21,7 +21,8 @@ window.dino-main .dino-conversation {
     background: @theme_base_color;
 }
 
-window.dino-main .dino-conversation undershoot {
+window.dino-main .dino-conversation undershoot,
+window.dino-main .dino-conversation viewport /* Some themes set this */ {
     background: none;
 }
 

@@ -83,6 +83,13 @@ public class Plugin : RootInterface, Object {
     public void shutdown() {
         // Nothing to do
     }
+
+    public bool has_new_devices(Account account, Xmpp.Jid jid) {
+        int identity_id = db.identity.get_id(account.id);
+        if (identity_id < 0) return false;
+
+        return db.identity_meta.get_new_devices(identity_id, jid.bare_jid.to_string()).count() > 0;
+    }
 }
 
 }
