@@ -102,7 +102,7 @@ public class HttpFileSender : FileSender, Object {
         Soup.Session session = new Soup.Session();
         try {
             yield session.send_async(message);
-            if (message.status_code < 200 && message.status_code >= 300) {
+            if (message.status_code < 200 || message.status_code >= 300) {
                 throw new FileSendError.UPLOAD_FAILED("HTTP status code %s".printf(message.status_code.to_string()));
             }
         } catch (Error e) {
