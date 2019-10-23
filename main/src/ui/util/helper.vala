@@ -168,7 +168,7 @@ private static string get_groupchat_display_name(StreamInteractor stream_interac
                 if (builder.len != 0) {
                     builder.append(", ");
                 }
-                builder.append((get_real_display_name(stream_interactor, account, occupant) ?? occupant.localpart).split(" ")[0]);
+                builder.append((get_real_display_name(stream_interactor, account, occupant) ?? occupant.localpart ?? occupant.domainpart).split(" ")[0]);
             }
             return builder.str;
         }
