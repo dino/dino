@@ -76,6 +76,7 @@ SOURCES
     "src/module/xep/0085_chat_state_notifications.vala"
     "src/module/xep/0115_entitiy_capabilities.vala"
     "src/module/xep/0166_jingle.vala"
+    "src/module/xep/0172_user_nickname.vala"
     "src/module/xep/0184_message_delivery_receipts.vala"
     "src/module/xep/0191_blocking_command.vala"
     "src/module/xep/0198_stream_management.vala"
