@@ -187,24 +187,24 @@ public class ContactDetailsDialog : Gtk.Dialog {
         ListBoxRow lbr = new ListBoxRow() { visible = true, activatable = false, hexpand = true };
         Box box = new Box(Gtk.Orientation.HORIZONTAL, 40) { visible = true, margin_start = 20, margin_end = 20, margin_top = 14, margin_bottom = 14, hexpand = true };
 
-        Box control_box = new Box(Gtk.Orientation.HORIZONTAL, 0) { visible = true, hexpand = true };
+        Button accept_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
+        accept_button.add(new Image.from_icon_name("emblem-ok-symbolic", IconSize.BUTTON) { visible=true }); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
+        accept_button.get_style_context().add_class("suggested-action");
+        accept_button.tooltip_text = _("Accept key");
 
-        Button yes_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        yes_button.image = new Image.from_icon_name("emblem-ok-symbolic", IconSize.BUTTON);
-        yes_button.get_style_context().add_class("suggested-action");
+        Button reject_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
+        reject_button.add(new Image.from_icon_name("action-unavailable-symbolic", IconSize.BUTTON) { visible=true });
+        reject_button.get_style_context().add_class("destructive-action");
+        reject_button.tooltip_text = _("Reject key");
 
-        Button no_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        no_button.image = new Image.from_icon_name("action-unavailable-symbolic", IconSize.BUTTON);
-        no_button.get_style_context().add_class("destructive-action");
-
-        yes_button.clicked.connect(() => {
+        accept_button.clicked.connect(() => {
             plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.TRUSTED);
             add_fingerprint(device, TrustLevel.TRUSTED);
             new_keys_listbox.remove(lbr);
             if (new_keys_listbox.get_children().length() < 1) new_keys_container.visible = false;
         });
 
-        no_button.clicked.connect(() => {
+        reject_button.clicked.connect(() => {
             plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.UNTRUSTED);
             add_fingerprint(device, TrustLevel.UNTRUSTED);
             new_keys_listbox.remove(lbr);
@@ -212,16 +212,13 @@ public class ContactDetailsDialog : Gtk.Dialog {
         });
 
         string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
-        Label lbl = new Label(res)
-            { use_markup=true, justify=Justification.RIGHT, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false };
+        Label fingerprint_label = new Label(res) { use_markup=true, justify=Justification.RIGHT, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false };
+        box.add(fingerprint_label);
 
-
-        box.add(lbl);
-
-        control_box.add(yes_button);
-        control_box.add(no_button);
-        control_box.get_style_context().add_class("linked");
-
+        Box control_box = new Box(Gtk.Orientation.HORIZONTAL, 0) { visible = true, hexpand = true };
+        control_box.add(accept_button);
+        control_box.add(reject_button);
+        control_box.get_style_context().add_class("linked"); // .linked: Visually link the accept / reject buttons
         box.add(control_box);
 
         lbr.add(box);
