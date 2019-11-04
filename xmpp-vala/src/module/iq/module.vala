@@ -9,6 +9,16 @@ namespace Xmpp.Iq {
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
+        public async Iq.Stanza send_iq_async(XmppStream stream, Iq.Stanza iq) {
+            Iq.Stanza? return_stanza = null;
+            send_iq(stream, iq, (_, result_iq) => {
+                return_stanza = result_iq;
+                Idle.add(send_iq_async.callback);
+            });
+            yield;
+            return return_stanza;
+        }
+
         public delegate void OnResult(XmppStream stream, Iq.Stanza iq);
         public void send_iq(XmppStream stream, Iq.Stanza iq, owned OnResult? listener = null) {
             stream.write(iq.stanza);

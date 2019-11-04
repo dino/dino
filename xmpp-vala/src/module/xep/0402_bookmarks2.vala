@@ -42,7 +42,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
         if (conference.nick != null) {
             conference_node.put_node((new StanzaNode.build("nick", NS_URI)).put_node(new StanzaNode.text(conference.nick)));
         }
-        yield stream.get_module(Pubsub.Module.IDENTITY).publish(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI, conference.jid.to_string(), conference_node, Xmpp.Xep.Pubsub.ACCESS_MODEL_WHITELIST, 128);
+        yield stream.get_module(Pubsub.Module.IDENTITY).publish(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI, conference.jid.to_string(), conference_node, Xmpp.Xep.Pubsub.ACCESS_MODEL_WHITELIST);
     }
 
     public async void replace_conference(XmppStream stream, Conference orig_conference, Conference modified_conference) {

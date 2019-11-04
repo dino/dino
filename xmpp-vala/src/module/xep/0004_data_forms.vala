@@ -83,7 +83,7 @@ public class DataForm {
             return values.size > 0 ? values[0] : "";
         }
 
-        internal void set_value_string(string val) {
+        public void set_value_string(string val) {
             StanzaNode? value_node = node.get_subnode("value", NS_URI);
             if (value_node == null) {
                 value_node = new StanzaNode.build("value", NS_URI);

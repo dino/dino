@@ -60,7 +60,7 @@ namespace Xmpp.Xep.Pubsub {
             });
         }
 
-        public async bool publish(XmppStream stream, Jid? jid, string node_id, string? item_id, StanzaNode content, string? access_model=null, int? max_items = null) {
+        public async bool publish(XmppStream stream, Jid? jid, string node_id, string? item_id, StanzaNode content, string? access_model=null) {
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI).add_self_xmlns();
             StanzaNode publish_node = new StanzaNode.build("publish", NS_URI).put_attribute("node", node_id);
             pubsub_node.put_node(publish_node);
@@ -69,7 +69,7 @@ namespace Xmpp.Xep.Pubsub {
             items_node.put_node(content);
             publish_node.put_node(items_node);
 
-            if (access_model != null || max_items != null) {
+            if (access_model != null) {
                 StanzaNode publish_options_node = new StanzaNode.build("publish-options", NS_URI);
                 pubsub_node.put_node(publish_options_node);
 
@@ -80,11 +80,6 @@ namespace Xmpp.Xep.Pubsub {
                 if (access_model != null) {
                     DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="pubsub#access_model" };
                     field.set_value_string(access_model);
-                    data_form.add_field(field);
-                }
-                if (max_items != null) {
-                    DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="pubsub#max_items" };
-                    field.set_value_string(max_items.to_string());
                     data_form.add_field(field);
                 }
                 publish_options_node.put_node(data_form.get_submit_node());
@@ -124,6 +119,31 @@ namespace Xmpp.Xep.Pubsub {
 
             Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
+        }
+
+        public async DataForms.DataForm? request_node_config(XmppStream stream, Jid? jid, string node_id) {
+            StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI_OWNER).add_self_xmlns();
+            StanzaNode publish_node = new StanzaNode.build("configure", NS_URI_OWNER).put_attribute("node", node_id);
+            pubsub_node.put_node(publish_node);
+
+            Iq.Stanza iq = new Iq.Stanza.get(pubsub_node);
+            Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+            StanzaNode? data_form_node = result_iq.stanza.get_deep_subnode(Pubsub.NS_URI_OWNER + ":pubsub", Pubsub.NS_URI_OWNER + ":configure", "jabber:x:data:x");
+            if (data_form_node == null) return null;
+            return DataForms.DataForm.create_from_node(stream, data_form_node, () => {});
+        }
+
+        public async void submit_node_config(XmppStream stream, DataForms.DataForm data_form, string node_id) {
+            StanzaNode submit_node = data_form.get_submit_node();
+
+            StanzaNode pubsub_node = new StanzaNode.build("pubsub", Pubsub.NS_URI_OWNER).add_self_xmlns();
+            StanzaNode publish_node = new StanzaNode.build("configure", Pubsub.NS_URI_OWNER).put_attribute("node", node_id);
+            pubsub_node.put_node(publish_node);
+            publish_node.put_node(submit_node);
+
+
+            Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
+            yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
         }
 
         public override void attach(XmppStream stream) {
