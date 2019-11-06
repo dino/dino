@@ -28,6 +28,7 @@ public class HttpFileSender : FileSender, Object {
             var slot_result = yield stream_interactor.module_manager.get_module(file_transfer.account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).request_slot(stream, file_transfer.server_file_name, file_meta.size, file_meta.mime_type);
             send_data.url_down = slot_result.url_get;
             send_data.url_up = slot_result.url_put;
+            send_data.headers = slot_result.headers;
         } catch (Xep.HttpFileUpload.HttpFileTransferError e) {
             throw new FileSendError.UPLOAD_FAILED("Http file upload XMPP error: %s".printf(e.message));
         }
@@ -96,6 +97,9 @@ public class HttpFileSender : FileSender, Object {
         Soup.Message message = new Soup.Message("PUT", file_send_data.url_up);
         message.request_headers.set_content_type(file_meta.mime_type, null);
         message.request_headers.set_content_length(file_meta.size);
+        foreach (var entry in file_send_data.headers.entries) {
+            message.request_headers.append(entry.key, entry.value);
+        }
         message.request_body.set_accumulate(false);
         message.wrote_headers.connect(() => transfer_more_bytes(file_transfer.input_stream, message.request_body));
         message.wrote_chunk.connect(() => transfer_more_bytes(file_transfer.input_stream, message.request_body));

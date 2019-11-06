@@ -1,5 +1,6 @@
 using Xmpp;
 using Xmpp.Xep;
+using Gee;
 
 namespace Xmpp.Xep.HttpFileUpload {
 
@@ -21,6 +22,7 @@ public class Module : XmppStreamModule {
     public struct SlotResult {
         public string url_get { get; set; }
         public string url_put { get; set; }
+        public HashMap<string, string> headers { get; set; }
     }
     public async SlotResult request_slot(XmppStream stream, string filename, int64 file_size, string? content_type) throws HttpFileTransferError {
         Flag? flag = stream.get_flag(Flag.IDENTITY);
@@ -69,6 +71,15 @@ public class Module : XmppStreamModule {
                 e = new HttpFileTransferError.SLOT_REQUEST("Error getting upload/download url: %s".printf(iq.stanza.to_string()));
                 Idle.add((owned) callback);
                 return;
+            }
+
+            slot_result.headers = new HashMap<string, string>();
+
+            foreach (StanzaNode node in iq.stanza.get_deep_subnodes(flag.ns_ver + ":slot", flag.ns_ver + ":put", flag.ns_ver + ":header")) {
+                string header_name = node.get_attribute("name");
+                if (header_name == "Authorization" || header_name == "Cookie" || header_name == "Expires") {
+                    slot_result.headers[header_name] = node.get_string_content();
+                }
             }
 
             slot_result.url_get = url_get;
