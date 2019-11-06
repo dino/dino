@@ -358,6 +358,7 @@ public class FileSendData { }
 public class HttpFileSendData : FileSendData {
     public string url_down { get; set; }
     public string url_up { get; set; }
+    public HashMap<string, string> headers { get; set; }
 
     public bool encrypt_message { get; set; default=true; }
 }
