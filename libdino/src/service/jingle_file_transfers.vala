@@ -163,6 +163,9 @@ public class JingleFileSender : FileSender, Object {
     }
 
     public bool can_send(Conversation conversation, FileTransfer file_transfer) {
+
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) return false;
+
         // No file specific restrictions apply to Jingle file transfers
         return is_upload_available(conversation);
     }

@@ -196,6 +196,8 @@ public class ChatInteraction : StreamInteractionModule, Object {
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return;
 
+        if (message.stanza_id != null) return; // Need a stanza id to mark
+
         switch (marker) {
             case Xep.ChatMarkers.MARKER_RECEIVED:
                 if (stanza != null && Xep.ChatMarkers.Module.requests_marking(stanza)) {
