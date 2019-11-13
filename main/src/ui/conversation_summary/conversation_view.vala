@@ -254,15 +254,18 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         main.reorder_child(insert, index);
 
         if (lower_item != null) {
-            ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
-            Plugins.MetaConversationItem lower_start_item = lower_skeleton.item;
-            if (item.display_time != null && lower_start_item.display_time != null &&
-                    item.display_time.difference(lower_start_item.display_time) < TimeSpan.MINUTE &&
-                    lower_start_item.jid.equals(item.jid) &&
-                    lower_start_item.encryption == item.encryption &&
-                    (item.mark == Message.Marked.WONTSEND) == (lower_start_item.mark == Message.Marked.WONTSEND)) {
+            if (can_merge(item, lower_item)) {
+                ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
                 item_skeleton.show_skeleton = false;
                 lower_skeleton.last_group_item = false;
+            }
+        }
+
+        Plugins.MetaConversationItem? upper_item = meta_items.higher(item);
+        if (upper_item != null) {
+            if (!can_merge(upper_item, item)) {
+                ConversationItemSkeleton upper_skeleton = item_item_skeletons[upper_item];
+                upper_skeleton.show_skeleton = true;
             }
         }
 
@@ -280,6 +283,14 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             }
         }
         return insert;
+    }
+
+    private bool can_merge(Plugins.MetaConversationItem upper_item /*more recent, displayed below*/, Plugins.MetaConversationItem lower_item /*less recent, displayed above*/) {
+        return upper_item.display_time != null && lower_item.display_time != null &&
+            upper_item.display_time.difference(lower_item.display_time) < TimeSpan.MINUTE &&
+            upper_item.jid.equals(lower_item.jid) &&
+            upper_item.encryption == lower_item.encryption &&
+            (upper_item.mark == Message.Marked.WONTSEND) == (lower_item.mark == Message.Marked.WONTSEND);
     }
 
     private void on_upper_notify() {

@@ -71,6 +71,7 @@ public class ConversationItemSkeleton : EventBox {
         this.show_skeleton = true;
         this.last_group_item = true;
         update_margin();
+        this.notify["show-skeleton"].connect(update_margin);
     }
 
     public void update_time() {
