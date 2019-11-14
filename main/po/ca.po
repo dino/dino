@@ -1,40 +1,41 @@
 # Catalan translation for Dino.
 # This file is distributed under the same license as the dino package.
-# Jordi Mallach <jordi@mallach.net>, 2018.
+# Jordi Mallach <jordi@mallach.net>, 2018-2019.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 14:18+0200\n"
-"PO-Revision-Date: 2018-05-10 14:38+0200\n"
-"Language-Team: Catalan <https://hosted.weblate.org/projects/dino/"
-"translations/ca/>\n"
+"PO-Revision-Date: 2019-11-13 00:22+0100\n"
+"Language-Team: Catalan; Valencian <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Generator: Gtranslator 3.34.0\n"
+"Last-Translator: Jordi Mallach <jordi@mallach.net>\n"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "Image sent"
-msgstr ""
+msgstr "Imatge enviada"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:155
 msgid "File sent"
-msgstr ""
+msgstr "Fitxer enviat"
 
 #: main/src/ui/notifications.vala:70
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "Image received"
-msgstr ""
+msgstr "Imatge rebuda"
 
 #: main/src/ui/notifications.vala:70
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:157
 msgid "File received"
-msgstr ""
+msgstr "Fitxer rebut"
 
 #: main/src/ui/notifications.vala:95
 msgid "Subscription request"
@@ -53,17 +54,17 @@ msgstr "Rebutja"
 #: main/src/ui/notifications.vala:109
 #, c-format
 msgid "Failed connecting to %s"
-msgstr ""
+msgstr "No s'ha pogut connectar a %s"
 
 #: main/src/ui/notifications.vala:124
 #, c-format
 msgid "Invitation to %s"
-msgstr ""
+msgstr "Invitació a %s"
 
 #: main/src/ui/notifications.vala:125
 #, c-format
 msgid "%s invited you to %s"
-msgstr ""
+msgstr "%s us ha convidat a %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -131,47 +132,47 @@ msgstr "Afegeix un compte"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:158
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Entra a %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:202
 #, c-format
 msgid "You can now start using %s"
-msgstr ""
+msgstr "Ara podeu començar a emprar %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:239
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "No s'ha pogut connectar a %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:256
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Usuari o contrasenya incorrecta"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:289
 msgid "No response from server"
-msgstr ""
+msgstr "No s'ha rebut una resposta del servidor"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:295
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "Registre en %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:298
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "El servidor requereix un registre a través d'una pàgina web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:300
 msgid "Open Registration"
-msgstr ""
+msgstr "Registre obert"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:316
 msgid "Register"
-msgstr ""
+msgstr "Registre"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:318
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "Mireu %s per obtenir informació sobre com registrar-vos"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:136
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:147
@@ -239,7 +240,7 @@ msgstr "Desa"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:27
 #: main/src/ui/unified_window.vala:190 main/data/menu_add.ui:13
 msgid "Join Channel"
-msgstr ""
+msgstr "Uneix-m'hi al canal"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:50
 #: main/src/ui/add_conversation/add_conference_dialog.vala:121
@@ -253,7 +254,7 @@ msgstr "Següent"
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:268
 msgid "Back"
-msgstr ""
+msgstr "Enrere"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/src/ui/unified_window.vala:189
@@ -261,7 +262,7 @@ msgstr ""
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
 msgid "Start Conversation"
-msgstr ""
+msgstr "Inicia una conversa"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -301,11 +302,11 @@ msgstr "Massa ocupants a la sala"
 
 #: main/src/ui/unified_window.vala:168
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Us donem la benvinguda al Dino!"
 
 #: main/src/ui/unified_window.vala:170
 msgid "Set up account"
-msgstr ""
+msgstr "Configureu un compte"
 
 #: main/src/ui/unified_window.vala:178
 msgid "No active accounts"
@@ -322,25 +323,25 @@ msgstr "Cap conversa activa"
 #: main/src/ui/conversation_summary/file_widget.vala:258
 #, c-format
 msgid "Downloading %s…"
-msgstr ""
+msgstr "S'està baixant %s…"
 
 #: main/src/ui/conversation_summary/file_widget.vala:263
 #, c-format
 msgid "%s offered: %s"
-msgstr ""
+msgstr "%s ha oferit: %s"
 
 #: main/src/ui/conversation_summary/file_widget.vala:265
 #, c-format
 msgid "File offered: %s"
-msgstr ""
+msgstr "Fitxer oferit: %s"
 
 #: main/src/ui/conversation_summary/file_widget.vala:267
 msgid "File offered"
-msgstr ""
+msgstr "Fitxer oferit"
 
 #: main/src/ui/conversation_summary/file_widget.vala:272
 msgid "File transfer failed"
-msgstr ""
+msgstr "Ha fallat la transferència del fitxer"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
@@ -353,17 +354,17 @@ msgstr "%a, %b %d"
 #: main/src/ui/conversation_summary/chat_state_populator.vala:146
 #, c-format
 msgid "%s, %s and %i others"
-msgstr ""
+msgstr "%s, %s i %i altres"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:148
 #, c-format
 msgid "%s, %s and %s"
-msgstr ""
+msgstr "%s, %s i %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:150
 #, c-format
 msgid "%s and %s"
-msgstr ""
+msgstr "%s i %s"
 
 #: main/src/ui/conversation_summary/chat_state_populator.vala:155
 msgid "is typing…"
@@ -449,17 +450,17 @@ msgstr "Expulsa"
 #: main/src/ui/global_search.vala:134
 #, c-format
 msgid "%i search results"
-msgstr ""
+msgstr "%i resultats de cerca"
 
 #: main/src/ui/global_search.vala:161
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "En %s"
 
 #: main/src/ui/global_search.vala:161
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "Amb %s"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
@@ -600,11 +601,11 @@ msgstr "Per defecte: %s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 msgid "Search messages"
-msgstr ""
+msgstr "Cerca els missatges"
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
-msgstr ""
+msgstr "Membres"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -632,53 +633,52 @@ msgstr "Afegeix un compte"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "Entra"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:329
 msgid "Create account"
-msgstr ""
+msgstr "Crea un compte"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "No s'ha pogut una connexió segura"
 
 #: main/data/manage_accounts/add_account_dialog.ui:289
 msgid "Connect"
-msgstr ""
+msgstr "Connecta"
 
 #: main/data/manage_accounts/add_account_dialog.ui:341
 msgid "Choose a public server"
-msgstr ""
+msgstr "Trieu un servidor públic"
 
 #: main/data/manage_accounts/add_account_dialog.ui:370
 msgid "Or specify a server address"
-msgstr ""
+msgstr "O especifiqueu l'adreça d'un servidor"
 
 #: main/data/manage_accounts/add_account_dialog.ui:390
 msgid "Sign in instead"
-msgstr ""
+msgstr "Entra"
 
 #: main/data/manage_accounts/add_account_dialog.ui:471
 msgid "Pick another server"
-msgstr ""
+msgstr "Trieu un altre servidor"
 
 #: main/data/manage_accounts/add_account_dialog.ui:544
 msgid "All set up!"
-msgstr ""
+msgstr "Tot llest!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:579
 msgid "Finish"
-msgstr ""
+msgstr "Finalitza"
 
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Sense xifrar"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
-#, fuzzy
 msgid "Modern XMPP Chat Client"
-msgstr "Client d'XMPP modern"
+msgstr "Client de xat XMPP modern"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -734,19 +734,19 @@ msgstr "Afegeix el contacte"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "No hi ha cap cerca activa"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "Teclegeu per a començar una cerca"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "No hi ha missatges coincidents"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Comproveu l'ortografia o proveu de suprimir filtres"
 
 #~ msgid "File"
 #~ msgstr "Fitxer"
