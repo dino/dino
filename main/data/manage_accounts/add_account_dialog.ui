@@ -196,7 +196,6 @@
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <object class="GtkLabel" id="sign_in_password_title">
-                                                        <property name="label">Sign in</property>
                                                         <property name="visible">True</property>
                                                         <attributes>
                                                             <attribute name="scale" value="1.3"/>

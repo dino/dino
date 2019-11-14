@@ -45,7 +45,7 @@
                                 <property name="margin-right">50</property>
                                 <property name="visible">True</property>
                                 <property name="valign">end</property>
-                                <property name="label">Click here to start a conversation or join a channel</property>
+                                <property name="label" translatable="yes">Click here to start a conversation or join a channel.</property>
                                 <style>
                                     <class name="dim-label"/>
                                 </style>
@@ -144,7 +144,7 @@
                                 <child>
                                     <object class="GtkLabel">
                                         <property name="visible">True</property>
-                                        <property name="label">You have no open chats</property>
+                                        <property name="label" translatable="yes">You have no open chats</property>
                                         <property name="xalign">0.5</property>
                                         <property name="yalign">0.5</property>
                                         <style>

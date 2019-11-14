@@ -238,9 +238,8 @@
                     <object class="GtkExpander">
                         <property name="visible">True</property>
                         <child type="label">
-                            <object class="GtkLabel" id="expander-label">
+                            <object class="GtkLabel" id="inactive_expander_label">
                                 <property name="visible">True</property>
-                                <property name="label">Inactive keys</property>
                                 <attributes>
                                     <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                 </attributes>

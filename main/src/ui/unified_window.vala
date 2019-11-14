@@ -182,7 +182,7 @@ public class UnifiedWindow : Gtk.Window {
 public class WelcomePlceholder : UnifiedWindowPlaceholder {
     public WelcomePlceholder() {
         title_label.label = _("Welcome to Dino!");
-        label.label = "Create or log in to your account to get started.";
+        label.label = _("Sign in or create an account to get started.");
         primary_button.label = _("Set up account");
         title_label.visible = true;
         secondary_button.visible = false;

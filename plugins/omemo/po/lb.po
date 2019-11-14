@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-28 14:18+0200\n"
+"POT-Creation-Date: 2019-11-14 01:25+0100\n"
 "PO-Revision-Date: 2019-02-26 08:17+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/lb/>\n"
@@ -13,28 +13,58 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.5-dev\n"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:79
+#: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
 msgstr "Verwalten"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:89
+#: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
 msgstr "Dëse Kontakt huet nei Geräter"
 
-#: plugins/omemo/src/ui/own_notifications.vala:36
+#: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
 msgstr "OMEMO Vertrauens Entscheedung noutwenneg"
 
-#: plugins/omemo/src/ui/own_notifications.vala:38
+#: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
 msgstr "Hues du een neit Gerät fir %s dobäi gemaach?"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:48
+#: plugins/omemo/src/ui/manage_key_dialog.vala:35
+msgid "Manage Key"
+msgstr "Schlëssel verwalten"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contacts device."
+msgstr ""
+"Vergläich de Fangerofdrock, Zeeche fir Zeechen, mat dem den um Gerät vum "
+"Kontakt ugewise gëtt."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+msgid "Not matching"
+msgstr "Stemmt net iwwerteneen"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:38
+msgid "Matching"
+msgstr "Stemmt iwwerteneen"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
+#: plugins/omemo/src/ui/manage_key_dialog.vala:82
+#: plugins/omemo/src/ui/manage_key_dialog.vala:88
+msgid "Cancel"
+msgstr "Ofbriechen"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:40
+msgid "Confirm"
+msgstr "Confirméieren"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:60
 msgid "Verify key"
 msgstr "Schlëssel verifizéieren"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:49
+#: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
@@ -43,11 +73,11 @@ msgstr ""
 "Wann konforméiert, all zukünfteg Messagen déi vum %s mat dësem Schlëssel "
 "geschéckt ginn, ginn deementspriechend am Chatfenster markéiert."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:59
+#: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
 msgstr "Fangerofdréck stëmmen net iwwerteneen"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:60
+#: plugins/omemo/src/ui/manage_key_dialog.vala:72
 #, c-format
 msgid ""
 "Please verify that you are comparing the correct fingerprint. If "
@@ -59,17 +89,11 @@ msgstr ""
 "dann ass dem %s säi Konto villäicht kompromettéiert an du solls dëse "
 "Schlëssel verweigeren."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:70
-#: plugins/omemo/src/ui/manage_key_dialog.vala:76
-#: plugins/omemo/data/manage_key_dialog.ui:13
-msgid "Cancel"
-msgstr "Ofbriechen"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:112
+#: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid "Verify key fingerprint"
 msgstr "Iwwerpréif Schlëssel Fangerofdrock"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:112
+#: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
@@ -77,63 +101,65 @@ msgstr ""
 "Vergläich de Fangerofdrock vun dësem Schlëssel mam Fangerofdrock den um "
 "Gerät vun dësem Kontakt steet."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:114
-#: plugins/omemo/src/ui/manage_key_dialog.vala:140
+#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
+#: plugins/omemo/src/ui/contact_details_dialog.vala:201
 msgid "Reject key"
 msgstr "Schlëssel ofleenen"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:114
+#: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
 "Stop accepting this key during communication with its associated contact."
 msgstr ""
 "Dëse Schlëssel net méi akzeptéiere wärend der Kommunikatioun mat sengem "
 "verbonnene Kontakt."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:116
-#: plugins/omemo/src/ui/manage_key_dialog.vala:148
+#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
+#: plugins/omemo/src/ui/contact_details_dialog.vala:196
 msgid "Accept key"
 msgstr "Schlëssel acceptéieren"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:116
+#: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
 "Start accepting this key during communication with its associated contact"
 msgstr "Dëse Schlëssel wärend de Conversatioun mat sengem Kontakt benotzen"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:120
-#: plugins/omemo/src/ui/manage_key_dialog.vala:125
-#: plugins/omemo/src/ui/manage_key_dialog.vala:129
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid "This key is currently %s."
 msgstr "Den aktuelle Schlëssel ass %s."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:120
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
 msgid "accepted"
 msgstr "akzeptéiert"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:120
-#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #, c-format
 msgid "This means it can be used by %s to receive and send messages."
 msgstr ""
 "Dat bedeit, dass et vum %s ka benotzt gi fir Messagen ze empfänken an ze "
 "verschécken."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
 msgstr "verifizéiert"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
 "De Schlëssel ass zousätzlech iwwerpréift gi mam Schlëssel um Gerät vum "
 "Kontakt iwwerteneen ze stëmmen."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:129
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
 msgid "rejected"
 msgstr "ofgeleent"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:129
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
 "This means it cannot be used by %s to receive messages, and any messages "
@@ -142,7 +168,7 @@ msgstr ""
 "Dat bedeit, dass dëse Schlëssel net ka vum %s benotz gi fir Messagen ze "
 "empfänken an all Message déi geschéckt gi ginn ignoréiert."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
@@ -152,7 +178,7 @@ msgstr ""
 "geschéckt ginn, ginn ignoréiert a keng vun dengem Messagë wäerte liesbar "
 "sinn."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:149
+#: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
 "Once confirmed this key will be usable by %s to receive and send messages."
@@ -160,30 +186,62 @@ msgstr ""
 "Wann konforméiert ass de Schlëssel vum %s benotzbar fir Messagen ze "
 "empfänken an ze schécken."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:155
+#: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
 msgstr "Zeréck"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+#: plugins/omemo/src/ui/contact_details_dialog.vala:42
+msgid "OMEMO Key Management"
+msgstr "OMEMO Schlësselenverwaltung"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:43
+msgid "Automatically accept new keys"
+msgstr "Automatesch nei Schlësselen akzeptéieren"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:44
+msgid ""
+"When this contact adds new encryption keys to their account, automatically "
+"accept them."
+msgstr ""
+"Wann dëse Kontakt néi Schlësselen zu sengem Konto bäifüügt, déi automatesch "
+"akzeptéieren."
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:45
+msgid "Own key"
+msgstr "Eegene Schlëssel"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+msgid "New keys"
+msgstr "Nei Schlësselen"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+msgid "Associated keys"
+msgstr "Zougehéiereg Schlësselen"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "Inactive keys"
+msgstr ""
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:76
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Wann s du nei Schlëssele bei däin Account bäifüügs, déi automatesch "
 "akzeptéieren."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:126
+#: plugins/omemo/src/ui/contact_details_dialog.vala:263
 msgid "Accepted"
 msgstr "Akzeptéiert"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:131
+#: plugins/omemo/src/ui/contact_details_dialog.vala:268
 msgid "Rejected"
 msgstr "Ofgeleent"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:136
+#: plugins/omemo/src/ui/contact_details_dialog.vala:273
 msgid "Verified"
 msgstr "Verifizéiert"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:143
+#: plugins/omemo/src/ui/contact_details_dialog.vala:280
 msgid "Unused"
 msgstr "Onbenotzt"
 
@@ -206,58 +264,6 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d OMEMO Gerät"
 msgstr[1] "%d OMEMO Geräter"
-
-#: plugins/omemo/data/contact_details_dialog.ui:5
-msgid "OMEMO Key Management"
-msgstr "OMEMO Schlësselenverwaltung"
-
-#: plugins/omemo/data/contact_details_dialog.ui:41
-msgid "Automatically accept new keys"
-msgstr "Automatesch nei Schlësselen akzeptéieren"
-
-#: plugins/omemo/data/contact_details_dialog.ui:54
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
-msgstr ""
-"Wann dëse Kontakt néi Schlësselen zu sengem Konto bäifüügt, déi automatesch "
-"akzeptéieren."
-
-#: plugins/omemo/data/contact_details_dialog.ui:89
-msgid "Own key"
-msgstr "Eegene Schlëssel"
-
-#: plugins/omemo/data/contact_details_dialog.ui:180
-msgid "New keys"
-msgstr "Nei Schlësselen"
-
-#: plugins/omemo/data/contact_details_dialog.ui:216
-msgid "Associated keys"
-msgstr "Zougehéiereg Schlësselen"
-
-#: plugins/omemo/data/manage_key_dialog.ui:9
-msgid "Manage Key"
-msgstr "Schlëssel verwalten"
-
-#: plugins/omemo/data/manage_key_dialog.ui:25
-msgid "Confirm"
-msgstr "Confirméieren"
-
-#: plugins/omemo/data/manage_key_dialog.ui:86
-msgid ""
-"Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
-msgstr ""
-"Vergläich de Fangerofdrock, Zeeche fir Zeechen, mat dem den um Gerät vum "
-"Kontakt ugewise gëtt."
-
-#: plugins/omemo/data/manage_key_dialog.ui:113
-msgid "Not matching"
-msgstr "Stemmt net iwwerteneen"
-
-#: plugins/omemo/data/manage_key_dialog.ui:120
-msgid "Matching"
-msgstr "Stemmt iwwerteneen"
 
 #~ msgid ""
 #~ "Start accepting this key during communication with its associated contact."

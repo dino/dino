@@ -25,6 +25,7 @@
   <summary xml:lang="eu">XMPP txat bezero modernoa</summary>
   <summary xml:lang="es">Cliente de XMPP moderno</summary>
   <summary xml:lang="de">Moderner XMPP Chat Client</summary>
+  <summary xml:lang="ca">Client de xat XMPP modern</summary>
   <summary xml:lang="ar">تطبيق حديث للدردشة عبر XMPP</summary>
   <description>
     <p>Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable Jabber/XMPP experience while having your privacy in mind.</p>
@@ -34,6 +35,7 @@
     <p xml:lang="ro">Dino este un client de chat modern, cu sursă deschisă, pentru calculatoare. Se concentrează să furnizeze o experiență Jabber/XMPP clară și fiabilă, ținând cont de confidențialitatea dumneavoastră.</p>
     <p xml:lang="pt_BR">Dino é um moderno chat de código aberto para desktop. Ele é focado em prover uma transparente e confiável experiência Jabber/XMPP, tendo em mente a sua privacidade.</p>
     <p xml:lang="pl">Dino jest nowoczesnym, otwartym komunikatorem. Skupia się na prostej obsłudze sieci Jabber/XMPP dbając o twoją prywatność.</p>
+    <p xml:lang="oc">Dino es un client de chat liure e modèrn per l’ordenador de burèu. Ensaja de provesir una experiéncia neta e fisabla de Jabber/XMPP en téner en compte vòstra confidencialitat.</p>
     <p xml:lang="nl_BE">Dino is een moderne, vrije chattoepassing voor uw bureaublad. Ze biedt een eenvoudige en betrouwbare Jabber/XMPP-ervaring, met uw privacy in het achterhoofd.</p>
     <p xml:lang="nl">Dino is een moderne, vrije chattoepassing voor uw bureaublad. Ze biedt een eenvoudige en betrouwbare Jabber/XMPP-ervaring, met uw privacy in het achterhoofd.</p>
     <p xml:lang="nb">Dino er en moderne friporg-sludringsklient for skrivebordet. Det fokuserer på rask og pålitelig XMPP-opplevelse, samtidig som det hegner om personvernet.</p>
@@ -55,6 +57,7 @@
     <p xml:lang="ro">Suportă criptare de la un capăt la altul prin intermediul OMEMO și OpenPGP, și permite configurarea caracteristicilor legate de confidențialitate precum trimiterea notificărilor de primire și tastare.</p>
     <p xml:lang="pt_BR">Suporte criptografia ponta a ponta com OMEMO e OpenPGP e permite configurar privacidade—características relacionadas às notificações de leitura, recebimento e escrita.</p>
     <p xml:lang="pl">Dino obsługuje szyfrowanie end-to-end za pomocą OMEMO i OpenPGP, a także daje kontrolę nad funkcjami wpływającymi na prywatność, takimi jak powiadomienia o pisaniu czy odczytaniu wiadomości.</p>
+    <p xml:lang="oc">Compatible amb lo chiframent OMEMO e OpenPGP del cap a la fin e permet de configurar de foncionalitats ligadas amb la confidencialitat  coma los acusats de lectura e las notificacions d’escritura.</p>
     <p xml:lang="nl_BE">Ze ondersteunt eind-tot-eind-versleuteling met OMEMO en OpenPGP, en laat u toe privacygerelateerde functies, gelijk leesbevestigingen en typmeldingen, in te stellen.</p>
     <p xml:lang="nl">Ze ondersteunt eind-tot-eind-versleuteling met OMEMO en OpenPGP, en staat u toe privacy-gerelateerde functies, zoals leesbevestigingen en typmeldingen, in te stellen.</p>
     <p xml:lang="nb">Det støtter ende-til-ende -kryptering med OMEMO og OpenPGP, og tillater oppsett av personvernsrelaterte funksjoner som meldingskvitteringer og skrivevarsling.</p>
@@ -76,6 +79,7 @@
     <p xml:lang="ro">Dino preia istoricul discuțiilor de pe server și sincronizează mesajele cu celelalte dispozitive.</p>
     <p xml:lang="pt_BR">Dino obtém o histórico do servidor e sincroniza mensagens com outros dispositivos.</p>
     <p xml:lang="pl">Dino pobiera historię rozmów z serwera i synchronizuje wiadomości z innymi urządzeniami.</p>
+    <p xml:lang="oc">Dino recupèra l’istoric del servidor e sincroniza los messatges amb d’autres periferics.</p>
     <p xml:lang="nl_BE">Dino haalt de geschiedenis op van de server en synchroniseert berichten met andere apparaten.</p>
     <p xml:lang="nl">Dino haalt de geschiedenis op van de server en synchroniseert berichten met andere apparaten.</p>
     <p xml:lang="nb">Dino henter historikk fra tjeneren og synkroniserer meldinger med andre enheter.</p>
@@ -101,6 +105,7 @@
       <caption xml:lang="ro">Fereastra principală de conversații</caption>
       <caption xml:lang="pt_BR">Janela principal com as conversas</caption>
       <caption xml:lang="pl">Główne okno rozmów</caption>
+      <caption xml:lang="oc">Fenèstra màger amb conversacions</caption>
       <caption xml:lang="nl_BE">Hoofdvenster met gesprekken</caption>
       <caption xml:lang="nl">Hoofdvenster met gesprekken</caption>
       <caption xml:lang="nb">Hovedvindu med samtaler</caption>
@@ -140,6 +145,7 @@
       <caption xml:lang="eu">Elkarrizketa hasi</caption>
       <caption xml:lang="es">Iniciar Conversación</caption>
       <caption xml:lang="de">Unterhaltung starten</caption>
+      <caption xml:lang="ca">Inicia una conversa</caption>
       <caption xml:lang="ar">الشروع في محادثة</caption>
       <image height="900" width="1600">https://dino.im/img/appdata/start_chat.png</image>
     </screenshot>

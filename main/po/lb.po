@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Luxembourgish (Dino)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-28 14:18+0200\n"
-"PO-Revision-Date: 2019-07-15 16:01+0000\n"
+"POT-Creation-Date: 2019-11-14 01:25+0100\n"
+"PO-Revision-Date: 2019-08-30 23:24+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "translations/lb/>\n"
 "Language: lb\n"
@@ -11,25 +11,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.8-dev\n"
+"X-Generator: Weblate 3.9-dev\n"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:155
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "Image sent"
 msgstr "Bild geschéckt"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:155
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "File sent"
 msgstr "Datei geschéckt"
 
 #: main/src/ui/notifications.vala:70
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:157
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "Image received"
 msgstr "Bild kritt"
 
 #: main/src/ui/notifications.vala:70
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:157
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "File received"
 msgstr "Datei kritt"
 
@@ -37,12 +37,12 @@ msgstr "Datei kritt"
 msgid "Subscription request"
 msgstr "Abonnement Ufro"
 
-#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:134
+#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:137
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Akzeptéieren"
 
-#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:133
+#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:136
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Verweigeren"
@@ -52,15 +52,15 @@ msgstr "Verweigeren"
 msgid "Failed connecting to %s"
 msgstr "Feeler beim connectéieren op %s"
 
-#: main/src/ui/notifications.vala:124
-#, c-format
-msgid "Invitation to %s"
-msgstr ""
-
 #: main/src/ui/notifications.vala:125
 #, c-format
+msgid "Invitation to %s"
+msgstr "Aluedung an %s"
+
+#: main/src/ui/notifications.vala:126
+#, c-format
 msgid "%s invited you to %s"
-msgstr ""
+msgstr "%s huet dech zu %s agelueden"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -79,7 +79,7 @@ msgstr "Avatar auswielen"
 msgid "Select"
 msgstr "Auswielen"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:158
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:159
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/add_conference_dialog.vala:125
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
@@ -171,58 +171,64 @@ msgid "Check %s for information on how to sign up"
 msgstr "Kuck %s fir Informatioune iwwert Registréierung"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:136
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:147
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:150
-#: main/src/ui/util/helper.vala:87
+#: main/src/ui/util/helper.vala:131 main/src/ui/util/helper.vala:145
 msgid "Me"
 msgstr "Ech"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:259
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:257
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:263
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:261
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Gëschter"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:266
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:229
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:264
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:209
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H:%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:267
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:230
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l:%M %p"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:234
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:268
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:214
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i Minutt hier"
 msgstr[1] "%i Minutten hier"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:272
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:236
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:216
 msgid "Just now"
 msgstr "Just elo"
 
-#: main/src/ui/application.vala:158
-msgid "Join Conference"
-msgstr "Konferenz bäitrieden"
+#: main/src/ui/application.vala:159
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:206 main/data/menu_add.ui:13
+msgid "Join Channel"
+msgstr "Kanal bäitrieden"
 
-#: main/src/ui/application.vala:158
+#: main/src/ui/application.vala:159
 #: main/src/ui/add_conversation/add_conference_dialog.vala:69
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
 #: main/src/ui/add_conversation/conference_details_fragment.vala:141
 msgid "Join"
 msgstr "Bäitrieden"
+
+#: main/src/ui/util/helper.vala:121
+#, c-format
+msgid "%s from %s"
+msgstr ""
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -233,27 +239,22 @@ msgstr "Bäisetzen"
 msgid "Save"
 msgstr "Späicheren"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:190 main/data/menu_add.ui:13
-msgid "Join Channel"
-msgstr "Kanal bäitrieden"
-
 #: main/src/ui/add_conversation/add_conference_dialog.vala:50
 #: main/src/ui/add_conversation/add_conference_dialog.vala:121
 #: main/data/manage_accounts/add_account_dialog.ui:99
-#: main/data/manage_accounts/add_account_dialog.ui:411
-#: main/data/manage_accounts/add_account_dialog.ui:491
+#: main/data/manage_accounts/add_account_dialog.ui:410
+#: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
 msgstr "Nächst"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:150
 #: main/data/manage_accounts/add_account_dialog.ui:175
-#: main/data/manage_accounts/add_account_dialog.ui:268
+#: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Zeréck"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:189
+#: main/src/ui/unified_window.vala:205
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
@@ -296,48 +297,52 @@ msgstr "Wiel een anere Spëtznumm"
 msgid "Too many occupants in room"
 msgstr "De Raum huet ze vill Benotzer"
 
-#: main/src/ui/unified_window.vala:168
+#: main/src/ui/unified_window.vala:184
 msgid "Welcome to Dino!"
 msgstr "Wëllkomm bei Dino!"
 
-#: main/src/ui/unified_window.vala:170
+#: main/src/ui/unified_window.vala:185
+msgid "Sign in or create an account to get started."
+msgstr ""
+
+#: main/src/ui/unified_window.vala:186
 msgid "Set up account"
 msgstr "Konto opsetzen"
 
-#: main/src/ui/unified_window.vala:178
+#: main/src/ui/unified_window.vala:194
 msgid "No active accounts"
 msgstr "Keng Kontoen aktiv"
 
-#: main/src/ui/unified_window.vala:179
+#: main/src/ui/unified_window.vala:195
 msgid "Manage accounts"
 msgstr "Kontoe managen"
 
-#: main/src/ui/unified_window.vala:188
+#: main/src/ui/unified_window.vala:204
 msgid "No active conversations"
 msgstr "Keng Conversatiounen aktiv"
 
-#: main/src/ui/conversation_summary/file_widget.vala:258
+#: main/src/ui/conversation_summary/file_widget.vala:272
 #, c-format
 msgid "Downloading %s…"
-msgstr ""
+msgstr "Lueden %s erof…"
 
-#: main/src/ui/conversation_summary/file_widget.vala:263
+#: main/src/ui/conversation_summary/file_widget.vala:278
 #, c-format
 msgid "%s offered: %s"
-msgstr ""
+msgstr "%s offréiert: %s"
 
-#: main/src/ui/conversation_summary/file_widget.vala:265
+#: main/src/ui/conversation_summary/file_widget.vala:280
 #, c-format
 msgid "File offered: %s"
-msgstr ""
+msgstr "Datei offréiert: %s"
 
-#: main/src/ui/conversation_summary/file_widget.vala:267
+#: main/src/ui/conversation_summary/file_widget.vala:282
 msgid "File offered"
-msgstr ""
+msgstr "Datei offréiert"
 
-#: main/src/ui/conversation_summary/file_widget.vala:272
+#: main/src/ui/conversation_summary/file_widget.vala:287
 msgid "File transfer failed"
-msgstr ""
+msgstr "Dateitransfert ass feelgeschloen"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
@@ -380,32 +385,32 @@ msgstr "Noriicht ze laang"
 msgid "This contact would like to add you to their contact list"
 msgstr "Dëse Kontakt wéilt dech gären an seng Kontaktlecht ophuelen"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:217
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H:%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:218
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l:%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:221
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H:%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:222
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l:%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:225
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:226
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
@@ -443,17 +448,17 @@ msgstr "Privat Conversatioun starten"
 msgid "Kick"
 msgstr "Erausgeheien"
 
-#: main/src/ui/global_search.vala:134
+#: main/src/ui/global_search.vala:140
 #, c-format
 msgid "%i search results"
 msgstr "%i Sichresultater"
 
-#: main/src/ui/global_search.vala:161
+#: main/src/ui/global_search.vala:167
 #, c-format
 msgid "In %s"
 msgstr "An %s"
 
-#: main/src/ui/global_search.vala:161
+#: main/src/ui/global_search.vala:167
 #, c-format
 msgid "With %s"
 msgstr "Mat %s"
@@ -501,7 +506,7 @@ msgstr "Ween däerf echt JIDs gesinn?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:212
+#: main/data/manage_accounts/add_account_dialog.ui:211
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
@@ -631,7 +636,7 @@ msgid "Sign in"
 msgstr "Aloggen"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
-#: main/data/manage_accounts/add_account_dialog.ui:329
+#: main/data/manage_accounts/add_account_dialog.ui:328
 msgid "Create account"
 msgstr "Account kreéieren"
 
@@ -639,31 +644,31 @@ msgstr "Account kreéieren"
 msgid "Could not establish a secure connection"
 msgstr "Konnt keng geséchert Verbindung opbauen"
 
-#: main/data/manage_accounts/add_account_dialog.ui:289
+#: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
 msgstr "Connectéieren"
 
-#: main/data/manage_accounts/add_account_dialog.ui:341
+#: main/data/manage_accounts/add_account_dialog.ui:340
 msgid "Choose a public server"
 msgstr "Ëffentleche Server auswielen"
 
-#: main/data/manage_accounts/add_account_dialog.ui:370
+#: main/data/manage_accounts/add_account_dialog.ui:369
 msgid "Or specify a server address"
 msgstr "Oder spezifizéier eng Server Adress"
 
-#: main/data/manage_accounts/add_account_dialog.ui:390
+#: main/data/manage_accounts/add_account_dialog.ui:389
 msgid "Sign in instead"
 msgstr "Aloggen a Platz"
 
-#: main/data/manage_accounts/add_account_dialog.ui:471
+#: main/data/manage_accounts/add_account_dialog.ui:470
 msgid "Pick another server"
 msgstr "Anere Server auswielen"
 
-#: main/data/manage_accounts/add_account_dialog.ui:544
+#: main/data/manage_accounts/add_account_dialog.ui:543
 msgid "All set up!"
 msgstr "Alles ageriicht!"
 
-#: main/data/manage_accounts/add_account_dialog.ui:579
+#: main/data/manage_accounts/add_account_dialog.ui:578
 msgid "Finish"
 msgstr "Ofschléissen"
 
@@ -741,6 +746,17 @@ msgstr "Keng Message fonnt"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Iwwerpréif Schreifweis oder läsch Filteren"
+
+#: main/data/unified_main_content.ui:48
+msgid "Click here to start a conversation or join a channel."
+msgstr ""
+
+#: main/data/unified_main_content.ui:147
+msgid "You have no open chats"
+msgstr ""
+
+#~ msgid "Join Conference"
+#~ msgstr "Konferenz bäitrieden"
 
 #~ msgid "File"
 #~ msgstr "Datei"

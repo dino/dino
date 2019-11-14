@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-28 14:18+0200\n"
+"POT-Creation-Date: 2019-11-14 01:25+0100\n"
 "PO-Revision-Date: 2019-07-09 01:01+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
@@ -19,22 +19,22 @@ msgstr ""
 "X-Generator: Weblate 3.8-dev\n"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:155
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "Image sent"
 msgstr "图片已发送"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:155
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "File sent"
 msgstr "文件已发送"
 
 #: main/src/ui/notifications.vala:70
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:157
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "Image received"
 msgstr "图片已接收"
 
 #: main/src/ui/notifications.vala:70
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:157
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "File received"
 msgstr "文件已接收"
 
@@ -42,12 +42,12 @@ msgstr "文件已接收"
 msgid "Subscription request"
 msgstr "订阅请求"
 
-#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:134
+#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:137
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "接受"
 
-#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:133
+#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:136
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "拒绝"
@@ -57,12 +57,12 @@ msgstr "拒绝"
 msgid "Failed connecting to %s"
 msgstr "连接 %s 失败"
 
-#: main/src/ui/notifications.vala:124
+#: main/src/ui/notifications.vala:125
 #, c-format
 msgid "Invitation to %s"
 msgstr ""
 
-#: main/src/ui/notifications.vala:125
+#: main/src/ui/notifications.vala:126
 #, c-format
 msgid "%s invited you to %s"
 msgstr ""
@@ -84,7 +84,7 @@ msgstr "选择头像"
 msgid "Select"
 msgstr "选择"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:158
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:159
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/add_conference_dialog.vala:125
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
@@ -176,57 +176,63 @@ msgid "Check %s for information on how to sign up"
 msgstr "检查 %s 以获取如何注册的信息"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:136
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:147
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:150
-#: main/src/ui/util/helper.vala:87
+#: main/src/ui/util/helper.vala:131 main/src/ui/util/helper.vala:145
 msgid "Me"
 msgstr "我"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:259
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:257
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%_m 月 %_d 日"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:263
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:261
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "昨天"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:266
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:229
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:264
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:209
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:267
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:230
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:234
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:268
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:214
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i 分钟以前"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:272
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:236
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:216
 msgid "Just now"
 msgstr "刚刚"
 
-#: main/src/ui/application.vala:158
-msgid "Join Conference"
-msgstr "加入群聊"
+#: main/src/ui/application.vala:159
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:206 main/data/menu_add.ui:13
+msgid "Join Channel"
+msgstr "加入频道"
 
-#: main/src/ui/application.vala:158
+#: main/src/ui/application.vala:159
 #: main/src/ui/add_conversation/add_conference_dialog.vala:69
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
 #: main/src/ui/add_conversation/conference_details_fragment.vala:141
 msgid "Join"
 msgstr "加入"
+
+#: main/src/ui/util/helper.vala:121
+#, c-format
+msgid "%s from %s"
+msgstr ""
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -237,27 +243,22 @@ msgstr "添加"
 msgid "Save"
 msgstr "保存"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:190 main/data/menu_add.ui:13
-msgid "Join Channel"
-msgstr "加入频道"
-
 #: main/src/ui/add_conversation/add_conference_dialog.vala:50
 #: main/src/ui/add_conversation/add_conference_dialog.vala:121
 #: main/data/manage_accounts/add_account_dialog.ui:99
-#: main/data/manage_accounts/add_account_dialog.ui:411
-#: main/data/manage_accounts/add_account_dialog.ui:491
+#: main/data/manage_accounts/add_account_dialog.ui:410
+#: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
 msgstr "下一个"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:150
 #: main/data/manage_accounts/add_account_dialog.ui:175
-#: main/data/manage_accounts/add_account_dialog.ui:268
+#: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "返回"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:189
+#: main/src/ui/unified_window.vala:205
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
@@ -300,46 +301,50 @@ msgstr "选择一个不同的昵称"
 msgid "Too many occupants in room"
 msgstr "房间内人数过多"
 
-#: main/src/ui/unified_window.vala:168
+#: main/src/ui/unified_window.vala:184
 msgid "Welcome to Dino!"
 msgstr "欢迎来到 Dino！"
 
-#: main/src/ui/unified_window.vala:170
+#: main/src/ui/unified_window.vala:185
+msgid "Sign in or create an account to get started."
+msgstr ""
+
+#: main/src/ui/unified_window.vala:186
 msgid "Set up account"
 msgstr "设置帐户"
 
-#: main/src/ui/unified_window.vala:178
+#: main/src/ui/unified_window.vala:194
 msgid "No active accounts"
 msgstr "没有激活的帐号"
 
-#: main/src/ui/unified_window.vala:179
+#: main/src/ui/unified_window.vala:195
 msgid "Manage accounts"
 msgstr "管理帐号"
 
-#: main/src/ui/unified_window.vala:188
+#: main/src/ui/unified_window.vala:204
 msgid "No active conversations"
 msgstr "没有激活的会话"
 
-#: main/src/ui/conversation_summary/file_widget.vala:258
+#: main/src/ui/conversation_summary/file_widget.vala:272
 #, c-format
 msgid "Downloading %s…"
 msgstr ""
 
-#: main/src/ui/conversation_summary/file_widget.vala:263
+#: main/src/ui/conversation_summary/file_widget.vala:278
 #, c-format
 msgid "%s offered: %s"
 msgstr ""
 
-#: main/src/ui/conversation_summary/file_widget.vala:265
+#: main/src/ui/conversation_summary/file_widget.vala:280
 #, c-format
 msgid "File offered: %s"
 msgstr ""
 
-#: main/src/ui/conversation_summary/file_widget.vala:267
+#: main/src/ui/conversation_summary/file_widget.vala:282
 msgid "File offered"
 msgstr ""
 
-#: main/src/ui/conversation_summary/file_widget.vala:272
+#: main/src/ui/conversation_summary/file_widget.vala:287
 msgid "File transfer failed"
 msgstr ""
 
@@ -383,32 +388,32 @@ msgstr "消息太长"
 msgid "This contact would like to add you to their contact list"
 msgstr "该联系人想把你加到他们的联系人列表"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:217
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x，%H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:218
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x，%l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:221
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%_m 月 %_d 日，%H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:222
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%_m 月 %_d 日，%l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:225
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%A，%H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:226
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%A，%l∶%M %p"
@@ -446,17 +451,17 @@ msgstr "启动私密会话"
 msgid "Kick"
 msgstr "踢出"
 
-#: main/src/ui/global_search.vala:134
+#: main/src/ui/global_search.vala:140
 #, c-format
 msgid "%i search results"
 msgstr "%i 搜索结果"
 
-#: main/src/ui/global_search.vala:161
+#: main/src/ui/global_search.vala:167
 #, c-format
 msgid "In %s"
 msgstr "在%s中"
 
-#: main/src/ui/global_search.vala:161
+#: main/src/ui/global_search.vala:167
 #, c-format
 msgid "With %s"
 msgstr "用%s"
@@ -504,7 +509,7 @@ msgstr "谁可能发现真实 JID？"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:212
+#: main/data/manage_accounts/add_account_dialog.ui:211
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
@@ -634,7 +639,7 @@ msgid "Sign in"
 msgstr "登录"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
-#: main/data/manage_accounts/add_account_dialog.ui:329
+#: main/data/manage_accounts/add_account_dialog.ui:328
 msgid "Create account"
 msgstr "创建账户"
 
@@ -642,31 +647,31 @@ msgstr "创建账户"
 msgid "Could not establish a secure connection"
 msgstr "无法建立安全连接"
 
-#: main/data/manage_accounts/add_account_dialog.ui:289
+#: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
 msgstr "连接"
 
-#: main/data/manage_accounts/add_account_dialog.ui:341
+#: main/data/manage_accounts/add_account_dialog.ui:340
 msgid "Choose a public server"
 msgstr "选择一个公共服务器"
 
-#: main/data/manage_accounts/add_account_dialog.ui:370
+#: main/data/manage_accounts/add_account_dialog.ui:369
 msgid "Or specify a server address"
 msgstr "或指定一个服务器地址"
 
-#: main/data/manage_accounts/add_account_dialog.ui:390
+#: main/data/manage_accounts/add_account_dialog.ui:389
 msgid "Sign in instead"
 msgstr "代替登录"
 
-#: main/data/manage_accounts/add_account_dialog.ui:471
+#: main/data/manage_accounts/add_account_dialog.ui:470
 msgid "Pick another server"
 msgstr "选择另外一个服务器"
 
-#: main/data/manage_accounts/add_account_dialog.ui:544
+#: main/data/manage_accounts/add_account_dialog.ui:543
 msgid "All set up!"
 msgstr "都准备好了！"
 
-#: main/data/manage_accounts/add_account_dialog.ui:579
+#: main/data/manage_accounts/add_account_dialog.ui:578
 msgid "Finish"
 msgstr "完成"
 
@@ -741,6 +746,17 @@ msgstr "无匹配的消息"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "检查拼写或尝试移除过滤器"
+
+#: main/data/unified_main_content.ui:48
+msgid "Click here to start a conversation or join a channel."
+msgstr ""
+
+#: main/data/unified_main_content.ui:147
+msgid "You have no open chats"
+msgstr ""
+
+#~ msgid "Join Conference"
+#~ msgstr "加入群聊"
 
 #~ msgid "File"
 #~ msgstr "文件"

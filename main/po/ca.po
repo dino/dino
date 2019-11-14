@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-28 14:18+0200\n"
+"POT-Creation-Date: 2019-11-14 01:25+0100\n"
 "PO-Revision-Date: 2019-11-13 00:22+0100\n"
 "Language-Team: Catalan; Valencian <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -15,25 +15,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "X-Generator: Gtranslator 3.34.0\n"
-"Last-Translator: Jordi Mallach <jordi@mallach.net>\n"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:155
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "Image sent"
 msgstr "Imatge enviada"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:155
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "File sent"
 msgstr "Fitxer enviat"
 
 #: main/src/ui/notifications.vala:70
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:157
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "Image received"
 msgstr "Imatge rebuda"
 
 #: main/src/ui/notifications.vala:70
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:157
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "File received"
 msgstr "Fitxer rebut"
 
@@ -41,12 +40,12 @@ msgstr "Fitxer rebut"
 msgid "Subscription request"
 msgstr "Petició de subscripció"
 
-#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:134
+#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:137
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Acepta"
 
-#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:133
+#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:136
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Rebutja"
@@ -56,12 +55,12 @@ msgstr "Rebutja"
 msgid "Failed connecting to %s"
 msgstr "No s'ha pogut connectar a %s"
 
-#: main/src/ui/notifications.vala:124
+#: main/src/ui/notifications.vala:125
 #, c-format
 msgid "Invitation to %s"
 msgstr "Invitació a %s"
 
-#: main/src/ui/notifications.vala:125
+#: main/src/ui/notifications.vala:126
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s us ha convidat a %s"
@@ -83,7 +82,7 @@ msgstr "Seleccioneu l'àvatar"
 msgid "Select"
 msgstr "Selecciona"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:158
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:159
 #: main/src/ui/add_conversation/add_conference_dialog.vala:16
 #: main/src/ui/add_conversation/add_conference_dialog.vala:125
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
@@ -175,58 +174,64 @@ msgid "Check %s for information on how to sign up"
 msgstr "Mireu %s per obtenir informació sobre com registrar-vos"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:136
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:147
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:150
-#: main/src/ui/util/helper.vala:87
+#: main/src/ui/util/helper.vala:131 main/src/ui/util/helper.vala:145
 msgid "Me"
 msgstr "Jo"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:259
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:257
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:263
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:261
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Ahir"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:266
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:229
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:264
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:209
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H.%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:267
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:230
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l.%M %p"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:234
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:268
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:214
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "fa %i minut"
 msgstr[1] "fa %i minuts"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:272
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:236
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:216
 msgid "Just now"
 msgstr "Ara mateix"
 
-#: main/src/ui/application.vala:158
-msgid "Join Conference"
-msgstr "Uneix-te a la conferència"
+#: main/src/ui/application.vala:159
+#: main/src/ui/add_conversation/add_conference_dialog.vala:27
+#: main/src/ui/unified_window.vala:206 main/data/menu_add.ui:13
+msgid "Join Channel"
+msgstr "Uneix-m'hi al canal"
 
-#: main/src/ui/application.vala:158
+#: main/src/ui/application.vala:159
 #: main/src/ui/add_conversation/add_conference_dialog.vala:69
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
 #: main/src/ui/add_conversation/conference_details_fragment.vala:141
 msgid "Join"
 msgstr "Uneix-te"
+
+#: main/src/ui/util/helper.vala:121
+#, c-format
+msgid "%s from %s"
+msgstr ""
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -237,27 +242,22 @@ msgstr "Afegeix"
 msgid "Save"
 msgstr "Desa"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:190 main/data/menu_add.ui:13
-msgid "Join Channel"
-msgstr "Uneix-m'hi al canal"
-
 #: main/src/ui/add_conversation/add_conference_dialog.vala:50
 #: main/src/ui/add_conversation/add_conference_dialog.vala:121
 #: main/data/manage_accounts/add_account_dialog.ui:99
-#: main/data/manage_accounts/add_account_dialog.ui:411
-#: main/data/manage_accounts/add_account_dialog.ui:491
+#: main/data/manage_accounts/add_account_dialog.ui:410
+#: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
 msgstr "Següent"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:150
 #: main/data/manage_accounts/add_account_dialog.ui:175
-#: main/data/manage_accounts/add_account_dialog.ui:268
+#: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Enrere"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:189
+#: main/src/ui/unified_window.vala:205
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
@@ -300,46 +300,50 @@ msgstr "Seleccioneu un sobrenom diferent"
 msgid "Too many occupants in room"
 msgstr "Massa ocupants a la sala"
 
-#: main/src/ui/unified_window.vala:168
+#: main/src/ui/unified_window.vala:184
 msgid "Welcome to Dino!"
 msgstr "Us donem la benvinguda al Dino!"
 
-#: main/src/ui/unified_window.vala:170
+#: main/src/ui/unified_window.vala:185
+msgid "Sign in or create an account to get started."
+msgstr ""
+
+#: main/src/ui/unified_window.vala:186
 msgid "Set up account"
 msgstr "Configureu un compte"
 
-#: main/src/ui/unified_window.vala:178
+#: main/src/ui/unified_window.vala:194
 msgid "No active accounts"
 msgstr "No hi ha cap compte actiu"
 
-#: main/src/ui/unified_window.vala:179
+#: main/src/ui/unified_window.vala:195
 msgid "Manage accounts"
 msgstr "Gestiona els comptes"
 
-#: main/src/ui/unified_window.vala:188
+#: main/src/ui/unified_window.vala:204
 msgid "No active conversations"
 msgstr "Cap conversa activa"
 
-#: main/src/ui/conversation_summary/file_widget.vala:258
+#: main/src/ui/conversation_summary/file_widget.vala:272
 #, c-format
 msgid "Downloading %s…"
 msgstr "S'està baixant %s…"
 
-#: main/src/ui/conversation_summary/file_widget.vala:263
+#: main/src/ui/conversation_summary/file_widget.vala:278
 #, c-format
 msgid "%s offered: %s"
 msgstr "%s ha oferit: %s"
 
-#: main/src/ui/conversation_summary/file_widget.vala:265
+#: main/src/ui/conversation_summary/file_widget.vala:280
 #, c-format
 msgid "File offered: %s"
 msgstr "Fitxer oferit: %s"
 
-#: main/src/ui/conversation_summary/file_widget.vala:267
+#: main/src/ui/conversation_summary/file_widget.vala:282
 msgid "File offered"
 msgstr "Fitxer oferit"
 
-#: main/src/ui/conversation_summary/file_widget.vala:272
+#: main/src/ui/conversation_summary/file_widget.vala:287
 msgid "File transfer failed"
 msgstr "Ha fallat la transferència del fitxer"
 
@@ -384,32 +388,32 @@ msgstr "El missatge és massa llarg"
 msgid "This contact would like to add you to their contact list"
 msgstr "Aquest contacte vol afegir-vos a la seva llista de contactes"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:217
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H.%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:218
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l.%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:221
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H.%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:222
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l.%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:225
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H.%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:226
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l.%M %p"
@@ -447,17 +451,17 @@ msgstr "Inicia una convesa privada"
 msgid "Kick"
 msgstr "Expulsa"
 
-#: main/src/ui/global_search.vala:134
+#: main/src/ui/global_search.vala:140
 #, c-format
 msgid "%i search results"
 msgstr "%i resultats de cerca"
 
-#: main/src/ui/global_search.vala:161
+#: main/src/ui/global_search.vala:167
 #, c-format
 msgid "In %s"
 msgstr "En %s"
 
-#: main/src/ui/global_search.vala:161
+#: main/src/ui/global_search.vala:167
 #, c-format
 msgid "With %s"
 msgstr "Amb %s"
@@ -505,7 +509,7 @@ msgstr "Qui pot descobrir els JID reals?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:59
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:212
+#: main/data/manage_accounts/add_account_dialog.ui:211
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
@@ -636,7 +640,7 @@ msgid "Sign in"
 msgstr "Entra"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
-#: main/data/manage_accounts/add_account_dialog.ui:329
+#: main/data/manage_accounts/add_account_dialog.ui:328
 msgid "Create account"
 msgstr "Crea un compte"
 
@@ -644,31 +648,31 @@ msgstr "Crea un compte"
 msgid "Could not establish a secure connection"
 msgstr "No s'ha pogut una connexió segura"
 
-#: main/data/manage_accounts/add_account_dialog.ui:289
+#: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
 msgstr "Connecta"
 
-#: main/data/manage_accounts/add_account_dialog.ui:341
+#: main/data/manage_accounts/add_account_dialog.ui:340
 msgid "Choose a public server"
 msgstr "Trieu un servidor públic"
 
-#: main/data/manage_accounts/add_account_dialog.ui:370
+#: main/data/manage_accounts/add_account_dialog.ui:369
 msgid "Or specify a server address"
 msgstr "O especifiqueu l'adreça d'un servidor"
 
-#: main/data/manage_accounts/add_account_dialog.ui:390
+#: main/data/manage_accounts/add_account_dialog.ui:389
 msgid "Sign in instead"
 msgstr "Entra"
 
-#: main/data/manage_accounts/add_account_dialog.ui:471
+#: main/data/manage_accounts/add_account_dialog.ui:470
 msgid "Pick another server"
 msgstr "Trieu un altre servidor"
 
-#: main/data/manage_accounts/add_account_dialog.ui:544
+#: main/data/manage_accounts/add_account_dialog.ui:543
 msgid "All set up!"
 msgstr "Tot llest!"
 
-#: main/data/manage_accounts/add_account_dialog.ui:579
+#: main/data/manage_accounts/add_account_dialog.ui:578
 msgid "Finish"
 msgstr "Finalitza"
 
@@ -747,6 +751,17 @@ msgstr "No hi ha missatges coincidents"
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
 msgstr "Comproveu l'ortografia o proveu de suprimir filtres"
+
+#: main/data/unified_main_content.ui:48
+msgid "Click here to start a conversation or join a channel."
+msgstr ""
+
+#: main/data/unified_main_content.ui:147
+msgid "You have no open chats"
+msgstr ""
+
+#~ msgid "Join Conference"
+#~ msgstr "Uneix-te a la conferència"
 
 #~ msgid "File"
 #~ msgstr "Fitxer"

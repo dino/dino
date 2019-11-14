@@ -22,6 +22,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private Label own_key_label;
     [GtkChild] private Label new_keys_label;
     [GtkChild] private Label associated_keys_label;
+    [GtkChild] private Label inactive_expander_label;
+
     [GtkChild] private Box own_fingerprint_container;
     [GtkChild] private Label own_fingerprint_label;
     [GtkChild] private Box new_keys_container;
@@ -43,6 +45,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         own_key_label.label = _("Own key");
         new_keys_label.label = _("New keys");
         associated_keys_label.label = _("Associated keys");
+        inactive_expander_label.label = _("Inactive keys");
     }
 
     public ContactDetailsDialog(Plugin plugin, Account account, Jid jid) {

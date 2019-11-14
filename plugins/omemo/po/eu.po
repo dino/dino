@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-28 14:18+0200\n"
+"POT-Creation-Date: 2019-11-14 01:25+0100\n"
 "PO-Revision-Date: 2019-01-05 11:06+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "eu/>\n"
@@ -18,28 +18,58 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.4-dev\n"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:79
+#: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
 msgstr "Kudeatu"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:89
+#: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
 msgstr "Kontaktu honek gailu berriak ditu"
 
-#: plugins/omemo/src/ui/own_notifications.vala:36
+#: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
 msgstr "OMEMO konfiantza erabakia behar da"
 
-#: plugins/omemo/src/ui/own_notifications.vala:38
+#: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
 msgstr "Gailu berri gehitu duzu %s konturako?"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:48
+#: plugins/omemo/src/ui/manage_key_dialog.vala:35
+msgid "Manage Key"
+msgstr "Gakoa kudeatu"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contacts device."
+msgstr ""
+"Hatz marka konparatu, hizkiz hizki, zure kontaktuaren gailuan ageri "
+"denarekin."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+msgid "Not matching"
+msgstr "Ez datoz bat"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:38
+msgid "Matching"
+msgstr "Bat datoz"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
+#: plugins/omemo/src/ui/manage_key_dialog.vala:82
+#: plugins/omemo/src/ui/manage_key_dialog.vala:88
+msgid "Cancel"
+msgstr "Utzi"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:40
+msgid "Confirm"
+msgstr "Baieztatu"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:60
 msgid "Verify key"
 msgstr "Gakoa egiaztatu"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:49
+#: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
@@ -48,11 +78,11 @@ msgstr ""
 "Egiaztatu ondoren, %s(e)k gako honekin etorkizunean bidalitako mezu guztiak "
 "behar bezala nabarmenduko dira txat leihoan."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:59
+#: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
 msgstr "Hatz markak ez datoz bat"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:60
+#: plugins/omemo/src/ui/manage_key_dialog.vala:72
 #, c-format
 msgid ""
 "Please verify that you are comparing the correct fingerprint. If "
@@ -63,17 +93,11 @@ msgstr ""
 "markak bat ez badatoz baliteke %s(e)ren kontua arriskuan egotea eta gako hau "
 "ez onartzea kontuan hartu beharko zenuke."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:70
-#: plugins/omemo/src/ui/manage_key_dialog.vala:76
-#: plugins/omemo/data/manage_key_dialog.ui:13
-msgid "Cancel"
-msgstr "Utzi"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:112
+#: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid "Verify key fingerprint"
 msgstr "Gakoaren hatz marka egiaztatu"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:112
+#: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
@@ -81,64 +105,66 @@ msgstr ""
 "Konpara ezazu gako honen hatz marka kontaktuaren gailuan agertzen den hatz "
 "markarekin."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:114
-#: plugins/omemo/src/ui/manage_key_dialog.vala:140
+#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
+#: plugins/omemo/src/ui/contact_details_dialog.vala:201
 msgid "Reject key"
 msgstr "Gakoa ukatu"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:114
+#: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
 "Stop accepting this key during communication with its associated contact."
 msgstr ""
 "Utzi gako hau onartzeari lotuta dagoen kontaktuarekin hitz egiten duzun "
 "bitartean."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:116
-#: plugins/omemo/src/ui/manage_key_dialog.vala:148
+#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
+#: plugins/omemo/src/ui/contact_details_dialog.vala:196
 msgid "Accept key"
 msgstr "Gakoa onartu"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:116
+#: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
 "Start accepting this key during communication with its associated contact"
 msgstr ""
 "Hasi gako hau onartzen lotuta dagoen kontaktuarekin hitz egiten duzun "
 "bitartean"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:120
-#: plugins/omemo/src/ui/manage_key_dialog.vala:125
-#: plugins/omemo/src/ui/manage_key_dialog.vala:129
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid "This key is currently %s."
 msgstr "Gako hau %s dago une honetan."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:120
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
 msgid "accepted"
 msgstr "onartuta"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:120
-#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #, c-format
 msgid "This means it can be used by %s to receive and send messages."
 msgstr ""
 "Honek esan nahi du %s(e)k mezuak jaso eta bidaltzeko erabili dezakeela."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
 msgstr "egiaztatuta"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
 "Gainera zure kontaktuaren gailuan ageri den gakoarekin bat datorrela "
 "egiaztatu da."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:129
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
 msgid "rejected"
 msgstr "ukatuta"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:129
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
 "This means it cannot be used by %s to receive messages, and any messages "
@@ -147,7 +173,7 @@ msgstr ""
 "Honek esan nahi du %s(e)k ezin duela gakoa mezuak jasotzeko erabili, eta "
 "berak bidalitako edozein mezu alde batera utziko da."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
@@ -157,7 +183,7 @@ msgstr ""
 "mezu alde batera utziko da eta zure mezuetako bat ere ez da irakurgarria "
 "izango gako hau erabiliz."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:149
+#: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
 "Once confirmed this key will be usable by %s to receive and send messages."
@@ -165,30 +191,62 @@ msgstr ""
 "Egiaztatu ondoren %s(e)k gako hau mezuak jaso eta bidaltzeko erabili ahal "
 "izango du."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:155
+#: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
 msgstr "Atzera"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+#: plugins/omemo/src/ui/contact_details_dialog.vala:42
+msgid "OMEMO Key Management"
+msgstr "OMEMO gakoen kudeaketa"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:43
+msgid "Automatically accept new keys"
+msgstr "Gako berriak automatikoki onartu"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:44
+msgid ""
+"When this contact adds new encryption keys to their account, automatically "
+"accept them."
+msgstr ""
+"Kontaktu honek enkriptatzeko gako berriak bere kontura gehitzen dituenean, "
+"automatikoki onartu."
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:45
+msgid "Own key"
+msgstr "Norberaren gakoa"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+msgid "New keys"
+msgstr "Gako berriak"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+msgid "Associated keys"
+msgstr "Lotutako gakoak"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "Inactive keys"
+msgstr ""
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:76
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Zure kontura enkriptazio gako berriak gehitzen dituzunean, automatikoki "
 "onartu."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:126
+#: plugins/omemo/src/ui/contact_details_dialog.vala:263
 msgid "Accepted"
 msgstr "Onartuta"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:131
+#: plugins/omemo/src/ui/contact_details_dialog.vala:268
 msgid "Rejected"
 msgstr "Ukatuta"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:136
+#: plugins/omemo/src/ui/contact_details_dialog.vala:273
 msgid "Verified"
 msgstr "Egiaztatuta"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:143
+#: plugins/omemo/src/ui/contact_details_dialog.vala:280
 msgid "Unused"
 msgstr "Ez erabilita"
 
@@ -211,58 +269,6 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "OMEMO gailu %d"
 msgstr[1] "%d OMEMO gailu"
-
-#: plugins/omemo/data/contact_details_dialog.ui:5
-msgid "OMEMO Key Management"
-msgstr "OMEMO gakoen kudeaketa"
-
-#: plugins/omemo/data/contact_details_dialog.ui:41
-msgid "Automatically accept new keys"
-msgstr "Gako berriak automatikoki onartu"
-
-#: plugins/omemo/data/contact_details_dialog.ui:54
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
-msgstr ""
-"Kontaktu honek enkriptatzeko gako berriak bere kontura gehitzen dituenean, "
-"automatikoki onartu."
-
-#: plugins/omemo/data/contact_details_dialog.ui:89
-msgid "Own key"
-msgstr "Norberaren gakoa"
-
-#: plugins/omemo/data/contact_details_dialog.ui:180
-msgid "New keys"
-msgstr "Gako berriak"
-
-#: plugins/omemo/data/contact_details_dialog.ui:216
-msgid "Associated keys"
-msgstr "Lotutako gakoak"
-
-#: plugins/omemo/data/manage_key_dialog.ui:9
-msgid "Manage Key"
-msgstr "Gakoa kudeatu"
-
-#: plugins/omemo/data/manage_key_dialog.ui:25
-msgid "Confirm"
-msgstr "Baieztatu"
-
-#: plugins/omemo/data/manage_key_dialog.ui:86
-msgid ""
-"Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
-msgstr ""
-"Hatz marka konparatu, hizkiz hizki, zure kontaktuaren gailuan ageri "
-"denarekin."
-
-#: plugins/omemo/data/manage_key_dialog.ui:113
-msgid "Not matching"
-msgstr "Ez datoz bat"
-
-#: plugins/omemo/data/manage_key_dialog.ui:120
-msgid "Matching"
-msgstr "Bat datoz"
 
 #~ msgid ""
 #~ "Start accepting this key during communication with its associated contact."
