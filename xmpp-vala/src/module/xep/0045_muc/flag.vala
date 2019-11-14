@@ -72,7 +72,7 @@ public class Flag : XmppStreamFlag {
     internal void set_real_jid(Jid full_jid, Jid real_jid) { occupant_real_jids[full_jid] = real_jid; }
 
     internal void set_offline_member(Jid muc_jid, Jid real_jid, Affiliation affiliation) {
-        set_affiliation(muc_jid.bare_jid, real_jid, affiliation);
+        set_affiliation(muc_jid.bare_jid, real_jid.bare_jid, affiliation);
     }
 
     internal void set_affiliation(Jid muc_jid, Jid full_jid, Affiliation affiliation) {

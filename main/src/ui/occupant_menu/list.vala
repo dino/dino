@@ -71,7 +71,7 @@ public class List : Box {
     }
 
     private void on_show_received(Show show, Jid jid, Account account) {
-        if (conversation != null && conversation.counterpart.equals_bare(jid)) {
+        if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
             if (show.as == Show.OFFLINE && rows.has_key(jid)) {
                 remove_occupant(jid);
             } else if (show.as != Show.OFFLINE && !rows.has_key(jid)) {
