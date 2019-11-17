@@ -53,6 +53,12 @@ public enum Feature {
     UNSECURED
 }
 
+public class JoinResult : Object {
+    public MucEnterError? muc_error { get; set; }
+    public string? stanza_error { get; set; }
+    public string? nick { get; set; }
+}
+
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0045_muc_module");
 
@@ -74,7 +80,7 @@ public class Module : XmppStreamModule {
         received_pipeline_listener = new ReceivedPipelineListener(this);
     }
 
-    public void enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since) {
+    public async JoinResult? enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since) {
         Presence.Stanza presence = new Presence.Stanza();
         presence.to = bare_jid.with_resource(nick);
         StanzaNode x_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
@@ -92,6 +98,16 @@ public class Module : XmppStreamModule {
 
         query_room_info(stream, bare_jid);
         stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
+
+        var promise = new Promise<JoinResult?>();
+        stream.get_flag(Flag.IDENTITY).enter_futures[bare_jid] = promise;
+        try {
+            JoinResult? enter_result = yield promise.future.wait_async();
+            stream.get_flag(Flag.IDENTITY).enter_futures.unset(bare_jid);
+            return enter_result;
+        } catch (Gee.FutureError e) {
+            return null;
+        }
     }
 
     public void exit(XmppStream stream, Jid jid) {
@@ -262,7 +278,12 @@ public class Module : XmppStreamModule {
                         if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.USE_RESERVED_ROOMNICK;
                         break;
                 }
-                if (error != MucEnterError.NONE) room_enter_error(stream, bare_jid, error);
+                if (error != MucEnterError.NONE) {
+                    room_enter_error(stream, bare_jid, error);
+                    flag.enter_futures[bare_jid].set_value(new JoinResult() {muc_error=error});
+                } else {
+                    flag.enter_futures[bare_jid].set_value(new JoinResult() {stanza_error=error_stanza.condition});
+                }
                 flag.finish_muc_enter(bare_jid);
             }
         }
@@ -279,6 +300,7 @@ public class Module : XmppStreamModule {
                     if (flag.get_enter_id(bare_jid) != null) {
                         room_entered(stream, bare_jid, presence.from.resourcepart);
                         flag.finish_muc_enter(bare_jid, presence.from.resourcepart);
+                        flag.enter_futures[bare_jid].set_value(new JoinResult() {nick=presence.from.resourcepart});
                     }
                 }
                 string? affiliation_str = x_node.get_deep_attribute("item", "affiliation");

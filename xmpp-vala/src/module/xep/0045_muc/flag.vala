@@ -9,6 +9,7 @@ public class Flag : XmppStreamFlag {
     private HashMap<Jid, string> room_names = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
 
     private HashMap<Jid, string> enter_ids = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
+    public HashMap<Jid, Promise<JoinResult?>> enter_futures = new HashMap<Jid, Promise<JoinResult?>>(Jid.hash_func, Jid.equals_func);
     private HashMap<Jid, string> own_nicks = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
     private HashMap<Jid, string> subjects = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
     private HashMap<Jid, Jid> subjects_by = new HashMap<Jid, Jid>(Jid.hash_bare_func, Jid.equals_bare_func);

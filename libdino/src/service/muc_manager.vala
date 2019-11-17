@@ -1,6 +1,7 @@
 using Gee;
 
 using Xmpp;
+using Xmpp.Xep;
 using Dino.Entities;
 
 namespace Dino {
@@ -36,9 +37,9 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
     }
 
-    public void join(Account account, Jid jid, string? nick, string? password) {
+    public async Muc.JoinResult? join(Account account, Jid jid, string? nick, string? password) {
         XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream == null) return;
+        if (stream == null) return null;
         string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
 
         DateTime? history_since = null;
@@ -48,7 +49,7 @@ public class MucManager : StreamInteractionModule, Object {
             if (last_message != null) history_since = last_message.time;
         }
 
-        stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since);
+        return yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since);
     }
 
     public void part(Account account, Jid jid) {
@@ -323,7 +324,7 @@ public class MucManager : StreamInteractionModule, Object {
         Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
         foreach (Conversation conversation in conversations) {
             if (conversation.type_ == Conversation.Type.GROUPCHAT && conversation.nickname != null) {
-                join(account, conversation.counterpart, conversation.nickname, null);
+                join.begin(account, conversation.counterpart, conversation.nickname, null);
             }
         }
     }
@@ -345,7 +346,7 @@ public class MucManager : StreamInteractionModule, Object {
                 if (conference.jid.equals(conversation.counterpart)) is_active = true;
             }
             if (!is_active || !is_joined(jid, account)) {
-                join(account, conference.jid, conference.nick, conference.password);
+                join.begin(account, conference.jid, conference.nick, conference.password);
             }
         } else {
             // Leave if we should leave

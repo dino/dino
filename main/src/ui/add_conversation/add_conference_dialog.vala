@@ -3,6 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 using Xmpp;
+using Xmpp.Xep;
 
 namespace Dino.Ui {
 
@@ -49,7 +50,6 @@ public class AddConferenceDialog : Gtk.Dialog {
             cancel_button.clicked.connect(on_cancel);
             ok_button.label = _("Next");
             ok_button.sensitive = select_fragment.done;
-            ok_button.clicked.disconnect(on_ok_button_clicked);
             ok_button.clicked.connect(on_next_button_clicked);
             details_fragment.notify["done"].disconnect(set_ok_sensitive_from_details);
             select_fragment.notify["done"].connect(set_ok_sensitive_from_select);
@@ -69,7 +69,6 @@ public class AddConferenceDialog : Gtk.Dialog {
             ok_button.label = _("Join");
             ok_button.sensitive = details_fragment.done;
             ok_button.clicked.disconnect(on_next_button_clicked);
-            ok_button.clicked.connect(on_ok_button_clicked);
             select_fragment.notify["done"].disconnect(set_ok_sensitive_from_select);
             details_fragment.notify["done"].connect(set_ok_sensitive_from_details);
         }
@@ -143,7 +142,6 @@ public class AddConferenceDialog : Gtk.Dialog {
 
             Button ok_button = new Button() { label=_("Join"), halign = Align.END, can_focus=true, can_default=true, visible=true };
             ok_button.get_style_context().add_class("suggested-action");
-            ok_button.clicked.connect(on_ok_button_clicked);
             details_fragment.notify["done"].connect(() => { ok_button.sensitive = select_fragment.done; });
             details_fragment.ok_button = ok_button;
 
@@ -180,10 +178,6 @@ public class AddConferenceDialog : Gtk.Dialog {
             details_fragment.jid = row.jid.to_string();
         }
         show_conference_details_view();
-    }
-
-    private void on_ok_button_clicked() {
-        stream_interactor.get_module(MucManager.IDENTITY).join(details_fragment.account, new Jid(details_fragment.jid), details_fragment.nick, details_fragment.password);
     }
 
     private void on_joined(Account account, Jid jid, string nick) {

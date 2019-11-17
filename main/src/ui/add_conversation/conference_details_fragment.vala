@@ -3,6 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 using Xmpp;
+using Xmpp.Xep;
 
 namespace Dino.Ui {
 
@@ -86,9 +87,9 @@ protected class ConferenceDetailsFragment : Box {
         set {
             if (value != null) {
                 value.clicked.connect(() => {
-                    ok_button.label = _("Joining…");
-                    ok_button.sensitive = false;
+                    on_ok_button_clicked();
                 });
+
                 ok_button_ = value;
             }
         }
@@ -96,7 +97,6 @@ protected class ConferenceDetailsFragment : Box {
 
     public ConferenceDetailsFragment(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-        this.ok_button = ok_button;
 
         account_combobox.initialize(stream_interactor);
 
@@ -114,7 +114,6 @@ protected class ConferenceDetailsFragment : Box {
         jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
         nick_entry.key_release_event.connect(() => { done = true; return false; });
 
-        stream_interactor.get_module(MucManager.IDENTITY).enter_error.connect(on_enter_error);
         notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
 
         clear();
@@ -137,29 +136,40 @@ protected class ConferenceDetailsFragment : Box {
         password_stack.set_visible_child_name("entry");
     }
 
-    private void on_enter_error(Account account, Jid jid, Xmpp.Xep.Muc.MucEnterError error) {
+    private async void on_ok_button_clicked() {
+        ok_button.label = _("Joining…");
+        ok_button.sensitive = false;
+
+        Muc.JoinResult? join_result = yield stream_interactor.get_module(MucManager.IDENTITY).join(account, new Jid(jid), nick, password);
+
         ok_button.label = _("Join");
         ok_button.sensitive = true;
+        if (join_result == null || join_result.nick != null) return;
+
         string label_text = "";
-        switch (error) {
-            case Xmpp.Xep.Muc.MucEnterError.PASSWORD_REQUIRED:
-                label_text = _("Password required to enter room");
-                password_text_label.visible = true;
-                password_stack.visible = true;
-                break;
-            case Xmpp.Xep.Muc.MucEnterError.BANNED:
-                label_text = _("Banned from joining or creating conference"); break;
-            case Xmpp.Xep.Muc.MucEnterError.ROOM_DOESNT_EXIST:
-                label_text = _("Room does not exist"); break;
-            case Xmpp.Xep.Muc.MucEnterError.CREATION_RESTRICTED:
-                label_text = _("Not allowed to create room"); break;
-            case Xmpp.Xep.Muc.MucEnterError.NOT_IN_MEMBER_LIST:
-                label_text = _("Members-only room"); break;
-            case Xmpp.Xep.Muc.MucEnterError.USE_RESERVED_ROOMNICK:
-            case Xmpp.Xep.Muc.MucEnterError.NICK_CONFLICT:
-                label_text = _("Choose a different nick"); break;
-            case Xmpp.Xep.Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
-                label_text = _("Too many occupants in room"); break;
+        if (join_result.muc_error != null) {
+            switch (join_result.muc_error) {
+                case Muc.MucEnterError.PASSWORD_REQUIRED:
+                    label_text = _("Password required to enter room");
+                    password_text_label.visible = true;
+                    password_stack.visible = true;
+                    break;
+                case Muc.MucEnterError.BANNED:
+                    label_text = _("Banned from joining or creating conference"); break;
+                case Muc.MucEnterError.ROOM_DOESNT_EXIST:
+                    label_text = _("Room does not exist"); break;
+                case Muc.MucEnterError.CREATION_RESTRICTED:
+                    label_text = _("Not allowed to create room"); break;
+                case Muc.MucEnterError.NOT_IN_MEMBER_LIST:
+                    label_text = _("Members-only room"); break;
+                case Muc.MucEnterError.USE_RESERVED_ROOMNICK:
+                case Muc.MucEnterError.NICK_CONFLICT:
+                    label_text = _("Choose a different nick"); break;
+                case Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
+                    label_text = _("Too many occupants in room"); break;
+            }
+        } else if (join_result.stanza_error != null) {
+            label_text = _("Failed connecting to %s").printf((new Jid(jid)).domainpart);
         }
         notification_label.label = label_text;
         notification_revealer.set_reveal_child(true);

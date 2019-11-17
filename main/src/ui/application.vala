@@ -169,7 +169,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         content_area.add(conference_fragment);
         dialog.response.connect((response_id) => {
             if (response_id == ResponseType.OK) {
-                stream_interactor.get_module(MucManager.IDENTITY).join(conference_fragment.account, new Jid(conference_fragment.jid), conference_fragment.nick, conference_fragment.password);
                 dialog.destroy();
             } else if (response_id == ResponseType.CANCEL) {
                 dialog.destroy();
