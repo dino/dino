@@ -104,7 +104,6 @@ public class Register : StreamInteractionModule, Object{
         stream.add_module(new Xep.SrvRecordsTls.Module());
         stream.add_module(new Xep.InBandRegistration.Module());
 
-        Xep.InBandRegistration.Form? form = null;
         SourceFunc callback = get_registration_form.callback;
 
         stream.stream_negotiated.connect(() => {
@@ -125,14 +124,50 @@ public class Register : StreamInteractionModule, Object{
         });
 
         yield;
+
+        Xep.InBandRegistration.Form? form = null;
         if (stream.negotiation_complete) {
             form = yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).get_from_server(stream, jid);
         }
+        try {
+            stream.disconnect();
+        } catch (Error e) {}
+
         return form;
     }
 
-    public static async string submit_form(Jid jid, Xep.InBandRegistration.Form form) {
-        return yield form.stream.get_module(Xep.InBandRegistration.Module.IDENTITY).submit_to_server(form.stream, jid, form);
+    public static async string? submit_form(Jid jid, Xep.InBandRegistration.Form form) {
+        XmppStream stream = new XmppStream();
+        stream.log = new XmppLog(jid.to_string(), Application.print_xmpp);
+        stream.add_module(new Tls.Module());
+        stream.add_module(new Iq.Module());
+        stream.add_module(new Xep.SrvRecordsTls.Module());
+        stream.add_module(new Xep.InBandRegistration.Module());
+
+        SourceFunc callback = submit_form.callback;
+
+        stream.stream_negotiated.connect(() => {
+            if (callback != null) {
+                Idle.add((owned)callback);
+            }
+        });
+
+        stream.connect.begin(jid.domainpart, (_, res) => {
+            try {
+                stream.connect.end(res);
+            } catch (Error e) {
+                debug("Error connecting to stream: %s", e.message);
+            }
+            if (callback != null) {
+                Idle.add((owned)callback);
+            }
+        });
+
+        yield;
+        if (stream.negotiation_complete) {
+            return yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).submit_to_server(stream, jid, form);
+        }
+        return null;
     }
 }
 

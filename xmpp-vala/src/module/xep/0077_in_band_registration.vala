@@ -20,7 +20,7 @@ public class Module : XmppStreamNegotiationModule {
         return form;
     }
 
-    public async string submit_to_server(XmppStream stream, Jid jid, Form form) {
+    public async string? submit_to_server(XmppStream stream, Jid jid, Form form) {
         StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
         query_node.put_node(form.get_submit_node());
         Iq.Stanza iq = new Iq.Stanza.set(query_node);
