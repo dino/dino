@@ -177,8 +177,8 @@ private static string get_groupchat_display_name(StreamInteractor stream_interac
 }
 
 private static string get_occupant_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
-    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
     /* TODO: MUC Real JID
+    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
     if (muc_manager.is_private_room(account, jid.bare_jid)) {
         Jid? real_jid = muc_manager.get_real_jid(jid, account);
         if (real_jid != null) {

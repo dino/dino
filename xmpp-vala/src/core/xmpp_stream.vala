@@ -61,7 +61,7 @@ public class XmppStream {
             }
             if (stream == null) {
                 debug("Connecting to %s, xmpp-client, tcp (fallback)", this.remote_name.to_string());
-                stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name.to_string()));
+                stream = yield (new SocketClient()).connect_to_host_async(this.remote_name.to_string(), 5222);
             }
             if (stream == null) {
                 throw new IOStreamError.CONNECT("client.connect() returned null");

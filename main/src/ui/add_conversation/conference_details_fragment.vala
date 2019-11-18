@@ -87,7 +87,7 @@ protected class ConferenceDetailsFragment : Box {
         set {
             if (value != null) {
                 value.clicked.connect(() => {
-                    on_ok_button_clicked();
+                    on_ok_button_clicked.begin();
                 });
 
                 ok_button_ = value;
