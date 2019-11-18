@@ -301,16 +301,12 @@ public class AddAccountDialog : Gtk.Dialog {
             register_form_continue.visible = true;
             register_form_continue.grab_focus();
         } else if (form.fields.size > 0) {
-            int i = 0;
             foreach (Xep.DataForms.DataForm.Field field in form.fields) {
-                if (field.label != null && field.label != "") {
+                Widget? field_widget = Util.get_data_form_fild_widget(field);
+                if (field.label != null && field.label != "" && field_widget != null) {
                     form_box.add(new Label(field.label) { xalign=0, margin_top=7, visible=true });
-                }
-                Widget field_widget = Util.get_data_form_fild_widget(field);
-                if (field_widget != null) {
                     form_box.add(field_widget);
                 }
-                i++;
             }
             register_form_continue.visible = true;
             register_form_continue_label.label = _("Register");
