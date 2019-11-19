@@ -68,7 +68,8 @@ public class UnifiedWindowController : Object {
                 if (window.conversation_frame.conversation != null && window.search_box.search_entry.text == "") {
                     reset_search_entry();
                 }
-                window.search_box.search_entry.grab_focus();
+                window.search_box.search_entry.grab_focus_without_selecting();
+                window.search_box.search_entry.set_position((int)window.search_box.search_entry.text_length);
             }
         });
         window.search_box.selected_item.connect((item) => {
