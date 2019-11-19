@@ -78,7 +78,11 @@ public class Module : XmppStreamModule {
             foreach (StanzaNode node in iq.stanza.get_deep_subnodes(flag.ns_ver + ":slot", flag.ns_ver + ":put", flag.ns_ver + ":header")) {
                 string header_name = node.get_attribute("name");
                 if (header_name == "Authorization" || header_name == "Cookie" || header_name == "Expires") {
-                    slot_result.headers[header_name] = node.get_string_content();
+                    string? header_val = node.get_string_content();
+                    if (header_val != null && header_val.length < 8192) {
+                        header_val = header_val.replace("\n", "").replace("\r", "");
+                        slot_result.headers[header_name] = header_val;
+                    }
                 }
             }
 
