@@ -110,6 +110,11 @@ window.dino-main button.dino-chatinput-button:checked:backdrop {
 }
 
 
+.dino-chatinput textview, .dino-chatinput textview text {
+    background-color: @theme_base_color;
+}
+
+
 /*Chat input warning*/
 
 box.dino-input-warning frame border {
@@ -124,6 +129,7 @@ box.dino-input-warning frame separator {
 box.dino-input-warning label {
     color: mix(@warning_color, @theme_fg_color, 0.5);
 }
+
 
 /*Chat input error*/
 
