@@ -110,10 +110,6 @@ window.dino-main button.dino-chatinput-button:checked:backdrop {
 }
 
 
-.dino-chatinput textview, .dino-chatinput textview text {
-    background-color: transparent;
-}
-
 /*Chat input warning*/
 
 box.dino-input-warning frame border {
