@@ -10,6 +10,8 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/add_conversation/conference_details_fragment.ui")]
 protected class ConferenceDetailsFragment : Box {
 
+    public signal void joined();
+
     public bool done {
         get {
             Jid? parsed_jid = Jid.parse(jid);
@@ -54,6 +56,8 @@ protected class ConferenceDetailsFragment : Box {
             nick_stack.set_visible_child_name("label");
         }
     }
+
+    public bool fragment_active { get; set; default=true; }
 
     [GtkChild] private Stack accounts_stack;
     [GtkChild] private Button accounts_button;
@@ -137,6 +141,8 @@ protected class ConferenceDetailsFragment : Box {
     }
 
     private async void on_ok_button_clicked() {
+        if (!fragment_active) return;
+
         ok_button.label = _("Joining…");
         ok_button.sensitive = false;
 
@@ -144,7 +150,10 @@ protected class ConferenceDetailsFragment : Box {
 
         ok_button.label = _("Join");
         ok_button.sensitive = true;
-        if (join_result == null || join_result.nick != null) return;
+        if (join_result == null || join_result.nick != null) {
+            joined();
+            return;
+        }
 
         string label_text = "";
         if (join_result.muc_error != null) {

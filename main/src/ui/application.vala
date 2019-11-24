@@ -167,10 +167,11 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         }
         Box content_area = dialog.get_content_area();
         content_area.add(conference_fragment);
+        conference_fragment.joined.connect(() => {
+            dialog.destroy();
+        });
         dialog.response.connect((response_id) => {
-            if (response_id == ResponseType.OK) {
-                dialog.destroy();
-            } else if (response_id == ResponseType.CANCEL) {
+            if (response_id == ResponseType.CANCEL) {
                 dialog.destroy();
             }
         });

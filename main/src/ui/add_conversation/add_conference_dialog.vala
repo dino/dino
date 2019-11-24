@@ -37,8 +37,6 @@ public class AddConferenceDialog : Gtk.Dialog {
         setup_jid_add_view();
         setup_conference_details_view();
         show_jid_add_view();
-
-        stream_interactor.get_module(MucManager.IDENTITY).joined.connect(on_joined);
     }
 
     private void show_jid_add_view() {
@@ -51,6 +49,7 @@ public class AddConferenceDialog : Gtk.Dialog {
             ok_button.label = _("Next");
             ok_button.sensitive = select_fragment.done;
             ok_button.clicked.connect(on_next_button_clicked);
+            details_fragment.fragment_active = false;
             details_fragment.notify["done"].disconnect(set_ok_sensitive_from_details);
             select_fragment.notify["done"].connect(set_ok_sensitive_from_select);
         }
@@ -69,6 +68,7 @@ public class AddConferenceDialog : Gtk.Dialog {
             ok_button.label = _("Join");
             ok_button.sensitive = details_fragment.done;
             ok_button.clicked.disconnect(on_next_button_clicked);
+            details_fragment.fragment_active = true;
             select_fragment.notify["done"].disconnect(set_ok_sensitive_from_select);
             details_fragment.notify["done"].connect(set_ok_sensitive_from_details);
         }
@@ -133,6 +133,7 @@ public class AddConferenceDialog : Gtk.Dialog {
 
     private void setup_conference_details_view() {
         details_fragment = new ConferenceDetailsFragment(stream_interactor) { ok_button=ok_button };
+        details_fragment.joined.connect(() => this.close());
 
         Box wrap_box = new Box(Orientation.VERTICAL, 0) { visible=true };
         wrap_box.add(details_fragment);
@@ -178,15 +179,6 @@ public class AddConferenceDialog : Gtk.Dialog {
             details_fragment.jid = row.jid.to_string();
         }
         show_conference_details_view();
-    }
-
-    private void on_joined(Account account, Jid jid, string nick) {
-        if (account.equals(details_fragment.account) && jid.equals_bare(new Jid(details_fragment.jid))) {
-            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
-            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
-            conversation_opened(conversation);
-            close();
-        }
     }
 
     private void on_cancel() {
