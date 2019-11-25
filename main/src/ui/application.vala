@@ -11,6 +11,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
     public Database db { get; set; }
     public Dino.Entities.Settings settings { get; set; }
+    private Config config { get; set; }
     public StreamInteractor stream_interactor { get; set; }
     public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
     public SearchPathGenerator? search_path_generator { get; set; }
@@ -30,7 +31,8 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         activate.connect(() => {
             if (window == null) {
                 controller = new UnifiedWindowController(this, stream_interactor, db);
-                window = new UnifiedWindow(this, stream_interactor, db);
+                config = new Config(db);
+                window = new UnifiedWindow(this, stream_interactor, db, config);
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.delete_event.connect(window.hide_on_delete);
 

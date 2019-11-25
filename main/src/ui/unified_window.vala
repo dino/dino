@@ -37,14 +37,16 @@ public class UnifiedWindow : Gtk.Window {
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
-    private Application app;
     private Database db;
+    private Config config;
 
-    public UnifiedWindow(Application application, StreamInteractor stream_interactor, Database db) {
+    public UnifiedWindow(Application application, StreamInteractor stream_interactor, Database db, Config config) {
         Object(application : application);
-        this.app = application;
         this.stream_interactor = stream_interactor;
         this.db = db;
+        this.config = config;
+
+        restore_window_size();
 
         this.get_style_context().add_class("dino-main");
         setup_headerbar();
@@ -176,6 +178,55 @@ public class UnifiedWindow : Gtk.Window {
 
     public void loop_conversations(bool backwards) {
         conversation_selector.loop_conversations(backwards);
+    }
+
+    public void restore_window_size() {
+        Gdk.Display? display = Gdk.Display.get_default();
+        if (display != null) {
+            Gdk.Monitor? monitor = display.get_primary_monitor();
+            if (monitor == null) {
+                monitor = display.get_monitor_at_point(1, 1);
+            }
+
+            if (monitor != null &&
+                    config.window_width <= monitor.geometry.width &&
+                    config.window_height <= monitor.geometry.height) {
+                set_default_size(config.window_width, config.window_height);
+            }
+        }
+        this.window_position = Gtk.WindowPosition.CENTER;
+        if (config.window_maximize) {
+            maximize();
+        }
+
+        this.delete_event.connect(() => {
+            save_window_size();
+            config.window_maximize = this.is_maximized;
+            return false;
+        });
+    }
+
+    public void save_window_size() {
+        if (this.is_maximized) return;
+
+        Gdk.Display? display = get_display();
+        Gdk.Window? window = get_window();
+        if (display != null && window != null) {
+            Gdk.Monitor monitor = display.get_monitor_at_window(window);
+
+            int width = 0;
+            int height = 0;
+            get_size(out width, out height);
+
+
+            // Only store if the values have changed and are reasonable-looking.
+            if (config.window_width != width && width > 0 && width <= monitor.geometry.width) {
+                config.window_width = width;
+            }
+            if (config.window_height != height && height > 0 && height <= monitor.geometry.height) {
+                config.window_height = height;
+            }
+        }
     }
 }
 

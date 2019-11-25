@@ -119,8 +119,6 @@ public class UnifiedWindowController : Object {
         });
 
         window.conversation_selected.connect(conversation => select_conversation(conversation));
-
-        restore_window_size();
     }
 
     public void select_conversation(Conversation? conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
@@ -206,30 +204,6 @@ public class UnifiedWindowController : Object {
     private void close_search() {
         search_menu_entry.search_button.active = false;
         window.search_revealer.reveal_child = false;
-    }
-
-    private void restore_window_size() {
-        window.default_width = app.settings.current_width;
-        window.default_height = app.settings.current_height;
-        if (app.settings.is_maximized) window.maximize();
-        if (app.settings.position_x != -1 && app.settings.position_y != -1) {
-            window.move(app.settings.position_x, app.settings.position_y);
-        }
-
-        window.delete_event.connect(() => {
-            int x, y;
-            window.get_position(out x, out y);
-            app.settings.position_x = x;
-            app.settings.position_y = y;
-
-            int width, height;
-            window.get_size(out width, out height);
-            app.settings.current_width = width;
-            app.settings.current_height = height;
-
-            app.settings.is_maximized = window.is_maximized;
-            return false;
-        });
     }
 }
 

@@ -149,6 +149,7 @@ SOURCES
     src/ui/occupant_menu/view.vala
 
     src/ui/util/accounts_combo_box.vala
+    src/ui/util/config.vala
     src/ui/util/data_forms.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
