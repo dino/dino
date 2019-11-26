@@ -106,7 +106,7 @@ public class Notifications : Object {
     }
 
     private void notify_connection_error(Account account, ConnectionManager.ConnectionError error) {
-        Notification notification = new Notification(_("Failed connecting to %s").printf(account.bare_jid.domainpart));
+        Notification notification = new Notification(_("Could not connect to %s").printf(account.bare_jid.domainpart));
         switch (error.source) {
             case ConnectionManager.ConnectionError.Source.SASL:
                 notification.set_body("Wrong password");
