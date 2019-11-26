@@ -18,11 +18,6 @@ public class Settings : Object {
         return val != null ? bool.parse(val) : def;
     }
 
-    private int col_to_int_or_default(string key, int def) {
-        string? val = db.settings.select({db.settings.value}).with(db.settings.key, "=", key)[db.settings.value];
-        return val != null ? int.parse(val) : def;
-    }
-
     private bool send_typing_;
     public bool send_typing {
         get { return send_typing_; }

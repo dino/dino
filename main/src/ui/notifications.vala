@@ -10,14 +10,12 @@ public class Notifications : Object {
     public signal void conversation_selected(Conversation conversation);
 
     private StreamInteractor stream_interactor;
-    private Gtk.Window window;
     private HashMap<Conversation, Notification> notifications = new HashMap<Conversation, Notification>(Conversation.hash_func, Conversation.equals_func);
     private Set<string>? active_conversation_ids = null;
     private Set<string>? active_ids = new HashSet<string>();
 
-    public Notifications(StreamInteractor stream_interactor, Gtk.Window window) {
+    public Notifications(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-        this.window = window;
 
         stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((focused_conversation) => {
             if (active_conversation_ids == null) {
@@ -81,13 +79,18 @@ public class Notifications : Object {
             Cairo.ImageSurface conversation_avatar = (yield Util.get_conversation_avatar_drawer(stream_interactor, conversation)).size(40, 40).draw_image_surface();
             notifications[conversation].set_icon(get_pixbuf_icon(conversation_avatar));
         } catch (Error e) { }
-        window.get_application().send_notification(conversation.id.to_string(), notifications[conversation]);
-        active_conversation_ids.add(conversation.id.to_string());
+        GLib.Application.get_default().send_notification(conversation.id.to_string(), notifications[conversation]);
+        if (active_conversation_ids != null) {
+            active_conversation_ids.add(conversation.id.to_string());
+        }
 
         // Don't set urgency hint in GNOME, produces "Window is active" notification
         var desktop_env = Environment.get_variable("XDG_CURRENT_DESKTOP");
         if (desktop_env == null || !desktop_env.down().contains("gnome")) {
-            window.urgency_hint = true;
+            var app = (GLib.Application.get_default() as Application);
+            if (app.active_window != null) {
+                app.active_window.urgency_hint = true;
+            }
         }
     }
 
@@ -101,7 +104,7 @@ public class Notifications : Object {
         notification.set_default_action_and_target_value("app.open-conversation", new Variant.int32(conversation.id));
         notification.add_button_with_target_value(_("Accept"), "app.accept-subscription", conversation.id);
         notification.add_button_with_target_value(_("Deny"), "app.deny-subscription", conversation.id);
-        window.get_application().send_notification(conversation.id.to_string() + "-subscription", notification);
+        GLib.Application.get_default().send_notification(conversation.id.to_string() + "-subscription", notification);
         active_ids.add(conversation.id.to_string() + "-subscription");
     }
 
@@ -115,7 +118,7 @@ public class Notifications : Object {
                 notification.set_body("Invalid TLS certificate");
                 break;
         }
-        window.get_application().send_notification(account.id.to_string() + "-connection-error", notification);
+        GLib.Application.get_default().send_notification(account.id.to_string() + "-connection-error", notification);
     }
 
     private async void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
@@ -135,7 +138,7 @@ public class Notifications : Object {
         notification.set_default_action_and_target_value("app.open-muc-join", new Variant.int32(group_conversation.id));
         notification.add_button_with_target_value(_("Deny"), "app.deny-invite", group_conversation.id);
         notification.add_button_with_target_value(_("Accept"), "app.open-muc-join", group_conversation.id);
-        window.get_application().send_notification(null, notification);
+        GLib.Application.get_default().send_notification(null, notification);
     }
 
     private Icon get_pixbuf_icon(Cairo.ImageSurface surface) throws Error {

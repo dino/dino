@@ -28,6 +28,11 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         create_actions();
 
+        startup.connect(() => {
+            notifications = new Notifications(stream_interactor);
+            notifications.start();
+        });
+
         activate.connect(() => {
             if (window == null) {
                 controller = new UnifiedWindowController(this, stream_interactor, db);
@@ -36,8 +41,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.delete_event.connect(window.hide_on_delete);
 
-                notifications = new Notifications(stream_interactor, window);
-                notifications.start();
                 notifications.conversation_selected.connect((conversation) => window.on_conversation_selected(conversation));
             }
             window.present();
