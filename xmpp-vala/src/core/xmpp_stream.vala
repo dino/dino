@@ -27,6 +27,7 @@ public class XmppStream {
     public bool negotiation_complete { get; set; default=false; }
     private bool setup_needed = false;
     private bool non_negotiation_modules_attached = false;
+    private bool disconnected = false;
 
     public signal void received_node(XmppStream stream, StanzaNode node);
     public signal void received_root_node(XmppStream stream, StanzaNode node);
@@ -75,15 +76,15 @@ public class XmppStream {
         yield loop();
     }
 
-    public void disconnect() throws IOStreamError {
-        StanzaWriter? writer = this.writer;
-        StanzaReader? reader = this.reader;
-        IOStream? stream = this.stream;
-        if (writer == null || reader == null || stream == null) throw new IOStreamError.DISCONNECT("trying to disconnect, but no stream open");
+    public async void disconnect() throws IOStreamError, XmlError, IOError {
+        disconnected = true;
+        if (writer == null || reader == null || stream == null) {
+            throw new IOStreamError.DISCONNECT("trying to disconnect, but no stream open");
+        }
         log.str("OUT", "</stream:stream>");
-        ((!)writer).write.begin("</stream:stream>");
-        ((!)reader).cancel();
-        ((!)stream).close_async.begin();
+        yield writer.write("</stream:stream>");
+        reader.cancel();
+        yield stream.close_async();
     }
 
     public void reset_stream(IOStream stream) {
@@ -217,6 +218,8 @@ public class XmppStream {
             Idle.add(loop.callback);
             yield;
 
+            if (disconnected) break;
+
             received_node(this, node);
 
             if (node.ns_uri == NS_URI && node.name == "features") {
@@ -224,7 +227,9 @@ public class XmppStream {
                 received_features_node(this);
             } else if (node.ns_uri == NS_URI && node.name == "stream" && node.pseudo) {
                 debug("[%p] Server closed stream", this);
-                disconnect();
+                try {
+                    yield disconnect();
+                } catch (Error e) {}
                 return;
             } else if (node.ns_uri == JABBER_URI) {
                 if (node.name == "message") {

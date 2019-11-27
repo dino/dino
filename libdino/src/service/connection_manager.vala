@@ -131,11 +131,11 @@ public class ConnectionManager : Object {
         connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
     }
 
-    public void disconnect_account(Account account) {
+    public async void disconnect_account(Account account) {
         if (connections.has_key(account)) {
             make_offline(account);
             try {
-                connections[account].stream.disconnect();
+                yield connections[account].stream.disconnect();
             } catch (Error e) {
                 debug("Error disconnecting stream: %s", e.message);
             }
@@ -217,6 +217,8 @@ public class ConnectionManager : Object {
     }
 
     private void check_reconnect(Account account) {
+        if (!connections.has_key(account)) return;
+
         bool acked = false;
         DateTime? last_activity_was = connections[account].last_activity;
 
@@ -228,6 +230,7 @@ public class ConnectionManager : Object {
         });
 
         Timeout.add_seconds(10, () => {
+            if (!connections.has_key(account)) return false;
             if (connections[account].stream != stream) return false;
             if (acked) return false;
             if (connections[account].last_activity != last_activity_was) return false;
@@ -235,11 +238,15 @@ public class ConnectionManager : Object {
             // Reconnect. Nothing gets through the stream.
             debug("[%s %p] Ping timeouted. Reconnecting", account.bare_jid.to_string(), stream);
             change_connection_state(account, ConnectionState.DISCONNECTED);
-            try {
-                connections[account].stream.disconnect();
-            } catch (Error e) {
-                debug("Error disconnecting stream: %s", e.message);
-            }
+
+            connections[account].stream.disconnect.begin((_, res) => {
+                try {
+                    connections[account].stream.disconnect.end(res);
+                } catch (Error e) {
+                    debug("Error disconnecting stream: %s", e.message);
+                }
+            });
+
             connect_(account);
             return false;
         });
@@ -267,7 +274,7 @@ public class ConnectionManager : Object {
         }
     }
 
-    private void on_prepare_for_sleep(bool suspend) {
+    private async void on_prepare_for_sleep(bool suspend) {
         foreach (Account account in connection_todo) {
             change_connection_state(account, ConnectionState.DISCONNECTED);
         }
@@ -276,7 +283,7 @@ public class ConnectionManager : Object {
             foreach (Account account in connection_todo) {
                 try {
                     make_offline(account);
-                    connections[account].stream.disconnect();
+                    yield connections[account].stream.disconnect();
                 } catch (Error e) {
                     debug("Error disconnecting stream %p: %s", connections[account].stream, e.message);
                 }

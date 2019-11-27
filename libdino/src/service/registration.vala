@@ -37,7 +37,7 @@ public class Register : StreamInteractionModule, Object{
             if (connected_account.equals(account)) {
                 ret = error.source;
             }
-            stream_interactor.disconnect_account(account);
+            stream_interactor.disconnect_account.begin(account);
             Idle.add((owned)callback);
         });
 
@@ -91,7 +91,7 @@ public class Register : StreamInteractionModule, Object{
         yield;
 
         try {
-            stream.disconnect();
+            yield stream.disconnect();
         } catch (Error e) {}
         return ret;
     }
@@ -130,7 +130,7 @@ public class Register : StreamInteractionModule, Object{
             form = yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).get_from_server(stream, jid);
         }
         try {
-            stream.disconnect();
+            yield stream.disconnect();
         } catch (Error e) {}
 
         return form;

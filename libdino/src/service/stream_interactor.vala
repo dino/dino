@@ -29,8 +29,8 @@ public class StreamInteractor : Object {
         connection_manager.connect_account(account);
     }
 
-    public void disconnect_account(Account account) {
-        connection_manager.disconnect_account(account);
+    public async void disconnect_account(Account account) {
+        yield connection_manager.disconnect_account(account);
         account_removed(account);
     }
 

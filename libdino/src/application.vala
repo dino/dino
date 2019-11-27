@@ -117,7 +117,7 @@ public interface Dino.Application : GLib.Application {
 
     protected void remove_connection(Account account) {
         if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) release();
-        stream_interactor.disconnect_account(account);
+        stream_interactor.disconnect_account.begin(account);
     }
 
     private void restore() {
