@@ -6,6 +6,16 @@ find_packages(ENGINE_PACKAGES REQUIRED
     GObject
 )
 
+set(ENGINE_DEFINITIONS "")
+
+find_package(GIO)
+if(GIO_VERSION VERSION_GREATER "2.60")
+    message(STATUS "ALPN support enabled")
+    set(ENGINE_DEFINITIONS ALPN_SUPPORT)
+else()
+    message(STATUS "No ALPN support, needs GIO >= 2.60")
+endif()
+
 vala_precompile(ENGINE_VALA_C
 SOURCES
     "src/glib_fixes.vapi"
@@ -91,6 +101,8 @@ GENERATE_VAPI
     xmpp-vala
 GENERATE_HEADER
     xmpp-vala
+DEFINITIONS
+    ${ENGINE_DEFINITIONS}
 )
 
 add_custom_target(xmpp-vala-vapi

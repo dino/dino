@@ -146,9 +146,9 @@ function(vala_precompile output)
     endforeach(pkg ${ARGS_PACKAGES})
 
     set(vala_define_opts "")
-    foreach(def ${ARGS_DEFINTIONS})
+    foreach(def ${ARGS_DEFINITIONS})
         list(APPEND vala_define_opts "--define=${def}")
-    endforeach(def ${ARGS_DEFINTIONS})
+    endforeach(def ${ARGS_DEFINITIONS})
 
     set(custom_vapi_arguments "")
     if(ARGS_CUSTOM_VAPIS)
@@ -212,6 +212,7 @@ function(vala_precompile output)
                 ${VALA_EXECUTABLE}
             ARGS
                 --fast-vapi ${fast_vapi_file}
+                ${vala_define_opts}
                 ${ARGS_OPTIONS}
                 ${VALAC_FLAGS}
                 ${in_file}
