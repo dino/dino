@@ -30,7 +30,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private ListBox new_keys_listbox;
     [GtkChild] private Box keys_container;
     [GtkChild] private ListBox keys_listbox;
-    [GtkChild] private ListBox unused_keys_listbox;
+    [GtkChild] private Expander inactive_keys_expander;
+    [GtkChild] private ListBox inactive_keys_listbox;
     [GtkChild] private Switch auto_accept_switch;
     [GtkChild] private Button copy_button;
     [GtkChild] private Button show_qrcode_button;
@@ -59,7 +60,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         }
 
         keys_listbox.row_activated.connect(on_key_entry_clicked);
-        unused_keys_listbox.row_activated.connect(on_key_entry_clicked);
+        inactive_keys_listbox.row_activated.connect(on_key_entry_clicked);
         auto_accept_switch.state_set.connect(on_auto_accept_toggled);
 
         int identity_id = plugin.db.identity.get_id(account.id);
@@ -134,7 +135,8 @@ public class ContactDetailsDialog : Gtk.Dialog {
             keys_container.visible = true;
             keys_listbox.add(fingerprint_row);
         } else {
-            unused_keys_listbox.add(fingerprint_row);
+            inactive_keys_expander.visible=true;
+            inactive_keys_listbox.add(fingerprint_row);
         }
     }
 

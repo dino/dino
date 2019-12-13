@@ -235,8 +235,8 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkExpander">
-                        <property name="visible">True</property>
+                    <object class="GtkExpander" id="inactive_keys_expander">
+                        <property name="visible">False</property>
                         <child type="label">
                             <object class="GtkLabel" id="inactive_expander_label">
                                 <property name="visible">True</property>
@@ -256,7 +256,7 @@
                                         <property name="visible">True</property>
                                         <property name="propagate_natural_height">True</property>
                                         <child>
-                                            <object class="GtkListBox" id="unused_keys_listbox">
+                                            <object class="GtkListBox" id="inactive_keys_listbox">
                                                 <property name="visible">True</property>
                                                 <property name="selection-mode">none</property>
                                             </object>
