@@ -48,7 +48,7 @@ public class Table {
         try {
             db.exec(@"INSERT INTO _fts_$name(_fts_$name) VALUES('rebuild');");
         } catch (Error e) {
-            error(@"Qlite Error: Rebuilding FTS index: $(e.message)");
+            critical(@"Qlite Error: Rebuilding FTS index: $(e.message)");
         }
     }
 
@@ -171,7 +171,7 @@ public class Table {
                 try {
                     db.exec(@"ALTER TABLE $name ADD COLUMN $(c.to_column_definition())");
                 } catch (Error e) {
-                    error(@"Qlite Error: Add columns for version: $(e.message)");
+                    critical(@"Qlite Error: Add columns for version: $(e.message)");
                 }
             }
         }
