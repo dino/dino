@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 01:25+0100\n"
-"PO-Revision-Date: 2019-09-02 11:24+0000\n"
+"POT-Creation-Date: 2019-12-16 21:15+0100\n"
+"PO-Revision-Date: 2019-11-15 07:04+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
 "Language: de\n"
@@ -11,53 +11,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 3.10-dev\n"
 
-#: main/src/ui/notifications.vala:68
+#: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "Image sent"
 msgstr "Bild gesendet"
 
-#: main/src/ui/notifications.vala:68
+#: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "File sent"
 msgstr "Datei gesendet"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "Image received"
 msgstr "Bild empfangen"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "File received"
 msgstr "Datei empfangen"
 
-#: main/src/ui/notifications.vala:95
+#: main/src/ui/notifications.vala:98
 msgid "Subscription request"
 msgstr "Kontaktanfrage"
 
-#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:137
+#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Annehmen"
 
-#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:136
+#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Ablehnen"
 
-#: main/src/ui/notifications.vala:109
+#: main/src/ui/notifications.vala:112
+#: main/src/ui/manage_accounts/add_account_dialog.vala:239
+#: main/src/ui/add_conversation/conference_details_fragment.vala:181
 #, c-format
-msgid "Failed connecting to %s"
-msgstr "Verbindung zu %s fehlgeschlagen"
+msgid "Could not connect to %s"
+msgstr "Verbindung zu %s konnte nicht hergestellt werden"
 
-#: main/src/ui/notifications.vala:125
+#: main/src/ui/notifications.vala:128
 #, c-format
 msgid "Invitation to %s"
 msgstr "Einladung zu %s"
 
-#: main/src/ui/notifications.vala:126
+#: main/src/ui/notifications.vala:129
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s hat dich in %s eingeladen"
@@ -79,9 +81,9 @@ msgstr "Kontaktbild auswählen"
 msgid "Select"
 msgstr "Auswählen"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:159
-#: main/src/ui/add_conversation/add_conference_dialog.vala:16
-#: main/src/ui/add_conversation/add_conference_dialog.vala:125
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:164
+#: main/src/ui/add_conversation/add_conference_dialog.vala:17
+#: main/src/ui/add_conversation/add_conference_dialog.vala:124
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -135,11 +137,6 @@ msgstr "Bei %s einloggen"
 msgid "You can now start using %s"
 msgstr "Du kannst %s ab jetzt nutzen"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:239
-#, c-format
-msgid "Could not connect to %s"
-msgstr "Verbindung zu %s konnte nicht hergestellt werden"
-
 #: main/src/ui/manage_accounts/add_account_dialog.vala:256
 msgid "Wrong username or password"
 msgstr "Benutzername oder Passwort falsch"
@@ -161,11 +158,11 @@ msgstr "Der Server erfordert die Registrierung durch eine Webseite"
 msgid "Open Registration"
 msgstr "Registrierung öffnen"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:316
+#: main/src/ui/manage_accounts/add_account_dialog.vala:312
 msgid "Register"
 msgstr "Registrieren"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:318
+#: main/src/ui/manage_accounts/add_account_dialog.vala:314
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Eventuell sind auf %s Informationen zur Registrierung zu finden"
@@ -212,23 +209,23 @@ msgstr[1] "vor %i min"
 msgid "Just now"
 msgstr "Gerade eben"
 
-#: main/src/ui/application.vala:159
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:206 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:164
+#: main/src/ui/add_conversation/add_conference_dialog.vala:28
+#: main/src/ui/unified_window.vala:257 main/data/menu_add.ui:13
 msgid "Join Channel"
 msgstr "Kanal beitreten"
 
-#: main/src/ui/application.vala:159
-#: main/src/ui/add_conversation/add_conference_dialog.vala:69
+#: main/src/ui/application.vala:164
+#: main/src/ui/add_conversation/add_conference_dialog.vala:68
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
-#: main/src/ui/add_conversation/conference_details_fragment.vala:141
+#: main/src/ui/add_conversation/conference_details_fragment.vala:151
 msgid "Join"
 msgstr "Beitreten"
 
 #: main/src/ui/util/helper.vala:121
 #, c-format
 msgid "%s from %s"
-msgstr ""
+msgstr "%s aus %s"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -239,22 +236,22 @@ msgstr "Hinzufügen"
 msgid "Save"
 msgstr "Speichern"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:50
-#: main/src/ui/add_conversation/add_conference_dialog.vala:121
+#: main/src/ui/add_conversation/add_conference_dialog.vala:49
+#: main/src/ui/add_conversation/add_conference_dialog.vala:120
 #: main/data/manage_accounts/add_account_dialog.ui:99
 #: main/data/manage_accounts/add_account_dialog.ui:410
 #: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
 msgstr "Weiter"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:150
+#: main/src/ui/add_conversation/add_conference_dialog.vala:149
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Zurück"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:205
+#: main/src/ui/unified_window.vala:256
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
@@ -265,59 +262,59 @@ msgstr "Unterhaltung starten"
 msgid "Start"
 msgstr "Starten"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:89
+#: main/src/ui/add_conversation/conference_details_fragment.vala:146
 msgid "Joining…"
 msgstr "Beitreten…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:162
 msgid "Password required to enter room"
 msgstr "Raum erfordert Passwort"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:151
+#: main/src/ui/add_conversation/conference_details_fragment.vala:167
 msgid "Banned from joining or creating conference"
 msgstr "Beitreten oder erstellen der Konferenz verboten"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Room does not exist"
 msgstr "Raum existiert nicht"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:171
 msgid "Not allowed to create room"
 msgstr "Raum erzeugen verboten"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:157
+#: main/src/ui/add_conversation/conference_details_fragment.vala:173
 msgid "Members-only room"
 msgstr "Raum nur für Mitglieder"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:160
+#: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Choose a different nick"
 msgstr "Wähle einen anderen Spitznamen"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:162
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Too many occupants in room"
 msgstr "Zu viele Nutzer im Raum"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:235
 msgid "Welcome to Dino!"
 msgstr "Willkommen bei Dino!"
 
-#: main/src/ui/unified_window.vala:185
+#: main/src/ui/unified_window.vala:236
 msgid "Sign in or create an account to get started."
-msgstr ""
+msgstr "Melde dich an oder erstelle ein Konto, um loszulegen."
 
-#: main/src/ui/unified_window.vala:186
+#: main/src/ui/unified_window.vala:237
 msgid "Set up account"
 msgstr "Konto einrichten"
 
-#: main/src/ui/unified_window.vala:194
+#: main/src/ui/unified_window.vala:245
 msgid "No active accounts"
 msgstr "Keine Konten aktiv"
 
-#: main/src/ui/unified_window.vala:195
+#: main/src/ui/unified_window.vala:246
 msgid "Manage accounts"
 msgstr "Konten verwalten"
 
-#: main/src/ui/unified_window.vala:204
+#: main/src/ui/unified_window.vala:255
 msgid "No active conversations"
 msgstr "Keine Unterhaltung aktiv"
 
@@ -472,40 +469,40 @@ msgstr "Konferenzdetails"
 msgid "Contact Details"
 msgstr "Kontaktdetails"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:39
+#: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
 msgstr "Name des Raums"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:42
+#: main/src/ui/contact_details/muc_config_form_provider.vala:53
 msgid "Description of the room"
 msgstr "Beschreibung des Raums"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:45
+#: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Persistent"
 msgstr "Dauerhaft"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:46
+#: main/src/ui/contact_details/muc_config_form_provider.vala:57
 msgid "The room will persist after the last occupant leaves"
 msgstr ""
 "Der Raum bleibt erhalten, nachdem der letzte Benutzer ihn verlassen hat"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:49
+#: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Publicly searchable"
 msgstr "Öffentlich sichtbar"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:52
+#: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
 msgstr "Nutzer können das Thema ändern"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:55
+#: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Discover real JIDs"
 msgstr "Echte JIDs finden"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:56
+#: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who may discover real JIDs?"
 msgstr "Wer kann echte JIDs sehen?"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:59
+#: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
 #: main/data/manage_accounts/add_account_dialog.ui:211
 #: main/data/add_conversation/conference_details_fragment.ui:175
@@ -513,35 +510,35 @@ msgstr "Wer kann echte JIDs sehen?"
 msgid "Password"
 msgstr "Passwort"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:60
+#: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "Password required for room entry, if any"
 msgstr "Passwort zum Betreten des Raums, falls gesetzt"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:63
+#: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
 msgstr "Moderiert"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:64
+#: main/src/ui/contact_details/muc_config_form_provider.vala:75
 msgid "Only occupants with voice may send messages"
 msgstr "Nur Nutzer mit Stimme können Nachrichten senden"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:67
+#: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Members only"
 msgstr "Ausschließlich Mitglieder"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:68
+#: main/src/ui/contact_details/muc_config_form_provider.vala:79
 msgid "Only members may enter the room"
 msgstr "Nur Mitglieder dürfen den Raum betreten"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:71
+#: main/src/ui/contact_details/muc_config_form_provider.vala:82
 msgid "Message history"
 msgstr "Gesprächsverlauf"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:72
+#: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
 msgstr "Anzahl der für diesen Raum gespeicherten Nachrichten"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:78
+#: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
 msgstr "Raum Konfiguration"
 
@@ -753,10 +750,14 @@ msgstr "Überprüfe die Schreibweise oder entferne Filter"
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
 msgstr ""
+"Klicke hier, um eine Unterhaltung zu starten oder einem Kanal beizutreten."
 
 #: main/data/unified_main_content.ui:147
 msgid "You have no open chats"
-msgstr ""
+msgstr "Du hast keine offenen Chats"
+
+#~ msgid "Failed connecting to %s"
+#~ msgstr "Verbindung zu %s fehlgeschlagen"
 
 #~ msgid "Join Conference"
 #~ msgstr "Konferenz beitreten"

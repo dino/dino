@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 01:25+0100\n"
-"PO-Revision-Date: 2019-01-05 11:06+0000\n"
+"POT-Creation-Date: 2019-12-16 21:15+0100\n"
+"PO-Revision-Date: 2019-12-11 03:27+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/nb_NO/>\n"
 "Language: nb\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.10-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -36,9 +36,8 @@ msgid "Did you add a new device for account %s?"
 msgstr "La du til en ny enhet for kontoen %s?"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
-#, fuzzy
 msgid "Manage Key"
-msgstr "Behandle"
+msgstr "Håndter nøkkel"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
@@ -49,7 +48,6 @@ msgstr ""
 "enhet."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-#, fuzzy
 msgid "Not matching"
 msgstr "Samsvarer ikke"
 
@@ -85,20 +83,19 @@ msgid "Fingerprints do not match"
 msgstr "Fingeravtrykkene stemmer ikke overens"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:72
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Please verify that you are comparing the correct fingerprint. If "
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Bekreft at du sammenligner rett fingeravtrykk. Hvis de ikke stemmer overens, "
-"kan det hende %s konto har falt i gale hender, og du bør overveie å avslå "
-"denne nøkkelen."
+"Sjekk at du sammenligner riktig fingeravtrykk. Hvis de ikke stemmer overens, "
+"kan det hende %s sin konto har falt i gale hender, og du bør overveie å "
+"avvise denne nøkkelen."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
-#, fuzzy
 msgid "Verify key fingerprint"
-msgstr "Bekreft nøkkelfingeravtrykk"
+msgstr "Sjekk nøkkelfingeravtrykk"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
@@ -110,7 +107,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:201
+#: plugins/omemo/src/ui/contact_details_dialog.vala:203
 msgid "Reject key"
 msgstr "Avslå nøkkel"
 
@@ -123,22 +120,20 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:196
+#: plugins/omemo/src/ui/contact_details_dialog.vala:198
 msgid "Accept key"
 msgstr "Godta nøkkel"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
-#, fuzzy
 msgid ""
 "Start accepting this key during communication with its associated contact"
 msgstr ""
-"Begynn anerkjennelse av denne nøkkelen under kommunikasjon med dens "
-"tilknyttede kontakt"
+"Aksepter heretter denne nøkkelen i kommunikasjon med dens tilhørende kontakt"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
-#, fuzzy, c-format
+#, c-format
 msgid "This key is currently %s."
 msgstr "Denne nøkkelen er i øyeblikket %s."
 
@@ -157,11 +152,10 @@ msgid "verified"
 msgstr "bekreftet"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, fuzzy
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
-"Ytterligere har den blitt bekreftet å samsvare med nøkkelen på kontaktens "
+"I tillegg har den blitt bekreftet å samsvare med nøkkelen på kontaktens "
 "enhet."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
@@ -169,7 +163,7 @@ msgid "rejected"
 msgstr "avslått"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This means it cannot be used by %s to receive messages, and any messages "
 "sent by it will be ignored."
@@ -178,13 +172,13 @@ msgstr ""
 "melding sendt på vegne av den vil bli ignorert."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "ignored and none of your messages will be readable using this key."
 msgstr ""
-"Når først bekreftet, vil fremtidige meldinger sendt av %s ved bruk av denne "
-"nøkkelen bli ignorert, og ingen av dine meldinger vil kunne leses med den."
+"Etter bekreftelsen vil fremtidige meldinger sendt av %s der denne nøkkelen "
+"brukes bli ignorert, og ingen av dine meldinger vil kunne leses med den."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
@@ -198,16 +192,15 @@ msgstr ""
 msgid "Back"
 msgstr "Tilbake"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:42
-#, fuzzy
-msgid "OMEMO Key Management"
-msgstr "OMEMO-nøkler"
-
 #: plugins/omemo/src/ui/contact_details_dialog.vala:43
+msgid "OMEMO Key Management"
+msgstr "OMEMO-nøkkelhåndtering"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:44
 msgid "Automatically accept new keys"
 msgstr "Godta nye nøkler automatisk"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:44
+#: plugins/omemo/src/ui/contact_details_dialog.vala:45
 msgid ""
 "When this contact adds new encryption keys to their account, automatically "
 "accept them."
@@ -215,42 +208,41 @@ msgstr ""
 "Når denne kontakten legger nye krypteringsnøkler til kontoen sin, godta dem "
 "automatisk."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:45
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "Own key"
 msgstr "Egen nøkkel"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "New keys"
 msgstr "Nye nøkler"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "Associated keys"
 msgstr "Tilknyttede nøkler"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Inactive keys"
-msgstr ""
+msgstr "Inaktive nøkler"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:76
-#, fuzzy
+#: plugins/omemo/src/ui/contact_details_dialog.vala:77
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
-"Når du legger nye krypteringsnøkler til kontoen din, godta dem automatisk."
+"Godta dem automatisk når du legger nye krypteringsnøkler til kontoen din."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:263
+#: plugins/omemo/src/ui/contact_details_dialog.vala:265
 msgid "Accepted"
 msgstr "Godtatt"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:268
+#: plugins/omemo/src/ui/contact_details_dialog.vala:270
 msgid "Rejected"
 msgstr "Avslått"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:273
+#: plugins/omemo/src/ui/contact_details_dialog.vala:275
 msgid "Verified"
 msgstr "Bekreftet"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:280
+#: plugins/omemo/src/ui/contact_details_dialog.vala:282
 msgid "Unused"
 msgstr "Ubrukt"
 

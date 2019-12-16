@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 01:25+0100\n"
+"POT-Creation-Date: 2019-12-16 21:15+0100\n"
 "PO-Revision-Date: 2019-01-12 20:06+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "nl/>\n"
@@ -102,7 +102,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:201
+#: plugins/omemo/src/ui/contact_details_dialog.vala:203
 msgid "Reject key"
 msgstr "Sleutel afwijzen"
 
@@ -115,7 +115,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:196
+#: plugins/omemo/src/ui/contact_details_dialog.vala:198
 msgid "Accept key"
 msgstr "Sleutel accepteren"
 
@@ -189,15 +189,15 @@ msgstr ""
 msgid "Back"
 msgstr "Terug"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:42
+#: plugins/omemo/src/ui/contact_details_dialog.vala:43
 msgid "OMEMO Key Management"
 msgstr "OMEMO-sleutelbeheer"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:43
+#: plugins/omemo/src/ui/contact_details_dialog.vala:44
 msgid "Automatically accept new keys"
 msgstr "Automatisch nieuwe sleutels accepteren"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:44
+#: plugins/omemo/src/ui/contact_details_dialog.vala:45
 msgid ""
 "When this contact adds new encryption keys to their account, automatically "
 "accept them."
@@ -205,42 +205,42 @@ msgstr ""
 "Indien dit contact nieuwe encryptiesleutels toevoegt aan hun account, "
 "automatisch accepteren."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:45
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "Own key"
 msgstr "Eigen sleutel"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "New keys"
 msgstr "Nieuwe sleutels"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "Associated keys"
 msgstr "Geassocieerde sleutels"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Inactive keys"
 msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:76
+#: plugins/omemo/src/ui/contact_details_dialog.vala:77
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Nieuwe encryptiesleutels die aan het account worden toegevoegd automatisch "
 "accepteren."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:263
+#: plugins/omemo/src/ui/contact_details_dialog.vala:265
 msgid "Accepted"
 msgstr "Geaccepteerd"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:268
+#: plugins/omemo/src/ui/contact_details_dialog.vala:270
 msgid "Rejected"
 msgstr "Afgewezen"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:273
+#: plugins/omemo/src/ui/contact_details_dialog.vala:275
 msgid "Verified"
 msgstr "Geverifieerd"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:280
+#: plugins/omemo/src/ui/contact_details_dialog.vala:282
 msgid "Unused"
 msgstr "Ongebruikt"
 

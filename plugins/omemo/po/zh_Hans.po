@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 01:25+0100\n"
+"POT-Creation-Date: 2019-12-16 21:15+0100\n"
 "PO-Revision-Date: 2019-02-02 14:09+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
@@ -95,7 +95,7 @@ msgstr "将此密钥的指纹与联系人设备上显示的指纹进行比较。
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:201
+#: plugins/omemo/src/ui/contact_details_dialog.vala:203
 msgid "Reject key"
 msgstr "拒绝密钥"
 
@@ -106,7 +106,7 @@ msgstr "在与其关联的联系人通信期间停止接受此密钥。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:196
+#: plugins/omemo/src/ui/contact_details_dialog.vala:198
 msgid "Accept key"
 msgstr "接受密钥"
 
@@ -171,54 +171,54 @@ msgstr "一旦确认，此密钥将被%s用于接收和发送消息。"
 msgid "Back"
 msgstr "返回"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:42
+#: plugins/omemo/src/ui/contact_details_dialog.vala:43
 msgid "OMEMO Key Management"
 msgstr "OMEMO　密钥管理"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:43
+#: plugins/omemo/src/ui/contact_details_dialog.vala:44
 msgid "Automatically accept new keys"
 msgstr "自动接受新密钥"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:44
+#: plugins/omemo/src/ui/contact_details_dialog.vala:45
 msgid ""
 "When this contact adds new encryption keys to their account, automatically "
 "accept them."
 msgstr "当此联系人向其帐户添加新的加密密钥时，自动接受它们。"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:45
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "Own key"
 msgstr "自己的钥匙"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "New keys"
 msgstr "新密钥"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "Associated keys"
 msgstr "关联密钥"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Inactive keys"
 msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:76
+#: plugins/omemo/src/ui/contact_details_dialog.vala:77
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr "当您向帐户添加新的加密密钥时，会自动接受它们。"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:263
+#: plugins/omemo/src/ui/contact_details_dialog.vala:265
 msgid "Accepted"
 msgstr "接受的"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:268
+#: plugins/omemo/src/ui/contact_details_dialog.vala:270
 msgid "Rejected"
 msgstr "拒绝的"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:273
+#: plugins/omemo/src/ui/contact_details_dialog.vala:275
 msgid "Verified"
 msgstr "验证的"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:280
+#: plugins/omemo/src/ui/contact_details_dialog.vala:282
 msgid "Unused"
 msgstr "未使用的"
 

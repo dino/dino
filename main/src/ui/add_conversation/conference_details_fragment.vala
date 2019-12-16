@@ -178,7 +178,7 @@ protected class ConferenceDetailsFragment : Box {
                     label_text = _("Too many occupants in room"); break;
             }
         } else if (join_result.stanza_error != null) {
-            label_text = _("Failed connecting to %s").printf((new Jid(jid)).domainpart);
+            label_text = _("Could not connect to %s").printf((new Jid(jid)).domainpart);
         }
         notification_label.label = label_text;
         notification_revealer.set_reveal_child(true);

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 01:25+0100\n"
-"PO-Revision-Date: 2019-09-06 17:24+0000\n"
+"POT-Creation-Date: 2019-12-16 21:15+0100\n"
+"PO-Revision-Date: 2019-11-15 07:04+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
 "translations/ro/>\n"
 "Language: ro\n"
@@ -17,53 +17,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 3.10-dev\n"
 
-#: main/src/ui/notifications.vala:68
+#: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "Image sent"
 msgstr "Imagine trimisă"
 
-#: main/src/ui/notifications.vala:68
+#: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 msgid "File sent"
 msgstr "Fișier trimis"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "Image received"
 msgstr "Imagine primitä"
 
-#: main/src/ui/notifications.vala:70
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:158
 msgid "File received"
 msgstr "Fișier primit"
 
-#: main/src/ui/notifications.vala:95
+#: main/src/ui/notifications.vala:98
 msgid "Subscription request"
 msgstr "Cerere de abonare"
 
-#: main/src/ui/notifications.vala:102 main/src/ui/notifications.vala:137
+#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Acceptă"
 
-#: main/src/ui/notifications.vala:103 main/src/ui/notifications.vala:136
+#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Refuză"
 
-#: main/src/ui/notifications.vala:109
+#: main/src/ui/notifications.vala:112
+#: main/src/ui/manage_accounts/add_account_dialog.vala:239
+#: main/src/ui/add_conversation/conference_details_fragment.vala:181
 #, c-format
-msgid "Failed connecting to %s"
-msgstr "Eroare la conectarea cu %s"
+msgid "Could not connect to %s"
+msgstr "Nu s-a putut face conectarea la %s"
 
-#: main/src/ui/notifications.vala:125
+#: main/src/ui/notifications.vala:128
 #, c-format
 msgid "Invitation to %s"
 msgstr "Invitaţie la %s"
 
-#: main/src/ui/notifications.vala:126
+#: main/src/ui/notifications.vala:129
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s v-a invitat la %s"
@@ -85,9 +87,9 @@ msgstr "Selectare avatar"
 msgid "Select"
 msgstr "Selectare"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:159
-#: main/src/ui/add_conversation/add_conference_dialog.vala:16
-#: main/src/ui/add_conversation/add_conference_dialog.vala:125
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:164
+#: main/src/ui/add_conversation/add_conference_dialog.vala:17
+#: main/src/ui/add_conversation/add_conference_dialog.vala:124
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -141,11 +143,6 @@ msgstr "Autentificare în %s"
 msgid "You can now start using %s"
 msgstr "Acum puteți utiliza %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:239
-#, c-format
-msgid "Could not connect to %s"
-msgstr "Nu s-a putut face conectarea la %s"
-
 #: main/src/ui/manage_accounts/add_account_dialog.vala:256
 msgid "Wrong username or password"
 msgstr "Nume utilizator sau parolă greșite"
@@ -167,11 +164,11 @@ msgstr "Serverul necesită înregistrarea printr-un site web"
 msgid "Open Registration"
 msgstr "Deschis pentru înregistrare"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:316
+#: main/src/ui/manage_accounts/add_account_dialog.vala:312
 msgid "Register"
 msgstr "Înregistrează-te"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:318
+#: main/src/ui/manage_accounts/add_account_dialog.vala:314
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Aflați pe %s informații despre cum se face înregistrarea"
@@ -219,23 +216,23 @@ msgstr[2] "Acum %i de minute"
 msgid "Just now"
 msgstr "Chiar acum"
 
-#: main/src/ui/application.vala:159
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:206 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:164
+#: main/src/ui/add_conversation/add_conference_dialog.vala:28
+#: main/src/ui/unified_window.vala:257 main/data/menu_add.ui:13
 msgid "Join Channel"
-msgstr "Alătură-te canalului"
+msgstr "Alăturați-vă canalului"
 
-#: main/src/ui/application.vala:159
-#: main/src/ui/add_conversation/add_conference_dialog.vala:69
+#: main/src/ui/application.vala:164
+#: main/src/ui/add_conversation/add_conference_dialog.vala:68
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
-#: main/src/ui/add_conversation/conference_details_fragment.vala:141
+#: main/src/ui/add_conversation/conference_details_fragment.vala:151
 msgid "Join"
-msgstr "Alătură-te"
+msgstr "Alăturați-vă"
 
 #: main/src/ui/util/helper.vala:121
 #, c-format
 msgid "%s from %s"
-msgstr ""
+msgstr "%s de la %s"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -246,22 +243,22 @@ msgstr "Adaugă"
 msgid "Save"
 msgstr "Salvare"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:50
-#: main/src/ui/add_conversation/add_conference_dialog.vala:121
+#: main/src/ui/add_conversation/add_conference_dialog.vala:49
+#: main/src/ui/add_conversation/add_conference_dialog.vala:120
 #: main/data/manage_accounts/add_account_dialog.ui:99
 #: main/data/manage_accounts/add_account_dialog.ui:410
 #: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
 msgstr "Următorul"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:150
+#: main/src/ui/add_conversation/add_conference_dialog.vala:149
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Înapoi"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:205
+#: main/src/ui/unified_window.vala:256
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20
@@ -272,59 +269,59 @@ msgstr "Pornește o conversație"
 msgid "Start"
 msgstr "Pornire"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:89
+#: main/src/ui/add_conversation/conference_details_fragment.vala:146
 msgid "Joining…"
 msgstr "Conectare…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:162
 msgid "Password required to enter room"
 msgstr "Este necesară o parolă pentru a te putea alătura acestei discuții"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:151
+#: main/src/ui/add_conversation/conference_details_fragment.vala:167
 msgid "Banned from joining or creating conference"
 msgstr "Aveți interdicție de a vă alătura sau de a crea o conferință"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:153
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Room does not exist"
 msgstr "Această discuție nu există"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:155
+#: main/src/ui/add_conversation/conference_details_fragment.vala:171
 msgid "Not allowed to create room"
 msgstr "Este interzisă crearea unei discuții"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:157
+#: main/src/ui/add_conversation/conference_details_fragment.vala:173
 msgid "Members-only room"
 msgstr "Discuție accesibilă numai membrilor"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:160
+#: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Choose a different nick"
 msgstr "Alegeți un nume diferit"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:162
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Too many occupants in room"
 msgstr "Discuția are prea mulți membrii"
 
-#: main/src/ui/unified_window.vala:184
+#: main/src/ui/unified_window.vala:235
 msgid "Welcome to Dino!"
 msgstr "Bine ați venit la Dino!"
 
-#: main/src/ui/unified_window.vala:185
+#: main/src/ui/unified_window.vala:236
 msgid "Sign in or create an account to get started."
-msgstr ""
+msgstr "Autentificați-vă sau creați un cont pentru a începe."
 
-#: main/src/ui/unified_window.vala:186
+#: main/src/ui/unified_window.vala:237
 msgid "Set up account"
 msgstr "Configurare cont"
 
-#: main/src/ui/unified_window.vala:194
+#: main/src/ui/unified_window.vala:245
 msgid "No active accounts"
 msgstr "Nici un cont activ"
 
-#: main/src/ui/unified_window.vala:195
+#: main/src/ui/unified_window.vala:246
 msgid "Manage accounts"
 msgstr "Administrare conturi"
 
-#: main/src/ui/unified_window.vala:204
+#: main/src/ui/unified_window.vala:255
 msgid "No active conversations"
 msgstr "Nici o conversație activă"
 
@@ -480,39 +477,39 @@ msgstr "Detalii conferință"
 msgid "Contact Details"
 msgstr "Detalii contact"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:39
+#: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
 msgstr "Numele discuției"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:42
+#: main/src/ui/contact_details/muc_config_form_provider.vala:53
 msgid "Description of the room"
 msgstr "Descrierea discuției"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:45
+#: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Persistent"
 msgstr "Persistentă"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:46
+#: main/src/ui/contact_details/muc_config_form_provider.vala:57
 msgid "The room will persist after the last occupant leaves"
 msgstr "Discuția va continua să existe și după ce ultima persoană va ieși"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:49
+#: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Publicly searchable"
 msgstr "Vizibilă public"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:52
+#: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
 msgstr "Membrii pot schimba subiectul"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:55
+#: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Discover real JIDs"
 msgstr "Descoperă ID-urile adevărate"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:56
+#: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who may discover real JIDs?"
 msgstr "Cine poate descoperi ID-urile adevărate?"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:59
+#: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
 #: main/data/manage_accounts/add_account_dialog.ui:211
 #: main/data/add_conversation/conference_details_fragment.ui:175
@@ -520,35 +517,35 @@ msgstr "Cine poate descoperi ID-urile adevărate?"
 msgid "Password"
 msgstr "Parolă"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:60
+#: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "Password required for room entry, if any"
 msgstr "Dacă există, o parolă va fi necesară pentru alăturarea la discuție"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:63
+#: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
 msgstr "Moderată"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:64
+#: main/src/ui/contact_details/muc_config_form_provider.vala:75
 msgid "Only occupants with voice may send messages"
 msgstr "Doar membrii cu drept de voce vor putea trimite mesaje"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:67
+#: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Members only"
 msgstr "Doar pentru membri"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:68
+#: main/src/ui/contact_details/muc_config_form_provider.vala:79
 msgid "Only members may enter the room"
 msgstr "Numai membrii se pot alătura discuției"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:71
+#: main/src/ui/contact_details/muc_config_form_provider.vala:82
 msgid "Message history"
 msgstr "Istoric mesaje"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:72
+#: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
 msgstr "Numărul maxim de mesaje din istoric ce va fi afișat în discuție"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:78
+#: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
 msgstr "Configurare discuție"
 
@@ -758,11 +755,14 @@ msgstr "Verificați ortografia sau încercați să eliminați filtre"
 
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
-msgstr ""
+msgstr "Apăsați aici pentru a porni o conversație sau a vă alătura unui canal."
 
 #: main/data/unified_main_content.ui:147
 msgid "You have no open chats"
-msgstr ""
+msgstr "Nu aveți nici o discuție deschisă"
+
+#~ msgid "Failed connecting to %s"
+#~ msgstr "Eroare la conectarea cu %s"
 
 #~ msgid "Join Conference"
 #~ msgstr "Alătură-te unei conferințe"

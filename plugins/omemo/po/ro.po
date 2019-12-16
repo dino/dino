@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 01:25+0100\n"
-"PO-Revision-Date: 2019-01-05 11:06+0000\n"
+"POT-Creation-Date: 2019-12-16 21:15+0100\n"
+"PO-Revision-Date: 2019-11-15 07:04+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ro/>\n"
 "Language: ro\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.10-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -107,7 +107,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:201
+#: plugins/omemo/src/ui/contact_details_dialog.vala:203
 msgid "Reject key"
 msgstr "Respingere cheie"
 
@@ -119,7 +119,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:196
+#: plugins/omemo/src/ui/contact_details_dialog.vala:198
 msgid "Accept key"
 msgstr "Acceptare cheie"
 
@@ -194,15 +194,15 @@ msgstr ""
 msgid "Back"
 msgstr "Înapoi"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:42
+#: plugins/omemo/src/ui/contact_details_dialog.vala:43
 msgid "OMEMO Key Management"
 msgstr "Administrare chei OMEMO"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:43
+#: plugins/omemo/src/ui/contact_details_dialog.vala:44
 msgid "Automatically accept new keys"
 msgstr "Automat acceptă chei noi"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:44
+#: plugins/omemo/src/ui/contact_details_dialog.vala:45
 msgid ""
 "When this contact adds new encryption keys to their account, automatically "
 "accept them."
@@ -210,42 +210,42 @@ msgstr ""
 "Când acest contact adäugă chei de criptare noi în contul lor, acestea vor fi "
 "acceptate în mod automat."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:45
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "Own key"
 msgstr "Cheie proprie"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "New keys"
 msgstr "Chei noi"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "Associated keys"
 msgstr "Chei asociate"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Inactive keys"
-msgstr ""
+msgstr "Chei inactive"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:76
+#: plugins/omemo/src/ui/contact_details_dialog.vala:77
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Când adäugați chei de criptare noi pentru acest cont, acestea vor fi "
 "acceptate în mod automat."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:263
+#: plugins/omemo/src/ui/contact_details_dialog.vala:265
 msgid "Accepted"
 msgstr "Acceptată"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:268
+#: plugins/omemo/src/ui/contact_details_dialog.vala:270
 msgid "Rejected"
 msgstr "Respinsă"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:273
+#: plugins/omemo/src/ui/contact_details_dialog.vala:275
 msgid "Verified"
 msgstr "Verificată"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:280
+#: plugins/omemo/src/ui/contact_details_dialog.vala:282
 msgid "Unused"
 msgstr "Neutilizatä"
 
