@@ -10,19 +10,6 @@ public class DataForm {
     public Gee.List<Field> fields = new ArrayList<Field>();
     public string? form_type = null;
 
-    public XmppStream stream;
-    public OnResult on_result;
-
-    public void cancel() {
-        StanzaNode stanza_node = new StanzaNode.build("x", NS_URI);
-        stanza_node.add_self_xmlns().set_attribute("type", "cancel");
-        on_result(stream, stanza_node);
-    }
-
-    public void submit() {
-        on_result(stream, get_submit_node());
-    }
-
     public StanzaNode get_submit_node() {
         stanza_node.set_attribute("type", "submit");
         return stanza_node;
@@ -197,10 +184,8 @@ public class DataForm {
 
     // TODO text-multi
 
-    internal DataForm.from_node(StanzaNode node, XmppStream stream, owned OnResult? listener = null) {
+    internal DataForm.from_node(StanzaNode node) {
         this.stanza_node = node;
-        this.stream = stream;
-        this.on_result = (owned)listener;
 
         Gee.List<StanzaNode> field_nodes = node.get_subnodes("field", NS_URI);
         foreach (StanzaNode field_node in field_nodes) {
@@ -235,9 +220,8 @@ public class DataForm {
         this.stanza_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
     }
 
-    public delegate void OnResult(XmppStream stream, StanzaNode node);
-    public static DataForm? create_from_node(XmppStream stream, StanzaNode node, owned OnResult listener) {
-        return new DataForm.from_node(node, stream, (owned)listener);
+    public static DataForm? create_from_node(StanzaNode node) {
+        return new DataForm.from_node(node);
     }
 
     public void add_field(Field field) {

@@ -62,13 +62,16 @@ public class MucManager : StreamInteractionModule, Object {
         if (conversation != null) stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
     }
 
-    public delegate void OnResult(Jid jid, Xep.DataForms.DataForm data_form);
-    public void get_config_form(Account account, Jid jid, owned OnResult listener) {
+    public async DataForms.DataForm? get_config_form(Account account, Jid jid) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) return null;
+        return yield stream.get_module(Xep.Muc.Module.IDENTITY).get_config_form(stream, jid);
+    }
+
+    public void set_config_form(Account account, Jid jid, DataForms.DataForm data_form) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
-        stream.get_module(Xep.Muc.Module.IDENTITY).get_config_form(stream, jid, (stream, jid, data_form) => {
-            listener(jid, data_form);
-        });
+        stream.get_module(Xep.Muc.Module.IDENTITY).set_config_form(stream, jid, data_form);
     }
 
     public void change_subject(Account account, Jid jid, string subject) {

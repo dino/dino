@@ -55,7 +55,7 @@ public class Form : DataForms.DataForm {
 
     internal Form.from_node(XmppStream stream, Iq.Stanza iq) {
         StanzaNode? x_node = iq.stanza.get_deep_subnode(NS_URI + ":query", DataForms.NS_URI + ":x");
-        base.from_node(x_node ?? new StanzaNode.build("x", NS_URI).add_self_xmlns(), stream);
+        base.from_node(x_node ?? new StanzaNode.build("x", NS_URI).add_self_xmlns());
 
         oob = iq.stanza.get_deep_string_content(NS_URI + ":query", "jabber:x:oob:x", "url");
     }

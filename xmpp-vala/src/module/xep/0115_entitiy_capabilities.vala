@@ -65,7 +65,7 @@ namespace Xmpp.Xep.EntityCapabilities {
 
             Gee.List<DataForms.DataForm> data_forms = new ArrayList<DataForms.DataForm>();
             foreach (StanzaNode node in query_result.iq.stanza.get_deep_subnodes(ServiceDiscovery.NS_URI_INFO + ":query", DataForms.NS_URI + ":x")) {
-                data_forms.add(DataForms.DataForm.create_from_node(stream, node, (stream, node) => {}));
+                data_forms.add(DataForms.DataForm.create_from_node(node));
             }
 
             if (compute_hash(query_result.identities, query_result.features, data_forms) == entity) {

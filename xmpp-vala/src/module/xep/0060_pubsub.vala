@@ -130,7 +130,7 @@ namespace Xmpp.Xep.Pubsub {
             Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
             StanzaNode? data_form_node = result_iq.stanza.get_deep_subnode(Pubsub.NS_URI_OWNER + ":pubsub", Pubsub.NS_URI_OWNER + ":configure", "jabber:x:data:x");
             if (data_form_node == null) return null;
-            return DataForms.DataForm.create_from_node(stream, data_form_node, () => {});
+            return DataForms.DataForm.create_from_node(data_form_node);
         }
 
         public async void submit_node_config(XmppStream stream, DataForms.DataForm data_form, string node_id) {

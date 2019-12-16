@@ -177,22 +177,23 @@ public class Module : XmppStreamModule {
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
     }
 
-    public delegate void OnConfigFormResult(XmppStream stream, Jid jid, DataForms.DataForm data_form);
-    public void get_config_form(XmppStream stream, Jid jid, owned OnConfigFormResult listener) {
+    public async DataForms.DataForm? get_config_form(XmppStream stream, Jid jid) {
         Iq.Stanza get_iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_OWNER).add_self_xmlns()) { to=jid };
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, get_iq, (stream, form_iq) => {
-            StanzaNode? x_node = form_iq.stanza.get_deep_subnode(NS_URI_OWNER + ":query", DataForms.NS_URI + ":x");
-            if (x_node != null) {
-                DataForms.DataForm data_form = DataForms.DataForm.create_from_node(stream, x_node, (stream, node) => {
-                    StanzaNode stanza_node = new StanzaNode.build("query", NS_URI_OWNER);
-                    stanza_node.add_self_xmlns().put_node(node);
-                    Iq.Stanza set_iq = new Iq.Stanza.set(stanza_node);
-                    set_iq.to = form_iq.from;
-                    stream.get_module(Iq.Module.IDENTITY).send_iq(stream, set_iq);
-                });
-                listener(stream, form_iq.from, data_form);
-            }
-        });
+        Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, get_iq);
+
+        StanzaNode? x_node = result_iq.stanza.get_deep_subnode(NS_URI_OWNER + ":query", DataForms.NS_URI + ":x");
+        if (x_node != null) {
+            DataForms.DataForm data_form = DataForms.DataForm.create_from_node(x_node);
+            return data_form;
+        }
+        return null;
+    }
+
+    public void set_config_form(XmppStream stream, Jid jid, DataForms.DataForm data_form) {
+        StanzaNode stanza_node = new StanzaNode.build("query", NS_URI_OWNER);
+        stanza_node.add_self_xmlns().put_node(data_form.get_submit_node());
+        Iq.Stanza set_iq = new Iq.Stanza.set(stanza_node) { to=jid };
+        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, set_iq);
     }
 
     public override void attach(XmppStream stream) {

@@ -19,12 +19,23 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) return;
-            stream_interactor.get_module(MucManager.IDENTITY).get_config_form(conversation.account, conversation.counterpart, (jid, data_form) => {
-                contact_details.save.connect(() => { data_form.submit(); });
+
+            stream_interactor.get_module(MucManager.IDENTITY).get_config_form.begin(conversation.account, conversation.counterpart, (_, res) => {
+                DataForms.DataForm? data_form = stream_interactor.get_module(MucManager.IDENTITY).get_config_form.end(res);
+                if (data_form == null) return;
+
                 for (int i = 0; i < data_form.fields.size; i++) {
                     DataForms.DataForm.Field field = data_form.fields[i];
                     add_field(field, contact_details);
                 }
+
+                string config_backup = data_form.stanza_node.to_string();
+                contact_details.save.connect(() => {
+                    // Only send the config form if something was changed
+                    if (config_backup != data_form.stanza_node.to_string()) {
+                        stream_interactor.get_module(MucManager.IDENTITY).set_config_form(conversation.account, conversation.counterpart, data_form);
+                    }
+                });
             });
         }
     }
@@ -74,7 +85,7 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
             }
         }
 
-        Widget? widget = Util.get_data_form_fild_widget(field);
+        Widget? widget = Util.get_data_form_field_widget(field);
         if (widget != null) contact_details.add(_("Room Configuration"), label, desc, widget);
     }
 }

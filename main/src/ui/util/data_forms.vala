@@ -6,7 +6,7 @@ using Xmpp.Xep;
 
 namespace Dino.Ui.Util {
 
-public static Widget? get_data_form_fild_widget(DataForms.DataForm.Field field) {
+public static Widget? get_data_form_field_widget(DataForms.DataForm.Field field) {
     if (field.type_ == null) return null;
     switch (field.type_) {
         case DataForms.DataForm.Type.BOOLEAN:

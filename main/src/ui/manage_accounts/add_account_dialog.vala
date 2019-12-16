@@ -302,7 +302,7 @@ public class AddAccountDialog : Gtk.Dialog {
             register_form_continue.grab_focus();
         } else if (form.fields.size > 0) {
             foreach (Xep.DataForms.DataForm.Field field in form.fields) {
-                Widget? field_widget = Util.get_data_form_fild_widget(field);
+                Widget? field_widget = Util.get_data_form_field_widget(field);
                 if (field.label != null && field.label != "" && field_widget != null) {
                     form_box.add(new Label(field.label) { xalign=0, margin_top=7, visible=true });
                     form_box.add(field_widget);
