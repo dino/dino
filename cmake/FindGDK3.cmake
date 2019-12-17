@@ -25,9 +25,12 @@ if(GDK3_FOUND AND NOT GDK3_VERSION)
     endif()
 endif()
 
-if(GDK3_FOUND)
+if (GDK3_FOUND)
     find_file(GDK3_WITH_X11 "gdk/gdkx.h" HINTS ${GDK3_INCLUDE_DIRS})
-endif()
+    if (GDK3_WITH_X11)
+        set(GDK3_WITH_X11 yes CACHE INTERNAL "Does GDK3 support X11")
+    endif (GDK3_WITH_X11)
+endif ()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GDK3

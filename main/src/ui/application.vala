@@ -80,6 +80,10 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         settings_action.activate.connect(show_settings_window);
         add_action(settings_action);
 
+        SimpleAction about_action = new SimpleAction("about", null);
+        about_action.activate.connect(show_about_window);
+        add_action(about_action);
+
         SimpleAction quit_action = new SimpleAction("quit", null);
         quit_action.activate.connect(quit);
         add_action(quit_action);
@@ -167,6 +171,18 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SettingsDialog dialog = new SettingsDialog();
         dialog.set_transient_for(get_active_window());
         dialog.present();
+    }
+
+    private void show_about_window() {
+        show_about_dialog(get_active_window(),
+                    logo_icon_name: "im.dino.Dino",
+                    program_name: "Dino",
+                    version: Dino.VERSION.strip().length == 0 ? null : Dino.VERSION,
+                    comments: "Dino. Communicating happiness.",
+                    website: "https://dino.im/",
+                    website_label: "dino.im",
+                    copyright: "Copyright © 2016-2019 - Dino Team",
+                    license_type: License.GPL_3_0);
     }
 
     private void show_join_muc_dialog(Account? account, Jid jid) {

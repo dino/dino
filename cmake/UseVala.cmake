@@ -193,6 +193,9 @@ function(vala_precompile output)
     endif(ARGS_GENERATE_HEADER)
 
     string(REPLACE " " ";" VALAC_FLAGS ${CMAKE_VALA_FLAGS})
+    if (VALA_VERSION VERSION_GREATER "0.38")
+        set(VALAC_COLORS "--color=always")
+    endif ()
 
     if(ARGS_FAST_VAPI)
         foreach(src ${ARGS_SOURCES} ${ARGS_UNPARSED_ARGUMENTS})
@@ -211,6 +214,7 @@ function(vala_precompile output)
             COMMAND
                 ${VALA_EXECUTABLE}
             ARGS
+                ${VALAC_COLORS}
                 --fast-vapi ${fast_vapi_file}
                 ${vala_define_opts}
                 ${ARGS_OPTIONS}
@@ -246,6 +250,7 @@ function(vala_precompile output)
             COMMAND
                 ${VALA_EXECUTABLE}
             ARGS
+                ${VALAC_COLORS}
                 "-C"
                 "-d" ${dir}
                 ${vala_pkg_opts}
@@ -271,6 +276,7 @@ function(vala_precompile output)
             COMMAND
                 ${VALA_EXECUTABLE}
             ARGS
+                ${VALAC_COLORS}
                 -C -q --disable-warnings
                 ${header_arguments}
                 ${vapi_arguments}
@@ -306,6 +312,7 @@ function(vala_precompile output)
         COMMAND
             ${VALA_EXECUTABLE}
         ARGS
+            ${VALAC_COLORS}
             -C
             ${header_arguments}
             ${vapi_arguments}

@@ -1,6 +1,9 @@
 using Dino.Entities;
 
-public interface Dino.Application : GLib.Application {
+namespace Dino {
+extern const string VERSION;
+
+public interface Application : GLib.Application {
 
     public abstract Database db { get; set; }
     public abstract Dino.Entities.Settings settings { get; set; }
@@ -76,7 +79,7 @@ public interface Dino.Application : GLib.Application {
                 jid = jid.substring(1);
             }
             string query = "message";
-            Gee.Map<string, string> options = new Gee.HashMap<string,string>();
+            Gee.Map<string, string> options = new Gee.HashMap<string, string>();
             if (m.length == 2) {
                 string[] cmds = m[1].split(";");
                 query = cmds[0];
@@ -127,3 +130,4 @@ public interface Dino.Application : GLib.Application {
     }
 }
 
+}

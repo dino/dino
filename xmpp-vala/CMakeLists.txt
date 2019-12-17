@@ -18,8 +18,6 @@ endif()
 
 vala_precompile(ENGINE_VALA_C
 SOURCES
-    "src/glib_fixes.vapi"
-
     "src/core/namespace_state.vala"
     "src/core/stanza_attribute.vala"
     "src/core/stanza_node.vala"
@@ -101,6 +99,8 @@ GENERATE_VAPI
     xmpp-vala
 GENERATE_HEADER
     xmpp-vala
+CUSTOM_VAPIS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/glib_fixes.vapi"
 DEFINITIONS
     ${ENGINE_DEFINITIONS}
 )
