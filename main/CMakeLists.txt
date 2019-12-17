@@ -61,6 +61,7 @@ set(RESOURCE_LIST
     occupant_list_item.ui
     search_autocomplete.ui
     settings_dialog.ui
+    shortcuts.ui
     unified_main_content.ui
     unified_window_placeholder.ui
 

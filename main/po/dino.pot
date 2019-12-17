@@ -678,6 +678,10 @@ msgstr ""
 msgid "Unencrypted"
 msgstr ""
 
+#: main/data/menu_app.ui:17
+msgid "Keyboard Shortcuts"
+msgstr ""
+
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
 msgstr ""
@@ -724,6 +728,22 @@ msgstr ""
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
+msgstr ""
+
+#: main/data/shortcuts.ui:12
+msgid "General"
+msgstr ""
+
+#: main/data/shortcuts.ui:32
+msgid "Navigation"
+msgstr ""
+
+#: main/data/shortcuts.ui:37
+msgid "Jump to next conversation"
+msgstr ""
+
+#: main/data/shortcuts.ui:44
+msgid "Jump to previous conversation"
 msgstr ""
 
 #: main/data/global_search.ui:37

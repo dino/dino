@@ -140,6 +140,15 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         loop_conversations_bw_action.activate.connect(() => { window.loop_conversations(true); });
         add_action(loop_conversations_bw_action);
         set_accels_for_action("app.loop_conversations_bw", new string[]{"<Ctrl><Shift>Tab"});
+
+        SimpleAction open_shortcuts_action = new SimpleAction("open_shortcuts", null);
+        open_shortcuts_action.activate.connect((variant) => {
+            Builder builder = new Builder.from_resource("/im/dino/Dino/shortcuts.ui");
+            var dialog = (ShortcutsWindow) builder.get_object("shortcuts-window");
+            dialog.set_transient_for(get_active_window());
+            dialog.present();
+        });
+        add_action(open_shortcuts_action);
     }
 
     public bool use_csd() {

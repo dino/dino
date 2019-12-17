@@ -11,5 +11,11 @@
                 <attribute name="label" translatable="yes">Settings</attribute>
             </item>
         </section>
+        <section>
+            <item>
+                <attribute name="action">app.open_shortcuts</attribute>
+                <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
+            </item>
+        </section>
     </menu>
 </interface>
