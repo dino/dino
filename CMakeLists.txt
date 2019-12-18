@@ -49,7 +49,7 @@ foreach (variable_name ${all_variables})
     endif()
 endforeach ()
 list(SORT PLUGINS)
-list(JOIN PLUGINS ", " PLUGINS_TEXT)
+string(REPLACE ";" ", " PLUGINS_TEXT "${PLUGINS}")
 
 message(STATUS "Configuring Dino ${PROJECT_VERSION} with plugins: ${PLUGINS_TEXT}")
 
