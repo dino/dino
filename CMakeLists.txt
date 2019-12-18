@@ -40,7 +40,6 @@ if (ENABLED_PLUGINS)
         message(STATUS "Enabled plugin: ${plugin}")
     endforeach(plugin)
 endif (ENABLED_PLUGINS)
-list(REMOVE_DUPLICATES PLUGINS)
 
 set(PLUGINS "")
 get_cmake_property(all_variables VARIABLES)
