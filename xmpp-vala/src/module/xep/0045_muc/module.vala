@@ -48,6 +48,7 @@ public enum Feature {
     PUBLIC,
     ROOMS,
     SEMI_ANONYMOUS,
+    STABLE_ID,
     TEMPORARY,
     UNMODERATED,
     UNSECURED
@@ -376,6 +377,7 @@ public class Module : XmppStreamModule {
                         case "http://jabber.org/protocol/muc#register": parsed = Feature.REGISTER; break;
                         case "http://jabber.org/protocol/muc#roomconfig": parsed = Feature.ROOMCONFIG; break;
                         case "http://jabber.org/protocol/muc#roominfo": parsed = Feature.ROOMINFO; break;
+                        case "http://jabber.org/protocol/muc#stable_id": parsed = Feature.STABLE_ID; break;
                         case "muc_hidden": parsed = Feature.HIDDEN; break;
                         case "muc_membersonly": parsed = Feature.MEMBERS_ONLY; break;
                         case "muc_moderated": parsed = Feature.MODERATED; break;

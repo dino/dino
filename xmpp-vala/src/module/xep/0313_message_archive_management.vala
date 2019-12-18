@@ -106,7 +106,8 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
 
             StanzaNode? forward_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", DelayedDelivery.NS_URI + ":delay");
             DateTime? datetime = DelayedDelivery.Module.get_time_for_node(forward_node);
-            message.add_flag(new MessageFlag(datetime));
+            string? mam_id = message.stanza.get_deep_attribute(NS_VER(stream) + ":result", NS_VER(stream) + ":id");
+            message.add_flag(new MessageFlag(datetime, mam_id));
 
             message.stanza = message_node;
             message.rerun_parsing = true;
@@ -132,9 +133,11 @@ public class MessageFlag : Xmpp.MessageFlag {
     public const string ID = "message_archive_management";
 
     public DateTime? server_time { get; private set; }
+    public string? mam_id { get; private set; }
 
-    public MessageFlag(DateTime? server_time) {
+    public MessageFlag(DateTime? server_time, string? mam_id) {
         this.server_time = server_time;
+        this.mam_id = mam_id;
     }
 
     public static MessageFlag? get_flag(MessageStanza message) { return (MessageFlag) message.get_flag(NS_URI, ID); }

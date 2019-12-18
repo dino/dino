@@ -40,6 +40,7 @@ public class Message : Object {
     public Type type_ { get; set; default = Type.UNKNOWN; }
     public string? body { get; set; }
     public string? stanza_id { get; set; }
+    public string? server_id { get; set; }
     public DateTime? time { get; set; }
     /** UTC **/
     public DateTime? local_time { get; set; }
@@ -63,8 +64,9 @@ public class Message : Object {
         this.db = db;
 
         id = row[db.message.id];
-        account = db.get_account_by_id(row[db.message.account_id]); // TODO don’t have to generate acc new
+        account = db.get_account_by_id(row[db.message.account_id]);
         stanza_id = row[db.message.stanza_id];
+        server_id = row[db.message.server_id];
         type_ = (Message.Type) row[db.message.type_];
 
         counterpart = db.get_jid_by_id(row[db.message.counterpart_id]);
@@ -108,6 +110,7 @@ public class Message : Object {
             .value(db.message.encryption, encryption)
             .value(db.message.marked, marked);
         if (stanza_id != null) builder.value(db.message.stanza_id, stanza_id);
+        if (server_id != null) builder.value(db.message.server_id, server_id);
         id = (int) builder.perform();
 
         if (real_jid != null) {
@@ -161,6 +164,8 @@ public class Message : Object {
         switch (sp.name) {
             case "stanza-id":
                 update_builder.set(db.message.stanza_id, stanza_id); break;
+            case "server-id":
+                update_builder.set(db.message.server_id, server_id); break;
             case "counterpart":
                 update_builder.set(db.message.counterpart_id, db.get_jid_id(counterpart));
                 update_builder.set(db.message.counterpart_resource, counterpart.resourcepart); break;

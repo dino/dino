@@ -86,6 +86,7 @@ SOURCES
     "src/module/xep/0313_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/0334_message_processing_hints.vala"
+    "src/module/xep/0359_unique_stable_stanza_ids.vala"
     "src/module/xep/0363_http_file_upload.vala"
     "src/module/xep/0368_srv_records_tls.vala"
     "src/module/xep/0380_explicit_encryption.vala"

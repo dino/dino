@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 9;
+    private const int VERSION = 10;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -55,6 +55,7 @@ public class Database : Qlite.Database {
     public class MessageTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<string> stanza_id = new Column.Text("stanza_id");
+        public Column<string> server_id = new Column.Text("server_id") { min_version=10 };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
         public Column<int> counterpart_id = new Column.Integer("counterpart_id") { not_null = true };
         public Column<string> counterpart_resource = new Column.Text("counterpart_resource");
@@ -69,7 +70,7 @@ public class Database : Qlite.Database {
 
         internal MessageTable(Database db) {
             base(db, "message");
-            init({id, stanza_id, account_id, counterpart_id, our_resource, counterpart_resource, direction,
+            init({id, stanza_id, server_id, account_id, counterpart_id, our_resource, counterpart_resource, direction,
                 type_, time, local_time, body, encryption, marked});
 
             // get latest messages
@@ -402,6 +403,14 @@ public class Database : Qlite.Database {
         } else {
             builder.with_null(message.counterpart_resource);
         }
+        return builder.count() > 0;
+    }
+
+    public bool contains_message_by_server_id(Account account, Jid counterpart, string server_id) {
+        QueryBuilder builder =  message.select()
+                .with(message.server_id, "=", server_id)
+                .with(message.counterpart_id, "=", get_jid_id(counterpart))
+                .with(message.account_id, "=", account.id);
         return builder.count() > 0;
     }
 

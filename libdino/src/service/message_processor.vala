@@ -91,7 +91,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
     public async Entities.Message parse_message_stanza(Account account, Xmpp.MessageStanza message) {
         Entities.Message new_message = new Entities.Message(message.body);
         new_message.account = account;
-        new_message.stanza_id = message.id;
+        new_message.stanza_id = Xep.UniqueStableStanzaIDs.get_origin_id(message) ?? message.id;
 
         Jid? counterpart_override = null;
         if (message.from.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.from.bare_jid, account))) {
@@ -105,7 +105,17 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.counterpart = counterpart_override ?? (new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
 
+        XmppStream? stream = stream_interactor.get_stream(account);
         Xep.MessageArchiveManagement.MessageFlag? mam_message_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
+        Xep.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) : null;
+        if (mam_message_flag != null && mam_flag != null && mam_flag.ns_ver == Xep.MessageArchiveManagement.NS_URI && mam_message_flag.mam_id != null) {
+            new_message.server_id = mam_message_flag.mam_id;
+        } else if (message.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
+            new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, new_message.counterpart.bare_jid);
+        } else if (message.type_ == Xmpp.MessageStanza.TYPE_CHAT) {
+            new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, account.bare_jid);
+        }
+
         if (mam_message_flag != null) new_message.local_time = mam_message_flag.server_time;
         if (new_message.local_time == null || new_message.local_time.compare(new DateTime.now_utc()) > 0) new_message.local_time = new DateTime.now_utc();
 
@@ -167,11 +177,17 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            bool is_uuid = message.stanza_id != null && Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", message.stanza_id);
-            bool new_uuid_msg = is_uuid && !db.contains_message_by_stanza_id(message, conversation.account);
-            bool new_misc_msg = !is_uuid && !db.contains_message(message, conversation.account);
-            bool new_msg = new_uuid_msg || new_misc_msg;
-            return !new_msg;
+            if (message.server_id != null) {
+                return db.contains_message_by_server_id(conversation.account, message.counterpart, message.server_id);
+            } else if (message.stanza_id != null) {
+                bool is_uuid = Regex.match_simple("""[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}""", message.stanza_id);
+                if (is_uuid) {
+                    return db.contains_message_by_stanza_id(message, conversation.account);
+                } else {
+                    return db.contains_message(message, conversation.account);
+                }
+            }
+            return false;
         }
     }
 
@@ -268,8 +284,17 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 if (delayed) {
                     Xmpp.Xep.DelayedDelivery.Module.set_message_delay(new_message, message.time);
                 }
+
+                // Set an origin ID if a MUC doen't guarantee to keep IDs
+                if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                    Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
+                    if (flag == null) return;
+                    if(!flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.STABLE_ID)) {
+                        Xep.UniqueStableStanzaIDs.set_origin_id(new_message, message.stanza_id);
+                    }
+                }
+
                 stream.get_module(Xmpp.MessageModule.IDENTITY).send_message(stream, new_message);
-                message.stanza_id = new_message.id;
             } else {
                 message.marked = Entities.Message.Marked.UNSENT;
             }
