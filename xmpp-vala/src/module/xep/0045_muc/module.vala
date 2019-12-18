@@ -487,16 +487,15 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 StanzaNode? invite_node = x_node.get_subnode("invite", NS_URI_USER);
                 string? password = null;
                 StanzaNode? password_node = x_node.get_subnode("password", NS_URI_USER);
-                if (password_node != null)
-                password = password_node.get_string_content();
+                if (password_node != null) password = password_node.get_string_content();
                 if (invite_node != null) {
                     string? from_jid = invite_node.get_attribute("from");
                     if (from_jid != null) {
                         StanzaNode? reason_node = invite_node.get_subnode("reason", NS_URI_USER);
                         string? reason = null;
-                        if (reason_node != null)
-                        reason = reason_node.get_string_content();
-                        outer.invite_received(stream, message.from, new Jid(from_jid), password, reason);
+                        if (reason_node != null) reason = reason_node.get_string_content();
+                        bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message) != null; // TODO
+                        if (!is_mam_message) outer.invite_received(stream, message.from, new Jid(from_jid), password, reason);
                         return true;
                     }
                 }

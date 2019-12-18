@@ -12,6 +12,7 @@ namespace Xmpp {
         public StanzaListenerHolder<MessageStanza> send_pipeline = new StanzaListenerHolder<MessageStanza>();
 
         public signal void received_message(XmppStream stream, MessageStanza message);
+        public signal void received_message_unprocessed(XmppStream stream, MessageStanza message);
 
         public void send_message(XmppStream stream, MessageStanza message) {
             send_pipeline.run.begin(stream, message, (obj, res) => {
@@ -21,6 +22,9 @@ namespace Xmpp {
 
         public async void received_message_stanza_async(XmppStream stream, StanzaNode node) {
             MessageStanza message = new MessageStanza.from_stanza(node, stream.get_flag(Bind.Flag.IDENTITY).my_jid);
+
+            received_message_unprocessed(stream, message);
+
             if (!message.is_error()) {
                 bool abort = yield received_pipeline.run(stream, message);
                 if (abort) return;

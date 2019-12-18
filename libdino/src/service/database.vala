@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 10;
+    private const int VERSION = 11;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -185,6 +185,21 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class MamCatchupTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<bool> from_end = new Column.BoolInt("from_end");
+        public Column<string> from_id = new Column.Text("from_id");
+        public Column<long> from_time = new Column.Long("from_time") { not_null = true };
+        public Column<string> to_id = new Column.Text("to_id");
+        public Column<long> to_time = new Column.Long("to_time") { not_null = true };
+
+        internal MamCatchupTable(Database db) {
+            base(db, "mam_catchup");
+            init({id, account_id, from_end, from_id, from_time, to_id, to_time});
+        }
+    }
+
     public class SettingsTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<string> key = new Column.Text("key") { unique = true, not_null = true };
@@ -206,6 +221,7 @@ public class Database : Qlite.Database {
     public AvatarTable avatar { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
     public RosterTable roster { get; private set; }
+    public MamCatchupTable mam_catchup { get; private set; }
     public SettingsTable settings { get; private set; }
 
     public Map<int, Jid> jid_table_cache = new HashMap<int, Jid>();
@@ -224,8 +240,9 @@ public class Database : Qlite.Database {
         avatar = new AvatarTable(this);
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
+        mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, content_item, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
+        init({ account, jid, content_item, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, mam_catchup, settings });
         try {
             exec("PRAGMA synchronous=0");
         } catch (Error e) { }
@@ -278,6 +295,15 @@ public class Database : Qlite.Database {
                     message.id in (select info from file_transfer where info not null)""");
             } catch (Error e) {
                 error("Failed to upgrade to database version 9: %s", e.message);
+            }
+        }
+        if (oldVersion < 11) {
+            try {
+                exec("""
+                insert into mam_catchup (account_id, from_end, from_time, to_time)
+                select id, 1, 0, mam_earliest_synced from account where mam_earliest_synced not null and mam_earliest_synced > 0""");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 11: %s", e.message);
             }
         }
     }
@@ -371,47 +397,6 @@ public class Database : Qlite.Database {
             ret.add(new Message.from_row(this, row));
         }
         return ret;
-    }
-
-    public bool contains_message(Message query_message, Account account) {
-        QueryBuilder builder = message.select()
-                .with(message.account_id, "=", account.id)
-                .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
-                .with(message.body, "=", query_message.body)
-                .with(message.time, "<", (long) query_message.time.add_minutes(1).to_unix())
-                .with(message.time, ">", (long) query_message.time.add_minutes(-1).to_unix());
-        if (query_message.stanza_id != null) {
-            builder.with(message.stanza_id, "=", query_message.stanza_id);
-        } else {
-            builder.with_null(message.stanza_id);
-        }
-        if (query_message.counterpart.resourcepart != null) {
-            builder.with(message.counterpart_resource, "=", query_message.counterpart.resourcepart);
-        } else {
-            builder.with_null(message.counterpart_resource);
-        }
-        return builder.count() > 0;
-    }
-
-    public bool contains_message_by_stanza_id(Message query_message, Account account) {
-        QueryBuilder builder =  message.select()
-                .with(message.stanza_id, "=", query_message.stanza_id)
-                .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
-                .with(message.account_id, "=", account.id);
-        if (query_message.counterpart.resourcepart != null) {
-            builder.with(message.counterpart_resource, "=", query_message.counterpart.resourcepart);
-        } else {
-            builder.with_null(message.counterpart_resource);
-        }
-        return builder.count() > 0;
-    }
-
-    public bool contains_message_by_server_id(Account account, Jid counterpart, string server_id) {
-        QueryBuilder builder =  message.select()
-                .with(message.server_id, "=", server_id)
-                .with(message.counterpart_id, "=", get_jid_id(counterpart))
-                .with(message.account_id, "=", account.id);
-        return builder.count() > 0;
     }
 
     public Message? get_message_by_id(int id) {

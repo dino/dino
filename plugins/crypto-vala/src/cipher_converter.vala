@@ -85,9 +85,7 @@ public class SymmetricCipherDecrypter : SymmetricCipherConverter {
             inbuf.length += (int) attached_taglen;
             if ((flags & ConverterFlags.INPUT_AT_END) != 0) {
                 if (attached_taglen > 0) {
-                    print("Checking tag\n");
                     check_tag(inbuf[(inbuf.length - attached_taglen):inbuf.length]);
-                    print("tag ok\n");
                     bytes_read = inbuf.length;
                 }
                 return ConverterResult.FINISHED;
