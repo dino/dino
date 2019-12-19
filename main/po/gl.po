@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-16 21:15+0100\n"
+"POT-Creation-Date: 2019-12-19 02:35+0100\n"
 "PO-Revision-Date: 2019-12-11 03:27+0000\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/"
 "translations/gl/>\n"
@@ -86,7 +86,7 @@ msgstr "Escoller imaxe do perfil"
 msgid "Select"
 msgstr "Escoller"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:164
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:189
 #: main/src/ui/add_conversation/add_conference_dialog.vala:17
 #: main/src/ui/add_conversation/add_conference_dialog.vala:124
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
@@ -214,13 +214,14 @@ msgstr[1] "hai %i minutos"
 msgid "Just now"
 msgstr "Xusto agora"
 
-#: main/src/ui/application.vala:164
+#: main/src/ui/application.vala:189
 #: main/src/ui/add_conversation/add_conference_dialog.vala:28
 #: main/src/ui/unified_window.vala:257 main/data/menu_add.ui:13
+#: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Unirse a unha canle"
 
-#: main/src/ui/application.vala:164
+#: main/src/ui/application.vala:189
 #: main/src/ui/add_conversation/add_conference_dialog.vala:68
 #: main/src/ui/add_conversation/add_conference_dialog.vala:144
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
@@ -259,7 +260,7 @@ msgstr "Atrás"
 #: main/src/ui/unified_window.vala:256
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20
+#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
 msgid "Start Conversation"
 msgstr "Comezar conversa"
 
@@ -680,6 +681,14 @@ msgstr "Rematar"
 msgid "Unencrypted"
 msgstr "Non cifrado"
 
+#: main/data/menu_app.ui:17
+msgid "Keyboard Shortcuts"
+msgstr ""
+
+#: main/data/menu_app.ui:21
+msgid "About Dino"
+msgstr ""
+
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
 msgstr "Cliente moderno para parolas XMPP"
@@ -735,6 +744,22 @@ msgstr "Alcume"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Engadir contacto"
+
+#: main/data/shortcuts.ui:12
+msgid "General"
+msgstr ""
+
+#: main/data/shortcuts.ui:32
+msgid "Navigation"
+msgstr ""
+
+#: main/data/shortcuts.ui:37
+msgid "Jump to next conversation"
+msgstr ""
+
+#: main/data/shortcuts.ui:44
+msgid "Jump to previous conversation"
+msgstr ""
 
 #: main/data/global_search.ui:37
 msgid "No active search"
