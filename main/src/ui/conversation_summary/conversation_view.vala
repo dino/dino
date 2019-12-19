@@ -164,7 +164,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
     public void insert_item(Plugins.MetaConversationItem item) {
         if (meta_items.size > 0) {
-            bool after_last = meta_items.last().sort_time.compare(item.sort_time) < 0;
+            bool after_last = meta_items.last().sort_time.compare(item.sort_time) <= 0;
             bool within_range = meta_items.last().sort_time.compare(item.sort_time) > 0 && meta_items.first().sort_time.compare(item.sort_time) < 0;
             bool accept = within_range || (at_current_content && after_last);
             if (!accept) {
