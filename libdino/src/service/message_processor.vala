@@ -338,7 +338,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
 
         if (mam_message_flag != null) new_message.local_time = mam_message_flag.server_time;
-        if (new_message.local_time == null || new_message.local_time.compare(new DateTime.now_utc()) > 0) new_message.local_time = new DateTime.now_utc();
+        DateTime now = new DateTime.from_unix_utc(new DateTime.now_utc().to_unix()); // Remove milliseconds. They are not stored in the db and might lead to ordering issues when compared with times from the db.
+        if (new_message.local_time == null || new_message.local_time.compare(now) > 0) new_message.local_time = now;
 
         Xep.DelayedDelivery.MessageFlag? delayed_message_flag = Xep.DelayedDelivery.MessageFlag.get_flag(message);
         if (delayed_message_flag != null) new_message.time = delayed_message_flag.datetime;
@@ -525,8 +526,9 @@ public class MessageProcessor : StreamInteractionModule, Object {
         message.stanza_id = random_uuid();
         message.account = conversation.account;
         message.body = text;
-        message.time = new DateTime.now_utc();
-        message.local_time = new DateTime.now_utc();
+        DateTime now = new DateTime.from_unix_utc(new DateTime.now_utc().to_unix()); // Remove milliseconds. They are not stored in the db and might lead to ordering issues when compared with times from the db.
+        message.time = now;
+        message.local_time = now;
         message.direction = Entities.Message.DIRECTION_SENT;
         message.counterpart = conversation.counterpart;
         if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
