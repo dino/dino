@@ -14,23 +14,25 @@ private const int NUM_KEYS_TO_PUBLISH = 100;
 
 public class StreamModule : XmppStreamModule {
     public static Xmpp.ModuleIdentity<StreamModule> IDENTITY = new Xmpp.ModuleIdentity<StreamModule>(NS_URI, "omemo_module");
+    private static TimeSpan IGNORE_TIME = TimeSpan.MINUTE;
 
     public Store store { public get; private set; }
     private ConcurrentSet<string> active_bundle_requests = new ConcurrentSet<string>();
     private HashMap<Jid, Future<ArrayList<int32>>> active_devicelist_requests = new HashMap<Jid, Future<ArrayList<int32>>>(Jid.hash_func, Jid.equals_func);
-    private Map<Jid, ArrayList<int32>> ignored_devices = new HashMap<Jid, ArrayList<int32>>(Jid.hash_bare_func, Jid.equals_bare_func);
+    private Map<string, DateTime> device_ignore_time = new HashMap<string, DateTime>();
 
-    public signal void store_created(Store store);
     public signal void device_list_loaded(Jid jid, ArrayList<int32> devices);
     public signal void bundle_fetched(Jid jid, int device_id, Bundle bundle);
+    public signal void bundle_fetch_failed(Jid jid, int device_id);
+
+    public StreamModule() {
+        if (Plugin.ensure_context()) {
+            this.store = Plugin.get_context().create_store();
+        }
+    }
 
     public override void attach(XmppStream stream) {
-        if (!Plugin.ensure_context()) return;
-
-        this.store = Plugin.get_context().create_store();
-        store_created(store);
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => parse_device_list(stream, jid, id, node), null);
-
     }
 
     public override void detach(XmppStream stream) {}
@@ -105,43 +107,56 @@ public class StreamModule : XmppStreamModule {
         address.device_id = 0; // TODO: Hack to have address obj live longer
     }
 
-    public void fetch_bundle(XmppStream stream, Jid jid, int device_id) {
+    public void fetch_bundle(XmppStream stream, Jid jid, int device_id, bool ignore_if_non_present = true) {
         if (active_bundle_requests.add(jid.bare_jid.to_string() + @":$device_id")) {
-            debug("Asking for bundle from %s: %i", jid.bare_jid.to_string(), device_id);
+            debug("Asking for bundle for %s/%d", jid.bare_jid.to_string(), device_id);
             stream.get_module(Pubsub.Module.IDENTITY).request(stream, jid.bare_jid, @"$NODE_BUNDLES:$device_id", (stream, jid, id, node) => {
-                on_other_bundle_result(stream, jid, device_id, id, node);
+                on_other_bundle_result(stream, jid, device_id, id, node, ignore_if_non_present);
             });
         }
     }
 
     public void ignore_device(Jid jid, int32 device_id) {
         if (device_id <= 0) return;
-        lock (ignored_devices) {
-            if (!ignored_devices.has_key(jid)) {
-                ignored_devices[jid] = new ArrayList<int32>();
-            }
-            ignored_devices[jid].add(device_id);
+        lock (device_ignore_time) {
+            device_ignore_time[jid.bare_jid.to_string() + @":$device_id"] = new DateTime.now_utc();
+        }
+    }
+
+    public void unignore_device(Jid jid, int32 device_id) {
+        if (device_id <= 0) return;
+        lock (device_ignore_time) {
+            device_ignore_time.unset(jid.bare_jid.to_string() + @":$device_id");
         }
     }
 
     public bool is_ignored_device(Jid jid, int32 device_id) {
         if (device_id <= 0) return true;
-        lock (ignored_devices) {
-            return ignored_devices.has_key(jid) && ignored_devices[jid].contains(device_id);
+        lock (device_ignore_time) {
+            string id = jid.bare_jid.to_string() + @":$device_id";
+            if (device_ignore_time.has_key(id)) {
+                return new DateTime.now_utc().difference(device_ignore_time[id]) < IGNORE_TIME;
+            }
         }
+        return false;
     }
 
     public void clear_device_list(XmppStream stream) {
         stream.get_module(Pubsub.Module.IDENTITY).delete_node(stream, null, NODE_DEVICELIST);
     }
 
-    private void on_other_bundle_result(XmppStream stream, Jid jid, int device_id, string? id, StanzaNode? node) {
+    private void on_other_bundle_result(XmppStream stream, Jid jid, int device_id, string? id, StanzaNode? node, bool ignore_if_non_present) {
         if (node == null) {
             // Device not registered, shouldn't exist
-            debug("Ignoring device %s (%i): No bundle", jid.bare_jid.to_string(), device_id);
-            stream.get_module(IDENTITY).ignore_device(jid, device_id);
+            if (ignore_if_non_present) {
+                debug("Ignoring device %s/%d: No bundle", jid.bare_jid.to_string(), device_id);
+                stream.get_module(IDENTITY).ignore_device(jid, device_id);
+            }
+            bundle_fetch_failed(jid, device_id);
         } else {
             Bundle bundle = new Bundle(node);
+            stream.get_module(IDENTITY).unignore_device(jid, device_id);
+            debug("Received bundle for %s/%d: %s", jid.bare_jid.to_string(), device_id, Base64.encode(bundle.identity_key.serialize()));
             bundle_fetched(jid, device_id, bundle);
         }
         stream.get_module(IDENTITY).active_bundle_requests.remove(jid.bare_jid.to_string() + @":$device_id");
@@ -169,17 +184,18 @@ public class StreamModule : XmppStreamModule {
                     if (store.contains_session(address)) {
                         return false;
                     }
+                    debug("Starting new session for encryption with %s/%d", jid.bare_jid.to_string(), device_id);
                     SessionBuilder builder = store.create_session_builder(address);
                     builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
                 } catch (Error e) {
-                    debug("Can't create session with %s (%i): %s", jid.bare_jid.to_string(), device_id, e.message);
+                    debug("Can't create session with %s/%d: %s", jid.bare_jid.to_string(), device_id, e.message);
                     fail = true;
                 }
                 address.device_id = 0; // TODO: Hack to have address obj live longer
             }
         }
         if (fail) {
-            debug("Ignoring device %s (%i): Bad bundle: %s", jid.bare_jid.to_string(), device_id, bundle.node.to_string());
+            debug("Ignoring device %s/%d: Bad bundle: %s", jid.bare_jid.to_string(), device_id, bundle.node.to_string());
             stream.get_module(IDENTITY).ignore_device(jid, device_id);
         }
         return true;

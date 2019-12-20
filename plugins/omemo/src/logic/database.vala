@@ -30,6 +30,10 @@ public class Database : Qlite.Database {
             return select().with(this.identity_id, "=", identity_id).with(this.address_name, "=", address_name);
         }
 
+        public QueryBuilder get_with_device_id(int identity_id, int device_id) {
+            return select().with(this.identity_id, "=", identity_id).with(this.device_id, "=", device_id);
+        }
+
         public void insert_device_list(int32 identity_id, string address_name, ArrayList<int32> devices) {
             update().with(this.identity_id, "=", identity_id).with(this.address_name, "=", address_name).set(now_active, false).perform();
             foreach (int32 device_id in devices) {
@@ -49,7 +53,22 @@ public class Database : Qlite.Database {
             string identity_key = Base64.encode(bundle.identity_key.serialize());
             RowOption row = with_address(identity_id, address_name).with(this.device_id, "=", device_id).single().row();
             if (row.is_present() && row[identity_key_public_base64] != null && row[identity_key_public_base64] != identity_key) {
-                error("Tried to change the identity key for a known device id. Likely an attack.");
+                critical("Tried to change the identity key for a known device id. Likely an attack.");
+                return -1;
+            }
+            return upsert()
+                    .value(this.identity_id, identity_id, true)
+                    .value(this.address_name, address_name, true)
+                    .value(this.device_id, device_id, true)
+                    .value(this.identity_key_public_base64, identity_key)
+                    .value(this.trust_level, trust).perform();
+        }
+
+        public int64 insert_device_session(int32 identity_id, string address_name, int device_id, string identity_key, TrustLevel trust) {
+            RowOption row = with_address(identity_id, address_name).with(this.device_id, "=", device_id).single().row();
+            if (row.is_present() && row[identity_key_public_base64] != null && row[identity_key_public_base64] != identity_key) {
+                critical("Tried to change the identity key for a known device id. Likely an attack.");
+                return -1;
             }
             return upsert()
                     .value(this.identity_id, identity_id, true)
@@ -86,10 +105,6 @@ public class Database : Qlite.Database {
             return this.with_address(identity_id, address_name)
                 .with(this.device_id, "=", device_id).single().row().inner;
         }
-
-        public QueryBuilder get_with_device_id(int device_id) {
-            return select().with(this.device_id, "=", device_id);
-        }
     }
 
 
@@ -104,10 +119,11 @@ public class Database : Qlite.Database {
             index("trust_idx", {identity_id, address_name}, true);
         }
 
-        public bool get_blind_trust(int32 identity_id, string address_name) {
-            return this.select().with(this.identity_id, "=", identity_id)
-                    .with(this.address_name, "=", address_name)
-                    .with(this.blind_trust, "=", true).count() > 0;
+        public bool get_blind_trust(int32 identity_id, string address_name, bool def = false) {
+            RowOption row = this.select().with(this.identity_id, "=", identity_id)
+                    .with(this.address_name, "=", address_name).single().row();
+            if (row.is_present()) return row[blind_trust];
+            return def;
         }
     }
 

@@ -66,7 +66,6 @@ public class Manager : StreamInteractionModule, Object {
         this.trust_manager = trust_manager;
 
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
-        stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
         stream_interactor.get_module(RosterManager.IDENTITY).mutual_subscription.connect(on_mutual_subscription);
     }
@@ -171,14 +170,15 @@ public class Manager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist.begin((!)stream, jid);
     }
 
-    private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store_created.connect((store) => on_store_created.begin(account, store));
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
-    }
-
     private void on_stream_negotiated(Account account, XmppStream stream) {
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist.begin(stream, account.bare_jid);
+        StreamModule module = stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY);
+        if (module != null) {
+            module.request_user_devicelist.begin(stream, account.bare_jid);
+            module.device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
+            module.bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
+            module.bundle_fetch_failed.connect((jid) => continue_message_sending(account, jid));
+        }
+        initialize_store.begin(account);
     }
 
     private void on_device_list_loaded(Account account, Jid jid, ArrayList<int32> device_list) {
@@ -202,7 +202,7 @@ public class Manager : StreamInteractionModule, Object {
         //Fetch the bundle for each new device
         int inc = 0;
         foreach (Row row in db.identity_meta.get_unknown_devices(identity_id, jid.bare_jid.to_string())) {
-            module.fetch_bundle(stream, Jid.parse(row[db.identity_meta.address_name]), row[db.identity_meta.device_id]);
+            module.fetch_bundle(stream, Jid.parse(row[db.identity_meta.address_name]), row[db.identity_meta.device_id], false);
             inc++;
         }
         if (inc > 0) {
@@ -245,7 +245,7 @@ public class Manager : StreamInteractionModule, Object {
         int identity_id = db.identity.get_id(account.id);
         if (identity_id < 0) return;
 
-        bool blind_trust = db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string());
+        bool blind_trust = db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string(), true);
 
         //If we don't blindly trust new devices and we haven't seen this key before then don't trust it
         bool untrust = !(blind_trust || db.identity_meta.with_address(identity_id, jid.bare_jid.to_string())
@@ -269,30 +269,44 @@ public class Manager : StreamInteractionModule, Object {
         //Update the database with the appropriate trust information
         db.identity_meta.insert_device_bundle(identity_id, jid.bare_jid.to_string(), device_id, bundle, trusted);
 
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if(stream == null) return;
-        StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
-        if(module == null) return;
+        if (should_start_session(account, jid)) {
+            XmppStream? stream = stream_interactor.get_stream(account);
+            if (stream != null) {
+                StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
+                if (module != null) {
+                    module.start_session(stream, jid, device_id, bundle);
+                }
+            }
+        }
+        continue_message_sending(account, jid);
+    }
 
-        //Get all messages waiting on the bundle and determine if they can now be sent
+    private bool should_start_session(Account account, Jid jid) {
+        lock (message_states) {
+            foreach (Entities.Message msg in message_states.keys) {
+                if (!msg.account.equals(account)) continue;
+                Gee.List<Jid> occupants = get_occupants(msg.counterpart.bare_jid, account);
+                if (account.bare_jid.equals(jid) || (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid)))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void continue_message_sending(Account account, Jid jid) {
+        //Get all messages waiting and determine if they can now be sent
         HashSet<Entities.Message> send_now = new HashSet<Entities.Message>();
         lock (message_states) {
             foreach (Entities.Message msg in message_states.keys) {
-
-                bool session_created = true;
                 if (!msg.account.equals(account)) continue;
                 Gee.List<Jid> occupants = get_occupants(msg.counterpart.bare_jid, account);
 
                 MessageState state = message_states[msg];
 
-                if (trusted == TrustLevel.TRUSTED || trusted == TrustLevel.VERIFIED) {
-                    if(account.bare_jid.equals(jid) || (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid)))) {
-                        session_created = module.start_session(stream, jid, device_id, bundle);
-                    }
-                }
-                if (account.bare_jid.equals(jid) && session_created) {
+                if (account.bare_jid.equals(jid)) {
                     state.waiting_own_sessions--;
-                } else if (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid)) && session_created) {
+                } else if (msg.counterpart != null && (msg.counterpart.equals_bare(jid) || occupants.contains(jid))) {
                     state.waiting_other_sessions--;
                 }
                 if (state.should_retry_now()){
@@ -309,12 +323,15 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private async void on_store_created(Account account, Store store) {
+    private async void initialize_store(Account account) {
         // If the account is not yet persisted, wait for that and then continue - without identity.account_id the entry isn't worth much.
         if (account.id == -1) {
-            account.notify["id"].connect(() => on_store_created.callback());
+            account.notify["id"].connect(() => initialize_store.callback());
             yield;
         }
+        StreamModule? module = stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY);
+        if (module == null) return;
+        Store store = module.store;
         Qlite.Row? row = db.identity.row_with(db.identity.account_id, account.id).inner;
         int identity_id = -1;
         bool publish_identity = false;
@@ -354,12 +371,9 @@ public class Manager : StreamInteractionModule, Object {
         }
 
         // Generated new device ID, ensure this gets added to the devicelist
-        if (publish_identity) {
-            XmppStream? stream = stream_interactor.get_stream(account);
-            if (stream == null) return;
-            StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
-            if(module == null) return;
-            module.request_user_devicelist.begin(stream, account.bare_jid);
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) {
+            module.request_user_devicelist.begin((!)stream, account.bare_jid);
         }
     }
 

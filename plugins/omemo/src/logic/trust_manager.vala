@@ -65,6 +65,7 @@ public class TrustManager {
     private StanzaNode create_encrypted_key_node(uint8[] key, Address address, Store store) throws GLib.Error {
         SessionCipher cipher = store.create_session_cipher(address);
         CiphertextMessage device_key = cipher.encrypt(key);
+        debug("Created encrypted key for %s/%d", address.name, address.device_id);
         StanzaNode key_node = new StanzaNode.build("key", NS_URI)
             .put_attribute("rid", address.device_id.to_string())
             .put_node(new StanzaNode.text(Base64.encode(device_key.serialized)));
@@ -181,7 +182,7 @@ public class TrustManager {
     public bool is_known_address(Account account, Jid jid) {
         int identity_id = db.identity.get_id(account.id);
         if (identity_id < 0) return false;
-        return db.identity_meta.with_address(identity_id, jid.to_string()).count() > 0;
+        return db.identity_meta.with_address(identity_id, jid.to_string()).with(db.identity_meta.last_active, ">", 0).count() > 0;
     }
 
     public Gee.List<int32> get_trusted_devices(Account account, Jid jid) {
@@ -261,7 +262,8 @@ public class TrustManager {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            Store store = stream_interactor.module_manager.get_module(conversation.account, StreamModule.IDENTITY).store;
+            StreamModule module = stream_interactor.module_manager.get_module(conversation.account, StreamModule.IDENTITY);
+            Store store = module.store;
 
             StanzaNode? _encrypted = stanza.stanza.get_subnode("encrypted", NS_URI);
             if (_encrypted == null || MessageFlag.get_flag(stanza) != null || stanza.from == null) return false;
@@ -270,6 +272,7 @@ public class TrustManager {
                 message.body = "[This message is OMEMO encrypted]"; // TODO temporary
             };
             if (!Plugin.ensure_context()) return false;
+            int identity_id = db.identity.get_id(conversation.account.id);
             MessageFlag flag = new MessageFlag();
             stanza.add_flag(flag);
             StanzaNode? _header = encrypted.get_subnode("header");
@@ -278,6 +281,7 @@ public class TrustManager {
             int sid = header.get_attribute_int("sid");
             if (sid <= 0) return false;
             foreach (StanzaNode key_node in header.get_subnodes("key")) {
+                debug("Is ours? %d =? %u", key_node.get_attribute_int("rid"), store.local_registration_id);
                 if (key_node.get_attribute_int("rid") == store.local_registration_id) {
 
                     string? payload = encrypted.get_deep_string_content("payload");
@@ -289,27 +293,63 @@ public class TrustManager {
                     uint8[] iv = Base64.decode((!)iv_node);
                     Gee.List<Jid> possible_jids = new ArrayList<Jid>();
                     if (conversation.type_ == Conversation.Type.CHAT) {
-                        possible_jids.add(stanza.from);
+                        possible_jids.add(stanza.from.bare_jid);
                     } else {
                         Jid? real_jid = message.real_jid;
                         if (real_jid != null) {
-                            possible_jids.add(real_jid);
+                            possible_jids.add(real_jid.bare_jid);
+                        } else if (key_node.get_attribute_bool("prekey")) {
+                            // pre key messages do store the identity key, so we can use that to find the real jid
+                            PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
+                            string identity_key = Base64.encode(msg.identity_key.serialize());
+                            foreach (Row row in db.identity_meta.get_with_device_id(identity_id, sid).with(db.identity_meta.identity_key_public_base64, "=", identity_key)) {
+                                possible_jids.add(new Jid(row[db.identity_meta.address_name]));
+                            }
+                            if (possible_jids.size != 1) {
+                                continue;
+                            }
                         } else {
                             // If we don't know the device name (MUC history w/o MAM), test decryption with all keys with fitting device id
-                            foreach (Row row in db.identity_meta.get_with_device_id(sid)) {
+                            foreach (Row row in db.identity_meta.get_with_device_id(identity_id, sid)) {
                                 possible_jids.add(new Jid(row[db.identity_meta.address_name]));
                             }
                         }
                     }
 
+                    if (possible_jids.size == 0) {
+                        debug("Received message from unknown entity with device id %d", sid);
+                    }
+
                     foreach (Jid possible_jid in possible_jids) {
                         try {
-                            Address address = new Address(possible_jid.bare_jid.to_string(), header.get_attribute_int("sid"));
+                            Address address = new Address(possible_jid.to_string(), sid);
                             if (key_node.get_attribute_bool("prekey")) {
+                                Row? device = db.identity_meta.get_device(identity_id, possible_jid.to_string(), sid);
                                 PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
+                                string identity_key = Base64.encode(msg.identity_key.serialize());
+                                if (device != null && device[db.identity_meta.identity_key_public_base64] != null) {
+                                    if (device[db.identity_meta.identity_key_public_base64] != identity_key) {
+                                        critical("Tried to use a different identity key for a known device id.");
+                                        continue;
+                                    }
+                                } else {
+                                    debug("Learn new device from incoming message from %s/%d", possible_jid.to_string(), sid);
+                                    bool blind_trust = db.trust.get_blind_trust(identity_id, possible_jid.to_string(), true);
+                                    if (db.identity_meta.insert_device_session(identity_id, possible_jid.to_string(), sid, identity_key, blind_trust ? TrustLevel.TRUSTED : TrustLevel.UNKNOWN) < 0) {
+                                        critical("Failed learning a device.");
+                                        continue;
+                                    }
+                                    XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                                    if (device == null && stream != null) {
+                                        module.request_user_devicelist.begin(stream, possible_jid);
+                                    }
+                                }
+                                debug("Starting new session for decryption with device from %s/%d", possible_jid.to_string(), sid);
                                 SessionCipher cipher = store.create_session_cipher(address);
                                 key = cipher.decrypt_pre_key_signal_message(msg);
+                                // TODO: Finish session
                             } else {
+                                debug("Continuing session for decryption with device from %s/%d", possible_jid.to_string(), sid);
                                 SignalMessage msg = Plugin.get_context().deserialize_signal_message(Base64.decode((!)key_node_content));
                                 SessionCipher cipher = store.create_session_cipher(address);
                                 key = cipher.decrypt_signal_message(msg);
@@ -332,6 +372,7 @@ public class TrustManager {
                             message.encryption = Encryption.OMEMO;
                             flag.decrypted = true;
                         } catch (Error e) {
+                            debug("Decrypting message from %s/%d failed: %s", possible_jid.to_string(), sid, e.message);
                             continue;
                         }
 
@@ -339,10 +380,11 @@ public class TrustManager {
                         if (conversation.type_ == Conversation.Type.GROUPCHAT && message.real_jid == null) {
                             message.real_jid = possible_jid;
                         }
-                        break;
+                        return false;
                     }
                 }
             }
+            debug("Received OMEMO encryped message that could not be decrypted.");
             return false;
         }
 

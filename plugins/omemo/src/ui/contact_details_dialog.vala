@@ -16,6 +16,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private Jid jid;
     private bool own = false;
     private int own_id = 0;
+    private int identity_id = 0;
+    private Signal.Store store;
+    private Set<uint32> displayed_ids = new HashSet<uint32>();
 
     [GtkChild] private Label automatically_accept_new_label;
     [GtkChild] private Label automatically_accept_new_descr;
@@ -63,10 +66,14 @@ public class ContactDetailsDialog : Gtk.Dialog {
         inactive_keys_listbox.row_activated.connect(on_key_entry_clicked);
         auto_accept_switch.state_set.connect(on_auto_accept_toggled);
 
-        int identity_id = plugin.db.identity.get_id(account.id);
+        identity_id = plugin.db.identity.get_id(account.id);
         if (identity_id < 0) return;
+        Dino.Application? app = Application.get_default() as Dino.Application;
+        if (app != null) {
+            store = app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store;
+        }
 
-        auto_accept_switch.set_active(plugin.db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string()));
+        auto_accept_switch.set_active(plugin.db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string(), true));
 
         // Dialog opened from the account settings menu
         // Show the fingerprint for this device separately with buttons for a qrcode and to copy
@@ -118,6 +125,31 @@ public class ContactDetailsDialog : Gtk.Dialog {
             }
             add_fingerprint(device, (TrustLevel) device[plugin.db.identity_meta.trust_level]);
         }
+
+        // Check for unknown devices
+        fetch_unknown_bundles();
+    }
+
+    private void fetch_unknown_bundles() {
+        Dino.Application app = Application.get_default() as Dino.Application;
+        XmppStream? stream = app.stream_interactor.get_stream(account);
+        if (stream == null) return;
+        StreamModule? module = stream.get_module(StreamModule.IDENTITY);
+        if (module == null) return;
+        module.bundle_fetched.connect_after((bundle_jid, device_id, bundle) => {
+            if (bundle_jid.equals(jid) && !displayed_ids.contains(device_id)) {
+                Row? device = plugin.db.identity_meta.get_device(identity_id, jid.to_string(), device_id);
+                if (device == null) return;
+                if (auto_accept_switch.active) {
+                    add_fingerprint(device, (TrustLevel) device[plugin.db.identity_meta.trust_level]);
+                } else {
+                    add_new_fingerprint(device);
+                }
+            }
+        });
+        foreach (Row device in plugin.db.identity_meta.get_unknown_devices(identity_id, jid.to_string())) {
+            module.fetch_bundle(stream, Jid.parse(device[plugin.db.identity_meta.address_name]), device[plugin.db.identity_meta.device_id], false);
+        }
     }
 
     private void header_function(ListBoxRow row, ListBoxRow? before) {
@@ -129,6 +161,22 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private void add_fingerprint(Row device, TrustLevel trust) {
         string key_base64 = device[plugin.db.identity_meta.identity_key_public_base64];
         bool key_active = device[plugin.db.identity_meta.now_active];
+        if (store != null) {
+            try {
+                Signal.Address address = new Signal.Address(jid.to_string(), device[plugin.db.identity_meta.device_id]);
+                Signal.SessionRecord? session = null;
+                if (store.contains_session(address)) {
+                    session = store.load_session(address);
+                    string session_key_base64 = Base64.encode(session.state.remote_identity_key.serialize());
+                    if (key_base64 != session_key_base64) {
+                        critical("Session and database identity key mismatch!");
+                        key_base64 = session_key_base64;
+                    }
+                }
+            } catch (Error e) {
+                print("Error while reading session store: %s", e.message);
+            }
+        }
         FingerprintRow fingerprint_row = new FingerprintRow(device, key_base64, trust, key_active) { visible = true, activatable = true, hexpand = true };
 
         if (device[plugin.db.identity_meta.now_active]) {
@@ -138,6 +186,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             inactive_keys_expander.visible=true;
             inactive_keys_listbox.add(fingerprint_row);
         }
+        displayed_ids.add(device[plugin.db.identity_meta.device_id]);
     }
 
     private void on_key_entry_clicked(ListBoxRow widget) {
@@ -228,6 +277,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         lbr.add(box);
         new_keys_listbox.add(lbr);
+        displayed_ids.add(device[plugin.db.identity_meta.device_id]);
     }
 }
 
