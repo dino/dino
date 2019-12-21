@@ -7,8 +7,6 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_list_titlebar_csd.ui")]
 public class ConversationListTitlebarCsd : Gtk.HeaderBar {
 
-    public signal void conversation_opened(Conversation conversation);
-
     [GtkChild] private MenuButton add_button;
     [GtkChild] private MenuButton menu_button;
 

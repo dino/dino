@@ -7,7 +7,7 @@ using Xmpp;
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private Notifications notifications;
     private UnifiedWindow window;
-    private UnifiedWindowController controller;
+    public UnifiedWindowController controller;
 
     public Database db { get; set; }
     public Dino.Entities.Settings settings { get; set; }
@@ -41,7 +41,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.delete_event.connect(window.hide_on_delete);
 
-                notifications.conversation_selected.connect((conversation) => window.on_conversation_selected(conversation));
+                notifications.conversation_selected.connect((conversation) => controller.select_conversation(conversation));
             }
             window.present();
         });
@@ -57,13 +57,13 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 if (accounts.size == 1) {
                     Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(new Jid(jid), accounts[0], Conversation.Type.CHAT);
                     stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
-                    window.on_conversation_selected(conversation);
+                    controller.select_conversation(conversation);
                 } else {
                     AddChatDialog dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
                     dialog.set_filter(jid);
                     dialog.set_transient_for(window);
                     dialog.added.connect((conversation) => {
-                        window.on_conversation_selected(conversation);
+                        controller.select_conversation(conversation);
                     });
                     dialog.present();
                 }
@@ -92,7 +92,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction open_conversation_action = new SimpleAction("open-conversation", VariantType.INT32);
         open_conversation_action.activate.connect((variant) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
-            if (conversation != null) window.on_conversation_selected(conversation);
+            if (conversation != null) controller.select_conversation(conversation);
             window.present();
         });
         add_action(open_conversation_action);
@@ -109,9 +109,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         contacts_action.activate.connect(() => {
             AddChatDialog add_chat_dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
             add_chat_dialog.set_transient_for(window);
-            add_chat_dialog.added.connect((conversation) => {
-                window.on_conversation_selected(conversation);
-            });
+            add_chat_dialog.added.connect((conversation) => controller.select_conversation(conversation));
             add_chat_dialog.present();
         });
         add_action(contacts_action);
@@ -121,7 +119,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         conference_action.activate.connect(() => {
             AddConferenceDialog add_conference_dialog = new AddConferenceDialog(stream_interactor);
             add_conference_dialog.set_transient_for(window);
-            add_conference_dialog.conversation_opened.connect(conversation => controller.select_conversation(conversation));
             add_conference_dialog.present();
         });
         add_action(conference_action);

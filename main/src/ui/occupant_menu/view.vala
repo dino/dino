@@ -107,6 +107,9 @@ public class View : Popover {
 
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(list_row.jid, list_row.conversation.account, Conversation.Type.GROUPCHAT_PM);
         stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+
+        Application app = GLib.Application.get_default() as Application;
+        app.controller.select_conversation(conversation);
     }
 
     private void kick_button_clicked() {

@@ -9,8 +9,6 @@ namespace Dino.Ui {
 
 public class AddConferenceDialog : Gtk.Dialog {
 
-    public signal void conversation_opened(Conversation conversation);
-
     private Stack stack = new Stack();
     private Button cancel_button;
     private Button ok_button;

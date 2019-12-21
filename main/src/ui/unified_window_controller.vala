@@ -136,7 +136,7 @@ public class UnifiedWindowController : Object {
 
         stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
         conversation.active = true; // only for conversation_selected
-        window.conversation_selector.on_conversation_selected(conversation); // only for conversation_opened
+        window.conversation_selector.on_conversation_selected(conversation); // In case selection was not via ConversationSelector
 
         if (do_reset_search) {
             reset_search_entry();

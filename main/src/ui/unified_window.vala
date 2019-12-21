@@ -36,7 +36,6 @@ public class UnifiedWindow : Gtk.Window {
     private Stack right_stack;
 
     private StreamInteractor stream_interactor;
-    private Conversation? conversation;
     private Database db;
     private Config config;
 
@@ -65,13 +64,6 @@ public class UnifiedWindow : Gtk.Window {
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => check_stack());
 
         check_stack();
-    }
-
-    public void on_conversation_selected(Conversation conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
-        if (this.conversation == null || !this.conversation.equals(conversation)) {
-            this.conversation = conversation;
-            conversation_selected(conversation);
-        }
     }
 
     private void setup_unified() {
