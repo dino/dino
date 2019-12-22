@@ -218,13 +218,12 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
 
         while (iq != null) {
-            debug("MAM: [%s] IN: %s", account.bare_jid.to_string(), iq.stanza.to_string());
             string? earliest_id = iq.stanza.get_deep_string_content("urn:xmpp:mam:2:fin", "http://jabber.org/protocol/rsm" + ":set", "first");
             if (earliest_id == null) return true;
 
             if (!mam_times[account].has_key(earliest_id)) error("wtf");
 
-            debug("MAM: [%s] Update from_id %s\n", account.bare_jid.to_string(), earliest_id);
+            debug("MAM: [%s] Update from_id %s", account.bare_jid.to_string(), earliest_id);
             if (!current_catchup_id.has_key(account)) {
                 debug("MAM: [%s] We get our first MAM page", account.bare_jid.to_string());
                 string? latest_id = iq.stanza.get_deep_string_content("urn:xmpp:mam:2:fin", "http://jabber.org/protocol/rsm" + ":set", "last");

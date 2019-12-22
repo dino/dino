@@ -60,8 +60,6 @@ public class Module : XmppStreamModule {
         query_node.put_node(create_set_rsm_node(end_id));
         Iq.Stanza iq = new Iq.Stanza.set(query_node);
 
-        debug(@"OUT INIT: %s", iq.stanza.to_string());
-
         Iq.Stanza? result_iq = null;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
             result_iq = iq;

@@ -81,7 +81,7 @@ public class XmppStream {
         if (writer == null || reader == null || stream == null) {
             throw new IOStreamError.DISCONNECT("trying to disconnect, but no stream open");
         }
-        log.str("OUT", "</stream:stream>");
+        log.str("OUT", "</stream:stream>", this);
         yield writer.write("</stream:stream>");
         reader.cancel();
         yield stream.close_async();
@@ -107,22 +107,25 @@ public class XmppStream {
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
             StanzaNode node = yield ((!)reader).read_node();
-            log.node("IN", node);
+            log.node("IN", node, this);
             return node;
         } catch (XmlError e) {
             throw new IOStreamError.READ(e.message);
         }
     }
 
+    [Version (deprecated = true, deprecated_since = "0.1", replacement = "write_async")]
     public void write(StanzaNode node) {
-        write_async.begin(node);
+        write_async.begin(node, (obj, res) => {
+            write_async.end(res);
+        });
     }
 
     public async void write_async(StanzaNode node) throws IOStreamError {
         StanzaWriter? writer = this.writer;
         if (writer == null) throw new IOStreamError.WRITE("trying to write, but no stream open");
         try {
-            log.node("OUT", node);
+            log.node("OUT", node, this);
             yield ((!)writer).write_node(node);
         } catch (XmlError e) {
             throw new IOStreamError.WRITE(e.message);
@@ -201,7 +204,7 @@ public class XmppStream {
                             .put_attribute("xmlns", "jabber:client")
                             .put_attribute("stream", "http://etherx.jabber.org/streams", XMLNS_URI);
         outs.has_nodes = true;
-        log.node("OUT ROOT", outs);
+        log.node("OUT ROOT", outs, this);
         write(outs);
         received_root_node(this, yield read_root());
     }
@@ -293,7 +296,7 @@ public class XmppStream {
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
             StanzaNode node = yield ((!)reader).read_root_node();
-            log.node("IN ROOT", node);
+            log.node("IN ROOT", node, this);
             return node;
         } catch (XmlError.TLS e) {
             throw new IOStreamError.TLS(e.message);
