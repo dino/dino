@@ -66,19 +66,28 @@ public class Module : BookmarksProvider, XmppStreamModule {
     }
 
     private void on_pupsub_retract(XmppStream stream, Jid jid, string id) {
-        Jid jid_parsed = Jid.parse(id);
-        Flag? flag = stream.get_flag(Flag.IDENTITY);
-        if (flag != null) {
-            flag.conferences.unset(jid_parsed);
+        try {
+            Jid jid_parsed = new Jid(id);
+            Flag? flag = stream.get_flag(Flag.IDENTITY);
+            if (flag != null) {
+                flag.conferences.unset(jid_parsed);
+            }
+            conference_removed(stream, jid_parsed);
+        } catch (InvalidJidError e) {
+            warning("Ignoring conference bookmark update with invalid Jid: %s", e.message);
         }
-        conference_removed(stream, jid_parsed);
     }
 
     private Conference? parse_item_node(StanzaNode conference_node, string id) {
         Conference conference = new Conference();
-        Jid? jid_parsed = Jid.parse(id);
-        if (jid_parsed == null || jid_parsed.resourcepart != null) return null;
-        conference.jid = jid_parsed;
+        try {
+            Jid jid_parsed = new Jid(id);
+            if (jid_parsed.resourcepart != null) return null;
+            conference.jid = jid_parsed;
+        } catch (InvalidJidError e) {
+            warning("Ignoring conference bookmark update with invalid Jid: %s", e.message);
+            return null;
+        }
 
         if (conference_node.name != "conference" || conference_node.ns_uri != NS_URI) return null;
 

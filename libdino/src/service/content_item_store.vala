@@ -49,19 +49,29 @@ public class ContentItemStore : StreamInteractionModule, Object {
                 case 1:
                     RowOption row_option = db.message.select().with(db.message.id, "=", foreign_id).row();
                     if (row_option.is_present()) {
-                        Message message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
+                        Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
                         if (message == null) {
-                            message = new Message.from_row(db, row_option.inner);
+                            try {
+                                message = new Message.from_row(db, row_option.inner);
+                            } catch (InvalidJidError e) {
+                                warning("Ignoring message with invalid Jid: %s", e.message);
+                            }
                         }
-                        items.add(new MessageItem(message, conversation, row[db.content_item.id]));
+                        if (message != null) {
+                            items.add(new MessageItem(message, conversation, row[db.content_item.id]));
+                        }
                     }
                     break;
                 case 2:
                     RowOption row_option = db.file_transfer.select().with(db.file_transfer.id, "=", foreign_id).row();
                     if (row_option.is_present()) {
-                        string storage_dir = FileManager.get_storage_dir();
-                        FileTransfer file_transfer = new FileTransfer.from_row(db, row_option.inner, storage_dir);
-                        items.add(new FileItem(file_transfer, row[db.content_item.id]));
+                        try {
+                            string storage_dir = FileManager.get_storage_dir();
+                            FileTransfer file_transfer = new FileTransfer.from_row(db, row_option.inner, storage_dir);
+                            items.add(new FileItem(file_transfer, row[db.content_item.id]));
+                        } catch (InvalidJidError e) {
+                            warning("Ignoring file transfer with invalid Jid: %s", e.message);
+                        }
                     }
                     break;
             }
@@ -256,7 +266,7 @@ public class FileItem : ContentItem {
     public Conversation conversation;
 
     public FileItem(FileTransfer file_transfer, int id) {
-        Jid jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? file_transfer.account.bare_jid.with_resource(file_transfer.account.resourcepart) : file_transfer.counterpart;
+        Jid jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? file_transfer.account.full_jid : file_transfer.counterpart;
         Entities.Message.Marked mark = Entities.Message.Marked.NONE;
         if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
             mark = file_to_message_state(file_transfer.state);

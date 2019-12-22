@@ -63,7 +63,7 @@ public class FileTransfer : Object {
     private Database? db;
     private string storage_dir;
 
-    public FileTransfer.from_row(Database db, Qlite.Row row, string storage_dir) {
+    public FileTransfer.from_row(Database db, Qlite.Row row, string storage_dir) throws InvalidJidError {
         this.db = db;
         this.storage_dir = storage_dir;
 

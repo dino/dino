@@ -47,7 +47,7 @@ public class Conversation : Object {
         this.type_ = type;
     }
 
-    public Conversation.from_row(Database db, Qlite.Row row) {
+    public Conversation.from_row(Database db, Qlite.Row row) throws InvalidJidError {
         this.db = db;
 
         id = row[db.conversation.id];

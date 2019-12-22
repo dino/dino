@@ -148,7 +148,11 @@ public class ContactDetailsDialog : Gtk.Dialog {
             }
         });
         foreach (Row device in plugin.db.identity_meta.get_unknown_devices(identity_id, jid.to_string())) {
-            module.fetch_bundle(stream, Jid.parse(device[plugin.db.identity_meta.address_name]), device[plugin.db.identity_meta.device_id], false);
+            try {
+                module.fetch_bundle(stream, new Jid(device[plugin.db.identity_meta.address_name]), device[plugin.db.identity_meta.device_id], false);
+            } catch (InvalidJidError e) {
+                warning("Ignoring device with invalid Jid: %s", e.message);
+            }
         }
     }
 

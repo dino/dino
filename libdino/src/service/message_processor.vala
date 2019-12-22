@@ -534,7 +534,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             message.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
             message.real_jid = conversation.account.bare_jid;
         } else {
-            message.ourpart = conversation.account.bare_jid.with_resource(conversation.account.resourcepart);
+            message.ourpart = conversation.account.full_jid;
         }
         message.marked = Entities.Message.Marked.UNSENT;
         message.encryption = conversation.encryption;

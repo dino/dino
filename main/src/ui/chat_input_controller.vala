@@ -108,7 +108,11 @@ public class ChatInputController : Object {
                     return;
                 case "/ping":
                     Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
-                    stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.with_resource(token[1]), null);
+                    try {
+                        stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.with_resource(token[1]), null);
+                    } catch (Xmpp.InvalidJidError e) {
+                        warning("Could not ping invalid Jid: %s", e.message);
+                    }
                     return;
                 case "/topic":
                     stream_interactor.get_module(MucManager.IDENTITY).change_subject(conversation.account, conversation.counterpart, token[1]);

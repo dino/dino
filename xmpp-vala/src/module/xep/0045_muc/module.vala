@@ -82,41 +82,50 @@ public class Module : XmppStreamModule {
     }
 
     public async JoinResult? enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since) {
-        Presence.Stanza presence = new Presence.Stanza();
-        presence.to = bare_jid.with_resource(nick);
-        StanzaNode x_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
-        if (password != null) {
-            x_node.put_node(new StanzaNode.build("password", NS_URI).put_node(new StanzaNode.text(password)));
-        }
-        if (history_since != null) {
-            StanzaNode history_node = new StanzaNode.build("history", NS_URI);
-            history_node.set_attribute("since", DateTimeProfiles.to_datetime(history_since));
-            x_node.put_node(history_node);
-        }
-        presence.stanza.put_node(x_node);
-
-        stream.get_flag(Flag.IDENTITY).start_muc_enter(bare_jid, presence.id);
-
-        query_room_info(stream, bare_jid);
-        stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
-
-        var promise = new Promise<JoinResult?>();
-        stream.get_flag(Flag.IDENTITY).enter_futures[bare_jid] = promise;
         try {
-            JoinResult? enter_result = yield promise.future.wait_async();
-            stream.get_flag(Flag.IDENTITY).enter_futures.unset(bare_jid);
-            return enter_result;
-        } catch (Gee.FutureError e) {
-            return null;
+            Presence.Stanza presence = new Presence.Stanza();
+            presence.to = bare_jid.with_resource(nick);
+
+            StanzaNode x_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
+            if (password != null) {
+                x_node.put_node(new StanzaNode.build("password", NS_URI).put_node(new StanzaNode.text(password)));
+            }
+            if (history_since != null) {
+                StanzaNode history_node = new StanzaNode.build("history", NS_URI);
+                history_node.set_attribute("since", DateTimeProfiles.to_datetime(history_since));
+                x_node.put_node(history_node);
+            }
+            presence.stanza.put_node(x_node);
+
+            stream.get_flag(Flag.IDENTITY).start_muc_enter(bare_jid, presence.id);
+
+            query_room_info(stream, bare_jid);
+            stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
+
+            var promise = new Promise<JoinResult?>();
+            stream.get_flag(Flag.IDENTITY).enter_futures[bare_jid] = promise;
+            try {
+                JoinResult? enter_result = yield promise.future.wait_async();
+                stream.get_flag(Flag.IDENTITY).enter_futures.unset(bare_jid);
+                return enter_result;
+            } catch (Gee.FutureError e) {
+                return null;
+            }
+        } catch (InvalidJidError e) {
+            return new JoinResult() { muc_error = MucEnterError.NICK_CONFLICT };
         }
     }
 
     public void exit(XmppStream stream, Jid jid) {
-        string nick = stream.get_flag(Flag.IDENTITY).get_muc_nick(jid);
-        Presence.Stanza presence = new Presence.Stanza();
-        presence.to = jid.with_resource(nick);
-        presence.type_ = Presence.Stanza.TYPE_UNAVAILABLE;
-        stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
+        try {
+            string nick = stream.get_flag(Flag.IDENTITY).get_muc_nick(jid);
+            Presence.Stanza presence = new Presence.Stanza();
+            presence.to = jid.with_resource(nick);
+            presence.type_ = Presence.Stanza.TYPE_UNAVAILABLE;
+            stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
+        } catch (InvalidJidError e) {
+            warning("Tried to leave room with invalid nick: %s", e.message);
+        }
     }
 
     public void change_subject(XmppStream stream, Jid jid, string subject) {
@@ -128,9 +137,14 @@ public class Module : XmppStreamModule {
     }
 
     public void change_nick(XmppStream stream, Jid jid, string new_nick) {
-        Presence.Stanza presence = new Presence.Stanza();
-        presence.to = jid.with_resource(new_nick);
-        stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
+        // TODO: Return if successful
+        try {
+            Presence.Stanza presence = new Presence.Stanza();
+            presence.to = jid.with_resource(new_nick);
+            stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
+        } catch (InvalidJidError e) {
+            warning("Tried to change nick to invalid nick: %s", e.message);
+        }
     }
 
     public void invite(XmppStream stream, Jid to_muc, Jid jid) {
@@ -148,20 +162,25 @@ public class Module : XmppStreamModule {
 
     /* XEP 0046: "A user cannot be kicked by a moderator with a lower affiliation." (XEP 0045 8.2) */
     public bool kick_possible(XmppStream stream, Jid occupant) {
-        Jid muc_jid = occupant.bare_jid;
-        Flag flag = stream.get_flag(Flag.IDENTITY);
-        string own_nick = flag.get_muc_nick(muc_jid);
-        Affiliation my_affiliation = flag.get_affiliation(muc_jid, muc_jid.with_resource(own_nick));
-        Affiliation other_affiliation = flag.get_affiliation(muc_jid, occupant);
-        switch (my_affiliation) {
-            case Affiliation.MEMBER:
-                if (other_affiliation == Affiliation.ADMIN || other_affiliation == Affiliation.OWNER) return false;
-                break;
-            case Affiliation.ADMIN:
-                if (other_affiliation == Affiliation.OWNER) return false;
-                break;
+        try {
+            Jid muc_jid = occupant.bare_jid;
+            Flag flag = stream.get_flag(Flag.IDENTITY);
+            string own_nick = flag.get_muc_nick(muc_jid);
+            Affiliation my_affiliation = flag.get_affiliation(muc_jid, muc_jid.with_resource(own_nick));
+            Affiliation other_affiliation = flag.get_affiliation(muc_jid, occupant);
+            switch (my_affiliation) {
+                case Affiliation.MEMBER:
+                    if (other_affiliation == Affiliation.ADMIN || other_affiliation == Affiliation.OWNER) return false;
+                    break;
+                case Affiliation.ADMIN:
+                    if (other_affiliation == Affiliation.OWNER) return false;
+                    break;
+            }
+            return true;
+        } catch (InvalidJidError e) {
+            warning("Tried to kick with invalid nick: %s", e.message);
+            return false;
         }
-        return true;
     }
 
     public void change_role(XmppStream stream, Jid jid, string nick, string new_role) {
@@ -314,12 +333,16 @@ public class Module : XmppStreamModule {
                 }
                 string? jid_ = x_node.get_deep_attribute("item", "jid");
                 if (jid_ != null) {
-                    Jid? jid = Jid.parse(jid_);
-                    flag.set_real_jid(presence.from, jid);
-                    if (affiliation != null) {
-                        stream.get_flag(Flag.IDENTITY).set_offline_member(presence.from, jid, affiliation);
+                    try {
+                        Jid jid = new Jid(jid_);
+                        flag.set_real_jid(presence.from, jid);
+                        if (affiliation != null) {
+                            stream.get_flag(Flag.IDENTITY).set_offline_member(presence.from, jid, affiliation);
+                        }
+                        received_occupant_jid(stream, presence.from, jid);
+                    } catch (InvalidJidError e) {
+                        warning("Received invalid occupant jid: %s", e.message);
                     }
-                    received_occupant_jid(stream, presence.from, jid);
                 }
                 string? role_str = x_node.get_deep_attribute("item", "role");
                 if (role_str != null) {
@@ -414,12 +437,17 @@ public class Module : XmppStreamModule {
             Gee.List<StanzaNode> item_nodes = query_node.get_subnodes("item", NS_URI_ADMIN);
             Gee.List<Jid> ret_jids = new ArrayList<Jid>(Jid.equals_func);
             foreach (StanzaNode item in item_nodes) {
-                Jid? jid_ = Jid.parse(item.get_attribute("jid"));
+                string jid__ = item.get_attribute("jid");
                 string? affiliation_ = item.get_attribute("affiliation");
-                if (jid_ != null && affiliation_ != null) {
-                    stream.get_flag(Flag.IDENTITY).set_offline_member(iq.from, jid_, parse_affiliation(affiliation_));
-                    ret_jids.add(jid_);
-                    received_occupant_jid(stream, iq.from, jid_);
+                if (jid__ != null && affiliation_ != null) {
+                    try {
+                        Jid jid_ = new Jid(jid__);
+                        stream.get_flag(Flag.IDENTITY).set_offline_member(iq.from, jid_, parse_affiliation(affiliation_));
+                        ret_jids.add(jid_);
+                        received_occupant_jid(stream, iq.from, jid_);
+                    } catch (InvalidJidError e) {
+                        warning("Received invalid occupant jid: %s", e.message);
+                    }
                 }
             }
             if (listener != null) listener(stream, ret_jids);
@@ -489,13 +517,19 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 StanzaNode? password_node = x_node.get_subnode("password", NS_URI_USER);
                 if (password_node != null) password = password_node.get_string_content();
                 if (invite_node != null) {
-                    string? from_jid = invite_node.get_attribute("from");
+                    Jid? from_jid = null;
+                    try {
+                        string from = invite_node.get_attribute("from");
+                        if (from != null) from_jid = new Jid(from);
+                    } catch (InvalidJidError e) {
+                        warning("Received invite from invalid jid: %s", e.message);
+                    }
                     if (from_jid != null) {
                         StanzaNode? reason_node = invite_node.get_subnode("reason", NS_URI_USER);
                         string? reason = null;
                         if (reason_node != null) reason = reason_node.get_string_content();
                         bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message) != null; // TODO
-                        if (!is_mam_message) outer.invite_received(stream, message.from, new Jid(from_jid), password, reason);
+                        if (!is_mam_message) outer.invite_received(stream, message.from, from_jid, password, reason);
                         return true;
                     }
                 }

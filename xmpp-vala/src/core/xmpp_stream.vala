@@ -44,7 +44,11 @@ public class XmppStream {
     }
 
     public async void connect(string? remote_name = null) throws IOStreamError {
-        if (remote_name != null) this.remote_name = Jid.parse(remote_name);
+        try {
+            if (remote_name != null) this.remote_name = new Jid(remote_name);
+        } catch (InvalidJidError e) {
+            throw new IOStreamError.CONNECT(@"Invalid remote name \"$remote_name\": $(e.message)");
+        }
         attach_negotation_modules();
         try {
             int min_priority = -1;

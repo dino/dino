@@ -6,10 +6,11 @@ namespace Dino.Entities {
 public class Account : Object {
 
     public int id { get; set; }
-    public string localpart { get { return bare_jid.localpart; } }
-    public string domainpart { get { return bare_jid.domainpart; } }
-    public string resourcepart { get; set; }
-    public Jid bare_jid { get; private set; }
+    public string localpart { get { return full_jid.localpart; } }
+    public string domainpart { get { return full_jid.domainpart; } }
+    public string resourcepart { get { return full_jid.resourcepart;} }
+    public Jid bare_jid { owned get { return full_jid.bare_jid; } }
+    public Jid full_jid { get; private set; }
     public string? password { get; set; }
     public string display_name {
         owned get { return alias ?? bare_jid.to_string(); }
@@ -23,17 +24,28 @@ public class Account : Object {
 
     public Account(Jid bare_jid, string? resourcepart, string? password, string? alias) {
         this.id = -1;
-        this.resourcepart = resourcepart ?? "dino." + Random.next_int().to_string("%x");
-        this.bare_jid = bare_jid;
+        if (resourcepart != null) {
+            try {
+                this.full_jid = bare_jid.with_resource(resourcepart);
+            } catch (InvalidJidError e) {
+                warning("Tried to create account with invalid resource (%s), defaulting to auto generated", e.message);
+            }
+        }
+        if (this.full_jid == null) {
+            try {
+                this.full_jid = bare_jid.with_resource("dino." + Random.next_int().to_string("%x"));
+            } catch (InvalidJidError e) {
+                error("Auto-generated resource was invalid (%s)", e.message);
+            }
+        }
         this.password = password;
         this.alias = alias;
     }
 
-    public Account.from_row(Database db, Qlite.Row row) {
+    public Account.from_row(Database db, Qlite.Row row) throws InvalidJidError {
         this.db = db;
         id = row[db.account.id];
-        resourcepart = row[db.account.resourcepart];
-        bare_jid = new Jid(row[db.account.bare_jid]);
+        full_jid = new Jid(row[db.account.bare_jid]).with_resource(row[db.account.resourcepart]);
         password = row[db.account.password];
         alias = row[db.account.alias];
         enabled = row[db.account.enabled];

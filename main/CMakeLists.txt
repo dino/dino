@@ -5,11 +5,11 @@ gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TAR
 
 find_packages(MAIN_PACKAGES REQUIRED
     Gee
-    GLib>=2.38
+    GLib
     GModule
     GObject
-    GTK3>=3.22
-    ICU>=57
+    GTK3
+    ICU
 )
 
 set(RESOURCE_LIST

@@ -73,6 +73,7 @@ public class AddAccountDialog : Gtk.Dialog {
     private Database db;
     private HashMap<ListBoxRow, string> list_box_jids = new HashMap<ListBoxRow, string>();
     private Jid? server_jid = null;
+    private Jid? login_jid = null;
     private Xep.InBandRegistration.Form? form = null;
 
     public AddAccountDialog(StreamInteractor stream_interactor, Database db) {
@@ -97,8 +98,12 @@ public class AddAccountDialog : Gtk.Dialog {
 
         // Select Server
         server_entry.changed.connect(() => {
-            Jid? jid = Jid.parse(server_entry.text);
-            select_server_continue.sensitive = jid != null && jid.localpart == null && jid.resourcepart == null;
+            try {
+                Jid jid = new Jid(server_entry.text);
+                select_server_continue.sensitive = jid != null && jid.localpart == null && jid.resourcepart == null;
+            } catch (InvalidJidError e) {
+                select_server_continue.sensitive = false;
+            }
         });
         select_server_continue.clicked.connect(on_select_server_continue);
         login_button.clicked.connect(show_sign_in_jid);
@@ -131,6 +136,7 @@ public class AddAccountDialog : Gtk.Dialog {
         set_default(sign_in_jid_continue_button);
 
         sign_in_jid_error_label.label = "";
+        jid_entry.sensitive = true;
         animate_window_resize(sign_in_jid_box);
     }
 
@@ -155,7 +161,7 @@ public class AddAccountDialog : Gtk.Dialog {
         set_default(sign_in_password_continue_button);
 
         sign_in_password_error_label.label = "";
-        sign_in_password_title.label = _("Sign in to %s").printf(jid_entry.text);
+        sign_in_password_title.label = _("Sign in to %s").printf(login_jid.to_string());
         animate_window_resize(sign_in_password_box);
     }
 
@@ -205,46 +211,60 @@ public class AddAccountDialog : Gtk.Dialog {
     }
 
     private void on_jid_entry_changed() {
-        Jid? jid = Jid.parse(jid_entry.text);
-        if (jid != null && jid.localpart != null && jid.resourcepart == null) {
-            sign_in_jid_continue_button.set_sensitive(true);
-            jid_entry.secondary_icon_name = null;
-        } else {
-            sign_in_jid_continue_button.set_sensitive(false);
+        try {
+            login_jid = new Jid(jid_entry.text);
+            if (login_jid.localpart != null && login_jid.resourcepart == null) {
+                sign_in_jid_continue_button.sensitive = true;
+                jid_entry.secondary_icon_name = null;
+            } else {
+                sign_in_jid_continue_button.sensitive = false;
+            }
+        } catch (InvalidJidError e) {
+            sign_in_jid_continue_button.sensitive = false;
         }
     }
 
     private async void on_sign_in_jid_continue_button_clicked() {
-        Jid jid = new Jid(jid_entry.get_text());
-        sign_in_jid_continue_stack.visible_child_name = "spinner";
-        Register.ServerAvailabilityReturn server_status = yield Register.check_server_availability(jid);
-        sign_in_jid_continue_stack.visible_child_name = "label";
-        if (server_status.available) {
-            show_sign_in_password();
-        } else {
-            if (server_status.error_flags != null) {
-                string error_desc = "The server could not prove that it is %s.".printf("<b>" + jid.domainpart + "</b>");
-                if (TlsCertificateFlags.UNKNOWN_CA in server_status.error_flags) {
-                    error_desc += " " + "Its security certificate is not trusted by your computer's operating system.";
-                } else if (TlsCertificateFlags.BAD_IDENTITY in server_status.error_flags) {
-                    error_desc += " " + "Its security certificate is issued to another domain.";
-                } else if (TlsCertificateFlags.NOT_ACTIVATED in server_status.error_flags) {
-                    error_desc += " " + "Its security certificate will only become valid in the future.";
-                } else if (TlsCertificateFlags.EXPIRED in server_status.error_flags) {
-                    error_desc += " " + "Its security certificate is expired.";
-                }
-                sign_in_tls_label.label = error_desc;
-                show_tls_error();
+        try {
+            login_jid = new Jid(jid_entry.text);
+            jid_entry.sensitive = false;
+            sign_in_tls_label.label = "";
+            sign_in_jid_error_label.label = "";
+            sign_in_jid_continue_button.sensitive = false;
+            sign_in_jid_continue_stack.visible_child_name = "spinner";
+            Register.ServerAvailabilityReturn server_status = yield Register.check_server_availability(login_jid);
+            sign_in_jid_continue_stack.visible_child_name = "label";
+            sign_in_jid_continue_button.sensitive = true;
+            if (server_status.available) {
+                show_sign_in_password();
             } else {
-                sign_in_jid_error_label.label = _("Could not connect to %s").printf(jid.domainpart);
+                jid_entry.sensitive = true;
+                if (server_status.error_flags != null) {
+                    string error_desc = "The server could not prove that it is %s.".printf("<b>" + login_jid.domainpart + "</b>");
+                    if (TlsCertificateFlags.UNKNOWN_CA in server_status.error_flags) {
+                        error_desc += " " + "Its security certificate is not trusted by your computer's operating system.";
+                    } else if (TlsCertificateFlags.BAD_IDENTITY in server_status.error_flags) {
+                        error_desc += " " + "Its security certificate is issued to another domain.";
+                    } else if (TlsCertificateFlags.NOT_ACTIVATED in server_status.error_flags) {
+                        error_desc += " " + "Its security certificate will only become valid in the future.";
+                    } else if (TlsCertificateFlags.EXPIRED in server_status.error_flags) {
+                        error_desc += " " + "Its security certificate is expired.";
+                    }
+                    sign_in_tls_label.label = error_desc;
+                    show_tls_error();
+                } else {
+                    sign_in_jid_error_label.label = _("Could not connect to %s").printf(login_jid.domainpart);
+                }
             }
+        } catch (InvalidJidError e) {
+            warning("Invalid address from interface allowed login: %s", e.message);
+            sign_in_jid_error_label.label = _("Invalid address");
         }
     }
 
     private async void on_sign_in_password_continue_button_clicked() {
-        Jid jid = new Jid(jid_entry.get_text());
-        string password = password_entry.get_text();
-        Account account = new Account(jid, null, password, null);
+        string password = password_entry.text;
+        Account account = new Account(login_jid, null, password, null);
 
         sign_in_password_continue_stack.visible_child_name = "spinner";
         ConnectionManager.ConnectionError.Source? error = yield stream_interactor.get_module(Register.IDENTITY).add_check_account(account);
@@ -256,7 +276,7 @@ public class AddAccountDialog : Gtk.Dialog {
                     sign_in_password_error_label.label = _("Wrong username or password");
                     break;
                 default:
-                    sign_in_password_error_label.label = "Something went wrong";
+                    sign_in_password_error_label.label = _("Something went wrong");
                     break;
             }
         } else {
@@ -266,13 +286,23 @@ public class AddAccountDialog : Gtk.Dialog {
     }
 
     private void on_select_server_continue() {
-        server_jid = new Jid(server_entry.text);
-        request_show_register_form.begin();
+        try {
+            server_jid = new Jid(server_entry.text);
+            request_show_register_form.begin();
+        } catch (InvalidJidError e) {
+            warning("Invalid address from interface allowed server: %s", e.message);
+            display_notification(_("Invalid address"));
+        }
     }
 
     private void on_server_list_row_selected(ListBox box, ListBoxRow? row) {
-        server_jid = new Jid(list_box_jids[row]);
-        request_show_register_form.begin();
+        try {
+            server_jid = new Jid(list_box_jids[row]);
+            request_show_register_form.begin();
+        } catch (InvalidJidError e) {
+            warning("Invalid address from selected server: %s", e.message);
+            display_notification(_("Invalid address"));
+        }
     }
 
     private async void request_show_register_form() {
@@ -341,9 +371,14 @@ public class AddAccountDialog : Gtk.Dialog {
                     case "password": password = field.get_value_string(); break;
                 }
             }
-            Account account = new Account(new Jid.components(username, server_jid.domainpart, null), null, password, null);
-            add_activate_account(account);
-            show_success(account);
+            try {
+                Account account = new Account(new Jid.components(username, server_jid.domainpart, null), null, password, null);
+                add_activate_account(account);
+                show_success(account);
+            } catch (InvalidJidError e) {
+                warning("Invalid address from components of registration: %s", e.message);
+                display_notification(_("Invalid address"));
+            }
         } else {
             display_notification(error);
         }

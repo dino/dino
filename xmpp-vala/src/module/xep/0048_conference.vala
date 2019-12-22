@@ -20,8 +20,14 @@ public class Bookmarks1Conference : Conference {
     }
 
     private Jid jid_;
-    public override Jid jid {
-    get { return jid_ ?? (jid_ = Jid.parse(stanza_node.get_attribute(ATTRIBUTE_JID))); }
+    public override Jid? jid {
+    get {
+        try {
+            return jid_ ?? (jid_ = new Jid(stanza_node.get_attribute(ATTRIBUTE_JID)));
+        } catch (InvalidJidError e) {
+            return null;
+        }
+    }
     set { stanza_node.set_attribute(ATTRIBUTE_JID, value.to_string()); }
     }
 

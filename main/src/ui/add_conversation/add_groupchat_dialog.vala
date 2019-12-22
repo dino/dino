@@ -52,29 +52,41 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     private bool on_jid_key_release() {
         check_ok();
         if (!alias_entry_changed) {
-            Jid? parsed_jid = Jid.parse(jid_entry.text);
-            alias_entry.text = parsed_jid != null && parsed_jid.localpart != null ? parsed_jid.localpart : jid_entry.text;
+            try {
+                Jid parsed_jid = new Jid(jid_entry.text);
+                alias_entry.text = parsed_jid != null && parsed_jid.localpart != null ? parsed_jid.localpart : jid_entry.text;
+            } catch (InvalidJidError e) {
+                alias_entry.text = jid_entry.text;
+            }
         }
         return false;
     }
 
     private bool check_ok() {
-        Jid? parsed_jid = Jid.parse(jid_entry.text);
-        ok_button.sensitive = parsed_jid != null && parsed_jid.localpart != null && parsed_jid.resourcepart == null;
+        try {
+            Jid parsed_jid = new Jid(jid_entry.text);
+            ok_button.sensitive = parsed_jid != null && parsed_jid.localpart != null && parsed_jid.resourcepart == null;
+        } catch (InvalidJidError e) {
+            ok_button.sensitive = false;
+        }
         return false;
     }
 
     private void on_ok_button_clicked() {
-        Conference conference = new Conference();
-        conference.jid = Jid.parse(jid_entry.text);
-        conference.nick = nick_entry.text != "" ? nick_entry.text : null;
-        conference.name = alias_entry.text;
-        if (edit_conference == null) {
-            stream_interactor.get_module(MucManager.IDENTITY).add_bookmark(account_combobox.selected, conference);
-        } else {
-            stream_interactor.get_module(MucManager.IDENTITY).replace_bookmark(account_combobox.selected, edit_conference, conference);
+        try {
+            Conference conference = new Conference();
+            conference.jid = new Jid(jid_entry.text);
+            conference.nick = nick_entry.text != "" ? nick_entry.text : null;
+            conference.name = alias_entry.text;
+            if (edit_conference == null) {
+                stream_interactor.get_module(MucManager.IDENTITY).add_bookmark(account_combobox.selected, conference);
+            } else {
+                stream_interactor.get_module(MucManager.IDENTITY).replace_bookmark(account_combobox.selected, edit_conference, conference);
+            }
+            close();
+        } catch (InvalidJidError e) {
+            warning("Ignoring invalid conference Jid: %s", e.message);
         }
-        close();
     }
 }
 

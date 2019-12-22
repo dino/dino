@@ -50,12 +50,18 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public void handle_uri(string jid, string query, Gee.Map<string, string> options) {
         switch (query) {
             case "join":
-                show_join_muc_dialog(null, new Jid(jid));
+                show_join_muc_dialog(null, jid);
                 break;
             case "message":
                 Gee.List<Account> accounts = stream_interactor.get_accounts();
-                if (accounts.size == 1) {
-                    Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(new Jid(jid), accounts[0], Conversation.Type.CHAT);
+                Jid parsed_jid = null;
+                try {
+                    parsed_jid = new Jid(jid);
+                } catch (InvalidJidError ignored) {
+                    // Ignored
+                }
+                if (accounts.size == 1 && parsed_jid != null) {
+                    Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(parsed_jid, accounts[0], Conversation.Type.CHAT);
                     stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
                     controller.select_conversation(conversation);
                 } else {
@@ -128,7 +134,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         accept_muc_invite_action.activate.connect((variant) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
             if (conversation == null) return;
-            show_join_muc_dialog(conversation.account, conversation.counterpart);
+            show_join_muc_dialog(conversation.account, conversation.counterpart.to_string());
         });
         add_action(accept_muc_invite_action);
 
@@ -182,13 +188,13 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                     license_type: License.GPL_3_0);
     }
 
-    private void show_join_muc_dialog(Account? account, Jid jid) {
+    private void show_join_muc_dialog(Account? account, string jid) {
         Dialog dialog = new Dialog.with_buttons(_("Join Channel"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
         dialog.modal = true;
         Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
         ok_button.get_style_context().add_class("suggested-action");
         ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor) { ok_button=ok_button };
-        conference_fragment.jid = jid.to_string();
+        conference_fragment.jid = jid;
         if (account != null)  {
             conference_fragment.account = account;
         }

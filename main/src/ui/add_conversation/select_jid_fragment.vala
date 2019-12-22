@@ -53,13 +53,17 @@ public class SelectJidFragment : Gtk.Box {
 
         string[] ? values = str == "" ? null : str.split(" ");
         filterable_list.set_filter_values(values);
-        Jid? parsed_jid = Jid.parse(str);
-        if (parsed_jid != null && parsed_jid.localpart != null) {
-            foreach (Account account in accounts) {
-                AddListRow row = new AddListRow(stream_interactor, str, account);
-                filterable_list.add(row);
-                added_rows.add(row);
+        try {
+            Jid parsed_jid = new Jid(str);
+            if (parsed_jid != null && parsed_jid.localpart != null) {
+                foreach (Account account in accounts) {
+                    AddListRow row = new AddListRow(stream_interactor, parsed_jid, account);
+                    filterable_list.add(row);
+                    added_rows.add(row);
+                }
             }
+        } catch (InvalidJidError ignored) {
+            // Ignore
         }
     }
 
@@ -82,11 +86,11 @@ public class SelectJidFragment : Gtk.Box {
 
     private class AddListRow : ListRow {
 
-        public AddListRow(StreamInteractor stream_interactor, string jid, Account account) {
+        public AddListRow(StreamInteractor stream_interactor, Jid jid, Account account) {
             this.account = account;
-            this.jid = new Jid(jid);
+            this.jid = jid;
 
-            name_label.label = jid;
+            name_label.label = jid.to_string();
             if (stream_interactor.get_accounts().size > 1) {
                 via_label.label = account.bare_jid.to_string();
             } else {

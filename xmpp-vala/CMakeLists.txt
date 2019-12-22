@@ -4,6 +4,7 @@ find_packages(ENGINE_PACKAGES REQUIRED
     GIO
     GLib
     GObject
+    ICU
 )
 
 set(ENGINE_DEFINITIONS "")
@@ -15,6 +16,7 @@ if(GIO_VERSION VERSION_GREATER "2.60")
 else()
     message(STATUS "No ALPN support, needs GIO >= 2.60")
 endif()
+set(ENGINE_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi)
 
 vala_precompile(ENGINE_VALA_C
 SOURCES
@@ -104,6 +106,8 @@ CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/glib_fixes.vapi"
 DEFINITIONS
     ${ENGINE_DEFINITIONS}
+OPTIONS
+    ${ENGINE_EXTRA_OPTIONS}
 )
 
 add_custom_target(xmpp-vala-vapi
@@ -128,12 +132,15 @@ if(BUILD_TESTS)
         "tests/common.vala"
         "tests/testcase.vala"
 
+        "tests/jid.vala"
         "tests/stanza.vala"
         "tests/util.vala"
     CUSTOM_VAPIS
         ${CMAKE_BINARY_DIR}/exports/xmpp-vala_internal.vapi
     PACKAGES
         ${ENGINE_PACKAGES}
+    OPTIONS
+        ${ENGINE_EXTRA_OPTIONS}
     )
 
     add_definitions(${VALA_CFLAGS})

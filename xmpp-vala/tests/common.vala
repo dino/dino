@@ -5,6 +5,7 @@ int main(string[] args) {
     GLib.Test.set_nonfatal_assertions();
     TestSuite.get_root().add_suite(new Xmpp.Test.StanzaTest().get_suite());
     TestSuite.get_root().add_suite(new Xmpp.Test.UtilTest().get_suite());
+    TestSuite.get_root().add_suite(new Xmpp.Test.JidTest().get_suite());
     return GLib.Test.run();
 }
 
@@ -72,6 +73,13 @@ bool fail_if_not_eq_str(string? left, string? right, string? reason = null) {
     if (left == null) left = "(null)";
     if (right == null) right = "(null)";
     return fail_if_not(!nullcheck && left == right, @"$(reason + ": " ?? "")$left != $right");
+}
+
+bool fail_if_eq_str(string? left, string? right, string? reason = null) {
+    bool nullcheck = (left == null && right != null) || (left != null && right == null);
+    if (left == null) left = "(null)";
+    if (right == null) right = "(null)";
+    return fail_if(!nullcheck && left == right, @"$(reason + ": " ?? "")$left == $right");
 }
 
 bool fail_if_not_eq_uint8_arr(uint8[] left, uint8[] right, string? reason = null) {

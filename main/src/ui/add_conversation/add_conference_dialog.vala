@@ -159,7 +159,7 @@ public class AddConferenceDialog : Gtk.Dialog {
     }
 
     private void set_ok_sensitive_from_details() {
-        ok_button.sensitive = select_fragment.done;
+        ok_button.sensitive = details_fragment.done;
     }
 
     private void on_next_button_clicked() {

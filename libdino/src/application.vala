@@ -78,6 +78,12 @@ public interface Application : GLib.Application {
             while (jid[0] == '/') {
                 jid = jid.substring(1);
             }
+            jid = Uri.unescape_string(jid);
+            try {
+                jid = new Xmpp.Jid(jid).to_string();
+            } catch (Xmpp.InvalidJidError e) {
+                warning("Received invalid jid in xmpp:-URI: %s", e.message);
+            }
             string query = "message";
             Gee.Map<string, string> options = new Gee.HashMap<string, string>();
             if (m.length == 2) {
@@ -85,7 +91,7 @@ public interface Application : GLib.Application {
                 query = cmds[0];
                 for (int i = 1; i < cmds.length; ++i) {
                     string[] opt = cmds[i].split("=", 2);
-                    options[opt[0]] = opt.length == 2 ? opt[1] : "";
+                    options[Uri.unescape_string(opt[0])] = opt.length == 2 ? Uri.unescape_string(opt[1]) : "";
                 }
             }
             activate();

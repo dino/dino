@@ -311,9 +311,13 @@ public class Database : Qlite.Database {
     public ArrayList<Account> get_accounts() {
         ArrayList<Account> ret = new ArrayList<Account>(Account.equals_func);
         foreach(Row row in account.select()) {
-            Account account = new Account.from_row(this, row);
-            ret.add(account);
-            account_table_cache[account.id] = account;
+            try {
+                Account account = new Account.from_row(this, row);
+                ret.add(account);
+                account_table_cache[account.id] = account;
+            } catch (InvalidJidError e) {
+                warning("Ignoring account with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
@@ -324,9 +328,13 @@ public class Database : Qlite.Database {
         } else {
             Row? row = account.row_with(account.id, id).inner;
             if (row != null) {
-                Account a = new Account.from_row(this, row);
-                account_table_cache[a.id] = a;
-                return a;
+                try {
+                    Account a = new Account.from_row(this, row);
+                    account_table_cache[a.id] = a;
+                    return a;
+                } catch (InvalidJidError e) {
+                    warning("Ignoring account with invalid Jid: %s", e.message);
+                }
             }
             return null;
         }
@@ -380,7 +388,11 @@ public class Database : Qlite.Database {
 
         LinkedList<Message> ret = new LinkedList<Message>();
         foreach (Row row in select) {
-            ret.insert(0, new Message.from_row(this, row));
+            try {
+                ret.insert(0, new Message.from_row(this, row));
+            } catch (InvalidJidError e) {
+                warning("Ignoring message with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
@@ -394,7 +406,11 @@ public class Database : Qlite.Database {
             select.with(message.counterpart_id, "=", get_jid_id(jid));
         }
         foreach (Row row in select) {
-            ret.add(new Message.from_row(this, row));
+            try {
+                ret.add(new Message.from_row(this, row));
+            } catch (InvalidJidError e) {
+                warning("Ignoring message with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
@@ -402,7 +418,11 @@ public class Database : Qlite.Database {
     public Message? get_message_by_id(int id) {
         Row? row = message.row_with(message.id, id).inner;
         if (row != null) {
-            return new Message.from_row(this, row);
+            try {
+                return new Message.from_row(this, row);
+            } catch (InvalidJidError e) {
+                warning("Ignoring message with invalid Jid: %s", e.message);
+            }
         }
         return null;
     }
@@ -410,7 +430,11 @@ public class Database : Qlite.Database {
     public ArrayList<Conversation> get_conversations(Account account) {
         ArrayList<Conversation> ret = new ArrayList<Conversation>();
         foreach (Row row in conversation.select().with(conversation.account_id, "=", account.id)) {
-            ret.add(new Conversation.from_row(this, row));
+            try {
+                ret.add(new Conversation.from_row(this, row));
+            } catch (InvalidJidError e) {
+                warning("Ignoring conversation with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
@@ -426,7 +450,11 @@ public class Database : Qlite.Database {
     public HashMap<Jid, string> get_avatar_hashes(int type) {
         HashMap<Jid, string> ret = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
         foreach (Row row in avatar.select({avatar.jid, avatar.hash}).with(avatar.type_, "=", type)) {
-            ret[Jid.parse(row[avatar.jid])] = row[avatar.hash];
+            try {
+                ret[new Jid(row[avatar.jid])] = row[avatar.hash];
+            } catch (InvalidJidError e) {
+                warning("Ignoring avatar of invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
@@ -466,13 +494,13 @@ public class Database : Qlite.Database {
         }
     }
 
-    public Jid? get_jid_by_id(int id) {
+    public Jid? get_jid_by_id(int id) throws InvalidJidError {
         if (jid_table_cache.has_key(id)) {
             return jid_table_cache[id];
         } else {
             string? bare_jid = jid.select({jid.bare_jid}).with(jid.id, "=", id)[jid.bare_jid];
             if (bare_jid != null) {
-                Jid jid_parsed = Jid.parse(bare_jid);
+                Jid jid_parsed = new Jid(bare_jid);
                 jid_table_cache[id] = jid_parsed;
                 jid_table_reverse[jid_parsed] = id;
                 return jid_parsed;

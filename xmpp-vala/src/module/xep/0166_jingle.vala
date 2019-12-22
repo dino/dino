@@ -572,13 +572,15 @@ public class Session {
     }
     void handle_session_accept(XmppStream stream, ContentNode content, StanzaNode jingle, Iq.Stanza iq) throws IqError {
         string? responder_str = jingle.get_attribute("responder");
-        Jid responder;
+        Jid responder = iq.from;
         if (responder_str != null) {
-            responder = Jid.parse(responder_str) ?? iq.from;
-        } else {
-            responder = iq.from; // TODO(hrxi): and above, can we assume iq.from != null
-            // TODO(hrxi): more sanity checking, perhaps replace who we're talking to
+            try {
+                responder = new Jid(responder_str);
+            } catch (InvalidJidError e) {
+                warning("Received invalid session accept: %s", e.message);
+            }
         }
+        // TODO(hrxi): more sanity checking, perhaps replace who we're talking to
         if (!responder.is_full()) {
             throw new IqError.BAD_REQUEST("invalid responder JID");
         }

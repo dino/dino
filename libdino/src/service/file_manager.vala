@@ -169,8 +169,12 @@ public class FileManager : StreamInteractionModule, Object {
     private Gee.List<FileTransfer> get_transfers_from_qry(Qlite.QueryBuilder select) {
         Gee.List<FileTransfer> ret = new ArrayList<FileTransfer>();
         foreach (Qlite.Row row in select) {
-            FileTransfer file_transfer = new FileTransfer.from_row(db, row, get_storage_dir());
-            ret.insert(0, file_transfer);
+            try {
+                FileTransfer file_transfer = new FileTransfer.from_row(db, row, get_storage_dir());
+                ret.insert(0, file_transfer);
+            } catch (InvalidJidError e) {
+                warning("Ignoring file transfer with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
@@ -287,7 +291,7 @@ public class FileManager : StreamInteractionModule, Object {
         if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
             file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
         } else {
-            file_transfer.ourpart = conversation.account.bare_jid.with_resource(conversation.account.resourcepart);
+            file_transfer.ourpart = conversation.account.full_jid;
         }
         file_transfer.time = time;
         file_transfer.local_time = local_time;

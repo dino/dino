@@ -239,10 +239,14 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public Jid? get_own_jid(Jid muc_jid, Account account) {
-        Xep.Muc.Flag? flag = get_muc_flag(account);
-        if (flag != null) {
-            string? nick  = flag.get_muc_nick(muc_jid);
-            if (nick != null) return muc_jid.with_resource(nick);
+        try {
+            Xep.Muc.Flag? flag = get_muc_flag(account);
+            if (flag != null) {
+                string? nick  = flag.get_muc_nick(muc_jid);
+                if (nick != null) return muc_jid.with_resource(nick);
+            }
+        } catch (InvalidJidError e) {
+            warning("Joined MUC with invalid Jid: %s", e.message);
         }
         return null;
     }

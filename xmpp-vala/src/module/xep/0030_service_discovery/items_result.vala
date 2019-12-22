@@ -9,9 +9,13 @@ public class ItemsResult {
         owned get {
             ArrayList<Item> ret = new ArrayList<Item>();
             foreach (StanzaNode feature_node in iq.stanza.get_subnode("query", NS_URI_ITEMS).get_subnodes("item", NS_URI_ITEMS)) {
-                ret.add(new Item(Jid.parse(feature_node.get_attribute("jid", NS_URI_ITEMS)),
-                                        feature_node.get_attribute("name", NS_URI_ITEMS),
-                                        feature_node.get_attribute("node", NS_URI_ITEMS)));
+                try {
+                    ret.add(new Item(new Jid(feature_node.get_attribute("jid", NS_URI_ITEMS)),
+                                feature_node.get_attribute("name", NS_URI_ITEMS),
+                                feature_node.get_attribute("node", NS_URI_ITEMS)));
+                } catch (InvalidJidError e) {
+                    warning("Ignoring service at invalid Jid: %s", e.message);
+                }
             }
             return ret;
         }

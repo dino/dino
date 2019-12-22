@@ -3,7 +3,6 @@ using Gdk;
 using Gtk;
 using Pango;
 using Xmpp;
-using Unicode;
 
 using Dino.Entities;
 

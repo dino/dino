@@ -132,10 +132,14 @@ public class SearchProcessor : StreamInteractionModule, Object {
                     .with(db.conversation.type_, "=", Conversation.Type.CHAT)
                     .order_by(db.conversation.last_active, "DESC");
                 foreach(Row chat in chats) {
-                    if (suggestions.size == 0) {
-                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "from:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                    try {
+                        if (suggestions.size == 0) {
+                            suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "from:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                        }
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.account.bare_jid]), "from:"+chat[db.account.bare_jid], after_prev_space, next_space));
+                    } catch (InvalidJidError e) {
+                        warning("Ignoring search suggestion with invalid Jid: %s", e.message);
                     }
-                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.account.bare_jid]), "from:"+chat[db.account.bare_jid], after_prev_space, next_space));
                 }
                 return suggestions;
             }
@@ -155,7 +159,11 @@ public class SearchProcessor : StreamInteractionModule, Object {
                     .order_by_name(@"MAX($(db.message.time))", "DESC")
                     .limit(5);
                 foreach(Row msg in msgs) {
-                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, msg), new Jid(current_in).with_resource(msg[db.message.counterpart_resource]), "from:"+msg[db.message.counterpart_resource], after_prev_space, next_space));
+                    try {
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, msg), new Jid(current_in).with_resource(msg[db.message.counterpart_resource]), "from:"+msg[db.message.counterpart_resource], after_prev_space, next_space));
+                    } catch (InvalidJidError e) {
+                        warning("Ignoring search suggestion with invalid Jid: %s", e.message);
+                    }
                 }
             }
             // TODO: auto complete from
@@ -181,7 +189,11 @@ public class SearchProcessor : StreamInteractionModule, Object {
                 .order_by(db.conversation.last_active, "DESC")
                 .limit(limit);
             foreach(Row chat in chats) {
-                suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "with:"+chat[db.jid.bare_jid], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                try {
+                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "with:"+chat[db.jid.bare_jid], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                } catch (InvalidJidError e) {
+                    warning("Ignoring search suggestion with invalid Jid: %s", e.message);
+                }
             }
 
             // Groupchat PM
@@ -195,7 +207,11 @@ public class SearchProcessor : StreamInteractionModule, Object {
                     .order_by(db.conversation.last_active, "DESC")
                     .limit(limit - suggestions.size);
                 foreach(Row chat in chats) {
-                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]).with_resource(chat[db.conversation.resource]), "with:"+chat[db.jid.bare_jid]+"/"+chat[db.conversation.resource], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                    try {
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]).with_resource(chat[db.conversation.resource]), "with:"+chat[db.jid.bare_jid]+"/"+chat[db.conversation.resource], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                    } catch (InvalidJidError e) {
+                        warning("Ignoring search suggestion with invalid Jid: %s", e.message);
+                    }
                 }
                 suggestions.sort((a, b) => (int)(b.order - a.order));
             }
@@ -218,7 +234,11 @@ public class SearchProcessor : StreamInteractionModule, Object {
                 .order_by(db.conversation.last_active, "DESC")
                 .limit(limit);
             foreach(Row chat in groupchats) {
-                suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "in:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                try {
+                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "in:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                } catch (InvalidJidError e) {
+                    warning("Ignoring search suggestion with invalid Jid: %s", e.message);
+                }
             }
         } else {
             // Other auto complete?
@@ -233,9 +253,13 @@ public class SearchProcessor : StreamInteractionModule, Object {
             rows.offset(offset);
         }
         foreach (Row row in rows) {
-            Message message = new Message.from_row(db, row);
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
-            ret.add(new MessageItem(message, conversation, row[db.content_item.id]));
+            try {
+                Message message = new Message.from_row(db, row);
+                Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+                ret.add(new MessageItem(message, conversation, row[db.content_item.id]));
+            } catch (InvalidJidError e) {
+                warning("Ignoring search result with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }

@@ -14,9 +14,12 @@ protected class ConferenceDetailsFragment : Box {
 
     public bool done {
         get {
-            Jid? parsed_jid = Jid.parse(jid);
-            return parsed_jid != null && parsed_jid.localpart != null &&
-                parsed_jid.resourcepart == null && nick != "";
+            try {
+                Jid parsed_jid = new Jid(jid);
+                return parsed_jid.localpart != null && parsed_jid.resourcepart == null && nick != null;
+            } catch (InvalidJidError e) {
+                return false;
+            }
         }
         private set {}
     }
@@ -146,43 +149,46 @@ protected class ConferenceDetailsFragment : Box {
         ok_button.label = _("Joining…");
         ok_button.sensitive = false;
 
-        Jid parsed_jid = new Jid(jid);
-        Muc.JoinResult? join_result = yield stream_interactor.get_module(MucManager.IDENTITY).join(account, parsed_jid, nick, password);
-
-        ok_button.label = _("Join");
-        ok_button.sensitive = true;
-        if (join_result == null || join_result.nick != null) {
-            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(parsed_jid, account, Conversation.Type.GROUPCHAT);
-            Application app = GLib.Application.get_default() as Application;
-            app.controller.select_conversation(conversation);
-            joined();
-            return;
-        }
-
         string label_text = "";
-        if (join_result.muc_error != null) {
-            switch (join_result.muc_error) {
-                case Muc.MucEnterError.PASSWORD_REQUIRED:
-                    label_text = _("Password required to enter room");
-                    password_text_label.visible = true;
-                    password_stack.visible = true;
-                    break;
-                case Muc.MucEnterError.BANNED:
-                    label_text = _("Banned from joining or creating conference"); break;
-                case Muc.MucEnterError.ROOM_DOESNT_EXIST:
-                    label_text = _("Room does not exist"); break;
-                case Muc.MucEnterError.CREATION_RESTRICTED:
-                    label_text = _("Not allowed to create room"); break;
-                case Muc.MucEnterError.NOT_IN_MEMBER_LIST:
-                    label_text = _("Members-only room"); break;
-                case Muc.MucEnterError.USE_RESERVED_ROOMNICK:
-                case Muc.MucEnterError.NICK_CONFLICT:
-                    label_text = _("Choose a different nick"); break;
-                case Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
-                    label_text = _("Too many occupants in room"); break;
+        try {
+            Jid parsed_jid = new Jid(jid);
+            Muc.JoinResult? join_result = yield stream_interactor.get_module(MucManager.IDENTITY).join(account, parsed_jid, nick, password);
+
+            ok_button.label = _("Join");
+            ok_button.sensitive = true;
+            if (join_result == null || join_result.nick != null) {
+                Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(parsed_jid, account, Conversation.Type.GROUPCHAT);
+            Application app = GLib.Application.get_default() as Application;
+            app.controller.select_conversation(conversation);joined();
+                return;
             }
-        } else if (join_result.stanza_error != null) {
-            label_text = _("Could not connect to %s").printf((new Jid(jid)).domainpart);
+
+            if (join_result.muc_error != null) {
+                switch (join_result.muc_error) {
+                    case Muc.MucEnterError.PASSWORD_REQUIRED:
+                        label_text = _("Password required to enter room");
+                        password_text_label.visible = true;
+                        password_stack.visible = true;
+                        break;
+                    case Muc.MucEnterError.BANNED:
+                        label_text = _("Banned from joining or creating conference"); break;
+                    case Muc.MucEnterError.ROOM_DOESNT_EXIST:
+                        label_text = _("Room does not exist"); break;
+                    case Muc.MucEnterError.CREATION_RESTRICTED:
+                        label_text = _("Not allowed to create room"); break;
+                    case Muc.MucEnterError.NOT_IN_MEMBER_LIST:
+                        label_text = _("Members-only room"); break;
+                    case Muc.MucEnterError.USE_RESERVED_ROOMNICK:
+                    case Muc.MucEnterError.NICK_CONFLICT:
+                        label_text = _("Choose a different nick"); break;
+                    case Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
+                        label_text = _("Too many occupants in room"); break;
+                }
+            } else if (join_result.stanza_error != null) {
+                label_text = _("Could not connect to %s").printf((new Jid(jid)).domainpart);
+            }
+        } catch (InvalidJidError e) {
+            label_text = _("Invalid address");
         }
         notification_label.label = label_text;
         notification_revealer.set_reveal_child(true);

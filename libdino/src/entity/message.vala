@@ -60,7 +60,7 @@ public class Message : Object {
         this.body = body;
     }
 
-    public Message.from_row(Database db, Qlite.Row row) {
+    public Message.from_row(Database db, Qlite.Row row) throws InvalidJidError {
         this.db = db;
 
         id = row[db.message.id];
