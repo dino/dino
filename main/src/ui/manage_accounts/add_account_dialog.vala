@@ -191,7 +191,7 @@ public class AddAccountDialog : Gtk.Dialog {
         animate_window_resize(register_box);
     }
 
-    private void show_success() {
+    private void show_success(Account account) {
         success_box.visible = true;
         stack.visible_child_name = "success";
         sign_in_jid_box.visible = false;
@@ -199,7 +199,7 @@ public class AddAccountDialog : Gtk.Dialog {
         sign_in_password_box.visible = false;
         create_account_box.visible = false;
         register_box.visible = false;
-        success_description.label = _("You can now start using %s").printf("<b>" + Markup.escape_text(jid_entry.text) + "</b>");
+        success_description.label = _("You can now start using %s").printf("<b>" + Markup.escape_text(account.bare_jid.to_string()) + "</b>");
 
         set_default(success_continue_button);
     }
@@ -261,7 +261,7 @@ public class AddAccountDialog : Gtk.Dialog {
             }
         } else {
             add_activate_account(account);
-            show_success();
+            show_success(account);
         }
     }
 
@@ -343,7 +343,7 @@ public class AddAccountDialog : Gtk.Dialog {
             }
             Account account = new Account(new Jid.components(username, server_jid.domainpart, null), null, password, null);
             add_activate_account(account);
-            show_success();
+            show_success(account);
         } else {
             display_notification(error);
         }

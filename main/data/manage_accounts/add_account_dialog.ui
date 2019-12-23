@@ -520,10 +520,9 @@
                                         <child>
                                             <object class="GtkBox" id="success_box">
                                                 <property name="margin">50</property>
-                                                <property name="margin-top">5</property>
-                                                <property name="margin-bottom">5</property>
+                                                <property name="margin-top">10</property>
+                                                <property name="margin-bottom">10</property>
                                                 <property name="orientation">vertical</property>
-                                                <property name="spacing">10</property>
                                                 <property name="valign">center</property>
                                                 <property name="visible">True</property>
                                                 <child>
@@ -560,6 +559,7 @@
                                                         <property name="xalign">0.5</property>
                                                         <property name="yalign">0.5</property>
                                                         <property name="use-markup">True</property>
+                                                        <property name="justify">center</property>
                                                         <property name="visible">True</property>
                                                         <style>
                                                             <class name="dim-label"/>
