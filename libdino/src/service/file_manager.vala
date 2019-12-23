@@ -42,7 +42,11 @@ public class FileManager : StreamInteractionModule, Object {
         FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
         file_transfer.counterpart = conversation.counterpart;
-        file_transfer.ourpart = conversation.account.bare_jid;
+        if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+            file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
+        } else {
+            file_transfer.ourpart = conversation.account.full_jid;
+        }
         file_transfer.direction = FileTransfer.DIRECTION_SENT;
         file_transfer.time = new DateTime.now_utc();
         file_transfer.local_time = new DateTime.now_utc();

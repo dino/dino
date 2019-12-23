@@ -68,7 +68,19 @@ public class ContentItemStore : StreamInteractionModule, Object {
                         try {
                             string storage_dir = FileManager.get_storage_dir();
                             FileTransfer file_transfer = new FileTransfer.from_row(db, row_option.inner, storage_dir);
-                            items.add(new FileItem(file_transfer, row[db.content_item.id]));
+                            if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+                                try {
+                                    // resourcepart wasn't set before, so we pick nickname instead (which isn't accurate if nickname is changed)
+                                    file_transfer.ourpart = conversation.counterpart.with_resource(file_transfer.ourpart.resourcepart ?? conversation.nickname);
+                                } catch (InvalidJidError e) {
+                                    warning("Failed setting file transfer Jid: %s", e.message);
+                                }
+                            }
+                            Message? message = null;
+                            if (file_transfer.provider == 0 && file_transfer.info != null) {
+                                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
+                            }
+                            items.add(new FileItem(file_transfer, conversation, row[db.content_item.id], message));
                         } catch (InvalidJidError e) {
                             warning("Ignoring file transfer with invalid Jid: %s", e.message);
                         }
@@ -168,7 +180,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
     }
 
     private void insert_file_transfer(FileTransfer file_transfer, Conversation conversation) {
-        FileItem item = new FileItem(file_transfer, -1);
+        FileItem item = new FileItem(file_transfer, conversation, -1);
         item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id, false);
         if (!discard(item)) {
             if (collection_conversations.has_key(conversation)) {
@@ -265,17 +277,26 @@ public class FileItem : ContentItem {
     public FileTransfer file_transfer;
     public Conversation conversation;
 
-    public FileItem(FileTransfer file_transfer, int id) {
-        Jid jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? file_transfer.account.full_jid : file_transfer.counterpart;
+    public FileItem(FileTransfer file_transfer, Conversation conversation, int id, Message? message = null) {
         Entities.Message.Marked mark = Entities.Message.Marked.NONE;
-        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+        if (message != null) {
+            mark = message.marked;
+        } else if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
             mark = file_to_message_state(file_transfer.state);
         }
-        base(id, TYPE, jid, file_transfer.local_time, file_transfer.time, file_transfer.encryption, mark);
+        base(id, TYPE, file_transfer.from, file_transfer.local_time, file_transfer.time, file_transfer.encryption, mark);
 
         this.file_transfer = file_transfer;
+        this.conversation = conversation;
 
-        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+        if (message != null) {
+            WeakRef weak_message = WeakRef(message);
+            message.notify["marked"].connect(() => {
+                Message? m = weak_message.get() as Message;
+                if (m == null) return;
+                this.mark = m.marked;
+            });
+        } else if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
             file_transfer.notify["state"].connect_after(() => {
                 this.mark = file_to_message_state(file_transfer.state);
             });

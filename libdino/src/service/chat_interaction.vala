@@ -56,6 +56,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
             if (file_transfer.provider == 0) {
                 // HTTP file transfer: Check if the associated message is the last one
+                if (file_transfer.info == null) return false;
                 Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
                 if (message == null) return false;
                 if (message.equals(conversation.read_up_to)) return false;
