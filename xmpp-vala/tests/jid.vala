@@ -9,11 +9,11 @@ class JidTest : Gee.TestCase {
         add_test("jid_valid_domain_with_resource", () => { test_jid_valid("example.com/test"); });
         add_test("jid_valid_full", () => { test_jid_valid("test@example.com/test"); });
 
-        // Should those actually be valid?
+        // These should not be valid in "strict-mode"
         add_test("jid_valid_emoji_local", () => { test_jid_valid("😅@example.com"); });
         add_test("jid_valid_emoji_resource", () => { test_jid_valid("test@example.com/😅"); });
+        add_test("jid_valid_emoji_domain", () => { test_jid_valid("test@😅.com"); });
 
-        add_test("jid_invalid_emoji_domain", () => { test_jid_invalid("test@😅.com"); });
         add_test("jid_invalid_bidi_local", () => { test_jid_invalid("te‏st@example.com"); });
         add_test("jid_invalid_bidi_resource", () => { test_jid_invalid("test@example.com/te‏st"); });
         add_test("jid_invalid_bidi_domain", () => { test_jid_invalid("test@exa‏mple.com"); });
@@ -43,7 +43,7 @@ class JidTest : Gee.TestCase {
         try {
             new Jid(jid);
         } catch (Error e) {
-            fail_if_reached();
+            fail_if_reached(@"Throws $(e.message)");
         }
     }
 

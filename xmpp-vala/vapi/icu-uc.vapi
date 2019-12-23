@@ -15,6 +15,10 @@ enum ErrorCode {
     ;
     [CCode (cname = "u_errorName")]
     public unowned string errorName();
+    [CCode (cname = "U_SUCCESS")]
+    public bool is_success();
+    [CCode (cname = "U_FAILURE")]
+    public bool is_failure();
 }
 
 [CCode (cname = "UErrorCode", cprefix = "U_", cheader_filename = "unicode/parseerr.h")]
@@ -42,8 +46,20 @@ enum PrepOptions {
 [CCode (cname = "UIDNA", cprefix = "uidna_", free_function = "uidna_close", cheader_filename = "unicode/uidna.h")]
 [Compact]
 class IDNA {
+    public static IDNA openUTS46(IDNAOptions options, ref ErrorCode status);
     public static int32 IDNToUnicode(Char* src, int32 src_length, Char* dest, int32 dest_capacity, IDNAOptions options, out ParseError parse_error, ref ErrorCode status);
     public static int32 IDNToASCII(Char* src, int32 src_length, Char* dest, int32 dest_capacity, IDNAOptions options, out ParseError parse_error, ref ErrorCode status);
+    public int32 nameToUnicode(Char* src, int32 src_length, Char* dest, int32 dest_capacity, out IDNAInfo info, ref ErrorCode status);
+    public int32 nameToASCII(Char* src, int32 src_length, Char* dest, int32 dest_capacity, out IDNAInfo info, ref ErrorCode status);
+    public int32 nameToASCII_UTF8(string name, int32 name_length, char[] dest, out IDNAInfo info, ref ErrorCode status);
+    public int32 nameToUnicodeUTF8(string name, int32 name_length, char[] dest, out IDNAInfo info, ref ErrorCode status);
+}
+
+[CCode (cname = "UIDNAInfo", default_value = "UIDNA_INFO_INITIALIZER", has_type_id = false, cheader_filename = "unicode/uidna.h")]
+struct IDNAInfo {
+    public static IDNAInfo INITIAL;
+    public uint32 errors;
+    public bool isTransitionalDifferent;
 }
 
 [CCode (cname = "uint32_t", cprefix = "UIDNA_")]

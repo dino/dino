@@ -62,47 +62,31 @@ public class Jid {
     }
 
     private static string idna_decode(string src) throws InvalidJidError {
-        try {
-            ICU.ErrorCode status = ICU.ErrorCode.ZERO_ERROR;
-            long src16_length = 0;
-            string16 src16 = src.to_utf16(-1, null, out src16_length);
-            ICU.Char[] dest16 = new ICU.Char[src16_length];
-            ICU.ParseError error;
-            long dest16_length = ICU.IDNA.IDNToUnicode(src16, (int32) src16_length, dest16, dest16.length, ICU.IDNAOptions.DEFAULT, out error, ref status);
-            if (status == ICU.ErrorCode.INVALID_CHAR_FOUND) {
-                throw new InvalidJidError.INVALID_CHAR("Found invalid character");
-            } else if (status != ICU.ErrorCode.ZERO_ERROR) {
-                throw new InvalidJidError.UNKNOWN(@"Unknown error: $(status.errorName())");
-            } else if (dest16_length < 0) {
-                throw new InvalidJidError.UNKNOWN("Unknown error");
-            }
-            return ((string16) dest16).to_utf8(dest16_length, null, null);
-        } catch (ConvertError e) {
-            throw new InvalidJidError.INVALID_CHAR(@"Conversion error: $(e.message)");
+        ICU.ErrorCode status = ICU.ErrorCode.ZERO_ERROR;
+        ICU.IDNAInfo info;
+        char[] dest = new char[src.length * 2];
+        ICU.IDNA.openUTS46(ICU.IDNAOptions.DEFAULT, ref status).nameToUnicodeUTF8(src, -1, dest, out info, ref status);
+        if (status == ICU.ErrorCode.INVALID_CHAR_FOUND) {
+            throw new InvalidJidError.INVALID_CHAR("Found invalid character");
+        } else if (status.is_failure() || info.errors > 0) {
+            throw new InvalidJidError.UNKNOWN(@"Unknown error: $(status.errorName())");
         }
+        return (string) dest;
     }
 
     private static void idna_verify(string src) throws InvalidJidError {
-        try {
-            ICU.ErrorCode status = ICU.ErrorCode.ZERO_ERROR;
-            long src16_length = 0;
-            string16 src16 = src.to_utf16(-1, null, out src16_length);
-            ICU.Char[] dest16 = new ICU.Char[256];
-            ICU.ParseError error;
-            long dest16_length = ICU.IDNA.IDNToASCII(src16, (int32) src16_length, dest16, dest16.length, ICU.IDNAOptions.DEFAULT, out error, ref status);
-            if (status == ICU.ErrorCode.INVALID_CHAR_FOUND) {
-                throw new InvalidJidError.INVALID_CHAR("Found invalid character");
-            } else if (status != ICU.ErrorCode.ZERO_ERROR) {
-                throw new InvalidJidError.UNKNOWN(@"Unknown error: $(status.errorName())");
-            } else if (dest16_length < 0) {
-                throw new InvalidJidError.UNKNOWN("Unknown error");
-            }
-        } catch (ConvertError e) {
-            throw new InvalidJidError.INVALID_CHAR(@"Conversion error: $(e.message)");
+        ICU.ErrorCode status = ICU.ErrorCode.ZERO_ERROR;
+        ICU.IDNAInfo info;
+        char[] dest = new char[src.length * 2];
+        ICU.IDNA.openUTS46(ICU.IDNAOptions.DEFAULT, ref status).nameToASCII_UTF8(src, -1, dest, out info, ref status);
+        if (status == ICU.ErrorCode.INVALID_CHAR_FOUND) {
+            throw new InvalidJidError.INVALID_CHAR("Found invalid character");
+        } else if (status.is_failure() || info.errors > 0) {
+            throw new InvalidJidError.UNKNOWN(@"Unknown error: $(status.errorName())");
         }
     }
 
-    private static string? prepare(string? src, ICU.PrepType type) throws InvalidJidError {
+    private static string? prepare(string? src, ICU.PrepType type, bool strict = false) throws InvalidJidError {
         if (src == null) return src;
         try {
             ICU.ErrorCode status = ICU.ErrorCode.ZERO_ERROR;
@@ -111,7 +95,7 @@ public class Jid {
             string16 src16 = src.to_utf16(-1, null, out src16_length);
             ICU.Char[] dest16 = new ICU.Char[src16_length * 2];
             ICU.ParseError error;
-            long dest16_length = profile.prepare((ICU.Char*) src16, (int32) src16_length, dest16, dest16.length, ICU.PrepOptions.ALLOW_UNASSIGNED, out error, ref status);
+            long dest16_length = profile.prepare((ICU.Char*) src16, (int32) src16_length, dest16, dest16.length, strict ? ICU.PrepOptions.DEFAULT : ICU.PrepOptions.ALLOW_UNASSIGNED, out error, ref status);
             if (status == ICU.ErrorCode.INVALID_CHAR_FOUND) {
                 throw new InvalidJidError.INVALID_CHAR("Found invalid character");
             } else if (status != ICU.ErrorCode.ZERO_ERROR) {
