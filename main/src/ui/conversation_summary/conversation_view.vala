@@ -72,6 +72,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             firstLoad = false;
         }
         stack.set_visible_child_name("void");
+        clear();
         initialize_for_conversation_(conversation);
         display_latest();
         stack.set_visible_child_name("main");
@@ -136,7 +137,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         clear_notifications();
         this.conversation = conversation;
 
-
         // Init for new conversation
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
@@ -149,8 +149,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     }
 
     private void display_latest() {
-        clear();
-
         Gee.List<ContentMetaItem> items = content_populator.populate_latest(conversation, 40);
         foreach (ContentMetaItem item in items) {
             do_insert_item(item);

@@ -80,7 +80,6 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.Conversati
             meta_item = new MetaChatStateItem(stream_interactor, current_conversation, jid, state_type, jids);
             item_collection.insert_item(meta_item);
         }
-
     }
 }
 

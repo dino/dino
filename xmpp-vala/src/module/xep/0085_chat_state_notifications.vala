@@ -48,8 +48,7 @@ public class Module : XmppStreamModule {
         if (!message.is_error()) {
             Gee.List<StanzaNode> nodes = message.stanza.get_all_subnodes();
             foreach (StanzaNode node in nodes) {
-                if (node.ns_uri == NS_URI &&
-                    node.name in STATES) {
+                if (node.ns_uri == NS_URI && node.name in STATES) {
                     chat_state_received(stream, message.from, node.name, message);
                 }
             }
