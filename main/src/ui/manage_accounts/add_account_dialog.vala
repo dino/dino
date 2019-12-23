@@ -127,6 +127,7 @@ public class AddAccountDialog : Gtk.Dialog {
 
     private void show_sign_in_jid() {
         sign_in_jid_box.visible = true;
+        jid_entry.grab_focus();
         stack.visible_child_name = "login_jid";
         sign_in_tls_box.visible = false;
         sign_in_password_box.visible = false;
@@ -152,6 +153,7 @@ public class AddAccountDialog : Gtk.Dialog {
 
     private void show_sign_in_password() {
         sign_in_password_box.visible = true;
+        password_entry.grab_focus();
         stack.visible_child_name = "login_password";
         sign_in_jid_box.visible = false;
         sign_in_tls_box.visible = false;
@@ -170,9 +172,9 @@ public class AddAccountDialog : Gtk.Dialog {
         server_entry.grab_focus();
         set_default(select_server_continue);
 
-        server_list_box.row_selected.disconnect(on_server_list_row_selected);
+        server_list_box.row_activated.disconnect(on_server_list_row_activated);
         server_list_box.unselect_all();
-        server_list_box.row_selected.connect(on_server_list_row_selected);
+        server_list_box.row_activated.connect(on_server_list_row_activated);
 
         create_account_box.visible = true;
         stack.visible_child_name = "server";
@@ -295,7 +297,7 @@ public class AddAccountDialog : Gtk.Dialog {
         }
     }
 
-    private void on_server_list_row_selected(ListBox box, ListBoxRow? row) {
+    private void on_server_list_row_activated(ListBox box, ListBoxRow row) {
         try {
             server_jid = new Jid(list_box_jids[row]);
             request_show_register_form.begin();
