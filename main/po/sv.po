@@ -61,12 +61,12 @@ msgstr "Kunde inte ansluta till %s"
 #: main/src/ui/notifications.vala:128
 #, c-format
 msgid "Invitation to %s"
-msgstr ""
+msgstr "Inbjudan till %s"
 
 #: main/src/ui/notifications.vala:129
 #, c-format
 msgid "%s invited you to %s"
-msgstr ""
+msgstr "%s bjöd in dig till %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -242,7 +242,7 @@ msgstr "Anslut"
 #: main/src/ui/util/helper.vala:121
 #, c-format
 msgid "%s from %s"
-msgstr ""
+msgstr "%s från %s"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -317,7 +317,7 @@ msgstr "Välkommen till Dino!"
 
 #: main/src/ui/unified_window.vala:228
 msgid "Sign in or create an account to get started."
-msgstr ""
+msgstr "Logga in eller skapa ett konto för att komma igång."
 
 #: main/src/ui/unified_window.vala:229
 msgid "Set up account"
@@ -338,25 +338,25 @@ msgstr "Inga aktiva chattar"
 #: main/src/ui/conversation_summary/file_widget.vala:272
 #, c-format
 msgid "Downloading %s…"
-msgstr ""
+msgstr "Tar emot %s…"
 
 #: main/src/ui/conversation_summary/file_widget.vala:278
 #, c-format
 msgid "%s offered: %s"
-msgstr ""
+msgstr "%s erbjöd: %s"
 
 #: main/src/ui/conversation_summary/file_widget.vala:280
 #, c-format
 msgid "File offered: %s"
-msgstr ""
+msgstr "Fil erbjuden: %s"
 
 #: main/src/ui/conversation_summary/file_widget.vala:282
 msgid "File offered"
-msgstr ""
+msgstr "Fil erbjuden"
 
 #: main/src/ui/conversation_summary/file_widget.vala:287
 msgid "File transfer failed"
-msgstr ""
+msgstr "Filöverföring misslyckades"
 
 #: main/src/ui/conversation_summary/date_separator_populator.vala:85
 msgid "Today"
@@ -692,11 +692,11 @@ msgstr "Okrypterat"
 
 #: main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Snabbkommandon"
 
 #: main/data/menu_app.ui:21
 msgid "About Dino"
-msgstr ""
+msgstr "Om Dino"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -756,19 +756,19 @@ msgstr "Lägg till kontakt"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
-msgstr ""
+msgstr "Allmänt"
 
 #: main/data/shortcuts.ui:32
 msgid "Navigation"
-msgstr ""
+msgstr "Navigering"
 
 #: main/data/shortcuts.ui:37
 msgid "Jump to next conversation"
-msgstr ""
+msgstr "Hoppa till nästa konversation"
 
 #: main/data/shortcuts.ui:44
 msgid "Jump to previous conversation"
-msgstr ""
+msgstr "Hoppa till föregående konversation"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
@@ -788,11 +788,11 @@ msgstr "Kolla stavningen eller ta bort filter"
 
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
-msgstr ""
+msgstr "Klicka här för att starta en konversation eller gå med i en kanal."
 
 #: main/data/unified_main_content.ui:147
 msgid "You have no open chats"
-msgstr ""
+msgstr "Du har inga öppna konversationer"
 
 #~ msgid "Failed connecting to %s"
 #~ msgstr "Anslutning till %s misslyckades"
