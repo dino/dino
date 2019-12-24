@@ -502,7 +502,11 @@ public class Database : Qlite.Database {
             if (bare_jid != null) {
                 Jid jid_parsed = new Jid(bare_jid);
                 jid_table_cache[id] = jid_parsed;
-                jid_table_reverse[jid_parsed] = id;
+
+                // Only store fully normalized Jids for reverse lookup
+                if (jid_parsed.to_string() == bare_jid) {
+                    jid_table_reverse[jid_parsed] = id;
+                }
                 return jid_parsed;
             }
             return null;
