@@ -70,8 +70,6 @@ public class Module : XmppStreamModule {
     public signal void room_name_set(XmppStream stream, Jid jid, string? room_name);
     public signal void invite_received(XmppStream stream, Jid room_jid, Jid from_jid, string? password, string? reason);
 
-    public signal void room_entered(XmppStream stream, Jid jid, string nick);
-    public signal void room_enter_error(XmppStream stream, Jid jid, MucEnterError? error); // TODO "?" shoudln't be necessary (vala bug), remove someday
     public signal void self_removed_from_room(XmppStream stream, Jid jid, StatusCode code);
     public signal void removed_from_room(XmppStream stream, Jid jid, StatusCode? code);
 
@@ -226,12 +224,6 @@ public class Module : XmppStreamModule {
         if (stream.get_module(ServiceDiscovery.Module.IDENTITY) != null) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         }
-
-        room_entered.connect((stream, jid, nick) => {
-            query_affiliation(stream, jid, "member", null);
-            query_affiliation(stream, jid, "admin", null);
-            query_affiliation(stream, jid, "owner", null);
-        });
     }
 
     public override void detach(XmppStream stream) {
@@ -300,7 +292,6 @@ public class Module : XmppStreamModule {
                         break;
                 }
                 if (error != MucEnterError.NONE) {
-                    room_enter_error(stream, bare_jid, error);
                     flag.enter_futures[bare_jid].set_value(new JoinResult() {muc_error=error});
                 } else {
                     flag.enter_futures[bare_jid].set_value(new JoinResult() {stanza_error=error_stanza.condition});
@@ -319,7 +310,11 @@ public class Module : XmppStreamModule {
                 if (status_codes.contains(StatusCode.SELF_PRESENCE)) {
                     Jid bare_jid = presence.from.bare_jid;
                     if (flag.get_enter_id(bare_jid) != null) {
-                        room_entered(stream, bare_jid, presence.from.resourcepart);
+
+                        query_affiliation(stream, bare_jid, "member", null);
+                        query_affiliation(stream, bare_jid, "admin", null);
+                        query_affiliation(stream, bare_jid, "owner", null);
+
                         flag.finish_muc_enter(bare_jid, presence.from.resourcepart);
                         flag.enter_futures[bare_jid].set_value(new JoinResult() {nick=presence.from.resourcepart});
                     }

@@ -42,6 +42,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
                     conference_node.put_node(new StanzaNode.build("nick", NS_URI)
                         .put_node(new StanzaNode.text(conference.nick)));
                 }
+                // TODO (?) Bookmarks 2 currently don't define a password
                 storage_node.put_node(conference_node);
             }
         }

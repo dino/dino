@@ -71,9 +71,10 @@ public class Bookmarks1Conference : Conference {
             return;
         }
         if (password_node == null) {
-            password_node = new StanzaNode.build(NODE_PASSWORD);
+            password_node = new StanzaNode.build(NODE_PASSWORD, NS_URI);
             stanza_node.put_node(password_node);
         }
+        password_node.sub_nodes.clear();
         password_node.put_node(new StanzaNode.text(value));
     }
     }

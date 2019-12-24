@@ -9,8 +9,6 @@ public class MucManager : StreamInteractionModule, Object {
     public static ModuleIdentity<MucManager> IDENTITY = new ModuleIdentity<MucManager>("muc_manager");
     public string id { get { return IDENTITY.id; } }
 
-    public signal void joined(Account account, Jid jid, string nick);
-    public signal void enter_error(Account account, Jid jid, Xep.Muc.MucEnterError error);
     public signal void left(Account account, Jid jid);
     public signal void subject_set(Account account, Jid jid, string? subject);
     public signal void room_name_set(Account account, Jid jid, string? room_name);
@@ -49,7 +47,23 @@ public class MucManager : StreamInteractionModule, Object {
             if (last_message != null) history_since = last_message.time;
         }
 
-        return yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since);
+        Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since);
+
+        if (res.nick != null) {
+            // Join completed
+            enter_errors.unset(jid);
+            set_autojoin(account, stream, jid, nick, password);
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_messages(account, jid);
+
+            Conversation joined_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
+            joined_conversation.nickname = nick;
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+        } else if (res.muc_error != null) {
+            // Join failed
+            enter_errors[jid] = res.muc_error;
+        }
+
+        return res;
     }
 
     public void part(Account account, Jid jid) {
@@ -264,13 +278,6 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_entered.connect( (stream, jid, nick) => {
-            on_room_entred(account, stream, jid, nick);
-        });
-        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_enter_error.connect( (stream, jid, error) => {
-            enter_errors[jid] = error;
-            enter_error(account, jid, error);
-        });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).self_removed_from_room.connect( (stream, jid, code) => {
             left(account, jid);
         });
@@ -315,16 +322,6 @@ public class MucManager : StreamInteractionModule, Object {
         } else {
             sync_autojoin_active(account, conferences);
         }
-    }
-
-    private void on_room_entred(Account account, XmppStream stream, Jid jid, string nick) {
-        enter_errors.unset(jid);
-        set_autojoin(account, stream, jid, nick, null); // TODO password
-        joined(account, jid, nick);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_messages(account, jid);
-        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
-        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
-        conversation.nickname = nick;
     }
 
     private void join_all_active(Account account) {
