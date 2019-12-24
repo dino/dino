@@ -145,7 +145,7 @@ public class ConversationSelectorRow : ListBoxRow {
 
                     if (conversation.type_ == Conversation.Type.GROUPCHAT) {
                         // TODO properly display nick for oneself
-                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, file_item.file_transfer.counterpart, true) + ": ";
+                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, file_item.file_transfer.from, true) + ": ";
                     } else {
                         nick_label.label = transfer.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
