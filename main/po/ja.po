@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-19 02:35+0100\n"
-"PO-Revision-Date: 2019-08-30 23:24+0000\n"
+"POT-Creation-Date: 2019-12-24 14:38+0100\n"
+"PO-Revision-Date: 2019-12-23 02:21+0000\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/dino/"
 "translations/ja/>\n"
 "Language: ja\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 3.10\n"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
@@ -53,8 +53,8 @@ msgid "Deny"
 msgstr "拒否"
 
 #: main/src/ui/notifications.vala:112
-#: main/src/ui/manage_accounts/add_account_dialog.vala:239
-#: main/src/ui/add_conversation/conference_details_fragment.vala:181
+#: main/src/ui/manage_accounts/add_account_dialog.vala:258
+#: main/src/ui/add_conversation/conference_details_fragment.vala:188
 #, c-format
 msgid "Could not connect to %s"
 msgstr "%s に接続できませんでした"
@@ -86,9 +86,9 @@ msgstr "アバターを選択"
 msgid "Select"
 msgstr "選択"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:17
-#: main/src/ui/add_conversation/add_conference_dialog.vala:124
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:15
+#: main/src/ui/add_conversation/add_conference_dialog.vala:122
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -128,46 +128,58 @@ msgstr "TLS 証明書が不正です"
 msgid "Error"
 msgstr "エラー"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:81
+#: main/src/ui/manage_accounts/add_account_dialog.vala:82
 msgid "Add Account"
 msgstr "アカウントを追加"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:158
+#: main/src/ui/manage_accounts/add_account_dialog.vala:166
 #, c-format
 msgid "Sign in to %s"
 msgstr "%s にサインイン"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:202
+#: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
 msgid "You can now start using %s"
 msgstr "%s をお使いいただけます"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:256
+#: main/src/ui/manage_accounts/add_account_dialog.vala:263
+#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:306
+#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+#: main/src/ui/add_conversation/conference_details_fragment.vala:191
+msgid "Invalid address"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"
 msgstr "ユーザー名またはパスワードが違います"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:289
+#: main/src/ui/manage_accounts/add_account_dialog.vala:281
+msgid "Something went wrong"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:321
 msgid "No response from server"
 msgstr "サーバーから応答がありません"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:295
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
 #, c-format
 msgid "Register on %s"
 msgstr "%s に登録"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:298
+#: main/src/ui/manage_accounts/add_account_dialog.vala:330
 msgid "The server requires to sign up through a website"
 msgstr "サーバーが Web サイトでのサインアップを要求しています"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:300
+#: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open Registration"
 msgstr "登録を開く"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:312
+#: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
 msgstr "登録"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:314
+#: main/src/ui/manage_accounts/add_account_dialog.vala:346
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "サインアップの方法に関する情報は、%s をご確認ください"
@@ -213,24 +225,24 @@ msgstr[0] "%i 分前"
 msgid "Just now"
 msgstr "たった今"
 
-#: main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:28
-#: main/src/ui/unified_window.vala:257 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/src/ui/unified_window.vala:249 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "チャンネルに参加"
 
-#: main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:68
-#: main/src/ui/add_conversation/add_conference_dialog.vala:144
-#: main/src/ui/add_conversation/conference_details_fragment.vala:151
+#: main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:66
+#: main/src/ui/add_conversation/add_conference_dialog.vala:142
+#: main/src/ui/add_conversation/conference_details_fragment.vala:157
 msgid "Join"
 msgstr "参加"
 
 #: main/src/ui/util/helper.vala:121
 #, c-format
 msgid "%s from %s"
-msgstr ""
+msgstr "%2$s の %1$s"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -241,87 +253,87 @@ msgstr "追加"
 msgid "Save"
 msgstr "保存"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:49
-#: main/src/ui/add_conversation/add_conference_dialog.vala:120
+#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:118
 #: main/data/manage_accounts/add_account_dialog.ui:99
 #: main/data/manage_accounts/add_account_dialog.ui:410
 #: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
 msgstr "次へ"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:149
+#: main/src/ui/add_conversation/add_conference_dialog.vala:147
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "戻る"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:256
+#: main/src/ui/unified_window.vala:248
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
 msgid "Start Conversation"
-msgstr "会話を開始"
+msgstr "トークを開始"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
 msgstr "開始"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Joining…"
 msgstr "参加試行中…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:162
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Password required to enter room"
 msgstr "トークルームに参加するにはパスワードが必要です"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:167
+#: main/src/ui/add_conversation/conference_details_fragment.vala:174
 msgid "Banned from joining or creating conference"
 msgstr "参加中または作成中のトークルームから退会させられました"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:169
+#: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Room does not exist"
 msgstr "トークルームは存在しません"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:171
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Not allowed to create room"
 msgstr "トークルームを作成する権限がありません"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:173
+#: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Members-only room"
 msgstr "メンバー制トークルーム"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:176
+#: main/src/ui/add_conversation/conference_details_fragment.vala:183
 msgid "Choose a different nick"
 msgstr "別のニックネームを選んでください"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:178
+#: main/src/ui/add_conversation/conference_details_fragment.vala:185
 msgid "Too many occupants in room"
 msgstr "トークルームの参加者が多すぎます"
 
-#: main/src/ui/unified_window.vala:235
+#: main/src/ui/unified_window.vala:227
 msgid "Welcome to Dino!"
 msgstr "Dino へようこそ！"
 
-#: main/src/ui/unified_window.vala:236
+#: main/src/ui/unified_window.vala:228
 msgid "Sign in or create an account to get started."
-msgstr ""
+msgstr "サインインまたはアカウント登録をしてください。"
 
-#: main/src/ui/unified_window.vala:237
+#: main/src/ui/unified_window.vala:229
 msgid "Set up account"
 msgstr "アカウントをセットアップ"
 
-#: main/src/ui/unified_window.vala:245
+#: main/src/ui/unified_window.vala:237
 msgid "No active accounts"
 msgstr "アクティブなアカウントがありません"
 
-#: main/src/ui/unified_window.vala:246
+#: main/src/ui/unified_window.vala:238
 msgid "Manage accounts"
 msgstr "アカウントを管理"
 
-#: main/src/ui/unified_window.vala:255
+#: main/src/ui/unified_window.vala:247
 msgid "No active conversations"
-msgstr "アクティブな会話がありません"
+msgstr "アクティブなトークがありません"
 
 #: main/src/ui/conversation_summary/file_widget.vala:272
 #, c-format
@@ -329,18 +341,18 @@ msgid "Downloading %s…"
 msgstr "%s をダウンロードしています…"
 
 #: main/src/ui/conversation_summary/file_widget.vala:278
-#, c-format
+#, fuzzy, c-format
 msgid "%s offered: %s"
-msgstr ""
+msgstr "%s から提供されているファイル: %s"
 
 #: main/src/ui/conversation_summary/file_widget.vala:280
-#, c-format
+#, fuzzy, c-format
 msgid "File offered: %s"
-msgstr ""
+msgstr "提供されているファイル: %s"
 
 #: main/src/ui/conversation_summary/file_widget.vala:282
 msgid "File offered"
-msgstr ""
+msgstr "ファイルが提供されています"
 
 #: main/src/ui/conversation_summary/file_widget.vala:287
 msgid "File transfer failed"
@@ -354,31 +366,31 @@ msgstr "今日"
 msgid "%a, %b %d"
 msgstr "%b%d日 (%a)"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:146
+#: main/src/ui/conversation_summary/chat_state_populator.vala:145
 #, c-format
 msgid "%s, %s and %i others"
 msgstr "%s さん、%s さんとその他 %i 人"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#: main/src/ui/conversation_summary/chat_state_populator.vala:147
 #, c-format
 msgid "%s, %s and %s"
 msgstr "%s さん、%s さんと %s さん"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#: main/src/ui/conversation_summary/chat_state_populator.vala:149
 #, c-format
 msgid "%s and %s"
 msgstr "%s さんと %s さん"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:155
+#: main/src/ui/conversation_summary/chat_state_populator.vala:154
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "が入力しています…"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+#: main/src/ui/conversation_summary/chat_state_populator.vala:156
 msgid "has stopped typing"
 msgstr "が入力を中断しました"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:60
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:59
 msgid "Message too long"
 msgstr "メッセージが長すぎます"
 
@@ -447,7 +459,7 @@ msgstr "個人チャットを始める"
 
 #: main/src/ui/occupant_menu/view.vala:93
 msgid "Kick"
-msgstr ""
+msgstr "退出させる"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
@@ -455,14 +467,14 @@ msgid "%i search results"
 msgstr "%i 件の検索結果"
 
 #: main/src/ui/global_search.vala:167
-#, c-format
+#, fuzzy, c-format
 msgid "In %s"
-msgstr ""
+msgstr "%s に"
 
 #: main/src/ui/global_search.vala:167
-#, c-format
+#, fuzzy, c-format
 msgid "With %s"
-msgstr ""
+msgstr "%s と"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
@@ -495,7 +507,7 @@ msgstr "外部から検索可能にする"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
-msgstr ""
+msgstr "参加者にタイトルの変更を許可する"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Discover real JIDs"
@@ -515,11 +527,11 @@ msgstr "パスワード"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "Password required for room entry, if any"
-msgstr ""
+msgstr "トークルームへの参加に必要なパスワード"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
-msgstr ""
+msgstr "発言制限"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:75
 msgid "Only occupants with voice may send messages"
@@ -538,8 +550,9 @@ msgid "Message history"
 msgstr "メッセージの履歴"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:83
+#, fuzzy
 msgid "Maximum amount of backlog issued by the room"
-msgstr ""
+msgstr "参加する時のトーク履歴の数"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
@@ -571,7 +584,7 @@ msgstr "入力中であることを通知"
 #: main/src/ui/contact_details/settings_provider.vala:33
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "既読状態を送信"
 
 #: main/src/ui/contact_details/settings_provider.vala:38
 #: main/src/ui/contact_details/settings_provider.vala:47
@@ -665,7 +678,7 @@ msgstr "代わりにサインイン"
 msgid "Pick another server"
 msgstr "別のサーバーを選択"
 
-#: main/data/manage_accounts/add_account_dialog.ui:543
+#: main/data/manage_accounts/add_account_dialog.ui:542
 msgid "All set up!"
 msgstr "すべてのセットアップが完了しました！"
 
@@ -679,11 +692,11 @@ msgstr "非暗号化"
 
 #: main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "キーボードショートカット"
 
 #: main/data/menu_app.ui:21
 msgid "About Dino"
-msgstr ""
+msgstr "Dino について"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -695,6 +708,9 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino はオープンソースの現代的なデスクトップ向けチャットクライアントです。プラ"
+"イバシーを考慮しつつ、シンプルで信頼できる Jabber/XMPP エクスペリエンスの提供"
+"を第一に考えて開発されています。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -702,6 +718,8 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"OMEMO と OpenPGP を利用したエンドツーエンド暗号化に対応しており、既読状態の送"
+"信や入力通知などのプライバシー関連の設定も可能です。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
@@ -712,7 +730,7 @@ msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
-msgstr "会話中のメインウィンドウ"
+msgstr "トーク中のメインウィンドウ"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
@@ -736,19 +754,19 @@ msgstr "連絡先を追加"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: main/data/shortcuts.ui:32
 msgid "Navigation"
-msgstr ""
+msgstr "ナビゲーション"
 
 #: main/data/shortcuts.ui:37
 msgid "Jump to next conversation"
-msgstr ""
+msgstr "次のトークへ移動"
 
 #: main/data/shortcuts.ui:44
 msgid "Jump to previous conversation"
-msgstr ""
+msgstr "前のトークへ移動"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
@@ -769,10 +787,12 @@ msgstr "スペルを確認するか、フィルターを消去してみてくだ
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
 msgstr ""
+"トークを始めたりトークルームに参加したりするには、ここをクリックしてくださ"
+"い。"
 
 #: main/data/unified_main_content.ui:147
 msgid "You have no open chats"
-msgstr ""
+msgstr "表示するトークはまだありません"
 
 #~ msgid "Failed connecting to %s"
 #~ msgstr "%s への接続に失敗しました"

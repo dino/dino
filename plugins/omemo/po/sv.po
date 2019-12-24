@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-19 02:35+0100\n"
+"POT-Creation-Date: 2019-12-24 14:38+0100\n"
 "PO-Revision-Date: 2019-08-14 11:23+0000\n"
 "Language-Team: none\n"
 "Language: sv\n"
@@ -106,7 +106,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:203
+#: plugins/omemo/src/ui/contact_details_dialog.vala:256
 msgid "Reject key"
 msgstr "Avvisa nyckeln"
 
@@ -118,7 +118,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:198
+#: plugins/omemo/src/ui/contact_details_dialog.vala:251
 msgid "Accept key"
 msgstr "Acceptera nyckeln"
 
@@ -193,54 +193,54 @@ msgstr ""
 msgid "Back"
 msgstr "Tillbaka"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:43
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "OMEMO Key Management"
 msgstr "OMEMO-nyckelhantering"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:44
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "Automatically accept new keys"
 msgstr "Acceptera automatiskt nya nycklar"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:45
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid ""
 "When this contact adds new encryption keys to their account, automatically "
 "accept them."
 msgstr "Acceptera automatiskt nya nycklar som läggs till av denna kontakt."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
 msgstr "Egen nyckel"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+#: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New keys"
 msgstr "Ny nyckel"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+#: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Associated keys"
 msgstr "Kopplade nycklar"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
+#: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
 msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:77
+#: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr "Acceptera automatiskt nya nycklar som du läggs till ditt konto."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:265
+#: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
 msgstr "Accepterad"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:270
+#: plugins/omemo/src/ui/contact_details_dialog.vala:324
 msgid "Rejected"
 msgstr "Avvisad"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:275
+#: plugins/omemo/src/ui/contact_details_dialog.vala:329
 msgid "Verified"
 msgstr "Verifierad"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:282
+#: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
 msgstr "Oanvänd"
 

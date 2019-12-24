@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-19 02:35+0100\n"
-"PO-Revision-Date: 2019-07-09 01:01+0000\n"
+"POT-Creation-Date: 2019-12-24 14:38+0100\n"
+"PO-Revision-Date: 2019-12-21 12:21+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.8-dev\n"
+"X-Generator: Weblate 3.10\n"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
@@ -53,8 +53,8 @@ msgid "Deny"
 msgstr "拒绝"
 
 #: main/src/ui/notifications.vala:112
-#: main/src/ui/manage_accounts/add_account_dialog.vala:239
-#: main/src/ui/add_conversation/conference_details_fragment.vala:181
+#: main/src/ui/manage_accounts/add_account_dialog.vala:258
+#: main/src/ui/add_conversation/conference_details_fragment.vala:188
 #, c-format
 msgid "Could not connect to %s"
 msgstr "无法连接到%s"
@@ -86,9 +86,9 @@ msgstr "选择头像"
 msgid "Select"
 msgstr "选择"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:17
-#: main/src/ui/add_conversation/add_conference_dialog.vala:124
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:15
+#: main/src/ui/add_conversation/add_conference_dialog.vala:122
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -128,46 +128,58 @@ msgstr "无效的 TLS 证书"
 msgid "Error"
 msgstr "错误"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:81
+#: main/src/ui/manage_accounts/add_account_dialog.vala:82
 msgid "Add Account"
 msgstr "添加帐号"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:158
+#: main/src/ui/manage_accounts/add_account_dialog.vala:166
 #, c-format
 msgid "Sign in to %s"
 msgstr "登录到%s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:202
+#: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
 msgid "You can now start using %s"
 msgstr "您现在可以开始使用%s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:256
+#: main/src/ui/manage_accounts/add_account_dialog.vala:263
+#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:306
+#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+#: main/src/ui/add_conversation/conference_details_fragment.vala:191
+msgid "Invalid address"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"
 msgstr "错误的用户名或密码"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:289
+#: main/src/ui/manage_accounts/add_account_dialog.vala:281
+msgid "Something went wrong"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:321
 msgid "No response from server"
 msgstr "服务器未响应"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:295
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
 #, c-format
 msgid "Register on %s"
 msgstr "在 %s 注册"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:298
+#: main/src/ui/manage_accounts/add_account_dialog.vala:330
 msgid "The server requires to sign up through a website"
 msgstr "服务器要求在网站上注册"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:300
+#: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open Registration"
 msgstr "开放注册"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:312
+#: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
 msgstr "注册"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:314
+#: main/src/ui/manage_accounts/add_account_dialog.vala:346
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "检查 %s 以获取如何注册的信息"
@@ -213,17 +225,17 @@ msgstr[0] "%i 分钟以前"
 msgid "Just now"
 msgstr "刚刚"
 
-#: main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:28
-#: main/src/ui/unified_window.vala:257 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/src/ui/unified_window.vala:249 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "加入频道"
 
-#: main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:68
-#: main/src/ui/add_conversation/add_conference_dialog.vala:144
-#: main/src/ui/add_conversation/conference_details_fragment.vala:151
+#: main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:66
+#: main/src/ui/add_conversation/add_conference_dialog.vala:142
+#: main/src/ui/add_conversation/conference_details_fragment.vala:157
 msgid "Join"
 msgstr "加入"
 
@@ -241,22 +253,22 @@ msgstr "添加"
 msgid "Save"
 msgstr "保存"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:49
-#: main/src/ui/add_conversation/add_conference_dialog.vala:120
+#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:118
 #: main/data/manage_accounts/add_account_dialog.ui:99
 #: main/data/manage_accounts/add_account_dialog.ui:410
 #: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
 msgstr "下一个"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:149
+#: main/src/ui/add_conversation/add_conference_dialog.vala:147
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "返回"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:256
+#: main/src/ui/unified_window.vala:248
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
@@ -267,59 +279,59 @@ msgstr "开始聊天"
 msgid "Start"
 msgstr "开始"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Joining…"
 msgstr "加入中…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:162
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Password required to enter room"
 msgstr "要加入房间需要输入密码"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:167
+#: main/src/ui/add_conversation/conference_details_fragment.vala:174
 msgid "Banned from joining or creating conference"
 msgstr "被禁止加入或创建聊天室"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:169
+#: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Room does not exist"
 msgstr "房间不存在"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:171
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Not allowed to create room"
 msgstr "不允许创建房间"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:173
+#: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Members-only room"
 msgstr "仅限会员的房间"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:176
+#: main/src/ui/add_conversation/conference_details_fragment.vala:183
 msgid "Choose a different nick"
 msgstr "选择一个不同的昵称"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:178
+#: main/src/ui/add_conversation/conference_details_fragment.vala:185
 msgid "Too many occupants in room"
 msgstr "房间内人数过多"
 
-#: main/src/ui/unified_window.vala:235
+#: main/src/ui/unified_window.vala:227
 msgid "Welcome to Dino!"
 msgstr "欢迎来到 Dino！"
 
-#: main/src/ui/unified_window.vala:236
+#: main/src/ui/unified_window.vala:228
 msgid "Sign in or create an account to get started."
 msgstr ""
 
-#: main/src/ui/unified_window.vala:237
+#: main/src/ui/unified_window.vala:229
 msgid "Set up account"
 msgstr "设置帐户"
 
-#: main/src/ui/unified_window.vala:245
+#: main/src/ui/unified_window.vala:237
 msgid "No active accounts"
 msgstr "没有激活的帐号"
 
-#: main/src/ui/unified_window.vala:246
+#: main/src/ui/unified_window.vala:238
 msgid "Manage accounts"
 msgstr "管理帐号"
 
-#: main/src/ui/unified_window.vala:255
+#: main/src/ui/unified_window.vala:247
 msgid "No active conversations"
 msgstr "没有激活的会话"
 
@@ -354,31 +366,31 @@ msgstr "今天"
 msgid "%a, %b %d"
 msgstr "%a，%b%d日"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:146
+#: main/src/ui/conversation_summary/chat_state_populator.vala:145
 #, c-format
 msgid "%s, %s and %i others"
 msgstr "%s、%s 以及 %i 个其他人"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#: main/src/ui/conversation_summary/chat_state_populator.vala:147
 #, c-format
 msgid "%s, %s and %s"
 msgstr "%s、%s 和 %s"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#: main/src/ui/conversation_summary/chat_state_populator.vala:149
 #, c-format
 msgid "%s and %s"
 msgstr "%s 和 %s"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:155
+#: main/src/ui/conversation_summary/chat_state_populator.vala:154
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "正在输入…"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+#: main/src/ui/conversation_summary/chat_state_populator.vala:156
 msgid "has stopped typing"
 msgstr "已经停止输入"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:60
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:59
 msgid "Message too long"
 msgstr "消息太长"
 
@@ -665,7 +677,7 @@ msgstr "代替登录"
 msgid "Pick another server"
 msgstr "选择另外一个服务器"
 
-#: main/data/manage_accounts/add_account_dialog.ui:543
+#: main/data/manage_accounts/add_account_dialog.ui:542
 msgid "All set up!"
 msgstr "都准备好了！"
 
@@ -678,12 +690,13 @@ msgid "Unencrypted"
 msgstr "未加密"
 
 #: main/data/menu_app.ui:17
+#, fuzzy
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "键盘快捷键"
 
 #: main/data/menu_app.ui:21
 msgid "About Dino"
-msgstr ""
+msgstr "关于 Dino"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -739,11 +752,11 @@ msgstr "增加联系人"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
-msgstr ""
+msgstr "常规"
 
 #: main/data/shortcuts.ui:32
 msgid "Navigation"
-msgstr ""
+msgstr "导航"
 
 #: main/data/shortcuts.ui:37
 msgid "Jump to next conversation"

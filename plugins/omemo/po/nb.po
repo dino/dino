@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-19 02:35+0100\n"
+"POT-Creation-Date: 2019-12-24 14:38+0100\n"
 "PO-Revision-Date: 2019-12-11 03:27+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/nb_NO/>\n"
@@ -107,7 +107,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:203
+#: plugins/omemo/src/ui/contact_details_dialog.vala:256
 msgid "Reject key"
 msgstr "Avslå nøkkel"
 
@@ -120,7 +120,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:198
+#: plugins/omemo/src/ui/contact_details_dialog.vala:251
 msgid "Accept key"
 msgstr "Godta nøkkel"
 
@@ -192,15 +192,15 @@ msgstr ""
 msgid "Back"
 msgstr "Tilbake"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:43
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "OMEMO Key Management"
 msgstr "OMEMO-nøkkelhåndtering"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:44
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "Automatically accept new keys"
 msgstr "Godta nye nøkler automatisk"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:45
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid ""
 "When this contact adds new encryption keys to their account, automatically "
 "accept them."
@@ -208,41 +208,41 @@ msgstr ""
 "Når denne kontakten legger nye krypteringsnøkler til kontoen sin, godta dem "
 "automatisk."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
 msgstr "Egen nøkkel"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+#: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New keys"
 msgstr "Nye nøkler"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+#: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Associated keys"
 msgstr "Tilknyttede nøkler"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
+#: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
 msgstr "Inaktive nøkler"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:77
+#: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
 "Godta dem automatisk når du legger nye krypteringsnøkler til kontoen din."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:265
+#: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
 msgstr "Godtatt"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:270
+#: plugins/omemo/src/ui/contact_details_dialog.vala:324
 msgid "Rejected"
 msgstr "Avslått"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:275
+#: plugins/omemo/src/ui/contact_details_dialog.vala:329
 msgid "Verified"
 msgstr "Bekreftet"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:282
+#: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
 msgstr "Ubrukt"
 

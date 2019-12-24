@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-19 02:35+0100\n"
-"PO-Revision-Date: 2019-12-11 03:27+0000\n"
+"POT-Creation-Date: 2019-12-24 14:38+0100\n"
+"PO-Revision-Date: 2019-12-21 12:21+0000\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/"
 "translations/gl/>\n"
 "Language: gl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 3.10\n"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
@@ -53,8 +53,8 @@ msgid "Deny"
 msgstr "Rexeitar"
 
 #: main/src/ui/notifications.vala:112
-#: main/src/ui/manage_accounts/add_account_dialog.vala:239
-#: main/src/ui/add_conversation/conference_details_fragment.vala:181
+#: main/src/ui/manage_accounts/add_account_dialog.vala:258
+#: main/src/ui/add_conversation/conference_details_fragment.vala:188
 #, c-format
 msgid "Could not connect to %s"
 msgstr "Non se conectou a %s"
@@ -86,9 +86,9 @@ msgstr "Escoller imaxe do perfil"
 msgid "Select"
 msgstr "Escoller"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:17
-#: main/src/ui/add_conversation/add_conference_dialog.vala:124
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:15
+#: main/src/ui/add_conversation/add_conference_dialog.vala:122
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -128,46 +128,58 @@ msgstr "Certificado do TLS non válido"
 msgid "Error"
 msgstr "Erro"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:81
+#: main/src/ui/manage_accounts/add_account_dialog.vala:82
 msgid "Add Account"
 msgstr "Engadir conta"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:158
+#: main/src/ui/manage_accounts/add_account_dialog.vala:166
 #, c-format
 msgid "Sign in to %s"
 msgstr "Conectar con %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:202
+#: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
 msgid "You can now start using %s"
 msgstr "Agora xa pode comezar a utilizar %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:256
+#: main/src/ui/manage_accounts/add_account_dialog.vala:263
+#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:306
+#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+#: main/src/ui/add_conversation/conference_details_fragment.vala:191
+msgid "Invalid address"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"
 msgstr "Usuario ou  contrasinal incorrectos"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:289
+#: main/src/ui/manage_accounts/add_account_dialog.vala:281
+msgid "Something went wrong"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:321
 msgid "No response from server"
 msgstr "Sen resposta do servidor"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:295
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
 #, c-format
 msgid "Register on %s"
 msgstr "Rexistrarse en %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:298
+#: main/src/ui/manage_accounts/add_account_dialog.vala:330
 msgid "The server requires to sign up through a website"
 msgstr "O servidor precisa que se rexistre a través dun sitio web"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:300
+#: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open Registration"
 msgstr "Rexistro aberto"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:312
+#: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
 msgstr "Rexistrar"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:314
+#: main/src/ui/manage_accounts/add_account_dialog.vala:346
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Comprobe %s para máis información sobre o rexistro"
@@ -214,17 +226,17 @@ msgstr[1] "hai %i minutos"
 msgid "Just now"
 msgstr "Xusto agora"
 
-#: main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:28
-#: main/src/ui/unified_window.vala:257 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/src/ui/unified_window.vala:249 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Unirse a unha canle"
 
-#: main/src/ui/application.vala:189
-#: main/src/ui/add_conversation/add_conference_dialog.vala:68
-#: main/src/ui/add_conversation/add_conference_dialog.vala:144
-#: main/src/ui/add_conversation/conference_details_fragment.vala:151
+#: main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:66
+#: main/src/ui/add_conversation/add_conference_dialog.vala:142
+#: main/src/ui/add_conversation/conference_details_fragment.vala:157
 msgid "Join"
 msgstr "Unirse"
 
@@ -242,22 +254,22 @@ msgstr "Engadir"
 msgid "Save"
 msgstr "Gardar"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:49
-#: main/src/ui/add_conversation/add_conference_dialog.vala:120
+#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:118
 #: main/data/manage_accounts/add_account_dialog.ui:99
 #: main/data/manage_accounts/add_account_dialog.ui:410
 #: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
 msgstr "Seguinte"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:149
+#: main/src/ui/add_conversation/add_conference_dialog.vala:147
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Atrás"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:256
+#: main/src/ui/unified_window.vala:248
 #: main/data/conversation_list_titlebar_csd.ui:12
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
@@ -268,59 +280,59 @@ msgstr "Comezar conversa"
 msgid "Start"
 msgstr "Comezar"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:146
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Joining…"
 msgstr "Uníndose…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:162
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Password required to enter room"
 msgstr "Precisa dun contrasinal para entrar na sala"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:167
+#: main/src/ui/add_conversation/conference_details_fragment.vala:174
 msgid "Banned from joining or creating conference"
 msgstr "Non ten permiso para unirse ou crea-lo grupo"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:169
+#: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Room does not exist"
 msgstr "A sala non existe"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:171
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Not allowed to create room"
 msgstr "Non pode crea-la sala"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:173
+#: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Members-only room"
 msgstr "Sala só para membros"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:176
+#: main/src/ui/add_conversation/conference_details_fragment.vala:183
 msgid "Choose a different nick"
 msgstr "Escolla un alcume diferente"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:178
+#: main/src/ui/add_conversation/conference_details_fragment.vala:185
 msgid "Too many occupants in room"
 msgstr "Demasiada xente na sala"
 
-#: main/src/ui/unified_window.vala:235
+#: main/src/ui/unified_window.vala:227
 msgid "Welcome to Dino!"
 msgstr "Benvida a Dino!"
 
-#: main/src/ui/unified_window.vala:236
+#: main/src/ui/unified_window.vala:228
 msgid "Sign in or create an account to get started."
 msgstr "Conectarse ou crear unha conta para comezar."
 
-#: main/src/ui/unified_window.vala:237
+#: main/src/ui/unified_window.vala:229
 msgid "Set up account"
 msgstr "Configurar conta"
 
-#: main/src/ui/unified_window.vala:245
+#: main/src/ui/unified_window.vala:237
 msgid "No active accounts"
 msgstr "Sen contas activas"
 
-#: main/src/ui/unified_window.vala:246
+#: main/src/ui/unified_window.vala:238
 msgid "Manage accounts"
 msgstr "Xestionar contas"
 
-#: main/src/ui/unified_window.vala:255
+#: main/src/ui/unified_window.vala:247
 msgid "No active conversations"
 msgstr "Sen parolas activas"
 
@@ -355,32 +367,32 @@ msgstr "Hoxe"
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:146
+#: main/src/ui/conversation_summary/chat_state_populator.vala:145
 #, c-format
 msgid "%s, %s and %i others"
 msgstr "%s, %s e %i outros"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:148
+#: main/src/ui/conversation_summary/chat_state_populator.vala:147
 #, c-format
 msgid "%s, %s and %s"
 msgstr "%s, %s e %s"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:150
+#: main/src/ui/conversation_summary/chat_state_populator.vala:149
 #, c-format
 msgid "%s and %s"
 msgstr "%s e %s"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:155
+#: main/src/ui/conversation_summary/chat_state_populator.vala:154
 msgid "is typing…"
 msgid_plural "are typing…"
 msgstr[0] "está a escribir…"
 msgstr[1] "están a escribir…"
 
-#: main/src/ui/conversation_summary/chat_state_populator.vala:157
+#: main/src/ui/conversation_summary/chat_state_populator.vala:156
 msgid "has stopped typing"
 msgstr "deixou de escribir"
 
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:60
+#: main/src/ui/conversation_summary/content_item_widget_factory.vala:59
 msgid "Message too long"
 msgstr "Mensaxe demasiado longa"
 
@@ -669,7 +681,7 @@ msgstr "Iniciar sesión no tocante diso"
 msgid "Pick another server"
 msgstr "Escoller outro servidor"
 
-#: main/data/manage_accounts/add_account_dialog.ui:543
+#: main/data/manage_accounts/add_account_dialog.ui:542
 msgid "All set up!"
 msgstr "Todo feito!"
 
@@ -683,11 +695,11 @@ msgstr "Non cifrado"
 
 #: main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Atallos de teclado"
 
 #: main/data/menu_app.ui:21
 msgid "About Dino"
-msgstr ""
+msgstr "Acerca de Dino"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -747,19 +759,19 @@ msgstr "Engadir contacto"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
-msgstr ""
+msgstr "Xeral"
 
 #: main/data/shortcuts.ui:32
 msgid "Navigation"
-msgstr ""
+msgstr "Navegación"
 
 #: main/data/shortcuts.ui:37
 msgid "Jump to next conversation"
-msgstr ""
+msgstr "Ir a seguinte conversa"
 
 #: main/data/shortcuts.ui:44
 msgid "Jump to previous conversation"
-msgstr ""
+msgstr "Ir a conversa anterior"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
