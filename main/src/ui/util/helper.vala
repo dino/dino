@@ -251,16 +251,19 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     bool already_escaped = already_escaped_;
 
     if (parse_links) {
-        Regex url_regex = /(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/;
+        string[] allowed_schemes = new string[] {"http", "https", "ftp", "ftps", "irc", "ircs", "xmpp", "mailto", "sms", "smsto", "mms", "tel", "geo", "openpgp4fpr", "im", "news", "nntp", "sip", "ssh", "bitcoin", "sftp", "magnet", "vnc"};
+        Regex url_regex = /\b((https?|ftps?|ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc):(\/\/([^\/?#,;!?)}>"'»”’ ]+)(\/([^# ,.;!?)\]}>"'»”’]|[,.;!)\]}>"'»”’][^?# ])*)?|([^\/# ,.;!?)\]}>"'»”’]|[,.;!)\]}>"'»”’][^\/?# ])*)(\?([^# ,.;!?)\]}>"'»”’]|[,.;!?)\]}>"'»”’][^# ])+)?(#([^ ,.;!?)\]}>"'»”’]|[,.;!?)\]}>"'»”’][^ ])+)?)/;
         MatchInfo match_info;
         url_regex.match(s.down(), 0, out match_info);
         if (match_info.matches())  {
             int start, end;
             match_info.fetch_pos(0, out start, out end);
             string link = s[start:end];
-            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                "<a href=\"" + Markup.escape_text(link) + "\">" + parse_add_markup(link, highlight_word, false, false, already_escaped) + "</a>" +
-                parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+            if (GLib.Uri.parse_scheme(link) in allowed_schemes) {
+                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                        "<a href=\"" + Markup.escape_text(link) + "\">" + parse_add_markup(link, highlight_word, false, false, already_escaped) + "</a>" +
+                        parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+            }
         }
     }
 
