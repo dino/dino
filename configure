@@ -1,7 +1,7 @@
 #!/bin/sh
 
 OPTS=`getopt -o "h" --long \
-help,fetch-only,no-debug,disable-fast-vapi,with-tests,\
+help,fetch-only,no-debug,disable-fast-vapi,with-tests,release,\
 enable-plugin:,disable-plugin:,\
 prefix:,program-prefix:,exec-prefix:,lib-suffix:,\
 bindir:,libdir:,includedir:,datadir:,\
@@ -18,6 +18,7 @@ PREFIX=${PREFIX:-/usr/local}
 ENABLED_PLUGINS=
 DISABLED_PLUGINS=
 BUILD_TESTS=
+BUILD_TYPE=Debug
 DISABLE_FAST_VAPI=
 LIB_SUFFIX=
 NO_DEBUG=
@@ -46,13 +47,14 @@ brackets.
 
 Configuration:
   -h, --help                 Print this help and exit
-  --fetch-only               Only fetch the files required to run ./configure
-                             without network access later and exit
-  --no-debug                 Build without debug symbols
   --disable-fast-vapi        Disable the usage of Vala compilers fast-vapi
                              feature. fast-vapi mode is slower when doing
                              clean builds, but faster when doing incremental
                              builds (during development).
+  --fetch-only               Only fetch the files required to run ./configure
+                             without network access later and exit
+  --no-debug                 Build without debug symbols
+  --release                  Configure to build an optimized release version
   --with-tests               Also build tests.
 
 Plugin configuration:
@@ -111,6 +113,7 @@ while true; do
         --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;
         --no-debug ) NO_DEBUG=yes; shift ;;
         --fetch-only ) FETCH_ONLY=yes; shift ;;
+        --release ) BUILD_TYPE=RelWithDebInfo; shift ;;
         --with-tests ) BUILD_TESTS=yes; shift ;;
         # Autotools paths
         --program-prefix ) PREFIX="$2"; shift; shift ;;
@@ -249,6 +252,7 @@ echo "$cmake_type" > .cmake_type
 echo "$ninja_version" > .ninja_version
 cmake -G "$cmake_type" \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+    -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
     -DENABLED_PLUGINS="$ENABLED_PLUGINS" \
     -DDISABLED_PLUGINS="$DISABLED_PLUGINS" \
     -DBUILD_TESTS="$BUILD_TESTS" \

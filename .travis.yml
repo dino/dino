@@ -1,11 +1,14 @@
 dist: bionic
 language: c
+env:
+  - CONFIGURE_FLAGS=
+  - CONFIGURE_FLAGS=--release
 before_install:
   - export USE_CCACHE=1
   - sudo apt-get update
   - sudo apt-get install -y cmake valac libgee-0.8-dev libsqlite3-dev libgtk-3-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev
 install:
-  - ./configure --with-tests
+  - ./configure --with-tests $CONFIGURE_FLAGS
   - make
 script:
   - build/xmpp-vala-test
