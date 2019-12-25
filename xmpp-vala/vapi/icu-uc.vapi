@@ -1,8 +1,49 @@
+[CCode (cprefix="u_")]
 namespace ICU {
 
 [CCode (cname = "UChar")]
 [IntegerType (rank = 5, min = 0, max = 65535)]
 struct Char {}
+
+[CCode (cname = "UChar*", destroy_function="g_free", has_type_id = false)]
+[SimpleType]
+struct String {
+    public static String alloc(int32 length) {
+        return (String) (Char*) new Char[length];
+    }
+
+    public static String from_string(string src) throws GLib.ConvertError {
+        ErrorCode status = ErrorCode.ZERO_ERROR;
+        int32 dest_capacity = src.length * 2 + 1;
+        String dest = alloc(dest_capacity);
+        int32 dest_length;
+        strFromUTF8(dest, dest_capacity, out dest_length, src, src.length, ref status);
+        if (status.is_failure()) {
+            throw new GLib.ConvertError.FAILED(status.errorName());
+        }
+        return dest;
+    }
+
+    public string to_string() throws GLib.ConvertError {
+        ErrorCode status = ErrorCode.ZERO_ERROR;
+        uint8[] dest = new uint8[len() * 4 + 1];
+        int32 dest_length;
+        strToUTF8(dest, out dest_length, this, -1, ref status);
+        if (status.is_failure()) {
+            throw new GLib.ConvertError.FAILED(status.errorName());
+        }
+        dest[dest_length] = 0;
+        return (string) dest;
+    }
+
+    [CCode (cname = "u_strlen")]
+    public int32 len();
+
+    [CCode (cname="u_strFromUTF8")]
+    private static void strFromUTF8(String dest, int32 dest_capacity, out int32 dest_length, string src, int32 src_length, ref ErrorCode status);
+    [CCode (cname="u_strToUTF8")]
+    private static void strToUTF8(uint8[] dest, out int32 dest_length, String src, int32 src_length, ref ErrorCode status);
+}
 
 [CCode (cname = "UErrorCode", cprefix = "U_", cheader_filename = "unicode/utypes.h")]
 enum ErrorCode {
@@ -10,6 +51,7 @@ enum ErrorCode {
     INVALID_CHAR_FOUND,
     INDEX_OUTOFBOUNDS_ERROR,
     BUFFER_OVERFLOW_ERROR,
+    STRINGPREP_PROHIBITED_ERROR,
     UNASSIGNED_CODE_POINT_FOUND,
     IDNA_STD3_ASCII_RULES_ERROR
     ;
@@ -21,7 +63,7 @@ enum ErrorCode {
     public bool is_failure();
 }
 
-[CCode (cname = "UErrorCode", cprefix = "U_", cheader_filename = "unicode/parseerr.h")]
+[CCode (cname = "UParseError", cprefix = "U_", cheader_filename = "unicode/parseerr.h")]
 struct ParseError {}
 
 [CCode (cname = "UStringPrepProfile", cprefix = "usprep_", free_function = "usprep_close", cheader_filename = "unicode/usprep.h")]
@@ -29,7 +71,7 @@ struct ParseError {}
 class PrepProfile {
     public static PrepProfile open(string path, string file_name, ref ErrorCode status);
     public static PrepProfile openByType(PrepType type, ref ErrorCode status);
-    public int32 prepare(Char* src, int32 src_length, Char* dest, int32 dest_capacity, PrepOptions options, out ParseError parse_error, ref ErrorCode status);
+    public int32 prepare(String src, int32 src_length, String dest, int32 dest_capacity, PrepOptions options, out ParseError parse_error, ref ErrorCode status);
 }
 [CCode (cname = "UStringPrepProfileType", cprefix = "USPREP_")]
 enum PrepType {

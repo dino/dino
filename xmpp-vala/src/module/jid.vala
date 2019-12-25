@@ -89,21 +89,23 @@ public class Jid {
     private static string? prepare(string? src, ICU.PrepType type, bool strict = false) throws InvalidJidError {
         if (src == null) return src;
         try {
+            ICU.ParseError error;
             ICU.ErrorCode status = ICU.ErrorCode.ZERO_ERROR;
             ICU.PrepProfile profile = ICU.PrepProfile.openByType(type, ref status);
-            long src16_length = 0;
-            string16 src16 = src.to_utf16(-1, null, out src16_length);
-            ICU.Char[] dest16 = new ICU.Char[src16_length * 2];
-            ICU.ParseError error;
-            long dest16_length = profile.prepare((ICU.Char*) src16, (int32) src16_length, dest16, dest16.length, strict ? ICU.PrepOptions.DEFAULT : ICU.PrepOptions.ALLOW_UNASSIGNED, out error, ref status);
+            ICU.String src16 = ICU.String.from_string(src);
+            int32 dest16_capacity = src16.len() * 2 + 1;
+            ICU.String dest16 = ICU.String.alloc(dest16_capacity);
+            long dest16_length = profile.prepare(src16, src16.len(), dest16, dest16_capacity, strict ? ICU.PrepOptions.DEFAULT : ICU.PrepOptions.ALLOW_UNASSIGNED, out error, ref status);
             if (status == ICU.ErrorCode.INVALID_CHAR_FOUND) {
                 throw new InvalidJidError.INVALID_CHAR("Found invalid character");
+            } else if (status == ICU.ErrorCode.STRINGPREP_PROHIBITED_ERROR) {
+                throw new InvalidJidError.INVALID_CHAR("Found prohibited character");
             } else if (status != ICU.ErrorCode.ZERO_ERROR) {
                 throw new InvalidJidError.UNKNOWN(@"Unknown error: $(status.errorName())");
             } else if (dest16_length < 0) {
                 throw new InvalidJidError.UNKNOWN("Unknown error");
             }
-            return ((string16) dest16).to_utf8(dest16_length, null, null);
+            return dest16.to_string();
         } catch (ConvertError e) {
             throw new InvalidJidError.INVALID_CHAR(@"Conversion error: $(e.message)");
         }

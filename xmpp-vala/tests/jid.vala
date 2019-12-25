@@ -10,6 +10,7 @@ class JidTest : Gee.TestCase {
         add_test("jid_valid_full", () => { test_jid_valid("test@example.com/test"); });
 
         // These should not be valid in "strict-mode"
+        add_test("jid_valid_emoji_only", () => { test_jid_valid("😅"); });
         add_test("jid_valid_emoji_local", () => { test_jid_valid("😅@example.com"); });
         add_test("jid_valid_emoji_resource", () => { test_jid_valid("test@example.com/😅"); });
         add_test("jid_valid_emoji_domain", () => { test_jid_valid("test@😅.com"); });
@@ -66,7 +67,7 @@ class JidTest : Gee.TestCase {
             var t2 = new Jid(jid2);
             fail_if_not_eq_str(t1.to_string(), t2.to_string());
         } catch (Error e) {
-            fail_if_reached();
+            fail_if_reached(@"Throws $(e.message)");
         }
     }
 
@@ -75,7 +76,7 @@ class JidTest : Gee.TestCase {
             var t1 = new Jid(jid1);
             fail_if_not_eq_str(t1.to_string(), jid2);
         } catch (Error e) {
-            fail_if_reached();
+            fail_if_reached(@"Throws $(e.message)");
         }
     }
 
@@ -85,7 +86,7 @@ class JidTest : Gee.TestCase {
             var t2 = new Jid(jid2);
             fail_if_eq_str(t1.to_string(), t2.to_string());
         } catch (Error e) {
-            fail_if_reached();
+            fail_if_reached(@"Throws $(e.message)");
         }
     }
 }
