@@ -10,8 +10,8 @@ public class FileProvider : Dino.FileProvider, Object {
 
     private StreamInteractor stream_interactor;
     private Dino.Database dino_db;
-    private Regex url_regex = /^(?i)\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))$/;
-    private Regex omemo_url_regex = /^aesgcm:\/\/(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$/;
+    private static Regex http_url_regex = /^https?:\/\/([^\s#]*)$/; // Spaces are invalid in URLs and we can't use fragments for downloads
+    private static Regex omemo_url_regex = /^aesgcm:\/\/(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$/;
 
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
@@ -35,15 +35,11 @@ public class FileProvider : Dino.FileProvider, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            if (outer.url_regex.match(message.body)) {
-                string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(stanza);
-
-                bool normal_file = oob_url != null && oob_url == message.body;
-                bool omemo_file = outer.omemo_url_regex.match(message.body);
-
-                if (normal_file || omemo_file) {
-                    yield outer.on_file_message(message, conversation);
-                }
+            string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(stanza);
+            bool normal_file = oob_url != null && oob_url == message.body && FileProvider.http_url_regex.match(message.body);
+            bool omemo_file = FileProvider.omemo_url_regex.match(message.body);
+            if (normal_file || omemo_file) {
+                yield outer.on_file_message(message, conversation);
             }
             return false;
         }

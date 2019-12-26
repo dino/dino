@@ -5,6 +5,8 @@ using Xmpp;
 
 namespace Dino.Ui.Util {
 
+private static Regex url_regex;
+private const string[] allowed_schemes = {"http", "https", "ftp", "ftps", "irc", "ircs", "xmpp", "mailto", "sms", "smsto", "mms", "tel", "geo", "openpgp4fpr", "im", "news", "nntp", "sip", "ssh", "bitcoim", "sftp", "magnet", "vnc"};
 private const string[] tango_colors_light = {"FCE94F", "FCAF3E", "E9B96E", "8AE234", "729FCF", "AD7FA8", "EF2929"};
 private const string[] tango_colors_medium = {"EDD400", "F57900", "C17D11", "73D216", "3465A4", "75507B", "CC0000"};
 private const string[] material_colors_800 = {"D32F2F", "C2185B", "7B1FA2", "512DA8", "303F9F", "1976D2", "0288D1", "0097A7", "00796B", "388E3C", "689F38", "AFB42B", "FFA000", "F57C00", "E64A19", "5D4037"};
@@ -246,15 +248,20 @@ public static bool is_24h_format() {
     return settings_format == "24h" || p_format == " ";
 }
 
+public static Regex get_url_regex() {
+    if (url_regex == null) {
+        url_regex = /\b((https?|ftps?|ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc|urn):(\/\/([^\/?#,;!)}>"'»”’\s]+)(\/([^#\s,.;!?)\]}>"'»”’]|[,.;!)\]}>"'»”’][^?#\s])*)?|([^\/#\s,.;!?)\]}>"'»”’]|[,.;!)\]}>"'»”’][^\/?#\s])*)(\?([^#\s,.;!?)\]}>"'»”’]|[,.;!?)\]}>"'»”’][^#\s])+)?(#([^\s,.;!?)\]}>"'»”’]|[,.;!?)\]}>"'»”’][^\s])+)?)/;
+    }
+    return url_regex;
+}
+
 public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup, bool already_escaped_ = false) {
     string s = s_;
     bool already_escaped = already_escaped_;
 
     if (parse_links) {
-        string[] allowed_schemes = new string[] {"http", "https", "ftp", "ftps", "irc", "ircs", "xmpp", "mailto", "sms", "smsto", "mms", "tel", "geo", "openpgp4fpr", "im", "news", "nntp", "sip", "ssh", "bitcoin", "sftp", "magnet", "vnc"};
-        Regex url_regex = /\b((https?|ftps?|ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc):(\/\/([^\/?#,;!?)}>"'»”’ ]+)(\/([^# ,.;!?)\]}>"'»”’]|[,.;!)\]}>"'»”’][^?# ])*)?|([^\/# ,.;!?)\]}>"'»”’]|[,.;!)\]}>"'»”’][^\/?# ])*)(\?([^# ,.;!?)\]}>"'»”’]|[,.;!?)\]}>"'»”’][^# ])+)?(#([^ ,.;!?)\]}>"'»”’]|[,.;!?)\]}>"'»”’][^ ])+)?)/;
         MatchInfo match_info;
-        url_regex.match(s.down(), 0, out match_info);
+        get_url_regex().match(s.down(), 0, out match_info);
         if (match_info.matches())  {
             int start, end;
             match_info.fetch_pos(0, out start, out end);
