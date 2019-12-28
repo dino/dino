@@ -11,7 +11,7 @@ public class StreamInteractor : Object {
     public signal void account_removed(Account account);
     public signal void stream_resumed(Account account, XmppStream stream);
     public signal void stream_negotiated(Account account, XmppStream stream);
-    public signal void attached_modules(Account account, XmppStream stream);
+    public signal void stream_attached_modules(Account account, XmppStream stream);
 
     public ModuleManager module_manager;
     public ConnectionManager connection_manager;
@@ -22,6 +22,9 @@ public class StreamInteractor : Object {
         connection_manager = new ConnectionManager(module_manager);
 
         connection_manager.stream_opened.connect(on_stream_opened);
+        connection_manager.stream_attached_modules.connect((account, stream) => {
+            stream_attached_modules(account, stream);
+        });
     }
 
     public void connect_account(Account account) {

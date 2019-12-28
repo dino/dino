@@ -11,7 +11,7 @@ else ()
 endif ()
 
 # Prepare Plugins
-set(DEFAULT_PLUGINS omemo;openpgp;http-files)
+set(DEFAULT_PLUGINS omemo;openpgp;http-files;ice)
 foreach (plugin ${DEFAULT_PLUGINS})
     if ("$CACHE{DINO_PLUGIN_ENABLED_${plugin}}" STREQUAL "")
         if (NOT DEFINED DINO_PLUGIN_ENABLED_${plugin}})

@@ -5,6 +5,7 @@ using Xmpp.Xep;
 namespace Xmpp.Xep.JingleSocks5Bytestreams {
 
 private const string NS_URI = "urn:xmpp:jingle:transports:s5b:1";
+private const int NEGOTIATION_TIMEOUT = 3;
 
 public class Module : Jingle.Transport, XmppStreamModule {
     public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0260_jingle_socks5_bytestreams");
@@ -33,7 +34,7 @@ public class Module : Jingle.Transport, XmppStreamModule {
     public int transport_priority() {
         return 1;
     }
-    private Gee.List<Candidate> get_local_candidates(XmppStream stream) {
+    private Gee.List<Candidate> get_proxies(XmppStream stream) {
         Gee.List<Candidate> result = new ArrayList<Candidate>();
         int i = 1 << 15;
         foreach (Socks5Bytestreams.Proxy proxy in stream.get_module(Socks5Bytestreams.Module.IDENTITY).get_proxies(stream)) {
@@ -42,16 +43,57 @@ public class Module : Jingle.Transport, XmppStreamModule {
         }
         return result;
     }
+    private Gee.List<Candidate> start_local_listeners(XmppStream stream, Jid local_full_jid, string dstaddr, out LocalListener? local_listener) {
+        Gee.List<Candidate> result = new ArrayList<Candidate>();
+        SocketListener listener = new SocketListener();
+        int i = 1 << 15;
+        foreach (string ip_address in stream.get_module(Socks5Bytestreams.Module.IDENTITY).get_local_ip_addresses()) {
+            InetSocketAddress addr = new InetSocketAddress.from_string(ip_address, 0);
+            SocketAddress effective_any;
+            string cid = random_uuid();
+            try {
+                listener.add_address(addr, SocketType.STREAM, SocketProtocol.DEFAULT, new StringWrapper(cid), out effective_any);
+            } catch (Error e) {
+                continue;
+            }
+            InetSocketAddress effective = (InetSocketAddress)effective_any;
+            result.add(new Candidate.build(cid, ip_address, local_full_jid, (int)effective.port, i, CandidateType.DIRECT));
+            i -= 1;
+        }
+        if (!result.is_empty) {
+            local_listener = new LocalListener(listener, dstaddr);
+            local_listener.start();
+        } else {
+            local_listener = new LocalListener.empty();
+        }
+        return result;
+    }
+    private void select_candidates(XmppStream stream, Jid local_full_jid, string dstaddr, Parameters result) {
+        result.local_candidates.add_all(get_proxies(stream));
+        result.local_candidates.add_all(start_local_listeners(stream, local_full_jid, dstaddr, out result.listener));
+        result.local_candidates.sort((c1, c2) => {
+            if (c1.priority < c2.priority) { return 1; }
+            if (c1.priority > c2.priority) { return -1; }
+            return 0;
+        });
+    }
     public Jingle.TransportParameters create_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid) {
         Parameters result = new Parameters.create(local_full_jid, peer_full_jid, random_uuid());
-        result.local_candidates.add_all(get_local_candidates(stream));
+        string dstaddr = calculate_dstaddr(result.sid, local_full_jid, peer_full_jid);
+        select_candidates(stream, local_full_jid, dstaddr, result);
         return result;
     }
     public Jingle.TransportParameters parse_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
         Parameters result = Parameters.parse(local_full_jid, peer_full_jid, transport);
-        result.local_candidates.add_all(get_local_candidates(stream));
+        string dstaddr = calculate_dstaddr(result.sid, local_full_jid, peer_full_jid);
+        select_candidates(stream, local_full_jid, dstaddr, result);
         return result;
     }
+}
+
+private string calculate_dstaddr(string sid, Jid first_jid, Jid second_jid) {
+    string hashed = sid + first_jid.to_string() + second_jid.to_string();
+    return Checksum.compute_for_string(ChecksumType.SHA1, hashed);
 }
 
 public enum CandidateType {
@@ -156,6 +198,142 @@ bool bytes_equal(uint8[] a, uint8[] b) {
     return true;
 }
 
+class StringWrapper : GLib.Object {
+    public string str { get; set; }
+
+    public StringWrapper(string str) {
+        this.str = str;
+    }
+}
+
+class LocalListener {
+    SocketListener? inner;
+    string dstaddr;
+    HashMap<string, SocketConnection> connections = new HashMap<string, SocketConnection>();
+
+    public LocalListener(SocketListener inner, string dstaddr) {
+        this.inner = inner;
+        this.dstaddr = dstaddr;
+    }
+    public LocalListener.empty() {
+        this.inner = null;
+        this.dstaddr = "";
+    }
+
+    public void start() {
+        if (inner == null) {
+            return;
+        }
+        run.begin();
+    }
+    async void run() {
+        while (true) {
+            Object cid;
+            SocketConnection conn;
+            try {
+                conn = yield inner.accept_async(null, out cid);
+            } catch (Error e) {
+                break;
+            }
+            handle_conn.begin(((StringWrapper)cid).str, conn);
+        }
+    }
+    async void handle_conn(string cid, SocketConnection conn) {
+        conn.socket.timeout = NEGOTIATION_TIMEOUT;
+        size_t read;
+        size_t written;
+        uint8[] read_buffer = new uint8[1024];
+        ByteArray write_buffer = new ByteArray();
+
+        try {
+            // 05 SOCKS version 5
+            // ?? number of authentication methods
+            yield conn.input_stream.read_all_async(read_buffer[0:2], GLib.Priority.DEFAULT, null, out read);
+            if (read != 2) {
+                throw new IOError.PROXY_FAILED("wanted client hello message consisting of 2 bytes, only got %d bytes".printf((int)read));
+            }
+            if (read_buffer[0] != 0x05 || read_buffer[1] == 0) {
+                throw new IOError.PROXY_FAILED("wanted 05 xx, got %02x %02x".printf(read_buffer[0], read_buffer[1]));
+            }
+            int num_auth_methods = read_buffer[1];
+            // ?? authentication method (num_auth_methods times)
+            yield conn.input_stream.read_all_async(read_buffer[0:num_auth_methods], GLib.Priority.DEFAULT, null, out read);
+            bool found_null_auth = false;
+            for (int i = 0; i < read; i++) {
+                if (read_buffer[i] == 0x00) {
+                    found_null_auth = true;
+                    break;
+                }
+            }
+            if (read != num_auth_methods || !found_null_auth) {
+                throw new IOError.PROXY_FAILED("peer didn't offer null auth");
+            }
+            // 05 SOCKS version 5
+            // 00 nop authentication
+            yield conn.output_stream.write_all_async({0x05, 0x00}, GLib.Priority.DEFAULT, null, out written);
+
+            // 05 SOCKS version 5
+            // 01 connect
+            // 00 reserved
+            // 03 address type: domain name
+            // ?? length of the domain
+            // .. domain
+            // 00 port 0 (upper half)
+            // 00 port 0 (lower half)
+            yield conn.input_stream.read_all_async(read_buffer[0:4], GLib.Priority.DEFAULT, null, out read);
+            if (read != 4) {
+                throw new IOError.PROXY_FAILED("wanted connect message consisting of 4 bytes, only got %d bytes".printf((int)read));
+            }
+            if (read_buffer[0] != 0x05 || read_buffer[1] != 0x01 || read_buffer[3] != 0x03) {
+                throw new IOError.PROXY_FAILED("wanted 05 00 ?? 03, got %02x %02x %02x %02x".printf(read_buffer[0], read_buffer[1], read_buffer[2], read_buffer[3]));
+            }
+            yield conn.input_stream.read_all_async(read_buffer[0:1], GLib.Priority.DEFAULT, null, out read);
+            if (read != 1) {
+                throw new IOError.PROXY_FAILED("wanted length of dstaddr consisting of 1 byte, only got %d bytes".printf((int)read));
+            }
+            int dstaddr_len = read_buffer[0];
+            yield conn.input_stream.read_all_async(read_buffer[0:dstaddr_len+2], GLib.Priority.DEFAULT, null, out read);
+            if (read != dstaddr_len + 2) {
+                throw new IOError.PROXY_FAILED("wanted dstaddr and port consisting of %d bytes, got %d bytes".printf(dstaddr_len + 2, (int)read));
+            }
+            if (!bytes_equal(read_buffer[0:dstaddr_len], dstaddr.data)) {
+                string repr = ((string)read_buffer[0:dstaddr.length]).make_valid().escape();
+                throw new IOError.PROXY_FAILED(@"wanted dstaddr $(dstaddr), got $(repr)");
+            }
+            if (read_buffer[dstaddr_len] != 0x00 || read_buffer[dstaddr_len + 1] != 0x00) {
+                throw new IOError.PROXY_FAILED("wanted 00 00, got %02x %02x".printf(read_buffer[dstaddr_len], read_buffer[dstaddr_len + 1]));
+            }
+
+            // 05 SOCKS version 5
+            // 00 success
+            // 00 reserved
+            // 03 address type: domain name
+            // ?? length of the domain
+            // .. domain
+            // 00 port 0 (upper half)
+            // 00 port 0 (lower half)
+            write_buffer.append({0x05, 0x00, 0x00, 0x03});
+            write_buffer.append({(uint8)dstaddr.length});
+            write_buffer.append(dstaddr.data);
+            write_buffer.append({0x00, 0x00});
+            yield conn.output_stream.write_all_async(write_buffer.data, GLib.Priority.DEFAULT, null, out written);
+
+            conn.socket.timeout = 0;
+            if (!connections.has_key(cid)) {
+                connections[cid] = conn;
+            }
+        } catch (Error e) {
+        }
+    }
+
+    public SocketConnection? get_connection(string cid) {
+        if (!connections.has_key(cid)) {
+            return null;
+        }
+        return connections[cid];
+    }
+}
+
 class Parameters : Jingle.TransportParameters, Object {
     public Jingle.Role role { get; private set; }
     public string sid { get; private set; }
@@ -163,6 +341,7 @@ class Parameters : Jingle.TransportParameters, Object {
     public string local_dstaddr { get; private set; }
     public Gee.List<Candidate> local_candidates = new ArrayList<Candidate>();
     public Gee.List<Candidate> remote_candidates = new ArrayList<Candidate>();
+    public LocalListener? listener = null;
 
     Jid local_full_jid;
     Jid peer_full_jid;
@@ -179,10 +358,6 @@ class Parameters : Jingle.TransportParameters, Object {
     SourceFunc waiting_for_activation_callback;
     bool waiting_for_activation_error = false;
 
-    private static string calculate_dstaddr(string sid, Jid first_jid, Jid second_jid) {
-        string hashed = sid + first_jid.to_string() + second_jid.to_string();
-        return Checksum.compute_for_string(ChecksumType.SHA1, hashed);
-    }
     private Parameters(Jingle.Role role, string sid, Jid local_full_jid, Jid peer_full_jid, string? remote_dstaddr) {
         this.role = role;
         this.sid = sid;
@@ -355,7 +530,21 @@ class Parameters : Jingle.TransportParameters, Object {
                 wait_for_remote_activation.begin(local_selected_candidate, local_selected_candidate_conn);
             }
         } else {
-            connect_to_local_candidate.begin(remote_selected_candidate);
+            if (remote_selected_candidate.type_ == CandidateType.DIRECT) {
+                Jingle.Session? strong = session;
+                if (strong == null) {
+                    return;
+                }
+                SocketConnection? conn = listener.get_connection(remote_selected_candidate.cid);
+                if (conn == null) {
+                    // Remote hasn't actually connected to us?!
+                    strong.set_transport_connection(hack, null);
+                    return;
+                }
+                strong.set_transport_connection(hack, conn);
+            } else {
+                connect_to_local_candidate.begin(remote_selected_candidate);
+            }
         }
     }
     public async void wait_for_remote_activation(Candidate candidate, SocketConnection conn) {
@@ -425,7 +614,7 @@ class Parameters : Jingle.TransportParameters, Object {
         }
     }
     public async SocketConnection connect_to_socks5(Candidate candidate, string dstaddr) throws Error {
-        SocketClient socket_client = new SocketClient() { timeout=3 };
+        SocketClient socket_client = new SocketClient() { timeout=NEGOTIATION_TIMEOUT };
 
         string address = @"[$(candidate.host)]:$(candidate.port)";
         debug("Connecting to SOCKS5 server at %s", address);
@@ -444,7 +633,10 @@ class Parameters : Jingle.TransportParameters, Object {
 
         yield conn.input_stream.read_all_async(read_buffer[0:2], GLib.Priority.DEFAULT, null, out read);
         // 05 SOCKS version 5
-        // 01 success
+        // 00 nop authentication
+        if (read != 2) {
+            throw new IOError.PROXY_FAILED("wanted 05 00, only got %d bytes".printf((int)read));
+        }
         if (read_buffer[0] != 0x05 || read_buffer[1] != 0x00) {
             throw new IOError.PROXY_FAILED("wanted 05 00, got %02x %02x".printf(read_buffer[0], read_buffer[1]));
         }
@@ -472,6 +664,9 @@ class Parameters : Jingle.TransportParameters, Object {
         // .. domain
         // 00 port 0 (upper half)
         // 00 port 0 (lower half)
+        if (read != write_buffer.len) {
+            throw new IOError.PROXY_FAILED("wanted server success response consisting of %d bytes, only got %d bytes".printf((int)write_buffer.len, (int)read));
+        }
         if (read_buffer[0] != 0x05 || read_buffer[1] != 0x00 || read_buffer[3] != 0x03) {
             throw new IOError.PROXY_FAILED("wanted 05 00 ?? 03, got %02x %02x %02x %02x".printf(read_buffer[0], read_buffer[1], read_buffer[2], read_buffer[3]));
         }
@@ -486,7 +681,7 @@ class Parameters : Jingle.TransportParameters, Object {
             throw new IOError.PROXY_FAILED("wanted port 00 00, got %02x %02x".printf(read_buffer[5+dstaddr.length], read_buffer[5+dstaddr.length+1]));
         }
 
-        conn.get_socket().set_timeout(0);
+        conn.socket.timeout = 0;
 
         return conn;
     }
