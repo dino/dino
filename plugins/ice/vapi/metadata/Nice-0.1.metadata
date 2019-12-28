@@ -1,0 +1,4 @@
+Nice cheader_filename="nice.h"
+Agent.new_reliable#constructor name="create_reliable"
+PseudoTcpCallbacks#record skip
+PseudoTcpSocket#class skip

@@ -18,8 +18,12 @@ public class Proxy : Object {
     }
 }
 
+public delegate Gee.List<string> GetLocalIpAddresses();
+
 public class Module : XmppStreamModule, Iq.Handler {
     public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0065_socks5_bytestreams");
+
+    private GetLocalIpAddresses? get_local_ip_addresses_impl = null;
 
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
@@ -27,10 +31,19 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
     public override void detach(XmppStream stream) { }
 
-    public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
-
     public Gee.List<Proxy> get_proxies(XmppStream stream) {
         return stream.get_flag(Flag.IDENTITY).proxies;
+    }
+
+    public void set_local_ip_address_handler(owned GetLocalIpAddresses get_local_ip_addresses) {
+        get_local_ip_addresses_impl = (owned)get_local_ip_addresses;
+    }
+
+    public Gee.List<string> get_local_ip_addresses() {
+        if (get_local_ip_addresses_impl == null) {
+            return Gee.List.empty();
+        }
+        return get_local_ip_addresses_impl();
     }
 
     private void query_availability(XmppStream stream) {
