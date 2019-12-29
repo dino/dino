@@ -10,6 +10,7 @@ class SmileyConverter {
 
     private TextView text_input;
     private static HashMap<string, string> smiley_translations = new HashMap<string, string>();
+    private Regex whitespace_regex = /\s/;
 
     static construct {
         smiley_translations[":)"] = "🙂";
@@ -40,13 +41,27 @@ class SmileyConverter {
     }
 
     private void check_convert() {
-        if (Dino.Application.get_default().settings.convert_utf8_smileys) {
-            foreach (string smiley in smiley_translations.keys) {
-                if (text_input.buffer.text.has_suffix(smiley)) {
-                    if (text_input.buffer.text.length == smiley.length ||
-                            text_input.buffer.text[text_input.buffer.text.length - smiley.length - 1] == ' ') {
-                        text_input.buffer.text = text_input.buffer.text.substring(0, text_input.buffer.text.length - smiley.length) + smiley_translations[smiley];
-                    }
+        if (!Dino.Application.get_default().settings.convert_utf8_smileys) return;
+
+        TextIter? start_iter;
+        text_input.buffer.get_start_iter(out start_iter);
+        TextIter? cursor_iter;
+        text_input.buffer.get_iter_at_mark(out cursor_iter, text_input.buffer.get_insert());
+        if (start_iter == null || cursor_iter == null) return;
+
+        string text = text_input.buffer.get_text(start_iter, cursor_iter, true);
+
+        foreach (string smiley in smiley_translations.keys) {
+            if (text.has_suffix(smiley)) {
+                if (text.length == smiley.length || whitespace_regex.match(text[text.length - smiley.length - 1].to_string())) {
+                    TextIter? end_iter;
+                    text_input.buffer.get_end_iter(out end_iter);
+                    if (end_iter == null) continue;
+
+                    TextIter smiley_start_iter = cursor_iter;
+                    smiley_start_iter.backward_chars(smiley.length);
+                    text_input.buffer.delete(ref smiley_start_iter, ref cursor_iter);
+                    text_input.buffer.insert_text(ref cursor_iter, smiley_translations[smiley], smiley_translations[smiley].length);
                 }
             }
         }
