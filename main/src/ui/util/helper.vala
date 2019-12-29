@@ -1,3 +1,4 @@
+using Gee;
 using Gtk;
 
 using Dino.Entities;
@@ -6,6 +7,7 @@ using Xmpp;
 namespace Dino.Ui.Util {
 
 private static Regex url_regex;
+private static Map<unichar, unichar> matching_chars;
 private const string[] allowed_schemes = {"http", "https", "ftp", "ftps", "irc", "ircs", "xmpp", "mailto", "sms", "smsto", "mms", "tel", "geo", "openpgp4fpr", "im", "news", "nntp", "sip", "ssh", "bitcoim", "sftp", "magnet", "vnc"};
 private const string[] tango_colors_light = {"FCE94F", "FCAF3E", "E9B96E", "8AE234", "729FCF", "AD7FA8", "EF2929"};
 private const string[] tango_colors_medium = {"EDD400", "F57900", "C17D11", "73D216", "3465A4", "75507B", "CC0000"};
@@ -250,9 +252,19 @@ public static bool is_24h_format() {
 
 public static Regex get_url_regex() {
     if (url_regex == null) {
-        url_regex = /\b((https?|ftps?|ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc|urn):(\/\/([^\/?#,;!)}>"'»”’\s]+)(\/([^#\s,.;!?)\]}>"'»”’]|[,.;!)\]}>"'»”’][^?#\s])*)?|([^\/#\s,.;!?)\]}>"'»”’]|[,.;!)\]}>"'»”’][^\/?#\s])*)(\?([^#\s,.;!?)\]}>"'»”’]|[,.;!?)\]}>"'»”’][^#\s])+)?(#([^\s,.;!?)\]}>"'»”’]|[,.;!?)\]}>"'»”’][^\s])+)?)/;
+        url_regex = /\b(((http|ftp)s?:\/\/|(ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc|urn):)([^\s,.;!?"'»”’]|[,.;!?"'»”’]\S)+)/;
     }
     return url_regex;
+}
+
+public static Map<unichar, unichar> get_matching_chars() {
+    if (matching_chars == null) {
+        matching_chars = new HashMap<unichar, unichar>();
+        matching_chars[")".get_char(0)] = "(".get_char(0);
+        matching_chars["]".get_char(0)] = "[".get_char(0);
+        matching_chars["}".get_char(0)] = "{".get_char(0);
+    }
+    return matching_chars;
 }
 
 public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup, bool already_escaped_ = false) {
@@ -266,6 +278,30 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
             int start, end;
             match_info.fetch_pos(0, out start, out end);
             string link = s[start:end];
+            Map<unichar, unichar> matching_chars = get_matching_chars();
+            unichar close_char;
+            int last_char_index = link.length;
+            while (link.get_prev_char(ref last_char_index, out close_char) && matching_chars.has_key(close_char)) {
+                unichar open_char = matching_chars[close_char];
+                unichar char;
+                int index = 0;
+                int open = 0, close = 0;
+                while (link.get_next_char(ref index, out char)) {
+                    if (char == open_char) {
+                        open++;
+                    } else if (char == close_char) {
+                        close++;
+                    }
+                }
+                if (close > open) {
+                    // Remove last char from url
+                    end -= close_char.to_string().length;
+                    link = s[start:end];
+                } else {
+                    break;
+                }
+            }
+
             if (GLib.Uri.parse_scheme(link) in allowed_schemes) {
                 return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
                         "<a href=\"" + Markup.escape_text(link) + "\">" + parse_add_markup(link, highlight_word, false, false, already_escaped) + "</a>" +
