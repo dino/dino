@@ -139,16 +139,26 @@ public static string get_participant_display_name(StreamInteractor stream_intera
     if ((conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) && conversation.counterpart.equals_bare(participant)) {
         return get_occupant_display_name(stream_interactor, conversation.account, participant);
     }
-    return participant.bare_jid.to_string();
+    return get_local_alias(conversation.account, participant) ?? participant.bare_jid.to_string();
+}
+
+private static string? get_local_alias(Account account, Jid jid) {
+    if (jid.equals_bare(account.bare_jid) && account.alias != null && account.alias.length != 0)
+        return account.alias;
+    else
+        return null;
 }
 
 private static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
     if (me_is_me && jid.equals_bare(account.bare_jid)) {
         return _("Me");
     }
-    if (jid.equals_bare(account.bare_jid) && account.alias != null && account.alias.length != 0) {
-        return account.alias;
-    }
+
+    string local_alias = get_local_alias(account, jid);
+
+    if (local_alias != null)
+        return local_alias;
+
     Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
     if (roster_item != null && roster_item.name != null && roster_item.name != "") {
         return roster_item.name;
