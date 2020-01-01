@@ -1,6 +1,7 @@
 using Gee;
 using Gdk;
 using Gtk;
+using Gst;
 using Pango;
 
 using Dino.Entities;
@@ -11,6 +12,7 @@ public class FileWidget : Box {
 
     enum State {
         IMAGE,
+        AUDIO,
         DEFAULT
     }
 
@@ -45,6 +47,13 @@ public class FileWidget : Box {
             content = yield get_image_widget(file_transfer);
             if (content != null) {
                 this.state = State.IMAGE;
+                this.add(content);
+                return;
+            }
+        } else if (show_audio()) {
+            content = get_multimedia_widget(file_transfer);
+            if (content != null) {
+                this.state = State.AUDIO;
                 this.add(content);
                 return;
             }
@@ -143,6 +152,120 @@ public class FileWidget : Box {
         ctx.clip();
         ctx.paint();
         return Gdk.pixbuf_get_from_surface(ctx.get_target(), 0, 0, pixbuf.width, pixbuf.height);
+    }
+
+    /* We want to use timestamps for seeking. Values are in nanoseconds */
+
+    private string format_timestamp(double ns) {
+        double seconds = ns / 1000000000.0f;
+        double minutes = seconds / 60.0f;
+        double hours = minutes / 60.0f;
+
+        /* Round down; note all values are positive so we can truncate */
+        int i_seconds = (int) seconds;
+        int i_minutes = (int) minutes;
+        int i_hours = (int) hours;
+
+        if (i_hours > 0)
+            return _("%d:%02d:%02d").printf(i_hours, i_minutes, i_seconds);
+        else
+            return _("%d:%02d").printf(i_minutes, i_seconds);
+    }
+
+    private void set_pause(Element playbin, Image image, bool paused) {
+        playbin.set_state(paused ? Gst.State.PAUSED : Gst.State.PLAYING);
+
+        /* Set the symbol for the action to change */
+        image["icon-name"] = paused ? "media-playback-start-symbolic" : "media-playback-pause-symbolic";
+    }
+
+    private bool get_pause(Element playbin) {
+        Gst.State state;
+        playbin.get_state(out state, null, 20);
+        return (state == Gst.State.PAUSED) || (state == Gst.State.NULL);
+    }
+
+    private Widget? get_multimedia_widget(FileTransfer file_transfer) {
+        Element playbin = ElementFactory.make ("playbin", "bin");
+
+        if (playbin == null)
+            return null;
+
+        playbin["uri"] = file_transfer.get_file().get_uri();
+
+        if (playbin.set_state (Gst.State.PAUSED) == Gst.StateChangeReturn.FAILURE)
+            return null;
+
+        Query query = new Query.position(Gst.Format.TIME);
+
+        Gst.Bus bus = playbin.get_bus();
+        bus.add_signal_watch();
+
+        Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_summary/multimedia_toolbar.ui");
+        Widget toolbar = builder.get_object("main") as Widget;
+
+        Button pause_button = builder.get_object("pause_button") as Button;
+        Gtk.Scale seek_scale = builder.get_object("seek_scale") as Gtk.Scale;
+        Image pause_image = builder.get_object("pause_image") as Image;
+
+        /* Initialize with dummy values */
+
+        seek_scale.set_range(0.0, 1.0);
+        seek_scale.format_value.connect(format_timestamp);
+
+        seek_scale.change_value.connect((_, seek_ns) => {
+            playbin.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH, (int64) seek_ns);
+            return false;
+        });
+
+        pause_button.clicked.connect(() => {
+            set_pause(playbin, pause_image, !get_pause(playbin));
+        });
+
+        bool has_timeout = false;
+
+        bus.message.connect((_, message) => {
+            if (message.type == Gst.MessageType.EOS) {
+                set_pause(playbin, pause_image, true);
+                playbin.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH, 0);
+            } else if (message.type == Gst.MessageType.STATE_CHANGED) {
+                int64 duration;
+                playbin.query_duration(Gst.Format.TIME, out duration);
+
+                if (duration > 0)
+                    seek_scale.set_range(0.0, duration);
+
+                /* We'll want to update info for as long as we can */
+
+                if (duration > 0 && !get_pause(playbin) && !has_timeout) {
+                    Timeout.add(33, () => {
+                        if (get_pause(playbin)) {
+                            has_timeout = false;
+                            return false;
+                        }
+
+                        if (playbin.query(query)) {
+                            Format fmt;
+                            int64 cur_position;
+
+                            query.parse_position(out fmt, out cur_position);
+                            seek_scale.set_value(cur_position);
+                        }
+
+                        return true;
+                    });
+
+                    has_timeout = true;
+                }
+            }
+        });
+
+        toolbar.destroy.connect(() => {
+            /* Cleanup (the timeout will abort as a result as well) */
+            playbin.set_state(Gst.State.NULL);
+        });
+
+        return toolbar;
     }
 
     private Widget get_default_widget(FileTransfer file_transfer) {
@@ -257,6 +380,10 @@ public class FileWidget : Box {
             this.remove(content);
             this.add(yield get_image_widget(file_transfer));
             state = State.IMAGE;
+        } else if (file_transfer.state == FileTransfer.State.COMPLETE && show_audio() && state != State.AUDIO) {
+            this.remove(content);
+            this.add(get_multimedia_widget(file_transfer));
+            state = State.AUDIO;
         }
 
         spinner.active = false; // A hidden spinning spinner still uses CPU. Deactivate asap
@@ -329,6 +456,11 @@ public class FileWidget : Box {
             }
         }
         return false;
+    }
+
+    private bool show_audio() {
+        if (file_transfer.mime_type == null || file_transfer.state != FileTransfer.State.COMPLETE) return false;
+        return file_transfer.mime_type.has_prefix("audio/");
     }
 }
 

@@ -6,7 +6,7 @@ env:
 before_install:
   - export USE_CCACHE=1
   - sudo apt-get update
-  - sudo apt-get install -y cmake valac libgee-0.8-dev libsqlite3-dev libgtk-3-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev
+  - sudo apt-get install -y cmake valac libgee-0.8-dev libsqlite3-dev libgtk-3-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libgstreamer1.0-dev gstreamer1.0-plugins-good
 install:
   - ./configure --with-tests $CONFIGURE_FLAGS
   - make
