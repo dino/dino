@@ -38,7 +38,7 @@ public class MucManager : StreamInteractionModule, Object {
     public async Muc.JoinResult? join(Account account, Jid jid, string? nick, string? password) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return null;
-        string nick_ = nick ?? account.bare_jid.localpart ?? account.bare_jid.domainpart;
+        string nick_ = (nick ?? account.localpart) ?? account.domainpart;
 
         DateTime? history_since = null;
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
@@ -372,7 +372,6 @@ public class MucManager : StreamInteractionModule, Object {
             Set<Conference>? conferences = bookmarks_provider[account].get_conferences.end(res);
             if (conferences == null) return;
 
-            Conference changed = new Xep.Bookmarks.Bookmarks1Conference(jid) { nick=nick, password=password, autojoin=true };
             foreach (Conference conference in conferences) {
                 if (conference.jid.equals(jid)) {
                     if (!conference.autojoin) {
@@ -386,6 +385,7 @@ public class MucManager : StreamInteractionModule, Object {
                     return;
                 }
             }
+            Conference changed = new Xep.Bookmarks.Bookmarks1Conference(jid) { nick=nick, password=password, autojoin=true };
             bookmarks_provider[account].add_conference.begin(stream, changed);
         });
     }

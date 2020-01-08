@@ -47,7 +47,7 @@ public class Register : StreamInteractionModule, Object{
             ret = ConnectionManager.ConnectionError.Source.SASL;
             Idle.add((owned)callback);
         });
-        stream.connect.begin(account.bare_jid.domainpart, (_, res) => {
+        stream.connect.begin(account.domainpart, (_, res) => {
             try {
                 stream.connect.end(res);
             } catch (Error e) {
