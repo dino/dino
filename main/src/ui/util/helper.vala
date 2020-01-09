@@ -8,7 +8,7 @@ namespace Dino.Ui.Util {
 
 private static Regex URL_REGEX;
 private static Map<unichar, unichar> MATCHING_CHARS;
-private const unichar[] NON_TRAILING_CHARS = {'\'', '"', ',', '.', ';', '!', '?', '»', '”', '’', '`', '~', '‽'};
+private const unichar[] NON_TRAILING_CHARS = {'\'', '"', ',', '.', ';', '!', '?', '»', '”', '’', '`', '~', '‽', ':', '>', '*', '_'};
 private const string[] ALLOWED_SCHEMAS = {"http", "https", "ftp", "ftps", "irc", "ircs", "xmpp", "mailto", "sms", "smsto", "mms", "tel", "geo", "openpgp4fpr", "im", "news", "nntp", "sip", "ssh", "bitcoin", "sftp", "magnet", "vnc"};
 private const string[] tango_colors_light = {"FCE94F", "FCAF3E", "E9B96E", "8AE234", "729FCF", "AD7FA8", "EF2929"};
 private const string[] tango_colors_medium = {"EDD400", "F57900", "C17D11", "73D216", "3465A4", "75507B", "CC0000"};
