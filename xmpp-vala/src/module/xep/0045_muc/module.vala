@@ -54,10 +54,10 @@ public enum Feature {
     UNSECURED
 }
 
-public class JoinResult : Object {
-    public MucEnterError? muc_error { get; set; }
-    public string? stanza_error { get; set; }
-    public string? nick { get; set; }
+public class JoinResult {
+    public MucEnterError? muc_error;
+    public string? stanza_error;
+    public string? nick;
 }
 
 public class Module : XmppStreamModule {
