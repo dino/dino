@@ -92,10 +92,12 @@ class SessionBuilderTest : Gee.TestCase {
             PreKeySignalMessage incoming_message = global_context.deserialize_pre_key_signal_message(outgoing_message.serialized);
 
             /* Save the pre key and signed pre key in Bob's data store */
-            PreKeyRecord bob_pre_key_record = new PreKeyRecord(bob_pre_key.pre_key_id, bob_pre_key_pair);
+            PreKeyRecord bob_pre_key_record;
+            throw_by_code(PreKeyRecord.create(out bob_pre_key_record, bob_pre_key.pre_key_id, bob_pre_key_pair));
             bob_store.store_pre_key(bob_pre_key_record);
 
-            SignedPreKeyRecord bob_signed_pre_key_record = new SignedPreKeyRecord(22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature);
+            SignedPreKeyRecord bob_signed_pre_key_record;
+            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature));
             bob_store.store_signed_pre_key(bob_signed_pre_key_record);
 
             /* Create Bob's session cipher and decrypt the message from Alice */
@@ -160,10 +162,10 @@ class SessionBuilderTest : Gee.TestCase {
             bob_pre_key = create_pre_key_bundle(bob_local_registration_id, 1, 31338, bob_pre_key_pair.public, 23, bob_signed_pre_key_pair.public, bob_signed_pre_key_signature, bob_identity_key_pair.public);
 
             /* Save the new pre key and signed pre key in Bob's data store */
-            bob_pre_key_record = new PreKeyRecord(bob_pre_key.pre_key_id, bob_pre_key_pair);
+            throw_by_code(PreKeyRecord.create(out bob_pre_key_record, bob_pre_key.pre_key_id, bob_pre_key_pair));
             bob_store.store_pre_key(bob_pre_key_record);
 
-            bob_signed_pre_key_record = new SignedPreKeyRecord(23, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature);
+            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 23, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature));
             bob_store.store_signed_pre_key(bob_signed_pre_key_record);
 
             /* Have Alice process Bob's pre key bundle */
@@ -260,9 +262,11 @@ class SessionBuilderTest : Gee.TestCase {
             PreKeyBundle bob_pre_key = create_pre_key_bundle(bob_store.local_registration_id,1,31337,bob_pre_key_pair.public,0,null,null,bob_store.identity_key_pair.public);
 
             /* Add Bob's pre keys to Bob's data store */
-            PreKeyRecord bob_pre_key_record = new PreKeyRecord(bob_pre_key.pre_key_id, bob_pre_key_pair);
+            PreKeyRecord bob_pre_key_record;
+            throw_by_code(PreKeyRecord.create(out bob_pre_key_record, bob_pre_key.pre_key_id, bob_pre_key_pair));
             bob_store.store_pre_key(bob_pre_key_record);
-            SignedPreKeyRecord bob_signed_pre_key_record = new SignedPreKeyRecord(22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature);
+            SignedPreKeyRecord bob_signed_pre_key_record;
+            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature));
             bob_store.store_signed_pre_key(bob_signed_pre_key_record);
 
             /*

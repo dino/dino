@@ -10,7 +10,7 @@ namespace Signal {
     [CCode (has_target = false)]
     public delegate void LockingFunc(void* user_data);
     [CCode (has_target = false)]
-    public delegate void LogFunc(LogLevel level, string message, void* user_data);
+    public delegate void LogFunc(LogLevel level, string message, size_t len, void* user_data);
 
     [Compact]
     [CCode (cname = "signal_crypto_provider", cheader_filename = "signal/signal_protocol.h")]

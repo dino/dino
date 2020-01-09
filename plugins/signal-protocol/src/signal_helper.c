@@ -2,13 +2,13 @@
 
 #include <gcrypt.h>
 
-signal_type_base* signal_type_ref_vapi(signal_type_base* instance) {
+signal_type_base* signal_type_ref_vapi(void* instance) {
     g_return_val_if_fail(instance != NULL, NULL);
     signal_type_ref(instance);
     return instance;
 }
 
-signal_type_base* signal_type_unref_vapi(signal_type_base* instance) {
+signal_type_base* signal_type_unref_vapi(void* instance) {
     g_return_val_if_fail(instance != NULL, NULL);
     signal_type_unref(instance);
     return NULL;
@@ -17,7 +17,7 @@ signal_type_base* signal_type_unref_vapi(signal_type_base* instance) {
 signal_protocol_address* signal_protocol_address_new(const gchar* name, int32_t device_id) {
     g_return_val_if_fail(name != NULL, NULL);
     signal_protocol_address* address = malloc(sizeof(signal_protocol_address));
-    address->device_id = NULL;
+    address->device_id = -1;
     address->name = NULL;
     signal_protocol_address_set_name(address, name);
     signal_protocol_address_set_device_id(address, device_id);
@@ -55,26 +55,13 @@ gchar* signal_protocol_address_get_name(signal_protocol_address* self) {
 }
 
 int32_t signal_protocol_address_get_device_id(signal_protocol_address* self) {
-    g_return_val_if_fail(self != NULL, NULL);
+    g_return_val_if_fail(self != NULL, -1);
     return self->device_id;
 }
 
 void signal_protocol_address_set_device_id(signal_protocol_address* self, int32_t device_id) {
     g_return_if_fail(self != NULL);
     self->device_id = device_id;
-}
-
-
-session_pre_key* session_pre_key_new(uint32_t pre_key_id, ec_key_pair* pair, int* err) {
-    session_pre_key* res;
-    *err = session_pre_key_create(&res, pre_key_id, pair);
-    return res;
-}
-
-session_signed_pre_key* session_signed_pre_key_new(uint32_t id, uint64_t timestamp, ec_key_pair* pair, uint8_t* key, int key_len, int* err) {
-    session_signed_pre_key* res;
-    *err = session_signed_pre_key_create(&res, id, timestamp, pair, key, key_len);
-    return res;
 }
 
 int signal_vala_randomize(uint8_t *data, size_t len) {
@@ -107,7 +94,7 @@ int signal_vala_hmac_sha256_init(void **hmac_context, const uint8_t *key, size_t
 }
 
 int signal_vala_hmac_sha256_update(void *hmac_context, const uint8_t *data, size_t data_len, void *user_data) {
-    gcry_mac_hd_t* *ctx = hmac_context;
+    gcry_mac_hd_t* ctx = hmac_context;
 
     if (gcry_mac_write(*ctx, data, data_len)) return SG_ERR_UNKNOWN;
 

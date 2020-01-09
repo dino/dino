@@ -14,7 +14,7 @@ public class Context {
         ctx.mutex.unlock();
     }
 
-    static void stderr_log(LogLevel level, string message, void* user_data) {
+    static void stderr_log(LogLevel level, string message, size_t len, void* user_data) {
         printerr(@"$level: $message\n");
     }
 
@@ -44,7 +44,9 @@ public class Context {
         Gee.Set<PreKeyRecord> res = new Gee.HashSet<PreKeyRecord>();
         for(uint i = start; i < start+count; i++) {
             ECKeyPair pair = generate_key_pair();
-            res.add(new PreKeyRecord(i, pair));
+            PreKeyRecord record;
+            throw_by_code(PreKeyRecord.create(out record, i, pair));
+            res.add(record);
         }
         return res;
     }
