@@ -110,7 +110,7 @@ public class FileProvider : Dino.FileProvider, Object {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) throw new FileReceiveError.GET_METADATA_FAILED("No conversation");
 
-        Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
+        Message? message = dino_db.get_message_by_id(int.parse(file_transfer.info));
         if (message == null) throw new FileReceiveError.GET_METADATA_FAILED("No message");
 
         var file_meta = new HttpFileMeta();
@@ -128,7 +128,7 @@ public class FileProvider : Dino.FileProvider, Object {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) return null;
 
-        Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
+        Message? message = dino_db.get_message_by_id(int.parse(file_transfer.info));
         if (message == null) return null;
 
         var receive_data = new HttpFileReceiveData();
