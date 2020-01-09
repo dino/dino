@@ -42,7 +42,7 @@ public class FileManager : StreamInteractionModule, Object {
         FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
         file_transfer.counterpart = conversation.counterpart;
-        if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+        if (conversation.type_.is_muc_semantic()) {
             file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
         } else {
             file_transfer.ourpart = conversation.account.full_jid;
@@ -292,7 +292,7 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.account = conversation.account;
         file_transfer.direction = from.bare_jid.equals(conversation.account.bare_jid) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
         file_transfer.counterpart = file_transfer.direction == FileTransfer.DIRECTION_RECEIVED ? from : conversation.counterpart;
-        if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+        if (conversation.type_.is_muc_semantic()) {
             file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
         } else {
             file_transfer.ourpart = conversation.account.full_jid;

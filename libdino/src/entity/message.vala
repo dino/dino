@@ -22,7 +22,11 @@ public class Message : Object {
         CHAT,
         GROUPCHAT,
         GROUPCHAT_PM,
-        UNKNOWN
+        UNKNOWN;
+
+        public bool is_muc_semantic() {
+            return this == GROUPCHAT || this == GROUPCHAT_PM;
+        }
     }
 
     public int id { get; set; default = -1; }
@@ -74,7 +78,7 @@ public class Message : Object {
         if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
 
         string our_resource = row[db.message.our_resource];
-        if (type_ == Type.GROUPCHAT && our_resource != null) {
+        if (type_.is_muc_semantic() && our_resource != null) {
             ourpart = counterpart.with_resource(our_resource);
         } else if (our_resource != null) {
             ourpart = account.bare_jid.with_resource(our_resource);

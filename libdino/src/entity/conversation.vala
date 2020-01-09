@@ -9,7 +9,11 @@ public class Conversation : Object {
     public enum Type {
         CHAT,
         GROUPCHAT,
-        GROUPCHAT_PM
+        GROUPCHAT_PM;
+
+        public bool is_muc_semantic() {
+            return this == GROUPCHAT || this == GROUPCHAT_PM;
+        }
     }
 
     public int id { get; set; }

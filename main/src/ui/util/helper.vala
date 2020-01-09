@@ -146,10 +146,10 @@ public static string get_participant_display_name(StreamInteractor stream_intera
 }
 
 private static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
-    if (me_is_me && jid.equals_bare(account.bare_jid)) {
-        return _("Me");
-    }
-    if (jid.equals_bare(account.bare_jid) && account.alias != null && account.alias.length != 0) {
+    if (jid.equals_bare(account.bare_jid)) {
+        if (me_is_me || account.alias == null || account.alias.length == 0) {
+            return _("Me");
+        }
         return account.alias;
     }
     Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
@@ -181,16 +181,17 @@ private static string get_groupchat_display_name(StreamInteractor stream_interac
     return jid.to_string();
 }
 
-private static string get_occupant_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
-    /* TODO: MUC Real JID
-    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
-    if (muc_manager.is_private_room(account, jid.bare_jid)) {
-        Jid? real_jid = muc_manager.get_real_jid(jid, account);
-        if (real_jid != null) {
-            string? display_name = get_real_display_name(stream_interactor, account, real_jid, me_is_me);
-            if (display_name != null) return display_name;
+private static string get_occupant_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false, bool muc_real_name = false) {
+    if (muc_real_name) {
+        MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
+        if (muc_manager.is_private_room(account, jid.bare_jid)) {
+            Jid? real_jid = muc_manager.get_real_jid(jid, account);
+            if (real_jid != null) {
+                string? display_name = get_real_display_name(stream_interactor, account, real_jid, me_is_me);
+                if (display_name != null) return display_name;
+            }
         }
-    }*/
+    }
     return jid.resourcepart ?? jid.to_string();
 }
 

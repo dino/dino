@@ -68,7 +68,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
                         try {
                             string storage_dir = FileManager.get_storage_dir();
                             FileTransfer file_transfer = new FileTransfer.from_row(db, row_option.inner, storage_dir);
-                            if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+                            if (conversation.type_.is_muc_semantic()) {
                                 try {
                                     // resourcepart wasn't set before, so we pick nickname instead (which isn't accurate if nickname is changed)
                                     file_transfer.ourpart = conversation.counterpart.with_resource(file_transfer.ourpart.resourcepart ?? conversation.nickname);

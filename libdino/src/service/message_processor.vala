@@ -530,7 +530,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         message.local_time = now;
         message.direction = Entities.Message.DIRECTION_SENT;
         message.counterpart = conversation.counterpart;
-        if (conversation.type_ in new Conversation.Type[]{Conversation.Type.GROUPCHAT, Conversation.Type.GROUPCHAT_PM}) {
+        if (conversation.type_.is_muc_semantic()) {
             message.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
             message.real_jid = conversation.account.bare_jid;
         } else {
