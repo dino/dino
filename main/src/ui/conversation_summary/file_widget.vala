@@ -55,15 +55,16 @@ public class FileWidget : Box {
     }
 
     private async Widget? get_image_widget(FileTransfer file_transfer) {
-        Image image = new Image() { halign=Align.START, visible = true };
+        // Load and prepare image in tread
+        Thread<Image?> thread = new Thread<Image?> (null, () => {
+            Image image = new Image() { halign=Align.START, visible = true };
 
-        // Load, scale and set the image
-        new Thread<void*> (null, () => {
             Gdk.Pixbuf pixbuf;
             try {
                 pixbuf = new Gdk.Pixbuf.from_file(file_transfer.get_file().get_path());
             } catch (Error error) {
-                warning("Can't load picture %s", file_transfer.get_file().get_path());
+                warning("Can't load picture %s - %s", file_transfer.get_file().get_path(), error.message);
+                Idle.add(get_image_widget.callback);
                 return null;
             }
 
@@ -81,9 +82,11 @@ public class FileWidget : Box {
             Util.image_set_from_scaled_pixbuf(image, pixbuf);
 
             Idle.add(get_image_widget.callback);
-            return null;
+            return image;
         });
         yield;
+        Image image = thread.join();
+        if (image == null) return null;
 
         Util.force_css(image, "* { box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.1); margin: 2px; border-radius: 3px; }");
 
