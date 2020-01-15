@@ -27,12 +27,11 @@ public class Manager : StreamInteractionModule, Object {
         public bool active_send_attempt { get; set; }
 
         public MessageState(Entities.Message msg, EncryptState last_try) {
-            this.msg = msg;
-            this.last_try = last_try;
-            update_from_encrypt_status(last_try);
+            update_from_encrypt_status(msg, last_try);
         }
 
-        public void update_from_encrypt_status(EncryptState new_try) {
+        public void update_from_encrypt_status(Entities.Message msg, EncryptState new_try) {
+            this.msg = msg;
             this.last_try = new_try;
             this.waiting_other_sessions = new_try.other_unknown;
             this.waiting_own_sessions = new_try.own_unknown;
@@ -56,7 +55,7 @@ public class Manager : StreamInteractionModule, Object {
         }
 
         public string to_string() {
-            return @"MessageState (waiting=(others=$waiting_other_sessions, own=$waiting_own_sessions, other_lists=$waiting_other_devicelists, own_list=$waiting_own_devicelist))";
+            return @"MessageState (msg=$(msg.stanza_id), send=$will_send_now, $last_try)";
         }
     }
 
@@ -127,7 +126,10 @@ public class Manager : StreamInteractionModule, Object {
             lock (message_states) {
                 if (message_states.has_key(message)) {
                     state = message_states.get(message);
-                    state.update_from_encrypt_status(enc_state);
+                    state.update_from_encrypt_status(message, enc_state);
+                    if (state.will_send_now) {
+                        debug("sending message delayed: %s", state.to_string());
+                    }
                 } else {
                     state = new MessageState(message, enc_state);
                     message_states[message] = state;
@@ -140,10 +142,10 @@ public class Manager : StreamInteractionModule, Object {
             //Encryption failed - need to fetch more information
             if (!state.will_send_now) {
                 if (message.marked == Entities.Message.Marked.WONTSEND) {
-                    debug("message was not sent: %s", state.to_string());
+                    debug("retracting message %s", state.to_string());
                     message_states.unset(message);
                 } else {
-                    debug("message will be delayed: %s", state.to_string());
+                    debug("delaying message %s", state.to_string());
 
                     if (state.waiting_own_sessions > 0) {
                         module.fetch_bundles((!)stream, conversation.account.bare_jid, trust_manager.get_trusted_devices(conversation.account, conversation.account.bare_jid));

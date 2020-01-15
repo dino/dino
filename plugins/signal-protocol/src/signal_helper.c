@@ -208,14 +208,14 @@ int signal_vala_encrypt(signal_buffer **output,
         const uint8_t *iv, size_t iv_len,
         const uint8_t *plaintext, size_t plaintext_len,
         void *user_data) {
-    int algo, mode;
-    if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_UNKNOWN;
+    int algo, mode, error_code = SG_ERR_UNKNOWN;
+    if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_INVAL;
 
-    if (iv_len != 16 && iv_len != 12) return SG_ERR_UNKNOWN;
+    if (iv_len != 16 && iv_len != 12) return SG_ERR_INVAL;
 
     gcry_cipher_hd_t ctx = {0};
 
-    if (gcry_cipher_open(&ctx, algo, mode, 0)) return SG_ERR_UNKNOWN;
+    if (gcry_cipher_open(&ctx, algo, mode, 0)) return SG_ERR_NOMEM;
 
     signal_buffer* padded = 0;
     signal_buffer* out_buf = 0;
@@ -228,7 +228,7 @@ error:
     if (out_buf != 0) {
         signal_buffer_free(out_buf);
     }
-    return SG_ERR_UNKNOWN;
+    return error_code;
 no_error:
 
     if (gcry_cipher_setkey(ctx, key, key_len)) goto error;
@@ -254,6 +254,7 @@ no_error:
     size_t padded_len = plaintext_len + pad_len;
     padded = signal_buffer_alloc(padded_len);
     if (padded == 0) {
+        error_code = SG_ERR_NOMEM;
         goto error;
     }
 
@@ -262,6 +263,7 @@ no_error:
 
     out_buf = signal_buffer_alloc(padded_len + tag_len);
     if (out_buf == 0) {
+        error_code = SG_ERR_NOMEM;
         goto error;
     }
 
@@ -287,16 +289,16 @@ int signal_vala_decrypt(signal_buffer **output,
         const uint8_t *iv, size_t iv_len,
         const uint8_t *ciphertext, size_t ciphertext_len,
         void *user_data) {
-    int algo, mode;
+    int algo, mode, error_code = SG_ERR_UNKNOWN;
     *output = 0;
-    if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_UNKNOWN;
-    if (ciphertext_len == 0) return SG_ERR_UNKNOWN;
+    if (aes_cipher(cipher, key_len, &algo, &mode)) return SG_ERR_INVAL;
+    if (ciphertext_len == 0) return SG_ERR_INVAL;
 
-    if (iv_len != 16 && iv_len != 12) return SG_ERR_UNKNOWN;
+    if (iv_len != 16 && iv_len != 12) return SG_ERR_INVAL;
 
     gcry_cipher_hd_t ctx = {0};
 
-    if (gcry_cipher_open(&ctx, algo, mode, 0)) return SG_ERR_UNKNOWN;
+    if (gcry_cipher_open(&ctx, algo, mode, 0)) return SG_ERR_NOMEM;
 
     signal_buffer* out_buf = 0;
     goto no_error;
@@ -305,7 +307,7 @@ error:
     if (out_buf != 0) {
         signal_buffer_bzero_free(out_buf);
     }
-    return SG_ERR_UNKNOWN;
+    return error_code;
 no_error:
 
     if (gcry_cipher_setkey(ctx, key, key_len)) goto error;
@@ -331,6 +333,7 @@ no_error:
     size_t padded_len = ciphertext_len - tag_len;
     out_buf = signal_buffer_alloc(padded_len);
     if (out_buf == 0) {
+        error_code = SG_ERR_NOMEM;
         goto error;
     }
 
