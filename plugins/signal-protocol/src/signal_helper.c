@@ -357,6 +357,8 @@ no_error:
 
 void setup_signal_vala_crypto_provider(signal_context *context)
 {
+    gcry_check_version(NULL);
+
     signal_crypto_provider provider = {
             .random_func = signal_vala_random_generator,
             .hmac_sha256_init_func = signal_vala_hmac_sha256_init,
