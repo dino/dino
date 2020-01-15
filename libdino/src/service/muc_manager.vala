@@ -33,6 +33,11 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect((conversation) => {
+            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                part(conversation.account, conversation.counterpart);
+            }
+        });
     }
 
     public async Muc.JoinResult? join(Account account, Jid jid, string? nick, string? password) {

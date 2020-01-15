@@ -71,7 +71,6 @@ public class ConversationSelector : ListBox {
             row = new ConversationSelectorRow(stream_interactor, conversation);
             rows[conversation] = row;
             add(row);
-            row.closed.connect(() => { select_fallback_conversation(conversation); });
             row.main_revealer.set_reveal_child(true);
         }
         invalidate_sort();
@@ -91,9 +90,10 @@ public class ConversationSelector : ListBox {
         }
     }
 
-    private void remove_conversation(Conversation conversation) {
+    private async void remove_conversation(Conversation conversation) {
         select_fallback_conversation(conversation);
         if (rows.has_key(conversation)) {
+            yield rows[conversation].colapse();
             remove(rows[conversation]);
             rows.unset(conversation);
         }
