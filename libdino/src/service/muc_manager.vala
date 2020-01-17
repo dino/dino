@@ -308,11 +308,11 @@ public class MucManager : StreamInteractionModule, Object {
             bookmarks_updated(account, conferences);
         });
         bookmarks_provider[account].conference_added.connect( (stream, conference) => {
-            sync_autojoin_state(account, conference.jid, conference);
+            // TODO join (for Bookmarks2)
             conference_added(account, conference);
         });
         bookmarks_provider[account].conference_removed.connect( (stream, jid) => {
-            sync_autojoin_state(account, jid, null);
+            // TODO part (for Bookmarks2)
             conference_removed(account, jid);
         });
     }
@@ -339,35 +339,35 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void sync_autojoin_active(Account account, Set<Conference> conferences) {
-        Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
+        Gee.List<Conversation> active_conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
+
+        // Join auto-join MUCs
         foreach (Conference conference in conferences) {
-            sync_autojoin_state(account, conference.jid, conference, conversations);
-        }
-    }
+            if (!conference.autojoin) continue;
 
-    private void sync_autojoin_state(Account account, Jid jid, Conference? conference, Gee.List<Conversation>? conversations_ = null) {
-        Gee.List<Conversation> conversations = conversations_ ?? stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
-
-        if (conference != null && conference.autojoin) {
-            // Join if we should join
             bool is_active = false;
-            foreach (Conversation conversation in conversations) {
-                if (conference.jid.equals(conversation.counterpart)) is_active = true;
-            }
-            if (!is_active || !is_joined(jid, account)) {
-                join.begin(account, conference.jid, conference.nick, conference.password);
-            }
-        } else {
-            // Leave if we should leave
-            bool is_active = false;
-            foreach (Conversation conversation in conversations) {
-                if (conversation.type_ != Conversation.Type.GROUPCHAT || !conversation.account.equals(account)) continue;
-                if (jid.equals(conversation.counterpart)) {
+            foreach (Conversation conversation in active_conversations) {
+                if (conference.jid.equals(conversation.counterpart)) {
                     is_active = true;
                 }
             }
-            if (is_active) {
-                part(account, jid);
+            if (!is_active || !is_joined(conference.jid, account)) {
+                join.begin(account, conference.jid, conference.nick, conference.password);
+            }
+        }
+
+        // Part MUCs that aren't auto-join (which closes those conversations)
+        foreach (Conversation conversation in active_conversations) {
+            if (conversation.type_ != Conversation.Type.GROUPCHAT) continue;
+
+            bool should_be_active = false;
+            foreach (Conference conference in conferences) {
+                if (conference.jid.equals(conversation.counterpart) && conference.autojoin) {
+                    should_be_active = true;
+                }
+            }
+            if (!should_be_active) {
+                part(conversation.account, conversation.counterpart);
             }
         }
     }
