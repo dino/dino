@@ -25,6 +25,7 @@ class SmileyConverter {
         smiley_translations[":("] = "🙁";
         smiley_translations[":'("] = "😢";
         smiley_translations[":/"] = "😕";
+        smiley_translations["<3"] = "❤️";
     }
 
     public SmileyConverter(TextView text_input) {
