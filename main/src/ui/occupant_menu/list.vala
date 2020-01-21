@@ -24,7 +24,7 @@ public class List : Box {
         list_box.set_header_func(header);
         list_box.set_sort_func(sort);
         list_box.set_filter_func(filter);
-        search_entry.search_changed.connect(search_changed);
+        search_entry.search_changed.connect(refilter);
 
         stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_show_received);
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_updated_roster_item);
@@ -50,10 +50,6 @@ public class List : Box {
         if (filter_values == values) return;
         filter_values = values;
         list_box.invalidate_filter();
-    }
-
-    private void search_changed(Editable editable) {
-        refilter();
     }
 
     public void add_occupant(Jid jid) {

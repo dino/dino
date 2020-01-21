@@ -813,8 +813,8 @@ dino_emoji_chooser_class_init (DinoEmojiChooserClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, search_changed);
 }
 
-GtkWidget *
+DinoEmojiChooser *
 dino_emoji_chooser_new (void)
 {
-  return GTK_WIDGET (g_object_new (GTK_TYPE_EMOJI_CHOOSER, NULL));
+  return DINO_EMOJI_CHOOSER (g_object_new (GTK_TYPE_EMOJI_CHOOSER, NULL));
 }
