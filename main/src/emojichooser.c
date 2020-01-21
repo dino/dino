@@ -236,7 +236,7 @@ static gboolean
 has_variations (GVariant *emoji_data)
 {
   GVariant *codes;
-  int i;
+  gsize i;
   gboolean has_variations;
 
   has_variations = FALSE;
@@ -366,7 +366,7 @@ add_emoji (GtkWidget    *box,
   GVariant *codes;
   char text[64];
   char *p = text;
-  int i;
+  gsize i;
   PangoLayout *layout;
   PangoRectangle rect;
 
@@ -451,21 +451,21 @@ populate_emoji_chooser (gpointer data)
 
       g_variant_get_child (item, 1, "&s", &name);
 
-      if (strcmp (name, chooser->body.first) == 0)
+      if (g_strcmp0 (name, chooser->body.first) == 0)
         chooser->box = chooser->body.box;
-      else if (strcmp (name, chooser->nature.first) == 0)
+      else if (g_strcmp0 (name, chooser->nature.first) == 0)
         chooser->box = chooser->nature.box;
-      else if (strcmp (name, chooser->food.first) == 0)
+      else if (g_strcmp0 (name, chooser->food.first) == 0)
         chooser->box = chooser->food.box;
-      else if (strcmp (name, chooser->travel.first) == 0)
+      else if (g_strcmp0 (name, chooser->travel.first) == 0)
         chooser->box = chooser->travel.box;
-      else if (strcmp (name, chooser->activities.first) == 0)
+      else if (g_strcmp0 (name, chooser->activities.first) == 0)
         chooser->box = chooser->activities.box;
-      else if (strcmp (name, chooser->objects.first) == 0)
+      else if (g_strcmp0 (name, chooser->objects.first) == 0)
         chooser->box = chooser->objects.box;
-      else if (strcmp (name, chooser->symbols.first) == 0)
+      else if (g_strcmp0 (name, chooser->symbols.first) == 0)
         chooser->box = chooser->symbols.box;
-      else if (strcmp (name, chooser->flags.first) == 0)
+      else if (g_strcmp0 (name, chooser->flags.first) == 0)
         chooser->box = chooser->flags.box;
 
       add_emoji (chooser->box, FALSE, item, 0, chooser);

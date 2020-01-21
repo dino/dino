@@ -121,7 +121,7 @@ public class ItemMetaDataHeader : Box {
 
         update_name_label();
         name_label.style_updated.connect(update_name_label);
-        if (item.encryption != null && item.encryption != Encryption.NONE) {
+        if (item.encryption != Encryption.NONE) {
             encryption_image.visible = true;
             encryption_image.set_from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER);
         }

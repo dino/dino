@@ -52,7 +52,7 @@ class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Plugins.Conver
 }
 
 public class MetaDateItem : Plugins.MetaConversationItem {
-    public override DateTime? sort_time { get; set; }
+    public override DateTime sort_time { get; set; }
 
     public override bool can_merge { get; set; default=false; }
     public override bool requires_avatar { get; set; default=false; }
