@@ -32,12 +32,8 @@ public class ConversationItemSkeleton : EventBox {
             image.set_conversation_participant(stream_interactor, conversation, item.jid);
             image_content_box.add(image);
         }
-        if (item.display_time != null) {
+        if (item.requires_header) {
             metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
-            if (!item.requires_header) {
-                metadata_header.name_label.visible = false;
-                metadata_header.dot_label.visible = false;
-            }
             header_content_box.add(metadata_header);
         }
 

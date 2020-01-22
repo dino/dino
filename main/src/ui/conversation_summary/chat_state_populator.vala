@@ -89,7 +89,7 @@ private enum StateType {
 }
 
 private class MetaChatStateItem : Plugins.MetaConversationItem {
-    public override Jid jid { get; set; }
+    public override Jid? jid { get; set; }
     public override bool dim { get; set; default=true; }
     public override DateTime sort_time { get; set; default=new DateTime.now_utc().add_years(10); }
 

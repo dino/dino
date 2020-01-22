@@ -67,9 +67,9 @@ public class ContentProvider : ContentItemCollection, Object {
 }
 
 public class ContentMetaItem : Plugins.MetaConversationItem {
-    public override Jid jid { get; set; }
+    public override Jid? jid { get; set; }
     public override DateTime sort_time { get; set; }
-    public override DateTime display_time { get; set; }
+    public override DateTime? display_time { get; set; }
     public override Encryption encryption { get; set; }
 
     public ContentItem content_item;
