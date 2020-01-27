@@ -690,7 +690,6 @@ msgid "Unencrypted"
 msgstr "未加密"
 
 #: main/data/menu_app.ui:17
-#, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "键盘快捷键"
 
