@@ -89,7 +89,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
             // If we received a display marker from ourselves (other device), set the conversation read up to that message.
             if (marker != Xep.ChatMarkers.MARKER_DISPLAYED && marker != Xep.ChatMarkers.MARKER_ACKNOWLEDGED) return;
             Conversation? conversation = stream_interactor.get_module(MessageStorage.IDENTITY).get_conversation_for_stanza_id(account, stanza_id);
-            if (conversation == null) return;
+            if (conversation == null || conversation.type_ == Conversation.Type.GROUPCHAT) return;
             Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
             if (message == null) return;
             // Don't move read marker backwards because we get old info from another client
@@ -98,6 +98,10 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         } else {
             // We received a marker from someone else. Search the respective message and mark it.
             foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations(jid, account)) {
+
+                // We can't currently handle chat markers in MUCs
+                if (conversation.type_ == Conversation.Type.GROUPCHAT) continue;
+
                 Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
                 if (message != null) {
                     switch (marker) {
