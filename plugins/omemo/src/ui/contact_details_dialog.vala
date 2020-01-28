@@ -48,7 +48,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         automatically_accept_new_descr.label = _("When this contact adds new encryption keys to their account, automatically accept them.");
         own_key_label.label = _("Own key");
         new_keys_label.label = _("New keys");
-        associated_keys_label.label = _("Associated keys");
+        associated_keys_label.label = _("Other keys");
         inactive_expander_label.label = _("Inactive keys");
     }
 
@@ -81,7 +81,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             own = true;
             own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
 
-            automatically_accept_new_descr.label = _("When you add new encryption keys to your account, automatically accept them.");
+            automatically_accept_new_descr.label = _("When I add new encryption keys to my account, automatically accept them.");
 
             own_fingerprint_container.visible = true;
 
