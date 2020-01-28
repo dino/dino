@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-24 14:38+0100\n"
-"PO-Revision-Date: 2019-12-23 02:21+0000\n"
+"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"PO-Revision-Date: 2020-01-28 23:24+0000\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/dino/"
 "translations/ja/>\n"
 "Language: ja\n"
@@ -16,25 +16,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 3.11-dev\n"
 
 #: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:166
 msgid "Image sent"
 msgstr "画像を送信しました"
 
 #: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:166
 msgid "File sent"
 msgstr "ファイルを送信しました"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:168
 msgid "Image received"
 msgstr "画像を受信しました"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:168
 msgid "File received"
 msgstr "ファイルを受信しました"
 
@@ -148,7 +148,7 @@ msgstr "%s をお使いいただけます"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:382
 #: main/src/ui/add_conversation/conference_details_fragment.vala:191
 msgid "Invalid address"
-msgstr ""
+msgstr "アドレスが不正です"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"
@@ -156,7 +156,7 @@ msgstr "ユーザー名またはパスワードが違います"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Something went wrong"
-msgstr ""
+msgstr "問題が発生しました"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:321
 msgid "No response from server"
@@ -184,44 +184,44 @@ msgstr "登録"
 msgid "Check %s for information on how to sign up"
 msgstr "サインアップの方法に関する情報は、%s をご確認ください"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:136
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:150
-#: main/src/ui/util/helper.vala:131 main/src/ui/util/helper.vala:145
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:146
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:160
+#: main/src/ui/util/helper.vala:136 main/src/ui/util/helper.vala:151
 msgid "Me"
 msgstr "自分"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:257
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:258
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b%d日"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:261
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:262
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "昨日"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:264
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:209
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:266
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%p %l∶%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:268
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:214
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:269
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i 分前"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:216
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:271
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:212
 msgid "Just now"
 msgstr "たった今"
 
@@ -239,7 +239,7 @@ msgstr "チャンネルに参加"
 msgid "Join"
 msgstr "参加"
 
-#: main/src/ui/util/helper.vala:121
+#: main/src/ui/util/helper.vala:126
 #, c-format
 msgid "%s from %s"
 msgstr "%2$s の %1$s"
@@ -335,26 +335,26 @@ msgstr "アカウントを管理"
 msgid "No active conversations"
 msgstr "アクティブなトークがありません"
 
-#: main/src/ui/conversation_summary/file_widget.vala:272
+#: main/src/ui/conversation_summary/file_widget.vala:275
 #, c-format
 msgid "Downloading %s…"
 msgstr "%s をダウンロードしています…"
 
-#: main/src/ui/conversation_summary/file_widget.vala:278
+#: main/src/ui/conversation_summary/file_widget.vala:281
 #, fuzzy, c-format
 msgid "%s offered: %s"
 msgstr "%s から提供されているファイル: %s"
 
-#: main/src/ui/conversation_summary/file_widget.vala:280
+#: main/src/ui/conversation_summary/file_widget.vala:283
 #, fuzzy, c-format
 msgid "File offered: %s"
 msgstr "提供されているファイル: %s"
 
-#: main/src/ui/conversation_summary/file_widget.vala:282
+#: main/src/ui/conversation_summary/file_widget.vala:285
 msgid "File offered"
 msgstr "ファイルが提供されています"
 
-#: main/src/ui/conversation_summary/file_widget.vala:287
+#: main/src/ui/conversation_summary/file_widget.vala:290
 msgid "File transfer failed"
 msgstr "ファイルの転送に失敗しました"
 
@@ -398,66 +398,66 @@ msgstr "メッセージが長すぎます"
 msgid "This contact would like to add you to their contact list"
 msgstr "この相手があなたを連絡先に入れようとしています"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x、%H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:194
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x、%p %l∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b%d日、%H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b%d日、%p %l∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a曜日、%H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a曜日、%p %l∶%M"
 
-#: main/src/ui/occupant_menu/list.vala:106
+#: main/src/ui/occupant_menu/list.vala:102
 msgid "Owner"
 msgstr "オーナー"
 
-#: main/src/ui/occupant_menu/list.vala:108
+#: main/src/ui/occupant_menu/list.vala:104
 msgid "Admin"
 msgstr "管理人"
 
-#: main/src/ui/occupant_menu/list.vala:110
+#: main/src/ui/occupant_menu/list.vala:106
 msgid "Member"
 msgstr "メンバー"
 
-#: main/src/ui/occupant_menu/list.vala:112
+#: main/src/ui/occupant_menu/list.vala:108
 msgid "User"
 msgstr "ユーザー"
 
-#: main/src/ui/occupant_menu/view.vala:27
-#: main/src/ui/occupant_menu/view.vala:36
+#: main/src/ui/occupant_menu/view.vala:29
+#: main/src/ui/occupant_menu/view.vala:38
 msgid "Invite"
 msgstr "招待"
 
-#: main/src/ui/occupant_menu/view.vala:35
+#: main/src/ui/occupant_menu/view.vala:37
 msgid "Invite to Conference"
 msgstr "トークルームへ招待"
 
-#: main/src/ui/occupant_menu/view.vala:85
+#: main/src/ui/occupant_menu/view.vala:88
 msgid "Start private conversation"
 msgstr "個人チャットを始める"
 
-#: main/src/ui/occupant_menu/view.vala:93
+#: main/src/ui/occupant_menu/view.vala:96
 msgid "Kick"
 msgstr "退出させる"
 
@@ -467,9 +467,9 @@ msgid "%i search results"
 msgstr "%i 件の検索結果"
 
 #: main/src/ui/global_search.vala:167
-#, fuzzy, c-format
+#, c-format
 msgid "In %s"
-msgstr "%s に"
+msgstr "%s での検索結果"
 
 #: main/src/ui/global_search.vala:167
 #, fuzzy, c-format
@@ -550,9 +550,8 @@ msgid "Message history"
 msgstr "メッセージの履歴"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:83
-#, fuzzy
 msgid "Maximum amount of backlog issued by the room"
-msgstr "参加する時のトーク履歴の数"
+msgstr "保存するトーク履歴の数"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"

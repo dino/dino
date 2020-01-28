@@ -1,71 +1,72 @@
-# Catalan translation for dino-omemo.
-# This file is distributed under the same license as the dino package.
-# Jordi Mallach <jordi@mallach.net>, 2018.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: dino-omemo 20180123\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-29 00:32+0100\n"
-"PO-Revision-Date: 2020-01-14 05:21+0000\n"
-"Language-Team: Catalan <ca@dodds.net>\n"
-"Language: ca\n"
+"PO-Revision-Date: 2020-01-28 23:24+0000\n"
+"Language-Team: none\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.11-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
-msgstr "Gestiona"
+msgstr "管理"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
-msgstr "Aquest contacte té dispositius nous"
+msgstr "この連絡先に新しいデバイスが追加されました"
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr ""
+msgstr "OMEMO 信頼選択が必要です"
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Heu afegit un dispositiu nou per al compte %s?"
+msgstr "アカウント %s に新しいデバイスを追加しましたか？"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
-msgstr "Gestiona la clau"
+msgstr "キーを管理"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contacts device."
 msgstr ""
-"Compareu l'empremta, caràcter per caràcter, amb la que es mostra al vostre "
-"dispositiu de contactes."
+"以下のフィンガープリントと、お使いのデバイスに表示されているフィンガープリン"
+"トを、1文字ずつ比較してください。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Not matching"
-msgstr "No coincideixen"
+msgstr "一致しない"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 msgid "Matching"
-msgstr "Coincideixen"
+msgstr "一致"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
 #: plugins/omemo/src/ui/manage_key_dialog.vala:88
 msgid "Cancel"
-msgstr "Cancel·la"
+msgstr "キャンセル"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:40
 msgid "Confirm"
-msgstr "Confirma"
+msgstr "確認"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 msgid "Verify key"
-msgstr "Comproveu la clau"
+msgstr "キーを確認"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
@@ -73,12 +74,10 @@ msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Després de la confirmació, qualssevol missatges que enviï %s amb aquesta "
-"clau es ressaltarà a la finestra del xat."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
-msgstr "Les empremtes no es corresponen"
+msgstr "フィンガープリントが一致しません"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:72
 #, c-format
@@ -87,72 +86,71 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Cercioreu-vos que estigueu verificant l'empremta correcta. Si no en "
-"coincideixen, el compte de %s podria trobar-se en perill i heu de considerar "
-"rebutjar aquesta clau."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
-#, fuzzy
 msgid "Verify key fingerprint"
-msgstr "Emprempta pròpia"
+msgstr "キーのフィンガープリントを検証"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
+"このキーのフィンガープリントと、連絡先のデバイスに表示されたフィンガープリン"
+"トを比較します。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #: plugins/omemo/src/ui/contact_details_dialog.vala:256
 msgid "Reject key"
-msgstr "Rebutja la clau"
+msgstr "キーを拒否"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
 "Stop accepting this key during communication with its associated contact."
 msgstr ""
+"関連付けられた連絡先とトークをする際に、このキーを許可しないようにします。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #: plugins/omemo/src/ui/contact_details_dialog.vala:251
 msgid "Accept key"
-msgstr "Accepta la clau"
+msgstr "キーを許可"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
 "Start accepting this key during communication with its associated contact"
-msgstr ""
+msgstr "関連付けられた連絡先とトークをする際に、このキーを許可するようにします"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid "This key is currently %s."
-msgstr "Actualment, aquesta clau ha estat %s."
+msgstr "このキーは現在%s。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 msgid "accepted"
-msgstr "acceptada"
+msgstr "許可されています"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #, c-format
 msgid "This means it can be used by %s to receive and send messages."
-msgstr ""
+msgstr "%s はこのキーを使ってメッセージの送受信ができます。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
-msgstr "verificada"
+msgstr "検証済みです"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
-msgstr ""
+msgstr "加えて、連絡先のデバイスのキーと一致することを検証済みです。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 msgid "rejected"
-msgstr "rebutjada"
+msgstr "拒否されています"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
@@ -176,15 +174,15 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
-msgstr "Enrere"
+msgstr "戻る"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "OMEMO Key Management"
-msgstr "Gestió de claus OMEMO"
+msgstr "OMEMO キー管理"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "Automatically accept new keys"
-msgstr "Accepta claus noves automàticament"
+msgstr "自動的に新しいキーを許可"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid ""
@@ -194,66 +192,56 @@ msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
-msgstr "Clau pròpia"
+msgstr "自身のキー"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New keys"
-msgstr "Claus noves"
+msgstr "新しいキー"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Associated keys"
-msgstr "Claus associades"
+msgstr "関連付けられたキー"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
-msgstr "Claus inactives"
+msgstr "非アクティブなキー"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
-msgstr ""
+msgstr "アカウントに追加した新しい暗号化キーを自動的に許可します。"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
-msgstr "Acceptada"
+msgstr "許可"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:324
 msgid "Rejected"
-msgstr "Rebutjada"
+msgstr "拒否"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:329
 msgid "Verified"
-msgstr "Verificada"
+msgstr "検証済み"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
-msgstr "No utilitzada"
+msgstr "未使用"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 #: plugins/omemo/src/ui/account_settings_widget.vala:45
 msgid "Own fingerprint"
-msgstr "Empremta pròpia"
+msgstr "自身のフィンガープリント"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 msgid "Will be generated on first connect"
-msgstr "Es generarà durant la primera connexió"
+msgstr "最初の接続で生成されます"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 msgid "Encryption"
-msgstr "Xifratge"
+msgstr "暗号化"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
-msgstr[0] "%d dispositiu OMEMO"
-msgstr[1] "%d dispositius OMEMO"
-
-#~ msgid "Unknown device (0x%.8x)"
-#~ msgstr "Dispositiu desconegut (0x%.8x)"
-
-#~ msgid "Other devices"
-#~ msgstr "Altres dispositius"
-
-#~ msgid "- None -"
-#~ msgstr "- Cap -"
+msgstr[0] "%d 台の OMEMO デバイス"

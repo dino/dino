@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-24 14:38+0100\n"
+"POT-Creation-Date: 2020-01-29 00:32+0100\n"
 "PO-Revision-Date: 2019-12-11 03:27+0000\n"
 "Language-Team: none\n"
 "Language: oc\n"
@@ -18,22 +18,22 @@ msgstr ""
 "X-Generator: Weblate 3.10-dev\n"
 
 #: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:166
 msgid "Image sent"
 msgstr "Imatge enviat"
 
 #: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:166
 msgid "File sent"
 msgstr "Fichièr enviat"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:168
 msgid "Image received"
 msgstr "Imatge recebuda"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:158
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:168
 msgid "File received"
 msgstr "Fichièr recebut"
 
@@ -183,45 +183,45 @@ msgstr "Se marcar"
 msgid "Check %s for information on how to sign up"
 msgstr "Consultatz %s per mai d’informacions tocant cossí se marchar"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:136
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:150
-#: main/src/ui/util/helper.vala:131 main/src/ui/util/helper.vala:145
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:146
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:160
+#: main/src/ui/util/helper.vala:136 main/src/ui/util/helper.vala:151
 msgid "Me"
 msgstr "Ieu"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:257
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:258
 #: main/src/ui/conversation_summary/date_separator_populator.vala:100
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:261
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:262
 #: main/src/ui/conversation_summary/date_separator_populator.vala:91
 msgid "Yesterday"
 msgstr "Ièr"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:264
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:209
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:266
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:268
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:214
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:269
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "fa %i minuta"
 msgstr[1] "fa %i minutas"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:270
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:216
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:271
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:212
 msgid "Just now"
 msgstr "Ara meteis"
 
@@ -239,7 +239,7 @@ msgstr "Rejónher una sala"
 msgid "Join"
 msgstr "Rejónher"
 
-#: main/src/ui/util/helper.vala:121
+#: main/src/ui/util/helper.vala:126
 #, c-format
 msgid "%s from %s"
 msgstr "%s de %s"
@@ -335,26 +335,26 @@ msgstr "Gerir los comptes"
 msgid "No active conversations"
 msgstr "Cap de discussion activa"
 
-#: main/src/ui/conversation_summary/file_widget.vala:272
+#: main/src/ui/conversation_summary/file_widget.vala:275
 #, c-format
 msgid "Downloading %s…"
 msgstr "Telecargament %s…"
 
-#: main/src/ui/conversation_summary/file_widget.vala:278
+#: main/src/ui/conversation_summary/file_widget.vala:281
 #, c-format
 msgid "%s offered: %s"
 msgstr "%s a ofrit : %s"
 
-#: main/src/ui/conversation_summary/file_widget.vala:280
+#: main/src/ui/conversation_summary/file_widget.vala:283
 #, c-format
 msgid "File offered: %s"
 msgstr "Fichièr ofrit : %s"
 
-#: main/src/ui/conversation_summary/file_widget.vala:282
+#: main/src/ui/conversation_summary/file_widget.vala:285
 msgid "File offered"
 msgstr "Fichièr ofrit"
 
-#: main/src/ui/conversation_summary/file_widget.vala:287
+#: main/src/ui/conversation_summary/file_widget.vala:290
 msgid "File transfer failed"
 msgstr "Fracàs del transferiment de fichièr"
 
@@ -399,66 +399,66 @@ msgstr "Lo messatge es tròp long"
 msgid "This contact would like to add you to their contact list"
 msgstr "Aqueste contacte volriá vos ajustar a sa lista de contactes"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:194
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l∶%M %p"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
+#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
-#: main/src/ui/occupant_menu/list.vala:106
+#: main/src/ui/occupant_menu/list.vala:102
 msgid "Owner"
 msgstr "Proprietari"
 
-#: main/src/ui/occupant_menu/list.vala:108
+#: main/src/ui/occupant_menu/list.vala:104
 msgid "Admin"
 msgstr "Administrador"
 
-#: main/src/ui/occupant_menu/list.vala:110
+#: main/src/ui/occupant_menu/list.vala:106
 msgid "Member"
 msgstr "Membre"
 
-#: main/src/ui/occupant_menu/list.vala:112
+#: main/src/ui/occupant_menu/list.vala:108
 msgid "User"
 msgstr "Utilizaire"
 
-#: main/src/ui/occupant_menu/view.vala:27
-#: main/src/ui/occupant_menu/view.vala:36
+#: main/src/ui/occupant_menu/view.vala:29
+#: main/src/ui/occupant_menu/view.vala:38
 msgid "Invite"
 msgstr "Convidar"
 
-#: main/src/ui/occupant_menu/view.vala:35
+#: main/src/ui/occupant_menu/view.vala:37
 msgid "Invite to Conference"
 msgstr "Convidar a la conferéncia"
 
-#: main/src/ui/occupant_menu/view.vala:85
+#: main/src/ui/occupant_menu/view.vala:88
 msgid "Start private conversation"
 msgstr "Començar una discussion privada"
 
-#: main/src/ui/occupant_menu/view.vala:93
+#: main/src/ui/occupant_menu/view.vala:96
 msgid "Kick"
 msgstr "Expulsar"
 

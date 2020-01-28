@@ -40,6 +40,7 @@
     <p xml:lang="nl">Dino is een moderne, vrije chattoepassing voor uw bureaublad. Ze biedt een eenvoudige en betrouwbare Jabber/XMPP-ervaring, met uw privacy in het achterhoofd.</p>
     <p xml:lang="nb">Dino er en moderne friporg-sludringsklient for skrivebordet. Det fokuserer på rask og pålitelig XMPP-opplevelse, samtidig som det hegner om personvernet.</p>
     <p xml:lang="lb">Dino ass e modernen, quell-offene Chat Client fir den Desktop. Hien biet eng opgeraumt a robust Jabber/XMPP Erfarung a leet ee Schwéierpunkt op Privatsphär.</p>
+    <p xml:lang="ja">Dino はオープンソースの現代的なデスクトップ向けチャットクライアントです。プライバシーを考慮しつつ、シンプルで信頼できる Jabber/XMPP エクスペリエンスの提供を第一に考えて開発されています。</p>
     <p xml:lang="it">Dino è un client di chat per il desktop, moderno e open-source. Si concentra nel fornire un'esperienza Jabber/XMPP pulita e affidabile tenendo presente la tua privacy.</p>
     <p xml:lang="hu">A Dino egy modern, nyílt forráskódú üzenetküldő alkalmazás asztali rendszerekre, ami a hangsúlyt a letisztult és megbízható Jabber/XMPP élményre helyezi, miközben a magánszféra megőrzését is fontosnak tartja.</p>
     <p xml:lang="gl">Dino é un cliente moderno e de código aberto para o escritorio. Orientado a fornecer unha experiencia Jabber/XMPP limpa e fiábel tendo a privacidade e seguranza presentes.</p>
@@ -56,12 +57,13 @@
     <p xml:lang="ru">Он поддерживает сквозное шифрование через OMEMO и OpenPGP и позволяет настраивать такие функции, как уведомления о прочтении и наборе сообщений.</p>
     <p xml:lang="ro">Suportă criptare de la un capăt la altul prin intermediul OMEMO și OpenPGP, și permite configurarea caracteristicilor legate de confidențialitate precum trimiterea notificărilor de primire și tastare.</p>
     <p xml:lang="pt_BR">Suporte criptografia ponta a ponta com OMEMO e OpenPGP e permite configurar privacidade—características relacionadas às notificações de leitura, recebimento e escrita.</p>
-    <p xml:lang="pl">Dino obsługuje szyfrowanie end-to-end za pomocą OMEMO i OpenPGP, a także daje kontrolę nad funkcjami wpływającymi na prywatność, takimi jak powiadomienia o pisaniu czy odczytaniu wiadomości.</p>
+    <p xml:lang="pl">Obsługuje szyfrowanie od końca do końca za pomocą OMEMO i OpenPGP, a także daje kontrolę nad funkcjami wpływającymi na prywatność, jak powiadomienia o pisaniu czy odczytaniu wiadomości.</p>
     <p xml:lang="oc">Compatible amb lo chiframent OMEMO e OpenPGP del cap a la fin e permet de configurar de foncionalitats ligadas amb la confidencialitat  coma los acusats de lectura e las notificacions d’escritura.</p>
     <p xml:lang="nl_BE">Ze ondersteunt eind-tot-eind-versleuteling met OMEMO en OpenPGP, en laat u toe privacygerelateerde functies, gelijk leesbevestigingen en typmeldingen, in te stellen.</p>
     <p xml:lang="nl">Ze ondersteunt eind-tot-eind-versleuteling met OMEMO en OpenPGP, en staat u toe privacy-gerelateerde functies, zoals leesbevestigingen en typmeldingen, in te stellen.</p>
     <p xml:lang="nb">Det støtter ende-til-ende -kryptering med OMEMO og OpenPGP, og tillater oppsett av personvernsrelaterte funksjoner som meldingskvitteringer og skrivevarsling.</p>
     <p xml:lang="lb">Hien ënnerstëtz Enn-zu-Enn Verschlësselung mat OMEMO an OpenPGP an enthält Privatsphäre-Astellungen zu Liesbestätegungen an Tipp-Benoriichtegungen.</p>
+    <p xml:lang="ja">OMEMO と OpenPGP を利用したエンドツーエンド暗号化に対応しており、既読状態の送信や入力通知などのプライバシー関連の設定も可能です。</p>
     <p xml:lang="it">Support la crittografia end-to-end tramite OMEMO e OpenPGP e permette di configurare le funzioni relative alla privacy come le ricevute di lettura e le notifiche di digitazione.</p>
     <p xml:lang="hu">Támogatja a végponttól-végpontig titkosítást az OMEMO és az OpenPGP által, és magánszférához kötődő beállítási lehetőségeket is biztosít, mint például a kézbesítési, vagy gépelési értesítések küldése.</p>
     <p xml:lang="gl">Suporta o cifrado de punto-a-punto con OMEMO e OpenPGP e permite configurar trazos orientados á privacidade tales coma confirmación de lectura e notificacións de escritura.</p>
@@ -110,7 +112,7 @@
       <caption xml:lang="nl">Hoofdvenster met gesprekken</caption>
       <caption xml:lang="nb">Hovedvindu med samtaler</caption>
       <caption xml:lang="lb">Haaptfënster mat den Conversatiounen</caption>
-      <caption xml:lang="ja">会話中のメインウィンドウ</caption>
+      <caption xml:lang="ja">トーク中のメインウィンドウ</caption>
       <caption xml:lang="it">La finestra principale con le conversazioni</caption>
       <caption xml:lang="hu">A fő ablak a beszélgetésekkel</caption>
       <caption xml:lang="gl">Lapela principal con parolas</caption>
@@ -136,7 +138,7 @@
       <caption xml:lang="nl">Gesprek beginnen</caption>
       <caption xml:lang="nb">Start samtale</caption>
       <caption xml:lang="lb">Konversatioun starten</caption>
-      <caption xml:lang="ja">会話を開始</caption>
+      <caption xml:lang="ja">トークを開始</caption>
       <caption xml:lang="it">Inizia una Conversazione</caption>
       <caption xml:lang="hu">Csevegés kezdeményezése</caption>
       <caption xml:lang="gl">Comezar conversa</caption>
@@ -144,6 +146,7 @@
       <caption xml:lang="fi">Aloita keskustelu</caption>
       <caption xml:lang="eu">Elkarrizketa hasi</caption>
       <caption xml:lang="es">Iniciar Conversación</caption>
+      <caption xml:lang="eo">Komenci Konversacio</caption>
       <caption xml:lang="de">Unterhaltung starten</caption>
       <caption xml:lang="ca">Inicia una conversa</caption>
       <caption xml:lang="ar">الشروع في محادثة</caption>
