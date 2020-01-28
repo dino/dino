@@ -138,12 +138,12 @@ public class Store : Object {
         });
     }
 
-    static int iks_destroy_func(void* user_data) {
-        return 0;
+    static void iks_destroy_func(void* user_data) {
     }
 
     static int ss_load_session_func(out Buffer? record, out Buffer? user_record, Address address, void* user_data) {
         Store store = (Store) user_data;
+        user_record = null; // No support for user_record
         uint8[]? res = null;
         try {
             res = store.session_store.load_session(address);
@@ -156,7 +156,6 @@ public class Store : Object {
             return 0;
         }
         record = new Buffer.from((!)res);
-        user_record = null; // No support for user_record
         if (record == null) return ErrorCode.NOMEM;
         return 1;
     }
@@ -204,8 +203,7 @@ public class Store : Object {
         });
     }
 
-    static int ss_destroy_func(void* user_data) {
-        return 0;
+    static void ss_destroy_func(void* user_data) {
     }
 
     static int pks_load_pre_key(out Buffer? record, uint32 pre_key_id, void* user_data) {
@@ -249,8 +247,7 @@ public class Store : Object {
         });
     }
 
-    static int pks_destroy_func(void* user_data) {
-        return 0;
+    static void pks_destroy_func(void* user_data) {
     }
 
     static int spks_load_signed_pre_key(out Buffer? record, uint32 pre_key_id, void* user_data) {
@@ -294,8 +291,7 @@ public class Store : Object {
         });
     }
 
-    static int spks_destroy_func(void* user_data) {
-        return 0;
+    static void spks_destroy_func(void* user_data) {
     }
 
     internal Store(Context context) {

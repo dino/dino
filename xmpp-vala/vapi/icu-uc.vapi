@@ -5,7 +5,7 @@ namespace ICU {
 [IntegerType (rank = 5, min = 0, max = 65535)]
 struct Char {}
 
-[CCode (cname = "UChar*", destroy_function="g_free", has_type_id = false)]
+[CCode (cname = "UChar*", destroy_function="g_free", has_type_id = false, cheader_filename = "unicode/ustring.h")]
 [SimpleType]
 struct String {
     public static String alloc(int32 length) {
@@ -26,7 +26,7 @@ struct String {
 
     public string to_string() throws GLib.ConvertError {
         ErrorCode status = ErrorCode.ZERO_ERROR;
-        uint8[] dest = new uint8[len() * 4 + 1];
+        char[] dest = new char[len() * 4 + 1];
         int32 dest_length;
         strToUTF8(dest, out dest_length, this, -1, ref status);
         if (status.is_failure()) {
@@ -42,7 +42,7 @@ struct String {
     [CCode (cname="u_strFromUTF8")]
     private static void strFromUTF8(String dest, int32 dest_capacity, out int32 dest_length, string src, int32 src_length, ref ErrorCode status);
     [CCode (cname="u_strToUTF8")]
-    private static void strToUTF8(uint8[] dest, out int32 dest_length, String src, int32 src_length, ref ErrorCode status);
+    private static void strToUTF8(char[] dest, out int32 dest_length, String src, int32 src_length, ref ErrorCode status);
 }
 
 [CCode (cname = "UErrorCode", cprefix = "U_", cheader_filename = "unicode/utypes.h")]

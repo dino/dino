@@ -31,6 +31,6 @@ typedef struct _DinoEmojiChooser      DinoEmojiChooser;
 typedef struct _DinoEmojiChooserClass DinoEmojiChooserClass;
 
 GType      dino_emoji_chooser_get_type (void) G_GNUC_CONST;
-GtkWidget *dino_emoji_chooser_new      (void);
+DinoEmojiChooser *dino_emoji_chooser_new      (void);
 
 G_END_DECLS
