@@ -1,4 +1,4 @@
-![Dino](https://cdn.rawgit.com/fiaxh/3cb1391c5a94443098d004b4bf7c712c/raw/62f6a5e7de8402a0a89ffc73e8d1ed170054051c/dino-writing.svg)
+![Dino](https://dino.im/img/readme_header.svg)
 =======
 
 ![screenshots](https://dino.im/img/screenshot-main.png)
@@ -30,7 +30,7 @@ Contribute
 License
 -------
     Dino - Modern Jabber/XMPP Client using GTK+/Vala
-    Copyright (C) 2016-2019 Dino contributors
+    Copyright (C) 2016-2020 Dino contributors
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
