@@ -144,6 +144,8 @@ public class JingleFileSender : FileSender, Object {
     }
 
     public bool is_upload_available(Conversation conversation) {
+        if (conversation.type_ != Conversation.Type.CHAT) return false;
+
         JingleFileEncryptionHelper? helper = JingleFileHelperRegistry.instance.get_encryption_helper(conversation.encryption);
         if (helper == null) return false;
         if (!helper.can_transfer(conversation)) return false;
@@ -163,8 +165,7 @@ public class JingleFileSender : FileSender, Object {
     }
 
     public bool can_send(Conversation conversation, FileTransfer file_transfer) {
-
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) return false;
+        if (conversation.type_ != Conversation.Type.CHAT) return false;
 
         // No file specific restrictions apply to Jingle file transfers
         return is_upload_available(conversation);
