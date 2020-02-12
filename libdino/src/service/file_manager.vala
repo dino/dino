@@ -290,12 +290,13 @@ public class FileManager : StreamInteractionModule, Object {
     private async void handle_incoming_file(FileProvider file_provider, string info, Jid from, DateTime time, DateTime local_time, Conversation conversation, FileReceiveData receive_data, FileMeta file_meta) {
         FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
-        file_transfer.direction = from.bare_jid.equals(conversation.account.bare_jid) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
         file_transfer.counterpart = file_transfer.direction == FileTransfer.DIRECTION_RECEIVED ? from : conversation.counterpart;
         if (conversation.type_.is_muc_semantic()) {
             file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
+            file_transfer.direction = from.equals(file_transfer.ourpart) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
         } else {
             file_transfer.ourpart = conversation.account.full_jid;
+            file_transfer.direction = from.equals_bare(file_transfer.ourpart) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
         }
         file_transfer.time = time;
         file_transfer.local_time = local_time;
