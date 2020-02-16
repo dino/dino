@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-29 00:32+0100\n"
-"PO-Revision-Date: 2019-12-11 03:27+0000\n"
-"Language-Team: Galician <https://hosted.weblate.org/projects/dino/plugin-"
-"omemo/gl/>\n"
+"PO-Revision-Date: 2020-02-07 10:50+0000\n"
+"Last-Translator: Xosé M <xosem@disroot.org>\n"
+"Language-Team: Galician <https://hosted.weblate.org/projects/dino/"
+"plugin-omemo/gl/>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 3.11-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -33,11 +34,11 @@ msgstr "Precisa decidir sobre a confianza OMEMO"
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Engadeu un novo dispositivo para a conta %s?"
+msgstr "Engadiches un novo dispositivo para a conta %s?"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
-msgstr "Xestionar chave"
+msgstr "Xestionar Chave"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
@@ -45,7 +46,7 @@ msgid ""
 "contacts device."
 msgstr ""
 "Comparar pegada dixital, caracter a caracter, coa mostrada no dispositivo do "
-"seu contacto."
+"teu contacto."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Not matching"
@@ -67,7 +68,7 @@ msgstr "Confirmar"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 msgid "Verify key"
-msgstr "Validar chave"
+msgstr "Verificar chave"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
@@ -89,20 +90,20 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Por favor, comprobe que está coparando a pegada correcta. Si as pegadas "
-"dixitais non coinciden, a conta de %s podería estar comprometida e debería "
+"Por favor, comproba que estás comparando a pegada correcta. Se as pegadas "
+"dixitais non coinciden, a conta de %s podería estar comprometida e deberías "
 "considerar rexeitar esta chave."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid "Verify key fingerprint"
-msgstr "Validar a chave de pegada dixital"
+msgstr "Verificar a pegada dixital da chave"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
-"Compare a pegada dixital de esta chave coa pegada mostrada no dispositivo do "
+"Compara a pegada dixital desta chave coa pegada mostrada no dispositivo do "
 "contacto."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
@@ -156,7 +157,8 @@ msgstr "verficada"
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
-"Adicionalmente foi validada e coincide coa chave no dispositivo do contacto."
+"Adicionalmente foi verificada e coincide coa chave no dispositivo do "
+"contacto."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 msgid "rejected"
@@ -169,7 +171,7 @@ msgid ""
 "sent by it will be ignored."
 msgstr ""
 "Esto significa que non pode ser utilizada por %s para recibir mensaxes, e "
-"calquer mensaxe enviada con ela será ignorado."
+"calquera mensaxe enviada con ela será ignorada."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
@@ -177,7 +179,7 @@ msgid ""
 "Once confirmed, any future messages sent by %s using this key will be "
 "ignored and none of your messages will be readable using this key."
 msgstr ""
-"Unha vez confirmada, calquer mensaxe futura enviada por %s utilizando esta "
+"Unha vez confirmada, calquera mensaxe futura enviada por %s utilizando esta "
 "chave será ignorada e ningunha das súas mensaxes serán lexibles usando esta "
 "chave."
 
@@ -229,7 +231,7 @@ msgstr "Chaves non activas"
 msgid ""
 "When you add new encryption keys to your account, automatically accept them."
 msgstr ""
-"Cando engade novas chaves de cifrado a súa conta, aceptalas automáticamente."
+"Cando engades novas chaves de cifrado a túa conta, aceptalas automáticamente."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -241,7 +243,7 @@ msgstr "Rexeitada"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:329
 msgid "Verified"
-msgstr "Validada"
+msgstr "Verificada"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
@@ -250,7 +252,7 @@ msgstr "Sen usar"
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 #: plugins/omemo/src/ui/account_settings_widget.vala:45
 msgid "Own fingerprint"
-msgstr "Pegada propia"
+msgstr "Pegada dixital propia"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 msgid "Will be generated on first connect"

@@ -8,7 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-29 00:32+0100\n"
-"PO-Revision-Date: 2019-12-21 12:21+0000\n"
+"PO-Revision-Date: 2020-02-04 16:50+0000\n"
+"Last-Translator: Michael Moroni <michaelmoroni@disroot.org>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
 "Language: it\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 3.11-dev\n"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:166
@@ -80,7 +81,7 @@ msgstr "Rimuovi"
 
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select avatar"
-msgstr "Scegli un avatar"
+msgstr "Scegli una foto profilo"
 
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
@@ -117,7 +118,7 @@ msgstr "Disconnesso"
 
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
-msgstr "Password errata"
+msgstr "Password sbagliata"
 
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
@@ -148,15 +149,15 @@ msgstr "Adesso puoi iniziare ad usare %s"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:382
 #: main/src/ui/add_conversation/conference_details_fragment.vala:191
 msgid "Invalid address"
-msgstr ""
+msgstr "Indirizzo non valido"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"
-msgstr "Utente o password errati"
+msgstr "Nome utente o password sbagliati"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Something went wrong"
-msgstr ""
+msgstr "Qualcosa è andato storto"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:321
 msgid "No response from server"
@@ -173,7 +174,7 @@ msgstr "Il server richiede di registrarsi tramite un sito web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open Registration"
-msgstr "Apri la Registrazione"
+msgstr "Registrazioni aperte"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
@@ -205,13 +206,13 @@ msgstr "Ieri"
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
 #, no-c-format
 msgid "%H∶%M"
-msgstr "%H∶%M"
+msgstr "%H:%M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:266
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
 #, no-c-format
 msgid "%l∶%M %p"
-msgstr "%l∶%M %p"
+msgstr "%l:%M %p"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:269
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
@@ -231,7 +232,7 @@ msgstr "Adesso"
 #: main/src/ui/unified_window.vala:249 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
-msgstr "Entra nel Canale"
+msgstr "Entra nel canale"
 
 #: main/src/ui/application.vala:192
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -241,7 +242,7 @@ msgid "Join"
 msgstr "Partecipa"
 
 #: main/src/ui/util/helper.vala:126
-#, fuzzy, c-format
+#, c-format
 msgid "%s from %s"
 msgstr "%s da %s"
 
@@ -274,7 +275,7 @@ msgstr "Indietro"
 #: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
 msgid "Start Conversation"
-msgstr "Inizia una Conversazione"
+msgstr "Inizia una conversazione"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -290,7 +291,7 @@ msgstr "Una password è richiesta per entrare nella stanza"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:174
 msgid "Banned from joining or creating conference"
-msgstr "Ti è proibito entrare o creare la conferenza"
+msgstr "Ti è proibito entrare o creare una conferenza"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Room does not exist"
@@ -310,7 +311,7 @@ msgstr "Scegli un soprannome differente"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:185
 msgid "Too many occupants in room"
-msgstr "La stanza ha troppi occupanti"
+msgstr "La stanza ha troppi partecipanti"
 
 #: main/src/ui/unified_window.vala:227
 msgid "Welcome to Dino!"
@@ -330,7 +331,7 @@ msgstr "Nessun account attivo"
 
 #: main/src/ui/unified_window.vala:238
 msgid "Manage accounts"
-msgstr "Gestisci accounts"
+msgstr "Gestisci account"
 
 #: main/src/ui/unified_window.vala:247
 msgid "No active conversations"
@@ -403,32 +404,32 @@ msgstr "Questo contatto vorrebbe aggiungerti alla sua lista contatti"
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr "%x, %H∶%M"
+msgstr "%x, %H:%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:194
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr "%x, %l∶%M %p"
+msgstr "%x, %l:%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr "%d %b, %H∶%M"
+msgstr "%d %b, %H:%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr "%d %b, %l∶%M %p"
+msgstr "%d %b, %l:%M %p"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr "%a, %H∶%M"
+msgstr "%a, %H:%M"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr "%a, %l∶%M %p"
+msgstr "%a, %l:%M %p"
 
 #: main/src/ui/occupant_menu/list.vala:102
 msgid "Owner"
@@ -509,15 +510,15 @@ msgstr "Ricercabile pubblicamente"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
-msgstr "Gli occupanti possono cambiare l'argomento"
+msgstr "I partecipanti possono cambiare l'argomento"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Discover real JIDs"
-msgstr "Scopri i veri JIDs"
+msgstr "Scopri i veri JID"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who may discover real JIDs?"
-msgstr "Chi può scoprire i veri JIDs?"
+msgstr "Chi può scoprire i veri JID?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
@@ -598,13 +599,13 @@ msgstr "Notifiche"
 #: main/src/ui/contact_details/settings_provider.vala:122
 #: main/src/ui/contact_details/settings_provider.vala:124
 msgid "On"
-msgstr "Sì"
+msgstr "Attivo"
 
 #: main/src/ui/contact_details/settings_provider.vala:84
 #: main/src/ui/contact_details/settings_provider.vala:122
 #: main/src/ui/contact_details/settings_provider.vala:125
 msgid "Off"
-msgstr "No"
+msgstr "Disattivo"
 
 #: main/src/ui/contact_details/settings_provider.vala:86
 msgid "Only when mentioned"
@@ -614,7 +615,7 @@ msgstr "Solo se menzionato"
 #: main/src/ui/contact_details/settings_provider.vala:123
 #, c-format
 msgid "Default: %s"
-msgstr "Default: %s"
+msgstr "Predefinito: %s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 msgid "Search messages"
@@ -755,7 +756,7 @@ msgstr "Alias"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr "Aggiungi Contatto"
+msgstr "Aggiungi contatto"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
@@ -767,11 +768,11 @@ msgstr "Navigazione"
 
 #: main/data/shortcuts.ui:37
 msgid "Jump to next conversation"
-msgstr "Passare alla conversazione successiva"
+msgstr "Passa alla conversazione successiva"
 
 #: main/data/shortcuts.ui:44
 msgid "Jump to previous conversation"
-msgstr "Passare alla conversazione precedente"
+msgstr "Passa alla conversazione precedente"
 
 #: main/data/global_search.ui:37
 msgid "No active search"

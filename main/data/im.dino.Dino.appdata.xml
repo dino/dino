@@ -6,6 +6,9 @@
   <project_license>GPL-3.0+</project_license>
   <name>Dino</name>
   <summary>Modern XMPP Chat Client</summary>
+  <summary xml:lang="ie">Un modern client de conversationes XMPP</summary>
+  <summary xml:lang="lt">Šiuolaikinė XMPP pokalbių kliento programa</summary>
+  <summary xml:lang="tr">Modern XMPP Sohbet İstemcisi</summary>
   <summary xml:lang="zh_CN">现代 XMPP 聊天客户端</summary>
   <summary xml:lang="sv">Modern XMPP-chattklient</summary>
   <summary xml:lang="ru">Современный чат-клиент на XMPP</summary>
@@ -20,7 +23,7 @@
   <summary xml:lang="ja">現代的な XMPP チャット クライアント</summary>
   <summary xml:lang="it">Client di chat moderno per XMPP</summary>
   <summary xml:lang="hu">Modern XMPP Üzenetküldő</summary>
-  <summary xml:lang="gl">Cliente moderno para parolas XMPP</summary>
+  <summary xml:lang="gl">Cliente moderno para conversas XMPP</summary>
   <summary xml:lang="fr">Client XMPP moderne</summary>
   <summary xml:lang="eu">XMPP txat bezero modernoa</summary>
   <summary xml:lang="es">Cliente de XMPP moderno</summary>
@@ -29,6 +32,9 @@
   <summary xml:lang="ar">تطبيق حديث للدردشة عبر XMPP</summary>
   <description>
     <p>Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable Jabber/XMPP experience while having your privacy in mind.</p>
+    <p xml:lang="ie">Dino es un modern cliente de conversationes con fonte apert. It foca se sur provider un nett e fidibil experientie de Jabber/XMPP con un attention a confidentialitá.</p>
+    <p xml:lang="lt">Dino yra šiuolaikinė atvirojo kodo kliento programa skirta darbalaukiui. Jos pagrindinis dėmesys yra pateikti tvarkingą ir patikimą Jabber/XMPP patyrimą nepamirštant apie jūsų privatumą.</p>
+    <p xml:lang="tr">Dino masaüstü bilgisayarlar için modern, açık-kaynak sohbet etme uygulamasıdır. Dino kendisini Jabber/XMPP deneyimini güvenilir ve sade olarak gizlilik hassasiyetinizi dikkate alacak şekilde sunmaya odaklanmıştır.</p>
     <p xml:lang="zh_CN">Dino 是一个现代的开源聊天桌面客户端。它致力于提供一个清爽又可靠的 Jabber/XMPP 体验，同时又保护您的隐私。</p>
     <p xml:lang="sv">Dino är en moden chattklient för skrivbordet med öppen källkod. Den erbjuder en elegant och pålitligt upplevelse av Jabber/XMPP samtidigt som den ser efter din integritet.</p>
     <p xml:lang="ru">Dino - это современный клиент для чатов с открытым исходным кодом, направленный на  надёжное и приватное использование Jabber/XMPP на персональных компьютерах.</p>
@@ -52,6 +58,9 @@
     <p xml:lang="ca">Dino és un client de xat lliure i modern per a l'escriptori. Està centrat en proveir una experiència neta i fiable de Jabber/XMPP, sempre tenint en compte la vostra privacitat.</p>
     <p xml:lang="ar">دينو برنامج حديث ومفتوح المصدر للدردشة صُمّم لسطح المكتب. ويُركّز علي تقديم تجربة نظيفة وموثوق منها لجابر/XMPP مع أخذ خصوصيتكم بعين الإعتبار.</p>
     <p>It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features such as read receipts and typing notifications.</p>
+    <p xml:lang="ie">It supporta ciffration terminal per OMEMO e OpenPGP e permisse configurar sensitiv functiones quam confirmation de lectada e notificationes de tippada.</p>
+    <p xml:lang="lt">Ji palaiko ištisinį šifravimą naudojant OMEMO ir OpenPGP bei leidžia konfigūruoti su privatumu susijusias ypatybes, tokias kaip pranešimus apie žinučių skaitymą ir rašymą.</p>
+    <p xml:lang="tr">OMEMO ve OpenPGP ile baştan sona şifreleme destekler ve "okundu" bilgisi, "yazıyor..." bildirimi gibi gizlilikle alakalı özelliklerin ayarlanabilmesini sağlar.</p>
     <p xml:lang="zh_CN">它支持 OMEMO 和 OpenPGP 端对端加密并允许配置隐私相关的特性比如已读回执和输入提醒。</p>
     <p xml:lang="sv">Dino stödjer end-to-end-kryptering med OMEMO och OpenPGP och tillåter konfigurering av funktioner med integritetspåverkan som läsbekräftelser och skriftaviseringar.</p>
     <p xml:lang="ru">Он поддерживает сквозное шифрование через OMEMO и OpenPGP и позволяет настраивать такие функции, как уведомления о прочтении и наборе сообщений.</p>
@@ -75,6 +84,9 @@
     <p xml:lang="ca">Implementa xifratge punt a punt amb OMEMO i OpenPGP, i permet configurar funcionalitats relacionades amb la privacitat com per exemple rebuts de lectura i notificacions d'escriptura.</p>
     <p xml:lang="ar">وهو يدعم التشفير بواسطة OMEMO و OpenPGP يسمح بإعداد ميزات الخصوصية كالإيصالات المقروءة والإخطارات عند الكتابة.</p>
     <p>Dino fetches history from the server and synchronizes messages with other devices.</p>
+    <p xml:lang="ie">Dino obtene li diarium del servitore e sincronisa missages inter altri apparates.</p>
+    <p xml:lang="lt">Dino gauna istoriją iš serverio ir sinchronizuoja žinutes su kitais įrenginiais.</p>
+    <p xml:lang="tr">Dino sunucudan konuşma geçmişini sunucudan çeker ve diğer cihazlara senkronize eder.</p>
     <p xml:lang="zh_CN">Dino 从服务器获取消息并和其他设备同步。</p>
     <p xml:lang="sv">Dino hämtar historik från servern och synkroniserar meddelanden med andra enheter.</p>
     <p xml:lang="ru">Dino загружает историю с сервера и синхронизирует сообщения с другими устройствами.</p>
@@ -101,6 +113,8 @@
   <screenshots>
     <screenshot type="default">
       <caption>Main window with conversations</caption>
+      <caption xml:lang="ie">Li primari fenestre con conversationes</caption>
+      <caption xml:lang="lt">Pagrindinis langas su pokalbiais</caption>
       <caption xml:lang="zh_CN">带有对话的主窗口</caption>
       <caption xml:lang="sv">Huvudfönster med konversationer</caption>
       <caption xml:lang="ru">Главное окно с чатами</caption>
@@ -115,7 +129,7 @@
       <caption xml:lang="ja">トーク中のメインウィンドウ</caption>
       <caption xml:lang="it">La finestra principale con le conversazioni</caption>
       <caption xml:lang="hu">A fő ablak a beszélgetésekkel</caption>
-      <caption xml:lang="gl">Lapela principal con parolas</caption>
+      <caption xml:lang="gl">Lapela principal con conversas</caption>
       <caption xml:lang="fr">Fenêtre principale avec des conversations</caption>
       <caption xml:lang="fi">Keskustelut pääikkunassa</caption>
       <caption xml:lang="eu">Leiho nagusia elkarrizketekin</caption>
@@ -127,6 +141,9 @@
     </screenshot>
     <screenshot>
       <caption>Start Conversation</caption>
+      <caption xml:lang="ie">Iniciar un conversation</caption>
+      <caption xml:lang="lt">Pradėti pokalbį</caption>
+      <caption xml:lang="tr">Sohbete Başla</caption>
       <caption xml:lang="zh_CN">开始聊天</caption>
       <caption xml:lang="sv">Starta Chatt</caption>
       <caption xml:lang="ru">Начать чат</caption>
@@ -139,14 +156,14 @@
       <caption xml:lang="nb">Start samtale</caption>
       <caption xml:lang="lb">Konversatioun starten</caption>
       <caption xml:lang="ja">トークを開始</caption>
-      <caption xml:lang="it">Inizia una Conversazione</caption>
+      <caption xml:lang="it">Inizia una conversazione</caption>
       <caption xml:lang="hu">Csevegés kezdeményezése</caption>
       <caption xml:lang="gl">Comezar conversa</caption>
       <caption xml:lang="fr">Commencer une discussion</caption>
       <caption xml:lang="fi">Aloita keskustelu</caption>
       <caption xml:lang="eu">Elkarrizketa hasi</caption>
       <caption xml:lang="es">Iniciar Conversación</caption>
-      <caption xml:lang="eo">Komenci Konversacio</caption>
+      <caption xml:lang="eo">Komenci Konversacion</caption>
       <caption xml:lang="de">Unterhaltung starten</caption>
       <caption xml:lang="ca">Inicia una conversa</caption>
       <caption xml:lang="ar">الشروع في محادثة</caption>
@@ -154,6 +171,9 @@
     </screenshot>
     <screenshot>
       <caption>Contact Details</caption>
+      <caption xml:lang="ie">Detallies del contacte</caption>
+      <caption xml:lang="lt">Išsamiau apie adresatą</caption>
+      <caption xml:lang="tr">Kişi Detayları</caption>
       <caption xml:lang="zh_CN">联系人详情</caption>
       <caption xml:lang="sv">Kontaktdetaljer</caption>
       <caption xml:lang="ru">Информация о контакте</caption>

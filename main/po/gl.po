@@ -8,7 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-29 00:32+0100\n"
-"PO-Revision-Date: 2020-01-05 08:21+0000\n"
+"PO-Revision-Date: 2020-02-07 10:50+0000\n"
+"Last-Translator: Xosé M <xosem@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/"
 "translations/gl/>\n"
 "Language: gl\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 3.11-dev\n"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:166
@@ -45,7 +46,7 @@ msgstr "Solicitude de subscrición"
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
 #: main/src/ui/conversation_summary/subscription_notification.vala:37
 msgid "Accept"
-msgstr "Feito"
+msgstr "Aceptar"
 
 #: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
 #: main/src/ui/conversation_summary/subscription_notification.vala:38
@@ -72,7 +73,7 @@ msgstr "%s convidoute a %s"
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
-msgstr "Elimina-la conta %s?"
+msgstr "Eliminar a conta %s?"
 
 #: main/src/ui/manage_accounts/dialog.vala:128
 msgid "Remove"
@@ -105,7 +106,7 @@ msgstr "Tódolos ficheiros"
 
 #: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
-msgstr "Estase a conectar…"
+msgstr "Conectando…"
 
 #: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connected"
@@ -121,7 +122,7 @@ msgstr "Contrasinal incorrecto"
 
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
-msgstr "Certificado do TLS non válido"
+msgstr "Certificado TLS non válido"
 
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
@@ -140,7 +141,7 @@ msgstr "Conectar con %s"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
 msgid "You can now start using %s"
-msgstr "Agora xa pode comezar a utilizar %s"
+msgstr "Agora xa podes comezar a utilizar %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
@@ -169,7 +170,7 @@ msgstr "Rexistrarse en %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:330
 msgid "The server requires to sign up through a website"
-msgstr "O servidor precisa que se rexistre a través dun sitio web"
+msgstr "O servidor precisa que te rexistres a través dun sitio web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open Registration"
@@ -182,7 +183,7 @@ msgstr "Rexistrar"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:346
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr "Comprobe %s para máis información sobre o rexistro"
+msgstr "Olla en %s para máis información sobre o rexistro"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:146
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:160
@@ -218,8 +219,8 @@ msgstr "%l∶%M %p"
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] "hai %i min"
-msgstr[1] "hai %i minutos"
+msgstr[0] "fai %i min"
+msgstr[1] "fai %i minutos"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:271
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:212
@@ -286,7 +287,7 @@ msgstr "Uníndose…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Password required to enter room"
-msgstr "Precisa dun contrasinal para entrar na sala"
+msgstr "Precisas dun contrasinal para entrar na sala"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:174
 msgid "Banned from joining or creating conference"
@@ -306,7 +307,7 @@ msgstr "Sala só para membros"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:183
 msgid "Choose a different nick"
-msgstr "Escolla un alcume diferente"
+msgstr "Escolle un alcume diferente"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:185
 msgid "Too many occupants in room"
@@ -334,7 +335,7 @@ msgstr "Xestionar contas"
 
 #: main/src/ui/unified_window.vala:247
 msgid "No active conversations"
-msgstr "Sen parolas activas"
+msgstr "Sen conversas activas"
 
 #: main/src/ui/conversation_summary/file_widget.vala:275
 #, c-format
@@ -398,7 +399,7 @@ msgstr "Mensaxe demasiado longa"
 
 #: main/src/ui/conversation_summary/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr "Esta persoa gostaríalle engadille á súa listaxe dos contactos"
+msgstr "Esta persoa gostaríalle engadirte á súa listaxe dos contactos"
 
 #: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
 #, no-c-format
@@ -598,13 +599,13 @@ msgstr "Notificacións"
 #: main/src/ui/contact_details/settings_provider.vala:122
 #: main/src/ui/contact_details/settings_provider.vala:124
 msgid "On"
-msgstr "Habilitado"
+msgstr "Activado"
 
 #: main/src/ui/contact_details/settings_provider.vala:84
 #: main/src/ui/contact_details/settings_provider.vala:122
 #: main/src/ui/contact_details/settings_provider.vala:125
 msgid "Off"
-msgstr "Inhabilitado"
+msgstr "Desactivado"
 
 #: main/src/ui/contact_details/settings_provider.vala:86
 msgid "Only when mentioned"
@@ -614,7 +615,7 @@ msgstr "Só cando te mencionan"
 #: main/src/ui/contact_details/settings_provider.vala:123
 #, c-format
 msgid "Default: %s"
-msgstr "Por defecto: %s"
+msgstr "Por omisión: %s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 msgid "Search messages"
@@ -703,7 +704,7 @@ msgstr "Acerca de Dino"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
-msgstr "Cliente moderno para parolas XMPP"
+msgstr "Cliente moderno para conversas XMPP"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -735,7 +736,7 @@ msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
-msgstr "Lapela principal con parolas"
+msgstr "Lapela principal con conversas"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
