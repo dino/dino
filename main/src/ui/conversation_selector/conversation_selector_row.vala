@@ -140,14 +140,35 @@ public class ConversationSelectorRow : ListBoxRow {
                     MessageItem message_item = last_content_item as MessageItem;
                     Message last_message = message_item.message;
 
-                    if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, last_message.from, true) + ": ";
+                    string body = last_message.body;
+                    bool me_command = body.has_prefix("/me ");
+
+                    /* If we have a /me command, we always show the display
+                     * name, and we don't set me_is_me on
+                     * get_participant_display_name, since that will return
+                     * "Me" (internationalized), whereas /me commands expect to
+                     * be in the third person. We also omit the colon in this
+                     * case, and strip off the /me prefix itself. */
+
+                    if (conversation.type_ == Conversation.Type.GROUPCHAT || me_command) {
+                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, last_message.from, !me_command);
+                    } else if (last_message.direction == Message.DIRECTION_SENT) {
+                        nick_label.label = _("Me");
                     } else {
-                        nick_label.label = last_message.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
+                        nick_label.label = "";
+                    }
+
+                    if (me_command) {
+                        /* Don't slice off the space after /me */
+                        body = body.slice("/me".length, body.length);
+                    } else if (nick_label.label.length > 0) {
+                        /* TODO: Is this valid for RTL languages? */
+                        nick_label.label += ": ";
                     }
 
                     message_label.attributes.filter((attr) => attr.equal(attr_style_new(Pango.Style.ITALIC)));
-                    message_label.label = Util.summarize_whitespaces_to_space(last_message.body);
+                    message_label.label = Util.summarize_whitespaces_to_space(body);
+
                     break;
                 case FileItem.TYPE:
                     FileItem file_item = last_content_item as FileItem;
