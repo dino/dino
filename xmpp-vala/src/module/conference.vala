@@ -7,7 +7,11 @@ public class Conference : Object {
     public virtual string? name { get; set; }
     public virtual string? password { get; set; }
 
-    public static bool equal_func(Conference a, Conference b) {
+    public bool equals(Conference c) {
+        return equals_func(this, c);
+    }
+
+    public static bool equals_func(Conference a, Conference b) {
         return Jid.equals_func(a.jid, b.jid);
     }
 

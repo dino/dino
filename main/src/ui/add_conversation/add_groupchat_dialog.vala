@@ -19,7 +19,6 @@ protected class AddGroupchatDialog : Gtk.Dialog {
     [GtkChild] private Entry nick_entry;
 
     private StreamInteractor stream_interactor;
-    private Conference? edit_conference = null;
     private bool alias_entry_changed = false;
 
     public AddGroupchatDialog(StreamInteractor stream_interactor) {
@@ -34,19 +33,6 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         ok_button.clicked.connect(on_ok_button_clicked);
         jid_entry.key_release_event.connect(on_jid_key_release);
         nick_entry.key_release_event.connect(check_ok);
-    }
-
-    public AddGroupchatDialog.for_conference(StreamInteractor stream_interactor, Account account, Conference conference) {
-        this(stream_interactor);
-        edit_conference = conference;
-        ok_button.label = _("Save");
-        ok_button.sensitive = true;
-        accounts_stack.set_visible_child_name("label");
-        account_label.label = account.bare_jid.to_string();
-        account_combobox.selected = account;
-        jid_entry.text = conference.jid.to_string();
-        nick_entry.text = conference.nick ?? "";
-        alias_entry.text = conference.name;
     }
 
     private bool on_jid_key_release() {
@@ -78,11 +64,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
             conference.jid = new Jid(jid_entry.text);
             conference.nick = nick_entry.text != "" ? nick_entry.text : null;
             conference.name = alias_entry.text;
-            if (edit_conference == null) {
-                stream_interactor.get_module(MucManager.IDENTITY).add_bookmark(account_combobox.selected, conference);
-            } else {
-                stream_interactor.get_module(MucManager.IDENTITY).replace_bookmark(account_combobox.selected, edit_conference, conference);
-            }
+            stream_interactor.get_module(MucManager.IDENTITY).add_bookmark(account_combobox.selected, conference);
             close();
         } catch (InvalidJidError e) {
             warning("Ignoring invalid conference Jid: %s", e.message);
