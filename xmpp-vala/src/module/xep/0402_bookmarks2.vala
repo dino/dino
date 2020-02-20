@@ -45,7 +45,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
         yield stream.get_module(Pubsub.Module.IDENTITY).publish(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI, conference.jid.to_string(), conference_node, Xmpp.Xep.Pubsub.ACCESS_MODEL_WHITELIST);
     }
 
-    public async void replace_conference(XmppStream stream, Conference orig_conference, Conference modified_conference) {
+    public async void replace_conference(XmppStream stream, Jid muc_jid, Conference modified_conference) {
         yield add_conference(stream, modified_conference);
     }
 

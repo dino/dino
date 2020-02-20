@@ -187,13 +187,6 @@ public class MucManager : StreamInteractionModule, Object {
         }
     }
 
-    public void replace_bookmark(Account account, Conference was, Conference replace) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference.begin(stream, was, replace);
-        }
-    }
-
     public void remove_bookmark(Account account, Conference conference) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
@@ -380,12 +373,8 @@ public class MucManager : StreamInteractionModule, Object {
             foreach (Conference conference in conferences) {
                 if (conference.jid.equals(jid)) {
                     if (!conference.autojoin) {
-                        Conference new_conference = new Conference();
-                        new_conference.jid = jid;
-                        new_conference.autojoin = true;
-                        new_conference.nick = nick;
-                        new_conference.password = password;
-                        bookmarks_provider[account].replace_conference.begin(stream, conference, new_conference);
+                        Conference new_conference = new Conference() { jid=jid, nick=conference.nick, name=conference.name, password=conference.password, autojoin=true };
+                        bookmarks_provider[account].replace_conference.begin(stream, jid, new_conference);
                     }
                     return;
                 }
@@ -403,12 +392,8 @@ public class MucManager : StreamInteractionModule, Object {
             foreach (Conference conference in conferences) {
                 if (conference.jid.equals(jid)) {
                     if (conference.autojoin) {
-                        Conference new_conference = new Conference();
-                        new_conference.jid = jid;
-                        new_conference.autojoin = false;
-                        new_conference.nick = conference.nick;
-                        new_conference.password = conference.password;
-                        bookmarks_provider[account].replace_conference.begin(stream, conference, new_conference);
+                        Conference new_conference = new Conference() { jid=jid, nick=conference.nick, name=conference.name, password=conference.password, autojoin=false };
+                        bookmarks_provider[account].replace_conference.begin(stream, jid, new_conference);
                         return;
                     }
                 }

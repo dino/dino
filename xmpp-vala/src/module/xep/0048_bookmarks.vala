@@ -7,7 +7,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0048_bookmarks_module");
 
     public async Set<Conference>? get_conferences(XmppStream stream) {
-        Set<Conference> ret = new HashSet<Conference>(Conference.hash_func, Conference.equal_func);
+        Set<Conference> ret = new HashSet<Conference>(Conference.hash_func, Conference.equals_func);
 
         StanzaNode get_node = new StanzaNode.build("storage", NS_URI).add_self_xmlns();
         stream.get_module(PrivateXmlStorage.Module.IDENTITY).retrieve(stream, get_node, (stream, node) => {
@@ -54,20 +54,26 @@ public class Module : BookmarksProvider, XmppStreamModule {
     public async void add_conference(XmppStream stream, Conference conference) {
         Set<Conference>? conferences = yield get_conferences(stream);
         conferences.add(conference);
-        stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
+        set_conferences(stream, conferences);
     }
 
-    public async void replace_conference(XmppStream stream, Conference orig_conference, Conference modified_conference) {
+    public async void replace_conference(XmppStream stream, Jid muc_jid, Conference modified_conference) {
         Set<Conference>? conferences = yield get_conferences(stream);
-        conferences.remove(orig_conference);
-        conferences.add(modified_conference);
-        stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
+        foreach (Conference conference in conferences) {
+            if (conference.jid.equals(muc_jid)) {
+                conference.autojoin = modified_conference.autojoin;
+                conference.name = modified_conference.name;
+                conference.nick = modified_conference.nick;
+                conference.password = modified_conference.password;
+            }
+        }
+        set_conferences(stream, conferences);
     }
 
     public async void remove_conference(XmppStream stream, Conference conference_remove) {
         Set<Conference>? conferences = yield get_conferences(stream);
         conferences.remove(conference_remove);
-        stream.get_module(Module.IDENTITY).set_conferences(stream, conferences);
+        set_conferences(stream, conferences);
     }
 
     public override void attach(XmppStream stream) { }
