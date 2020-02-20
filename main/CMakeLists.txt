@@ -12,6 +12,10 @@ find_packages(MAIN_PACKAGES REQUIRED
     ICU
 )
 
+set(MAIN_PACKAGES ${MAIN_PACKAGES} gstreamer-1.0)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GST REQUIRED IMPORTED_TARGET gstreamer-1.0)
+
 set(RESOURCE_LIST
     icons/dino-changes-prevent-symbolic.svg
     icons/dino-conversation-list-placeholder-arrow.svg
@@ -48,6 +52,7 @@ set(RESOURCE_LIST
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
     conversation_summary/image_toolbar.ui
+    conversation_summary/multimedia_toolbar.ui
     conversation_summary/item_metadata_header.ui
     conversation_summary/view.ui
     manage_accounts/account_row.ui
@@ -173,7 +178,7 @@ add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE
 add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c)
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_include_directories(dino PRIVATE src)
-target_link_libraries(dino libdino ${MAIN_PACKAGES})
+target_link_libraries(dino libdino ${MAIN_PACKAGES} PkgConfig::GST)
 
 if(WIN32)
     target_link_libraries(dino -mwindows)

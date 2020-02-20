@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <object class="GtkBox" id="main">
+        <property name="valign">end</property>
+        <property name="halign">fill</property>
+        <property name="margin">10</property>
+        <property name="visible">True</property>
+        <child>
+            <object class="GtkToolItem">
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="GtkButton" id="pause_button">
+                                <property name="relief">none</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <object class="GtkImage" id="pause_image">
+                                        <property name="icon-name">media-playback-start-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkScale" id="seek_scale">
+                                <property name="visible">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="halign">fill</property>
+                                <property name="value-pos">GTK_POS_RIGHT</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>

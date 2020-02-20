@@ -15,6 +15,7 @@ void main(string[] args) {
         internationalize(GETTEXT_PACKAGE, search_path_generator.get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR));
 
         Gtk.init(ref args);
+        Gst.init(ref args);
         Dino.Ui.Application app = new Dino.Ui.Application() { search_path_generator=search_path_generator };
         Plugins.Loader loader = new Plugins.Loader(app);
         loader.loadAll();
