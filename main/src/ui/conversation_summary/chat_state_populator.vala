@@ -19,14 +19,14 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.Conversati
     public ChatStatePopulator(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).received_state.connect((account, jid, state) => {
-            if (current_conversation != null && current_conversation.account.equals(account) && current_conversation.counterpart.equals_bare(jid)) {
-                update_chat_state(account, jid);
+        stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).received_state.connect((conversation, state) => {
+            if (current_conversation != null && current_conversation.equals(conversation)) {
+                update_chat_state();
             }
         });
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
             if (conversation.equals(current_conversation)) {
-                update_chat_state(conversation.account, conversation.counterpart);
+                update_chat_state();
             }
         });
     }
@@ -36,60 +36,32 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.Conversati
         this.item_collection = item_collection;
         this.meta_item = null;
 
-        update_chat_state(conversation.account, conversation.counterpart);
+        update_chat_state();
     }
 
     public void close(Conversation conversation) { }
 
     public void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 
-    private void update_chat_state(Account account, Jid jid) {
-        HashMap<Jid, string>? states = stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).get_chat_states(current_conversation);
+    private void update_chat_state() {
+        Gee.List<Jid>? typing_jids = stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).get_typing_jids(current_conversation);
 
-        StateType? state_type = null;
-        Gee.List<Jid> jids = new ArrayList<Jid>();
-
-        if (states != null) {
-            Gee.List<Jid> composing = new ArrayList<Jid>();
-            Gee.List<Jid> paused = new ArrayList<Jid>();
-            foreach (Jid j in states.keys) {
-                string state = states[j];
-                if (state == Xep.ChatStateNotifications.STATE_COMPOSING) {
-                    composing.add(j);
-                } else if (state == Xep.ChatStateNotifications.STATE_PAUSED) {
-                    paused.add(j);
-                }
-            }
-            if (composing.size == 1 || (composing.size > 1 && current_conversation.type_ != Conversation.Type.GROUPCHAT)) {
-                state_type = StateType.TYPING;
-                jids.add(composing[0]);
-            } else if (paused.size >= 1 && current_conversation.type_ != Conversation.Type.GROUPCHAT) {
-                state_type = StateType.PAUSED;
-                jids.add(paused[0]);
-            } else if (composing.size > 1) {
-                state_type = StateType.TYPING;
-                jids = composing;
-            }
-        }
-        if (meta_item != null && state_type == null) {
+        if (meta_item != null && typing_jids == null) {
+            // Remove state (stoped typing)
             item_collection.remove_item(meta_item);
             meta_item = null;
-        } else if (meta_item != null && state_type != null) {
-            meta_item.set_new(state_type, jids);
-        } else if (state_type != null) {
-            meta_item = new MetaChatStateItem(stream_interactor, current_conversation, jid, state_type, jids);
+        } else if (meta_item != null && typing_jids != null) {
+            // Update state (other people typing in MUC)
+            meta_item.set_new(typing_jids);
+        } else if (typing_jids != null) {
+            // New state (started typing)
+            meta_item = new MetaChatStateItem(stream_interactor, current_conversation, typing_jids);
             item_collection.insert_item(meta_item);
         }
     }
 }
 
-private enum StateType {
-    TYPING,
-    PAUSED
-}
-
 private class MetaChatStateItem : Plugins.MetaConversationItem {
-    public override Jid? jid { get; set; }
     public override bool dim { get; set; default=true; }
     public override DateTime sort_time { get; set; default=new DateTime.now_utc().add_years(10); }
 
@@ -99,16 +71,13 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
 
     private StreamInteractor stream_interactor;
     private Conversation conversation;
-    private StateType state_type;
     private Gee.List<Jid> jids = new ArrayList<Jid>();
     private Label label;
     private AvatarImage image;
 
-    public MetaChatStateItem(StreamInteractor stream_interactor, Conversation conversation, Jid jid, StateType state_type, Gee.List<Jid> jids) {
+    public MetaChatStateItem(StreamInteractor stream_interactor, Conversation conversation, Gee.List<Jid> jids) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
-        this.jid = jid;
-        this.state_type = state_type;
         this.jids = jids;
     }
 
@@ -125,8 +94,7 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
         return image_content_box;
     }
 
-    public void set_new(StateType state_type, Gee.List<Jid> jids) {
-        this.state_type = state_type;
+    public void set_new(Gee.List<Jid> jids) {
         this.jids = jids;
         update();
     }
@@ -144,16 +112,11 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
         if (jids.size > 3) {
             new_text = _("%s, %s and %i others").printf(display_names[0], display_names[1], jids.size - 2);
         } else if (jids.size == 3) {
-            new_text = _("%s, %s and %s").printf(display_names[0], display_names[1], display_names[2]);
+            new_text = _("%s, %s and %s are typing…").printf(display_names[0], display_names[1], display_names[2]);
         } else if (jids.size == 2) {
-            new_text =_("%s and %s").printf(display_names[0], display_names[1]);
+            new_text =_("%s and %s are typing…").printf(display_names[0], display_names[1]);
         } else {
-            new_text = display_names[0];
-        }
-        if (state_type == StateType.TYPING) {
-            new_text += " " + n("is typing…", "are typing…", jids.size);
-        } else {
-            new_text += " " + _("has stopped typing");
+            new_text = "%s is typing…".printf(display_names[0]);
         }
 
         label.label = new_text;

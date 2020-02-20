@@ -15,6 +15,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
     public signal void build_message_stanza(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
     public signal void pre_message_send(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation);
     public signal void message_sent(Entities.Message message, Conversation conversation);
+    public signal void message_sent_or_received(Entities.Message message, Conversation conversation);
     public signal void history_synced(Account account);
 
     public MessageListenerHolder received_pipeline = new MessageListenerHolder();
@@ -306,6 +307,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
         } else if (message.direction == Entities.Message.DIRECTION_SENT) {
             message_sent(message, conversation);
         }
+
+        message_sent_or_received(message, conversation);
     }
 
     public async Entities.Message parse_message_stanza(Account account, Xmpp.MessageStanza message) {
