@@ -84,6 +84,12 @@ public class UnifiedWindowController : Object {
         });
 
         window.conversation_selected.connect(conversation => select_conversation(conversation));
+
+        stream_interactor.account_added.connect((account) => { update_stack_state(true); });
+        stream_interactor.account_removed.connect((account) => { update_stack_state(); });
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(() => update_stack_state());
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => update_stack_state());
+        update_stack_state();
     }
 
     public void select_conversation(Conversation? conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
@@ -116,6 +122,21 @@ public class UnifiedWindowController : Object {
             if (widget != null) {
                 widget.unset_conversation();
             }
+        }
+    }
+
+    private void update_stack_state(bool know_exists = false) {
+        ArrayList<Account> accounts = stream_interactor.get_accounts();
+        if (!know_exists && accounts.size == 0) {
+            if (db.get_accounts().size == 0) {
+                window.set_stack_state(UnifiedWindow.StackState.CLEAN_START);
+            } else {
+                window.set_stack_state(UnifiedWindow.StackState.NO_ACTIVE_ACCOUNTS);
+            }
+        } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
+            window.set_stack_state(UnifiedWindow.StackState.NO_ACTIVE_CONVERSATIONS);
+        } else {
+            window.set_stack_state(UnifiedWindow.StackState.CONVERSATION);
         }
     }
 

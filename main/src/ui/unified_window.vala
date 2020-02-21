@@ -52,13 +52,6 @@ public class UnifiedWindow : Gtk.Window {
         setup_stack();
 
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-
-        stream_interactor.account_added.connect((account) => { check_stack(true); });
-        stream_interactor.account_removed.connect((account) => { check_stack(); });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(() => check_stack());
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => check_stack());
-
-        check_stack();
     }
 
     private void setup_unified() {
@@ -113,29 +106,35 @@ public class UnifiedWindow : Gtk.Window {
         add(stack);
     }
 
-    private void check_stack(bool know_exists = false) {
-        ArrayList<Account> accounts = stream_interactor.get_accounts();
-        if (!know_exists && accounts.size == 0) {
-            if (db.get_accounts().size == 0) {
+    public enum StackState {
+        CLEAN_START,
+        NO_ACTIVE_ACCOUNTS,
+        NO_ACTIVE_CONVERSATIONS,
+        CONVERSATION
+    }
+
+    public void set_stack_state(StackState stack_state) {
+        if (stack_state == StackState.CONVERSATION) {
+            left_stack.set_visible_child_name("content");
+            right_stack.set_visible_child_name("content");
+
+            stack.set_visible_child_name("main");
+            if (Util.use_csd()) {
+                set_titlebar(headerbar_paned);
+            }
+        } else if (stack_state == StackState.CLEAN_START || stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
+            if (stack_state == StackState.CLEAN_START) {
                 stack.set_visible_child_name("welcome_placeholder");
-            } else {
+            } else if (stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
                 stack.set_visible_child_name("accounts_placeholder");
             }
             if (Util.use_csd()) {
                 set_titlebar(placeholder_headerbar);
             }
-        } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
+        } else if (stack_state == StackState.NO_ACTIVE_CONVERSATIONS) {
             stack.set_visible_child_name("main");
             left_stack.set_visible_child_name("placeholder");
             right_stack.set_visible_child_name("placeholder");
-            if (Util.use_csd()) {
-                set_titlebar(headerbar_paned);
-            }
-        } else {
-            left_stack.set_visible_child_name("content");
-            right_stack.set_visible_child_name("content");
-
-            stack.set_visible_child_name("main");
             if (Util.use_csd()) {
                 set_titlebar(headerbar_paned);
             }
