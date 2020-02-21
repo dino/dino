@@ -43,6 +43,7 @@ set(RESOURCE_LIST
     contact_details_dialog.ui
     conversation_list_titlebar.ui
     conversation_list_titlebar_csd.ui
+    conversation_view.ui
     emojichooser.ui
     global_search.ui
     conversation_selector/chat_row_tooltip.ui
@@ -97,6 +98,8 @@ SOURCES
     src/ui/chat_input_controller.vala
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_list_titlebar_csd.vala
+    src/ui/conversation_view.vala
+    src/ui/conversation_view_controller.vala
     src/ui/global_search.vala
     src/ui/notifications.vala
     src/ui/settings_dialog.vala

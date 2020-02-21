@@ -56,7 +56,6 @@ public class ConversationSelector : ListBox {
         if (!rows.has_key(conversation)) {
             add_conversation(conversation);
         }
-        rows[conversation].grab_focus();
         this.select_row(rows[conversation]);
     }
 
@@ -86,8 +85,8 @@ public class ConversationSelector : ListBox {
         if (this.drag_timeout != null)
             return false;
         this.drag_timeout = Timeout.add(200, () => {
-            if (widget.get_type().is_a(typeof(ConversationRow))) {
-                ConversationRow row = widget as ConversationRow;
+            if (widget.get_type().is_a(typeof(ConversationSelectorRow))) {
+                ConversationSelectorRow row = widget as ConversationSelectorRow;
                 conversation_selected(row.conversation);
             }
             this.drag_timeout = null;

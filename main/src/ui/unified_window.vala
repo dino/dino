@@ -16,9 +16,8 @@ public class UnifiedWindow : Gtk.Window {
     public WelcomePlceholder welcome_placeholder = new WelcomePlceholder() { visible=true };
     public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     public NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
-    public ChatInput.View chat_input;
+    public ConversationView conversation_view;
     public ConversationSelector conversation_selector;
-    public ConversationSummary.ConversationView conversation_frame;
     public ConversationTitlebar conversation_titlebar;
     public ConversationTitlebarCsd conversation_titlebar_csd;
     public ConversationListTitlebarCsd conversation_list_titlebar_csd;
@@ -26,8 +25,6 @@ public class UnifiedWindow : Gtk.Window {
     public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL, visible=true };
     public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
     public Paned paned;
-    public Revealer goto_end_revealer;
-    public Button goto_end_button;
     public Revealer search_revealer;
     public SearchEntry search_entry;
     public GlobalSearch search_box;
@@ -72,13 +69,8 @@ public class UnifiedWindow : Gtk.Window {
         box.add(paned);
         left_stack = (Stack) builder.get_object("left_stack");
         right_stack = (Stack) builder.get_object("right_stack");
-        chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
-        chat_input.key_press_event.connect(forward_key_press_to_chat_input);
-        conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
-        conversation_frame.key_press_event.connect(forward_key_press_to_chat_input);
+        conversation_view = (ConversationView) builder.get_object("conversation_view");
         conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
-        goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
-        goto_end_button = (Button) builder.get_object("goto_end_button");
         search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
         search_revealer = (Revealer) builder.get_object("search_revealer");
         search_entry = (SearchEntry) builder.get_object("search_entry");
@@ -103,7 +95,7 @@ public class UnifiedWindow : Gtk.Window {
 
             box.add(headerbar_paned);
         }
-        headerbar_paned.key_press_event.connect(forward_key_press_to_chat_input);
+//        headerbar_paned.key_press_event.connect(forward_key_press_to_chat_input); TODO
     }
 
     private void set_window_buttons() {
@@ -151,21 +143,6 @@ public class UnifiedWindow : Gtk.Window {
                 set_titlebar(headerbar_paned);
             }
         }
-    }
-
-    private bool forward_key_press_to_chat_input(EventKey event) {
-        // Don't forward / change focus on Control / Alt
-        if (event.keyval == Gdk.Key.Control_L || event.keyval == Gdk.Key.Control_R ||
-                event.keyval == Gdk.Key.Alt_L || event.keyval == Gdk.Key.Alt_R) {
-            return false;
-        }
-        // Don't forward / change focus on Control + ...
-        if ((event.state & ModifierType.CONTROL_MASK) > 0) {
-            return false;
-        }
-        chat_input.text_input.key_press_event(event);
-        chat_input.text_input.grab_focus();
-        return true;
     }
 
     public void loop_conversations(bool backwards) {
