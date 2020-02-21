@@ -94,7 +94,7 @@ public class ConversationItemSkeleton : EventBox {
     }
 }
 
-[GtkTemplate (ui = "/im/dino/Dino/conversation_summary/item_metadata_header.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/item_metadata_header.ui")]
 public class ItemMetaDataHeader : Box {
     [GtkChild] public Label name_label;
     [GtkChild] public Label dot_label;
