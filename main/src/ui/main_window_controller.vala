@@ -6,17 +6,17 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class UnifiedWindowController : Object {
+public class MainWindowController : Object {
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
     private Application app;
     private Database db;
-    private UnifiedWindow window;
+    private MainWindow window;
 
     private ConversationViewController conversation_view_controller;
 
-    public UnifiedWindowController(Application application, StreamInteractor stream_interactor, Database db) {
+    public MainWindowController(Application application, StreamInteractor stream_interactor, Database db) {
         this.app = application;
         this.stream_interactor = stream_interactor;
         this.db = db;
@@ -25,7 +25,7 @@ public class UnifiedWindowController : Object {
         stream_interactor.account_removed.connect(check_unset_conversation);
     }
 
-    public void set_window(UnifiedWindow window) {
+    public void set_window(MainWindow window) {
         this.window = window;
 
         this.conversation_view_controller = new ConversationViewController(window.conversation_view, window.conversation_titlebar, stream_interactor);
@@ -129,14 +129,14 @@ public class UnifiedWindowController : Object {
         ArrayList<Account> accounts = stream_interactor.get_accounts();
         if (!know_exists && accounts.size == 0) {
             if (db.get_accounts().size == 0) {
-                window.set_stack_state(UnifiedWindow.StackState.CLEAN_START);
+                window.set_stack_state(MainWindow.StackState.CLEAN_START);
             } else {
-                window.set_stack_state(UnifiedWindow.StackState.NO_ACTIVE_ACCOUNTS);
+                window.set_stack_state(MainWindow.StackState.NO_ACTIVE_ACCOUNTS);
             }
         } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
-            window.set_stack_state(UnifiedWindow.StackState.NO_ACTIVE_CONVERSATIONS);
+            window.set_stack_state(MainWindow.StackState.NO_ACTIVE_CONVERSATIONS);
         } else {
-            window.set_stack_state(UnifiedWindow.StackState.CONVERSATION);
+            window.set_stack_state(MainWindow.StackState.CONVERSATION);
         }
     }
 

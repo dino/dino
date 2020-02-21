@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class UnifiedWindow : Gtk.Window {
+public class MainWindow : Gtk.Window {
 
     public signal void conversation_selected(Conversation conversation);
 
@@ -36,7 +36,7 @@ public class UnifiedWindow : Gtk.Window {
     private Database db;
     private Config config;
 
-    public UnifiedWindow(Application application, StreamInteractor stream_interactor, Database db, Config config) {
+    public MainWindow(Application application, StreamInteractor stream_interactor, Database db, Config config) {
         Object(application : application);
         this.stream_interactor = stream_interactor;
         this.db = db;
@@ -195,7 +195,7 @@ public class UnifiedWindow : Gtk.Window {
     }
 }
 
-public class WelcomePlceholder : UnifiedWindowPlaceholder {
+public class WelcomePlceholder : MainWindowPlaceholder {
     public WelcomePlceholder() {
         title_label.label = _("Welcome to Dino!");
         label.label = _("Sign in or create an account to get started.");
@@ -205,7 +205,7 @@ public class WelcomePlceholder : UnifiedWindowPlaceholder {
     }
 }
 
-public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
+public class NoAccountsPlaceholder : MainWindowPlaceholder {
     public NoAccountsPlaceholder() {
         title_label.label = _("No active accounts");
         primary_button.label = _("Manage accounts");
@@ -215,7 +215,7 @@ public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
     }
 }
 
-public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
+public class NoConversationsPlaceholder : MainWindowPlaceholder {
     public NoConversationsPlaceholder() {
         title_label.label = _("No active conversations");
         primary_button.label = _("Start Conversation");
@@ -227,7 +227,7 @@ public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
 }
 
 [GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
-public class UnifiedWindowPlaceholder : Box {
+public class MainWindowPlaceholder : Box {
     [GtkChild] public Label title_label;
     [GtkChild] public Label label;
     [GtkChild] public Button primary_button;
