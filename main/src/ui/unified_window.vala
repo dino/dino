@@ -51,8 +51,6 @@ public class UnifiedWindow : Gtk.Window {
         setup_unified();
         setup_stack();
 
-        this.bind_property("title", conversation_titlebar, "title");
-        this.bind_property("subtitle", conversation_titlebar, "subtitle");
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         stream_interactor.account_added.connect((account) => { check_stack(true); });
@@ -80,14 +78,14 @@ public class UnifiedWindow : Gtk.Window {
 
     private void setup_headerbar() {
         if (Util.use_csd()) {
-            conversation_list_titlebar_csd = new ConversationListTitlebarCsd(stream_interactor, this) { visible=true };
+            conversation_list_titlebar_csd = new ConversationListTitlebarCsd() { visible=true };
             headerbar_paned.pack1(conversation_list_titlebar_csd, false, false);
 
             conversation_titlebar_csd = new ConversationTitlebarCsd() { visible=true };
             conversation_titlebar = conversation_titlebar_csd;
             headerbar_paned.pack2(conversation_titlebar_csd, true, false);
         } else {
-            ConversationListTitlebar conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
+            ConversationListTitlebar conversation_list_titlebar = new ConversationListTitlebar() { visible=true };
             headerbar_paned.pack1(conversation_list_titlebar, false, false);
 
             conversation_titlebar = new ConversationTitlebarNoCsd() { visible=true };
@@ -95,7 +93,6 @@ public class UnifiedWindow : Gtk.Window {
 
             box.add(headerbar_paned);
         }
-//        headerbar_paned.key_press_event.connect(forward_key_press_to_chat_input); TODO
     }
 
     private void set_window_buttons() {

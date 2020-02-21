@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public interface ConversationTitlebar: Widget {
+public interface ConversationTitlebar : Widget {
     public abstract string? subtitle { get; set; }
     public abstract string? title { get; set; }
 }

@@ -57,14 +57,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             }
             return true;
         });
-
-        const TargetEntry[] target_list = {
-            { "text/uri-list", 0, Target.URI_LIST }
-        };
-//        drag_dest_unset(main);
-//        drag_dest_set(scrolled, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
-//        scrolled.drag_data_received.connect(() => print("a\n"));
-
         return this;
     }
 

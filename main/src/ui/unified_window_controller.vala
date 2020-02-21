@@ -8,16 +8,11 @@ namespace Dino.Ui {
 
 public class UnifiedWindowController : Object {
 
-    public new string? conversation_display_name { get; set; }
-    public string? conversation_topic { get; set; }
-
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
     private Application app;
     private Database db;
     private UnifiedWindow window;
-
-    private SearchMenuEntry search_menu_entry = new SearchMenuEntry();
 
     private ConversationViewController conversation_view_controller;
 
@@ -26,39 +21,16 @@ public class UnifiedWindowController : Object {
         this.stream_interactor = stream_interactor;
         this.db = db;
 
-        stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
-            if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_conversation_display_name();
-            }
-        });
-
-        stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
-            if (conversation != null && conversation.counterpart.equals_bare(room.bare_jid) && conversation.account.equals(account)) {
-                update_conversation_display_name();
-            }
-        });
-
-        stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
-            if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_conversation_topic(subject);
-            }
-        });
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(check_unset_conversation);
         stream_interactor.account_removed.connect(check_unset_conversation);
-
-        app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
-        app.plugin_registry.register_contact_titlebar_entry(search_menu_entry);
-        app.plugin_registry.register_contact_titlebar_entry(new OccupantsEntry(stream_interactor));
     }
 
     public void set_window(UnifiedWindow window) {
         this.window = window;
 
-        this.conversation_view_controller = new ConversationViewController(window.conversation_view, stream_interactor);
+        this.conversation_view_controller = new ConversationViewController(window.conversation_view, window.conversation_titlebar, stream_interactor);
 
-        this.bind_property("conversation-display-name", window, "title");
-        this.bind_property("conversation-topic", window, "subtitle");
-        search_menu_entry.search_button.bind_property("active", window.search_revealer, "reveal_child");
+        conversation_view_controller.search_menu_entry.search_button.bind_property("active", window.search_revealer, "reveal_child");
 
         window.search_revealer.notify["child-revealed"].connect(() => {
             if (window.search_revealer.child_revealed) {
@@ -119,16 +91,6 @@ public class UnifiedWindowController : Object {
 
         conversation_view_controller.select_conversation(conversation, default_initialize_conversation);
 
-        update_conversation_display_name();
-        update_conversation_topic();
-
-        foreach(var e in this.app.plugin_registry.conversation_titlebar_entries) {
-            Plugins.ConversationTitlebarWidget widget = e.get_widget(Plugins.WidgetType.GTK);
-            if (widget != null) {
-                widget.set_conversation(conversation);
-            }
-        }
-
         stream_interactor.get_module(ChatInteraction.IDENTITY).on_conversation_selected(conversation);
         conversation.active = true; // only for conversation_selected
         window.conversation_selector.on_conversation_selected(conversation); // In case selection was not via ConversationSelector
@@ -147,33 +109,13 @@ public class UnifiedWindowController : Object {
     private void unset_conversation() {
         this.conversation = null;
 
-        conversation_display_name = null;
-        conversation_topic = null;
+        conversation_view_controller.unset_conversation();
 
         foreach(var e in this.app.plugin_registry.conversation_titlebar_entries) {
             Plugins.ConversationTitlebarWidget widget = e.get_widget(Plugins.WidgetType.GTK);
             if (widget != null) {
                 widget.unset_conversation();
             }
-        }
-    }
-
-    private void update_conversation_display_name() {
-        conversation_display_name = Util.get_conversation_display_name(stream_interactor, conversation);
-    }
-
-    private void update_conversation_topic(string? subtitle = null) {
-        if (subtitle != null) {
-            conversation_topic = Util.summarize_whitespaces_to_space(subtitle);
-        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            string? subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
-            if (subject != null) {
-                conversation_topic = Util.summarize_whitespaces_to_space(subject);
-            } else {
-                conversation_topic = null;
-            }
-        } else {
-            conversation_topic = null;
         }
     }
 
@@ -192,7 +134,7 @@ public class UnifiedWindowController : Object {
     }
 
     private void close_search() {
-        search_menu_entry.search_button.active = false;
+        conversation_view_controller.search_menu_entry.search_button.active = false;
         window.search_revealer.reveal_child = false;
     }
 }

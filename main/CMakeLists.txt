@@ -97,7 +97,6 @@ SOURCES
     src/ui/avatar_image.vala
     src/ui/chat_input_controller.vala
     src/ui/conversation_list_titlebar.vala
-    src/ui/conversation_list_titlebar_csd.vala
     src/ui/conversation_view.vala
     src/ui/conversation_view_controller.vala
     src/ui/global_search.vala
