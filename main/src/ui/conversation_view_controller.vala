@@ -77,12 +77,13 @@ public class ConversationViewController : Object {
             }
         });
 
-        // Register headerbar plugins
+        // Headerbar plugins
         app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
         app.plugin_registry.register_contact_titlebar_entry(search_menu_entry);
         app.plugin_registry.register_contact_titlebar_entry(new OccupantsEntry(stream_interactor));
-
-
+        foreach(var entry in app.plugin_registry.conversation_titlebar_entries) {
+            titlebar.insert_entry(entry);
+        }
     }
 
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {
