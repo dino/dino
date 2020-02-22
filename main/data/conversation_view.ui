@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoUiConversationView" parent="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="visible">True</property>
+            <style>
+                <class name="dino-conversation"/>
+            </style>
+            <child>
+                <object class="GtkOverlay">
+                    <property name="visible">True</property>
+                    <child>
+                <object class="DinoUiConversationSummaryConversationView" id="conversation_frame">
+                    <property name="visible">True</property>
+                </object>
+                    </child>
+                    <child type="overlay">
+                        <object class="GtkRevealer" id="goto_end_revealer">
+                            <property name="halign">end</property>
+                            <property name="valign">end</property>
+                            <property name="transition-type">crossfade</property>
+                            <property name="visible">True</property>
+                            <property name="margin-end">30</property>
+                            <property name="margin-bottom">30</property>
+                            <child>
+                                <object class="GtkButton" id="goto_end_button">
+                                    <property name="vexpand">False</property>
+                                    <property name="halign">end</property>
+                                    <property name="valign">end</property>
+                                    <property name="visible">True</property>
+                                    <style>
+                                        <class name="circular"/>
+                                    </style>
+                                    <child>
+                                        <object class="GtkImage">
+                                            <property name="icon-name">go-down-symbolic</property>
+                                            <property name="icon-size">1</property>
+                                            <property name="visible">True</property>
+                                        </object>
+                                    </child>
+                                </object>
+                            </child>
+                        </object>
+
+                    </child>
+                </object>
+            </child>
+            <child>
+                <object class="DinoUiChatInputView" id="chat_input">
+                    <property name="visible">True</property>
+                </object>
+            </child>
+    </template>
+</interface>

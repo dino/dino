@@ -126,6 +126,8 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     public void close_conversation(Conversation conversation) {
+        if (!conversation.active) return;
+
         conversation.active = false;
         conversation_deactivated(conversation);
     }

@@ -6,8 +6,8 @@ using Xmpp;
 
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private Notifications notifications;
-    private UnifiedWindow window;
-    public UnifiedWindowController controller;
+    private MainWindow window;
+    public MainWindowController controller;
 
     public Database db { get; set; }
     public Dino.Entities.Settings settings { get; set; }
@@ -35,9 +35,9 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         activate.connect(() => {
             if (window == null) {
-                controller = new UnifiedWindowController(this, stream_interactor, db);
+                controller = new MainWindowController(this, stream_interactor, db);
                 config = new Config(db);
-                window = new UnifiedWindow(this, stream_interactor, db, config);
+                window = new MainWindow(this, stream_interactor, db, config);
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.delete_event.connect(window.hide_on_delete);
 

@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"PO-Revision-Date: 2020-02-04 16:50+0000\n"
+"Last-Translator: OIS <mistresssilvara@hotmail.com>\n"
+"Language-Team: none\n"
+"Language: ie\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.11-dev\n"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Key publishing disabled"
+msgstr "Publication de claves depermisset"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr "Errore de GnuPG"
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
+msgid "No keys available. Generate one!"
+msgstr "Null claves disponibil. Crea ún!"
+
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Select key"
+msgstr "Selecter un clave"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Loading…"
+msgstr "Cargante…"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Querying GnuPG"
+msgstr "Contactante GnuPG"
+
+#: plugins/openpgp/src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr "Clave ne es in li porta-clave"
+
+#: plugins/openpgp/src/contact_details_provider.vala:30
+msgid "Encryption"
+msgstr "Ciffration"

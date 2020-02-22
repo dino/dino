@@ -12,8 +12,6 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_selector/conversation_row.ui")]
 public class ConversationSelectorRow : ListBoxRow {
 
-    public signal void closed();
-
     [GtkChild] protected AvatarImage image;
     [GtkChild] protected Label name_label;
     [GtkChild] protected Label time_label;
@@ -51,9 +49,6 @@ public class ConversationSelectorRow : ListBoxRow {
                 });
                 break;
             case Conversation.Type.GROUPCHAT:
-                closed.connect(() => {
-                    stream_interactor.get_module(MucManager.IDENTITY).part(conversation.account, conversation.counterpart);
-                });
                 stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
                     if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                         update_name_label();
@@ -93,7 +88,9 @@ public class ConversationSelectorRow : ListBoxRow {
         });
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
-        x_button.clicked.connect(close_conversation);
+        x_button.clicked.connect(() => {
+            stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
+        });
         image.set_conversation(stream_interactor, conversation);
         conversation.notify["read-up-to"].connect(update_read);
 
@@ -110,6 +107,19 @@ public class ConversationSelectorRow : ListBoxRow {
         update_message_label();
         update_time_label();
         update_read();
+    }
+
+    public async void colapse() {
+        main_revealer.set_transition_type(RevealerTransitionType.SLIDE_UP);
+        main_revealer.set_reveal_child(false);
+
+        // Animations can be diabled (=> child_revealed immediately false). Wait for completion in case they're enabled.
+        if (main_revealer.child_revealed) {
+            main_revealer.notify["child-revealed"].connect(() => {
+                Idle.add(colapse.callback);
+            });
+            yield;
+        }
     }
 
     protected void update_name_label() {
@@ -130,14 +140,35 @@ public class ConversationSelectorRow : ListBoxRow {
                     MessageItem message_item = last_content_item as MessageItem;
                     Message last_message = message_item.message;
 
-                    if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, last_message.from, true) + ": ";
+                    string body = last_message.body;
+                    bool me_command = body.has_prefix("/me ");
+
+                    /* If we have a /me command, we always show the display
+                     * name, and we don't set me_is_me on
+                     * get_participant_display_name, since that will return
+                     * "Me" (internationalized), whereas /me commands expect to
+                     * be in the third person. We also omit the colon in this
+                     * case, and strip off the /me prefix itself. */
+
+                    if (conversation.type_ == Conversation.Type.GROUPCHAT || me_command) {
+                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, last_message.from, !me_command);
+                    } else if (last_message.direction == Message.DIRECTION_SENT) {
+                        nick_label.label = _("Me");
                     } else {
-                        nick_label.label = last_message.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
+                        nick_label.label = "";
+                    }
+
+                    if (me_command) {
+                        /* Don't slice off the space after /me */
+                        body = body.slice("/me".length, body.length);
+                    } else if (nick_label.label.length > 0) {
+                        /* TODO: Is this valid for RTL languages? */
+                        nick_label.label += ": ";
                     }
 
                     message_label.attributes.filter((attr) => attr.equal(attr_style_new(Pango.Style.ITALIC)));
-                    message_label.label = Util.summarize_whitespaces_to_space(last_message.body);
+                    message_label.label = Util.summarize_whitespaces_to_space(body);
+
                     break;
                 case FileItem.TYPE:
                     FileItem file_item = last_content_item as FileItem;
@@ -207,15 +238,6 @@ public class ConversationSelectorRow : ListBoxRow {
         box.add(resource);
         box.show_all();
         return box;
-    }
-
-    private void close_conversation() {
-        main_revealer.set_transition_type(RevealerTransitionType.SLIDE_UP);
-        main_revealer.set_reveal_child(false);
-        closed();
-        main_revealer.notify["child-revealed"].connect(() => {
-            stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
-        });
     }
 
     public override void state_flags_changed(StateFlags flags) {

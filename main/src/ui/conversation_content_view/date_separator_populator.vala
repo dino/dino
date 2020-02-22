@@ -36,7 +36,7 @@ class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Plugins.Conver
     public void populate_timespan(Conversation conversation, DateTime after, DateTime before) { }
 
     private void on_inserted_item(Plugins.MetaConversationItem item) {
-        if (item.display_time == null) return;
+        if (!(item is ContentMetaItem)) return;
 
         DateTime time = item.sort_time.to_local();
         DateTime msg_date = new DateTime.local(time.get_year(), time.get_month(), time.get_day_of_month(), 0, 0, 0);
@@ -52,7 +52,7 @@ class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Plugins.Conver
 }
 
 public class MetaDateItem : Plugins.MetaConversationItem {
-    public override DateTime? sort_time { get; set; }
+    public override DateTime sort_time { get; set; }
 
     public override bool can_merge { get; set; default=false; }
     public override bool requires_avatar { get; set; default=false; }

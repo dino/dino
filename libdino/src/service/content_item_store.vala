@@ -223,11 +223,11 @@ public interface ContentFilter : Object {
 public abstract class ContentItem : Object {
     public int id { get; set; }
     public string type_ { get; set; }
-    public Jid? jid { get; set; default=null; }
-    public DateTime? sort_time { get; set; default=null; }
-    public DateTime? display_time { get; set; default=null; }
-    public Encryption? encryption { get; set; default=null; }
-    public Entities.Message.Marked? mark { get; set; default=null; }
+    public Jid jid { get; set; }
+    public DateTime sort_time { get; set; }
+    public DateTime display_time { get; set; }
+    public Encryption encryption { get; set; }
+    public Entities.Message.Marked mark { get; set; }
 
     ContentItem(int id, string ty, Jid jid, DateTime sort_time, DateTime display_time, Encryption encryption, Entities.Message.Marked mark) {
         this.id = id;

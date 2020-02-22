@@ -93,12 +93,12 @@ public abstract class MetaConversationItem : Object {
     public virtual string populator_id { get; set; }
     public virtual Jid? jid { get; set; default=null; }
     public virtual bool dim { get; set; default=false; }
-    public virtual DateTime? sort_time { get; set; default=null; }
+    public virtual DateTime sort_time { get; set; default = new DateTime.now_utc(); }
     public virtual long seccondary_sort_indicator { get; set; }
     public virtual long tertiary_sort_indicator { get; set; }
-    public virtual DateTime? display_time { get; set; default=null; }
-    public virtual Encryption? encryption { get; set; default=null; }
-    public virtual Entities.Message.Marked? mark { get; set; default=null; }
+    public virtual DateTime? display_time { get; set; default = null; }
+    public virtual Encryption encryption { get; set; default = Encryption.NONE; }
+    public virtual Entities.Message.Marked mark { get; set; default = Entities.Message.Marked.NONE; }
 
     public abstract bool can_merge { get; set; }
     public abstract bool requires_avatar { get; set; }

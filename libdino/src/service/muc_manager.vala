@@ -33,6 +33,11 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect((conversation) => {
+            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                part(conversation.account, conversation.counterpart);
+            }
+        });
     }
 
     public async Muc.JoinResult? join(Account account, Jid jid, string? nick, string? password) {
@@ -182,13 +187,6 @@ public class MucManager : StreamInteractionModule, Object {
         }
     }
 
-    public void replace_bookmark(Account account, Conference was, Conference replace) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            stream.get_module(Xep.Bookmarks.Module.IDENTITY).replace_conference.begin(stream, was, replace);
-        }
-    }
-
     public void remove_bookmark(Account account, Conference conference) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
@@ -303,11 +301,11 @@ public class MucManager : StreamInteractionModule, Object {
             bookmarks_updated(account, conferences);
         });
         bookmarks_provider[account].conference_added.connect( (stream, conference) => {
-            sync_autojoin_state(account, conference.jid, conference);
+            // TODO join (for Bookmarks2)
             conference_added(account, conference);
         });
         bookmarks_provider[account].conference_removed.connect( (stream, jid) => {
-            sync_autojoin_state(account, jid, null);
+            // TODO part (for Bookmarks2)
             conference_removed(account, jid);
         });
     }
@@ -334,35 +332,35 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void sync_autojoin_active(Account account, Set<Conference> conferences) {
-        Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
+        Gee.List<Conversation> active_conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
+
+        // Join auto-join MUCs
         foreach (Conference conference in conferences) {
-            sync_autojoin_state(account, conference.jid, conference, conversations);
-        }
-    }
+            if (!conference.autojoin) continue;
 
-    private void sync_autojoin_state(Account account, Jid jid, Conference? conference, Gee.List<Conversation>? conversations_ = null) {
-        Gee.List<Conversation> conversations = conversations_ ?? stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
-
-        if (conference != null && conference.autojoin) {
-            // Join if we should join
             bool is_active = false;
-            foreach (Conversation conversation in conversations) {
-                if (conference.jid.equals(conversation.counterpart)) is_active = true;
-            }
-            if (!is_active || !is_joined(jid, account)) {
-                join.begin(account, conference.jid, conference.nick, conference.password);
-            }
-        } else {
-            // Leave if we should leave
-            bool is_active = false;
-            foreach (Conversation conversation in conversations) {
-                if (conversation.type_ != Conversation.Type.GROUPCHAT || !conversation.account.equals(account)) continue;
-                if (jid.equals(conversation.counterpart)) {
+            foreach (Conversation conversation in active_conversations) {
+                if (conference.jid.equals(conversation.counterpart)) {
                     is_active = true;
                 }
             }
-            if (is_active) {
-                part(account, jid);
+            if (!is_active || !is_joined(conference.jid, account)) {
+                join.begin(account, conference.jid, conference.nick, conference.password);
+            }
+        }
+
+        // Part MUCs that aren't auto-join (which closes those conversations)
+        foreach (Conversation conversation in active_conversations) {
+            if (conversation.type_ != Conversation.Type.GROUPCHAT) continue;
+
+            bool should_be_active = false;
+            foreach (Conference conference in conferences) {
+                if (conference.jid.equals(conversation.counterpart) && conference.autojoin) {
+                    should_be_active = true;
+                }
+            }
+            if (!should_be_active) {
+                part(conversation.account, conversation.counterpart);
             }
         }
     }
@@ -375,12 +373,8 @@ public class MucManager : StreamInteractionModule, Object {
             foreach (Conference conference in conferences) {
                 if (conference.jid.equals(jid)) {
                     if (!conference.autojoin) {
-                        Conference new_conference = new Conference();
-                        new_conference.jid = jid;
-                        new_conference.autojoin = true;
-                        new_conference.nick = nick;
-                        new_conference.password = password;
-                        bookmarks_provider[account].replace_conference.begin(stream, conference, new_conference);
+                        Conference new_conference = new Conference() { jid=jid, nick=conference.nick, name=conference.name, password=conference.password, autojoin=true };
+                        bookmarks_provider[account].replace_conference.begin(stream, jid, new_conference);
                     }
                     return;
                 }
@@ -398,12 +392,8 @@ public class MucManager : StreamInteractionModule, Object {
             foreach (Conference conference in conferences) {
                 if (conference.jid.equals(jid)) {
                     if (conference.autojoin) {
-                        Conference new_conference = new Conference();
-                        new_conference.jid = jid;
-                        new_conference.autojoin = false;
-                        new_conference.nick = conference.nick;
-                        new_conference.password = conference.password;
-                        bookmarks_provider[account].replace_conference.begin(stream, conference, new_conference);
+                        Conference new_conference = new Conference() { jid=jid, nick=conference.nick, name=conference.name, password=conference.password, autojoin=false };
+                        bookmarks_provider[account].replace_conference.begin(stream, jid, new_conference);
                         return;
                     }
                 }

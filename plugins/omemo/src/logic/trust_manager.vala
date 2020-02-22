@@ -175,6 +175,8 @@ public class TrustManager {
             status.encrypted = true;
         } catch (Error e) {
             warning(@"Signal error while encrypting message: $(e.message)\n");
+            message.body = "[OMEMO encryption failed]";
+            status.encrypted = false;
         }
         return status;
     }

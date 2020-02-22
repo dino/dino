@@ -31,8 +31,8 @@ public interface Application : GLib.Application {
 
         MessageProcessor.start(stream_interactor, db);
         MessageStorage.start(stream_interactor, db);
-        CounterpartInteractionManager.start(stream_interactor);
         PresenceManager.start(stream_interactor);
+        CounterpartInteractionManager.start(stream_interactor);
         BlockingManager.start(stream_interactor);
         ConversationManager.start(stream_interactor, db);
         MucManager.start(stream_interactor);

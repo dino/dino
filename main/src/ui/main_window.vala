@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class UnifiedWindow : Gtk.Window {
+public class MainWindow : Gtk.Window {
 
     public signal void conversation_selected(Conversation conversation);
 
@@ -16,9 +16,8 @@ public class UnifiedWindow : Gtk.Window {
     public WelcomePlceholder welcome_placeholder = new WelcomePlceholder() { visible=true };
     public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     public NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
-    public ChatInput.View chat_input;
+    public ConversationView conversation_view;
     public ConversationSelector conversation_selector;
-    public ConversationSummary.ConversationView conversation_frame;
     public ConversationTitlebar conversation_titlebar;
     public ConversationTitlebarCsd conversation_titlebar_csd;
     public ConversationListTitlebarCsd conversation_list_titlebar_csd;
@@ -26,8 +25,6 @@ public class UnifiedWindow : Gtk.Window {
     public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL, visible=true };
     public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
     public Paned paned;
-    public Revealer goto_end_revealer;
-    public Button goto_end_button;
     public Revealer search_revealer;
     public SearchEntry search_entry;
     public GlobalSearch search_box;
@@ -39,7 +36,7 @@ public class UnifiedWindow : Gtk.Window {
     private Database db;
     private Config config;
 
-    public UnifiedWindow(Application application, StreamInteractor stream_interactor, Database db, Config config) {
+    public MainWindow(Application application, StreamInteractor stream_interactor, Database db, Config config) {
         Object(application : application);
         this.stream_interactor = stream_interactor;
         this.db = db;
@@ -54,16 +51,7 @@ public class UnifiedWindow : Gtk.Window {
         setup_unified();
         setup_stack();
 
-        this.bind_property("title", conversation_titlebar, "title");
-        this.bind_property("subtitle", conversation_titlebar, "subtitle");
         paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-
-        stream_interactor.account_added.connect((account) => { check_stack(true); });
-        stream_interactor.account_removed.connect((account) => { check_stack(); });
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(() => check_stack());
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(() => check_stack());
-
-        check_stack();
     }
 
     private void setup_unified() {
@@ -72,13 +60,8 @@ public class UnifiedWindow : Gtk.Window {
         box.add(paned);
         left_stack = (Stack) builder.get_object("left_stack");
         right_stack = (Stack) builder.get_object("right_stack");
-        chat_input = ((ChatInput.View) builder.get_object("chat_input")).init(stream_interactor);
-        chat_input.key_press_event.connect(forward_key_press_to_chat_input);
-        conversation_frame = ((ConversationSummary.ConversationView) builder.get_object("conversation_frame")).init(stream_interactor);
-        conversation_frame.key_press_event.connect(forward_key_press_to_chat_input);
+        conversation_view = (ConversationView) builder.get_object("conversation_view");
         conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
-        goto_end_revealer = (Revealer) builder.get_object("goto_end_revealer");
-        goto_end_button = (Button) builder.get_object("goto_end_button");
         search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
         search_revealer = (Revealer) builder.get_object("search_revealer");
         search_entry = (SearchEntry) builder.get_object("search_entry");
@@ -88,14 +71,14 @@ public class UnifiedWindow : Gtk.Window {
 
     private void setup_headerbar() {
         if (Util.use_csd()) {
-            conversation_list_titlebar_csd = new ConversationListTitlebarCsd(stream_interactor, this) { visible=true };
+            conversation_list_titlebar_csd = new ConversationListTitlebarCsd() { visible=true };
             headerbar_paned.pack1(conversation_list_titlebar_csd, false, false);
 
             conversation_titlebar_csd = new ConversationTitlebarCsd() { visible=true };
             conversation_titlebar = conversation_titlebar_csd;
             headerbar_paned.pack2(conversation_titlebar_csd, true, false);
         } else {
-            ConversationListTitlebar conversation_list_titlebar = new ConversationListTitlebar(stream_interactor, this) { visible=true };
+            ConversationListTitlebar conversation_list_titlebar = new ConversationListTitlebar() { visible=true };
             headerbar_paned.pack1(conversation_list_titlebar, false, false);
 
             conversation_titlebar = new ConversationTitlebarNoCsd() { visible=true };
@@ -103,7 +86,6 @@ public class UnifiedWindow : Gtk.Window {
 
             box.add(headerbar_paned);
         }
-        headerbar_paned.key_press_event.connect(forward_key_press_to_chat_input);
     }
 
     private void set_window_buttons() {
@@ -124,25 +106,15 @@ public class UnifiedWindow : Gtk.Window {
         add(stack);
     }
 
-    private void check_stack(bool know_exists = false) {
-        ArrayList<Account> accounts = stream_interactor.get_accounts();
-        if (!know_exists && accounts.size == 0) {
-            if (db.get_accounts().size == 0) {
-                stack.set_visible_child_name("welcome_placeholder");
-            } else {
-                stack.set_visible_child_name("accounts_placeholder");
-            }
-            if (Util.use_csd()) {
-                set_titlebar(placeholder_headerbar);
-            }
-        } else if (stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations().size == 0) {
-            stack.set_visible_child_name("main");
-            left_stack.set_visible_child_name("placeholder");
-            right_stack.set_visible_child_name("placeholder");
-            if (Util.use_csd()) {
-                set_titlebar(headerbar_paned);
-            }
-        } else {
+    public enum StackState {
+        CLEAN_START,
+        NO_ACTIVE_ACCOUNTS,
+        NO_ACTIVE_CONVERSATIONS,
+        CONVERSATION
+    }
+
+    public void set_stack_state(StackState stack_state) {
+        if (stack_state == StackState.CONVERSATION) {
             left_stack.set_visible_child_name("content");
             right_stack.set_visible_child_name("content");
 
@@ -150,22 +122,23 @@ public class UnifiedWindow : Gtk.Window {
             if (Util.use_csd()) {
                 set_titlebar(headerbar_paned);
             }
+        } else if (stack_state == StackState.CLEAN_START || stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
+            if (stack_state == StackState.CLEAN_START) {
+                stack.set_visible_child_name("welcome_placeholder");
+            } else if (stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
+                stack.set_visible_child_name("accounts_placeholder");
+            }
+            if (Util.use_csd()) {
+                set_titlebar(placeholder_headerbar);
+            }
+        } else if (stack_state == StackState.NO_ACTIVE_CONVERSATIONS) {
+            stack.set_visible_child_name("main");
+            left_stack.set_visible_child_name("placeholder");
+            right_stack.set_visible_child_name("placeholder");
+            if (Util.use_csd()) {
+                set_titlebar(headerbar_paned);
+            }
         }
-    }
-
-    private bool forward_key_press_to_chat_input(EventKey event) {
-        // Don't forward / change focus on Control / Alt
-        if (event.keyval == Gdk.Key.Control_L || event.keyval == Gdk.Key.Control_R ||
-                event.keyval == Gdk.Key.Alt_L || event.keyval == Gdk.Key.Alt_R) {
-            return false;
-        }
-        // Don't forward / change focus on Control + ...
-        if ((event.state & ModifierType.CONTROL_MASK) > 0) {
-            return false;
-        }
-        chat_input.text_input.key_press_event(event);
-        chat_input.text_input.grab_focus();
-        return true;
     }
 
     public void loop_conversations(bool backwards) {
@@ -222,7 +195,7 @@ public class UnifiedWindow : Gtk.Window {
     }
 }
 
-public class WelcomePlceholder : UnifiedWindowPlaceholder {
+public class WelcomePlceholder : MainWindowPlaceholder {
     public WelcomePlceholder() {
         title_label.label = _("Welcome to Dino!");
         label.label = _("Sign in or create an account to get started.");
@@ -232,7 +205,7 @@ public class WelcomePlceholder : UnifiedWindowPlaceholder {
     }
 }
 
-public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
+public class NoAccountsPlaceholder : MainWindowPlaceholder {
     public NoAccountsPlaceholder() {
         title_label.label = _("No active accounts");
         primary_button.label = _("Manage accounts");
@@ -242,7 +215,7 @@ public class NoAccountsPlaceholder : UnifiedWindowPlaceholder {
     }
 }
 
-public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
+public class NoConversationsPlaceholder : MainWindowPlaceholder {
     public NoConversationsPlaceholder() {
         title_label.label = _("No active conversations");
         primary_button.label = _("Start Conversation");
@@ -254,7 +227,7 @@ public class NoConversationsPlaceholder : UnifiedWindowPlaceholder {
 }
 
 [GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
-public class UnifiedWindowPlaceholder : Box {
+public class MainWindowPlaceholder : Box {
     [GtkChild] public Label title_label;
     [GtkChild] public Label label;
     [GtkChild] public Button primary_button;

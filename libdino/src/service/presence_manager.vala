@@ -9,6 +9,7 @@ public class PresenceManager : StreamInteractionModule, Object {
     public string id { get { return IDENTITY.id; } }
 
     public signal void show_received(Show show, Jid jid, Account account);
+    public signal void received_offline_presence(Jid jid, Account account);
     public signal void received_subscription_request(Jid jid, Account account);
     public signal void received_subscription_approval(Jid jid, Account account);
 
@@ -121,7 +122,7 @@ public class PresenceManager : StreamInteractionModule, Object {
                 }
             }
         }
-        add_show(account, jid, Show.OFFLINE);
+        received_offline_presence(jid, account);
     }
 
     private void add_show(Account account, Jid jid, string s) {

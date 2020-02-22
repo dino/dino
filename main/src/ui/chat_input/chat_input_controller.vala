@@ -23,6 +23,8 @@ public class ChatInputController : Object {
         this.status_description_label = chat_input.chat_input_status;
         this.stream_interactor = stream_interactor;
 
+        chat_input.init(stream_interactor);
+
         reset_input_field_status();
 
         chat_input.text_input.buffer.changed.connect(on_text_input_changed);
@@ -40,6 +42,7 @@ public class ChatInputController : Object {
 
         reset_input_field_status();
 
+        chat_input.initialize_for_conversation(conversation);
         chat_input.occupants_tab_completor.initialize_for_conversation(conversation);
         chat_input.edit_history.initialize_for_conversation(conversation);
         chat_input.encryption_widget.set_conversation(conversation);

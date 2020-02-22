@@ -43,13 +43,14 @@ set(RESOURCE_LIST
     contact_details_dialog.ui
     conversation_list_titlebar.ui
     conversation_list_titlebar_csd.ui
+    conversation_view.ui
     emojichooser.ui
     global_search.ui
     conversation_selector/chat_row_tooltip.ui
     conversation_selector/conversation_row.ui
-    conversation_summary/image_toolbar.ui
-    conversation_summary/item_metadata_header.ui
-    conversation_summary/view.ui
+    conversation_content_view/image_toolbar.ui
+    conversation_content_view/item_metadata_header.ui
+    conversation_content_view/view.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
     manage_accounts/dialog.ui
@@ -94,14 +95,14 @@ SOURCES
     src/ui/application.vala
     src/ui/avatar_drawer.vala
     src/ui/avatar_image.vala
-    src/ui/chat_input_controller.vala
     src/ui/conversation_list_titlebar.vala
-    src/ui/conversation_list_titlebar_csd.vala
+    src/ui/conversation_view.vala
+    src/ui/conversation_view_controller.vala
     src/ui/global_search.vala
     src/ui/notifications.vala
     src/ui/settings_dialog.vala
-    src/ui/unified_window.vala
-    src/ui/unified_window_controller.vala
+    src/ui/main_window.vala
+    src/ui/main_window_controller.vala
 
     src/ui/add_conversation/add_conference_dialog.vala
     src/ui/add_conversation/add_contact_dialog.vala
@@ -113,6 +114,7 @@ SOURCES
     src/ui/add_conversation/select_contact_dialog.vala
     src/ui/add_conversation/select_jid_fragment.vala
 
+    src/ui/chat_input/chat_input_controller.vala
     src/ui/chat_input/edit_history.vala
     src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala
@@ -127,14 +129,14 @@ SOURCES
     src/ui/conversation_selector/conversation_selector_row.vala
     src/ui/conversation_selector/conversation_selector.vala
 
-    src/ui/conversation_summary/chat_state_populator.vala
-    src/ui/conversation_summary/content_item_widget_factory.vala
-    src/ui/conversation_summary/content_populator.vala
-    src/ui/conversation_summary/conversation_item_skeleton.vala
-    src/ui/conversation_summary/conversation_view.vala
-    src/ui/conversation_summary/date_separator_populator.vala
-    src/ui/conversation_summary/file_widget.vala
-    src/ui/conversation_summary/subscription_notification.vala
+    src/ui/conversation_content_view/chat_state_populator.vala
+    src/ui/conversation_content_view/content_item_widget_factory.vala
+    src/ui/conversation_content_view/content_populator.vala
+    src/ui/conversation_content_view/conversation_item_skeleton.vala
+    src/ui/conversation_content_view/conversation_view.vala
+    src/ui/conversation_content_view/date_separator_populator.vala
+    src/ui/conversation_content_view/file_widget.vala
+    src/ui/conversation_content_view/subscription_notification.vala
 
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala

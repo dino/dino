@@ -32,12 +32,8 @@ public class ConversationItemSkeleton : EventBox {
             image.set_conversation_participant(stream_interactor, conversation, item.jid);
             image_content_box.add(image);
         }
-        if (item.display_time != null) {
+        if (item.requires_header) {
             metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
-            if (!item.requires_header) {
-                metadata_header.name_label.visible = false;
-                metadata_header.dot_label.visible = false;
-            }
             header_content_box.add(metadata_header);
         }
 
@@ -98,7 +94,7 @@ public class ConversationItemSkeleton : EventBox {
     }
 }
 
-[GtkTemplate (ui = "/im/dino/Dino/conversation_summary/item_metadata_header.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/item_metadata_header.ui")]
 public class ItemMetaDataHeader : Box {
     [GtkChild] public Label name_label;
     [GtkChild] public Label dot_label;
@@ -121,7 +117,7 @@ public class ItemMetaDataHeader : Box {
 
         update_name_label();
         name_label.style_updated.connect(update_name_label);
-        if (item.encryption != null && item.encryption != Encryption.NONE) {
+        if (item.encryption != Encryption.NONE) {
             encryption_image.visible = true;
             encryption_image.set_from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER);
         }
@@ -154,6 +150,10 @@ public class ItemMetaDataHeader : Box {
                 Util.force_error_color(received_image);
                 Util.force_error_color(encryption_image);
                 Util.force_error_color(time_label);
+                string error_text = _("Unable to send message");
+                received_image.tooltip_text = error_text;
+                encryption_image.tooltip_text = error_text;
+                time_label.tooltip_text = error_text;
                 return;
             } else if (item.mark != Message.Marked.READ) {
                 all_read = false;
