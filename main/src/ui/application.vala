@@ -184,7 +184,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                     comments: "Dino. Communicating happiness.",
                     website: "https://dino.im/",
                     website_label: "dino.im",
-                    copyright: "Copyright © 2016-2019 - Dino Team",
+                    copyright: "Copyright © 2016-2020 - Dino Team",
                     license_type: License.GPL_3_0);
     }
 
