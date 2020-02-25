@@ -4,8 +4,7 @@ using Gee;
 
 namespace Xmpp.Xep.HttpFileUpload {
 
-private const string NS_URI = "urn:xmpp:http:upload";
-private const string NS_URI_0 = "urn:xmpp:http:upload:0";
+private const string NS_URI = "urn:xmpp:http:upload:0";
 
 public errordomain HttpFileTransferError {
     SLOT_REQUEST
@@ -30,22 +29,10 @@ public class Module : XmppStreamModule {
             throw new HttpFileTransferError.SLOT_REQUEST("No flag");
         }
 
-        StanzaNode? request_node = null;
-        switch (flag.ns_ver) {
-            case NS_URI_0:
-                request_node = new StanzaNode.build("request", NS_URI_0).add_self_xmlns();
-                request_node.put_attribute("filename", filename).put_attribute("size", file_size.to_string());
-                if (content_type != null) request_node.put_attribute("content-type", content_type);
-                break;
-            case NS_URI:
-                request_node = new StanzaNode.build("request", NS_URI).add_self_xmlns()
-                        .put_node(new StanzaNode.build("filename", NS_URI).put_node(new StanzaNode.text(filename)))
-                        .put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(file_size.to_string())));
-                if (content_type != null) {
-                    request_node.put_node(new StanzaNode.build("content-type", NS_URI).put_node(new StanzaNode.text(content_type)));
-                }
-                break;
-        }
+        StanzaNode request_node = new StanzaNode.build("request", NS_URI).add_self_xmlns();
+        request_node.put_attribute("filename", filename).put_attribute("size", file_size.to_string());
+        if (content_type != null)
+            request_node.put_attribute("content-type", content_type);
 
         SourceFunc callback = request_slot.callback;
         var slot_result = SlotResult();
@@ -59,14 +46,8 @@ public class Module : XmppStreamModule {
                 Idle.add((owned) callback);
                 return;
             }
-            string? url_get = null, url_put = null;
-            // FIXME change back to switch on version in a while (prosody bug)
-            url_get = iq.stanza.get_deep_attribute(flag.ns_ver + ":slot", flag.ns_ver + ":get", flag.ns_ver + ":url");
-            url_put = iq.stanza.get_deep_attribute(flag.ns_ver + ":slot", flag.ns_ver + ":put", flag.ns_ver + ":url");
-            if (url_get == null && url_put == null) {
-                url_get = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":get");
-                url_put = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":put");
-            }
+            string? url_get = iq.stanza.get_deep_attribute(NS_URI + ":slot", NS_URI + ":get", NS_URI + ":url");
+            string? url_put = iq.stanza.get_deep_attribute(NS_URI + ":slot", NS_URI + ":put", NS_URI + ":url");
             if (url_get == null || url_put == null) {
                 e = new HttpFileTransferError.SLOT_REQUEST("Error getting upload/download url: %s".printf(iq.stanza.to_string()));
                 Idle.add((owned) callback);
@@ -75,7 +56,7 @@ public class Module : XmppStreamModule {
 
             slot_result.headers = new HashMap<string, string>();
 
-            foreach (StanzaNode node in iq.stanza.get_deep_subnodes(flag.ns_ver + ":slot", flag.ns_ver + ":put", flag.ns_ver + ":header")) {
+            foreach (StanzaNode node in iq.stanza.get_deep_subnodes(NS_URI + ":slot", NS_URI + ":put", NS_URI + ":header")) {
                 string header_name = node.get_attribute("name");
                 if (header_name == "Authorization" || header_name == "Cookie" || header_name == "Expires") {
                     string? header_val = node.get_string_content();
@@ -127,29 +108,21 @@ public class Module : XmppStreamModule {
     }
 
     private bool check_ns_in_info(XmppStream stream, Jid jid, Xep.ServiceDiscovery.InfoResult info_result) {
-        bool ver_available = false;
-        bool ver_0_available = false;
+        bool available = false;
         foreach (string feature in info_result.features) {
-            if (feature == NS_URI_0) {
-                ver_0_available = true;
+            if (feature == NS_URI) {
+                available = true;
                 break;
-            } else if (feature == NS_URI) {
-                ver_available = true;
             }
         }
 
-        if (ver_available || ver_0_available) {
-            long max_file_size = extract_max_file_size(info_result);
-            if (ver_0_available) {
-                stream.add_flag(new Flag(jid, NS_URI_0));
-            } else if (ver_available) {
-                stream.add_flag(new Flag(jid, NS_URI));
-            }
+        if (!available)
+            return false;
 
-            feature_available(stream, max_file_size);
-            return true;
-        }
-        return false;
+        long max_file_size = extract_max_file_size(info_result);
+        stream.add_flag(new Flag(jid));
+        feature_available(stream, max_file_size);
+        return true;
     }
 
     private long extract_max_file_size(Xep.ServiceDiscovery.InfoResult info_result) {
@@ -189,12 +162,10 @@ public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "http_file_upload");
 
     public Jid file_store_jid;
-    public string ns_ver;
     public int? max_file_size;
 
-    public Flag(Jid file_store_jid, string ns_ver) {
+    public Flag(Jid file_store_jid) {
         this.file_store_jid = file_store_jid;
-        this.ns_ver = ns_ver;
     }
 
     public override string get_ns() { return NS_URI; }
