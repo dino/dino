@@ -137,7 +137,7 @@ public class GlobalSearch : Overlay {
             results_empty_stack.set_visible_child_name("results");
 
             int match_count = messages.size < 10 ? messages.size : stream_interactor.get_module(SearchProcessor.IDENTITY).count_match_messages(search);
-            entry_number_label.label = "<i>" + _("%i search results").printf(match_count) + "</i>";
+            entry_number_label.label = "<i>" + n("%i search result", "%i search results", match_count).printf(match_count) + "</i>";
             loaded_results += messages.size;
             append_messages(messages);
         }
