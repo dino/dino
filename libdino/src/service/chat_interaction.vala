@@ -32,11 +32,19 @@ public class ChatInteraction : StreamInteractionModule, Object {
         stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(new_item);
     }
 
-    public bool has_unread(Conversation conversation) {
-        ContentItem? last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
-        if (last_content_item == null) return false;
+    public int get_num_unread(Conversation conversation) {
+        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+        if (read_up_to_item == null) return 0;
 
-        return last_content_item.id != conversation.read_up_to_item;
+        Database db = Dino.Application.get_default().db;
+        string local_time = read_up_to_item.sort_time.to_unix().to_string();
+        string time = read_up_to_item.display_time.to_unix().to_string();
+        string id = read_up_to_item.id.to_string();
+        return (int)db.content_item.select()
+                .where(@"local_time > ? OR (local_time = ? AND time > ?) OR (local_time = ? AND time = ? AND id > ?)", { local_time, local_time, time, local_time, time, id })
+                .with(db.content_item.conversation_id, "=", conversation.id)
+                .with(db.content_item.hide, "=", false)
+                .count();
     }
 
     public bool is_active_focus(Conversation? conversation = null) {

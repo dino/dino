@@ -17,9 +17,11 @@ public class ConversationSelectorRow : ListBoxRow {
     [GtkChild] protected Label time_label;
     [GtkChild] protected Label nick_label;
     [GtkChild] protected Label message_label;
+    [GtkChild] protected Label unread_count_label;
     [GtkChild] protected Button x_button;
     [GtkChild] protected Revealer time_revealer;
     [GtkChild] protected Revealer xbutton_revealer;
+    [GtkChild] protected Revealer unread_count_revealer;
     [GtkChild] public Revealer main_revealer;
 
     public Conversation conversation { get; private set; }
@@ -27,7 +29,7 @@ public class ConversationSelectorRow : ListBoxRow {
     protected const int AVATAR_SIZE = 40;
 
     protected ContentItem? last_content_item;
-    protected bool read = true;
+    protected int num_unread = 0;
 
 
     protected StreamInteractor stream_interactor;
@@ -202,21 +204,27 @@ public class ConversationSelectorRow : ListBoxRow {
     }
 
     protected void update_read() {
-        bool current_read_status = !stream_interactor.get_module(ChatInteraction.IDENTITY).has_unread(conversation);
-        if (read == current_read_status) return;
-        read = current_read_status;
+        int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
+        if (num_unread == current_num_unread) return;
+        num_unread = current_num_unread;
 
-        if (read) {
+        if (num_unread == 0) {
+            unread_count_label.visible = false;
+
             name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
             time_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
             nick_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
             message_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
         } else {
+            unread_count_label.label = num_unread.to_string();
+            unread_count_label.visible = true;
+
             name_label.attributes.insert(attr_weight_new(Weight.BOLD));
             time_label.attributes.insert(attr_weight_new(Weight.BOLD));
             nick_label.attributes.insert(attr_weight_new(Weight.BOLD));
             message_label.attributes.insert(attr_weight_new(Weight.BOLD));
         }
+
         name_label.label = name_label.label; // TODO initializes redrawing, which would otherwise not happen. nicer?
         time_label.label = time_label.label;
         nick_label.label = nick_label.label;
@@ -227,9 +235,11 @@ public class ConversationSelectorRow : ListBoxRow {
         StateFlags curr_flags = get_state_flags();
         if ((curr_flags & StateFlags.PRELIGHT) != 0) {
             time_revealer.set_reveal_child(false);
+            unread_count_revealer.set_reveal_child(false);
             xbutton_revealer.set_reveal_child(true);
         } else {
             time_revealer.set_reveal_child(true);
+            unread_count_revealer.set_reveal_child(true);
             xbutton_revealer.set_reveal_child(false);
         }
     }
