@@ -17,6 +17,7 @@ public class ConversationSelectorRow : ListBoxRow {
     [GtkChild] protected Label time_label;
     [GtkChild] protected Label nick_label;
     [GtkChild] protected Label message_label;
+    [GtkChild] protected Label unread_count_label;
     [GtkChild] protected Button x_button;
     [GtkChild] protected Revealer time_revealer;
     [GtkChild] protected Revealer xbutton_revealer;
@@ -27,7 +28,7 @@ public class ConversationSelectorRow : ListBoxRow {
     protected const int AVATAR_SIZE = 40;
 
     protected ContentItem? last_content_item;
-    protected bool read = true;
+    protected int num_unread = 0;
 
 
     protected StreamInteractor stream_interactor;
@@ -197,24 +198,19 @@ public class ConversationSelectorRow : ListBoxRow {
 
     protected void update_read() {
         bool current_read_status = !stream_interactor.get_module(ChatInteraction.IDENTITY).has_unread(conversation);
-        if (read == current_read_status) return;
-        read = current_read_status;
+        int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
+        if (num_unread == current_num_unread) return;
+        num_unread = current_num_unread;
 
-        if (read) {
-            name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
-            time_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
-            nick_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
-            message_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+        if (num_unread == 0) {
+            unread_count_label.visible = false;
+        } else if (num_unread == -1 ){
+            unread_count_label.label = "> 50";
+            unread_count_label.visible = true;
         } else {
-            name_label.attributes.insert(attr_weight_new(Weight.BOLD));
-            time_label.attributes.insert(attr_weight_new(Weight.BOLD));
-            nick_label.attributes.insert(attr_weight_new(Weight.BOLD));
-            message_label.attributes.insert(attr_weight_new(Weight.BOLD));
+            unread_count_label.label = num_unread.to_string();
+            unread_count_label.visible = true;
         }
-        name_label.label = name_label.label; // TODO initializes redrawing, which would otherwise not happen. nicer?
-        time_label.label = time_label.label;
-        nick_label.label = nick_label.label;
-        message_label.label = message_label.label;
     }
 
     protected Box get_fulljid_box(Jid full_jid) {

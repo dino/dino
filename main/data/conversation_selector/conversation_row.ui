@@ -17,8 +17,8 @@
                         <property name="visible">True</property>
                         <child>
                             <object class="DinoUiAvatarImage" id="image">
-                                <property name="height">35</property>
-                                <property name="width">35</property>
+                                <property name="height">50</property>
+                                <property name="width">50</property>
                                 <property name="valign">center</property>
                                 <property name="visible">True</property>
                             </object>
@@ -53,6 +53,9 @@
                                                     <object class="GtkLabel" id="time_label">
                                                         <property name="hexpand">False</property>
                                                         <property name="xalign">1</property>
+                                                        <style>
+                                                            <class name="dim-label"/>
+                                                        </style>
                                                         <attributes>
                                                             <attribute name="scale" value="0.7"/>
                                                         </attributes>
@@ -87,6 +90,9 @@
                                                 <property name="ellipsize">end</property>
                                                 <property name="expand">True</property>
                                                 <property name="xalign">0</property>
+                                                <style>
+                                                    <class name="dim-label"/>
+                                                </style>
                                                 <attributes>
                                                     <attribute name="scale" value="0.8"/>
                                                 </attributes>
@@ -94,6 +100,18 @@
                                         </child>
                                     </object>
                                 </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="unread_count_label">
+                                <property name="vexpand">False</property>
+                                <property name="visible">False</property>
+                                <property name="margin-start">15</property>
+                                <property name="margin-top">10</property>
+                                <property name="margin-bottom">10</property>
+                                <style>
+                                    <class name="notify-badge"/>
+                                </style>
                             </object>
                         </child>
                         <child>

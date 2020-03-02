@@ -69,6 +69,48 @@ public class ChatInteraction : StreamInteractionModule, Object {
         return false;
     }
 
+    public int get_num_unread(Conversation conversation) {
+        ContentItem? last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
+        if (last_content_item == null) return 0;
+
+        MessageItem? message_item = last_content_item as MessageItem;
+        if (message_item != null) {
+            Message last_message = message_item.message;
+
+            // We are the message sender
+            if (last_message.from.equals_bare(conversation.account.bare_jid)) return 0;
+            // We read up to the message
+            if (conversation.read_up_to != null && last_message.equals(conversation.read_up_to)) return 0;
+
+            Gee.List<Message> message_list = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation, 50);
+            for(int i = message_list.size - 1; i >= 0; i--) {
+                if(message_list[i].equals(conversation.read_up_to)) {
+                    return message_list.size - 1 - i;
+                }
+            }
+            return -1;
+        }
+
+        FileItem? file_item = last_content_item as FileItem;
+        if (file_item != null) {
+            FileTransfer file_transfer = file_item.file_transfer;
+
+            // We are the file sender
+            if (file_transfer.from.equals_bare(conversation.account.bare_jid)) return 0;
+
+            // HTTP file transfer: Check if the associated message is the last one
+            if (file_transfer.info == null) return 0;
+            Gee.List<Message> message_list = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation, 50);
+            for(int i = message_list.size - 1; i >= 0; i--) {
+                if(message_list[i].equals(conversation.read_up_to)) {
+                    return message_list.size - 1 - i;
+                }
+            }
+            return -1;
+        }
+        return 0;
+    }
+
     public bool is_active_focus(Conversation? conversation = null) {
         if (conversation != null) {
             return focus_in && conversation.equals(this.selected_conversation);
