@@ -46,7 +46,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
 
         stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
-            if (state == ConnectionManager.ConnectionState.CONNECTED) send_unsent_messages(account);
+            if (state == ConnectionManager.ConnectionState.CONNECTED) send_unsent_chat_messages(account);
         });
 
         stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
@@ -68,12 +68,32 @@ public class MessageProcessor : StreamInteractionModule, Object {
         return message;
     }
 
-    public void send_unsent_messages(Account account, Jid? jid = null) {
-        Gee.List<Entities.Message> unsend_messages = db.get_unsend_messages(account, jid);
-        foreach (Entities.Message message in unsend_messages) {
-            Conversation? msg_conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart, account);
-            if (msg_conv != null) {
-                send_xmpp_message(message, msg_conv, true);
+    private void send_unsent_chat_messages(Account account) {
+        var select = db.message.select()
+                .with(db.message.account_id, "=", account.id)
+                .with(db.message.marked, "=", (int) Message.Marked.UNSENT)
+                .with(db.message.type_, "=", (int) Message.Type.CHAT);
+        send_unsent_messages(account, select);
+    }
+
+    public void send_unsent_muc_messages(Account account, Jid muc_jid) {
+        var select = db.message.select()
+                .with(db.message.account_id, "=", account.id)
+                .with(db.message.marked, "=", (int) Message.Marked.UNSENT)
+                .with(db.message.counterpart_id, "=", db.get_jid_id(muc_jid));
+        send_unsent_messages(account, select);
+    }
+
+    private void send_unsent_messages(Account account, QueryBuilder select) {
+        foreach (Row row in select) {
+            try {
+                Message message = new Message.from_row(db, row);
+                Conversation? msg_conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart, account, Util.get_conversation_type_for_message(message));
+                if (msg_conv != null) {
+                    send_xmpp_message(message, msg_conv, true);
+                }
+            } catch (InvalidJidError e) {
+                warning("Ignoring message with invalid Jid: %s", e.message);
             }
         }
     }

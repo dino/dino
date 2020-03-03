@@ -58,7 +58,7 @@ public class MucManager : StreamInteractionModule, Object {
             // Join completed
             enter_errors.unset(jid);
             set_autojoin(account, stream, jid, nick, password);
-            stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_messages(account, jid);
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_muc_messages(account, jid);
 
             Conversation joined_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
             joined_conversation.nickname = nick;
