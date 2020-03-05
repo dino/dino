@@ -25,7 +25,6 @@
         </child>
         <child>
             <object class="GtkMenuButton" id="menu_button">
-                <property name="valign">center</property>
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkImage">
