@@ -47,8 +47,8 @@ window.dino-main .notify-badge {
   color: white;
   font-weight: bold;
   font-size: 0.8em;
-  border-radius: 10px;
-  min-width: 0.7em;
+  border-radius: 1em;
+  min-width: 1.1em;
   padding: 2px 5px;
 }
 
