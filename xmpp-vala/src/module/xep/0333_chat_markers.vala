@@ -21,7 +21,7 @@ public class Module : XmppStreamModule {
         received_message.to = jid;
         received_message.type_ = type_;
         received_message.stanza.put_node(new StanzaNode.build(marker, NS_URI).add_self_xmlns().put_attribute("id", message_id));
-        stream.get_module(MessageModule.IDENTITY).send_message(stream, received_message);
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, received_message);
     }
 
     public static bool requests_marking(MessageStanza message) {

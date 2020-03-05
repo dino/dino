@@ -131,7 +131,7 @@ public class Module : XmppStreamModule {
         message.to = jid;
         message.type_ = MessageStanza.TYPE_GROUPCHAT;
         message.stanza.put_node((new StanzaNode.build("subject")).put_node(new StanzaNode.text(subject)));
-        stream.get_module(MessageModule.IDENTITY).send_message(stream, message);
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
     }
 
     public void change_nick(XmppStream stream, Jid jid, string new_nick) {
@@ -151,7 +151,7 @@ public class Module : XmppStreamModule {
         StanzaNode invite_node = new StanzaNode.build("x", NS_URI_USER).add_self_xmlns()
             .put_node(new StanzaNode.build("invite", NS_URI_USER).put_attribute("to", jid.to_string()));
         message.stanza.put_node(invite_node);
-        stream.get_module(MessageModule.IDENTITY).send_message(stream, message);
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
     }
 
     public void kick(XmppStream stream, Jid jid, string nick) {

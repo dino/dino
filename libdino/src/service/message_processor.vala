@@ -22,7 +22,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private Object lock_send_unsent;
     private HashMap<Account, int> current_catchup_id = new HashMap<Account, int>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashMap<string, DateTime>> mam_times = new HashMap<Account, HashMap<string, DateTime>>();
     public HashMap<string, int> hitted_range = new HashMap<string, int>();
@@ -565,39 +564,48 @@ public class MessageProcessor : StreamInteractionModule, Object {
     }
 
     public void send_xmpp_message(Entities.Message message, Conversation conversation, bool delayed = false) {
-        lock (lock_send_unsent) {
-            XmppStream stream = stream_interactor.get_stream(conversation.account);
-            message.marked = Entities.Message.Marked.NONE;
-            if (stream != null) {
-                Xmpp.MessageStanza new_message = new Xmpp.MessageStanza(message.stanza_id);
-                new_message.to = message.counterpart;
-                new_message.body = message.body;
-                if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                    new_message.type_ = Xmpp.MessageStanza.TYPE_GROUPCHAT;
-                } else {
-                    new_message.type_ = Xmpp.MessageStanza.TYPE_CHAT;
-                }
-                build_message_stanza(message, new_message, conversation);
-                pre_message_send(message, new_message, conversation);
-                if (message.marked == Entities.Message.Marked.UNSENT || message.marked == Entities.Message.Marked.WONTSEND) return;
-                if (delayed) {
-                    Xmpp.Xep.DelayedDelivery.Module.set_message_delay(new_message, message.time);
-                }
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
+        message.marked = Entities.Message.Marked.NONE;
 
-                // Set an origin ID if a MUC doen't guarantee to keep IDs
-                if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                    Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-                    if (flag == null) return;
-                    if(!flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.STABLE_ID)) {
-                        Xep.UniqueStableStanzaIDs.set_origin_id(new_message, message.stanza_id);
-                    }
-                }
+        if (stream == null) {
+            message.marked = Entities.Message.Marked.UNSENT;
+            return;
+        }
 
-                stream.get_module(Xmpp.MessageModule.IDENTITY).send_message(stream, new_message);
-            } else {
+        MessageStanza new_message = new MessageStanza(message.stanza_id);
+        new_message.to = message.counterpart;
+        new_message.body = message.body;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            new_message.type_ = MessageStanza.TYPE_GROUPCHAT;
+        } else {
+            new_message.type_ = MessageStanza.TYPE_CHAT;
+        }
+        build_message_stanza(message, new_message, conversation);
+        pre_message_send(message, new_message, conversation);
+        if (message.marked == Entities.Message.Marked.UNSENT || message.marked == Entities.Message.Marked.WONTSEND) return;
+        if (delayed) {
+            DelayedDelivery.Module.set_message_delay(new_message, message.time);
+        }
+
+        // Set an origin ID if a MUC doen't guarantee to keep IDs
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
+            if (flag == null) {
                 message.marked = Entities.Message.Marked.UNSENT;
+                return;
+            }
+            if(!flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.STABLE_ID)) {
+                UniqueStableStanzaIDs.set_origin_id(new_message, message.stanza_id);
             }
         }
+
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, new_message, (_, res) => {
+            try {
+                stream.get_module(MessageModule.IDENTITY).send_message.end(res);
+            } catch (IOStreamError e) {
+                message.marked = Entities.Message.Marked.UNSENT;
+            }
+        });
     }
 }
 
