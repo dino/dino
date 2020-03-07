@@ -23,9 +23,11 @@ Resources
 
 Contribute
 ----------
-- Pull requests are welcome. Please discuss bigger changes in the conference room first.
+- Pull requests are welcome. A good start are [good first issues](https://github.com/dino/dino/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22). 
+Please discuss bigger changes in the [conference room](xmpp:chat@dino.im?join) first.
 - Look at [how to debug](https://github.com/dino/dino/wiki/Debugging) Dino before you report a bug.
 - Help [translating](https://hosted.weblate.org/projects/dino/) Dino into your language.
+- Make a donation: [Liberapay](https://liberapay.com/Dino) or Paypal (`paypal at dino.im`).
 
 License
 -------
