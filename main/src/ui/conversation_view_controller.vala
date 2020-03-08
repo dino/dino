@@ -61,7 +61,7 @@ public class ConversationViewController : Object {
         // Update conversation display name & topic
         this.bind_property("conversation-display-name", titlebar, "title");
         this.bind_property("conversation-topic", titlebar, "subtitle");
-        stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
+        stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                 update_conversation_display_name();
             }

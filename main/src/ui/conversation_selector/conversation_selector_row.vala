@@ -49,7 +49,7 @@ public class ConversationSelectorRow : ListBoxRow {
                 });
                 break;
             case Conversation.Type.GROUPCHAT:
-                stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
+                stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
                     if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                         update_name_label();
                     }

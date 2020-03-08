@@ -35,8 +35,6 @@ public class ChatInputController : Object {
         stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(on_upload_available);
     }
 
-
-
     public void set_conversation(Conversation conversation) {
         this.conversation = conversation;
 

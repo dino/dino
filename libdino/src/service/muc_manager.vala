@@ -11,7 +11,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     public signal void left(Account account, Jid jid);
     public signal void subject_set(Account account, Jid jid, string? subject);
-    public signal void room_name_set(Account account, Jid jid, string? room_name);
+    public signal void room_info_updated(Account account, Jid muc_jid);
     public signal void private_room_occupant_updated(Account account, Jid room, Jid occupant);
     public signal void invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason);
     public signal void bookmarks_updated(Account account, Set<Conference> conferences);
@@ -285,8 +285,8 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).invite_received.connect( (stream, room_jid, from_jid, password, reason) => {
             invite_received(account, room_jid, from_jid, password, reason);
         });
-        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_name_set.connect( (stream, jid, room_name) => {
-            room_name_set(account, jid, room_name);
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_info_updated.connect( (stream, muc_jid) => {
+            room_info_updated(account, muc_jid);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).received_occupant_jid.connect( (stream, room, occupant) => {
             if (is_private_room(account, room.bare_jid)) {
