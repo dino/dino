@@ -451,10 +451,18 @@ public class MessageProcessor : StreamInteractionModule, Object {
                         .with(db.message.stanza_id, "=", message.stanza_id)
                         .with(db.message.counterpart_id, "=", db.get_jid_id(message.counterpart))
                         .with(db.message.account_id, "=", account.id);
-                if (message.counterpart.resourcepart != null) {
-                    builder.with(db.message.counterpart_resource, "=", message.counterpart.resourcepart);
-                } else {
-                    builder.with_null(db.message.counterpart_resource);
+                if (message.direction == Message.DIRECTION_RECEIVED) {
+                    if (message.counterpart.resourcepart != null) {
+                        builder.with(db.message.counterpart_resource, "=", message.counterpart.resourcepart);
+                    } else {
+                        builder.with_null(db.message.counterpart_resource);
+                    }
+                } else if (message.direction == Message.DIRECTION_SENT) {
+                    if (message.ourpart.resourcepart != null) {
+                        builder.with(db.message.our_resource, "=", message.ourpart.resourcepart);
+                    } else {
+                        builder.with_null(db.message.our_resource);
+                    }
                 }
                 RowOption row_opt = builder.single().row();
                 bool duplicate = row_opt.is_present();
