@@ -1,5 +1,6 @@
 using Gdk;
 using Gee;
+using Qlite;
 
 using Xmpp;
 using Dino.Entities;
@@ -120,7 +121,6 @@ public class AvatarManager : StreamInteractionModule, Object {
             XmppStream stream = stream_interactor.get_stream(account);
             if (stream != null) {
                 stream.get_module(Xep.UserAvatars.Module.IDENTITY).publish_png(stream, buffer, pixbuf.width, pixbuf.height);
-                on_user_avatar_received(account, account.bare_jid, Base64.encode(buffer));
             }
         } catch (Error e) {
             warning(e.message);
@@ -129,52 +129,61 @@ public class AvatarManager : StreamInteractionModule, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.UserAvatars.Module.IDENTITY).received_avatar.connect((stream, jid, id) =>
-            on_user_avatar_received(account, jid, id)
+            on_user_avatar_received.begin(account, jid, id)
         );
         stream_interactor.module_manager.get_module(account, Xep.VCard.Module.IDENTITY).received_avatar.connect((stream, jid, id) =>
-            on_vcard_avatar_received(account, jid, id)
+            on_vcard_avatar_received.begin(account, jid, id)
         );
 
-        foreach (var entry in db.get_avatar_hashes(Source.USER_AVATARS).entries) {
-            on_user_avatar_received(account, entry.key, entry.value);
+        foreach (var entry in get_avatar_hashes(account, Source.USER_AVATARS).entries) {
+            user_avatars[entry.key] = entry.value;
         }
-        foreach (var entry in db.get_avatar_hashes(Source.VCARD).entries) {
-            // FIXME: remove. temporary to remove falsely saved avatars.
-            if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(entry.key, account)) {
-                db.avatar.delete().with(db.avatar.jid, "=", entry.key.to_string()).perform();
-                continue;
-            }
-
-            on_vcard_avatar_received(account, entry.key, entry.value);
+        foreach (var entry in get_avatar_hashes(account, Source.VCARD).entries) {
+            vcard_avatars[entry.key] = entry.value;
         }
     }
 
-    private void on_user_avatar_received(Account account, Jid jid, string id) {
+    private async void on_user_avatar_received(Account account, Jid jid, string id) {
         if (!user_avatars.has_key(jid) || user_avatars[jid] != id) {
             user_avatars[jid] = id;
-            db.set_avatar_hash(jid, id, Source.USER_AVATARS);
+            set_avatar_hash(account, jid, id, Source.USER_AVATARS);
         }
-        avatar_storage.get_image.begin(id, (obj, res) => {
-            Pixbuf? avatar = avatar_storage.get_image.end(res);
-            if (avatar != null) {
-                received_avatar(avatar, jid, account);
-            }
-        });
+        Pixbuf? avatar = yield get_avatar_by_hash(id);
+        if (avatar != null) {
+            received_avatar(avatar, jid, account);
+        }
     }
 
-    private void on_vcard_avatar_received(Account account, Jid jid, string id) {
+    private async void on_vcard_avatar_received(Account account, Jid jid, string id) {
         if (!vcard_avatars.has_key(jid) || vcard_avatars[jid] != id) {
             vcard_avatars[jid] = id;
             if (!jid.is_full()) { // don't save MUC occupant avatars
-                db.set_avatar_hash(jid, id, Source.VCARD);
+                set_avatar_hash(account, jid, id, Source.VCARD);
             }
         }
-        avatar_storage.get_image.begin(id, (obj, res) => {
-            Pixbuf? avatar = avatar_storage.get_image.end(res);
-            if (avatar != null) {
-                received_avatar(avatar, jid, account);
-            }
-        });
+        Pixbuf? avatar = yield get_avatar_by_hash(id);
+        if (avatar != null) {
+            received_avatar(avatar, jid, account);
+        }
+    }
+
+    public void set_avatar_hash(Account account, Jid jid, string hash, int type) {
+        db.avatar.insert()
+            .value(db.avatar.jid_id, db.get_jid_id(jid))
+            .value(db.avatar.account_id, account.id)
+            .value(db.avatar.hash, hash)
+            .value(db.avatar.type_, type)
+            .perform();
+    }
+
+    public HashMap<Jid, string> get_avatar_hashes(Account account, int type) {
+        HashMap<Jid, string> ret = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
+        foreach (Row row in db.avatar.select({db.avatar.jid_id, db.avatar.hash})
+                .with(db.avatar.type_, "=", type)
+                .with(db.avatar.account_id, "=", account.id)) {
+            ret[db.get_jid_by_id(row[db.avatar.jid_id])] = row[db.avatar.hash];
+        }
+        return ret;
     }
 }
 

@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 11;
+    private const int VERSION = 12;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -150,13 +150,15 @@ public class Database : Qlite.Database {
     }
 
     public class AvatarTable : Table {
-        public Column<string> jid = new Column.Text("jid");
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<int> account_id = new Column.Integer("account_id");
         public Column<string> hash = new Column.Text("hash");
         public Column<int> type_ = new Column.Integer("type");
 
         internal AvatarTable(Database db) {
-            base(db, "avatar");
-            init({jid, hash, type_});
+            base(db, "contact_avatar");
+            init({jid_id, account_id, hash, type_});
+            unique({jid_id, account_id}, "REPLACE");
         }
     }
 
@@ -309,6 +311,13 @@ public class Database : Qlite.Database {
                 error("Failed to upgrade to database version 11: %s", e.message);
             }
         }
+        if (oldVersion < 12) {
+            try {
+                exec("delete from avatar");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 12: %s", e.message);
+            }
+        }
     }
 
     public ArrayList<Account> get_accounts() {
@@ -419,26 +428,6 @@ public class Database : Qlite.Database {
                 ret.add(new Conversation.from_row(this, row));
             } catch (InvalidJidError e) {
                 warning("Ignoring conversation with invalid Jid: %s", e.message);
-            }
-        }
-        return ret;
-    }
-
-    public void set_avatar_hash(Jid jid, string hash, int type) {
-        avatar.insert().or("REPLACE")
-                .value(avatar.jid, jid.to_string())
-                .value(avatar.hash, hash)
-                .value(avatar.type_, type)
-                .perform();
-    }
-
-    public HashMap<Jid, string> get_avatar_hashes(int type) {
-        HashMap<Jid, string> ret = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
-        foreach (Row row in avatar.select({avatar.jid, avatar.hash}).with(avatar.type_, "=", type)) {
-            try {
-                ret[new Jid(row[avatar.jid])] = row[avatar.hash];
-            } catch (InvalidJidError e) {
-                warning("Ignoring avatar of invalid Jid: %s", e.message);
             }
         }
         return ret;
