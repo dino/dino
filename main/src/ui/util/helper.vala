@@ -389,6 +389,12 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     return s;
 }
 
+/**
+ * This is a heuristic to count emojis in a string {@link http://example.com/}
+ *
+ * @param markup_text string to search in
+ * @return number of emojis, or -1 if text includes non-emojis.
+ */
 public int get_only_emoji_count(string markup_text) {
     int emoji_no = 0;
     int index_ref = 0;
@@ -408,7 +414,9 @@ public int get_only_emoji_count(string markup_text) {
             emoji_no--;
         }
 
-        if (last_was_emoji && last_was_modifier_base && ICU.has_binary_property(curchar, ICU.Property.EMOJI_MODIFIER)) {
+        if (last_was_emoji && curchar == 0xFE0F) {
+            // Variation selector after emoji is useless, ignoring.
+        } else if (last_was_emoji && last_was_modifier_base && ICU.has_binary_property(curchar, ICU.Property.EMOJI_MODIFIER)) {
             // still an emoji, but no longer a modifier base
             last_was_modifier_base = false;
         } else if (ICU.has_binary_property(curchar, ICU.Property.EMOJI_PRESENTATION)) {
