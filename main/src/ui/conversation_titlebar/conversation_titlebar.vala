@@ -65,17 +65,39 @@ public class ConversationTitlebarCsd : ConversationTitlebar, Gtk.HeaderBar {
 
     public new string? title { get { return this.get_title(); } set { base.set_title(value); } }
     public new string? subtitle { get { return this.get_subtitle(); } set { base.set_subtitle(value); } }
+    private Revealer back_revealer;
+    public bool back_button {
+        get { return back_revealer.reveal_child; }
+        set { back_revealer.reveal_child = value; }
+    }
+    public signal void back_pressed();
 
     public ConversationTitlebarCsd() {
         this.get_style_context().add_class("dino-right");
         show_close_button = true;
         hexpand = true;
+        back_revealer = new Revealer() { visible = true, transition_type = RevealerTransitionType.SLIDE_RIGHT, transition_duration = 200, can_focus = false, reveal_child = false };
+        Button back_button = new Button.from_icon_name("go-previous-symbolic") { visible = true, valign = Align.CENTER, use_underline = true };
+        back_button.get_style_context().add_class("image-button");
+        back_button.clicked.connect(() => back_pressed());
+        back_revealer.add(back_button);
+        this.pack_start(back_revealer);
     }
 
     public void insert_entry(Plugins.ConversationTitlebarEntry entry) {
         Plugins.ConversationTitlebarWidget widget = entry.get_widget(Plugins.WidgetType.GTK);
         Button gtk_widget = (Gtk.Button)widget;
         this.pack_end(gtk_widget);
+    }
+
+    /*
+     * HdyLeaflet collapses based on natural_width, but labels set natural_width to the width required to have the full
+     * text in a single line, thus if the label gets longer, HdyLeaflet would collapse. Work around is to just use the
+     * minimum_width as natural_width.
+     */
+    public override void get_preferred_width(out int minimum_width, out int natural_width) {
+        base.get_preferred_width(out minimum_width, out natural_width);
+        natural_width = minimum_width;
     }
 }
 

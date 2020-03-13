@@ -10,6 +10,7 @@ find_packages(MAIN_PACKAGES REQUIRED
     GObject
     GTK3
     ICU
+    Handy
 )
 
 set(RESOURCE_LIST
@@ -187,7 +188,7 @@ OPTIONS
     ${MAIN_EXTRA_OPTIONS}
 )
 
-add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DDINO_VERSION=\"${PROJECT_VERSION}\")
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DDINO_VERSION=\"${PROJECT_VERSION}\" -DHANDY_USE_UNSTABLE_API=yes)
 add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c)
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_include_directories(dino PRIVATE src)
