@@ -156,6 +156,8 @@ SOURCES
     src/ui/util/data_forms.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
+    src/ui/util/sizing_bin.vala
+    src/ui/util/scaling_image.vala
     src/ui/util/preview_file_chooser_native.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi

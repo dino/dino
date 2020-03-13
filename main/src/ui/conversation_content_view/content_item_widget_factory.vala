@@ -40,7 +40,7 @@ public interface WidgetGenerator : Object {
 
 public class MessageItemWidgetGenerator : WidgetGenerator, Object {
 
-    public string handles_type { get; set; default=FileItem.TYPE; }
+    public string handles_type { get; set; default=MessageItem.TYPE; }
 
     private StreamInteractor stream_interactor;
 

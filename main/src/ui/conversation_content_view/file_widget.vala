@@ -38,6 +38,11 @@ public class FileWidget : Box {
         this.file_transfer = file_transfer;
 
         load_widget.begin();
+        size_allocate.connect((allocation) => {
+            if (allocation.height > parent.get_allocated_height()) {
+                Idle.add(() => { parent.queue_resize(); return false; });
+            }
+        });
     }
 
     private async void load_widget() {
@@ -57,7 +62,7 @@ public class FileWidget : Box {
     private async Widget? get_image_widget(FileTransfer file_transfer) {
         // Load and prepare image in tread
         Thread<Image?> thread = new Thread<Image?> (null, () => {
-            Image image = new Image() { halign=Align.START, visible = true };
+            ScalingImage image = new ScalingImage() { halign=Align.START, visible = true, max_width = MAX_WIDTH, max_height = MAX_HEIGHT };
 
             Gdk.Pixbuf pixbuf;
             try {
@@ -70,16 +75,7 @@ public class FileWidget : Box {
 
             pixbuf = pixbuf.apply_embedded_orientation();
 
-            int max_scaled_height = MAX_HEIGHT * image.scale_factor;
-            if (pixbuf.height > max_scaled_height) {
-                pixbuf = pixbuf.scale_simple((int) ((double) max_scaled_height / pixbuf.height * pixbuf.width), max_scaled_height, Gdk.InterpType.BILINEAR);
-            }
-            int max_scaled_width = MAX_WIDTH * image.scale_factor;
-            if (pixbuf.width > max_scaled_width) {
-                pixbuf = pixbuf.scale_simple(max_scaled_width, (int) ((double) max_scaled_width / pixbuf.width * pixbuf.height), Gdk.InterpType.BILINEAR);
-            }
-            pixbuf = crop_corners(pixbuf, 3 * image.get_scale_factor());
-            Util.image_set_from_scaled_pixbuf(image, pixbuf);
+            image.load(pixbuf);
 
             Idle.add(get_image_widget.callback);
             return image;
@@ -166,7 +162,7 @@ public class FileWidget : Box {
         main_box.add(stack_event_box);
 
         Box right_box = new Box(Orientation.VERTICAL, 0) { hexpand=true, visible=true };
-        Label name_label = new Label(file_transfer.file_name) { ellipsize=EllipsizeMode.MIDDLE, max_width_chars=1, hexpand=true, xalign=0, yalign=0, visible=true};
+        Label name_label = new Label(file_transfer.file_name) { ellipsize=EllipsizeMode.MIDDLE, xalign=0, yalign=0, visible=true};
         right_box.add(name_label);
 
         EventBox mime_label_event_box = new EventBox() { visible=true };
@@ -178,9 +174,13 @@ public class FileWidget : Box {
         right_box.add(mime_label_event_box);
         main_box.add(right_box);
 
-        EventBox event_box = new EventBox() { margin_top=5, width_request=500, halign=Align.START, visible=true };
+        SizingBin bin = new SizingBin() { visible=true, hexpand=true, max_width=500, target_width=500 };
+        bin.add(main_box);
+
+        EventBox event_box = new EventBox() { margin_top=5, halign=Align.START, visible=true };
         event_box.get_style_context().add_class("file-box-outer");
-        event_box.add(main_box);
+        event_box.add(bin);
+
         main_box.get_style_context().add_class("file-box");
 
         event_box.enter_notify_event.connect((event) => {
