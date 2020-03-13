@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <object class="GtkPaned" id="paned">
-        <property name="position">300</property>
+    <object class="HdyLeaflet" id="paned">
         <property name="orientation">horizontal</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="mode-transition-type">slide</property>
+        <property name="child-transition-type">slide</property>
         <child>
             <object class="GtkStack" id="left_stack">
                 <property name="visible">True</property>
+                <property name="hexpand">False</property>
                 <child>
                     <object class="GtkScrolledWindow" id="scrolled">
                         <property name="expand">True</property>
@@ -29,6 +32,7 @@
                         <property name="valign">start</property>
                         <property name="halign">start</property>
                         <property name="visible">True</property>
+                        <property name="width_request">260</property>
                         <child>
                             <object class="GtkImage" id="conversation_list_placeholder_image">
                                 <property name="visible">True</property>
@@ -44,7 +48,9 @@
                                 <property name="margin-top">70</property>
                                 <property name="margin-right">50</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">0</property>
                                 <property name="valign">end</property>
+                                <property name="max-width-chars">0</property>
                                 <property name="label" translatable="yes">Click here to start a conversation or join a channel.</property>
                                 <style>
                                     <class name="dim-label"/>
@@ -58,8 +64,7 @@
                 </child>
             </object>
             <packing>
-                <property name="resize">False</property>
-                <property name="shrink">False</property>
+                <property name="name">list-pane</property>
             </packing>
         </child>
         <child>
@@ -139,8 +144,7 @@
                 </child>
             </object>
             <packing>
-                <property name="resize">True</property>
-                <property name="shrink">False</property>
+                <property name="name">view-pane</property>
             </packing>
         </child>
     </object>
