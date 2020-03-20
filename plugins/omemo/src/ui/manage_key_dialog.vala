@@ -58,7 +58,7 @@ public class ManageKeyDialog : Gtk.Dialog {
         verify_yes_button.clicked.connect(() => {
             confirm_image.set_from_icon_name("security-high-symbolic", IconSize.DIALOG);
             confirm_title_label.label = _("Verify key");
-            confirm_desc_label.set_markup(_("Future messages sent by %s and encrypted with this key will be highlighted accordingly in the chat window.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+            confirm_desc_label.set_markup(_("Future messages sent by %s from the device that uses this key will be highlighted accordingly in the chat window.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
             manage_stack.set_visible_child_name("confirm");
             ok_button.sensitive = true;
             return_to_main = false;
@@ -125,7 +125,7 @@ public class ManageKeyDialog : Gtk.Dialog {
         ListBoxRow reject_row = new ListBoxRow() { visible = true };
         reject_row.add(make_action_box(_("Reject key"), _("Block encrypted communication with the contact's device that uses this key.")));
         ListBoxRow accept_row = new ListBoxRow() {visible = true };
-        accept_row.add(make_action_box(_("Accept key"), _("Enable encrypted communication with the contact's device that uses this key.")));
+        accept_row.add(make_action_box(_("Accept key"), _("Allow encrypted communication with the contact's device that uses this key.")));
 
         switch((TrustLevel) device[db.identity_meta.trust_level]) {
             case TrustLevel.TRUSTED:

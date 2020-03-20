@@ -45,7 +45,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         // If we set the strings in the .ui file, they don't get translated
         title = _("OMEMO Key Management");
         automatically_accept_new_label.label = _("Automatically accept new keys");
-        automatically_accept_new_descr.label = _("When this contact adds new encryption keys to their account, automatically accept them.");
+        automatically_accept_new_descr.label = _("New encryption keys from this contact will be accepted automatically.");
         own_key_label.label = _("Own key");
         new_keys_label.label = _("New keys");
         associated_keys_label.label = _("Other keys");
@@ -81,7 +81,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             own = true;
             own_id = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
 
-            automatically_accept_new_descr.label = _("When I add new encryption keys to my account, automatically accept them.");
+            automatically_accept_new_descr.label = _("New encryption keys from your other devices will be accepted automatically.");
 
             own_fingerprint_container.visible = true;
 
