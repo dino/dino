@@ -22,7 +22,7 @@ public class ConversationItemSkeleton : EventBox {
     private Box header_content_box = new Box(Orientation.VERTICAL, 0) { visible=true };
     private ItemMetaDataHeader metadata_header;
 
-    public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
+    public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item, bool initial_item) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
         this.item = item;
@@ -44,22 +44,16 @@ public class ConversationItemSkeleton : EventBox {
         }
 
         image_content_box.add(header_content_box);
-        this.add(image_content_box);
 
-        if (item.get_type().is_a(typeof(ContentMetaItem))) {
-            this.motion_notify_event.connect((event) => {
-                this.set_state_flags(StateFlags.PRELIGHT, false);
-                return false;
-            });
-            this.enter_notify_event.connect((event) => {
-                this.set_state_flags(StateFlags.PRELIGHT, false);
-                return false;
-            });
-            this.leave_notify_event.connect((event) => {
-                this.unset_state_flags(StateFlags.PRELIGHT);
-                return false;
-            });
+        if (initial_item) {
+            this.add(image_content_box);
+        } else {
+            Revealer revealer = new Revealer() { transition_duration=200, transition_type = RevealerTransitionType.SLIDE_UP, visible = true };
+            revealer.add_with_properties(image_content_box);
+            revealer.reveal_child = true;
+            this.add(revealer);
         }
+
 
         this.notify["show-skeleton"].connect(update_margin);
         this.notify["last-group-item"].connect(update_margin);

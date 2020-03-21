@@ -18,15 +18,49 @@
                                 <property name="expand">True</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
+                                    <object class="GtkEventBox" id="main_wrap_event_box">
+                                        <property name="valign">end</property>
                                         <property name="visible">True</property>
-                                        <child>
-                                            <object class="GtkBox" id="main">
-                                                <property name="margin-bottom">15</property>
-                                                <property name="expand">False</property>
-                                                <property name="orientation">vertical</property>
-                                                <property name="visible">True</property>
+                                            <child>
+                                                <object class="GtkOverlay">
+                                                    <property name="visible">True</property>
+                                                    <child>
+                                                        <object class="GtkEventBox" id="main_event_box">
+                                                            <property name="visible">True</property>
+                                                            <child>
+                                                                <object class="GtkBox" id="main">
+                                                                    <property name="margin-bottom">15</property>
+                                                                    <property name="expand">False</property>
+                                                                    <property name="orientation">vertical</property>
+                                                                    <property name="visible">True</property>
+                                                                </object>
+                                                            </child>
+                                                        </object>
+                                                    </child>
+                                                    <child type="overlay">
+                                                        <object class="GtkBox" id="message_menu_box">
+                                                            <property name="margin-right">10</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="halign">end</property>
+                                                            <property name="valign">start</property>
+                                                            <child>
+                                                                <object class="GtkMenuButton" id="emoji_button">
+                                                                    <property name="vexpand">False</property>
+                                                                    <property name="halign">end</property>
+                                                                    <property name="valign">end</property>
+                                                                    <property name="visible">True</property>
+                                                                    <child>
+                                                                        <object class="GtkImage">
+                                                                            <property name="icon-name">dino-emoticon-add-symbolic</property>
+                                                                            <property name="icon-size">1</property>
+                                                                            <property name="visible">True</property>
+                                                                        </object>
+                                                                    </child>
+                                                                </object>
+                                                            </child>
+                                                        </object>
+                                                    </child>
                                             </object>
                                         </child>
                                     </object>
