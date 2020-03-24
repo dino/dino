@@ -9,10 +9,8 @@ namespace Dino.Ui.ConversationSummary {
 
 public class ConversationItemSkeleton : EventBox {
 
-    private AvatarImage image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true, allow_gray = false };
-
-    public bool show_skeleton { get; set; }
-    public bool last_group_item { get; set; }
+    public bool show_skeleton { get; set; default=false; }
+    public bool last_group_item { get; set; default=true; }
 
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
@@ -20,22 +18,14 @@ public class ConversationItemSkeleton : EventBox {
 
     private Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
     private Box header_content_box = new Box(Orientation.VERTICAL, 0) { visible=true };
-    private ItemMetaDataHeader metadata_header;
+    private ItemMetaDataHeader? metadata_header = null;
+    private AvatarImage? image = null;
 
     public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item, bool initial_item) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
         this.item = item;
         this.get_style_context().add_class("message-box");
-
-        if (item.requires_avatar) {
-            image.set_conversation_participant(stream_interactor, conversation, item.jid);
-            image_content_box.add(image);
-        }
-        if (item.requires_header) {
-            metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
-            header_content_box.add(metadata_header);
-        }
 
         Widget? widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
         if (widget != null) {
@@ -58,10 +48,7 @@ public class ConversationItemSkeleton : EventBox {
         this.notify["show-skeleton"].connect(update_margin);
         this.notify["last-group-item"].connect(update_margin);
 
-        this.show_skeleton = true;
-        this.last_group_item = true;
         update_margin();
-        this.notify["show-skeleton"].connect(update_margin);
     }
 
     public void update_time() {
@@ -71,7 +58,21 @@ public class ConversationItemSkeleton : EventBox {
     }
 
     public void update_margin() {
-        image.visible = this.show_skeleton;
+        if (item.requires_header && show_skeleton && metadata_header == null) {
+            metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
+            header_content_box.add(metadata_header);
+            header_content_box.reorder_child(metadata_header, 0);
+        }
+        if (item.requires_avatar && show_skeleton && image == null) {
+            image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true, allow_gray = false };
+            image.set_conversation_participant(stream_interactor, conversation, item.jid);
+            image_content_box.add(image);
+            image_content_box.reorder_child(image, 0);
+        }
+
+        if (image != null) {
+            image.visible = this.show_skeleton;
+        }
         if (metadata_header != null) {
             metadata_header.visible = this.show_skeleton;
         }

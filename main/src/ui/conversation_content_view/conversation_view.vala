@@ -337,7 +337,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
                 ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
                 item_skeleton.show_skeleton = false;
                 lower_skeleton.last_group_item = false;
+            } else {
+                item_skeleton.show_skeleton = true;
             }
+        } else {
+            item_skeleton.show_skeleton = true;
         }
 
         Plugins.MetaConversationItem? upper_item = meta_items.higher(item);
