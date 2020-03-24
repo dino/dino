@@ -63,12 +63,12 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
                     label = _("Occupants may change the subject");
                     break;
                 case "muc#roomconfig_whois":
-                    label = _("Discover real JIDs");
-                    desc = _("Who may discover real JIDs?");
+                    label = _("Permission to view JIDs");
+                    desc = _("Who is allowed to view the occupants' JIDs?");
                     break;
                 case "muc#roomconfig_roomsecret":
                     label = _("Password");
-                    desc = _("Password required for room entry, if any");
+                    desc = _("A password to restrict access to the room");
                     break;
                 case "muc#roomconfig_moderatedroom":
                     label = _("Moderated");
