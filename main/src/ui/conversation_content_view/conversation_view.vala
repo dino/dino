@@ -60,13 +60,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         app.plugin_registry.register_conversation_addition_populator(new ChatStatePopulator(stream_interactor));
         app.plugin_registry.register_conversation_addition_populator(new DateSeparatorPopulator(stream_interactor));
 
-        Timeout.add_seconds(60, () => {
-            foreach (ConversationItemSkeleton item_skeleton in item_skeletons) {
-                item_skeleton.update_time();
-            }
-            return true;
-        });
-
         main_wrap_event_box.events = EventMask.ENTER_NOTIFY_MASK;
         main_wrap_event_box.events = EventMask.LEAVE_NOTIFY_MASK;
         main_wrap_event_box.leave_notify_event.connect(on_leave_notify_event);

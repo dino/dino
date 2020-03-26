@@ -51,12 +51,6 @@ public class ConversationItemSkeleton : EventBox {
         update_margin();
     }
 
-    public void update_time() {
-        if (metadata_header != null) {
-            metadata_header.update_time();
-        }
-    }
-
     public void update_margin() {
         if (item.requires_header && show_skeleton && metadata_header == null) {
             metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
@@ -116,16 +110,22 @@ public class ItemMetaDataHeader : Box {
             encryption_image.visible = true;
             encryption_image.set_from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER);
         }
-        update_time();
+        if (item.display_time != null) {
+            update_time();
+        }
 
         item.notify["mark"].connect_after(update_received_mark);
         update_received_mark();
     }
 
-    public void update_time() {
-        if (item.display_time != null) {
-            time_label.label = get_relative_time(item.display_time.to_local()).to_string();
-        }
+    private void update_time() {
+        time_label.label = get_relative_time(item.display_time.to_local()).to_string();
+
+        Timeout.add_seconds((int) get_next_time_change(), () => {
+            if (this.parent == null) return false;
+            update_time();
+            return false;
+        });
     }
 
     private void update_name_label() {
@@ -172,6 +172,22 @@ public class ItemMetaDataHeader : Box {
         } else if (received_image.visible) {
             received_image.set_from_icon_name("image-loading-symbolic", ICON_SIZE_HEADER);
 
+        }
+    }
+
+    private int get_next_time_change() {
+        DateTime now = new DateTime.now_local();
+        DateTime item_time = item.display_time;
+        TimeSpan timespan = now.difference(item_time);
+
+        if (timespan < 10 * TimeSpan.MINUTE) {
+            if (now.get_second() < item_time.get_second()) {
+                return item_time.get_second() - now.get_second();
+            } else {
+                return 60 - (now.get_second() - item_time.get_second());
+            }
+        } else {
+            return (23 - now.get_hour()) * 3600 + (59 - now.get_minute()) * 60 + (59 - now.get_second());
         }
     }
 
