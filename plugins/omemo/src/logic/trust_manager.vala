@@ -8,6 +8,8 @@ namespace Dino.Plugins.Omemo {
 
 public class TrustManager {
 
+    public signal void bad_message_state_updated(Account account, Jid jid, int device_id);
+
     private StreamInteractor stream_interactor;
     private Database db;
     private DecryptMessageListener decrypt_message_listener;
@@ -19,8 +21,8 @@ public class TrustManager {
         this.stream_interactor = stream_interactor;
         this.db = db;
 
-        decrypt_message_listener = new DecryptMessageListener(stream_interactor, db, message_device_id_map);
-        tag_message_listener = new TagMessageListener(stream_interactor, db, message_device_id_map);
+        decrypt_message_listener = new DecryptMessageListener(stream_interactor, this, db, message_device_id_map);
+        tag_message_listener = new TagMessageListener(stream_interactor, this, db, message_device_id_map);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(decrypt_message_listener);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(tag_message_listener);
     }
@@ -59,6 +61,11 @@ public class TrustManager {
                 .set(app_db.content_item.hide, trust_level == TrustLevel.UNTRUSTED || trust_level == TrustLevel.UNKNOWN)
                 .where(selection, selection_args)
                 .perform();
+        }
+
+        if (trust_level == TrustLevel.TRUSTED) {
+            db.identity_meta.update_last_message_untrusted(identity_id, device_id, null);
+            bad_message_state_updated(account, jid, device_id);
         }
     }
 
@@ -204,11 +211,13 @@ public class TrustManager {
         public override string[] after_actions { get { return after_actions_const; } }
 
         private StreamInteractor stream_interactor;
+        private TrustManager trust_manager;
         private Database db;
         private HashMap<Message, int> message_device_id_map;
 
-        public TagMessageListener(StreamInteractor stream_interactor, Database db, HashMap<Message, int> message_device_id_map) {
+        public TagMessageListener(StreamInteractor stream_interactor, TrustManager trust_manager, Database db, HashMap<Message, int> message_device_id_map) {
             this.stream_interactor = stream_interactor;
+            this.trust_manager = trust_manager;
             this.db = db;
             this.message_device_id_map = message_device_id_map;
         }
@@ -234,6 +243,8 @@ public class TrustManager {
                 TrustLevel trust_level = (TrustLevel) db.identity_meta.get_device(identity_id, jid.bare_jid.to_string(), device_id)[db.identity_meta.trust_level];
                 if (trust_level == TrustLevel.UNTRUSTED || trust_level == TrustLevel.UNKNOWN) {
                     stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
+                    db.identity_meta.update_last_message_untrusted(identity_id, device_id, message.time);
+                    trust_manager.bad_message_state_updated(conversation.account, jid, device_id);
                 }
 
                 db.content_item_meta.insert()
@@ -254,11 +265,13 @@ public class TrustManager {
         public override string[] after_actions { get { return after_actions_const; } }
 
         private StreamInteractor stream_interactor;
+        private TrustManager trust_manager;
         private Database db;
         private HashMap<Message, int> message_device_id_map;
 
-        public DecryptMessageListener(StreamInteractor stream_interactor, Database db, HashMap<Message, int> message_device_id_map) {
+        public DecryptMessageListener(StreamInteractor stream_interactor, TrustManager trust_manager, Database db, HashMap<Message, int> message_device_id_map) {
             this.stream_interactor = stream_interactor;
+            this.trust_manager = trust_manager;
             this.db = db;
             this.message_device_id_map = message_device_id_map;
         }
@@ -270,9 +283,6 @@ public class TrustManager {
             StanzaNode? _encrypted = stanza.stanza.get_subnode("encrypted", NS_URI);
             if (_encrypted == null || MessageFlag.get_flag(stanza) != null || stanza.from == null) return false;
             StanzaNode encrypted = (!)_encrypted;
-            if (message.body == null && Xep.ExplicitEncryption.get_encryption_tag(stanza) == NS_URI) {
-                message.body = "[This message is OMEMO encrypted]"; // TODO temporary
-            };
             if (!Plugin.ensure_context()) return false;
             int identity_id = db.identity.get_id(conversation.account.id);
             MessageFlag flag = new MessageFlag();
@@ -282,118 +292,129 @@ public class TrustManager {
             StanzaNode header = (!)_header;
             int sid = header.get_attribute_int("sid");
             if (sid <= 0) return false;
+
+            var our_nodes = new ArrayList<StanzaNode>();
             foreach (StanzaNode key_node in header.get_subnodes("key")) {
                 debug("Is ours? %d =? %u", key_node.get_attribute_int("rid"), store.local_registration_id);
                 if (key_node.get_attribute_int("rid") == store.local_registration_id) {
-
-                    string? payload = encrypted.get_deep_string_content("payload");
-                    string? iv_node = header.get_deep_string_content("iv");
-                    string? key_node_content = key_node.get_string_content();
-                    if (payload == null || iv_node == null || key_node_content == null) continue;
-                    uint8[] key;
-                    uint8[] ciphertext = Base64.decode((!)payload);
-                    uint8[] iv = Base64.decode((!)iv_node);
-                    Gee.List<Jid> possible_jids = new ArrayList<Jid>();
-                    if (conversation.type_ == Conversation.Type.CHAT) {
-                        possible_jids.add(stanza.from.bare_jid);
-                    } else {
-                        Jid? real_jid = message.real_jid;
-                        if (real_jid != null) {
-                            possible_jids.add(real_jid.bare_jid);
-                        } else if (key_node.get_attribute_bool("prekey")) {
-                            // pre key messages do store the identity key, so we can use that to find the real jid
-                            PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
-                            string identity_key = Base64.encode(msg.identity_key.serialize());
-                            foreach (Row row in db.identity_meta.get_with_device_id(identity_id, sid).with(db.identity_meta.identity_key_public_base64, "=", identity_key)) {
-                                try {
-                                    possible_jids.add(new Jid(row[db.identity_meta.address_name]));
-                                } catch (InvalidJidError e) {
-                                    warning("Ignoring invalid jid from database: %s", e.message);
-                                }
-                            }
-                            if (possible_jids.size != 1) {
-                                continue;
-                            }
-                        } else {
-                            // If we don't know the device name (MUC history w/o MAM), test decryption with all keys with fitting device id
-                            foreach (Row row in db.identity_meta.get_with_device_id(identity_id, sid)) {
-                                try {
-                                    possible_jids.add(new Jid(row[db.identity_meta.address_name]));
-                                } catch (InvalidJidError e) {
-                                    warning("Ignoring invalid jid from database: %s", e.message);
-                                }
-                            }
-                        }
-                    }
-
-                    if (possible_jids.size == 0) {
-                        debug("Received message from unknown entity with device id %d", sid);
-                    }
-
-                    foreach (Jid possible_jid in possible_jids) {
-                        try {
-                            Address address = new Address(possible_jid.to_string(), sid);
-                            if (key_node.get_attribute_bool("prekey")) {
-                                Row? device = db.identity_meta.get_device(identity_id, possible_jid.to_string(), sid);
-                                PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
-                                string identity_key = Base64.encode(msg.identity_key.serialize());
-                                if (device != null && device[db.identity_meta.identity_key_public_base64] != null) {
-                                    if (device[db.identity_meta.identity_key_public_base64] != identity_key) {
-                                        critical("Tried to use a different identity key for a known device id.");
-                                        continue;
-                                    }
-                                } else {
-                                    debug("Learn new device from incoming message from %s/%d", possible_jid.to_string(), sid);
-                                    bool blind_trust = db.trust.get_blind_trust(identity_id, possible_jid.to_string(), true);
-                                    if (db.identity_meta.insert_device_session(identity_id, possible_jid.to_string(), sid, identity_key, blind_trust ? TrustLevel.TRUSTED : TrustLevel.UNKNOWN) < 0) {
-                                        critical("Failed learning a device.");
-                                        continue;
-                                    }
-                                    XmppStream? stream = stream_interactor.get_stream(conversation.account);
-                                    if (device == null && stream != null) {
-                                        module.request_user_devicelist.begin(stream, possible_jid);
-                                    }
-                                }
-                                debug("Starting new session for decryption with device from %s/%d", possible_jid.to_string(), sid);
-                                SessionCipher cipher = store.create_session_cipher(address);
-                                key = cipher.decrypt_pre_key_signal_message(msg);
-                                // TODO: Finish session
-                            } else {
-                                debug("Continuing session for decryption with device from %s/%d", possible_jid.to_string(), sid);
-                                SignalMessage msg = Plugin.get_context().deserialize_signal_message(Base64.decode((!)key_node_content));
-                                SessionCipher cipher = store.create_session_cipher(address);
-                                key = cipher.decrypt_signal_message(msg);
-                            }
-                            //address.device_id = 0; // TODO: Hack to have address obj live longer
-
-                            if (key.length >= 32) {
-                                int authtaglength = key.length - 16;
-                                uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
-                                uint8[] new_key = new uint8[16];
-                                Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
-                                Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
-                                Memory.copy(new_key, key, 16);
-                                ciphertext = new_ciphertext;
-                                key = new_key;
-                            }
-
-                            message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
-                            message_device_id_map[message] = address.device_id;
-                            message.encryption = Encryption.OMEMO;
-                            flag.decrypted = true;
-                        } catch (Error e) {
-                            debug("Decrypting message from %s/%d failed: %s", possible_jid.to_string(), sid, e.message);
-                            continue;
-                        }
-
-                        // If we figured out which real jid a message comes from due to decryption working, save it
-                        if (conversation.type_ == Conversation.Type.GROUPCHAT && message.real_jid == null) {
-                            message.real_jid = possible_jid;
-                        }
-                        return false;
-                    }
+                    our_nodes.add(key_node);
                 }
             }
+
+            foreach (StanzaNode key_node in our_nodes) {
+                string? payload = encrypted.get_deep_string_content("payload");
+                string? iv_node = header.get_deep_string_content("iv");
+                string? key_node_content = key_node.get_string_content();
+                if (payload == null || iv_node == null || key_node_content == null) continue;
+                uint8[] key;
+                uint8[] ciphertext = Base64.decode((!)payload);
+                uint8[] iv = Base64.decode((!)iv_node);
+                Gee.List<Jid> possible_jids = new ArrayList<Jid>();
+                if (conversation.type_ == Conversation.Type.CHAT) {
+                    possible_jids.add(stanza.from.bare_jid);
+                } else {
+                    Jid? real_jid = message.real_jid;
+                    if (real_jid != null) {
+                        possible_jids.add(real_jid.bare_jid);
+                    } else if (key_node.get_attribute_bool("prekey")) {
+                        // pre key messages do store the identity key, so we can use that to find the real jid
+                        PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
+                        string identity_key = Base64.encode(msg.identity_key.serialize());
+                        foreach (Row row in db.identity_meta.get_with_device_id(identity_id, sid).with(db.identity_meta.identity_key_public_base64, "=", identity_key)) {
+                            try {
+                                possible_jids.add(new Jid(row[db.identity_meta.address_name]));
+                            } catch (InvalidJidError e) {
+                                warning("Ignoring invalid jid from database: %s", e.message);
+                            }
+                        }
+                        if (possible_jids.size != 1) {
+                            continue;
+                        }
+                    } else {
+                        // If we don't know the device name (MUC history w/o MAM), test decryption with all keys with fitting device id
+                        foreach (Row row in db.identity_meta.get_with_device_id(identity_id, sid)) {
+                            try {
+                                possible_jids.add(new Jid(row[db.identity_meta.address_name]));
+                            } catch (InvalidJidError e) {
+                                warning("Ignoring invalid jid from database: %s", e.message);
+                            }
+                        }
+                    }
+                }
+
+                if (possible_jids.size == 0) {
+                    debug("Received message from unknown entity with device id %d", sid);
+                }
+
+                foreach (Jid possible_jid in possible_jids) {
+                    try {
+                        Address address = new Address(possible_jid.to_string(), sid);
+                        if (key_node.get_attribute_bool("prekey")) {
+                            Row? device = db.identity_meta.get_device(identity_id, possible_jid.to_string(), sid);
+                            PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(Base64.decode((!)key_node_content));
+                            string identity_key = Base64.encode(msg.identity_key.serialize());
+                            if (device != null && device[db.identity_meta.identity_key_public_base64] != null) {
+                                if (device[db.identity_meta.identity_key_public_base64] != identity_key) {
+                                    critical("Tried to use a different identity key for a known device id.");
+                                    continue;
+                                }
+                            } else {
+                                debug("Learn new device from incoming message from %s/%d", possible_jid.to_string(), sid);
+                                bool blind_trust = db.trust.get_blind_trust(identity_id, possible_jid.to_string(), true);
+                                if (db.identity_meta.insert_device_session(identity_id, possible_jid.to_string(), sid, identity_key, blind_trust ? TrustLevel.TRUSTED : TrustLevel.UNKNOWN) < 0) {
+                                    critical("Failed learning a device.");
+                                    continue;
+                                }
+                                XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                                if (device == null && stream != null) {
+                                    module.request_user_devicelist.begin(stream, possible_jid);
+                                }
+                            }
+                            debug("Starting new session for decryption with device from %s/%d", possible_jid.to_string(), sid);
+                            SessionCipher cipher = store.create_session_cipher(address);
+                            key = cipher.decrypt_pre_key_signal_message(msg);
+                            // TODO: Finish session
+                        } else {
+                            debug("Continuing session for decryption with device from %s/%d", possible_jid.to_string(), sid);
+                            SignalMessage msg = Plugin.get_context().deserialize_signal_message(Base64.decode((!)key_node_content));
+                            SessionCipher cipher = store.create_session_cipher(address);
+                            key = cipher.decrypt_signal_message(msg);
+                        }
+                        //address.device_id = 0; // TODO: Hack to have address obj live longer
+
+                        if (key.length >= 32) {
+                            int authtaglength = key.length - 16;
+                            uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
+                            uint8[] new_key = new uint8[16];
+                            Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
+                            Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
+                            Memory.copy(new_key, key, 16);
+                            ciphertext = new_ciphertext;
+                            key = new_key;
+                        }
+
+                        message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
+                        message_device_id_map[message] = address.device_id;
+                        message.encryption = Encryption.OMEMO;
+                        flag.decrypted = true;
+                    } catch (Error e) {
+                        debug("Decrypting message from %s/%d failed: %s", possible_jid.to_string(), sid, e.message);
+                        continue;
+                    }
+
+                    // If we figured out which real jid a message comes from due to decryption working, save it
+                    if (conversation.type_ == Conversation.Type.GROUPCHAT && message.real_jid == null) {
+                        message.real_jid = possible_jid;
+                    }
+                    return false;
+                }
+            }
+
+            if (our_nodes.size == 0) {
+                db.identity_meta.update_last_message_undecryptable(identity_id, sid, message.time);
+                trust_manager.bad_message_state_updated(conversation.account, message.from, sid);
+            }
+
             debug("Received OMEMO encryped message that could not be decrypted.");
             return false;
         }
