@@ -88,8 +88,8 @@ public class ItemMetaDataHeader : Box {
     [GtkChild] public Label name_label;
     [GtkChild] public Label dot_label;
     [GtkChild] public Label time_label;
-    [GtkChild] public Image encryption_image;
-    [GtkChild] public Image received_image;
+    public Image received_image = new Image() { opacity=0.4 };
+    public Image? encryption_image = null;
 
     public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON", 17, 12);
 
@@ -106,9 +106,23 @@ public class ItemMetaDataHeader : Box {
 
         update_name_label();
         name_label.style_updated.connect(update_name_label);
-        if (item.encryption != Encryption.NONE) {
-            encryption_image.visible = true;
-            encryption_image.set_from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER);
+
+        Application app = GLib.Application.get_default() as Application;
+
+        ContentMetaItem ci = item as ContentMetaItem;
+        if (ci != null) {
+            foreach(var e in app.plugin_registry.encryption_list_entries) {
+                if (e.encryption == item.encryption) {
+                    Object? w = e.get_encryption_icon(conversation, ci.content_item);
+                    if (w != null) {
+                        this.add(w as Widget);
+                    } else {
+                        Image image = new Image.from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER) { opacity=0.4, visible = true };
+                        this.add(image);
+                    }
+                    break;
+                }
+            }
         }
         if (item.display_time != null) {
             update_time();
@@ -143,11 +157,9 @@ public class ItemMetaDataHeader : Box {
                 received_image.visible = true;
                 received_image.set_from_icon_name("dialog-warning-symbolic", ICON_SIZE_HEADER);
                 Util.force_error_color(received_image);
-                Util.force_error_color(encryption_image);
                 Util.force_error_color(time_label);
                 string error_text = _("Unable to send message");
                 received_image.tooltip_text = error_text;
-                encryption_image.tooltip_text = error_text;
                 time_label.tooltip_text = error_text;
                 return;
             } else if (item.mark != Message.Marked.READ) {

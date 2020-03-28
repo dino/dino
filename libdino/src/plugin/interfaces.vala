@@ -26,6 +26,7 @@ public interface EncryptionListEntry : Object {
     public abstract string name { get; }
 
     public abstract void encryption_activated(Entities.Conversation conversation, Plugins.SetInputFieldStatus callback);
+    public abstract Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item);
 }
 
 public abstract class AccountSettingsEntry : Object {

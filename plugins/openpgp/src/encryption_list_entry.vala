@@ -1,4 +1,5 @@
 using Gee;
+using Gtk;
 
 using Dino.Entities;
 using Xmpp;
@@ -22,6 +23,12 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
     public string name { get {
         return "OpenPGP";
     }}
+
+    public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON3", 17, 12);
+
+    public Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item) {
+        return null;
+    }
 
     public void encryption_activated(Entities.Conversation conversation, Plugins.SetInputFieldStatus input_status_callback) {
         try {

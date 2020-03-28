@@ -42,15 +42,5 @@
                 </style>
             </object>
         </child>
-        <child>
-            <object class="GtkImage" id="encryption_image">
-                <property name="opacity">0.4</property>
-            </object>
-        </child>
-        <child>
-            <object class="GtkImage" id="received_image">
-                <property name="opacity">0.4</property>
-            </object>
-        </child>
     </template>
 </interface>

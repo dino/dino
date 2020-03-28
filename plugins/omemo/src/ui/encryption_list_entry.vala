@@ -1,12 +1,16 @@
+using Gtk;
+using Qlite;
 using Xmpp;
 
 namespace Dino.Plugins.Omemo {
 
 public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
     private Plugin plugin;
+    private Database db;
 
     public EncryptionListEntry(Plugin plugin) {
         this.plugin = plugin;
+        this.db = plugin.db;
     }
 
     public Entities.Encryption encryption { get {
@@ -16,6 +20,22 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
     public string name { get {
         return "OMEMO";
     }}
+
+    public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON2", 17, 12);
+
+    public Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item) {
+        if (content_item.encryption != encryption) return null;
+
+        RowOption row = db.content_item_meta.select( { db.identity_meta.trust_level } ).with(db.content_item_meta.content_item_id, "=", content_item.id)
+            .join_on(db.identity_meta, @"$(db.identity_meta.address_name)=$(db.content_item_meta.address_name) AND $(db.identity_meta.device_id)=$(db.content_item_meta.device_id)")
+            .single().row();
+
+
+        if (row.is_present() && (TrustLevel) row[db.identity_meta.trust_level] == TrustLevel.VERIFIED) {
+            return new Image.from_icon_name("dino-security-high-symbolic", ICON_SIZE_HEADER) { opacity=0.4, visible = true };
+        }
+        return null;
+    }
 
     public void encryption_activated(Entities.Conversation conversation, Plugins.SetInputFieldStatus input_status_callback) {
         encryption_activated_async.begin(conversation, input_status_callback);
