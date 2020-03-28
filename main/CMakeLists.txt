@@ -13,6 +13,7 @@ find_packages(MAIN_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
+    icons/dino-changes-allowed-symbolic.svg
     icons/dino-changes-prevent-symbolic.svg
     icons/dino-conversation-list-placeholder-arrow.svg
     icons/dino-double-tick-symbolic.svg

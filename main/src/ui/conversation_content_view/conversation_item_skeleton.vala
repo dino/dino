@@ -124,12 +124,33 @@ public class ItemMetaDataHeader : Box {
                 }
             }
         }
+        if (item.encryption == Encryption.NONE) {
+            conversation.notify["encryption"].connect(update_unencrypted_icon);
+            update_unencrypted_icon();
+        }
+
+        this.add(received_image);
+
         if (item.display_time != null) {
             update_time();
         }
 
         item.notify["mark"].connect_after(update_received_mark);
         update_received_mark();
+    }
+
+    private void update_unencrypted_icon() {
+        if (conversation.encryption != Encryption.NONE) {
+            encryption_image = new Image() { opacity=0.4, visible = true };
+            encryption_image.set_from_icon_name("dino-changes-allowed-symbolic", ICON_SIZE_HEADER);
+            encryption_image.tooltip_text = _("Unencrypted");
+            this.add(encryption_image);
+            this.reorder_child(encryption_image, 3);
+            Util.force_error_color(encryption_image);
+        } else if (encryption_image != null) {
+            encryption_image.destroy();
+            encryption_image = null;
+        }
     }
 
     private void update_time() {
