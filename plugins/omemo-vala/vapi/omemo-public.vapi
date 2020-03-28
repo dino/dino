@@ -213,6 +213,8 @@ namespace Omemo {
             }
             return buffer.data;
         }
+        public Buffer ed { get; }
+        public Buffer mont { get; }
         public int compare(ECPublicKey other);
         public int memcmp(ECPublicKey other);
     }

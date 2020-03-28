@@ -37,14 +37,14 @@ public class Module : XmppStreamModule, Jet.EnvelopEncoding {
     }
 
     public string get_type_uri() {
-        return Omemo.NS_URI;
+        return Omemo.Legacy.NS_URI;
     }
 
     public Jet.TransportSecret decode_envolop(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, StanzaNode security) throws Jingle.IqError {
-        Store store = stream.get_module(Omemo.StreamModule.IDENTITY).store;
-        StanzaNode? encrypted = security.get_subnode("encrypted", Omemo.NS_URI);
+        Store store = stream.get_module(Omemo.Legacy.StreamModule.IDENTITY).store;
+        StanzaNode? encrypted = security.get_subnode("encrypted", Omemo.Legacy.NS_URI);
         if (encrypted == null) throw new Jingle.IqError.BAD_REQUEST("Invalid JET-OMEMO envelop: missing encrypted element");
-        StanzaNode? header = encrypted.get_subnode("header", Omemo.NS_URI);
+        StanzaNode? header = encrypted.get_subnode("header", Omemo.Legacy.NS_URI);
         if (header == null) throw new Jingle.IqError.BAD_REQUEST("Invalid JET-OMEMO envelop: missing header element");
         string? iv_node = header.get_deep_string_content("iv");
         if (header == null) throw new Jingle.IqError.BAD_REQUEST("Invalid JET-OMEMO envelop: missing iv element");
@@ -84,7 +84,7 @@ public class Module : XmppStreamModule, Jet.EnvelopEncoding {
 
     public void encode_envelop(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, Jet.SecurityParameters security_params, StanzaNode security) {
         ArrayList<Account> accounts = plugin.app.stream_interactor.get_accounts();
-        Store store = stream.get_module(Omemo.StreamModule.IDENTITY).store;
+        Store store = stream.get_module(Omemo.Legacy.StreamModule.IDENTITY).store;
         Account? account = null;
         foreach (Account compare in accounts) {
             if (compare.bare_jid.equals_bare(local_full_jid)) {
@@ -98,10 +98,10 @@ public class Module : XmppStreamModule, Jet.EnvelopEncoding {
         }
 
         StanzaNode header_node;
-        StanzaNode encrypted_node = new StanzaNode.build("encrypted", Omemo.NS_URI).add_self_xmlns()
-                .put_node(header_node = new StanzaNode.build("header", Omemo.NS_URI)
+        StanzaNode encrypted_node = new StanzaNode.build("encrypted", Omemo.Legacy.NS_URI).add_self_xmlns()
+                .put_node(header_node = new StanzaNode.build("header", Omemo.Legacy.NS_URI)
                     .put_attribute("sid", store.local_registration_id.to_string())
-                    .put_node(new StanzaNode.build("iv", Omemo.NS_URI)
+                    .put_node(new StanzaNode.build("iv", Omemo.Legacy.NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(security_params.secret.initialization_vector)))));
 
         plugin.trust_manager.encrypt_key(header_node, security_params.secret.transport_key, local_full_jid.bare_jid, new ArrayList<Jid>.wrap(new Jid[] {peer_full_jid.bare_jid}), stream, account);

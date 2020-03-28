@@ -50,7 +50,8 @@ public class Plugin : RootInterface, Object {
         this.app.plugin_registry.register_notification_populator(device_notification_populator);
         this.app.plugin_registry.register_conversation_addition_populator(new BadMessagesPopulator(this.app.stream_interactor, this));
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
-            list.add(new StreamModule());
+            list.add(new Legacy.StreamModule());
+            list.add(new V1.StreamModule());
             list.add(new JetOmemo.Module(this));
             this.own_notifications = new OwnNotifications(this, this.app.stream_interactor, account);
         });

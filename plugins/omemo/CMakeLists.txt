@@ -50,6 +50,9 @@ SOURCES
     src/protocol/bundle.vala
     src/protocol/message_flag.vala
     src/protocol/stream_module.vala
+    src/protocol/legacy_stream_module.vala
+    src/protocol/v1_stream_module.vala
+    src/protocol/version.vala
 
     src/ui/account_settings_entry.vala
     src/ui/account_settings_widget.vala

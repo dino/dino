@@ -8,11 +8,11 @@ public class MessageFlag : Xmpp.MessageFlag {
     public bool decrypted = false;
 
     public static MessageFlag? get_flag(MessageStanza message) {
-        return (MessageFlag) message.get_flag(NS_URI, id);
+        return (MessageFlag) message.get_flag(V1.NS_URI, id);
     }
 
     public override string get_ns() {
-        return NS_URI;
+        return V1.NS_URI;
     }
 
     public override string get_id() {

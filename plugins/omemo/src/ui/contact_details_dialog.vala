@@ -71,7 +71,15 @@ public class ContactDetailsDialog : Gtk.Dialog {
         if (identity_id < 0) return;
         Dino.Application? app = Application.get_default() as Dino.Application;
         if (app != null) {
-            store = app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store;
+            var legacy_module = app.stream_interactor.module_manager.get_module(account, Legacy.StreamModule.IDENTITY);
+            var v1_module = app.stream_interactor.module_manager.get_module(account, V1.StreamModule.IDENTITY);
+            if (legacy_module != null) {
+                store = legacy_module.store;
+            } else if (v1_module != null) {
+                store = v1_module.store;
+            } else {
+                return;
+            }
         }
 
         auto_accept_switch.set_active(plugin.db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string(), true));
@@ -135,22 +143,42 @@ public class ContactDetailsDialog : Gtk.Dialog {
         Dino.Application app = Application.get_default() as Dino.Application;
         XmppStream? stream = app.stream_interactor.get_stream(account);
         if (stream == null) return;
-        StreamModule? module = stream.get_module(StreamModule.IDENTITY);
-        if (module == null) return;
-        module.bundle_fetched.connect_after((bundle_jid, device_id, bundle) => {
-            if (bundle_jid.equals(jid) && !displayed_ids.contains(device_id)) {
-                Row? device = plugin.db.identity_meta.get_device(identity_id, jid.to_string(), device_id);
-                if (device == null) return;
-                if (auto_accept_switch.active) {
-                    add_fingerprint(device, (TrustLevel) device[plugin.db.identity_meta.trust_level]);
-                } else {
-                    add_new_fingerprint(device);
+        Legacy.StreamModule? legacy_module = stream.get_module(Legacy.StreamModule.IDENTITY);
+        V1.StreamModule? v1_module = stream.get_module(V1.StreamModule.IDENTITY);
+        if (legacy_module != null) {
+            legacy_module.bundle_fetched.connect_after((bundle_jid, device_id, bundle) => {
+                if (bundle_jid.equals(jid) && !displayed_ids.contains(device_id)) {
+                    Row? device = plugin.db.identity_meta.get_device(identity_id, jid.to_string(), device_id);
+                    if (device == null) return;
+                    if (auto_accept_switch.active) {
+                        add_fingerprint(device, (TrustLevel) device[plugin.db.identity_meta.trust_level]);
+                    } else {
+                        add_new_fingerprint(device);
+                    }
                 }
-            }
-        });
+            });
+        }
+        if (v1_module != null) {
+            v1_module.bundle_fetched.connect_after((bundle_jid, device_id, bundle) => {
+                if (bundle_jid.equals(jid) && !displayed_ids.contains(device_id)) {
+                    Row? device = plugin.db.identity_meta.get_device(identity_id, jid.to_string(), device_id);
+                    if (device == null) return;
+                    if (auto_accept_switch.active) {
+                        add_fingerprint(device, (TrustLevel) device[plugin.db.identity_meta.trust_level]);
+                    } else {
+                        add_new_fingerprint(device);
+                    }
+                }
+            });
+        }
         foreach (Row device in plugin.db.identity_meta.get_unknown_devices(identity_id, jid.to_string())) {
             try {
-                module.fetch_bundle(stream, new Jid(device[plugin.db.identity_meta.address_name]), device[plugin.db.identity_meta.device_id], false);
+                if (legacy_module != null) {
+                    legacy_module.fetch_bundle(stream, new Jid(device[plugin.db.identity_meta.address_name]), device[plugin.db.identity_meta.device_id], false);
+                }
+                if (v1_module != null) {
+                    v1_module.fetch_bundle(stream, new Jid(device[plugin.db.identity_meta.address_name]), device[plugin.db.identity_meta.device_id], false);
+                }
             } catch (InvalidJidError e) {
                 warning("Ignoring device with invalid Jid: %s", e.message);
             }

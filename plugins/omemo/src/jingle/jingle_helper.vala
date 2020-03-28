@@ -39,12 +39,12 @@ public class EncryptionHelper : JingleFileEncryptionHelper, Object {
     }
 
     public Object? get_precondition_options(Conversation conversation, FileTransfer file_transfer) {
-        return new Xep.Jet.Options(Omemo.NS_URI, AES_128_GCM_URI);
+        return new Xep.Jet.Options(Omemo.Legacy.NS_URI, AES_128_GCM_URI);
     }
 
     public FileMeta complete_meta(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta, Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer) {
         Xep.Jet.SecurityParameters? security = jingle_transfer.security as Xep.Jet.SecurityParameters;
-        if (security != null && security.encoding.get_type_uri() == Omemo.NS_URI) {
+        if (security != null && security.encoding.get_type_uri() == Omemo.Legacy.NS_URI) {
             file_transfer.encryption = Encryption.OMEMO;
         }
         return file_meta;

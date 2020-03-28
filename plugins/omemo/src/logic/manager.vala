@@ -73,7 +73,8 @@ public class Manager : StreamInteractionModule, Object {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
 
-        stream.get_module(StreamModule.IDENTITY).clear_device_list(stream);
+        stream.get_module(Legacy.StreamModule.IDENTITY).clear_device_list(stream);
+        stream.get_module(V1.StreamModule.IDENTITY).clear_device_list(stream);
     }
 
     private Gee.List<Jid> get_occupants(Jid jid, Account account){
@@ -100,12 +101,12 @@ public class Manager : StreamInteractionModule, Object {
                 message.marked = Entities.Message.Marked.UNSENT;
                 return;
             }
-            StreamModule? module_ = ((!)stream).get_module(StreamModule.IDENTITY);
-            if (module_ == null) {
+            Legacy.StreamModule? legacy_module = ((!)stream).get_module(Legacy.StreamModule.IDENTITY);
+            V1.StreamModule? v1_module = ((!)stream).get_module(V1.StreamModule.IDENTITY);
+            if (legacy_module == null && v1_module == null) {
                 message.marked = Entities.Message.Marked.UNSENT;
                 return;
             }
-            StreamModule module = (!)module_;
 
             //Get a list of everyone for whom the message should be encrypted
             Gee.List<Jid> recipients;
@@ -147,17 +148,18 @@ public class Manager : StreamInteractionModule, Object {
                 } else {
                     debug("delaying message %s", state.to_string());
 
+                    // TODO: V1 support
                     if (state.waiting_own_sessions > 0) {
-                        module.fetch_bundles((!)stream, conversation.account.bare_jid, trust_manager.get_trusted_devices(conversation.account, conversation.account.bare_jid));
+                        legacy_module.fetch_bundles((!)stream, conversation.account.bare_jid, trust_manager.get_trusted_devices(conversation.account, conversation.account.bare_jid));
                     }
                     if (state.waiting_other_sessions > 0 && message.counterpart != null) {
                         foreach(Jid jid in get_occupants(((!)message.counterpart).bare_jid, conversation.account)) {
-                            module.fetch_bundles((!)stream, jid, trust_manager.get_trusted_devices(conversation.account, jid));
+                            legacy_module.fetch_bundles((!)stream, jid, trust_manager.get_trusted_devices(conversation.account, jid));
                         }
                     }
                     if (state.waiting_other_devicelists > 0 && message.counterpart != null) {
                         foreach(Jid jid in get_occupants(((!)message.counterpart).bare_jid, conversation.account)) {
-                            module.request_user_devicelist.begin((!)stream, jid);
+                            legacy_module.request_user_devicelist.begin((!)stream, jid);
                         }
                     }
                 }
@@ -169,16 +171,24 @@ public class Manager : StreamInteractionModule, Object {
         XmppStream? stream = stream_interactor.get_stream(account);
         if(stream == null) return;
 
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist.begin((!)stream, jid);
+        stream_interactor.module_manager.get_module(account, Legacy.StreamModule.IDENTITY).request_user_devicelist.begin((!)stream, jid);
+        stream_interactor.module_manager.get_module(account, V1.StreamModule.IDENTITY).request_user_devicelist.begin((!)stream, jid);
     }
 
     private void on_stream_negotiated(Account account, XmppStream stream) {
-        StreamModule module = stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY);
-        if (module != null) {
-            module.request_user_devicelist.begin(stream, account.bare_jid);
-            module.device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
-            module.bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
-            module.bundle_fetch_failed.connect((jid) => continue_message_sending(account, jid));
+        Legacy.StreamModule legacy_module = stream_interactor.module_manager.get_module(account, Legacy.StreamModule.IDENTITY);
+        if (legacy_module != null) {
+            legacy_module.request_user_devicelist.begin(stream, account.bare_jid);
+            legacy_module.device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
+            legacy_module.bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
+            legacy_module.bundle_fetch_failed.connect((jid) => continue_message_sending(account, jid));
+        }
+        V1.StreamModule v1_module = stream_interactor.module_manager.get_module(account, V1.StreamModule.IDENTITY);
+        if (v1_module != null) {
+            v1_module.request_user_devicelist.begin(stream, account.bare_jid);
+            //v1_module.device_list_loaded.connect((jid, devices) => on_device_list_loaded_v1(account, jid, devices));
+            v1_module.bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
+            v1_module.bundle_fetch_failed.connect((jid) => continue_message_sending(account, jid));
         }
         initialize_store.begin(account);
     }
@@ -190,7 +200,7 @@ public class Manager : StreamInteractionModule, Object {
         if (stream == null) {
             return;
         }
-        StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
+        Legacy.StreamModule? module = ((!)stream).get_module(Legacy.StreamModule.IDENTITY);
         if (module == null) {
             return;
         }
@@ -278,7 +288,7 @@ public class Manager : StreamInteractionModule, Object {
         if (should_start_session(account, jid)) {
             XmppStream? stream = stream_interactor.get_stream(account);
             if (stream != null) {
-                StreamModule? module = ((!)stream).get_module(StreamModule.IDENTITY);
+                Legacy.StreamModule? module = ((!)stream).get_module(Legacy.StreamModule.IDENTITY);
                 if (module != null) {
                     module.start_session(stream, jid, device_id, bundle);
                 }
@@ -335,9 +345,20 @@ public class Manager : StreamInteractionModule, Object {
             account.notify["id"].connect(() => initialize_store.callback());
             yield;
         }
-        StreamModule? module = stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY);
-        if (module == null) return;
-        Store store = module.store;
+        Store store = null;
+        Legacy.StreamModule? legacy_module = stream_interactor.module_manager.get_module(account, Legacy.StreamModule.IDENTITY);
+        V1.StreamModule? v1_module = stream_interactor.module_manager.get_module(account, V1.StreamModule.IDENTITY);
+        if (legacy_module != null) {
+            store = legacy_module.store;
+        }
+        if (v1_module != null) {
+            if (store != null) {
+                v1_module.store = store;
+            } else {
+                store = v1_module.store;
+            }
+        }
+        if (store == null) return;
         Qlite.Row? row = db.identity.row_with(db.identity.account_id, account.id).inner;
         int identity_id = -1;
         bool publish_identity = false;
@@ -379,7 +400,12 @@ public class Manager : StreamInteractionModule, Object {
         // Generated new device ID, ensure this gets added to the devicelist
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            module.request_user_devicelist.begin((!)stream, account.bare_jid);
+            if (legacy_module != null) {
+                legacy_module.request_user_devicelist.begin((!)stream, account.bare_jid);
+            }
+            if (v1_module != null) {
+                v1_module.request_user_devicelist.begin((!)stream, account.bare_jid);
+            }
         }
     }
 
@@ -401,8 +427,15 @@ public class Manager : StreamInteractionModule, Object {
         if (trust_manager.is_known_address(account, jid)) return true;
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {
-            var device_list = yield stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).request_user_devicelist(stream, jid);
-            return device_list.size > 0;
+            var legacy_module = stream_interactor.module_manager.get_module(account, Legacy.StreamModule.IDENTITY);
+            if (legacy_module != null) {
+                if ((yield legacy_module.request_user_devicelist(stream, jid)).size > 0) return true;
+            }
+            var v1_module = stream_interactor.module_manager.get_module(account, V1.StreamModule.IDENTITY);
+            if (legacy_module != null) {
+                if ((yield v1_module.request_user_devicelist(stream, jid)).size > 0) return true;
+            }
+            return false;
         }
         return true; // TODO wait for stream?
     }

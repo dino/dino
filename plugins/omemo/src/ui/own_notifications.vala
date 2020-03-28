@@ -14,7 +14,12 @@ public class OwnNotifications {
         this.stream_interactor = (!)stream_interactor;
         this.plugin = plugin;
         this.account = account;
-        stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
+        stream_interactor.module_manager.get_module(account, Legacy.StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
+            if (jid.equals(account.bare_jid) && plugin.has_new_devices(account, account.bare_jid)) {
+                display_notification();
+            }
+        });
+        stream_interactor.module_manager.get_module(account, V1.StreamModule.IDENTITY).bundle_fetched.connect_after((jid, device_id, bundle) => {
             if (jid.equals(account.bare_jid) && plugin.has_new_devices(account, account.bare_jid)) {
                 display_notification();
             }

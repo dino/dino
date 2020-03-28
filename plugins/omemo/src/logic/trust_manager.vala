@@ -73,7 +73,7 @@ public class TrustManager {
         SessionCipher cipher = store.create_session_cipher(address);
         CiphertextMessage device_key = cipher.encrypt(key);
         debug("Created encrypted key for %s/%d", address.name, address.device_id);
-        StanzaNode key_node = new StanzaNode.build("key", NS_URI)
+        StanzaNode key_node = new StanzaNode.build("key", Legacy.NS_URI)
             .put_attribute("rid", address.device_id.to_string())
             .put_node(new StanzaNode.text(Base64.encode(device_key.serialized)));
         if (device_key.type == CiphertextType.PREKEY) key_node.put_attribute("prekey", "true");
@@ -82,7 +82,7 @@ public class TrustManager {
 
     internal EncryptState encrypt_key(StanzaNode header_node, uint8[] keytag, Jid self_jid, Gee.List<Jid> recipients, XmppStream stream, Account account) throws Error {
         EncryptState status = new EncryptState();
-        StreamModule module = stream.get_module(StreamModule.IDENTITY);
+        Legacy.StreamModule module = stream.get_module(Legacy.StreamModule.IDENTITY);
 
         //Check we have the bundles and device lists needed to send the message
         if (!is_known_address(account, self_jid)) return status;
@@ -149,7 +149,7 @@ public class TrustManager {
         if (!Plugin.ensure_context()) return status;
         if (message.to == null) return status;
 
-        StreamModule module = stream.get_module(StreamModule.IDENTITY);
+        Legacy.StreamModule module = stream.get_module(Legacy.StreamModule.IDENTITY);
 
         try {
             //Create a key and use it to encrypt the message
@@ -166,18 +166,18 @@ public class TrustManager {
             Memory.copy((uint8*)keytag + key.length, tag, tag.length);
 
             StanzaNode header_node;
-            StanzaNode encrypted_node = new StanzaNode.build("encrypted", NS_URI).add_self_xmlns()
-                    .put_node(header_node = new StanzaNode.build("header", NS_URI)
+            StanzaNode encrypted_node = new StanzaNode.build("encrypted", Legacy.NS_URI).add_self_xmlns()
+                    .put_node(header_node = new StanzaNode.build("header", Legacy.NS_URI)
                         .put_attribute("sid", module.store.local_registration_id.to_string())
-                        .put_node(new StanzaNode.build("iv", NS_URI)
+                        .put_node(new StanzaNode.build("iv", Legacy.NS_URI)
                             .put_node(new StanzaNode.text(Base64.encode(iv)))))
-                    .put_node(new StanzaNode.build("payload", NS_URI)
+                    .put_node(new StanzaNode.build("payload", Legacy.NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(ciphertext))));
 
             status = encrypt_key(header_node, keytag, self_jid, recipients, stream, account);
 
             message.stanza.put_node(encrypted_node);
-            Xep.ExplicitEncryption.add_encryption_tag_to_message(message, NS_URI, "OMEMO");
+            Xep.ExplicitEncryption.add_encryption_tag_to_message(message, Legacy.NS_URI, "OMEMO");
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;
         } catch (Error e) {
@@ -277,12 +277,15 @@ public class TrustManager {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            StreamModule module = stream_interactor.module_manager.get_module(conversation.account, StreamModule.IDENTITY);
+            Legacy.StreamModule module = stream_interactor.module_manager.get_module(conversation.account, Legacy.StreamModule.IDENTITY);
             Store store = module.store;
 
-            StanzaNode? _encrypted = stanza.stanza.get_subnode("encrypted", NS_URI);
+            StanzaNode? _encrypted = stanza.stanza.get_subnode("encrypted", Legacy.NS_URI);
             if (_encrypted == null || MessageFlag.get_flag(stanza) != null || stanza.from == null) return false;
             StanzaNode encrypted = (!)_encrypted;
+            if (message.body == null && Xep.ExplicitEncryption.get_encryption_tag(stanza) == Legacy.NS_URI) {
+                message.body = "[This message is OMEMO encrypted]"; // TODO temporary
+            }
             if (!Plugin.ensure_context()) return false;
             int identity_id = db.identity.get_id(conversation.account.id);
             MessageFlag flag = new MessageFlag();
@@ -305,9 +308,8 @@ public class TrustManager {
                 string? payload = encrypted.get_deep_string_content("payload");
                 string? iv_node = header.get_deep_string_content("iv");
                 string? key_node_content = key_node.get_string_content();
-                if (payload == null || iv_node == null || key_node_content == null) continue;
-                uint8[] key;
-                uint8[] ciphertext = Base64.decode((!)payload);
+                if (iv_node == null || key_node_content == null) continue;
+                    uint8[] key;
                 uint8[] iv = Base64.decode((!)iv_node);
                 Gee.List<Jid> possible_jids = new ArrayList<Jid>();
                 if (conversation.type_ == Conversation.Type.CHAT) {
@@ -382,20 +384,23 @@ public class TrustManager {
                         }
                         //address.device_id = 0; // TODO: Hack to have address obj live longer
 
-                        if (key.length >= 32) {
-                            int authtaglength = key.length - 16;
-                            uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
-                            uint8[] new_key = new uint8[16];
-                            Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
-                            Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
-                            Memory.copy(new_key, key, 16);
-                            ciphertext = new_ciphertext;
-                            key = new_key;
-                        }
+                        if (payload != null) {
+                            uint8[] ciphertext = Base64.decode(payload ?? "");
+                            if (key.length >= 32) {
+                                int authtaglength = key.length - 16;
+                                uint8[] new_ciphertext = new uint8[ciphertext.length + authtaglength];
+                                uint8[] new_key = new uint8[16];
+                                Memory.copy(new_ciphertext, ciphertext, ciphertext.length);
+                                Memory.copy((uint8*)new_ciphertext + ciphertext.length, (uint8*)key + 16, authtaglength);
+                                Memory.copy(new_key, key, 16);
+                                ciphertext = new_ciphertext;
+                                key = new_key;
+                            }
 
-                        message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
-                        message_device_id_map[message] = address.device_id;
-                        message.encryption = Encryption.OMEMO;
+                            message.body = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, iv, ciphertext));
+                            message_device_id_map[message] = address.device_id;
+                            message.encryption = Encryption.OMEMO;
+                        }
                         flag.decrypted = true;
                     } catch (Error e) {
                         debug("Decrypting message from %s/%d failed: %s", possible_jid.to_string(), sid, e.message);

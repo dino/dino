@@ -48,8 +48,12 @@ namespace Xmpp.Xep.Pubsub {
         }
 
         public delegate void OnResult(XmppStream stream, Jid jid, string? id, StanzaNode? node);
-        public void request(XmppStream stream, Jid jid, string node, owned OnResult listener) { // TODO multiple nodes gehen auch
-            Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
+        public void request(XmppStream stream, Jid jid, string node, owned OnResult listener, string? item_id = null) { // TODO multiple nodes gehen auch
+            var items = new StanzaNode.build("items", NS_URI).put_attribute("node", node);
+            if (item_id != null) {
+                items.put_node(new StanzaNode.build("item", NS_URI).put_attribute("id", item_id));
+            }
+            Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(items));
             request_iq.to = jid;
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, request_iq, (stream, iq) => {
                 StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);
