@@ -1,6 +1,6 @@
 using Gee;
 
-namespace Signal {
+namespace Omemo {
 
 public class SimpleSignedPreKeyStore : SignedPreKeyStore {
     private Map<uint32, SignedPreKeyStore.Key> pre_key_map = new HashMap<uint32, SignedPreKeyStore.Key>();

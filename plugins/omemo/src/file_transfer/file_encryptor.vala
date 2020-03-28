@@ -3,8 +3,8 @@ using Gtk;
 
 using Crypto;
 using Dino.Entities;
+using Omemo;
 using Xmpp;
-using Signal;
 
 namespace Dino.Plugins.Omemo {
 

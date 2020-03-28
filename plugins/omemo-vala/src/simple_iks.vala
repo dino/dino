@@ -1,6 +1,6 @@
 using Gee;
 
-namespace Signal {
+namespace Omemo {
 
 public class SimpleIdentityKeyStore : IdentityKeyStore {
     public override Bytes identity_key_private { get; set; }

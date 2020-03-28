@@ -1,7 +1,7 @@
 using Dino.Entities;
 using Gee;
 using Xmpp;
-using Signal;
+using Omemo;
 using Qlite;
 
 namespace Dino.Plugins.Omemo {
@@ -181,7 +181,7 @@ public class TrustManager {
             message.body = "[This message is OMEMO encrypted]";
             status.encrypted = true;
         } catch (Error e) {
-            warning(@"Signal error while encrypting message: $(e.message)\n");
+            warning(@"OMEMO error while encrypting message: $(e.message)\n");
             message.body = "[OMEMO encryption failed]";
             status.encrypted = false;
         }

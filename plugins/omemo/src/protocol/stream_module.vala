@@ -1,7 +1,7 @@
 using Gee;
+using Omemo;
 using Xmpp;
 using Xmpp.Xep;
-using Signal;
 
 namespace Dino.Plugins.Omemo {
 

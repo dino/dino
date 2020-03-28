@@ -1,4 +1,4 @@
-namespace Signal {
+namespace Omemo {
 
 public ECPublicKey generate_public_key(ECPrivateKey private_key) throws Error {
     ECPublicKey public_key;

@@ -1,4 +1,4 @@
-namespace Signal.Test {
+namespace Omemo.Test {
 
 class Curve25519 : Gee.TestCase {
 

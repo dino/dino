@@ -63,7 +63,7 @@ SOURCES
     src/ui/util.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/crypto-vala.vapi
-    ${CMAKE_BINARY_DIR}/exports/signal-protocol.vapi
+    ${CMAKE_BINARY_DIR}/exports/omemo.vapi
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
@@ -78,7 +78,7 @@ OPTIONS
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\"  -DG_LOG_DOMAIN="OMEMO")
 add_library(omemo SHARED ${OMEMO_VALA_C} ${OMEMO_GRESOURCES_TARGET})
 add_dependencies(omemo ${GETTEXT_PACKAGE}-translations)
-target_link_libraries(omemo libdino signal-protocol-vala crypto-vala ${OMEMO_PACKAGES})
+target_link_libraries(omemo libdino omemo-vala crypto-vala ${OMEMO_PACKAGES})
 set_target_properties(omemo PROPERTIES PREFIX "")
 set_target_properties(omemo PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
 

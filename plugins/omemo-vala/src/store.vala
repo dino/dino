@@ -1,4 +1,4 @@
-namespace Signal {
+namespace Omemo {
 
 public abstract class IdentityKeyStore : Object {
     public abstract Bytes identity_key_private { get; set; }

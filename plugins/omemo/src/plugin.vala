@@ -1,4 +1,5 @@
 using Dino.Entities;
+using Omemo;
 
 extern const string GETTEXT_PACKAGE;
 extern const string LOCALE_INSTALL_DIR;
@@ -7,8 +8,8 @@ namespace Dino.Plugins.Omemo {
 
 public class Plugin : RootInterface, Object {
     public const bool DEBUG = false;
-    private static Signal.Context? _context;
-    public static Signal.Context get_context() {
+    private static Context? _context;
+    public static Context get_context() {
         assert(_context != null);
         return (!)_context;
     }
@@ -16,7 +17,7 @@ public class Plugin : RootInterface, Object {
         lock(_context) {
             try {
                 if (_context == null) {
-                    _context = new Signal.Context(DEBUG);
+                    _context = new Context(DEBUG);
                 }
                 return true;
             } catch (Error e) {

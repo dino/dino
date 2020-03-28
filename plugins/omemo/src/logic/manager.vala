@@ -1,5 +1,5 @@
 using Dino.Entities;
-using Signal;
+using Omemo;
 using Qlite;
 using Xmpp;
 using Gee;
@@ -348,7 +348,7 @@ public class Manager : StreamInteractionModule, Object {
             try {
                 store.identity_key_store.local_registration_id = Random.int_range(1, int32.MAX);
 
-                Signal.ECKeyPair key_pair = Plugin.get_context().generate_key_pair();
+                ECKeyPair key_pair = Plugin.get_context().generate_key_pair();
                 store.identity_key_store.identity_key_private = new Bytes(key_pair.private.serialize());
                 store.identity_key_store.identity_key_public = new Bytes(key_pair.public.serialize());
 
