@@ -3,12 +3,24 @@ using Gee;
 namespace Xmpp.Xep.EntityCapabilities {
     private const string NS_URI = "http://jabber.org/protocol/caps";
 
+    private Regex? sha1_base64_regex = null;
+
+    public string? get_caps_hash(Presence.Stanza presence) {
+        if (sha1_base64_regex == null) {
+            sha1_base64_regex = /^[A-Za-z0-9+\/]{27}=$/;
+        }
+        StanzaNode? c_node = presence.stanza.get_subnode("c", NS_URI);
+        if (c_node == null) return null;
+        string? ver_attribute = c_node.get_attribute("ver", NS_URI);
+        if (ver_attribute == null || !sha1_base64_regex.match(ver_attribute)) return null;
+        return ver_attribute;
+    }
+
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0115_entity_capabilities");
 
         private string own_ver_hash;
         private Storage storage;
-        private Regex sha1_base64_regex = /^[A-Za-z0-9+\/]{27}=$/;
 
         public Module(Storage storage) {
             this.storage = storage;
@@ -45,18 +57,17 @@ namespace Xmpp.Xep.EntityCapabilities {
         }
 
         private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
-            StanzaNode? c_node = presence.stanza.get_subnode("c", NS_URI);
-            if (c_node != null) {
-                string? ver_attribute = c_node.get_attribute("ver", NS_URI);
-                if (ver_attribute == null || !sha1_base64_regex.match(ver_attribute)) return;
-                Gee.List<string> capabilities = storage.get_features(ver_attribute);
-                if (capabilities.size == 0) {
-                    stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
-                        store_entity_result(stream, ver_attribute, query_result);
-                    });
-                } else {
-                    stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(presence.from, capabilities);
-                }
+            string? caps_hash = get_caps_hash(presence);
+            if (caps_hash == null) return;
+
+            Gee.List<string> capabilities = storage.get_features(caps_hash);
+            ServiceDiscovery.Identity identity = storage.get_identities(caps_hash);
+            if (identity == null) {
+                stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
+                    store_entity_result(stream, caps_hash, query_result);
+                });
+            } else {
+                stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(presence.from, capabilities);
             }
         }
 
@@ -69,6 +80,7 @@ namespace Xmpp.Xep.EntityCapabilities {
             }
 
             if (compute_hash(query_result.identities, query_result.features, data_forms) == entity) {
+                storage.store_identities(entity, query_result.identities);
                 storage.store_features(entity, query_result.features);
                 stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(query_result.iq.from, query_result.features);
             }
@@ -142,7 +154,9 @@ namespace Xmpp.Xep.EntityCapabilities {
     }
 
     public interface Storage : Object {
+        public abstract void store_identities(string entity, Gee.List<ServiceDiscovery.Identity> identities);
         public abstract void store_features(string entity, Gee.List<string> capabilities);
+        public abstract ServiceDiscovery.Identity? get_identities(string entity);
         public abstract Gee.List<string> get_features(string entity);
     }
 }

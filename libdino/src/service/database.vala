@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 12;
+    private const int VERSION = 13;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -32,6 +32,21 @@ public class Database : Qlite.Database {
         internal JidTable(Database db) {
             base(db, "jid");
             init({id, bare_jid});
+        }
+    }
+
+    public class EntityTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id");
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<string> resource = new Column.Text("resource");
+        public Column<string> caps_hash = new Column.Text("caps_hash");
+        public Column<long> last_seen = new Column.Long("last_seen");
+
+        internal EntityTable(Database db) {
+            base(db, "entity");
+            init({id, account_id, jid_id, resource, caps_hash, last_seen});
+            unique({account_id, jid_id, resource}, "IGNORE");
         }
     }
 
@@ -162,6 +177,20 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class EntityIdentityTable : Table {
+        public Column<string> entity = new Column.Text("entity");
+        public Column<string> category = new Column.Text("category");
+        public Column<string> type = new Column.Text("type");
+        public Column<string> name = new Column.Text("name");
+
+        internal EntityIdentityTable(Database db) {
+            base(db, "entity_identity");
+            init({entity, category, name, type});
+            unique({entity, category, type}, "IGNORE");
+            index("entity_identity_idx", {entity});
+        }
+    }
+
     public class EntityFeatureTable : Table {
         public Column<string> entity = new Column.Text("entity");
         public Column<string> feature = new Column.Text("feature");
@@ -215,12 +244,14 @@ public class Database : Qlite.Database {
 
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
+    public EntityTable entity { get; private set; }
     public ContentItemTable content_item { get; private set; }
     public MessageTable message { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
+    public EntityIdentityTable entity_identity { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
     public RosterTable roster { get; private set; }
     public MamCatchupTable mam_catchup { get; private set; }
@@ -234,17 +265,19 @@ public class Database : Qlite.Database {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);
+        entity = new EntityTable(this);
         content_item = new ContentItemTable(this);
         message = new MessageTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
+        entity_identity = new EntityIdentityTable(this);
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, content_item, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, mam_catchup, settings });
+        init({ account, jid, entity, content_item, message, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings });
         try {
             exec("PRAGMA synchronous=0");
         } catch (Error e) { }
@@ -432,24 +465,6 @@ public class Database : Qlite.Database {
         }
         return ret;
     }
-
-    public void add_entity_features(string entity, Gee.List<string> features) {
-        foreach (string feature in features) {
-            entity_feature.insert()
-                    .value(entity_feature.entity, entity)
-                    .value(entity_feature.feature, feature)
-                    .perform();
-        }
-    }
-
-    public Gee.List<string> get_entity_features(string entity) {
-        ArrayList<string> ret = new ArrayList<string>();
-        foreach (Row row in entity_feature.select({entity_feature.feature}).with(entity_feature.entity, "=", entity)) {
-            ret.add(row[entity_feature.feature]);
-        }
-        return ret;
-    }
-
 
     public int get_jid_id(Jid jid_obj) {
         var bare_jid = jid_obj.bare_jid;

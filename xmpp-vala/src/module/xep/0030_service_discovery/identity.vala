@@ -4,6 +4,10 @@ public class Identity {
     public const string CATEGORY_CLIENT = "client";
     public const string CATEGORY_CONFERENCE = "conference";
 
+    public const string TYPE_PC = "pc";
+    public const string TYPE_PHONE = "phone";
+    public const string TYPE_TABLET = "tablet";
+
     public string category { get; set; }
     public string type_ { get; set; }
     public string? name { get; set; }

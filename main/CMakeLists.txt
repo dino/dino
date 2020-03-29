@@ -28,6 +28,9 @@ set(RESOURCE_LIST
     icons/im.dino.Dino-symbolic.svg
     icons/dino-tick-symbolic.svg
 
+    icons/dino-device-desktop-symbolic.svg
+    icons/dino-device-phone-symbolic.svg
+
     icons/dino-file-document-symbolic.svg
     icons/dino-file-download-symbolic.svg
     icons/dino-file-image-symbolic.svg
@@ -45,11 +48,10 @@ set(RESOURCE_LIST
     contact_details_dialog.ui
     conversation_list_titlebar.ui
     conversation_list_titlebar_csd.ui
+    conversation_row.ui
     conversation_view.ui
     emojichooser.ui
     global_search.ui
-    conversation_selector/chat_row_tooltip.ui
-    conversation_selector/conversation_row.ui
     conversation_content_view/image_toolbar.ui
     conversation_content_view/item_metadata_header.ui
     conversation_content_view/view.ui
