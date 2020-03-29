@@ -148,18 +148,26 @@ public class Manager : StreamInteractionModule, Object {
                 } else {
                     debug("delaying message %s", state.to_string());
 
-                    // TODO: V1 support
                     if (state.waiting_own_sessions > 0) {
-                        legacy_module.fetch_bundles((!)stream, conversation.account.bare_jid, trust_manager.get_trusted_devices(conversation.account, conversation.account.bare_jid));
+                        var devices = trust_manager.get_trusted_devices(conversation.account, conversation.account.bare_jid);
+                        var list = devices.filter((d) => d.version == ProtocolVersion.LEGACY).fold<ArrayList<int32>>((d, list) => { list.add(d.device_id); return list; }, new ArrayList<int32>());
+                        legacy_module.fetch_bundles((!)stream, conversation.account.bare_jid, list);
+                        list = devices.filter((d) => d.version == ProtocolVersion.LEGACY).fold<ArrayList<int32>>((d, list) => { list.add(d.device_id); return list; }, new ArrayList<int32>());
+                        v1_module.fetch_bundles((!)stream, conversation.account.bare_jid, list);
                     }
                     if (state.waiting_other_sessions > 0 && message.counterpart != null) {
                         foreach(Jid jid in get_occupants(((!)message.counterpart).bare_jid, conversation.account)) {
-                            legacy_module.fetch_bundles((!)stream, jid, trust_manager.get_trusted_devices(conversation.account, jid));
+                            var devices = trust_manager.get_trusted_devices(conversation.account, jid);
+                            var list = devices.filter((d) => d.version == ProtocolVersion.LEGACY).fold<ArrayList<int32>>((d, list) => { list.add(d.device_id); return list; }, new ArrayList<int32>());
+                            legacy_module.fetch_bundles((!)stream, jid, list);
+                            list = devices.filter((d) => d.version == ProtocolVersion.V1).fold<ArrayList<int32>>((d, list) => { list.add(d.device_id); return list; }, new ArrayList<int32>());
+                            v1_module.fetch_bundles((!)stream, jid, list);
                         }
                     }
                     if (state.waiting_other_devicelists > 0 && message.counterpart != null) {
                         foreach(Jid jid in get_occupants(((!)message.counterpart).bare_jid, conversation.account)) {
                             legacy_module.request_user_devicelist.begin((!)stream, jid);
+                            v1_module.request_user_devicelist.begin((!)stream, jid);
                         }
                     }
                 }
@@ -179,22 +187,22 @@ public class Manager : StreamInteractionModule, Object {
         Legacy.StreamModule legacy_module = stream_interactor.module_manager.get_module(account, Legacy.StreamModule.IDENTITY);
         if (legacy_module != null) {
             legacy_module.request_user_devicelist.begin(stream, account.bare_jid);
-            legacy_module.device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
+            legacy_module.device_list_loaded.connect((jid, devices) => on_legacy_device_list_loaded(account, jid, devices));
             legacy_module.bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
             legacy_module.bundle_fetch_failed.connect((jid) => continue_message_sending(account, jid));
         }
         V1.StreamModule v1_module = stream_interactor.module_manager.get_module(account, V1.StreamModule.IDENTITY);
         if (v1_module != null) {
             v1_module.request_user_devicelist.begin(stream, account.bare_jid);
-            //v1_module.device_list_loaded.connect((jid, devices) => on_device_list_loaded_v1(account, jid, devices));
+            v1_module.device_list_loaded.connect((jid, devices) => on_v1_device_list_loaded(account, jid, devices));
             v1_module.bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
             v1_module.bundle_fetch_failed.connect((jid) => continue_message_sending(account, jid));
         }
         initialize_store.begin(account);
     }
 
-    private void on_device_list_loaded(Account account, Jid jid, ArrayList<int32> device_list) {
-        debug("received device list for %s from %s", account.bare_jid.to_string(), jid.to_string());
+    private void on_legacy_device_list_loaded(Account account, Jid jid, ArrayList<int32> device_list) {
+        debug("[Legacy] received device list for %s from %s", account.bare_jid.to_string(), jid.to_string());
 
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) {
@@ -209,7 +217,7 @@ public class Manager : StreamInteractionModule, Object {
         if (identity_id < 0) return;
 
         //Update meta database
-        db.identity_meta.insert_device_list(identity_id, jid.bare_jid.to_string(), device_list);
+        db.identity_meta.insert_legacy_device_list(identity_id, jid.bare_jid.to_string(), device_list);
 
         //Fetch the bundle for each new device
         int inc = 0;
@@ -225,6 +233,45 @@ public class Manager : StreamInteractionModule, Object {
             debug("new bundles %i/%i for %s", inc, device_list.size, jid.to_string());
         }
 
+        on_after_devicelist_laoded(account, jid, identity_id);
+    }
+
+    private void on_v1_device_list_loaded(Account account, Jid jid, ArrayList<V1.DeviceListItem> device_list) {
+        debug("[V1] received device list for %s from %s", account.bare_jid.to_string(), jid.to_string());
+
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) {
+            return;
+        }
+        V1.StreamModule? module = ((!)stream).get_module(V1.StreamModule.IDENTITY);
+        if (module == null) {
+            return;
+        }
+
+        int identity_id = db.identity.get_id(account.id);
+        if (identity_id < 0) return;
+
+        //Update meta database
+        db.identity_meta.insert_v1_device_list(identity_id, jid.bare_jid.to_string(), device_list);
+
+        //Fetch the bundle for each new device
+        int inc = 0;
+        foreach (Row row in db.identity_meta.get_unknown_devices(identity_id, jid.bare_jid.to_string())) {
+            try {
+                module.fetch_bundle(stream, new Jid(row[db.identity_meta.address_name]), row[db.identity_meta.device_id], false);
+                inc++;
+            } catch (InvalidJidError e) {
+                warning("Ignoring device with invalid Jid: %s", e.message);
+            }
+        }
+        if (inc > 0) {
+            debug("new bundles %i/%i for %s", inc, device_list.size, jid.to_string());
+        }
+
+        on_after_devicelist_laoded(account, jid, identity_id);
+    }
+
+    private void on_after_devicelist_laoded(Account account, Jid jid, int identity_id) {
         //Create an entry for the jid in the account table if one does not exist already
         if (db.trust.select().with(db.trust.identity_id, "=", identity_id).with(db.trust.address_name, "=", jid.bare_jid.to_string()).count() == 0) {
             db.trust.insert().value(db.trust.identity_id, identity_id).value(db.trust.address_name, jid.bare_jid.to_string()).value(db.trust.blind_trust, true).perform();
@@ -254,7 +301,6 @@ public class Manager : StreamInteractionModule, Object {
             if (conv == null) continue;
             stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(msg, (!)conv, true);
         }
-
     }
 
     private void on_bundle_fetched(Account account, Jid jid, int32 device_id, Bundle bundle) {
@@ -288,13 +334,21 @@ public class Manager : StreamInteractionModule, Object {
         if (should_start_session(account, jid)) {
             XmppStream? stream = stream_interactor.get_stream(account);
             if (stream != null) {
-                Legacy.StreamModule? module = ((!)stream).get_module(Legacy.StreamModule.IDENTITY);
+                BaseStreamModule? module = get_module_from_stream(stream, bundle.version);
                 if (module != null) {
                     module.start_session(stream, jid, device_id, bundle);
                 }
             }
         }
         continue_message_sending(account, jid);
+    }
+
+    private BaseStreamModule? get_module_from_stream(XmppStream stream, ProtocolVersion version) {
+        switch (version) {
+            case ProtocolVersion.LEGACY: return stream.get_module(Legacy.StreamModule.IDENTITY);
+            case ProtocolVersion.V1: return stream.get_module(V1.StreamModule.IDENTITY);
+        }
+        return null;
     }
 
     private bool should_start_session(Account account, Jid jid) {

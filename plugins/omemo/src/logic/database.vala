@@ -6,7 +6,7 @@ using Dino.Entities;
 namespace Dino.Plugins.Omemo {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 5;
+    private const int VERSION = 6;
 
     public class IdentityMetaTable : Table {
         //Default to provide backwards compatability
@@ -20,10 +20,12 @@ public class Database : Qlite.Database {
         public Column<long> last_active = new Column.Long("last_active");
         public Column<long> last_message_untrusted = new Column.Long("last_message_untrusted") { min_version = 5 };
         public Column<long> last_message_undecryptable = new Column.Long("last_message_undecryptable") { min_version = 5 };
+        public Column<int> version = new Column.Integer("version") { default = "0", min_version = 6 };
+        public Column<string?> label = new Column.Text("label") { min_version = 6 };
 
         internal IdentityMetaTable(Database db) {
             base(db, "identity_meta");
-            init({identity_id, address_name, device_id, identity_key_public_base64, trusted_identity, trust_level, now_active, last_active, last_message_untrusted, last_message_undecryptable});
+            init({identity_id, address_name, device_id, identity_key_public_base64, trusted_identity, trust_level, now_active, last_active, last_message_untrusted, last_message_undecryptable, version, label});
             index("identity_meta_idx", {identity_id, address_name, device_id}, true);
             index("identity_meta_list_idx", {identity_id, address_name});
         }
@@ -36,8 +38,8 @@ public class Database : Qlite.Database {
             return select().with(this.identity_id, "=", identity_id).with(this.device_id, "=", device_id);
         }
 
-        public void insert_device_list(int32 identity_id, string address_name, ArrayList<int32> devices) {
-            update().with(this.identity_id, "=", identity_id).with(this.address_name, "=", address_name).set(now_active, false).perform();
+        public void insert_legacy_device_list(int32 identity_id, string address_name, ArrayList<int32> devices) {
+            update().with(this.identity_id, "=", identity_id).with(this.address_name, "=", address_name).with(this.version, "=", ProtocolVersion.LEGACY.to_int()).set(now_active, false).perform();
             foreach (int32 device_id in devices) {
                 upsert()
                         .value(this.identity_id, identity_id, true)
@@ -45,6 +47,21 @@ public class Database : Qlite.Database {
                         .value(this.device_id, device_id, true)
                         .value(this.now_active, true)
                         .value(this.last_active, (long) new DateTime.now_utc().to_unix())
+                        .perform();
+            }
+        }
+
+        public void insert_v1_device_list(int32 identity_id, string address_name, ArrayList<V1.DeviceListItem> devices) {
+            update().with(this.identity_id, "=", identity_id).with(this.address_name, "=", address_name).with(this.version, "=", ProtocolVersion.V1.to_int()).set(now_active, false).perform();
+            foreach (V1.DeviceListItem device_id in devices) {
+                upsert()
+                        .value(this.identity_id, identity_id, true)
+                        .value(this.address_name, address_name, true)
+                        .value(this.device_id, device_id.device_id, true)
+                        .value(this.now_active, true)
+                        .value(this.last_active, (long) new DateTime.now_utc().to_unix())
+                        .value(this.version, ProtocolVersion.V1.to_int())
+                        .value(this.label, device_id.label)
                         .perform();
             }
         }
@@ -66,7 +83,7 @@ public class Database : Qlite.Database {
                     .value(this.trust_level, trust).perform();
         }
 
-        public int64 insert_device_session(int32 identity_id, string address_name, int device_id, string identity_key, TrustLevel trust) {
+        public int64 insert_device_session(int32 identity_id, string address_name, int device_id, string identity_key, ProtocolVersion version, TrustLevel trust) {
             RowOption row = with_address(identity_id, address_name).with(this.device_id, "=", device_id).single().row();
             if (row.is_present() && row[identity_key_public_base64] != null && row[identity_key_public_base64] != identity_key) {
                 critical("Tried to change the identity key for a known device id. Likely an attack.");
@@ -77,6 +94,7 @@ public class Database : Qlite.Database {
                     .value(this.address_name, address_name, true)
                     .value(this.device_id, device_id, true)
                     .value(this.identity_key_public_base64, identity_key)
+                    .value(this.version, version.to_int())
                     .value(this.trust_level, trust).perform();
         }
 

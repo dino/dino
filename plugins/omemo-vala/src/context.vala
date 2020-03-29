@@ -1,3 +1,4 @@
+using Omemo;
 namespace Omemo {
 
 public class Context {
@@ -81,6 +82,12 @@ public class Context {
         return res;
     }
 
+    public SignalMessage deserialize_signal_message_omemo(uint8[] data) throws Error {
+        SignalMessage res;
+        throw_by_code(signal_message_deserialize_omemo(out res, data, native_context));
+        return res;
+    }
+
     public SignalMessage copy_signal_message(CiphertextMessage original) throws Error {
         SignalMessage res;
         throw_by_code(signal_message_copy(out res, (SignalMessage) original, native_context));
@@ -93,10 +100,26 @@ public class Context {
         return res;
     }
 
+    public PreKeySignalMessage deserialize_pre_key_signal_message_omemo(uint8[] data, int32 sid) throws Error {
+        PreKeySignalMessage res;
+        throw_by_code(pre_key_signal_message_deserialize_omemo(out res, data, sid, native_context));
+        return res;
+    }
+
     public PreKeySignalMessage copy_pre_key_signal_message(CiphertextMessage original) throws Error {
         PreKeySignalMessage res;
         throw_by_code(pre_key_signal_message_copy(out res, (PreKeySignalMessage) original, native_context));
         return res;
+    }
+
+    public uint8[] derive_payload_secret(uint8[] ikm, size_t output_len) throws Error {
+        NativeHkdfContext context;
+        throw_by_code(NativeHkdfContext.create(out context, 4, native_context));
+        uint8[] empty = new uint8[32];
+        Memory.set(empty, 0, empty.length);
+        uint8[] output = null;
+        context.derive_secrets(out output, ikm, empty, "OMEMO Payload".data, output_len);
+        return output;
     }
 }
 

@@ -377,9 +377,9 @@ public class Store : Object {
         throw_by_code(Protocol.Session.delete_session(native_context, address));
     }
 
-    public SessionRecord load_session(Address other) throws Error {
+    public SessionRecord load_session(Address other, int preferred_version = 2) throws Error {
         SessionRecord record;
-        throw_by_code(Protocol.Session.load_session(native_context, out record, other));
+        throw_by_code(Protocol.Session.load_session(native_context, out record, other, preferred_version));
         return record;
     }
 

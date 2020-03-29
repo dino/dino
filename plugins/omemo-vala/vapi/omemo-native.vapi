@@ -239,12 +239,16 @@ namespace Omemo {
     public static int session_cipher_create(out SessionCipher cipher, NativeStoreContext store, Address remote_address, NativeContext global_context);
     [CCode (cname = "pre_key_signal_message_deserialize", cheader_filename = "omemo/protocol.h")]
     public static int pre_key_signal_message_deserialize(out PreKeySignalMessage message, uint8[] data, NativeContext global_context);
+    [CCode (cname = "pre_key_signal_message_deserialize_omemo", cheader_filename = "omemo/protocol.h")]
+    public static int pre_key_signal_message_deserialize_omemo(out PreKeySignalMessage message, uint8[] data, uint32 remote_registration_id, NativeContext global_context);
     [CCode (cname = "pre_key_signal_message_copy", cheader_filename = "omemo/protocol.h")]
     public static int pre_key_signal_message_copy(out PreKeySignalMessage message, PreKeySignalMessage other_message, NativeContext global_context);
     [CCode (cname = "signal_message_create", cheader_filename = "omemo/protocol.h")]
     public static int signal_message_create(out SignalMessage message, uint8 message_version, uint8[] mac_key, ECPublicKey sender_ratchet_key, uint32 counter, uint32 previous_counter, uint8[] ciphertext, ECPublicKey sender_identity_key, ECPublicKey receiver_identity_key, NativeContext global_context);
     [CCode (cname = "signal_message_deserialize", cheader_filename = "omemo/protocol.h")]
     public static int signal_message_deserialize(out SignalMessage message, uint8[] data, NativeContext global_context);
+    [CCode (cname = "signal_message_deserialize_omemo", cheader_filename = "omemo/protocol.h")]
+    public static int signal_message_deserialize_omemo(out SignalMessage message, uint8[] data, NativeContext global_context);
     [CCode (cname = "signal_message_copy", cheader_filename = "omemo/protocol.h")]
     public static int signal_message_copy(out SignalMessage message, SignalMessage other_message, NativeContext global_context);
     [CCode (cname = "curve_generate_key_pair", cheader_filename = "omemo/curve.h")]

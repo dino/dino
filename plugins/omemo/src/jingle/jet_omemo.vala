@@ -104,7 +104,7 @@ public class Module : XmppStreamModule, Jet.EnvelopEncoding {
                     .put_node(new StanzaNode.build("iv", Omemo.Legacy.NS_URI)
                         .put_node(new StanzaNode.text(Base64.encode(security_params.secret.initialization_vector)))));
 
-        plugin.trust_manager.encrypt_key(header_node, security_params.secret.transport_key, local_full_jid.bare_jid, new ArrayList<Jid>.wrap(new Jid[] {peer_full_jid.bare_jid}), stream, account);
+        plugin.trust_manager.encrypt_key(header_node, null, security_params.secret.transport_key, null, local_full_jid.bare_jid, new ArrayList<Jid>.wrap(new Jid[] {peer_full_jid.bare_jid}), stream, account);
         security.put_node(encrypted_node);
     }
 

@@ -100,7 +100,12 @@ public class StreamModule : XmppStreamModule, BaseStreamModule {
             if (!is_ignored_device(jid, device_id)) {
                 address.device_id = device_id;
                 try {
-                    if (!store.contains_session(address)) {
+                    if (store.contains_session(address)) {
+                        var session = store.load_session(address, 4);
+                        if (session.state.session_version != 4) {
+                            fetch_bundle(stream, jid, device_id);
+                        }
+                    } else {
                         fetch_bundle(stream, jid, device_id);
                     }
                 } catch (Error e) {
@@ -186,10 +191,15 @@ public class StreamModule : XmppStreamModule, BaseStreamModule {
                 Address address = new Address(jid.bare_jid.to_string(), device_id);
                 try {
                     if (store.contains_session(address)) {
-                        return false;
+                        var session = store.load_session(address, 4);
+                        if (session.state.session_version == 4) {
+                            return false;
+                        }
+                        store.delete_session(address);
                     }
                     debug("[V1] Starting new session for encryption with %s/%d", jid.bare_jid.to_string(), device_id);
                     SessionBuilder builder = store.create_session_builder(address);
+                    builder.version = 4;
                     builder.process_pre_key_bundle(create_pre_key_bundle(device_id, device_id, pre_key_id, pre_key, signed_pre_key_id, signed_pre_key, signed_pre_key_signature, identity_key));
                 } catch (Error e) {
                     debug("[V1] Can't create session with %s/%d: %s", jid.bare_jid.to_string(), device_id, e.message);

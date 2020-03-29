@@ -98,6 +98,7 @@ namespace Omemo {
         public void process_pre_key_bundle(PreKeyBundle pre_key_bundle) throws GLib.Error {
             throw_by_code(process_pre_key_bundle_(pre_key_bundle));
         }
+        public int version { get; set; }
     }
 
     [Compact]
@@ -299,7 +300,9 @@ namespace Omemo {
             return res.data;
         }
         public int get_remote_registration_id(out uint32 remote_id);
-        public int get_session_version(uint32 version);
+        public int get_session_version(out uint32 version);
+
+        public uint32 version { get; set; }
 
         [CCode (has_target = false)]
         public delegate int DecryptionCallback(SessionCipher cipher, Buffer plaintext, void* decrypt_context);

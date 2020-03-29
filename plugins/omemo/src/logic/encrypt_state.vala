@@ -17,7 +17,7 @@ public class EncryptState {
     public bool own_list { get; internal set; }
 
     public string to_string() {
-        return @"EncryptState (encrypted=$encrypted, other=(devices=$other_devices, success=$other_success, lost=$other_lost, unknown=$other_unknown, failure=$other_failure, waiting_lists=$other_waiting_lists, own=(devices=$own_devices, success=$own_success, lost=$own_lost, unknown=$own_unknown, failure=$own_failure, list=$own_list))";
+        return @"EncryptState (encrypted=$encrypted, other=(devices=$other_devices, success=$other_success, lost=$other_lost, unknown=$other_unknown, failure=$other_failure, waiting_lists=$other_waiting_lists), own=(devices=$own_devices, success=$own_success, lost=$own_lost, unknown=$own_unknown, failure=$own_failure, list=$own_list))";
     }
 }
 
