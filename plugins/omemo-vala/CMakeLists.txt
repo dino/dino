@@ -33,42 +33,46 @@ set_property(TARGET curve25519 PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET protobuf-c PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET omemo-c PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-set(OMEMO_VALA_C_HEADERS
-    signal_protocol.h
-    signal_protocol_types.h
-    curve.h
-    hkdf.h
-    ratchet.h
-    protocol.h
-    session_state.h
-    session_record.h
-    session_pre_key.h
-    session_builder.h
-    session_cipher.h
-    key_helper.h
-    sender_key.h
-    sender_key_state.h
-    sender_key_record.h
-    group_session_builder.h
-    group_cipher.h
-    fingerprint.h
-    device_consistency.h
-)
-
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/exports/omemo-vala")
-
-foreach(f ${OMEMO_VALA_C_HEADERS})
-    list(APPEND C_HEADERS_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libomemo-c/src/${f}")
-    list(APPEND C_HEADERS_TARGET "${CMAKE_BINARY_DIR}/exports/omemo/${f}")
-    add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/omemo/${f}"
-    COMMAND
-        cp "${CMAKE_CURRENT_SOURCE_DIR}/libomemo-c/src/${f}" "${CMAKE_BINARY_DIR}/exports/omemo/${f}"
-    DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/libomemo-c/src/${f}"
-    COMMENT
-        Copy header file omemo/${f}
+if(NOT BUILD_LIBOMEMO_IN_TREE)
+    find_package(Omemo REQUIRED)
+else()
+    set(OMEMO_C_HEADERS
+        signal_protocol.h
+        signal_protocol_types.h
+        curve.h
+        hkdf.h
+        ratchet.h
+        protocol.h
+        session_state.h
+        session_record.h
+        session_pre_key.h
+        session_builder.h
+        session_cipher.h
+        key_helper.h
+        sender_key.h
+        sender_key_state.h
+        sender_key_record.h
+        group_session_builder.h
+        group_cipher.h
+        fingerprint.h
+        device_consistency.h
     )
-endforeach(f)
+
+    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/exports/omemo")
+
+    foreach(f ${OMEMO_C_HEADERS})
+        list(APPEND C_HEADERS_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libomemo-c/src/${f}")
+        list(APPEND C_HEADERS_TARGET "${CMAKE_BINARY_DIR}/exports/omemo/${f}")
+        add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/omemo/${f}"
+        COMMAND
+            cp "${CMAKE_CURRENT_SOURCE_DIR}/libomemo-c/src/${f}" "${CMAKE_BINARY_DIR}/exports/omemo/${f}"
+        DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/libomemo-c/src/${f}"
+        COMMENT
+            Copy header file omemo/${f}
+        )
+    endforeach(f)
+endif()
 
 list(APPEND C_HEADERS_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/signal_helper.h")
 list(APPEND C_HEADERS_TARGET "${CMAKE_BINARY_DIR}/exports/signal_helper.h")

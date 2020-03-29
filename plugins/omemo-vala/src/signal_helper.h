@@ -1,7 +1,7 @@
 #ifndef SIGNAL_PROTOCOL_VALA_HELPER
 #define SIGNAL_PROTOCOL_VALA_HELPER 1
 
-#include <signal/signal_protocol.h>
+#include <omemo/signal_protocol.h>
 #include <string.h>
 #include <glib.h>
 
