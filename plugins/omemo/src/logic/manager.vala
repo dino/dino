@@ -152,7 +152,7 @@ public class Manager : StreamInteractionModule, Object {
                         var devices = trust_manager.get_trusted_devices(conversation.account, conversation.account.bare_jid);
                         var list = devices.filter((d) => d.version == ProtocolVersion.LEGACY).fold<ArrayList<int32>>((d, list) => { list.add(d.device_id); return list; }, new ArrayList<int32>());
                         legacy_module.fetch_bundles((!)stream, conversation.account.bare_jid, list);
-                        list = devices.filter((d) => d.version == ProtocolVersion.LEGACY).fold<ArrayList<int32>>((d, list) => { list.add(d.device_id); return list; }, new ArrayList<int32>());
+                        list = devices.filter((d) => d.version == ProtocolVersion.V1).fold<ArrayList<int32>>((d, list) => { list.add(d.device_id); return list; }, new ArrayList<int32>());
                         v1_module.fetch_bundles((!)stream, conversation.account.bare_jid, list);
                     }
                     if (state.waiting_other_sessions > 0 && message.counterpart != null) {

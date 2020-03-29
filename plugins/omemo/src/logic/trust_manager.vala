@@ -77,7 +77,7 @@ public class TrustManager {
     private StanzaNode create_legacy_encrypted_key_node(uint8[] key, Address address, Store store) throws GLib.Error {
         SessionCipher cipher = store.create_session_cipher(address);
         CiphertextMessage device_key = cipher.encrypt(key);
-        debug("Created encrypted key for %s/%d", address.name, address.device_id);
+        debug("[Legacy] Created encrypted key for %s/%d", address.name, address.device_id);
         StanzaNode key_node = new StanzaNode.build("key", Legacy.NS_URI)
             .put_attribute("rid", address.device_id.to_string())
             .put_node(new StanzaNode.text(Base64.encode(device_key.serialized)));
@@ -95,7 +95,7 @@ public class TrustManager {
             throw new Error(-1, ErrorCode.UNKNOWN, "Session is outdated");
         }
         CiphertextMessage device_key = cipher.encrypt(key);
-        debug("Created encrypted key for %s/%d", address.name, address.device_id);
+        debug("[V1] Created encrypted key for %s/%d", address.name, address.device_id);
         StanzaNode key_node = new StanzaNode.build("key", V1.NS_URI)
                 .put_attribute("rid", address.device_id.to_string())
                 .put_node(new StanzaNode.text(Base64.encode(device_key.serialized)));
@@ -195,6 +195,7 @@ public class TrustManager {
                     }
                     status.own_success++;
                 } catch (Error e) {
+                    debug(@"Error while encrypting: $(e.message)[$(e.code)]");
                     if (e.code == ErrorCode.UNKNOWN) status.own_unknown++;
                     else status.own_failure++;
                 }
@@ -296,10 +297,10 @@ public class TrustManager {
         if (device_meta == null) return;
         switch (ProtocolVersion.from_int(device_meta[db.identity_meta.version])) {
             case ProtocolVersion.LEGACY:
-                send_empty_legacy_message(account, full_jid, device_id);
+                yield send_empty_legacy_message(account, full_jid, device_id);
                 break;
             case ProtocolVersion.V1:
-                send_empty_v1_message(account, full_jid, device_id);
+                yield send_empty_v1_message(account, full_jid, device_id);
                 break;
         }
     }
@@ -309,16 +310,34 @@ public class TrustManager {
         if (stream == null) return;
         V1.StreamModule v1_module = stream.get_module(V1.StreamModule.IDENTITY);
         if (v1_module == null) return;
+
+        uint8[] v1_key = new uint8[32];
+        Plugin.get_context().randomize(v1_key);
+        uint8[] v1_hkdf = Plugin.get_context().derive_payload_secret(v1_key, 80);
+        uint8[] v1_enc_key = v1_hkdf[0:32];
+        uint8[] v1_auth_key = v1_hkdf[32:64];
+        uint8[] v1_iv = v1_hkdf[64:80];
+        // TODO: build from xml, proper rpad
+        string v1_sce_content = @"<content xmlns='urn:xmpp:sce:0'><payload></payload><rpad>nope</rpad></content>";
+        uint8[] v1_ciphertext = aes_encrypt(Cipher.AES_CBC_PKCS5, v1_enc_key, v1_iv, v1_sce_content.data);
+        uint8[] v1_hmac = hmac(ChecksumType.SHA256, v1_auth_key, v1_sce_content.data);
+        uint8[] v1_keymac = new uint8[v1_key.length + v1_hmac.length];
+        Memory.copy(v1_keymac, v1_key, v1_key.length);
+        Memory.copy((uint8*)v1_keymac + v1_key.length, v1_hmac, v1_hmac.length);
+
         MessageStanza message = new MessageStanza() { to = full_jid };
         Xep.ExplicitEncryption.add_encryption_tag_to_message(message, V1.NS_URI, "OMEMO");
         StanzaNode v1_header_node = null, v1_encrypted_node = null;
         v1_encrypted_node = new StanzaNode.build("encrypted", V1.NS_URI).add_self_xmlns()
                 .put_node(v1_header_node = new StanzaNode.build("header", V1.NS_URI)
-                    .put_attribute("sid", v1_module.store.local_registration_id.to_string()));
+                    .put_attribute("sid", v1_module.store.local_registration_id.to_string()))
+                .put_node(new StanzaNode.build("payload", V1.NS_URI)
+                    .put_node(new StanzaNode.text(Base64.encode(v1_ciphertext))));
         Address address = new Address(full_jid.bare_jid.to_string(), device_id);
         try {
-            append_v1_encrypted_key_node(v1_header_node, new uint8[44], address, v1_module.store);
+            append_v1_encrypted_key_node(v1_header_node, v1_keymac, address, v1_module.store);
             message.stanza.put_node(v1_encrypted_node);
+            Xep.MessageProcessingHints.set_message_hint(message, Xep.MessageProcessingHints.HINT_NO_COPY);
             yield stream.write_async(message.stanza);
         } catch (Error e) {}
     }
@@ -585,6 +604,10 @@ public class TrustManager {
                         SessionCipher cipher = store.create_session_cipher(address);
                         cipher.version = 4;
                         key = cipher.decrypt_signal_message(msg);
+                        if (msg.counter == 53) {
+                            // TODO: This is not precisely what should happen, but good enough for now
+                            yield trust_manager.send_empty_v1_message(conversation.account, message.from.equals_bare(possible_jid) ? message.from : possible_jid, sid);
+                        }
                     }
                     if (payload != null) {
                         if (key.length != 64) {
@@ -608,7 +631,10 @@ public class TrustManager {
                         // TODO: SCE
                         StanzaNode content = yield new StanzaReader.for_buffer(decrypted).read_stanza_node();
 
-                        message.body = content.get_subnode("payload").get_subnode("body", "jabber:client").get_string_content();
+                        message.body = content.get_deep_string_content("payload", "jabber:client:body");
+                        if (message.body == "reply empty") {
+                            yield trust_manager.send_empty_v1_message(conversation.account, message.from.equals_bare(possible_jid) ? message.from : possible_jid, sid);
+                        }
                         message_device_id_map[message] = address.device_id;
                         message.encryption = Encryption.OMEMO;
                     } else {

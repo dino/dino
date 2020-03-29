@@ -137,7 +137,7 @@ public class View : Box {
         if (event.keyval in new uint[]{Key.Return, Key.KP_Enter}) {
             if ((event.state & ModifierType.SHIFT_MASK) > 0) {
                 text_input.buffer.insert_at_cursor("\n", 1);
-            } else if (this.text != "") {
+            } else if (this.text.strip() != "") {
                 send_text();
                 edit_history.reset_history();
             }

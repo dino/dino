@@ -160,7 +160,9 @@ public class Message : Object {
     }
 
     public static uint hash_func(Message message) {
-        return message.body.hash();
+        if (message.stanza_id != null) return message.stanza_id.hash();
+        if (message.body != null) return message.body.hash();
+        return 0;
     }
 
     private void on_update(Object o, ParamSpec sp) {

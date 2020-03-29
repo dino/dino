@@ -55,9 +55,10 @@ public class MessageProcessor : StreamInteractionModule, Object {
         });
     }
 
-    public Entities.Message send_text(string text, Conversation conversation) {
+    public void send_text(string text, Conversation conversation) {
+        if (text == null || text.strip() == "") return;
         Entities.Message message = create_out_message(text, conversation);
-        return send_message(message, conversation);
+        send_message(message, conversation);
     }
 
     public Entities.Message send_message(Entities.Message message, Conversation conversation) {
@@ -520,7 +521,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            if (message.body == null) return true;
+            if (message.body == null || message.body.strip() == "") return true;
             stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
             return false;
         }
