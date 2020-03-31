@@ -106,7 +106,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         // Get widget under pointer
         int h = 0;
         bool @break = false;
-        Widget w = null;
+        Widget? w = null;
         main.@foreach((widget) => {
             if (break) return;
 
@@ -117,6 +117,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
                 return;
             }
         });
+
+        if (w == null) {
+            if (currently_highlighted != null) currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
+            currently_highlighted = null;
+            return;
+        }
 
         // Get widget coordinates in main
         int widget_x, widget_y;

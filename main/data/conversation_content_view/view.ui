@@ -28,11 +28,12 @@
                                                         <object class="GtkEventBox" id="main_event_box">
                                                             <property name="visible">True</property>
                                                             <child>
-                                                                <object class="GtkBox" id="main">
+                                                                <object class="DinoUiSizeRequestBox" id="main">
                                                                     <property name="margin-bottom">15</property>
                                                                     <property name="expand">False</property>
                                                                     <property name="orientation">vertical</property>
                                                                     <property name="visible">True</property>
+                                                                    <property name="size-request-mode">height-for-width</property>
                                                                 </object>
                                                             </child>
                                                         </object>
