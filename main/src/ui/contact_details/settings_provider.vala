@@ -45,6 +45,15 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
             combobox.append("on", get_notify_setting_string(Conversation.NotifySetting.ON));
             combobox.append("off", get_notify_setting_string(Conversation.NotifySetting.OFF));
             contact_details.add(DETAILS_HEADLINE_ROOM, _("Notifications"), "", combobox);
+
+            Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+            if (stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account)==Xmpp.Xep.Muc.Role.VISITOR){
+                Button voice_request = new Button() {visible=true, label="Request"};
+                voice_request.clicked.connect(()=>stream_interactor.get_module(MucManager.IDENTITY).request_voice(conversation.account, conversation.counterpart));
+                contact_details.add(DETAILS_HEADLINE_ROOM, _("Request voice"), "", voice_request);
+
+            }
+
             combobox.active_id = get_notify_setting_id(conversation.notify_setting);
             combobox.changed.connect(() => { conversation.notify_setting = get_notify_setting(combobox.active_id); } );
         }

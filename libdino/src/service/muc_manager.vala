@@ -14,6 +14,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void room_info_updated(Account account, Jid muc_jid);
     public signal void private_room_occupant_updated(Account account, Jid room, Jid occupant);
     public signal void invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason);
+    public signal void voice_request_received(Account account, Jid room_jid, Jid from_jid, string? nick, string? role, string? label);
     public signal void bookmarks_updated(Account account, Set<Conference> conferences);
     public signal void conference_added(Account account, Conference conference);
     public signal void conference_removed(Account account, Jid jid);
@@ -118,6 +119,16 @@ public class MucManager : StreamInteractionModule, Object {
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation(stream, jid.bare_jid, nick, role);
     }
 
+    public void change_role(Account account, Jid jid, string nick, string role) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_role(stream, jid.bare_jid, nick, role);
+    }
+
+    public void request_voice(Account account, Jid jid) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).request_voice(stream, jid.bare_jid);
+    }
+
     public bool kick_possible(Account account, Jid occupant) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) return stream.get_module(Xep.Muc.Module.IDENTITY).kick_possible(stream, occupant);
@@ -135,6 +146,18 @@ public class MucManager : StreamInteractionModule, Object {
             return false;
         }
         return flag.has_room_feature(jid, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(jid, Xep.Muc.Feature.MEMBERS_ONLY);
+    }
+
+    public bool is_moderated_room(Account account, Jid jid) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) {
+            return false;
+        }
+        Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
+        if (flag == null) {
+            return false;
+        }
+        return flag.has_room_feature(jid, Xep.Muc.Feature.MODERATED);
     }
 
     public bool is_public_room(Account account, Jid jid) {
@@ -284,6 +307,9 @@ public class MucManager : StreamInteractionModule, Object {
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).invite_received.connect( (stream, room_jid, from_jid, password, reason) => {
             invite_received(account, room_jid, from_jid, password, reason);
+        });
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).voice_request_received.connect( (stream, room_jid, from_jid, nick, role, label) => {
+            voice_request_received(account, room_jid, from_jid, nick, role, label);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_info_updated.connect( (stream, muc_jid) => {
             room_info_updated(account, muc_jid);

@@ -44,6 +44,15 @@ public class ChatInputController : Object {
         chat_input.occupants_tab_completor.initialize_for_conversation(conversation);
         chat_input.edit_history.initialize_for_conversation(conversation);
         chat_input.encryption_widget.set_conversation(conversation);
+
+        Xmpp.Jid? j = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+
+        if (conversation.type_ == conversation.Type.GROUPCHAT){
+            if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) && 
+            stream_interactor.get_module(MucManager.IDENTITY).get_role(j, conversation.account)==Xmpp.Xep.Muc.Role.VISITOR) {
+                set_input_field_status(new Plugins.InputFieldStatus("This is a moderated group, you don't have voice", Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND));
+            }
+        }
     }
 
     private void on_encryption_changed(Plugins.EncryptionListEntry? encryption_entry) {

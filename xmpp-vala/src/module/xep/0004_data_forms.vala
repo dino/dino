@@ -148,6 +148,7 @@ public class DataForm {
         public ListSingleField(StanzaNode node) {
             base.from_node(node);
             type_ = Type.LIST_SINGLE;
+            node.set_attribute("type", "list-single");
         }
     }
 

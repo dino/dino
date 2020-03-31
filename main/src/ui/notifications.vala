@@ -43,6 +43,7 @@ public class Notifications : Object {
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_subscription_request.connect(notify_subscription_request);
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_connection_error.connect(notify_connection_error);
         stream_interactor.get_module(NotificationEvents.IDENTITY).notify_muc_invite.connect(on_invite_received);
+        stream_interactor.get_module(NotificationEvents.IDENTITY).notify_voice_request.connect(on_voice_request_received);
     }
 
     private async void notify_content_item(ContentItem content_item, Conversation conversation) {
@@ -138,6 +139,27 @@ public class Notifications : Object {
         notification.set_default_action_and_target_value("app.open-muc-join", new Variant.int32(group_conversation.id));
         notification.add_button_with_target_value(_("Deny"), "app.deny-invite", group_conversation.id);
         notification.add_button_with_target_value(_("Accept"), "app.open-muc-join", group_conversation.id);
+        GLib.Application.get_default().send_notification(null, notification);
+    }
+    
+    private async void on_voice_request_received(Account account, Jid room_jid, Jid from_jid, string? nick, string? role, string? label) {
+        Conversation direct_conversation = new Conversation(from_jid, account, Conversation.Type.CHAT);
+        string display_name = Util.get_participant_display_name(stream_interactor, direct_conversation, from_jid);
+        string display_room = room_jid.bare_jid.to_string();
+        Notification notification = new Notification(_("voice request from %s").printf(display_name));
+        string body = _("%s requests voice in %s").printf(display_name, display_room);
+        notification.set_body(body);
+
+        try {
+            Cairo.ImageSurface jid_avatar = (yield Util.get_conversation_avatar_drawer(stream_interactor, direct_conversation)).size(40, 40).draw_image_surface();
+            notification.set_icon(get_pixbuf_icon(jid_avatar));
+        } catch (Error e) { }
+
+        Conversation group_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
+        group_conversation.nickname = nick;
+        notification.set_default_action_and_target_value("app.accept-voice-request", new Variant.int32(group_conversation.id));
+        notification.add_button_with_target_value(_("Deny"), "app.deny-voice-request", group_conversation.id);
+        notification.add_button_with_target_value(_("Accept"), "app.accept-voice-request", group_conversation.id);
         GLib.Application.get_default().send_notification(null, notification);
     }
 
