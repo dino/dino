@@ -349,7 +349,7 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
         for (int i = 0; i < markup_string.length; i++) {
             string markup_esc = Regex.escape_string(markup_string[i]);
             try {
-                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S.*?\\S|\\S)" + markup_esc);
+                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S|\\S.*?\\S)" + markup_esc);
                 MatchInfo match_info;
                 regex.match(s.down(), 0, out match_info);
                 if (match_info.matches()) {
