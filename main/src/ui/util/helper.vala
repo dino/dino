@@ -61,7 +61,7 @@ public static async AvatarDrawer get_conversation_avatar_drawer(StreamInteractor
     return yield get_conversation_participants_avatar_drawer(stream_interactor, conversation, new Jid[0]);
 }
 
-public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, Jid[] jids) {
+public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, owned Jid[] jids) {
     AvatarManager avatar_manager = stream_interactor.get_module(AvatarManager.IDENTITY);
     MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
     if (conversation.type_ != Conversation.Type.GROUPCHAT) {
