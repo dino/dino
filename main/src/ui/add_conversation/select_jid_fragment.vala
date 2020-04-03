@@ -45,7 +45,8 @@ public class SelectJidFragment : Gtk.Box {
         remove_button.clicked.connect(() => { remove_jid(filterable_list.get_selected_row() as ListRow); });
     }
 
-    public void set_filter(string str) {
+    public void set_filter(string text) {
+		string str = text;
         if (entry.text != str) entry.text = str;
 
         foreach (AddListRow row in added_rows) row.destroy();
@@ -53,17 +54,23 @@ public class SelectJidFragment : Gtk.Box {
 
         string[] ? values = str == "" ? null : str.split(" ");
         filterable_list.set_filter_values(values);
-        try {
-            Jid parsed_jid = new Jid(str);
-            if (parsed_jid != null && parsed_jid.localpart != null) {
-                foreach (Account account in accounts) {
+		foreach (Account account in accounts) {
+			try {
+				if (!("@" in str)) {
+					str = str + "@" + account.domainpart;
+				}
+
+				Jid parsed_jid = new Jid(str);
+				if (parsed_jid != null && parsed_jid.localpart != null) {
+
                     AddListRow row = new AddListRow(stream_interactor, parsed_jid, account);
                     filterable_list.add(row);
                     added_rows.add(row);
                 }
             }
-        } catch (InvalidJidError ignored) {
-            // Ignore
+			catch (InvalidJidError ignored) {
+				// Ignore
+			}
         }
     }
 
