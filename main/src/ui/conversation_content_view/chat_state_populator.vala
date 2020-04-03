@@ -64,10 +64,6 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.Conversati
 private class MetaChatStateItem : Plugins.MetaConversationItem {
     public override DateTime sort_time { get; set; default=new DateTime.now_utc().add_years(10); }
 
-    public override bool can_merge { get; set; default=false; }
-    public override bool requires_avatar { get; set; default=false; }
-    public override bool requires_header { get; set; default=false; }
-
     private StreamInteractor stream_interactor;
     private Conversation conversation;
     private Gee.List<Jid> jids = new ArrayList<Jid>();
@@ -92,6 +88,8 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
         update();
         return image_content_box;
     }
+
+    public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
 
     public void set_new(Gee.List<Jid> jids) {
         this.jids = jids;

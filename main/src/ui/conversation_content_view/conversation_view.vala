@@ -15,6 +15,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     [GtkChild] public ScrolledWindow scrolled;
     [GtkChild] private Revealer notification_revealer;
     [GtkChild] private Box message_menu_box;
+    [GtkChild] private Button button1;
+    [GtkChild] private Image button1_icon;
     [GtkChild] private Box notifications;
     [GtkChild] private Box main;
     [GtkChild] private EventBox main_event_box;
@@ -29,7 +31,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private Gee.List<ConversationItemSkeleton> item_skeletons = new Gee.ArrayList<ConversationItemSkeleton>();
     private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
-    private bool enable_menu_box = false;
 
     private double? was_value;
     private double? was_upper;
@@ -40,8 +41,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private bool firstLoad = true;
     private bool at_current_content = true;
     private bool reload_messages = true;
-    Widget currently_highlighted = null;
-    ContentItem current_highlighted_item = null;
+    ConversationItemSkeleton currently_highlighted = null;
+    ContentMetaItem? current_meta_item = null;
     bool mouse_inside = false;
     int last_y_root = -1;
 
@@ -66,6 +67,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         main_wrap_event_box.enter_notify_event.connect(on_enter_notify_event);
         main_event_box.events = EventMask.POINTER_MOTION_MASK;
         main_event_box.motion_notify_event.connect(on_motion_notify_event);
+
+        button1.clicked.connect(() => {
+            current_meta_item.get_item_actions(Plugins.WidgetType.GTK)[0].callback(button1, current_meta_item, currently_highlighted.widget);
+            update_message_menu();
+        });
 
         return this;
     }
@@ -95,7 +101,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         }
 
         last_y_root = y_root;
-        message_menu_box.visible = enable_menu_box;
 
         // Get pointer location in main
         int geometry_x, geometry_y, geometry_width, geometry_height, dest_x, dest_y;
@@ -106,21 +111,24 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         // Get widget under pointer
         int h = 0;
         bool @break = false;
-        Widget? w = null;
+        ConversationItemSkeleton? w = null;
         main.@foreach((widget) => {
             if (break) return;
 
             h += widget.get_allocated_height();
-            w = widget;
+            w = widget as ConversationItemSkeleton;
             if (h >= dest_y) {
                 @break = true;
                 return;
             }
         });
 
+        if (currently_highlighted != null) currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
+
         if (w == null) {
-            if (currently_highlighted != null) currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
             currently_highlighted = null;
+            current_meta_item = null;
+            update_message_menu();
             return;
         }
 
@@ -129,23 +137,36 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         w.translate_coordinates(main, 0, 0, out widget_x, out widget_y);
 
         // Get MessageItem
-        var iter = widgets.map_iterator();
-        while (iter.next()) {
-            if (iter.get_value() == w) {
-                Plugins.MetaConversationItem meta_item = iter.get_key();
-                var meta_content_item = meta_item as ContentMetaItem;
-                if (meta_content_item == null) return;
-                current_highlighted_item = meta_content_item.content_item;
+        foreach (Plugins.MetaConversationItem item in item_item_skeletons.keys) {
+            if (item_item_skeletons[item] == w) {
+                current_meta_item = item as ContentMetaItem;
             }
         }
 
-        // Highlight widget
-        if (currently_highlighted != null) currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
-        w.set_state_flags(StateFlags.PRELIGHT, true);
-        currently_highlighted = w;
+        update_message_menu();
 
-        // Move message menu
-        message_menu_box.margin_top = widget_y - 10;
+        if (current_meta_item != null) {
+            // Highlight widget
+            w.set_state_flags(StateFlags.PRELIGHT, true);
+            currently_highlighted = w;
+
+            // Move message menu
+            message_menu_box.margin_top = widget_y - 10;
+        }
+    }
+
+    private void update_message_menu() {
+        if (current_meta_item == null) {
+            message_menu_box.visible = false;
+            return;
+        }
+
+        var actions = current_meta_item.get_item_actions(Plugins.WidgetType.GTK);
+        message_menu_box.visible = actions != null && actions.size > 0;
+        if (actions != null && actions.size == 1) {
+            button1.visible = true;
+            button1_icon.set_from_icon_name(actions[0].icon_name, IconSize.SMALL_TOOLBAR);
+        }
     }
 
     public void initialize_for_conversation(Conversation? conversation) {
@@ -163,8 +184,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         initialize_for_conversation_(conversation);
         display_latest();
         stack.set_visible_child_name("main");
-
-        enable_menu_box = false;
     }
 
     public void initialize_around_message(Conversation conversation, ContentItem content_item) {

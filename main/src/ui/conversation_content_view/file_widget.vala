@@ -7,6 +7,24 @@ using Dino.Entities;
 
 namespace Dino.Ui.ConversationSummary {
 
+public class FileMetaItem : ContentMetaItem {
+
+    private StreamInteractor stream_interactor;
+
+    public FileMetaItem(ContentItem content_item, StreamInteractor stream_interactor) {
+        base(content_item);
+        this.stream_interactor = stream_interactor;
+    }
+
+    public override Object? get_widget(Plugins.WidgetType type) {
+        FileItem file_item = content_item as FileItem;
+        FileTransfer transfer = file_item.file_transfer;
+        return new FileWidget(stream_interactor, transfer) { visible=true };
+    }
+
+    public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
+}
+
 public class FileWidget : Box {
 
     enum State {

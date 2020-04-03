@@ -4,7 +4,7 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.ChatInput {
+namespace Dino.Ui {
 
 class SmileyConverter {
 

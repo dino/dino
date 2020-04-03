@@ -45,9 +45,13 @@ public class ContentItemStore : StreamInteractionModule, Object {
         foreach (var row in select) {
             int provider = row[db.content_item.content_type];
             int foreign_id = row[db.content_item.foreign_id];
+            DateTime time = new DateTime.from_unix_utc(row[db.content_item.time]);
+            DateTime local_time = new DateTime.from_unix_utc(row[db.content_item.local_time]);
             switch (provider) {
                 case 1:
-                    RowOption row_option = db.message.select().with(db.message.id, "=", foreign_id).row();
+                    RowOption row_option = db.message.select().with(db.message.id, "=", foreign_id)
+                            .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
+                            .row();
                     if (row_option.is_present()) {
                         Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
                         if (message == null) {
@@ -58,7 +62,10 @@ public class ContentItemStore : StreamInteractionModule, Object {
                             }
                         }
                         if (message != null) {
-                            items.add(new MessageItem(message, conversation, row[db.content_item.id]));
+                            var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
+                            message_item.display_time = time;
+                            message_item.sort_time = local_time;
+                            items.add(message_item);
                         }
                     }
                     break;
@@ -259,6 +266,7 @@ public class MessageItem : ContentItem {
 
     public MessageItem(Message message, Conversation conversation, int id) {
         base(id, TYPE, message.from, message.local_time, message.time, message.encryption, message.marked);
+
         this.message = message;
         this.conversation = conversation;
 

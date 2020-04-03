@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk+" version="3.22"/>
+    <template class="DinoUiConversationSummaryMessageItemEditMode" parent="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="visible">True</property>
+        <child>
+            <object class="GtkFrame" id="frame">
+                <property name="visible">True</property>
+                <style>
+                    <class name="dino-chatinput"/>
+                </style>
+                <child>
+                    <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <child>
+                            <object class="DinoUiChatTextView" id="chat_text_view">
+                                <property name="visible">True</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkMenuButton" id="emoji_button">
+                                <property name="relief">none</property>
+                                <property name="margin-top">3</property>
+                                <property name="valign">start</property>
+                                <property name="visible">True</property>
+                                <style>
+                                    <class name="dino-chatinput-button"/>
+                                    <class name="flat"/>
+                                </style>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="icon-name">dino-emoticon-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                        <property name="visible">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="GtkBox">
+                <property name="spacing">5</property>
+                <property name="halign">end</property>
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkButton" id="cancel_button">
+                        <property name="label">Cancel</property>
+                        <property name="visible">True</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkButton" id="send_button">
+                        <property name="label">Update message</property>
+                        <property name="visible">True</property>
+                        <style>
+                            <class name="suggested-action"/>
+                        </style>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

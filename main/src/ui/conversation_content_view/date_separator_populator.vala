@@ -54,10 +54,6 @@ class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Plugins.Conver
 public class MetaDateItem : Plugins.MetaConversationItem {
     public override DateTime sort_time { get; set; }
 
-    public override bool can_merge { get; set; default=false; }
-    public override bool requires_avatar { get; set; default=false; }
-    public override bool requires_header { get; set; default=false; }
-
     private DateTime date;
 
     public MetaDateItem(DateTime date) {
@@ -75,6 +71,8 @@ public class MetaDateItem : Plugins.MetaConversationItem {
         box.add(new Separator(Orientation.HORIZONTAL) { valign=Align.CENTER, hexpand=true, visible=true });
         return box;
     }
+
+    public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
 
     private static string get_relative_time(DateTime time) {
         DateTime time_local = time.to_local();
