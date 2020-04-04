@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 13;
+    private const int VERSION = 14;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -94,6 +94,18 @@ public class Database : Qlite.Database {
             // deduplication
             index("message_account_counterpart_stanzaid_idx", {account_id, counterpart_id, stanza_id});
             fts({body});
+        }
+    }
+
+    public class MessageCorrectionTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> message_id = new Column.Integer("message_id") { unique=true };
+        public Column<string> to_stanza_id = new Column.Text("to_stanza_id");
+
+        internal MessageCorrectionTable(Database db) {
+            base(db, "message_correction");
+            init({id, message_id, to_stanza_id});
+            index("message_correction_to_stanza_id_idx", {to_stanza_id});
         }
     }
 
@@ -247,6 +259,7 @@ public class Database : Qlite.Database {
     public EntityTable entity { get; private set; }
     public ContentItemTable content_item { get; private set; }
     public MessageTable message { get; private set; }
+    public MessageCorrectionTable message_correction { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public ConversationTable conversation { get; private set; }
@@ -268,6 +281,7 @@ public class Database : Qlite.Database {
         entity = new EntityTable(this);
         content_item = new ContentItemTable(this);
         message = new MessageTable(this);
+        message_correction = new MessageCorrectionTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         conversation = new ConversationTable(this);
@@ -277,7 +291,7 @@ public class Database : Qlite.Database {
         roster = new RosterTable(this);
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, entity, content_item, message, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings });
         try {
             exec("PRAGMA synchronous=0");
         } catch (Error e) { }
@@ -401,14 +415,14 @@ public class Database : Qlite.Database {
 
         if (before != null) {
             if (id > 0) {
-                select.where(@"local_time < ? OR (local_time = ? AND id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
+                select.where(@"local_time < ? OR (local_time = ? AND message.id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
             } else {
                 select.with(message.id, "<", id);
             }
         }
         if (after != null) {
             if (id > 0) {
-                select.where(@"local_time > ? OR (local_time = ? AND id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
+                select.where(@"local_time > ? OR (local_time = ? AND message.id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
             } else {
                 select.with(message.local_time, ">", (long) after.to_unix());
             }
@@ -430,6 +444,7 @@ public class Database : Qlite.Database {
         }
 
         select.outer_join_with(real_jid, real_jid.message_id, message.id);
+        select.outer_join_with(message_correction, message_correction.message_id, message.id);
 
         LinkedList<Message> ret = new LinkedList<Message>();
         foreach (Row row in select) {

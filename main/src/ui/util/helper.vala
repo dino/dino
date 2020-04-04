@@ -62,7 +62,7 @@ public static async AvatarDrawer get_conversation_avatar_drawer(StreamInteractor
     return yield get_conversation_participants_avatar_drawer(stream_interactor, conversation, new Jid[0]);
 }
 
-public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, Jid[] jids) {
+public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, owned Jid[] jids) {
     AvatarManager avatar_manager = stream_interactor.get_module(AvatarManager.IDENTITY);
     MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
     if (conversation.type_ != Conversation.Type.GROUPCHAT) {
@@ -370,7 +370,7 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
         for (int i = 0; i < markup_string.length; i++) {
             string markup_esc = Regex.escape_string(markup_string[i]);
             try {
-                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S.*?\\S|\\S)" + markup_esc);
+                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S|\\S.*?\\S)" + markup_esc);
                 MatchInfo match_info;
                 regex.match(s.down(), 0, out match_info);
                 if (match_info.matches()) {

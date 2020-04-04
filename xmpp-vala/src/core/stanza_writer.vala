@@ -18,7 +18,7 @@ public class StanzaWriter {
         yield write_data(s.data);
     }
 
-    private async void write_data(uint8[] data) throws XmlError {
+    private async void write_data(owned uint8[] data) throws XmlError {
         if (running) {
             queue.push_tail(new SourceFuncWrapper(write_data.callback));
             yield;

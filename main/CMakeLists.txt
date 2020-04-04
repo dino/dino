@@ -62,6 +62,7 @@ set(RESOURCE_LIST
     menu_app.ui
     menu_conversation.ui
     menu_encryption.ui
+    message_item_widget_edit_mode.ui
     occupant_list.ui
     occupant_list_item.ui
     search_autocomplete.ui
@@ -119,6 +120,7 @@ SOURCES
     src/ui/add_conversation/select_jid_fragment.vala
 
     src/ui/chat_input/chat_input_controller.vala
+    src/ui/chat_input/chat_text_view.vala
     src/ui/chat_input/edit_history.vala
     src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala
@@ -134,12 +136,12 @@ SOURCES
     src/ui/conversation_selector/conversation_selector.vala
 
     src/ui/conversation_content_view/chat_state_populator.vala
-    src/ui/conversation_content_view/content_item_widget_factory.vala
     src/ui/conversation_content_view/content_populator.vala
     src/ui/conversation_content_view/conversation_item_skeleton.vala
     src/ui/conversation_content_view/conversation_view.vala
     src/ui/conversation_content_view/date_separator_populator.vala
     src/ui/conversation_content_view/file_widget.vala
+    src/ui/conversation_content_view/message_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
 
     src/ui/conversation_titlebar/menu_entry.vala
@@ -161,6 +163,7 @@ SOURCES
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
     src/ui/util/sizing_bin.vala
+    src/ui/util/size_request_box.vala
     src/ui/util/scaling_image.vala
     src/ui/util/preview_file_chooser_native.vala
 CUSTOM_VAPIS

@@ -10,25 +10,17 @@ namespace Dino.Ui.ChatInput {
 [GtkTemplate (ui = "/im/dino/Dino/chat_input.ui")]
 public class View : Box {
 
-    public signal void send_text();
-
     public string text {
-        owned get { return text_input.buffer.text; }
-        set { text_input.buffer.text = value; }
+        owned get { return chat_text_view.text_view.buffer.text; }
+        set { chat_text_view.text_view.buffer.text = value; }
     }
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
-    private int vscrollbar_min_height;
-
-    public OccupantsTabCompletor occupants_tab_completor;
-    private SmileyConverter smiley_converter;
-    public EditHistory edit_history;
 
     [GtkChild] public Frame frame;
-    [GtkChild] public ScrolledWindow scrolled;
-    [GtkChild] public TextView text_input;
+    [GtkChild] public ChatTextView chat_text_view;
     [GtkChild] public Box outer_box;
     [GtkChild] public Button file_button;
     [GtkChild] public Separator file_separator;
@@ -39,9 +31,6 @@ public class View : Box {
     public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
-        smiley_converter = new SmileyConverter(text_input);
-        edit_history = new EditHistory(text_input, GLib.Application.get_default());
         encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
 
         file_button.clicked.connect(() => {
@@ -52,9 +41,6 @@ public class View : Box {
             }
         });
         file_button.get_style_context().add_class("dino-attach-button");
-
-        scrolled.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
-        scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
 
         encryption_widget.get_style_context().add_class("dino-chatinput-button");
         encryption_widget.encryption_changed.connect(update_file_transfer_availability);
@@ -68,7 +54,7 @@ public class View : Box {
 
             EmojiChooser chooser = new EmojiChooser();
             chooser.emoji_picked.connect((emoji) => {
-                text_input.buffer.insert_at_cursor(emoji, emoji.data.length);
+                chat_text_view.text_view.buffer.insert_at_cursor(emoji, emoji.data.length);
             });
             emoji_button.set_popover(chooser);
 
@@ -76,8 +62,6 @@ public class View : Box {
         }
 
         outer_box.add(encryption_widget);
-
-        text_input.key_press_event.connect(on_text_input_key_press);
 
         Util.force_css(frame, "* { border-radius: 3px; }");
 
@@ -91,17 +75,17 @@ public class View : Box {
     }
 
     public void initialize_for_conversation(Conversation conversation) {
-        if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
+        if (this.conversation != null) entry_cache[this.conversation] = chat_text_view.text_view.buffer.text;
         this.conversation = conversation;
 
         update_file_transfer_availability();
 
-        text_input.buffer.text = "";
+        chat_text_view.text_view.buffer.text = "";
         if (entry_cache.has_key(conversation)) {
-            text_input.buffer.text = entry_cache[conversation];
+            chat_text_view.text_view.buffer.text = entry_cache[conversation];
         }
 
-        text_input.grab_focus();
+        chat_text_view.text_view.grab_focus();
     }
 
     public void set_input_state(Plugins.InputFieldStatus.MessageType message_type) {
@@ -131,26 +115,6 @@ public class View : Box {
             chat_input_status.get_style_context().remove_class("input-status-highlight-once");
             return false;
         });
-    }
-
-    private bool on_text_input_key_press(EventKey event) {
-        if (event.keyval in new uint[]{Key.Return, Key.KP_Enter}) {
-            if ((event.state & ModifierType.SHIFT_MASK) > 0) {
-                text_input.buffer.insert_at_cursor("\n", 1);
-            } else if (this.text != "") {
-                send_text();
-                edit_history.reset_history();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void on_upper_notify() {
-        scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size;
-
-        // hack for vscrollbar not requiring space and making textview higher //TODO doesn't resize immediately
-        scrolled.get_vscrollbar().visible = (scrolled.vadjustment.upper > scrolled.max_content_height - 2 * vscrollbar_min_height);
     }
 }
 

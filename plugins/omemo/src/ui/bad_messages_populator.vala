@@ -79,9 +79,6 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
 }
 
 public class BadMessageItem : Plugins.MetaConversationItem {
-    public override bool can_merge { get; set; default=false; }
-    public override bool requires_avatar { get; set; default=false; }
-    public override bool requires_header { get; set; default=false; }
 
     private Plugin plugin;
     private Account account;
@@ -101,6 +98,8 @@ public class BadMessageItem : Plugins.MetaConversationItem {
     public override Object? get_widget(Plugins.WidgetType widget_type) {
         return new BadMessagesWidget(plugin, account, problem_jid, badness_type);
     }
+
+    public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
 }
 
 public class BadMessagesWidget : Box {

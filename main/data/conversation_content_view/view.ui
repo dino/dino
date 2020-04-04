@@ -28,11 +28,12 @@
                                                         <object class="GtkEventBox" id="main_event_box">
                                                             <property name="visible">True</property>
                                                             <child>
-                                                                <object class="GtkBox" id="main">
+                                                                <object class="DinoUiSizeRequestBox" id="main">
                                                                     <property name="margin-bottom">15</property>
                                                                     <property name="expand">False</property>
                                                                     <property name="orientation">vertical</property>
                                                                     <property name="visible">True</property>
+                                                                    <property name="size-request-mode">height-for-width</property>
                                                                 </object>
                                                             </child>
                                                         </object>
@@ -45,14 +46,12 @@
                                                             <property name="halign">end</property>
                                                             <property name="valign">start</property>
                                                             <child>
-                                                                <object class="GtkMenuButton" id="emoji_button">
+                                                                <object class="GtkButton" id="button1">
                                                                     <property name="vexpand">False</property>
                                                                     <property name="halign">end</property>
                                                                     <property name="valign">end</property>
-                                                                    <property name="visible">True</property>
                                                                     <child>
-                                                                        <object class="GtkImage">
-                                                                            <property name="icon-name">dino-emoticon-add-symbolic</property>
+                                                                        <object class="GtkImage" id="button1_icon">
                                                                             <property name="icon-size">1</property>
                                                                             <property name="visible">True</property>
                                                                         </object>

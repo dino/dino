@@ -86,6 +86,12 @@ public class ConversationSelectorRow : ListBoxRow {
                 content_item_received(item);
             }
         });
+        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect((item) => {
+            if (last_content_item != null && last_content_item.id == item.id) {
+                content_item_received(item);
+            }
+        });
+
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
         x_button.clicked.connect(() => {

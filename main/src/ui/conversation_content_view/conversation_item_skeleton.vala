@@ -15,6 +15,8 @@ public class ConversationItemSkeleton : EventBox {
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
     public Plugins.MetaConversationItem item;
+    public ContentMetaItem? content_meta_item = null;
+    public Widget? widget = null;
 
     private Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
     private Box header_content_box = new Box(Orientation.VERTICAL, 0) { visible=true };
@@ -25,9 +27,18 @@ public class ConversationItemSkeleton : EventBox {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
         this.item = item;
+        this.content_meta_item = item as ContentMetaItem;
         this.get_style_context().add_class("message-box");
 
-        Widget? widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
+        item.notify["in-edit-mode"].connect(() => {
+            if (item.in_edit_mode) {
+                this.get_style_context().add_class("edit-mode");
+            } else {
+                this.get_style_context().remove_class("edit-mode");
+            }
+        });
+
+        widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
         if (widget != null) {
             widget.valign = Align.END;
             header_content_box.add(widget);
@@ -51,7 +62,12 @@ public class ConversationItemSkeleton : EventBox {
         update_margin();
     }
 
-    public void update_margin() {
+    public void set_edit_mode() {
+        if (content_meta_item == null) return;
+
+    }
+
+    private void update_margin() {
         if (item.requires_header && show_skeleton && metadata_header == null) {
             metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
             header_content_box.add(metadata_header);

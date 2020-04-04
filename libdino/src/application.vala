@@ -45,6 +45,7 @@ public interface Application : GLib.Application {
         SearchProcessor.start(stream_interactor, db);
         Register.start(stream_interactor, db);
         EntityInfo.start(stream_interactor, db);
+        MessageCorrection.start(stream_interactor, db);
 
         create_actions();
 
