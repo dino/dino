@@ -44,6 +44,7 @@ public class ConversationViewController : Object {
         view.drag_data_received.connect(this.on_drag_data_received);
 
         // forward key presses
+        chat_input_controller.activate_last_message_correction.connect(() => view.conversation_frame.activate_last_message_correction());
         view.chat_input.key_press_event.connect(forward_key_press_to_chat_input);
         view.conversation_frame.key_press_event.connect(forward_key_press_to_chat_input);
         titlebar.key_press_event.connect(forward_key_press_to_chat_input);
@@ -160,7 +161,6 @@ public class ConversationViewController : Object {
             return false;
         }
         if (view.chat_input.chat_text_view.text_view.key_press_event(event)) {
-            view.chat_input.chat_text_view.text_view.grab_focus();
             return true;
         }
         return false;

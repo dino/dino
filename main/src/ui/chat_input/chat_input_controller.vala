@@ -8,6 +8,8 @@ namespace Dino.Ui {
 
 public class ChatInputController : Object {
 
+    public signal void activate_last_message_correction();
+
     public new string? conversation_display_name { get; set; }
     public string? conversation_topic { get; set; }
 
@@ -30,6 +32,7 @@ public class ChatInputController : Object {
         reset_input_field_status();
 
         chat_input.chat_text_view.text_view.buffer.changed.connect(on_text_input_changed);
+        chat_input.chat_text_view.text_view.key_press_event.connect(on_text_input_key_press);
         chat_text_view_controller.send_text.connect(send_text);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
@@ -144,6 +147,16 @@ public class ChatInputController : Object {
         } else {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation);
         }
+    }
+
+    private bool on_text_input_key_press(EventKey event) {
+        if (event.keyval == Gdk.Key.Up && chat_input.chat_text_view.text_view.buffer.text == "") {
+            activate_last_message_correction();
+            return true;
+        } else {
+            chat_input.chat_text_view.text_view.grab_focus();
+        }
+        return false;
     }
 }
 

@@ -91,6 +91,12 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     public override string[] after_actions { get { return after_actions_const; } }
 
     public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+        if (conversation.type_ != Conversation.Type.CHAT) {
+            // Don't process messages or corrections from MUC history
+            DateTime? mam_delay = Xep.DelayedDelivery.get_time_for_message(stanza, message.from.bare_jid);
+            if (mam_delay != null) return false;
+        }
+
         string? replace_id = Xep.LastMessageCorrection.get_replace_id(stanza);
         if (replace_id == null) {
             if (!last_messages.has_key(conversation)) {
@@ -126,9 +132,11 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
             message.edit_to = replace_id;
 
             on_received_correction(conversation, current_correction_message_id);
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private void on_received_correction(Conversation conversation, int message_id) {

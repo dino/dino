@@ -2,6 +2,21 @@ namespace Xmpp.Xep.DelayedDelivery {
 
 private const string NS_URI = "urn:xmpp:delay";
 
+public static DateTime? get_time_for_node(StanzaNode node) {
+    string? time = node.get_attribute("stamp");
+    if (time != null) return DateTimeProfiles.parse_string(time);
+    return null;
+}
+
+public static DateTime? get_time_for_message(MessageStanza message, Jid? jid = null) {
+    foreach (StanzaNode delay_node in message.stanza.get_subnodes("delay", NS_URI)) {
+        if (jid == null || delay_node.get_attribute("from") == jid.to_string()) {
+            return get_time_for_node(delay_node);
+        }
+    }
+    return null;
+}
+
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0203_delayed_delivery");
 
@@ -13,19 +28,6 @@ public class Module : XmppStreamModule {
         message.stanza.put_node(delay_node);
     }
 
-    public static DateTime? get_time_for_message(MessageStanza message) {
-        StanzaNode? delay_node = message.stanza.get_subnode("delay", NS_URI);
-        if (delay_node != null) {
-            return get_time_for_node(delay_node);
-        }
-        return null;
-    }
-
-    public static DateTime? get_time_for_node(StanzaNode node) {
-        string? time = node.get_attribute("stamp");
-        if (time != null) return DateTimeProfiles.parse_string(time);
-        return null;
-    }
 
     public override void attach(XmppStream stream) {
         stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_listener);
@@ -52,7 +54,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
     public override string[] after_actions { get { return after_actions_const; } }
 
     public override async bool run(XmppStream stream, MessageStanza message) {
-        DateTime? datetime = Module.get_time_for_message(message);
+        DateTime? datetime = get_time_for_message(message);
         if (datetime != null) message.add_flag(new MessageFlag(datetime));
         return false;
     }
