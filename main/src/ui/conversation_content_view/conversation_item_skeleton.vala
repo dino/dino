@@ -105,7 +105,7 @@ public class ItemMetaDataHeader : Box {
     [GtkChild] public Label dot_label;
     [GtkChild] public Label time_label;
     public Image received_image = new Image() { opacity=0.4 };
-    public Image? encryption_image = null;
+    public Image? unencrypted_image = null;
 
     public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON", 17, 12);
 
@@ -156,16 +156,16 @@ public class ItemMetaDataHeader : Box {
     }
 
     private void update_unencrypted_icon() {
-        if (conversation.encryption != Encryption.NONE) {
-            encryption_image = new Image() { opacity=0.4, visible = true };
-            encryption_image.set_from_icon_name("dino-changes-allowed-symbolic", ICON_SIZE_HEADER);
-            encryption_image.tooltip_text = _("Unencrypted");
-            this.add(encryption_image);
-            this.reorder_child(encryption_image, 3);
-            Util.force_error_color(encryption_image);
-        } else if (encryption_image != null) {
-            encryption_image.destroy();
-            encryption_image = null;
+        if (conversation.encryption != Encryption.NONE && unencrypted_image == null) {
+            unencrypted_image = new Image() { opacity=0.4, visible = true };
+            unencrypted_image.set_from_icon_name("dino-changes-allowed-symbolic", ICON_SIZE_HEADER);
+            unencrypted_image.tooltip_text = _("Unencrypted");
+            this.add(unencrypted_image);
+            this.reorder_child(unencrypted_image, 3);
+            Util.force_error_color(unencrypted_image);
+        } else if (conversation.encryption == Encryption.NONE && unencrypted_image != null) {
+            unencrypted_image.destroy();
+            unencrypted_image = null;
         }
     }
 
