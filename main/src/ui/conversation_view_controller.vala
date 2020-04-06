@@ -151,6 +151,10 @@ public class ConversationViewController : Object {
     }
 
     private bool forward_key_press_to_chat_input(EventKey event) {
+        if (((Gtk.Window)view.get_toplevel()).get_focus() is TextView) {
+            return false;
+        }
+
         // Don't forward / change focus on Control / Alt
         if (event.keyval == Gdk.Key.Control_L || event.keyval == Gdk.Key.Control_R ||
                 event.keyval == Gdk.Key.Alt_L || event.keyval == Gdk.Key.Alt_R) {
