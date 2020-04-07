@@ -254,8 +254,7 @@ public class ConversationSelectorRow : ListBoxRow {
             Xep.ServiceDiscovery.Identity? identity = stream_interactor.get_module(EntityInfo.IDENTITY).get_identity(conversation.account, full_jid);
 
             Image image = new Image() { hexpand=false, valign=Align.START, visible=true };
-            grid.attach(image, 0, i + 1, 1, 1);
-            if (identity != null && identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_PHONE || identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_TABLET) {
+            if (identity != null && (identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_PHONE || identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_TABLET)) {
                 image.set_from_icon_name("dino-device-phone-symbolic", IconSize.SMALL_TOOLBAR);
             } else {
                 image.set_from_icon_name("dino-device-desktop-symbolic", IconSize.SMALL_TOOLBAR);
@@ -279,12 +278,14 @@ public class ConversationSelectorRow : ListBoxRow {
             }
 
             var sb = new StringBuilder();
-            if (identity.name != null) {
+            if (identity != null && identity.name != null) {
                 sb.append(identity.name);
-            } else if (dino_resource_regex.match(full_jid.resourcepart)) {
+            } else if (full_jid.resourcepart != null && dino_resource_regex.match(full_jid.resourcepart)) {
                 sb.append("Dino");
-            } else {
+            } else if (full_jid.resourcepart != null) {
                 sb.append(full_jid.resourcepart);
+            } else {
+                continue;
             }
             if (status != null) {
                 sb.append(" <i>(");
@@ -293,6 +294,8 @@ public class ConversationSelectorRow : ListBoxRow {
             }
 
             Label resource = new Label(sb.str) { use_markup=true, hexpand=true, xalign=0, visible=true };
+
+            grid.attach(image, 0, i + 1, 1, 1);
             grid.attach(resource, 1, i + 1, 1, 1);
         }
         return grid;
