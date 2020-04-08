@@ -158,6 +158,10 @@ public class ChatInputController : Object {
         }
         return false;
     }
+
+    public void open_emoji_picker() {
+        chat_input.open_emoji_picker();
+    }
 }
 
 }

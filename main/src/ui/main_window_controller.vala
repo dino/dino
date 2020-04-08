@@ -158,6 +158,10 @@ public class MainWindowController : Object {
         conversation_view_controller.search_menu_entry.search_button.active = false;
         window.search_revealer.reveal_child = false;
     }
+
+    public void open_emoji_picker() {
+        conversation_view_controller.open_emoji_picker();
+    }
 }
 
 }

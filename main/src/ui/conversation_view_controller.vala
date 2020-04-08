@@ -169,5 +169,9 @@ public class ConversationViewController : Object {
         }
         return false;
     }
+
+    public void open_emoji_picker() {
+        chat_input_controller.open_emoji_picker();
+    }
 }
 }

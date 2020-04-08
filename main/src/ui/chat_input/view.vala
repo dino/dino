@@ -27,6 +27,7 @@ public class View : Box {
     [GtkChild] public Label chat_input_status;
 
     public EncryptionButton encryption_widget;
+    public MenuButton emoji_button;
 
     public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -47,7 +48,7 @@ public class View : Box {
 
         // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
         if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
-            MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
+            emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
             emoji_button.get_style_context().add_class("flat");
             emoji_button.get_style_context().add_class("dino-chatinput-button");
             emoji_button.image = new Image.from_icon_name("dino-emoticon-symbolic", IconSize.BUTTON) { visible=true };
@@ -115,6 +116,12 @@ public class View : Box {
             chat_input_status.get_style_context().remove_class("input-status-highlight-once");
             return false;
         });
+    }
+
+    public void open_emoji_picker() {
+        Popover chooser = emoji_button.get_popover();
+        if (chooser != null)
+            chooser.popup();
     }
 }
 

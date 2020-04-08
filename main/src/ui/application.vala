@@ -148,6 +148,11 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         add_action(loop_conversations_bw_action);
         set_accels_for_action("app.loop_conversations_bw", new string[]{"<Ctrl><Shift>Tab"});
 
+        SimpleAction open_emoji_picker_action = new SimpleAction("open_emoji_picker", null);
+        open_emoji_picker_action.activate.connect(() => { controller.open_emoji_picker(); });
+        add_action(open_emoji_picker_action);
+        set_accels_for_action("app.open_emoji_picker", new string[]{"<Ctrl>E"});
+
         SimpleAction open_shortcuts_action = new SimpleAction("open_shortcuts", null);
         open_shortcuts_action.activate.connect((variant) => {
             Builder builder = new Builder.from_resource("/im/dino/Dino/shortcuts.ui");
