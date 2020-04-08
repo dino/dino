@@ -27,7 +27,7 @@ Contribute
 Please discuss bigger changes in the [conference room](xmpp:chat@dino.im?join) first.
 - Look at [how to debug](https://github.com/dino/dino/wiki/Debugging) Dino before you report a bug.
 - Help [translating](https://hosted.weblate.org/projects/dino/) Dino into your language.
-- Make a donation: [Liberapay](https://liberapay.com/Dino), Paypal (`paypal at dino.im`) or on [Bounty Source](https://www.bountysource.com/teams/dino/issues)
+- Make a [donation](https://dino.im/#donate)
 
 License
 -------
