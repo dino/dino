@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"POT-Creation-Date: 2020-04-11 00:00+0200\n"
 "PO-Revision-Date: 2019-12-21 12:21+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/lb/>\n"
@@ -21,6 +21,10 @@ msgstr "Verwalten"
 msgid "This contact has new devices"
 msgstr "Dëse Kontakt huet nei Geräter"
 
+#: plugins/omemo/src/ui/bad_messages_populator.vala:115
+msgid "Manage devices"
+msgstr ""
+
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
 msgstr "OMEMO Vertrauens Entscheedung noutwenneg"
@@ -37,18 +41,18 @@ msgstr "Schlëssel verwalten"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
+"contact's device."
 msgstr ""
 "Vergläich de Fangerofdrock, Zeeche fir Zeechen, mat dem den um Gerät vum "
 "Kontakt ugewise gëtt."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Not matching"
-msgstr "Stemmt net iwwerteneen"
+msgid "Fingerprints differ"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Matching"
-msgstr "Stemmt iwwerteneen"
+msgid "Fingerprints match"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -67,11 +71,9 @@ msgstr "Schlëssel verifizéieren"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
+"Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Wann konforméiert, all zukünfteg Messagen déi vum %s mat dësem Schlëssel "
-"geschéckt ginn, ginn deementspriechend am Chatfenster markéiert."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -109,10 +111,8 @@ msgstr "Schlëssel ofleenen"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
-"Stop accepting this key during communication with its associated contact."
+"Block encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Dëse Schlëssel net méi akzeptéiere wärend der Kommunikatioun mat sengem "
-"verbonnene Kontakt."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -122,8 +122,8 @@ msgstr "Schlëssel acceptéieren"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
-"Start accepting this key during communication with its associated contact"
-msgstr "Dëse Schlëssel wärend de Conversatioun mat sengem Kontakt benotzen"
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -138,8 +138,8 @@ msgstr "akzeptéiert"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, c-format
-msgid "This means it can be used by %s to receive and send messages."
+#, fuzzy, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
 "Dat bedeit, dass et vum %s ka benotzt gi fir Messagen ze empfänken an ze "
 "verschécken."
@@ -162,29 +162,23 @@ msgstr "ofgeleent"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
-"This means it cannot be used by %s to receive messages, and any messages "
-"sent by it will be ignored."
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
 msgstr ""
-"Dat bedeit, dass dëse Schlëssel net ka vum %s benotz gi fir Messagen ze "
-"empfänken an all Message déi geschéckt gi ginn ignoréiert."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
-"ignored and none of your messages will be readable using this key."
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Wann confirméiert, all zukünfteg Message déi vum %s mat dësem Schlëssel "
-"geschéckt ginn, ginn ignoréiert a keng vun dengem Messagë wäerte liesbar "
-"sinn."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
-"Once confirmed this key will be usable by %s to receive and send messages."
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
 msgstr ""
-"Wann konforméiert ass de Schlëssel vum %s benotzbar fir Messagen ze "
-"empfänken an ze schécken."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -199,12 +193,8 @@ msgid "Automatically accept new keys"
 msgstr "Automatesch nei Schlësselen akzeptéieren"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
+msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
-"Wann dëse Kontakt néi Schlësselen zu sengem Konto bäifüügt, déi automatesch "
-"akzeptéieren."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -224,10 +214,8 @@ msgstr "Inaktiv Schlësselen"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
-"When you add new encryption keys to your account, automatically accept them."
+"New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Wann s du nei Schlëssele bei däin Account bäifüügs, déi automatesch "
-"akzeptéieren."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -251,7 +239,7 @@ msgid "Own fingerprint"
 msgstr "Eegene Fangerofdrock"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connect"
+msgid "Will be generated on first connection"
 msgstr "Gett bei der éischter Connectioun generéiert"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
@@ -264,6 +252,68 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d OMEMO Gerät"
 msgstr[1] "%d OMEMO Geräter"
+
+#~ msgid "Not matching"
+#~ msgstr "Stemmt net iwwerteneen"
+
+#~ msgid "Matching"
+#~ msgstr "Stemmt iwwerteneen"
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "Wann konforméiert, all zukünfteg Messagen déi vum %s mat dësem Schlëssel "
+#~ "geschéckt ginn, ginn deementspriechend am Chatfenster markéiert."
+
+#~ msgid ""
+#~ "Stop accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Dëse Schlëssel net méi akzeptéiere wärend der Kommunikatioun mat sengem "
+#~ "verbonnene Kontakt."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact"
+#~ msgstr "Dëse Schlëssel wärend de Conversatioun mat sengem Kontakt benotzen"
+
+#, c-format
+#~ msgid ""
+#~ "This means it cannot be used by %s to receive messages, and any messages "
+#~ "sent by it will be ignored."
+#~ msgstr ""
+#~ "Dat bedeit, dass dëse Schlëssel net ka vum %s benotz gi fir Messagen ze "
+#~ "empfänken an all Message déi geschéckt gi ginn ignoréiert."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "ignored and none of your messages will be readable using this key."
+#~ msgstr ""
+#~ "Wann confirméiert, all zukünfteg Message déi vum %s mat dësem Schlëssel "
+#~ "geschéckt ginn, ginn ignoréiert a keng vun dengem Messagë wäerte liesbar "
+#~ "sinn."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed this key will be usable by %s to receive and send messages."
+#~ msgstr ""
+#~ "Wann konforméiert ass de Schlëssel vum %s benotzbar fir Messagen ze "
+#~ "empfänken an ze schécken."
+
+#~ msgid ""
+#~ "When this contact adds new encryption keys to their account, "
+#~ "automatically accept them."
+#~ msgstr ""
+#~ "Wann dëse Kontakt néi Schlësselen zu sengem Konto bäifüügt, déi "
+#~ "automatesch akzeptéieren."
+
+#~ msgid ""
+#~ "When you add new encryption keys to your account, automatically accept "
+#~ "them."
+#~ msgstr ""
+#~ "Wann s du nei Schlëssele bei däin Account bäifüügs, déi automatesch "
+#~ "akzeptéieren."
 
 #~ msgid ""
 #~ "Start accepting this key during communication with its associated contact."

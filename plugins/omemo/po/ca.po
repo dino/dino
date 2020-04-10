@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo 20180123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"POT-Creation-Date: 2020-04-11 00:00+0200\n"
 "PO-Revision-Date: 2020-01-14 05:21+0000\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Language: ca\n"
@@ -24,6 +24,10 @@ msgstr "Gestiona"
 msgid "This contact has new devices"
 msgstr "Aquest contacte té dispositius nous"
 
+#: plugins/omemo/src/ui/bad_messages_populator.vala:115
+msgid "Manage devices"
+msgstr ""
+
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
 msgstr ""
@@ -40,18 +44,18 @@ msgstr "Gestiona la clau"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
+"contact's device."
 msgstr ""
 "Compareu l'empremta, caràcter per caràcter, amb la que es mostra al vostre "
 "dispositiu de contactes."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Not matching"
-msgstr "No coincideixen"
+msgid "Fingerprints differ"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Matching"
-msgstr "Coincideixen"
+msgid "Fingerprints match"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -70,11 +74,9 @@ msgstr "Comproveu la clau"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
+"Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Després de la confirmació, qualssevol missatges que enviï %s amb aquesta "
-"clau es ressaltarà a la finestra del xat."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -110,7 +112,7 @@ msgstr "Rebutja la clau"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
-"Stop accepting this key during communication with its associated contact."
+"Block encrypted communication with the contact's device that uses this key."
 msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
@@ -121,7 +123,7 @@ msgstr "Accepta la clau"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
-"Start accepting this key during communication with its associated contact"
+"Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
@@ -138,7 +140,7 @@ msgstr "acceptada"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #, c-format
-msgid "This means it can be used by %s to receive and send messages."
+msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -157,21 +159,22 @@ msgstr "rebutjada"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
-"This means it cannot be used by %s to receive messages, and any messages "
-"sent by it will be ignored."
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
 msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
-"ignored and none of your messages will be readable using this key."
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
-"Once confirmed this key will be usable by %s to receive and send messages."
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
 msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
@@ -187,9 +190,7 @@ msgid "Automatically accept new keys"
 msgstr "Accepta claus noves automàticament"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
+msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
@@ -210,7 +211,7 @@ msgstr "Claus inactives"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
-"When you add new encryption keys to your account, automatically accept them."
+"New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
@@ -235,7 +236,7 @@ msgid "Own fingerprint"
 msgstr "Empremta pròpia"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connect"
+msgid "Will be generated on first connection"
 msgstr "Es generarà durant la primera connexió"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
@@ -248,6 +249,20 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d dispositiu OMEMO"
 msgstr[1] "%d dispositius OMEMO"
+
+#~ msgid "Not matching"
+#~ msgstr "No coincideixen"
+
+#~ msgid "Matching"
+#~ msgstr "Coincideixen"
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "Després de la confirmació, qualssevol missatges que enviï %s amb aquesta "
+#~ "clau es ressaltarà a la finestra del xat."
 
 #~ msgid "Unknown device (0x%.8x)"
 #~ msgstr "Dispositiu desconegut (0x%.8x)"

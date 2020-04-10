@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"POT-Creation-Date: 2020-04-11 00:00+0200\n"
 "PO-Revision-Date: 2019-11-15 07:04+0000\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/es/>\n"
@@ -26,6 +26,10 @@ msgstr "Gestionar"
 msgid "This contact has new devices"
 msgstr "Este contacto tiene un nuevo dispositivo"
 
+#: plugins/omemo/src/ui/bad_messages_populator.vala:115
+msgid "Manage devices"
+msgstr ""
+
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
 msgstr "Decisión de confianza requerida para clave OMEMO"
@@ -42,18 +46,18 @@ msgstr "Gestionar Clave"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
+"contact's device."
 msgstr ""
 "Compara la huella digital, carácter a carácter, con la huella digital "
 "mostrada en el dispositivo de tus contactos."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Not matching"
-msgstr "No coincide"
+msgid "Fingerprints differ"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Matching"
-msgstr "Coincide"
+msgid "Fingerprints match"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -72,11 +76,9 @@ msgstr "Verificar clave"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
+"Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Una vez confirmada, cualquier futuro mensaje enviado por %s usando esta "
-"clave será resaltado en el ventana de conversación."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -113,8 +115,8 @@ msgstr "Rechazar clave"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
-"Stop accepting this key during communication with its associated contact."
-msgstr "Dejar de aceptar esta clave durante la comunicación con este contacto."
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -124,8 +126,8 @@ msgstr "Aceptar clave"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
-"Start accepting this key during communication with its associated contact"
-msgstr "Aceptar esta clave durante la comunicación con este contacto"
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -140,8 +142,8 @@ msgstr "aceptada"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, c-format
-msgid "This means it can be used by %s to receive and send messages."
+#, fuzzy, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
 "Esto significa que puede ser usada por %s para recibir y enviar mensajes."
 
@@ -163,28 +165,23 @@ msgstr "rechazada"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
-"This means it cannot be used by %s to receive messages, and any messages "
-"sent by it will be ignored."
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
 msgstr ""
-"Esto significa que no puede ser usada por %s para recibir mensajes, y "
-"cualquier mensaje enviado con esta clave será ignorado."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
-"ignored and none of your messages will be readable using this key."
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Una vez confirmado, cualquier futuro mensaje enviado por %s usando esta "
-"clave será ignorado y ninguno de tus mensajes será legible usando esta clave."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
-"Once confirmed this key will be usable by %s to receive and send messages."
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
 msgstr ""
-"Una vez confirmada esta clave será usable por %s para recibir y enviar "
-"mensajes."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -199,12 +196,8 @@ msgid "Automatically accept new keys"
 msgstr "Automáticamente aceptar nuevas claves"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
+msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
-"Cuando este contacto añada nuevas claves de cifrado a su cuenta, "
-"automáticamente aceptarlas."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -224,10 +217,8 @@ msgstr "Claves inactivas"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
-"When you add new encryption keys to your account, automatically accept them."
+"New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Cuando añades nuevas claves de cifrado a tu cuenta, aceptarlas "
-"automáticamente."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -251,7 +242,7 @@ msgid "Own fingerprint"
 msgstr "Tu huella digital"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connect"
+msgid "Will be generated on first connection"
 msgstr "Será generada en la primera conexión"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
@@ -264,6 +255,67 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d dispositivo OMEMO"
 msgstr[1] "%d dispositivos OMEMO"
+
+#~ msgid "Not matching"
+#~ msgstr "No coincide"
+
+#~ msgid "Matching"
+#~ msgstr "Coincide"
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "Una vez confirmada, cualquier futuro mensaje enviado por %s usando esta "
+#~ "clave será resaltado en el ventana de conversación."
+
+#~ msgid ""
+#~ "Stop accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Dejar de aceptar esta clave durante la comunicación con este contacto."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact"
+#~ msgstr "Aceptar esta clave durante la comunicación con este contacto"
+
+#, c-format
+#~ msgid ""
+#~ "This means it cannot be used by %s to receive messages, and any messages "
+#~ "sent by it will be ignored."
+#~ msgstr ""
+#~ "Esto significa que no puede ser usada por %s para recibir mensajes, y "
+#~ "cualquier mensaje enviado con esta clave será ignorado."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "ignored and none of your messages will be readable using this key."
+#~ msgstr ""
+#~ "Una vez confirmado, cualquier futuro mensaje enviado por %s usando esta "
+#~ "clave será ignorado y ninguno de tus mensajes será legible usando esta "
+#~ "clave."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed this key will be usable by %s to receive and send messages."
+#~ msgstr ""
+#~ "Una vez confirmada esta clave será usable por %s para recibir y enviar "
+#~ "mensajes."
+
+#~ msgid ""
+#~ "When this contact adds new encryption keys to their account, "
+#~ "automatically accept them."
+#~ msgstr ""
+#~ "Cuando este contacto añada nuevas claves de cifrado a su cuenta, "
+#~ "automáticamente aceptarlas."
+
+#~ msgid ""
+#~ "When you add new encryption keys to your account, automatically accept "
+#~ "them."
+#~ msgstr ""
+#~ "Cuando añades nuevas claves de cifrado a tu cuenta, aceptarlas "
+#~ "automáticamente."
 
 #~ msgid ""
 #~ "Start accepting this key during communication with its associated contact."

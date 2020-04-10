@@ -7,138 +7,314 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
-"PO-Revision-Date: 2019-12-21 12:21+0000\n"
+"POT-Creation-Date: 2020-04-11 00:00+0200\n"
+"PO-Revision-Date: 2020-04-04 01:18+0000\n"
 "Language-Team: none\n"
-"Language: zh_Hant\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 4.0-dev\n"
+
+#: main/src/ui/main_window.vala:200
+msgid "Welcome to Dino!"
+msgstr "歡迎來到 Dino！"
+
+#: main/src/ui/main_window.vala:201
+msgid "Sign in or create an account to get started."
+msgstr "開始前請先登入或建立一個帳號。"
+
+#: main/src/ui/main_window.vala:202
+msgid "Set up account"
+msgstr "設定帳號"
+
+#: main/src/ui/main_window.vala:210
+msgid "No active accounts"
+msgstr "没有啟用的帳號"
+
+#: main/src/ui/main_window.vala:211
+msgid "Manage accounts"
+msgstr "管理帳號"
+
+#: main/src/ui/main_window.vala:220
+msgid "No active conversations"
+msgstr "没有進行中的對話"
+
+#: main/src/ui/main_window.vala:221
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "開始對話"
+
+#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "加入頻道"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
+msgid "Today"
+msgstr "今天"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:316
+msgid "Yesterday"
+msgstr "昨天"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
+msgid "%a, %b %d"
+msgstr "%b%d日，%A"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:312
+#, no-c-format
+msgid "%b %d"
+msgstr "%b%d日"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#, c-format
+msgid "Downloading %s…"
+msgstr "正在下載 %s …"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#, c-format
+msgid "%s offered: %s"
+msgstr "分享了 %s：%s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#, c-format
+msgid "File offered: %s"
+msgstr "分享了檔案：%s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+msgid "File offered"
+msgstr "分享了檔案"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:62
+msgid "File transfer failed"
+msgstr "檔案傳送失敗"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
+#, c-format
+msgid "%s, %s and %i others are typing"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
+#, c-format
+msgid "%s, %s and %s are typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
+#, c-format
+msgid "%s and %s are typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
+#, c-format
+msgid "%s is typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/message_widget.vala:157
+msgid "Message too long"
+msgstr "訊息太長"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:184
+msgid "edited"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
+msgid "Accept"
+msgstr "同意"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
+msgid "Deny"
+msgstr "拒絕"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:48
+msgid "This contact would like to add you to their contact list"
+msgstr "此聯絡人想把您新增到他們的聯絡人清單"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "未加密"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+msgid "Unable to send message"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x，%H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x，%p%l∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%b%d日，%H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%b%d日，%p%l:%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%A，%H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%A，%p%l∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:319
+#, no-c-format
+msgid "%H∶%M"
+msgstr "%H:%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:320
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr "%p%l∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:323
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "%i 分鐘前"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:325
+msgid "Just now"
+msgstr "剛才"
 
 #: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:166
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
 msgid "Image sent"
-msgstr ""
+msgstr "影像已傳送"
 
 #: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:166
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
 msgid "File sent"
-msgstr ""
+msgstr "檔案已傳送"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:168
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
 msgid "Image received"
-msgstr ""
+msgstr "影像已接收"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:168
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
 msgid "File received"
-msgstr ""
+msgstr "檔案已接收"
 
 #: main/src/ui/notifications.vala:98
 msgid "Subscription request"
-msgstr ""
-
-#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
-#: main/src/ui/conversation_summary/subscription_notification.vala:37
-msgid "Accept"
-msgstr ""
-
-#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
-#: main/src/ui/conversation_summary/subscription_notification.vala:38
-msgid "Deny"
-msgstr ""
+msgstr "訂閱請求"
 
 #: main/src/ui/notifications.vala:112
 #: main/src/ui/manage_accounts/add_account_dialog.vala:258
 #: main/src/ui/add_conversation/conference_details_fragment.vala:188
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "無法連線到 %s"
 
 #: main/src/ui/notifications.vala:128
 #, c-format
 msgid "Invitation to %s"
-msgstr ""
+msgstr "邀請加入 %s"
 
 #: main/src/ui/notifications.vala:129
 #, c-format
 msgid "%s invited you to %s"
-msgstr ""
+msgstr "%s 邀請您加入 %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
-msgstr ""
+msgstr "移除帳號 %s ？"
 
 #: main/src/ui/manage_accounts/dialog.vala:128
 msgid "Remove"
-msgstr ""
+msgstr "移除"
 
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select avatar"
-msgstr ""
+msgstr "選取頭像照片"
 
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
-msgstr ""
+msgstr "選取"
 
 #: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:192
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
+#: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: main/src/ui/manage_accounts/dialog.vala:159
 msgid "Images"
-msgstr ""
+msgstr "影像"
 
 #: main/src/ui/manage_accounts/dialog.vala:163
 msgid "All files"
-msgstr ""
+msgstr "所有檔案"
 
 #: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
-msgstr ""
+msgstr "正在連線…"
 
 #: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connected"
-msgstr ""
+msgstr "已連線"
 
 #: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Disconnected"
-msgstr ""
+msgstr "連線已斷開"
 
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
-msgstr ""
+msgstr "密碼錯誤"
 
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
-msgstr ""
+msgstr "無效的 TLS 憑證"
 
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
 msgid "Error"
-msgstr ""
+msgstr "錯誤"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
 msgid "Add Account"
-msgstr ""
+msgstr "新增帳號"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:166
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "登入到 %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using %s"
+msgid "You can now start using the account %s"
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
@@ -147,110 +323,64 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:382
 #: main/src/ui/add_conversation/conference_details_fragment.vala:191
 msgid "Invalid address"
-msgstr ""
+msgstr "無效的位址"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"
-msgstr ""
+msgstr "使用者名稱或密碼錯誤"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Something went wrong"
-msgstr ""
+msgstr "出現了錯誤"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:321
 msgid "No response from server"
-msgstr ""
+msgstr "伺服器没有回應"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:327
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "在 %s 註冊"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:330
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "伺服器要求通過網頁進行註冊"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
-msgid "Open Registration"
+msgid "Open website"
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
-msgstr ""
+msgstr "註冊"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:346
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "查閱 %s 以取得關於如何註冊的資訊"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:146
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:160
-#: main/src/ui/util/helper.vala:136 main/src/ui/util/helper.vala:151
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:162
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:187
+#: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
 msgid "Me"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:258
-#: main/src/ui/conversation_summary/date_separator_populator.vala:100
-#, no-c-format
-msgid "%b %d"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:262
-#: main/src/ui/conversation_summary/date_separator_populator.vala:91
-msgid "Yesterday"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
-#, no-c-format
-msgid "%H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:266
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
-#, no-c-format
-msgid "%l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:269
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
-#, c-format
-msgid "%i min ago"
-msgid_plural "%i mins ago"
-msgstr[0] ""
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:271
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:212
-msgid "Just now"
-msgstr ""
-
-#: main/src/ui/application.vala:192
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/unified_window.vala:249 main/data/menu_add.ui:13
-#: main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr ""
+msgstr "我"
 
 #: main/src/ui/application.vala:192
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
 msgid "Join"
-msgstr ""
+msgstr "加入"
 
-#: main/src/ui/util/helper.vala:126
+#: main/src/ui/util/helper.vala:127
 #, c-format
 msgid "%s from %s"
-msgstr ""
+msgstr "%s 來自 %s"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:27
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
-msgstr ""
-
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
-msgid "Save"
-msgstr ""
+msgstr "新增"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:118
@@ -258,262 +388,138 @@ msgstr ""
 #: main/data/manage_accounts/add_account_dialog.ui:410
 #: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
-msgstr ""
+msgstr "下一個"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:147
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
-msgstr ""
-
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:248
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr ""
+msgstr "返回"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
-msgstr ""
+msgstr "開始"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Joining…"
-msgstr ""
+msgstr "正在加入…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Password required to enter room"
-msgstr ""
+msgstr "需要密碼才能加入聊天室"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:174
 msgid "Banned from joining or creating conference"
-msgstr ""
+msgstr "被禁止加入或建立聊天室"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Room does not exist"
-msgstr ""
+msgstr "聊天室不存在"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Not allowed to create room"
-msgstr ""
+msgstr "不允許建立聊天室"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Members-only room"
-msgstr ""
+msgstr "聊天室不對外開放"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:183
 msgid "Choose a different nick"
-msgstr ""
+msgstr "選取一個不同的暱稱"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:185
 msgid "Too many occupants in room"
-msgstr ""
-
-#: main/src/ui/unified_window.vala:227
-msgid "Welcome to Dino!"
-msgstr ""
-
-#: main/src/ui/unified_window.vala:228
-msgid "Sign in or create an account to get started."
-msgstr ""
-
-#: main/src/ui/unified_window.vala:229
-msgid "Set up account"
-msgstr ""
-
-#: main/src/ui/unified_window.vala:237
-msgid "No active accounts"
-msgstr ""
-
-#: main/src/ui/unified_window.vala:238
-msgid "Manage accounts"
-msgstr ""
-
-#: main/src/ui/unified_window.vala:247
-msgid "No active conversations"
-msgstr ""
-
-#: main/src/ui/conversation_summary/file_widget.vala:275
-#, c-format
-msgid "Downloading %s…"
-msgstr ""
-
-#: main/src/ui/conversation_summary/file_widget.vala:281
-#, c-format
-msgid "%s offered: %s"
-msgstr ""
-
-#: main/src/ui/conversation_summary/file_widget.vala:283
-#, c-format
-msgid "File offered: %s"
-msgstr ""
-
-#: main/src/ui/conversation_summary/file_widget.vala:285
-msgid "File offered"
-msgstr ""
-
-#: main/src/ui/conversation_summary/file_widget.vala:290
-msgid "File transfer failed"
-msgstr ""
-
-#: main/src/ui/conversation_summary/date_separator_populator.vala:85
-msgid "Today"
-msgstr ""
-
-#: main/src/ui/conversation_summary/date_separator_populator.vala:98
-msgid "%a, %b %d"
-msgstr ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:145
-#, c-format
-msgid "%s, %s and %i others"
-msgstr ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:147
-#, c-format
-msgid "%s, %s and %s"
-msgstr ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:149
-#, c-format
-msgid "%s and %s"
-msgstr ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:154
-msgid "is typing…"
-msgid_plural "are typing…"
-msgstr[0] ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:156
-msgid "has stopped typing"
-msgstr ""
-
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:59
-msgid "Message too long"
-msgstr ""
-
-#: main/src/ui/conversation_summary/subscription_notification.vala:48
-msgid "This contact would like to add you to their contact list"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
-#, no-c-format
-msgid "%x, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:194
-#, no-c-format
-msgid "%x, %l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
-#, no-c-format
-msgid "%b %d, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
-#, no-c-format
-msgid "%b %d, %l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
-#, no-c-format
-msgid "%a, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
-#, no-c-format
-msgid "%a, %l∶%M %p"
-msgstr ""
+msgstr "聊天室人數過多"
 
 #: main/src/ui/occupant_menu/list.vala:102
 msgid "Owner"
-msgstr ""
+msgstr "擁有人"
 
 #: main/src/ui/occupant_menu/list.vala:104
 msgid "Admin"
-msgstr ""
+msgstr "管理員"
 
 #: main/src/ui/occupant_menu/list.vala:106
 msgid "Member"
-msgstr ""
+msgstr "成員"
 
 #: main/src/ui/occupant_menu/list.vala:108
 msgid "User"
-msgstr ""
+msgstr "使用者"
 
 #: main/src/ui/occupant_menu/view.vala:29
 #: main/src/ui/occupant_menu/view.vala:38
 msgid "Invite"
-msgstr ""
+msgstr "邀請"
 
 #: main/src/ui/occupant_menu/view.vala:37
 msgid "Invite to Conference"
-msgstr ""
+msgstr "邀請加入聊天室"
 
 #: main/src/ui/occupant_menu/view.vala:88
 msgid "Start private conversation"
-msgstr ""
+msgstr "開始私人對話"
 
 #: main/src/ui/occupant_menu/view.vala:96
 msgid "Kick"
-msgstr ""
+msgstr "踢走"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
-msgid "%i search results"
-msgstr ""
+msgid "%i search result"
+msgid_plural "%i search results"
+msgstr[0] ""
 
 #: main/src/ui/global_search.vala:167
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "在 %s"
 
 #: main/src/ui/global_search.vala:167
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "和 %s"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr ""
+msgstr "聊天室詳細情況"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
-msgstr ""
+msgstr "聯絡人詳細情況"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
-msgstr ""
+msgstr "聊天室名稱"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:53
 msgid "Description of the room"
-msgstr ""
+msgstr "聊天室介紹"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Persistent"
-msgstr ""
+msgstr "永久"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:57
 msgid "The room will persist after the last occupant leaves"
-msgstr ""
+msgstr "聊天室在最後一個成員離開後仍然存在"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Publicly searchable"
-msgstr ""
+msgstr "可被公開搜尋"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
-msgstr ""
+msgstr "成員可以變更主旨"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
-msgid "Discover real JIDs"
+msgid "Permission to view JIDs"
 msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
-msgid "Who may discover real JIDs?"
+msgid "Who is allowed to view the occupants' JIDs?"
 msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
@@ -522,185 +528,183 @@ msgstr ""
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
-msgstr ""
+msgstr "密碼"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
-msgid "Password required for room entry, if any"
+msgid "A password to restrict access to the room"
 msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
-msgstr ""
+msgstr "發言"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:75
 msgid "Only occupants with voice may send messages"
-msgstr ""
+msgstr "僅限有發言權的成員可以傳送訊息"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Members only"
-msgstr ""
+msgstr "僅限會員"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:79
 msgid "Only members may enter the room"
-msgstr ""
+msgstr "只有會員才可以加入聊天室"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:82
 msgid "Message history"
-msgstr ""
+msgstr "訊息紀錄"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
-msgstr ""
+msgstr "聊天室儲存的訊息紀錄的最大數目"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
-msgstr ""
+msgstr "聊天室設定"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:12
 #: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
-msgstr ""
+msgstr "設定"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr ""
+msgstr "封鎖"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
-msgstr ""
+msgstr "雙向的通訊以及狀態更新被封鎖"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
-msgstr ""
+msgstr "本地設定"
 
 #: main/src/ui/contact_details/settings_provider.vala:28
 #: main/data/settings_dialog.ui:22
 msgid "Send typing notifications"
-msgstr ""
+msgstr "傳送「正在輸入」提示"
 
 #: main/src/ui/contact_details/settings_provider.vala:33
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "傳送已讀回條"
 
 #: main/src/ui/contact_details/settings_provider.vala:38
 #: main/src/ui/contact_details/settings_provider.vala:47
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 #: main/src/ui/contact_details/settings_provider.vala:82
 #: main/src/ui/contact_details/settings_provider.vala:122
 #: main/src/ui/contact_details/settings_provider.vala:124
 msgid "On"
-msgstr ""
+msgstr "啟用"
 
 #: main/src/ui/contact_details/settings_provider.vala:84
 #: main/src/ui/contact_details/settings_provider.vala:122
 #: main/src/ui/contact_details/settings_provider.vala:125
 msgid "Off"
-msgstr ""
+msgstr "停用"
 
 #: main/src/ui/contact_details/settings_provider.vala:86
 msgid "Only when mentioned"
-msgstr ""
+msgstr "僅限被提及時"
 
 #: main/src/ui/contact_details/settings_provider.vala:88
 #: main/src/ui/contact_details/settings_provider.vala:123
 #, c-format
 msgid "Default: %s"
-msgstr ""
+msgstr "預設：%s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 msgid "Search messages"
-msgstr ""
+msgstr "搜尋訊息"
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
+msgstr "成員"
+
+#: main/data/message_item_widget_edit_mode.ui:60
+msgid "Update message"
 msgstr ""
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
-msgstr ""
+msgstr "有新訊息時提醒"
 
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
-msgstr ""
+msgstr "將文字表情轉換爲表情符號"
 
 #: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:7
 msgid "Accounts"
-msgstr ""
+msgstr "帳諕"
 
 #: main/data/manage_accounts/dialog.ui:200
 msgid "Local alias"
-msgstr ""
+msgstr "本地別名"
 
 #: main/data/manage_accounts/dialog.ui:255
 msgid "No accounts configured"
-msgstr ""
+msgstr "未有設定好的帳號"
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
-msgstr ""
+msgstr "新增帳號"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "登入"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:328
 msgid "Create account"
-msgstr ""
+msgstr "建立帳號"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "無法建立安全連線"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
-msgstr ""
+msgstr "連線"
 
 #: main/data/manage_accounts/add_account_dialog.ui:340
 msgid "Choose a public server"
-msgstr ""
+msgstr "選取一個公眾伺服器"
 
 #: main/data/manage_accounts/add_account_dialog.ui:369
 msgid "Or specify a server address"
-msgstr ""
+msgstr "或指定一個伺服器位址"
 
 #: main/data/manage_accounts/add_account_dialog.ui:389
 msgid "Sign in instead"
-msgstr ""
+msgstr "登入"
 
 #: main/data/manage_accounts/add_account_dialog.ui:470
 msgid "Pick another server"
-msgstr ""
+msgstr "選取另一個伺服器"
 
 #: main/data/manage_accounts/add_account_dialog.ui:542
 msgid "All set up!"
-msgstr ""
+msgstr "準備好了！"
 
 #: main/data/manage_accounts/add_account_dialog.ui:578
 msgid "Finish"
-msgstr ""
-
-#: main/data/menu_encryption.ui:14
-msgid "Unencrypted"
-msgstr ""
+msgstr "完成"
 
 #: main/data/menu_app.ui:17
-#, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "鍵盤捷徑鍵"
 
 #: main/data/menu_app.ui:21
-#, fuzzy
 msgid "About Dino"
 msgstr "關於 Dino"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
-msgstr ""
+msgstr "現代化的 XMPP 聊天用戶端"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -708,6 +712,8 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino 是一個爲桌面打造的現代化的開放源始碼聊天用戶端。它致力於提供一個簡洁而可"
+"靠的 Jabber/XMPP 體驗，同時亦尊重您的隱私。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -715,36 +721,38 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"它支持 OMEMO 和 OpenPGP 兩種端到端加密方式，並且容許設定隱私相關的特性譬如已"
+"讀回條和正在輸入提示。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
-msgstr ""
+msgstr "Dino 從伺服器取得訊息並與其他裝置同步。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
-msgstr ""
+msgstr "含有對話的主視窗"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
 msgid "Account"
-msgstr ""
+msgstr "帳號"
 
 #: main/data/add_conversation/conference_details_fragment.ui:123
 #: main/data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
-msgstr ""
+msgstr "暱稱"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:175
 #: main/data/add_conversation/add_contact_dialog.ui:102
 msgid "Alias"
-msgstr ""
+msgstr "別名"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr ""
+msgstr "新增聯絡人"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
@@ -756,32 +764,74 @@ msgstr "導航"
 
 #: main/data/shortcuts.ui:37
 msgid "Jump to next conversation"
-msgstr ""
+msgstr "跳到下一個對話"
 
 #: main/data/shortcuts.ui:44
 msgid "Jump to previous conversation"
-msgstr ""
+msgstr "跳到上一個對話"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "目前没有搜尋"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "輸入關鍵字進行搜尋"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "找不到符合條件的訊息"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "檢查拼字或嘗試移除篩選器"
 
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
-msgstr ""
+msgstr "點擊此處開始對話或加入頻道。"
 
-#: main/data/unified_main_content.ui:147
+#: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
-msgstr ""
+msgstr "您没有開啟的對話"
+
+#, c-format
+#~ msgid "%s, %s and %i others"
+#~ msgstr "%s、%s 和另外 %i 人"
+
+#, c-format
+#~ msgid "You can now start using %s"
+#~ msgstr "您現在可以開始使用 %s"
+
+#~ msgid "Open Registration"
+#~ msgstr "開啟網頁"
+
+#~ msgid "Save"
+#~ msgstr "儲存"
+
+#, c-format
+#~ msgid "%s, %s and %s"
+#~ msgstr "%s、%s 和 %s"
+
+#, c-format
+#~ msgid "%s and %s"
+#~ msgstr "%s 和 %s"
+
+#~ msgid "is typing…"
+#~ msgid_plural "are typing…"
+#~ msgstr[0] "正在輸入…"
+
+#~ msgid "has stopped typing"
+#~ msgstr "已經停止輸入"
+
+#, c-format
+#~ msgid "%i search results"
+#~ msgstr "%i 個搜尋結果"
+
+#~ msgid "Discover real JIDs"
+#~ msgstr "檢閱真正的 JID"
+
+#~ msgid "Who may discover real JIDs?"
+#~ msgstr "誰可以檢閱真正的 JID？"
+
+#~ msgid "Password required for room entry, if any"
+#~ msgstr "加入聊天室需要的密碼，可不填"
