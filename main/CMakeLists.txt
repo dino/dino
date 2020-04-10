@@ -50,6 +50,7 @@ set(RESOURCE_LIST
     conversation_list_titlebar_csd.ui
     conversation_row.ui
     conversation_view.ui
+    file_default_widget.ui
     emojichooser.ui
     global_search.ui
     conversation_content_view/image_toolbar.ui
@@ -140,6 +141,7 @@ SOURCES
     src/ui/conversation_content_view/conversation_item_skeleton.vala
     src/ui/conversation_content_view/conversation_view.vala
     src/ui/conversation_content_view/date_separator_populator.vala
+    src/ui/conversation_content_view/file_default_widget.vala
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/message_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
