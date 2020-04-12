@@ -18,16 +18,15 @@ Make sure to install all [dependencies](https://github.com/dino/dino/wiki/Build#
 Resources
 ---------
 - Check out the [Dino website](https://dino.im).
-- Join our XMPP conference room at `chat@dino.im`.
+- Join our XMPP channel at `chat@dino.im`.
 - The [wiki](https://github.com/dino/dino/wiki) provides additional information.
 
 Contribute
 ----------
-- Pull requests are welcome. A good start are [good first issues](https://github.com/dino/dino/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22). 
-Please discuss bigger plans on contributions first in our XMPP conference room 'chat@dino.im'.
+- Pull requests are welcome. [These](https://github.com/dino/dino/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) might be good first issues. Please discuss bigger changes in our channel first.
 - Look at [how to debug](https://github.com/dino/dino/wiki/Debugging) Dino before you report a bug.
-- Help [translating](https://hosted.weblate.org/projects/dino/) Dino into your language.
-- Make a [donation](https://dino.im/#donate)
+- Help [translating](https://github.com/dino/dino/wiki/Translations) Dino into your language.
+- Make a [donation](https://dino.im/#donate).
 
 License
 -------
