@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
-"PO-Revision-Date: 2019-12-26 23:21+0000\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: none\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: main/src/ui/main_window.vala:200
 msgid "Welcome to Dino!"
@@ -57,22 +57,22 @@ msgstr "Anslut till kanal"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:83
 msgid "Today"
-msgstr "I dag"
+msgstr "Idag"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:89
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:316
 msgid "Yesterday"
-msgstr "I går"
+msgstr "Igår"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:96
 msgid "%a, %b %d"
-msgstr "%a %d %b"
+msgstr "%a, %b %d"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:98
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:312
 #, no-c-format
 msgid "%b %d"
-msgstr "%d %b"
+msgstr "%b %d"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:46
 #, c-format
@@ -100,22 +100,22 @@ msgstr "Filöverföring misslyckades"
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
 msgid "%s, %s and %i others are typing"
-msgstr ""
+msgstr "%s, %s och %i skriver"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s och %s skriver…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:114
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s och %s skriver…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:116
 #, c-format
 msgid "%s is typing…"
-msgstr ""
+msgstr "%s skriver…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:157
 msgid "Message too long"
@@ -123,7 +123,7 @@ msgstr "Meddelandet är för långt"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:184
 msgid "edited"
-msgstr ""
+msgstr "redigerad"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
@@ -146,7 +146,7 @@ msgstr "Okrypterat"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Unable to send message"
-msgstr ""
+msgstr "Kunde inte skicka meddelandet"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
 #, no-c-format
@@ -161,12 +161,12 @@ msgstr "%x, %l∶%M %p"
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr "%d %b, %H∶%M"
+msgstr "%b %d, %H∶%M"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr "%d %b, %l∶%M %p"
+msgstr "%b %d, %l∶%M %p"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
 #, no-c-format
@@ -182,7 +182,7 @@ msgstr "%a, %l∶%M %p"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:319
 #, no-c-format
 msgid "%H∶%M"
-msgstr "%H:%M"
+msgstr "%H : %M"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:320
@@ -201,7 +201,7 @@ msgstr[1] "%i minuter sedan"
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:325
 msgid "Just now"
-msgstr "Nyss"
+msgstr "Just nu"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:193
@@ -314,9 +314,9 @@ msgid "Sign in to %s"
 msgstr "Logga in på %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
-#, c-format
-msgid "You can now start using the account %s"
-msgstr ""
+#, fuzzy, c-format
+msgid "You can now use the account %s."
+msgstr "Du kan nu börja använda kontot %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
@@ -349,7 +349,7 @@ msgstr "Servern kräver registrering genom en webbsida"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open website"
-msgstr ""
+msgstr "Öppna webbsida"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
@@ -470,8 +470,8 @@ msgstr "Kasta ut"
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i sökresultat"
+msgstr[1] "%i sökresultat"
 
 #: main/src/ui/global_search.vala:167
 #, c-format
@@ -494,11 +494,11 @@ msgstr "Kontaktdetaljer"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
-msgstr "Namn för rummet"
+msgstr "Namn på rummet"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:53
 msgid "Description of the room"
-msgstr "Beskrivning för rummet"
+msgstr "Beskrivning av rummet"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Persistent"
@@ -506,7 +506,8 @@ msgstr "Behåll"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:57
 msgid "The room will persist after the last occupant leaves"
-msgstr "Rummet kommer att finnas kvar även efter att sista besökaren lämnat"
+msgstr ""
+"Rummet kommer att finnas kvar även efter att sista användaren har lämnat"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Publicly searchable"
@@ -514,15 +515,15 @@ msgstr "Offentligt sökbart"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
-msgstr "Besökare får ändra ämnet"
+msgstr "Användare får ändra ämnet"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "Tillstånd att visa JID"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "Vem har tillstånd att se användarnas JID?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
@@ -534,7 +535,7 @@ msgstr "Lösenord"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
-msgstr ""
+msgstr "Det krävs ett lösenord för att få tillträde till rummet"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
@@ -601,13 +602,13 @@ msgstr "Aviseringar"
 #: main/src/ui/contact_details/settings_provider.vala:122
 #: main/src/ui/contact_details/settings_provider.vala:124
 msgid "On"
-msgstr "Av"
+msgstr "På"
 
 #: main/src/ui/contact_details/settings_provider.vala:84
 #: main/src/ui/contact_details/settings_provider.vala:122
 #: main/src/ui/contact_details/settings_provider.vala:125
 msgid "Off"
-msgstr "På"
+msgstr "Av"
 
 #: main/src/ui/contact_details/settings_provider.vala:86
 msgid "Only when mentioned"
@@ -629,7 +630,7 @@ msgstr "Medlemmar"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
-msgstr ""
+msgstr "Uppdatera meddelande"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"

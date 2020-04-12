@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
-"PO-Revision-Date: 2020-02-04 16:50+0000\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: main/src/ui/main_window.vala:200
 msgid "Welcome to Dino!"
@@ -24,7 +24,7 @@ msgstr "Bienvenue dans Dino !"
 
 #: main/src/ui/main_window.vala:201
 msgid "Sign in or create an account to get started."
-msgstr "Connecter-vous ou créer un compte pour commencer."
+msgstr "Connectez-vous ou créez un compte pour commencer."
 
 #: main/src/ui/main_window.vala:202
 msgid "Set up account"
@@ -101,22 +101,22 @@ msgstr "Échec du transfert de fichier"
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
 msgid "%s, %s and %i others are typing"
-msgstr ""
+msgstr "%s, %s et %i sont en train d’écrire"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s et %s sont en train d’écrire…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:114
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s et %s sont en train d’écrire…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:116
 #, c-format
 msgid "%s is typing…"
-msgstr ""
+msgstr "%s est en train d’écrire…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:157
 msgid "Message too long"
@@ -124,7 +124,7 @@ msgstr "Message trop long"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:184
 msgid "edited"
-msgstr ""
+msgstr "modifié"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
@@ -315,9 +315,9 @@ msgid "Sign in to %s"
 msgstr "Se connecter à %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
-#, c-format
-msgid "You can now start using the account %s"
-msgstr ""
+#, fuzzy, c-format
+msgid "You can now use the account %s."
+msgstr "Vous pouvez maintenant utiliser le compte %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
@@ -350,7 +350,7 @@ msgstr "Ce serveur nécessite de s’inscrire depuis son site web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open website"
-msgstr ""
+msgstr "Ouvrir le site web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
@@ -471,8 +471,8 @@ msgstr "Éjecter"
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i résultat"
+msgstr[1] "%i résultats"
 
 #: main/src/ui/global_search.vala:167
 #, c-format
@@ -519,11 +519,11 @@ msgstr "Les occupants peuvent changer le sujet"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "Autorisation de voir les JID"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "Qui peut voir les JID des participants ?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
@@ -535,7 +535,7 @@ msgstr "Mot de passe"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
-msgstr ""
+msgstr "Un mot de passe pour restreindre l'accès au salon"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
@@ -630,7 +630,7 @@ msgstr "Membres"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
-msgstr ""
+msgstr "Mettre à jour le message"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -638,7 +638,7 @@ msgstr "Notifier l’arrivée de nouveaux messages"
 
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
-msgstr "Convertir les smileys en emojis"
+msgstr "Convertir les émoticônes en émojis"
 
 #: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:7
 msgid "Accounts"
@@ -795,7 +795,7 @@ msgstr "Vérifiez l’orthographe ou essayez de supprimer des filtres"
 
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
-msgstr "Cliquez ici pour commencer une discussion ou rejoindre un salon."
+msgstr "Cliquer ici pour commencer une discussion ou rejoindre un salon."
 
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"

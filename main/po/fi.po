@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
-"PO-Revision-Date: 2018-05-13 10:18+0000\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
 "translations/fi/>\n"
 "Language: fi\n"
@@ -16,15 +16,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: main/src/ui/main_window.vala:200
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Tervetuloa Dino!"
 
 #: main/src/ui/main_window.vala:201
 msgid "Sign in or create an account to get started."
-msgstr ""
+msgstr "Kirjaudu sisään tai luo tili päästäksesi alkuun."
 
 #: main/src/ui/main_window.vala:202
 msgid "Set up account"
@@ -78,7 +78,7 @@ msgstr "%d. %b"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:46
 #, c-format
 msgid "Downloading %s…"
-msgstr ""
+msgstr "Lataa %s…"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:52
 #, c-format
@@ -101,22 +101,22 @@ msgstr ""
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
 msgid "%s, %s and %i others are typing"
-msgstr ""
+msgstr "%s, %s ja %i muuta kirjoittavat"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s ja %s kirjoittavat…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:114
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s ja %s kirjoittavat…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:116
 #, c-format
 msgid "%s is typing…"
-msgstr ""
+msgstr "%s kirjoittaa…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:157
 msgid "Message too long"
@@ -124,7 +124,7 @@ msgstr "Viesti liian pitkä"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:184
 msgid "edited"
-msgstr ""
+msgstr "muokattu"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
@@ -147,7 +147,7 @@ msgstr "Salaamaton"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Unable to send message"
-msgstr ""
+msgstr "Viestiä ei voi lähettää"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
 #, no-c-format
@@ -207,22 +207,22 @@ msgstr "Juuri nyt"
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:193
 msgid "Image sent"
-msgstr ""
+msgstr "Kuva lähetetty"
 
 #: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:193
 msgid "File sent"
-msgstr ""
+msgstr "Tiedosto lähetetty"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:195
 msgid "Image received"
-msgstr ""
+msgstr "Kuva vastaanotettu"
 
 #: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:195
 msgid "File received"
-msgstr ""
+msgstr "Tiedosto vastaanotettu"
 
 #: main/src/ui/notifications.vala:98
 msgid "Subscription request"
@@ -231,19 +231,19 @@ msgstr "Yhteyspyyntö"
 #: main/src/ui/notifications.vala:112
 #: main/src/ui/manage_accounts/add_account_dialog.vala:258
 #: main/src/ui/add_conversation/conference_details_fragment.vala:188
-#, c-format
+#, fuzzy, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Ei voitu yhdistää: %s"
 
 #: main/src/ui/notifications.vala:128
-#, c-format
+#, fuzzy, c-format
 msgid "Invitation to %s"
-msgstr ""
+msgstr "Kutsu %s"
 
 #: main/src/ui/notifications.vala:129
-#, c-format
+#, fuzzy, c-format
 msgid "%s invited you to %s"
-msgstr ""
+msgstr "%s on kutsunut sinut %s-ryhmään"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -310,13 +310,13 @@ msgid "Add Account"
 msgstr "Lisää tili"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:166
-#, c-format
+#, fuzzy, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Kirjaudu sisään %s-ryhmään"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using the account %s"
+msgid "You can now use the account %s."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
@@ -325,19 +325,19 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:382
 #: main/src/ui/add_conversation/conference_details_fragment.vala:191
 msgid "Invalid address"
-msgstr ""
+msgstr "Väärä osoite"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Väärä käyttäjätunnus tai salasana"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Something went wrong"
-msgstr ""
+msgstr "Jokin meni pieleen"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:321
 msgid "No response from server"
-msgstr ""
+msgstr "Palvelin ei vastaa"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:327
 #, c-format
@@ -346,7 +346,7 @@ msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:330
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "Palvelin vatii kirjautumaan verkkosivuston kautta"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open website"
@@ -354,12 +354,12 @@ msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
-msgstr ""
+msgstr "Rekisteröity"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:346
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "Tarkista %s ohjeet kirjautumiseen"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:162
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:187
@@ -396,7 +396,7 @@ msgstr "Seuraava"
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
-msgstr ""
+msgstr "Takaisin"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"

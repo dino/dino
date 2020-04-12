@@ -112,7 +112,7 @@ public class BadMessagesWidget : Box {
         var sb = new StringBuilder();
         if (badness_type == BadnessType.UNTRUSTED) {
             sb.append("Your contact has been using an untrusted device. You won't see messages from devices that you do not trust.");
-            sb.append(" <a href=\"\">%s</a>".printf(_("Manage devices")));
+            sb.append(" <a href=\"\">%s</a>".printf("Manage devices"));
         } else {
             sb.append("Your contact does not trust this device. That means, you might be missing messages.");
         }

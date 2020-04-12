@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2020-01-16 00:21+0000\n"
 "Language-Team: Catalan; Valencian <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -314,7 +314,7 @@ msgstr "Entra a %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using the account %s"
+msgid "You can now use the account %s."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263

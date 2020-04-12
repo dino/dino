@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
-"PO-Revision-Date: 2020-04-04 01:18+0000\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
@@ -100,22 +100,22 @@ msgstr "檔案傳送失敗"
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
 msgid "%s, %s and %i others are typing"
-msgstr ""
+msgstr "%s, %s 和其他 %i 個人正在輸入"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s 和 %s 正在輸入…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:114
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s 和 %s 正在輸入…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:116
 #, c-format
 msgid "%s is typing…"
-msgstr ""
+msgstr "%s 正在輸入…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:157
 msgid "Message too long"
@@ -123,7 +123,7 @@ msgstr "訊息太長"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:184
 msgid "edited"
-msgstr ""
+msgstr "已編輯"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
@@ -146,7 +146,7 @@ msgstr "未加密"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Unable to send message"
-msgstr ""
+msgstr "無法傳送訊息"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
 #, no-c-format
@@ -313,9 +313,9 @@ msgid "Sign in to %s"
 msgstr "登入到 %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
-#, c-format
-msgid "You can now start using the account %s"
-msgstr ""
+#, fuzzy, c-format
+msgid "You can now use the account %s."
+msgstr "您可以開始使用帳號 %s 了"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
@@ -348,7 +348,7 @@ msgstr "伺服器要求通過網頁進行註冊"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open website"
-msgstr ""
+msgstr "開啟網頁"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
@@ -469,7 +469,7 @@ msgstr "踢走"
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
+msgstr[0] "%i 個搜尋結果"
 
 #: main/src/ui/global_search.vala:167
 #, c-format
@@ -516,11 +516,11 @@ msgstr "成員可以變更主旨"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "JID 查閱權限"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "誰可以查看成員的 JID？"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
@@ -532,7 +532,7 @@ msgstr "密碼"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
-msgstr ""
+msgstr "加入聊天室需要的密碼"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
@@ -627,7 +627,7 @@ msgstr "成員"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
-msgstr ""
+msgstr "更新訊息"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -712,8 +712,8 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino 是一個爲桌面打造的現代化的開放源始碼聊天用戶端。它致力於提供一個簡洁而可"
-"靠的 Jabber/XMPP 體驗，同時亦尊重您的隱私。"
+"Dino 是一個爲桌面打造的現代化開放原始碼聊天用戶端。它致力於提供一份簡洁而可靠"
+"的 Jabber/XMPP 體驗，同時亦尊重您的隱私。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -721,7 +721,7 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
-"它支持 OMEMO 和 OpenPGP 兩種端到端加密方式，並且容許設定隱私相關的特性譬如已"
+"它支持 OMEMO 和 OpenPGP 兩種端對端加密方式，並且容許設定隱私相關的特性譬如已"
 "讀回條和正在輸入提示。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:12

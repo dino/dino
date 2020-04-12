@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2020-01-12 13:21+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "ar/>\n"
@@ -26,10 +26,6 @@ msgstr "الإدارة"
 #: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
 msgstr "لدى هذا المُراسِل أجهزة جديدة"
-
-#: plugins/omemo/src/ui/bad_messages_populator.vala:115
-msgid "Manage devices"
-msgstr ""
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"

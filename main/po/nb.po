@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
-"PO-Revision-Date: 2019-12-26 23:21+0000\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "translations/nb_NO/>\n"
 "Language: nb\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: main/src/ui/main_window.vala:200
 msgid "Welcome to Dino!"
@@ -101,22 +101,22 @@ msgstr "Filoverføring mislyktes"
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
 msgid "%s, %s and %i others are typing"
-msgstr ""
+msgstr "%s, %s og %i andre skriver"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s og %s skriver…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:114
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s og %s skriver…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:116
 #, c-format
 msgid "%s is typing…"
-msgstr ""
+msgstr "%s skriver…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:157
 msgid "Message too long"
@@ -124,7 +124,7 @@ msgstr "Meldingen er for lang"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:184
 msgid "edited"
-msgstr ""
+msgstr "redigert"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
@@ -147,7 +147,7 @@ msgstr "Ukryptert"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Unable to send message"
-msgstr ""
+msgstr "Kunneikke sende melding"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
 #, no-c-format
@@ -315,9 +315,9 @@ msgid "Sign in to %s"
 msgstr "Logg inn på %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
-#, c-format
-msgid "You can now start using the account %s"
-msgstr ""
+#, fuzzy, c-format
+msgid "You can now use the account %s."
+msgstr "Du kan begynne å bruke kontoen %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
@@ -350,7 +350,7 @@ msgstr "Tjeneren krever at man logger inn via en nettside"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open website"
-msgstr ""
+msgstr "Åpne nettside"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
@@ -471,8 +471,8 @@ msgstr "Kast ut"
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i søkeresultat"
+msgstr[1] "%i søkeresultater"
 
 #: main/src/ui/global_search.vala:167
 #, c-format
@@ -519,11 +519,11 @@ msgstr "Deltagere kan endre emne"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "Tilgang til visning av JID-er"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "Hvem skal tillates å vise brukernes JID-er?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
@@ -535,7 +535,7 @@ msgstr "Passord"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
-msgstr ""
+msgstr "Et passord for å begrense tilgang til rommet"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
@@ -559,7 +559,7 @@ msgstr "Meldingshistorikk"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
-msgstr "Maksimalt antall meldinger med historikk som skal svares av rommet"
+msgstr "Maksimalt mengde historikk som skal utstedes av rommet"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
@@ -630,7 +630,7 @@ msgstr "Medlemmer"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
-msgstr ""
+msgstr "Oppdater melding"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"

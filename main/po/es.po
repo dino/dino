@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
-"PO-Revision-Date: 2019-12-28 16:21+0000\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/"
 "translations/es/>\n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: main/src/ui/main_window.vala:200
 msgid "Welcome to Dino!"
@@ -124,7 +124,7 @@ msgstr "Mensaje demasiado largo"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:184
 msgid "edited"
-msgstr ""
+msgstr "editado"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
@@ -316,7 +316,7 @@ msgstr "Iniciar sesión con %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using the account %s"
+msgid "You can now use the account %s."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263

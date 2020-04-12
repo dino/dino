@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2020-02-04 16:50+0000\n"
 "Language-Team: none\n"
 "Language: ie\n"
@@ -315,7 +315,7 @@ msgstr "Inregistrar se in %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using the account %s"
+msgid "You can now use the account %s."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263

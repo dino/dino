@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2020-01-28 23:24+0000\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/dino/translations/"
 "pl/>\n"
@@ -318,7 +318,7 @@ msgstr "Zaloguj się do %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using the account %s"
+msgid "You can now use the account %s."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263

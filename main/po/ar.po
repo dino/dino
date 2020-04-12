@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2020-01-12 13:21+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
@@ -20,6 +20,7 @@ msgstr ""
 "X-Generator: Weblate 3.10.1\n"
 
 #: main/src/ui/main_window.vala:200
+#, fuzzy
 msgid "Welcome to Dino!"
 msgstr "مرحبا بكم على دينو!"
 
@@ -321,7 +322,7 @@ msgstr "الإتصال بـ %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using the account %s"
+msgid "You can now use the account %s."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263

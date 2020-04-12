@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2020-03-26 13:46+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
 "eu/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: main/src/ui/main_window.vala:200
 msgid "Welcome to Dino!"
-msgstr "Ongi etorri Dinora!"
+msgstr "Ongi etorri Dino!"
 
 #: main/src/ui/main_window.vala:201
 msgid "Sign in or create an account to get started."
@@ -316,7 +316,7 @@ msgstr "Hasi saioa %s(e)n"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using the account %s"
+msgid "You can now use the account %s."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263

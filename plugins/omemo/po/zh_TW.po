@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 00:00+0200\n"
-"PO-Revision-Date: 2020-04-03 06:39+0000\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -25,10 +25,6 @@ msgstr "管理"
 #: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
 msgstr "此連絡人有新的裝置"
-
-#: plugins/omemo/src/ui/bad_messages_populator.vala:115
-msgid "Manage devices"
-msgstr ""
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
@@ -51,11 +47,11 @@ msgstr "將指紋與顯示在聯絡人裝置上的指紋逐個字元地進行比
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints differ"
-msgstr ""
+msgstr "指紋不同"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 msgid "Fingerprints match"
-msgstr ""
+msgstr "指紋吻合"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -76,7 +72,7 @@ msgstr "驗證金鑰"
 msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
-msgstr ""
+msgstr "未來由 %s 從使用了此金鑰的裝置所傳送的訊息都將會在對話視窗內加亮顯示。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -111,7 +107,7 @@ msgstr "拒絕金鑰"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
-msgstr ""
+msgstr "封鎖與該聯絡人使用此金鑰的裝置之間的加密通訊。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -122,7 +118,7 @@ msgstr "接收金鑰"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
-msgstr ""
+msgstr "允許與該聯絡人使用此金鑰的裝置之間的加密通訊。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -137,9 +133,9 @@ msgstr "已接收"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, fuzzy, c-format
+#, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
-msgstr "這代表 %s 可以使用它來傳送及收受訊息。"
+msgstr "這表示 %s 可以使用它來傳送及收受加密訊息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
@@ -159,7 +155,7 @@ msgstr "已拒絕"
 msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
-msgstr ""
+msgstr "這表示 %s 無法使用它來解密您的訊息，同時您不會看到使用它加密的訊息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
@@ -167,13 +163,15 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
+"您不會看到從 %s 使用此金鑰的裝置所傳送的加密訊息。同時，該裝置亦無法再解密您"
+"的訊息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
-msgstr ""
+msgstr "您將能夠與 %s 使用此金鑰的裝置互相傳送加密訊息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -189,7 +187,7 @@ msgstr "自動接收新密鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
+msgstr "新的來自此聯絡人的加密金鑰將會被自動接收。"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -210,7 +208,7 @@ msgstr "未啟用的金鑰"
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
-msgstr ""
+msgstr "新的來自您其它裝置的加密金鑰將會被自動接收。"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -246,6 +244,9 @@ msgstr "加密"
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d 個 OMEMO 裝置"
+
+#~ msgid "Manage devices"
+#~ msgstr "管理裝置"
 
 #~ msgid "Not matching"
 #~ msgstr "不吻合"
