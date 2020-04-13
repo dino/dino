@@ -98,20 +98,19 @@
                                                 </attributes>
                                             </object>
                                         </child>
+                                        <child>
+                                            <object class="GtkLabel" id="unread_count_label">
+                                                <property name="vexpand">False</property>
+                                                <property name="visible">False</property>
+                                                <property name="margin-start">15</property>
+                                                <property name="xalign">0.5</property>
+                                                <style>
+                                                    <class name="notify-badge"/>
+                                                </style>
+                                            </object>
+                                        </child>
                                     </object>
                                 </child>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkLabel" id="unread_count_label">
-                                <property name="vexpand">False</property>
-                                <property name="visible">False</property>
-                                <property name="margin-start">15</property>
-                                <property name="margin-top">10</property>
-                                <property name="margin-bottom">10</property>
-                                <style>
-                                    <class name="notify-badge"/>
-                                </style>
                             </object>
                         </child>
                         <child>
@@ -134,6 +133,7 @@
                                             <object class="GtkButton" id="x_button">
                                                 <property name="vexpand">False</property>
                                                 <property name="visible">True</property>
+                                                <property name="margin-start">5</property>
                                                 <style>
                                                     <class name="conversation_list_row_xbutton"/>
                                                     <class name="circular"/>

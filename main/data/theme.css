@@ -46,10 +46,10 @@ window.dino-main .notify-badge {
   background-color: #555;
   color: white;
   font-weight: bold;
-  font-size: 0.8em;
+  font-size: 0.7em;
   border-radius: 1em;
-  min-width: 1.1em;
-  padding: 2px 5px;
+  min-width: 1.15em;
+  padding: .15em .25em;
 }
 
 window.dino-main .dino-sidebar > frame {
