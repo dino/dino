@@ -197,7 +197,6 @@ public class ConversationSelectorRow : ListBoxRow {
     }
 
     protected void update_read() {
-        bool current_read_status = !stream_interactor.get_module(ChatInteraction.IDENTITY).has_unread(conversation);
         int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
         if (num_unread == current_num_unread) return;
         num_unread = current_num_unread;

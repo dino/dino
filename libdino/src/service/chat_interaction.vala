@@ -31,44 +31,6 @@ public class ChatInteraction : StreamInteractionModule, Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
     }
 
-    public bool has_unread(Conversation conversation) {
-        ContentItem? last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
-        if (last_content_item == null) return false;
-
-        MessageItem? message_item = last_content_item as MessageItem;
-        if (message_item != null) {
-            Message last_message = message_item.message;
-
-            // We are the message sender
-            if (last_message.from.equals_bare(conversation.account.bare_jid)) return false;
-            // We read up to the message
-            if (conversation.read_up_to != null && last_message.equals(conversation.read_up_to)) return false;
-
-            return true;
-        }
-
-        FileItem? file_item = last_content_item as FileItem;
-        if (file_item != null) {
-            FileTransfer file_transfer = file_item.file_transfer;
-
-            // We are the file sender
-            if (file_transfer.from.equals_bare(conversation.account.bare_jid)) return false;
-
-            if (file_transfer.provider == 0) {
-                // HTTP file transfer: Check if the associated message is the last one
-                if (file_transfer.info == null) return false;
-                Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
-                if (message == null) return false;
-                if (message.equals(conversation.read_up_to)) return false;
-            }
-            if (file_transfer.provider == 1) {
-                if (file_transfer.state == FileTransfer.State.COMPLETE) return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
     public int get_num_unread(Conversation conversation) {
         ContentItem? last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
         if (last_content_item == null) return 0;
