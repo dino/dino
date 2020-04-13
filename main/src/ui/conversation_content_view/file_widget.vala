@@ -37,51 +37,45 @@ public class FileWidget : Box {
 
     private StreamInteractor stream_interactor;
     private FileTransfer file_transfer;
-    private State state;
+    private State? state = null;
 
     private FileDefaultWidgetController default_widget_controller;
-    private Widget content;
+    private Widget? content = null;
 
     public FileWidget(StreamInteractor stream_interactor, FileTransfer file_transfer) {
         this.stream_interactor = stream_interactor;
         this.file_transfer = file_transfer;
 
-        load_widget.begin();
+        update_widget.begin();
         size_allocate.connect((allocation) => {
             if (allocation.height > parent.get_allocated_height()) {
                 Idle.add(() => { parent.queue_resize(); return false; });
             }
         });
 
-        file_transfer.notify["state"].connect(update_widget_type);
-        file_transfer.notify["mime-type"].connect(update_widget_type);
+        file_transfer.notify["state"].connect(update_widget);
+        file_transfer.notify["mime-type"].connect(update_widget);
     }
 
-    private async void load_widget() {
-        if (show_image()) {
-            content = yield get_image_widget(file_transfer.get_file(), file_transfer.file_name);
-            if (content != null) {
-                this.state = State.IMAGE;
+    private async void update_widget() {
+        if (show_image() && state != State.IMAGE) {
+            var content_bak = content;
+            Widget? image_widget = yield get_image_widget(file_transfer.get_file(), file_transfer.file_name);
+
+            // If the widget changed in the meanwhile, stop
+            if (content != content_bak) return;
+
+            if (image_widget != null) {
+                if (content != null) this.remove(content);
+                content = image_widget;
+                state = State.IMAGE;
                 this.add(content);
                 return;
             }
         }
-        FileDefaultWidget default_file_widget = new FileDefaultWidget() { visible=true };
-        default_widget_controller = new FileDefaultWidgetController(default_file_widget, file_transfer, stream_interactor);
-        content = default_file_widget;
-        this.state = State.DEFAULT;
-        this.add(content);
-    }
 
-    private async void update_widget_type() {
-        if (file_transfer.state == FileTransfer.State.COMPLETE && show_image() && state != State.IMAGE) {
-            this.remove(content);
-            this.add(yield get_image_widget(file_transfer.get_file(), file_transfer.file_name));
-            state = State.IMAGE;
-            return;
-        }
-        if (file_transfer.state == FileTransfer.State.FAILED && state == State.IMAGE) {
-            this.remove(content);
+        if (state != State.DEFAULT) {
+            if (content != null) this.remove(content);
             FileDefaultWidget default_file_widget = new FileDefaultWidget() { visible=true };
             default_widget_controller = new FileDefaultWidgetController(default_file_widget, file_transfer, stream_interactor);
             content = default_file_widget;
@@ -161,7 +155,11 @@ public class FileWidget : Box {
     }
 
     private bool show_image() {
-        if (file_transfer.mime_type == null || file_transfer.state != FileTransfer.State.COMPLETE) return false;
+        if (file_transfer.mime_type == null) return false;
+        if (file_transfer.state != FileTransfer.State.COMPLETE &&
+                !(file_transfer.direction == FileTransfer.DIRECTION_SENT && file_transfer.state == FileTransfer.State.IN_PROGRESS)) {
+            return false;
+        }
 
         foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
             foreach (string mime_type in pixbuf_format.get_mime_types()) {
