@@ -8,6 +8,7 @@ namespace Dino {
 public class ConnectionManager : Object {
 
     public signal void stream_opened(Account account, XmppStream stream);
+    public signal void stream_attached_modules(Account account, XmppStream stream);
     public signal void connection_state_changed(Account account, ConnectionState state);
     public signal void connection_error(Account account, ConnectionError error);
 
@@ -162,6 +163,7 @@ public class ConnectionManager : Object {
         connections[account] = connection;
         change_connection_state(account, ConnectionState.CONNECTING);
         stream.attached_modules.connect((stream) => {
+            stream_attached_modules(account, stream);
             change_connection_state(account, ConnectionState.CONNECTED);
         });
         stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {

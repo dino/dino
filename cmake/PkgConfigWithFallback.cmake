@@ -10,7 +10,7 @@ function(find_pkg_config_with_fallback name)
     endif(PKG_CONFIG_FOUND)
 
     if (${name}_PKG_CONFIG_FOUND)
-        # Found via pkg-config, using it's result values
+        # Found via pkg-config, using its result values
         set(${name}_FOUND ${${name}_PKG_CONFIG_FOUND})
 
         # Try to find real file name of libraries
