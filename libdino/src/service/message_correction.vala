@@ -68,17 +68,22 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     public bool is_own_correction_allowed(Conversation conversation, Message message) {
         string stanza_id = message.edit_to ?? message.stanza_id;
 
-        Jid own_jid = conversation.account.full_jid;
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+        Jid? own_jid = null;
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            own_jid = conversation.account.full_jid;
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
         }
+
+        if (own_jid == null) return false;
+
         return last_messages.has_key(conversation) &&
                 last_messages[conversation].has_key(own_jid) &&
                 last_messages[conversation][own_jid].stanza_id == stanza_id;
     }
 
     private void check_add_correction_node(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (message.stanza_id in outstanding_correction_nodes) {
+        if (outstanding_correction_nodes.has_key(message.stanza_id)) {
             LastMessageCorrection.set_replace_id(message_stanza, outstanding_correction_nodes[message.stanza_id]);
             outstanding_correction_nodes.unset(message.stanza_id);
         } else {

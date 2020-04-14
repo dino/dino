@@ -48,6 +48,9 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
     private bool should_notify(ContentItem content_item, Conversation conversation) {
         Conversation.NotifySetting notify = conversation.get_notification_setting(stream_interactor);
+
+        if (notify == Conversation.NotifySetting.OFF) return false;
+
         switch (content_item.type_) {
             case MessageItem.TYPE:
                 Message message = (content_item as MessageItem).message;
@@ -60,13 +63,13 @@ public class NotificationEvents : StreamInteractionModule, Object {
                 if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return false;
                 break;
         }
-        if (notify == Conversation.NotifySetting.OFF) return false;
-        Jid? nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
-        if (content_item.type_ == MessageItem.TYPE) {
+
+        if (content_item.type_ == MessageItem.TYPE && notify == Conversation.NotifySetting.HIGHLIGHT) {
+            Jid? nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+            if (nick == null) return false;
+
             Entities.Message message = (content_item as MessageItem).message;
-            if (notify == Conversation.NotifySetting.HIGHLIGHT && nick != null) {
-                return Regex.match_simple("\\b" + Regex.escape_string(nick.resourcepart) + "\\b", message.body, RegexCompileFlags.CASELESS);
-            }
+            return Regex.match_simple("\\b" + Regex.escape_string(nick.resourcepart) + "\\b", message.body, RegexCompileFlags.CASELESS);
         }
         return true;
     }
