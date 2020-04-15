@@ -21,6 +21,7 @@ public class ConversationSelectorRow : ListBoxRow {
     [GtkChild] protected Button x_button;
     [GtkChild] protected Revealer time_revealer;
     [GtkChild] protected Revealer xbutton_revealer;
+    [GtkChild] protected Revealer unread_count_revealer;
     [GtkChild] public Revealer main_revealer;
 
     public Conversation conversation { get; private set; }
@@ -209,22 +210,40 @@ public class ConversationSelectorRow : ListBoxRow {
 
         if (num_unread == 0) {
             unread_count_label.visible = false;
-        } else if (num_unread == -1 ){
-            unread_count_label.label = "> 50";
-            unread_count_label.visible = true;
+
+            name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+            time_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+            nick_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+            message_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
         } else {
-            unread_count_label.label = num_unread.to_string();
+            if (num_unread == -1 ){
+                unread_count_label.label = "50+";
+            } else {
+                unread_count_label.label = num_unread.to_string();
+            }
             unread_count_label.visible = true;
+
+            name_label.attributes.insert(attr_weight_new(Weight.BOLD));
+            time_label.attributes.insert(attr_weight_new(Weight.BOLD));
+            nick_label.attributes.insert(attr_weight_new(Weight.BOLD));
+            message_label.attributes.insert(attr_weight_new(Weight.BOLD));
         }
+
+        name_label.label = name_label.label; // TODO initializes redrawing, which would otherwise not happen. nicer?
+        time_label.label = time_label.label;
+        nick_label.label = nick_label.label;
+        message_label.label = message_label.label;
     }
 
     public override void state_flags_changed(StateFlags flags) {
         StateFlags curr_flags = get_state_flags();
         if ((curr_flags & StateFlags.PRELIGHT) != 0) {
             time_revealer.set_reveal_child(false);
+            unread_count_revealer.set_reveal_child(false);
             xbutton_revealer.set_reveal_child(true);
         } else {
             time_revealer.set_reveal_child(true);
+            unread_count_revealer.set_reveal_child(true);
             xbutton_revealer.set_reveal_child(false);
         }
     }
