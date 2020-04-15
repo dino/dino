@@ -40,11 +40,11 @@ public class ConversationViewController : Object {
         view.conversation_frame.init(stream_interactor);
 
         // drag 'n drop file upload
-        Gtk.drag_dest_unset(view.chat_input.text_input);
         Gtk.drag_dest_set(view, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
         view.drag_data_received.connect(this.on_drag_data_received);
 
         // forward key presses
+        chat_input_controller.activate_last_message_correction.connect(() => view.conversation_frame.activate_last_message_correction());
         view.chat_input.key_press_event.connect(forward_key_press_to_chat_input);
         view.conversation_frame.key_press_event.connect(forward_key_press_to_chat_input);
         titlebar.key_press_event.connect(forward_key_press_to_chat_input);
@@ -52,7 +52,9 @@ public class ConversationViewController : Object {
         // goto-end floating button
         var vadjustment = view.conversation_frame.scrolled.vadjustment;
         vadjustment.notify["value"].connect(() => {
-            view.goto_end_revealer.reveal_child = vadjustment.value <  vadjustment.upper - vadjustment.page_size;
+            bool button_active = vadjustment.value <  vadjustment.upper - vadjustment.page_size;
+            view.goto_end_revealer.reveal_child = button_active;
+            view.goto_end_revealer.visible = button_active;
         });
         view.goto_end_button.clicked.connect(() => {
             view.conversation_frame.initialize_for_conversation(conversation);
@@ -61,7 +63,7 @@ public class ConversationViewController : Object {
         // Update conversation display name & topic
         this.bind_property("conversation-display-name", titlebar, "title");
         this.bind_property("conversation-topic", titlebar, "subtitle");
-        stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
+        stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                 update_conversation_display_name();
             }
@@ -149,6 +151,10 @@ public class ConversationViewController : Object {
     }
 
     private bool forward_key_press_to_chat_input(EventKey event) {
+        if (((Gtk.Window)view.get_toplevel()).get_focus() is TextView) {
+            return false;
+        }
+
         // Don't forward / change focus on Control / Alt
         if (event.keyval == Gdk.Key.Control_L || event.keyval == Gdk.Key.Control_R ||
                 event.keyval == Gdk.Key.Alt_L || event.keyval == Gdk.Key.Alt_R) {
@@ -158,9 +164,10 @@ public class ConversationViewController : Object {
         if ((event.state & ModifierType.CONTROL_MASK) > 0) {
             return false;
         }
-        view.chat_input.text_input.key_press_event(event);
-        view.chat_input.text_input.grab_focus();
-        return true;
+        if (view.chat_input.chat_text_view.text_view.key_press_event(event)) {
+            return true;
+        }
+        return false;
     }
 }
 }

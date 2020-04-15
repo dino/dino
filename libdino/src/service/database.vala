@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 11;
+    private const int VERSION = 14;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -32,6 +32,21 @@ public class Database : Qlite.Database {
         internal JidTable(Database db) {
             base(db, "jid");
             init({id, bare_jid});
+        }
+    }
+
+    public class EntityTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id");
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<string> resource = new Column.Text("resource");
+        public Column<string> caps_hash = new Column.Text("caps_hash");
+        public Column<long> last_seen = new Column.Long("last_seen");
+
+        internal EntityTable(Database db) {
+            base(db, "entity");
+            init({id, account_id, jid_id, resource, caps_hash, last_seen});
+            unique({account_id, jid_id, resource}, "IGNORE");
         }
     }
 
@@ -79,6 +94,18 @@ public class Database : Qlite.Database {
             // deduplication
             index("message_account_counterpart_stanzaid_idx", {account_id, counterpart_id, stanza_id});
             fts({body});
+        }
+    }
+
+    public class MessageCorrectionTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> message_id = new Column.Integer("message_id") { unique=true };
+        public Column<string> to_stanza_id = new Column.Text("to_stanza_id");
+
+        internal MessageCorrectionTable(Database db) {
+            base(db, "message_correction");
+            init({id, message_id, to_stanza_id});
+            index("message_correction_to_stanza_id_idx", {to_stanza_id});
         }
     }
 
@@ -150,13 +177,29 @@ public class Database : Qlite.Database {
     }
 
     public class AvatarTable : Table {
-        public Column<string> jid = new Column.Text("jid");
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<int> account_id = new Column.Integer("account_id");
         public Column<string> hash = new Column.Text("hash");
         public Column<int> type_ = new Column.Integer("type");
 
         internal AvatarTable(Database db) {
-            base(db, "avatar");
-            init({jid, hash, type_});
+            base(db, "contact_avatar");
+            init({jid_id, account_id, hash, type_});
+            unique({jid_id, account_id}, "REPLACE");
+        }
+    }
+
+    public class EntityIdentityTable : Table {
+        public Column<string> entity = new Column.Text("entity");
+        public Column<string> category = new Column.Text("category");
+        public Column<string> type = new Column.Text("type");
+        public Column<string> name = new Column.Text("name");
+
+        internal EntityIdentityTable(Database db) {
+            base(db, "entity_identity");
+            init({entity, category, name, type});
+            unique({entity, category, type}, "IGNORE");
+            index("entity_identity_idx", {entity});
         }
     }
 
@@ -213,12 +256,15 @@ public class Database : Qlite.Database {
 
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
+    public EntityTable entity { get; private set; }
     public ContentItemTable content_item { get; private set; }
     public MessageTable message { get; private set; }
+    public MessageCorrectionTable message_correction { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
+    public EntityIdentityTable entity_identity { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
     public RosterTable roster { get; private set; }
     public MamCatchupTable mam_catchup { get; private set; }
@@ -232,17 +278,20 @@ public class Database : Qlite.Database {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);
+        entity = new EntityTable(this);
         content_item = new ContentItemTable(this);
         message = new MessageTable(this);
+        message_correction = new MessageCorrectionTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
+        entity_identity = new EntityIdentityTable(this);
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, content_item, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, mam_catchup, settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings });
         try {
             exec("PRAGMA synchronous=0");
         } catch (Error e) { }
@@ -309,6 +358,13 @@ public class Database : Qlite.Database {
                 error("Failed to upgrade to database version 11: %s", e.message);
             }
         }
+        if (oldVersion < 12) {
+            try {
+                exec("delete from avatar");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 12: %s", e.message);
+            }
+        }
     }
 
     public ArrayList<Account> get_accounts() {
@@ -359,14 +415,14 @@ public class Database : Qlite.Database {
 
         if (before != null) {
             if (id > 0) {
-                select.where(@"local_time < ? OR (local_time = ? AND id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
+                select.where(@"local_time < ? OR (local_time = ? AND message.id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
             } else {
                 select.with(message.id, "<", id);
             }
         }
         if (after != null) {
             if (id > 0) {
-                select.where(@"local_time > ? OR (local_time = ? AND id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
+                select.where(@"local_time > ? OR (local_time = ? AND message.id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
             } else {
                 select.with(message.local_time, ">", (long) after.to_unix());
             }
@@ -388,29 +444,12 @@ public class Database : Qlite.Database {
         }
 
         select.outer_join_with(real_jid, real_jid.message_id, message.id);
+        select.outer_join_with(message_correction, message_correction.message_id, message.id);
 
         LinkedList<Message> ret = new LinkedList<Message>();
         foreach (Row row in select) {
             try {
                 ret.insert(0, new Message.from_row(this, row));
-            } catch (InvalidJidError e) {
-                warning("Ignoring message with invalid Jid: %s", e.message);
-            }
-        }
-        return ret;
-    }
-
-    public Gee.List<Message> get_unsend_messages(Account account, Jid? jid = null) {
-        Gee.List<Message> ret = new ArrayList<Message>();
-        var select = message.select()
-            .with(message.account_id, "=", account.id)
-            .with(message.marked, "=", (int) Message.Marked.UNSENT);
-        if (jid != null) {
-            select.with(message.counterpart_id, "=", get_jid_id(jid));
-        }
-        foreach (Row row in select) {
-            try {
-                ret.add(new Message.from_row(this, row));
             } catch (InvalidJidError e) {
                 warning("Ignoring message with invalid Jid: %s", e.message);
             }
@@ -441,44 +480,6 @@ public class Database : Qlite.Database {
         }
         return ret;
     }
-
-    public void set_avatar_hash(Jid jid, string hash, int type) {
-        avatar.insert().or("REPLACE")
-                .value(avatar.jid, jid.to_string())
-                .value(avatar.hash, hash)
-                .value(avatar.type_, type)
-                .perform();
-    }
-
-    public HashMap<Jid, string> get_avatar_hashes(int type) {
-        HashMap<Jid, string> ret = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
-        foreach (Row row in avatar.select({avatar.jid, avatar.hash}).with(avatar.type_, "=", type)) {
-            try {
-                ret[new Jid(row[avatar.jid])] = row[avatar.hash];
-            } catch (InvalidJidError e) {
-                warning("Ignoring avatar of invalid Jid: %s", e.message);
-            }
-        }
-        return ret;
-    }
-
-    public void add_entity_features(string entity, Gee.List<string> features) {
-        foreach (string feature in features) {
-            entity_feature.insert()
-                    .value(entity_feature.entity, entity)
-                    .value(entity_feature.feature, feature)
-                    .perform();
-        }
-    }
-
-    public Gee.List<string> get_entity_features(string entity) {
-        ArrayList<string> ret = new ArrayList<string>();
-        foreach (Row row in entity_feature.select({entity_feature.feature}).with(entity_feature.entity, "=", entity)) {
-            ret.add(row[entity_feature.feature]);
-        }
-        return ret;
-    }
-
 
     public int get_jid_id(Jid jid_obj) {
         var bare_jid = jid_obj.bare_jid;

@@ -207,7 +207,7 @@ public class AddAccountDialog : Gtk.Dialog {
         sign_in_password_box.visible = false;
         create_account_box.visible = false;
         register_box.visible = false;
-        success_description.label = _("You can now start using %s").printf("<b>" + Markup.escape_text(account.bare_jid.to_string()) + "</b>");
+        success_description.label = _("You can now use the account %s.").printf("<b>" + Markup.escape_text(account.bare_jid.to_string()) + "</b>");
 
         set_default(success_continue_button);
     }
@@ -329,7 +329,7 @@ public class AddAccountDialog : Gtk.Dialog {
         if (form.oob != null) {
             form_box.add(new Label(_("The server requires to sign up through a website")){ visible=true } );
             form_box.add(new Label(@"<a href=\"$(form.oob)\">$(form.oob)</a>") { use_markup=true, visible=true });
-            register_form_continue_label.label = _("Open Registration");
+            register_form_continue_label.label = _("Open website");
             register_form_continue.visible = true;
             register_form_continue.grab_focus();
         } else if (form.fields.size > 0) {

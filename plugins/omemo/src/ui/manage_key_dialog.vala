@@ -33,9 +33,9 @@ public class ManageKeyDialog : Gtk.Dialog {
     construct {
         // If we set the strings in the .ui file, they don't get translated
         headerbar.title = _("Manage Key");
-        compare_fingerprint_label.label = _("Compare the fingerprint, character by character, with the one shown on your contacts device.");
-        verify_no_button.label = _("Not matching");
-        verify_yes_button.label = _("Matching");
+        compare_fingerprint_label.label = _("Compare the fingerprint, character by character, with the one shown on your contact's device.");
+        verify_no_button.label = _("Fingerprints differ");
+        verify_yes_button.label = _("Fingerprints match");
         cancel_button.label = _("Cancel");
         ok_button.label = _("Confirm");
     }
@@ -58,7 +58,7 @@ public class ManageKeyDialog : Gtk.Dialog {
         verify_yes_button.clicked.connect(() => {
             confirm_image.set_from_icon_name("security-high-symbolic", IconSize.DIALOG);
             confirm_title_label.label = _("Verify key");
-            confirm_desc_label.set_markup(_("Once confirmed, any future messages sent by %s using this key will be highlighted accordingly in the chat window.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+            confirm_desc_label.set_markup(_("Future messages sent by %s from the device that uses this key will be highlighted accordingly in the chat window.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
             manage_stack.set_visible_child_name("confirm");
             ok_button.sensitive = true;
             return_to_main = false;
@@ -95,7 +95,7 @@ public class ManageKeyDialog : Gtk.Dialog {
     }
 
     private Box make_action_box(string title, string desc){
-        Box box = new Box(Orientation.VERTICAL, 0) { visible = true, margin_start = 20, margin_end = 20, margin_top = 14, margin_bottom = 14 }; 
+        Box box = new Box(Orientation.VERTICAL, 0) { visible = true, margin_start = 20, margin_end = 20, margin_top = 14, margin_bottom = 14 };
         Label lbl_title = new Label(title) { visible = true, halign = Align.START };
         Label lbl_desc = new Label(desc) { visible = true, xalign = 0, wrap = true, max_width_chars = 40 };
 
@@ -111,7 +111,7 @@ public class ManageKeyDialog : Gtk.Dialog {
         box.add(lbl_desc);
 
         return box;
-    }   
+    }
 
     private void setup_main_screen() {
         main_action_list.set_header_func((row, before_row) => {
@@ -123,22 +123,22 @@ public class ManageKeyDialog : Gtk.Dialog {
         ListBoxRow verify_row = new ListBoxRow() { visible = true };
         verify_row.add(make_action_box(_("Verify key fingerprint"), _("Compare this key's fingerprint with the fingerprint displayed on the contact's device.")));
         ListBoxRow reject_row = new ListBoxRow() { visible = true };
-        reject_row.add(make_action_box(_("Reject key"), _("Stop accepting this key during communication with its associated contact.")));
+        reject_row.add(make_action_box(_("Reject key"), _("Block encrypted communication with the contact's device that uses this key.")));
         ListBoxRow accept_row = new ListBoxRow() {visible = true };
-        accept_row.add(make_action_box(_("Accept key"), _("Start accepting this key during communication with its associated contact")));
+        accept_row.add(make_action_box(_("Accept key"), _("Allow encrypted communication with the contact's device that uses this key.")));
 
         switch((TrustLevel) device[db.identity_meta.trust_level]) {
             case TrustLevel.TRUSTED:
-                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("accepted")+"</span>")+" "+_("This means it can be used by %s to receive and send messages.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("accepted")+"</span>")+" "+_("This means it can be used by %s to receive and send encrypted messages.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(verify_row);
                 main_action_list.add(reject_row);
                 break;
             case TrustLevel.VERIFIED:
-                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("verified")+"</span>")+" "+_("This means it can be used by %s to receive and send messages.").printf(@"<b>$(device[db.identity_meta.address_name])</b>") + " " + _("Additionally it has been verified to match the key on the contact's device."));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#1A63D9'>"+_("verified")+"</span>")+" "+_("This means it can be used by %s to receive and send encrypted messages.").printf(@"<b>$(device[db.identity_meta.address_name])</b>") + " " + _("Additionally it has been verified to match the key on the contact's device."));
                 main_action_list.add(reject_row);
                 break;
             case TrustLevel.UNTRUSTED:
-                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#D91900'>"+_("rejected")+"</span>")+" "+_("This means it cannot be used by %s to receive messages, and any messages sent by it will be ignored.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+                main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#D91900'>"+_("rejected")+"</span>")+" "+_("This means it cannot be used by %s to decipher your messages, and you won't see messages encrypted with it.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.add(accept_row);
                 break;
         }
@@ -150,7 +150,7 @@ public class ManageKeyDialog : Gtk.Dialog {
             } else if (row == reject_row) {
                 confirm_image.set_from_icon_name("action-unavailable-symbolic", IconSize.DIALOG);
                 confirm_title_label.label = _("Reject key");
-                confirm_desc_label.set_markup(_("Once confirmed, any future messages sent by %s using this key will be ignored and none of your messages will be readable using this key.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+                confirm_desc_label.set_markup(_("You won't see encrypted messages from the device of %s that uses this key. Conversely, that device won't be able to decipher your messages anymore.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 manage_stack.set_visible_child_name("confirm");
                 ok_button.sensitive = true;
                 return_to_main = true;
@@ -158,7 +158,7 @@ public class ManageKeyDialog : Gtk.Dialog {
             } else if (row == accept_row) {
                 confirm_image.set_from_icon_name("emblem-ok-symbolic", IconSize.DIALOG);
                 confirm_title_label.label = _("Accept key");
-                confirm_desc_label.set_markup(_("Once confirmed this key will be usable by %s to receive and send messages.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
+                confirm_desc_label.set_markup(_("You will be able to exchange encrypted messages with the device of %s that uses this key.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 manage_stack.set_visible_child_name("confirm");
                 ok_button.sensitive = true;
                 return_to_main = true;

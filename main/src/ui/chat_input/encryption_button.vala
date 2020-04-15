@@ -28,6 +28,12 @@ public class EncryptionButton : MenuButton {
         button_unencrypted = builder.get_object("button_unencrypted") as RadioButton;
         button_unencrypted.toggled.connect(encryption_button_toggled);
 
+        stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, muc_jid) => {
+            if (conversation != null && conversation.account.equals(account) && conversation.counterpart.equals(muc_jid)) {
+                update_visibility();
+            }
+        });
+
         Application app = GLib.Application.get_default() as Application;
         foreach (var e in app.plugin_registry.encryption_list_entries) {
             RadioButton btn = new RadioButton.with_label(button_unencrypted.get_group(), e.name);
@@ -79,13 +85,16 @@ public class EncryptionButton : MenuButton {
         set_icon(conversation.encryption == Encryption.NONE ? "changes-allow-symbolic" : "changes-prevent-symbolic");
     }
 
+    private void update_visibility() {
+        visible = !stream_interactor.get_module(MucManager.IDENTITY).is_public_room(conversation.account, conversation.counterpart) ||
+                conversation.encryption != Encryption.NONE;
+    }
+
     public new void set_conversation(Conversation conversation) {
         this.conversation = conversation;
         update_encryption_menu_state();
         update_encryption_menu_icon();
-
-        visible = !stream_interactor.get_module(MucManager.IDENTITY).is_public_room(conversation.account, conversation.counterpart) ||
-                conversation.encryption != Encryption.NONE;
+        update_visibility();
     }
 }
 

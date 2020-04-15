@@ -8,6 +8,8 @@ namespace Dino.Ui {
 
 public class ChatInputController : Object {
 
+    public signal void activate_last_message_correction();
+
     public new string? conversation_display_name { get; set; }
     public string? conversation_topic { get; set; }
 
@@ -17,35 +19,36 @@ public class ChatInputController : Object {
 
     private StreamInteractor stream_interactor;
     private Plugins.InputFieldStatus input_field_status;
+    private ChatTextViewController chat_text_view_controller;
 
     public ChatInputController(ChatInput.View chat_input, StreamInteractor stream_interactor) {
         this.chat_input = chat_input;
         this.status_description_label = chat_input.chat_input_status;
         this.stream_interactor = stream_interactor;
+        this.chat_text_view_controller = new ChatTextViewController(chat_input.chat_text_view, stream_interactor);
 
         chat_input.init(stream_interactor);
 
         reset_input_field_status();
 
-        chat_input.text_input.buffer.changed.connect(on_text_input_changed);
-        chat_input.send_text.connect(send_text);
+        chat_input.chat_text_view.text_view.buffer.changed.connect(on_text_input_changed);
+        chat_input.chat_text_view.text_view.key_press_event.connect(on_text_input_key_press);
+        chat_text_view_controller.send_text.connect(send_text);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
 
         stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(on_upload_available);
     }
 
-
-
     public void set_conversation(Conversation conversation) {
         this.conversation = conversation;
 
         reset_input_field_status();
 
-        chat_input.initialize_for_conversation(conversation);
-        chat_input.occupants_tab_completor.initialize_for_conversation(conversation);
-        chat_input.edit_history.initialize_for_conversation(conversation);
         chat_input.encryption_widget.set_conversation(conversation);
+
+        chat_input.initialize_for_conversation(conversation);
+        chat_text_view_controller.initialize_for_conversation(conversation);
     }
 
     private void on_encryption_changed(Plugins.EncryptionListEntry? encryption_entry) {
@@ -83,8 +86,8 @@ public class ChatInputController : Object {
             return;
         }
 
-        string text = chat_input.text_input.buffer.text;
-        chat_input.text_input.buffer.text = "";
+        string text = chat_input.chat_text_view.text_view.buffer.text;
+        chat_input.chat_text_view.text_view.buffer.text = "";
         if (text.has_prefix("/")) {
             string[] token = text.split(" ", 2);
             switch(token[0]) {
@@ -139,11 +142,21 @@ public class ChatInputController : Object {
     }
 
     private void on_text_input_changed() {
-        if (chat_input.text_input.buffer.text != "") {
+        if (chat_input.chat_text_view.text_view.buffer.text != "") {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
         } else {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation);
         }
+    }
+
+    private bool on_text_input_key_press(EventKey event) {
+        if (event.keyval == Gdk.Key.Up && chat_input.chat_text_view.text_view.buffer.text == "") {
+            activate_last_message_correction();
+            return true;
+        } else {
+            chat_input.chat_text_view.text_view.grab_focus();
+        }
+        return false;
     }
 }
 

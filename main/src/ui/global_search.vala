@@ -137,7 +137,7 @@ public class GlobalSearch : Overlay {
             results_empty_stack.set_visible_child_name("results");
 
             int match_count = messages.size < 10 ? messages.size : stream_interactor.get_module(SearchProcessor.IDENTITY).count_match_messages(search);
-            entry_number_label.label = "<i>" + _("%i search results").printf(match_count) + "</i>";
+            entry_number_label.label = "<i>" + n("%i search result", "%i search results", match_count).printf(match_count) + "</i>";
             loaded_results += messages.size;
             append_messages(messages);
         }
@@ -255,7 +255,7 @@ public class GlobalSearch : Overlay {
 
         string display_name = Util.get_participant_display_name(stream_interactor, item.conversation, item.jid);
         string color = Util.get_name_hex_color(stream_interactor, item.message.account, item.jid, false); // TODO Util.is_dark_theme(name_label)
-        Label name_label = new Label("") { use_markup=true, xalign=0, visible=true };
+        Label name_label = new Label("") { ellipsize=EllipsizeMode.END, use_markup=true, xalign=0, visible=true };
         name_label.label = @"<span size='small' foreground=\"#$color\">$display_name</span>";
         grid.attach(name_label, 1, 0, 1, 1);
         return grid;

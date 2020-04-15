@@ -62,7 +62,7 @@ public static async AvatarDrawer get_conversation_avatar_drawer(StreamInteractor
     return yield get_conversation_participants_avatar_drawer(stream_interactor, conversation, new Jid[0]);
 }
 
-public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, Jid[] jids) {
+public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, owned Jid[] jids) {
     AvatarManager avatar_manager = stream_interactor.get_module(AvatarManager.IDENTITY);
     MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
     if (conversation.type_ != Conversation.Type.GROUPCHAT) {
@@ -370,7 +370,7 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
         for (int i = 0; i < markup_string.length; i++) {
             string markup_esc = Regex.escape_string(markup_string[i]);
             try {
-                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S.*?\\S|\\S)" + markup_esc);
+                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S|\\S.*?\\S)" + markup_esc);
                 MatchInfo match_info;
                 regex.match(s.down(), 0, out match_info);
                 if (match_info.matches()) {
@@ -389,6 +389,12 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     return s;
 }
 
+/**
+ * This is a heuristic to count emojis in a string {@link http://example.com/}
+ *
+ * @param markup_text string to search in
+ * @return number of emojis, or -1 if text includes non-emojis.
+ */
 public int get_only_emoji_count(string markup_text) {
     int emoji_no = 0;
     int index_ref = 0;
@@ -408,7 +414,9 @@ public int get_only_emoji_count(string markup_text) {
             emoji_no--;
         }
 
-        if (last_was_emoji && last_was_modifier_base && ICU.has_binary_property(curchar, ICU.Property.EMOJI_MODIFIER)) {
+        if (last_was_emoji && curchar == 0xFE0F) {
+            // Variation selector after emoji is useless, ignoring.
+        } else if (last_was_emoji && last_was_modifier_base && ICU.has_binary_property(curchar, ICU.Property.EMOJI_MODIFIER)) {
             // still an emoji, but no longer a modifier base
             last_was_modifier_base = false;
         } else if (ICU.has_binary_property(curchar, ICU.Property.EMOJI_PRESENTATION)) {

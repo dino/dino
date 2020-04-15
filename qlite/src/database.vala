@@ -29,8 +29,8 @@ public class Database {
             error(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
         this.tables = tables;
-        start_migration();
         if (debug) db.trace((message) => print(@"Qlite trace: $message\n"));
+        start_migration();
     }
 
     public void ensure_init() {

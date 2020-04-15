@@ -5,7 +5,7 @@ using Gtk;
 using Dino.Entities;
 using Xmpp;
 
-namespace Dino.Ui.ChatInput {
+namespace Dino.Ui {
 
 /**
  * - With given prefix: Complete from occupant list (sorted lexicographically)

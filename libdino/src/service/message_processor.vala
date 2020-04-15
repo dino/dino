@@ -22,7 +22,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private Object lock_send_unsent;
     private HashMap<Account, int> current_catchup_id = new HashMap<Account, int>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashMap<string, DateTime>> mam_times = new HashMap<Account, HashMap<string, DateTime>>();
     public HashMap<string, int> hitted_range = new HashMap<string, int>();
@@ -41,12 +40,13 @@ public class MessageProcessor : StreamInteractionModule, Object {
         received_pipeline.connect(new DeduplicateMessageListener(this, db));
         received_pipeline.connect(new FilterMessageListener());
         received_pipeline.connect(new StoreMessageListener(stream_interactor));
+        received_pipeline.connect(new StoreContentItemListener(stream_interactor));
         received_pipeline.connect(new MamMessageListener(stream_interactor));
 
         stream_interactor.account_added.connect(on_account_added);
 
         stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
-            if (state == ConnectionManager.ConnectionState.CONNECTED) send_unsent_messages(account);
+            if (state == ConnectionManager.ConnectionState.CONNECTED) send_unsent_chat_messages(account);
         });
 
         stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
@@ -63,17 +63,38 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     public Entities.Message send_message(Entities.Message message, Conversation conversation) {
         stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
+        stream_interactor.get_module(ContentItemStore.IDENTITY).insert_message(message, conversation);
         send_xmpp_message(message, conversation);
         message_sent(message, conversation);
         return message;
     }
 
-    public void send_unsent_messages(Account account, Jid? jid = null) {
-        Gee.List<Entities.Message> unsend_messages = db.get_unsend_messages(account, jid);
-        foreach (Entities.Message message in unsend_messages) {
-            Conversation? msg_conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart, account);
-            if (msg_conv != null) {
-                send_xmpp_message(message, msg_conv, true);
+    private void send_unsent_chat_messages(Account account) {
+        var select = db.message.select()
+                .with(db.message.account_id, "=", account.id)
+                .with(db.message.marked, "=", (int) Message.Marked.UNSENT)
+                .with(db.message.type_, "=", (int) Message.Type.CHAT);
+        send_unsent_messages(account, select);
+    }
+
+    public void send_unsent_muc_messages(Account account, Jid muc_jid) {
+        var select = db.message.select()
+                .with(db.message.account_id, "=", account.id)
+                .with(db.message.marked, "=", (int) Message.Marked.UNSENT)
+                .with(db.message.counterpart_id, "=", db.get_jid_id(muc_jid));
+        send_unsent_messages(account, select);
+    }
+
+    private void send_unsent_messages(Account account, QueryBuilder select) {
+        foreach (Row row in select) {
+            try {
+                Message message = new Message.from_row(db, row);
+                Conversation? msg_conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart, account, Util.get_conversation_type_for_message(message));
+                if (msg_conv != null) {
+                    send_xmpp_message(message, msg_conv, true);
+                }
+            } catch (InvalidJidError e) {
+                warning("Ignoring message with invalid Jid: %s", e.message);
             }
         }
     }
@@ -101,7 +122,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             if (id == null) return;
             StanzaNode? delay_node = message.stanza.get_deep_subnode(mam_flag.ns_ver + ":result", "urn:xmpp:forward:0:forwarded", "urn:xmpp:delay:delay");
             if (delay_node == null) return;
-            DateTime? time = DelayedDelivery.Module.get_time_for_node(delay_node);
+            DateTime? time = DelayedDelivery.get_time_for_node(delay_node);
             if (time == null) return;
             mam_times[account][id] = time;
 
@@ -432,10 +453,18 @@ public class MessageProcessor : StreamInteractionModule, Object {
                         .with(db.message.stanza_id, "=", message.stanza_id)
                         .with(db.message.counterpart_id, "=", db.get_jid_id(message.counterpart))
                         .with(db.message.account_id, "=", account.id);
-                if (message.counterpart.resourcepart != null) {
-                    builder.with(db.message.counterpart_resource, "=", message.counterpart.resourcepart);
-                } else {
-                    builder.with_null(db.message.counterpart_resource);
+                if (message.direction == Message.DIRECTION_RECEIVED) {
+                    if (message.counterpart.resourcepart != null) {
+                        builder.with(db.message.counterpart_resource, "=", message.counterpart.resourcepart);
+                    } else {
+                        builder.with_null(db.message.counterpart_resource);
+                    }
+                } else if (message.direction == Message.DIRECTION_SENT) {
+                    if (message.ourpart.resourcepart != null) {
+                        builder.with(db.message.our_resource, "=", message.ourpart.resourcepart);
+                    } else {
+                        builder.with_null(db.message.our_resource);
+                    }
                 }
                 RowOption row_opt = builder.single().row();
                 bool duplicate = row_opt.is_present();
@@ -499,6 +528,25 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
+    private class StoreContentItemListener : MessageListener {
+
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT", "FILTER_EMPTY", "STORE", "CORRECTION" };
+        public override string action_group { get { return "STORE_CONTENT_ITEM"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+
+        public StoreContentItemListener(StreamInteractor stream_interactor) {
+            this.stream_interactor = stream_interactor;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (message.body == null) return true;
+            stream_interactor.get_module(ContentItemStore.IDENTITY).insert_message(message, conversation);
+            return false;
+        }
+    }
+
     private class MamMessageListener : MessageListener {
 
         public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
@@ -545,39 +593,48 @@ public class MessageProcessor : StreamInteractionModule, Object {
     }
 
     public void send_xmpp_message(Entities.Message message, Conversation conversation, bool delayed = false) {
-        lock (lock_send_unsent) {
-            XmppStream stream = stream_interactor.get_stream(conversation.account);
-            message.marked = Entities.Message.Marked.NONE;
-            if (stream != null) {
-                Xmpp.MessageStanza new_message = new Xmpp.MessageStanza(message.stanza_id);
-                new_message.to = message.counterpart;
-                new_message.body = message.body;
-                if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                    new_message.type_ = Xmpp.MessageStanza.TYPE_GROUPCHAT;
-                } else {
-                    new_message.type_ = Xmpp.MessageStanza.TYPE_CHAT;
-                }
-                build_message_stanza(message, new_message, conversation);
-                pre_message_send(message, new_message, conversation);
-                if (message.marked == Entities.Message.Marked.UNSENT || message.marked == Entities.Message.Marked.WONTSEND) return;
-                if (delayed) {
-                    Xmpp.Xep.DelayedDelivery.Module.set_message_delay(new_message, message.time);
-                }
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
+        message.marked = Entities.Message.Marked.NONE;
 
-                // Set an origin ID if a MUC doen't guarantee to keep IDs
-                if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                    Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-                    if (flag == null) return;
-                    if(!flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.STABLE_ID)) {
-                        Xep.UniqueStableStanzaIDs.set_origin_id(new_message, message.stanza_id);
-                    }
-                }
+        if (stream == null) {
+            message.marked = Entities.Message.Marked.UNSENT;
+            return;
+        }
 
-                stream.get_module(Xmpp.MessageModule.IDENTITY).send_message(stream, new_message);
-            } else {
+        MessageStanza new_message = new MessageStanza(message.stanza_id);
+        new_message.to = message.counterpart;
+        new_message.body = message.body;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            new_message.type_ = MessageStanza.TYPE_GROUPCHAT;
+        } else {
+            new_message.type_ = MessageStanza.TYPE_CHAT;
+        }
+        build_message_stanza(message, new_message, conversation);
+        pre_message_send(message, new_message, conversation);
+        if (message.marked == Entities.Message.Marked.UNSENT || message.marked == Entities.Message.Marked.WONTSEND) return;
+        if (delayed) {
+            DelayedDelivery.Module.set_message_delay(new_message, message.time);
+        }
+
+        // Set an origin ID if a MUC doen't guarantee to keep IDs
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
+            if (flag == null) {
                 message.marked = Entities.Message.Marked.UNSENT;
+                return;
+            }
+            if(!flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.STABLE_ID)) {
+                UniqueStableStanzaIDs.set_origin_id(new_message, message.stanza_id);
             }
         }
+
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, new_message, (_, res) => {
+            try {
+                stream.get_module(MessageModule.IDENTITY).send_message.end(res);
+            } catch (IOStreamError e) {
+                message.marked = Entities.Message.Marked.UNSENT;
+            }
+        });
     }
 }
 

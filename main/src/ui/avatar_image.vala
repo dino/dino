@@ -83,6 +83,7 @@ public class AvatarImage : Misc {
             stream_interactor.connection_manager.connection_state_changed.disconnect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.disconnect(on_roster_updated);
             muc_manager.private_room_occupant_updated.disconnect(on_private_room_occupant_updated);
+            muc_manager.room_info_updated.disconnect(on_room_info_updated);
             stream_interactor = null;
         }
     }
@@ -123,6 +124,11 @@ public class AvatarImage : Misc {
     private void on_private_room_occupant_updated(Account account, Jid room, Jid occupant) {
         if (!account.equals(this.account)) return;
         update_avatar_if_jid(room);
+    }
+
+    private void on_room_info_updated(Account account, Jid muc_jid) {
+        if (!account.equals(this.account)) return;
+        update_avatar_if_jid(muc_jid);
     }
 
     private bool is_self_online() {
@@ -167,6 +173,7 @@ public class AvatarImage : Misc {
             stream_interactor.connection_manager.connection_state_changed.connect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
             muc_manager.private_room_occupant_updated.connect(on_private_room_occupant_updated);
+            muc_manager.room_info_updated.connect(on_room_info_updated);
         }
         this.cached_surface = null;
         this.conversation = conversation;

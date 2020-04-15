@@ -17,7 +17,7 @@ public class StreamInteractor : Object {
     private ArrayList<StreamInteractionModule> modules = new ArrayList<StreamInteractionModule>();
 
     public StreamInteractor(Database db) {
-        module_manager = new ModuleManager(db);
+        module_manager = new ModuleManager();
         connection_manager = new ConnectionManager(module_manager);
 
         connection_manager.stream_opened.connect(on_stream_opened);

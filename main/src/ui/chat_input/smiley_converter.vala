@@ -4,7 +4,7 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.ChatInput {
+namespace Dino.Ui {
 
 class SmileyConverter {
 
@@ -26,6 +26,7 @@ class SmileyConverter {
         smiley_translations[":'("] = "😢";
         smiley_translations[":/"] = "😕";
         smiley_translations["<3"] = "❤️";
+        smiley_translations[":*"] = "😘️";
         smiley_translations[":-*"] = "😘️";
     }
 

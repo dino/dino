@@ -57,6 +57,7 @@ public class Message : Object {
             marked_ = value;
         }
     }
+    public string? edit_to = null;
 
     private Database? db;
 
@@ -93,6 +94,8 @@ public class Message : Object {
         encryption = (Encryption) row[db.message.encryption];
         string? real_jid_str = row[db.real_jid.real_jid];
         if (real_jid_str != null) real_jid = new Jid(real_jid_str);
+
+        edit_to = row[db.message_correction.to_stanza_id];
 
         notify.connect(on_update);
     }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(-154.64 -256.66)">
+    <g transform="matrix(.74332 0 0 .74332 157.02 256.73)" fill="#000000">
+      <path d="m3 9h10c0.554 0 1 0.446 1 1v3c0 0.554-0.446 1-1 1h-10c-0.554 0-1-0.446-1-1v-3c0-0.554 0.446-1 1-1z" overflow="visible"/>
+      <path d="M 7,0 C 7,0 6.291,-0.014 5.553,0.356 4.814,0.725 4,1.666 4,3 V 4.4127188 H 6 V 3 C 6,2.333 6.186,2.275 6.447,2.145 6.71,2.014 7,2 7,2 H 9 C 9,2 9.291,2.014 9.553,2.145 9.814,2.275 10,2.333 10,3 v 8 h 2 V 3 C 12,1.667 11.186,0.725 10.447,0.356 9.71,-0.014 9,0 9,0 Z" font-family="sans-serif" font-weight="400" overflow="visible" style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;isolation:auto;mix-blend-mode:normal;shape-padding:0;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none" white-space="normal"/>
+      <path d="m2 12h12v4h-12z" overflow="visible"/>
+    </g>
+  </g>
+</svg>

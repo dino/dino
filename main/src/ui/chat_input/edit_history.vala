@@ -4,7 +4,7 @@ using Gtk;
 
 using Dino.Entities;
 
-namespace Dino.Ui.ChatInput {
+namespace Dino.Ui {
 
 public class EditHistory {
 
@@ -14,7 +14,7 @@ public class EditHistory {
     private HashMap<Conversation, Gee.List<string>> histories = new HashMap<Conversation, Gee.List<string>>(Conversation.hash_func, Conversation.equals_func);
     private HashMap<Conversation, int> indices = new HashMap<Conversation, int>(Conversation.hash_func, Conversation.equals_func);
 
-    public EditHistory(TextView text_input, GLib.Application application) {
+    public EditHistory(TextView text_input) {
         this.text_input = text_input;
 
         text_input.key_press_event.connect(on_text_input_key_press);

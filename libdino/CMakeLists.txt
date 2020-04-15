@@ -34,8 +34,10 @@ SOURCES
     src/service/counterpart_interaction_manager.vala
     src/service/database.vala
     src/service/entity_capabilities_storage.vala
+    src/service/entity_info.vala
     src/service/file_manager.vala
     src/service/jingle_file_transfers.vala
+    src/service/message_correction.vala
     src/service/message_processor.vala
     src/service/message_storage.vala
     src/service/module_manager.vala

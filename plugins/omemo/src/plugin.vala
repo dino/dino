@@ -47,6 +47,7 @@ public class Plugin : RootInterface, Object {
         this.app.plugin_registry.register_account_settings_entry(settings_entry);
         this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
         this.app.plugin_registry.register_notification_populator(device_notification_populator);
+        this.app.plugin_registry.register_conversation_addition_populator(new BadMessagesPopulator(this.app.stream_interactor, this));
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
             list.add(new StreamModule());
             list.add(new JetOmemo.Module(this));

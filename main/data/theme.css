@@ -62,14 +62,22 @@ window.dino-main .dino-sidebar > frame {
     transition: background .05s ease;
 }
 
-.file-box-outer {
+window.dino-main .dino-conversation .message-box.edit-mode {
+    background: alpha(@theme_selected_bg_color, 0.1);
+}
+
+window.dino-main .dino-conversation .message-box.edit-mode:hover {
+    background: alpha(@theme_selected_bg_color, 0.12);
+}
+
+window.dino-main .dino-conversation .file-box-outer {
     background: @theme_base_color;
     border-radius: 3px;
     border: 1px solid alpha(@theme_fg_color, 0.1);
 }
 
-.file-box {
-    margin: 12px;
+window.dino-main .dino-conversation .file-box {
+    margin: 12px 16px 12px 12px;
 }
 
 window.dino-main .dino-sidebar > frame.collapsed {
@@ -120,7 +128,9 @@ window.dino-main button.dino-chatinput-button:checked:backdrop {
 }
 
 
-.dino-chatinput textview, .dino-chatinput textview text {
+.dino-chatinput,
+.dino-chatinput textview,
+.dino-chatinput textview text {
     background-color: @theme_base_color;
 }
 

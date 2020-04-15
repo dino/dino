@@ -7,9 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2020-02-01 15:50+0000\n"
-"Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: none\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
@@ -20,39 +19,216 @@ msgstr ""
 "1 : 2);\n"
 "X-Generator: Weblate 3.11-dev\n"
 
+#: main/src/ui/main_window.vala:200
+msgid "Welcome to Dino!"
+msgstr "Sveiki atvykę į Dino!"
+
+#: main/src/ui/main_window.vala:201
+msgid "Sign in or create an account to get started."
+msgstr "Norėdami pradėti, prisijunkite arba susikurkite paskyrą."
+
+#: main/src/ui/main_window.vala:202
+msgid "Set up account"
+msgstr "Nusistatyti paskyrą"
+
+#: main/src/ui/main_window.vala:210
+msgid "No active accounts"
+msgstr "Aktyvių paskyrų nėra"
+
+#: main/src/ui/main_window.vala:211
+msgid "Manage accounts"
+msgstr "Tvarkyti paskyras"
+
+#: main/src/ui/main_window.vala:220
+msgid "No active conversations"
+msgstr "Aktyvių pokalbių nėra"
+
+#: main/src/ui/main_window.vala:221
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "Pradėti pokalbį"
+
+#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "Prisijungti prie kanalo"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
+msgid "Today"
+msgstr "Šiandien"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:316
+msgid "Yesterday"
+msgstr "Vakar"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
+msgid "%a, %b %d"
+msgstr "%b %d, %a"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:312
+#, no-c-format
+msgid "%b %d"
+msgstr "%b %d"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#, c-format
+msgid "Downloading %s…"
+msgstr "Atsisiunčiama %s…"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#, c-format
+msgid "%s offered: %s"
+msgstr "%s pasiūlė: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#, c-format
+msgid "File offered: %s"
+msgstr "Pasiūlytas failas: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+msgid "File offered"
+msgstr "Pasiūlytas failas"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:62
+msgid "File transfer failed"
+msgstr "Failo persiuntimas nepavyko"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
+#, c-format
+msgid "%s, %s and %i others are typing"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
+#, c-format
+msgid "%s, %s and %s are typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
+#, c-format
+msgid "%s and %s are typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
+#, c-format
+msgid "%s is typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/message_widget.vala:157
+msgid "Message too long"
+msgstr "Žinutė per ilga"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:184
+msgid "edited"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
+msgid "Accept"
+msgstr "Priimti"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
+msgid "Deny"
+msgstr "Atmesti"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:48
+msgid "This contact would like to add you to their contact list"
+msgstr "Šis adresatas norėtų jus pridėti į savo adresatų sąrašą"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Nešifruota"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+msgid "Unable to send message"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x, %H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%b %d, %H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%b %d, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%a, %H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%a, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:319
+#, no-c-format
+msgid "%H∶%M"
+msgstr "%H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:320
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr "%l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:323
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "prieš %i minutę"
+msgstr[1] "prieš %i minutes"
+msgstr[2] "prieš %i minučių"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:325
+msgid "Just now"
+msgstr "Ką tik"
+
 #: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:166
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
 msgid "Image sent"
 msgstr "Paveikslas išsiųstas"
 
 #: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:166
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
 msgid "File sent"
 msgstr "Failas išsiųstas"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:168
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
 msgid "Image received"
 msgstr "Paveikslas gautas"
 
 #: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:168
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
 msgid "File received"
 msgstr "Failas gautas"
 
 #: main/src/ui/notifications.vala:98
 msgid "Subscription request"
 msgstr "Prenumeratos užklausa"
-
-#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
-#: main/src/ui/conversation_summary/subscription_notification.vala:37
-msgid "Accept"
-msgstr "Priimti"
-
-#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
-#: main/src/ui/conversation_summary/subscription_notification.vala:38
-msgid "Deny"
-msgstr "Atmesti"
 
 #: main/src/ui/notifications.vala:112
 #: main/src/ui/manage_accounts/add_account_dialog.vala:258
@@ -92,6 +268,7 @@ msgstr "Pasirinkti"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
+#: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
@@ -141,8 +318,8 @@ msgstr "Prisijungti prie %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
-msgid "You can now start using %s"
-msgstr "Dabar, galite pradėti naudoti %s"
+msgid "You can now use the account %s."
+msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
@@ -174,8 +351,8 @@ msgid "The server requires to sign up through a website"
 msgstr "Serveris reikalauja registruotis per internetinę svetainę"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
-msgid "Open Registration"
-msgstr "Atverti registraciją"
+msgid "Open website"
+msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
@@ -186,55 +363,11 @@ msgstr "Registruotis"
 msgid "Check %s for information on how to sign up"
 msgstr "Išsamesnei informacijai apie registraciją, žiūrėkite %s"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:146
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:160
-#: main/src/ui/util/helper.vala:136 main/src/ui/util/helper.vala:151
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:162
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:187
+#: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
 msgid "Me"
 msgstr "Aš"
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:258
-#: main/src/ui/conversation_summary/date_separator_populator.vala:100
-#, no-c-format
-msgid "%b %d"
-msgstr "%b %d"
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:262
-#: main/src/ui/conversation_summary/date_separator_populator.vala:91
-msgid "Yesterday"
-msgstr "Vakar"
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:265
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:205
-#, no-c-format
-msgid "%H∶%M"
-msgstr "%H∶%M"
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:266
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:206
-#, no-c-format
-msgid "%l∶%M %p"
-msgstr "%l∶%M %p"
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:269
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:210
-#, c-format
-msgid "%i min ago"
-msgid_plural "%i mins ago"
-msgstr[0] "prieš %i minutę"
-msgstr[1] "prieš %i minutes"
-msgstr[2] "prieš %i minučių"
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:271
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:212
-msgid "Just now"
-msgstr "Ką tik"
-
-#: main/src/ui/application.vala:192
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/unified_window.vala:249 main/data/menu_add.ui:13
-#: main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "Prisijungti prie kanalo"
 
 #: main/src/ui/application.vala:192
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -243,19 +376,15 @@ msgstr "Prisijungti prie kanalo"
 msgid "Join"
 msgstr "Prisijungti"
 
-#: main/src/ui/util/helper.vala:126
+#: main/src/ui/util/helper.vala:127
 #, c-format
 msgid "%s from %s"
 msgstr "%s iš %s"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:27
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "Pridėti"
-
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
-msgid "Save"
-msgstr "Įrašyti"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:118
@@ -270,14 +399,6 @@ msgstr "Kitas"
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Atgal"
-
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/src/ui/unified_window.vala:248
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "Pradėti pokalbį"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -315,125 +436,6 @@ msgstr "Pasirinkti kitą slapyvardį"
 msgid "Too many occupants in room"
 msgstr "Kambaryje per daug žmonių"
 
-#: main/src/ui/unified_window.vala:227
-msgid "Welcome to Dino!"
-msgstr "Sveiki atvykę į Dino!"
-
-#: main/src/ui/unified_window.vala:228
-msgid "Sign in or create an account to get started."
-msgstr "Norėdami pradėti, prisijunkite arba susikurkite paskyrą."
-
-#: main/src/ui/unified_window.vala:229
-msgid "Set up account"
-msgstr "Nusistatyti paskyrą"
-
-#: main/src/ui/unified_window.vala:237
-msgid "No active accounts"
-msgstr "Aktyvių paskyrų nėra"
-
-#: main/src/ui/unified_window.vala:238
-msgid "Manage accounts"
-msgstr "Tvarkyti paskyras"
-
-#: main/src/ui/unified_window.vala:247
-msgid "No active conversations"
-msgstr "Aktyvių pokalbių nėra"
-
-#: main/src/ui/conversation_summary/file_widget.vala:275
-#, c-format
-msgid "Downloading %s…"
-msgstr "Atsisiunčiama %s…"
-
-#: main/src/ui/conversation_summary/file_widget.vala:281
-#, c-format
-msgid "%s offered: %s"
-msgstr "%s pasiūlė: %s"
-
-#: main/src/ui/conversation_summary/file_widget.vala:283
-#, c-format
-msgid "File offered: %s"
-msgstr "Pasiūlytas failas: %s"
-
-#: main/src/ui/conversation_summary/file_widget.vala:285
-msgid "File offered"
-msgstr "Pasiūlytas failas"
-
-#: main/src/ui/conversation_summary/file_widget.vala:290
-msgid "File transfer failed"
-msgstr "Failo persiuntimas nepavyko"
-
-#: main/src/ui/conversation_summary/date_separator_populator.vala:85
-msgid "Today"
-msgstr "Šiandien"
-
-#: main/src/ui/conversation_summary/date_separator_populator.vala:98
-msgid "%a, %b %d"
-msgstr "%b %d, %a"
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:145
-#, c-format
-msgid "%s, %s and %i others"
-msgstr "%s, %s ir dar %i"
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:147
-#, c-format
-msgid "%s, %s and %s"
-msgstr "%s, %s ir %s"
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:149
-#, c-format
-msgid "%s and %s"
-msgstr "%s ir %s"
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:154
-msgid "is typing…"
-msgid_plural "are typing…"
-msgstr[0] "rašo…"
-msgstr[1] "rašo…"
-msgstr[2] "rašo…"
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:156
-msgid "has stopped typing"
-msgstr "nustojo rašyti"
-
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:59
-msgid "Message too long"
-msgstr "Žinutė per ilga"
-
-#: main/src/ui/conversation_summary/subscription_notification.vala:48
-msgid "This contact would like to add you to their contact list"
-msgstr "Šis adresatas norėtų jus pridėti į savo adresatų sąrašą"
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
-#, no-c-format
-msgid "%x, %H∶%M"
-msgstr "%x, %H∶%M"
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:194
-#, no-c-format
-msgid "%x, %l∶%M %p"
-msgstr "%x, %l∶%M %p"
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
-#, no-c-format
-msgid "%b %d, %H∶%M"
-msgstr "%b %d, %H∶%M"
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:198
-#, no-c-format
-msgid "%b %d, %l∶%M %p"
-msgstr "%b %d, %l∶%M %p"
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
-#, no-c-format
-msgid "%a, %H∶%M"
-msgstr "%a, %H∶%M"
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:202
-#, no-c-format
-msgid "%a, %l∶%M %p"
-msgstr "%a, %l∶%M %p"
-
 #: main/src/ui/occupant_menu/list.vala:102
 msgid "Owner"
 msgstr "Savininkas"
@@ -469,8 +471,11 @@ msgstr "Išvaryti"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
-msgid "%i search results"
-msgstr "Paieškos rezultatų: %i"
+msgid "%i search result"
+msgid_plural "%i search results"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: main/src/ui/global_search.vala:167
 #, c-format
@@ -516,12 +521,12 @@ msgid "Occupants may change the subject"
 msgstr "Lankytojai gali keisti temą"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
-msgid "Discover real JIDs"
-msgstr "Atrasti tikruosius JID"
+msgid "Permission to view JIDs"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
-msgid "Who may discover real JIDs?"
-msgstr "Kas gali atrasti tikruosius JID?"
+msgid "Who is allowed to view the occupants' JIDs?"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
@@ -532,8 +537,8 @@ msgid "Password"
 msgstr "Slaptažodis"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
-msgid "Password required for room entry, if any"
-msgstr "Jei nustatytas, norint užeiti į kambarį bus reikalaujama slaptažodžio"
+msgid "A password to restrict access to the room"
+msgstr ""
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
@@ -575,7 +580,8 @@ msgstr "Blokuoti"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
-msgstr "Abiejomis kryptimis bus blokuojamas bendravimas ir būsenos atnaujinimai"
+msgstr ""
+"Abiejomis kryptimis bus blokuojamas bendravimas ir būsenos atnaujinimai"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
@@ -625,6 +631,10 @@ msgstr "Ieškoti žinučių"
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
 msgstr "Nariai"
+
+#: main/data/message_item_widget_edit_mode.ui:60
+msgid "Update message"
+msgstr ""
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -690,10 +700,6 @@ msgstr "Viskas nustatyta!"
 #: main/data/manage_accounts/add_account_dialog.ui:578
 msgid "Finish"
 msgstr "Užbaigti"
-
-#: main/data/menu_encryption.ui:14
-msgid "Unencrypted"
-msgstr "Nešifruota"
 
 #: main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
@@ -795,6 +801,51 @@ msgstr "Patikrinkite rašybą arba pabandykite pašalinti filtrus"
 msgid "Click here to start a conversation or join a channel."
 msgstr "Spustelėkite čia norėdami pradėti pokalbį ar prisijungti prie kanalo."
 
-#: main/data/unified_main_content.ui:147
+#: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
 msgstr "Neturite jokių atvertų pokalbių"
+
+#, c-format
+#~ msgid "%s, %s and %i others"
+#~ msgstr "%s, %s ir dar %i"
+
+#, c-format
+#~ msgid "You can now start using %s"
+#~ msgstr "Dabar, galite pradėti naudoti %s"
+
+#~ msgid "Open Registration"
+#~ msgstr "Atverti registraciją"
+
+#~ msgid "Save"
+#~ msgstr "Įrašyti"
+
+#, c-format
+#~ msgid "%s, %s and %s"
+#~ msgstr "%s, %s ir %s"
+
+#, c-format
+#~ msgid "%s and %s"
+#~ msgstr "%s ir %s"
+
+#~ msgid "is typing…"
+#~ msgid_plural "are typing…"
+#~ msgstr[0] "rašo…"
+#~ msgstr[1] "rašo…"
+#~ msgstr[2] "rašo…"
+
+#~ msgid "has stopped typing"
+#~ msgstr "nustojo rašyti"
+
+#, c-format
+#~ msgid "%i search results"
+#~ msgstr "Paieškos rezultatų: %i"
+
+#~ msgid "Discover real JIDs"
+#~ msgstr "Atrasti tikruosius JID"
+
+#~ msgid "Who may discover real JIDs?"
+#~ msgstr "Kas gali atrasti tikruosius JID?"
+
+#~ msgid "Password required for room entry, if any"
+#~ msgstr ""
+#~ "Jei nustatytas, norint užeiti į kambarį bus reikalaujama slaptažodžio"

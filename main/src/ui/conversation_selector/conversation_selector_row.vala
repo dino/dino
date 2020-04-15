@@ -9,7 +9,7 @@ using Xmpp;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/Dino/conversation_selector/conversation_row.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/conversation_row.ui")]
 public class ConversationSelectorRow : ListBoxRow {
 
     [GtkChild] protected AvatarImage image;
@@ -50,7 +50,7 @@ public class ConversationSelectorRow : ListBoxRow {
                 });
                 break;
             case Conversation.Type.GROUPCHAT:
-                stream_interactor.get_module(MucManager.IDENTITY).room_name_set.connect((account, jid, room_name) => {
+                stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
                     if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                         update_name_label();
                     }
@@ -87,6 +87,12 @@ public class ConversationSelectorRow : ListBoxRow {
                 content_item_received(item);
             }
         });
+        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect((item) => {
+            if (last_content_item != null && last_content_item.id == item.id) {
+                content_item_received(item);
+            }
+        });
+
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
         x_button.clicked.connect(() => {
@@ -212,29 +218,6 @@ public class ConversationSelectorRow : ListBoxRow {
         }
     }
 
-    protected Box get_fulljid_box(Jid full_jid) {
-        Box box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
-
-        Show show = stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, conversation.account);
-        Image image = new Image() { visible=true };
-        if (show.as == Show.AWAY) {
-            image.set_from_icon_name("dino-status-away", IconSize.SMALL_TOOLBAR);
-        } else if (show.as == Show.XA || show.as == Show.DND) {
-            image.set_from_icon_name("dino-status-dnd", IconSize.SMALL_TOOLBAR);
-        } else if (show.as == Show.CHAT) {
-            image.set_from_icon_name("dino-status-chat", IconSize.SMALL_TOOLBAR);
-        } else {
-            image.set_from_icon_name("dino-status-online", IconSize.SMALL_TOOLBAR);
-        }
-        box.add(image);
-
-        Label resource = new Label(full_jid.resourcepart) { visible=true };
-        resource.xalign = 0;
-        box.add(resource);
-        box.show_all();
-        return box;
-    }
-
     public override void state_flags_changed(StateFlags flags) {
         StateFlags curr_flags = get_state_flags();
         if ((curr_flags & StateFlags.PRELIGHT) != 0) {
@@ -246,21 +229,71 @@ public class ConversationSelectorRow : ListBoxRow {
         }
     }
 
-    private Widget generate_tooltip() {
-        Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_selector/chat_row_tooltip.ui");
-        Box main_box = builder.get_object("main_box") as Box;
-        Box inner_box = builder.get_object("inner_box") as Box;
-        Label jid_label = builder.get_object("jid_label") as Label;
+    private static Regex dino_resource_regex = /^dino\.[a-f0-9]{8}$/;
 
-        jid_label.label = conversation.counterpart.to_string();
+    private Widget generate_tooltip() {
+        Grid grid = new Grid() { row_spacing=5, column_homogeneous=false, column_spacing=2, margin_start=5, margin_end=5, margin_top=2, margin_bottom=2, visible=true };
+
+        Label label = new Label(conversation.counterpart.to_string()) { valign=Align.START, xalign=0, visible=true };
+        label.attributes = new AttrList();
+        label.attributes.insert(attr_weight_new(Weight.BOLD));
+
+        grid.attach(label, 0, 0, 2, 1);
 
         Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
-        if (full_jids != null) {
-            for (int i = 0; i < full_jids.size; i++) {
-                inner_box.add(get_fulljid_box(full_jids[i]));
+        if (full_jids == null) return grid;
+
+        for (int i = 0; i < full_jids.size; i++) {
+            Jid full_jid = full_jids[i];
+            Show show = stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, conversation.account);
+            Xep.ServiceDiscovery.Identity? identity = stream_interactor.get_module(EntityInfo.IDENTITY).get_identity(conversation.account, full_jid);
+
+            Image image = new Image() { hexpand=false, valign=Align.START, visible=true };
+            if (identity != null && (identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_PHONE || identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_TABLET)) {
+                image.set_from_icon_name("dino-device-phone-symbolic", IconSize.SMALL_TOOLBAR);
+            } else {
+                image.set_from_icon_name("dino-device-desktop-symbolic", IconSize.SMALL_TOOLBAR);
             }
+
+            if (show.as == Show.AWAY) {
+                Util.force_color(image, "#FF9800");
+            } else if (show.as == Show.XA || show.as == Show.DND) {
+                Util.force_color(image, "#FF5722");
+            } else {
+                Util.force_color(image, "#4CAF50");
+            }
+
+            string? status = null;
+            if (show.as == Show.AWAY) {
+                status = "away";
+            } else if (show.as == Show.XA) {
+                status = "not available";
+            } else if (show.as == Show.DND) {
+                status = "do not disturb";
+            }
+
+            var sb = new StringBuilder();
+            if (identity != null && identity.name != null) {
+                sb.append(identity.name);
+            } else if (full_jid.resourcepart != null && dino_resource_regex.match(full_jid.resourcepart)) {
+                sb.append("Dino");
+            } else if (full_jid.resourcepart != null) {
+                sb.append(full_jid.resourcepart);
+            } else {
+                continue;
+            }
+            if (status != null) {
+                sb.append(" <i>(");
+                sb.append(status);
+                sb.append(")</i>");
+            }
+
+            Label resource = new Label(sb.str) { use_markup=true, hexpand=true, xalign=0, visible=true };
+
+            grid.attach(image, 0, i + 1, 1, 1);
+            grid.attach(resource, 1, i + 1, 1, 1);
         }
-        return main_box;
+        return grid;
     }
 
     private static string get_relative_time(DateTime datetime) {

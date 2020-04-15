@@ -67,8 +67,8 @@ public class Module : XmppStreamModule {
     public signal void received_occupant_jid(XmppStream stream, Jid jid, Jid? real_jid);
     public signal void received_occupant_role(XmppStream stream, Jid jid, Role? role);
     public signal void subject_set(XmppStream stream, string? subject, Jid jid);
-    public signal void room_name_set(XmppStream stream, Jid jid, string? room_name);
     public signal void invite_received(XmppStream stream, Jid room_jid, Jid from_jid, string? password, string? reason);
+    public signal void room_info_updated(XmppStream stream, Jid muc_jid);
 
     public signal void self_removed_from_room(XmppStream stream, Jid jid, StatusCode code);
     public signal void removed_from_room(XmppStream stream, Jid jid, StatusCode? code);
@@ -131,7 +131,7 @@ public class Module : XmppStreamModule {
         message.to = jid;
         message.type_ = MessageStanza.TYPE_GROUPCHAT;
         message.stanza.put_node((new StanzaNode.build("subject")).put_node(new StanzaNode.text(subject)));
-        stream.get_module(MessageModule.IDENTITY).send_message(stream, message);
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
     }
 
     public void change_nick(XmppStream stream, Jid jid, string new_nick) {
@@ -151,7 +151,7 @@ public class Module : XmppStreamModule {
         StanzaNode invite_node = new StanzaNode.build("x", NS_URI_USER).add_self_xmlns()
             .put_node(new StanzaNode.build("invite", NS_URI_USER).put_attribute("to", jid.to_string()));
         message.stanza.put_node(invite_node);
-        stream.get_module(MessageModule.IDENTITY).send_message(stream, message);
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
     }
 
     public void kick(XmppStream stream, Jid jid, string nick) {
@@ -248,12 +248,14 @@ public class Module : XmppStreamModule {
 
             StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_USER);
             if (x_node != null) {
-              StanzaNode? status_node = x_node.get_subnode("status", NS_URI_USER);
-              if (status_node != null && status_node.get_attribute_int("code") == 104) {
-                  // room configuration has changed (e.g. room name)
-                  // https://xmpp.org/extensions/xep-0045.html#roomconfig-notify
-                  query_room_info(stream, message.from.bare_jid);
-              }
+                Gee.List<int> status_codes = get_status_codes(x_node);
+                if (!status_codes.is_empty) {
+                    if (status_codes.contains(StatusCode.CONFIG_CHANGE_NON_PRIVACY) ||
+                            status_codes.contains(StatusCode.NON_ANONYMOUS) ||
+                            status_codes.contains(StatusCode.SEMI_ANONYMOUS)) {
+                        query_room_info(stream, message.from.bare_jid);
+                    }
+                }
             }
         }
     }
@@ -385,7 +387,6 @@ public class Module : XmppStreamModule {
                 foreach (ServiceDiscovery.Identity identity in query_result.identities) {
                     if (identity.category == "conference") {
                         stream.get_flag(Flag.IDENTITY).set_room_name(jid, identity.name);
-                        room_name_set(stream, jid, identity.name);
                     }
                 }
 
@@ -414,6 +415,7 @@ public class Module : XmppStreamModule {
                 }
             }
             stream.get_flag(Flag.IDENTITY).set_room_features(jid, features);
+            room_info_updated(stream, jid);
         });
     }
 

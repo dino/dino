@@ -27,7 +27,7 @@ public class Module : XmppStreamModule {
 
         MessageProcessingHints.set_message_hint(message, MessageProcessingHints.HINT_NO_STORE);
 
-        stream.get_module(MessageModule.IDENTITY).send_message(stream, message);
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
     }
 
     public override void attach(XmppStream stream) {
