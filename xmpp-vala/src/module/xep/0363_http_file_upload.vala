@@ -154,14 +154,16 @@ public class Module : XmppStreamModule {
 
     private long extract_max_file_size(Xep.ServiceDiscovery.InfoResult info_result) {
         string? max_file_size_str = null;
-        StanzaNode x_node = info_result.iq.stanza.get_deep_subnode("http://jabber.org/protocol/disco#info:query", "jabber:x:data:x");
-        Gee.List<StanzaNode> field_nodes = x_node.get_subnodes("field", "jabber:x:data");
-        foreach (StanzaNode node in field_nodes) {
-            string? var_attr = node.get_attribute("var");
-            if (var_attr == "max-file-size") {
-                StanzaNode value_node = node.get_subnode("value", "jabber:x:data");
-                max_file_size_str = value_node.get_string_content();
-                break;
+        Gee.List<StanzaNode> x_nodes = info_result.iq.stanza.get_deep_subnodes("http://jabber.org/protocol/disco#info:query", "jabber:x:data:x");
+        foreach(StanzaNode x_node in x_nodes) {
+            Gee.List<StanzaNode> field_nodes = x_node.get_subnodes("field", "jabber:x:data");
+            foreach (StanzaNode node in field_nodes) {
+                string? var_attr = node.get_attribute("var");
+                if (var_attr == "max-file-size") {
+                    StanzaNode value_node = node.get_subnode("value", "jabber:x:data");
+                    max_file_size_str = value_node.get_string_content();
+                    break;
+                }
             }
         }
         if (max_file_size_str != null) return long.parse(max_file_size_str);
