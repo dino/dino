@@ -99,18 +99,16 @@ public class View : Popover {
         }
         if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) && role ==  Xmpp.Xep.Muc.Role.MODERATOR){
             if (stream_interactor.get_module(MucManager.IDENTITY).get_role(selected_jid, conversation.account) ==  Xmpp.Xep.Muc.Role.VISITOR) {
-                ModelButton voice_button = new ModelButton()  { active=true, text=_("Grant voice"), visible=true };
+                ModelButton voice_button = new ModelButton()  { active=true, text=_("Grant write permission"), visible=true };
                 outer_box.add(voice_button);
-                voice_button.clicked.connect(
-                    () => voice_button_clicked("participant")
-                    );
+                voice_button.clicked.connect(() => 
+                    voice_button_clicked("participant"));
             } 
             else if (stream_interactor.get_module(MucManager.IDENTITY).get_role(selected_jid, conversation.account) ==  Xmpp.Xep.Muc.Role.PARTICIPANT){
-                ModelButton voice_button = new ModelButton()  { active=true, text=_("Revoke voice"), visible=true };
+                ModelButton voice_button = new ModelButton()  { active=true, text=_("Revoke write permission"), visible=true };
                 outer_box.add(voice_button);
-                voice_button.clicked.connect(
-                    () => voice_button_clicked("visitor")
-                    );
+                voice_button.clicked.connect(() => 
+                    voice_button_clicked("visitor"));
             }
             
         }

@@ -529,7 +529,6 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
     public override async bool run(XmppStream stream, MessageStanza message) {
         if (message.type_ == MessageStanza.TYPE_NORMAL) {
             StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_USER);
-            StanzaNode? x_field_node = message.stanza.get_subnode("x", DataForms.NS_URI); 
             if (x_node != null) {
                 StanzaNode? invite_node = x_node.get_subnode("invite", NS_URI_USER);
                 string? password = null;
@@ -554,8 +553,8 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 }
             }
 
+            StanzaNode? x_field_node = message.stanza.get_subnode("x", DataForms.NS_URI); 
             if (x_field_node != null){
-
                 Gee.List<StanzaNode>? fields = x_field_node.get_subnodes("field", DataForms.NS_URI);
                 Jid? from_jid = null;
                 string? nick = null;

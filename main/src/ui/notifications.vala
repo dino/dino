@@ -143,11 +143,12 @@ public class Notifications : Object {
     }
     
     private async void on_voice_request_received(Account account, Jid room_jid, Jid from_jid, string? nick, string? role, string? label) {
-        Conversation direct_conversation = new Conversation(from_jid, account, Conversation.Type.CHAT);
+        Conversation? direct_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
+        if (direct_conversation == null) return;
         string display_name = Util.get_participant_display_name(stream_interactor, direct_conversation, from_jid);
         string display_room = room_jid.bare_jid.to_string();
-        Notification notification = new Notification(_("voice request from %s").printf(display_name));
-        string body = _("%s requests voice in %s").printf(display_name, display_room);
+        Notification notification = new Notification(_("Permission request"));
+        string body = _("%s requests the permission to write in %s").printf(display_name, display_room);
         notification.set_body(body);
 
         try {

@@ -48,12 +48,32 @@ public class ChatInputController : Object {
         chat_text_view_controller.initialize_for_conversation(conversation);
         
         Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+        
         if (conversation.type_ == conversation.Type.GROUPCHAT){
             if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) && 
             stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account)==Xmpp.Xep.Muc.Role.VISITOR) {
-                set_input_field_status(new Plugins.InputFieldStatus("This is a moderated group, you don't have voice", Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND));
+                set_input_field_status(new Plugins.InputFieldStatus("This conference does not allow you to send messages. <a href=\"nonexistant\"> Request permission </a>", Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND, true));
             }
         }
+
+        stream_interactor.get_module(MucManager.IDENTITY).received_occupant_role.connect((account, jid, role) => {
+            if (conversation.type_ == conversation.Type.GROUPCHAT){
+                if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) && 
+                stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account)!=Xmpp.Xep.Muc.Role.VISITOR && jid.equals(own_jid)) {
+                    reset_input_field_status();
+                }
+        }
+        });
+
+        stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, muc_jid) => {
+            if (conversation.type_ == conversation.Type.GROUPCHAT){
+                if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) && 
+                stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account)==Xmpp.Xep.Muc.Role.VISITOR) {
+                    set_input_field_status(new Plugins.InputFieldStatus("This conference does not allow you to send messages. <a href=\"nonexistant\"> Request permission </a>", Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND, true));
+                }
+                else reset_input_field_status();
+            }
+        });
     }
 
     private void on_encryption_changed(Plugins.EncryptionListEntry? encryption_entry) {
@@ -68,7 +88,20 @@ public class ChatInputController : Object {
         input_field_status = status;
 
         chat_input.set_input_state(status.message_type);
-        status_description_label.label = status.message;
+        if (status.contains_markup){
+            status_description_label.set_markup("%s".printf(Markup.escape_text(status.message)));
+            status_description_label.label = status.message;
+            status_description_label.activate_link.connect(() => {
+                ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
+                contact_details_dialog.present();
+
+            return true;
+        });
+        }
+        else{
+            status_description_label.label = status.message;
+        }
+
 
         chat_input.file_button.sensitive = status.input_state == Plugins.InputFieldStatus.InputState.NORMAL;
     }

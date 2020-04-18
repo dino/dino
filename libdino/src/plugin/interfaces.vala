@@ -149,11 +149,13 @@ public class InputFieldStatus : Object {
     public string? message;
     public MessageType message_type;
     public InputState input_state;
+    public bool contains_markup;
 
-    public InputFieldStatus(string? message, MessageType message_type, InputState input_state) {
+    public InputFieldStatus(string? message, MessageType message_type, InputState input_state, bool contains_markup = false) {
         this.message = message;
         this.message_type = message_type;
         this.input_state = input_state;
+        this.contains_markup = contains_markup;
     }
 }
 
