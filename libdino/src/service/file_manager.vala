@@ -63,6 +63,7 @@ public class FileManager : StreamInteractionModule, Object {
             yield save_file(file_transfer);
 
             file_transfer.persist(db);
+            conversation.last_active = file_transfer.time;
             received_file(file_transfer, conversation);
         } catch (Error e) {
             file_transfer.state = FileTransfer.State.FAILED;
@@ -113,7 +114,6 @@ public class FileManager : StreamInteractionModule, Object {
 
             yield file_sender.send_file(conversation, file_transfer, file_send_data, file_meta);
 
-            conversation.last_active = file_transfer.time;
         } catch (Error e) {
             warning("Send file error: %s", e.message);
             file_transfer.state = FileTransfer.State.FAILED;
