@@ -1,0 +1,851 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-02-01 15:50+0000\n"
+"Language-Team: none\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
+"19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
+"1 : 2);\n"
+"X-Generator: Weblate 3.11-dev\n"
+
+#: main/src/ui/main_window.vala:200
+msgid "Welcome to Dino!"
+msgstr "Sveiki atvykę į Dino!"
+
+#: main/src/ui/main_window.vala:201
+msgid "Sign in or create an account to get started."
+msgstr "Norėdami pradėti, prisijunkite arba susikurkite paskyrą."
+
+#: main/src/ui/main_window.vala:202
+msgid "Set up account"
+msgstr "Nusistatyti paskyrą"
+
+#: main/src/ui/main_window.vala:210
+msgid "No active accounts"
+msgstr "Aktyvių paskyrų nėra"
+
+#: main/src/ui/main_window.vala:211
+msgid "Manage accounts"
+msgstr "Tvarkyti paskyras"
+
+#: main/src/ui/main_window.vala:220
+msgid "No active conversations"
+msgstr "Aktyvių pokalbių nėra"
+
+#: main/src/ui/main_window.vala:221
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "Pradėti pokalbį"
+
+#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "Prisijungti prie kanalo"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
+msgid "Today"
+msgstr "Šiandien"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:316
+msgid "Yesterday"
+msgstr "Vakar"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
+msgid "%a, %b %d"
+msgstr "%b %d, %a"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:312
+#, no-c-format
+msgid "%b %d"
+msgstr "%b %d"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#, c-format
+msgid "Downloading %s…"
+msgstr "Atsisiunčiama %s…"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#, c-format
+msgid "%s offered: %s"
+msgstr "%s pasiūlė: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#, c-format
+msgid "File offered: %s"
+msgstr "Pasiūlytas failas: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+msgid "File offered"
+msgstr "Pasiūlytas failas"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:62
+msgid "File transfer failed"
+msgstr "Failo persiuntimas nepavyko"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
+#, c-format
+msgid "%s, %s and %i others are typing"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
+#, c-format
+msgid "%s, %s and %s are typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
+#, c-format
+msgid "%s and %s are typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
+#, c-format
+msgid "%s is typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/message_widget.vala:157
+msgid "Message too long"
+msgstr "Žinutė per ilga"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:184
+msgid "edited"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
+msgid "Accept"
+msgstr "Priimti"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
+msgid "Deny"
+msgstr "Atmesti"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:48
+msgid "This contact would like to add you to their contact list"
+msgstr "Šis adresatas norėtų jus pridėti į savo adresatų sąrašą"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Nešifruota"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+msgid "Unable to send message"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x, %H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%b %d, %H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%b %d, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%a, %H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%a, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:319
+#, no-c-format
+msgid "%H∶%M"
+msgstr "%H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:320
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr "%l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:323
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "prieš %i minutę"
+msgstr[1] "prieš %i minutes"
+msgstr[2] "prieš %i minučių"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:325
+msgid "Just now"
+msgstr "Ką tik"
+
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+msgid "Image sent"
+msgstr "Paveikslas išsiųstas"
+
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+msgid "File sent"
+msgstr "Failas išsiųstas"
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
+msgid "Image received"
+msgstr "Paveikslas gautas"
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
+msgid "File received"
+msgstr "Failas gautas"
+
+#: main/src/ui/notifications.vala:98
+msgid "Subscription request"
+msgstr "Prenumeratos užklausa"
+
+#: main/src/ui/notifications.vala:112
+#: main/src/ui/manage_accounts/add_account_dialog.vala:258
+#: main/src/ui/add_conversation/conference_details_fragment.vala:188
+#, c-format
+msgid "Could not connect to %s"
+msgstr "Nepavyko prisijungti prie %s"
+
+#: main/src/ui/notifications.vala:128
+#, c-format
+msgid "Invitation to %s"
+msgstr "Pakvietimas į %s"
+
+#: main/src/ui/notifications.vala:129
+#, c-format
+msgid "%s invited you to %s"
+msgstr "%s pakvietė jus į %s"
+
+#: main/src/ui/manage_accounts/dialog.vala:125
+#, c-format
+msgid "Remove account %s?"
+msgstr "Šalinti paskyrą %s?"
+
+#: main/src/ui/manage_accounts/dialog.vala:128
+msgid "Remove"
+msgstr "Šalinti"
+
+#: main/src/ui/manage_accounts/dialog.vala:152
+msgid "Select avatar"
+msgstr "Pasirinkti avatarą"
+
+#: main/src/ui/manage_accounts/dialog.vala:152
+msgid "Select"
+msgstr "Pasirinkti"
+
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:15
+#: main/src/ui/add_conversation/add_conference_dialog.vala:122
+#: main/src/ui/add_conversation/select_contact_dialog.vala:38
+#: main/data/message_item_widget_edit_mode.ui:54
+#: main/data/add_conversation/add_groupchat_dialog.ui:11
+#: main/data/add_conversation/add_contact_dialog.ui:12
+msgid "Cancel"
+msgstr "Atsisakyti"
+
+#: main/src/ui/manage_accounts/dialog.vala:159
+msgid "Images"
+msgstr "Paveikslai"
+
+#: main/src/ui/manage_accounts/dialog.vala:163
+msgid "All files"
+msgstr "Visi failai"
+
+#: main/src/ui/manage_accounts/dialog.vala:219
+msgid "Connecting…"
+msgstr "Jungiamasi…"
+
+#: main/src/ui/manage_accounts/dialog.vala:221
+msgid "Connected"
+msgstr "Prisijungta"
+
+#: main/src/ui/manage_accounts/dialog.vala:223
+msgid "Disconnected"
+msgstr "Atsijungta"
+
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Neteisingas slaptažodis"
+
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "Negaliojantis TLS liudijimas"
+
+#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:239
+msgid "Error"
+msgstr "Klaida"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:82
+msgid "Add Account"
+msgstr "Pridėti paskyrą"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:166
+#, c-format
+msgid "Sign in to %s"
+msgstr "Prisijungti prie %s"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:210
+#, c-format
+msgid "You can now use the account %s."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:263
+#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:306
+#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+#: main/src/ui/add_conversation/conference_details_fragment.vala:191
+msgid "Invalid address"
+msgstr "Neteisingas adresas"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:278
+msgid "Wrong username or password"
+msgstr "Neteisingas naudotojo vardas ar slaptažodis"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:281
+msgid "Something went wrong"
+msgstr "Kažkas nutiko"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:321
+msgid "No response from server"
+msgstr "Nėra atsakymo iš serverio"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
+#, c-format
+msgid "Register on %s"
+msgstr "Registruotis %s"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:330
+msgid "The server requires to sign up through a website"
+msgstr "Serveris reikalauja registruotis per internetinę svetainę"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:332
+msgid "Open website"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:344
+msgid "Register"
+msgstr "Registruotis"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:346
+#, c-format
+msgid "Check %s for information on how to sign up"
+msgstr "Išsamesnei informacijai apie registraciją, žiūrėkite %s"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:162
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:187
+#: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
+msgid "Me"
+msgstr "Aš"
+
+#: main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:66
+#: main/src/ui/add_conversation/add_conference_dialog.vala:142
+#: main/src/ui/add_conversation/conference_details_fragment.vala:157
+msgid "Join"
+msgstr "Prisijungti"
+
+#: main/src/ui/util/helper.vala:127
+#, c-format
+msgid "%s from %s"
+msgstr "%s iš %s"
+
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:27
+#: main/data/add_conversation/add_contact_dialog.ui:24
+msgid "Add"
+msgstr "Pridėti"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:118
+#: main/data/manage_accounts/add_account_dialog.ui:99
+#: main/data/manage_accounts/add_account_dialog.ui:410
+#: main/data/manage_accounts/add_account_dialog.ui:490
+msgid "Next"
+msgstr "Kitas"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:147
+#: main/data/manage_accounts/add_account_dialog.ui:175
+#: main/data/manage_accounts/add_account_dialog.ui:267
+msgid "Back"
+msgstr "Atgal"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:98
+msgid "Start"
+msgstr "Pradėti"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
+msgid "Joining…"
+msgstr "Prisijungiama…"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
+msgid "Password required to enter room"
+msgstr "Norint užeiti į kambarį, reikalingas slaptažodis"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:174
+msgid "Banned from joining or creating conference"
+msgstr "Uždrausta prisijungti ar sukurti konferenciją"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:176
+msgid "Room does not exist"
+msgstr "Kambario nėra"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
+msgid "Not allowed to create room"
+msgstr "Neleidžiama kurti kambarių"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:180
+msgid "Members-only room"
+msgstr "Kambarys tik nariams"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:183
+msgid "Choose a different nick"
+msgstr "Pasirinkti kitą slapyvardį"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:185
+msgid "Too many occupants in room"
+msgstr "Kambaryje per daug žmonių"
+
+#: main/src/ui/occupant_menu/list.vala:102
+msgid "Owner"
+msgstr "Savininkas"
+
+#: main/src/ui/occupant_menu/list.vala:104
+msgid "Admin"
+msgstr "Administratorius"
+
+#: main/src/ui/occupant_menu/list.vala:106
+msgid "Member"
+msgstr "Narys"
+
+#: main/src/ui/occupant_menu/list.vala:108
+msgid "User"
+msgstr "Naudotojas"
+
+#: main/src/ui/occupant_menu/view.vala:29
+#: main/src/ui/occupant_menu/view.vala:38
+msgid "Invite"
+msgstr "Pakviesti"
+
+#: main/src/ui/occupant_menu/view.vala:37
+msgid "Invite to Conference"
+msgstr "Pakviesti į konferenciją"
+
+#: main/src/ui/occupant_menu/view.vala:88
+msgid "Start private conversation"
+msgstr "Pradėti privatų pokalbį"
+
+#: main/src/ui/occupant_menu/view.vala:96
+msgid "Kick"
+msgstr "Išvaryti"
+
+#: main/src/ui/global_search.vala:140
+#, c-format
+msgid "%i search result"
+msgid_plural "%i search results"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: main/src/ui/global_search.vala:167
+#, c-format
+msgid "In %s"
+msgstr "Ties %s"
+
+#: main/src/ui/global_search.vala:167
+#, c-format
+msgid "With %s"
+msgstr "Su %s"
+
+#: main/src/ui/contact_details/dialog.vala:37
+msgid "Conference Details"
+msgstr "Išsamiau apie konferenciją"
+
+#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
+#: main/data/im.dino.Dino.appdata.xml.in:24
+msgid "Contact Details"
+msgstr "Išsamiau apie adresatą"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:50
+msgid "Name of the room"
+msgstr "Kambario pavadinimas"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:53
+msgid "Description of the room"
+msgstr "Kambario aprašas"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:56
+msgid "Persistent"
+msgstr "Ilgalaikis"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:57
+msgid "The room will persist after the last occupant leaves"
+msgstr "Kambarys išliks netgi po to, kai išeis paskutinis lankytojas"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:60
+msgid "Publicly searchable"
+msgstr "Viešai randamas"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:63
+msgid "Occupants may change the subject"
+msgstr "Lankytojai gali keisti temą"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:66
+msgid "Permission to view JIDs"
+msgstr ""
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:67
+msgid "Who is allowed to view the occupants' JIDs?"
+msgstr ""
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:70
+#: main/data/manage_accounts/dialog.ui:170
+#: main/data/manage_accounts/add_account_dialog.ui:211
+#: main/data/add_conversation/conference_details_fragment.ui:175
+#: main/data/add_conversation/add_groupchat_dialog.ui:147
+msgid "Password"
+msgstr "Slaptažodis"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:71
+msgid "A password to restrict access to the room"
+msgstr ""
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:74
+msgid "Moderated"
+msgstr "Moderuojamas"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:75
+msgid "Only occupants with voice may send messages"
+msgstr "Tik lankytojai su balso teise gali siųsti žinutes"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:78
+msgid "Members only"
+msgstr "Tik nariai"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:79
+msgid "Only members may enter the room"
+msgstr "Tik nariai gali užeiti į kambarį"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:82
+msgid "Message history"
+msgstr "Žinučių istorija"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:83
+msgid "Maximum amount of backlog issued by the room"
+msgstr "Didžiausias kambario išduodamas praeities žurnalo skaičius"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:89
+msgid "Room Configuration"
+msgstr "Kambario konfigūracija"
+
+#: main/src/ui/contact_details/blocking_provider.vala:31
+#: main/src/ui/contact_details/settings_provider.vala:12
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
+msgid "Settings"
+msgstr "Nustatymai"
+
+#: main/src/ui/contact_details/blocking_provider.vala:31
+msgid "Block"
+msgstr "Blokuoti"
+
+#: main/src/ui/contact_details/blocking_provider.vala:31
+msgid "Communication and status updates in either direction are blocked"
+msgstr ""
+"Abiejomis kryptimis bus blokuojamas bendravimas ir būsenos atnaujinimai"
+
+#: main/src/ui/contact_details/settings_provider.vala:13
+msgid "Local Settings"
+msgstr "Vietiniai nustatymai"
+
+#: main/src/ui/contact_details/settings_provider.vala:28
+#: main/data/settings_dialog.ui:22
+msgid "Send typing notifications"
+msgstr "Siųsti pranešimus apie žinutės rašymą"
+
+#: main/src/ui/contact_details/settings_provider.vala:33
+#: main/data/settings_dialog.ui:34
+msgid "Send read receipts"
+msgstr "Siųsti pranešimus apie žinučių skaitymą"
+
+#: main/src/ui/contact_details/settings_provider.vala:38
+#: main/src/ui/contact_details/settings_provider.vala:47
+msgid "Notifications"
+msgstr "Pranešimai"
+
+#: main/src/ui/contact_details/settings_provider.vala:82
+#: main/src/ui/contact_details/settings_provider.vala:122
+#: main/src/ui/contact_details/settings_provider.vala:124
+msgid "On"
+msgstr "Įjungta"
+
+#: main/src/ui/contact_details/settings_provider.vala:84
+#: main/src/ui/contact_details/settings_provider.vala:122
+#: main/src/ui/contact_details/settings_provider.vala:125
+msgid "Off"
+msgstr "Išjungta"
+
+#: main/src/ui/contact_details/settings_provider.vala:86
+msgid "Only when mentioned"
+msgstr "Tik paminėjus"
+
+#: main/src/ui/contact_details/settings_provider.vala:88
+#: main/src/ui/contact_details/settings_provider.vala:123
+#, c-format
+msgid "Default: %s"
+msgstr "Pagal numatymą: %s"
+
+#: main/src/ui/conversation_titlebar/search_entry.vala:11
+msgid "Search messages"
+msgstr "Ieškoti žinučių"
+
+#: main/src/ui/conversation_titlebar/occupants_entry.vala:37
+msgid "Members"
+msgstr "Nariai"
+
+#: main/data/message_item_widget_edit_mode.ui:60
+msgid "Update message"
+msgstr ""
+
+#: main/data/settings_dialog.ui:46
+msgid "Notify when a new message arrives"
+msgstr "Pranešti, kai gaunama nauja žinutė"
+
+#: main/data/settings_dialog.ui:58
+msgid "Convert smileys to emojis"
+msgstr "Keisti šypsenėles į jaustukus"
+
+#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:7
+msgid "Accounts"
+msgstr "Paskyros"
+
+#: main/data/manage_accounts/dialog.ui:200
+msgid "Local alias"
+msgstr "Vietinis pseudonimas"
+
+#: main/data/manage_accounts/dialog.ui:255
+msgid "No accounts configured"
+msgstr "Nėra sukonfigūruotų paskyrų"
+
+#: main/data/manage_accounts/dialog.ui:266
+msgid "Add an account"
+msgstr "Pridėti paskyrą"
+
+#: main/data/manage_accounts/add_account_dialog.ui:31
+msgid "Sign in"
+msgstr "Prisijungti"
+
+#: main/data/manage_accounts/add_account_dialog.ui:78
+#: main/data/manage_accounts/add_account_dialog.ui:328
+msgid "Create account"
+msgstr "Sukurti paskyrą"
+
+#: main/data/manage_accounts/add_account_dialog.ui:153
+msgid "Could not establish a secure connection"
+msgstr "Nepavyko užmegzti saugaus ryšio"
+
+#: main/data/manage_accounts/add_account_dialog.ui:288
+msgid "Connect"
+msgstr "Prisijungti"
+
+#: main/data/manage_accounts/add_account_dialog.ui:340
+msgid "Choose a public server"
+msgstr "Pasirinkite viešąjį serverį"
+
+#: main/data/manage_accounts/add_account_dialog.ui:369
+msgid "Or specify a server address"
+msgstr "Arba nurodykite serverio adresą"
+
+#: main/data/manage_accounts/add_account_dialog.ui:389
+msgid "Sign in instead"
+msgstr "Vietoj to, prisijungti"
+
+#: main/data/manage_accounts/add_account_dialog.ui:470
+msgid "Pick another server"
+msgstr "Pasirinkti kitą serverį"
+
+#: main/data/manage_accounts/add_account_dialog.ui:542
+msgid "All set up!"
+msgstr "Viskas nustatyta!"
+
+#: main/data/manage_accounts/add_account_dialog.ui:578
+msgid "Finish"
+msgstr "Užbaigti"
+
+#: main/data/menu_app.ui:17
+msgid "Keyboard Shortcuts"
+msgstr "Trumpiniai"
+
+#: main/data/menu_app.ui:21
+msgid "About Dino"
+msgstr "Apie Dino"
+
+#: main/data/im.dino.Dino.appdata.xml.in:8
+msgid "Modern XMPP Chat Client"
+msgstr "Šiuolaikinė XMPP pokalbių kliento programa"
+
+#: main/data/im.dino.Dino.appdata.xml.in:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+"Dino yra šiuolaikinė atvirojo kodo kliento programa skirta darbalaukiui. Jos "
+"pagrindinis dėmesys yra pateikti tvarkingą ir patikimą Jabber/XMPP patyrimą "
+"nepamirštant apie jūsų privatumą."
+
+#: main/data/im.dino.Dino.appdata.xml.in:11
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+"Ji palaiko ištisinį šifravimą naudojant OMEMO ir OpenPGP bei leidžia "
+"konfigūruoti su privatumu susijusias ypatybes, tokias kaip pranešimus apie "
+"žinučių skaitymą ir rašymą."
+
+#: main/data/im.dino.Dino.appdata.xml.in:12
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+"Dino gauna istoriją iš serverio ir sinchronizuoja žinutes su kitais "
+"įrenginiais."
+
+#: main/data/im.dino.Dino.appdata.xml.in:16
+msgid "Main window with conversations"
+msgstr "Pagrindinis langas su pokalbiais"
+
+#: main/data/add_conversation/conference_details_fragment.ui:19
+#: main/data/add_conversation/add_groupchat_dialog.ui:49
+#: main/data/add_conversation/add_contact_dialog.ui:49
+msgid "Account"
+msgstr "Paskyra"
+
+#: main/data/add_conversation/conference_details_fragment.ui:123
+#: main/data/add_conversation/add_groupchat_dialog.ui:120
+msgid "Nick"
+msgstr "Slapyvardis"
+
+#: main/data/add_conversation/add_groupchat_dialog.ui:175
+#: main/data/add_conversation/add_contact_dialog.ui:102
+msgid "Alias"
+msgstr "Pseudonimas"
+
+#: main/data/add_conversation/add_contact_dialog.ui:8
+msgid "Add Contact"
+msgstr "Pridėti adresatą"
+
+#: main/data/shortcuts.ui:12
+msgid "General"
+msgstr "Bendri"
+
+#: main/data/shortcuts.ui:32
+msgid "Navigation"
+msgstr "Naršymas"
+
+#: main/data/shortcuts.ui:37
+msgid "Jump to next conversation"
+msgstr "Peršokti prie kito pokalbio"
+
+#: main/data/shortcuts.ui:44
+msgid "Jump to previous conversation"
+msgstr "Peršokti prie ankstesnio pokalbio"
+
+#: main/data/global_search.ui:37
+msgid "No active search"
+msgstr "Nėra aktyvios paieškos"
+
+#: main/data/global_search.ui:52
+msgid "Type to start a search"
+msgstr "Rašykite norėdami atlikti paiešką"
+
+#: main/data/global_search.ui:85
+msgid "No matching messages"
+msgstr "Nėra atitinkančių žinučių"
+
+#: main/data/global_search.ui:100
+msgid "Check the spelling or try to remove filters"
+msgstr "Patikrinkite rašybą arba pabandykite pašalinti filtrus"
+
+#: main/data/unified_main_content.ui:48
+msgid "Click here to start a conversation or join a channel."
+msgstr "Spustelėkite čia norėdami pradėti pokalbį ar prisijungti prie kanalo."
+
+#: main/data/unified_main_content.ui:100
+msgid "You have no open chats"
+msgstr "Neturite jokių atvertų pokalbių"
+
+#, c-format
+#~ msgid "%s, %s and %i others"
+#~ msgstr "%s, %s ir dar %i"
+
+#, c-format
+#~ msgid "You can now start using %s"
+#~ msgstr "Dabar, galite pradėti naudoti %s"
+
+#~ msgid "Open Registration"
+#~ msgstr "Atverti registraciją"
+
+#~ msgid "Save"
+#~ msgstr "Įrašyti"
+
+#, c-format
+#~ msgid "%s, %s and %s"
+#~ msgstr "%s, %s ir %s"
+
+#, c-format
+#~ msgid "%s and %s"
+#~ msgstr "%s ir %s"
+
+#~ msgid "is typing…"
+#~ msgid_plural "are typing…"
+#~ msgstr[0] "rašo…"
+#~ msgstr[1] "rašo…"
+#~ msgstr[2] "rašo…"
+
+#~ msgid "has stopped typing"
+#~ msgstr "nustojo rašyti"
+
+#, c-format
+#~ msgid "%i search results"
+#~ msgstr "Paieškos rezultatų: %i"
+
+#~ msgid "Discover real JIDs"
+#~ msgstr "Atrasti tikruosius JID"
+
+#~ msgid "Who may discover real JIDs?"
+#~ msgstr "Kas gali atrasti tikruosius JID?"
+
+#~ msgid "Password required for room entry, if any"
+#~ msgstr ""
+#~ "Jei nustatytas, norint užeiti į kambarį bus reikalaujama slaptažodžio"

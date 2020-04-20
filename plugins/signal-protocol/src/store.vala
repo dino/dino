@@ -1,8 +1,8 @@
 namespace Signal {
 
 public abstract class IdentityKeyStore : Object {
-    public abstract uint8[] identity_key_private { get; set; }
-    public abstract uint8[] identity_key_public { get; set; }
+    public abstract Bytes identity_key_private { get; set; }
+    public abstract Bytes identity_key_public { get; set; }
     public abstract uint32 local_registration_id { get; set; }
 
     public signal void trusted_identity_added(TrustedIdentity id);
@@ -112,8 +112,8 @@ public class Store : Object {
 
     static int iks_get_identity_key_pair(out Buffer public_data, out Buffer private_data, void* user_data) {
         Store store = (Store) user_data;
-        public_data = new Buffer.from(store.identity_key_store.identity_key_public);
-        private_data = new Buffer.from(store.identity_key_store.identity_key_private);
+        public_data = new Buffer.from(store.identity_key_store.identity_key_public.get_data());
+        private_data = new Buffer.from(store.identity_key_store.identity_key_private.get_data());
         return 0;
     }
 
@@ -138,25 +138,25 @@ public class Store : Object {
         });
     }
 
-    static int iks_destroy_func(void* user_data) {
-        return 0;
+    static void iks_destroy_func(void* user_data) {
     }
 
-    static int ss_load_session_func(out Buffer? buffer, Address address, void* user_data) {
+    static int ss_load_session_func(out Buffer? record, out Buffer? user_record, Address address, void* user_data) {
         Store store = (Store) user_data;
+        user_record = null; // No support for user_record
         uint8[]? res = null;
         try {
             res = store.session_store.load_session(address);
         } catch (Error e) {
-            buffer = null;
+            record = null;
             return e.code;
         }
         if (res == null) {
-            buffer = null;
+            record = null;
             return 0;
         }
-        buffer = new Buffer.from((!)res);
-        if (buffer == null) return ErrorCode.NOMEM;
+        record = new Buffer.from((!)res);
+        if (record == null) return ErrorCode.NOMEM;
         return 1;
     }
 
@@ -171,7 +171,8 @@ public class Store : Object {
         return 0;
     }
 
-    static int ss_store_session_func(Address address, uint8[] record, void* user_data) {
+    static int ss_store_session_func(Address address, uint8[] record, uint8[] user_record, void* user_data) {
+        // Ignoring user_record
         Store store = (Store) user_data;
         return catch_to_code(() => {
             store.session_store.store_session(address, record);
@@ -202,8 +203,7 @@ public class Store : Object {
         });
     }
 
-    static int ss_destroy_func(void* user_data) {
-        return 0;
+    static void ss_destroy_func(void* user_data) {
     }
 
     static int pks_load_pre_key(out Buffer? record, uint32 pre_key_id, void* user_data) {
@@ -247,8 +247,7 @@ public class Store : Object {
         });
     }
 
-    static int pks_destroy_func(void* user_data) {
-        return 0;
+    static void pks_destroy_func(void* user_data) {
     }
 
     static int spks_load_signed_pre_key(out Buffer? record, uint32 pre_key_id, void* user_data) {
@@ -292,8 +291,7 @@ public class Store : Object {
         });
     }
 
-    static int spks_destroy_func(void* user_data) {
-        return 0;
+    static void spks_destroy_func(void* user_data) {
     }
 
     internal Store(Context context) {

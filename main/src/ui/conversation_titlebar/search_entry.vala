@@ -8,10 +8,10 @@ namespace Dino.Ui {
 public class SearchMenuEntry : Plugins.ConversationTitlebarEntry, Object {
     public string id { get { return "search"; } }
 
-    Plugins.ConversationTitlebarWidget search_button;
+    public GlobalSearchButton search_button = new GlobalSearchButton() { tooltip_text=_("Search messages"), visible = true };
 
-    public SearchMenuEntry(Plugins.ConversationTitlebarWidget search_button) {
-        this.search_button = search_button;
+    public SearchMenuEntry() {
+        search_button.set_image(new Gtk.Image.from_icon_name("system-search-symbolic", Gtk.IconSize.MENU) { visible = true });
     }
 
     public double order { get { return 1; } }
@@ -25,6 +25,7 @@ public class SearchMenuEntry : Plugins.ConversationTitlebarEntry, Object {
 
 public class GlobalSearchButton : Plugins.ConversationTitlebarWidget, Gtk.ToggleButton {
     public new void set_conversation(Conversation conversation) { }
+    public new void unset_conversation() { }
 }
 
 }

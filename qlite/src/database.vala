@@ -29,8 +29,8 @@ public class Database {
             error(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
         this.tables = tables;
-        start_migration();
         if (debug) db.trace((message) => print(@"Qlite trace: $message\n"));
+        start_migration();
     }
 
     public void ensure_init() {
@@ -38,6 +38,11 @@ public class Database {
     }
 
     private void start_migration() {
+        try {
+            exec("BEGIN TRANSACTION");
+        } catch (Error e) {
+            error("SQLite error: %d - %s", db.errcode(), db.errmsg());
+        }
         meta_table.create_table_at_version(expected_version);
         long old_version = 0;
         old_version = meta_table.row_with(meta_name, "version")[meta_int_val, -1];
@@ -65,6 +70,11 @@ public class Database {
         }
         foreach (Table t in tables) {
             t.post();
+        }
+        try {
+            exec("END TRANSACTION");
+        } catch (Error e) {
+            error("SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
     }
 

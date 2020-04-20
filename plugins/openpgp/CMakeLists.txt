@@ -28,14 +28,15 @@ compile_gresources(
 
 vala_precompile(OPENPGP_VALA_C
 SOURCES
+    src/file_transfer/file_decryptor.vala
+    src/file_transfer/file_encryptor.vala
+
     src/account_settings_entry.vala
     src/account_settings_widget.vala
     src/contact_details_provider.vala
     src/database.vala
     src/encryption_list_entry.vala
-    src/in_file_processor.vala
     src/manager.vala
-    src/out_file_processor.vala
     src/plugin.vala
     src/register_plugin.vala
     src/stream_flag.vala
@@ -52,7 +53,7 @@ GRESOURCES
     ${OPENPGP_GRESOURCES_XML}
 )
 
-add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
+add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="OpenPGP" -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_library(openpgp SHARED ${OPENPGP_VALA_C} ${OPENPGP_GRESOURCES_TARGET})
 add_dependencies(openpgp ${GETTEXT_PACKAGE}-translations)
 if(APPLE)

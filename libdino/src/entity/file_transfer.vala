@@ -9,7 +9,7 @@ public class FileTransfer : Object {
 
     public enum State {
         COMPLETE,
-        IN_PROCESS,
+        IN_PROGRESS,
         NOT_STARTED,
         FAILED
     }
@@ -27,7 +27,7 @@ public class FileTransfer : Object {
     public bool direction { get; set; }
     public DateTime time { get; set; }
     public DateTime? local_time { get; set; }
-    public Encryption encryption { get; set; }
+    public Encryption encryption { get; set; default=Encryption.NONE; }
 
     private InputStream? input_stream_ = null;
     public InputStream input_stream {
@@ -44,7 +44,6 @@ public class FileTransfer : Object {
             input_stream_ = value;
         }
     }
-    public OutputStream output_stream { get; set; }
 
     public string file_name { get; set; }
     private string? server_file_name_ = null;
@@ -54,25 +53,25 @@ public class FileTransfer : Object {
     }
     public string path { get; set; }
     public string? mime_type { get; set; }
-    public int size { get; set; }
+    // TODO(hrxi): expand to 64 bit
+    public int size { get; set; default=-1; }
 
-    public State state { get; set; }
+    public State state { get; set; default=State.NOT_STARTED; }
     public int provider { get; set; }
     public string info { get; set; }
 
     private Database? db;
     private string storage_dir;
 
-    public FileTransfer.from_row(Database db, Qlite.Row row, string storage_dir) {
+    public FileTransfer.from_row(Database db, Qlite.Row row, string storage_dir) throws InvalidJidError {
         this.db = db;
         this.storage_dir = storage_dir;
 
         id = row[db.file_transfer.id];
         account = db.get_account_by_id(row[db.file_transfer.account_id]); // TODO don’t have to generate acc new
 
-        string counterpart_jid = db.get_jid_by_id(row[db.file_transfer.counterpart_id]);
+        counterpart = db.get_jid_by_id(row[db.file_transfer.counterpart_id]);
         string counterpart_resource = row[db.file_transfer.counterpart_resource];
-        counterpart = Jid.parse(counterpart_jid);
         if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
 
         string our_resource = row[db.file_transfer.our_resource];
@@ -110,12 +109,15 @@ public class FileTransfer : Object {
             .value(db.file_transfer.local_time, (long) local_time.to_unix())
             .value(db.file_transfer.encryption, encryption)
             .value(db.file_transfer.file_name, file_name)
-            .value(db.file_transfer.path, path)
-            .value(db.file_transfer.mime_type, mime_type)
             .value(db.file_transfer.size, size)
             .value(db.file_transfer.state, state)
             .value(db.file_transfer.provider, provider)
             .value(db.file_transfer.info, info);
+
+        if (file_name != null) builder.value(db.file_transfer.file_name, file_name);
+        if (path != null) builder.value(db.file_transfer.path, path);
+        if (mime_type != null) builder.value(db.file_transfer.mime_type, mime_type);
+
         id = (int) builder.perform();
         notify.connect(on_update);
     }
@@ -142,7 +144,14 @@ public class FileTransfer : Object {
                 update_builder.set(db.file_transfer.encryption, encryption); break;
             case "file-name":
                 update_builder.set(db.file_transfer.file_name, file_name); break;
+            case "path":
+                update_builder.set(db.file_transfer.path, path); break;
+            case "mime-type":
+                update_builder.set(db.file_transfer.mime_type, mime_type); break;
+            case "size":
+                update_builder.set(db.file_transfer.size, size); break;
             case "state":
+                if (state == State.IN_PROGRESS) return;
                 update_builder.set(db.file_transfer.state, state); break;
             case "provider":
                 update_builder.set(db.file_transfer.provider, provider); break;

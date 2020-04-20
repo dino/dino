@@ -333,6 +333,9 @@ public class StanzaNode : StanzaEntry {
     internal string printf(int i, string fmt_start_begin, string start_empty_end, string start_content_end, string fmt_end, string fmt_attr, bool no_ns = false) {
         string indent = string.nfill (i * 2, ' ');
         if (name == "#text") {
+            if (((!)val).length > 1000) {
+                return indent + "[... retracted for brevity ...]\n";
+            }
             return indent + ((!)val).replace("\n", indent + "\n") + "\n";
         }
         var sb = new StringBuilder();

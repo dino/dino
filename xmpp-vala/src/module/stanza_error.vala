@@ -2,6 +2,8 @@ using Gee;
 
 namespace Xmpp {
 
+    private const string ERROR_NS_URI = "urn:ietf:params:xml:ns:xmpp-stanzas";
+
     public class ErrorStanza {
         public const string CONDITION_BAD_REQUEST = "bad-request";
         public const string CONDITION_CONFLICT = "conflict";
@@ -37,14 +39,14 @@ namespace Xmpp {
         }
 
         public string? text {
-            get { return error_node.get_deep_string_content("urn:ietf:params:xml:ns:xmpp-stanzas:text"); }
+            get { return error_node.get_deep_string_content(ERROR_NS_URI + ":text"); }
         }
 
         public string condition {
             get {
                 Gee.List<StanzaNode> subnodes = error_node.sub_nodes;
                 foreach (StanzaNode subnode in subnodes) { // TODO get subnode by ns
-                    if (subnode.ns_uri == "urn:ietf:params:xml:ns:xmpp-stanzas") {
+                    if (subnode.ns_uri == ERROR_NS_URI) {
                         return subnode.name;
                     }
                 }
@@ -52,20 +54,51 @@ namespace Xmpp {
             }
         }
 
-        public string? original_id {
-            get { return stanza.get_attribute("id"); }
-        }
-
         public string type_ {
             get { return error_node.get_attribute("type"); }
         }
 
-        public StanzaNode stanza;
         public StanzaNode error_node;
 
         public ErrorStanza.from_stanza(StanzaNode stanza) {
-            this.stanza = stanza;
             error_node = stanza.get_subnode("error");
+        }
+
+        public ErrorStanza.build(string type, string condition, string? human_readable, StanzaNode? application_condition) {
+            error_node = new StanzaNode.build("error")
+                .put_attribute("type", type)
+                .put_node(new StanzaNode.build(condition, ERROR_NS_URI).add_self_xmlns());
+            if (application_condition != null) {
+                error_node.put_node(application_condition);
+            }
+            if (human_readable != null) {
+                error_node.put_node(new StanzaNode.build("text", ERROR_NS_URI)
+                    .add_self_xmlns()
+                    .put_attribute("xml:lang", "en")
+                    .put_node(new StanzaNode.text(human_readable))
+                );
+            }
+        }
+        public ErrorStanza.bad_request(string? human_readable = null) {
+            this.build(TYPE_MODIFY, CONDITION_BAD_REQUEST, human_readable, null);
+        }
+        public ErrorStanza.feature_not_implemented(string? human_readable = null) {
+            this.build(TYPE_MODIFY, CONDITION_FEATURE_NOT_IMPLEMENTED, human_readable, null);
+        }
+        public ErrorStanza.item_not_found(StanzaNode? application_condition = null) {
+            this.build(TYPE_CANCEL, CONDITION_ITEM_NOT_FOUND, null, application_condition);
+        }
+        public ErrorStanza.not_acceptable(string? human_readable = null) {
+            this.build(TYPE_MODIFY, CONDITION_NOT_ACCEPTABLE, human_readable, null);
+        }
+        public ErrorStanza.not_allowed(string? human_readable = null) {
+            this.build(TYPE_CANCEL, CONDITION_NOT_ALLOWED, human_readable, null);
+        }
+        public ErrorStanza.resource_constraint(string? human_readable = null) {
+            this.build(TYPE_WAIT, CONDITION_RESOURCE_CONSTRAINT, human_readable, null);
+        }
+        public ErrorStanza.service_unavailable() {
+            this.build(TYPE_CANCEL, CONDITION_SERVICE_UNAVAILABLE, null, null);
         }
     }
 }

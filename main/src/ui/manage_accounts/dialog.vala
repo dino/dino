@@ -78,7 +78,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     public Dialog(StreamInteractor stream_interactor, Database db) {
-        Object(use_header_bar : 1);
+        Object(use_header_bar : Util.use_csd() ? 1 : 0);
         this.db = db;
         this.stream_interactor = stream_interactor;
         foreach (Account account in db.get_accounts()) {
@@ -108,10 +108,9 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void show_add_account_dialog() {
-        AddAccountDialog add_account_dialog = new AddAccountDialog(stream_interactor);
+        AddAccountDialog add_account_dialog = new AddAccountDialog(stream_interactor, db);
         add_account_dialog.set_transient_for(this);
         add_account_dialog.added.connect((account) => {
-            account.persist(db);
             AccountRow account_item = add_account(account);
             account_list.select_row(account_item);
             account_list.queue_draw();
@@ -152,12 +151,11 @@ public class Dialog : Gtk.Dialog {
     private void show_select_avatar() {
         PreviewFileChooserNative chooser = new PreviewFileChooserNative(_("Select avatar"), this, FileChooserAction.OPEN, _("Select"), _("Cancel"));
         FileFilter filter = new FileFilter();
-        filter.add_pattern("*.png");
-        filter.add_pattern("*.jpg");
-        filter.add_pattern("*.jpeg");
-        filter.add_pattern("*.gif");
-        filter.add_pattern("*.svg");
-        filter.add_pattern("*.bmp");
+        foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
+            foreach (string mime_type in pixbuf_format.get_mime_types()) {
+                filter.add_mime_type(mime_type);
+            }
+        }
         filter.set_filter_name(_("Images"));
         chooser.add_filter(filter);
 
@@ -175,7 +173,6 @@ public class Dialog : Gtk.Dialog {
     private bool change_account_state(bool state) {
         selected_account.enabled = state;
         if (state) {
-            if (selected_account.enabled) account_disabled(selected_account);
             account_enabled(selected_account);
         } else {
             account_disabled(selected_account);
@@ -185,18 +182,18 @@ public class Dialog : Gtk.Dialog {
 
     private void on_received_avatar(Pixbuf pixbuf, Jid jid, Account account) {
         if (selected_account.equals(account) && jid.equals(account.bare_jid)) {
-            image.set_jid(stream_interactor, account.bare_jid, account);
+            image.set_conversation(stream_interactor, new Conversation(account.bare_jid, account, Conversation.Type.CHAT));
         }
     }
 
     private void populate_grid_data(Account account) {
         active_switch.state_set.disconnect(change_account_state);
 
-        image.set_jid(stream_interactor, account.bare_jid, account);
+        image.set_conversation(stream_interactor, new Conversation(account.bare_jid, account, Conversation.Type.CHAT));
         active_switch.set_active(account.enabled);
         jid_label.label = account.bare_jid.to_string();
 
-        alias_hybrid.text = account.alias;
+        alias_hybrid.text = account.alias ?? "";
         password_hybrid.entry.input_purpose = InputPurpose.PASSWORD;
         password_hybrid.text = account.password;
 

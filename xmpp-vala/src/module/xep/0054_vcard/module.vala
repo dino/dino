@@ -55,8 +55,8 @@ public class Module : XmppStreamModule {
         if (iq.is_error()) return;
         string? res = iq.stanza.get_deep_string_content(@"$NS_URI:vCard", "PHOTO", "BINVAL");
         if (res == null) return;
-        uint8[] content = Base64.decode(res);
-        string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, content);
+        Bytes content = new Bytes.take(Base64.decode(res));
+        string sha1 = Checksum.compute_for_bytes(ChecksumType.SHA1, content);
         storage.store(sha1, content);
         stream.get_module(IDENTITY).received_avatar(stream, iq.from, sha1);
     }

@@ -22,7 +22,8 @@ public class ListRow : ListBoxRow {
         this.jid = jid;
         this.account = account;
 
-        string display_name = Util.get_display_name(stream_interactor, jid, account);
+        Conversation conv = new Conversation(jid, account, Conversation.Type.CHAT);
+        string display_name = Util.get_conversation_display_name(stream_interactor, conv);
         if (show_account && stream_interactor.get_accounts().size > 1) {
             via_label.label = @"via $(account.bare_jid)";
             this.has_tooltip = true;
@@ -33,7 +34,7 @@ public class ListRow : ListBoxRow {
             via_label.visible = false;
         }
         name_label.label = display_name;
-        image.set_jid(stream_interactor, jid, account);
+        image.set_conversation(stream_interactor, conv);
     }
 }
 

@@ -15,7 +15,9 @@ public class View : Popover {
     private ListBox invite_list;
     private Box? jid_menu = null;
 
-    public View(StreamInteractor stream_interactor, Window window, Conversation conversation) {
+    private Jid? selected_jid;
+
+    public View(StreamInteractor stream_interactor, Conversation conversation) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
 
@@ -31,7 +33,7 @@ public class View : Popover {
             Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
             acc_list.add(conversation.account);
             SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
-            add_chat_dialog.set_transient_for(window);
+            add_chat_dialog.set_transient_for((Window) get_toplevel());
             add_chat_dialog.title = _("Invite to Conference");
             add_chat_dialog.ok_button.label = _("Invite");
             add_chat_dialog.selected.connect((account, jid) => {
@@ -66,6 +68,7 @@ public class View : Popover {
     }
 
     private void show_menu(Jid jid, string name_) {
+        selected_jid = jid;
         stack.transition_type = StackTransitionType.SLIDE_LEFT;
 
         string name = name_;
@@ -102,18 +105,19 @@ public class View : Popover {
     }
 
     private void private_conversation_button_clicked() {
-        ListRow? list_row = list.list_box.get_selected_row() as ListRow;
-        if (list_row == null) return;
+        if (selected_jid == null) return;
 
-        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(list_row.jid, list_row.account, Conversation.Type.GROUPCHAT_PM);
-        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(selected_jid, conversation.account, Conversation.Type.GROUPCHAT_PM);
+        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+
+        Application app = GLib.Application.get_default() as Application;
+        app.controller.select_conversation(conversation);
     }
 
     private void kick_button_clicked() {
-        ListRow? list_row = list.list_box.get_selected_row() as ListRow;
-        if (list_row == null) return;
+        if (selected_jid == null) return;
 
-        stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, list_row.jid.resourcepart);
+        stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, selected_jid.resourcepart);
     }
 }
 

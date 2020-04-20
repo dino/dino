@@ -13,7 +13,7 @@ class SettingsDialog : Dialog {
     Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
     public SettingsDialog() {
-        Object(use_header_bar : 1);
+        Object(use_header_bar : Util.use_csd() ? 1 : 0);
 
         typing_checkbutton.active = settings.send_typing;
         marker_checkbutton.active = settings.send_marker;

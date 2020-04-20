@@ -33,10 +33,12 @@ public class RosterManager : StreamInteractionModule, Object {
     }
 
     public Collection<Roster.Item> get_roster(Account account) {
+        if (roster_stores[account] == null) return new ArrayList<Roster.Item>();
         return roster_stores[account].get_roster();
     }
 
     public Roster.Item? get_roster_item(Account account, Jid jid) {
+        if (roster_stores[account] == null) return null;
         return roster_stores[account].get_item(jid);
     }
 
@@ -89,11 +91,15 @@ public class RosterStoreImpl : Roster.Storage, Object {
         this.db = db;
 
         foreach (Qlite.Row row in db.roster.select().with(db.roster.account_id, "=", account.id)) {
-            Roster.Item item = new Roster.Item();
-            item.jid = Jid.parse(row[db.roster.jid]);
-            item.name = row[db.roster.handle];
-            item.subscription = row[db.roster.subscription];
-            items[item.jid] = item;
+            try {
+                Roster.Item item = new Roster.Item();
+                item.jid = new Jid(row[db.roster.jid]);
+                item.name = row[db.roster.handle];
+                item.subscription = row[db.roster.subscription];
+                items[item.jid] = item;
+            } catch (InvalidJidError e) {
+                warning("Ignoring roster entry with invalid Jid: %s", e.message);
+            }
         }
     }
 

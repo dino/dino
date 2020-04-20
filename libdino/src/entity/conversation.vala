@@ -9,7 +9,11 @@ public class Conversation : Object {
     public enum Type {
         CHAT,
         GROUPCHAT,
-        GROUPCHAT_PM
+        GROUPCHAT_PM;
+
+        public bool is_muc_semantic() {
+            return this == GROUPCHAT || this == GROUPCHAT_PM;
+        }
     }
 
     public int id { get; set; }
@@ -47,14 +51,14 @@ public class Conversation : Object {
         this.type_ = type;
     }
 
-    public Conversation.from_row(Database db, Qlite.Row row) {
+    public Conversation.from_row(Database db, Qlite.Row row) throws InvalidJidError {
         this.db = db;
 
         id = row[db.conversation.id];
         type_ = (Conversation.Type) row[db.conversation.type_];
         account = db.get_account_by_id(row[db.conversation.account_id]);
         string? resource = row[db.conversation.resource];
-        counterpart = Jid.parse(db.get_jid_by_id(row[db.conversation.jid_id]));
+        counterpart = db.get_jid_by_id(row[db.conversation.jid_id]);
         if (type_ == Conversation.Type.GROUPCHAT_PM) counterpart = counterpart.with_resource(resource);
         nickname = type_ == Conversation.Type.GROUPCHAT ? resource : null;
         active = row[db.conversation.active];
@@ -102,25 +106,31 @@ public class Conversation : Object {
     }
 
     public NotifySetting get_notification_default_setting(StreamInteractor stream_interactor) {
-        Xmpp.XmppStream? stream = stream_interactor.get_stream(account);
         if (!Application.get_default().settings.notifications) return NotifySetting.OFF;
+
         if (type_ == Type.GROUPCHAT) {
-            Xmpp.Xep.Muc.Flag flag = stream.get_flag(Xmpp.Xep.Muc.Flag.IDENTITY);
-            if (flag != null) {
-                bool members_only = flag.has_room_feature(counterpart.bare_jid, Xmpp.Xep.Muc.Feature.MEMBERS_ONLY);
-                return members_only ? NotifySetting.ON : NotifySetting.HIGHLIGHT;
+            if (stream_interactor.get_module(MucManager.IDENTITY).is_private_room(this.account, this.counterpart)) {
+                return NotifySetting.ON;
+            } else {
+                return NotifySetting.HIGHLIGHT;
             }
         }
         return NotifySetting.ON;
     }
 
-    public Setting get_send_typing_setting() {
+    public Setting get_send_typing_setting(StreamInteractor stream_interactor) {
         if (send_typing != Setting.DEFAULT) return send_typing;
+
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_public_room(this.account, this.counterpart)) return Setting.OFF;
+
         return Application.get_default().settings.send_typing ? Setting.ON : Setting.OFF;
     }
 
-    public Setting get_send_marker_setting() {
+    public Setting get_send_marker_setting(StreamInteractor stream_interactor) {
         if (send_marker != Setting.DEFAULT) return send_marker;
+
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_public_room(this.account, this.counterpart)) return Setting.OFF;
+
         return Application.get_default().settings.send_marker ? Setting.ON : Setting.OFF;
     }
 
@@ -130,7 +140,7 @@ public class Conversation : Object {
     }
 
     public static bool equals_func(Conversation conversation1, Conversation conversation2) {
-        return conversation1.counterpart.equals(conversation2.counterpart) && conversation1.account.equals(conversation2.account);
+        return conversation1.counterpart.equals(conversation2.counterpart) && conversation1.account.equals(conversation2.account) && conversation1.type_ == conversation2.type_;
     }
 
     public static uint hash_func(Conversation conversation) {

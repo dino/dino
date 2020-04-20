@@ -88,6 +88,8 @@ function(find_pkg_config_with_fallback_on_config_script name)
             string(REGEX REPLACE "^(.* |)-L([^ ]*)( .*|)$" "\\2" ${name}_LIBRARY_DIRS "${${name}_LDFLAGS}")
             find_library(${name}_LIBRARY ${${name}_LIBRARY_NAME} HINTS ${${name}_LIBRARY_DIRS})
             mark_as_advanced(${name}_LIBRARY)
+            set(${name}_LIBRARY ${${name}_LIBRARY} PARENT_SCOPE)
+            set(${name}_VERSION ${${name}_VERSION} PARENT_SCOPE)
             unset(${name}_LIBRARY_NAME)
             unset(${name}_LIBRARY_DIRS)
 

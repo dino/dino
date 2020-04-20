@@ -27,7 +27,6 @@ namespace Xmpp.Xep.Ping {
         public void on_iq_get(XmppStream stream, Iq.Stanza iq) {
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
         }
-        public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }

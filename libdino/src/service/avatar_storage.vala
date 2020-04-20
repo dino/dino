@@ -12,12 +12,12 @@ public class AvatarStorage : Xep.PixbufStorage, Object {
         DirUtils.create_with_parents(folder, 0700);
     }
 
-    public void store(string id, uint8[] data) {
+    public void store(string id, Bytes data) {
         File file = File.new_for_path(Path.build_filename(folder, id));
         try {
             if (file.query_exists()) file.delete(); //TODO y?
             DataOutputStream fos = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
-            fos.write(data);
+            fos.write_bytes_async.begin(data);
         } catch (Error e) {
             // Ignore: we failed in storing, so we refuse to display later...
         }
@@ -28,9 +28,24 @@ public class AvatarStorage : Xep.PixbufStorage, Object {
         return file.query_exists();
     }
 
-    public Pixbuf? get_image(string id) {
+    public async Pixbuf? get_image(string id) {
         try {
-            return new Pixbuf.from_file(Path.build_filename(folder, id));
+            File file = File.new_for_path(Path.build_filename(folder, id));
+            FileInputStream stream = yield file.read_async();
+
+            uint8 fbuf[1024];
+            size_t size;
+
+            Checksum checksum = new Checksum (ChecksumType.SHA1);
+            while ((size = yield stream.read_async(fbuf)) > 0) {
+                checksum.update(fbuf, size);
+            }
+
+            if (checksum.get_string() != id) {
+                FileUtils.remove(file.get_path());
+            }
+            stream.seek(0, SeekType.SET);
+            return yield new Pixbuf.from_stream_async(stream, null);
         } catch (Error e) {
             return null;
         }

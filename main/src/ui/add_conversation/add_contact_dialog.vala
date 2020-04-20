@@ -39,17 +39,24 @@ protected class AddContactDialog : Gtk.Dialog {
 
     private void on_ok_button_clicked() {
         string? alias = alias_entry.text == "" ? null : alias_entry.text;
-        Jid jid = new Jid(jid_entry.text);
-        stream_interactor.get_module(RosterManager.IDENTITY).add_jid(account, jid, alias);
-        stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(account, jid);
-        close();
+        try {
+            Jid jid = new Jid(jid_entry.text);
+            stream_interactor.get_module(RosterManager.IDENTITY).add_jid(account, jid, alias);
+            stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(account, jid);
+            close();
+        } catch (InvalidJidError e) {
+            warning("Tried to add contact with invalid Jid: %s", e.message);
+        }
     }
 
     private void on_jid_entry_changed() {
-        Jid parsed_jid = Jid.parse(jid_entry.text);
-        bool sensitive = parsed_jid != null && parsed_jid.resourcepart == null &&
-                stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, parsed_jid) == null;
-        ok_button.set_sensitive(sensitive);
+        try {
+            Jid parsed_jid = new Jid(jid_entry.text);
+            ok_button. sensitive = parsed_jid != null && parsed_jid.resourcepart == null &&
+                    stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, parsed_jid) == null;
+        } catch (InvalidJidError e) {
+            ok_button.sensitive = false;
+        }
     }
 }
 

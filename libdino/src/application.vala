@@ -1,6 +1,9 @@
 using Dino.Entities;
 
-public interface Dino.Application : GLib.Application {
+namespace Dino {
+extern const string VERSION;
+
+public interface Application : GLib.Application {
 
     public abstract Database db { get; set; }
     public abstract Dino.Entities.Settings settings { get; set; }
@@ -8,7 +11,7 @@ public interface Dino.Application : GLib.Application {
     public abstract Plugins.Registry plugin_registry { get; set; }
     public abstract SearchPathGenerator? search_path_generator { get; set; }
 
-    static string print_xmpp;
+    internal static string print_xmpp;
 
     private const OptionEntry[] options = {
         { "print-xmpp", 0, 0, OptionArg.STRING, ref print_xmpp, "Print XMPP stanzas identified by DESC to stderr", "DESC" },
@@ -26,21 +29,23 @@ public interface Dino.Application : GLib.Application {
         this.settings = new Dino.Entities.Settings.from_db(db);
         this.stream_interactor = new StreamInteractor(db);
 
-        AvatarManager.start(stream_interactor, db);
         MessageProcessor.start(stream_interactor, db);
         MessageStorage.start(stream_interactor, db);
-        CounterpartInteractionManager.start(stream_interactor);
         PresenceManager.start(stream_interactor);
+        CounterpartInteractionManager.start(stream_interactor);
         BlockingManager.start(stream_interactor);
-        MucManager.start(stream_interactor);
-        RosterManager.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
+        MucManager.start(stream_interactor);
+        AvatarManager.start(stream_interactor, db);
+        RosterManager.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
         FileManager.start(stream_interactor, db);
         ContentItemStore.start(stream_interactor, db);
         NotificationEvents.start(stream_interactor);
         SearchProcessor.start(stream_interactor, db);
         Register.start(stream_interactor, db);
+        EntityInfo.start(stream_interactor, db);
+        MessageCorrection.start(stream_interactor, db);
 
         create_actions();
 
@@ -75,14 +80,20 @@ public interface Dino.Application : GLib.Application {
             while (jid[0] == '/') {
                 jid = jid.substring(1);
             }
+            jid = Uri.unescape_string(jid);
+            try {
+                jid = new Xmpp.Jid(jid).to_string();
+            } catch (Xmpp.InvalidJidError e) {
+                warning("Received invalid jid in xmpp:-URI: %s", e.message);
+            }
             string query = "message";
-            Gee.Map<string, string> options = new Gee.HashMap<string,string>();
+            Gee.Map<string, string> options = new Gee.HashMap<string, string>();
             if (m.length == 2) {
                 string[] cmds = m[1].split(";");
                 query = cmds[0];
                 for (int i = 1; i < cmds.length; ++i) {
                     string[] opt = cmds[i].split("=", 2);
-                    options[opt[0]] = opt.length == 2 ? opt[1] : "";
+                    options[Uri.unescape_string(opt[0])] = opt.length == 2 ? Uri.unescape_string(opt[1]) : "";
                 }
             }
             activate();
@@ -111,11 +122,13 @@ public interface Dino.Application : GLib.Application {
     }
 
     protected void add_connection(Account account) {
+        if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) hold();
         stream_interactor.connect_account(account);
     }
 
     protected void remove_connection(Account account) {
-        stream_interactor.disconnect_account(account);
+        if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) release();
+        stream_interactor.disconnect_account.begin(account);
     }
 
     private void restore() {
@@ -125,3 +138,4 @@ public interface Dino.Application : GLib.Application {
     }
 }
 
+}

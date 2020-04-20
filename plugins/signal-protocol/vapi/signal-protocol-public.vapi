@@ -118,14 +118,7 @@ namespace Signal {
     [Compact]
     [CCode (cname = "session_pre_key", cprefix = "session_pre_key_", cheader_filename = "signal/session_pre_key.h,signal_helper.h")]
     public class PreKeyRecord : TypeBase {
-        public PreKeyRecord(uint32 id, ECKeyPair key_pair) throws GLib.Error {
-            int err;
-            this.new(id, key_pair, out err);
-            throw_by_code(err);
-        }
-        [CCode (cheader_filename = "signal_helper.h")]
-        private PreKeyRecord.new(uint32 id, ECKeyPair key_pair, out int err);
-        private static int create(out PreKeyRecord pre_key, uint32 id, ECKeyPair key_pair);
+        public static int create(out PreKeyRecord pre_key, uint32 id, ECKeyPair key_pair);
         //public static int deserialize(out PreKeyRecord pre_key, uint8[] data, NativeContext global_context);
         [CCode (instance_pos = 2)]
         public int serialze(out Buffer buffer);
@@ -137,6 +130,7 @@ namespace Signal {
     [CCode (cname = "session_record", cprefix = "session_record_", cheader_filename = "signal/signal_protocol_types.h")]
     public class SessionRecord : TypeBase {
         public SessionState state { get; }
+        public Buffer user_record { get; }
     }
 
     [Compact]
@@ -165,14 +159,7 @@ namespace Signal {
     [Compact]
     [CCode (cname = "session_signed_pre_key", cprefix = "session_signed_pre_key_", cheader_filename = "signal/session_pre_key.h")]
     public class SignedPreKeyRecord : TypeBase {
-        public SignedPreKeyRecord(uint32 id, uint64 timestamp, ECKeyPair key_pair, uint8[] signature) throws GLib.Error {
-            int err;
-            this.new(id, timestamp, key_pair, signature, out err);
-            throw_by_code(err);
-        }
-        [CCode (cheader_filename = "signal_helper.h")]
-        private SignedPreKeyRecord.new(uint32 id, uint64 timestamp, ECKeyPair key_pair, uint8[] signature, out int err);
-        private static int create(out SignedPreKeyRecord pre_key, uint32 id, uint64 timestamp, ECKeyPair key_pair, uint8[] signature);
+        public static int create(out SignedPreKeyRecord pre_key, uint32 id, uint64 timestamp, ECKeyPair key_pair, uint8[] signature);
         [CCode (instance_pos = 2)]
         public int serialze(out Buffer buffer);
 
@@ -217,9 +204,13 @@ namespace Signal {
         [CCode (instance_pos = 1, cname = "ec_public_key_serialize")]
         private int serialize_([CCode (pos = 0)] out Buffer buffer);
         [CCode (cname = "ec_public_key_serialize_")]
-        public uint8[] serialize() throws GLib.Error {
+        public uint8[] serialize() {
             Buffer buffer;
-            throw_by_code(serialize_(out buffer));
+            int code = serialize_(out buffer);
+            if (code < 0 && code > MIN_ERROR_CODE) {
+                // Can only throw for invalid arguments or out of memory.
+                GLib.assert_not_reached();
+            }
             return buffer.data;
         }
         public int compare(ECPublicKey other);
@@ -234,7 +225,11 @@ namespace Signal {
         [CCode (cname = "ec_private_key_serialize_")]
         public uint8[] serialize() throws GLib.Error {
             Buffer buffer;
-            throw_by_code(serialize_(out buffer));
+            int code = serialize_(out buffer);
+            if (code < 0 && code > MIN_ERROR_CODE) {
+                // Can only throw for invalid arguments or out of memory.
+                GLib.assert_not_reached();
+            }
             return buffer.data;
         }
         public int compare(ECPublicKey other);

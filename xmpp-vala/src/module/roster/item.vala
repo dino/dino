@@ -17,8 +17,15 @@ public class Item {
     public StanzaNode stanza_node;
 
     private Jid jid_;
-    public Jid jid {
-        get { return jid_ ?? (jid_ = Jid.parse(stanza_node.get_attribute(NODE_JID))); }
+    public Jid? jid {
+        get {
+            try {
+                return jid_ ?? (jid_ = new Jid(stanza_node.get_attribute(NODE_JID)));
+            } catch (InvalidJidError e) {
+                warning("Ignoring invalid Jid in roster entry: %s", e.message);
+                return null;
+            }
+        }
         set { stanza_node.set_attribute(NODE_JID, value.to_string()); }
     }
 

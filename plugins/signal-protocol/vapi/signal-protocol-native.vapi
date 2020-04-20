@@ -10,7 +10,7 @@ namespace Signal {
     [CCode (has_target = false)]
     public delegate void LockingFunc(void* user_data);
     [CCode (has_target = false)]
-    public delegate void LogFunc(LogLevel level, string message, void* user_data);
+    public delegate void LogFunc(LogLevel level, string message, size_t len, void* user_data);
 
     [Compact]
     [CCode (cname = "signal_crypto_provider", cheader_filename = "signal/signal_protocol.h")]
@@ -62,17 +62,17 @@ namespace Signal {
         public void* user_data;
     }
     [CCode (has_target = false)]
-    public delegate int LoadSessionFunc(out Buffer buffer, Address address, void* user_data);
+    public delegate int LoadSessionFunc(out Buffer record, out Buffer user_record, Address address, void* user_data);
     [CCode (has_target = false)]
-    public delegate int GetSubDeviceSessionsFunc(out IntList sessions, char[] name, void* user_data);
+    public delegate int GetSubDeviceSessionsFunc(out IntList sessions, [CCode (array_length_type = "size_t")] char[] name, void* user_data);
     [CCode (has_target = false)]
-    public delegate int StoreSessionFunc(Address address, uint8[] record, void* user_data);
+    public delegate int StoreSessionFunc(Address address, [CCode (array_length_type = "size_t")] uint8[] record, [CCode (array_length_type = "size_t")] uint8[] user_record, void* user_data);
     [CCode (has_target = false)]
     public delegate int ContainsSessionFunc(Address address, void* user_data);
     [CCode (has_target = false)]
     public delegate int DeleteSessionFunc(Address address, void* user_data);
     [CCode (has_target = false)]
-    public delegate int DeleteAllSessionsFunc(char[] name, void* user_data);
+    public delegate int DeleteAllSessionsFunc([CCode (array_length_type = "size_t")] char[] name, void* user_data);
 
     [Compact]
     [CCode (cname = "signal_protocol_identity_key_store", cheader_filename = "signal/signal_protocol.h")]
@@ -89,9 +89,9 @@ namespace Signal {
     [CCode (has_target = false)]
     public delegate int GetLocalRegistrationIdFunc(void* user_data, out uint32 registration_id);
     [CCode (has_target = false)]
-    public delegate int SaveIdentityFunc(Address address, uint8[] key, void* user_data);
+    public delegate int SaveIdentityFunc(Address address, [CCode (array_length_type = "size_t")] uint8[] key, void* user_data);
     [CCode (has_target = false)]
-    public delegate int IsTrustedIdentityFunc(Address address, uint8[] key, void* user_data);
+    public delegate int IsTrustedIdentityFunc(Address address, [CCode (array_length_type = "size_t")] uint8[] key, void* user_data);
 
     [Compact]
     [CCode (cname = "signal_protocol_pre_key_store", cheader_filename = "signal/signal_protocol.h")]
@@ -106,7 +106,7 @@ namespace Signal {
     [CCode (has_target = false)]
     public delegate int LoadPreKeyFunc(out Buffer record, uint32 pre_key_id, void* user_data);
     [CCode (has_target = false)]
-    public delegate int StorePreKeyFunc(uint32 pre_key_id, uint8[] record, void* user_data);
+    public delegate int StorePreKeyFunc(uint32 pre_key_id, [CCode (array_length_type = "size_t")] uint8[] record, void* user_data);
     [CCode (has_target = false)]
     public delegate int ContainsPreKeyFunc(uint32 pre_key_id, void* user_data);
     [CCode (has_target = false)]
@@ -134,12 +134,12 @@ namespace Signal {
         void* user_data;
     }
     [CCode (has_target = false)]
-    public delegate int StoreSenderKeyFunc(SenderKeyName sender_key_name, uint8[] record, void* user_data);
+    public delegate int StoreSenderKeyFunc(SenderKeyName sender_key_name, [CCode (array_length_type = "size_t")] uint8[] record, [CCode (array_length_type = "size_t")] uint8[] user_record, void* user_data);
     [CCode (has_target = false)]
-    public delegate int LoadSenderKeyFunc(out Buffer record, SenderKeyName sender_key_name, void* user_data);
+    public delegate int LoadSenderKeyFunc(out Buffer record, out Buffer user_record, SenderKeyName sender_key_name, void* user_data);
 
     [CCode (has_target = false)]
-    public delegate int DestroyFunc(void* user_data);
+    public delegate void DestroyFunc(void* user_data);
 
     [Compact]
     [CCode (cname = "signal_protocol_store_context", cprefix = "signal_protocol_store_context_", free_function="signal_protocol_store_context_destroy", cheader_filename = "signal/signal_protocol.h")]
@@ -269,6 +269,6 @@ namespace Signal {
 
     [CCode (cname = "setup_signal_vala_crypto_provider", cheader_filename = "signal_helper.h")]
     public static void setup_crypto_provider(NativeContext context);
-    [CCode (cname = "signal_crypto_random", cheader_filename = "signal_protocol_internal.h")]
-    public static int native_random(NativeContext context, uint8[] data);
+    [CCode (cname = "signal_vala_randomize", cheader_filename = "signal_helper.h")]
+    public static int native_random(uint8[] data);
 }

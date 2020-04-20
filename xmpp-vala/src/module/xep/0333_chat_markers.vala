@@ -21,7 +21,7 @@ public class Module : XmppStreamModule {
         received_message.to = jid;
         received_message.type_ = type_;
         received_message.stanza.put_node(new StanzaNode.build(marker, NS_URI).add_self_xmlns().put_attribute("id", message_id));
-        stream.get_module(MessageModule.IDENTITY).send_message(stream, received_message);
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, received_message);
     }
 
     public static bool requests_marking(MessageStanza message) {
@@ -44,7 +44,6 @@ public class Module : XmppStreamModule {
     public override string get_id() { return IDENTITY.id; }
 
     private void on_received_message(XmppStream stream, MessageStanza message) {
-        if (message.type_ != MessageStanza.TYPE_CHAT) return;
         Gee.List<StanzaNode> nodes = message.stanza.get_all_subnodes();
         foreach (StanzaNode node in nodes) {
             if (node.ns_uri == NS_URI && node.name in MARKERS) {

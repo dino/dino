@@ -30,12 +30,14 @@ public class Dialog : Gtk.Dialog {
     }
 
     public Dialog(StreamInteractor stream_interactor, Conversation conversation) {
-        Object(use_header_bar : 1);
+        Object(use_header_bar : Util.use_csd() ? 1 : 0);
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
 
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
-        (get_header_bar() as HeaderBar).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+        if (Util.use_csd()) {
+            (get_header_bar() as HeaderBar).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+        }
         setup_top();
 
         contact_details.add.connect(add_entry);
@@ -70,7 +72,7 @@ public class Dialog : Gtk.Dialog {
         }
         jid_label.label = conversation.counterpart.to_string();
         account_label.label = "via " + conversation.account.bare_jid.to_string();
-        avatar.set_jid(stream_interactor, conversation.counterpart, conversation.account);
+        avatar.set_conversation(stream_interactor, conversation);
     }
 
     private void add_entry(string category, string label, string? description, Object wo) {

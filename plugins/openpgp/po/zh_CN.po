@@ -1,0 +1,57 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dino-omemo-0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2018-05-08 09:42+0000\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"dino/plugin-openpgp/zh_Hans/>\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.0-dev\n"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Key publishing disabled"
+msgstr "已禁用密钥发布功能"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr "GnuPG 错误"
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
+msgid "No keys available. Generate one!"
+msgstr "没有密钥可用。生成一个吧！"
+
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Select key"
+msgstr "选择密钥"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Loading…"
+msgstr "载入中…"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Querying GnuPG"
+msgstr "正在查询 GnuPG"
+
+#: plugins/openpgp/src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr "密钥并没有在密钥串里"
+
+#: plugins/openpgp/src/contact_details_provider.vala:30
+msgid "Encryption"
+msgstr "加密"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "自己的指纹"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "会在第一次连接时生成"
+
+#~ msgid "Database error"
+#~ msgstr "数据库错误"

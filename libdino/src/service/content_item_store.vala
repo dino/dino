@@ -45,23 +45,52 @@ public class ContentItemStore : StreamInteractionModule, Object {
         foreach (var row in select) {
             int provider = row[db.content_item.content_type];
             int foreign_id = row[db.content_item.foreign_id];
+            DateTime time = new DateTime.from_unix_utc(row[db.content_item.time]);
+            DateTime local_time = new DateTime.from_unix_utc(row[db.content_item.local_time]);
             switch (provider) {
                 case 1:
-                    RowOption row_option = db.message.select().with(db.message.id, "=", foreign_id).row();
+                    RowOption row_option = db.message.select().with(db.message.id, "=", foreign_id)
+                            .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
+                            .row();
                     if (row_option.is_present()) {
-                        Message message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
+                        Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
                         if (message == null) {
-                            message = new Message.from_row(db, row_option.inner);
+                            try {
+                                message = new Message.from_row(db, row_option.inner);
+                            } catch (InvalidJidError e) {
+                                warning("Ignoring message with invalid Jid: %s", e.message);
+                            }
                         }
-                        items.add(new MessageItem(message, conversation, row[db.content_item.id]));
+                        if (message != null) {
+                            var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
+                            message_item.display_time = time;
+                            message_item.sort_time = local_time;
+                            items.add(message_item);
+                        }
                     }
                     break;
                 case 2:
                     RowOption row_option = db.file_transfer.select().with(db.file_transfer.id, "=", foreign_id).row();
                     if (row_option.is_present()) {
-                        string storage_dir = FileManager.get_storage_dir();
-                        FileTransfer file_transfer = new FileTransfer.from_row(db, row_option.inner, storage_dir);
-                        items.add(new FileItem(file_transfer, row[db.content_item.id]));
+                        try {
+                            string storage_dir = FileManager.get_storage_dir();
+                            FileTransfer file_transfer = new FileTransfer.from_row(db, row_option.inner, storage_dir);
+                            if (conversation.type_.is_muc_semantic()) {
+                                try {
+                                    // resourcepart wasn't set before, so we pick nickname instead (which isn't accurate if nickname is changed)
+                                    file_transfer.ourpart = conversation.counterpart.with_resource(file_transfer.ourpart.resourcepart ?? conversation.nickname);
+                                } catch (InvalidJidError e) {
+                                    warning("Failed setting file transfer Jid: %s", e.message);
+                                }
+                            }
+                            Message? message = null;
+                            if (file_transfer.provider == 0 && file_transfer.info != null) {
+                                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
+                            }
+                            items.add(new FileItem(file_transfer, conversation, row[db.content_item.id], message));
+                        } catch (InvalidJidError e) {
+                            warning("Ignoring file transfer with invalid Jid: %s", e.message);
+                        }
                     }
                     break;
             }
@@ -158,7 +187,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
     }
 
     private void insert_file_transfer(FileTransfer file_transfer, Conversation conversation) {
-        FileItem item = new FileItem(file_transfer, -1);
+        FileItem item = new FileItem(file_transfer, conversation, -1);
         item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id, false);
         if (!discard(item)) {
             if (collection_conversations.has_key(conversation)) {
@@ -201,13 +230,13 @@ public interface ContentFilter : Object {
 public abstract class ContentItem : Object {
     public int id { get; set; }
     public string type_ { get; set; }
-    public Jid? jid { get; set; default=null; }
-    public DateTime? sort_time { get; set; default=null; }
-    public DateTime? display_time { get; set; default=null; }
-    public Encryption? encryption { get; set; default=null; }
-    public Entities.Message.Marked? mark { get; set; default=null; }
+    public Jid jid { get; set; }
+    public DateTime sort_time { get; set; }
+    public DateTime display_time { get; set; }
+    public Encryption encryption { get; set; }
+    public Entities.Message.Marked mark { get; set; }
 
-    public ContentItem(int id, string ty, Jid jid, DateTime sort_time, DateTime display_time, Encryption encryption, Entities.Message.Marked mark) {
+    ContentItem(int id, string ty, Jid jid, DateTime sort_time, DateTime display_time, Encryption encryption, Entities.Message.Marked mark) {
         this.id = id;
         this.type_ = ty;
         this.jid = jid;
@@ -237,6 +266,7 @@ public class MessageItem : ContentItem {
 
     public MessageItem(Message message, Conversation conversation, int id) {
         base(id, TYPE, message.from, message.local_time, message.time, message.encryption, message.marked);
+
         this.message = message;
         this.conversation = conversation;
 
@@ -255,20 +285,35 @@ public class FileItem : ContentItem {
     public FileTransfer file_transfer;
     public Conversation conversation;
 
-    public FileItem(FileTransfer file_transfer, int id) {
-        Jid jid = file_transfer.direction == FileTransfer.DIRECTION_SENT ? file_transfer.account.bare_jid.with_resource(file_transfer.account.resourcepart) : file_transfer.counterpart;
-        base(id, TYPE, jid, file_transfer.local_time, file_transfer.time, file_transfer.encryption, file_to_message_state(file_transfer.state));
+    public FileItem(FileTransfer file_transfer, Conversation conversation, int id, Message? message = null) {
+        Entities.Message.Marked mark = Entities.Message.Marked.NONE;
+        if (message != null) {
+            mark = message.marked;
+        } else if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+            mark = file_to_message_state(file_transfer.state);
+        }
+        base(id, TYPE, file_transfer.from, file_transfer.local_time, file_transfer.time, file_transfer.encryption, mark);
 
         this.file_transfer = file_transfer;
+        this.conversation = conversation;
 
-        file_transfer.notify["state"].connect_after(() => {
-            this.mark = file_to_message_state(file_transfer.state);
-        });
+        if (message != null) {
+            WeakRef weak_message = WeakRef(message);
+            message.notify["marked"].connect(() => {
+                Message? m = weak_message.get() as Message;
+                if (m == null) return;
+                this.mark = m.marked;
+            });
+        } else if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+            file_transfer.notify["state"].connect_after(() => {
+                this.mark = file_to_message_state(file_transfer.state);
+            });
+        }
     }
 
     private static Entities.Message.Marked file_to_message_state(FileTransfer.State state) {
         switch (state) {
-            case FileTransfer.State.IN_PROCESS:
+            case FileTransfer.State.IN_PROGRESS:
                 return Entities.Message.Marked.UNSENT;
             case FileTransfer.State.COMPLETE:
                 return Entities.Message.Marked.NONE;

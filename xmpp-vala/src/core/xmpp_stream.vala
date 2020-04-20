@@ -27,6 +27,7 @@ public class XmppStream {
     public bool negotiation_complete { get; set; default=false; }
     private bool setup_needed = false;
     private bool non_negotiation_modules_attached = false;
+    private bool disconnected = false;
 
     public signal void received_node(XmppStream stream, StanzaNode node);
     public signal void received_root_node(XmppStream stream, StanzaNode node);
@@ -43,7 +44,11 @@ public class XmppStream {
     }
 
     public async void connect(string? remote_name = null) throws IOStreamError {
-        if (remote_name != null) this.remote_name = Jid.parse(remote_name);
+        try {
+            if (remote_name != null) this.remote_name = new Jid(remote_name);
+        } catch (InvalidJidError e) {
+            throw new IOStreamError.CONNECT(@"Invalid remote name \"$remote_name\": $(e.message)");
+        }
         attach_negotation_modules();
         try {
             int min_priority = -1;
@@ -60,28 +65,30 @@ public class XmppStream {
                 stream = yield best_provider.connect(this);
             }
             if (stream == null) {
-                stream = yield (new SocketClient()).connect_async(new NetworkService("xmpp-client", "tcp", this.remote_name.to_string()));
+                debug("Connecting to %s, xmpp-client, tcp (fallback)", this.remote_name.to_string());
+                stream = yield (new SocketClient()).connect_to_host_async(this.remote_name.to_string(), 5222);
             }
             if (stream == null) {
                 throw new IOStreamError.CONNECT("client.connect() returned null");
             }
             reset_stream((!)stream);
         } catch (Error e) {
-            stderr.printf("CONNECTION LOST?\n");
+            debug("[%p] Could not connect to server: %s", this, e.message);
             throw new IOStreamError.CONNECT(e.message);
         }
+        debug("Connected to %s", remote_name);
         yield loop();
     }
 
-    public void disconnect() throws IOStreamError {
-        StanzaWriter? writer = this.writer;
-        StanzaReader? reader = this.reader;
-        IOStream? stream = this.stream;
-        if (writer == null || reader == null || stream == null) throw new IOStreamError.DISCONNECT("trying to disconnect, but no stream open");
-        log.str("OUT", "</stream:stream>");
-        ((!)writer).write.begin("</stream:stream>");
-        ((!)reader).cancel();
-        ((!)stream).close_async.begin();
+    public async void disconnect() throws IOStreamError, XmlError, IOError {
+        disconnected = true;
+        if (writer == null || reader == null || stream == null) {
+            throw new IOStreamError.DISCONNECT("trying to disconnect, but no stream open");
+        }
+        log.str("OUT", "</stream:stream>", this);
+        yield writer.write("</stream:stream>");
+        reader.cancel();
+        yield stream.close_async();
     }
 
     public void reset_stream(IOStream stream) {
@@ -104,22 +111,25 @@ public class XmppStream {
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
             StanzaNode node = yield ((!)reader).read_node();
-            log.node("IN", node);
+            log.node("IN", node, this);
             return node;
         } catch (XmlError e) {
             throw new IOStreamError.READ(e.message);
         }
     }
 
+    [Version (deprecated = true, deprecated_since = "0.1", replacement = "write_async")]
     public void write(StanzaNode node) {
-        write_async.begin(node);
+        write_async.begin(node, (obj, res) => {
+            write_async.end(res);
+        });
     }
 
     public async void write_async(StanzaNode node) throws IOStreamError {
         StanzaWriter? writer = this.writer;
         if (writer == null) throw new IOStreamError.WRITE("trying to write, but no stream open");
         try {
-            log.node("OUT", node);
+            log.node("OUT", node, this);
             yield ((!)writer).write_node(node);
         } catch (XmlError e) {
             throw new IOStreamError.WRITE(e.message);
@@ -153,7 +163,7 @@ public class XmppStream {
     public XmppStream add_module(XmppStreamModule module) {
         foreach (XmppStreamModule m in modules) {
             if (m.get_ns() == module.get_ns() && m.get_id() == module.get_id()) {
-                print("[%p] Adding already added module: %s\n".printf(this, module.get_id()));
+                warning("[%p] Adding already added module: %s\n", this, module.get_id());
                 return this;
             }
         }
@@ -198,7 +208,7 @@ public class XmppStream {
                             .put_attribute("xmlns", "jabber:client")
                             .put_attribute("stream", "http://etherx.jabber.org/streams", XMLNS_URI);
         outs.has_nodes = true;
-        log.node("OUT ROOT", outs);
+        log.node("OUT ROOT", outs, this);
         write(outs);
         received_root_node(this, yield read_root());
     }
@@ -215,14 +225,18 @@ public class XmppStream {
             Idle.add(loop.callback);
             yield;
 
+            if (disconnected) break;
+
             received_node(this, node);
 
             if (node.ns_uri == NS_URI && node.name == "features") {
                 features = node;
                 received_features_node(this);
             } else if (node.ns_uri == NS_URI && node.name == "stream" && node.pseudo) {
-                print("disconnect\n");
-                disconnect();
+                debug("[%p] Server closed stream", this);
+                try {
+                    yield disconnect();
+                } catch (Error e) {}
                 return;
             } else if (node.ns_uri == JABBER_URI) {
                 if (node.name == "message") {
@@ -286,7 +300,7 @@ public class XmppStream {
         if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
         try {
             StanzaNode node = yield ((!)reader).read_root_node();
-            log.node("IN ROOT", node);
+            log.node("IN ROOT", node, this);
             return node;
         } catch (XmlError.TLS e) {
             throw new IOStreamError.TLS(e.message);
@@ -379,6 +393,7 @@ public class StartTlsConnectionProvider : ConnectionProvider {
     public async override IOStream? connect(XmppStream stream) {
         try {
             SocketClient client = new SocketClient();
+            debug("Connecting to %s %i (starttls)", srv_target.get_hostname(), srv_target.get_port());
             return yield client.connect_to_host_async(srv_target.get_hostname(), srv_target.get_port());
         } catch (Error e) {
             return null;

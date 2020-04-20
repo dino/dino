@@ -1,12 +1,13 @@
 using Gee;
 using Qlite;
+using Xmpp;
 
 using Dino.Entities;
 
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 9;
+    private const int VERSION = 14;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -34,6 +35,21 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class EntityTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id");
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<string> resource = new Column.Text("resource");
+        public Column<string> caps_hash = new Column.Text("caps_hash");
+        public Column<long> last_seen = new Column.Long("last_seen");
+
+        internal EntityTable(Database db) {
+            base(db, "entity");
+            init({id, account_id, jid_id, resource, caps_hash, last_seen});
+            unique({account_id, jid_id, resource}, "IGNORE");
+        }
+    }
+
     public class ContentItemTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> conversation_id = new Column.Integer("conversation_id") { not_null = true };
@@ -54,6 +70,7 @@ public class Database : Qlite.Database {
     public class MessageTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<string> stanza_id = new Column.Text("stanza_id");
+        public Column<string> server_id = new Column.Text("server_id") { min_version=10 };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
         public Column<int> counterpart_id = new Column.Integer("counterpart_id") { not_null = true };
         public Column<string> counterpart_resource = new Column.Text("counterpart_resource");
@@ -68,10 +85,27 @@ public class Database : Qlite.Database {
 
         internal MessageTable(Database db) {
             base(db, "message");
-            init({id, stanza_id, account_id, counterpart_id, our_resource, counterpart_resource, direction,
+            init({id, stanza_id, server_id, account_id, counterpart_id, our_resource, counterpart_resource, direction,
                 type_, time, local_time, body, encryption, marked});
-            index("message_localtime_counterpart_idx", {local_time, counterpart_id});
+
+            // get latest messages
+            index("message_account_counterpart_localtime_idx", {account_id, counterpart_id, local_time});
+
+            // deduplication
+            index("message_account_counterpart_stanzaid_idx", {account_id, counterpart_id, stanza_id});
             fts({body});
+        }
+    }
+
+    public class MessageCorrectionTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> message_id = new Column.Integer("message_id") { unique=true };
+        public Column<string> to_stanza_id = new Column.Text("to_stanza_id");
+
+        internal MessageCorrectionTable(Database db) {
+            base(db, "message_correction");
+            init({id, message_id, to_stanza_id});
+            index("message_correction_to_stanza_id_idx", {to_stanza_id});
         }
     }
 
@@ -143,13 +177,29 @@ public class Database : Qlite.Database {
     }
 
     public class AvatarTable : Table {
-        public Column<string> jid = new Column.Text("jid");
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<int> account_id = new Column.Integer("account_id");
         public Column<string> hash = new Column.Text("hash");
         public Column<int> type_ = new Column.Integer("type");
 
         internal AvatarTable(Database db) {
-            base(db, "avatar");
-            init({jid, hash, type_});
+            base(db, "contact_avatar");
+            init({jid_id, account_id, hash, type_});
+            unique({jid_id, account_id}, "REPLACE");
+        }
+    }
+
+    public class EntityIdentityTable : Table {
+        public Column<string> entity = new Column.Text("entity");
+        public Column<string> category = new Column.Text("category");
+        public Column<string> type = new Column.Text("type");
+        public Column<string> name = new Column.Text("name");
+
+        internal EntityIdentityTable(Database db) {
+            base(db, "entity_identity");
+            init({entity, category, name, type});
+            unique({entity, category, type}, "IGNORE");
+            index("entity_identity_idx", {entity});
         }
     }
 
@@ -178,6 +228,21 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class MamCatchupTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<bool> from_end = new Column.BoolInt("from_end");
+        public Column<string> from_id = new Column.Text("from_id");
+        public Column<long> from_time = new Column.Long("from_time") { not_null = true };
+        public Column<string> to_id = new Column.Text("to_id");
+        public Column<long> to_time = new Column.Long("to_time") { not_null = true };
+
+        internal MamCatchupTable(Database db) {
+            base(db, "mam_catchup");
+            init({id, account_id, from_end, from_id, from_time, to_id, to_time});
+        }
+    }
+
     public class SettingsTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<string> key = new Column.Text("key") { unique = true, not_null = true };
@@ -191,36 +256,47 @@ public class Database : Qlite.Database {
 
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
+    public EntityTable entity { get; private set; }
     public ContentItemTable content_item { get; private set; }
     public MessageTable message { get; private set; }
+    public MessageCorrectionTable message_correction { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
+    public EntityIdentityTable entity_identity { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
     public RosterTable roster { get; private set; }
+    public MamCatchupTable mam_catchup { get; private set; }
     public SettingsTable settings { get; private set; }
 
-    public Map<int, string> jid_table_cache = new HashMap<int, string>();
-    public Map<string, int> jid_table_reverse = new HashMap<string, int>();
+    public Map<int, Jid> jid_table_cache = new HashMap<int, Jid>();
+    public Map<Jid, int> jid_table_reverse = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
     public Map<int, Account> account_table_cache = new HashMap<int, Account>();
 
     public Database(string fileName) {
         base(fileName, VERSION);
         account = new AccountTable(this);
         jid = new JidTable(this);
+        entity = new EntityTable(this);
         content_item = new ContentItemTable(this);
         message = new MessageTable(this);
+        message_correction = new MessageCorrectionTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
+        entity_identity = new EntityIdentityTable(this);
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
+        mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, content_item, message, real_jid, file_transfer, conversation, avatar, entity_feature, roster, settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings });
         try {
             exec("PRAGMA synchronous=0");
+        } catch (Error e) { }
+        try {
+            exec("PRAGMA secure_delete=1");
         } catch (Error e) { }
     }
 
@@ -230,49 +306,77 @@ public class Database : Qlite.Database {
             message.fts_rebuild();
         }
         if (oldVersion < 8) {
-            exec("""
-            insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
-            select conversation.id, message.time, message.local_time, 1, message.id, 0
-            from message join conversation on
-                message.account_id=conversation.account_id and
-                message.counterpart_id=conversation.jid_id and
-                message.type=conversation.type+1 and
-                (message.counterpart_resource=conversation.resource or message.type != 3)
-            where
-                message.body not in (select info from file_transfer where info not null) and
-                message.id not in (select info from file_transfer where info not null)
-            union
-            select conversation.id, message.time, message.local_time, 2, file_transfer.id, 0
-            from file_transfer
-            join message on
-                file_transfer.info=message.id
-            join conversation on
-                file_transfer.account_id=conversation.account_id and
-                file_transfer.counterpart_id=conversation.jid_id and
-                message.type=conversation.type+1 and
-                (message.counterpart_resource=conversation.resource or message.type != 3)""");
+            try {
+                exec("""
+                insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
+                select conversation.id, message.time, message.local_time, 1, message.id, 0
+                from message join conversation on
+                    message.account_id=conversation.account_id and
+                    message.counterpart_id=conversation.jid_id and
+                    message.type=conversation.type+1 and
+                    (message.counterpart_resource=conversation.resource or message.type != 3)
+                where
+                    message.body not in (select info from file_transfer where info not null) and
+                    message.id not in (select info from file_transfer where info not null)
+                union
+                select conversation.id, message.time, message.local_time, 2, file_transfer.id, 0
+                from file_transfer
+                join message on
+                    file_transfer.info=message.id
+                join conversation on
+                    file_transfer.account_id=conversation.account_id and
+                    file_transfer.counterpart_id=conversation.jid_id and
+                    message.type=conversation.type+1 and
+                    (message.counterpart_resource=conversation.resource or message.type != 3)""");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 8: %s", e.message);
+            }
         }
         if (oldVersion < 9) {
-            exec("""
-            insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
-            select conversation.id, message.time, message.local_time, 1, message.id, 1
-            from message join conversation on
-                message.account_id=conversation.account_id and
-                message.counterpart_id=conversation.jid_id and
-                message.type=conversation.type+1 and
-                (message.counterpart_resource=conversation.resource or message.type != 3)
-            where
-                message.body in (select info from file_transfer where info not null) or
-                message.id in (select info from file_transfer where info not null)""");
+            try {
+                exec("""
+                insert into content_item (conversation_id, time, local_time, content_type, foreign_id, hide)
+                select conversation.id, message.time, message.local_time, 1, message.id, 1
+                from message join conversation on
+                    message.account_id=conversation.account_id and
+                    message.counterpart_id=conversation.jid_id and
+                    message.type=conversation.type+1 and
+                    (message.counterpart_resource=conversation.resource or message.type != 3)
+                where
+                    message.body in (select info from file_transfer where info not null) or
+                    message.id in (select info from file_transfer where info not null)""");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 9: %s", e.message);
+            }
+        }
+        if (oldVersion < 11) {
+            try {
+                exec("""
+                insert into mam_catchup (account_id, from_end, from_time, to_time)
+                select id, 1, 0, mam_earliest_synced from account where mam_earliest_synced not null and mam_earliest_synced > 0""");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 11: %s", e.message);
+            }
+        }
+        if (oldVersion < 12) {
+            try {
+                exec("delete from avatar");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 12: %s", e.message);
+            }
         }
     }
 
     public ArrayList<Account> get_accounts() {
         ArrayList<Account> ret = new ArrayList<Account>(Account.equals_func);
         foreach(Row row in account.select()) {
-            Account account = new Account.from_row(this, row);
-            ret.add(account);
-            account_table_cache[account.id] = account;
+            try {
+                Account account = new Account.from_row(this, row);
+                ret.add(account);
+                account_table_cache[account.id] = account;
+            } catch (InvalidJidError e) {
+                warning("Ignoring account with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
@@ -283,9 +387,13 @@ public class Database : Qlite.Database {
         } else {
             Row? row = account.row_with(account.id, id).inner;
             if (row != null) {
-                Account a = new Account.from_row(this, row);
-                account_table_cache[a.id] = a;
-                return a;
+                try {
+                    Account a = new Account.from_row(this, row);
+                    account_table_cache[a.id] = a;
+                    return a;
+                } catch (InvalidJidError e) {
+                    warning("Ignoring account with invalid Jid: %s", e.message);
+                }
             }
             return null;
         }
@@ -302,19 +410,19 @@ public class Database : Qlite.Database {
             .perform();
     }
 
-    public Gee.List<Message> get_messages(Xmpp.Jid jid, Account account, Message.Type? type, int count, DateTime? before, DateTime? after, int id) {
+    public Gee.List<Message> get_messages(Jid jid, Account account, Message.Type? type, int count, DateTime? before, DateTime? after, int id) {
         QueryBuilder select = message.select();
 
         if (before != null) {
             if (id > 0) {
-                select.where(@"local_time < ? OR (local_time = ? AND id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
+                select.where(@"local_time < ? OR (local_time = ? AND message.id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
             } else {
                 select.with(message.id, "<", id);
             }
         }
         if (after != null) {
             if (id > 0) {
-                select.where(@"local_time > ? OR (local_time = ? AND id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
+                select.where(@"local_time > ? OR (local_time = ? AND message.id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
             } else {
                 select.with(message.local_time, ">", (long) after.to_unix());
             }
@@ -322,7 +430,7 @@ public class Database : Qlite.Database {
                 select.with(message.id, ">", id);
             }
         } else {
-            select.order_by(message.id, "DESC");
+            select.order_by(message.local_time, "DESC");
         }
 
         select.with(message.counterpart_id, "=", get_jid_id(jid))
@@ -335,64 +443,28 @@ public class Database : Qlite.Database {
             select.with(message.type_, "=", (int) type);
         }
 
+        select.outer_join_with(real_jid, real_jid.message_id, message.id);
+        select.outer_join_with(message_correction, message_correction.message_id, message.id);
+
         LinkedList<Message> ret = new LinkedList<Message>();
         foreach (Row row in select) {
-            ret.insert(0, new Message.from_row(this, row));
+            try {
+                ret.insert(0, new Message.from_row(this, row));
+            } catch (InvalidJidError e) {
+                warning("Ignoring message with invalid Jid: %s", e.message);
+            }
         }
         return ret;
-    }
-
-    public Gee.List<Message> get_unsend_messages(Account account, Xmpp.Jid? jid = null) {
-        Gee.List<Message> ret = new ArrayList<Message>();
-        var select = message.select()
-            .with(message.account_id, "=", account.id)
-            .with(message.marked, "=", (int) Message.Marked.UNSENT);
-        if (jid != null) {
-            select.with(message.counterpart_id, "=", get_jid_id(jid));
-        }
-        foreach (Row row in select) {
-            ret.add(new Message.from_row(this, row));
-        }
-        return ret;
-    }
-
-    public bool contains_message(Message query_message, Account account) {
-        QueryBuilder builder = message.select()
-                .with(message.account_id, "=", account.id)
-                .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
-                .with(message.body, "=", query_message.body)
-                .with(message.time, "<", (long) query_message.time.add_minutes(1).to_unix())
-                .with(message.time, ">", (long) query_message.time.add_minutes(-1).to_unix());
-        if (query_message.stanza_id != null) {
-            builder.with(message.stanza_id, "=", query_message.stanza_id);
-        } else {
-            builder.with_null(message.stanza_id);
-        }
-        if (query_message.counterpart.resourcepart != null) {
-            builder.with(message.counterpart_resource, "=", query_message.counterpart.resourcepart);
-        } else {
-            builder.with_null(message.counterpart_resource);
-        }
-        return builder.count() > 0;
-    }
-
-    public bool contains_message_by_stanza_id(Message query_message, Account account) {
-        QueryBuilder builder =  message.select()
-                .with(message.stanza_id, "=", query_message.stanza_id)
-                .with(message.counterpart_id, "=", get_jid_id(query_message.counterpart))
-                .with(message.account_id, "=", account.id);
-        if (query_message.counterpart.resourcepart != null) {
-            builder.with(message.counterpart_resource, "=", query_message.counterpart.resourcepart);
-        } else {
-            builder.with_null(message.counterpart_resource);
-        }
-        return builder.count() > 0;
     }
 
     public Message? get_message_by_id(int id) {
         Row? row = message.row_with(message.id, id).inner;
         if (row != null) {
-            return new Message.from_row(this, row);
+            try {
+                return new Message.from_row(this, row);
+            } catch (InvalidJidError e) {
+                warning("Ignoring message with invalid Jid: %s", e.message);
+            }
         }
         return null;
     }
@@ -400,47 +472,17 @@ public class Database : Qlite.Database {
     public ArrayList<Conversation> get_conversations(Account account) {
         ArrayList<Conversation> ret = new ArrayList<Conversation>();
         foreach (Row row in conversation.select().with(conversation.account_id, "=", account.id)) {
-            ret.add(new Conversation.from_row(this, row));
+            try {
+                ret.add(new Conversation.from_row(this, row));
+            } catch (InvalidJidError e) {
+                warning("Ignoring conversation with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
 
-    public void set_avatar_hash(Xmpp.Jid jid, string hash, int type) {
-        avatar.insert().or("REPLACE")
-                .value(avatar.jid, jid.to_string())
-                .value(avatar.hash, hash)
-                .value(avatar.type_, type)
-                .perform();
-    }
-
-    public HashMap<Xmpp.Jid, string> get_avatar_hashes(int type) {
-        HashMap<Xmpp.Jid, string> ret = new HashMap<Xmpp.Jid, string>(Xmpp.Jid.hash_func, Xmpp.Jid.equals_func);
-        foreach (Row row in avatar.select({avatar.jid, avatar.hash}).with(avatar.type_, "=", type)) {
-            ret[Xmpp.Jid.parse(row[avatar.jid])] = row[avatar.hash];
-        }
-        return ret;
-    }
-
-    public void add_entity_features(string entity, Gee.List<string> features) {
-        foreach (string feature in features) {
-            entity_feature.insert()
-                    .value(entity_feature.entity, entity)
-                    .value(entity_feature.feature, feature)
-                    .perform();
-        }
-    }
-
-    public Gee.List<string> get_entity_features(string entity) {
-        ArrayList<string> ret = new ArrayList<string>();
-        foreach (Row row in entity_feature.select({entity_feature.feature}).with(entity_feature.entity, "=", entity)) {
-            ret.add(row[entity_feature.feature]);
-        }
-        return ret;
-    }
-
-
-    public int get_jid_id(Xmpp.Jid jid_obj) {
-        string bare_jid = jid_obj.bare_jid.to_string();
+    public int get_jid_id(Jid jid_obj) {
+        var bare_jid = jid_obj.bare_jid;
         if (jid_table_reverse.has_key(bare_jid)) {
             return jid_table_reverse[bare_jid];
         } else {
@@ -456,22 +498,28 @@ public class Database : Qlite.Database {
         }
     }
 
-    public string? get_jid_by_id(int id) {
+    public Jid? get_jid_by_id(int id) throws InvalidJidError {
         if (jid_table_cache.has_key(id)) {
             return jid_table_cache[id];
         } else {
             string? bare_jid = jid.select({jid.bare_jid}).with(jid.id, "=", id)[jid.bare_jid];
             if (bare_jid != null) {
-                jid_table_cache[id] = bare_jid;
-                jid_table_reverse[bare_jid] = id;
+                Jid jid_parsed = new Jid(bare_jid);
+                jid_table_cache[id] = jid_parsed;
+
+                // Only store fully normalized Jids for reverse lookup
+                if (jid_parsed.to_string() == bare_jid) {
+                    jid_table_reverse[jid_parsed] = id;
+                }
+                return jid_parsed;
             }
-            return bare_jid;
+            return null;
         }
     }
 
-    private int add_jid(Xmpp.Jid jid_obj) {
-        string bare_jid = jid_obj.bare_jid.to_string();
-        int id = (int) jid.insert().value(jid.bare_jid, bare_jid).perform();
+    private int add_jid(Jid jid_obj) {
+        Jid bare_jid = jid_obj.bare_jid;
+        int id = (int) jid.insert().value(jid.bare_jid, bare_jid.to_string()).perform();
         jid_table_cache[id] = bare_jid;
         jid_table_reverse[bare_jid] = id;
         return id;

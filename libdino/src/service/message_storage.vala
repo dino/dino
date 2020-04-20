@@ -28,7 +28,6 @@ public class MessageStorage : StreamInteractionModule, Object {
         message.persist(db);
         init_conversation(conversation);
         messages[conversation].add(message);
-        stream_interactor.get_module(ContentItemStore.IDENTITY).insert_message(message, conversation);
     }
 
     public Gee.List<Message> get_messages(Conversation conversation, int count = 50) {

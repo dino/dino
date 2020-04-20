@@ -52,9 +52,9 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
             StanzaNode? forwarded_node = carbons_node.get_subnode("forwarded", "urn:xmpp:forward:0");
             if (forwarded_node != null) {
                 StanzaNode? message_node = forwarded_node.get_subnode("message", Xmpp.NS_URI);
-                string? from_attribute = message_node.get_attribute("from", Xmpp.NS_URI);
                 // Any forwarded copies received by a Carbons-enabled client MUST be from that user's bare JID; any copies that do not meet this requirement MUST be ignored.
-                if (from_attribute != null && from_attribute == stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid.to_string()) {
+                if (!message.from.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)) {
+                    warning("Received alleged carbon message from %s, ignoring", message.from.to_string());
                     return true;
                 }
                 if (received_node != null) {

@@ -44,7 +44,6 @@ public class ConnectionManager : Object {
         public Source source;
         public string? identifier;
         public Reconnect reconnect_recomendation { get; set; default=Reconnect.NOW; }
-        public bool resource_rejected = false;
 
         public ConnectionError(Source source, string? identifier) {
             this.source = source;
@@ -110,14 +109,13 @@ public class ConnectionManager : Object {
         return connection_todo;
     }
 
-    public XmppStream? connect(Account account) {
+    public void connect_account(Account account) {
         if (!connection_todo.contains(account)) connection_todo.add(account);
         if (!connections.has_key(account)) {
-            return connect_(account);
+            connect_(account);
         } else {
             check_reconnect(account);
         }
-        return null;
     }
 
     public void make_offline_all() {
@@ -133,13 +131,13 @@ public class ConnectionManager : Object {
         connections[account].stream.get_module(Presence.Module.IDENTITY).send_presence(connections[account].stream, presence);
     }
 
-    public void disconnect_account(Account account) {
+    public async void disconnect_account(Account account) {
         if (connections.has_key(account)) {
             make_offline(account);
             try {
-                connections[account].stream.disconnect();
+                yield connections[account].stream.disconnect();
             } catch (Error e) {
-                warning(@"Error disconnecting stream  $(e.message)\n");
+                debug("Error disconnecting stream: %s", e.message);
             }
             connection_todo.remove(account);
             if (connections.has_key(account)) {
@@ -148,7 +146,7 @@ public class ConnectionManager : Object {
         }
     }
 
-    private XmppStream? connect_(Account account, string? resource = null) {
+    private void connect_(Account account, string? resource = null) {
         if (connections.has_key(account)) connections[account].stream.detach_modules();
         connection_errors.unset(account);
         if (resource == null) resource = account.resourcepart;
@@ -158,7 +156,7 @@ public class ConnectionManager : Object {
             stream.add_module(module);
         }
         stream.log = new XmppLog(account.bare_jid.to_string(), log_options);
-        print("[%s] New connection with resource %s: %p\n".printf(account.bare_jid.to_string(), resource, stream));
+        debug("[%s] New connection with resource %s: %p", account.bare_jid.to_string(), resource, stream);
 
         Connection connection = new Connection(stream, new DateTime.now_utc());
         connections[account] = connection;
@@ -173,51 +171,39 @@ public class ConnectionManager : Object {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.TLS, null) { reconnect_recomendation=ConnectionError.Reconnect.NEVER});
         });
         stream.received_node.connect(() => {
-            connections[account].last_activity = new DateTime.now_utc();
+            connection.last_activity = new DateTime.now_utc();
         });
         connect_async.begin(account, stream);
         stream_opened(account, stream);
-
-        return stream;
     }
 
     private async void connect_async(Account account, XmppStream stream) {
         try {
             yield stream.connect(account.domainpart);
         } catch (Error e) {
-            print(@"[$(account.bare_jid)] Error: $(e.message)\n");
+            debug("[%s %p] Error: %s", account.bare_jid.to_string(), stream, e.message);
             change_connection_state(account, ConnectionState.DISCONNECTED);
             if (!connection_todo.contains(account)) {
                 return;
             }
             StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);
             if (flag != null) {
-                set_connection_error(account, new ConnectionError(ConnectionError.Source.STREAM_ERROR, flag.error_type) { resource_rejected=flag.resource_rejected });
-            }
+                warning(@"[%s %p] Stream Error: %s", account.bare_jid.to_string(), stream, flag.error_type);
+                set_connection_error(account, new ConnectionError(ConnectionError.Source.STREAM_ERROR, flag.error_type));
 
-            ConnectionError? error = connection_errors[account];
-            int wait_sec = 5;
-            if (error == null) {
-                wait_sec = 3;
-            } else if (error.source == ConnectionError.Source.STREAM_ERROR) {
-                print(@"[$(account.bare_jid)] Stream Error: $(error.identifier)\n");
-                if (error.resource_rejected) {
+                if (flag.resource_rejected) {
                     connect_(account, account.resourcepart + "-" + random_uuid());
                     return;
                 }
-                switch (error.reconnect_recomendation) {
-                    case ConnectionError.Reconnect.NOW:
-                        wait_sec = 5; break;
-                    case ConnectionError.Reconnect.LATER:
-                        wait_sec = 60; break;
-                    case ConnectionError.Reconnect.NEVER:
-                        return;
-                }
-            } else if (error.source == ConnectionError.Source.SASL) {
+            }
+
+            ConnectionError? error = connection_errors[account];
+            if (error != null && error.source == ConnectionError.Source.SASL) {
                 return;
             }
-            print(@"[$(account.bare_jid)] Check reconnect in $wait_sec sec\n");
-            Timeout.add_seconds(wait_sec, () => {
+
+            debug("[%s] Check reconnect in 5 sec", account.bare_jid.to_string());
+            Timeout.add_seconds(5, () => {
                 check_reconnect(account);
                 return false;
             });
@@ -231,23 +217,36 @@ public class ConnectionManager : Object {
     }
 
     private void check_reconnect(Account account) {
+        if (!connections.has_key(account)) return;
+
         bool acked = false;
+        DateTime? last_activity_was = connections[account].last_activity;
 
         XmppStream stream = connections[account].stream;
         stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.bare_jid.domain_jid, () => {
-            if (connections[account].stream != stream) return;
             acked = true;
+            if (connections[account].stream != stream) return;
             change_connection_state(account, ConnectionState.CONNECTED);
         });
 
-        Timeout.add_seconds(5, () => {
+        Timeout.add_seconds(10, () => {
+            if (!connections.has_key(account)) return false;
             if (connections[account].stream != stream) return false;
             if (acked) return false;
+            if (connections[account].last_activity != last_activity_was) return false;
 
+            // Reconnect. Nothing gets through the stream.
+            debug("[%s %p] Ping timeouted. Reconnecting", account.bare_jid.to_string(), stream);
             change_connection_state(account, ConnectionState.DISCONNECTED);
-            try {
-                connections[account].stream.disconnect();
-            } catch (Error e) { }
+
+            connections[account].stream.disconnect.begin((_, res) => {
+                try {
+                    connections[account].stream.disconnect.end(res);
+                } catch (Error e) {
+                    debug("Error disconnecting stream: %s", e.message);
+                }
+            });
+
             connect_(account);
             return false;
         });
@@ -265,32 +264,32 @@ public class ConnectionManager : Object {
 
     private void on_network_changed() {
         if (network_is_online()) {
-            print("Network reported online\n");
+            debug("NetworkMonitor: Network reported online");
             check_reconnects();
         } else {
-            print("Network reported offline\n");
+            debug("NetworkMonitor: Network reported offline");
             foreach (Account account in connection_todo) {
                 change_connection_state(account, ConnectionState.DISCONNECTED);
             }
         }
     }
 
-    private void on_prepare_for_sleep(bool suspend) {
+    private async void on_prepare_for_sleep(bool suspend) {
         foreach (Account account in connection_todo) {
             change_connection_state(account, ConnectionState.DISCONNECTED);
         }
         if (suspend) {
-            print("Device suspended\n");
+            debug("Login1: Device suspended");
             foreach (Account account in connection_todo) {
                 try {
                     make_offline(account);
-                    connections[account].stream.disconnect();
+                    yield connections[account].stream.disconnect();
                 } catch (Error e) {
-                    warning(@"Error disconnecting stream  $(e.message)\n");
+                    debug("Error disconnecting stream %p: %s", connections[account].stream, e.message);
                 }
             }
         } else {
-            print("Device un-suspend\n");
+            debug("Login1: Device un-suspend");
             check_reconnects();
         }
     }

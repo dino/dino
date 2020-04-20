@@ -3,6 +3,19 @@ using Gee;
 namespace Xmpp.Xep.EntityCapabilities {
     private const string NS_URI = "http://jabber.org/protocol/caps";
 
+    private Regex? sha1_base64_regex = null;
+
+    public string? get_caps_hash(Presence.Stanza presence) {
+        if (sha1_base64_regex == null) {
+            sha1_base64_regex = /^[A-Za-z0-9+\/]{27}=$/;
+        }
+        StanzaNode? c_node = presence.stanza.get_subnode("c", NS_URI);
+        if (c_node == null) return null;
+        string? ver_attribute = c_node.get_attribute("ver", NS_URI);
+        if (ver_attribute == null || !sha1_base64_regex.match(ver_attribute)) return null;
+        return ver_attribute;
+    }
+
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0115_entity_capabilities");
 
@@ -15,7 +28,7 @@ namespace Xmpp.Xep.EntityCapabilities {
 
         private string get_own_hash(XmppStream stream) {
             if (own_ver_hash == null) {
-                own_ver_hash = compute_hash(stream.get_module(ServiceDiscovery.Module.IDENTITY).identities, stream.get_flag(ServiceDiscovery.Flag.IDENTITY).features);
+                own_ver_hash = compute_hash(stream.get_module(ServiceDiscovery.Module.IDENTITY).identities, stream.get_flag(ServiceDiscovery.Flag.IDENTITY).features, new ArrayList<DataForms.DataForm>());
             }
             return own_ver_hash;
         }
@@ -44,29 +57,36 @@ namespace Xmpp.Xep.EntityCapabilities {
         }
 
         private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
-            StanzaNode? c_node = presence.stanza.get_subnode("c", NS_URI);
-            if (c_node != null) {
-                string ver_attribute = c_node.get_attribute("ver", NS_URI);
-                Gee.List<string> capabilities = storage.get_features(ver_attribute);
-                if (capabilities.size == 0) {
-                    stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
-                        store_entity_result(stream, ver_attribute, query_result);
-                    });
-                } else {
-                    stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(presence.from, capabilities);
-                }
+            string? caps_hash = get_caps_hash(presence);
+            if (caps_hash == null) return;
+
+            Gee.List<string> capabilities = storage.get_features(caps_hash);
+            ServiceDiscovery.Identity identity = storage.get_identities(caps_hash);
+            if (identity == null) {
+                stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
+                    store_entity_result(stream, caps_hash, query_result);
+                });
+            } else {
+                stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(presence.from, capabilities);
             }
         }
 
         private void store_entity_result(XmppStream stream, string entity, ServiceDiscovery.InfoResult? query_result) {
             if (query_result == null) return;
-            if (compute_hash(query_result.identities, query_result.features) == entity) {
+
+            Gee.List<DataForms.DataForm> data_forms = new ArrayList<DataForms.DataForm>();
+            foreach (StanzaNode node in query_result.iq.stanza.get_deep_subnodes(ServiceDiscovery.NS_URI_INFO + ":query", DataForms.NS_URI + ":x")) {
+                data_forms.add(DataForms.DataForm.create_from_node(node));
+            }
+
+            if (compute_hash(query_result.identities, query_result.features, data_forms) == entity) {
+                storage.store_identities(entity, query_result.identities);
                 storage.store_features(entity, query_result.features);
                 stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(query_result.iq.from, query_result.features);
             }
         }
 
-        private static string compute_hash(Gee.List<ServiceDiscovery.Identity> identities, Gee.List<string> features) {
+        private static string compute_hash(Gee.List<ServiceDiscovery.Identity> identities, Gee.List<string> features, Gee.List<DataForms.DataForm> data_forms) {
             identities.sort(compare_identities);
             features.sort();
 
@@ -79,6 +99,25 @@ namespace Xmpp.Xep.EntityCapabilities {
             }
             foreach (string feature in features) {
                 s += feature + "<";
+            }
+
+            data_forms.sort(compare_data_forms);
+            foreach (DataForms.DataForm data_form in data_forms) {
+                if (data_form.form_type == null) {
+                    // If [..] the FORM_TYPE field is not of type "hidden" or the form does not include a FORM_TYPE field, ignore the form but continue processing. (XEP-0115)
+                    continue;
+                }
+                s += data_form.form_type + "<";
+
+                data_form.fields.sort(compare_data_fields);
+                foreach (DataForms.DataForm.Field field in data_form.fields) {
+                    s += field.var + "<";
+                    Gee.List<string> values = field.get_values();
+                    values.sort();
+                    foreach (string value in values) {
+                        s += value + "<";
+                    }
+                }
             }
 
             Checksum c = new Checksum(ChecksumType.SHA1);
@@ -98,10 +137,26 @@ namespace Xmpp.Xep.EntityCapabilities {
             // TODO lang
             return 0;
         }
+
+        private static int compare_data_forms(DataForms.DataForm a, DataForms.DataForm b) {
+            if (a.form_type != null && b.form_type != null) {
+                return a.form_type.collate(b.form_type);
+            }
+            return 0;
+        }
+
+        private static int compare_data_fields(DataForms.DataForm.Field a, DataForms.DataForm.Field b) {
+            if (a.var != null && b.var != null) {
+                return a.var.collate(b.var);
+            }
+            return 0;
+        }
     }
 
     public interface Storage : Object {
+        public abstract void store_identities(string entity, Gee.List<ServiceDiscovery.Identity> identities);
         public abstract void store_features(string entity, Gee.List<string> capabilities);
+        public abstract ServiceDiscovery.Identity? get_identities(string entity);
         public abstract Gee.List<string> get_features(string entity);
     }
 }

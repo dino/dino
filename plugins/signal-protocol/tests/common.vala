@@ -15,8 +15,8 @@ Store setup_test_store_context(Context global_context) {
         store.identity_key_store.local_registration_id = (Random.next_int() % 16380) + 1;
 
         ECKeyPair key_pair = global_context.generate_key_pair();
-        store.identity_key_store.identity_key_private = key_pair.private.serialize();
-        store.identity_key_store.identity_key_public = key_pair.public.serialize();
+        store.identity_key_store.identity_key_private = new Bytes(key_pair.private.serialize());
+        store.identity_key_store.identity_key_public = new Bytes(key_pair.public.serialize());
     } catch (Error e) {
         fail_if_reached();
     }

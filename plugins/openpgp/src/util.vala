@@ -1,6 +1,7 @@
 using Gtk;
 
 using Dino.Entities;
+using Xmpp.Util;
 
 namespace Dino.Plugins.OpenPgp {
 
@@ -10,7 +11,7 @@ public static string markup_colorize_id(string s, bool is_fingerprint) {
     for (int i = 0; i < s.length; i += 4) {
         string four_chars = s.substring(i, 4).down();
 
-        int raw = (int) four_chars.to_long(null, 16);
+        int raw = (int) from_hex(four_chars);
         uint8[] bytes = {(uint8) ((raw >> 8) & 0xff - 128), (uint8) (raw & 0xff - 128)};
 
         Checksum checksum = new Checksum(ChecksumType.SHA1);

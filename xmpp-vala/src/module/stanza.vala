@@ -18,7 +18,13 @@ public class Stanza : Object {
             string? from_attribute = stanza.get_attribute(ATTRIBUTE_FROM);
             // "when a client receives a stanza that does not include a 'from' attribute, it MUST assume that the stanza
             // is from the user's account on the server." (RFC6120 8.1.2.1)
-            if (from_attribute != null) return from_ = Jid.parse(from_attribute);
+            if (from_attribute != null) {
+                try {
+                    return from_ = new Jid(from_attribute);
+                } catch (InvalidJidError e) {
+                    warning("Ignoring invalid from Jid: %s", e.message);
+                }
+            }
             if (my_jid != null) {
                 return my_jid.bare_jid;
             }
@@ -37,7 +43,12 @@ public class Stanza : Object {
             string? to_attribute = stanza.get_attribute(ATTRIBUTE_TO);
             // "if the stanza does not include a 'to' address then the client MUST treat it as if the 'to' address were
             // included with a value of the client's full JID." (RFC6120 8.1.1.1)
-            return to_attribute == null ? my_jid : to_ = Jid.parse(to_attribute);
+            try {
+                return to_attribute == null ? my_jid : to_ = new Jid(to_attribute);
+            } catch (InvalidJidError e) {
+                warning("Ignoring invalid to Jid: %s", e.message);
+            }
+            return my_jid;
         }
         set { stanza.set_attribute(ATTRIBUTE_TO, value.to_string()); }
     }

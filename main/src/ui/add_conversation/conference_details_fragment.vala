@@ -3,17 +3,23 @@ using Gtk;
 
 using Dino.Entities;
 using Xmpp;
+using Xmpp.Xep;
 
 namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/Dino/add_conversation/conference_details_fragment.ui")]
 protected class ConferenceDetailsFragment : Box {
 
+    public signal void joined();
+
     public bool done {
         get {
-            Jid? parsed_jid = Jid.parse(jid);
-            return parsed_jid != null && parsed_jid.localpart != null &&
-                parsed_jid.resourcepart == null && nick != "";
+            try {
+                Jid parsed_jid = new Jid(jid);
+                return parsed_jid.localpart != null && parsed_jid.resourcepart == null && nick != null;
+            } catch (InvalidJidError e) {
+                return false;
+            }
         }
         private set {}
     }
@@ -54,6 +60,8 @@ protected class ConferenceDetailsFragment : Box {
         }
     }
 
+    public bool fragment_active { get; set; default=true; }
+
     [GtkChild] private Stack accounts_stack;
     [GtkChild] private Button accounts_button;
     [GtkChild] private Label accounts_label;
@@ -80,11 +88,22 @@ protected class ConferenceDetailsFragment : Box {
     [GtkChild] private Label notification_label;
 
     private StreamInteractor stream_interactor;
-    private Button ok_button;
+    private Button ok_button_;
+    public Button ok_button {
+        get { return ok_button_; }
+        set {
+            if (value != null) {
+                value.clicked.connect(() => {
+                    on_ok_button_clicked.begin();
+                });
 
-    public ConferenceDetailsFragment(StreamInteractor stream_interactor, Button ok_button) {
+                ok_button_ = value;
+            }
+        }
+    }
+
+    public ConferenceDetailsFragment(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-        this.ok_button = ok_button;
 
         account_combobox.initialize(stream_interactor);
 
@@ -102,12 +121,7 @@ protected class ConferenceDetailsFragment : Box {
         jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
         nick_entry.key_release_event.connect(() => { done = true; return false; });
 
-        stream_interactor.get_module(MucManager.IDENTITY).enter_error.connect(on_enter_error);
         notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
-        ok_button.clicked.connect(() => {
-            ok_button.label = _("Joining…");
-            ok_button.sensitive = false;
-        });
 
         clear();
     }
@@ -129,29 +143,52 @@ protected class ConferenceDetailsFragment : Box {
         password_stack.set_visible_child_name("entry");
     }
 
-    private void on_enter_error(Account account, Jid jid, Xmpp.Xep.Muc.MucEnterError error) {
-        ok_button.label = _("Join");
-        ok_button.sensitive = true;
+    private async void on_ok_button_clicked() {
+        if (!fragment_active) return;
+
+        ok_button.label = _("Joining…");
+        ok_button.sensitive = false;
+
         string label_text = "";
-        switch (error) {
-            case Xmpp.Xep.Muc.MucEnterError.PASSWORD_REQUIRED:
-                label_text = _("Password required to enter room");
-                password_text_label.visible = true;
-                password_stack.visible = true;
-                break;
-            case Xmpp.Xep.Muc.MucEnterError.BANNED:
-                label_text = _("Banned from joining or creating conference"); break;
-            case Xmpp.Xep.Muc.MucEnterError.ROOM_DOESNT_EXIST:
-                label_text = _("Room does not exist"); break;
-            case Xmpp.Xep.Muc.MucEnterError.CREATION_RESTRICTED:
-                label_text = _("Not allowed to create room"); break;
-            case Xmpp.Xep.Muc.MucEnterError.NOT_IN_MEMBER_LIST:
-                label_text = _("Members-only room"); break;
-            case Xmpp.Xep.Muc.MucEnterError.USE_RESERVED_ROOMNICK:
-            case Xmpp.Xep.Muc.MucEnterError.NICK_CONFLICT:
-                label_text = _("Choose a different nick"); break;
-            case Xmpp.Xep.Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
-                label_text = _("Too many occupants in room"); break;
+        try {
+            Jid parsed_jid = new Jid(jid);
+            Muc.JoinResult? join_result = yield stream_interactor.get_module(MucManager.IDENTITY).join(account, parsed_jid, nick, password);
+
+            ok_button.label = _("Join");
+            ok_button.sensitive = true;
+            if (join_result == null || join_result.nick != null) {
+                Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(parsed_jid, account, Conversation.Type.GROUPCHAT);
+            Application app = GLib.Application.get_default() as Application;
+            app.controller.select_conversation(conversation);joined();
+                return;
+            }
+
+            if (join_result.muc_error != null) {
+                switch (join_result.muc_error) {
+                    case Muc.MucEnterError.PASSWORD_REQUIRED:
+                        label_text = _("Password required to enter room");
+                        password_text_label.visible = true;
+                        password_stack.visible = true;
+                        break;
+                    case Muc.MucEnterError.BANNED:
+                        label_text = _("Banned from joining or creating conference"); break;
+                    case Muc.MucEnterError.ROOM_DOESNT_EXIST:
+                        label_text = _("Room does not exist"); break;
+                    case Muc.MucEnterError.CREATION_RESTRICTED:
+                        label_text = _("Not allowed to create room"); break;
+                    case Muc.MucEnterError.NOT_IN_MEMBER_LIST:
+                        label_text = _("Members-only room"); break;
+                    case Muc.MucEnterError.USE_RESERVED_ROOMNICK:
+                    case Muc.MucEnterError.NICK_CONFLICT:
+                        label_text = _("Choose a different nick"); break;
+                    case Muc.MucEnterError.OCCUPANT_LIMIT_REACHED:
+                        label_text = _("Too many occupants in room"); break;
+                }
+            } else if (join_result.stanza_error != null) {
+                label_text = _("Could not connect to %s").printf((new Jid(jid)).domainpart);
+            }
+        } catch (InvalidJidError e) {
+            label_text = _("Invalid address");
         }
         notification_label.label = label_text;
         notification_revealer.set_reveal_child(true);

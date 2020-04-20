@@ -1,7 +1,7 @@
 #!/bin/sh
 
 OPTS=`getopt -o "h" --long \
-help,fetch-only,no-debug,disable-fast-vapi,with-tests,\
+help,fetch-only,no-debug,disable-fast-vapi,with-tests,release,with-libsignal-in-tree,\
 enable-plugin:,disable-plugin:,\
 prefix:,program-prefix:,exec-prefix:,lib-suffix:,\
 bindir:,libdir:,includedir:,datadir:,\
@@ -17,7 +17,9 @@ eval set -- "$OPTS"
 PREFIX=${PREFIX:-/usr/local}
 ENABLED_PLUGINS=
 DISABLED_PLUGINS=
+BUILD_LIBSIGNAL_IN_TREE=
 BUILD_TESTS=
+BUILD_TYPE=Debug
 DISABLE_FAST_VAPI=
 LIB_SUFFIX=
 NO_DEBUG=
@@ -46,13 +48,16 @@ brackets.
 
 Configuration:
   -h, --help                 Print this help and exit
-  --fetch-only               Only fetch the files required to run ./configure
-                             without network access later and exit
-  --no-debug                 Build without debug symbols
   --disable-fast-vapi        Disable the usage of Vala compilers fast-vapi
                              feature. fast-vapi mode is slower when doing
                              clean builds, but faster when doing incremental
                              builds (during development).
+  --fetch-only               Only fetch the files required to run ./configure
+                             without network access later and exit.
+  --no-debug                 Build without debug symbols
+  --release                  Configure to build an optimized release version
+  --with-libsignal-in-tree   Build libsignal-protocol-c in tree and link it
+                             statically.
   --with-tests               Also build tests.
 
 Plugin configuration:
@@ -108,9 +113,11 @@ while true; do
         --valac ) VALA_EXECUTABLE="$2"; shift; shift ;;
         --valac-flags ) VALAC_FLAGS="$2"; shift; shift ;;
         --lib-suffix ) LIB_SUFFIX="$2"; shift; shift ;;
+        --with-libsignal-in-tree ) BUILD_LIBSIGNAL_IN_TREE=yes; shift ;;
         --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;
         --no-debug ) NO_DEBUG=yes; shift ;;
         --fetch-only ) FETCH_ONLY=yes; shift ;;
+        --release ) BUILD_TYPE=RelWithDebInfo; shift ;;
         --with-tests ) BUILD_TESTS=yes; shift ;;
         # Autotools paths
         --program-prefix ) PREFIX="$2"; shift; shift ;;
@@ -138,44 +145,46 @@ while true; do
     esac
 done
 
-if [ -d ".git" ]; then
-    git submodule update --init 2>/dev/null
-else
-    tmp=0
-    for i in $(cat .gitmodules | grep -n submodule | awk -F ':' '{print $1}') $(wc -l .gitmodules | awk '{print $1}'); do
-        if ! [ $tmp -eq 0 ]; then
-            name=$(cat .gitmodules | head -n $tmp | tail -n 1 | awk -F '"' '{print $2}')
-            def=$(cat .gitmodules | head -n $i | tail -n $(expr "$i" - "$tmp") | awk -F ' ' '{print $1 $2 $3}')
-            path=$(echo "$def" | grep '^path=' | awk -F '=' '{print $2}')
-            url=$(echo "$def" | grep '^url=' | awk -F '=' '{print $2}')
-            branch=$(echo "$def" | grep '^branch=' | awk -F '=' '{print $2}')
+if [ "$BUILD_LIBSIGNAL_IN_TREE" = "yes" ] || [ "$FETCH_ONLY" = "yes" ]; then
+    if [ -d ".git" ]; then
+        git submodule update --init 2>/dev/null
+    else
+        tmp=0
+        for i in $(cat .gitmodules | grep -n submodule | awk -F ':' '{print $1}') $(wc -l .gitmodules | awk '{print $1}'); do
+            if ! [ $tmp -eq 0 ]; then
+                name=$(cat .gitmodules | head -n $tmp | tail -n 1 | awk -F '"' '{print $2}')
+                def=$(cat .gitmodules | head -n $i | tail -n $(expr "$i" - "$tmp") | awk -F ' ' '{print $1 $2 $3}')
+                path=$(echo "$def" | grep '^path=' | awk -F '=' '{print $2}')
+                url=$(echo "$def" | grep '^url=' | awk -F '=' '{print $2}')
+                branch=$(echo "$def" | grep '^branch=' | awk -F '=' '{print $2}')
 
-            if ! ls "$path"/* >/dev/null 2>/dev/null; then
-                git=$(which git)
-                if ! [ $? -eq 0 ] || ! [ -x $git ]; then
-                    echo "Failed retrieving missing files"
-                    exit 5
-                fi
-                res=$(git clone "$url" "$path" 2>&1)
-                if ! [ $? -eq 0 ] || ! [ -d $path ]; then
-                    echo "Failed retrieving missing files: $res"
-                    exit 5
-                fi
-                if [ -n "$branch" ]; then
-                    olddir="$(pwd)"
-                    cd "$path"
-                    res=$(git checkout "$branch" 2>&1)
-                    if ! [ $? -eq 0 ]; then
+                if ! ls "$path"/* >/dev/null 2>/dev/null; then
+                    git=$(which git)
+                    if ! [ $? -eq 0 ] || ! [ -x $git ]; then
+                        echo "Failed retrieving missing files"
+                        exit 5
+                    fi
+                    res=$(git clone "$url" "$path" 2>&1)
+                    if ! [ $? -eq 0 ] || ! [ -d $path ]; then
                         echo "Failed retrieving missing files: $res"
                         exit 5
                     fi
-                    cd "$olddir"
+                    if [ -n "$branch" ]; then
+                        olddir="$(pwd)"
+                        cd "$path"
+                        res=$(git checkout "$branch" 2>&1)
+                        if ! [ $? -eq 0 ]; then
+                            echo "Failed retrieving missing files: $res"
+                            exit 5
+                        fi
+                        cd "$olddir"
+                    fi
+                    echo "Submodule path '$path': checked out '$branch' (via git clone)"
                 fi
-                echo "Submodule path '$path': checked out '$branch' (via git clone)"
             fi
-        fi
-        tmp=$i
-    done
+            tmp=$i
+        done
+    fi
 fi
 
 if [ "$FETCH_ONLY" = "yes" ]; then exit 0; fi
@@ -191,9 +200,16 @@ if ! [ -x "$ninja_bin" ]; then
     ninja_bin="$(which ninja 2>/dev/null)"
 fi
 if [ -x "$ninja_bin" ]; then
-    ninja_version=$($ninja_bin --version 2>/dev/null)
+    ninja_version=`$ninja_bin --version 2>/dev/null`
     if [ $? -eq 0 ]; then
-        echo "-- Found Ninja: $ninja_bin (found version \"$ninja_version\")"
+        if [ -d build ]; then
+            last_ninja_version=`cat build/.ninja_version 2>/dev/null`
+        else
+            last_ninja_version=0
+        fi
+        if [ "$ninja_version" != "$last_ninja_version" ]; then
+            echo "-- Found Ninja: $ninja_bin (found version \"$ninja_version\")"
+        fi
         cmake_type="Ninja"
         exec_bin="$ninja_bin"
         exec_command="$exec_bin"
@@ -219,14 +235,12 @@ if ! [ -x "$exec_bin" ]; then
 fi
 
 
-if [ -f ./build ]
-then
+if [ -f ./build ]; then
     echo "-!- ./build file exists. ./configure can't continue"
     exit 2
 fi
 
-if [ -d build ]
-then
+if [ -d build ]; then
     last_type=`cat build/.cmake_type`
     if [ "$cmake_type" != "$last_type" ]
     then
@@ -241,11 +255,14 @@ mkdir -p build
 cd build
 
 echo "$cmake_type" > .cmake_type
+echo "$ninja_version" > .ninja_version
 cmake -G "$cmake_type" \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+    -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
     -DENABLED_PLUGINS="$ENABLED_PLUGINS" \
     -DDISABLED_PLUGINS="$DISABLED_PLUGINS" \
     -DBUILD_TESTS="$BUILD_TESTS" \
+    -DBUILD_LIBSIGNAL_IN_TREE="$BUILD_LIBSIGNAL_IN_TREE" \
     -DVALA_EXECUTABLE="$VALAC" \
     -DCMAKE_VALA_FLAGS="$VALACFLAGS" \
     -DDISABLE_FAST_VAPI="$DISABLE_FAST_VAPI" \
@@ -256,10 +273,10 @@ cmake -G "$cmake_type" \
     -DBIN_INSTALL_DIR="$BINDIR" \
     -DINCLUDE_INSTALL_DIR="$INCLUDEDIR" \
     -DLIB_INSTALL_DIR="$LIBDIR" \
+    -Wno-dev \
     .. || exit 9
 
-if [ "$cmake_type" = "Ninja" ]
-then
+if [ "$cmake_type" = "Ninja" ]; then
 cat << EOF > Makefile
 default:
 	@sh -c "$exec_command"

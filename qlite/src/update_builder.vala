@@ -94,7 +94,7 @@ public class UpdateBuilder : StatementBuilder {
     public void perform() {
         if (fields.length == 0) return;
         if (prepare().step() != DONE) {
-            error("SQLite error: %d - %s", db.errcode(), db.errmsg());
+            critical("SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
     }
 

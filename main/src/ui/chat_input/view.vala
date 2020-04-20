@@ -11,171 +11,110 @@ namespace Dino.Ui.ChatInput {
 public class View : Box {
 
     public string text {
-        owned get { return text_input.buffer.text; }
-        set { text_input.buffer.text = value; }
+        owned get { return chat_text_view.text_view.buffer.text; }
+        set { chat_text_view.text_view.buffer.text = value; }
     }
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
-    private int vscrollbar_min_height;
 
-    private OccupantsTabCompletor occupants_tab_completor;
-    private SmileyConverter smiley_converter;
-    private EditHistory edit_history;
+    [GtkChild] public Frame frame;
+    [GtkChild] public ChatTextView chat_text_view;
+    [GtkChild] public Box outer_box;
+    [GtkChild] public Button file_button;
+    [GtkChild] public Separator file_separator;
+    [GtkChild] public Label chat_input_status;
 
-    [GtkChild] private Frame frame;
-    [GtkChild] private ScrolledWindow scrolled;
-    [GtkChild] private TextView text_input;
-    [GtkChild] private Box outer_box;
-    [GtkChild] private Button file_button;
-    [GtkChild] private Separator file_separator;
-    private EncryptionButton encryption_widget = new EncryptionButton() { margin_top=3, valign=Align.START, visible=true };
+    public EncryptionButton encryption_widget;
 
     public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, text_input);
-        smiley_converter = new SmileyConverter(stream_interactor, text_input);
-        edit_history = new EditHistory(text_input, GLib.Application.get_default());
+        encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
 
         file_button.clicked.connect(() => {
             PreviewFileChooserNative chooser = new PreviewFileChooserNative("Select file", get_toplevel() as Gtk.Window, FileChooserAction.OPEN, "Select", "Cancel");
-
-            //        long max_file_size = stream_interactor.get_module(Manager.IDENTITY).get_max_file_size(conversation.account);
-            //        if (max_file_size != -1) {
-            //            FileFilter filter = new FileFilter();
-            //            filter.add_custom(FileFilterFlags.URI, (filter_info) => {
-            //                File file = File.new_for_uri(filter_info.uri);
-            //                FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-            //                return file_info.get_size() <= max_file_size;
-            //            });
-            //            chooser.set_filter(filter);
-            //        }
             if (chooser.run() == Gtk.ResponseType.ACCEPT) {
                 string uri = chooser.get_filename();
-                stream_interactor.get_module(FileManager.IDENTITY).send_file(uri, conversation);
+                stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(uri, conversation);
             }
         });
-
-        scrolled.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
-        scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
+        file_button.get_style_context().add_class("dino-attach-button");
 
         encryption_widget.get_style_context().add_class("dino-chatinput-button");
-        outer_box.add(encryption_widget);
+        encryption_widget.encryption_changed.connect(update_file_transfer_availability);
 
-        text_input.key_press_event.connect(on_text_input_key_press);
-        text_input.buffer.changed.connect(on_text_input_changed);
+        // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
+        if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
+            MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
+            emoji_button.get_style_context().add_class("flat");
+            emoji_button.get_style_context().add_class("dino-chatinput-button");
+            emoji_button.image = new Image.from_icon_name("dino-emoticon-symbolic", IconSize.BUTTON) { visible=true };
+
+            EmojiChooser chooser = new EmojiChooser();
+            chooser.emoji_picked.connect((emoji) => {
+                chat_text_view.text_view.buffer.insert_at_cursor(emoji, emoji.data.length);
+            });
+            emoji_button.set_popover(chooser);
+
+            outer_box.add(emoji_button);
+        }
+
+        outer_box.add(encryption_widget);
 
         Util.force_css(frame, "* { border-radius: 3px; }");
 
-        stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(on_upload_available);
         return this;
     }
 
-    public void initialize_for_conversation(Conversation conversation) {
-        occupants_tab_completor.initialize_for_conversation(conversation);
-        edit_history.initialize_for_conversation(conversation);
-        encryption_widget.set_conversation(conversation);
-
-        if (this.conversation != null) entry_cache[this.conversation] = text_input.buffer.text;
-        this.conversation = conversation;
-
+    private void update_file_transfer_availability() {
         bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
         file_button.visible = upload_available;
         file_separator.visible = upload_available;
+    }
 
-        text_input.buffer.changed.disconnect(on_text_input_changed);
-        text_input.buffer.text = "";
+    public void initialize_for_conversation(Conversation conversation) {
+        if (this.conversation != null) entry_cache[this.conversation] = chat_text_view.text_view.buffer.text;
+        this.conversation = conversation;
+
+        update_file_transfer_availability();
+
+        chat_text_view.text_view.buffer.text = "";
         if (entry_cache.has_key(conversation)) {
-            text_input.buffer.text = entry_cache[conversation];
+            chat_text_view.text_view.buffer.text = entry_cache[conversation];
         }
-        text_input.buffer.changed.connect(on_text_input_changed);
 
-        text_input.grab_focus();
+        chat_text_view.text_view.grab_focus();
     }
 
-    private void send_text() {
-        string text = text_input.buffer.text;
-        text_input.buffer.text = "";
-        if (text.has_prefix("/")) {
-            string[] token = text.split(" ", 2);
-            switch(token[0]) {
-                case "/me":
-                    // Just send as is.
-                    break;
-                case "/say":
-                    if (token.length == 1) return;
-                    text = token[1];
-                    break;
-                case "/kick":
-                    stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, token[1]);
-                    return;
-                case "/affiliate":
-                    string[] user_role = token[1].split(" ", 2);
-                    stream_interactor.get_module(MucManager.IDENTITY).change_affiliation(conversation.account, conversation.counterpart, user_role[0].strip(), user_role[1].strip());
-                    return;
-                case "/nick":
-                    stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
-                    return;
-                case "/ping":
-                    Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
-                    stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.with_resource(token[1]), null);
-                    return;
-                case "/topic":
-                    stream_interactor.get_module(MucManager.IDENTITY).change_subject(conversation.account, conversation.counterpart, token[1]);
-                    return;
-                default:
-                    if (token[0].has_prefix("//")) {
-                        text = text.substring(1);
-                    } else {
-                        string cmd_name = token[0].substring(1);
-                        Dino.Application app = GLib.Application.get_default() as Dino.Application;
-                        if (app != null && app.plugin_registry.text_commands.has_key(cmd_name)) {
-                            string? new_text = app.plugin_registry.text_commands[cmd_name].handle_command(token[1], conversation);
-                            if (new_text == null) return;
-                            text = (!)new_text;
-                        }
-                    }
-                    break;
-            }
-        }
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
-    }
-
-    private bool on_text_input_key_press(EventKey event) {
-        if (event.keyval in new uint[]{Key.Return, Key.KP_Enter}) {
-            if ((event.state & ModifierType.SHIFT_MASK) > 0) {
-                text_input.buffer.insert_at_cursor("\n", 1);
-            } else if (text_input.buffer.text != ""){
-                send_text();
-                edit_history.reset_history();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void on_upper_notify() {
-        scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size;
-
-        // hack for vscrollbar not requiring space and making textview higher //TODO doesn't resize immediately
-        scrolled.get_vscrollbar().visible = (scrolled.vadjustment.upper > scrolled.max_content_height - 2 * vscrollbar_min_height);
-    }
-
-    private void on_text_input_changed() {
-        if (text_input.buffer.text != "") {
-            stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
-        } else {
-            stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation);
+    public void set_input_state(Plugins.InputFieldStatus.MessageType message_type) {
+        switch (message_type) {
+            case Plugins.InputFieldStatus.MessageType.NONE:
+                this.get_style_context().remove_class("dino-input-warning");
+                this.get_style_context().remove_class("dino-input-error");
+                break;
+            case Plugins.InputFieldStatus.MessageType.INFO:
+                this.get_style_context().remove_class("dino-input-warning");
+                this.get_style_context().remove_class("dino-input-error");
+                break;
+            case Plugins.InputFieldStatus.MessageType.WARNING:
+                this.get_style_context().add_class("dino-input-warning");
+                this.get_style_context().remove_class("dino-input-error");
+                break;
+            case Plugins.InputFieldStatus.MessageType.ERROR:
+                this.get_style_context().remove_class("dino-input-warning");
+                this.get_style_context().add_class("dino-input-error");
+                break;
         }
     }
 
-    private void on_upload_available(Account account) {
-        if (conversation != null && conversation.account.equals(account)) {
-            file_button.visible = true;
-            file_separator.visible = true;
-        }
+    public void highlight_state_description() {
+        chat_input_status.get_style_context().add_class("input-status-highlight-once");
+        Timeout.add_seconds(1, () => {
+            chat_input_status.get_style_context().remove_class("input-status-highlight-once");
+            return false;
+        });
     }
 }
 

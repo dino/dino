@@ -18,7 +18,7 @@ namespace Xmpp.Xep.UserAvatars {
             string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, image);
             StanzaNode data_node = new StanzaNode.build("data", NS_URI_DATA).add_self_xmlns()
                     .put_node(new StanzaNode.text(Base64.encode(image)));
-            stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_DATA, NS_URI_DATA, sha1, data_node);
+            stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, null, NS_URI_DATA, sha1, data_node);
 
             StanzaNode metadata_node = new StanzaNode.build("metadata", NS_URI_METADATA).add_self_xmlns();
             StanzaNode info_node = new StanzaNode.build("info", NS_URI_METADATA)
@@ -28,11 +28,11 @@ namespace Xmpp.Xep.UserAvatars {
                 .put_attribute("height", height.to_string())
                 .put_attribute("type", "image/png");
             metadata_node.put_node(info_node);
-            stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI_METADATA, NS_URI_METADATA, sha1, metadata_node);
+            stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, null, NS_URI_METADATA, sha1, metadata_node);
         }
 
         public override void attach(XmppStream stream) {
-            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_event);
+            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_event, null);
         }
 
         public override void detach(XmppStream stream) { }
@@ -56,10 +56,10 @@ namespace Xmpp.Xep.UserAvatars {
             if (node == null || id == null) {
                 return;
             }
-            uint8[] image = Base64.decode(node.get_string_content());
-            string sha1 = Checksum.compute_for_data(ChecksumType.SHA1, image);
+            Bytes image = new Bytes.take(Base64.decode(node.get_string_content()));
+            string sha1 = Checksum.compute_for_bytes(ChecksumType.SHA1, image);
             if (sha1 != id) {
-                warning("sha sum did not match for avatar from "+jid.to_string()+" expected="+id+", actual="+sha1);
+                warning("sha sum did not match for avatar from %s expected=%s actual=%s", jid.to_string(), id, sha1);
                 return;
             }
             storage.store(id, image);

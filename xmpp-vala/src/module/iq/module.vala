@@ -9,6 +9,16 @@ namespace Xmpp.Iq {
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
+        public async Iq.Stanza send_iq_async(XmppStream stream, Iq.Stanza iq) {
+            Iq.Stanza? return_stanza = null;
+            send_iq(stream, iq, (_, result_iq) => {
+                return_stanza = result_iq;
+                Idle.add(send_iq_async.callback);
+            });
+            yield;
+            return return_stanza;
+        }
+
         public delegate void OnResult(XmppStream stream, Iq.Stanza iq);
         public void send_iq(XmppStream stream, Iq.Stanza iq, owned OnResult? listener = null) {
             stream.write(iq.stanza);
@@ -67,8 +77,9 @@ namespace Xmpp.Iq {
                         }
                     }
                 } else {
-                    Iq.Stanza unaviable_error =  new Iq.Stanza.error(iq, new StanzaNode.build("service-unaviable", "urn:ietf:params:xml:ns:xmpp-stanzas").add_self_xmlns());
-                    send_iq(stream, unaviable_error);
+                    // Send error if we don't handle the NS of the IQ get/set payload (RFC6120 10.3.3 (2))
+                    Iq.Stanza unavailable_error = new Iq.Stanza.error(iq, new ErrorStanza.service_unavailable()) { to=iq.from };
+                    send_iq(stream, unavailable_error);
                 }
             }
         }
@@ -83,8 +94,14 @@ namespace Xmpp.Iq {
     }
 
     public interface Handler : Object {
-        public abstract void on_iq_get(XmppStream stream, Iq.Stanza iq);
-        public abstract void on_iq_set(XmppStream stream, Iq.Stanza iq);
+        public virtual void on_iq_get(XmppStream stream, Iq.Stanza iq) {
+            Iq.Stanza bad_request = new Iq.Stanza.error(iq, new ErrorStanza.bad_request("unexpected IQ get for this namespace"));
+            stream.get_module(Module.IDENTITY).send_iq(stream, bad_request);
+        }
+        public virtual void on_iq_set(XmppStream stream, Iq.Stanza iq) {
+            Iq.Stanza bad_request = new Iq.Stanza.error(iq, new ErrorStanza.bad_request("unexpected IQ set for this namespace"));
+            stream.get_module(Module.IDENTITY).send_iq(stream, bad_request);
+        }
     }
 
 }

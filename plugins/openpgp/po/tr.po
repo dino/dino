@@ -1,0 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-02-04 16:50+0000\n"
+"Language-Team: none\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.11-dev\n"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Key publishing disabled"
+msgstr "Anahtar yayınlama devre dışı"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr "GnuPG'de Hata"
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
+msgid "No keys available. Generate one!"
+msgstr "Anahtar yok. Bir tane oluşturun!"
+
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Select key"
+msgstr "Anahtar seçin"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Loading…"
+msgstr "Yükleniyor…"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Querying GnuPG"
+msgstr "GnuPG sorgu"
+
+#: plugins/openpgp/src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr "Anahtar anahtarlıkta değil"
+
+#: plugins/openpgp/src/contact_details_provider.vala:30
+msgid "Encryption"
+msgstr "Şifreleme"

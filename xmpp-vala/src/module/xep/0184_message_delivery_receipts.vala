@@ -12,7 +12,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
             MessageStanza received_message = new MessageStanza();
             received_message.to = from;
             received_message.stanza.put_node(new StanzaNode.build("received", NS_URI).add_self_xmlns().put_attribute("id", message_id));
-            stream.get_module(MessageModule.IDENTITY).send_message(stream, received_message);
+            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, received_message);
         }
 
         public static bool requests_receipt(MessageStanza message) {

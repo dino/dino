@@ -132,28 +132,38 @@ public class SearchProcessor : StreamInteractionModule, Object {
                     .with(db.conversation.type_, "=", Conversation.Type.CHAT)
                     .order_by(db.conversation.last_active, "DESC");
                 foreach(Row chat in chats) {
-                    if (suggestions.size == 0) {
-                        suggestions.add(new SearchSuggestion(new Account.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "from:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                    try {
+                        if (suggestions.size == 0) {
+                            suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "from:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                        }
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.account.bare_jid]), "from:"+chat[db.account.bare_jid], after_prev_space, next_space));
+                    } catch (InvalidJidError e) {
+                        warning("Ignoring search suggestion with invalid Jid: %s", e.message);
                     }
-                    suggestions.add(new SearchSuggestion(new Account.from_row(db, chat), new Jid(chat[db.account.bare_jid]), "from:"+chat[db.account.bare_jid], after_prev_space, next_space));
                 }
                 return suggestions;
             }
             if (current_in != null) {
                 // All members of the MUC with history
                 QueryBuilder msgs = db.message.select()
-                    .select_string(@"account.*, $(db.message.counterpart_resource)")
+                    .select_string(@"account.*, $(db.message.counterpart_resource), conversation.*")
                     .join_with(db.jid, db.jid.id, db.message.counterpart_id)
                     .join_with(db.account, db.account.id, db.message.account_id)
+                    .join_on(db.conversation, @"$(db.conversation.account_id)=$(db.account.id) AND $(db.conversation.jid_id)=$(db.jid.id)")
                     .with(db.jid.bare_jid, "=", current_in)
                     .with(db.account.enabled, "=", true)
                     .with(db.message.type_, "=", Message.Type.GROUPCHAT)
+                    .with(db.conversation.type_, "=", Conversation.Type.GROUPCHAT)
                     .with(db.message.counterpart_resource, "LIKE", @"%$current_from%")
                     .group_by({db.message.counterpart_resource})
                     .order_by_name(@"MAX($(db.message.time))", "DESC")
                     .limit(5);
                 foreach(Row msg in msgs) {
-                    suggestions.add(new SearchSuggestion(new Account.from_row(db, msg), new Jid(current_in).with_resource(msg[db.message.counterpart_resource]), "from:"+msg[db.message.counterpart_resource], after_prev_space, next_space));
+                    try {
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, msg), new Jid(current_in).with_resource(msg[db.message.counterpart_resource]), "from:"+msg[db.message.counterpart_resource], after_prev_space, next_space));
+                    } catch (InvalidJidError e) {
+                        warning("Ignoring search suggestion with invalid Jid: %s", e.message);
+                    }
                 }
             }
             // TODO: auto complete from
@@ -179,7 +189,11 @@ public class SearchProcessor : StreamInteractionModule, Object {
                 .order_by(db.conversation.last_active, "DESC")
                 .limit(limit);
             foreach(Row chat in chats) {
-                suggestions.add(new SearchSuggestion(new Account.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "with:"+chat[db.jid.bare_jid], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                try {
+                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "with:"+chat[db.jid.bare_jid], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                } catch (InvalidJidError e) {
+                    warning("Ignoring search suggestion with invalid Jid: %s", e.message);
+                }
             }
 
             // Groupchat PM
@@ -193,7 +207,11 @@ public class SearchProcessor : StreamInteractionModule, Object {
                     .order_by(db.conversation.last_active, "DESC")
                     .limit(limit - suggestions.size);
                 foreach(Row chat in chats) {
-                    suggestions.add(new SearchSuggestion(new Account.from_row(db, chat), new Jid(chat[db.jid.bare_jid]).with_resource(chat[db.conversation.resource]), "with:"+chat[db.jid.bare_jid]+"/"+chat[db.conversation.resource], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                    try {
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]).with_resource(chat[db.conversation.resource]), "with:"+chat[db.jid.bare_jid]+"/"+chat[db.conversation.resource], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                    } catch (InvalidJidError e) {
+                        warning("Ignoring search suggestion with invalid Jid: %s", e.message);
+                    }
                 }
                 suggestions.sort((a, b) => (int)(b.order - a.order));
             }
@@ -216,7 +234,11 @@ public class SearchProcessor : StreamInteractionModule, Object {
                 .order_by(db.conversation.last_active, "DESC")
                 .limit(limit);
             foreach(Row chat in groupchats) {
-                suggestions.add(new SearchSuggestion(new Account.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "in:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                try {
+                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "in:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                } catch (InvalidJidError e) {
+                    warning("Ignoring search suggestion with invalid Jid: %s", e.message);
+                }
             }
         } else {
             // Other auto complete?
@@ -231,9 +253,13 @@ public class SearchProcessor : StreamInteractionModule, Object {
             rows.offset(offset);
         }
         foreach (Row row in rows) {
-            Message message = new Message.from_row(db, row);
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
-            ret.add(new MessageItem(message, conversation, row[db.content_item.id]));
+            try {
+                Message message = new Message.from_row(db, row);
+                Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+                ret.add(new MessageItem(message, conversation, row[db.content_item.id]));
+            } catch (InvalidJidError e) {
+                warning("Ignoring search result with invalid Jid: %s", e.message);
+            }
         }
         return ret;
     }
@@ -244,15 +270,16 @@ public class SearchProcessor : StreamInteractionModule, Object {
 }
 
 public class SearchSuggestion : Object {
-    public Account account { get; private set; }
+    public Account account { get { return conversation.account; } }
+    public Conversation conversation { get; private set; }
     public Jid? jid { get; private set; }
     public string completion { get; private set; }
     public int start_index { get; private set; }
     public int end_index { get; private set; }
     public long order { get; set; }
 
-    public SearchSuggestion(Account account, Jid? jid, string completion, int start_index, int end_index) {
-        this.account = account;
+    public SearchSuggestion(Conversation conversation, Jid? jid, string completion, int start_index, int end_index) {
+        this.conversation = conversation;
         this.jid = jid;
         this.completion = completion;
         this.start_index = start_index;

@@ -1,0 +1,54 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-02-01 15:50+0000\n"
+"Language-Team: none\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
+"19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
+"1 : 2);\n"
+"X-Generator: Weblate 3.11-dev\n"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Key publishing disabled"
+msgstr "Rakto paskelbimas išjungtas"
+
+#: plugins/openpgp/src/account_settings_widget.vala:60
+msgid "Error in GnuPG"
+msgstr "Klaida GnuPG programoje"
+
+#: plugins/openpgp/src/account_settings_widget.vala:64
+msgid "No keys available. Generate one!"
+msgstr "Nėra prieinamų raktų. Sugeneruokite!"
+
+#: plugins/openpgp/src/account_settings_widget.vala:93
+msgid "Select key"
+msgstr "Pasirinkti raktą"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Loading…"
+msgstr "Įkeliama…"
+
+#: plugins/openpgp/src/account_settings_widget.vala:106
+msgid "Querying GnuPG"
+msgstr "Užklausiama GnuPG"
+
+#: plugins/openpgp/src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr "Rakto nėra raktinėje"
+
+#: plugins/openpgp/src/contact_details_provider.vala:30
+msgid "Encryption"
+msgstr "Šifravimas"

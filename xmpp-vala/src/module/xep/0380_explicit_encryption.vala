@@ -10,5 +10,13 @@ public static void add_encryption_tag_to_message(MessageStanza message, string n
 
     message.stanza.put_node(encryption);
 }
+
+public static string? get_encryption_tag(MessageStanza message) {
+    StanzaNode? encryption_node = message.stanza.get_subnode("encryption", NS_URI);
+    if (encryption_node != null) {
+        return encryption_node.get_attribute("namespace", NS_URI);
+    }
+    return null;
+}
     
 }

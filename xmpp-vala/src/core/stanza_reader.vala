@@ -52,8 +52,6 @@ public class StanzaReader {
             buffer_fill = (int) yield ((!)input).read_async(buffer, GLib.Priority.DEFAULT, cancellable);
             if (buffer_fill == 0) throw new XmlError.EOF("End of input stream reached.");
             buffer_pos = 0;
-        } catch (TlsError e) {
-            throw new XmlError.TLS("TlsError: %s".printf(e.message));
         } catch (GLib.IOError e) {
             throw new XmlError.IO("GLib.IOError: %s".printf(e.message));
         }
@@ -63,14 +61,14 @@ public class StanzaReader {
         if (buffer_pos >= buffer_fill) {
             yield update_buffer();
         }
-        char c = (char) buffer[buffer_pos++];
-        return c;
+        return (char) buffer[buffer_pos++];
     }
 
     private async char peek_single() throws XmlError {
-        var res = yield read_single();
-        buffer_pos--;
-        return res;
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        return (char) buffer[buffer_pos];
     }
 
     private bool is_ws(uint8 what) {
@@ -82,37 +80,55 @@ public class StanzaReader {
     }
 
     private async void skip_until_non_ws() throws XmlError {
-        while (is_ws(yield peek_single())) {
-            skip_single();
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        while (is_ws(buffer[buffer_pos])) {
+            buffer_pos++;
+            if (buffer_pos >= buffer_fill) {
+                yield update_buffer();
+            }
         }
     }
 
     private async string read_until_ws() throws XmlError {
         var res = new StringBuilder();
-        var what = yield peek_single();
-        while (!is_ws(what)) {
-            res.append_c(yield read_single());
-            what = yield peek_single();
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        while (!is_ws(buffer[buffer_pos])) {
+            res.append_c((char) buffer[buffer_pos++]);
+            if (buffer_pos >= buffer_fill) {
+                yield update_buffer();
+            }
         }
         return res.str;
     }
 
     private async string read_until_char_or_ws(char x, char y = 0) throws XmlError {
         var res = new StringBuilder();
-        var what = yield peek_single();
-        while (what != x && what != y && !is_ws(what)) {
-            res.append_c(yield read_single());
-            what = yield peek_single();
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        while (buffer[buffer_pos] != x && buffer[buffer_pos] != y && !is_ws(buffer[buffer_pos])) {
+            res.append_c((char) buffer[buffer_pos++]);
+            if (buffer_pos >= buffer_fill) {
+                yield update_buffer();
+            }
         }
         return res.str;
     }
 
     private async string read_until_char(char x) throws XmlError {
         var res = new StringBuilder();
-        var what = yield peek_single();
-        while (what != x) {
-            res.append_c(yield read_single());
-            what = yield peek_single();
+        if (buffer_pos >= buffer_fill) {
+            yield update_buffer();
+        }
+        while (buffer[buffer_pos] != x) {
+            res.append_c((char) buffer[buffer_pos++]);
+            if (buffer_pos >= buffer_fill) {
+                yield update_buffer();
+            }
         }
         return res.str;
     }
@@ -223,38 +239,45 @@ public class StanzaReader {
     }
 
     public async StanzaNode read_stanza_node() throws XmlError {
-        ns_state = ns_state.push();
-        var res = yield read_node_start();
-        if (res.has_nodes) {
-            bool finishNodeSeen = false;
-            do {
-                yield skip_until_non_ws();
-                if ((yield peek_single()) == '<') {
-                    skip_single();
-                    if ((yield peek_single()) == '/') {
+        try {
+            ns_state = ns_state.push();
+            var res = yield read_node_start();
+            if (res.has_nodes) {
+                bool finish_node_seen = false;
+                do {
+                    yield skip_until_non_ws();
+                    if ((yield peek_single()) == '<') {
                         skip_single();
-                        string desc = yield read_until_char('>');
-                        skip_single();
-                        if (desc.contains(":")) {
-                            var split = desc.split(":");
-                            if (split[0] != ns_state.find_name((!)res.ns_uri)) throw new XmlError.BAD_XML("");
-                            if (split[1] != res.name) throw new XmlError.BAD_XML("");
+                        if ((yield peek_single()) == '/') {
+                            skip_single();
+                            string desc = yield read_until_char('>');
+                            skip_single();
+                            if (desc.contains(":")) {
+                                var split = desc.split(":");
+                                if (split[0] != ns_state.find_name((!)res.ns_uri)) throw new XmlError.BAD_XML("");
+                                if (split[1] != res.name) throw new XmlError.BAD_XML("");
+                            } else {
+                                if (ns_state.current_ns_uri != res.ns_uri) throw new XmlError.BAD_XML("");
+                                if (desc != res.name) throw new XmlError.BAD_XML("");
+                            }
+                            finish_node_seen = true;
                         } else {
-                            if (ns_state.current_ns_uri != res.ns_uri) throw new XmlError.BAD_XML("");
-                            if (desc != res.name) throw new XmlError.BAD_XML("");
+                            res.sub_nodes.add(yield read_stanza_node());
                         }
-                        finishNodeSeen = true;
                     } else {
-                        res.sub_nodes.add(yield read_stanza_node());
+                        res.sub_nodes.add(yield read_text_node());
                     }
-                } else {
-                    res.sub_nodes.add(yield read_text_node());
-                }
-            } while (!finishNodeSeen);
-            if (res.sub_nodes.size == 0) res.has_nodes = false;
+                } while (!finish_node_seen);
+                if (res.sub_nodes.size == 0) res.has_nodes = false;
+            }
+            ns_state = ns_state.pop();
+            return res;
+        } catch (XmlError e) {
+            uint8[] buffer_cpy = new uint8[buffer.length + 1];
+            Memory.copy(buffer_cpy, buffer, buffer.length);
+            warning("XmlError at: %s".printf((string)buffer_cpy) + "\n");
+            throw e;
         }
-        ns_state = ns_state.pop();
-        return res;
     }
 
     public async StanzaNode read_node() throws XmlError {

@@ -5,11 +5,11 @@ namespace Xmpp.Bind {
     public class Module : XmppStreamNegotiationModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "bind_module");
 
-        public string requested_resource { get; set; }
+        public string? requested_resource { get; set; }
 
         public signal void bound_to_resource(XmppStream stream, Jid my_jid);
 
-        public Module(string requested_resource) {
+        public Module(string? requested_resource) {
             this.requested_resource = requested_resource;
         }
 
@@ -18,9 +18,13 @@ namespace Xmpp.Bind {
             if (flag == null || flag.finished) return;
 
             if (iq.type_ == Iq.Stanza.TYPE_RESULT) {
-                flag.my_jid = Jid.parse(iq.stanza.get_subnode("jid", NS_URI, true).get_string_content());
-                flag.finished = true;
-                bound_to_resource(stream, flag.my_jid);
+                try {
+                    flag.my_jid = new Jid(iq.stanza.get_subnode("jid", NS_URI, true).get_string_content());
+                    flag.finished = true;
+                    bound_to_resource(stream, flag.my_jid);
+                } catch (InvalidJidError e) {
+                    warning("Received invalid Jid when binding: %s", e.message);
+                }
             }
         }
 
@@ -32,7 +36,9 @@ namespace Xmpp.Bind {
             if (bind != null) {
                 var flag = new Flag();
                 StanzaNode bind_node = new StanzaNode.build("bind", NS_URI).add_self_xmlns();
-                bind_node.put_node(new StanzaNode.build("resource", NS_URI).put_node(new StanzaNode.text(requested_resource)));
+                if (requested_resource != null) {
+                    bind_node.put_node(new StanzaNode.build("resource", NS_URI).put_node(new StanzaNode.text(requested_resource)));
+                }
                 stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.set(bind_node), iq_response_stanza);
                 stream.add_flag(flag);
             }

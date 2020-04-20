@@ -57,7 +57,10 @@ public class Stanza : Xmpp.Stanza {
     public string show {
         get {
             StanzaNode? show_node = stanza.get_subnode(NODE_SHOW);
-            return show_node != null ? show_node.get_string_content() : SHOW_ONLINE;
+            if (show_node == null) {
+                return SHOW_ONLINE;
+            }
+            return show_node.get_string_content() ?? SHOW_ONLINE;
         }
         set {
             if (value != SHOW_ONLINE) {

@@ -17,7 +17,7 @@ public class StreamInteractor : Object {
     private ArrayList<StreamInteractionModule> modules = new ArrayList<StreamInteractionModule>();
 
     public StreamInteractor(Database db) {
-        module_manager = new ModuleManager(db);
+        module_manager = new ModuleManager();
         connection_manager = new ConnectionManager(module_manager);
 
         connection_manager.stream_opened.connect(on_stream_opened);
@@ -26,11 +26,11 @@ public class StreamInteractor : Object {
     public void connect_account(Account account) {
         module_manager.initialize(account);
         account_added(account);
-        connection_manager.connect(account);
+        connection_manager.connect_account(account);
     }
 
-    public void disconnect_account(Account account) {
-        connection_manager.disconnect_account(account);
+    public async void disconnect_account(Account account) {
+        yield connection_manager.disconnect_account(account);
         account_removed(account);
     }
 
@@ -58,6 +58,13 @@ public class StreamInteractor : Object {
         return null;
     }
 
+    public new T? get<T>() {
+        foreach (StreamInteractionModule module in modules) {
+            if (module.get_type() == typeof(T)) return (T?) module;
+        }
+        return null;
+    }
+
     private void on_stream_opened(Account account, XmppStream stream) {
         stream.stream_negotiated.connect( (stream) => {
             stream_negotiated(account, stream);
@@ -77,7 +84,7 @@ public class ModuleIdentity<T> : Object {
     }
 
     public bool matches(StreamInteractionModule module) {
-        return module.id== id;
+        return module.id == id;
     }
 }
 

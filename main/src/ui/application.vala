@@ -6,10 +6,12 @@ using Xmpp;
 
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     private Notifications notifications;
-    private UnifiedWindow window;
+    private MainWindow window;
+    public MainWindowController controller;
 
     public Database db { get; set; }
     public Dino.Entities.Settings settings { get; set; }
+    private Config config { get; set; }
     public StreamInteractor stream_interactor { get; set; }
     public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
     public SearchPathGenerator? search_path_generator { get; set; }
@@ -26,13 +28,20 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         create_actions();
 
+        startup.connect(() => {
+            notifications = new Notifications(stream_interactor);
+            notifications.start();
+        });
+
         activate.connect(() => {
             if (window == null) {
-                create_set_app_menu();
-                window = new UnifiedWindow(this, stream_interactor, db);
-                notifications = new Notifications(stream_interactor, window);
-                notifications.start();
-                notifications.conversation_selected.connect((conversation) => window.on_conversation_selected(conversation));
+                controller = new MainWindowController(this, stream_interactor, db);
+                config = new Config(db);
+                window = new MainWindow(this, stream_interactor, db, config);
+                controller.set_window(window);
+                if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.delete_event.connect(window.hide_on_delete);
+
+                notifications.conversation_selected.connect((conversation) => controller.select_conversation(conversation));
             }
             window.present();
         });
@@ -41,36 +50,26 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public void handle_uri(string jid, string query, Gee.Map<string, string> options) {
         switch (query) {
             case "join":
-                Dialog dialog = new Dialog.with_buttons(_("Join Conference"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
-                dialog.modal = true;
-                Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
-                ok_button.get_style_context().add_class("suggested-action");
-                ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor, ok_button);
-                conference_fragment.jid = jid;
-                Box content_area = dialog.get_content_area();
-                content_area.add(conference_fragment);
-                dialog.response.connect((response_id) => {
-                    if (response_id == ResponseType.OK) {
-                        stream_interactor.get_module(MucManager.IDENTITY).join(conference_fragment.account, new Jid(conference_fragment.jid), conference_fragment.nick, conference_fragment.password);
-                        dialog.destroy();
-                    } else if (response_id == ResponseType.CANCEL) {
-                        dialog.destroy();
-                    }
-                });
-                dialog.present();
+                show_join_muc_dialog(null, jid);
                 break;
             case "message":
                 Gee.List<Account> accounts = stream_interactor.get_accounts();
-                if (accounts.size == 1) {
-                    Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(new Jid(jid), accounts[0], Conversation.Type.CHAT);
-                    stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation, true);
-                    window.on_conversation_selected(conversation);
+                Jid parsed_jid = null;
+                try {
+                    parsed_jid = new Jid(jid);
+                } catch (InvalidJidError ignored) {
+                    // Ignored
+                }
+                if (accounts.size == 1 && parsed_jid != null) {
+                    Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(parsed_jid, accounts[0], Conversation.Type.CHAT);
+                    stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+                    controller.select_conversation(conversation);
                 } else {
                     AddChatDialog dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
                     dialog.set_filter(jid);
                     dialog.set_transient_for(window);
                     dialog.added.connect((conversation) => {
-                        window.on_conversation_selected(conversation);
+                        controller.select_conversation(conversation);
                     });
                     dialog.present();
                 }
@@ -79,10 +78,27 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     }
 
     private void create_actions() {
+        SimpleAction accounts_action = new SimpleAction("accounts", null);
+        accounts_action.activate.connect(show_accounts_window);
+        add_action(accounts_action);
+
+        SimpleAction settings_action = new SimpleAction("settings", null);
+        settings_action.activate.connect(show_settings_window);
+        add_action(settings_action);
+
+        SimpleAction about_action = new SimpleAction("about", null);
+        about_action.activate.connect(show_about_window);
+        add_action(about_action);
+
+        SimpleAction quit_action = new SimpleAction("quit", null);
+        quit_action.activate.connect(quit);
+        add_action(quit_action);
+        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
+
         SimpleAction open_conversation_action = new SimpleAction("open-conversation", VariantType.INT32);
         open_conversation_action.activate.connect((variant) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
-            if (conversation != null) window.on_conversation_selected(conversation);
+            if (conversation != null) controller.select_conversation(conversation);
             window.present();
         });
         add_action(open_conversation_action);
@@ -94,6 +110,56 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             stream_interactor.get_module(PresenceManager.IDENTITY).deny_subscription(conversation.account, conversation.counterpart);
         });
         add_action(deny_subscription_action);
+
+        SimpleAction contacts_action = new SimpleAction("add_chat", null);
+        contacts_action.activate.connect(() => {
+            AddChatDialog add_chat_dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
+            add_chat_dialog.set_transient_for(window);
+            add_chat_dialog.added.connect((conversation) => controller.select_conversation(conversation));
+            add_chat_dialog.present();
+        });
+        add_action(contacts_action);
+        set_accels_for_action("app.add_chat", new string[]{"<Ctrl>T"});
+
+        SimpleAction conference_action = new SimpleAction("add_conference", null);
+        conference_action.activate.connect(() => {
+            AddConferenceDialog add_conference_dialog = new AddConferenceDialog(stream_interactor);
+            add_conference_dialog.set_transient_for(window);
+            add_conference_dialog.present();
+        });
+        add_action(conference_action);
+        set_accels_for_action("app.add_conference", new string[]{"<Ctrl>G"});
+
+        SimpleAction accept_muc_invite_action = new SimpleAction("open-muc-join", VariantType.INT32);
+        accept_muc_invite_action.activate.connect((variant) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
+            if (conversation == null) return;
+            show_join_muc_dialog(conversation.account, conversation.counterpart.to_string());
+        });
+        add_action(accept_muc_invite_action);
+
+        SimpleAction loop_conversations_action = new SimpleAction("loop_conversations", null);
+        loop_conversations_action.activate.connect(() => { window.loop_conversations(false); });
+        add_action(loop_conversations_action);
+        set_accels_for_action("app.loop_conversations", new string[]{"<Ctrl>Tab"});
+
+        SimpleAction loop_conversations_bw_action = new SimpleAction("loop_conversations_bw", null);
+        loop_conversations_bw_action.activate.connect(() => { window.loop_conversations(true); });
+        add_action(loop_conversations_bw_action);
+        set_accels_for_action("app.loop_conversations_bw", new string[]{"<Ctrl><Shift>Tab"});
+
+        SimpleAction open_shortcuts_action = new SimpleAction("open_shortcuts", null);
+        open_shortcuts_action.activate.connect((variant) => {
+            Builder builder = new Builder.from_resource("/im/dino/Dino/shortcuts.ui");
+            var dialog = (ShortcutsWindow) builder.get_object("shortcuts-window");
+            dialog.set_transient_for(get_active_window());
+            dialog.present();
+        });
+        add_action(open_shortcuts_action);
+    }
+
+    public bool use_csd() {
+        return Environment.get_variable("GTK_CSD") != "0";
     }
 
     private void show_accounts_window() {
@@ -110,24 +176,39 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         dialog.present();
     }
 
-    private void create_set_app_menu() {
-        SimpleAction accounts_action = new SimpleAction("accounts", null);
-        accounts_action.activate.connect(show_accounts_window);
-        add_action(accounts_action);
+    private void show_about_window() {
+        show_about_dialog(get_active_window(),
+                    logo_icon_name: "im.dino.Dino",
+                    program_name: "Dino",
+                    version: Dino.VERSION.strip().length == 0 ? null : Dino.VERSION,
+                    comments: "Dino. Communicating happiness.",
+                    website: "https://dino.im/",
+                    website_label: "dino.im",
+                    copyright: "Copyright © 2016-2020 - Dino Team",
+                    license_type: License.GPL_3_0);
+    }
 
-        SimpleAction settings_action = new SimpleAction("settings", null);
-        settings_action.activate.connect(show_settings_window);
-        add_action(settings_action);
-
-        SimpleAction quit_action = new SimpleAction("quit", null);
-        quit_action.activate.connect(quit);
-        add_action(quit_action);
-        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
-
-        Builder builder = new Builder.from_resource("/im/dino/Dino/menu_app.ui");
-        MenuModel menu = builder.get_object("menu_app") as MenuModel;
-
-        set_app_menu(menu);
+    private void show_join_muc_dialog(Account? account, string jid) {
+        Dialog dialog = new Dialog.with_buttons(_("Join Channel"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
+        dialog.modal = true;
+        Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
+        ok_button.get_style_context().add_class("suggested-action");
+        ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor) { ok_button=ok_button };
+        conference_fragment.jid = jid;
+        if (account != null)  {
+            conference_fragment.account = account;
+        }
+        Box content_area = dialog.get_content_area();
+        content_area.add(conference_fragment);
+        conference_fragment.joined.connect(() => {
+            dialog.destroy();
+        });
+        dialog.response.connect((response_id) => {
+            if (response_id == ResponseType.CANCEL) {
+                dialog.destroy();
+            }
+        });
+        dialog.present();
     }
 }
 

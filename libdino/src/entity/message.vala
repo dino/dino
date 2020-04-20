@@ -22,7 +22,11 @@ public class Message : Object {
         CHAT,
         GROUPCHAT,
         GROUPCHAT_PM,
-        UNKNOWN
+        UNKNOWN;
+
+        public bool is_muc_semantic() {
+            return this == GROUPCHAT || this == GROUPCHAT_PM;
+        }
     }
 
     public int id { get; set; default = -1; }
@@ -40,6 +44,7 @@ public class Message : Object {
     public Type type_ { get; set; default = Type.UNKNOWN; }
     public string? body { get; set; }
     public string? stanza_id { get; set; }
+    public string? server_id { get; set; }
     public DateTime? time { get; set; }
     /** UTC **/
     public DateTime? local_time { get; set; }
@@ -52,7 +57,7 @@ public class Message : Object {
             marked_ = value;
         }
     }
-    public Xmpp.MessageStanza stanza { get; set; }
+    public string? edit_to = null;
 
     private Database? db;
 
@@ -60,20 +65,21 @@ public class Message : Object {
         this.body = body;
     }
 
-    public Message.from_row(Database db, Qlite.Row row) {
+    public Message.from_row(Database db, Qlite.Row row) throws InvalidJidError {
         this.db = db;
 
         id = row[db.message.id];
-        account = db.get_account_by_id(row[db.message.account_id]); // TODO don’t have to generate acc new
+        account = db.get_account_by_id(row[db.message.account_id]);
         stanza_id = row[db.message.stanza_id];
+        server_id = row[db.message.server_id];
         type_ = (Message.Type) row[db.message.type_];
 
-        counterpart = Jid.parse(db.get_jid_by_id(row[db.message.counterpart_id]));
+        counterpart = db.get_jid_by_id(row[db.message.counterpart_id]);
         string counterpart_resource = row[db.message.counterpart_resource];
         if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
 
         string our_resource = row[db.message.our_resource];
-        if (type_ == Type.GROUPCHAT && our_resource != null) {
+        if (type_.is_muc_semantic() && our_resource != null) {
             ourpart = counterpart.with_resource(our_resource);
         } else if (our_resource != null) {
             ourpart = account.bare_jid.with_resource(our_resource);
@@ -86,8 +92,10 @@ public class Message : Object {
         body = row[db.message.body];
         marked = (Message.Marked) row[db.message.marked];
         encryption = (Encryption) row[db.message.encryption];
-        string? real_jid_str = db.real_jid.select({db.real_jid.real_jid}).with(db.real_jid.message_id, "=", id)[db.real_jid.real_jid];
+        string? real_jid_str = row[db.real_jid.real_jid];
         if (real_jid_str != null) real_jid = new Jid(real_jid_str);
+
+        edit_to = row[db.message_correction.to_stanza_id];
 
         notify.connect(on_update);
     }
@@ -109,6 +117,7 @@ public class Message : Object {
             .value(db.message.encryption, encryption)
             .value(db.message.marked, marked);
         if (stanza_id != null) builder.value(db.message.stanza_id, stanza_id);
+        if (server_id != null) builder.value(db.message.server_id, server_id);
         id = (int) builder.perform();
 
         if (real_jid != null) {
@@ -162,6 +171,8 @@ public class Message : Object {
         switch (sp.name) {
             case "stanza-id":
                 update_builder.set(db.message.stanza_id, stanza_id); break;
+            case "server-id":
+                update_builder.set(db.message.server_id, server_id); break;
             case "counterpart":
                 update_builder.set(db.message.counterpart_id, db.get_jid_id(counterpart));
                 update_builder.set(db.message.counterpart_resource, counterpart.resourcepart); break;

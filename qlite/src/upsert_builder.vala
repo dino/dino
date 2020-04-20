@@ -100,7 +100,7 @@ public class UpsertBuilder : StatementBuilder {
 
     public int64 perform() {
         if (prepare_update().step() != DONE || prepare_insert().step() != DONE) {
-            error(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
+            critical(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
         return db.last_insert_rowid();
     }

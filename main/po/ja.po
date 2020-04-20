@@ -7,9 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 14:06-0600\n"
-"PO-Revision-Date: 2018-04-04 05:38+0000\n"
-"Last-Translator: Mako N <mako@pasero.net>\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/dino/"
 "translations/ja/>\n"
 "Language: ja\n"
@@ -17,531 +16,623 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_row.vala:145
-msgid "Image sent"
-msgstr ""
+#: main/src/ui/main_window.vala:200
+msgid "Welcome to Dino!"
+msgstr "Dino へようこそ！"
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_row.vala:145
-msgid "File sent"
-msgstr ""
+#: main/src/ui/main_window.vala:201
+msgid "Sign in or create an account to get started."
+msgstr "サインインまたはアカウント登録をしてください。"
 
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_row.vala:147
-msgid "Image received"
-msgstr ""
+#: main/src/ui/main_window.vala:202
+msgid "Set up account"
+msgstr "アカウントをセットアップ"
 
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_row.vala:147
-msgid "File received"
-msgstr ""
+#: main/src/ui/main_window.vala:210
+msgid "No active accounts"
+msgstr "アクティブなアカウントがありません"
 
-#: main/src/ui/notifications.vala:87
-msgid "Subscription request"
-msgstr "在席通知の申込"
+#: main/src/ui/main_window.vala:211
+msgid "Manage accounts"
+msgstr "アカウントを管理"
 
-#: main/src/ui/notifications.vala:93
-#: main/src/ui/conversation_summary/subscription_notification.vala:37
-msgid "Accept"
-msgstr "承諾"
+#: main/src/ui/main_window.vala:220
+msgid "No active conversations"
+msgstr "アクティブなトークがありません"
 
-#: main/src/ui/notifications.vala:94
-#: main/src/ui/conversation_summary/subscription_notification.vala:38
-msgid "Deny"
-msgstr "拒否"
+#: main/src/ui/main_window.vala:221
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "トークを開始"
 
-#: main/src/ui/notifications.vala:100
-#, c-format
-msgid "Failed connecting to %s"
-msgstr ""
+#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "チャンネルに参加"
 
-#: main/src/ui/manage_accounts/dialog.vala:126
-#, c-format
-msgid "Remove account %s?"
-msgstr "アカウント %s を削除しますか ?"
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
+msgid "Today"
+msgstr "今日"
 
-#: main/src/ui/manage_accounts/dialog.vala:129
-msgid "Remove"
-msgstr "削除"
-
-#: main/src/ui/manage_accounts/dialog.vala:153
-msgid "Select avatar"
-msgstr "アバターを選択"
-
-#: main/src/ui/manage_accounts/dialog.vala:153
-msgid "Select"
-msgstr "選択"
-
-#: main/src/ui/manage_accounts/dialog.vala:153 main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:16
-#: main/src/ui/add_conversation/select_contact_dialog.vala:41
-#: main/data/add_conversation/add_groupchat_dialog.ui:11
-#: main/data/add_conversation/add_contact_dialog.ui:12
-msgid "Cancel"
-msgstr "キャンセル"
-
-#: main/src/ui/manage_accounts/dialog.vala:161
-msgid "Images"
-msgstr "画像"
-
-#: main/src/ui/manage_accounts/dialog.vala:165
-msgid "All files"
-msgstr "すべてのファイル"
-
-#: main/src/ui/manage_accounts/dialog.vala:222
-msgid "Connecting…"
-msgstr "接続中…"
-
-#: main/src/ui/manage_accounts/dialog.vala:224
-msgid "Connected"
-msgstr "接続しました"
-
-#: main/src/ui/manage_accounts/dialog.vala:226
-msgid "Disconnected"
-msgstr "切断しました"
-
-#: main/src/ui/manage_accounts/dialog.vala:235
-msgid "Wrong password"
-msgstr "パスワードが違います"
-
-#: main/src/ui/manage_accounts/dialog.vala:237
-msgid "Invalid TLS certificate"
-msgstr "TLS 証明書が不正です"
-
-#: main/src/ui/manage_accounts/dialog.vala:240
-#: main/src/ui/manage_accounts/dialog.vala:242
-msgid "Error"
-msgstr "エラー"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:55
-msgid "Add Account"
-msgstr "アカウントを追加"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:135
-msgid "JID should be of the form “user@example.com”"
-msgstr "JID は “user@example.com” の形式にしてください"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:171
-msgid "No response from server"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:177
-#, c-format
-msgid "Register on %s"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:180
-msgid "The server requires to sign up through a website"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:182
-msgid "Open Registration"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:198
-msgid "Register"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:200
-#, c-format
-msgid "Check %s for information on how to sign up"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_row.vala:131
-#: main/src/ui/conversation_selector/conversation_row.vala:141
-msgid "Me"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_row.vala:249
-#: main/src/ui/conversation_summary/date_separator_populator.vala:100
-#, no-c-format
-msgid "%b %d"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_row.vala:253
-#: main/src/ui/conversation_summary/date_separator_populator.vala:91
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:316
 msgid "Yesterday"
 msgstr "昨日"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:256
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:196
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
+msgid "%a, %b %d"
+msgstr "%b%d日 (%a)"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:312
+#, no-c-format
+msgid "%b %d"
+msgstr "%b%d日"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#, c-format
+msgid "Downloading %s…"
+msgstr "%s をダウンロードしています…"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#, fuzzy, c-format
+msgid "%s offered: %s"
+msgstr "%s から提供されているファイル: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#, fuzzy, c-format
+msgid "File offered: %s"
+msgstr "提供されているファイル: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+msgid "File offered"
+msgstr "ファイルが提供されています"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:62
+msgid "File transfer failed"
+msgstr "ファイルの転送に失敗しました"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
+#, c-format
+msgid "%s, %s and %i others are typing"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
+#, c-format
+msgid "%s, %s and %s are typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
+#, c-format
+msgid "%s and %s are typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
+#, c-format
+msgid "%s is typing…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/message_widget.vala:157
+msgid "Message too long"
+msgstr "メッセージが長すぎます"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:184
+msgid "edited"
+msgstr "編集済み"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
+msgid "Accept"
+msgstr "承諾"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
+msgid "Deny"
+msgstr "拒否"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:48
+msgid "This contact would like to add you to their contact list"
+msgstr "この相手があなたを連絡先に入れようとしています"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "非暗号化"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+msgid "Unable to send message"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x、%H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x、%p %l∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%b%d日、%H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%b%d日、%p %l∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%a曜日、%H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%a曜日、%p %l∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:319
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:257
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:197
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:320
 #, no-c-format
 msgid "%l∶%M %p"
-msgstr ""
+msgstr "%p %l∶%M"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:260
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:201
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:323
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i 分前"
 
-#: main/src/ui/conversation_selector/conversation_row.vala:262
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:203
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:325
 msgid "Just now"
 msgstr "たった今"
 
-#: main/src/ui/application.vala:44
-msgid "Join Conference"
-msgstr "談話室に参加"
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+msgid "Image sent"
+msgstr "画像を送信しました"
 
-#: main/src/ui/application.vala:44
-#: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/conference_details_fragment.vala:133
+#: main/src/ui/notifications.vala:66
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+msgid "File sent"
+msgstr "ファイルを送信しました"
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
+msgid "Image received"
+msgstr "画像を受信しました"
+
+#: main/src/ui/notifications.vala:68
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
+msgid "File received"
+msgstr "ファイルを受信しました"
+
+#: main/src/ui/notifications.vala:98
+msgid "Subscription request"
+msgstr "在席通知の申込"
+
+#: main/src/ui/notifications.vala:112
+#: main/src/ui/manage_accounts/add_account_dialog.vala:258
+#: main/src/ui/add_conversation/conference_details_fragment.vala:188
+#, c-format
+msgid "Could not connect to %s"
+msgstr "%s に接続できませんでした"
+
+#: main/src/ui/notifications.vala:128
+#, c-format
+msgid "Invitation to %s"
+msgstr "%s への招待"
+
+#: main/src/ui/notifications.vala:129
+#, c-format
+msgid "%s invited you to %s"
+msgstr "%s さんがあなたを %s に招待しました"
+
+#: main/src/ui/manage_accounts/dialog.vala:125
+#, c-format
+msgid "Remove account %s?"
+msgstr "アカウント %s を削除しますか？"
+
+#: main/src/ui/manage_accounts/dialog.vala:128
+msgid "Remove"
+msgstr "削除"
+
+#: main/src/ui/manage_accounts/dialog.vala:152
+msgid "Select avatar"
+msgstr "アバターを選択"
+
+#: main/src/ui/manage_accounts/dialog.vala:152
+msgid "Select"
+msgstr "選択"
+
+#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:15
+#: main/src/ui/add_conversation/add_conference_dialog.vala:122
+#: main/src/ui/add_conversation/select_contact_dialog.vala:38
+#: main/data/message_item_widget_edit_mode.ui:54
+#: main/data/add_conversation/add_groupchat_dialog.ui:11
+#: main/data/add_conversation/add_contact_dialog.ui:12
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: main/src/ui/manage_accounts/dialog.vala:159
+msgid "Images"
+msgstr "画像"
+
+#: main/src/ui/manage_accounts/dialog.vala:163
+msgid "All files"
+msgstr "すべてのファイル"
+
+#: main/src/ui/manage_accounts/dialog.vala:219
+msgid "Connecting…"
+msgstr "接続試行中…"
+
+#: main/src/ui/manage_accounts/dialog.vala:221
+msgid "Connected"
+msgstr "接続済み"
+
+#: main/src/ui/manage_accounts/dialog.vala:223
+msgid "Disconnected"
+msgstr "切断"
+
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "パスワードが違います"
+
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "TLS 証明書が不正です"
+
+#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:239
+msgid "Error"
+msgstr "エラー"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:82
+msgid "Add Account"
+msgstr "アカウントを追加"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:166
+#, c-format
+msgid "Sign in to %s"
+msgstr "%s にサインイン"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:210
+#, c-format
+msgid "You can now use the account %s."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:263
+#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:306
+#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+#: main/src/ui/add_conversation/conference_details_fragment.vala:191
+msgid "Invalid address"
+msgstr "アドレスが不正です"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:278
+msgid "Wrong username or password"
+msgstr "ユーザー名またはパスワードが違います"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:281
+msgid "Something went wrong"
+msgstr "問題が発生しました"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:321
+msgid "No response from server"
+msgstr "サーバーから応答がありません"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
+#, c-format
+msgid "Register on %s"
+msgstr "%s に登録"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:330
+msgid "The server requires to sign up through a website"
+msgstr "サーバーが Web サイトでのサインアップを要求しています"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:332
+msgid "Open website"
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:344
+msgid "Register"
+msgstr "登録"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:346
+#, c-format
+msgid "Check %s for information on how to sign up"
+msgstr "サインアップの方法に関する情報は、%s をご確認ください"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:162
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:187
+#: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
+msgid "Me"
+msgstr "自分"
+
+#: main/src/ui/application.vala:192
+#: main/src/ui/add_conversation/add_conference_dialog.vala:66
+#: main/src/ui/add_conversation/add_conference_dialog.vala:142
+#: main/src/ui/add_conversation/conference_details_fragment.vala:157
 msgid "Join"
 msgstr "参加"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:28
+#: main/src/ui/util/helper.vala:127
+#, c-format
+msgid "%s from %s"
+msgstr "%2$s の %1$s"
+
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:27
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "追加"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:42
-#: main/data/manage_accounts/add_account_dialog.ui:119
-msgid "Save"
-msgstr "保存"
-
-#: main/src/ui/add_conversation/add_conference_dialog.vala:27
-#: main/src/ui/unified_window.vala:243 main/data/menu_add.ui:13
-msgid "Join Channel"
-msgstr ""
-
-#: main/src/ui/add_conversation/add_conference_dialog.vala:48
-#: main/data/manage_accounts/add_account_dialog.ui:228
-#: main/data/manage_accounts/add_account_dialog.ui:308
+#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:118
+#: main/data/manage_accounts/add_account_dialog.ui:99
+#: main/data/manage_accounts/add_account_dialog.ui:410
+#: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
-msgstr "次"
+msgstr "次へ"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:85
-#: main/src/ui/unified_window.vala:242 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20
-msgid "Start Conversation"
-msgstr ""
+#: main/src/ui/add_conversation/add_conference_dialog.vala:147
+#: main/data/manage_accounts/add_account_dialog.ui:175
+#: main/data/manage_accounts/add_account_dialog.ui:267
+msgid "Back"
+msgstr "戻る"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:86
+#: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
 msgstr "開始"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:108
-msgid "Joining…"
-msgstr "参加します…"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:138
-msgid "Password required to enter room"
-msgstr "談話室に入るにはパスワードが必要です"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:143
-msgid "Banned from joining or creating conference"
-msgstr "参加中または作成の談話室から締め出されました"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:145
-msgid "Room does not exist"
-msgstr "談話室は存在しません"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:147
-msgid "Not allowed to create room"
-msgstr "談話室を作成する権限がありません"
-
 #: main/src/ui/add_conversation/conference_details_fragment.vala:149
-msgid "Members-only room"
-msgstr "メンバー制談話室"
+msgid "Joining…"
+msgstr "参加試行中…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:152
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
+msgid "Password required to enter room"
+msgstr "トークルームに参加するにはパスワードが必要です"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:174
+msgid "Banned from joining or creating conference"
+msgstr "参加中または作成中のトークルームから退会させられました"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:176
+msgid "Room does not exist"
+msgstr "トークルームは存在しません"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
+msgid "Not allowed to create room"
+msgstr "トークルームを作成する権限がありません"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:180
+msgid "Members-only room"
+msgstr "メンバー制トークルーム"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:183
 msgid "Choose a different nick"
 msgstr "別のニックネームを選んでください"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:154
+#: main/src/ui/add_conversation/conference_details_fragment.vala:185
 msgid "Too many occupants in room"
-msgstr "談話室は参加者が多すぎます"
+msgstr "トークルームの参加者が多すぎます"
 
-#: main/src/ui/unified_window.vala:233
-msgid "No active accounts"
-msgstr ""
-
-#: main/src/ui/unified_window.vala:234
-msgid "Manage accounts"
-msgstr "アカウントを管理"
-
-#: main/src/ui/unified_window.vala:241
-msgid "No active conversations"
-msgstr ""
-
-#: main/src/ui/conversation_summary/date_separator_populator.vala:85
-msgid "Today"
-msgstr "今日"
-
-#: main/src/ui/conversation_summary/date_separator_populator.vala:98
-msgid "%a, %b %d"
-msgstr ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:146
-#, c-format
-msgid "%s, %s and %i others"
-msgstr ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:148
-#, c-format
-msgid "%s, %s and %s"
-msgstr ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:150
-#, c-format
-msgid "%s and %s"
-msgstr ""
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:155
-msgid "is typing…"
-msgid_plural "are typing…"
-msgstr[0] "は入力中…"
-
-#: main/src/ui/conversation_summary/chat_state_populator.vala:157
-msgid "has stopped typing"
-msgstr "は入力を中断しました"
-
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:58
-msgid "Message too long"
-msgstr "メッセージが長すぎます"
-
-#: main/src/ui/conversation_summary/content_item_widget_factory.vala:196
-msgid "File"
-msgstr "ファイル"
-
-#: main/src/ui/conversation_summary/subscription_notification.vala:48
-msgid "This contact would like to add you to their contact list"
-msgstr "この相手先はあなたを名簿に入れたいと希望しています"
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:184
-#, no-c-format
-msgid "%x, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:185
-#, no-c-format
-msgid "%x, %l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:188
-#, no-c-format
-msgid "%b %d, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:189
-#, no-c-format
-msgid "%b %d, %l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:192
-#, no-c-format
-msgid "%a, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_summary/conversation_item_skeleton.vala:193
-#, no-c-format
-msgid "%a, %l∶%M %p"
-msgstr ""
-
-#: main/src/ui/occupant_menu/list.vala:106
+#: main/src/ui/occupant_menu/list.vala:102
 msgid "Owner"
-msgstr "主宰者"
+msgstr "オーナー"
 
-#: main/src/ui/occupant_menu/list.vala:108
+#: main/src/ui/occupant_menu/list.vala:104
 msgid "Admin"
 msgstr "管理人"
 
-#: main/src/ui/occupant_menu/list.vala:110
+#: main/src/ui/occupant_menu/list.vala:106
 msgid "Member"
 msgstr "メンバー"
 
-#: main/src/ui/occupant_menu/list.vala:112
+#: main/src/ui/occupant_menu/list.vala:108
 msgid "User"
 msgstr "ユーザー"
 
-#: main/src/ui/occupant_menu/view.vala:27
-#: main/src/ui/occupant_menu/view.vala:36
+#: main/src/ui/occupant_menu/view.vala:29
+#: main/src/ui/occupant_menu/view.vala:38
 msgid "Invite"
 msgstr "招待"
 
-#: main/src/ui/occupant_menu/view.vala:35
+#: main/src/ui/occupant_menu/view.vala:37
 msgid "Invite to Conference"
-msgstr "談話室へ招待"
+msgstr "トークルームへ招待"
 
-#: main/src/ui/occupant_menu/view.vala:85
+#: main/src/ui/occupant_menu/view.vala:88
 msgid "Start private conversation"
-msgstr "私信を始める"
+msgstr "個人チャットを始める"
 
-#: main/src/ui/occupant_menu/view.vala:93
+#: main/src/ui/occupant_menu/view.vala:96
 msgid "Kick"
-msgstr "蹴り出す"
+msgstr "退出させる"
 
-#: main/src/ui/global_search.vala:134
+#: main/src/ui/global_search.vala:140
 #, c-format
-msgid "%i search results"
-msgstr ""
+msgid "%i search result"
+msgid_plural "%i search results"
+msgstr[0] ""
 
-#: main/src/ui/global_search.vala:161
+#: main/src/ui/global_search.vala:167
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "%s での検索結果"
 
-#: main/src/ui/global_search.vala:161
-#, c-format
+#: main/src/ui/global_search.vala:167
+#, fuzzy, c-format
 msgid "With %s"
-msgstr ""
+msgstr "%s と"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr "談話室の詳細"
+msgstr "トークルームの詳細"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 #: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
-msgstr "相手先の詳細"
+msgstr "連絡先の詳細"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:39
+#: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
-msgstr "談話室の名称"
+msgstr "トークルームの名前"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:42
+#: main/src/ui/contact_details/muc_config_form_provider.vala:53
 msgid "Description of the room"
-msgstr "談話室の説明"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:45
-msgid "Persistent"
-msgstr "常設"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:46
-msgid "The room will persist after the last occupant leaves"
-msgstr "この談話室は最後の参加者が提出しても残ります"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:49
-msgid "Publicly searchable"
-msgstr "検索可"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:52
-msgid "Occupants may change the subject"
-msgstr "参加者は題を変更できます"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:55
-msgid "Discover real JIDs"
-msgstr "真の JID を探索"
+msgstr "トークルームの説明"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
-msgid "Who may discover real JIDs?"
+msgid "Persistent"
+msgstr "トークルームを自動削除しない"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:57
+msgid "The room will persist after the last occupant leaves"
+msgstr "最後の参加者が退会してもトークルームを残します"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:60
+msgid "Publicly searchable"
+msgstr "外部から検索可能にする"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:63
+msgid "Occupants may change the subject"
+msgstr "参加者にタイトルの変更を許可する"
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:66
+msgid "Permission to view JIDs"
 msgstr ""
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:59
+#: main/src/ui/contact_details/muc_config_form_provider.vala:67
+msgid "Who is allowed to view the occupants' JIDs?"
+msgstr ""
+
+#: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:62
+#: main/data/manage_accounts/add_account_dialog.ui:211
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
 msgid "Password"
 msgstr "パスワード"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:60
-msgid "Password required for room entry, if any"
+#: main/src/ui/contact_details/muc_config_form_provider.vala:71
+msgid "A password to restrict access to the room"
 msgstr ""
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:63
+#: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
-msgstr ""
+msgstr "発言制限"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:64
+#: main/src/ui/contact_details/muc_config_form_provider.vala:75
 msgid "Only occupants with voice may send messages"
 msgstr "発言権のある参加者のみがメッセージを送れます"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:67
+#: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Members only"
 msgstr "メンバー制"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:68
+#: main/src/ui/contact_details/muc_config_form_provider.vala:79
 msgid "Only members may enter the room"
 msgstr "メンバーのみが入室できます"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:71
+#: main/src/ui/contact_details/muc_config_form_provider.vala:82
 msgid "Message history"
 msgstr "メッセージの履歴"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:72
+#: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
-msgstr ""
+msgstr "保存するトーク履歴の数"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:78
+#: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
-msgstr "談話室の調整"
+msgstr "トークルームの設定"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
-#: main/src/ui/contact_details/settings_provider.vala:22
-#: main/src/ui/contact_details/settings_provider.vala:25
-#: main/src/ui/contact_details/settings_provider.vala:30
-#: main/data/menu_app.ui:11
+#: main/src/ui/contact_details/settings_provider.vala:12
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "設定"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr ""
+msgstr "ブロック"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
-msgstr ""
+msgstr "双方のコミュニケーションと状態の更新がブロックされます"
 
-#: main/src/ui/contact_details/settings_provider.vala:22
+#: main/src/ui/contact_details/settings_provider.vala:13
+msgid "Local Settings"
+msgstr "ローカル設定"
+
+#: main/src/ui/contact_details/settings_provider.vala:28
 #: main/data/settings_dialog.ui:22
 msgid "Send typing notifications"
-msgstr ""
+msgstr "入力中であることを通知"
 
-#: main/src/ui/contact_details/settings_provider.vala:25
+#: main/src/ui/contact_details/settings_provider.vala:33
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "既読状態を送信"
 
-#: main/src/ui/contact_details/settings_provider.vala:30
-#: main/src/ui/contact_details/settings_provider.vala:39
+#: main/src/ui/contact_details/settings_provider.vala:38
+#: main/src/ui/contact_details/settings_provider.vala:47
 msgid "Notifications"
 msgstr "通知"
 
-#: main/src/ui/contact_details/settings_provider.vala:39
-msgid "Local Settings"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:74
-#: main/src/ui/contact_details/settings_provider.vala:114
-#: main/src/ui/contact_details/settings_provider.vala:116
+#: main/src/ui/contact_details/settings_provider.vala:82
+#: main/src/ui/contact_details/settings_provider.vala:122
+#: main/src/ui/contact_details/settings_provider.vala:124
 msgid "On"
-msgstr ""
+msgstr "オン"
 
-#: main/src/ui/contact_details/settings_provider.vala:76
-#: main/src/ui/contact_details/settings_provider.vala:114
-#: main/src/ui/contact_details/settings_provider.vala:117
+#: main/src/ui/contact_details/settings_provider.vala:84
+#: main/src/ui/contact_details/settings_provider.vala:122
+#: main/src/ui/contact_details/settings_provider.vala:125
 msgid "Off"
-msgstr ""
+msgstr "オフ"
 
-#: main/src/ui/contact_details/settings_provider.vala:78
+#: main/src/ui/contact_details/settings_provider.vala:86
 msgid "Only when mentioned"
-msgstr ""
+msgstr "メンションされた場合のみ"
 
-#: main/src/ui/contact_details/settings_provider.vala:80
-#: main/src/ui/contact_details/settings_provider.vala:115
+#: main/src/ui/contact_details/settings_provider.vala:88
+#: main/src/ui/contact_details/settings_provider.vala:123
 #, c-format
 msgid "Default: %s"
 msgstr "デフォルト: %s"
 
-#: main/data/settings_dialog.ui:7
-msgid "Preferences"
+#: main/src/ui/conversation_titlebar/search_entry.vala:11
+msgid "Search messages"
+msgstr "メッセージを検索"
+
+#: main/src/ui/conversation_titlebar/occupants_entry.vala:37
+msgid "Members"
+msgstr "メンバー"
+
+#: main/data/message_item_widget_edit_mode.ui:60
+msgid "Update message"
 msgstr ""
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
-msgstr "新しいメッセージが届いたとき通知"
+msgstr "新しいメッセージが届いたときに通知"
 
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
@@ -552,54 +643,69 @@ msgid "Accounts"
 msgstr "アカウント"
 
 #: main/data/manage_accounts/dialog.ui:200
-#: main/data/manage_accounts/add_account_dialog.ui:83
 msgid "Local alias"
-msgstr ""
+msgstr "ローカルでの別名"
 
 #: main/data/manage_accounts/dialog.ui:255
 msgid "No accounts configured"
-msgstr ""
+msgstr "アカウントが設定されていません"
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
 msgstr "アカウントを追加"
 
-#: main/data/manage_accounts/add_account_dialog.ui:30
+#: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "サインイン"
 
-#: main/data/manage_accounts/add_account_dialog.ui:109
-#: main/data/manage_accounts/add_account_dialog.ui:146
+#: main/data/manage_accounts/add_account_dialog.ui:78
+#: main/data/manage_accounts/add_account_dialog.ui:328
 msgid "Create account"
-msgstr ""
+msgstr "アカウントを作成"
 
-#: main/data/manage_accounts/add_account_dialog.ui:158
-msgid "Choose a public server"
-msgstr ""
-
-#: main/data/manage_accounts/add_account_dialog.ui:187
-msgid "Or specify a server address"
-msgstr ""
-
-#: main/data/manage_accounts/add_account_dialog.ui:207
-msgid "Sign in instead"
-msgstr ""
+#: main/data/manage_accounts/add_account_dialog.ui:153
+msgid "Could not establish a secure connection"
+msgstr "安全な接続を確立できませんでした"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
-msgid "Pick another server"
-msgstr ""
+msgid "Connect"
+msgstr "接続"
 
-#: main/data/menu_encryption.ui:14
-msgid "Unencrypted"
-msgstr "非暗号化"
+#: main/data/manage_accounts/add_account_dialog.ui:340
+msgid "Choose a public server"
+msgstr "公開サーバーを選択"
+
+#: main/data/manage_accounts/add_account_dialog.ui:369
+msgid "Or specify a server address"
+msgstr "または、サーバーのアドレスを手入力"
+
+#: main/data/manage_accounts/add_account_dialog.ui:389
+msgid "Sign in instead"
+msgstr "代わりにサインイン"
+
+#: main/data/manage_accounts/add_account_dialog.ui:470
+msgid "Pick another server"
+msgstr "別のサーバーを選択"
+
+#: main/data/manage_accounts/add_account_dialog.ui:542
+msgid "All set up!"
+msgstr "すべてのセットアップが完了しました！"
+
+#: main/data/manage_accounts/add_account_dialog.ui:578
+msgid "Finish"
+msgstr "完了"
 
 #: main/data/menu_app.ui:17
-msgid "Quit"
-msgstr ""
+msgid "Keyboard Shortcuts"
+msgstr "キーボードショートカット"
+
+#: main/data/menu_app.ui:21
+msgid "About Dino"
+msgstr "Dino について"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
-msgstr ""
+msgstr "現代的な XMPP チャット クライアント"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -607,6 +713,9 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino はオープンソースの現代的なデスクトップ向けチャットクライアントです。プラ"
+"イバシーを考慮しつつ、シンプルで信頼できる Jabber/XMPP エクスペリエンスの提供"
+"を第一に考えて開発されています。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -614,16 +723,19 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"OMEMO と OpenPGP を利用したエンドツーエンド暗号化に対応しており、既読状態の送"
+"信や入力通知などのプライバシー関連の設定も可能です。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"Dino はサーバーから履歴を取得し、ほかのデバイスとメッセージを同期します。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:16
 msgid "Main window with conversations"
-msgstr ""
+msgstr "トーク中のメインウィンドウ"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
@@ -643,23 +755,103 @@ msgstr "別名"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr "相手先を追加"
+msgstr "連絡先を追加"
+
+#: main/data/shortcuts.ui:12
+msgid "General"
+msgstr "一般"
+
+#: main/data/shortcuts.ui:32
+msgid "Navigation"
+msgstr "ナビゲーション"
+
+#: main/data/shortcuts.ui:37
+msgid "Jump to next conversation"
+msgstr "次のトークへ移動"
+
+#: main/data/shortcuts.ui:44
+msgid "Jump to previous conversation"
+msgstr "前のトークへ移動"
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "まだ検索していません"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "入力して検索を開始してください"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "一致するメッセージはありません"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
+msgstr "スペルを確認するか、フィルターを消去してみてください"
+
+#: main/data/unified_main_content.ui:48
+msgid "Click here to start a conversation or join a channel."
 msgstr ""
+"トークを始めたりトークルームに参加したりするには、ここをクリックしてくださ"
+"い。"
+
+#: main/data/unified_main_content.ui:100
+msgid "You have no open chats"
+msgstr "表示するトークはまだありません"
+
+#, c-format
+#~ msgid "%s, %s and %i others"
+#~ msgstr "%s さん、%s さんとその他 %i 人"
+
+#, c-format
+#~ msgid "You can now start using %s"
+#~ msgstr "%s をお使いいただけます"
+
+#~ msgid "Open Registration"
+#~ msgstr "登録を開く"
+
+#~ msgid "Save"
+#~ msgstr "保存"
+
+#, c-format
+#~ msgid "%s, %s and %s"
+#~ msgstr "%s さん、%s さんと %s さん"
+
+#, c-format
+#~ msgid "%s and %s"
+#~ msgstr "%s さんと %s さん"
+
+#~ msgid "is typing…"
+#~ msgid_plural "are typing…"
+#~ msgstr[0] "が入力しています…"
+
+#~ msgid "has stopped typing"
+#~ msgstr "が入力を中断しました"
+
+#, c-format
+#~ msgid "%i search results"
+#~ msgstr "%i 件の検索結果"
+
+#~ msgid "Discover real JIDs"
+#~ msgstr "JID の検索"
+
+#~ msgid "Who may discover real JIDs?"
+#~ msgstr "JID の検索を許可する対象"
+
+#~ msgid "Password required for room entry, if any"
+#~ msgstr "トークルームへの参加に必要なパスワード"
+
+#~ msgid "Failed connecting to %s"
+#~ msgstr "%s への接続に失敗しました"
+
+#~ msgid "Join Conference"
+#~ msgstr "トークルームに参加"
+
+#~ msgid "File"
+#~ msgstr "ファイル"
+
+#~ msgid "JID should be of the form “user@example.com”"
+#~ msgstr "JID は “user@example.com” の形式にしてください"
 
 #~ msgid "Copy Link Address"
 #~ msgstr "リンクアドレスをコピー"

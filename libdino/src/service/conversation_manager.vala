@@ -14,7 +14,7 @@ public class ConversationManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
 
-    private HashMap<Account, HashMap<Jid, Conversation>> conversations = new HashMap<Account, HashMap<Jid, Conversation>>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, HashMap<Jid, Gee.List<Conversation>>> conversations = new HashMap<Account, HashMap<Jid, Gee.List<Conversation>>>(Account.hash_func, Account.equals_func);
 
     public static void start(StreamInteractor stream_interactor, Database db) {
         ConversationManager m = new ConversationManager(stream_interactor, db);
@@ -26,22 +26,29 @@ public class ConversationManager : StreamInteractionModule, Object {
         this.stream_interactor = stream_interactor;
         stream_interactor.add_module(this);
         stream_interactor.account_added.connect(on_account_added);
+        stream_interactor.account_removed.connect(on_account_removed);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new MessageListener(stream_interactor));
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_new_message);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_sent_message);
     }
 
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
         assert(conversations.has_key(account));
         Jid store_jid = type == Conversation.Type.GROUPCHAT ? jid.bare_jid : jid;
+
+        // Do we already have a conversation for this jid?
         if (conversations[account].has_key(store_jid)) {
-            conversations[account][store_jid].type_ = type;
-            return conversations[account][store_jid];
-        } else {
-            Conversation conversation = new Conversation(jid, account, type);
-            add_conversation(conversation);
-            conversation.persist(db);
-            return conversation;
+            foreach (var conversation in conversations[account][store_jid]) {
+                if (conversation.type_ == type) {
+                    return conversation;
+                }
+            }
         }
+
+        // Create a new converation
+        Conversation conversation = new Conversation(jid, account, type);
+        add_conversation(conversation);
+        conversation.persist(db);
+        return conversation;
     }
 
     public Conversation? get_conversation_for_message(Entities.Message message) {
@@ -68,17 +75,27 @@ public class ConversationManager : StreamInteractionModule, Object {
         return ret;
     }
 
-    public Conversation? get_conversation(Jid jid, Account account) {
+    public Conversation? get_conversation(Jid jid, Account account, Conversation.Type? type = null) {
         if (conversations.has_key(account)) {
-            return conversations[account][jid];
+            if (conversations[account].has_key(jid)) {
+                foreach (var conversation in conversations[account][jid]) {
+                    if (type == null || conversation.type_ == type) {
+                        return conversation;
+                    }
+                }
+            }
         }
         return null;
     }
 
     public Conversation? get_conversation_by_id(int id) {
-        foreach (HashMap<Jid, Conversation> hm in conversations.values) {
-            foreach (Conversation conversation in hm.values) {
-                if (conversation.id == id) return conversation;
+        foreach (HashMap<Jid, Gee.List<Conversation>> hm in conversations.values) {
+            foreach (Gee.List<Conversation> hm2 in hm.values) {
+                foreach (Conversation conversation in hm2) {
+                    if (conversation.id == id) {
+                        return conversation;
+                    }
+                }
             }
         }
         return null;
@@ -88,15 +105,17 @@ public class ConversationManager : StreamInteractionModule, Object {
         Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
         foreach (Account account_ in conversations.keys) {
             if (account != null && !account_.equals(account)) continue;
-            foreach (Conversation conversation in conversations[account_].values) {
-                if(conversation.active) ret.add(conversation);
+            foreach (Gee.List<Conversation> list in conversations[account_].values) {
+                foreach (var conversation in list) {
+                    if(conversation.active) ret.add(conversation);
+                }
             }
         }
         return ret;
     }
 
-    public void start_conversation(Conversation conversation, bool push_front = false) {
-        if (push_front) {
+    public void start_conversation(Conversation conversation) {
+        if (conversation.last_active == null) {
             conversation.last_active = new DateTime.now_utc();
             if (conversation.active) conversation_activated(conversation);
         }
@@ -107,20 +126,31 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     public void close_conversation(Conversation conversation) {
+        if (!conversation.active) return;
+
         conversation.active = false;
         conversation_deactivated(conversation);
     }
 
     private void on_account_added(Account account) {
-        conversations[account] = new HashMap<Jid, Conversation>(Jid.hash_func, Jid.equals_func);
+        conversations[account] = new HashMap<Jid, ArrayList<Conversation>>(Jid.hash_func, Jid.equals_func);
         foreach (Conversation conversation in db.get_conversations(account)) {
             add_conversation(conversation);
         }
     }
 
+    private void on_account_removed(Account account) {
+        foreach (Gee.List<Conversation> list in conversations[account].values) {
+            foreach (var conversation in list) {
+                if(conversation.active) conversation_deactivated(conversation);
+            }
+        }
+        conversations.unset(account);
+    }
+
     private class MessageListener : Dino.MessageListener {
 
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "FILTER_EMPTY" };
         public override string action_group { get { return "MANAGER"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
@@ -133,9 +163,9 @@ public class ConversationManager : StreamInteractionModule, Object {
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
             conversation.last_active = message.time;
 
-            if (message.stanza != null) {
-                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null;
-                bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+            if (stanza != null) {
+                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
+                bool is_recent = message.local_time.compare(new DateTime.now_utc().add_days(-3)) > 0;
                 if (is_mam_message && !is_recent) return false;
             }
             stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
@@ -143,19 +173,22 @@ public class ConversationManager : StreamInteractionModule, Object {
         }
     }
 
-    private void handle_new_message(Entities.Message message, Conversation conversation) {
+    private void handle_sent_message(Entities.Message message, Conversation conversation) {
         conversation.last_active = message.time;
 
-        if (message.stanza != null) {
-            bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message.stanza) != null;
-            bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
-            if (is_mam_message && !is_recent) return;
+        bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+        if (is_recent) {
+            start_conversation(conversation);
         }
-        start_conversation(conversation);
     }
 
     private void add_conversation(Conversation conversation) {
-        conversations[conversation.account][conversation.counterpart] = conversation;
+        if (!conversations[conversation.account].has_key(conversation.counterpart)) {
+            conversations[conversation.account][conversation.counterpart] = new ArrayList<Conversation>(Conversation.equals_func);
+        }
+
+        conversations[conversation.account][conversation.counterpart].add(conversation);
+
         if (conversation.active) {
             conversation_activated(conversation);
         }

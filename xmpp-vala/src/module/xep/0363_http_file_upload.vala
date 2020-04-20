@@ -1,11 +1,15 @@
 using Xmpp;
-using Xmpp;
 using Xmpp.Xep;
+using Gee;
 
 namespace Xmpp.Xep.HttpFileUpload {
 
 private const string NS_URI = "urn:xmpp:http:upload";
 private const string NS_URI_0 = "urn:xmpp:http:upload:0";
+
+public errordomain HttpFileTransferError {
+    SLOT_REQUEST
+}
 
 public class Module : XmppStreamModule {
     public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0363_http_file_upload");
@@ -15,9 +19,16 @@ public class Module : XmppStreamModule {
 
     public delegate void OnSlotOk(XmppStream stream, string url_get, string url_put);
     public delegate void OnError(XmppStream stream, string error);
-    public void request_slot(XmppStream stream, string filename, int file_size, string? content_type, owned OnSlotOk listener, owned OnError error_listener) {
+    public struct SlotResult {
+        public string url_get { get; set; }
+        public string url_put { get; set; }
+        public HashMap<string, string> headers { get; set; }
+    }
+    public async SlotResult request_slot(XmppStream stream, string filename, int64 file_size, string? content_type) throws HttpFileTransferError {
         Flag? flag = stream.get_flag(Flag.IDENTITY);
-        if (flag == null) return;
+        if (flag == null) {
+            throw new HttpFileTransferError.SLOT_REQUEST("No flag");
+        }
 
         StanzaNode? request_node = null;
         switch (flag.ns_ver) {
@@ -35,10 +46,17 @@ public class Module : XmppStreamModule {
                 }
                 break;
         }
+
+        SourceFunc callback = request_slot.callback;
+        var slot_result = SlotResult();
+
         Iq.Stanza iq = new Iq.Stanza.get(request_node) { to=flag.file_store_jid };
+
+        HttpFileTransferError? e = null;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
             if (iq.is_error()) {
-                error_listener(stream, "Error getting upload/download url (Error Iq)");
+                e = new HttpFileTransferError.SLOT_REQUEST("Error getting upload/download url (Error Iq)");
+                Idle.add((owned) callback);
                 return;
             }
             string? url_get = null, url_put = null;
@@ -50,10 +68,36 @@ public class Module : XmppStreamModule {
                 url_put = iq.stanza.get_deep_string_content(flag.ns_ver + ":slot", flag.ns_ver + ":put");
             }
             if (url_get == null || url_put == null) {
-                error_listener(stream, "Error getting upload/download url");
+                e = new HttpFileTransferError.SLOT_REQUEST("Error getting upload/download url: %s".printf(iq.stanza.to_string()));
+                Idle.add((owned) callback);
+                return;
             }
-            listener(stream, url_get, url_put);
+
+            slot_result.headers = new HashMap<string, string>();
+
+            foreach (StanzaNode node in iq.stanza.get_deep_subnodes(flag.ns_ver + ":slot", flag.ns_ver + ":put", flag.ns_ver + ":header")) {
+                string header_name = node.get_attribute("name");
+                if (header_name == "Authorization" || header_name == "Cookie" || header_name == "Expires") {
+                    string? header_val = node.get_string_content();
+                    if (header_val != null && header_val.length < 8192) {
+                        header_val = header_val.replace("\n", "").replace("\r", "");
+                        slot_result.headers[header_name] = header_val;
+                    }
+                }
+            }
+
+            slot_result.url_get = url_get;
+            slot_result.url_put = url_put;
+
+            Idle.add((owned) callback);
         });
+        yield;
+
+        if (e != null) {
+            throw e;
+        }
+
+        return slot_result;
     }
 
     public override void attach(XmppStream stream) {
@@ -110,14 +154,16 @@ public class Module : XmppStreamModule {
 
     private long extract_max_file_size(Xep.ServiceDiscovery.InfoResult info_result) {
         string? max_file_size_str = null;
-        StanzaNode x_node = info_result.iq.stanza.get_deep_subnode("http://jabber.org/protocol/disco#info:query", "jabber:x:data:x");
-        Gee.List<StanzaNode> field_nodes = x_node.get_subnodes("field", "jabber:x:data");
-        foreach (StanzaNode node in field_nodes) {
-            string? var_attr = node.get_attribute("var");
-            if (var_attr == "max-file-size") {
-                StanzaNode value_node = node.get_subnode("value", "jabber:x:data");
-                max_file_size_str = value_node.get_string_content();
-                break;
+        Gee.List<StanzaNode> x_nodes = info_result.iq.stanza.get_deep_subnodes("http://jabber.org/protocol/disco#info:query", "jabber:x:data:x");
+        foreach(StanzaNode x_node in x_nodes) {
+            Gee.List<StanzaNode> field_nodes = x_node.get_subnodes("field", "jabber:x:data");
+            foreach (StanzaNode node in field_nodes) {
+                string? var_attr = node.get_attribute("var");
+                if (var_attr == "max-file-size") {
+                    StanzaNode value_node = node.get_subnode("value", "jabber:x:data");
+                    max_file_size_str = value_node.get_string_content();
+                    break;
+                }
             }
         }
         if (max_file_size_str != null) return long.parse(max_file_size_str);
@@ -137,7 +183,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
         if (oob_url != null && oob_url == message.body) {
             stream.get_module(Module.IDENTITY).received_url(stream, message);
         }
-        return true;
+        return false;
     }
 }
 

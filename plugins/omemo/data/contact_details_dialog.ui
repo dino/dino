@@ -2,7 +2,6 @@
 <interface>
     <template class="DinoPluginsOmemoContactDetailsDialog">
         <property name="modal">True</property>
-        <property name="title" translatable="yes">OMEMO Key Management</property>
         <property name="resizable">False</property>
         <child internal-child="vbox">
             <object class="GtkBox">
@@ -35,10 +34,9 @@
                                                         <property name="orientation">vertical</property>
                                                         <property name="hexpand">True</property>
                                                         <child>
-                                                            <object class="GtkLabel">
+                                                            <object class="GtkLabel" id="automatically_accept_new_label">
                                                                 <property name="visible">True</property>
                                                                 <property name="halign">start</property>
-                                                                <property name="label" translatable="yes">Automatically accept new keys</property>
                                                                 <attributes>
                                                                     <attribute name="scale" value="1.1"/>
                                                                 </attributes>
@@ -51,7 +49,6 @@
                                                                 <property name="expand">True</property>
                                                                 <property name="xalign">0</property>
                                                                 <property name="wrap">True</property>
-                                                                <property name="label" translatable="yes">When this contact adds new encryption keys to their account, automatically accept them.</property>
                                                                 <attributes>
                                                                     <attribute name="scale" value="0.8"/>
                                                                 </attributes>
@@ -83,10 +80,9 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
                         <child>
-                            <object class="GtkLabel">
+                            <object class="GtkLabel" id="own_key_label">
                                 <property name="visible">True</property>
                                 <property name="halign">start</property>
-                                <property name="label" translatable="yes">Own key</property>
                                 <attributes>
                                     <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                 </attributes>
@@ -174,10 +170,9 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
                         <child>
-                            <object class="GtkLabel">
+                            <object class="GtkLabel" id="new_keys_label">
                                 <property name="visible">True</property>
                                 <property name="halign">start</property>
-                                <property name="label" translatable="yes">New keys</property>
                                 <attributes>
                                     <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                 </attributes>
@@ -210,10 +205,9 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
                         <child>
-                            <object class="GtkLabel">
+                            <object class="GtkLabel" id="associated_keys_label">
                                 <property name="visible">True</property>
                                 <property name="halign">start</property>
-                                <property name="label" translatable="yes">Associated keys</property>
                                 <attributes>
                                     <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                 </attributes>
@@ -230,6 +224,39 @@
                                         <property name="propagate_natural_height">True</property>
                                         <child>
                                             <object class="GtkListBox" id="keys_listbox">
+                                                <property name="visible">True</property>
+                                                <property name="selection-mode">none</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkExpander" id="inactive_keys_expander">
+                        <property name="visible">False</property>
+                        <child type="label">
+                            <object class="GtkLabel" id="inactive_expander_label">
+                                <property name="visible">True</property>
+                                <attributes>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                </attributes>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkFrame">
+                                <property name="visible">True</property>
+                                <property name="margin-top">2</property>
+                                <child>
+                                    <object class="GtkScrolledWindow">
+                                        <property name="hscrollbar_policy">never</property>
+                                        <property name="vscrollbar_policy">automatic</property>
+                                        <property name="visible">True</property>
+                                        <property name="propagate_natural_height">True</property>
+                                        <child>
+                                            <object class="GtkListBox" id="inactive_keys_listbox">
                                                 <property name="visible">True</property>
                                                 <property name="selection-mode">none</property>
                                             </object>

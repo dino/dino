@@ -25,7 +25,8 @@ public interface EncryptionListEntry : Object {
     public abstract Entities.Encryption encryption { get; }
     public abstract string name { get; }
 
-    public abstract bool can_encrypt(Conversation conversation);
+    public abstract void encryption_activated(Entities.Conversation conversation, Plugins.SetInputFieldStatus callback);
+    public abstract Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item);
 }
 
 public abstract class AccountSettingsEntry : Object {
@@ -70,6 +71,7 @@ public interface ConversationTitlebarEntry : Object {
 
 public interface ConversationTitlebarWidget : Object {
     public abstract void set_conversation(Conversation conversation);
+    public abstract void unset_conversation();
 }
 
 public abstract interface ConversationItemPopulator : Object {
@@ -91,18 +93,26 @@ public abstract interface NotificationPopulator : Object {
 public abstract class MetaConversationItem : Object {
     public virtual string populator_id { get; set; }
     public virtual Jid? jid { get; set; default=null; }
-    public virtual bool dim { get; set; default=false; }
-    public virtual DateTime? sort_time { get; set; default=null; }
-    public virtual double seccondary_sort_indicator { get; set; }
-    public virtual DateTime? display_time { get; set; default=null; }
-    public virtual Encryption? encryption { get; set; default=null; }
-    public virtual Entities.Message.Marked? mark { get; set; default=null; }
+    public virtual DateTime sort_time { get; set; default = new DateTime.now_utc(); }
+    public virtual long seccondary_sort_indicator { get; set; }
+    public virtual long tertiary_sort_indicator { get; set; }
+    public virtual DateTime? display_time { get; set; default = null; }
+    public virtual Encryption encryption { get; set; default = Encryption.NONE; }
+    public virtual Entities.Message.Marked mark { get; set; default = Entities.Message.Marked.NONE; }
 
-    public abstract bool can_merge { get; set; }
-    public abstract bool requires_avatar { get; set; }
-    public abstract bool requires_header { get; set; }
+    public bool can_merge { get; set; default=false; }
+    public bool requires_avatar { get; set; default=false; }
+    public bool requires_header { get; set; default=false; }
+    public bool in_edit_mode { get; set; default=false; }
 
     public abstract Object? get_widget(WidgetType type);
+    public abstract Gee.List<MessageAction>? get_item_actions(WidgetType type);
+}
+
+public delegate void MessageActionEvoked(Object button, Plugins.MetaConversationItem evoked_on, Object widget);
+public class MessageAction : Object {
+    public string icon_name;
+    public MessageActionEvoked callback;
 }
 
 public abstract class MetaConversationNotification : Object {
@@ -110,13 +120,41 @@ public abstract class MetaConversationNotification : Object {
 }
 
 public interface ConversationItemCollection : Object {
-    public signal void insert_item(MetaConversationItem item);
-    public signal void remove_item(MetaConversationItem item);
+    public signal void inserted_item(MetaConversationItem item);
+    public signal void removed_item(MetaConversationItem item);
+
+    public abstract void insert_item(MetaConversationItem item);
+    public abstract void remove_item(MetaConversationItem item);
 }
 
 public interface NotificationCollection : Object {
     public signal void add_meta_notification(MetaConversationNotification item);
     public signal void remove_meta_notification(MetaConversationNotification item);
+}
+
+public delegate void SetInputFieldStatus(InputFieldStatus field_status);
+public class InputFieldStatus : Object {
+    public enum MessageType {
+        NONE,
+        INFO,
+        WARNING,
+        ERROR
+    }
+    public enum InputState {
+        NORMAL,
+        DISABLED,
+        NO_SEND
+    }
+
+    public string? message;
+    public MessageType message_type;
+    public InputState input_state;
+
+    public InputFieldStatus(string? message, MessageType message_type, InputState input_state) {
+        this.message = message;
+        this.message_type = message_type;
+        this.input_state = input_state;
+    }
 }
 
 }

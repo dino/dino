@@ -32,8 +32,11 @@ GENERATE_HEADER
 set(C_HEADERS_SRC "")
 set(C_HEADERS_TARGET "")
 
-if((SHARED_SIGNAL_PROTOCOL) OR ($ENV{SHARED_SIGNAL_PROTOCOL}))
-    find_package(SignalProtocol REQUIRED)
+if(NOT BUILD_LIBSIGNAL_IN_TREE)
+    # libsignal-protocol-c has a history of breaking compatibility on the patch level
+    # we'll have to check compatibility for every new release
+    # distro maintainers may update this dependency after compatibility tests
+    find_package(SignalProtocol 2.3.2 REQUIRED)
 else()
     add_subdirectory(libsignal-protocol-c EXCLUDE_FROM_ALL)
     set_property(TARGET curve25519 PROPERTY POSITION_INDEPENDENT_CODE ON)

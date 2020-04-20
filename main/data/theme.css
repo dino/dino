@@ -3,6 +3,14 @@
  * It provides sane defaults for things that are very Dino-specific.
  */
 
+window.dino-main .dino-header-right {
+    background: @theme_base_color;
+}
+
+window.dino-main .dino-header-left {
+    background: @insensitive_bg_color;
+}
+
 window.dino-main headerbar.dino-left label.title {
     opacity: 0;
     font-size: 0;
@@ -13,7 +21,8 @@ window.dino-main .dino-conversation {
     background: @theme_base_color;
 }
 
-window.dino-main .dino-conversation undershoot {
+window.dino-main .dino-conversation undershoot,
+window.dino-main .dino-conversation viewport /* Some themes set this */ {
     background: none;
 }
 
@@ -29,10 +38,36 @@ window.dino-main .dino-conversation .highlight-once {
     animation-name: highlight;
 }
 
+window.dino-main .dino-conversation .message-box:hover {
+    background: alpha(@theme_fg_color, 0.04);
+}
+
 window.dino-main .dino-sidebar > frame {
     background: @insensitive_bg_color;
     border-left: 1px solid @borders;
     border-bottom: 1px solid @borders;
+}
+
+.message-box {
+    transition: background .05s ease;
+}
+
+window.dino-main .dino-conversation .message-box.edit-mode {
+    background: alpha(@theme_selected_bg_color, 0.1);
+}
+
+window.dino-main .dino-conversation .message-box.edit-mode:hover {
+    background: alpha(@theme_selected_bg_color, 0.12);
+}
+
+window.dino-main .dino-conversation .file-box-outer {
+    background: @theme_base_color;
+    border-radius: 3px;
+    border: 1px solid alpha(@theme_fg_color, 0.1);
+}
+
+window.dino-main .dino-conversation .file-box {
+    margin: 12px 16px 12px 12px;
 }
 
 window.dino-main .dino-sidebar > frame.collapsed {
@@ -49,6 +84,10 @@ window.dino-main .dino-sidebar frame.auto-complete list > row {
 
 window.dino-main .dino-chatinput frame box {
     background: transparent;
+}
+
+window.dino-main button.dino-attach-button {
+    min-width: 24px; /* Make button the same with as avatars */
 }
 
 window.dino-main button.dino-chatinput-button {
@@ -76,4 +115,56 @@ window.dino-main button.dino-chatinput-button:checked {
 
 window.dino-main button.dino-chatinput-button:checked:backdrop {
     color: alpha(@theme_unfocused_selected_bg_color, 0.8);
+}
+
+
+.dino-chatinput,
+.dino-chatinput textview,
+.dino-chatinput textview text {
+    background-color: @theme_base_color;
+}
+
+
+/*Chat input warning*/
+
+box.dino-input-warning frame border {
+    border-color: @warning_color;
+}
+
+box.dino-input-warning frame separator {
+    background-color: @warning_color;
+    border: none;
+}
+
+box.dino-input-warning label {
+    color: mix(@warning_color, @theme_fg_color, 0.5);
+}
+
+
+/*Chat input error*/
+
+box.dino-input-error frame border {
+    border-color: @error_color;
+}
+
+box.dino-input-error frame separator {
+    background-color: @error_color;
+    border: none;
+}
+
+box.dino-input-error label {
+    color: @error_color;
+}
+
+@keyframes input-error-highlight {
+    0% { color: mix(@error_color, @theme_fg_color, 0.3);}
+    30% { color: @error_color; text-shadow: 0px 0px 2px alpha(@error_color, 0.4); }
+    100% { color: mix(@error_color, @theme_fg_color, 0.3); }
+}
+
+box.dino-input-error label.input-status-highlight-once {
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-name: input-error-highlight;
 }

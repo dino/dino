@@ -18,7 +18,7 @@ public class StanzaWriter {
         yield write_data(s.data);
     }
 
-    private async void write_data(uint8[] data) throws XmlError {
+    private async void write_data(owned uint8[] data) throws XmlError {
         if (running) {
             queue.push_tail(new SourceFuncWrapper(write_data.callback));
             yield;
@@ -26,14 +26,15 @@ public class StanzaWriter {
         running = true;
         try {
             yield output.write_all_async(data, 0, null, null);
-            SourceFuncWrapper? sfw = queue.pop_head();
-            if (sfw != null) {
-                sfw.sfun();
-            }
         } catch (GLib.Error e) {
             throw new XmlError.IO(@"IOError in GLib: $(e.message)");
         } finally {
-            running = false;
+            SourceFuncWrapper? sfw = queue.pop_head();
+            if (sfw != null) {
+                sfw.sfun();
+            } else {
+                running = false;
+            }
         }
     }
 }

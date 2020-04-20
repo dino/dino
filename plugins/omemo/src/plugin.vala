@@ -1,3 +1,5 @@
+using Dino.Entities;
+
 extern const string GETTEXT_PACKAGE;
 extern const string LOCALE_INSTALL_DIR;
 
@@ -45,13 +47,17 @@ public class Plugin : RootInterface, Object {
         this.app.plugin_registry.register_account_settings_entry(settings_entry);
         this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
         this.app.plugin_registry.register_notification_populator(device_notification_populator);
+        this.app.plugin_registry.register_conversation_addition_populator(new BadMessagesPopulator(this.app.stream_interactor, this));
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
             list.add(new StreamModule());
+            list.add(new JetOmemo.Module(this));
             this.own_notifications = new OwnNotifications(this, this.app.stream_interactor, account);
         });
 
-        app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(new FileProvider(app.stream_interactor, app.db));
-        this.app.stream_interactor.get_module(FileManager.IDENTITY).add_sender(new AesGcmFileSender(app.stream_interactor));
+        app.stream_interactor.get_module(FileManager.IDENTITY).add_file_decryptor(new OmemoFileDecryptor());
+        app.stream_interactor.get_module(FileManager.IDENTITY).add_file_encryptor(new OmemoFileEncryptor());
+        JingleFileHelperRegistry.instance.add_encryption_helper(Encryption.OMEMO, new JetOmemo.EncryptionHelper(app.stream_interactor));
+
         Manager.start(this.app.stream_interactor, db, trust_manager);
 
         SimpleAction own_keys_action = new SimpleAction("own-keys", VariantType.INT32);
@@ -77,6 +83,13 @@ public class Plugin : RootInterface, Object {
 
     public void shutdown() {
         // Nothing to do
+    }
+
+    public bool has_new_devices(Account account, Xmpp.Jid jid) {
+        int identity_id = db.identity.get_id(account.id);
+        if (identity_id < 0) return false;
+
+        return db.identity_meta.get_new_devices(identity_id, jid.bare_jid.to_string()).count() > 0;
     }
 }
 

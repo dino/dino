@@ -13,8 +13,12 @@
         </section>
         <section>
             <item>
-                <attribute name="action">app.quit</attribute>
-                <attribute name="label" translatable="yes">Quit</attribute>
+                <attribute name="action">app.open_shortcuts</attribute>
+                <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
+            </item>
+            <item>
+                <attribute name="action">app.about</attribute>
+                <attribute name="label" translatable="yes">About Dino</attribute>
             </item>
         </section>
     </menu>

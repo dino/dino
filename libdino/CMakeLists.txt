@@ -34,7 +34,10 @@ SOURCES
     src/service/counterpart_interaction_manager.vala
     src/service/database.vala
     src/service/entity_capabilities_storage.vala
+    src/service/entity_info.vala
     src/service/file_manager.vala
+    src/service/jingle_file_transfers.vala
+    src/service/message_correction.vala
     src/service/message_processor.vala
     src/service/message_storage.vala
     src/service/module_manager.vala
@@ -78,7 +81,7 @@ DEPENDS
     ${CMAKE_BINARY_DIR}/exports/dino_i18n.h
 )
 
-add_definitions(${VALA_CFLAGS} -DDINO_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}")
+add_definitions(${VALA_CFLAGS} -DDINO_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}" -DG_LOG_DOMAIN="libdino")
 add_library(libdino SHARED ${LIBDINO_VALA_C} ${CMAKE_BINARY_DIR}/exports/dino_i18n.h)
 add_dependencies(libdino dino-vapi)
 target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} m)

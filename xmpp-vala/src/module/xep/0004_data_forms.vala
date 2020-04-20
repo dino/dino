@@ -8,19 +8,7 @@ public class DataForm {
 
     public StanzaNode stanza_node { get; set; }
     public Gee.List<Field> fields = new ArrayList<Field>();
-
-    public XmppStream stream;
-    public OnResult on_result;
-
-    public void cancel() {
-        StanzaNode stanza_node = new StanzaNode.build("x", NS_URI);
-        stanza_node.add_self_xmlns().set_attribute("type", "cancel");
-        on_result(stream, stanza_node);
-    }
-
-    public void submit() {
-        on_result(stream, get_submit_node());
-    }
+    public string? form_type = null;
 
     public StanzaNode get_submit_node() {
         stanza_node.set_attribute("type", "submit");
@@ -82,7 +70,7 @@ public class DataForm {
             return values.size > 0 ? values[0] : "";
         }
 
-        internal void set_value_string(string val) {
+        public void set_value_string(string val) {
             StanzaNode? value_node = node.get_subnode("value", NS_URI);
             if (value_node == null) {
                 value_node = new StanzaNode.build("value", NS_URI);
@@ -133,12 +121,12 @@ public class DataForm {
     public class HiddenField : Field {
         public HiddenField() {
             base();
-            type_ = Type.HIDDEN;;
+            type_ = Type.HIDDEN;
             node.put_attribute("type", "hidden");
         }
         public HiddenField.from_node(StanzaNode node) {
             base.from_node(node);
-            type_ = Type.HIDDEN;;
+            type_ = Type.HIDDEN;
         }
     }
 
@@ -159,7 +147,7 @@ public class DataForm {
         }
         public ListSingleField(StanzaNode node) {
             base.from_node(node);
-            type_ = Type.LIST_SINGLE;;
+            type_ = Type.LIST_SINGLE;
         }
     }
 
@@ -196,10 +184,8 @@ public class DataForm {
 
     // TODO text-multi
 
-    internal DataForm.from_node(StanzaNode node, XmppStream stream, owned OnResult? listener = null) {
+    internal DataForm.from_node(StanzaNode node) {
         this.stanza_node = node;
-        this.stream = stream;
-        this.on_result = (owned)listener;
 
         Gee.List<StanzaNode> field_nodes = node.get_subnodes("field", NS_URI);
         foreach (StanzaNode field_node in field_nodes) {
@@ -210,7 +196,12 @@ public class DataForm {
                 case "fixed":
                     fields.add(new FixedField(field_node)); break;
                 case "hidden":
-                    fields.add(new HiddenField.from_node(field_node)); break;
+                    HiddenField field = new HiddenField.from_node(field_node);
+                    if (field.var == "FORM_TYPE") {
+                        this.form_type = field.get_value_string();
+                        break;
+                    }
+                    fields.add(field); break;
                 case "jid-multi":
                     fields.add(new JidMultiField(field_node)); break;
                 case "list-single":
@@ -229,9 +220,8 @@ public class DataForm {
         this.stanza_node = new StanzaNode.build("x", NS_URI).add_self_xmlns();
     }
 
-    public delegate void OnResult(XmppStream stream, StanzaNode node);
-    public static DataForm? create_from_node(XmppStream stream, StanzaNode node, owned OnResult listener) {
-        return new DataForm.from_node(node, stream, (owned)listener);
+    public static DataForm? create_from_node(StanzaNode node) {
+        return new DataForm.from_node(node);
     }
 
     public void add_field(Field field) {

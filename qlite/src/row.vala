@@ -108,7 +108,7 @@ public class RowIterator {
         int r = stmt.step();
         if (r == Sqlite.ROW) return true;
         if (r == Sqlite.DONE) return false;
-        print(@"SQLite error: $(db.errcode()) - $(db.errmsg())\n");
+        warning(@"SQLite error: $(db.errcode()) - $(db.errmsg())");
         return false;
     }
 

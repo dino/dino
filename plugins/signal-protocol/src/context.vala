@@ -14,7 +14,7 @@ public class Context {
         ctx.mutex.unlock();
     }
 
-    static void stderr_log(LogLevel level, string message, void* user_data) {
+    static void stderr_log(LogLevel level, string message, size_t len, void* user_data) {
         printerr(@"$level: $message\n");
     }
 
@@ -30,7 +30,7 @@ public class Context {
     }
 
     public void randomize(uint8[] data) throws Error {
-        throw_by_code(Signal.native_random(native_context, data));
+        throw_by_code(Signal.native_random(data));
     }
 
     public SignedPreKeyRecord generate_signed_pre_key(IdentityKeyPair identity_key_pair, int32 id, uint64 timestamp = 0) throws Error {
@@ -44,7 +44,9 @@ public class Context {
         Gee.Set<PreKeyRecord> res = new Gee.HashSet<PreKeyRecord>();
         for(uint i = start; i < start+count; i++) {
             ECKeyPair pair = generate_key_pair();
-            res.add(new PreKeyRecord(i, pair));
+            PreKeyRecord record;
+            throw_by_code(PreKeyRecord.create(out record, i, pair));
+            res.add(record);
         }
         return res;
     }
