@@ -18,9 +18,9 @@ public class PermissionsProvider : Plugins.ContactDetailsProvider, Object {
         
         Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
             if (stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account)==Xmpp.Xep.Muc.Role.VISITOR){
-                Button voice_request = new Button() {visible=true, label="Request"};
+                Button voice_request = new Button() {visible=true, label=_("Request")};
                 voice_request.clicked.connect(()=>stream_interactor.get_module(MucManager.IDENTITY).request_voice(conversation.account, conversation.counterpart));
-                contact_details.add("Permissions", _("Request permission to send messages"), "", voice_request);
+                contact_details.add(_("Permissions"), _("Request permission to send messages"), "", voice_request);
 
             }
     }
