@@ -46,6 +46,19 @@
                         </child>
                     </object>
                 </child>
+                <child>
+                    <object class="GtkShortcutsGroup">
+                        <property name="visible">True</property>
+                        <property name="title" translatable="yes">Text input</property>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">True</property>
+                                <property name="accelerator">&lt;ctrl&gt;semicolon &lt;ctrl&gt;period</property>
+                                <property name="title" translatable="yes">Open emoji picker</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
             </object>
         </child>
     </object>
