@@ -9,27 +9,39 @@ public const string NS_URI_ITEMS = NS_URI + "#items";
 public class Module : XmppStreamModule, Iq.Handler {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0030_service_discovery_module");
 
-    public ArrayList<Identity> identities = new ArrayList<Identity>();
+    public Identity own_identity;
 
     public Module.with_identity(string category, string type, string? name = null) {
-        add_identity(category, type, name);
+        own_identity = new Identity(category, type, name);
     }
 
     public void add_feature(XmppStream stream, string feature) {
         stream.get_flag(Flag.IDENTITY).add_own_feature(feature);
     }
 
+    public void remove_feature(XmppStream stream, string feature) {
+        stream.get_flag(Flag.IDENTITY).remove_own_feature(feature);
+    }
+
     public void add_feature_notify(XmppStream stream, string feature) {
         add_feature(stream, feature + "+notify");
     }
 
-    public void add_identity(string category, string type, string? name = null) {
-        identities.add(new Identity(category, type, name));
+    public void remove_feature_notify(XmppStream stream, string feature) {
+        remove_feature(stream, feature + "+notify");
     }
 
-    public delegate void HasEntryCategoryRes(XmppStream stream, Gee.List<Identity>? identities);
+    public void add_identity(XmppStream stream, Identity identity) {
+        stream.get_flag(Flag.IDENTITY).add_own_identity(identity);
+    }
+
+    public void remove_identity(XmppStream stream, Identity identity) {
+        stream.get_flag(Flag.IDENTITY).remove_own_identity(identity);
+    }
+
+    public delegate void HasEntryCategoryRes(XmppStream stream, Gee.Set<Identity>? identities);
     public void get_entity_categories(XmppStream stream, Jid jid, owned HasEntryCategoryRes listener) {
-        Gee.List<Identity>? res = stream.get_flag(Flag.IDENTITY).get_entity_categories(jid);
+        Gee.Set<Identity>? res = stream.get_flag(Flag.IDENTITY).get_entity_categories(jid);
         if (res != null) listener(stream, res);
         request_info(stream, jid, (stream, query_result) => {
             listener(stream, query_result != null ? query_result.identities : null);
@@ -68,12 +80,17 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
+        add_identity(stream, own_identity);
+
         stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI_INFO, this);
         add_feature(stream, NS_URI_INFO);
     }
 
     public override void detach(XmppStream stream) {
+        remove_identity(stream, own_identity);
+
         stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI_INFO, this);
+        remove_feature(stream, NS_URI_INFO);
     }
 
     public static void require(XmppStream stream) {
@@ -85,8 +102,8 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     private void send_query_result(XmppStream stream, Iq.Stanza iq_request) {
         InfoResult query_result = new ServiceDiscovery.InfoResult(iq_request);
-        query_result.features = stream.get_flag(Flag.IDENTITY).features;
-        query_result.identities = identities;
+        query_result.features = stream.get_flag(Flag.IDENTITY).own_features;
+        query_result.identities = stream.get_flag(Flag.IDENTITY).own_identities;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, query_result.iq);
     }
 }

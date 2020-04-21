@@ -17,6 +17,18 @@ public class Identity {
         this.type_ = type;
         this.name = name;
     }
+
+    public static uint hash_func(Identity a) {
+        uint hash = a.category.hash() ^ a.type_.hash();
+        if (a.name != null) {
+            hash ^= a.name.hash();
+        }
+        return hash;
+    }
+
+    public static bool equals_func(Identity a, Identity b) {
+        return a.category == b.category && a.type_ == b.type_ && a.name == b.name;
+    }
 }
 
 }

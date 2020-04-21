@@ -15,6 +15,7 @@ public class Module : XmppStreamModule, SecurityPrecondition {
     }
 
     public override void detach(XmppStream stream) {
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
     }
 
     public bool is_available(XmppStream stream, Jid full_jid) {

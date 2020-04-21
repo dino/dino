@@ -6,11 +6,24 @@ public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "service_discovery");
 
     private HashMap<Jid, Gee.List<string>?> entity_features = new HashMap<Jid, Gee.List<string>?>(Jid.hash_func, Jid.equals_func);
-    private HashMap<Jid, Gee.List<Identity>?> entity_identities = new HashMap<Jid, Gee.List<Identity>?>(Jid.hash_func, Jid.equals_func);
+    private HashMap<Jid, Gee.Set<Identity>?> entity_identities = new HashMap<Jid, Gee.Set<Identity>?>(Jid.hash_func, Jid.equals_func);
     private HashMap<Jid, Gee.List<Item>?> entity_items = new HashMap<Jid, Gee.List<Item>?>(Jid.hash_func, Jid.equals_func);
-    public Gee.List<string> features = new ArrayList<string>();
 
-    public Gee.List<Identity>? get_entity_categories(Jid jid) {
+    private Gee.Set<string> own_features_ = new HashSet<string>();
+    public Gee.List<string> own_features {
+        owned get {
+            var ret = new ArrayList<string>();
+            foreach (var feature in own_features_) ret.add(feature);
+            return ret;
+        }
+    }
+
+    private Gee.Set<Identity> own_identities_ = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
+    public Gee.Set<Identity> own_identities {
+        owned get { return own_identities_.read_only_view; }
+    }
+
+    public Gee.Set<Identity>? get_entity_categories(Jid jid) {
         return entity_identities.has_key(jid) ? entity_identities[jid] : null; // TODO isn’t this default for hashmap
     }
 
@@ -29,7 +42,7 @@ public class Flag : XmppStreamFlag {
         return entity_features[jid].contains(feature);
     }
 
-    public void set_entity_identities(Jid jid, Gee.List<Identity>? identities) {
+    public void set_entity_identities(Jid jid, Gee.Set<Identity>? identities) {
         entity_identities[jid] = identities;
     }
 
@@ -41,7 +54,20 @@ public class Flag : XmppStreamFlag {
         entity_items[jid] = features;
     }
 
-    public void add_own_feature(string feature) { features.add(feature); }
+    public void add_own_feature(string feature) {
+        if (own_features_.contains(feature)) {
+            warning("Tried to add the feature %s a second time".printf(feature));
+            return;
+        }
+        own_features_.add(feature);
+    }
+
+    public void remove_own_feature(string feature) {
+        own_features_.remove(feature);
+    }
+
+    public void add_own_identity(Identity identity) { own_identities_.add(identity); }
+    public void remove_own_identity(Identity identity) { own_identities_.remove(identity); }
 
     public override string get_ns() { return NS_URI; }
 

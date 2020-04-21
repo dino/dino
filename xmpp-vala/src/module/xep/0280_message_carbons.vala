@@ -26,6 +26,7 @@ public class Module : XmppStreamModule {
     public override void detach(XmppStream stream) {
         stream.stream_negotiated.disconnect(enable);
         stream.get_module(MessageModule.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
     }
 
     public override string get_ns() {

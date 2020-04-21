@@ -26,6 +26,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
         }
 
         public override void detach(XmppStream stream) {
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
             stream.get_module(MessageModule.IDENTITY).received_message.disconnect(received_message);
             stream.get_module(MessageModule.IDENTITY).send_pipeline.disconnect(send_pipeline_listener);
         }

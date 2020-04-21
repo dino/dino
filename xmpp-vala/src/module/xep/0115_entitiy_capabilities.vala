@@ -28,7 +28,7 @@ namespace Xmpp.Xep.EntityCapabilities {
 
         private string get_own_hash(XmppStream stream) {
             if (own_ver_hash == null) {
-                own_ver_hash = compute_hash(stream.get_module(ServiceDiscovery.Module.IDENTITY).identities, stream.get_flag(ServiceDiscovery.Flag.IDENTITY).features, new ArrayList<DataForms.DataForm>());
+                own_ver_hash = compute_hash(stream.get_flag(ServiceDiscovery.Flag.IDENTITY).own_identities, stream.get_flag(ServiceDiscovery.Flag.IDENTITY).own_features, new ArrayList<DataForms.DataForm>());
             }
             return own_ver_hash;
         }
@@ -42,6 +42,7 @@ namespace Xmpp.Xep.EntityCapabilities {
         public override void detach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
             stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
         }
 
         public override string get_ns() { return NS_URI; }
@@ -86,7 +87,10 @@ namespace Xmpp.Xep.EntityCapabilities {
             }
         }
 
-        private static string compute_hash(Gee.List<ServiceDiscovery.Identity> identities, Gee.List<string> features, Gee.List<DataForms.DataForm> data_forms) {
+        private static string compute_hash(Gee.Set<ServiceDiscovery.Identity> identities_set, Gee.List<string> features, Gee.List<DataForms.DataForm> data_forms) {
+            var identities = new ArrayList<ServiceDiscovery.Identity>();
+            foreach (var identity in identities_set) identities.add(identity);
+
             identities.sort(compare_identities);
             features.sort();
 
@@ -154,7 +158,7 @@ namespace Xmpp.Xep.EntityCapabilities {
     }
 
     public interface Storage : Object {
-        public abstract void store_identities(string entity, Gee.List<ServiceDiscovery.Identity> identities);
+        public abstract void store_identities(string entity, Gee.Set<ServiceDiscovery.Identity> identities);
         public abstract void store_features(string entity, Gee.List<string> capabilities);
         public abstract ServiceDiscovery.Identity? get_identities(string entity);
         public abstract Gee.List<string> get_features(string entity);

@@ -22,6 +22,7 @@ namespace Xmpp.Xep.Ping {
 
         public override void detach(XmppStream stream) {
             stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI, this);
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
         }
 
         public void on_iq_get(XmppStream stream, Iq.Stanza iq) {

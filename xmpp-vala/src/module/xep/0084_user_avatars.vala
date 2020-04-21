@@ -35,7 +35,9 @@ namespace Xmpp.Xep.UserAvatars {
             stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_event, null);
         }
 
-        public override void detach(XmppStream stream) { }
+        public override void detach(XmppStream stream) {
+            stream.get_module(Pubsub.Module.IDENTITY).remove_filtered_notification(stream, NS_URI_METADATA);
+        }
 
 
         public void on_pupsub_event(XmppStream stream, Jid jid, string id, StanzaNode? node) {

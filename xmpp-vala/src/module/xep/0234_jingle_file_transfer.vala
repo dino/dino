@@ -13,7 +13,9 @@ public class Module : Jingle.ContentType, XmppStreamModule {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
         stream.get_module(Jingle.Module.IDENTITY).register_content_type(this);
     }
-    public override void detach(XmppStream stream) { }
+    public override void detach(XmppStream stream) {
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
+    }
 
     public string content_type_ns_uri() {
         return NS_URI;
