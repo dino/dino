@@ -76,6 +76,24 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         return this;
     }
 
+    public void activate_last_message_correction() {
+        Gee.BidirIterator<Plugins.MetaConversationItem> iter = content_items.bidir_iterator();
+        iter.last();
+        for (int i = 0; i < 10 && content_items.size > i; i++) {
+            Plugins.MetaConversationItem item = iter.get();
+            MessageMetaItem message_item = item as MessageMetaItem;
+            if (message_item != null) {
+                if ((conversation.type_ == Conversation.Type.CHAT && message_item.jid.equals_bare(conversation.account.bare_jid)) ||
+                        (conversation.type_ == Conversation.Type.GROUPCHAT &&
+                        message_item.jid.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account)))) {
+                    message_item.in_edit_mode = true;
+                    break;
+                }
+            }
+            iter.previous();
+        }
+    }
+
     private bool on_enter_notify_event(Gdk.EventCrossing event) {
         mouse_inside = true;
         update_highlight((int)event.x_root, (int)event.y_root);

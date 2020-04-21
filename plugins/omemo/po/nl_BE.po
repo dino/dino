@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2019-01-12 20:06+0000\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/nl_BE/>\n"
@@ -42,18 +42,18 @@ msgstr "Sleutel beheren"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
+"contact's device."
 msgstr ""
 "Vergelijkt de vingerafdruk, teken per teken, met die op het apparaat van uw "
 "contact."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Not matching"
-msgstr "Komen niet overeen"
+msgid "Fingerprints differ"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Matching"
-msgstr "Komen overeen"
+msgid "Fingerprints match"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -72,11 +72,9 @@ msgstr "Sleutel verifiëren"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
+"Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Zodra bevestigd, worden nieuwe berichten verstuurd door %s met deze sleutel "
-"uitgelicht in ’t chatvenster."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -113,10 +111,8 @@ msgstr "Sleutel afwijzen"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
-"Stop accepting this key during communication with its associated contact."
+"Block encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Aanvaardt deze sleutel niet meer tijdens communicatie met het bijbehorend "
-"contact."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -126,9 +122,8 @@ msgstr "Sleutel aanvaarden"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
-"Start accepting this key during communication with its associated contact"
+"Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Aanvaardt deze sleutel tijdens communicatie met het bijbehorend contact"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -143,8 +138,8 @@ msgstr "aanvaard"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, c-format
-msgid "This means it can be used by %s to receive and send messages."
+#, fuzzy, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
 "Dit betekent dat %s deze kan gebruiken voor berichten te ontvangen en "
 "versturen."
@@ -167,29 +162,23 @@ msgstr "afgewezen"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
-"This means it cannot be used by %s to receive messages, and any messages "
-"sent by it will be ignored."
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
 msgstr ""
-"Dit betekent dat hij niet kan gebruikt worden door %s voor berichten te "
-"ontvangen. Berichten die dat hiermee worden verstuurd, worden genegeerd."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
-"ignored and none of your messages will be readable using this key."
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Zodra bevestigd, worden toekomstige berichten die dat worden verstuurd door "
-"%s met deze sleutel genegeerd, en zullen geen van uw berichten met deze "
-"sleutel leesbaar zijn."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
-"Once confirmed this key will be usable by %s to receive and send messages."
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
 msgstr ""
-"Zodra bevestigd kan deze sleutel gebruikt worden door %s voor berichten te "
-"ontvangen en te versturen."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -204,12 +193,8 @@ msgid "Automatically accept new keys"
 msgstr "Nieuwe sleutels automatisch aanvaarden"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
+msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
-"Indien dat dit contact nieuwe versleutelingssleutels toevoegt aan zijn/haar "
-"account, deze automatisch aanvaarden."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -229,10 +214,8 @@ msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
-"When you add new encryption keys to your account, automatically accept them."
+"New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Nieuwe versleutelingssleutels die aan den account worden toegevoegd "
-"automatisch aanvaarden."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -256,7 +239,7 @@ msgid "Own fingerprint"
 msgstr "Eigen vingerafdruk"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connect"
+msgid "Will be generated on first connection"
 msgstr "Wordt bij de eerste verbinding gegenereerd"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
@@ -269,6 +252,69 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d OMEMO-apparaat"
 msgstr[1] "%d OMEMO-apparaten"
+
+#~ msgid "Not matching"
+#~ msgstr "Komen niet overeen"
+
+#~ msgid "Matching"
+#~ msgstr "Komen overeen"
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "Zodra bevestigd, worden nieuwe berichten verstuurd door %s met deze "
+#~ "sleutel uitgelicht in ’t chatvenster."
+
+#~ msgid ""
+#~ "Stop accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Aanvaardt deze sleutel niet meer tijdens communicatie met het bijbehorend "
+#~ "contact."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact"
+#~ msgstr ""
+#~ "Aanvaardt deze sleutel tijdens communicatie met het bijbehorend contact"
+
+#, c-format
+#~ msgid ""
+#~ "This means it cannot be used by %s to receive messages, and any messages "
+#~ "sent by it will be ignored."
+#~ msgstr ""
+#~ "Dit betekent dat hij niet kan gebruikt worden door %s voor berichten te "
+#~ "ontvangen. Berichten die dat hiermee worden verstuurd, worden genegeerd."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "ignored and none of your messages will be readable using this key."
+#~ msgstr ""
+#~ "Zodra bevestigd, worden toekomstige berichten die dat worden verstuurd "
+#~ "door %s met deze sleutel genegeerd, en zullen geen van uw berichten met "
+#~ "deze sleutel leesbaar zijn."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed this key will be usable by %s to receive and send messages."
+#~ msgstr ""
+#~ "Zodra bevestigd kan deze sleutel gebruikt worden door %s voor berichten "
+#~ "te ontvangen en te versturen."
+
+#~ msgid ""
+#~ "When this contact adds new encryption keys to their account, "
+#~ "automatically accept them."
+#~ msgstr ""
+#~ "Indien dat dit contact nieuwe versleutelingssleutels toevoegt aan zijn/"
+#~ "haar account, deze automatisch aanvaarden."
+
+#~ msgid ""
+#~ "When you add new encryption keys to your account, automatically accept "
+#~ "them."
+#~ msgstr ""
+#~ "Nieuwe versleutelingssleutels die aan den account worden toegevoegd "
+#~ "automatisch aanvaarden."
 
 #~ msgid "Unknown device (0x%.8x)"
 #~ msgstr "Onbekend apparaat (0x%.8x)"

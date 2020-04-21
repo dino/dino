@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
-"PO-Revision-Date: 2019-01-05 11:06+0000\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
+"PO-Revision-Date: 2020-03-26 13:46+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "eu/>\n"
 "Language: eu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -42,18 +42,18 @@ msgstr "Gakoa kudeatu"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
+"contact's device."
 msgstr ""
 "Hatz marka konparatu, hizkiz hizki, zure kontaktuaren gailuan ageri "
 "denarekin."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Not matching"
-msgstr "Ez datoz bat"
+msgid "Fingerprints differ"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Matching"
-msgstr "Bat datoz"
+msgid "Fingerprints match"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -72,11 +72,9 @@ msgstr "Gakoa egiaztatu"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
+"Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Egiaztatu ondoren, %s(e)k gako honekin etorkizunean bidalitako mezu guztiak "
-"behar bezala nabarmenduko dira txat leihoan."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -113,10 +111,8 @@ msgstr "Gakoa ukatu"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
-"Stop accepting this key during communication with its associated contact."
+"Block encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Utzi gako hau onartzeari lotuta dagoen kontaktuarekin hitz egiten duzun "
-"bitartean."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -126,10 +122,8 @@ msgstr "Gakoa onartu"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
-"Start accepting this key during communication with its associated contact"
+"Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Hasi gako hau onartzen lotuta dagoen kontaktuarekin hitz egiten duzun "
-"bitartean"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -144,8 +138,8 @@ msgstr "onartuta"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, c-format
-msgid "This means it can be used by %s to receive and send messages."
+#, fuzzy, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
 "Honek esan nahi du %s(e)k mezuak jaso eta bidaltzeko erabili dezakeela."
 
@@ -167,29 +161,23 @@ msgstr "ukatuta"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
-"This means it cannot be used by %s to receive messages, and any messages "
-"sent by it will be ignored."
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
 msgstr ""
-"Honek esan nahi du %s(e)k ezin duela gakoa mezuak jasotzeko erabili, eta "
-"berak bidalitako edozein mezu alde batera utziko da."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
-"ignored and none of your messages will be readable using this key."
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Egiaztatu ondoren, etorkizunean %s(e)k gako hau erabiliz bidalitako edozein "
-"mezu alde batera utziko da eta zure mezuetako bat ere ez da irakurgarria "
-"izango gako hau erabiliz."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
-"Once confirmed this key will be usable by %s to receive and send messages."
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
 msgstr ""
-"Egiaztatu ondoren %s(e)k gako hau mezuak jaso eta bidaltzeko erabili ahal "
-"izango du."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -204,12 +192,8 @@ msgid "Automatically accept new keys"
 msgstr "Gako berriak automatikoki onartu"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
+msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
-"Kontaktu honek enkriptatzeko gako berriak bere kontura gehitzen dituenean, "
-"automatikoki onartu."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -225,14 +209,12 @@ msgstr "Lotutako gakoak"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
-msgstr ""
+msgstr "Gako ez aktiboak"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
-"When you add new encryption keys to your account, automatically accept them."
+"New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Zure kontura enkriptazio gako berriak gehitzen dituzunean, automatikoki "
-"onartu."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -256,7 +238,7 @@ msgid "Own fingerprint"
 msgstr "Norberaren hatz marka"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connect"
+msgid "Will be generated on first connection"
 msgstr "Lehen konexioan sortuko da"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
@@ -269,6 +251,70 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "OMEMO gailu %d"
 msgstr[1] "%d OMEMO gailu"
+
+#~ msgid "Not matching"
+#~ msgstr "Ez datoz bat"
+
+#~ msgid "Matching"
+#~ msgstr "Bat datoz"
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "Egiaztatu ondoren, %s(e)k gako honekin etorkizunean bidalitako mezu "
+#~ "guztiak behar bezala nabarmenduko dira txat leihoan."
+
+#~ msgid ""
+#~ "Stop accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Utzi gako hau onartzeari lotuta dagoen kontaktuarekin hitz egiten duzun "
+#~ "bitartean."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact"
+#~ msgstr ""
+#~ "Hasi gako hau onartzen lotuta dagoen kontaktuarekin hitz egiten duzun "
+#~ "bitartean"
+
+#, c-format
+#~ msgid ""
+#~ "This means it cannot be used by %s to receive messages, and any messages "
+#~ "sent by it will be ignored."
+#~ msgstr ""
+#~ "Honek esan nahi du %s(e)k ezin duela gakoa mezuak jasotzeko erabili, eta "
+#~ "berak bidalitako edozein mezu alde batera utziko da."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "ignored and none of your messages will be readable using this key."
+#~ msgstr ""
+#~ "Egiaztatu ondoren, etorkizunean %s(e)k gako hau erabiliz bidalitako "
+#~ "edozein mezu alde batera utziko da eta zure mezuetako bat ere ez da "
+#~ "irakurgarria izango gako hau erabiliz."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed this key will be usable by %s to receive and send messages."
+#~ msgstr ""
+#~ "Egiaztatu ondoren %s(e)k gako hau mezuak jaso eta bidaltzeko erabili ahal "
+#~ "izango du."
+
+#~ msgid ""
+#~ "When this contact adds new encryption keys to their account, "
+#~ "automatically accept them."
+#~ msgstr ""
+#~ "Kontaktu honek enkriptatzeko gako berriak bere kontura gehitzen "
+#~ "dituenean, automatikoki onartu."
+
+#~ msgid ""
+#~ "When you add new encryption keys to your account, automatically accept "
+#~ "them."
+#~ msgstr ""
+#~ "Zure kontura enkriptazio gako berriak gehitzen dituzunean, automatikoki "
+#~ "onartu."
 
 #~ msgid ""
 #~ "Start accepting this key during communication with its associated contact."

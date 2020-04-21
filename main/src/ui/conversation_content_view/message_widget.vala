@@ -28,6 +28,16 @@ public class MessageMetaItem : ContentMetaItem {
 
         stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect(on_received_correction);
 
+        this.notify["in-edit-mode"].connect(() => {
+            if (in_edit_mode == false) return;
+            bool allowed = stream_interactor.get_module(MessageCorrection.IDENTITY).is_own_correction_allowed(message_item.conversation, message_item.message);
+            if (allowed) {
+                message_item_widget.set_edit_mode();
+            } else {
+                this.in_edit_mode = false;
+            }
+        });
+
         return message_item_widget;
     }
 
@@ -106,7 +116,11 @@ public class MessageItemWidget : SizeRequestBin {
                 unset_edit_mode();
             });
             edit_mode.send.connect(() => {
-                edit_sent(edit_mode.chat_text_view.text_view.buffer.text);
+                if (((MessageItem) content_item).message.body != edit_mode.chat_text_view.text_view.buffer.text) {
+                    edit_sent(edit_mode.chat_text_view.text_view.buffer.text);
+                } else {
+                    edit_cancelled();
+                }
                 unset_edit_mode();
             });
         }
@@ -122,6 +136,9 @@ public class MessageItemWidget : SizeRequestBin {
     public void unset_edit_mode() {
         this.remove(edit_mode);
         this.add(label);
+        label.grab_focus();
+        label.selectable = false;
+        label.selectable = true;
     }
 
     public void update_label() {
@@ -200,11 +217,16 @@ public class MessageItemEditMode : Box {
         });
         emoji_button.set_popover(chooser);
 
+        chat_text_view.text_view.buffer.changed.connect_after(on_text_view_changed);
+
         cancel_button.clicked.connect(() => cancelled());
         send_button.clicked.connect(() => send());
         chat_text_view.cancel_input.connect(() => cancelled());
         chat_text_view.send_text.connect(() => send());
+    }
 
+    private void on_text_view_changed() {
+        send_button.sensitive = chat_text_view.text_view.buffer.text != "";
     }
 }
 

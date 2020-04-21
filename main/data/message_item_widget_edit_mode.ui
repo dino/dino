@@ -51,13 +51,13 @@
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkButton" id="cancel_button">
-                        <property name="label">Cancel</property>
+                        <property name="label" translatable="yes">Cancel</property>
                         <property name="visible">True</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkButton" id="send_button">
-                        <property name="label">Update message</property>
+                        <property name="label" translatable="yes">Update message</property>
                         <property name="visible">True</property>
                         <style>
                             <class name="suggested-action"/>

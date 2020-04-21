@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2020-01-12 13:21+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "ar/>\n"
@@ -43,16 +43,16 @@ msgstr "إدارة المفتاح"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
+"contact's device."
 msgstr "قارن البصمة حرفا بحرف ، مع التي تظهر على جهاز مُراسِلك."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Not matching"
-msgstr "غير مطابقة"
+msgid "Fingerprints differ"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Matching"
-msgstr "مطابقة"
+msgid "Fingerprints match"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -71,11 +71,9 @@ msgstr "التحقق مِن المفتاح"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
+"Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"بمجرد تأكيد ذلك ، سيتم تمييز أية رسائل مستقبلية مرسلة مِن %s باستخدام هذا "
-"المفتاح وفقا لذلك في نافذة الدردشة."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -110,8 +108,8 @@ msgstr "رفض المفتاح"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
-"Stop accepting this key during communication with its associated contact."
-msgstr "توقف عن قبول هذا المفتاح أثناء الاتصال مع المُراسِل المرتبط به."
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -121,8 +119,8 @@ msgstr "اقبل المفتاح"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
-"Start accepting this key during communication with its associated contact"
-msgstr "ابدأ في قبول هذا المفتاح أثناء الاتصال مع المُراسِل المرتبط به"
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -137,8 +135,8 @@ msgstr "مقبول"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, c-format
-msgid "This means it can be used by %s to receive and send messages."
+#, fuzzy, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr "وهذا يعني أنه يمكن أن يستخدمه %s لتلقي وإرسال الرسائل."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -157,28 +155,23 @@ msgstr "مرفوض"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
-"This means it cannot be used by %s to receive messages, and any messages "
-"sent by it will be ignored."
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
 msgstr ""
-"هذا يعني أنه لا يمكن استخدامه مِن طرف %s لاستقبال الرسائل و سيتم تجاهل أية "
-"رسائل بُعِثت به."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
-"ignored and none of your messages will be readable using this key."
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"بمجرد التأكيد ، سيتم تجاهل أي رسائل مستقبلية يقوم بإرسالها %s باستخدام هذا "
-"المفتاح ويتصبح كافة رسائلك غير قابلة للقراءة باستخدام هذا المفتاح."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
-"Once confirmed this key will be usable by %s to receive and send messages."
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
 msgstr ""
-"بمجرد تأكيد هذا المفتاح سوف يكون قابلا للاستخدام من قِبل %s لتلقي وإرسال "
-"الرسائل."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -193,12 +186,8 @@ msgid "Automatically accept new keys"
 msgstr "تقبّل المفاتيح الجديدة تلقائياً"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
+msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
-"عند قيام جهة الاتصال هذه باضافة مفاتيح تشفير جديدة إلى حسابها ، قم بقبولها "
-"تلقائيا."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -218,8 +207,8 @@ msgstr "المفاتيح غير المُنشَّطة"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
-"When you add new encryption keys to your account, automatically accept them."
-msgstr "عند إضافة مفاتيح تشفير جديدة إلى حسابك ، اقبلها تلقائيا."
+"New encryption keys from your other devices will be accepted automatically."
+msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -243,7 +232,7 @@ msgid "Own fingerprint"
 msgstr "بصمتك الخاصة"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connect"
+msgid "Will be generated on first connection"
 msgstr "سيتم توليدها عند أول اتصال"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
@@ -260,6 +249,63 @@ msgstr[2] "جهازين لـ OMEMO"
 msgstr[3] "%d أجهزة OMEMO"
 msgstr[4] "%d جهاز OMEMO"
 msgstr[5] "%d أجهزة OMEMO"
+
+#~ msgid "Not matching"
+#~ msgstr "غير مطابقة"
+
+#~ msgid "Matching"
+#~ msgstr "مطابقة"
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "بمجرد تأكيد ذلك ، سيتم تمييز أية رسائل مستقبلية مرسلة مِن %s باستخدام هذا "
+#~ "المفتاح وفقا لذلك في نافذة الدردشة."
+
+#~ msgid ""
+#~ "Stop accepting this key during communication with its associated contact."
+#~ msgstr "توقف عن قبول هذا المفتاح أثناء الاتصال مع المُراسِل المرتبط به."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact"
+#~ msgstr "ابدأ في قبول هذا المفتاح أثناء الاتصال مع المُراسِل المرتبط به"
+
+#, c-format
+#~ msgid ""
+#~ "This means it cannot be used by %s to receive messages, and any messages "
+#~ "sent by it will be ignored."
+#~ msgstr ""
+#~ "هذا يعني أنه لا يمكن استخدامه مِن طرف %s لاستقبال الرسائل و سيتم تجاهل أية "
+#~ "رسائل بُعِثت به."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "ignored and none of your messages will be readable using this key."
+#~ msgstr ""
+#~ "بمجرد التأكيد ، سيتم تجاهل أي رسائل مستقبلية يقوم بإرسالها %s باستخدام "
+#~ "هذا المفتاح ويتصبح كافة رسائلك غير قابلة للقراءة باستخدام هذا المفتاح."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed this key will be usable by %s to receive and send messages."
+#~ msgstr ""
+#~ "بمجرد تأكيد هذا المفتاح سوف يكون قابلا للاستخدام من قِبل %s لتلقي وإرسال "
+#~ "الرسائل."
+
+#~ msgid ""
+#~ "When this contact adds new encryption keys to their account, "
+#~ "automatically accept them."
+#~ msgstr ""
+#~ "عند قيام جهة الاتصال هذه باضافة مفاتيح تشفير جديدة إلى حسابها ، قم "
+#~ "بقبولها تلقائيا."
+
+#~ msgid ""
+#~ "When you add new encryption keys to your account, automatically accept "
+#~ "them."
+#~ msgstr "عند إضافة مفاتيح تشفير جديدة إلى حسابك ، اقبلها تلقائيا."
 
 #~ msgid "Unknown device (0x%.8x)"
 #~ msgstr "جهاز مجهول (0x%.8x)"

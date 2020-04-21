@@ -141,7 +141,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
             }
 
             StanzaNode? forward_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", "urn:xmpp:forward:0:forwarded", DelayedDelivery.NS_URI + ":delay");
-            DateTime? datetime = DelayedDelivery.Module.get_time_for_node(forward_node);
+            DateTime? datetime = DelayedDelivery.get_time_for_node(forward_node);
             string? mam_id = message.stanza.get_deep_attribute(NS_VER(stream) + ":result", NS_VER(stream) + ":id");
             string? query_id = message.stanza.get_deep_attribute(NS_VER(stream) + ":result", NS_VER(stream) + ":queryid");
             message.add_flag(new MessageFlag(datetime, mam_id, query_id));

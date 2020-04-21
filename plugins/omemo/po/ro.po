@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-29 00:32+0100\n"
+"POT-Creation-Date: 2020-04-12 22:15+0200\n"
 "PO-Revision-Date: 2019-11-15 07:04+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ro/>\n"
@@ -43,18 +43,18 @@ msgstr "Gestionare cheie"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
-"contacts device."
+"contact's device."
 msgstr ""
 "Comparați amprenta, caracter cu caracter, cu amprenta afișată pe "
 "dispozitivul contactului."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Not matching"
-msgstr "Nu se potrivesc"
+msgid "Fingerprints differ"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Matching"
-msgstr "Se potrivesc"
+msgid "Fingerprints match"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -73,11 +73,9 @@ msgstr "Verificare cheie"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
+"Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Odată confirmată, orice viitoare mesaje trimise de %s folosind această cheie "
-"vor fi evidenţiate în consecință în fereastra de discuție."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -113,9 +111,8 @@ msgstr "Respingere cheie"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
-"Stop accepting this key during communication with its associated contact."
+"Block encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Nu mai accepta această cheie în timpul comunicärii cu acest contact asociat."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -125,9 +122,8 @@ msgstr "Acceptare cheie"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
-"Start accepting this key during communication with its associated contact"
+"Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Se va accepta această cheie în timpul comunicării cu acest contact asociat"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -142,8 +138,8 @@ msgstr "acceptată"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, c-format
-msgid "This means it can be used by %s to receive and send messages."
+#, fuzzy, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
 "Aceasta înseamnă că poate fi folositä de %s să primească și să trimită "
 "mesaje."
@@ -166,29 +162,23 @@ msgstr "respinsă"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid ""
-"This means it cannot be used by %s to receive messages, and any messages "
-"sent by it will be ignored."
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
 msgstr ""
-"Aceasta înseamnă că nu poate fi folosită de %s ca să primească mesaje, iar "
-"orice mesaj trimis cu ea v-a fi ignorat."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
 msgid ""
-"Once confirmed, any future messages sent by %s using this key will be "
-"ignored and none of your messages will be readable using this key."
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Odată confirmată, orice viitoare mesaje trimise de %s folosind această cheie "
-"vor fi ignorate și nici un mesaj trimis de dumneavoastră nu se va putea "
-"citii folosid aceastä cheie."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
-"Once confirmed this key will be usable by %s to receive and send messages."
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
 msgstr ""
-"Odată confirmată, aceastä cheie va fi utilizatä de %s pentru a primi și "
-"trimite mesaje."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -203,12 +193,8 @@ msgid "Automatically accept new keys"
 msgstr "Automat acceptă chei noi"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid ""
-"When this contact adds new encryption keys to their account, automatically "
-"accept them."
+msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
-"Când acest contact adäugă chei de criptare noi în contul lor, acestea vor fi "
-"acceptate în mod automat."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -228,10 +214,8 @@ msgstr "Chei inactive"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
-"When you add new encryption keys to your account, automatically accept them."
+"New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Când adäugați chei de criptare noi pentru acest cont, acestea vor fi "
-"acceptate în mod automat."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -255,7 +239,7 @@ msgid "Own fingerprint"
 msgstr "Amprentă proprie"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connect"
+msgid "Will be generated on first connection"
 msgstr "Se va genera la prima conectare"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
@@ -269,6 +253,69 @@ msgid_plural "%d OMEMO devices"
 msgstr[0] "%d dispozitiv OMEMO"
 msgstr[1] "%d dispozitive OMEMO"
 msgstr[2] "%d de dispozitive OMEMO"
+
+#~ msgid "Not matching"
+#~ msgstr "Nu se potrivesc"
+
+#~ msgid "Matching"
+#~ msgstr "Se potrivesc"
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "Odată confirmată, orice viitoare mesaje trimise de %s folosind această "
+#~ "cheie vor fi evidenţiate în consecință în fereastra de discuție."
+
+#~ msgid ""
+#~ "Stop accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Nu mai accepta această cheie în timpul comunicärii cu acest contact "
+#~ "asociat."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact"
+#~ msgstr ""
+#~ "Se va accepta această cheie în timpul comunicării cu acest contact asociat"
+
+#, c-format
+#~ msgid ""
+#~ "This means it cannot be used by %s to receive messages, and any messages "
+#~ "sent by it will be ignored."
+#~ msgstr ""
+#~ "Aceasta înseamnă că nu poate fi folosită de %s ca să primească mesaje, "
+#~ "iar orice mesaj trimis cu ea v-a fi ignorat."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "ignored and none of your messages will be readable using this key."
+#~ msgstr ""
+#~ "Odată confirmată, orice viitoare mesaje trimise de %s folosind această "
+#~ "cheie vor fi ignorate și nici un mesaj trimis de dumneavoastră nu se va "
+#~ "putea citii folosid aceastä cheie."
+
+#, c-format
+#~ msgid ""
+#~ "Once confirmed this key will be usable by %s to receive and send messages."
+#~ msgstr ""
+#~ "Odată confirmată, aceastä cheie va fi utilizatä de %s pentru a primi și "
+#~ "trimite mesaje."
+
+#~ msgid ""
+#~ "When this contact adds new encryption keys to their account, "
+#~ "automatically accept them."
+#~ msgstr ""
+#~ "Când acest contact adäugă chei de criptare noi în contul lor, acestea vor "
+#~ "fi acceptate în mod automat."
+
+#~ msgid ""
+#~ "When you add new encryption keys to your account, automatically accept "
+#~ "them."
+#~ msgstr ""
+#~ "Când adäugați chei de criptare noi pentru acest cont, acestea vor fi "
+#~ "acceptate în mod automat."
 
 #~ msgid ""
 #~ "Start accepting this key during communication with its associated contact."

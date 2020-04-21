@@ -47,6 +47,9 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         outstanding_correction_nodes[out_message.stanza_id] = stanza_id;
         stream_interactor.get_module(MessageStorage.IDENTITY).add_message(out_message, conversation);
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(out_message, conversation);
+        if (conversation.read_up_to != null && conversation.read_up_to.equals(old_message)) { // TODO nicer
+            conversation.read_up_to = out_message;
+        }
 
         db.message_correction.insert()
             .value(db.message_correction.message_id, out_message.id)
@@ -65,17 +68,22 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     public bool is_own_correction_allowed(Conversation conversation, Message message) {
         string stanza_id = message.edit_to ?? message.stanza_id;
 
-        Jid own_jid = conversation.account.full_jid;
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+        Jid? own_jid = null;
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            own_jid = conversation.account.full_jid;
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
         }
+
+        if (own_jid == null) return false;
+
         return last_messages.has_key(conversation) &&
                 last_messages[conversation].has_key(own_jid) &&
                 last_messages[conversation][own_jid].stanza_id == stanza_id;
     }
 
     private void check_add_correction_node(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (message.stanza_id in outstanding_correction_nodes) {
+        if (outstanding_correction_nodes.has_key(message.stanza_id)) {
             LastMessageCorrection.set_replace_id(message_stanza, outstanding_correction_nodes[message.stanza_id]);
             outstanding_correction_nodes.unset(message.stanza_id);
         } else {
@@ -91,6 +99,12 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     public override string[] after_actions { get { return after_actions_const; } }
 
     public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+        if (conversation.type_ != Conversation.Type.CHAT) {
+            // Don't process messages or corrections from MUC history
+            DateTime? mam_delay = Xep.DelayedDelivery.get_time_for_message(stanza, message.from.bare_jid);
+            if (mam_delay != null) return false;
+        }
+
         string? replace_id = Xep.LastMessageCorrection.get_replace_id(stanza);
         if (replace_id == null) {
             if (!last_messages.has_key(conversation)) {
@@ -126,9 +140,11 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
             message.edit_to = replace_id;
 
             on_received_correction(conversation, current_correction_message_id);
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private void on_received_correction(Conversation conversation, int message_id) {

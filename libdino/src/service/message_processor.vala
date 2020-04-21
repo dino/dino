@@ -122,7 +122,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             if (id == null) return;
             StanzaNode? delay_node = message.stanza.get_deep_subnode(mam_flag.ns_ver + ":result", "urn:xmpp:forward:0:forwarded", "urn:xmpp:delay:delay");
             if (delay_node == null) return;
-            DateTime? time = DelayedDelivery.Module.get_time_for_node(delay_node);
+            DateTime? time = DelayedDelivery.get_time_for_node(delay_node);
             if (time == null) return;
             mam_times[account][id] = time;
 

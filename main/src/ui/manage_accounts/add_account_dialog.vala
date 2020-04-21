@@ -207,7 +207,7 @@ public class AddAccountDialog : Gtk.Dialog {
         sign_in_password_box.visible = false;
         create_account_box.visible = false;
         register_box.visible = false;
-        success_description.label = _("You can now start using the account %s").printf("<b>" + Markup.escape_text(account.bare_jid.to_string()) + "</b>");
+        success_description.label = _("You can now use the account %s.").printf("<b>" + Markup.escape_text(account.bare_jid.to_string()) + "</b>");
 
         set_default(success_continue_button);
     }
