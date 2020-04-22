@@ -33,17 +33,9 @@ public class View : Box {
 
         encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
 
-        file_button.clicked.connect(() => {
-            PreviewFileChooserNative chooser = new PreviewFileChooserNative("Select file", get_toplevel() as Gtk.Window, FileChooserAction.OPEN, "Select", "Cancel");
-            if (chooser.run() == Gtk.ResponseType.ACCEPT) {
-                string uri = chooser.get_filename();
-                stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(uri, conversation);
-            }
-        });
         file_button.get_style_context().add_class("dino-attach-button");
 
         encryption_widget.get_style_context().add_class("dino-chatinput-button");
-        encryption_widget.encryption_changed.connect(update_file_transfer_availability);
 
         // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
         if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
@@ -68,17 +60,14 @@ public class View : Box {
         return this;
     }
 
-    private void update_file_transfer_availability() {
-        bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
-        file_button.visible = upload_available;
-        file_separator.visible = upload_available;
+    public void set_file_upload_active(bool active) {
+        file_button.visible = active;
+        file_separator.visible = active;
     }
 
     public void initialize_for_conversation(Conversation conversation) {
         if (this.conversation != null) entry_cache[this.conversation] = chat_text_view.text_view.buffer.text;
         this.conversation = conversation;
-
-        update_file_transfer_availability();
 
         chat_text_view.text_view.buffer.text = "";
         if (entry_cache.has_key(conversation)) {

@@ -38,7 +38,15 @@ public class FileManager : StreamInteractionModule, Object {
         this.add_sender(new JingleFileSender(stream_interactor));
     }
 
-    public async void send_file(string uri, Conversation conversation) {
+    public HashMap<int, long> get_file_size_limits(Conversation conversation) {
+        HashMap<int, long> ret = new HashMap<int, long>();
+        foreach (FileSender sender in file_senders) {
+            ret[sender.get_id()] = sender.get_file_size_limit(conversation);
+        }
+        return ret;
+    }
+
+    public async void send_file(File file, Conversation conversation) {
         FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
         file_transfer.counterpart = conversation.counterpart;
@@ -53,7 +61,6 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.encryption = conversation.encryption;
 
         try {
-            File file = File.new_for_path(uri);
             FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
             file_transfer.file_name = file_info.get_display_name();
             file_transfer.mime_type = file_info.get_content_type();
@@ -394,6 +401,7 @@ public interface FileSender : Object {
     public signal void upload_available(Account account);
 
     public abstract bool is_upload_available(Conversation conversation);
+    public abstract long get_file_size_limit(Conversation conversation);
     public abstract bool can_send(Conversation conversation, FileTransfer file_transfer);
     public abstract async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer, FileMeta file_meta) throws FileSendError;
     public abstract async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data, FileMeta file_meta) throws FileSendError;

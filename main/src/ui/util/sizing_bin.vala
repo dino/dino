@@ -1,7 +1,7 @@
 using Gtk;
 
 namespace Dino.Ui {
-class SizingBin : Bin {
+public class SizingBin : Bin {
     public int min_width { get; set; default = -1; }
     public int target_width { get; set; default = -1; }
     public int max_width { get; set; default = -1; }

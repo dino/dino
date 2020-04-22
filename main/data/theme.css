@@ -60,13 +60,13 @@ window.dino-main .dino-conversation .message-box.edit-mode:hover {
     background: alpha(@theme_selected_bg_color, 0.12);
 }
 
-window.dino-main .dino-conversation .file-box-outer {
+window.dino-main .file-box-outer {
     background: @theme_base_color;
     border-radius: 3px;
     border: 1px solid alpha(@theme_fg_color, 0.1);
 }
 
-window.dino-main .dino-conversation .file-box {
+window.dino-main .file-box {
     margin: 12px 16px 12px 12px;
 }
 
@@ -80,6 +80,16 @@ window.dino-main .dino-sidebar frame.auto-complete {
 
 window.dino-main .dino-sidebar frame.auto-complete list > row {
     transition: none;
+}
+
+window.dino-main .dino-white-overlay {
+    background: @theme_base_color;
+}
+
+window.dino-main .dino-file-overlay {
+    border-radius: 5px;
+    border: 1px solid alpha(black, 0.2);
+    box-shadow: 0 2px 3px alpha(black, 0.1);
 }
 
 window.dino-main .dino-chatinput frame box {

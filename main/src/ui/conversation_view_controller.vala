@@ -22,6 +22,7 @@ public class ConversationViewController : Object {
 
     private Application app;
     private ConversationView view;
+    private Widget? overlay_dialog;
     private ConversationTitlebar titlebar;
     public SearchMenuEntry search_menu_entry = new SearchMenuEntry();
 
@@ -36,15 +37,15 @@ public class ConversationViewController : Object {
         this.app = GLib.Application.get_default() as Application;
 
         this.chat_input_controller = new ChatInputController(view.chat_input, stream_interactor);
+        chat_input_controller.activate_last_message_correction.connect(() => view.conversation_frame.activate_last_message_correction());
+        chat_input_controller.file_picker_selected.connect(() => on_file_picker_selected());
 
         view.conversation_frame.init(stream_interactor);
 
         // drag 'n drop file upload
-        Gtk.drag_dest_set(view, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
         view.drag_data_received.connect(this.on_drag_data_received);
 
         // forward key presses
-        chat_input_controller.activate_last_message_correction.connect(() => view.conversation_frame.activate_last_message_correction());
         view.chat_input.key_press_event.connect(forward_key_press_to_chat_input);
         view.conversation_frame.key_press_event.connect(forward_key_press_to_chat_input);
         titlebar.key_press_event.connect(forward_key_press_to_chat_input);
@@ -79,6 +80,8 @@ public class ConversationViewController : Object {
             }
         });
 
+        stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(update_file_upload_status);
+
         // Headerbar plugins
         app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
         app.plugin_registry.register_contact_titlebar_entry(search_menu_entry);
@@ -89,7 +92,16 @@ public class ConversationViewController : Object {
     }
 
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {
+        if (this.conversation != null) {
+            conversation.notify["encryption"].disconnect(update_file_upload_status);
+        }
+        if (overlay_dialog != null) {
+            overlay_dialog.destroy();
+        }
+
         this.conversation = conversation;
+
+        conversation.notify["encryption"].connect(update_file_upload_status);
 
         chat_input_controller.set_conversation(conversation);
 
@@ -106,11 +118,23 @@ public class ConversationViewController : Object {
         if (default_initialize_conversation) {
             view.conversation_frame.initialize_for_conversation(conversation);
         }
+
+        update_file_upload_status();
     }
 
     public void unset_conversation() {
         conversation_display_name = null;
         conversation_topic = null;
+    }
+
+    private void update_file_upload_status() {
+        bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
+        chat_input_controller.set_file_upload_active(upload_available);
+        if (upload_available) {
+            Gtk.drag_dest_set(view, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
+        } else {
+            Gtk.drag_dest_unset(view);
+        }
     }
 
     private void update_conversation_display_name() {
@@ -139,8 +163,8 @@ public class ConversationViewController : Object {
                     string[] uris = selection_data.get_uris();
                     for (int i = 0; i < uris.length; i++) {
                         try {
-                            string filename = Filename.from_uri(uris[i]);
-                            stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(filename, conversation);
+                            string file_path = Filename.from_uri(uris[i]);
+                            open_send_file_overlay(File.new_for_path(file_path));
                         } catch (Error err) {}
                     }
                     break;
@@ -148,6 +172,43 @@ public class ConversationViewController : Object {
                     break;
             }
         }
+    }
+
+    private void on_file_picker_selected() {
+        PreviewFileChooserNative chooser = new PreviewFileChooserNative(_("Select file"), view.get_toplevel() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"));
+        if (chooser.run() == Gtk.ResponseType.ACCEPT) {
+            open_send_file_overlay(File.new_for_path(chooser.get_filename()));
+        }
+    }
+
+    private void open_send_file_overlay(File file) {
+        FileInfo file_info;
+        try {
+            file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+        } catch (Error e) { return; }
+
+        FileSendOverlay overlay = new FileSendOverlay(file, file_info);
+        overlay.send_file.connect(() => send_file(file));
+
+        HashMap<int, long> limits = stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits(conversation);
+        bool something_works = false;
+        foreach (var limit in limits.values) {
+            if (limit >= file_info.get_size()) {
+                something_works = true;
+            }
+        }
+        if (!something_works && limits.has_key(0)) {
+            if (!something_works && file_info.get_size() > limits[0]) {
+                overlay.set_file_too_large();
+            }
+        }
+
+        view.add_overlay_dialog(overlay);
+        overlay_dialog = overlay;
+    }
+
+    private void send_file(File file) {
+        stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(file, conversation);
     }
 
     private bool forward_key_press_to_chat_input(EventKey event) {

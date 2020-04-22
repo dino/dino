@@ -49,10 +49,10 @@ public class ConversationItemSkeleton : EventBox {
         if (initial_item) {
             this.add(image_content_box);
         } else {
-            Revealer revealer = new Revealer() { transition_duration=200, transition_type = RevealerTransitionType.SLIDE_UP, visible = true };
+            Revealer revealer = new Revealer() { transition_duration=200, transition_type=RevealerTransitionType.SLIDE_UP, reveal_child=false, visible=true };
             revealer.add_with_properties(image_content_box);
-            revealer.reveal_child = true;
             this.add(revealer);
+            revealer.reveal_child = true;
         }
 
 

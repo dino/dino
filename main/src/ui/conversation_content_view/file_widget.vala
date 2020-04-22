@@ -5,9 +5,9 @@ using Pango;
 
 using Dino.Entities;
 
-namespace Dino.Ui.ConversationSummary {
+namespace Dino.Ui {
 
-public class FileMetaItem : ContentMetaItem {
+public class FileMetaItem : ConversationSummary.ContentMetaItem {
 
     private StreamInteractor stream_interactor;
 
@@ -25,7 +25,7 @@ public class FileMetaItem : ContentMetaItem {
     public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
 }
 
-public class FileWidget : Box {
+public class FileWidget : SizeRequestBox {
 
     enum State {
         IMAGE,
@@ -41,6 +41,11 @@ public class FileWidget : Box {
 
     private FileDefaultWidgetController default_widget_controller;
     private Widget? content = null;
+
+    construct {
+        margin_top = 4;
+        size_request_mode = SizeRequestMode.HEIGHT_FOR_WIDTH;
+    }
 
     public FileWidget(StreamInteractor stream_interactor, FileTransfer file_transfer) {
         this.stream_interactor = stream_interactor;
@@ -60,98 +65,32 @@ public class FileWidget : Box {
     private async void update_widget() {
         if (show_image() && state != State.IMAGE) {
             var content_bak = content;
-            Widget? image_widget = yield get_image_widget(file_transfer.get_file(), file_transfer.file_name);
 
-            // If the widget changed in the meanwhile, stop
-            if (content != content_bak) return;
+            FileImageWidget file_image_widget = null;
+            try {
+                file_image_widget = new FileImageWidget() { visible=true };
+                yield file_image_widget.load_from_file(file_transfer.get_file(), file_transfer.file_name);
 
-            if (image_widget != null) {
+                // If the widget changed in the meanwhile, stop
+                if (content != content_bak) return;
+
                 if (content != null) this.remove(content);
-                content = image_widget;
+                content = file_image_widget;
                 state = State.IMAGE;
                 this.add(content);
                 return;
-            }
+            } catch (Error e) { }
         }
 
         if (state != State.DEFAULT) {
             if (content != null) this.remove(content);
             FileDefaultWidget default_file_widget = new FileDefaultWidget() { visible=true };
-            default_widget_controller = new FileDefaultWidgetController(default_file_widget, file_transfer, stream_interactor);
+            default_widget_controller = new FileDefaultWidgetController(default_file_widget);
+            default_widget_controller.set_file_transfer(file_transfer, stream_interactor);
             content = default_file_widget;
             this.state = State.DEFAULT;
             this.add(content);
         }
-    }
-
-    public static async Widget? get_image_widget(File file, string file_name, int MAX_WIDTH=600, int MAX_HEIGHT=300) {
-        // Load and prepare image in tread
-        Thread<Image?> thread = new Thread<Image?> (null, () => {
-            ScalingImage image = new ScalingImage() { halign=Align.START, visible = true, max_width = MAX_WIDTH, max_height = MAX_HEIGHT };
-
-            Gdk.Pixbuf pixbuf;
-            try {
-                pixbuf = new Gdk.Pixbuf.from_file(file.get_path());
-            } catch (Error error) {
-                warning("Can't load picture %s - %s", file.get_path(), error.message);
-                Idle.add(get_image_widget.callback);
-                return null;
-            }
-
-            pixbuf = pixbuf.apply_embedded_orientation();
-
-            image.load(pixbuf);
-
-            Idle.add(get_image_widget.callback);
-            return image;
-        });
-        yield;
-        Image image = thread.join();
-        if (image == null) return null;
-
-        Util.force_css(image, "* { box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.1); margin: 2px; border-radius: 3px; }");
-
-        Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_content_view/image_toolbar.ui");
-        Widget toolbar = builder.get_object("main") as Widget;
-        Util.force_background(toolbar, "rgba(0, 0, 0, 0.5)");
-        Util.force_css(toolbar, "* { padding: 3px; border-radius: 3px; }");
-
-        Label url_label = builder.get_object("url_label") as Label;
-        Util.force_color(url_label, "#eee");
-
-        if (file_name != null && file_name != "") {
-            string caption = file_name;
-            url_label.label = caption;
-        } else {
-            url_label.visible = false;
-        }
-
-        Image open_image = builder.get_object("open_image") as Image;
-        Util.force_css(open_image, "*:not(:hover) { color: #eee; }");
-        Button open_button = builder.get_object("open_button") as Button;
-        Util.force_css(open_button, "*:hover { background-color: rgba(255,255,255,0.3); border-color: transparent; }");
-        open_button.clicked.connect(() => {
-            try{
-                AppInfo.launch_default_for_uri(file.get_uri(), null);
-            } catch (Error err) {
-                info("Could not to open file://%s: %s", file.get_path(), err.message);
-            }
-        });
-
-        Revealer toolbar_revealer = new Revealer() { transition_type=RevealerTransitionType.CROSSFADE, transition_duration=400, visible=true };
-        toolbar_revealer.add(toolbar);
-
-        Grid grid = new Grid() { visible=true };
-        grid.attach(toolbar_revealer, 0, 0, 1, 1);
-        grid.attach(image, 0, 0, 1, 1);
-
-        EventBox event_box = new EventBox() { margin_top=5, halign=Align.START, visible=true };
-        event_box.events = EventMask.POINTER_MOTION_MASK;
-        event_box.add(grid);
-        event_box.enter_notify_event.connect(() => { toolbar_revealer.reveal_child = true; return false; });
-        event_box.leave_notify_event.connect(() => { toolbar_revealer.reveal_child = false; return false; });
-
-        return event_box;
     }
 
     private bool show_image() {
@@ -175,17 +114,21 @@ public class FileWidget : Box {
 public class FileDefaultWidgetController : Object {
 
     private FileDefaultWidget widget;
-    private FileTransfer file_transfer;
-    private StreamInteractor stream_interactor;
+    private FileTransfer? file_transfer;
+    private StreamInteractor? stream_interactor;
+    private string file_uri;
+    private FileTransfer.State state;
 
-    public FileDefaultWidgetController(FileDefaultWidget widget, FileTransfer file_transfer, StreamInteractor stream_interactor) {
+    public FileDefaultWidgetController(FileDefaultWidget widget) {
         this.widget = widget;
+        widget.button_release_event.connect(on_clicked);
+    }
+
+    public void set_file_transfer(FileTransfer file_transfer, StreamInteractor stream_interactor) {
         this.file_transfer = file_transfer;
         this.stream_interactor = stream_interactor;
 
         widget.name_label.label = file_transfer.file_name;
-
-        widget.button_release_event.connect(on_clicked);
 
         file_transfer.notify["path"].connect(update_file_info);
         file_transfer.notify["state"].connect(update_file_info);
@@ -194,22 +137,32 @@ public class FileDefaultWidgetController : Object {
         update_file_info();
     }
 
+    public void set_file(File file, string file_name, string? mime_type) {
+        file_uri = file.get_uri();
+        state = FileTransfer.State.COMPLETE;
+        widget.name_label.label = file_name;
+        widget.update_file_info(mime_type, state, -1);
+    }
+
     private void update_file_info() {
+        file_uri = file_transfer.get_file().get_uri();
+        state = file_transfer.state;
         widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.size);
     }
 
     private bool on_clicked(EventButton event_button) {
-        switch (file_transfer.state) {
+        switch (state) {
             case FileTransfer.State.COMPLETE:
                 if (event_button.button == 1) {
                     try{
-                        AppInfo.launch_default_for_uri(file_transfer.get_file().get_uri(), null);
+                        AppInfo.launch_default_for_uri(file_uri, null);
                     } catch (Error err) {
-                        print("Tried to open " + file_transfer.get_file().get_path());
+                        print("Tried to open " + file_uri);
                     }
                 }
                 break;
             case FileTransfer.State.NOT_STARTED:
+                assert(stream_interactor != null && file_transfer != null);
                 stream_interactor.get_module(FileManager.IDENTITY).download_file.begin(file_transfer);
                 break;
         }

@@ -29,7 +29,7 @@ public class FileDefaultWidget : EventBox {
         mime_label.leave_notify_event.connect((event) => { pointer_inside = true; return false; });
     }
 
-    public void update_file_info(string? mime_type, FileTransfer.State state, int size) {
+    public void update_file_info(string? mime_type, FileTransfer.State state, long size) {
         this.state = state;
 
         spinner.active = false; // A hidden spinning spinner still uses CPU. Deactivate asap
@@ -111,7 +111,7 @@ public class FileDefaultWidget : EventBox {
         }
     }
 
-    private static string get_size_string(int size) {
+    private static string get_size_string(long size) {
         if (size < 1024) {
             return @"$(size) B";
         } else if (size < 1000 * 1000) {
