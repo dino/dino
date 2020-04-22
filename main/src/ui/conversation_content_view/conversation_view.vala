@@ -128,11 +128,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
         last_y_root = y_root;
 
-        // Get pointer location in main
-        int geometry_x, geometry_y, geometry_width, geometry_height, dest_x, dest_y;
+        int toplevel_window_pos_x, toplevel_window_pos_y, dest_x, dest_y;
         Widget toplevel_widget = this.get_toplevel();
-        toplevel_widget.get_window().get_geometry(out geometry_x, out geometry_y, out geometry_width, out geometry_height);
-        toplevel_widget.translate_coordinates(main, x_root - geometry_x, y_root - geometry_y, out dest_x, out dest_y);
+        // Obtain the position of the main application window relative to the root window
+        toplevel_widget.get_window().get_origin(out toplevel_window_pos_x, out toplevel_window_pos_y);
+        // Get the pointer location relative to the `main` box
+        toplevel_widget.translate_coordinates(main, x_root - toplevel_window_pos_x, y_root - toplevel_window_pos_y, out dest_x, out dest_y);
 
         // Get widget under pointer
         int h = 0;
