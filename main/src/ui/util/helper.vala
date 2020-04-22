@@ -273,10 +273,10 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     string s = s_;
     bool already_escaped = already_escaped_;
 
-    if (parse_links) {
+    if (parse_links && !already_escaped) {
         MatchInfo match_info;
         get_url_regex().match(s.down(), 0, out match_info);
-        if (match_info.matches())  {
+        while (match_info.matches()) {
             int start, end;
             match_info.fetch_pos(0, out start, out end);
             string link = s[start:end];
@@ -317,6 +317,7 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
                         "<a href=\"" + Markup.escape_text(link) + "\">" + parse_add_markup(link, highlight_word, false, false, already_escaped) + "</a>" +
                         parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
             }
+            match_info.next();
         }
     }
 
