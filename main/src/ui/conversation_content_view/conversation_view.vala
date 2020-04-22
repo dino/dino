@@ -43,7 +43,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private bool reload_messages = true;
     ConversationItemSkeleton currently_highlighted = null;
     ContentMetaItem? current_meta_item = null;
-    bool mouse_inside = false;
     int last_y_root = -1;
 
     public ConversationView init(StreamInteractor stream_interactor) {
@@ -61,10 +60,19 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         app.plugin_registry.register_conversation_addition_populator(new ChatStatePopulator(stream_interactor));
         app.plugin_registry.register_conversation_addition_populator(new DateSeparatorPopulator(stream_interactor));
 
+        // Rather than connecting to the leave event of the main_event_box directly,
+        // we connect to the parent event box that also wraps the overlaying message_menu_box.
+        // This eliminates the unwanted leave events emitted on the main_event_box when hovering
+        // the overlaying menu buttons.
         main_wrap_event_box.events = EventMask.ENTER_NOTIFY_MASK;
         main_wrap_event_box.events = EventMask.LEAVE_NOTIFY_MASK;
         main_wrap_event_box.leave_notify_event.connect(on_leave_notify_event);
         main_wrap_event_box.enter_notify_event.connect(on_enter_notify_event);
+        // The buttons of the overlaying message_menu_box may partially overlap the adjacent
+        // conversation items. We connect to the main_event_box directly to avoid emitting
+        // the pointer motion events as long as the pointer is above the message menu.
+        // This ensures that the currently highlighted item remains unchanged when the pointer
+        // reaches the overlapping part of a button.
         main_event_box.events = EventMask.POINTER_MOTION_MASK;
         main_event_box.motion_notify_event.connect(on_motion_notify_event);
 
@@ -95,13 +103,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     }
 
     private bool on_enter_notify_event(Gdk.EventCrossing event) {
-        mouse_inside = true;
         update_highlight((int)event.x_root, (int)event.y_root);
         return false;
     }
 
     private bool on_leave_notify_event(Gdk.EventCrossing event) {
-        mouse_inside = false;
         if (currently_highlighted != null) {
             currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
             currently_highlighted = null;
@@ -111,7 +117,6 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     }
 
     private bool on_motion_notify_event(Gdk.EventMotion event) {
-        mouse_inside = true;
         update_highlight((int)event.x_root, (int)event.y_root);
         return false;
     }
@@ -131,18 +136,14 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
         // Get widget under pointer
         int h = 0;
-        bool @break = false;
         ConversationItemSkeleton? w = null;
-        main.@foreach((widget) => {
-            if (break) return;
-
+        foreach (Widget widget in main.get_children()) {
             h += widget.get_allocated_height();
-            w = widget as ConversationItemSkeleton;
             if (h >= dest_y) {
-                @break = true;
-                return;
+                w = widget as ConversationItemSkeleton;
+                break;
             }
-        });
+        };
 
         if (currently_highlighted != null) currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
 
