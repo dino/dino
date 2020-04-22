@@ -42,8 +42,6 @@ public class ChatInputController : Object {
         
         chat_input.file_button.clicked.connect(() => file_picker_selected());
 
-        stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(on_upload_available);
-
         stream_interactor.get_module(MucManager.IDENTITY).received_occupant_role.connect(update_moderated_input_status);
         stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect(update_moderated_input_status);
 
