@@ -45,6 +45,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
             combobox.append("on", get_notify_setting_string(Conversation.NotifySetting.ON));
             combobox.append("off", get_notify_setting_string(Conversation.NotifySetting.OFF));
             contact_details.add(DETAILS_HEADLINE_ROOM, _("Notifications"), "", combobox);
+
             combobox.active_id = get_notify_setting_id(conversation.notify_setting);
             combobox.changed.connect(() => { conversation.notify_setting = get_notify_setting(combobox.active_id); } );
         }

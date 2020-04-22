@@ -138,6 +138,14 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         });
         add_action(accept_muc_invite_action);
 
+        SimpleAction accept_voice_request_action = new SimpleAction("accept-voice-request", VariantType.INT32);
+        accept_voice_request_action.activate.connect((variant) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
+            if (conversation == null) return;
+            stream_interactor.get_module(MucManager.IDENTITY).change_role(conversation.account, conversation.counterpart, conversation.nickname, "participant");
+        });
+        add_action(accept_voice_request_action);
+
         SimpleAction loop_conversations_action = new SimpleAction("loop_conversations", null);
         loop_conversations_action.activate.connect(() => { window.loop_conversations(false); });
         add_action(loop_conversations_action);

@@ -6,6 +6,7 @@ private const string NS_URI = "http://jabber.org/protocol/muc";
 private const string NS_URI_ADMIN = NS_URI + "#admin";
 private const string NS_URI_OWNER = NS_URI + "#owner";
 private const string NS_URI_USER = NS_URI + "#user";
+private const string NS_URI_REQUEST = NS_URI + "#request";
 
 public enum MucEnterError {
     NONE,
@@ -68,6 +69,7 @@ public class Module : XmppStreamModule {
     public signal void received_occupant_role(XmppStream stream, Jid jid, Role? role);
     public signal void subject_set(XmppStream stream, string? subject, Jid jid);
     public signal void invite_received(XmppStream stream, Jid room_jid, Jid from_jid, string? password, string? reason);
+    public signal void voice_request_received(XmppStream stream, Jid room_jid, Jid from_jid, string? nick, string? role, string? label); 
     public signal void room_info_updated(XmppStream stream, Jid muc_jid);
 
     public signal void self_removed_from_room(XmppStream stream, Jid jid, StatusCode code);
@@ -151,6 +153,25 @@ public class Module : XmppStreamModule {
         StanzaNode invite_node = new StanzaNode.build("x", NS_URI_USER).add_self_xmlns()
             .put_node(new StanzaNode.build("invite", NS_URI_USER).put_attribute("to", jid.to_string()));
         message.stanza.put_node(invite_node);
+        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
+    }
+
+    public void request_voice(XmppStream stream, Jid to_muc) {
+        MessageStanza message = new MessageStanza() { to=to_muc };
+
+        DataForms.DataForm submit_node = new DataForms.DataForm();
+        submit_node.get_submit_node();
+
+        DataForms.DataForm.Field field_node = new DataForms.DataForm.Field() { var="FORM_TYPE" };
+        field_node.set_value_string(NS_URI_REQUEST);
+
+        DataForms.DataForm.ListSingleField single_field = new DataForms.DataForm.ListSingleField(new StanzaNode.build("field", DataForms.NS_URI)) { var="muc#role", label="Requested role", value="participant" };
+
+        submit_node.add_field(field_node);
+        submit_node.add_field(single_field);
+
+        message.stanza.put_node(submit_node.stanza_node);
+
         stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
     }
 
@@ -528,6 +549,38 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                         if (!is_mam_message) outer.invite_received(stream, message.from, from_jid, password, reason);
                         return true;
                     }
+                }
+            }
+
+            StanzaNode? x_field_node = message.stanza.get_subnode("x", DataForms.NS_URI); 
+            if (x_field_node != null){
+                Gee.List<StanzaNode>? fields = x_field_node.get_subnodes("field", DataForms.NS_URI);
+                Jid? from_jid = null;
+                string? nick = null;
+                string? role = null;
+                string? label = null;
+                
+                if (fields.size!=0){ 
+                    foreach (var field_node in fields){
+                        string? var_ = field_node.get_attribute("var");
+                        if (var_ == "muc#jid"){
+                            StanzaNode? value_node = field_node.get_subnode("value", DataForms.NS_URI);
+                            if (value_node != null) from_jid = new Jid(value_node.get_string_content());                            
+                        }
+                        else if (var_ == "muc#roomnick"){
+                            StanzaNode? value_node = field_node.get_subnode("value", DataForms.NS_URI);
+                            if (value_node != null) nick = value_node.get_string_content();                            
+                        }
+                        else if (var_ == "muc#role"){
+                            StanzaNode? value_node = field_node.get_subnode("value", DataForms.NS_URI);
+                            if (value_node != null) role = value_node.get_string_content();                            
+                        }
+                        else if (var_ == "muc#request_allow"){
+                            label = field_node.get_attribute("label");                            
+                        }
+                    }
+                    outer.voice_request_received(stream, message.from, from_jid, nick, role, label);
+                    return true;
                 }
             }
         }

@@ -97,6 +97,21 @@ public class View : Popover {
             outer_box.add(kick_button);
             kick_button.clicked.connect(kick_button_clicked);
         }
+        if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) && role ==  Xmpp.Xep.Muc.Role.MODERATOR){
+            if (stream_interactor.get_module(MucManager.IDENTITY).get_role(selected_jid, conversation.account) ==  Xmpp.Xep.Muc.Role.VISITOR) {
+                ModelButton voice_button = new ModelButton()  { active=true, text=_("Grant write permission"), visible=true };
+                outer_box.add(voice_button);
+                voice_button.clicked.connect(() => 
+                    voice_button_clicked("participant"));
+            } 
+            else if (stream_interactor.get_module(MucManager.IDENTITY).get_role(selected_jid, conversation.account) ==  Xmpp.Xep.Muc.Role.PARTICIPANT){
+                ModelButton voice_button = new ModelButton()  { active=true, text=_("Revoke write permission"), visible=true };
+                outer_box.add(voice_button);
+                voice_button.clicked.connect(() => 
+                    voice_button_clicked("visitor"));
+            }
+            
+        }
 
         if (jid_menu != null) jid_menu.destroy();
         stack.add_named(outer_box, "menu");
@@ -118,6 +133,12 @@ public class View : Popover {
         if (selected_jid == null) return;
 
         stream_interactor.get_module(MucManager.IDENTITY).kick(conversation.account, conversation.counterpart, selected_jid.resourcepart);
+    }
+
+    private void voice_button_clicked(string role) {
+        if (selected_jid == null) return;
+
+        stream_interactor.get_module(MucManager.IDENTITY).change_role(conversation.account, conversation.counterpart, selected_jid.resourcepart, role);
     }
 }
 

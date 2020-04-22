@@ -5,6 +5,7 @@ using Gtk;
 using Dino.Entities;
 
 namespace Dino.Ui {
+private const string OPEN_CONVERSATION_DETAILS_URI = "x-dino:open-conversation-details";
 
 public class ChatInputController : Object {
 
@@ -38,8 +39,19 @@ public class ChatInputController : Object {
         chat_text_view_controller.send_text.connect(send_text);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
-
+        
         chat_input.file_button.clicked.connect(() => file_picker_selected());
+
+        stream_interactor.get_module(MucManager.IDENTITY).received_occupant_role.connect(update_moderated_input_status);
+        stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect(update_moderated_input_status);
+
+        status_description_label.activate_link.connect((uri) => {
+            if (uri == OPEN_CONVERSATION_DETAILS_URI){
+                ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
+                contact_details_dialog.present();
+            }
+            return true;
+        });
     }
 
     public void set_conversation(Conversation conversation) {
@@ -51,6 +63,10 @@ public class ChatInputController : Object {
 
         chat_input.initialize_for_conversation(conversation);
         chat_text_view_controller.initialize_for_conversation(conversation);
+        
+        Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+        
+        update_moderated_input_status(conversation.account, own_jid);
     }
 
     public void set_file_upload_active(bool active) {
@@ -69,6 +85,10 @@ public class ChatInputController : Object {
         input_field_status = status;
 
         chat_input.set_input_state(status.message_type);
+        
+        if (status.contains_markup) status_description_label.use_markup = true; 
+        else status_description_label.use_markup = false;
+
         status_description_label.label = status.message;
 
         chat_input.file_button.sensitive = status.input_state == Plugins.InputFieldStatus.InputState.NORMAL;
@@ -145,6 +165,19 @@ public class ChatInputController : Object {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
         } else {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation);
+        }
+    }
+    
+    private void update_moderated_input_status(Account account, Xmpp.Jid jid) {
+        Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+        if (conversation.type_ == conversation.Type.GROUPCHAT){
+            if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) && 
+            stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account)==Xmpp.Xep.Muc.Role.VISITOR) {
+                set_input_field_status(new Plugins.InputFieldStatus(_("This conference does not allow you to send messages. %s").printf("<a href=\"" + OPEN_CONVERSATION_DETAILS_URI + "\">" + _("Request permission") + "</a>"),
+                Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND, true));
+            } else {
+                reset_input_field_status();
+            }
         }
     }
 
