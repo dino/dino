@@ -102,7 +102,10 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
     private bool on_leave_notify_event(Gdk.EventCrossing event) {
         mouse_inside = false;
-        if (currently_highlighted != null) currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
+        if (currently_highlighted != null) {
+            currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
+            currently_highlighted = null;
+        }
         message_menu_box.visible = false;
         return false;
     }
@@ -114,7 +117,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     }
 
     private void update_highlight(int x_root, int y_root) {
-        if ((last_y_root - y_root).abs() <= 2) {
+        if (currently_highlighted != null && (last_y_root - y_root).abs() <= 2) {
             return;
         }
 
