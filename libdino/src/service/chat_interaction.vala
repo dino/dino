@@ -131,7 +131,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     private void check_send_read() {
-        if (selected_conversation == null || selected_conversation.type_ == Conversation.Type.GROUPCHAT) return;
+        if (selected_conversation == null) return;
         Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(selected_conversation);
         if (message != null && message.direction == Entities.Message.DIRECTION_RECEIVED && !message.equals(selected_conversation.read_up_to)) {
             selected_conversation.read_up_to = message;
@@ -197,17 +197,22 @@ public class ChatInteraction : StreamInteractionModule, Object {
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return;
 
-        if (message.stanza_id == null) return; // Need a stanza id to mark
-
         switch (marker) {
             case Xep.ChatMarkers.MARKER_RECEIVED:
-                if (stanza != null && Xep.ChatMarkers.Module.requests_marking(stanza)) {
+                if (stanza != null && Xep.ChatMarkers.Module.requests_marking(stanza) && message.type_ != Message.Type.GROUPCHAT) {
+                    if (message.stanza_id == null) return;
                     stream.get_module(Xep.ChatMarkers.Module.IDENTITY).send_marker(stream, message.from, message.stanza_id, message.get_type_string(), Xep.ChatMarkers.MARKER_RECEIVED);
                 }
                 break;
             case Xep.ChatMarkers.MARKER_DISPLAYED:
                 if (conversation.get_send_marker_setting(stream_interactor) == Conversation.Setting.ON) {
-                    stream.get_module(Xep.ChatMarkers.Module.IDENTITY).send_marker(stream, message.from, message.stanza_id, message.get_type_string(), Xep.ChatMarkers.MARKER_DISPLAYED);
+                    if (message.type_ == Message.Type.GROUPCHAT) {
+                        if (message.stanza_id == null) return;
+                        stream.get_module(Xep.ChatMarkers.Module.IDENTITY).send_marker(stream, message.from.bare_jid, message.server_id, message.get_type_string(), Xep.ChatMarkers.MARKER_DISPLAYED);
+                    } else {
+                        if (message.stanza_id == null) return;
+                        stream.get_module(Xep.ChatMarkers.Module.IDENTITY).send_marker(stream, message.from, message.stanza_id, message.get_type_string(), Xep.ChatMarkers.MARKER_DISPLAYED);
+                    }
                 }
                 break;
         }

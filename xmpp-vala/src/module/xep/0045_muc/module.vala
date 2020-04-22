@@ -242,9 +242,7 @@ public class Module : XmppStreamModule {
         stream.get_module(Presence.Module.IDENTITY).received_presence.connect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.connect(on_received_unavailable);
-        if (stream.get_module(ServiceDiscovery.Module.IDENTITY) != null) {
-            stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
-        }
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
     }
 
     public override void detach(XmppStream stream) {
@@ -253,6 +251,7 @@ public class Module : XmppStreamModule {
         stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.disconnect(on_received_available);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.disconnect(on_received_unavailable);
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
     }
 
     public override string get_ns() { return NS_URI; }

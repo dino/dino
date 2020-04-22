@@ -127,6 +127,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         current_stream = stream;
     }
     public override void detach(XmppStream stream) {
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
         stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI, this);
     }
 

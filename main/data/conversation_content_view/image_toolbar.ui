@@ -13,7 +13,7 @@
                         <property name="visible">True</property>
                         <child>
                             <object class="GtkLabel" id="url_label">
-                                <property name="max_width_chars">25</property>
+                                <property name="max_width_chars">18</property>
                                 <property name="ellipsize">middle</property>
                                 <property name="hexpand">True</property>
                                 <property name="margin-left">5</property>

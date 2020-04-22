@@ -72,8 +72,9 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public override void detach(XmppStream stream) {
-        stream.stream_negotiated.disconnect(on_stream_negotiated);
         stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI, this);
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
+        stream.stream_negotiated.disconnect(on_stream_negotiated);
     }
 
     public override string get_ns() { return NS_URI; }

@@ -25,17 +25,51 @@ class ScalingImage : Image {
         queue_resize();
     }
 
+    private void calculate_size(ref double exact_width, ref double exact_height) {
+        if (exact_width == -1 && exact_height == -1) {
+            if (target_width == -1) {
+                exact_width = ((double)image_width) / ((double)scale_factor);
+                exact_height = ((double)image_height) / ((double)scale_factor);
+            } else {
+                exact_width = target_width;
+                exact_height = exact_width * image_ratio;
+            }
+        } else if (exact_width != -1) {
+            exact_height = exact_width * image_ratio;
+        } else if (exact_height != -1) {
+            exact_width = exact_height / image_ratio;
+        } else {
+            if (exact_width * image_ratio > exact_height + scale_factor) {
+                exact_width = exact_height / image_ratio;
+            } else if (exact_height / image_ratio > exact_width + scale_factor) {
+                exact_height = exact_width * image_ratio;
+            }
+        }
+        if (max_width != -1 && exact_width > max_width) {
+            exact_width = max_width;
+            exact_height = exact_width * image_ratio;
+        }
+        if (max_height != -1 && exact_height > max_height) {
+            exact_height = max_height;
+            exact_width = exact_height / image_ratio;
+        }
+        if (exact_width < min_width) exact_width = min_width;
+        if (exact_height < min_height) exact_height = min_height;
+    }
+
     public override void size_allocate(Allocation allocation) {
         if (max_width != -1) allocation.width = int.min(allocation.width, max_width);
         if (max_height != -1) allocation.height = int.min(allocation.height, max_height);
-        allocation.height = int.min(allocation.height, (int)(allocation.width * image_ratio));
-        allocation.width = int.min(allocation.width, (int)(allocation.height / image_ratio));
+        allocation.height = int.max(allocation.height, min_height);
+        allocation.width = int.max(allocation.width, min_width);
+        double exact_width = allocation.width, exact_height = allocation.height;
+        calculate_size(ref exact_width, ref exact_height);
         base.size_allocate(allocation);
         if (last_allocation_height != allocation.height || last_allocation_width != allocation.width || last_scale_factor != scale_factor) {
             last_allocation_height = allocation.height;
             last_allocation_width = allocation.width;
             last_scale_factor = scale_factor;
-            Pixbuf scaled = image.scale_simple(allocation.width * scale_factor, allocation.height * scale_factor, Gdk.InterpType.BILINEAR);
+            Pixbuf scaled = image.scale_simple((int) Math.floor(exact_width * scale_factor), (int) Math.floor(exact_height * scale_factor), Gdk.InterpType.BILINEAR);
             scaled = crop_corners(scaled, 3 * scale_factor);
             Util.image_set_from_scaled_pixbuf(this, scaled);
         }
@@ -58,30 +92,30 @@ class ScalingImage : Image {
 
     public override void get_preferred_width(out int minimum_width, out int natural_width) {
         minimum_width = int.max(0, min_width);
-        natural_width = target_width != -1 ? target_width : (image_width / scale_factor);
-        natural_width = int.min(natural_width, max_width);
-        if (natural_width * image_ratio > max_height) {
-            natural_width = (int) (max_height / image_ratio);
-        }
+        double exact_width = -1, exact_height = -1;
+        calculate_size(ref exact_width, ref exact_height);
+        natural_width = (int) Math.ceil(exact_width);
     }
 
     public override void get_preferred_height(out int minimum_height, out int natural_height) {
         minimum_height = int.max(0, min_height);
-        natural_height = (int) (target_width != -1 ? target_width * image_ratio : image_width / scale_factor);
-        natural_height = int.min(natural_height, max_height);
-        if (natural_height / image_ratio > max_width) {
-            natural_height = (int) (max_width * image_ratio);
-        }
+        double exact_width = -1, exact_height = -1;
+        calculate_size(ref exact_width, ref exact_height);
+        natural_height = (int) Math.ceil(exact_height);
     }
 
     public override void get_preferred_height_for_width(int width, out int minimum_height, out int natural_height) {
-        natural_height = (int) (width * image_ratio);
-        minimum_height = min_height != -1 ? int.min(min_height, natural_height) : natural_height;
+        double exact_width = width, exact_height = -1;
+        calculate_size(ref exact_width, ref exact_height);
+        natural_height = (int) Math.ceil(exact_height);
+        minimum_height = natural_height;
     }
 
     public override void get_preferred_width_for_height(int height, out int minimum_width, out int natural_width) {
-        natural_width = (int) (height / image_ratio);
-        minimum_width = min_width != -1 ? int.min(min_width, natural_width) : natural_width;
+        double exact_width = -1, exact_height = height;
+        calculate_size(ref exact_width, ref exact_height);
+        natural_width = (int) Math.ceil(exact_width);
+        minimum_width = natural_width;
     }
 
     public override SizeRequestMode get_request_mode() {

@@ -101,7 +101,9 @@ public class Module : BookmarksProvider, XmppStreamModule {
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI, on_pupsub_item, on_pupsub_retract);
     }
 
-    public override void detach(XmppStream stream) { }
+    public override void detach(XmppStream stream) {
+        stream.get_module(Pubsub.Module.IDENTITY).remove_filtered_notification(stream, NS_URI);
+    }
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }

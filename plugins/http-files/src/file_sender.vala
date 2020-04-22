@@ -63,6 +63,14 @@ public class HttpFileSender : FileSender, Object {
         return file_transfer.size < max_file_sizes[conversation.account];
     }
 
+    public long get_file_size_limit(Conversation conversation) {
+        long? max_size = max_file_sizes[conversation.account];
+        if (max_size != null) {
+            return max_size;
+        }
+        return -1;
+    }
+
     public bool can_encrypt(Conversation conversation, FileTransfer file_transfer) {
         return false;
     }

@@ -29,6 +29,12 @@ namespace Xmpp.Xep.Pubsub {
             }
         }
 
+        public void remove_filtered_notification(XmppStream stream, string node) {
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature_notify(stream, node);
+            item_listeners.unset(node);
+            retract_listeners.unset(node);
+        }
+
         public async Gee.List<StanzaNode>? request_all(XmppStream stream, Jid jid, string node) { // TODO multiple nodes gehen auch
             Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
             request_iq.to = jid;

@@ -219,7 +219,7 @@ public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, 
 private const string force_background_css = "%s { background-color: %s; }";
 private const string force_color_css = "%s { color: %s; }";
 
-private static void force_css(Gtk.Widget widget, string css) {
+public static void force_css(Gtk.Widget widget, string css) {
     var p = new Gtk.CssProvider();
     try {
         p.load_from_data(css);

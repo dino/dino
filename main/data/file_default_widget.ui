@@ -2,7 +2,6 @@
 <interface>
     <template class="DinoUiFileDefaultWidget" parent="GtkEventBox">
         <property name="halign">start</property>
-        <property name="visible">True</property>
         <style>
             <class name="file-box-outer"/>
         </style>

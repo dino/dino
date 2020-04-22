@@ -10,6 +10,7 @@ private const string OPEN_CONVERSATION_DETAILS_URI = "x-dino:open-conversation-d
 public class ChatInputController : Object {
 
     public signal void activate_last_message_correction();
+    public signal void file_picker_selected();
 
     public new string? conversation_display_name { get; set; }
     public string? conversation_topic { get; set; }
@@ -34,9 +35,12 @@ public class ChatInputController : Object {
 
         chat_input.chat_text_view.text_view.buffer.changed.connect(on_text_input_changed);
         chat_input.chat_text_view.text_view.key_press_event.connect(on_text_input_key_press);
+
         chat_text_view_controller.send_text.connect(send_text);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
+        
+        chat_input.file_button.clicked.connect(() => file_picker_selected());
 
         stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(on_upload_available);
 
@@ -67,6 +71,10 @@ public class ChatInputController : Object {
         update_moderated_input_status(conversation.account, own_jid);
     }
 
+    public void set_file_upload_active(bool active) {
+        chat_input.set_file_upload_active(active);
+    }
+
     private void on_encryption_changed(Plugins.EncryptionListEntry? encryption_entry) {
         reset_input_field_status();
 
@@ -90,13 +98,6 @@ public class ChatInputController : Object {
 
     private void reset_input_field_status() {
         set_input_field_status(new Plugins.InputFieldStatus("", Plugins.InputFieldStatus.MessageType.NONE, Plugins.InputFieldStatus.InputState.NORMAL));
-    }
-
-    private void on_upload_available(Account account) {
-        if (conversation != null && conversation.account.equals(account)) {
-            chat_input.file_button.visible = true;
-            chat_input.file_separator.visible = true;
-        }
     }
 
     private void send_text() {

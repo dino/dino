@@ -35,7 +35,9 @@ public class StreamModule : XmppStreamModule {
         stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => parse_device_list(stream, jid, id, node), null);
     }
 
-    public override void detach(XmppStream stream) {}
+    public override void detach(XmppStream stream) {
+        stream.get_module(Pubsub.Module.IDENTITY).remove_filtered_notification(stream, NODE_DEVICELIST);
+    }
 
     public async ArrayList<int32> request_user_devicelist(XmppStream stream, Jid jid) {
         var future = active_devicelist_requests[jid];

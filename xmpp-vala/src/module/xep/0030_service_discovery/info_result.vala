@@ -20,9 +20,9 @@ public class InfoResult {
         }
     }
 
-    public Gee.List<Identity> identities {
+    public Gee.Set<Identity> identities {
         owned get {
-            ArrayList<Identity> ret = new ArrayList<Identity>();
+            HashSet<Identity> ret = new HashSet<Identity>();
             foreach (StanzaNode feature_node in iq.stanza.get_subnode("query", NS_URI_INFO).get_subnodes("identity", NS_URI_INFO)) {
                 ret.add(new Identity(feature_node.get_attribute("category", NS_URI_INFO),
                                         feature_node.get_attribute("type", NS_URI_INFO),

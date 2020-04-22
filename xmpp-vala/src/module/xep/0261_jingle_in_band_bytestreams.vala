@@ -14,7 +14,9 @@ public class Module : Jingle.Transport, XmppStreamModule {
         stream.get_module(Jingle.Module.IDENTITY).register_transport(this);
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
     }
-    public override void detach(XmppStream stream) { }
+    public override void detach(XmppStream stream) {
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
+    }
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }

@@ -24,7 +24,7 @@ public class EntityCapabilitiesStorage : Xep.EntityCapabilities.Storage, Object 
         }
     }
 
-    public void store_identities(string entity, Gee.List<Identity> identities) {
+    public void store_identities(string entity, Gee.Set<Identity> identities) {
         foreach (Identity identity in identities) {
             if (identity.category == Identity.CATEGORY_CLIENT) {
                 db.entity_identity.insert()

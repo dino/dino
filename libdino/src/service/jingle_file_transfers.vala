@@ -164,7 +164,18 @@ public class JingleFileSender : FileSender, Object {
         return false;
     }
 
+    public long get_file_size_limit(Conversation conversation) {
+        if (can_send_(conversation)) {
+            return int.MAX;
+        }
+        return -1;
+    }
+
     public bool can_send(Conversation conversation, FileTransfer file_transfer) {
+        return can_send_(conversation);
+    }
+
+    private bool can_send_(Conversation conversation) {
         if (conversation.type_ != Conversation.Type.CHAT) return false;
 
         // No file specific restrictions apply to Jingle file transfers
