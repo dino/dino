@@ -54,7 +54,6 @@ set(RESOURCE_LIST
     file_send_overlay.ui
     emojichooser.ui
     global_search.ui
-    conversation_content_view/image_toolbar.ui
     conversation_content_view/item_metadata_header.ui
     conversation_content_view/view.ui
     manage_accounts/account_row.ui
