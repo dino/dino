@@ -24,7 +24,7 @@ public class OmemoFileEncryptor : Dino.FileEncryptor, Object {
 
         try {
             //Create a key and use it to encrypt the file
-            uint8[] iv = new uint8[16];
+            uint8[] iv = new uint8[12];
             Plugin.get_context().randomize(iv);
             uint8[] key = new uint8[32];
             Plugin.get_context().randomize(key);

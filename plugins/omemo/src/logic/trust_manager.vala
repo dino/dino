@@ -155,7 +155,7 @@ public class TrustManager {
             //Create a key and use it to encrypt the message
             uint8[] key = new uint8[16];
             Plugin.get_context().randomize(key);
-            uint8[] iv = new uint8[16];
+            uint8[] iv = new uint8[12];
             Plugin.get_context().randomize(iv);
 
             uint8[] aes_encrypt_result = aes_encrypt(Cipher.AES_GCM_NOPADDING, key, iv, message.body.data);

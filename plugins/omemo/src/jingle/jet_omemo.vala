@@ -124,7 +124,7 @@ public class AesGcmCipher : Jet.Cipher, Object {
         return uri;
     }
     public Jet.TransportSecret generate_random_secret() {
-        uint8[] iv = new uint8[16];
+        uint8[] iv = new uint8[12];
         Omemo.Plugin.get_context().randomize(iv);
         uint8[] key = new uint8[key_size];
         Omemo.Plugin.get_context().randomize(key);
