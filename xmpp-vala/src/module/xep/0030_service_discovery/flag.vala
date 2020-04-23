@@ -23,8 +23,8 @@ public class Flag : XmppStreamFlag {
         owned get { return own_identities_.read_only_view; }
     }
 
-    public Gee.Set<Identity>? get_entity_categories(Jid jid) {
-        return entity_identities.has_key(jid) ? entity_identities[jid] : null; // TODO isn’t this default for hashmap
+    public Gee.Set<Identity>? get_entity_identities(Jid jid) {
+        return entity_identities.has_key(jid) ? entity_identities[jid].read_only_view : null; // TODO isn’t this default for hashmap
     }
 
     public bool? has_entity_identity(Jid jid, string category, string type) {

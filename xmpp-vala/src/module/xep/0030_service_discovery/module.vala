@@ -9,6 +9,8 @@ public const string NS_URI_ITEMS = NS_URI + "#items";
 public class Module : XmppStreamModule, Iq.Handler {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0030_service_discovery_module");
 
+    private HashMap<Jid, Future<InfoResult?>> active_info_requests = new HashMap<Jid, Future<InfoResult?>>(Jid.hash_func, Jid.equals_func);
+
     public Identity own_identity;
 
     public Module.with_identity(string category, string type, string? name = null) {
@@ -39,36 +41,63 @@ public class Module : XmppStreamModule, Iq.Handler {
         stream.get_flag(Flag.IDENTITY).remove_own_identity(identity);
     }
 
-    public delegate void HasEntryCategoryRes(XmppStream stream, Gee.Set<Identity>? identities);
-    public void get_entity_categories(XmppStream stream, Jid jid, owned HasEntryCategoryRes listener) {
-        Gee.Set<Identity>? res = stream.get_flag(Flag.IDENTITY).get_entity_categories(jid);
-        if (res != null) listener(stream, res);
-        request_info(stream, jid, (stream, query_result) => {
-            listener(stream, query_result != null ? query_result.identities : null);
-        });
+    public async bool has_entity_feature(XmppStream stream, Jid jid, string feature) {
+        Flag flag = stream.get_flag(Flag.IDENTITY);
+
+        if (flag.has_entity_feature(jid, feature) == null) {
+            InfoResult? info_result = yield request_info(stream, jid);
+            stream.get_flag(Flag.IDENTITY).set_entity_features(info_result.iq.from, info_result != null ? info_result.features : null);
+            stream.get_flag(Flag.IDENTITY).set_entity_identities(info_result.iq.from, info_result != null ? info_result.identities : null);
+        }
+
+        return flag.has_entity_feature(jid, feature);
     }
 
-    public delegate void OnInfoResult(XmppStream stream, InfoResult? query_result);
-    public void request_info(XmppStream stream, Jid jid, owned OnInfoResult listener) {
-        Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns());
-        iq.to = jid;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-            InfoResult? result = InfoResult.create_from_iq(iq);
-            stream.get_flag(Flag.IDENTITY).set_entity_features(iq.from, result != null ? result.features : null);
-            stream.get_flag(Flag.IDENTITY).set_entity_identities(iq.from, result != null ? result.identities : null);
-            listener(stream, result);
-        });
+    public async Gee.Set<Identity>? get_entity_identities(XmppStream stream, Jid jid) {
+        Flag flag = stream.get_flag(Flag.IDENTITY);
+
+        if (flag.get_entity_identities(jid) == null) {
+            InfoResult? info_result = yield request_info(stream, jid);
+            stream.get_flag(Flag.IDENTITY).set_entity_features(info_result.iq.from, info_result != null ? info_result.features : null);
+            stream.get_flag(Flag.IDENTITY).set_entity_identities(info_result.iq.from, info_result != null ? info_result.identities : null);
+        }
+
+        return flag.get_entity_identities(jid);
     }
 
-    public delegate void OnItemsResult(XmppStream stream, ItemsResult query_result);
-    public void request_items(XmppStream stream, Jid jid, owned OnItemsResult listener) {
-        Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns());
-        iq.to = jid;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-            ItemsResult? result = ItemsResult.create_from_iq(iq);
-            stream.get_flag(Flag.IDENTITY).set_entity_items(iq.from, result != null ? result.items : null);
-            listener(stream, result);
-        });
+    public async InfoResult? request_info(XmppStream stream, Jid jid) {
+        var future = active_info_requests[jid];
+        if (future == null) {
+            var promise = new Promise<InfoResult?>();
+            future = promise.future;
+            active_info_requests[jid] = future;
+
+            Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns()) { to=jid };
+            Iq.Stanza iq_response = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+            InfoResult? result = InfoResult.create_from_iq(iq_response);
+
+            promise.set_value(result);
+            active_info_requests.unset(jid);
+        }
+
+        try {
+            InfoResult? res = yield future.wait_async();
+            return res;
+        } catch (FutureError error) {
+            warning("Future error when waiting for info request result: %s", error.message);
+            return null;
+        }
+    }
+
+    public async ItemsResult? request_items(XmppStream stream, Jid jid) {
+        StanzaNode query_node = new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns();
+        Iq.Stanza iq = new Iq.Stanza.get(query_node) { to=jid };
+
+        Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        ItemsResult? result = ItemsResult.create_from_iq(iq_result);
+        stream.get_flag(Flag.IDENTITY).set_entity_items(iq_result.from, result != null ? result.items : null);
+
+        return result;
     }
 
     public void on_iq_get(XmppStream stream, Iq.Stanza iq) {

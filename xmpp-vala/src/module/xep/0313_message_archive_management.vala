@@ -108,17 +108,22 @@ public class Module : XmppStreamModule {
         return result_iq;
     }
 
-    private void query_availability(XmppStream stream) {
-        stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).request_info(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, (stream, info_result) => {
-            if (info_result == null) return;
-            if (info_result.features.contains(NS_URI)) {
-                stream.add_flag(new Flag(NS_URI));
-                feature_available(stream);
-            } else if (info_result.features.contains(NS_URI_1)) {
-                stream.add_flag(new Flag(NS_URI_1));
-                feature_available(stream);
-            }
-        });
+    private async void query_availability(XmppStream stream) {
+        Jid own_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid;
+
+        bool ver_2_available = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, own_jid, NS_URI);
+        if (ver_2_available) {
+            stream.add_flag(new Flag(NS_URI));
+            feature_available(stream);
+            return;
+        }
+
+        bool ver_1_available = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, own_jid, NS_URI_1);
+        if (ver_1_available) {
+            stream.add_flag(new Flag(NS_URI_1));
+            feature_available(stream);
+            return;
+        }
     }
 }
 

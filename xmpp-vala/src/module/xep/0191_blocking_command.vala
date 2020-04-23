@@ -80,29 +80,24 @@ public class Module : XmppStreamModule, Iq.Handler {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    private void on_stream_negotiated(XmppStream stream) {
-        stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).request_info(stream, stream.remote_name, (stream, info_result) => {
-            if (info_result.features.contains(NS_URI)) {
-                stream.add_flag(new Flag());
-                get_blocklist(stream, (stream, jids) => {
-                    stream.get_flag(Flag.IDENTITY).blocklist = jids;
-                });
-                return;
-            }
-        });
+    private async void on_stream_negotiated(XmppStream stream) {
+        bool has_feature = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, stream.remote_name, NS_URI);
+        if (has_feature) {
+            stream.add_flag(new Flag());
+            stream.get_flag(Flag.IDENTITY).blocklist = yield get_blocklist(stream);
+        }
     }
 
-    private delegate void OnBlocklist(XmppStream stream, Gee.List<string> jids);
-    private void get_blocklist(XmppStream stream, owned OnBlocklist listener) {
+    private async Gee.List<string> get_blocklist(XmppStream stream) {
         StanzaNode blocklist_node = new StanzaNode.build("blocklist", NS_URI).add_self_xmlns();
         Iq.Stanza iq = new Iq.Stanza.get(blocklist_node);
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-            StanzaNode? node = iq.stanza.get_subnode("blocklist", NS_URI);
-            if (node != null) {
-                Gee.List<string> jids = get_jids_from_items(node);
-                listener(stream, jids);
-            }
-        });
+
+        Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        StanzaNode? node = result_iq.stanza.get_subnode("blocklist", NS_URI);
+        if (node != null) {
+            return get_jids_from_items(node);
+        }
+        return new ArrayList<string>();
     }
 
     private Gee.List<string> get_jids_from_items(StanzaNode node) {

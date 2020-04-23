@@ -105,25 +105,22 @@ public class Module : XmppStreamModule {
     }
 
     public override void detach(XmppStream stream) {
-        stream.get_module(Bind.Module.IDENTITY).bound_to_resource.disconnect(query_availability);
+        stream.stream_negotiated.disconnect(query_availability);
     }
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    private void query_availability(XmppStream stream) {
-        stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, stream.remote_name, (stream, info_result) => {
-            bool available = check_ns_in_info(stream, stream.remote_name, info_result);
-            if (!available) {
-                stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name, (stream, items_result) => {
-                    foreach (Xep.ServiceDiscovery.Item item in items_result.items) {
-                        stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, item.jid, (stream, info_result) => {
-                            check_ns_in_info(stream, item.jid, info_result);
-                        });
-                    }
-                });
+    private async void query_availability(XmppStream stream) {
+        ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, stream.remote_name);
+        bool available = check_ns_in_info(stream, stream.remote_name, info_result);
+        if (!available) {
+            ServiceDiscovery.ItemsResult? items_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name);
+            foreach (Xep.ServiceDiscovery.Item item in items_result.items) {
+                ServiceDiscovery.InfoResult? info_result2 = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, item.jid);
+                check_ns_in_info(stream, item.jid, info_result2);
             }
-        });
+        }
     }
 
     private bool check_ns_in_info(XmppStream stream, Jid jid, Xep.ServiceDiscovery.InfoResult info_result) {

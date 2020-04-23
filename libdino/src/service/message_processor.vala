@@ -386,24 +386,20 @@ public class MessageProcessor : StreamInteractionModule, Object {
                     return Entities.Message.Type.GROUPCHAT_PM;
                 }
             } else {
-                SourceFunc callback = determine_message_type.callback;
                 XmppStream stream = stream_interactor.get_stream(account);
-                if (stream != null) stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_categories(stream, message.counterpart.bare_jid, (stream, identities) => {
+                if (stream != null) {
+                    Gee.Set<Xep.ServiceDiscovery.Identity>? identities = yield stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).get_entity_identities(stream, message.counterpart.bare_jid);
                     if (identities == null) {
-                        message.type_ = Entities.Message.Type.CHAT;
-                        Idle.add((owned) callback);
-                        return;
+                        return Entities.Message.Type.CHAT;
                     }
                     foreach (Xep.ServiceDiscovery.Identity identity in identities) {
                         if (identity.category == Xep.ServiceDiscovery.Identity.CATEGORY_CONFERENCE) {
-                            message.type_ = Entities.Message.Type.GROUPCHAT_PM;
+                            return Entities.Message.Type.GROUPCHAT_PM;
                         } else {
-                            message.type_ = Entities.Message.Type.CHAT;
+                            return Entities.Message.Type.CHAT;
                         }
                     }
-                    Idle.add((owned) callback);
-                });
-                yield;
+                }
             }
         }
         return Entities.Message.Type.CHAT;

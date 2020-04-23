@@ -23,7 +23,7 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
-        query_availability(stream);
+        query_availability.begin(stream);
     }
     public override void detach(XmppStream stream) { }
 
@@ -33,41 +33,36 @@ public class Module : XmppStreamModule, Iq.Handler {
         return stream.get_flag(Flag.IDENTITY).proxies;
     }
 
-    private void query_availability(XmppStream stream) {
-        stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name, (stream, items_result) => {
-            foreach (Xep.ServiceDiscovery.Item item in items_result.items) {
-                stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, item.jid, (stream, info_result) => {
-                    foreach (string feature in info_result.features) {
-                        if (feature == NS_URI) {
-                            StanzaNode query_ = new StanzaNode.build("query", NS_URI).add_self_xmlns();
-                            Iq.Stanza iq = new Iq.Stanza.get(query_) { to=item.jid };
-                            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-                                if (iq.is_error()) {
-                                    return;
-                                }
-                                StanzaNode? query = iq.stanza.get_subnode("query", NS_URI);
-                                StanzaNode? stream_host = query != null ? query.get_subnode("streamhost", NS_URI) : null;
-                                if (query == null || stream_host == null) {
-                                    return;
-                                }
-                                string? host = stream_host.get_attribute("host");
-                                string? jid_str = stream_host.get_attribute("jid");
-                                Jid? jid = null;
-                                try {
-                                    jid = jid_str != null ? new Jid(jid_str) : null;
-                                } catch (InvalidJidError ignored) {
-                                }
-                                int port = stream_host.get_attribute_int("port");
-                                if (host == null || jid == null || port <= 0 || port > 65535) {
-                                    return;
-                                }
-                                stream.get_flag(Flag.IDENTITY).proxies.add(new Proxy(host, jid, port));
-                            });
-                        }
-                    }
-                });
+    private async void query_availability(XmppStream stream) {
+        ServiceDiscovery.ItemsResult? items_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name);
+
+        foreach (Xep.ServiceDiscovery.Item item in items_result.items) {
+            bool has_feature = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, item.jid, NS_URI);
+            if (!has_feature) continue;
+
+            StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
+            Iq.Stanza iq = new Iq.Stanza.get(query_node) { to=item.jid };
+
+            Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+            if (iq_result.is_error()) continue;
+
+            StanzaNode? query_result_node = iq_result.stanza.get_subnode("query", NS_URI);
+            StanzaNode? stream_host = query_result_node != null ? query_result_node.get_subnode("streamhost", NS_URI) : null;
+            if (query_result_node == null || stream_host == null) {
+                return;
             }
-        });
+            string? host = stream_host.get_attribute("host");
+            string? jid_str = stream_host.get_attribute("jid");
+            Jid? jid = null;
+            try {
+                jid = jid_str != null ? new Jid(jid_str) : null;
+            } catch (InvalidJidError ignored) { }
+            int port = stream_host.get_attribute_int("port");
+            if (host == null || jid == null || port <= 0 || port > 65535) {
+                continue;
+            }
+            stream.get_flag(Flag.IDENTITY).proxies.add(new Proxy(host, jid, port));
+        }
     }
 
     public override string get_ns() { return NS_URI; }

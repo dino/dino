@@ -5,10 +5,15 @@ namespace Xmpp.Xep.EntityCapabilities {
 
     private Regex? sha1_base64_regex = null;
 
-    public string? get_caps_hash(Presence.Stanza presence) {
+    private Regex get_sha1_base64_regex() {
         if (sha1_base64_regex == null) {
             sha1_base64_regex = /^[A-Za-z0-9+\/]{27}=$/;
         }
+        return sha1_base64_regex;
+    }
+
+    public string? get_caps_hash(Presence.Stanza presence) {
+        Regex sha1_base64_regex = get_sha1_base64_regex();
         StanzaNode? c_node = presence.stanza.get_subnode("c", NS_URI);
         if (c_node == null) return null;
         string? ver_attribute = c_node.get_attribute("ver", NS_URI);
@@ -37,6 +42,8 @@ namespace Xmpp.Xep.EntityCapabilities {
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
             stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
+
+            check_features_node_ver(stream);
         }
 
         public override void detach(XmppStream stream) {
@@ -61,14 +68,27 @@ namespace Xmpp.Xep.EntityCapabilities {
             string? caps_hash = get_caps_hash(presence);
             if (caps_hash == null) return;
 
+            process_hash.begin(stream, presence.from, caps_hash);
+        }
+
+        private void check_features_node_ver(XmppStream stream) {
+            StanzaNode? node = stream.features.get_subnode("c", NS_URI);
+            if (node == null) return;
+
+            string? ver_attribute = node.get_attribute("ver", NS_URI);
+            if (ver_attribute == null) return;
+
+            process_hash.begin(stream, stream.remote_name, ver_attribute);
+        }
+
+        private async void process_hash(XmppStream stream, Jid jid_from, string caps_hash) {
             Gee.List<string> capabilities = storage.get_features(caps_hash);
             ServiceDiscovery.Identity identity = storage.get_identities(caps_hash);
             if (identity == null) {
-                stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, presence.from, (stream, query_result) => {
-                    store_entity_result(stream, caps_hash, query_result);
-                });
+                ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid_from);
+                store_entity_result(stream, caps_hash, info_result);
             } else {
-                stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(presence.from, capabilities);
+                stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(jid_from, capabilities);
             }
         }
 
