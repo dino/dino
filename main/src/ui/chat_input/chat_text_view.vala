@@ -75,7 +75,7 @@ public class ChatTextView : ScrolledWindow {
         if (event.keyval in new uint[]{Key.Return, Key.KP_Enter}) {
             if ((event.state & ModifierType.SHIFT_MASK) > 0) {
                 text_view.buffer.insert_at_cursor("\n", 1);
-            } else if (text_view.buffer.text != "") {
+            } else if (text_view.buffer.text.strip() != "") {
                 send_text();
                 edit_history.reset_history();
             }
