@@ -295,7 +295,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         current_stream.get_flag(Flag.IDENTITY).remove_session(sid);
     }
 
-    public void on_iq_set(XmppStream stream, Iq.Stanza iq) {
+    public async void on_iq_set(XmppStream stream, Iq.Stanza iq) {
         try {
             handle_iq_set(stream, iq);
         } catch (IqError e) {

@@ -22,16 +22,16 @@ public class Module : XmppStreamNegotiationModule {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    private void on_bound_resource(XmppStream stream, Jid my_jid) {
+    private async void on_bound_resource(XmppStream stream, Jid my_jid) {
         StanzaNode? session_node = stream.features.get_subnode("session", NS_URI);
         if (session_node != null && session_node.get_subnode("optional", NS_URI) == null) {
             stream.add_flag(new Flag());
             Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("session", NS_URI).add_self_xmlns()) { to=stream.remote_name };
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-                if (!iq.is_error()) {
-                    stream.get_flag(Flag.IDENTITY).finished = true;
-                }
-            });
+
+            Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+            if (!result_iq.is_error()) {
+                stream.get_flag(Flag.IDENTITY).finished = true;
+            }
         }
     }
 }

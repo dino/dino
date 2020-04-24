@@ -8,34 +8,27 @@ public class Module : XmppStreamNegotiationModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0077_in_band_registration");
 
     public async Form? get_from_server(XmppStream stream, Jid jid) {
-        Iq.Stanza request_form_iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI).add_self_xmlns());
+        StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
+        Iq.Stanza request_form_iq = new Iq.Stanza.get(query_node) { to=jid };
         request_form_iq.to = jid;
         SourceFunc callback = get_from_server.callback;
-        Form? form = null;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, request_form_iq, (stream, response_iq) => {
-            form = new Form.from_node(stream, response_iq);
-            Idle.add((owned)callback);
-        });
-        yield;
-        return form;
+
+        Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, request_form_iq);
+        return new Form.from_node(stream, iq_result);
     }
 
     public async string? submit_to_server(XmppStream stream, Jid jid, Form form) {
         StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
         query_node.put_node(form.get_submit_node());
-        Iq.Stanza iq = new Iq.Stanza.set(query_node);
-        iq.to = jid;
-        string? error_message = null;
-        SourceFunc callback = submit_to_server.callback;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, response_iq) => {
-            if (response_iq.is_error()) {
-                ErrorStanza? error_stanza = response_iq.get_error();
-                error_message = error_stanza.text ?? "Error";
-            }
-            Idle.add((owned)callback);
-        });
-        yield;
-        return error_message;
+        Iq.Stanza iq = new Iq.Stanza.set(query_node) { to=jid };
+
+        Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        if (iq_result.is_error()) {
+            ErrorStanza? error_stanza = iq_result.get_error();
+            return error_stanza.text ?? "Error";
+        }
+
+        return null;
     }
 
     public override bool mandatory_outstanding(XmppStream stream) { return false; }

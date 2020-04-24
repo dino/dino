@@ -223,7 +223,7 @@ public class ConnectionManager : Object {
         DateTime? last_activity_was = connections[account].last_activity;
 
         XmppStream stream = connections[account].stream;
-        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping(stream, account.bare_jid.domain_jid, () => {
+        stream.get_module(Xep.Ping.Module.IDENTITY).send_ping.begin(stream, account.bare_jid.domain_jid, () => {
             acked = true;
             if (connections[account].stream != stream) return;
             change_connection_state(account, ConnectionState.CONNECTED);

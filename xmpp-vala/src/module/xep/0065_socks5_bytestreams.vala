@@ -27,7 +27,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
     public override void detach(XmppStream stream) { }
 
-    public void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
+    public async void on_iq_set(XmppStream stream, Iq.Stanza iq) { }
 
     public Gee.List<Proxy> get_proxies(XmppStream stream) {
         return stream.get_flag(Flag.IDENTITY).proxies;

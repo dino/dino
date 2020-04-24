@@ -333,9 +333,9 @@ public class Module : XmppStreamModule {
                     Jid bare_jid = presence.from.bare_jid;
                     if (flag.get_enter_id(bare_jid) != null) {
 
-                        query_affiliation(stream, bare_jid, "member", null);
-                        query_affiliation(stream, bare_jid, "admin", null);
-                        query_affiliation(stream, bare_jid, "owner", null);
+                        query_affiliation.begin(stream, bare_jid, "member");
+                        query_affiliation.begin(stream, bare_jid, "admin");
+                        query_affiliation.begin(stream, bare_jid, "owner");
 
                         flag.finish_muc_enter(bare_jid, presence.from.resourcepart);
                         flag.enter_futures[bare_jid].set_value(new JoinResult() {nick=presence.from.resourcepart});
@@ -437,36 +437,38 @@ public class Module : XmppStreamModule {
         room_info_updated(stream, jid);
     }
 
-    public delegate void OnAffiliationResult(XmppStream stream, Gee.List<Jid> jids);
-    private void query_affiliation(XmppStream stream, Jid jid, string affiliation, owned OnAffiliationResult? listener) {
+    private async Gee.List<Jid>? query_affiliation(XmppStream stream, Jid jid, string affiliation) {
         Iq.Stanza iq = new Iq.Stanza.get(
             new StanzaNode.build("query", NS_URI_ADMIN)
                 .add_self_xmlns()
                 .put_node(new StanzaNode.build("item", NS_URI_ADMIN)
                     .put_attribute("affiliation", affiliation))
         ) { to=jid };
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-            if (iq.is_error()) return;
-            StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI_ADMIN);
-            if (query_node == null) return;
-            Gee.List<StanzaNode> item_nodes = query_node.get_subnodes("item", NS_URI_ADMIN);
-            Gee.List<Jid> ret_jids = new ArrayList<Jid>(Jid.equals_func);
-            foreach (StanzaNode item in item_nodes) {
-                string jid__ = item.get_attribute("jid");
-                string? affiliation_ = item.get_attribute("affiliation");
-                if (jid__ != null && affiliation_ != null) {
-                    try {
-                        Jid jid_ = new Jid(jid__);
-                        stream.get_flag(Flag.IDENTITY).set_offline_member(iq.from, jid_, parse_affiliation(affiliation_));
-                        ret_jids.add(jid_);
-                        received_occupant_jid(stream, iq.from, jid_);
-                    } catch (InvalidJidError e) {
-                        warning("Received invalid occupant jid: %s", e.message);
-                    }
+
+
+        Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        if (iq_result.is_error()) return null;
+
+        StanzaNode? query_node = iq_result.stanza.get_subnode("query", NS_URI_ADMIN);
+        if (query_node == null) return null;
+
+        Gee.List<StanzaNode> item_nodes = query_node.get_subnodes("item", NS_URI_ADMIN);
+        Gee.List<Jid> ret_jids = new ArrayList<Jid>(Jid.equals_func);
+        foreach (StanzaNode item in item_nodes) {
+            string jid__ = item.get_attribute("jid");
+            string? affiliation_ = item.get_attribute("affiliation");
+            if (jid__ != null && affiliation_ != null) {
+                try {
+                    Jid jid_ = new Jid(jid__);
+                    stream.get_flag(Flag.IDENTITY).set_offline_member(iq_result.from, jid_, parse_affiliation(affiliation_));
+                    ret_jids.add(jid_);
+                    received_occupant_jid(stream, iq_result.from, jid_);
+                } catch (InvalidJidError e) {
+                    warning("Received invalid occupant jid: %s", e.message);
                 }
             }
-            if (listener != null) listener(stream, ret_jids);
-        });
+        }
+        return ret_jids;
     }
 
     private static ArrayList<int> get_status_codes(StanzaNode x_node) {

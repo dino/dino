@@ -44,7 +44,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         roster_set(stream, item);
     }
 
-    public void on_iq_set(XmppStream stream, Iq.Stanza iq) {
+    public async void on_iq_set(XmppStream stream, Iq.Stanza iq) {
         StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI);
         if (query_node == null) return;
         if (!iq.from.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)) {

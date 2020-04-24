@@ -56,18 +56,10 @@ public class Module : XmppStreamModule {
         if (stream.get_flag(Flag.IDENTITY) == null) return null;
 
         var query_node = crate_base_query(stream, jid, query_id, start_time, end_time);
-
         query_node.put_node(create_set_rsm_node(end_id));
         Iq.Stanza iq = new Iq.Stanza.set(query_node);
 
-        Iq.Stanza? result_iq = null;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-            result_iq = iq;
-            Idle.add(query_archive.callback);
-        });
-        yield;
-
-        return result_iq;
+        return yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
     }
 
     public override void attach(XmppStream stream) {
@@ -98,14 +90,7 @@ public class Module : XmppStreamModule {
 
         Iq.Stanza paging_iq = new Iq.Stanza.set(query_node);
 
-        Iq.Stanza? result_iq = null;
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, paging_iq, (stream, iq) => {
-            result_iq = iq;
-            Idle.add(page_through_results.callback);
-        });
-        yield;
-
-        return result_iq;
+        return yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, paging_iq);
     }
 
     private async void query_availability(XmppStream stream) {

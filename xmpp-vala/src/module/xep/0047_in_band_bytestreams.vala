@@ -18,7 +18,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI, this);
     }
 
-    public void on_iq_set(XmppStream stream, Iq.Stanza iq) {
+    public async void on_iq_set(XmppStream stream, Iq.Stanza iq) {
         // the iq module ensures that there's only one child node
         StanzaNode? node = null;
         node = (node != null) ? node : iq.stanza.get_subnode("open", NS_URI);

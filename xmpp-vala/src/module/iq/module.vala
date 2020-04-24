@@ -54,7 +54,7 @@ namespace Xmpp.Iq {
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
 
-        private void on_received_iq_stanza(XmppStream stream, StanzaNode node) {
+        private async void on_received_iq_stanza(XmppStream stream, StanzaNode node) {
             Iq.Stanza iq = new Iq.Stanza.from_stanza(node, stream.has_flag(Bind.Flag.IDENTITY) ? stream.get_flag(Bind.Flag.IDENTITY).my_jid : null);
 
             if (iq.type_ == Iq.Stanza.TYPE_RESULT || iq.is_error()) {
@@ -71,9 +71,9 @@ namespace Xmpp.Iq {
                     Gee.List<Handler> handlers = namespaceRegistrants[children[0].ns_uri];
                     foreach (Handler handler in handlers) {
                         if (iq.type_ == Iq.Stanza.TYPE_GET) {
-                            handler.on_iq_get(stream, iq);
+                            yield handler.on_iq_get(stream, iq);
                         } else if (iq.type_ == Iq.Stanza.TYPE_SET) {
-                            handler.on_iq_set(stream, iq);
+                            yield handler.on_iq_set(stream, iq);
                         }
                     }
                 } else {
@@ -94,11 +94,11 @@ namespace Xmpp.Iq {
     }
 
     public interface Handler : Object {
-        public virtual void on_iq_get(XmppStream stream, Iq.Stanza iq) {
+        public async virtual void on_iq_get(XmppStream stream, Iq.Stanza iq) {
             Iq.Stanza bad_request = new Iq.Stanza.error(iq, new ErrorStanza.bad_request("unexpected IQ get for this namespace"));
             stream.get_module(Module.IDENTITY).send_iq(stream, bad_request);
         }
-        public virtual void on_iq_set(XmppStream stream, Iq.Stanza iq) {
+        public async virtual void on_iq_set(XmppStream stream, Iq.Stanza iq) {
             Iq.Stanza bad_request = new Iq.Stanza.error(iq, new ErrorStanza.bad_request("unexpected IQ set for this namespace"));
             stream.get_module(Module.IDENTITY).send_iq(stream, bad_request);
         }

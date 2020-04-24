@@ -100,7 +100,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         return result;
     }
 
-    public void on_iq_get(XmppStream stream, Iq.Stanza iq) {
+    public async void on_iq_get(XmppStream stream, Iq.Stanza iq) {
         StanzaNode? query_node = iq.stanza.get_subnode("query", NS_URI_INFO);
         if (query_node != null) {
             send_query_result(stream, iq);

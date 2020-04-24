@@ -6,22 +6,17 @@ namespace Xmpp.Xep.PrivateXmlStorage {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0049_private_xml_storage");
 
-        public delegate void OnSuccess(XmppStream stream);
-        public void store(XmppStream stream, StanzaNode node, owned OnSuccess listener) {
+        public async void store(XmppStream stream, StanzaNode node) {
             StanzaNode queryNode = new StanzaNode.build("query", NS_URI).add_self_xmlns().put_node(node);
             Iq.Stanza iq = new Iq.Stanza.set(queryNode);
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-                listener(stream);
-            });
+            yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
         }
 
-        public delegate void OnResponse(XmppStream stream, StanzaNode? node);
-        public void retrieve(XmppStream stream, StanzaNode node, owned OnResponse listener) {
+        public async StanzaNode? retrieve(XmppStream stream, StanzaNode node) {
             StanzaNode queryNode = new StanzaNode.build("query", NS_URI).add_self_xmlns().put_node(node);
             Iq.Stanza iq = new Iq.Stanza.get(queryNode);
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, iq) => {
-                listener(stream, iq.stanza.get_subnode("query", NS_URI));
-            });
+            Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+            return iq_result.stanza.get_subnode("query", NS_URI);
         }
 
         public override void attach(XmppStream stream) { }
