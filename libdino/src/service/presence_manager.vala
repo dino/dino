@@ -8,13 +8,12 @@ public class PresenceManager : StreamInteractionModule, Object {
     public static ModuleIdentity<PresenceManager> IDENTITY = new ModuleIdentity<PresenceManager>("presence_manager");
     public string id { get { return IDENTITY.id; } }
 
-    public signal void show_received(Show show, Jid jid, Account account);
+    public signal void show_received(Jid jid, Account account);
     public signal void received_offline_presence(Jid jid, Account account);
     public signal void received_subscription_request(Jid jid, Account account);
     public signal void received_subscription_approval(Jid jid, Account account);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Jid, HashMap<Jid, ArrayList<Show>>> shows = new HashMap<Jid, HashMap<Jid, ArrayList<Show>>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private HashMap<Jid, ArrayList<Jid>> resources = new HashMap<Jid, ArrayList<Jid>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private Gee.List<Jid> subscription_requests = new ArrayList<Jid>(Jid.equals_func);
 
@@ -28,19 +27,14 @@ public class PresenceManager : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
     }
 
-    public Show get_last_show(Jid jid, Account account) {
+    public string? get_last_show(Jid jid, Account account) {
         XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) {
-            Xmpp.Presence.Stanza? presence = stream.get_flag(Presence.Flag.IDENTITY).get_presence(jid);
-            if (presence != null) {
-                return new Show(jid, presence.show, new DateTime.now_utc());
-            }
-        }
-        return new Show(jid, Show.OFFLINE, new DateTime.now_utc());
-    }
+        if (stream == null) return null;
 
-    public HashMap<Jid, ArrayList<Show>>? get_shows(Jid jid, Account account) {
-        return shows[jid];
+        Xmpp.Presence.Stanza? presence = stream.get_flag(Presence.Flag.IDENTITY).get_presence(jid);
+        if (presence == null) return null;
+
+        return presence.show;
     }
 
     public Gee.List<Jid>? get_full_jids(Jid jid, Account account) {
@@ -110,7 +104,7 @@ public class PresenceManager : StreamInteractionModule, Object {
                 resources[jid].add(jid);
             }
         }
-        add_show(account, jid, show);
+        show_received(jid, account);
     }
 
     private void on_received_unavailable(Account account, Jid jid) {
@@ -123,39 +117,6 @@ public class PresenceManager : StreamInteractionModule, Object {
             }
         }
         received_offline_presence(jid, account);
-    }
-
-    private void add_show(Account account, Jid jid, string s) {
-        Show show = new Show(jid, s, new DateTime.now_utc());
-        lock (shows) {
-            if (!shows.has_key(jid)) {
-                shows[jid] = new HashMap<Jid, ArrayList<Show>>();
-            }
-            if (!shows[jid].has_key(jid)) {
-                shows[jid][jid] = new ArrayList<Show>();
-            }
-            shows[jid][jid].add(show);
-        }
-        show_received(show, jid, account);
-    }
-}
-
-public class Show : Object {
-    public const string ONLINE = Xmpp.Presence.Stanza.SHOW_ONLINE;
-    public const string AWAY = Xmpp.Presence.Stanza.SHOW_AWAY;
-    public const string CHAT = Xmpp.Presence.Stanza.SHOW_CHAT;
-    public const string DND = Xmpp.Presence.Stanza.SHOW_DND;
-    public const string XA = Xmpp.Presence.Stanza.SHOW_XA;
-    public const string OFFLINE = "offline";
-
-    public Jid jid;
-    public string as;
-    public DateTime datetime;
-
-    public Show(Jid jid, string show, DateTime datetime) {
-        this.jid = jid;
-        this.as = show;
-        this.datetime = datetime;
     }
 }
 }

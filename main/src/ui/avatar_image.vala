@@ -88,7 +88,7 @@ public class AvatarImage : Misc {
         }
     }
 
-    private void on_show_received(Show show, Jid jid, Account account) {
+    private void on_show_received(Jid jid, Account account) {
         if (!account.equals(this.account)) return;
         update_avatar_if_jid(jid);
     }

@@ -127,7 +127,7 @@ public class ChatInputController : Object {
                     }
                     return;
                 case "/nick":
-                    stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation.account, conversation.counterpart, token[1]);
+                    stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation, token[1]);
                     return;
                 case "/ping":
                     Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);

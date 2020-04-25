@@ -337,9 +337,11 @@ public class Module : XmppStreamModule {
                         query_affiliation.begin(stream, bare_jid, "admin");
                         query_affiliation.begin(stream, bare_jid, "owner");
 
-                        flag.finish_muc_enter(bare_jid, presence.from.resourcepart);
+                        flag.finish_muc_enter(bare_jid);
                         flag.enter_futures[bare_jid].set_value(new JoinResult() {nick=presence.from.resourcepart});
                     }
+
+                    flag.set_muc_nick(presence.from);
                 }
                 string? affiliation_str = x_node.get_deep_attribute("item", "affiliation");
                 Affiliation? affiliation = null;

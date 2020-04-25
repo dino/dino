@@ -250,7 +250,8 @@ public class ConversationSelectorRow : ListBoxRow {
 
         for (int i = 0; i < full_jids.size; i++) {
             Jid full_jid = full_jids[i];
-            Show show = stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, conversation.account);
+            string? show = stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, conversation.account);
+            if (show == null) continue;
             Xep.ServiceDiscovery.Identity? identity = stream_interactor.get_module(EntityInfo.IDENTITY).get_identity(conversation.account, full_jid);
 
             Image image = new Image() { hexpand=false, valign=Align.START, visible=true };
@@ -260,20 +261,20 @@ public class ConversationSelectorRow : ListBoxRow {
                 image.set_from_icon_name("dino-device-desktop-symbolic", IconSize.SMALL_TOOLBAR);
             }
 
-            if (show.as == Show.AWAY) {
+            if (show == Presence.Stanza.SHOW_AWAY) {
                 Util.force_color(image, "#FF9800");
-            } else if (show.as == Show.XA || show.as == Show.DND) {
+            } else if (show == Presence.Stanza.SHOW_XA || show == Presence.Stanza.SHOW_DND) {
                 Util.force_color(image, "#FF5722");
             } else {
                 Util.force_color(image, "#4CAF50");
             }
 
             string? status = null;
-            if (show.as == Show.AWAY) {
+            if (show == Presence.Stanza.SHOW_AWAY) {
                 status = "away";
-            } else if (show.as == Show.XA) {
+            } else if (show == Presence.Stanza.SHOW_XA) {
                 status = "not available";
-            } else if (show.as == Show.DND) {
+            } else if (show == Presence.Stanza.SHOW_DND) {
                 status = "do not disturb";
             }
 
@@ -288,9 +289,7 @@ public class ConversationSelectorRow : ListBoxRow {
                 continue;
             }
             if (status != null) {
-                sb.append(" <i>(");
-                sb.append(status);
-                sb.append(")</i>");
+                sb.append(" <i>(").append(status).append(")</i>");
             }
 
             Label resource = new Label(sb.str) { use_markup=true, hexpand=true, xalign=0, visible=true };

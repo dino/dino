@@ -62,10 +62,6 @@ public class ConversationManager : StreamInteractionModule, Object {
         return null;
     }
 
-    public Gee.List<Conversation> get_conversations_for_presence(Show show, Account account) {
-        return get_conversations(show.jid, account);
-    }
-
     public Gee.List<Conversation> get_conversations(Jid jid, Account account) {
         Gee.List<Conversation> ret = new ArrayList<Conversation>(Conversation.equals_func);
         Conversation? bare_conversation = get_conversation(jid, account);

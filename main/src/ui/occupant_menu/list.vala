@@ -27,7 +27,7 @@ public class List : Box {
         search_entry.search_changed.connect(refilter);
 
         stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_show_received);
-        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_updated_roster_item);
+        stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect(on_received_offline_presence);
 
         initialize_for_conversation(conversation);
     }
@@ -62,15 +62,18 @@ public class List : Box {
         rows.unset(jid);
     }
 
-    private void on_updated_roster_item(Account account, Jid jid, Xmpp.Roster.Item roster_item) {
-
+    private void on_received_offline_presence(Jid jid, Account account) {
+        if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
+            if (rows.has_key(jid)) {
+                remove_occupant(jid);
+            }
+            list_box.invalidate_filter();
+        }
     }
 
-    private void on_show_received(Show show, Jid jid, Account account) {
+    private void on_show_received(Jid jid, Account account) {
         if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
-            if (show.as == Show.OFFLINE && rows.has_key(jid)) {
-                remove_occupant(jid);
-            } else if (show.as != Show.OFFLINE && !rows.has_key(jid)) {
+            if (!rows.has_key(jid)) {
                 add_occupant(jid);
             }
             list_box.invalidate_filter();

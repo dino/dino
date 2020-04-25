@@ -50,6 +50,12 @@ public class Flag : XmppStreamFlag {
 
     public string? get_muc_nick(Jid muc_jid) { return own_nicks[muc_jid.bare_jid]; }
 
+    public void set_muc_nick(Jid muc_jid) {
+        if (muc_jid.is_full()) {
+            own_nicks[muc_jid.bare_jid] = muc_jid.resourcepart;
+        }
+    }
+
     public string? get_enter_id(Jid muc_jid) { return enter_ids[muc_jid.bare_jid]; }
 
     public bool is_muc(Jid jid) { return own_nicks[jid] != null; }
@@ -98,8 +104,7 @@ public class Flag : XmppStreamFlag {
         enter_ids[jid.bare_jid] = presence_id;
     }
 
-    internal void finish_muc_enter(Jid jid, string? nick = null) {
-        if (nick != null) own_nicks[jid.bare_jid] = nick;
+    internal void finish_muc_enter(Jid jid) {
         enter_ids.unset(jid.bare_jid);
     }
 

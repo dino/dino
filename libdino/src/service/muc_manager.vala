@@ -100,9 +100,29 @@ public class MucManager : StreamInteractionModule, Object {
         if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_subject(stream, jid.bare_jid, subject);
     }
 
-    public void change_nick(Account account, Jid jid, string new_nick) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_nick(stream, jid.bare_jid, new_nick);
+    public async void change_nick(Conversation conversation, string new_nick) {
+        XmppStream? stream = stream_interactor.get_stream(conversation.account);
+        if (stream == null) return;
+
+        // Check if this would be a valid nick
+        try {
+            Jid jid = conversation.counterpart.with_resource(new_nick);
+        } catch (InvalidJidError error) { return; }
+
+        stream.get_module(Xep.Muc.Module.IDENTITY).change_nick(stream, conversation.counterpart, new_nick);
+
+        conversation.nickname = new_nick;
+
+        // Update nick in bookmark
+        Set<Conference>? conferences = yield bookmarks_provider[conversation.account].get_conferences(stream);
+        if (conferences == null) return;
+        foreach (Conference conference in conferences) {
+            if (conference.jid.equals(conversation.counterpart)) {
+                Conference new_conference = new Conference() { jid=conversation.counterpart, nick=new_nick, name=conference.name, password=conference.password, autojoin=conference.autojoin };
+                bookmarks_provider[conversation.account].replace_conference.begin(stream, conversation.counterpart, new_conference);
+                break;
+            }
+        }
     }
 
     public void invite(Account account, Jid muc, Jid invitee) {
@@ -403,7 +423,7 @@ public class MucManager : StreamInteractionModule, Object {
             foreach (Conference conference in conferences) {
                 if (conference.jid.equals(jid)) {
                     if (!conference.autojoin) {
-                        Conference new_conference = new Conference() { jid=jid, nick=conference.nick, name=conference.name, password=conference.password, autojoin=true };
+                        Conference new_conference = new Conference() { jid=jid, nick=nick ?? conference.nick, name=conference.name, password=password ?? conference.password, autojoin=true };
                         bookmarks_provider[account].replace_conference.begin(stream, jid, new_conference);
                     }
                     return;
