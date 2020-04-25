@@ -46,11 +46,11 @@ public class Module : XmppStreamModule, Iq.Handler {
 
         if (flag.has_entity_feature(jid, feature) == null) {
             InfoResult? info_result = yield request_info(stream, jid);
-            stream.get_flag(Flag.IDENTITY).set_entity_features(info_result.iq.from, info_result != null ? info_result.features : null);
-            stream.get_flag(Flag.IDENTITY).set_entity_identities(info_result.iq.from, info_result != null ? info_result.identities : null);
+            stream.get_flag(Flag.IDENTITY).set_entity_features(jid, info_result != null ? info_result.features : null);
+            stream.get_flag(Flag.IDENTITY).set_entity_identities(jid, info_result != null ? info_result.identities : null);
         }
 
-        return flag.has_entity_feature(jid, feature);
+        return flag.has_entity_feature(jid, feature) ?? false;
     }
 
     public async Gee.Set<Identity>? get_entity_identities(XmppStream stream, Jid jid) {

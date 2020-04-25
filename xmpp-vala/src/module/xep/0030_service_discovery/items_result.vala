@@ -26,6 +26,10 @@ public class ItemsResult {
     }
 
     public static ItemsResult? create_from_iq(Iq.Stanza iq) {
+        if (iq.type_ != Iq.Stanza.TYPE_RESULT) return null;
+
+        if (iq.stanza.get_subnode("query", NS_URI_ITEMS) == null) return null;
+
         return new ItemsResult.from_iq(iq);
     }
 }

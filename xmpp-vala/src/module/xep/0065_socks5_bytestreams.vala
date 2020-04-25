@@ -35,6 +35,7 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     private async void query_availability(XmppStream stream) {
         ServiceDiscovery.ItemsResult? items_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name);
+        if (items_result == null) return;
 
         foreach (Xep.ServiceDiscovery.Item item in items_result.items) {
             bool has_feature = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, item.jid, NS_URI);

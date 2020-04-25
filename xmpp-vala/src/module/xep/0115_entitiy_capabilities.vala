@@ -86,6 +86,7 @@ namespace Xmpp.Xep.EntityCapabilities {
             ServiceDiscovery.Identity identity = storage.get_identities(caps_hash);
             if (identity == null) {
                 ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid_from);
+                if (info_result == null) return;
                 store_entity_result(stream, caps_hash, info_result);
             } else {
                 stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(jid_from, capabilities);
