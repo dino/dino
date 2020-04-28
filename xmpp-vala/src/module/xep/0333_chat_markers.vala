@@ -12,7 +12,7 @@ private const string[] MARKERS = {MARKER_RECEIVED, MARKER_DISPLAYED, MARKER_ACKN
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0333_chat_markers");
 
-    public signal void marker_received(XmppStream stream, Jid jid, string marker, string id);
+    public signal void marker_received(XmppStream stream, Jid jid, string marker, string id, MessageStanza message);
 
     private SendPipelineListener send_pipeline_listener = new SendPipelineListener();
 
@@ -48,7 +48,10 @@ public class Module : XmppStreamModule {
         Gee.List<StanzaNode> nodes = message.stanza.get_all_subnodes();
         foreach (StanzaNode node in nodes) {
             if (node.ns_uri == NS_URI && node.name in MARKERS) {
-                marker_received(stream, message.from, node.name, node.get_attribute("id", NS_URI));
+                string? to_stanza_id = node.get_attribute("id", NS_URI);
+                if (to_stanza_id != null) {
+                    marker_received(stream, message.from, node.name, to_stanza_id, message);
+                }
             }
         }
     }

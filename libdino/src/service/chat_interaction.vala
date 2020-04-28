@@ -206,7 +206,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
                 break;
             case Xep.ChatMarkers.MARKER_DISPLAYED:
                 if (conversation.get_send_marker_setting(stream_interactor) == Conversation.Setting.ON) {
-                    if (message.type_ == Message.Type.GROUPCHAT) {
+                    if (message.type_ == Message.Type.GROUPCHAT || message.type_ == Message.Type.GROUPCHAT_PM) {
                         if (message.server_id == null) return;
                         stream.get_module(Xep.ChatMarkers.Module.IDENTITY).send_marker(stream, message.from.bare_jid, message.server_id, message.get_type_string(), Xep.ChatMarkers.MARKER_DISPLAYED);
                     } else {

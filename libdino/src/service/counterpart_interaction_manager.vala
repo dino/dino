@@ -64,8 +64,8 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, Xep.ChatMarkers.Module.IDENTITY).marker_received.connect( (stream, jid, marker, id) => {
-            on_chat_marker_received(account, jid, marker, id);
+        stream_interactor.module_manager.get_module(account, Xep.ChatMarkers.Module.IDENTITY).marker_received.connect( (stream, jid, marker, id, message_stanza) => {
+            on_chat_marker_received(account, jid, marker, id, message_stanza);
         });
         stream_interactor.module_manager.get_module(account, Xep.MessageDeliveryReceipts.Module.IDENTITY).receipt_received.connect((stream, jid, id) => {
             on_receipt_received(account, jid, id);
@@ -119,12 +119,20 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id) {
+    private async void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id, MessageStanza message_stanza) {
+        Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, message_stanza);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+        if (conversation == null) return;
+        handle_chat_marker(conversation, jid, marker, stanza_id);
+    }
 
+    private void handle_chat_marker(Conversation conversation, Jid jid, string marker, string stanza_id) {
         // Check if the marker comes from ourselves (own jid or our jid in a MUC)
-        bool own_marker = account.bare_jid.to_string() == jid.bare_jid.to_string();
-        if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account)) {
-            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, account);
+        bool own_marker = false;
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            own_marker = conversation.account.bare_jid.to_string() == jid.bare_jid.to_string();
+        } else {
+            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, conversation.account);
             if (own_muc_jid != null && own_muc_jid.equals(jid)) {
                 own_marker = true;
             }
@@ -133,60 +141,61 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         if (own_marker) {
             // If we received a display marker from ourselves (other device), set the conversation read up to that message.
             if (marker != Xep.ChatMarkers.MARKER_DISPLAYED && marker != Xep.ChatMarkers.MARKER_ACKNOWLEDGED) return;
-            Conversation? conversation = stream_interactor.get_module(MessageStorage.IDENTITY).get_conversation_for_stanza_id(account, stanza_id);
-            if (conversation == null || conversation.type_ == Conversation.Type.GROUPCHAT) return;
-            Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
+            Entities.Message? message = null;
+            if (conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
+                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(stanza_id, conversation);
+            } else {
+                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
+            }
             if (message == null) return;
             // Don't move read marker backwards because we get old info from another client
             if (conversation.read_up_to == null || conversation.read_up_to.local_time.compare(message.local_time) > 0) return;
             conversation.read_up_to = message;
         } else {
-            // We received a marker from someone else. Search the respective message and mark it.
-            foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations(jid, account)) {
+            // We can't currently handle chat markers in MUCs
+            if (conversation.type_ == Conversation.Type.GROUPCHAT) return;
 
-                // We can't currently handle chat markers in MUCs
-                if (conversation.type_ == Conversation.Type.GROUPCHAT) continue;
-
-                Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
-                if (message != null) {
-                    switch (marker) {
-                        case Xep.ChatMarkers.MARKER_RECEIVED:
-                            // If we got a received marker, mark the respective message received.
-                            received_message_received(account, jid, message);
-                            message.marked = Entities.Message.Marked.RECEIVED;
-                            break;
-                        case Xep.ChatMarkers.MARKER_DISPLAYED:
-                            // If we got a display marker, set all messages up to that message as read (if we know they've been received).
-                            received_message_displayed(account, jid, message);
-                            Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
-                            foreach (Entities.Message m in messages) {
-                                if (m.equals(message)) break;
-                                if (m.marked == Entities.Message.Marked.RECEIVED) m.marked = Entities.Message.Marked.READ;
-                            }
-                            message.marked = Entities.Message.Marked.READ;
-                            break;
-                    }
-                } else {
-                    // We might get a marker before the actual message (on catchup). Save the marker.
-                    if (marker_wo_message.has_key(stanza_id) &&
-                        marker_wo_message[stanza_id] == Xep.ChatMarkers.MARKER_DISPLAYED && marker == Xep.ChatMarkers.MARKER_RECEIVED) {
-                        return;
-                    }
-                    marker_wo_message[stanza_id] = marker;
+            Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
+            if (message != null) {
+                switch (marker) {
+                    case Xep.ChatMarkers.MARKER_RECEIVED:
+                        // If we got a received marker, mark the respective message received.
+                        received_message_received(conversation.account, jid, message);
+                        message.marked = Entities.Message.Marked.RECEIVED;
+                        break;
+                    case Xep.ChatMarkers.MARKER_DISPLAYED:
+                        // If we got a display marker, set all messages up to that message as read (if we know they've been received).
+                        received_message_displayed(conversation.account, jid, message);
+                        Gee.List<Entities.Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
+                        foreach (Entities.Message m in messages) {
+                            if (m.equals(message)) break;
+                            if (m.marked == Entities.Message.Marked.RECEIVED) m.marked = Entities.Message.Marked.READ;
+                        }
+                        message.marked = Entities.Message.Marked.READ;
+                        break;
                 }
+            } else {
+                // We might get a marker before the actual message (on catchup). Save the marker.
+                if (marker_wo_message.has_key(stanza_id) &&
+                        marker_wo_message[stanza_id] == Xep.ChatMarkers.MARKER_DISPLAYED && marker == Xep.ChatMarkers.MARKER_RECEIVED) {
+                    return;
+                }
+                marker_wo_message[stanza_id] = marker;
             }
         }
     }
 
     private void check_if_got_marker(Entities.Message message, Conversation conversation) {
         if (marker_wo_message.has_key(message.stanza_id)) {
-            on_chat_marker_received(conversation.account, conversation.counterpart, marker_wo_message[message.stanza_id], message.stanza_id);
+            handle_chat_marker(conversation, conversation.counterpart, marker_wo_message[message.stanza_id], message.stanza_id);
             marker_wo_message.unset(message.stanza_id);
         }
     }
 
     private void on_receipt_received(Account account, Jid jid, string id) {
-        on_chat_marker_received(account, jid, Xep.ChatMarkers.MARKER_RECEIVED, id);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account, Conversation.Type.CHAT);
+        if (conversation == null) return;
+        handle_chat_marker(conversation, jid,Xep.ChatMarkers.MARKER_RECEIVED, id);
     }
 }
 

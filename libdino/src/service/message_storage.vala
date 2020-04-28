@@ -100,6 +100,14 @@ public class MessageStorage : StreamInteractionModule, Object {
         return null;
     }
 
+    public Message? get_message_by_server_id(string server_id, Conversation conversation) {
+        init_conversation(conversation);
+        foreach (Message message in messages[conversation]) {
+            if (message.server_id == server_id) return message;
+        }
+        return null;
+    }
+
     public Conversation? get_conversation_for_stanza_id(Account account, string stanza_id) {
         foreach (Conversation conversation in messages.keys) {
             if (!conversation.account.equals(account)) continue;
