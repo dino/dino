@@ -443,7 +443,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private void load_earlier_messages() {
         was_value = scrolled.vadjustment.value;
         if (!reloading_mutex.trylock()) return;
-        if (meta_items.size > 0) {
+        if (content_items.size > 0) {
             Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, (content_items.first() as ContentMetaItem).content_item, 20);
             foreach (ContentMetaItem item in items) {
                 do_insert_item(item);
@@ -455,7 +455,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
     private void load_later_messages() {
         if (!reloading_mutex.trylock()) return;
-        if (meta_items.size > 0 && !at_current_content) {
+        if (content_items.size > 0 && !at_current_content) {
             Gee.List<ContentMetaItem> items = content_populator.populate_after(conversation, (content_items.last() as ContentMetaItem).content_item, 20);
             if (items.size == 0) {
                 at_current_content = true;
