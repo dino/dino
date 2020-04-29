@@ -5,7 +5,7 @@ namespace Xmpp.Xep.ServiceDiscovery {
 public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "service_discovery");
 
-    private HashMap<Jid, Gee.List<string>?> entity_features = new HashMap<Jid, Gee.List<string>?>(Jid.hash_func, Jid.equals_func);
+    public HashMap<Jid, Gee.List<string>?> entity_features = new HashMap<Jid, Gee.List<string>?>(Jid.hash_func, Jid.equals_func);
     private HashMap<Jid, Gee.Set<Identity>?> entity_identities = new HashMap<Jid, Gee.Set<Identity>?>(Jid.hash_func, Jid.equals_func);
     private HashMap<Jid, Gee.List<Item>?> entity_items = new HashMap<Jid, Gee.List<Item>?>(Jid.hash_func, Jid.equals_func);
 

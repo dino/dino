@@ -1,6 +1,7 @@
 namespace Xmpp.Xep.MessageArchiveManagement {
 
 public const string NS_URI = "urn:xmpp:mam:2";
+public const string NS_URI_2 = "urn:xmpp:mam:2";
 public const string NS_URI_1 = "urn:xmpp:mam:1";
 
 private static string NS_VER(XmppStream stream) {

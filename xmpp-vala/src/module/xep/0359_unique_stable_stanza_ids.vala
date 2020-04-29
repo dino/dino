@@ -1,6 +1,6 @@
 namespace Xmpp.Xep.UniqueStableStanzaIDs {
 
-private const string NS_URI = "urn:xmpp:sid:0";
+public const string NS_URI = "urn:xmpp:sid:0";
 
 private const string HINT_NO_PERMANENT_STORE = "no-permanent-store";
 private const string HINT_NO_STORE = "no-store";
