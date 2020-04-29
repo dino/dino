@@ -216,9 +216,10 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
+        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return true;
         Jid relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account) ?? conversation.counterpart;
         bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
-        return file_transfer.direction == FileTransfer.DIRECTION_SENT || in_roster;
+        return in_roster;
     }
 
     private async FileMeta get_file_meta(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation, FileReceiveData receive_data_) throws FileReceiveError {

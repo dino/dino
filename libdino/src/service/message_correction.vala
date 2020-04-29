@@ -47,9 +47,6 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         outstanding_correction_nodes[out_message.stanza_id] = stanza_id;
         stream_interactor.get_module(MessageStorage.IDENTITY).add_message(out_message, conversation);
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(out_message, conversation);
-        if (conversation.read_up_to != null && conversation.read_up_to.equals(old_message)) { // TODO nicer
-            conversation.read_up_to = out_message;
-        }
 
         db.message_correction.insert()
             .value(db.message_correction.message_id, out_message.id)

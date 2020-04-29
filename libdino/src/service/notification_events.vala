@@ -33,15 +33,9 @@ public class NotificationEvents : StreamInteractionModule, Object {
     }
 
     private void on_content_item_received(ContentItem item, Conversation conversation) {
-
         ContentItem last_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
-        bool not_read_up_to = true;
-        MessageItem message_item = item as MessageItem;
-        if (message_item != null) {
-            not_read_up_to = conversation.read_up_to != null && !conversation.read_up_to.equals(message_item.message);
-        }
-        if (item.id != last_item.id && not_read_up_to) return;
+        if (item.id != last_item.id && last_item.id != conversation.read_up_to_item) return;
 
         if (!should_notify(item, conversation)) return;
         if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus()) return;

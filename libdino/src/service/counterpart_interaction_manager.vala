@@ -150,8 +150,13 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
             }
             if (message == null) return;
             // Don't move read marker backwards because we get old info from another client
-            if (conversation.read_up_to == null || conversation.read_up_to.local_time.compare(message.local_time) > 0) return;
+            if (conversation.read_up_to != null && conversation.read_up_to.local_time.compare(message.local_time) > 0) return;
             conversation.read_up_to = message;
+
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+            ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+            if (read_up_to_item != null && read_up_to_item.sort_time.compare(content_item.sort_time) > 0) return;
+            conversation.read_up_to_item = content_item.id;
         } else {
             // We can't currently handle chat markers in MUCs
             if (conversation.type_ == Conversation.Type.GROUPCHAT) return;

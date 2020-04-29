@@ -98,7 +98,7 @@ public class ConversationSelectorRow : ListBoxRow {
             stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
         });
         image.set_conversation(stream_interactor, conversation);
-        conversation.notify["read-up-to"].connect(update_read);
+        conversation.notify["read-up-to-item"].connect(update_read);
 
         update_name_label();
         content_item_received();

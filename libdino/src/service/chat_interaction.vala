@@ -29,44 +29,14 @@ public class ChatInteraction : StreamInteractionModule, Object {
         Timeout.add_seconds(30, update_interactions);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(on_message_sent);
+        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(new_item);
     }
 
     public bool has_unread(Conversation conversation) {
         ContentItem? last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
         if (last_content_item == null) return false;
 
-        MessageItem? message_item = last_content_item as MessageItem;
-        if (message_item != null) {
-            Message last_message = message_item.message;
-
-            // We are the message sender
-            if (last_message.from.equals_bare(conversation.account.bare_jid)) return false;
-            // We read up to the message
-            if (conversation.read_up_to != null && last_message.equals(conversation.read_up_to)) return false;
-
-            return true;
-        }
-
-        FileItem? file_item = last_content_item as FileItem;
-        if (file_item != null) {
-            FileTransfer file_transfer = file_item.file_transfer;
-
-            // We are the file sender
-            if (file_transfer.from.equals_bare(conversation.account.bare_jid)) return false;
-
-            if (file_transfer.provider == 0) {
-                // HTTP file transfer: Check if the associated message is the last one
-                if (file_transfer.info == null) return false;
-                Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
-                if (message == null) return false;
-                if (message.equals(conversation.read_up_to)) return false;
-            }
-            if (file_transfer.provider == 1) {
-                if (file_transfer.state == FileTransfer.State.COMPLETE) return false;
-            }
-            return true;
-        }
-        return false;
+        return last_content_item.id != conversation.read_up_to_item;
     }
 
     public bool is_active_focus(Conversation? conversation = null) {
@@ -106,24 +76,58 @@ public class ChatInteraction : StreamInteractionModule, Object {
         on_conversation_focused(conversation);
     }
 
+    private void new_item(ContentItem item, Conversation conversation) {
+        bool mark_read = is_active_focus(conversation);
+
+        if (!mark_read) {
+            MessageItem? message_item = item as MessageItem;
+            if (message_item != null) {
+                if (message_item.message.direction == Message.DIRECTION_SENT) {
+                    mark_read = true;
+                }
+            }
+            if (message_item == null) {
+                FileItem? file_item = item as FileItem;
+                if (file_item != null) {
+                    if (file_item.file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+                        mark_read = true;
+                    }
+                }
+            }
+        }
+        if (mark_read) {
+            ContentItem? read_up_to = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+            if (read_up_to != null) {
+                if (read_up_to.compare(item) < 0) {
+                    conversation.read_up_to_item = item.id;
+                }
+            } else {
+                conversation.read_up_to_item = item.id;
+            }
+        }
+    }
+
     private void on_message_sent(Entities.Message message, Conversation conversation) {
         last_input_interaction.unset(conversation);
         last_interface_interaction.unset(conversation);
-        conversation.read_up_to = message;
     }
 
     private void on_conversation_focused(Conversation? conversation) {
         focus_in = true;
         if (conversation == null) return;
-        focused_in(selected_conversation);
+        focused_in(conversation);
         check_send_read();
-        selected_conversation.read_up_to = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
+
+        ContentItem? latest_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
+        if (latest_item != null) {
+            conversation.read_up_to_item = latest_item.id;
+        }
     }
 
     private void on_conversation_unfocused(Conversation? conversation) {
         focus_in = false;
         if (conversation == null) return;
-        focused_out(selected_conversation);
+        focused_out(conversation);
         if (last_input_interaction.has_key(conversation)) {
             send_chat_state_notification(conversation, Xep.ChatStateNotifications.STATE_PAUSED);
             last_input_interaction.unset(conversation);
@@ -133,8 +137,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
     private void check_send_read() {
         if (selected_conversation == null) return;
         Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(selected_conversation);
-        if (message != null && message.direction == Entities.Message.DIRECTION_RECEIVED && !message.equals(selected_conversation.read_up_to)) {
-            selected_conversation.read_up_to = message;
+        if (message != null && message.direction == Entities.Message.DIRECTION_RECEIVED) {
             send_chat_marker(message, null, selected_conversation, Xep.ChatMarkers.MARKER_DISPLAYED);
         }
     }
@@ -163,7 +166,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
 
     private class ReceivedMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "FILTER_EMPTY" };
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "FILTER_EMPTY", "STORE_CONTENT_ITEM" };
         public override string action_group { get { return "OTHER_NODES"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
@@ -183,7 +186,6 @@ public class ChatInteraction : StreamInteractionModule, Object {
             if (message.direction == Entities.Message.DIRECTION_SENT) return false;
             if (outer.is_active_focus(conversation)) {
                 outer.check_send_read();
-                conversation.read_up_to = message;
                 outer.send_chat_marker(message, stanza, conversation, Xep.ChatMarkers.MARKER_DISPLAYED);
             } else {
                 outer.send_chat_marker(message, stanza, conversation, Xep.ChatMarkers.MARKER_RECEIVED);
@@ -206,6 +208,9 @@ public class ChatInteraction : StreamInteractionModule, Object {
                 break;
             case Xep.ChatMarkers.MARKER_DISPLAYED:
                 if (conversation.get_send_marker_setting(stream_interactor) == Conversation.Setting.ON) {
+                    if (message.equals(conversation.read_up_to)) return;
+                    conversation.read_up_to = message;
+
                     if (message.type_ == Message.Type.GROUPCHAT || message.type_ == Message.Type.GROUPCHAT_PM) {
                         if (message.server_id == null) return;
                         stream.get_module(Xep.ChatMarkers.Module.IDENTITY).send_marker(stream, message.from.bare_jid, message.server_id, message.get_type_string(), Xep.ChatMarkers.MARKER_DISPLAYED);

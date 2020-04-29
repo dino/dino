@@ -34,6 +34,7 @@ public class Conversation : Object {
     }
     public Encryption encryption { get; set; default = Encryption.NONE; }
     public Message? read_up_to { get; set; }
+    public int read_up_to_item { get; set; default=-1; }
 
     public enum NotifySetting { DEFAULT, ON, OFF, HIGHLIGHT }
     public NotifySetting notify_setting { get; set; default = NotifySetting.DEFAULT; }
@@ -67,6 +68,7 @@ public class Conversation : Object {
         encryption = (Encryption) row[db.conversation.encryption];
         int? read_up_to = row[db.conversation.read_up_to];
         if (read_up_to != null) this.read_up_to = db.get_message_by_id(read_up_to);
+        read_up_to_item = row[db.conversation.read_up_to_item];
         notify_setting = (NotifySetting) row[db.conversation.notification];
         send_typing = (Setting) row[db.conversation.send_typing];
         send_marker = (Setting) row[db.conversation.send_marker];
@@ -87,6 +89,9 @@ public class Conversation : Object {
                 .value(db.conversation.send_marker, send_marker);
         if (read_up_to != null) {
             insert.value(db.conversation.read_up_to, read_up_to.id);
+        }
+        if (read_up_to_item != -1) {
+            insert.value(db.conversation.read_up_to_item, read_up_to_item);
         }
         if (nickname != null) {
             insert.value(db.conversation.resource, nickname);
@@ -159,6 +164,13 @@ public class Conversation : Object {
                     update.set(db.conversation.read_up_to, read_up_to.id);
                 } else {
                     update.set_null(db.conversation.read_up_to);
+                }
+                break;
+            case "read-up-to-item":
+                if (read_up_to_item != -1) {
+                    update.set(db.conversation.read_up_to_item, read_up_to_item);
+                } else {
+                    update.set_null(db.conversation.read_up_to_item);
                 }
                 break;
             case "nickname":

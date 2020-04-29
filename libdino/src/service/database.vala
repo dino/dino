@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 14;
+    private const int VERSION = 15;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -166,13 +166,14 @@ public class Database : Qlite.Database {
         public Column<int> type_ = new Column.Integer("type");
         public Column<int> encryption = new Column.Integer("encryption");
         public Column<int> read_up_to = new Column.Integer("read_up_to");
+        public Column<int> read_up_to_item = new Column.Integer("read_up_to_item") { not_null=true, default="-1", min_version=15 };
         public Column<int> notification = new Column.Integer("notification") { min_version=3 };
         public Column<int> send_typing = new Column.Integer("send_typing") { min_version=3 };
         public Column<int> send_marker = new Column.Integer("send_marker") { min_version=3 };
 
         internal ConversationTable(Database db) {
             base(db, "conversation");
-            init({id, account_id, jid_id, resource, active, last_active, type_, encryption, read_up_to, notification, send_typing, send_marker});
+            init({id, account_id, jid_id, resource, active, last_active, type_, encryption, read_up_to, read_up_to_item, notification, send_typing, send_marker});
         }
     }
 
@@ -363,6 +364,20 @@ public class Database : Qlite.Database {
                 exec("delete from avatar");
             } catch (Error e) {
                 error("Failed to upgrade to database version 12: %s", e.message);
+            }
+        }
+        if (oldVersion < 15) {
+            // Initialize `conversation.read_up_to_item` with the content item id corresponding to the `read_up_to` message.
+            try {
+                exec("
+                update conversation
+                set read_up_to_item=ifnull((
+                    select content_item.id
+                    from content_item
+                    where content_item.foreign_id=conversation.read_up_to and content_type=1)
+                , -1);");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 15: %s", e.message);
             }
         }
     }
