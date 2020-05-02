@@ -9,7 +9,7 @@ Unicode True
 # define installer name
 OutFile "dino-installer.exe"
 
-BrandingText "Dino - Communication happyness"
+BrandingText "Dino - Communicating happiness"
  
 # set install directory
 InstallDir $PROGRAMFILES64\dino
