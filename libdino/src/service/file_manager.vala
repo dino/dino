@@ -63,7 +63,7 @@ public class FileManager : StreamInteractionModule, Object {
         try {
             FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
             file_transfer.file_name = file_info.get_display_name();
-            file_transfer.mime_type = file_info.get_content_type();
+            file_transfer.mime_type = Util.get_content_type(file_info);
             file_transfer.size = (int)file_info.get_size();
             file_transfer.input_stream = yield file.read_async();
 
@@ -285,7 +285,7 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.input_stream = yield file.read_async();
 
             FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
-            file_transfer.mime_type = file_info.get_content_type();
+            file_transfer.mime_type = Util.get_content_type(file_info);
 
             file_transfer.state = FileTransfer.State.COMPLETE;
         } catch (Error e) {

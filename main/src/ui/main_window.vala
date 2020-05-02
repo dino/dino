@@ -55,6 +55,10 @@ public class MainWindow : Gtk.Window {
     }
 
     private void setup_unified() {
+        new Dino.Ui.ConversationSelector();
+        new Dino.Ui.ConversationSummary.ConversationView();
+        new Dino.Ui.ChatInput.View();
+        new Dino.Ui.GlobalSearch();
         Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
         paned = (Paned) builder.get_object("paned");
         box.add(paned);

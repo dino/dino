@@ -26,6 +26,25 @@ public class Util {
         }
         assert_not_reached();
     }
-}
+    
+    public static string get_content_type(FileInfo fileInfo)
+    {
+//#if WIN32
+        string fileName = fileInfo.get_name();
+        int fileNameLength = fileName.length;
+        int extIndex = fileName.index_of(".");
+        if (extIndex < fileNameLength)
+        {
+            string extension = fileName.substring(extIndex, fileNameLength - extIndex);
+            string mime_type = ContentType.get_mime_type(extension);
+            if (mime_type != null && mime_type.length != 0)
+            {
+                return mime_type;
+            }
+        }
+//#endif
 
+        return fileInfo.get_content_type();
+    }
+}
 }
