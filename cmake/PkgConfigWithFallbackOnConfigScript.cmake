@@ -13,15 +13,17 @@ function(find_pkg_config_with_fallback_on_config_script name)
         # Found via pkg-config, using it's result values
         set(${name}_FOUND ${${name}_PKG_CONFIG_FOUND})
 
+        if(MINGW)
+            list(FILTER ${name}_PKG_CONFIG_LIBRARIES EXCLUDE REGEX "(ole32)|(gdi32)|(imm32)|(shell32)|(winmm)|(dwmapi)|(setupapi)|(cfgmgr32)|(ws2_32)")
+        endif(MINGW)
+
         # Try to find real file name of libraries
         foreach(lib ${${name}_PKG_CONFIG_LIBRARIES})
             find_library(${name}_${lib}_LIBRARY ${lib} HINTS ${${name}_PKG_CONFIG_LIBRARY_DIRS})
             mark_as_advanced(${name}_${lib}_LIBRARY)
             if(NOT ${name}_${lib}_LIBRARY)
-                find_library(${name}_${lib}_LIBRARY ${lib} HINTS "C:/msys64/mingw64/x86_64-w64-mingw32/lib")
-                if(NOT ${name}_${lib}_LIBRARY)
-                    unset(${name}_FOUND)
-                endif(NOT ${name}_${lib}_LIBRARY)
+                message(${name} ": " ${lib} " library not found")
+                unset(${name}_FOUND)
             endif(NOT ${name}_${lib}_LIBRARY)
         endforeach(lib)
         if(${name}_FOUND)
