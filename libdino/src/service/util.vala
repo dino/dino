@@ -29,7 +29,7 @@ public class Util {
     
     public static string get_content_type(FileInfo fileInfo)
     {
-//#if WIN32
+#if _WIN32
         string fileName = fileInfo.get_name();
         int fileNameLength = fileName.length;
         int extIndex = fileName.index_of(".");
@@ -42,8 +42,7 @@ public class Util {
                 return mime_type;
             }
         }
-//#endif
-
+#endif
         return fileInfo.get_content_type();
     }
 }
