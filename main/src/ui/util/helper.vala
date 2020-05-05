@@ -246,11 +246,13 @@ public static bool is_dark_theme(Gtk.Widget widget) {
     return (bg.red > 0.5 && bg.green > 0.5 && bg.blue > 0.5);
 }
 
+private static uint8 is24h = 0;
 public static bool is_24h_format() {
-    GLib.Settings settings = new GLib.Settings("org.gnome.desktop.interface");
-    string settings_format = settings.get_string("clock-format");
-    string p_format = (new DateTime.now_utc()).format("%p");
-    return settings_format == "24h" || p_format == " ";
+    if (is24h == 0) {
+        string p_format = (new DateTime.now_utc()).format("%p");
+        is24h = p_format.strip() == "" ? 1 : -1;
+    }
+    return is24h == 1;
 }
 
 public static Regex get_url_regex() {
