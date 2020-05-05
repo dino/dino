@@ -2,14 +2,21 @@ Unicode True
 
 !define MUI_PRODUCT "Dino"
 !define MUI_PRODUCT_NAME ${MUI_PRODUCT}
+!define MUI_BRANDINGTEXT ${MUI_PRODUCT}
 !define PRODUCT_WEBSITE "https://dino.im"
 !define MUI_ICON "input/logo.ico"
 !define ICON "input/logo.ico"
 
+# Modern Interface
+!include "MUI2.nsh"
+!insertmacro "MUI_PAGE_LICENSE" "input/LICENSE_SHORT"
+!insertmacro MUI_PAGE_INSTFILES
+
+Name ${MUI_PRODUCT}
+BrandingText "Communicating happiness"
+
 # define installer name
 OutFile "dino-installer.exe"
-
-BrandingText "Dino - Communicating happiness"
  
 # set install directory
 InstallDir $PROGRAMFILES64\dino

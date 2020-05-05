@@ -8,6 +8,7 @@ To create the Dino windows installer you need this:
 * logo.ico in input directory
 	* Download https://dino.im/img/logo.svg
 	* Convert it to ico (e.g. `convert -background transparent -define 'icon:auto-resize=16,24,32,64' logo.svg logo.ico` (requires imagemagick)
+* Copy `LICENSE` and `LICENSE_SHORT` to the input directory
 
 ## Create installer
 
