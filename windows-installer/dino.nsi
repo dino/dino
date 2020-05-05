@@ -40,14 +40,21 @@ File input/plugins/*
 WriteUninstaller $INSTDIR\uninstaller.exe
  
 # Create a shortcut for startmenu
-CreateShortcut "$SMPROGRAMS\dino.lnk" "$INSTDIR\bin\dino.exe" "" "$INSTDIR\logo.ico"
+CreateDirectory "$SMPROGRAMS\Dino"
+CreateShortcut "$SMPROGRAMS\Dino\Dino.lnk" "$INSTDIR\bin\dino.exe" "" "$INSTDIR\logo.ico"
+CreateShortcut "$SMPROGRAMS\Dino\Uninstaller.lnk" "$INSTDIR\uninstaller.exe"
+CreateShortcut "$SMPROGRAMS\Dino\License.lnk" "$INSTDIR\LICENSE" "" "notepad.exe" 0
+CreateShortcut "$SMPROGRAMS\Dino\Dino website.lnk" "https://dino.im" "" "$INSTDIR\logo.ico"
 
 # default section end
 SectionEnd
  
 # Uninsaller section
 Section "Uninstall"
- 
+
+# Delete startmenu folder
+RMDir /r "$SMPROGRAMS\Dino"
+
 # Always delete uninstaller first
 Delete $INSTDIR\uninstaller.exe
  
