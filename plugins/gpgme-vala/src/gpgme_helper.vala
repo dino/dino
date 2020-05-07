@@ -176,6 +176,9 @@ private static uint8[] get_uint8_from_data(Data data) {
 
 private static void initialize() {
     if (!initialized) {
+#if _WIN32
+        set_global_flag("w32-inst-dir", "C://Program Files (x86)//GnuPG//bin");
+#endif
         check_version();
         initialized = true;
     }

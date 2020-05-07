@@ -4,6 +4,9 @@ namespace GPG {
 [CCode (cname = "gpgme_check_version")]
 public unowned string check_version(string? required_version = null);
 
+[CCode (cname = "gpgme_set_global_flag")]
+public int set_global_flag(string name, string value);
+
 [Compact]
 [CCode (cname = "struct _gpgme_key", ref_function = "gpgme_key_ref_vapi", unref_function = "gpgme_key_unref_vapi", free_function = "gpgme_key_release")]
 public class Key {
