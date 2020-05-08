@@ -3,6 +3,15 @@ using Dino.Entities;
 namespace Dino {
 
 public class Util {
+    #if _WIN32
+    [CCode (cname = "ShellExecuteA")]
+    private static extern int ShellExecuteA(int* hwnd, string operation, string file, string parameters, string directory, int showCmd);
+
+    private static int ShellExecute(string file) {
+        return ShellExecuteA(null, null, file, null, null, 0);
+    }
+    #endif
+
     public static Message.Type get_message_type_for_conversation(Conversation conversation) {
         switch (conversation.type_) {
             case Conversation.Type.CHAT:
@@ -25,6 +34,15 @@ public class Util {
                 return Conversation.Type.GROUPCHAT_PM;
         }
         assert_not_reached();
+    }
+
+    public static void launch_default_for_uri(string file_uri)
+    {
+#if _WIN32
+        Dino.Util.ShellExecute(file_uri);
+#else
+        AppInfo.launch_default_for_uri(file_uri, null);
+#endif
     }
     
     public static string get_content_type(FileInfo fileInfo)
