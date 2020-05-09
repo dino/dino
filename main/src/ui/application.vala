@@ -27,6 +27,12 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         Environment.set_application_name("Dino");
         Window.set_default_icon_name("im.dino.Dino");
 
+#if _WIN32
+        CssProvider larger_fonts = new CssProvider();
+        larger_fonts.load_from_resource("/im/dino/Dino/win32_larger_fonts.css");
+        StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), larger_fonts, STYLE_PROVIDER_PRIORITY_APPLICATION);
+#endif
+
         CssProvider provider = new CssProvider();
         provider.load_from_resource("/im/dino/Dino/theme.css");
         StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
