@@ -32,7 +32,7 @@ public class Conversation : Object {
             }
         }
     }
-    public Encryption encryption { get; set; default = Encryption.NONE; }
+    public Encryption encryption { get; set; default = Encryption.OMEMO; }
     public Message? read_up_to { get; set; }
 
     public enum NotifySetting { DEFAULT, ON, OFF, HIGHLIGHT }
