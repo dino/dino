@@ -115,43 +115,60 @@ namespace Xmpp.Xep.EntityCapabilities {
             identities.sort(compare_identities);
             features.sort();
 
-            string s = "";
+            StringBuilder sb = new StringBuilder();
             foreach (ServiceDiscovery.Identity identity in identities) {
-                string s_identity = identity.category + "/" + identity.type_ + "//";
-                if (identity.name != null) s_identity += identity.name;
-                s_identity += "<";
-                s += s_identity;
+                sb.append(sanitize(identity.category))
+                    .append("/")
+                    .append(sanitize(identity.type_))
+                    .append("//");
+                if (identity.name != null) {
+                    sb.append(sanitize(identity.name));
+                }
+                sb.append("<");
             }
             foreach (string feature in features) {
-                s += feature + "<";
+                sb.append(sanitize(feature))
+                        .append("<");
             }
 
             data_forms.sort(compare_data_forms);
             foreach (DataForms.DataForm data_form in data_forms) {
                 if (data_form.form_type == null) {
-                    // If [..] the FORM_TYPE field is not of type "hidden" or the form does not include a FORM_TYPE field, ignore the form but continue processing. (XEP-0115)
+                    // If [..] the FORM_TYPE field is not of type "hidden" or the form does not include a FORM_TYPE field, ignore the form but continue processing. (XEP-0115 5.4)
                     continue;
                 }
-                s += data_form.form_type + "<";
+                sb.append(sanitize(data_form.form_type))
+                        .append("<");
 
                 data_form.fields.sort(compare_data_fields);
                 foreach (DataForms.DataForm.Field field in data_form.fields) {
-                    s += field.var + "<";
+                    sb.append(sanitize(field.var))
+                        .append("<");
                     Gee.List<string> values = field.get_values();
                     values.sort();
                     foreach (string value in values) {
-                        s += value + "<";
+                        sb.append(sanitize(value))
+                            .append("<");
                     }
                 }
             }
 
             Checksum c = new Checksum(ChecksumType.SHA1);
-            c.update(s.data, -1);
+            c.update(sb.str.data, -1);
             size_t size = 20;
             uint8[] buf = new uint8[size];
             c.get_digest(buf, ref size);
 
             return Base64.encode(buf);
+        }
+
+        /*
+         * If the four characters '&', 'l', 't', ';' appear consecutively in any of the factors of the verification
+         * string S [...] then that string of characters MUST be treated as literally '&lt;' and MUST NOT be converted to
+         * the character '<', because completing such a conversion would open the protocol to trivial attacks. (XEP-0115 5.1)
+         */
+        private static string sanitize(string s) {
+            return s.replace("<", "&lt;");
         }
 
         private static int compare_identities(ServiceDiscovery.Identity a, ServiceDiscovery.Identity b) {
