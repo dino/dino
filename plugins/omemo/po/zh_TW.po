@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-12 22:15+0200\n"
-"PO-Revision-Date: 2020-04-12 20:01+0000\n"
+"POT-Creation-Date: 2020-05-16 19:02+0200\n"
+"PO-Revision-Date: 2020-05-04 01:11+0000\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -33,7 +33,7 @@ msgstr "需要 OMEMO 信任決策"
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "您是否有為帳號 %s 增加新裝置？"
+msgstr "您是否有爲帳號 %s 增加新裝置？"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
@@ -65,7 +65,7 @@ msgstr "確定"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 msgid "Verify key"
-msgstr "驗證金鑰"
+msgstr "核驗金鑰"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
@@ -90,7 +90,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid "Verify key fingerprint"
-msgstr "驗證金鑰指紋"
+msgstr "核驗金鑰指紋"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
@@ -125,7 +125,7 @@ msgstr "允許與該聯絡人使用此金鑰的裝置之間的加密通訊。"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid "This key is currently %s."
-msgstr "此密鑰目前%s。"
+msgstr "此金鑰目前%s。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 msgid "accepted"
@@ -139,12 +139,12 @@ msgstr "這表示 %s 可以使用它來傳送及收受加密訊息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
-msgstr "驗證"
+msgstr "已核驗"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
-msgstr "此外，已驗證它與聯絡人裝置上的金鑰吻合。"
+msgstr "此外，已經核驗它與聯絡人裝置上的金鑰吻合。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 msgid "rejected"
@@ -183,7 +183,7 @@ msgstr "OMEMO 金鑰管理"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "Automatically accept new keys"
-msgstr "自動接收新密鑰"
+msgstr "自動接收新金鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "New encryption keys from this contact will be accepted automatically."
@@ -220,7 +220,7 @@ msgstr "已拒絕"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:329
 msgid "Verified"
-msgstr "已驗證"
+msgstr "已核驗"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"

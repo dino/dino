@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-12 22:15+0200\n"
-"PO-Revision-Date: 2020-04-12 20:01+0000\n"
+"POT-Creation-Date: 2020-05-16 19:02+0200\n"
+"PO-Revision-Date: 2020-05-13 18:41+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "fr/>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -43,8 +43,8 @@ msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
 msgstr ""
-"Comparez l'empreinte digitale, lettre par lettre, avec celle affichée sur "
-"l'appareil de votre contact."
+"Comparez l'empreinte, lettre par lettre, avec celle affichée sur l'appareil "
+"de votre contact."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints differ"
@@ -79,7 +79,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
-msgstr "Les empreintes digitales ne correspondent pas"
+msgstr "Les empreintes ne correspondent pas"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:72
 #, c-format
@@ -88,21 +88,20 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Vérifiez s'il vous plaît que vous comparez la bonne empreinte digitale. Si "
-"les empreintes ne correspondent pas, le compte de %s pourrait être compromis "
-"et vous devriez envisager de rejeter cette clé."
+"Vérifiez s'il vous plaît que vous comparez la bonne empreinte. Si les "
+"empreintes ne correspondent pas, le compte de %s pourrait être compromis et "
+"vous devriez envisager de rejeter cette clé."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid "Verify key fingerprint"
-msgstr "Vérifier l'empreinte digitale"
+msgstr "Vérifier l'empreinte"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
-"Comparez cette empreinte digitale avec l'empreinte affichée sur l'appareil "
-"du contact."
+"Comparez cette empreinte avec celle affichée sur l'appareil du contact."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
@@ -252,7 +251,7 @@ msgstr "Inutilisé"
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 #: plugins/omemo/src/ui/account_settings_widget.vala:45
 msgid "Own fingerprint"
-msgstr "Empreinte digitale personnelle"
+msgstr "Empreinte publique"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 msgid "Will be generated on first connection"

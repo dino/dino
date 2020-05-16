@@ -2,16 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-12 22:15+0200\n"
-"PO-Revision-Date: 2019-02-02 14:09+0000\n"
+"POT-Creation-Date: 2020-05-16 19:02+0200\n"
+"PO-Revision-Date: 2020-05-04 01:11+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
-"Language: zh_Hans\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.5-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -134,7 +134,7 @@ msgstr "这意味着%s 可以使用它来接收和发送消息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
-msgstr "验证"
+msgstr "已验证"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid ""

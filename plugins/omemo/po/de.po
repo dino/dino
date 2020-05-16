@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-12 22:15+0200\n"
-"PO-Revision-Date: 2020-04-12 20:01+0000\n"
+"POT-Creation-Date: 2020-05-16 19:02+0200\n"
+"PO-Revision-Date: 2020-04-16 20:11+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "de/>\n"
 "Language: de\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.0.1-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -232,11 +232,11 @@ msgstr "Akzeptiert"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:324
 msgid "Rejected"
-msgstr "Abgelehnt"
+msgstr "Zurückgewiesen"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:329
 msgid "Verified"
-msgstr "Überprüft"
+msgstr "Verifiziert"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"

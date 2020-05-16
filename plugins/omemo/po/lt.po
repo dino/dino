@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-12 22:15+0200\n"
-"PO-Revision-Date: 2020-02-01 15:50+0000\n"
+"POT-Creation-Date: 2020-05-16 19:02+0200\n"
+"PO-Revision-Date: 2020-05-15 21:41+0000\n"
 "Language-Team: none\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
 "19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
 "1 : 2);\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -50,11 +50,11 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints differ"
-msgstr ""
+msgstr "Kodas skiriasi"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 msgid "Fingerprints match"
-msgstr ""
+msgstr "Kodas atitinka"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -76,6 +76,8 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"Nuo šiol žinutės nuo %s išsiųstos iš įrenginio naudojančio šį kontrolinį "
+"kodą bus atitinkamai paryškintos."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -114,6 +116,7 @@ msgstr "Atmesti raktą"
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr ""
+"Blokuoti šifruotą bendravimą su kontakto įrenginiu, kuris naudoja šį raktą."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -125,6 +128,7 @@ msgstr "Priimti raktą"
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
+"Leisti šifruotą bendravimą su kontakto įrenginiu, kuris naudoja šį raktą."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -139,9 +143,10 @@ msgstr "priimtas"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, fuzzy, c-format
+#, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
-msgstr "Tai reiškia, kad %s gali jį naudoti, kad siųstų ir gautų žinutes."
+msgstr ""
+"Tai reiškia, kad %s gali jį naudoti šifruotų žinučių siuntimui ir gavimui."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
@@ -163,6 +168,8 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
+"Tai reiškia, kad %s negali jo naudoti jūsų žinučių iššifravimui ir jūs "
+"nematysite žinučiu užšifruotų šiuo raktu."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
@@ -170,6 +177,8 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
+"Jūs nematysite šifruotų žinučių išsiustų iš %s įrenginio, kuris naudoją šį "
+"raktą. Tuo pačiu tas įrenginys nebegalės iššifruoti jūsų žinučių."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
@@ -177,6 +186,8 @@ msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
+"Jūs galite keistis šifruotomis žinutėmis su %s įrenginiu, kuris naudoja šį "
+"raktą."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -192,7 +203,7 @@ msgstr "Automatiškai priimti naujus raktus"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
+msgstr "Nauji šifravimo raktai iš šio kontakto bus priimti automatiškai."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -214,6 +225,7 @@ msgstr "Neaktyvūs raktai"
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
+"Nauji šifravimo raktai iš jūsų kitų įrenginių bus priimti automatiškai."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
