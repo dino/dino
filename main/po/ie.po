@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-16 19:02+0200\n"
+"POT-Creation-Date: 2020-05-17 19:27+0200\n"
 "PO-Revision-Date: 2020-02-04 16:50+0000\n"
 "Language-Team: none\n"
 "Language: ie\n"
@@ -17,43 +17,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.11-dev\n"
 
-#: main/src/ui/main_window.vala:200
+#: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
 msgstr "Benevenit a Dino!"
 
-#: main/src/ui/main_window.vala:201
+#: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
 msgstr "Inregistra vos o crea un conto por iniciar."
 
-#: main/src/ui/main_window.vala:202
+#: main/src/ui/main_window.vala:200
 msgid "Set up account"
 msgstr "Etablisser un conto"
 
-#: main/src/ui/main_window.vala:210
+#: main/src/ui/main_window.vala:208
 msgid "No active accounts"
 msgstr "Null activ contos"
 
-#: main/src/ui/main_window.vala:211
+#: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
 msgstr "Gerer contos"
-
-#: main/src/ui/main_window.vala:220
-msgid "No active conversations"
-msgstr "Null activ conversationes"
-
-#: main/src/ui/main_window.vala:221
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "Iniciar un conversation"
-
-#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "Adherer al chanele"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:83
 msgid "Today"
@@ -380,13 +362,18 @@ msgid "Me"
 msgstr "Yo"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
-#, c-format
-msgid "This conference does not allow you to send messages. %s"
+msgid "This conference does not allow you to send messages."
 msgstr ""
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "Request permission"
 msgstr ""
+
+#: main/src/ui/application.vala:200
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "Adherer al chanele"
 
 #: main/src/ui/application.vala:200
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -418,6 +405,13 @@ msgstr "Avan"
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Retro"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "Iniciar un conversation"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -522,7 +516,6 @@ msgid "Conference Details"
 msgstr "Detallies del conferentie"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Detallies del contacte"
 
@@ -781,10 +774,6 @@ msgstr ""
 "Dino obtene li diarium del servitore e sincronisa missages inter altri "
 "apparates."
 
-#: main/data/im.dino.Dino.appdata.xml.in:16
-msgid "Main window with conversations"
-msgstr "Li primari fenestre con conversationes"
-
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -804,6 +793,10 @@ msgstr "Pseudonim"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Adjunter li contacte"
+
+#: main/data/file_send_overlay.ui:28
+msgid "Send a file"
+msgstr ""
 
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
@@ -848,6 +841,12 @@ msgstr "Fa un clic ti-ci por iniciar un conversation o adherer a un channel."
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
 msgstr "Vu ne have apertet conversationes"
+
+#~ msgid "No active conversations"
+#~ msgstr "Null activ conversationes"
+
+#~ msgid "Main window with conversations"
+#~ msgstr "Li primari fenestre con conversationes"
 
 #, c-format
 #~ msgid "%s, %s and %i others"

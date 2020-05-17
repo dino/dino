@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-16 19:02+0200\n"
-"PO-Revision-Date: 2020-04-16 20:11+0000\n"
+"POT-Creation-Date: 2020-05-17 19:27+0200\n"
+"PO-Revision-Date: 2020-05-17 17:21+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
 "Language: de\n"
@@ -11,45 +11,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0.1-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
-#: main/src/ui/main_window.vala:200
+#: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
 msgstr "Willkommen bei Dino!"
 
-#: main/src/ui/main_window.vala:201
+#: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
 msgstr "Melde dich an oder erstelle ein Konto, um loszulegen."
 
-#: main/src/ui/main_window.vala:202
+#: main/src/ui/main_window.vala:200
 msgid "Set up account"
 msgstr "Konto einrichten"
 
-#: main/src/ui/main_window.vala:210
+#: main/src/ui/main_window.vala:208
 msgid "No active accounts"
 msgstr "Keine Konten aktiv"
 
-#: main/src/ui/main_window.vala:211
+#: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
 msgstr "Konten verwalten"
-
-#: main/src/ui/main_window.vala:220
-msgid "No active conversations"
-msgstr "Keine Unterhaltung aktiv"
-
-#: main/src/ui/main_window.vala:221
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "Unterhaltung starten"
-
-#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "Kanal beitreten"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:83
 msgid "Today"
@@ -244,12 +226,12 @@ msgstr "%s hat dich in %s eingeladen"
 
 #: main/src/ui/notifications.vala:150
 msgid "Permission request"
-msgstr ""
+msgstr "Berechtigungsanfrage"
 
 #: main/src/ui/notifications.vala:151
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "%s erbittet die Berechtigung zum Schreiben in %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -320,7 +302,7 @@ msgstr "Konto hinzufügen"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:166
 #, c-format
 msgid "Sign in to %s"
-msgstr "Bei %s anmelden"
+msgstr "Bei %s einloggen"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
@@ -376,13 +358,18 @@ msgid "Me"
 msgstr "Ich"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
-#, c-format
-msgid "This conference does not allow you to send messages. %s"
-msgstr ""
+msgid "This conference does not allow you to send messages."
+msgstr "Diese Konferenz erlaubt es dir nicht, Nachrichten zu senden."
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "Request permission"
-msgstr ""
+msgstr "Berechtigung anfordern"
+
+#: main/src/ui/application.vala:200
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "Kanal beitreten"
 
 #: main/src/ui/application.vala:200
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -414,6 +401,13 @@ msgstr "Weiter"
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Zurück"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "Unterhaltung starten"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -457,7 +451,7 @@ msgstr "Eigentümer"
 
 #: main/src/ui/occupant_menu/list.vala:107
 msgid "Admin"
-msgstr "Administrator"
+msgstr "Admin"
 
 #: main/src/ui/occupant_menu/list.vala:109
 msgid "Member"
@@ -486,11 +480,11 @@ msgstr "Hinauswerfen"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Grant write permission"
-msgstr ""
+msgstr "Schreibberechtigung erteilen"
 
 #: main/src/ui/occupant_menu/view.vala:108
 msgid "Revoke write permission"
-msgstr ""
+msgstr "Schreibberechtigung entziehen"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
@@ -511,14 +505,13 @@ msgstr "Mit %s"
 
 #: main/src/ui/conversation_view_controller.vala:178
 msgid "Select file"
-msgstr ""
+msgstr "Datei auswählen"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "Konferenzdetails"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Kontaktdetails"
 
@@ -612,15 +605,15 @@ msgstr ""
 
 #: main/src/ui/contact_details/permissions_provider.vala:21
 msgid "Request"
-msgstr ""
+msgstr "Anfragen"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Permissions"
-msgstr ""
+msgstr "Berechtigungen"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "Berechtigung zum Senden von Nachrichten anfordern"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
@@ -710,7 +703,7 @@ msgstr "Konto erstellen"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr "Eine sichere Verbindung konnte nicht hergestellt werden"
+msgstr "Es konnte keine sichere Verbindung hergestellt werden"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
@@ -780,10 +773,6 @@ msgstr ""
 "Dino ruft Gesprächsverläufe vom Server ab und synchronisiert Nachrichten mit "
 "anderen Geräten."
 
-#: main/data/im.dino.Dino.appdata.xml.in:16
-msgid "Main window with conversations"
-msgstr "Hauptfenster mit Konversationen"
-
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -804,9 +793,13 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Kontakt hinzufügen"
 
+#: main/data/file_send_overlay.ui:28
+msgid "Send a file"
+msgstr ""
+
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
-msgstr ""
+msgstr "Senden"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
@@ -848,6 +841,12 @@ msgstr ""
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
 msgstr "Du hast keine offenen Chats"
+
+#~ msgid "No active conversations"
+#~ msgstr "Keine Unterhaltung aktiv"
+
+#~ msgid "Main window with conversations"
+#~ msgstr "Hauptfenster mit Konversationen"
 
 #, c-format
 #~ msgid "%s, %s and %i others"

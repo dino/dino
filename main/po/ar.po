@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-16 19:02+0200\n"
+"POT-Creation-Date: 2020-05-17 19:27+0200\n"
 "PO-Revision-Date: 2020-05-12 12:41+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
@@ -19,43 +19,25 @@ msgstr ""
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 "X-Generator: Weblate 4.1-dev\n"
 
-#: main/src/ui/main_window.vala:200
+#: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
 msgstr "مرحبا بكم على Dino!"
 
-#: main/src/ui/main_window.vala:201
+#: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
 msgstr "إتّصل أو قم بإنشاء حساب للمواصلة."
 
-#: main/src/ui/main_window.vala:202
+#: main/src/ui/main_window.vala:200
 msgid "Set up account"
 msgstr "تهيئة الحساب"
 
-#: main/src/ui/main_window.vala:210
+#: main/src/ui/main_window.vala:208
 msgid "No active accounts"
 msgstr "ليس هناك أية حسابات نشطة"
 
-#: main/src/ui/main_window.vala:211
+#: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
 msgstr "إدارة الحسابات"
-
-#: main/src/ui/main_window.vala:220
-msgid "No active conversations"
-msgstr "ليس هناك أية محادثات نشطة"
-
-#: main/src/ui/main_window.vala:221
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "الشروع في محادثة"
-
-#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "الإلتحاق بقناة"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:83
 msgid "Today"
@@ -386,13 +368,18 @@ msgid "Me"
 msgstr "أنا"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
-#, c-format
-msgid "This conference does not allow you to send messages. %s"
+msgid "This conference does not allow you to send messages."
 msgstr ""
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "Request permission"
 msgstr ""
+
+#: main/src/ui/application.vala:200
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "الإلتحاق بقناة"
 
 #: main/src/ui/application.vala:200
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -424,6 +411,13 @@ msgstr "التالي"
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "العودة"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "الشروع في محادثة"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -532,7 +526,6 @@ msgid "Conference Details"
 msgstr "تفاصيل فريق المحادثة"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "تفاصيل عن المُراسل"
 
@@ -788,10 +781,6 @@ msgid ""
 "devices."
 msgstr "يقوم Dino بجلب السِجلّ مِن السيرفر ثم يُزامِن الرسائل مع الأجهزة الأخرى."
 
-#: main/data/im.dino.Dino.appdata.xml.in:16
-msgid "Main window with conversations"
-msgstr "النافذة الرئيسية بالمُحادثات"
-
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -811,6 +800,10 @@ msgstr "اللقب"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "إضافة مُراسِل"
+
+#: main/data/file_send_overlay.ui:28
+msgid "Send a file"
+msgstr ""
 
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
@@ -855,6 +848,12 @@ msgstr "اضغط هنا لبداية المحادثة أو للإنضمام إل
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
 msgstr "ليس لديك أية محادثة مفتوحة"
+
+#~ msgid "No active conversations"
+#~ msgstr "ليس هناك أية محادثات نشطة"
+
+#~ msgid "Main window with conversations"
+#~ msgstr "النافذة الرئيسية بالمُحادثات"
 
 #, c-format
 #~ msgid "%s, %s and %i others"

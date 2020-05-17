@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-16 19:02+0200\n"
+"POT-Creation-Date: 2020-05-17 19:27+0200\n"
 "PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/dino/"
 "translations/pt_BR/>\n"
@@ -17,43 +17,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.0-dev\n"
 
-#: main/src/ui/main_window.vala:200
+#: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
 msgstr "Seja bem vindo ao Dino!"
 
-#: main/src/ui/main_window.vala:201
+#: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
 msgstr "Entre ou crie uma conta para começar."
 
-#: main/src/ui/main_window.vala:202
+#: main/src/ui/main_window.vala:200
 msgid "Set up account"
 msgstr "Configurar a conta"
 
-#: main/src/ui/main_window.vala:210
+#: main/src/ui/main_window.vala:208
 msgid "No active accounts"
 msgstr "Nenhuma conta ativa"
 
-#: main/src/ui/main_window.vala:211
+#: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
 msgstr "Gerenciar contas"
-
-#: main/src/ui/main_window.vala:220
-msgid "No active conversations"
-msgstr "Nenhuma conversa ativa"
-
-#: main/src/ui/main_window.vala:221
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "Iniciar conversa"
-
-#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "Juntar-se a um canal"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:83
 msgid "Today"
@@ -380,13 +362,18 @@ msgid "Me"
 msgstr "Eu"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
-#, c-format
-msgid "This conference does not allow you to send messages. %s"
+msgid "This conference does not allow you to send messages."
 msgstr ""
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "Request permission"
 msgstr ""
+
+#: main/src/ui/application.vala:200
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "Juntar-se a um canal"
 
 #: main/src/ui/application.vala:200
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -418,6 +405,13 @@ msgstr "Próximo"
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Voltar"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "Iniciar conversa"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -522,7 +516,6 @@ msgid "Conference Details"
 msgstr "Detalhes da Conferência"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Detalhes do contato"
 
@@ -782,10 +775,6 @@ msgstr ""
 "Dino obtém o histórico do servidor e sincroniza mensagens com outros "
 "dispositivos."
 
-#: main/data/im.dino.Dino.appdata.xml.in:16
-msgid "Main window with conversations"
-msgstr "Janela principal com as conversas"
-
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -805,6 +794,10 @@ msgstr "Pseudônimo"
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
 msgstr "Adicionar contato"
+
+#: main/data/file_send_overlay.ui:28
+msgid "Send a file"
+msgstr ""
 
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
@@ -849,6 +842,12 @@ msgstr "Clique aqui para inicial uma conversa or entrar em um canal."
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
 msgstr "Você não tem conversas abertas"
+
+#~ msgid "No active conversations"
+#~ msgstr "Nenhuma conversa ativa"
+
+#~ msgid "Main window with conversations"
+#~ msgstr "Janela principal com as conversas"
 
 #, c-format
 #~ msgid "%s, %s and %i others"

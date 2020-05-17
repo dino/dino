@@ -53,8 +53,6 @@ public class MainWindowController : Object {
             dialog.present();
         });
         window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("accounts", null); });
-        window.conversations_placeholder.primary_button.clicked.connect(() => { app.activate_action("add_chat", null); });
-        window.conversations_placeholder.secondary_button.clicked.connect(() => { app.activate_action("add_conference", null); });
         window.conversation_selector.conversation_selected.connect((conversation) => select_conversation(conversation));
 
         window.event.connect((event) => {

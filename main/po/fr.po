@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-16 19:02+0200\n"
-"PO-Revision-Date: 2020-05-02 11:11+0000\n"
+"POT-Creation-Date: 2020-05-17 19:27+0200\n"
+"PO-Revision-Date: 2020-05-17 17:21+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
 "Language: fr\n"
@@ -18,43 +18,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.1-dev\n"
 
-#: main/src/ui/main_window.vala:200
+#: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
 msgstr "Bienvenue dans Dino !"
 
-#: main/src/ui/main_window.vala:201
+#: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
 msgstr "Connectez-vous ou créez un compte pour commencer."
 
-#: main/src/ui/main_window.vala:202
+#: main/src/ui/main_window.vala:200
 msgid "Set up account"
 msgstr "Configurer le compte"
 
-#: main/src/ui/main_window.vala:210
+#: main/src/ui/main_window.vala:208
 msgid "No active accounts"
 msgstr "Aucun compte actif"
 
-#: main/src/ui/main_window.vala:211
+#: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
 msgstr "Gérer les comptes"
-
-#: main/src/ui/main_window.vala:220
-msgid "No active conversations"
-msgstr "Aucune discussion en cours"
-
-#: main/src/ui/main_window.vala:221
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "Commencer une discussion"
-
-#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "Rejoindre un salon"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:83
 msgid "Today"
@@ -149,7 +131,7 @@ msgstr "Non-chiffré"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Unable to send message"
-msgstr "Impossible d'envoyer le message"
+msgstr "Impossible d’envoyer le message"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
 #, no-c-format
@@ -235,7 +217,7 @@ msgstr "Demande d’abonnement"
 #: main/src/ui/add_conversation/conference_details_fragment.vala:188
 #, c-format
 msgid "Could not connect to %s"
-msgstr "N'a pas pu se connecter à %s"
+msgstr "N’a pas pu se connecter à %s"
 
 #: main/src/ui/notifications.vala:129
 #, c-format
@@ -249,12 +231,12 @@ msgstr "%s vous a invité·e à %s"
 
 #: main/src/ui/notifications.vala:150
 msgid "Permission request"
-msgstr ""
+msgstr "Demande de permission"
 
 #: main/src/ui/notifications.vala:151
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "%s demande la permission d’écrire dans %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -342,11 +324,11 @@ msgstr "Adresse invalide"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"
-msgstr "Nom d'utilisateur ou mot de passe incorrect"
+msgstr "Nom d’utilisateur ou mot de passe incorrect"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Something went wrong"
-msgstr "Quelque chose s'est mal passé"
+msgstr "Quelque chose s’est mal passé"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:321
 msgid "No response from server"
@@ -381,13 +363,18 @@ msgid "Me"
 msgstr "Moi"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
-#, c-format
-msgid "This conference does not allow you to send messages. %s"
-msgstr ""
+msgid "This conference does not allow you to send messages."
+msgstr "Cette conférence ne vous autorise pas à envoyer de messages."
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "Request permission"
-msgstr ""
+msgstr "Demander la permission"
+
+#: main/src/ui/application.vala:200
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "Rejoindre un salon"
 
 #: main/src/ui/application.vala:200
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -419,6 +406,13 @@ msgstr "Suivant"
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Retour"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "Commencer une discussion"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -491,11 +485,11 @@ msgstr "Éjecter"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Grant write permission"
-msgstr ""
+msgstr "Donner la permission d’écrire"
 
 #: main/src/ui/occupant_menu/view.vala:108
 msgid "Revoke write permission"
-msgstr ""
+msgstr "Révoquer la permission d’écrire"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
@@ -516,14 +510,13 @@ msgstr "Avec %s"
 
 #: main/src/ui/conversation_view_controller.vala:178
 msgid "Select file"
-msgstr ""
+msgstr "Sélectionner un fichier"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "Informations du salon"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Informations du contact"
 
@@ -569,7 +562,7 @@ msgstr "Mot de passe"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
-msgstr "Un mot de passe pour restreindre l'accès au salon"
+msgstr "Un mot de passe pour restreindre l’accès au salon"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
@@ -615,15 +608,15 @@ msgstr "Tous les échanges de messages et de statuts sont bloqués"
 
 #: main/src/ui/contact_details/permissions_provider.vala:21
 msgid "Request"
-msgstr ""
+msgstr "Demander"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Permissions"
-msgstr ""
+msgstr "Permissions"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "Demander la permission d’envoyer des messages"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
@@ -704,7 +697,7 @@ msgstr "Ajouter un compte"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr "S'identifier"
+msgstr "S’identifier"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:328
@@ -713,7 +706,7 @@ msgstr "Créer un compte"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr "N'a pas pu établir une connexion sécurisée"
+msgstr "N’a pas pu établir une connexion sécurisée"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
@@ -781,11 +774,7 @@ msgid ""
 "devices."
 msgstr ""
 "Dino récupère l’historique du serveur et synchronise les messages avec "
-"d'autres appareils."
-
-#: main/data/im.dino.Dino.appdata.xml.in:16
-msgid "Main window with conversations"
-msgstr "Fenêtre principale avec des conversations"
+"d’autres appareils."
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
@@ -807,9 +796,13 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Ajouter un contact"
 
+#: main/data/file_send_overlay.ui:28
+msgid "Send a file"
+msgstr ""
+
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
-msgstr ""
+msgstr "Envoyer"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
@@ -849,7 +842,13 @@ msgstr "Cliquer ici pour commencer une discussion ou rejoindre un salon."
 
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
-msgstr "Vous n'avez aucune discussion ouverte"
+msgstr "Vous n’avez aucune discussion ouverte"
+
+#~ msgid "No active conversations"
+#~ msgstr "Aucune discussion en cours"
+
+#~ msgid "Main window with conversations"
+#~ msgstr "Fenêtre principale avec des conversations"
 
 #, c-format
 #~ msgid "%s, %s and %i others"

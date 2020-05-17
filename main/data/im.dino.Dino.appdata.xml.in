@@ -13,15 +13,12 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <caption>Main window with conversations</caption>
       <image height="900" width="1600">https://dino.im/img/appdata/main.png</image>
     </screenshot>
     <screenshot>
-      <caption>Start Conversation</caption>
       <image height="900" width="1600">https://dino.im/img/appdata/start_chat.png</image>
     </screenshot>
     <screenshot>
-      <caption>Contact Details</caption>
       <image height="900" width="1600">https://dino.im/img/appdata/contact_details.png</image>
     </screenshot>
   </screenshots>

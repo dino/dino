@@ -7,53 +7,35 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-16 19:02+0200\n"
-"PO-Revision-Date: 2020-04-21 01:11+0000\n"
+"POT-Creation-Date: 2020-05-17 19:27+0200\n"
+"PO-Revision-Date: 2020-05-17 17:21+0000\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.0.2-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
-#: main/src/ui/main_window.vala:200
+#: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
 msgstr "歡迎來到 Dino！"
 
-#: main/src/ui/main_window.vala:201
+#: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
 msgstr "開始前請先登入或建立一個帳號。"
 
-#: main/src/ui/main_window.vala:202
+#: main/src/ui/main_window.vala:200
 msgid "Set up account"
 msgstr "設定帳號"
 
-#: main/src/ui/main_window.vala:210
+#: main/src/ui/main_window.vala:208
 msgid "No active accounts"
 msgstr "没有啟用的帳號"
 
-#: main/src/ui/main_window.vala:211
+#: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
 msgstr "管理帳號"
-
-#: main/src/ui/main_window.vala:220
-msgid "No active conversations"
-msgstr "没有進行中的對話"
-
-#: main/src/ui/main_window.vala:221
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "開始對話"
-
-#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "加入頻道"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:83
 msgid "Today"
@@ -247,12 +229,12 @@ msgstr "%s 邀請您加入 %s"
 
 #: main/src/ui/notifications.vala:150
 msgid "Permission request"
-msgstr ""
+msgstr "權限請求"
 
 #: main/src/ui/notifications.vala:151
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "%s 請求權限以寫入 %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -379,13 +361,18 @@ msgid "Me"
 msgstr "我"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
-#, c-format
-msgid "This conference does not allow you to send messages. %s"
-msgstr ""
+msgid "This conference does not allow you to send messages."
+msgstr "此聊天室不允許您傳送訊息。"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "Request permission"
-msgstr ""
+msgstr "權限請求"
+
+#: main/src/ui/application.vala:200
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "加入頻道"
 
 #: main/src/ui/application.vala:200
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -417,6 +404,13 @@ msgstr "下一個"
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "返回"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "開始對話"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -489,11 +483,11 @@ msgstr "踢走"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Grant write permission"
-msgstr ""
+msgstr "同意寫入權限"
 
 #: main/src/ui/occupant_menu/view.vala:108
 msgid "Revoke write permission"
-msgstr ""
+msgstr "撤回寫入權限"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
@@ -513,14 +507,13 @@ msgstr "和 %s"
 
 #: main/src/ui/conversation_view_controller.vala:178
 msgid "Select file"
-msgstr ""
+msgstr "選取檔案"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "聊天室詳細資訊"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "聯絡人詳細資訊"
 
@@ -612,15 +605,15 @@ msgstr "雙向的通訊以及狀態更新被封鎖"
 
 #: main/src/ui/contact_details/permissions_provider.vala:21
 msgid "Request"
-msgstr ""
+msgstr "請求"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Permissions"
-msgstr ""
+msgstr "權限"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "請求權限以傳送訊息"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
@@ -767,7 +760,7 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
-"它支持 OMEMO 和 OpenPGP 兩種端對端加密方式，並且容許設定隱私相關的特性譬如已"
+"它支持 OMEMO 和 OpenPGP 兩種端到端加密方式，並且容許設定隱私相關的特性譬如已"
 "讀回條和正在輸入提示。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
@@ -775,10 +768,6 @@ msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr "Dino 從伺服器取得訊息並與其他裝置同步。"
-
-#: main/data/im.dino.Dino.appdata.xml.in:16
-msgid "Main window with conversations"
-msgstr "含有對話的主視窗"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
@@ -800,9 +789,13 @@ msgstr "別名"
 msgid "Add Contact"
 msgstr "新增聯絡人"
 
+#: main/data/file_send_overlay.ui:28
+msgid "Send a file"
+msgstr ""
+
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
-msgstr ""
+msgstr "傳送"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
@@ -843,6 +836,12 @@ msgstr "點擊此處開始對話或加入頻道。"
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
 msgstr "您没有開啟的對話"
+
+#~ msgid "No active conversations"
+#~ msgstr "没有進行中的對話"
+
+#~ msgid "Main window with conversations"
+#~ msgstr "含有對話的主視窗"
 
 #, c-format
 #~ msgid "%s, %s and %i others"

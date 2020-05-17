@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-16 19:02+0200\n"
-"PO-Revision-Date: 2020-04-15 00:11+0000\n"
+"POT-Creation-Date: 2020-05-17 19:27+0200\n"
+"PO-Revision-Date: 2020-05-17 17:21+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
 "translations/ro/>\n"
 "Language: ro\n"
@@ -17,45 +17,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
-#: main/src/ui/main_window.vala:200
+#: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
 msgstr "Bine ați venit la Dino!"
 
-#: main/src/ui/main_window.vala:201
+#: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
 msgstr "Autentificați-vă sau creați un cont pentru a începe."
 
-#: main/src/ui/main_window.vala:202
+#: main/src/ui/main_window.vala:200
 msgid "Set up account"
 msgstr "Configurare cont"
 
-#: main/src/ui/main_window.vala:210
+#: main/src/ui/main_window.vala:208
 msgid "No active accounts"
 msgstr "Nici un cont activ"
 
-#: main/src/ui/main_window.vala:211
+#: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
 msgstr "Administrare conturi"
-
-#: main/src/ui/main_window.vala:220
-msgid "No active conversations"
-msgstr "Nici o conversație activă"
-
-#: main/src/ui/main_window.vala:221
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:20 main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "Pornește o conversație"
-
-#: main/src/ui/main_window.vala:222 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "Alăturați-vă canalului"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:83
 msgid "Today"
@@ -251,12 +233,12 @@ msgstr "%s v-a invitat la %s"
 
 #: main/src/ui/notifications.vala:150
 msgid "Permission request"
-msgstr ""
+msgstr "Solicitare de permisiune"
 
 #: main/src/ui/notifications.vala:151
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "%s solicită permisiunea de a scrie în %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -383,13 +365,18 @@ msgid "Me"
 msgstr "Eu"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
-#, c-format
-msgid "This conference does not allow you to send messages. %s"
-msgstr ""
+msgid "This conference does not allow you to send messages."
+msgstr "Această conferință nu vă permite să trimiteți mesaje."
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "Request permission"
-msgstr ""
+msgstr "Solicitare permisiune"
+
+#: main/src/ui/application.vala:200
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "Alăturați-vă canalului"
 
 #: main/src/ui/application.vala:200
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
@@ -421,6 +408,13 @@ msgstr "Următorul"
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
 msgstr "Înapoi"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12
+#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
+#: main/data/shortcuts.ui:17
+msgid "Start Conversation"
+msgstr "Pornește o conversație"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
@@ -493,11 +487,11 @@ msgstr "Dă afară"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Grant write permission"
-msgstr ""
+msgstr "Acordă permisiunea de a scrie"
 
 #: main/src/ui/occupant_menu/view.vala:108
 msgid "Revoke write permission"
-msgstr ""
+msgstr "Revoca permisiunea de a scrie"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
@@ -519,14 +513,13 @@ msgstr "Cu %s"
 
 #: main/src/ui/conversation_view_controller.vala:178
 msgid "Select file"
-msgstr ""
+msgstr "Selectare fișier"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
 msgstr "Detalii conferință"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-#: main/data/im.dino.Dino.appdata.xml.in:24
 msgid "Contact Details"
 msgstr "Detalii contact"
 
@@ -618,15 +611,15 @@ msgstr "Comunicațiile și actualizările de stare sunt blocate în ambele sensu
 
 #: main/src/ui/contact_details/permissions_provider.vala:21
 msgid "Request"
-msgstr ""
+msgstr "Cerere"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Permissions"
-msgstr ""
+msgstr "Permisiuni"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "Solicita permisiunea de a trimite mesaje"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
@@ -786,10 +779,6 @@ msgstr ""
 "Dino preia istoricul discuțiilor de pe server și sincronizează mesajele cu "
 "celelalte dispozitive."
 
-#: main/data/im.dino.Dino.appdata.xml.in:16
-msgid "Main window with conversations"
-msgstr "Fereastra principală de conversații"
-
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
@@ -810,9 +799,13 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Adaugă contact"
 
+#: main/data/file_send_overlay.ui:28
+msgid "Send a file"
+msgstr ""
+
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
-msgstr ""
+msgstr "Trimite"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
@@ -853,6 +846,12 @@ msgstr "Apăsați aici pentru a porni o conversație sau a vă alătura unui can
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
 msgstr "Nu aveți nici o discuție deschisă"
+
+#~ msgid "No active conversations"
+#~ msgstr "Nici o conversație activă"
+
+#~ msgid "Main window with conversations"
+#~ msgstr "Fereastra principală de conversații"
 
 #, c-format
 #~ msgid "%s, %s and %i others"

@@ -172,8 +172,8 @@ public class ChatInputController : Object {
             if (own_jid == null) return;
             if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) &&
                     stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account) == Xmpp.Xep.Muc.Role.VISITOR) {
-                set_input_field_status(new Plugins.InputFieldStatus(_("This conference does not allow you to send messages. %s").printf("<a href=\"" + OPEN_CONVERSATION_DETAILS_URI + "\">" + _("Request permission") + "</a>"),
-                Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND, true));
+                string msg_str = _("This conference does not allow you to send messages.") + " <a href=\"" + OPEN_CONVERSATION_DETAILS_URI + "\">" + _("Request permission") + "</a>";
+                set_input_field_status(new Plugins.InputFieldStatus(msg_str, Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND, true));
             } else {
                 reset_input_field_status();
             }

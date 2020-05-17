@@ -15,7 +15,6 @@ public class MainWindow : Gtk.Window {
 
     public WelcomePlceholder welcome_placeholder = new WelcomePlceholder() { visible=true };
     public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
-    public NoConversationsPlaceholder conversations_placeholder = new NoConversationsPlaceholder() { visible=true };
     public ConversationView conversation_view;
     public ConversationSelector conversation_selector;
     public ConversationTitlebar conversation_titlebar;
@@ -102,7 +101,6 @@ public class MainWindow : Gtk.Window {
         stack.add_named(box, "main");
         stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
-        stack.add_named(conversations_placeholder, "conversations_placeholder");
         add(stack);
     }
 
@@ -212,17 +210,6 @@ public class NoAccountsPlaceholder : MainWindowPlaceholder {
         title_label.visible = true;
         label.visible = false;
         secondary_button.visible = false;
-    }
-}
-
-public class NoConversationsPlaceholder : MainWindowPlaceholder {
-    public NoConversationsPlaceholder() {
-        title_label.label = _("No active conversations");
-        primary_button.label = _("Start Conversation");
-        secondary_button.label = _("Join Channel");
-        title_label.visible = true;
-        label.visible = false;
-        secondary_button.visible = true;
     }
 }
 
