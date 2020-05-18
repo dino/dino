@@ -30,7 +30,7 @@ File input/*.dll input/dino.exe
 
 # Install the libs and shared files 
 SetOutPath $INSTDIR
-File /r /x dino.exe /x plugins /x ./*.dll input/*
+File /r input/lib input/share input/LICENSE
 
 # Install the plugins
 SetOutPath $INSTDIR\lib\dino\plugins
