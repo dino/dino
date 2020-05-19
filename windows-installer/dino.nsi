@@ -24,18 +24,10 @@ InstallDir $PROGRAMFILES64\dino
 # default section start
 Section
  
-# Install binary and DLLs
-SetOutPath $INSTDIR\bin
-File input/*.dll input/dino.exe
-
-# Install the libs and shared files 
+# Install all files
 SetOutPath $INSTDIR
-File /r input/lib input/share input/LICENSE input/logo.ico
+File /r input/*
 
-# Install the plugins
-SetOutPath $INSTDIR\lib\dino\plugins
-File input/plugins/*
- 
 # define uninstaller name
 WriteUninstaller $INSTDIR\uninstaller.exe
  
