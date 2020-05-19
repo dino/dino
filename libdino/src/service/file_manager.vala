@@ -248,6 +248,13 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.mime_type = Util.get_content_type(file_info);
 
             file_transfer.state = FileTransfer.State.COMPLETE;
+
+#if _WIN32 // Add Zone.Identifier so Windows knows this file was downloaded from the internet
+            var file_alternate_stream = File.new_for_path(Path.build_filename(get_storage_dir(), filename + ":Zone.Identifier"));
+            var os_alternate_stream = file_alternate_stream.create(FileCreateFlags.REPLACE_DESTINATION);
+            os_alternate_stream.write("[ZoneTransfer]\r\nZoneId=3".data);
+#endif
+
         } catch (Error e) {
             warning("Error downloading file: %s", e.message);
             file_transfer.state = FileTransfer.State.FAILED;
