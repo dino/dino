@@ -213,7 +213,12 @@ OPTIONS
 )
 
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DDINO_VERSION=\"${PROJECT_VERSION}\")
-add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c)
+if(WIN32)
+    set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> --use-temp-file -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
+    add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c dino-info.rc)
+else(WIN32)
+    add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c)
+endif(WIN32)
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_include_directories(dino PRIVATE src)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})

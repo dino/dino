@@ -1,0 +1,25 @@
+1 VERSIONINFO
+FILEVERSION     0,1,0,0
+PRODUCTVERSION  0,1,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "Dino"
+      VALUE "FileDescription", "Dino - Modern XMPP (""Jabber"") Chat Client"
+      VALUE "FileVersion", "0.1.0-win"
+      VALUE "InternalName", "dino"
+      VALUE "LegalCopyright", "Dino"
+      VALUE "OriginalFilename", "dino.exe"
+      VALUE "ProductName", "Dino"
+      VALUE "ProductVersion", DINO_VERSION
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x809, 1252
+  END
+END
+
+DINO_ICO ICON "./dino.ico"
