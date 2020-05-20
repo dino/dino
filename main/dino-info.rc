@@ -1,6 +1,6 @@
 1 VERSIONINFO
-FILEVERSION     0,1,0,0
-PRODUCTVERSION  0,1,0,0
+FILEVERSION     DINO_NUMERIC_VERSION
+PRODUCTVERSION  DINO_NUMERIC_VERSION
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -8,7 +8,7 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Dino"
       VALUE "FileDescription", "Dino - Modern XMPP (""Jabber"") Chat Client"
-      VALUE "FileVersion", "0.1.0-win"
+      VALUE "FileVersion", DINO_VERSION
       VALUE "InternalName", "dino"
       VALUE "LegalCopyright", "Dino"
       VALUE "OriginalFilename", "dino.exe"
