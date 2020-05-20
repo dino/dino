@@ -160,7 +160,7 @@ public class GlobalSearch : Overlay {
                 context_box.add(get_context_message_widget(after_message.first()));
             }
 
-            Label date_label = new Label(ConversationSummary.ItemMetaDataHeader.get_relative_time(item.display_time)) { xalign=0, visible=true };
+            Label date_label = new Label(ConversationSummary.ItemMetaDataHeader.get_relative_time(item.display_time.to_local())) { xalign=0, visible=true };
             date_label.get_style_context().add_class("dim-label");
 
             string display_name = Util.get_conversation_display_name(stream_interactor, item.conversation);
