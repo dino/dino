@@ -8,14 +8,17 @@ public class Util {
     private static extern int ShellExecuteA(int* hwnd, string operation, string file, string parameters, string directory, int showCmd);
 
     [CCode (cname = "CoInitialize")]
-    public static extern int CoInitialize(void* reserved);
+    private static extern int CoInitialize(void* reserved);
 
     [CCode (cname = "CoUninitialize")]
-    public static extern void CoUninitialize();
+    private static extern void CoUninitialize();
 
     private static int ShellExecute(string operation, string file) {
         CoInitialize(null);
-        return ShellExecuteA(null, operation, file, null, null, 1);
+        var result = ShellExecuteA(null, operation, file, null, null, 1);
+        CoUninitialize();
+
+        return result;
     }
     #endif
 
@@ -46,7 +49,7 @@ public class Util {
     public static void launch_default_for_uri(string file_uri)
     {
 #if _WIN32
-        Dino.Util.ShellExecute("open", file_uri);
+        ShellExecute("open", file_uri);
 #else
         AppInfo.launch_default_for_uri(file_uri, null);
 #endif

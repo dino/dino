@@ -61,9 +61,6 @@ public interface Application : GLib.Application {
         });
         shutdown.connect(() => {
             stream_interactor.connection_manager.make_offline_all();
-#if _WIN32
-            Dino.Util.CoUninitialize();
-#endif
         });
         open.connect((files, hint) => {
             if (files.length != 1) {
