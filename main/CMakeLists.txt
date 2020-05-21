@@ -1,5 +1,3 @@
-
-
 set(GETTEXT_PACKAGE "dino")
 find_package(Gettext)
 include(${GETTEXT_USE_FILE})
