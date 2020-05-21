@@ -86,8 +86,9 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         foreach (Conversation conversation in typing_since.keys) {
             if (conversation.account.equals(account)) {
                 foreach (Jid jid in typing_since[conversation].keys) {
-                    clear_chat_state(conversation, jid);
+                    received_state(conversation, Xmpp.Xep.ChatStateNotifications.STATE_ACTIVE);
                 }
+                typing_since[conversation].clear();
             }
         }
     }
