@@ -23,3 +23,7 @@ endif(DINO_PLUGIN_ENABLED_omemo)
 if(DINO_PLUGIN_ENABLED_notification-sound)
   add_subdirectory(notification-sound)
 endif(DINO_PLUGIN_ENABLED_notification-sound)
+
+if(DINO_PLUGIN_ENABLED_win32-fonts)
+  add_subdirectory(win32-fonts)
+endif(DINO_PLUGIN_ENABLED_win32-fonts)

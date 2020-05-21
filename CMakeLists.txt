@@ -12,6 +12,9 @@ endif ()
 
 # Prepare Plugins
 set(DEFAULT_PLUGINS omemo;openpgp;http-files;ice;rtp)
+if (WIN32)
+    set(DEFAULT_PLUGINS ${DEFAULT_PLUGINS};win32-fonts)
+endif (WIN32)
 foreach (plugin ${DEFAULT_PLUGINS})
     if ("$CACHE{DINO_PLUGIN_ENABLED_${plugin}}" STREQUAL "")
         if (NOT DEFINED DINO_PLUGIN_ENABLED_${plugin}})
