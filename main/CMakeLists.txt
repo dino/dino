@@ -1,3 +1,5 @@
+
+
 set(GETTEXT_PACKAGE "dino")
 find_package(Gettext)
 include(${GETTEXT_USE_FILE})
@@ -219,6 +221,7 @@ endif ()
 
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DDINO_VERSION=\"${PROJECT_VERSION}\" -DDINO_NUMERIC_VERSION=${DINO_NUMERIC_VERSION})
 if(WIN32)
+    add_link_options("-Wl,--export-all-symbols")
     set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> --use-temp-file -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
     add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c dino-info.rc)
 else(WIN32)
