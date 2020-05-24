@@ -627,6 +627,12 @@ public class MessageProcessor : StreamInteractionModule, Object {
         stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, new_message, (_, res) => {
             try {
                 stream.get_module(MessageModule.IDENTITY).send_message.end(res);
+
+                // The server might not have given us the resource we asked for. In that case, store the actual resource the message was sent with. Relevant for deduplication.
+                Jid? current_own_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid;
+                if (!conversation.type_.is_muc_semantic() && current_own_jid != null && !current_own_jid.equals(message.ourpart)) {
+                    message.ourpart = current_own_jid;
+                }
             } catch (IOStreamError e) {
                 message.marked = Entities.Message.Marked.UNSENT;
             }
