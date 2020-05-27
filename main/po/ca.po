@@ -7,14 +7,13 @@ msgstr ""
 "Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-17 19:27+0200\n"
-"PO-Revision-Date: 2020-01-16 00:21+0000\n"
+"PO-Revision-Date: 2020-05-27 21:08+0200\n"
 "Language-Team: Catalan; Valencian <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
 
 #: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
@@ -81,22 +80,22 @@ msgstr "Ha fallat la transferència del fitxer"
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
 msgid "%s, %s and %i others are typing"
-msgstr ""
+msgstr "%s, %s i %i altres estan escrivint…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s i %s estan escrivint…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:114
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s i %s estan escrivint…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:116
 #, c-format
 msgid "%s is typing…"
-msgstr ""
+msgstr "%s està escrivint…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:157
 msgid "Message too long"
@@ -104,13 +103,13 @@ msgstr "El missatge és massa llarg"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:184
 msgid "edited"
-msgstr ""
+msgstr "editat"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:141
 #: main/src/ui/notifications.vala:163
 msgid "Accept"
-msgstr "Acepta"
+msgstr "Accepta"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 #: main/src/ui/notifications.vala:107 main/src/ui/notifications.vala:140
@@ -129,7 +128,7 @@ msgstr "Sense xifrar"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Unable to send message"
-msgstr ""
+msgstr "No s'ha pogut enviar el missatge"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
 #, no-c-format
@@ -229,12 +228,12 @@ msgstr "%s us ha convidat a %s"
 
 #: main/src/ui/notifications.vala:150
 msgid "Permission request"
-msgstr ""
+msgstr "Sol·licitud de permís"
 
 #: main/src/ui/notifications.vala:151
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "%s demana el permís per a escriure a %s"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -310,7 +309,7 @@ msgstr "Entra a %s"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
 msgid "You can now use the account %s."
-msgstr ""
+msgstr "Ara podeu emprar el compte %s."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:263
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
@@ -343,7 +342,7 @@ msgstr "El servidor requereix un registre a través d'una pàgina web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:332
 msgid "Open website"
-msgstr ""
+msgstr "Obre el lloc web"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:344
 msgid "Register"
@@ -362,11 +361,11 @@ msgstr "Jo"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "This conference does not allow you to send messages."
-msgstr ""
+msgstr "Aquesta conferència no us permet enviar missatges."
 
 #: main/src/ui/chat_input/chat_input_controller.vala:175
 msgid "Request permission"
-msgstr ""
+msgstr "Sol·licita el permís"
 
 #: main/src/ui/application.vala:200
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
@@ -426,7 +425,7 @@ msgstr "Es requereix una contrasenya per entrar a la sala"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:174
 msgid "Banned from joining or creating conference"
-msgstr "Heu estat bandejat de unir-vos o crear conferències"
+msgstr "Heu estat bandejat d'unir-vos o crear conferències"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Room does not exist"
@@ -483,18 +482,18 @@ msgstr "Expulsa"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Grant write permission"
-msgstr ""
+msgstr "Autoritza el permís d'escriptura"
 
 #: main/src/ui/occupant_menu/view.vala:108
 msgid "Revoke write permission"
-msgstr ""
+msgstr "Revoca el permís d'escriptura"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i resultat de cerca"
+msgstr[1] "%i resultats de cerca"
 
 #: main/src/ui/global_search.vala:167
 #, c-format
@@ -508,7 +507,7 @@ msgstr "Amb %s"
 
 #: main/src/ui/conversation_view_controller.vala:178
 msgid "Select file"
-msgstr ""
+msgstr "Selecciona el fitxer"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
@@ -544,11 +543,11 @@ msgstr "Els ocupants poden canviar el tema"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "Permís per a veure JID"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "Qui té permís per a veure els JID dels membres?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/manage_accounts/dialog.ui:170
@@ -560,7 +559,7 @@ msgstr "Contrasenya"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
-msgstr ""
+msgstr "Una contrasenya per a restringir l'accés a la sala"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
@@ -607,15 +606,15 @@ msgstr ""
 
 #: main/src/ui/contact_details/permissions_provider.vala:21
 msgid "Request"
-msgstr ""
+msgstr "Sol·licita"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Permissions"
-msgstr ""
+msgstr "Permisos"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "Sol·licita permís per a enviar missatges"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
@@ -668,7 +667,7 @@ msgstr "Membres"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
-msgstr ""
+msgstr "Actualitza el missatge"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -797,11 +796,11 @@ msgstr "Afegeix el contacte"
 
 #: main/data/file_send_overlay.ui:28
 msgid "Send a file"
-msgstr ""
+msgstr "Envia un fitxer"
 
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
-msgstr ""
+msgstr "Envia"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
