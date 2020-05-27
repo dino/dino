@@ -11,7 +11,6 @@ public class Module : XmppStreamNegotiationModule {
         StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
         Iq.Stanza request_form_iq = new Iq.Stanza.get(query_node) { to=jid };
         request_form_iq.to = jid;
-        SourceFunc callback = get_from_server.callback;
 
         Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, request_form_iq);
         return new Form.from_node(stream, iq_result);

@@ -106,7 +106,7 @@ public class MucManager : StreamInteractionModule, Object {
 
         // Check if this would be a valid nick
         try {
-            Jid jid = conversation.counterpart.with_resource(new_nick);
+            conversation.counterpart.with_resource(new_nick);
         } catch (InvalidJidError error) { return; }
 
         stream.get_module(Xep.Muc.Module.IDENTITY).change_nick(stream, conversation.counterpart, new_nick);

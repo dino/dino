@@ -54,7 +54,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
 
     public Gee.List<Jid>? get_typing_jids(Conversation conversation) {
         if (stream_interactor.connection_manager.get_state(conversation.account) != ConnectionManager.ConnectionState.CONNECTED) return null;
-        if (!typing_since.contains(conversation) || typing_since[conversation].size == 0) return null;
+        if (!typing_since.has_key(conversation) || typing_since[conversation].size == 0) return null;
 
         var jids = new ArrayList<Jid>();
         foreach (Jid jid in typing_since[conversation].keys) {
@@ -65,7 +65,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.ChatMarkers.Module.IDENTITY).marker_received.connect( (stream, jid, marker, id, message_stanza) => {
-            on_chat_marker_received(account, jid, marker, id, message_stanza);
+            on_chat_marker_received.begin(account, jid, marker, id, message_stanza);
         });
         stream_interactor.module_manager.get_module(account, Xep.MessageDeliveryReceipts.Module.IDENTITY).receipt_received.connect((stream, jid, id) => {
             on_receipt_received(account, jid, id);
@@ -76,7 +76,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     }
 
     private void clear_chat_state(Conversation conversation, Jid jid) {
-        if (!(typing_since.contains(conversation) && typing_since[conversation].contains(jid))) return;
+        if (!(typing_since.has_key(conversation) && typing_since[conversation].has_key(jid))) return;
 
         typing_since[conversation].unset(jid);
         received_state(conversation, Xmpp.Xep.ChatStateNotifications.STATE_ACTIVE);
@@ -85,9 +85,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     private void clear_all_chat_states(Account account) {
         foreach (Conversation conversation in typing_since.keys) {
             if (conversation.account.equals(account)) {
-                foreach (Jid jid in typing_since[conversation].keys) {
-                    received_state(conversation, Xmpp.Xep.ChatStateNotifications.STATE_ACTIVE);
-                }
+                received_state(conversation, Xmpp.Xep.ChatStateNotifications.STATE_ACTIVE);
                 typing_since[conversation].clear();
             }
         }
@@ -155,7 +153,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
 
             ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
             ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
-            if (read_up_to_item != null && read_up_to_item.sort_time.compare(content_item.sort_time) > 0) return;
+            if (read_up_to_item != null && read_up_to_item.compare(content_item) > 0) return;
             conversation.read_up_to_item = content_item.id;
         } else {
             // We can't currently handle chat markers in MUCs

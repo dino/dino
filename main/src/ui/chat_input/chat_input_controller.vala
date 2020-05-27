@@ -167,7 +167,7 @@ public class ChatInputController : Object {
     }
 
     private void update_moderated_input_status(Account account, Xmpp.Jid? jid = null) {
-        if (conversation.type_ == conversation.Type.GROUPCHAT){
+        if (conversation != null && conversation.type_ == Conversation.Type.GROUPCHAT){
             Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
             if (own_jid == null) return;
             if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) &&

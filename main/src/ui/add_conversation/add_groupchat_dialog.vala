@@ -11,7 +11,6 @@ protected class AddGroupchatDialog : Gtk.Dialog {
 
     [GtkChild] private Stack accounts_stack;
     [GtkChild] private AccountComboBox account_combobox;
-    [GtkChild] private Label account_label;
     [GtkChild] private Button ok_button;
     [GtkChild] private Button cancel_button;
     [GtkChild] private Entry jid_entry;

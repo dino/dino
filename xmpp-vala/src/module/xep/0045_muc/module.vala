@@ -567,7 +567,11 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                         string? var_ = field_node.get_attribute("var");
                         if (var_ == "muc#jid"){
                             StanzaNode? value_node = field_node.get_subnode("value", DataForms.NS_URI);
-                            if (value_node != null) from_jid = new Jid(value_node.get_string_content());                            
+                            try {
+                                if (value_node != null) from_jid = new Jid(value_node.get_string_content());
+                            } catch (InvalidJidError e) {
+                                return false;
+                            }
                         }
                         else if (var_ == "muc#roomnick"){
                             StanzaNode? value_node = field_node.get_subnode("value", DataForms.NS_URI);

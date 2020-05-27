@@ -194,11 +194,11 @@ public class Database : Qlite.Database {
         public Column<string> entity = new Column.Text("entity");
         public Column<string> category = new Column.Text("category");
         public Column<string> type = new Column.Text("type");
-        public Column<string> name = new Column.Text("name");
+        public Column<string> entity_name = new Column.Text("name");
 
         internal EntityIdentityTable(Database db) {
             base(db, "entity_identity");
-            init({entity, category, name, type});
+            init({entity, category, entity_name, type});
             unique({entity, category, type}, "IGNORE");
             index("entity_identity_idx", {entity});
         }

@@ -33,7 +33,7 @@ public class EntityCapabilitiesStorage : Xep.EntityCapabilities.Storage, Object 
                         .value(db.entity_identity.entity, entity)
                         .value(db.entity_identity.category, identity.category)
                         .value(db.entity_identity.type, identity.type_)
-                        .value(db.entity_identity.name, identity.name)
+                        .value(db.entity_identity.entity_name, identity.name)
                         .perform();
                 return;
             }
@@ -62,7 +62,7 @@ public class EntityCapabilitiesStorage : Xep.EntityCapabilities.Storage, Object 
 
         RowOption row = db.entity_identity.select().with(db.entity_identity.entity, "=", entity).single().row();
         if (row.is_present()) {
-            identity = new Identity(row[db.entity_identity.category], row[db.entity_identity.type], row[db.entity_identity.name]);
+            identity = new Identity(row[db.entity_identity.category], row[db.entity_identity.type], row[db.entity_identity.entity_name]);
         }
         identity_cache[entity] = identity;
         return identity;
