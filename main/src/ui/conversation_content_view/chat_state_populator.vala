@@ -107,7 +107,7 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
         }
         string new_text = "";
         if (jids.size > 3) {
-            new_text = _("%s, %s and %i others are typing").printf(display_names[0], display_names[1], jids.size - 2);
+            new_text = _("%s, %s and %i others are typing…").printf(display_names[0], display_names[1], jids.size - 2);
         } else if (jids.size == 3) {
             new_text = _("%s, %s and %s are typing…").printf(display_names[0], display_names[1], display_names[2]);
         } else if (jids.size == 2) {
