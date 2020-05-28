@@ -64,7 +64,7 @@ public class MucManager : StreamInteractionModule, Object {
 
             Conversation joined_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
             joined_conversation.nickname = nick;
-            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+            stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(joined_conversation);
         } else if (res.muc_error != null) {
             // Join failed
             enter_errors[jid] = res.muc_error;
