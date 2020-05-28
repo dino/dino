@@ -86,12 +86,7 @@ public abstract class ContentMetaItem : Plugins.MetaConversationItem {
         this.encryption = content_item.encryption;
         this.mark = content_item.mark;
 
-        WeakRef weak_item = WeakRef(content_item);
-        content_item.notify["mark"].connect(() => {
-            ContentItem? ci = weak_item.get() as ContentItem;
-            if (ci == null) return;
-            this.mark = ci.mark;
-        });
+        content_item.bind_property("mark", this, "mark");
 
         this.can_merge = true;
         this.requires_avatar = true;

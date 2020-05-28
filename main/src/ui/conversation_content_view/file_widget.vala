@@ -37,6 +37,8 @@ public class FileWidget : SizeRequestBox {
 
     private StreamInteractor stream_interactor;
     private FileTransfer file_transfer;
+    public FileTransfer.State file_transfer_state { get; set; }
+    public string file_transfer_mime_type { get; set; }
     private State? state = null;
 
     private FileDefaultWidgetController default_widget_controller;
@@ -58,8 +60,11 @@ public class FileWidget : SizeRequestBox {
             }
         });
 
-        file_transfer.notify["state"].connect(update_widget);
-        file_transfer.notify["mime-type"].connect(update_widget);
+        file_transfer.bind_property("state", this, "file-transfer-state");
+        file_transfer.bind_property("mime-type", this, "file-transfer-mime-type");
+
+        this.notify["file-transfer-state"].connect(update_widget);
+        this.notify["file-transfer-mime-type"].connect(update_widget);
     }
 
     private async void update_widget() {
@@ -115,6 +120,10 @@ public class FileDefaultWidgetController : Object {
 
     private FileDefaultWidget widget;
     private FileTransfer? file_transfer;
+    public string file_transfer_path { get; set; }
+    public string file_transfer_state { get; set; }
+    public string file_transfer_mime_type { get; set; }
+
     private StreamInteractor? stream_interactor;
     private string file_uri;
     private FileTransfer.State state;
@@ -130,9 +139,13 @@ public class FileDefaultWidgetController : Object {
 
         widget.name_label.label = file_transfer.file_name;
 
-        file_transfer.notify["path"].connect(update_file_info);
-        file_transfer.notify["state"].connect(update_file_info);
-        file_transfer.notify["mime-type"].connect(update_file_info);
+        file_transfer.bind_property("path", this, "file-transfer-path");
+        file_transfer.bind_property("state", this, "file-transfer-state");
+        file_transfer.bind_property("mime-type", this, "file-transfer-mime-type");
+
+        this.notify["file-transfer-path"].connect(update_file_info);
+        this.notify["file-transfer-state"].connect(update_file_info);
+        this.notify["file-transfer-mime-type"].connect(update_file_info);
 
         update_file_info();
     }

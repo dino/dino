@@ -282,13 +282,7 @@ public class MessageItem : ContentItem {
 
         this.message = message;
         this.conversation = conversation;
-
-        WeakRef weak_message = WeakRef(message);
-        message.notify["marked"].connect(() => {
-            Message? m = weak_message.get() as Message;
-            if (m == null) return;
-            mark = m.marked;
-        });
+        message.bind_property("marked", this, "mark");
     }
 }
 
@@ -310,16 +304,13 @@ public class FileItem : ContentItem {
         this.file_transfer = file_transfer;
         this.conversation = conversation;
 
+        // TODO those don't work
         if (message != null) {
-            WeakRef weak_message = WeakRef(message);
-            message.notify["marked"].connect(() => {
-                Message? m = weak_message.get() as Message;
-                if (m == null) return;
-                this.mark = m.marked;
-            });
+            message.bind_property("marked", this, "mark");
         } else if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
-            file_transfer.notify["state"].connect_after(() => {
-                this.mark = file_to_message_state(file_transfer.state);
+            file_transfer.bind_property("state", this, "mark", BindingFlags.DEFAULT, (_, from_value, ref to_value) => {
+                to_value = file_to_message_state((FileTransfer.State)from_value.get_enum());
+                return true;
             });
         }
     }

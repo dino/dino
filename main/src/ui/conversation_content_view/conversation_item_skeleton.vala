@@ -15,6 +15,7 @@ public class ConversationItemSkeleton : EventBox {
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
     public Plugins.MetaConversationItem item;
+    public bool item_in_edit_mode { get; set; }
     public ContentMetaItem? content_meta_item = null;
     public Widget? widget = null;
 
@@ -30,7 +31,8 @@ public class ConversationItemSkeleton : EventBox {
         this.content_meta_item = item as ContentMetaItem;
         this.get_style_context().add_class("message-box");
 
-        item.notify["in-edit-mode"].connect(() => {
+        item.bind_property("in-edit-mode", this, "item-in-edit-mode");
+        this.notify["item-in-edit-mode"].connect(() => {
             if (item.in_edit_mode) {
                 this.get_style_context().add_class("edit-mode");
             } else {
@@ -112,7 +114,9 @@ public class ItemMetaDataHeader : Box {
     private StreamInteractor stream_interactor;
     private Conversation conversation;
     private Plugins.MetaConversationItem item;
+    public Entities.Message.Marked item_mark { get; set; }
     private ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
+    private uint time_update_timeout = 0;
 
     public ItemMetaDataHeader(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.stream_interactor = stream_interactor;
@@ -151,7 +155,8 @@ public class ItemMetaDataHeader : Box {
             update_time();
         }
 
-        item.notify["mark"].connect_after(update_received_mark);
+        item.bind_property("mark", this, "item-mark");
+        this.notify["item-mark"].connect_after(update_received_mark);
         update_received_mark();
     }
 
@@ -172,7 +177,7 @@ public class ItemMetaDataHeader : Box {
     private void update_time() {
         time_label.label = get_relative_time(item.display_time.to_local()).to_string();
 
-        Timeout.add_seconds((int) get_next_time_change(), () => {
+        time_update_timeout = Timeout.add_seconds((int) get_next_time_change(), () => {
             if (this.parent == null) return false;
             update_time();
             return false;
@@ -274,6 +279,15 @@ public class ItemMetaDataHeader : Box {
             return n("%i min ago", "%i mins ago", mins).printf(mins);
         } else {
             return _("Just now");
+        }
+    }
+
+    public override void dispose() {
+        base.dispose();
+
+        if (time_update_timeout != 0) {
+            Source.remove(time_update_timeout);
+            time_update_timeout = 0;
         }
     }
 }
