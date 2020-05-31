@@ -6,6 +6,7 @@ public class MessageStanza : Xmpp.Stanza {
     public const string NODE_BODY = "body";
     public const string NODE_SUBJECT = "subject";
     public const string NODE_THREAD = "thread";
+    public const string NODE_RTT = "rtt";
 
     public const string TYPE_CHAT = "chat";
     public const string TYPE_GROUPCHAT = "groupchat";
@@ -14,6 +15,8 @@ public class MessageStanza : Xmpp.Stanza {
 
     public bool rerun_parsing = false;
     private ArrayList<MessageFlag> flags = new ArrayList<MessageFlag>();
+
+    public StanzaNode? rtt { get; set; }
 
     public string body {
         get {

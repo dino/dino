@@ -586,12 +586,13 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
-    public Entities.Message create_out_message(string text, Conversation conversation) {
+    public Entities.Message create_out_message(string? text, Conversation conversation, StanzaNode? rtt_subnode = null,  bool is_rtt = false) {
         Entities.Message message = new Entities.Message(text);
         message.type_ = Util.get_message_type_for_conversation(conversation);
         message.stanza_id = random_uuid();
         message.account = conversation.account;
-        message.body = text;
+        if (!is_rtt) message.body = text;
+        else message.rtt = rtt_subnode;
         DateTime now = new DateTime.from_unix_utc(new DateTime.now_utc().to_unix()); // Remove milliseconds. They are not stored in the db and might lead to ordering issues when compared with times from the db.
         message.time = now;
         message.local_time = now;
@@ -619,7 +620,12 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         MessageStanza new_message = new MessageStanza(message.stanza_id);
         new_message.to = message.counterpart;
-        new_message.body = message.body;
+        if (message.body != null){
+            new_message.body = message.body;
+        }
+        else {
+            new_message.rtt = message.rtt;
+        }
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             new_message.type_ = MessageStanza.TYPE_GROUPCHAT;
         } else {

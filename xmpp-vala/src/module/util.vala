@@ -12,6 +12,11 @@ public string random_uuid() {
     return "%08x-%04x-%04x-%04x-%04x%08x".printf(b1, b2, b3, b4, b5_1, b5_2);
 }
 
+public string random_seq() {
+    int random_number = Random.int_range(0,9000);
+    return random_number.to_string();
+}
+
 public abstract class StanzaListener<T> : OrderedListener {
 
     public abstract async bool run(XmppStream stream, T stanza);

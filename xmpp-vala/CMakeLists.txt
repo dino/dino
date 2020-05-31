@@ -85,6 +85,8 @@ SOURCES
     "src/module/xep/0260_jingle_socks5_bytestreams.vala"
     "src/module/xep/0261_jingle_in_band_bytestreams.vala"
     "src/module/xep/0280_message_carbons.vala"
+    "src/module/xep/0301_in_band_real_time_text/rtt_stanza.vala"
+    "src/module/xep/0301_in_band_real_time_text/module.vala"
     "src/module/xep/0308_last_message_correction.vala"
     "src/module/xep/0313_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"

@@ -10,21 +10,32 @@ namespace Dino.Ui {
 public class ChatTextViewController : Object {
 
     public signal void send_text();
+    public signal void send_rtt();
 
     public OccupantsTabCompletor occupants_tab_completor;
 
     private ChatTextView widget;
+    private Conversation? conversation;
+    private StreamInteractor? stream_interactor;
 
     public ChatTextViewController(ChatTextView widget, StreamInteractor stream_interactor) {
         this.widget = widget;
+        this.stream_interactor = stream_interactor;
         occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, widget.text_view);
 
         widget.send_text.connect(() => {
             send_text();
+            XmppStream stream = stream_interactor.get_stream(conversation.account);
+            stream.get_module(Xep.RealTimeText.Module.IDENTITY).event = "new";
+        });
+
+        widget.send_rtt.connect(() => {
+            send_rtt();
         });
     }
 
     public void initialize_for_conversation(Conversation conversation) {
+        this.conversation = conversation;
         occupants_tab_completor.initialize_for_conversation(conversation);
         widget.initialize_for_conversation(conversation);
     }
@@ -33,6 +44,7 @@ public class ChatTextViewController : Object {
 public class ChatTextView : ScrolledWindow {
 
     public signal void send_text();
+    public signal void send_rtt();
     public signal void cancel_input();
 
     public TextView text_view = new TextView() { can_focus=true, hexpand=true, margin=8, wrap_mode=Gtk.WrapMode.WORD_CHAR, valign=Align.CENTER, visible=true };
@@ -84,6 +96,12 @@ public class ChatTextView : ScrolledWindow {
         if (event.keyval == Key.Escape) {
             cancel_input();
         }
+
+        if (text_view.buffer.text != "") {  //TODO(Wolfie) send_rtt() on basis of num keystrokes/time
+            send_rtt();
+            //  edit_history.save_state();
+        }
+
         return false;
     }
 }
