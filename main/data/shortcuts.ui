@@ -29,6 +29,26 @@
                 <child>
                     <object class="GtkShortcutsGroup">
                         <property name="visible">True</property>
+                        <property name="title" translatable="yes">Conversation</property>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">True</property>
+                                <property name="accelerator">&lt;ctrl&gt;F</property>
+                                <property name="title" translatable="yes">Search messages</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">True</property>
+                                <property name="accelerator">&lt;ctrl&gt;U</property>
+                                <property name="title" translatable="yes">Send a file</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkShortcutsGroup">
+                        <property name="visible">True</property>
                         <property name="title" translatable="yes">Navigation</property>
                         <child>
                             <object class="GtkShortcutsShortcut">

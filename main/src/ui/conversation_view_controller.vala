@@ -38,7 +38,7 @@ public class ConversationViewController : Object {
 
         this.chat_input_controller = new ChatInputController(view.chat_input, stream_interactor);
         chat_input_controller.activate_last_message_correction.connect(() => view.conversation_frame.activate_last_message_correction());
-        chat_input_controller.file_picker_selected.connect(() => on_file_picker_selected());
+        chat_input_controller.file_picker_selected.connect(() => open_file_picker());
 
         view.conversation_frame.init(stream_interactor);
 
@@ -89,6 +89,15 @@ public class ConversationViewController : Object {
         foreach(var entry in app.plugin_registry.conversation_titlebar_entries) {
             titlebar.insert_entry(entry);
         }
+
+        AccelGroup accel_group = new AccelGroup();
+        accel_group.connect(Gdk.Key.U, ModifierType.CONTROL_MASK, AccelFlags.VISIBLE, () => {
+            if (conversation != null && stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation)) {
+                open_file_picker();
+            }
+            return false;
+        });
+        ((Gtk.Window)view.get_toplevel()).add_accel_group(accel_group);
     }
 
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {
@@ -174,7 +183,7 @@ public class ConversationViewController : Object {
         }
     }
 
-    private void on_file_picker_selected() {
+    private void open_file_picker() {
         PreviewFileChooserNative chooser = new PreviewFileChooserNative(_("Select file"), view.get_toplevel() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"));
         if (chooser.run() == Gtk.ResponseType.ACCEPT) {
             open_send_file_overlay(File.new_for_path(chooser.get_filename()));
