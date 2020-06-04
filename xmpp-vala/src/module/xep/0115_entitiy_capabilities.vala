@@ -110,7 +110,7 @@ namespace Xmpp.Xep.EntityCapabilities {
                     Gee.List<string> values = field.get_values();
                     values.sort();
                     foreach (string value in values) {
-                        sb.append(sanitize(value))
+                        sb.append(sanitize(value ?? ""))
                             .append("<");
                     }
                 }
