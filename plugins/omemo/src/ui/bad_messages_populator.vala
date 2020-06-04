@@ -38,22 +38,47 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
 
     private void init_state() {
         var qry = db.identity_meta.select()
-                .join_with(db.identity, db.identity.id, db.identity_meta.identity_id)
-                .with(db.identity.account_id, "=", current_conversation.account.id)
-                .with(db.identity_meta.address_name, "=", current_conversation.counterpart.to_string())
-                .where("last_message_untrusted is not NULL OR last_message_undecryptable is not NULL");
+            .join_with(db.identity, db.identity.id, db.identity_meta.identity_id)
+            .with(db.identity.account_id, "=", current_conversation.account.id)
+            .where("last_message_untrusted is not NULL OR last_message_undecryptable is not NULL");
+
+        switch (current_conversation.type_) {
+            case Conversation.Type.CHAT:
+                qry.with(db.identity_meta.address_name, "=", current_conversation.counterpart.to_string());
+                break;
+            case Conversation.Type.GROUPCHAT:
+                bool is_private = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(current_conversation.account, current_conversation.counterpart);
+                if (!is_private) return;
+
+                var list = stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(current_conversation.counterpart, current_conversation.account);
+                if (list == null || list.is_empty) return;
+
+                var selection = new StringBuilder();
+                string[] selection_args = {};
+                foreach (Jid jid in list) {
+                    if (selection.len == 0) {
+                        selection.append(@" ($(db.identity_meta.address_name) = ?");
+                    } else {
+                        selection.append(@" OR $(db.identity_meta.address_name) = ?");
+                    }
+                    selection_args += jid.to_string();
+                }
+                selection.append(")");
+                qry.where(selection.str, selection_args);
+                break;
+        }
 
         foreach (Row row in qry) {
             Jid jid = new Jid(row[db.identity_meta.address_name]);
             if (!db.identity_meta.last_message_untrusted.is_null(row)) {
                 DateTime time = new DateTime.from_unix_utc(row[db.identity_meta.last_message_untrusted]);
-                var item = new BadMessageItem(plugin, current_conversation.account, jid, time, BadnessType.UNTRUSTED);
+                var item = new BadMessageItem(plugin, current_conversation, jid, time, BadnessType.UNTRUSTED);
                 bad_items.add(item);
                 item_collection.insert_item(item);
             }
             if (!db.identity_meta.last_message_undecryptable.is_null(row)) {
                 DateTime time = new DateTime.from_unix_utc(row[db.identity_meta.last_message_undecryptable]);
-                var item = new BadMessageItem(plugin, current_conversation.account, jid, time, BadnessType.UNDECRYPTABLE);
+                var item = new BadMessageItem(plugin, current_conversation, jid, time, BadnessType.UNDECRYPTABLE);
                 bad_items.add(item);
                 item_collection.insert_item(item);
             }
@@ -81,14 +106,14 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
 public class BadMessageItem : Plugins.MetaConversationItem {
 
     private Plugin plugin;
-    private Account account;
+    private Conversation conversation;
     private DateTime date;
     private Jid problem_jid;
     private BadnessType badness_type;
 
-    public BadMessageItem(Plugin plugin, Account account, Jid jid, DateTime date, BadnessType badness_type) {
+    public BadMessageItem(Plugin plugin, Conversation conversation, Jid jid, DateTime date, BadnessType badness_type) {
         this.plugin = plugin;
-        this.account = account;
+        this.conversation = conversation;
         this.problem_jid = jid;
         this.date = date;
         this.sort_time = date;
@@ -96,25 +121,35 @@ public class BadMessageItem : Plugins.MetaConversationItem {
     }
 
     public override Object? get_widget(Plugins.WidgetType widget_type) {
-        return new BadMessagesWidget(plugin, account, problem_jid, badness_type);
+        return new BadMessagesWidget(plugin, conversation, problem_jid, badness_type);
     }
 
     public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
 }
 
 public class BadMessagesWidget : Box {
-    public BadMessagesWidget(Plugin plugin, Account account, Jid jid, BadnessType badness_type) {
+    public BadMessagesWidget(Plugin plugin, Conversation conversation, Jid jid, BadnessType badness_type) {
         Object(orientation:Orientation.HORIZONTAL, spacing:5);
 
         this.halign = Align.CENTER;
         this.visible = true;
 
         var sb = new StringBuilder();
+        string who = "Your contact";
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            var occupants = plugin.app.stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
+            if (occupants == null) return;
+            foreach (Jid occupant in occupants) {
+                if (jid.equals_bare(plugin.app.stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(occupant, conversation.account))) {
+                    who = occupant.resourcepart;
+                }
+            }
+        }
         if (badness_type == BadnessType.UNTRUSTED) {
-            sb.append("Your contact has been using an untrusted device. You won't see messages from devices that you do not trust.");
+            sb.append("%s has been using an untrusted device. You won't see messages from devices that you do not trust.".printf(who));
             sb.append(" <a href=\"\">%s</a>".printf("Manage devices"));
         } else {
-            sb.append("Your contact does not trust this device. That means, you might be missing messages.");
+            sb.append("%s does not trust this device. That means, you might be missing messages.".printf(who));
         }
         Label label = new Label(sb.str) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
         label.get_style_context().add_class("dim-label");
@@ -122,7 +157,7 @@ public class BadMessagesWidget : Box {
 
         label.activate_link.connect(() => {
             if (badness_type == BadnessType.UNTRUSTED) {
-                ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, account, jid);
+                ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, jid);
                 dialog.set_transient_for((Window) get_toplevel());
                 dialog.present();
             }

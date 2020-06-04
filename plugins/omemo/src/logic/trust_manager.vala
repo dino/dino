@@ -413,7 +413,7 @@ public class TrustManager {
                 }
             }
 
-            if (our_nodes.size == 0) {
+            if (our_nodes.size == 0 && module.store.local_registration_id != sid) {
                 db.identity_meta.update_last_message_undecryptable(identity_id, sid, message.time);
                 trust_manager.bad_message_state_updated(conversation.account, message.from, sid);
             }

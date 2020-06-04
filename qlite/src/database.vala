@@ -139,7 +139,7 @@ public class Database {
         ensure_init();
         Sqlite.Statement statement;
         if (db.prepare_v2(sql, sql.length, out statement) != OK) {
-            error("SQLite error: %d - %s", db.errcode(), db.errmsg());
+            error("SQLite error: %d - %s: %s", db.errcode(), db.errmsg(), sql);
         }
         return statement;
     }
