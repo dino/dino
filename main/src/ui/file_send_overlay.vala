@@ -20,9 +20,13 @@ public class FileSendOverlay : Gtk.EventBox {
     private bool can_send = true;
 
     public FileSendOverlay(File file, FileInfo file_info) {
-        close_button.clicked.connect(() => this.destroy());
+        close_button.clicked.connect(() => {
+            this.close();
+            this.destroy();
+        });
         send_button.clicked.connect(() => {
             send_file();
+            this.close();
             this.destroy();
         });
 

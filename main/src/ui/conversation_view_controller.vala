@@ -140,7 +140,7 @@ public class ConversationViewController : Object {
     private void update_file_upload_status() {
         bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
         chat_input_controller.set_file_upload_active(upload_available);
-        if (upload_available) {
+        if (upload_available && overlay_dialog == null) {
             Gtk.drag_dest_set(view, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
         } else {
             Gtk.drag_dest_unset(view);
@@ -184,11 +184,10 @@ public class ConversationViewController : Object {
             switch (target_type) {
                 case Target.URI_LIST:
                     string[] uris = selection_data.get_uris();
-                    for (int i = 0; i < uris.length; i++) {
-                        try {
-                            string file_path = Filename.from_uri(uris[i]);
-                            open_send_file_overlay(File.new_for_path(file_path));
-                        } catch (Error err) {}
+                    // For now we only process the first dragged file
+                    if (uris.length >= 1) {
+                        string file_path = Filename.from_uri(uris[0]);
+                        open_send_file_overlay(File.new_for_path(file_path));
                     }
                     break;
                 default:
@@ -226,8 +225,16 @@ public class ConversationViewController : Object {
             }
         }
 
+        overlay.close.connect(() => {
+            // We don't want drag'n'drop to be active while the overlay is active
+            overlay_dialog = null;
+            update_file_upload_status();
+        });
+
         view.add_overlay_dialog(overlay);
         overlay_dialog = overlay;
+
+        update_file_upload_status();
     }
 
     private void send_file(File file) {
