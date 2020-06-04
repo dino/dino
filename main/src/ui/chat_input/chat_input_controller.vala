@@ -11,6 +11,7 @@ public class ChatInputController : Object {
 
     public signal void activate_last_message_correction();
     public signal void file_picker_selected();
+    public signal void clipboard_pasted();
 
     public new string? conversation_display_name { get; set; }
     public string? conversation_topic { get; set; }
@@ -35,6 +36,7 @@ public class ChatInputController : Object {
 
         chat_input.chat_text_view.text_view.buffer.changed.connect(on_text_input_changed);
         chat_input.chat_text_view.text_view.key_press_event.connect(on_text_input_key_press);
+        chat_input.chat_text_view.text_view.paste_clipboard.connect(() => clipboard_pasted());
 
         chat_text_view_controller.send_text.connect(send_text);
 

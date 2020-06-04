@@ -39,6 +39,7 @@ public class ConversationViewController : Object {
         this.chat_input_controller = new ChatInputController(view.chat_input, stream_interactor);
         chat_input_controller.activate_last_message_correction.connect(() => view.conversation_frame.activate_last_message_correction());
         chat_input_controller.file_picker_selected.connect(() => open_file_picker());
+        chat_input_controller.clipboard_pasted.connect(on_clipboard_paste);
 
         view.conversation_frame.init(stream_interactor);
 
@@ -162,6 +163,19 @@ public class ConversationViewController : Object {
             }
         } else {
             conversation_topic = null;
+        }
+    }
+
+    private void on_clipboard_paste() {
+        Clipboard clipboard = Clipboard.get(Gdk.SELECTION_CLIPBOARD);
+        if (clipboard.wait_is_image_available()) {
+            clipboard.request_image((_, pixbuf) => {
+                File file = File.new_for_path(Path.build_filename(FileManager.get_storage_dir(), Xmpp.random_uuid() + ".png"));
+                DataOutputStream fos = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
+                pixbuf.save_to_stream_async.begin(fos, "png", null, () => {
+                    open_send_file_overlay(file);
+                });
+            });
         }
     }
 
