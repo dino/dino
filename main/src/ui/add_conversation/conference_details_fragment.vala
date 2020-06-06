@@ -158,8 +158,9 @@ protected class ConferenceDetailsFragment : Box {
             ok_button.sensitive = true;
             if (join_result == null || join_result.nick != null) {
                 Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(parsed_jid, account, Conversation.Type.GROUPCHAT);
-            Application app = GLib.Application.get_default() as Application;
-            app.controller.select_conversation(conversation);joined();
+                Application app = GLib.Application.get_default() as Application;
+                app.controller.select_conversation(conversation);
+                joined();
                 return;
             }
 
