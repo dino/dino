@@ -45,7 +45,6 @@ public class Message : Object {
     public Jid? real_jid { get; set; }
     public Type type_ { get; set; default = Type.UNKNOWN; }
     public string? body { get; set; }
-    public StanzaNode? rtt{get; set;}
     public string? stanza_id { get; set; }
     public string? server_id { get; set; }
     public DateTime? time { get; set; }

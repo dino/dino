@@ -51,6 +51,7 @@ public class ChatTextView : ScrolledWindow {
     private int vscrollbar_min_height;
     private SmileyConverter smiley_converter;
     public EditHistory edit_history;
+    private int num_keystrokes;
 
     construct {
         max_content_height = 300;
@@ -98,8 +99,11 @@ public class ChatTextView : ScrolledWindow {
         }
 
         if (text_view.buffer.text != "") {  //TODO(Wolfie) send_rtt() on basis of num keystrokes/time
-            send_rtt();
-            //  edit_history.save_state();
+            num_keystrokes++;
+            if (num_keystrokes > 5) {
+                send_rtt();
+                num_keystrokes = 0;
+            }
         }
 
         return false;

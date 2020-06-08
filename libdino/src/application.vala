@@ -46,6 +46,7 @@ public interface Application : GLib.Application {
         Register.start(stream_interactor, db);
         EntityInfo.start(stream_interactor, db);
         MessageCorrection.start(stream_interactor, db);
+        RttManager.start(stream_interactor);
 
         create_actions();
 

@@ -36,7 +36,7 @@ SOURCES
     src/service/entity_info.vala
     src/service/file_manager.vala
     src/service/jingle_file_transfers.vala
-    src/service/message_comparision.vala
+    src/service/message_comparison.vala
     src/service/message_correction.vala
     src/service/message_processor.vala
     src/service/message_storage.vala

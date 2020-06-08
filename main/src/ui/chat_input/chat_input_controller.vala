@@ -39,6 +39,7 @@ public class ChatInputController : Object {
         chat_input.chat_text_view.text_view.paste_clipboard.connect(() => clipboard_pasted());
 
         chat_text_view_controller.send_text.connect(send_text);
+        chat_text_view_controller.send_rtt.connect(send_rtt);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
 
@@ -158,6 +159,14 @@ public class ChatInputController : Object {
             }
         }
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
+    }
+
+    private void send_rtt() {
+        Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+        string current_message = chat_input.chat_text_view.text_view.buffer.text;
+        string previous_message = stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).get_previous_message(stream);
+        stream_interactor.get_module(RttManager.IDENTITY).message_compare(conversation, previous_message, current_message);
+        stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).save_previous_message(stream, current_message);
     }
 
     private void on_text_input_changed() {

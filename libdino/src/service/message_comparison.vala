@@ -20,22 +20,28 @@ namespace  Dino {
         public int new_hi { get; set; }
     }
 
-    class MessageComparision : Object {
+    class Tag {
+        public string? tag { get; set; }
+        public int a0 { get; set; }
+        public int a1 { get; set; }
+        public int b0 { get; set; }
+        public int b1 { get; set; }
+    }
+
+    class MessageComparison : Object {
 
         public string old_message;
         public string new_message;
-
         private HashMap<string, ArrayList<int>> message_to_indices = new HashMap<string, ArrayList<int>>();
 
 
-        public MessageComparision(string old_message, string new_message) {
-
+        public MessageComparison(string old_message, string new_message) {
             this.old_message = old_message;
             this.new_message = new_message;
+            convert_to_indices(new_message);
         }
 
         private void convert_to_indices(string message){
-
             unichar c;
             for (int i = 0; message.get_next_char (ref i, out c);) {
 
@@ -48,8 +54,13 @@ namespace  Dino {
             }
         }
 
-        public Match find_longest_match(MessageSlice message_slice){
+        private int compare_matches(Match a, Match b) {
+            if (a.old_index > b.old_index || a.new_index > b.new_index) return 1; //TODO(Wolfie) is this correct?
+            else if (a.old_index == b.old_index && a.new_index == b.new_index) return 0;
+            else return -1;
+        }
 
+        public Match find_longest_match(MessageSlice message_slice){
             string old_message = this.old_message;
             string new_message = this.new_message;
             HashMap<string, ArrayList<int>> message_to_indices = this.message_to_indices;
@@ -104,7 +115,6 @@ namespace  Dino {
         }
 
         public ArrayList<Match> get_all_blocks() {
-            
             int len_old = old_message.char_count();
             int len_new = new_message.char_count();
             
@@ -132,9 +142,44 @@ namespace  Dino {
                 }
 
             }
-            
+            matching_blocks.sort(compare_matches);
+            matching_blocks.add(new Match() { old_index=len_old, new_index=len_new, length=0 });
             return matching_blocks;
         }
 
+        public ArrayList<Tag> generate_tags(){
+            int i = 0;
+            int j = 0;
+            ArrayList<Tag> all_tags = new ArrayList<Tag>();
+
+            ArrayList<Match> matching_blocks = get_all_blocks();
+
+            foreach (Match match in matching_blocks) {
+                Tag tag = new Tag() { tag="", a0=i, a1=match.old_index, b0=j, b1=match.new_index };
+
+                if (i < match.old_index && j < match.new_index) {
+                    tag.tag = "replace";
+                } 
+                else if (i<match.old_index) {
+                    tag.tag = "erase";
+                }
+                else if (j<match.new_index) {
+                    tag.tag = "insert";
+                } 
+
+                if (tag.tag!="") {
+                    all_tags.add(tag);
+                }
+
+                i = match.old_index + match.length;
+                j = match.new_index + match.length;
+
+                if (match.length != 0) {
+                    Tag tag_equal = new Tag() { tag="equal", a0=match.old_index, a1=i, b0=match.new_index , b1=j };
+                    all_tags.add(tag_equal);
+                }
+            }
+            return all_tags;
+        }
     }
 }

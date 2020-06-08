@@ -16,7 +16,14 @@ public class MessageStanza : Xmpp.Stanza {
     public bool rerun_parsing = false;
     private ArrayList<MessageFlag> flags = new ArrayList<MessageFlag>();
 
-    public StanzaNode? rtt { get; set; }
+    public StanzaNode? rtt { 
+        owned get { 
+            return stanza.get_subnode(NODE_RTT); 
+        } 
+        set { 
+            stanza.put_node(value); 
+        } 
+    }
 
     public string body {
         get {
