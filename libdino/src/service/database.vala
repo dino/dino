@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 15;
+    private const int VERSION = 16;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -186,7 +186,7 @@ public class Database : Qlite.Database {
         internal AvatarTable(Database db) {
             base(db, "contact_avatar");
             init({jid_id, account_id, hash, type_});
-            unique({jid_id, account_id}, "REPLACE");
+            unique({jid_id, account_id, type_}, "REPLACE");
         }
     }
 
@@ -378,6 +378,14 @@ public class Database : Qlite.Database {
                 , -1);");
             } catch (Error e) {
                 error("Failed to upgrade to database version 15: %s", e.message);
+            }
+        }
+        if (oldVersion < 16) {
+            try {
+                exec("DROP TABLE contact_avatar");
+                avatar.create_table_at_version(VERSION);
+            } catch (Error e) {
+                error("Failed to upgrade to database version 16: %s", e.message);
             }
         }
     }
