@@ -21,9 +21,11 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void conference_removed(Account account, Jid jid);
 
     private StreamInteractor stream_interactor;
+    private HashMap<Account, Gee.List<Jid>> mucs_joining = new HashMap<Account, ArrayList<Jid>>(Account.hash_func, Account.equals_func);
     private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
     private ReceivedMessageListener received_message_listener;
     private HashMap<Account, BookmarksProvider> bookmarks_provider = new HashMap<Account, BookmarksProvider>(Account.hash_func, Account.equals_func);
+
     public static void start(StreamInteractor stream_interactor) {
         MucManager m = new MucManager(stream_interactor);
         stream_interactor.add_module(m);
@@ -45,6 +47,7 @@ public class MucManager : StreamInteractionModule, Object {
     public async Muc.JoinResult? join(Account account, Jid jid, string? nick, string? password) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return null;
+
         string nick_ = (nick ?? account.localpart) ?? account.domainpart;
 
         DateTime? history_since = null;
@@ -54,7 +57,14 @@ public class MucManager : StreamInteractionModule, Object {
             if (last_message != null) history_since = last_message.time;
         }
 
+        if (!mucs_joining.has_key(account)) {
+            mucs_joining[account] = new ArrayList<Jid>();
+        }
+        mucs_joining[account].add(jid);
+
         Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since);
+
+        mucs_joining[account].remove(jid);
 
         if (res.nick != null) {
             // Join completed
@@ -211,6 +221,11 @@ public class MucManager : StreamInteractionModule, Object {
     public bool is_groupchat(Jid jid, Account account) {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account, Conversation.Type.GROUPCHAT);
         return !jid.is_full() && conversation != null;
+    }
+
+    public bool might_be_groupchat(Jid jid, Account account) {
+        if (mucs_joining.has_key(account) && mucs_joining[account].contains(jid)) return true;
+        return is_groupchat(jid, account);
     }
 
     public bool is_groupchat_occupant(Jid jid, Account account) {

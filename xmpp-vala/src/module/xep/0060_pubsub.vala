@@ -1,7 +1,7 @@
 using Gee;
 
 namespace Xmpp.Xep.Pubsub {
-    private const string NS_URI = "http://jabber.org/protocol/pubsub";
+    public const string NS_URI = "http://jabber.org/protocol/pubsub";
     private const string NS_URI_EVENT = NS_URI + "#event";
     private const string NS_URI_OWNER = NS_URI + "#owner";
 
@@ -39,18 +39,14 @@ namespace Xmpp.Xep.Pubsub {
             Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
             request_iq.to = jid;
 
-            Gee.List<StanzaNode>? ret = null;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, request_iq, (stream, iq) => {
-                StanzaNode event_node = iq.stanza.get_subnode("pubsub", NS_URI);
-                if (event_node == null) return;
-                StanzaNode items_node = event_node.get_subnode("items", NS_URI);
-                if (items_node == null) return;
-                ret = items_node.get_subnodes("item", NS_URI);
-                Idle.add(request_all.callback);
-            });
-            yield;
+            Iq.Stanza iq_res = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, request_iq);
 
-            return ret;
+            StanzaNode event_node = iq_res.stanza.get_subnode("pubsub", NS_URI);
+            if (event_node == null) return null;
+            StanzaNode items_node = event_node.get_subnode("items", NS_URI);
+            if (items_node == null) return null;
+
+            return items_node.get_subnodes("item", NS_URI);
         }
 
         public delegate void OnResult(XmppStream stream, Jid jid, string? id, StanzaNode? node);

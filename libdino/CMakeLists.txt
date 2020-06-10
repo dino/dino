@@ -25,7 +25,6 @@ SOURCES
     src/plugin/registry.vala
 
     src/service/avatar_manager.vala
-    src/service/avatar_storage.vala
     src/service/blocking_manager.vala
     src/service/chat_interaction.vala
     src/service/connection_manager.vala

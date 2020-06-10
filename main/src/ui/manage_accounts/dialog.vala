@@ -180,7 +180,7 @@ public class Dialog : Gtk.Dialog {
         return false;
     }
 
-    private void on_received_avatar(Pixbuf pixbuf, Jid jid, Account account) {
+    private void on_received_avatar(Jid jid, Account account) {
         if (selected_account.equals(account) && jid.equals(account.bare_jid)) {
             image.set_conversation(stream_interactor, new Conversation(account.bare_jid, account, Conversation.Type.CHAT));
         }
