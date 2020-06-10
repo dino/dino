@@ -39,8 +39,8 @@ public class Database : Qlite.Database {
     }
 
     public void set_contact_key(Jid jid, string key) {
-        contact_key_table.insert().or("REPLACE")
-                .value(contact_key_table.jid, jid.to_string())
+        contact_key_table.upsert()
+                .value(contact_key_table.jid, jid.to_string(), true)
                 .value(contact_key_table.key, key)
                 .perform();
     }
@@ -51,8 +51,8 @@ public class Database : Qlite.Database {
     }
 
     public void set_account_key(Account account, string key) {
-        account_setting_table.insert().or("REPLACE")
-                .value(account_setting_table.account_id, account.id)
+        account_setting_table.upsert()
+                .value(account_setting_table.account_id, account.id, true)
                 .value(account_setting_table.key, key)
                 .perform();
     }

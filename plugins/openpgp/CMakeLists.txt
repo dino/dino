@@ -6,7 +6,7 @@ gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TAR
 
 find_packages(OPENPGP_PACKAGES REQUIRED
     Gee
-    GLib>=2.38
+    GLib
     GModule
     GObject
     GTK3

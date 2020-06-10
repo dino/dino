@@ -36,70 +36,49 @@ public class UpsertBuilder : StatementBuilder {
         error("prepare() not available for upsert.");
     }
 
-    internal Statement prepare_update() {
-        string update_set_list = "";
-        string update_where_list = "";
-        for (int i = 0; i < fields.length; i++) {
-            if (i != 0) {
-                update_set_list += ", ";
-            }
-            update_set_list += @"$(((!)fields[i].column).name) = ?";
-        }
+    internal Statement prepare_upsert() {
+        var unique_fields = new StringBuilder();
+        var unique_values = new StringBuilder();
+        var update_fields = new StringBuilder();
+        var update_values = new StringBuilder();
+        var update_fields_vals = new StringBuilder();
+
         for (int i = 0; i < keys.length; i++) {
             if (i != 0) {
-                update_where_list += " AND ";
+                unique_fields.append(", ");
+                unique_values.append(", ");
             }
-            update_where_list += @"$(((!)keys[i].column).name) = ?";
+            unique_fields.append(keys[i].column.name);
+            unique_values.append("?");
         }
 
-        string sql = @"UPDATE $table_name SET $update_set_list WHERE $update_where_list";
+        for (int i = 0; i < fields.length; i++) {
+            if (i != 0) {
+                update_fields.append(", ");
+                update_values.append(", ");
+                update_fields_vals.append(", ");
+            }
+            update_fields.append(fields[i].column.name);
+            update_values.append("?");
+            update_fields_vals.append(fields[i].column.name).append("=excluded.").append(fields[i].column.name);
+        }
+
+        string sql = @"INSERT INTO $table_name ($(unique_fields.str), $(update_fields.str)) VALUES ($(unique_values.str), $(update_values.str)) " +
+                @"ON CONFLICT ($(unique_fields.str)) DO UPDATE SET $(update_fields_vals.str)";
 
         Statement stmt = db.prepare(sql);
-        for (int i = 0; i < fields.length; i++) {
-            fields[i].bind(stmt, i + 1);
-        }
         for (int i = 0; i < keys.length; i++) {
-            keys[i].bind(stmt, i + fields.length + 1);
+            keys[i].bind(stmt, i + 1);
         }
-
-        return stmt;
-    }
-
-    internal Statement prepare_insert() {
-        string insert_field_list = "";
-        string insert_value_qs = "";
         for (int i = 0; i < fields.length; i++) {
-            if (i != 0) {
-                insert_value_qs += ", ";
-                insert_field_list += ", ";
-            }
-            insert_field_list += ((!)fields[i].column).name;
-            insert_value_qs += "?";
-        }
-        for (int i = 0; i < keys.length; i++) {
-            if (i != 0 || fields.length > 0) {
-                insert_value_qs += ", ";
-                insert_field_list += ", ";
-            }
-            insert_field_list += ((!)keys[i].column).name;
-            insert_value_qs += "?";
-        }
-
-        string sql = @"INSERT OR IGNORE INTO $table_name ($insert_field_list) VALUES ($insert_value_qs)";
-
-        Statement stmt = db.prepare(sql);
-        for (int i = 0; i < fields.length; i++) {
-            fields[i].bind(stmt, i + 1);
-        }
-        for (int i = 0; i < keys.length; i++) {
-            keys[i].bind(stmt, i + fields.length + 1);
+            fields[i].bind(stmt, i + keys.length + 1);
         }
 
         return stmt;
     }
 
     public int64 perform() {
-        if (prepare_update().step() != DONE || prepare_insert().step() != DONE) {
+        if (prepare_upsert().step() != DONE) {
             critical(@"SQLite error: %d - %s", db.errcode(), db.errmsg());
         }
         return db.last_insert_rowid();

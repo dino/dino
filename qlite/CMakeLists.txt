@@ -2,7 +2,7 @@ find_packages(QLITE_PACKAGES REQUIRED
     Gee
     GLib
     GObject
-    SQLite3
+    SQLite3>=3.24
 )
 
 vala_precompile(QLITE_VALA_C

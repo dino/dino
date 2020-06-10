@@ -352,8 +352,8 @@ public class Manager : StreamInteractionModule, Object {
                 store.identity_key_store.identity_key_private = new Bytes(key_pair.private.serialize());
                 store.identity_key_store.identity_key_public = new Bytes(key_pair.public.serialize());
 
-                identity_id = (int) db.identity.insert().or("REPLACE")
-                        .value(db.identity.account_id, account.id)
+                identity_id = (int) db.identity.upsert()
+                        .value(db.identity.account_id, account.id, true)
                         .value(db.identity.device_id, (int) store.local_registration_id)
                         .value(db.identity.identity_key_private_base64, Base64.encode(store.identity_key_store.identity_key_private.get_data()))
                         .value(db.identity.identity_key_public_base64, Base64.encode(store.identity_key_store.identity_key_public.get_data()))

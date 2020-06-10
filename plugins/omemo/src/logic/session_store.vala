@@ -29,10 +29,10 @@ private class BackedSessionStore : SimpleSessionStore {
     }
 
     public void on_session_stored(SessionStore.Session session) {
-        db.session.insert().or("REPLACE")
-                .value(db.session.identity_id, identity_id)
-                .value(db.session.address_name, session.name)
-                .value(db.session.device_id, session.device_id)
+        db.session.upsert()
+                .value(db.session.identity_id, identity_id, true)
+                .value(db.session.address_name, session.name, true)
+                .value(db.session.device_id, session.device_id, true)
                 .value(db.session.record_base64, Base64.encode(session.record))
                 .perform();
     }

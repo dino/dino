@@ -22,7 +22,10 @@ public class Config : Object {
         get { return window_maximize_; }
         set {
             if (value == window_maximize_) return;
-            db.settings.insert().or("REPLACE").value(db.settings.key, "window_maximized").value(db.settings.value, value.to_string()).perform();
+            db.settings.upsert()
+                    .value(db.settings.key, "window_maximized", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
             window_maximize_ = value;
         }
     }
@@ -32,7 +35,10 @@ public class Config : Object {
         get { return window_height_; }
         set {
             if (value == window_height_) return;
-            db.settings.insert().or("REPLACE").value(db.settings.key, "window_height").value(db.settings.value, value.to_string()).perform();
+            db.settings.upsert()
+                    .value(db.settings.key, "window_height", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
             window_height_ = value;
         }
     }
@@ -42,7 +48,10 @@ public class Config : Object {
         get { return window_width_; }
         set {
             if (value == window_width_) return;
-            db.settings.insert().or("REPLACE").value(db.settings.key, "window_width").value(db.settings.value, value.to_string()).perform();
+            db.settings.upsert()
+                    .value(db.settings.key, "window_width", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
             window_width_ = value;
         }
     }

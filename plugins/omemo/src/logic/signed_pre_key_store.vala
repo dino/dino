@@ -27,9 +27,9 @@ private class BackedSignedPreKeyStore : SimpleSignedPreKeyStore {
     }
 
     public void on_signed_pre_key_stored(SignedPreKeyStore.Key key) {
-        db.signed_pre_key.insert().or("REPLACE")
-                .value(db.signed_pre_key.identity_id, identity_id)
-                .value(db.signed_pre_key.signed_pre_key_id, (int) key.key_id)
+        db.signed_pre_key.upsert()
+                .value(db.signed_pre_key.identity_id, identity_id, true)
+                .value(db.signed_pre_key.signed_pre_key_id, (int) key.key_id, true)
                 .value(db.signed_pre_key.record_base64, Base64.encode(key.record))
                 .perform();
     }

@@ -196,8 +196,8 @@ public class Message : Object {
         update_builder.perform();
 
         if (sp.get_name() == "real-jid") {
-            db.real_jid.insert().or("REPLACE")
-                .value(db.real_jid.message_id, id)
+            db.real_jid.upsert()
+                .value(db.real_jid.message_id, id, true)
                 .value(db.real_jid.real_jid, real_jid.to_string())
                 .perform();
         }

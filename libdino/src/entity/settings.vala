@@ -22,7 +22,10 @@ public class Settings : Object {
     public bool send_typing {
         get { return send_typing_; }
         set {
-            db.settings.insert().or("REPLACE").value(db.settings.key, "send_typing").value(db.settings.value, value.to_string()).perform();
+            db.settings.upsert()
+                    .value(db.settings.key, "send_typing", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
             send_typing_ = value;
         }
     }
@@ -31,7 +34,10 @@ public class Settings : Object {
     public bool send_marker {
         get { return send_marker_; }
         set {
-            db.settings.insert().or("REPLACE").value(db.settings.key, "send_marker").value(db.settings.value, value.to_string()).perform();
+            db.settings.upsert()
+                    .value(db.settings.key, "send_marker", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
             send_marker_ = value;
         }
     }
@@ -40,7 +46,10 @@ public class Settings : Object {
     public bool notifications {
         get { return notifications_; }
         set {
-            db.settings.insert().or("REPLACE").value(db.settings.key, "notifications").value(db.settings.value, value.to_string()).perform();
+            db.settings.upsert()
+                    .value(db.settings.key, "notifications", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
             notifications_ = value;
         }
     }
@@ -49,7 +58,10 @@ public class Settings : Object {
     public bool convert_utf8_smileys {
         get { return convert_utf8_smileys_; }
         set {
-            db.settings.insert().or("REPLACE").value(db.settings.key, "convert_utf8_smileys").value(db.settings.value, value.to_string()).perform();
+            db.settings.upsert()
+                    .value(db.settings.key, "convert_utf8_smileys", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
             convert_utf8_smileys_ = value;
         }
     }

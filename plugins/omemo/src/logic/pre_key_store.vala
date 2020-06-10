@@ -27,9 +27,9 @@ private class BackedPreKeyStore : SimplePreKeyStore {
     }
 
     public void on_pre_key_stored(PreKeyStore.Key key) {
-        db.pre_key.insert().or("REPLACE")
-                .value(db.pre_key.identity_id, identity_id)
-                .value(db.pre_key.pre_key_id, (int) key.key_id)
+        db.pre_key.upsert()
+                .value(db.pre_key.identity_id, identity_id, true)
+                .value(db.pre_key.pre_key_id, (int) key.key_id, true)
                 .value(db.pre_key.record_base64, Base64.encode(key.record))
                 .perform();
     }

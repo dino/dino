@@ -128,9 +128,9 @@ public class RosterStoreImpl : Roster.Storage, Object {
 
     public void set_item(Roster.Item item) {
         items[item.jid] = item;
-        db.roster.insert().or("REPLACE")
-            .value(db.roster.account_id, account.id)
-            .value(db.roster.jid, item.jid.to_string())
+        db.roster.upsert()
+            .value(db.roster.account_id, account.id, true)
+            .value(db.roster.jid, item.jid.to_string(), true)
             .value(db.roster.handle, item.name)
             .value(db.roster.subscription, item.subscription)
             .perform();
