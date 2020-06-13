@@ -99,11 +99,12 @@ public class ChatTextView : ScrolledWindow {
         }
 
         if (text_view.buffer.text != "") {  //TODO(Wolfie) send_rtt() on basis of num keystrokes/time
-            num_keystrokes++;
-            if (num_keystrokes > 5) {
-                send_rtt();
-                num_keystrokes = 0;
-            }
+            //  num_keystrokes++;
+            //  if (num_keystrokes > 5) {
+            //      send_rtt();
+            //      num_keystrokes = 0;
+            //  }
+            send_rtt();
         }
 
         return false;

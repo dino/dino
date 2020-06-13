@@ -157,7 +157,7 @@ namespace  Dino {
             foreach (Match match in matching_blocks) {
                 Tag tag = new Tag() { tag="", a0=i, a1=match.old_index, b0=j, b1=match.new_index };
 
-                if (i < match.old_index && j < match.new_index) {
+                if (i<match.old_index && j<match.new_index) {
                     tag.tag = "replace";
                 } 
                 else if (i<match.old_index) {

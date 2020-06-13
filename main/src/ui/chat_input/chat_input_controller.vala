@@ -162,9 +162,15 @@ public class ChatInputController : Object {
     }
 
     private void send_rtt() {
+        
         Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
         string current_message = chat_input.chat_text_view.text_view.buffer.text;
-        string previous_message = stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).get_previous_message(stream);
+        string previous_message = "";
+        try{
+            previous_message = stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).get_previous_message(stream);
+        }catch(Error e) {
+            warning("module (%s)", e.message);
+        }
         stream_interactor.get_module(RttManager.IDENTITY).message_compare(conversation, previous_message, current_message);
         stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).save_previous_message(stream, current_message);
     }
@@ -172,8 +178,11 @@ public class ChatInputController : Object {
     private void on_text_input_changed() {
         if (chat_input.chat_text_view.text_view.buffer.text != "") {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
+            Timeout.add_seconds(1, stream_interactor.get_module(RttManager.IDENTITY).schedule_rtt); //TODO(Wolfie) stop scheduling.
         } else {
-            stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation);
+            stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation); 
+            Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+            stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).event = "new"; //TODO(Wolfie) probably send "reset" event with empty text + empty queue before setting event to "new"
         }
     }
 

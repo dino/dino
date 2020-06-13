@@ -14,10 +14,9 @@ namespace Dino {
         public string id { get { return IDENTITY.id; } }
 
         public signal void rtt_sent(Message message, Conversation conversation);
+        public signal void start_scheduling(Message message, Conversation conversation);
 
-
-        //private HashMap<Conversation, HashMap<Jid, Gee.List<StanzaNode>> action_elements = new HashMap<Conversation, HashMap<Jid, Gee.List<StanzaNode>>(Conversation.hash_func, Conversation.equals_func);
-        //  private HashMap<Conversation, Gee.List<StanzaNode>> action_elements = new HashMap<Conversation, Gee.List<StanzaNode>>(Conversation.hash_func, Conversation.equals_func);
+        private HashMap<Jid, string> rtt_builder = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
 
         public static void start(StreamInteractor stream_interactor) {
             RttManager m = new RttManager(stream_interactor);
@@ -27,7 +26,16 @@ namespace Dino {
         public RttManager(StreamInteractor stream_interactor) {
             //  Timeout.add_seconds(1, schedule_rtt);                   //TODO(Wolfie) handle schedule correctly
             this.stream_interactor = stream_interactor;
+            XmppStream? stream = stream_interactor.get_stream(conversation.account);
             stream_interactor.account_added.connect(on_account_added);
+
+            //  stream.get_module(Xep.RealTimeText.Module.IDENTITY).rtt_received.connect((stream, jid) => {
+            //      Timeout.add_seconds(1, () => {
+            //          schedule_receiving(stream, jid);
+            //          return true;
+            //      });
+            //  });
+
             stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => { 
                 //TODO(Wolfie) remove user's rtt from UI if present.
             });
@@ -37,6 +45,13 @@ namespace Dino {
             XmppStream? stream = stream_interactor.get_stream(conversation.account);
 
             MessageStanza message = new MessageStanza() { to=conversation.counterpart };
+
+            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                message.type_ = MessageStanza.TYPE_GROUPCHAT;
+            } else {
+                message.type_ = MessageStanza.TYPE_CHAT;
+            }
+
             RttStanzaNode rtt_node = new RttStanzaNode() { seq=sequence, event=event };
            
             debug("%d", action_elements.size);
@@ -46,6 +61,8 @@ namespace Dino {
             
             message.stanza.put_node(rtt_node.stanza_node);
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
+
+            stream.get_module(Xep.RealTimeText.Module.IDENTITY).event = "edit";
 
         }
 
@@ -74,34 +91,30 @@ namespace Dino {
                         stream.get_module(Xep.RealTimeText.Module.IDENTITY).generate_t_element(stream, new_message[tag.b0:tag.b1], tag.a0.to_string());     
                     }
                 }
-                //TODO(Wolfie) handle schedule correctly
-                XmppStream? stream = stream_interactor.get_stream(conversation.account);
-                ArrayList<StanzaNode> action_elements = stream.get_module(Xep.RealTimeText.Module.IDENTITY).get_all_action_elements(stream);
-                string event = stream.get_module(Xep.RealTimeText.Module.IDENTITY).event;
-                int seq = stream.get_module(Xep.RealTimeText.Module.IDENTITY).seq;
-                if (!action_elements.is_empty) {
-                    send_rtt(action_elements, seq.to_string(), event);
-                }
-             }
-
+            }
         }
 
         public bool schedule_rtt() {
-            XmppStream? stream = stream_interactor.get_stream(conversation.account);
-            ArrayList<StanzaNode> action_elements = stream.get_module(Xep.RealTimeText.Module.IDENTITY).get_all_action_elements(stream);
-            string event = stream.get_module(Xep.RealTimeText.Module.IDENTITY).event;
-            int seq = stream.get_module(Xep.RealTimeText.Module.IDENTITY).seq;
-            if (!action_elements.is_empty) {
-                send_rtt(action_elements, seq.to_string(), event);
+            //TODO(Wolfie) correct error handling
+            try {
+                XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                ArrayList<StanzaNode> action_elements = stream.get_module(Xep.RealTimeText.Module.IDENTITY).get_all_action_elements(stream);
+                if (!action_elements.is_empty) {
+                    string event = stream.get_module(Xep.RealTimeText.Module.IDENTITY).event;
+                    int seq = stream.get_module(Xep.RealTimeText.Module.IDENTITY).seq;
+                    send_rtt(action_elements, seq.to_string(), event);
+                    return true;
+                }
+                return false;
+            } catch (Error e) {
+                warning("invalid stream (%s)", e.message);
+                return true;
             }
-            return true;
         }
-        
 
         private void on_account_added(Account account) {
             //TODO(Wolfie)
         }
-
 
     }
 }
