@@ -37,6 +37,9 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
     }
 
     private void init_state() {
+
+        if (current_conversation.type_ == Conversation.Type.GROUPCHAT_PM) return;
+
         var qry = db.identity_meta.select()
             .join_with(db.identity, db.identity.id, db.identity_meta.identity_id)
             .with(db.identity.account_id, "=", current_conversation.account.id)

@@ -95,6 +95,10 @@ public class Manager : StreamInteractionModule, Object {
 
     private void on_pre_message_send(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         if (message.encryption == Encryption.OMEMO) {
+            if (message.type_ == Message.Type.GROUPCHAT_PM) {
+                message.marked = Message.Marked.WONTSEND;
+                return;
+            }
             XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) {
                 message.marked = Entities.Message.Marked.UNSENT;

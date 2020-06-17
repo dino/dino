@@ -1,3 +1,4 @@
+using Dino.Entities;
 using Gtk;
 using Qlite;
 using Xmpp;
@@ -42,6 +43,10 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
     }
 
     public async void encryption_activated_async(Entities.Conversation conversation, Plugins.SetInputFieldStatus input_status_callback) {
+        if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
+            input_status_callback(new Plugins.InputFieldStatus("Can't use encryption in a groupchat private message.", Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND));
+            return;
+        }
         MucManager muc_manager = plugin.app.stream_interactor.get_module(MucManager.IDENTITY);
         Manager omemo_manager = plugin.app.stream_interactor.get_module(Manager.IDENTITY);
 

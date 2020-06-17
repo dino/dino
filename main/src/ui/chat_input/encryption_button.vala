@@ -86,8 +86,21 @@ public class EncryptionButton : MenuButton {
     }
 
     private void update_visibility() {
-        visible = !stream_interactor.get_module(MucManager.IDENTITY).is_public_room(conversation.account, conversation.counterpart) ||
-                conversation.encryption != Encryption.NONE;
+        if (conversation.encryption != Encryption.NONE) {
+            visible = true;
+            return;
+        }
+        switch (conversation.type_) {
+            case Conversation.Type.CHAT:
+                visible = true;
+                break;
+            case Conversation.Type.GROUPCHAT_PM:
+                visible = false;
+                break;
+            case Conversation.Type.GROUPCHAT:
+                visible = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
+                break;
+        }
     }
 
     public new void set_conversation(Conversation conversation) {
