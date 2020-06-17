@@ -58,7 +58,7 @@ public class MucManager : StreamInteractionModule, Object {
         }
 
         if (!mucs_joining.has_key(account)) {
-            mucs_joining[account] = new ArrayList<Jid>();
+            mucs_joining[account] = new ArrayList<Jid>(Jid.equals_bare_func);
         }
         mucs_joining[account].add(jid);
 
