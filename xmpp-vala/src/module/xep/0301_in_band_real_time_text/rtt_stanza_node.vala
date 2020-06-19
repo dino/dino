@@ -1,3 +1,5 @@
+using Gee;
+
 namespace Xmpp {
 
     public class RttStanzaNode : Object {
@@ -13,7 +15,7 @@ namespace Xmpp {
             set { stanza_node.set_attribute(ATTRIBUTE_SEQUENCE, value); }
         }
 
-        //TODO(Wolfie) look into id attribute (to work in conjection with message correction)
+        //TODO(Wolfie) look into id attribute (to work in conjuction with message correction)
     
         //  public virtual string? id {
         //      get { return stanza_node.get_attribute(ATTRIBUTE_ID); }
@@ -29,8 +31,8 @@ namespace Xmpp {
     
         public StanzaNode stanza_node;
     
-        public RttStanzaNode() {
-            this.stanza_node = new StanzaNode.build("rtt", Xep.RealTimeText.NS_URI).add_self_xmlns();
+        public RttStanzaNode(ArrayList<StanzaNode> sub_nodes) {
+            this.stanza_node = new StanzaNode.build("rtt", Xep.RealTimeText.NS_URI, sub_nodes).add_self_xmlns();
         }
         
     }

@@ -10,7 +10,7 @@ namespace Dino.Ui {
 public class ChatTextViewController : Object {
 
     public signal void send_text();
-    public signal void send_rtt();
+    public signal void generate_rtt();
 
     public OccupantsTabCompletor occupants_tab_completor;
 
@@ -25,12 +25,11 @@ public class ChatTextViewController : Object {
 
         widget.send_text.connect(() => {
             send_text();
-            XmppStream stream = stream_interactor.get_stream(conversation.account);
-            stream.get_module(Xep.RealTimeText.Module.IDENTITY).event = "new";
+            stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xep.RealTimeText.Module.EVENT_NEW);
         });
 
-        widget.send_rtt.connect(() => {
-            send_rtt();
+        widget.generate_rtt.connect(() => {
+            generate_rtt();
         });
     }
 
@@ -44,7 +43,7 @@ public class ChatTextViewController : Object {
 public class ChatTextView : ScrolledWindow {
 
     public signal void send_text();
-    public signal void send_rtt();
+    public signal void generate_rtt();
     public signal void cancel_input();
 
     public TextView text_view = new TextView() { can_focus=true, hexpand=true, margin=8, wrap_mode=Gtk.WrapMode.WORD_CHAR, valign=Align.CENTER, visible=true };
@@ -104,7 +103,7 @@ public class ChatTextView : ScrolledWindow {
             //      send_rtt();
             //      num_keystrokes = 0;
             //  }
-            send_rtt();
+            generate_rtt();
         }
 
         return false;
