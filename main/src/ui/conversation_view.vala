@@ -31,6 +31,7 @@ public class ConversationView : Gtk.Overlay {
         widget.destroy.connect(() => {
             revealer.destroy();
             white_revealer.reveal_child = false;
+            chat_input.do_focus();
         });
     }
 

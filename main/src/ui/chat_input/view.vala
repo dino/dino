@@ -74,7 +74,7 @@ public class View : Box {
             chat_text_view.text_view.buffer.text = entry_cache[conversation];
         }
 
-        chat_text_view.text_view.grab_focus();
+        do_focus();
     }
 
     public void set_input_state(Plugins.InputFieldStatus.MessageType message_type) {
@@ -104,6 +104,10 @@ public class View : Box {
             chat_input_status.get_style_context().remove_class("input-status-highlight-once");
             return false;
         });
+    }
+
+    public void do_focus() {
+        chat_text_view.text_view.grab_focus();
     }
 }
 
