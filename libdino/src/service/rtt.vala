@@ -15,11 +15,13 @@ namespace Dino {
         public string id { get { return IDENTITY.id; } }
 
         public signal void start_scheduling(Message message, Conversation conversation);
+        public signal void rtt_processed(Conversation conversation, Jid jid, string rtt_message);
+        public signal void event_received(Conversation conversation, Jid jid, string event_);
   
         private HashMap<Conversation, Gee.Queue<StanzaNode>> action_elements_sent = new  HashMap<Conversation, Gee.ArrayQueue<StanzaNode>>(Conversation.hash_func, Conversation.equals_func);
         private HashMap<Conversation, int> seq = new  HashMap<Conversation, int>(Conversation.hash_func, Conversation.equals_func);
         private HashMap<Conversation, string> event = new  HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
-        public HashMap<Conversation, string>? previous_message =  new  HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
+        private HashMap<Conversation, string>? previous_message =  new  HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
 
         private HashMap<Conversation, HashMap<Jid, Gee.Queue<StanzaNode>>> received_action_elements = new HashMap<Conversation, HashMap<Jid, Gee.ArrayQueue<StanzaNode>>>(Conversation.hash_func, Conversation.equals_func);
         private HashMap<Conversation, HashMap<Jid, string>> rtt_builder = new HashMap<Conversation, HashMap<Jid, string>>(Conversation.hash_func, Conversation.equals_func);
@@ -32,15 +34,13 @@ namespace Dino {
         public RttManager(StreamInteractor stream_interactor) {
             this.stream_interactor = stream_interactor;
             stream_interactor.account_added.connect(on_account_added);
-            stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => { 
-                //TODO(Wolfie) remove user's rtt from UI if present.
-            });
         }
 
         public void message_compare(Conversation conversation, string old_message, string? new_message) {
             this.conversation = conversation;
             MessageComparison message_comparison = new MessageComparison(old_message, new_message);
-            ArrayList<Tag> tags = message_comparison.generate_tags();
+            ArrayList<Tag>? tags = message_comparison.generate_tags();
+            if (tags == null) return;
 
             foreach (Tag tag in tags) {
                 if (tag.tag == "insert") {
@@ -145,6 +145,14 @@ namespace Dino {
             if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid) && event_ == RealTimeText.Module.EVENT_NEW) {
                 rtt_builder[conversation].unset(jid);
             }
+            event_received(conversation, jid, event_);
+        }
+
+        public HashMap<Jid, string>? get_active_rtt(Conversation conversation) {
+            if (rtt_builder.has_key(conversation)) {
+                return rtt_builder[conversation];
+            }
+            return null;
         }
 
         public bool schedule_rtt(Conversation conversation) {
@@ -216,8 +224,8 @@ namespace Dino {
                     rtt_builder[conversation][jid] = rtt_message.str;
                 }
 
-                debug("%s", rtt_message.str);
-                //TODO(Wolfie) display on UI
+                debug("%s::%s", rtt_message.str, jid.to_string());
+                rtt_processed(conversation, jid, rtt_message.str);
 
                 return true;
             }
@@ -229,14 +237,28 @@ namespace Dino {
             stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).rtt_received.connect((jid, stanza, action_elements) => {
                 set_received_action_element.begin(account, jid, stanza, action_elements);
 
-                Timeout.add(1, () => {
+                Idle.add(() => {
                     schedule_receiving(account, jid);
-                    return true;
+                    return false;
                 });
             });
 
             stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).event_received.connect((jid, stanza, event) => {
                 unset_rtt_builder.begin(account, jid, stanza, event);
+            });
+
+            stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
+                if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(message.from)) {
+                    rtt_builder[conversation].unset(message.from);
+                }
+            });
+
+            stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => {
+                Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid.bare_jid, account); 
+
+                if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid)) {
+                    rtt_builder[conversation].unset(jid);
+                }
             });
         }
     }

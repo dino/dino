@@ -55,12 +55,12 @@ namespace  Dino {
         }
 
         private int compare_matches(Match a, Match b) {
-            if (a.old_index > b.old_index || a.new_index > b.new_index) return 1; //TODO(Wolfie) is this correct?
+            if (a.old_index > b.old_index || a.new_index > b.new_index) return 1;
             else if (a.old_index == b.old_index && a.new_index == b.new_index) return 0;
             else return -1;
         }
 
-        public Match find_longest_match(MessageSlice message_slice){
+        public Match? find_longest_match(MessageSlice message_slice){
             string old_message = this.old_message;
             string new_message = this.new_message;
             HashMap<string, ArrayList<int>> message_to_indices = this.message_to_indices;
@@ -82,6 +82,8 @@ namespace  Dino {
                 new_index_to_len = new HashMap<int, int>();
 
                 ArrayList<int>? indices =  message_to_indices.has_key(curr_char) ? message_to_indices[curr_char] : null;
+
+                if (indices == null) return null;
 
                 foreach(int index in indices) {
                     if (index < message_slice.new_lo) {
@@ -114,7 +116,7 @@ namespace  Dino {
 
         }
 
-        public ArrayList<Match> get_all_blocks() {
+        public ArrayList<Match>? get_all_blocks() {
             int len_old = old_message.char_count();
             int len_new = new_message.char_count();
             
@@ -127,7 +129,8 @@ namespace  Dino {
 
                 MessageSlice message_slice = queue.pop_head();
 
-                Match match = find_longest_match(message_slice);
+                Match? match = find_longest_match(message_slice);
+                if (match == null) return null;
                 
                 if (match.length > 0) {
                     matching_blocks.add(match);
@@ -147,12 +150,13 @@ namespace  Dino {
             return matching_blocks;
         }
 
-        public ArrayList<Tag> generate_tags(){
+        public ArrayList<Tag>? generate_tags(){
             int i = 0;
             int j = 0;
             ArrayList<Tag> all_tags = new ArrayList<Tag>();
 
-            ArrayList<Match> matching_blocks = get_all_blocks();
+            ArrayList<Match>? matching_blocks = get_all_blocks();
+            if (matching_blocks == null) return null;
 
             foreach (Match match in matching_blocks) {
                 Tag tag = new Tag() { tag="", a0=i, a1=match.old_index, b0=j, b1=match.new_index };

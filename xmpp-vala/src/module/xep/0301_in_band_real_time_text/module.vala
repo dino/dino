@@ -104,7 +104,6 @@ namespace Xmpp.Xep.RealTimeText {
                 // event resolution
                 string? event = rtt_stanza_node.get_attribute("event", NS_URI);
                 
-                //TODO(Wolfie) set up rtt viewer on UI when event new
                 event_received(from_jid, message, event);
 
                 if (!ignore[from_jid]) {
