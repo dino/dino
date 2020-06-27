@@ -37,7 +37,7 @@ class StanzaTest : Gee.TestCase {
             <message from='laurence@example.net/churchyard'
                     to='juliet@example.com'
                     xml:lang='en'>
-                <body>I'll send a friar with speed, to Mantua, with my letters to thy lord.</body>
+                <body> I'll send a friar with speed, to Mantua, with my letters to thy lord.</body>
             </message>
         </stream:stream>
         """;

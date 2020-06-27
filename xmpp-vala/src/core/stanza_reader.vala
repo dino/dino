@@ -221,7 +221,7 @@ public class StanzaReader {
         var res = new StanzaNode();
         res.name = "#text";
         res.ns_uri = ns_state.current_ns_uri;
-        res.encoded_val = (yield read_until_char('<')).strip();
+        res.encoded_val = (yield read_until_char('<'));
         return res;
     }
 
@@ -244,8 +244,9 @@ public class StanzaReader {
             var res = yield read_node_start();
             if (res.has_nodes) {
                 bool finish_node_seen = false;
+                StanzaNode? text_node = null;
                 do {
-                    yield skip_until_non_ws();
+                    text_node = yield read_text_node();
                     if ((yield peek_single()) == '<') {
                         skip_single();
                         if ((yield peek_single()) == '/') {
@@ -264,11 +265,15 @@ public class StanzaReader {
                         } else {
                             res.sub_nodes.add(yield read_stanza_node());
                         }
-                    } else {
-                        res.sub_nodes.add(yield read_text_node());
                     }
                 } while (!finish_node_seen);
-                if (res.sub_nodes.size == 0) res.has_nodes = false;
+                if (res.sub_nodes.size == 0) {
+                    if (text_node == null || text_node.val.length == 0) {
+                        res.has_nodes = false;
+                    } else {
+                        res.sub_nodes.add(text_node);
+                    }
+                }
             }
             ns_state = ns_state.pop();
             return res;

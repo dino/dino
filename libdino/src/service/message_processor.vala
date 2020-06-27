@@ -333,7 +333,9 @@ public class MessageProcessor : StreamInteractionModule, Object {
     }
 
     public async Entities.Message parse_message_stanza(Account account, Xmpp.MessageStanza message) {
-        Entities.Message new_message = new Entities.Message(message.body);
+        string? body = message.body;
+        if (body != null) body = body.strip();
+        Entities.Message new_message = new Entities.Message(body);
         new_message.account = account;
         new_message.stanza_id = Xep.UniqueStableStanzaIDs.get_origin_id(message) ?? message.id;
 
