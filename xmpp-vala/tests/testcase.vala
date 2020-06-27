@@ -26,13 +26,25 @@ public abstract class Gee.TestCase : Object {
     private Adaptor[] adaptors = new Adaptor[0];
 
     public delegate void TestMethod ();
+    public delegate void FinishCallback ();
+    public delegate void AsyncTestMethod (FinishCallback cb);
 
     protected TestCase (string name) {
         this.suite = new GLib.TestSuite (name);
     }
 
     public void add_test (string name, owned TestMethod test) {
-        var adaptor = new Adaptor (name, (owned)test, this);
+        var adaptor = new DefaultAdaptor (name, (owned)test, this);
+        this.adaptors += adaptor;
+
+        this.suite.add (new GLib.TestCase (adaptor.name,
+                                           adaptor.set_up,
+                                           adaptor.run,
+                                           adaptor.tear_down ));
+    }
+
+    public void add_async_test (string name, owned AsyncTestMethod test, int timeout = 10000) {
+        var adaptor = new AsyncAdaptor (name, (owned)test, this, timeout);
         this.adaptors += adaptor;
 
         this.suite.add (new GLib.TestCase (adaptor.name,
@@ -51,13 +63,19 @@ public abstract class Gee.TestCase : Object {
         return this.suite;
     }
 
-    private class Adaptor {
+    private interface Adaptor : Object {
+        public abstract void set_up (void* fixture);
+        public abstract void run (void* fixture);
+        public abstract void tear_down (void* fixture);
+    }
+
+    private class DefaultAdaptor : Object, Adaptor {
         [CCode (notify = false)]
         public string name { get; private set; }
         private TestMethod test;
         private TestCase test_case;
 
-        public Adaptor (string name,
+        public DefaultAdaptor (string name,
         owned TestMethod test,
         TestCase test_case) {
             this.name = name;
@@ -71,6 +89,51 @@ public abstract class Gee.TestCase : Object {
 
         public void run (void* fixture) {
             this.test ();
+        }
+
+        public void tear_down (void* fixture) {
+            this.test_case.tear_down ();
+        }
+    }
+
+    private class AsyncAdaptor : Object, Adaptor {
+        [CCode (notify = false)]
+        public string name { get; private set; }
+        private AsyncTestMethod test;
+        private TestCase test_case;
+        private MainLoop main_loop;
+        private int timeout;
+
+        public AsyncAdaptor (string name,
+        owned AsyncTestMethod test,
+        TestCase test_case,
+        int timeout) {
+            this.name = name;
+            this.test = (owned)test;
+            this.test_case = test_case;
+            this.timeout = timeout;
+        }
+
+        public void set_up (void* fixture) {
+            this.test_case.set_up ();
+            main_loop = new MainLoop ();
+        }
+
+        public void run (void* fixture) {
+            this.test (finish);
+            Timeout.add (timeout, finish_timeout);
+            main_loop.run ();
+        }
+
+        public void finish () {
+            Idle.add (() => { main_loop.quit (); return false; });
+        }
+
+        public bool finish_timeout () {
+            Test.fail ();
+            Test.message (@"Timeout of $(timeout)ms reached.");
+            main_loop.quit ();
+            return false;
         }
 
         public void tear_down (void* fixture) {

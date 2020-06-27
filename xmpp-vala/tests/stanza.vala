@@ -4,12 +4,12 @@ class StanzaTest : Gee.TestCase {
     public StanzaTest() {
         base("Stanza");
 
-        add_test("node_one", () => { test_node_one.begin(); });
-        add_test("typical_stream", () => { test_typical_stream.begin(); });
-        add_test("ack_stream", () => { test_ack_stream.begin(); });
+        add_async_test("node_one", (cb) => { test_node_one.begin(cb); });
+        add_async_test("typical_stream", (cb) => { test_typical_stream.begin(cb); });
+        add_async_test("ack_stream", (cb) => { test_ack_stream.begin(cb); });
     }
 
-    private async void test_node_one() {
+    private async void test_node_one(Gee.TestCase.FinishCallback cb) {
         var node1 = new StanzaNode.build("test", "ns1_uri")
                 .add_self_xmlns()
                 .put_attribute("ns2", "ns2_uri", XMLNS_URI)
@@ -23,9 +23,10 @@ class StanzaTest : Gee.TestCase {
         var node2 = yield new StanzaReader.for_string(xml1).read_node();
         fail_if_not(node1.equals(node2));
         fail_if_not_eq_str(node1.to_string(), node2.to_string());
+        cb();
     }
 
-    private async void test_typical_stream() {
+    private async void test_typical_stream(Gee.TestCase.FinishCallback cb) {
         var stream = """
         <?xml version='1.0' encoding='UTF-8'?>
         <stream:stream
@@ -50,16 +51,28 @@ class StanzaTest : Gee.TestCase {
                 .put_attribute("to", "juliet@example.com")
                 .put_attribute("lang", "en", XML_URI)
                 .put_node(new StanzaNode.build("body")
-                        .put_node(new StanzaNode.text("I'll send a friar with speed, to Mantua, with my letters to thy lord.")));
+                        .put_node(new StanzaNode.text(" I'll send a friar with speed, to Mantua, with my letters to thy lord.")));
 
         var reader = new StanzaReader.for_string(stream);
         fail_if_not_eq_node(root_node_cmp, yield reader.read_root_node());
         fail_if_not_eq_node(node_cmp, yield reader.read_node());
         yield reader.read_node();
-        fail_if_not_error_code(() => reader.read_node(), 3, "end of stream should be reached");
+        yield fail_if_not_end_of_stream(reader);
+        cb();
     }
 
-    private async void test_ack_stream() {
+    private async void fail_if_not_end_of_stream(StanzaReader reader) {
+        try {
+            yield reader.read_node();
+            fail_if_reached("end of stream should be reached");
+        } catch (XmlError.EOF e) {
+            return;
+        } catch (Error e) {
+            fail_if_reached("Unexpected error");
+        }
+    }
+
+    private async void test_ack_stream(Gee.TestCase.FinishCallback cb) {
         var stream = """
         <?xml version='1.0' encoding='UTF-8'?>
         <stream:stream
@@ -95,7 +108,8 @@ class StanzaTest : Gee.TestCase {
         fail_if_not_eq_node(node_cmp, yield reader.read_node());
         fail_if_not_eq_node(node2_cmp, yield reader.read_node());
         yield reader.read_node();
-        fail_if_not_error_code(() => reader.read_node(), 3, "end of stream should be reached");
+        yield fail_if_not_end_of_stream(reader);
+        cb();
     }
 
 }
