@@ -11,6 +11,8 @@ Unicode True
 !include "MUI2.nsh"
 !insertmacro "MUI_PAGE_LICENSE" "input/LICENSE_SHORT"
 !insertmacro MUI_PAGE_INSTFILES
+!include "english.nsh"
+!include "german.nsh"
 
 Name ${MUI_PRODUCT}
 BrandingText "Communicating happiness"
@@ -20,7 +22,7 @@ OutFile "dino-installer.exe"
  
 # set install directory
 InstallDir $PROGRAMFILES64\dino
- 
+
 # default section start
 Section
  
