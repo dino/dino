@@ -14,7 +14,8 @@ public class Message : Object {
         READ,
         ACKNOWLEDGED,
         UNSENT,
-        WONTSEND
+        WONTSEND,
+        SENT
     }
 
     public enum Type {

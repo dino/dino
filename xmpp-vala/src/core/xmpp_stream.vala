@@ -18,12 +18,14 @@ public class XmppStream {
     public StanzaNode? features { get; private set; default = new StanzaNode.build("features", NS_URI); }
 
     private IOStream? stream;
-    private StanzaReader? reader;
-    private StanzaWriter? writer;
+    internal StanzaReader? reader;
+    internal StanzaWriter? writer;
 
     public Gee.List<XmppStreamFlag> flags { get; private set; default=new ArrayList<XmppStreamFlag>(); }
     public Gee.List<XmppStreamModule> modules { get; private set; default=new ArrayList<XmppStreamModule>(); }
     private Gee.List<ConnectionProvider> connection_providers = new ArrayList<ConnectionProvider>();
+
+    internal WriteNodeFunc? write_obj = null;
     public bool negotiation_complete { get; set; default=false; }
     private bool setup_needed = false;
     private bool non_negotiation_modules_attached = false;
@@ -126,13 +128,17 @@ public class XmppStream {
     }
 
     public async void write_async(StanzaNode node) throws IOStreamError {
-        StanzaWriter? writer = this.writer;
-        if (writer == null) throw new IOStreamError.WRITE("trying to write, but no stream open");
-        try {
-            log.node("OUT", node, this);
-            yield ((!)writer).write_node(node);
-        } catch (XmlError e) {
-            throw new IOStreamError.WRITE(e.message);
+        if (write_obj != null) {
+            yield write_obj.write_stanza(this, node);
+        } else {
+            StanzaWriter? writer = this.writer;
+            if (writer == null) throw new IOStreamError.WRITE("trying to write, but no stream open");
+            try {
+                log.node("OUT", node, this);
+                yield ((!)writer).write_node(node);
+            } catch (XmlError e) {
+                throw new IOStreamError.WRITE(e.message);
+            }
         }
     }
 
@@ -401,6 +407,10 @@ public class StartTlsConnectionProvider : ConnectionProvider {
     }
 
     public override string get_id() { return "start_tls"; }
+}
+
+public interface WriteNodeFunc : Object {
+    public abstract async void write_stanza(XmppStream stream, StanzaNode node) throws IOError;
 }
 
 }

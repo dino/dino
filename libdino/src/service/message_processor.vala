@@ -638,6 +638,9 @@ public class MessageProcessor : StreamInteractionModule, Object {
         stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, new_message, (_, res) => {
             try {
                 stream.get_module(MessageModule.IDENTITY).send_message.end(res);
+                if (message.marked == Message.Marked.NONE/* && (yield stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, conversation.account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI))*/) {
+                    message.marked = Message.Marked.SENT;
+                }
 
                 // The server might not have given us the resource we asked for. In that case, store the actual resource the message was sent with. Relevant for deduplication.
                 Jid? current_own_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid;

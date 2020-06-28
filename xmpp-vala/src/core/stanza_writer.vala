@@ -14,6 +14,22 @@ public class StanzaWriter {
         yield write_data(node.to_xml().data);
     }
 
+    public async void write_nodes(StanzaNode node1, StanzaNode node2) throws XmlError {
+        var data1 = node1.to_xml().data;
+        var data2 = node2.to_xml().data;
+
+        uint8[] concat = new uint8[data1.length + data2.length];
+        int i = 0;
+        foreach (var datum in data1) {
+            concat[i++] = datum;
+        }
+        foreach (var datum in data2) {
+            concat[i++] = datum;
+        }
+
+        yield write_data(concat);
+    }
+
     public async void write(string s) throws XmlError {
         yield write_data(s.data);
     }
