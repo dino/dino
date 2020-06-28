@@ -123,6 +123,7 @@ public class AvatarDrawer {
             ctx.rectangle(0, 0, width, height);
             ctx.fill();
         }
+        ctx.set_source_rgb(0, 0, 0);
     }
 
     private Cairo.Surface sub_surface_idx(Cairo.Context ctx, int idx, int width, int height, int font_factor = 1) {

@@ -2,7 +2,7 @@ using Gdk;
 using Gtk;
 
 namespace Dino.Ui {
-class ScalingImage : Image {
+class ScalingImage : Misc {
     public int min_width { get; set; default = -1; }
     public int target_width { get; set; default = -1; }
     public int max_width { get; set; default = -1; }
@@ -16,6 +16,8 @@ class ScalingImage : Image {
     private int last_allocation_height = -1;
     private int last_allocation_width = -1;
     private int last_scale_factor = -1;
+    private Cairo.ImageSurface? cached_surface;
+    private static int8 use_image_surface = -1;
 
     public void load(Pixbuf image) {
         this.image = image;
@@ -23,6 +25,12 @@ class ScalingImage : Image {
         this.image_height = image.height;
         this.image_width = image.width;
         queue_resize();
+    }
+
+    public override void dispose() {
+        base.dispose();
+        image = null;
+        cached_surface = null;
     }
 
     private void calculate_size(ref double exact_width, ref double exact_height) {
@@ -69,10 +77,75 @@ class ScalingImage : Image {
             last_allocation_height = allocation.height;
             last_allocation_width = allocation.width;
             last_scale_factor = scale_factor;
-            Pixbuf scaled = image.scale_simple((int) Math.floor(exact_width * scale_factor), (int) Math.floor(exact_height * scale_factor), Gdk.InterpType.BILINEAR);
-            scaled = crop_corners(scaled, 3 * scale_factor);
-            Util.image_set_from_scaled_pixbuf(this, scaled);
+            cached_surface = null;
         }
+    }
+
+    public override bool draw(Cairo.Context ctx_in) {
+        if (image == null) return false;
+        Cairo.Context ctx = ctx_in;
+        int width = this.get_allocated_width(), height = this.get_allocated_height(), base_factor = 1;
+        if (use_image_surface == -1) {
+            // TODO: detect if we have to buffer in image surface
+            use_image_surface = 1;
+        }
+        if (use_image_surface == 1) {
+            ctx_in.scale(1f / scale_factor, 1f / scale_factor);
+            if (cached_surface != null) {
+                ctx_in.set_source_surface(cached_surface, 0, 0);
+                ctx_in.paint();
+                ctx_in.set_source_rgb(0, 0, 0);
+                return true;
+            }
+            width *= scale_factor;
+            height *= scale_factor;
+            base_factor *= scale_factor;
+            cached_surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, width, height);
+            ctx = new Cairo.Context(cached_surface);
+        }
+
+        double radius = 3 * base_factor;
+        double degrees = Math.PI / 180.0;
+        ctx.new_sub_path();
+        ctx.arc(width - radius, radius, radius, -90 * degrees, 0 * degrees);
+        ctx.arc(width - radius, height - radius, radius, 0 * degrees, 90 * degrees);
+        ctx.arc(radius, height - radius, radius, 90 * degrees, 180 * degrees);
+        ctx.arc(radius, radius, radius, 180 * degrees, 270 * degrees);
+        ctx.close_path();
+        ctx.clip();
+
+        Cairo.Surface buffer = sub_surface(ctx, width, height);
+        ctx.set_source_surface(buffer, 0, 0);
+        ctx.paint();
+
+        if (use_image_surface == 1) {
+            ctx_in.set_source_surface(ctx.get_target(), 0, 0);
+            ctx_in.paint();
+            ctx_in.set_source_rgb(0, 0, 0);
+        }
+
+        return true;
+    }
+
+    private Cairo.Surface sub_surface(Cairo.Context ctx, int width, int height) {
+        Cairo.Surface buffer = new Cairo.Surface.similar(ctx.get_target(), Cairo.Content.COLOR_ALPHA, width, height);
+        Cairo.Context bufctx = new Cairo.Context(buffer);
+        double w_scale = (double) width / image_width;
+        double h_scale = (double) height / image_height;
+        double scale = double.max(w_scale, h_scale);
+        bufctx.scale(scale, scale);
+
+        double x_off = 0, y_off = 0;
+        if (scale == h_scale) {
+            x_off = (width / scale - image_width) / 2.0;
+        } else {
+            y_off = (height / scale - image_height) / 2.0;
+        }
+        Gdk.cairo_set_source_pixbuf(bufctx, image, 0, 0);
+        bufctx.get_source().set_filter(Cairo.Filter.BILINEAR);
+        bufctx.paint();
+        bufctx.set_source_rgb(0, 0, 0);
+        return buffer;
     }
 
     private static Gdk.Pixbuf crop_corners(Gdk.Pixbuf pixbuf, double radius = 3) {

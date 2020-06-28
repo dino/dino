@@ -26,6 +26,13 @@ public class AvatarImage : Misc {
         get_style_context().add_class("avatar");
     }
 
+    public override void dispose() {
+        base.dispose();
+        drawer = null;
+        cached_surface = null;
+        disconnect_stream_interactor();
+    }
+
     public override void get_preferred_width(out int minimum_width, out int natural_width) {
         minimum_width = width;
         natural_width = width;
@@ -50,6 +57,7 @@ public class AvatarImage : Misc {
             if (cached_surface != null) {
                 ctx_in.set_source_surface(cached_surface, 0, 0);
                 ctx_in.paint();
+                ctx_in.set_source_rgb(0, 0, 0);
                 return true;
             }
             width *= scale_factor;
@@ -67,13 +75,10 @@ public class AvatarImage : Misc {
         if (use_image_surface == 1) {
             ctx_in.set_source_surface(ctx.get_target(), 0, 0);
             ctx_in.paint();
+            ctx_in.set_source_rgb(0, 0, 0);
         }
 
         return true;
-    }
-
-    public override void destroy() {
-        disconnect_stream_interactor();
     }
 
     private void disconnect_stream_interactor() {
