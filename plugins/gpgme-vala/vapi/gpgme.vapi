@@ -474,7 +474,7 @@ namespace GPG {
         [CCode (cname = "gpgme_data_release_and_get_mem")]
         public string release_and_get_mem(out size_t len);
 
-        public ssize_t read(uint8[] buf);
+        public ssize_t read([CCode (array_length = false)] uint8[] buf, size_t len);
 
         public ssize_t write(uint8[] buf);
 
