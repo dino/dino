@@ -144,28 +144,29 @@ private static Key? get_key(string sig, bool priv) throws GLib.Error {
 }
 
 private static string get_string_from_data(Data data) {
+    const size_t BUF_SIZE = 256;
     data.seek(0);
-    uint8[] buf = new uint8[256];
-    ssize_t? len = null;
+    uint8[] buf = new uint8[BUF_SIZE + 1];
+    ssize_t len = 0;
     string res = "";
     do {
-        len = data.read(buf);
+        len = data.read(buf, BUF_SIZE);
         if (len > 0) {
-            string part = (string) buf;
-            part = part.substring(0, (long) len);
-            res += part;
+            buf[len] = 0;
+            res += (string) buf;
         }
     } while (len > 0);
     return res;
 }
 
 private static uint8[] get_uint8_from_data(Data data) {
+    const size_t BUF_SIZE = 256;
     data.seek(0);
-    uint8[] buf = new uint8[256];
-    ssize_t? len = null;
+    uint8[] buf = new uint8[BUF_SIZE + 1];
+    ssize_t len = 0;
     ByteArray res = new ByteArray();
     do {
-        len = data.read(buf);
+        len = data.read(buf, BUF_SIZE);
         if (len > 0) {
             res.append(buf[0:len]);
         }
