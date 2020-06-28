@@ -9,7 +9,7 @@ class StanzaTest : Gee.TestCase {
         add_async_test("ack_stream", (cb) => { test_ack_stream.begin(cb); });
     }
 
-    private async void test_node_one(Gee.TestCase.FinishCallback cb) {
+    private async void test_node_one(Gee.TestFinishedCallback cb) {
         var node1 = new StanzaNode.build("test", "ns1_uri")
                 .add_self_xmlns()
                 .put_attribute("ns2", "ns2_uri", XMLNS_URI)
@@ -26,7 +26,7 @@ class StanzaTest : Gee.TestCase {
         cb();
     }
 
-    private async void test_typical_stream(Gee.TestCase.FinishCallback cb) {
+    private async void test_typical_stream(Gee.TestFinishedCallback cb) {
         var stream = """
         <?xml version='1.0' encoding='UTF-8'?>
         <stream:stream
@@ -72,7 +72,7 @@ class StanzaTest : Gee.TestCase {
         }
     }
 
-    private async void test_ack_stream(Gee.TestCase.FinishCallback cb) {
+    private async void test_ack_stream(Gee.TestFinishedCallback cb) {
         var stream = """
         <?xml version='1.0' encoding='UTF-8'?>
         <stream:stream
