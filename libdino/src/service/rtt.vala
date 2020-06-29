@@ -39,9 +39,8 @@ namespace Dino {
         public void message_compare(Conversation conversation, string old_message, string? new_message) {
             this.conversation = conversation;
             MessageComparison message_comparison = new MessageComparison(old_message, new_message);
-            ArrayList<Tag>? tags = message_comparison.generate_tags();
-            if (tags == null) return;
-
+            ArrayList<Tag> tags = message_comparison.generate_tags();
+            
             foreach (Tag tag in tags) {
                 if (tag.tag == "insert") {
                     XmppStream? stream = stream_interactor.get_stream(conversation.account);
@@ -182,9 +181,9 @@ namespace Dino {
             return false;
         }
 
-        public bool schedule_receiving(Account account, Jid jid) {
-
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid.bare_jid, account);
+        public bool schedule_receiving(Account account, Jid jid, MessageStanza message_stanza) {
+            Conversation.Type type = message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? Conversation.Type.GROUPCHAT : Conversation.Type.CHAT;
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid.bare_jid, account, type);
             if (conversation==null) return false;
 
             StanzaNode action_element = get_received_action_element(conversation, jid);
@@ -213,8 +212,11 @@ namespace Dino {
 
                     int? length = int.parse(action_element.get_attribute(RealTimeText.Module.ATTRIBUTE_LENGTH, RealTimeText.NS_URI));
                     if (length == null || length>(int)rtt_message.len) length = 1;
+
+                    int position_ = position - length > 0 ? position-length : 0;
+                    int length_ = position - length > 0 ? length : position;
                     
-                    rtt_message.erase(position-length+1, length);
+                    rtt_message.erase(position_, length_);
                 }
 
                 if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid)) {
@@ -224,7 +226,6 @@ namespace Dino {
                     rtt_builder[conversation][jid] = rtt_message.str;
                 }
 
-                debug("%s::%s", rtt_message.str, jid.to_string());
                 rtt_processed(conversation, jid, rtt_message.str);
 
                 return true;
@@ -238,8 +239,8 @@ namespace Dino {
                 set_received_action_element.begin(account, jid, stanza, action_elements);
 
                 Idle.add(() => {
-                    schedule_receiving(account, jid);
-                    return false;
+                    bool res = schedule_receiving(account, jid, stanza);
+                    return res;
                 });
             });
 

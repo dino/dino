@@ -60,7 +60,7 @@ namespace  Dino {
             else return -1;
         }
 
-        public Match? find_longest_match(MessageSlice message_slice){
+        public Match find_longest_match(MessageSlice message_slice){
             string old_message = this.old_message;
             string new_message = this.new_message;
             HashMap<string, ArrayList<int>> message_to_indices = this.message_to_indices;
@@ -78,12 +78,9 @@ namespace  Dino {
             for (int i=message_slice.old_lo; i<message_slice.old_hi; i++) {
 
                 string curr_char = old_message.get_char(old_message.index_of_nth_char(i)).to_string();
-
                 new_index_to_len = new HashMap<int, int>();
 
-                ArrayList<int>? indices =  message_to_indices.has_key(curr_char) ? message_to_indices[curr_char] : null;
-
-                if (indices == null) return null;
+                ArrayList<int> indices =  message_to_indices.has_key(curr_char) ? message_to_indices[curr_char] : new ArrayList<int>();
 
                 foreach(int index in indices) {
                     if (index < message_slice.new_lo) {
@@ -101,7 +98,6 @@ namespace  Dino {
                         k = 1;
                         new_index_to_len[index] = k;
                     }
-                    //  k = new_index_to_len[index] = index_to_len.has_key(index-1) ? index_to_len[index-1] + 1 : 1;
 
                     if (k > bestsize) {
                         besti = i-k+1;
@@ -116,7 +112,7 @@ namespace  Dino {
 
         }
 
-        public ArrayList<Match>? get_all_blocks() {
+        public ArrayList<Match> get_all_blocks() {
             int len_old = old_message.char_count();
             int len_new = new_message.char_count();
             
@@ -129,8 +125,7 @@ namespace  Dino {
 
                 MessageSlice message_slice = queue.pop_head();
 
-                Match? match = find_longest_match(message_slice);
-                if (match == null) return null;
+                Match match = find_longest_match(message_slice);
                 
                 if (match.length > 0) {
                     matching_blocks.add(match);
@@ -155,8 +150,7 @@ namespace  Dino {
             int j = 0;
             ArrayList<Tag> all_tags = new ArrayList<Tag>();
 
-            ArrayList<Match>? matching_blocks = get_all_blocks();
-            if (matching_blocks == null) return null;
+            ArrayList<Match> matching_blocks = get_all_blocks();
 
             foreach (Match match in matching_blocks) {
                 Tag tag = new Tag() { tag="", a0=i, a1=match.old_index, b0=j, b1=match.new_index };

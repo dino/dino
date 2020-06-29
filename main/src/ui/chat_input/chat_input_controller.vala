@@ -39,7 +39,6 @@ public class ChatInputController : Object {
         chat_input.chat_text_view.text_view.paste_clipboard.connect(() => clipboard_pasted());
 
         chat_text_view_controller.send_text.connect(send_text);
-        chat_text_view_controller.generate_rtt.connect(generate_rtt);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
 
@@ -161,21 +160,31 @@ public class ChatInputController : Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
     }
 
-    private void generate_rtt() {
+    private bool generate_rtt() {
         string current_message = chat_input.chat_text_view.text_view.buffer.text;
         string previous_message = stream_interactor.get_module(RttManager.IDENTITY).get_previous_message(conversation);
+
+        if (current_message == previous_message) return false;
+
         stream_interactor.get_module(RttManager.IDENTITY).message_compare(conversation, previous_message, current_message);
         stream_interactor.get_module(RttManager.IDENTITY).save_previous_message(conversation, current_message);
+        return true;
     }
 
     private void on_text_input_changed() {
+
+        Timeout.add(150, () => {
+            bool res = generate_rtt();
+            return res;
+        });  
+
+        Timeout.add(300, () => {
+            bool res = stream_interactor.get_module(RttManager.IDENTITY).schedule_rtt(conversation);
+            return res;
+        });  
+
         if (chat_input.chat_text_view.text_view.buffer.text != "") {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
-
-            Timeout.add(300, () => {
-                stream_interactor.get_module(RttManager.IDENTITY).schedule_rtt(conversation);
-                return true;
-            });  
         } else {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation); 
             stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xmpp.Xep.RealTimeText.Module.EVENT_NEW); //TODO(Wolfie) probably send "reset" event with empty text + empty queue before setting event to RealTimeText.Module.EVENT_NEW

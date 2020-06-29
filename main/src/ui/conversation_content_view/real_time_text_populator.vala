@@ -69,16 +69,19 @@ namespace Dino.Ui.ConversationSummary {
             if (!meta_items.has_key(jid)) {
                 meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
                 item_collection.insert_item(meta_items[jid]);
-            } else if (meta_items.has_key(jid)) {
+            } else if (meta_items.has_key(jid) && rtt_message != "") {
                 meta_items[jid].set_new(rtt_message);
-            }
+            } 
+            
+            if (meta_items.has_key(jid) && rtt_message.char_count() == 0) {
+                delete_rtt(jid);
+            } 
         }
 
         private void delete_rtt(Jid jid){
             if (meta_items.has_key(jid)) {
                 item_collection.remove_item(meta_items[jid]);
                 meta_items.unset(jid);
-                return;
             }
         }
     }
@@ -102,12 +105,10 @@ namespace Dino.Ui.ConversationSummary {
         }
 
         public override Object? get_widget(Plugins.WidgetType widget_type) {
-            label = new Label("") { xalign=0, vexpand=true, visible=true };
+            label = new Label("") { xalign=0, vexpand=true, visible=true, wrap=true };
             label.get_style_context().add_class("dim-label");
 
-            name_label = new Label("") { xalign=0, vexpand=true, visible=true };
-            name_label.use_markup = true;
-            //  name_label.get_style_context().add_class("dim-label");
+            name_label = new Label("") { xalign=0, vexpand=true, visible=true, use_markup=true };
             
             image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true };
 

@@ -10,7 +10,6 @@ namespace Dino.Ui {
 public class ChatTextViewController : Object {
 
     public signal void send_text();
-    public signal void generate_rtt();
 
     public OccupantsTabCompletor occupants_tab_completor;
 
@@ -28,9 +27,6 @@ public class ChatTextViewController : Object {
             stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xep.RealTimeText.Module.EVENT_NEW);
         });
 
-        widget.generate_rtt.connect(() => {
-            generate_rtt();
-        });
     }
 
     public void initialize_for_conversation(Conversation conversation) {
@@ -43,7 +39,6 @@ public class ChatTextViewController : Object {
 public class ChatTextView : ScrolledWindow {
 
     public signal void send_text();
-    public signal void generate_rtt();
     public signal void cancel_input();
 
     public TextView text_view = new TextView() { can_focus=true, hexpand=true, margin=8, wrap_mode=Gtk.WrapMode.WORD_CHAR, valign=Align.CENTER, visible=true };
@@ -95,15 +90,6 @@ public class ChatTextView : ScrolledWindow {
         }
         if (event.keyval == Key.Escape) {
             cancel_input();
-        }
-
-        if (text_view.buffer.text != "") {  //TODO(Wolfie) send_rtt() on basis of num keystrokes/time
-            //  num_keystrokes++;
-            //  if (num_keystrokes > 5) {
-            //      send_rtt();
-            //      num_keystrokes = 0;
-            //  }
-            generate_rtt();
         }
 
         return false;

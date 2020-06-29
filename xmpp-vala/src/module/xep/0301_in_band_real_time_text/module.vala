@@ -92,6 +92,8 @@ namespace Xmpp.Xep.RealTimeText {
             RttStanzaNode rtt_node = new RttStanzaNode(action_elements) { seq=sequence, event=event };
            
             message.stanza.put_node(rtt_node.stanza_node);
+            MessageProcessingHints.set_message_hint(message, MessageProcessingHints.HINT_NO_STORE);
+            
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
             rtt_sent(jid, message);
         }
@@ -103,6 +105,7 @@ namespace Xmpp.Xep.RealTimeText {
             if (rtt_stanza_node != null) {
                 // event resolution
                 string? event = rtt_stanza_node.get_attribute("event", NS_URI);
+                if (event == null) event = EVENT_EDIT;
                 
                 event_received(from_jid, message, event);
 
