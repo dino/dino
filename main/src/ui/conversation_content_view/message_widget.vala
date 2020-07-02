@@ -156,8 +156,8 @@ public class MessageItemWidget : SizeRequestBin {
         if (markup_text.length > 10000) {
             markup_text = markup_text.substring(0, 10000) + " [" + _("Message too long") + "]";
         }
-        if (message.body.has_prefix("/me")) {
-            markup_text = markup_text.substring(3);
+        if (message.body.has_prefix("/me ")) {
+            markup_text = markup_text.substring(4);
         }
 
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
@@ -166,10 +166,10 @@ public class MessageItemWidget : SizeRequestBin {
             markup_text = Util.parse_add_markup(markup_text, null, true, true);
         }
 
-        if (message.body.has_prefix("/me")) {
+        if (message.body.has_prefix("/me ")) {
             string display_name = Util.get_participant_display_name(stream_interactor, conversation, message.from);
             string color = Util.get_name_hex_color(stream_interactor, conversation.account, message.real_jid ?? message.from, Util.is_dark_theme(label));
-            markup_text = @"<span color=\"#$(color)\">$(Markup.escape_text(display_name))</span>" + markup_text;
+            markup_text = @"<span color=\"#$(color)\">$(Markup.escape_text(display_name))</span> " + markup_text;
             theme_dependent = true;
         }
 
