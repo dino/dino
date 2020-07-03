@@ -93,9 +93,12 @@ public class ConversationViewController : Object {
 
         AccelGroup accel_group = new AccelGroup();
         accel_group.connect(Gdk.Key.U, ModifierType.CONTROL_MASK, AccelFlags.VISIBLE, () => {
-            if (conversation != null && stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation)) {
-                open_file_picker();
-            }
+            if (conversation == null) return false;
+            stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.begin(conversation, (_, res) => {
+                if (stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.end(res)) {
+                    open_file_picker();
+                }
+            });
             return false;
         });
         ((Gtk.Window)view.get_toplevel()).add_accel_group(accel_group);
@@ -138,13 +141,15 @@ public class ConversationViewController : Object {
     }
 
     private void update_file_upload_status() {
-        bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
-        chat_input_controller.set_file_upload_active(upload_available);
-        if (upload_available && overlay_dialog == null) {
-            Gtk.drag_dest_set(view, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
-        } else {
-            Gtk.drag_dest_unset(view);
-        }
+        stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.begin(conversation, (_, res) => {
+            bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.end(res);
+            chat_input_controller.set_file_upload_active(upload_available);
+            if (upload_available && overlay_dialog == null) {
+                Gtk.drag_dest_set(view, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
+            } else {
+                Gtk.drag_dest_unset(view);
+            }
+        });
     }
 
     private void update_conversation_display_name() {
@@ -212,18 +217,20 @@ public class ConversationViewController : Object {
         FileSendOverlay overlay = new FileSendOverlay(file, file_info);
         overlay.send_file.connect(() => send_file(file));
 
-        HashMap<int, long> limits = stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits(conversation);
-        bool something_works = false;
-        foreach (var limit in limits.values) {
-            if (limit >= file_info.get_size()) {
-                something_works = true;
+        stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.begin(conversation, (_, res) => {
+            HashMap<int, long> limits = stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.end(res);
+            bool something_works = false;
+            foreach (var limit in limits.values) {
+                if (limit >= file_info.get_size()) {
+                    something_works = true;
+                }
             }
-        }
-        if (!something_works && limits.has_key(0)) {
-            if (!something_works && file_info.get_size() > limits[0]) {
-                overlay.set_file_too_large();
+            if (!something_works && limits.has_key(0)) {
+                if (!something_works && file_info.get_size() > limits[0]) {
+                    overlay.set_file_too_large();
+                }
             }
-        }
+        });
 
         overlay.close.connect(() => {
             // We don't want drag'n'drop to be active while the overlay is active

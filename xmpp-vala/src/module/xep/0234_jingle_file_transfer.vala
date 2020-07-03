@@ -42,12 +42,12 @@ public class Module : Jingle.ContentType, XmppStreamModule {
 
     public signal void file_incoming(XmppStream stream, FileTransfer file_transfer);
 
-    public bool is_available(XmppStream stream, Jid full_jid) {
-        bool? has_feature = stream.get_flag(ServiceDiscovery.Flag.IDENTITY).has_entity_feature(full_jid, NS_URI);
+    public async bool is_available(XmppStream stream, Jid full_jid) {
+        bool? has_feature = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
         if (has_feature == null || !(!)has_feature) {
             return false;
         }
-        return stream.get_module(Jingle.Module.IDENTITY).is_available(stream, Jingle.TransportType.STREAMING, full_jid);
+        return yield stream.get_module(Jingle.Module.IDENTITY).is_available(stream, Jingle.TransportType.STREAMING, full_jid);
     }
 
     public async void offer_file_stream(XmppStream stream, Jid receiver_full_jid, InputStream input_stream, string basename, int64 size, string? precondition_name = null, Object? precondition_options = null) throws IOError {
@@ -66,7 +66,7 @@ public class Module : Jingle.ContentType, XmppStreamModule {
 
         Jingle.Session session;
         try {
-            session = stream.get_module(Jingle.Module.IDENTITY)
+            session = yield stream.get_module(Jingle.Module.IDENTITY)
                 .create_session(stream, Jingle.TransportType.STREAMING, receiver_full_jid, Jingle.Senders.INITIATOR, "a-file-offer", description, precondition_name, precondition_options); // TODO(hrxi): Why "a-file-offer"?
         } catch (Jingle.Error e) {
             throw new IOError.FAILED(@"couldn't create Jingle session: $(e.message)");

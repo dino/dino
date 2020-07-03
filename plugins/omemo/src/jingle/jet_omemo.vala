@@ -29,12 +29,12 @@ public class Module : XmppStreamModule, Jet.EnvelopEncoding {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
     }
 
-    public bool is_available(XmppStream stream, Jid full_jid) {
-        bool? has_feature = stream.get_flag(ServiceDiscovery.Flag.IDENTITY).has_entity_feature(full_jid, NS_URI);
+    public async bool is_available(XmppStream stream, Jid full_jid) {
+        bool? has_feature = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
         if (has_feature == null || !(!)has_feature) {
             return false;
         }
-        return stream.get_module(Xep.Jet.Module.IDENTITY).is_available(stream, full_jid);
+        return yield stream.get_module(Xep.Jet.Module.IDENTITY).is_available(stream, full_jid);
     }
 
     public string get_type_uri() {

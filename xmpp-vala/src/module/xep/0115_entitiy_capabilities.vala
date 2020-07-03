@@ -21,6 +21,16 @@ namespace Xmpp.Xep.EntityCapabilities {
         return ver_attribute;
     }
 
+    public string? get_server_caps_hash(XmppStream stream) {
+        StanzaNode? node = stream.features.get_subnode("c", NS_URI);
+        if (node == null) return null;
+
+        string? ver_attribute = node.get_attribute("ver", NS_URI);
+        if (ver_attribute == null) return null;
+
+        return ver_attribute;
+    }
+
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0115_entity_capabilities");
 
@@ -40,15 +50,11 @@ namespace Xmpp.Xep.EntityCapabilities {
 
         public override void attach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
-            stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
-
-            check_features_node_ver(stream);
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
-            stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
             stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
         }
 
@@ -64,51 +70,16 @@ namespace Xmpp.Xep.EntityCapabilities {
             }
         }
 
-        private void on_received_presence(XmppStream stream, Presence.Stanza presence) {
-            string? caps_hash = get_caps_hash(presence);
-            if (caps_hash == null) return;
-
-            process_hash.begin(stream, presence.from, caps_hash);
-        }
-
-        private void check_features_node_ver(XmppStream stream) {
-            StanzaNode? node = stream.features.get_subnode("c", NS_URI);
-            if (node == null) return;
-
-            string? ver_attribute = node.get_attribute("ver", NS_URI);
-            if (ver_attribute == null) return;
-
-            process_hash.begin(stream, stream.remote_name, ver_attribute);
-        }
-
-        private async void process_hash(XmppStream stream, Jid jid_from, string caps_hash) {
-            Gee.List<string> capabilities = storage.get_features(caps_hash);
-            ServiceDiscovery.Identity identity = storage.get_identities(caps_hash);
-            if (identity == null) {
-                ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid_from);
-                if (info_result == null) return;
-                store_entity_result(stream, caps_hash, info_result);
-            } else {
-                stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(jid_from, capabilities);
-            }
-        }
-
-        private void store_entity_result(XmppStream stream, string entity, ServiceDiscovery.InfoResult? query_result) {
-            if (query_result == null) return;
-
+        public static string compute_hash_for_info_result(ServiceDiscovery.InfoResult info_result) {
             Gee.List<DataForms.DataForm> data_forms = new ArrayList<DataForms.DataForm>();
-            foreach (StanzaNode node in query_result.iq.stanza.get_deep_subnodes(ServiceDiscovery.NS_URI_INFO + ":query", DataForms.NS_URI + ":x")) {
+            foreach (StanzaNode node in info_result.iq.stanza.get_deep_subnodes(ServiceDiscovery.NS_URI_INFO + ":query", DataForms.NS_URI + ":x")) {
                 data_forms.add(DataForms.DataForm.create_from_node(node));
             }
 
-            if (compute_hash(query_result.identities, query_result.features, data_forms) == entity) {
-                storage.store_identities(entity, query_result.identities);
-                storage.store_features(entity, query_result.features);
-                stream.get_flag(ServiceDiscovery.Flag.IDENTITY).set_entity_features(query_result.iq.from, query_result.features);
-            }
+            return compute_hash(info_result.identities, info_result.features, data_forms);
         }
 
-        private static string compute_hash(Gee.Set<ServiceDiscovery.Identity> identities_set, Gee.List<string> features, Gee.List<DataForms.DataForm> data_forms) {
+        public static string compute_hash(Gee.Set<ServiceDiscovery.Identity> identities_set, Gee.List<string> features, Gee.List<DataForms.DataForm> data_forms) {
             var identities = new ArrayList<ServiceDiscovery.Identity>();
             foreach (var identity in identities_set) identities.add(identity);
 

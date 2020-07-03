@@ -8,7 +8,7 @@ namespace Dino {
 
 public interface JingleFileEncryptionHelper : Object {
     public abstract bool can_transfer(Conversation conversation);
-    public abstract bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid = null);
+    public abstract async bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid = null);
     public abstract string? get_precondition_name(Conversation conversation, FileTransfer file_transfer);
     public abstract Object? get_precondition_options(Conversation conversation, FileTransfer file_transfer);
     public abstract FileMeta complete_meta(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta, Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer);
@@ -18,7 +18,7 @@ public class JingleFileEncryptionHelperTransferOnly : JingleFileEncryptionHelper
     public bool can_transfer(Conversation conversation) {
         return true;
     }
-    public bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid) {
+    public async bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid) {
         return false;
     }
     public string? get_precondition_name(Conversation conversation, FileTransfer file_transfer) {
@@ -143,7 +143,7 @@ public class JingleFileSender : FileSender, Object {
         this.stream_interactor = stream_interactor;
     }
 
-    public bool is_upload_available(Conversation conversation) {
+    public async bool is_upload_available(Conversation conversation) {
         if (conversation.type_ != Conversation.Type.CHAT) return false;
 
         JingleFileEncryptionHelper? helper = JingleFileHelperRegistry.instance.get_encryption_helper(conversation.encryption);
@@ -157,35 +157,35 @@ public class JingleFileSender : FileSender, Object {
         if (resources == null) return false;
 
         foreach (Jid full_jid in resources) {
-            if (stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
+            if (yield stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
                 return true;
             }
         }
         return false;
     }
 
-    public long get_file_size_limit(Conversation conversation) {
-        if (can_send_(conversation)) {
+    public async long get_file_size_limit(Conversation conversation) {
+        if (yield can_send_conv(conversation)) {
             return int.MAX;
         }
         return -1;
     }
 
-    public bool can_send(Conversation conversation, FileTransfer file_transfer) {
-        return can_send_(conversation);
+    public async bool can_send(Conversation conversation, FileTransfer file_transfer) {
+        return yield can_send_conv(conversation);
     }
 
-    private bool can_send_(Conversation conversation) {
+    private async bool can_send_conv(Conversation conversation) {
         if (conversation.type_ != Conversation.Type.CHAT) return false;
 
         // No file specific restrictions apply to Jingle file transfers
-        return is_upload_available(conversation);
+        return yield is_upload_available(conversation);
     }
 
-    public bool can_encrypt(Conversation conversation, FileTransfer file_transfer) {
+    public async bool can_encrypt(Conversation conversation, FileTransfer file_transfer) {
         JingleFileEncryptionHelper? helper = JingleFileHelperRegistry.instance.get_encryption_helper(file_transfer.encryption);
         if (helper == null) return false;
-        return helper.can_encrypt(conversation, file_transfer);
+        return yield helper.can_encrypt(conversation, file_transfer);
     }
 
     public async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer, FileMeta file_meta) throws FileSendError {
@@ -199,13 +199,13 @@ public class JingleFileSender : FileSender, Object {
         XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream == null) throw new FileSendError.UPLOAD_FAILED("No stream available");
         JingleFileEncryptionHelper? helper = JingleFileHelperRegistry.instance.get_encryption_helper(file_transfer.encryption);
-        bool must_encrypt = helper != null && helper.can_encrypt(conversation, file_transfer);
+        bool must_encrypt = helper != null && yield helper.can_encrypt(conversation, file_transfer);
         foreach (Jid full_jid in stream.get_flag(Presence.Flag.IDENTITY).get_resources(conversation.counterpart)) {
             // TODO(hrxi): Prioritization of transports (and resources?).
-            if (!stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
+            if (!yield stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
                 continue;
             }
-            if (must_encrypt && !helper.can_encrypt(conversation, file_transfer, full_jid)) {
+            if (must_encrypt && !yield helper.can_encrypt(conversation, file_transfer, full_jid)) {
                 continue;
             }
             string? precondition_name = null;

@@ -271,50 +271,54 @@ public class ConversationSelectorRow : ListBoxRow {
             Jid full_jid = full_jids[i];
             string? show = stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, conversation.account);
             if (show == null) continue;
-            Xep.ServiceDiscovery.Identity? identity = stream_interactor.get_module(EntityInfo.IDENTITY).get_identity(conversation.account, full_jid);
 
-            Image image = new Image() { hexpand=false, valign=Align.CENTER, visible=true };
-            if (identity != null && (identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_PHONE || identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_TABLET)) {
-                image.set_from_icon_name("dino-device-phone-symbolic", IconSize.SMALL_TOOLBAR);
-            } else {
-                image.set_from_icon_name("dino-device-desktop-symbolic", IconSize.SMALL_TOOLBAR);
-            }
+            int i_cache = i;
+            stream_interactor.get_module(EntityInfo.IDENTITY).get_identity.begin(conversation.account, full_jid, (_, res) => {
+                Xep.ServiceDiscovery.Identity? identity = stream_interactor.get_module(EntityInfo.IDENTITY).get_identity.end(res);
 
-            if (show == Presence.Stanza.SHOW_AWAY) {
-                Util.force_color(image, "#FF9800");
-            } else if (show == Presence.Stanza.SHOW_XA || show == Presence.Stanza.SHOW_DND) {
-                Util.force_color(image, "#FF5722");
-            } else {
-                Util.force_color(image, "#4CAF50");
-            }
+                Image image = new Image() { hexpand=false, valign=Align.CENTER, visible=true };
+                if (identity != null && (identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_PHONE || identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_TABLET)) {
+                    image.set_from_icon_name("dino-device-phone-symbolic", IconSize.SMALL_TOOLBAR);
+                } else {
+                    image.set_from_icon_name("dino-device-desktop-symbolic", IconSize.SMALL_TOOLBAR);
+                }
 
-            string? status = null;
-            if (show == Presence.Stanza.SHOW_AWAY) {
-                status = "away";
-            } else if (show == Presence.Stanza.SHOW_XA) {
-                status = "not available";
-            } else if (show == Presence.Stanza.SHOW_DND) {
-                status = "do not disturb";
-            }
+                if (show == Presence.Stanza.SHOW_AWAY) {
+                    Util.force_color(image, "#FF9800");
+                } else if (show == Presence.Stanza.SHOW_XA || show == Presence.Stanza.SHOW_DND) {
+                    Util.force_color(image, "#FF5722");
+                } else {
+                    Util.force_color(image, "#4CAF50");
+                }
 
-            var sb = new StringBuilder();
-            if (identity != null && identity.name != null) {
-                sb.append(identity.name);
-            } else if (full_jid.resourcepart != null && dino_resource_regex.match(full_jid.resourcepart)) {
-                sb.append("Dino");
-            } else if (full_jid.resourcepart != null) {
-                sb.append(full_jid.resourcepart);
-            } else {
-                continue;
-            }
-            if (status != null) {
-                sb.append(" <i>(").append(status).append(")</i>");
-            }
+                string? status = null;
+                if (show == Presence.Stanza.SHOW_AWAY) {
+                    status = "away";
+                } else if (show == Presence.Stanza.SHOW_XA) {
+                    status = "not available";
+                } else if (show == Presence.Stanza.SHOW_DND) {
+                    status = "do not disturb";
+                }
 
-            Label resource = new Label(sb.str) { use_markup=true, hexpand=true, xalign=0, visible=true };
+                var sb = new StringBuilder();
+                if (identity != null && identity.name != null) {
+                    sb.append(identity.name);
+                } else if (full_jid.resourcepart != null && dino_resource_regex.match(full_jid.resourcepart)) {
+                    sb.append("Dino");
+                } else if (full_jid.resourcepart != null) {
+                    sb.append(full_jid.resourcepart);
+                } else {
+                    return;
+                }
+                if (status != null) {
+                    sb.append(" <i>(").append(status).append(")</i>");
+                }
 
-            grid.attach(image, 0, i + 1, 1, 1);
-            grid.attach(resource, 1, i + 1, 1, 1);
+                Label resource = new Label(sb.str) { use_markup=true, hexpand=true, xalign=0, visible=true };
+
+                grid.attach(image, 0, i_cache + 1, 1, 1);
+                grid.attach(resource, 1, i_cache + 1, 1, 1);
+            });
         }
         return grid;
     }

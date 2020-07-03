@@ -38,10 +38,10 @@ public class FileManager : StreamInteractionModule, Object {
         this.add_sender(new JingleFileSender(stream_interactor));
     }
 
-    public HashMap<int, long> get_file_size_limits(Conversation conversation) {
+    public async HashMap<int, long> get_file_size_limits(Conversation conversation) {
         HashMap<int, long> ret = new HashMap<int, long>();
         foreach (FileSender sender in file_senders) {
-            ret[sender.get_id()] = sender.get_file_size_limit(conversation);
+            ret[sender.get_id()] = yield sender.get_file_size_limit(conversation);
         }
         return ret;
     }
@@ -86,8 +86,8 @@ public class FileManager : StreamInteractionModule, Object {
             FileSender file_sender = null;
             FileEncryptor file_encryptor = null;
             foreach (FileSender sender in file_senders) {
-                if (sender.can_send(conversation, file_transfer)) {
-                    if (file_transfer.encryption == Encryption.NONE || sender.can_encrypt(conversation, file_transfer)) {
+                if (yield sender.can_send(conversation, file_transfer)) {
+                    if (file_transfer.encryption == Encryption.NONE || yield sender.can_encrypt(conversation, file_transfer)) {
                         file_sender = sender;
                         break;
                     } else {
@@ -140,11 +140,11 @@ public class FileManager : StreamInteractionModule, Object {
         yield download_file_internal(file_provider, file_transfer, conversation);
     }
 
-    public bool is_upload_available(Conversation? conversation) {
+    public async bool is_upload_available(Conversation? conversation) {
         if (conversation == null) return false;
 
         foreach (FileSender file_sender in file_senders) {
-            if (file_sender.is_upload_available(conversation)) return true;
+            if (yield file_sender.is_upload_available(conversation)) return true;
         }
         return false;
     }
@@ -401,12 +401,12 @@ public interface FileProvider : Object {
 public interface FileSender : Object {
     public signal void upload_available(Account account);
 
-    public abstract bool is_upload_available(Conversation conversation);
-    public abstract long get_file_size_limit(Conversation conversation);
-    public abstract bool can_send(Conversation conversation, FileTransfer file_transfer);
+    public abstract async bool is_upload_available(Conversation conversation);
+    public abstract async long get_file_size_limit(Conversation conversation);
+    public abstract async bool can_send(Conversation conversation, FileTransfer file_transfer);
     public abstract async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer, FileMeta file_meta) throws FileSendError;
     public abstract async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data, FileMeta file_meta) throws FileSendError;
-    public abstract bool can_encrypt(Conversation conversation, FileTransfer file_transfer);
+    public abstract async bool can_encrypt(Conversation conversation, FileTransfer file_transfer);
 
     public abstract int get_id();
     public abstract float get_priority();

@@ -18,9 +18,8 @@ public class Module : XmppStreamModule, SecurityPrecondition {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
     }
 
-    public bool is_available(XmppStream stream, Jid full_jid) {
-        bool? has_feature = stream.get_flag(ServiceDiscovery.Flag.IDENTITY).has_entity_feature(full_jid, NS_URI);
-        return has_feature != null && (!)has_feature;
+    public async bool is_available(XmppStream stream, Jid full_jid) {
+        return yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
     }
 
     public void register_envelop_encoding(EnvelopEncoding encoding) {

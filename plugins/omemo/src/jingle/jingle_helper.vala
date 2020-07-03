@@ -13,7 +13,7 @@ public class EncryptionHelper : JingleFileEncryptionHelper, Object {
         return true;
     }
 
-    public bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid) {
+    public async bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid) {
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
         if (stream == null) return false;
 
@@ -22,12 +22,12 @@ public class EncryptionHelper : JingleFileEncryptionHelper, Object {
 
         if (full_jid == null) {
             foreach (Jid test_jid in resources) {
-                if (stream.get_module(Module.IDENTITY).is_available(stream, test_jid)) {
+                if (yield stream.get_module(Module.IDENTITY).is_available(stream, test_jid)) {
                     return true;
                 }
             }
         } else {
-            if (stream.get_module(Module.IDENTITY).is_available(stream, full_jid)) {
+            if (yield stream.get_module(Module.IDENTITY).is_available(stream, full_jid)) {
                 return true;
             }
         }

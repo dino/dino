@@ -57,13 +57,13 @@ public class HttpFileSender : FileSender, Object {
         }
     }
 
-    public bool can_send(Conversation conversation, FileTransfer file_transfer) {
+    public async bool can_send(Conversation conversation, FileTransfer file_transfer) {
         if (!max_file_sizes.has_key(conversation.account)) return false;
 
         return file_transfer.size < max_file_sizes[conversation.account];
     }
 
-    public long get_file_size_limit(Conversation conversation) {
+    public async long get_file_size_limit(Conversation conversation) {
         long? max_size = max_file_sizes[conversation.account];
         if (max_size != null) {
             return max_size;
@@ -71,17 +71,17 @@ public class HttpFileSender : FileSender, Object {
         return -1;
     }
 
-    public bool can_encrypt(Conversation conversation, FileTransfer file_transfer) {
+    public async bool can_encrypt(Conversation conversation, FileTransfer file_transfer) {
         return false;
     }
 
-    public bool is_upload_available(Conversation conversation) {
+    public async bool is_upload_available(Conversation conversation) {
         lock (max_file_sizes) {
             return max_file_sizes.has_key(conversation.account);
         }
     }
 
-    public long get_max_file_size(Account account) {
+    public async long get_max_file_size(Account account) {
         lock (max_file_sizes) {
             return max_file_sizes[account];
         }

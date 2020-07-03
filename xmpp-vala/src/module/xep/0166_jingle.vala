@@ -149,7 +149,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         }
         return transports[ns_uri];
     }
-    public Transport? select_transport(XmppStream stream, TransportType type, Jid receiver_full_jid, Set<string> blacklist) {
+    public async Transport? select_transport(XmppStream stream, TransportType type, Jid receiver_full_jid, Set<string> blacklist) {
         Transport? result = null;
         foreach (Transport transport in transports.values) {
             if (transport.transport_type() != type) {
@@ -158,7 +158,7 @@ public class Module : XmppStreamModule, Iq.Handler {
             if (transport.transport_ns_uri() in blacklist) {
                 continue;
             }
-            if (transport.is_transport_available(stream, receiver_full_jid)) {
+            if (yield transport.is_transport_available(stream, receiver_full_jid)) {
                 if (result != null) {
                     if (result.transport_priority() >= transport.transport_priority()) {
                         continue;
@@ -180,20 +180,20 @@ public class Module : XmppStreamModule, Iq.Handler {
         return security_preconditions[ns_uri];
     }
 
-    private bool is_jingle_available(XmppStream stream, Jid full_jid) {
-        bool? has_jingle = stream.get_flag(ServiceDiscovery.Flag.IDENTITY).has_entity_feature(full_jid, NS_URI);
+    private async bool is_jingle_available(XmppStream stream, Jid full_jid) {
+        bool? has_jingle = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
         return has_jingle != null && has_jingle;
     }
 
-    public bool is_available(XmppStream stream, TransportType type, Jid full_jid) {
-        return is_jingle_available(stream, full_jid) && select_transport(stream, type, full_jid, Set.empty()) != null;
+    public async bool is_available(XmppStream stream, TransportType type, Jid full_jid) {
+        return (yield is_jingle_available(stream, full_jid)) && (yield select_transport(stream, type, full_jid, Set.empty())) != null;
     }
 
-    public Session create_session(XmppStream stream, TransportType type, Jid receiver_full_jid, Senders senders, string content_name, StanzaNode description, string? precondition_name = null, Object? precondation_options = null) throws Error {
-        if (!is_jingle_available(stream, receiver_full_jid)) {
+    public async Session create_session(XmppStream stream, TransportType type, Jid receiver_full_jid, Senders senders, string content_name, StanzaNode description, string? precondition_name = null, Object? precondation_options = null) throws Error {
+        if (!yield is_jingle_available(stream, receiver_full_jid)) {
             throw new Error.NO_SHARED_PROTOCOLS("No Jingle support");
         }
-        Transport? transport = select_transport(stream, type, receiver_full_jid, Set.empty());
+        Transport? transport = yield select_transport(stream, type, receiver_full_jid, Set.empty());
         if (transport == null) {
             throw new Error.NO_SHARED_PROTOCOLS("No suitable transports");
         }
@@ -358,7 +358,7 @@ public delegate void SessionTerminate(Jid to, string sid, StanzaNode reason);
 
 public interface Transport : Object {
     public abstract string transport_ns_uri();
-    public abstract bool is_transport_available(XmppStream stream, Jid full_jid);
+    public async abstract bool is_transport_available(XmppStream stream, Jid full_jid);
     public abstract TransportType transport_type();
     public abstract int transport_priority();
     public abstract TransportParameters create_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid) throws Error;
@@ -613,7 +613,7 @@ public class Session {
             transport = null;
         } else {
             if (role == Role.INITIATOR) {
-                select_new_transport(stream);
+                select_new_transport.begin(stream);
             } else {
                 state = State.WAITING_FOR_TRANSPORT_REPLACE;
             }
@@ -640,8 +640,8 @@ public class Session {
         }
         content_type.handle_content_session_info(stream, this, info, iq);
     }
-    void select_new_transport(XmppStream stream) {
-        Transport? new_transport = stream.get_module(Module.IDENTITY).select_transport(stream, type_, peer_full_jid, tried_transport_methods);
+    async void select_new_transport(XmppStream stream) {
+        Transport? new_transport = yield stream.get_module(Module.IDENTITY).select_transport(stream, type_, peer_full_jid, tried_transport_methods);
         if (new_transport == null) {
             StanzaNode reason = new StanzaNode.build("reason", NS_URI)
                 .put_node(new StanzaNode.build("failed-transport", NS_URI));
@@ -680,7 +680,7 @@ public class Session {
             throw new IqError.OUT_OF_ORDER("no outstanding transport-replace request");
         }
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
-        select_new_transport(stream);
+        select_new_transport.begin(stream);
     }
     void handle_transport_replace(XmppStream stream, StanzaNode transport_node, StanzaNode jingle, Iq.Stanza iq) throws IqError {
         Transport? transport = stream.get_module(Module.IDENTITY).get_transport(transport_node.ns_uri);

@@ -12,9 +12,10 @@ public class Module : XmppStreamModule, Iq.Handler {
     private HashMap<Jid, Future<InfoResult?>> active_info_requests = new HashMap<Jid, Future<InfoResult?>>(Jid.hash_func, Jid.equals_func);
 
     public Identity own_identity;
+    public CapsCache cache;
 
     public Module.with_identity(string category, string type, string? name = null) {
-        own_identity = new Identity(category, type, name);
+        this.own_identity = new Identity(category, type, name);
     }
 
     public void add_feature(XmppStream stream, string feature) {
@@ -42,27 +43,11 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public async bool has_entity_feature(XmppStream stream, Jid jid, string feature) {
-        Flag flag = stream.get_flag(Flag.IDENTITY);
-
-        if (flag.has_entity_feature(jid, feature) == null) {
-            InfoResult? info_result = yield request_info(stream, jid);
-            stream.get_flag(Flag.IDENTITY).set_entity_features(jid, info_result != null ? info_result.features : null);
-            stream.get_flag(Flag.IDENTITY).set_entity_identities(jid, info_result != null ? info_result.identities : null);
-        }
-
-        return flag.has_entity_feature(jid, feature) ?? false;
+        return yield this.cache.has_entity_feature(jid, feature);
     }
 
     public async Gee.Set<Identity>? get_entity_identities(XmppStream stream, Jid jid) {
-        Flag flag = stream.get_flag(Flag.IDENTITY);
-
-        if (flag.get_entity_identities(jid) == null) {
-            InfoResult? info_result = yield request_info(stream, jid);
-            stream.get_flag(Flag.IDENTITY).set_entity_features(info_result.iq.from, info_result != null ? info_result.features : null);
-            stream.get_flag(Flag.IDENTITY).set_entity_identities(info_result.iq.from, info_result != null ? info_result.identities : null);
-        }
-
-        return flag.get_entity_identities(jid);
+        return yield this.cache.get_entity_identities(jid);
     }
 
     public async InfoResult? request_info(XmppStream stream, Jid jid) {
@@ -135,6 +120,11 @@ public class Module : XmppStreamModule, Iq.Handler {
         query_result.identities = stream.get_flag(Flag.IDENTITY).own_identities;
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, query_result.iq);
     }
+}
+
+public interface CapsCache : Object {
+    public abstract async bool has_entity_feature(Jid jid, string feature);
+    public abstract async Gee.Set<Identity> get_entity_identities(Jid jid);
 }
 
 }

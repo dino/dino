@@ -20,9 +20,8 @@ public class Module : Jingle.Transport, XmppStreamModule {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    public bool is_transport_available(XmppStream stream, Jid full_jid) {
-        bool? result = stream.get_flag(ServiceDiscovery.Flag.IDENTITY).has_entity_feature(full_jid, NS_URI);
-        return result != null && result;
+    public async bool is_transport_available(XmppStream stream, Jid full_jid) {
+        return yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
     }
 
     public string transport_ns_uri() {

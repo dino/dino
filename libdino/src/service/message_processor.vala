@@ -354,18 +354,18 @@ public class MessageProcessor : StreamInteractionModule, Object {
         XmppStream? stream = stream_interactor.get_stream(account);
         Xep.MessageArchiveManagement.MessageFlag? mam_message_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
         Xep.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xep.MessageArchiveManagement.Flag.IDENTITY) : null;
-        Xep.ServiceDiscovery.Module disco_module = stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY);
+        EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
         if (mam_message_flag != null && mam_flag != null && mam_flag.ns_ver == Xep.MessageArchiveManagement.NS_URI_2 && mam_message_flag.mam_id != null) {
             new_message.server_id = mam_message_flag.mam_id;
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
-            bool server_supports_sid = (yield disco_module.has_entity_feature(stream, new_message.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield disco_module.has_entity_feature(stream, new_message.counterpart.bare_jid, Xep.MessageArchiveManagement.NS_URI_2));
+            bool server_supports_sid = (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
+                    (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xep.MessageArchiveManagement.NS_URI_2));
             if (server_supports_sid) {
                 new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, new_message.counterpart.bare_jid);
             }
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_CHAT) {
-            bool server_supports_sid = (yield disco_module.has_entity_feature(stream, account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield disco_module.has_entity_feature(stream, account.bare_jid, Xep.MessageArchiveManagement.NS_URI_2));
+            bool server_supports_sid = (yield entity_info.has_feature(account, account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
+                    (yield entity_info.has_feature(account, account.bare_jid, Xep.MessageArchiveManagement.NS_URI_2));
             if (server_supports_sid) {
                 new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, account.bare_jid);
             }
