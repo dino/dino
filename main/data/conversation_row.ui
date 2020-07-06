@@ -110,9 +110,6 @@
                                                             <attribute name="scale" value="0.6"/>
                                                             <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                                         </attributes>
-                                                        <style>
-                                                            <class name="unread-count"/>
-                                                        </style>
                                                     </object>
                                                 </child>
                                             </object>

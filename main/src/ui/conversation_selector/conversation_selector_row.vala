@@ -219,6 +219,14 @@ public class ConversationSelectorRow : ListBoxRow {
             unread_count_label.label = num_unread.to_string();
             unread_count_label.visible = true;
 
+            if (conversation.get_notification_setting(stream_interactor) == Conversation.NotifySetting.ON) {
+                unread_count_label.get_style_context().add_class("unread-count-notify");
+                unread_count_label.get_style_context().remove_class("unread-count");
+            } else {
+                unread_count_label.get_style_context().add_class("unread-count");
+                unread_count_label.get_style_context().remove_class("unread-count-notify");
+            }
+
             name_label.attributes.insert(attr_weight_new(Weight.BOLD));
             time_label.attributes.insert(attr_weight_new(Weight.BOLD));
             nick_label.attributes.insert(attr_weight_new(Weight.BOLD));

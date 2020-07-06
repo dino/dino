@@ -42,12 +42,30 @@ window.dino-main .dino-conversation .message-box:hover {
     background: alpha(@theme_fg_color, 0.04);
 }
 
-window.dino-main .unread-count {
+window.dino-main .unread-count-notify {
     background-color: alpha(@theme_fg_color, 0.8);
     color: @theme_base_color;
     font-family: monospace;
     border-radius: 999em;
     padding: .2em .41em;
+}
+
+window.dino-main .unread-count-notify:backdrop {
+    background-color: alpha(@theme_unfocused_fg_color, 0.8);
+    color: @theme_unfocused_base_color;
+}
+
+window.dino-main .unread-count {
+    background-color: alpha(@theme_fg_color, 0.1);
+    color: @theme_fg_color;
+    font-family: monospace;
+    border-radius: 999em;
+    padding: .2em .41em;
+}
+
+window.dino-main .unread-count:backdrop {
+    background-color: alpha(@theme_unfocused_fg_color, 0.1);
+    color: @theme_unfocused_fg_color;
 }
 
 window.dino-main .dino-sidebar > frame {
