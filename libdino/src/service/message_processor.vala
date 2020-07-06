@@ -341,7 +341,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         message_sent_or_received(message, conversation);
     }
 
-    public async Entities.Message parse_message_stanza(Account account, Xmpp.MessageStanza message) {
+    private async Entities.Message parse_message_stanza(Account account, Xmpp.MessageStanza message) {
         string? body = message.body;
         if (body != null) body = body.strip();
         Entities.Message new_message = new Entities.Message(body);

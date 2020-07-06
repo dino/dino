@@ -95,8 +95,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         // Don't show our own (other devices) typing notification
         if (jid.equals_bare(account.bare_jid)) return;
 
-        Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(jid, account, stanza.type_);
         if (conversation == null) return;
 
         // Don't show our own typing notification in MUCs
@@ -119,8 +118,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     }
 
     private async void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id, MessageStanza message_stanza) {
-        Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, message_stanza);
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(jid, account, message_stanza.type_);
         if (conversation == null) return;
         handle_chat_marker(conversation, jid, marker, stanza_id);
     }

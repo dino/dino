@@ -84,6 +84,17 @@ public class ConversationManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public Conversation? approx_conversation_for_stanza(Jid jid, Account account, string msg_ty) {
+        if (msg_ty == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
+            return get_conversation(jid.bare_jid, account, Conversation.Type.GROUPCHAT);
+        } else if (msg_ty == Xmpp.MessageStanza.TYPE_CHAT && jid.is_full() &&
+                get_conversation(jid.bare_jid, account, Conversation.Type.GROUPCHAT) != null) {
+            var pm = get_conversation(jid, account, Conversation.Type.GROUPCHAT_PM);
+            if (pm != null) return pm;
+        }
+        return get_conversation(jid.bare_jid, account, Conversation.Type.CHAT);
+    }
+
     public Conversation? get_conversation_by_id(int id) {
         foreach (HashMap<Jid, Gee.List<Conversation>> hm in conversations.values) {
             foreach (Gee.List<Conversation> hm2 in hm.values) {
