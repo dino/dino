@@ -89,7 +89,6 @@ public class Register : StreamInteractionModule, Object{
         });
         stream.get_module(Tls.Module.IDENTITY).invalid_certificate.connect((peer_cert, errors) => {
             if (callback != null) {
-
                 ret.error_flags = errors;
                 Idle.add((owned)callback);
             }

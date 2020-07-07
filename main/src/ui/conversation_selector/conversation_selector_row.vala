@@ -54,6 +54,7 @@ public class ConversationSelectorRow : ListBoxRow {
                 stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
                     if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                         update_name_label();
+                        update_read(true); // bubble color might have changed
                     }
                 });
                 stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
@@ -100,7 +101,7 @@ public class ConversationSelectorRow : ListBoxRow {
             stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
         });
         image.set_conversation(stream_interactor, conversation);
-        conversation.notify["read-up-to-item"].connect(update_read);
+        conversation.notify["read-up-to-item"].connect(() => update_read());
 
         update_name_label();
         content_item_received();
@@ -203,9 +204,9 @@ public class ConversationSelectorRow : ListBoxRow {
         }
     }
 
-    protected void update_read() {
+    protected void update_read(bool force_update = false) {
         int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
-        if (num_unread == current_num_unread) return;
+        if (num_unread == current_num_unread && !force_update) return;
         num_unread = current_num_unread;
 
         if (num_unread == 0) {
