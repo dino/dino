@@ -249,7 +249,8 @@ public static bool is_dark_theme(Gtk.Widget widget) {
 private static uint8 is24h = 0;
 public static bool is_24h_format() {
     if (is24h == 0) {
-        string p_format = (new DateTime.now_utc()).format("%p");
+        string p_format = "  "; // Leaving room to be filled by strftime
+        Time.local(0).strftime((char[]) p_format.data, "%p");
         is24h = p_format.strip() == "" ? 1 : -1;
     }
     return is24h == 1;
