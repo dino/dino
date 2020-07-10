@@ -8,9 +8,6 @@ Unicode True
 !define ICON "input/logo.ico"
 !define MUI_COMPONENTSPAGE_NODESC
 
-# Installation types
-InstType "OpenPGP support" IT_PGP
-
 # Modern Interface
 !include "MUI2.nsh"
 !insertmacro MUI_PAGE_LICENSE "input/LICENSE_SHORT"
