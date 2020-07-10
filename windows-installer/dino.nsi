@@ -14,7 +14,6 @@ InstType "OpenPGP support" IT_PGP
 # Modern Interface
 !include "MUI2.nsh"
 !insertmacro MUI_PAGE_LICENSE "input/LICENSE_SHORT"
-!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
 !include "english.nsh"
 !include "german.nsh"
@@ -30,20 +29,9 @@ InstallDir $PROGRAMFILES64\dino
 
 Section 
 
-# Install all files but openpgp.dll
+# Install all files
 SetOutPath $INSTDIR
-File /r input/bin
-File input/LICENSE
-File input/logo.ico
-File input/logo.svg
-File /r input/share
-SetOutPath $INSTDIR\lib
-File /r input/lib/gio
-File /r input/lib/gdk-pixbuf-2.0
-SetOutPath $INSTDIR\lib\dino\plugins
-File input/lib/dino/plugins/http-files.dll
-File input/lib/dino/plugins/omemo.dll
-File input/lib/dino/plugins/win32-fonts.dll
+File /r input/
 
 # define uninstaller name
 WriteUninstaller $INSTDIR\uninstaller.exe
@@ -57,12 +45,6 @@ CreateShortcut "$SMPROGRAMS\Dino\Dino website.lnk" "https://dino.im" "" "$INSTDI
 
 SectionEnd
 
-Section "OpenPGP support"
-SectionInstType ${IT_PGP}
-SetOutPath $INSTDIR/lib/dino/plugins
-File input/lib/dino/plugins/openpgp.dll
-SectionEnd
- 
 # Uninstaller section
 Section "Uninstall"
 
