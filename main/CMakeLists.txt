@@ -19,6 +19,7 @@ set(RESOURCE_LIST
     icons/dino-double-tick-symbolic.svg
     icons/dino-emoticon-symbolic.svg
     icons/dino-qr-code-symbolic.svg
+    icons/dino-rtt-symbolic.svg
     icons/dino-security-high-symbolic.svg
     icons/dino-party-popper-symbolic.svg
     icons/dino-status-away.svg
@@ -63,6 +64,7 @@ set(RESOURCE_LIST
     menu_app.ui
     menu_conversation.ui
     menu_encryption.ui
+    menu_rtt.ui
     message_item_widget_edit_mode.ui
     occupant_list.ui
     occupant_list_item.ui
@@ -126,6 +128,7 @@ SOURCES
     src/ui/chat_input/edit_history.vala
     src/ui/chat_input/encryption_button.vala
     src/ui/chat_input/occupants_tab_completer.vala
+    src/ui/chat_input/rtt_button.vala
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
 
@@ -212,6 +215,7 @@ install(FILES
     data/icons/dino-double-tick-symbolic.svg
     data/icons/dino-qr-code-symbolic.svg
     data/icons/dino-tick-symbolic.svg
+    data/icons/dino-rtt-symbolic.svg
 DESTINATION
     ${ICON_INSTALL_DIR}/hicolor/scalable/status
 )

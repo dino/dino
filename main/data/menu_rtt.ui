@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk+" version="3.16"/>
+    <object class="GtkPopoverMenu" id="menu_rtt">
+        <property name="can_focus">False</property>
+        <child>
+            <object class="GtkBox" id="rtt_main_box">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="margin">10</property>
+                <child>
+                    <object class="GtkBox" id="rtt_box">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="margin">10</property>
+                        <child>
+                            <object class="GtkRadioButton" id="rtt_off_button">
+                                <property name="label" translatable="yes">Off</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                            </object>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                            </packing>
+                        </child>
+                    </object>
+                </child>
+                <child>   
+                    <object class="GtkLabel" id="rtt_button_status">
+                        <property name="xalign">0</property>
+                        <property name="margin_bottom">3</property>
+                        <property name="margin_start">10</property>
+                        <property name="margin_end">10</property>
+                        <property name="visible">False</property>
+                        <attributes>
+                            <attribute name="scale" value="0.8"/>
+                        </attributes>
+                        <style>
+                            <class name="rtt-button-status"/>
+                        </style>
+                    </object>
+                </child>
+            </object>
+            <packing>
+                <property name="submenu">main</property>
+            </packing>
+        </child>
+    </object>
+</interface>
+

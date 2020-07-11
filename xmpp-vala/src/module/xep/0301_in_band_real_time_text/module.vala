@@ -87,7 +87,7 @@ namespace Xmpp.Xep.RealTimeText {
             return erase_text;
         }
 
-        public void send_rtt(XmppStream stream, Jid jid, string message_type, ArrayList<StanzaNode>? action_elements, string sequence, string? event) {
+        public void send_rtt(XmppStream stream, Jid jid, string message_type, string sequence, string? event, ArrayList<StanzaNode>? action_elements = null) {
             MessageStanza message = new MessageStanza() { to=jid, type_=message_type };
             RttStanzaNode rtt_node = new RttStanzaNode(action_elements) { seq=sequence, event=event };
            
@@ -107,6 +107,7 @@ namespace Xmpp.Xep.RealTimeText {
                 string? event = rtt_stanza_node.get_attribute("event", NS_URI);
                 if (event == null) event = EVENT_EDIT;
                 
+                //  handle_event(string event);
                 event_received(from_jid, message, event);
 
                 if (!ignore[from_jid]) {

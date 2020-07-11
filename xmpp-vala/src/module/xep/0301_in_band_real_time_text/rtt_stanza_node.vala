@@ -31,8 +31,12 @@ namespace Xmpp {
     
         public StanzaNode stanza_node;
     
-        public RttStanzaNode(ArrayList<StanzaNode> sub_nodes) {
-            this.stanza_node = new StanzaNode.build("rtt", Xep.RealTimeText.NS_URI, sub_nodes).add_self_xmlns();
+        public RttStanzaNode(ArrayList<StanzaNode>? sub_nodes) {
+            if (sub_nodes != null) {
+                this.stanza_node = new StanzaNode.build("rtt", Xep.RealTimeText.NS_URI, sub_nodes).add_self_xmlns();
+            } else {
+                this.stanza_node = new StanzaNode.build("rtt", Xep.RealTimeText.NS_URI).add_self_xmlns();
+            }
         }
         
     }

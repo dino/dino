@@ -41,6 +41,7 @@ public class ChatInputController : Object {
         chat_text_view_controller.send_text.connect(send_text);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
+        chat_input.rtt_widget.rtt_setting_changed.connect(on_rtt_setting_changed);
 
         chat_input.file_button.clicked.connect(() => file_picker_selected());
 
@@ -62,6 +63,7 @@ public class ChatInputController : Object {
 
         reset_input_field_status();
 
+        chat_input.rtt_widget.set_conversation(conversation);
         chat_input.encryption_widget.set_conversation(conversation);
 
         chat_input.initialize_for_conversation(conversation);
@@ -171,17 +173,30 @@ public class ChatInputController : Object {
         return true;
     }
 
+    private void on_rtt_setting_changed(Conversation.RttSetting rtt_setting) {
+        Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
+        if (stream == null) return;
+        string message_type = conversation.type_ == Conversation.Type.GROUPCHAT ? Xmpp.MessageStanza.TYPE_GROUPCHAT : Xmpp.MessageStanza.TYPE_CHAT;
+        
+        if (rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+            stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).send_rtt(stream, conversation.counterpart, message_type, Xmpp.random_seq().to_string(), Xmpp.Xep.RealTimeText.Module.EVENT_INIT);
+        } else if (rtt_setting == Conversation.RttSetting.OFF) {
+            stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).send_rtt(stream, conversation.counterpart, message_type, Xmpp.random_seq().to_string(), Xmpp.Xep.RealTimeText.Module.EVENT_CANCEL);
+        }
+    }
+
     private void on_text_input_changed() {
+        if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+            Timeout.add(150, () => {
+                bool res = generate_rtt();
+                return res;
+            });  
 
-        Timeout.add(150, () => {
-            bool res = generate_rtt();
-            return res;
-        });  
-
-        Timeout.add(300, () => {
-            bool res = stream_interactor.get_module(RttManager.IDENTITY).schedule_rtt(conversation);
-            return res;
-        });  
+            Timeout.add(300, () => {
+                bool res = stream_interactor.get_module(RttManager.IDENTITY).schedule_rtt(conversation);
+                return res;
+            });  
+        }
 
         if (chat_input.chat_text_view.text_view.buffer.text != "") {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
