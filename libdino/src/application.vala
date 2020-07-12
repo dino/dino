@@ -12,9 +12,11 @@ public interface Application : GLib.Application {
     public abstract SearchPathGenerator? search_path_generator { get; set; }
 
     internal static string print_xmpp;
+    internal static bool print_version;
 
     private const OptionEntry[] options = {
         { "print-xmpp", 0, 0, OptionArg.STRING, ref print_xmpp, "Print XMPP stanzas identified by DESC to stderr", "DESC" },
+        { "version", 'v', 0, OptionArg.NONE, ref print_version, "Print version number", null },
         { null }
     };
 
@@ -50,6 +52,11 @@ public interface Application : GLib.Application {
         create_actions();
 
         startup.connect(() => {
+            if (print_version) {
+                stdout.printf("Dino %s\n", Dino.VERSION);
+                Process.exit(0);
+            }
+
             stream_interactor.connection_manager.log_options = print_xmpp;
             Idle.add(() => {
                 restore();
