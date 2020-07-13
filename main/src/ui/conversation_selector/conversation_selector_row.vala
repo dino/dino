@@ -272,7 +272,7 @@ public class ConversationSelectorRow : ListBoxRow {
             if (show == null) continue;
             Xep.ServiceDiscovery.Identity? identity = stream_interactor.get_module(EntityInfo.IDENTITY).get_identity(conversation.account, full_jid);
 
-            Image image = new Image() { hexpand=false, valign=Align.START, visible=true };
+            Image image = new Image() { hexpand=false, valign=Align.CENTER, visible=true };
             if (identity != null && (identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_PHONE || identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_TABLET)) {
                 image.set_from_icon_name("dino-device-phone-symbolic", IconSize.SMALL_TOOLBAR);
             } else {
