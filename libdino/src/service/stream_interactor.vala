@@ -67,7 +67,10 @@ public class StreamInteractor : Object {
 
     private void on_stream_opened(Account account, XmppStream stream) {
         stream.stream_negotiated.connect( (stream) => {
-            stream_negotiated(account, stream);
+            var flag = stream.get_flag(Xep.StreamManagement.Flag.IDENTITY);
+            if (flag == null || flag.resumed == false) {
+                stream_negotiated(account, stream);
+            }
         });
     }
 }

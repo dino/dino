@@ -15,6 +15,7 @@ public class Message : Object {
         ACKNOWLEDGED,
         UNSENT,
         WONTSEND,
+        SENDING,
         SENT
     }
 

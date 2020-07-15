@@ -80,6 +80,7 @@ public class MessageItemWidget : SizeRequestBin {
 
     StreamInteractor stream_interactor;
     public ContentItem content_item;
+    public Message.Marked marked { get; set; }
 
     Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, vexpand=true, visible=true };
     MessageItemEditMode? edit_mode = null;
@@ -179,10 +180,28 @@ public class MessageItemWidget : SizeRequestBin {
             markup_text = @"<span size=\'$size_str\'>" + markup_text + "</span>";
         }
 
+        string gray_color = Util.is_dark_theme(label) ? "#808080" : "#909090";
+
         if (message.edit_to != null) {
-            string color = Util.is_dark_theme(label) ? "#808080" : "#909090";
-            markup_text += " <span size='small' color='%s'>(%s)</span>".printf(color, _("edited"));
+            markup_text += " <span size='small' color='%s'>(%s)</span>".printf(gray_color, _("edited"));
             theme_dependent = true;
+        }
+
+        if (message.direction == Message.DIRECTION_SENT && (message.marked == Message.Marked.SENDING || message.marked == Message.Marked.UNSENT)) {
+            if (message.local_time.compare(new DateTime.now_utc().add_seconds(-10)) < 0) {
+                markup_text += " <span size='small' color='%s'>%s</span>".printf(gray_color, "pending…");
+
+                message.bind_property("marked", this, "marked");
+                this.notify["marked"].connect(() => {
+                    update_label();
+                });
+            } else {
+                int time_diff = (- (int) message.local_time.difference(new DateTime.now_utc()) / 1000);
+                Timeout.add(10000 - time_diff, () => {
+                   update_label();
+                    return false;
+                });
+            }
         }
 
         if (theme_dependent && realize_id == -1) {

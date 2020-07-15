@@ -410,7 +410,7 @@ public class StartTlsConnectionProvider : ConnectionProvider {
 }
 
 public interface WriteNodeFunc : Object {
-    public abstract async void write_stanza(XmppStream stream, StanzaNode node) throws IOError;
+    public abstract async void write_stanza(XmppStream stream, StanzaNode node) throws IOStreamError;
 }
 
 }

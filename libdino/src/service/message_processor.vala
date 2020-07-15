@@ -45,9 +45,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         stream_interactor.account_added.connect(on_account_added);
 
-        stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
-            if (state == ConnectionManager.ConnectionState.CONNECTED) send_unsent_chat_messages(account);
-        });
+        stream_interactor.stream_negotiated.connect(send_unsent_chat_messages);
 
         stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
             debug("MAM: [%s] Reset catchup_id", account.bare_jid.to_string());
@@ -67,6 +65,14 @@ public class MessageProcessor : StreamInteractionModule, Object {
         send_xmpp_message(message, conversation);
         message_sent(message, conversation);
         return message;
+    }
+
+    private void convert_sending_to_unsent_msgs(Account account) {
+        db.message.update()
+                .with(db.message.account_id, "=", account.id)
+                .with(db.message.marked, "=", Message.Marked.SENDING)
+                .set(db.message.marked, Message.Marked.UNSENT)
+                .perform();
     }
 
     private void send_unsent_chat_messages(Account account) {
@@ -91,7 +97,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 Message message = new Message.from_row(db, row);
                 Conversation? msg_conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart, account, Util.get_conversation_type_for_message(message));
                 if (msg_conv != null) {
-                    send_xmpp_message(message, msg_conv, true);
+                    Message cached_msg = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(message.id, msg_conv);
+                    send_xmpp_message(cached_msg ?? message, msg_conv, true);
                 }
             } catch (InvalidJidError e) {
                 warning("Ignoring message with invalid Jid: %s", e.message);
@@ -132,6 +139,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 hitted_range[query_id] = -2;
             }
         });
+
+        convert_sending_to_unsent_msgs(account);
     }
 
     private async void do_mam_catchup(Account account) {
@@ -601,7 +610,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     public void send_xmpp_message(Entities.Message message, Conversation conversation, bool delayed = false) {
         XmppStream stream = stream_interactor.get_stream(conversation.account);
-        message.marked = Entities.Message.Marked.NONE;
+        message.marked = Entities.Message.Marked.SENDING;
 
         if (stream == null) {
             message.marked = Entities.Message.Marked.UNSENT;
@@ -638,7 +647,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, new_message, (_, res) => {
             try {
                 stream.get_module(MessageModule.IDENTITY).send_message.end(res);
-                if (message.marked == Message.Marked.NONE/* && (yield stream.get_module(Xep.ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, conversation.account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI))*/) {
+                if (message.marked == Message.Marked.SENDING) {
                     message.marked = Message.Marked.SENT;
                 }
 
@@ -649,6 +658,13 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
             } catch (IOStreamError e) {
                 message.marked = Entities.Message.Marked.UNSENT;
+
+                if (stream != stream_interactor.get_stream(conversation.account)) {
+                    Timeout.add_seconds(3, () => {
+                        send_xmpp_message(message, conversation, true);
+                        return false;
+                    });
+                }
             }
         });
     }

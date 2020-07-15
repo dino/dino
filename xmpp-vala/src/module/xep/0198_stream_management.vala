@@ -25,14 +25,18 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
         }
     }
 
-    public async void write_stanza(XmppStream stream, StanzaNode node) throws IOError {
+    public async void write_stanza(XmppStream stream, StanzaNode node) throws IOStreamError {
         if (stream.has_flag(Flag.IDENTITY)) {
             var promise = new Promise<IOError?>();
 
             node_queue.add(new QueueItem(node, promise));
             check_queue(stream);
 
-            yield promise.future.wait_async();
+            try {
+                yield promise.future.wait_async();
+            } catch (FutureError e) {
+                throw new IOStreamError.WRITE("Future returned error %i".printf(e.code));
+            }
         } else {
             yield write_node(stream, node);
         }
@@ -141,10 +145,11 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
                     flags = stream.flags;
                     stream.write_obj = this;
                 } else if (node.name == "resumed") {
+                    stream.get_flag(Flag.IDENTITY).resumed = true;
+
                     foreach (XmppStreamFlag flag in flags) {
                         stream.add_flag(flag);
                     }
-                    stream.negotiation_complete = true;
 
                     h_outbound = int.parse(node.get_attribute("h", NS_URI));
                     handle_incoming_h(stream, h_outbound);
@@ -158,7 +163,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
                     stream.received_features_node(stream);
                     session_id = null;
                     foreach (var id in in_flight_stanzas.keys) {
-                        in_flight_stanzas[id].promise.set_exception(new IOError.FAILED("bla"));
+                        in_flight_stanzas[id].promise.set_exception(new IOStreamError.WRITE("Stanza not acked and session not resumed"));
                     }
                     in_flight_stanzas.clear();
                     check_queue(stream);
@@ -200,6 +205,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
 public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "stream_management");
     public bool finished = false;
+    public bool resumed = false;
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
