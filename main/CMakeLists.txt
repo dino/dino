@@ -19,7 +19,7 @@ set(RESOURCE_LIST
     icons/dino-double-tick-symbolic.svg
     icons/dino-emoticon-symbolic.svg
     icons/dino-qr-code-symbolic.svg
-    icons/dino-rtt-symbolic.svg
+    icons/dino-rtt-active-symbolic.svg
     icons/dino-security-high-symbolic.svg
     icons/dino-party-popper-symbolic.svg
     icons/dino-status-away.svg
@@ -215,7 +215,7 @@ install(FILES
     data/icons/dino-double-tick-symbolic.svg
     data/icons/dino-qr-code-symbolic.svg
     data/icons/dino-tick-symbolic.svg
-    data/icons/dino-rtt-symbolic.svg
+    data/icons/dino-rtt-active-symbolic.svg
 DESTINATION
     ${ICON_INSTALL_DIR}/hicolor/scalable/status
 )

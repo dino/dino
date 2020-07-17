@@ -41,7 +41,9 @@ public class ChatInputController : Object {
         chat_text_view_controller.send_text.connect(send_text);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
-        chat_input.rtt_widget.rtt_setting_changed.connect(on_rtt_setting_changed);
+        chat_input.rtt_widget.rtt_setting_changed.connect((rtt_setting) => {
+            stream_interactor.get_module(RttManager.IDENTITY).on_rtt_setting_changed(conversation, rtt_setting);
+        });
 
         chat_input.file_button.clicked.connect(() => file_picker_selected());
 
@@ -49,13 +51,22 @@ public class ChatInputController : Object {
         stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect(update_moderated_input_status);
 
         status_description_label.activate_link.connect((uri) => {
-            if (uri == OPEN_CONVERSATION_DETAILS_URI){
+            if (uri == OPEN_CONVERSATION_DETAILS_URI) {
                 ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
                 contact_details_dialog.set_transient_for((Gtk.Window) chat_input.get_toplevel());
                 contact_details_dialog.present();
             }
             return true;
         });
+
+        Timeout.add_seconds(10, () => {
+            string current_message = chat_input.chat_text_view.text_view.buffer.text;
+            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL && current_message != "") {
+                stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
+            }
+            return true;
+        });
+
     }
 
     public void set_conversation(Conversation conversation) {
@@ -170,19 +181,15 @@ public class ChatInputController : Object {
 
         stream_interactor.get_module(RttManager.IDENTITY).message_compare(conversation, previous_message, current_message);
         stream_interactor.get_module(RttManager.IDENTITY).save_previous_message(conversation, current_message);
-        return true;
-    }
 
-    private void on_rtt_setting_changed(Conversation.RttSetting rtt_setting) {
-        Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
-        if (stream == null) return;
-        string message_type = conversation.type_ == Conversation.Type.GROUPCHAT ? Xmpp.MessageStanza.TYPE_GROUPCHAT : Xmpp.MessageStanza.TYPE_CHAT;
-        
-        if (rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
-            stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).send_rtt(stream, conversation.counterpart, message_type, Xmpp.random_seq().to_string(), Xmpp.Xep.RealTimeText.Module.EVENT_INIT);
-        } else if (rtt_setting == Conversation.RttSetting.OFF) {
-            stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).send_rtt(stream, conversation.counterpart, message_type, Xmpp.random_seq().to_string(), Xmpp.Xep.RealTimeText.Module.EVENT_CANCEL);
+        if(current_message == "") {
+            stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xmpp.Xep.RealTimeText.Module.EVENT_NEW);
+            //  return false;
         }
+
+        // TODO(Wolfie) if event is set to new here in this method then rtt end with event new (with all text erased in a.e.), insted of starting with new. In practice everything seems to be  working fine here.
+
+        return true;
     }
 
     private void on_text_input_changed() {
@@ -190,19 +197,14 @@ public class ChatInputController : Object {
             Timeout.add(150, () => {
                 bool res = generate_rtt();
                 return res;
-            });  
-
-            Timeout.add(300, () => {
-                bool res = stream_interactor.get_module(RttManager.IDENTITY).schedule_rtt(conversation);
-                return res;
-            });  
+            });
         }
 
         if (chat_input.chat_text_view.text_view.buffer.text != "") {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
         } else {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation); 
-            stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xmpp.Xep.RealTimeText.Module.EVENT_NEW); //TODO(Wolfie) probably send "reset" event with empty text + empty queue before setting event to RealTimeText.Module.EVENT_NEW
+            //  stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xmpp.Xep.RealTimeText.Module.EVENT_NEW); //TODO(Wolfie) probably send "reset" event with empty text + empty queue before setting event to RealTimeText.Module.EVENT_NEW
             //TODO(Wolfie) bug: when switching conversation this sets older conversation to new even though input of older conv is not empty.
         }
     }

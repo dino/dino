@@ -20,7 +20,7 @@ public class RttButton : MenuButton {
         this.stream_interactor = stream_interactor;
 
         use_popover = true;
-        image = new Image.from_icon_name("rtt-symbolic", IconSize.BUTTON);
+        image = new Image.from_icon_name("dino-rtt-active-symbolic", IconSize.BUTTON);
         get_style_context().add_class("flat");
 
         Builder builder = new Builder.from_resource("/im/dino/Dino/menu_rtt.ui");
@@ -40,13 +40,13 @@ public class RttButton : MenuButton {
 
         Application app = GLib.Application.get_default() as Application;
     
-        RadioButton btn_bidirectional = new RadioButton.with_label(rtt_off_button.get_group(), "Send and Receive");
+        RadioButton btn_bidirectional = new RadioButton.with_label(rtt_off_button.get_group(), _("Send and Receive"));
         rtt_radios[btn_bidirectional] = Conversation.RttSetting.BIDIRECTIONAL;
         btn_bidirectional.toggled.connect(rtt_button_toggled);
         btn_bidirectional.visible = true;
         rtt_box.pack_end(btn_bidirectional, false);
 
-        RadioButton btn_receive = new RadioButton.with_label(rtt_off_button.get_group(), "Receive only"); 
+        RadioButton btn_receive = new RadioButton.with_label(rtt_off_button.get_group(), _("Receive only")); 
         rtt_radios[btn_receive] = Conversation.RttSetting.RECEIVE;
         btn_receive.toggled.connect(rtt_button_toggled);
         btn_receive.visible = true;
@@ -91,7 +91,7 @@ public class RttButton : MenuButton {
     }
 
     private void update_rtt_menu_icon() {
-        set_icon(conversation.rtt_setting == Conversation.RttSetting.OFF ? "rtt-symbolic" : "rtt-symbolic");
+        set_icon(conversation.rtt_setting == Conversation.RttSetting.OFF ? "dino-rtt-active-symbolic" : "dino-rtt-active-symbolic");
     }
 
     private void update_visibility() {

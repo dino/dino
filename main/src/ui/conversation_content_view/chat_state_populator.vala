@@ -21,12 +21,12 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.Conversati
 
         stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).received_state.connect((conversation, state) => {
             if (current_conversation != null && current_conversation.equals(conversation)) {
-                update_chat_state();
+                update_chat_state(current_conversation);
             }
         });
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect((message, conversation) => {
             if (conversation.equals(current_conversation)) {
-                update_chat_state();
+                update_chat_state(current_conversation);
             }
         });
     }
@@ -36,14 +36,14 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.Conversati
         this.item_collection = item_collection;
         this.meta_item = null;
 
-        update_chat_state();
+        update_chat_state(current_conversation);
     }
 
     public void close(Conversation conversation) { }
 
     public void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 
-    private void update_chat_state() {
+    private void update_chat_state(Conversation conversation) {
         Gee.List<Jid>? typing_jids = stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).get_typing_jids(current_conversation);
 
         if (meta_item != null && typing_jids == null) {
@@ -55,6 +55,7 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.Conversati
             meta_item.set_new(typing_jids);
         } else if (typing_jids != null) {
             // New state (started typing)
+            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) return;
             meta_item = new MetaChatStateItem(stream_interactor, current_conversation, typing_jids);
             item_collection.insert_item(meta_item);
         }

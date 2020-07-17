@@ -12,6 +12,7 @@ namespace Dino.Ui.ConversationSummary {
 
         private StreamInteractor? stream_interactor;
         private Conversation? current_conversation;
+        private ChatInputController chat_input_controller;
         private Plugins.ConversationItemCollection? item_collection;
 
         private HashMap<Jid, MetaRttItem> meta_items;
@@ -41,7 +42,14 @@ namespace Dino.Ui.ConversationSummary {
                 delete_rtt(jid);
             });
 
-           
+            stream_interactor.get_module(RttManager.IDENTITY).rtt_setting_changed.connect((conversation) => {
+                if (conversation.rtt_setting == Conversation.RttSetting.OFF) {
+                    foreach(Jid jid in meta_items.keys) {
+                        item_collection.remove_item(meta_items[jid]);
+                    }
+                    meta_items = new HashMap<Jid, MetaRttItem>(Jid.hash_func, Jid.equals_func); 
+                }
+            });
         }
 
         public void init(Conversation conversation, Plugins.ConversationItemCollection item_collection, Plugins.WidgetType type) {
@@ -55,20 +63,34 @@ namespace Dino.Ui.ConversationSummary {
 
         public void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 
+        public void generate_new(Jid jid, string rtt_message) {
+            meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
+            item_collection.insert_item(meta_items[jid]);
+            
+            Timeout.add_seconds(5, () => {
+                bool is_stale = stream_interactor.get_module(RttManager.IDENTITY).check_if_stale(current_conversation, jid, meta_items[jid].rtt_message);
+                if (is_stale) {
+                    delete_rtt(jid);
+                    return false;
+                }
+                return true;
+            });
+        }
+
         private void init_rtt() {
            HashMap<Jid, string>? active_rtt = stream_interactor.get_module(RttManager.IDENTITY).get_active_rtt(current_conversation);
            if (active_rtt == null) return;
 
            foreach(Jid jid in active_rtt.keys) {
-                meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, active_rtt[jid]);
-                item_collection.insert_item(meta_items[jid]);
+                if (active_rtt[jid] != "") { 
+                    generate_new(jid, active_rtt[jid]);
+                }
             }
         }
 
         private void update_rtt(Jid jid, string rtt_message) {
             if (!meta_items.has_key(jid)) {
-                meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
-                item_collection.insert_item(meta_items[jid]);
+                generate_new(jid, rtt_message);  
             } else if (meta_items.has_key(jid) && rtt_message != "") {
                 meta_items[jid].set_new(rtt_message);
             } 

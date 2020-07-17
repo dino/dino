@@ -49,6 +49,7 @@ namespace Xmpp.Xep.RealTimeText {
 
         public signal void rtt_sent(Jid jid, MessageStanza message);
         public signal void rtt_received(Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements);
+        public signal void reset_rtt_received(Jid jid, MessageStanza stanza, StanzaNode text);
         public signal void event_received(Jid jid, MessageStanza stanza, string event);
 
         public override void attach(XmppStream stream) {
@@ -65,7 +66,7 @@ namespace Xmpp.Xep.RealTimeText {
     
         public override string get_id() { return IDENTITY.id; }
 
-        public StanzaNode generate_t_element(XmppStream stream, string text, string? position) {
+        public StanzaNode generate_t_element(XmppStream stream, string text, string? position = null) {
            StanzaNode insert_text = new StanzaNode.build(ACTION_ELEMENT_INSERT, NS_URI);
            if (position != null) {
                insert_text.put_attribute(ATTRIBUTE_POSITION, position, NS_URI);
@@ -106,6 +107,8 @@ namespace Xmpp.Xep.RealTimeText {
                 // event resolution
                 string? event = rtt_stanza_node.get_attribute("event", NS_URI);
                 if (event == null) event = EVENT_EDIT;
+
+                if (event == EVENT_RESET || event == EVENT_NEW) ignore[from_jid] = false;
                 
                 //  handle_event(string event);
                 event_received(from_jid, message, event);
@@ -118,8 +121,12 @@ namespace Xmpp.Xep.RealTimeText {
                     previous_sequence[from_jid] = received_sequence;
                 
                     //get action element subnodes
-                    if (is_sequence) {
-                        rtt_received(from_jid, message, rtt_stanza_node.get_all_subnodes());
+                    if (is_sequence) { 
+                        if (event!=EVENT_RESET) {
+                            rtt_received(from_jid, message, rtt_stanza_node.get_all_subnodes());
+                        } else {
+                            reset_rtt_received(from_jid, message, rtt_stanza_node.get_subnode("t", NS_URI));
+                        } 
                     } else {
                         ignore[from_jid] = true;
                         //TODO(Wolfie) handle loss of sync  https://xmpp.org/extensions/xep-0301.html#recovery_from_loss_of_sync
