@@ -1,6 +1,8 @@
 namespace Xmpp {
 
 public class StanzaWriter {
+    public signal void cancel();
+
     private OutputStream output;
 
     private Queue<SourceFuncWrapper> queue = new Queue<SourceFuncWrapper>();
@@ -43,6 +45,7 @@ public class StanzaWriter {
         try {
             yield output.write_all_async(data, 0, null, null);
         } catch (GLib.Error e) {
+            cancel();
             throw new XmlError.IO(@"IOError in GLib: $(e.message)");
         } finally {
             SourceFuncWrapper? sfw = queue.pop_head();

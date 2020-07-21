@@ -97,6 +97,8 @@ public class XmppStream {
         this.stream = stream;
         reader = new StanzaReader.for_stream(stream.input_stream);
         writer = new StanzaWriter.for_stream(stream.output_stream);
+
+        writer.cancel.connect(reader.cancel);
         require_setup();
     }
 
@@ -123,7 +125,9 @@ public class XmppStream {
     [Version (deprecated = true, deprecated_since = "0.1", replacement = "write_async")]
     public void write(StanzaNode node) {
         write_async.begin(node, (obj, res) => {
-            write_async.end(res);
+            try {
+                write_async.end(res);
+            } catch (Error e) { }
         });
     }
 
