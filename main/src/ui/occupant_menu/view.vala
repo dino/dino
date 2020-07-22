@@ -11,7 +11,7 @@ public class View : Popover {
     private Conversation conversation;
 
     private Stack stack = new Stack() { vhomogeneous=false, visible=true };
-    private List list;
+    private List? list = null;
     private ListBox invite_list;
     private Box? jid_menu = null;
 
@@ -22,8 +22,19 @@ public class View : Popover {
         this.conversation = conversation;
 
         Box list_box = new Box(Orientation.VERTICAL, 1) { visible=true };
-        list = new List(stream_interactor, conversation) { visible=true };
-        list_box.add(list);
+
+        this.show.connect(() => {
+            if (list == null) {
+                list = new List(stream_interactor, conversation) { visible=true };
+                list_box.add(list);
+                list_box.reorder_child(list, 0);
+
+                list.list_box.row_activated.connect((row) => {
+                    ListRow list_row = row as ListRow;
+                    show_menu(list_row.jid, list_row.name_label.label);
+                });
+            }
+        });
 
         invite_list = new ListBox() { visible=true };
         invite_list.add(new ListRow.label("+", _("Invite")) {visible=true});
@@ -46,23 +57,18 @@ public class View : Popover {
         add(stack);
         stack.visible_child_name = "list";
 
-        list.list_box.row_activated.connect((row) => {
-            ListRow list_row = row as ListRow;
-            show_menu(list_row.jid, list_row.name_label.label);
-        });
-
         hide.connect(reset);
     }
 
     public void reset() {
         stack.transition_type = StackTransitionType.NONE;
         stack.visible_child_name = "list";
-        list.list_box.unselect_all();
+        if (list != null) list.list_box.unselect_all();
         invite_list.unselect_all();
     }
 
     private void show_list() {
-        list.list_box.unselect_all();
+        if (list != null) list.list_box.unselect_all();
         stack.transition_type = StackTransitionType.SLIDE_RIGHT;
         stack.visible_child_name = "list";
     }
