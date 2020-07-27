@@ -11,9 +11,12 @@ namespace Dino.Ui.ConversationSummary {
         public string id { get { return "real_time_text"; } }
 
         private StreamInteractor? stream_interactor;
-        private Conversation? current_conversation;
+        public Conversation? current_conversation;
         private ChatInputController chat_input_controller;
         private Plugins.ConversationItemCollection? item_collection;
+        private Timer stale_timer;
+        private ulong microseconds;
+	    private double seconds;
 
         private HashMap<Jid, MetaRttItem> meta_items;
 
@@ -63,12 +66,17 @@ namespace Dino.Ui.ConversationSummary {
 
         public void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 
-        public void generate_new(Jid jid, string rtt_message) {
+        public void generate_new(Conversation conversation, Jid jid, string rtt_message) {
             meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
             item_collection.insert_item(meta_items[jid]);
+            stale_timer = new Timer();
             
             Timeout.add_seconds(5, () => {
-                bool is_stale = stream_interactor.get_module(RttManager.IDENTITY).check_if_stale(current_conversation, jid, meta_items[jid].rtt_message);
+                if (current_conversation == null || current_conversation != conversation || !meta_items.has_key(jid)) return false;
+                debug(current_conversation.counterpart.to_string());
+
+                seconds = stale_timer.elapsed (out microseconds);
+                bool is_stale = seconds > 5.0 ? true : false;
                 if (is_stale) {
                     delete_rtt(jid);
                     return false;
@@ -83,17 +91,19 @@ namespace Dino.Ui.ConversationSummary {
 
            foreach(Jid jid in active_rtt.keys) {
                 if (active_rtt[jid] != "") { 
-                    generate_new(jid, active_rtt[jid]);
+                    generate_new(current_conversation, jid, active_rtt[jid]);
                 }
             }
         }
 
         private void update_rtt(Jid jid, string rtt_message) {
             if (!meta_items.has_key(jid)) {
-                generate_new(jid, rtt_message);  
+                generate_new(current_conversation, jid, rtt_message);  
             } else if (meta_items.has_key(jid) && rtt_message != "") {
                 meta_items[jid].set_new(rtt_message);
-            } 
+            }
+            
+            stale_timer.reset();
             
             if (meta_items.has_key(jid) && rtt_message.char_count() == 0) {
                 delete_rtt(jid);
@@ -113,37 +123,24 @@ namespace Dino.Ui.ConversationSummary {
 
         private StreamInteractor stream_interactor;
         private Conversation conversation;
-        public Jid jid;
         public string rtt_message;
         private Label label;
-        private Label name_label;
-        private AvatarImage image;
 
         public MetaRttItem(StreamInteractor stream_interactor, Conversation conversation, Jid jid, string rtt_message) {
             this.stream_interactor = stream_interactor;
             this.conversation = conversation;
             this.jid = jid;
             this.rtt_message = rtt_message;
+            
+            this.can_merge = true;
+            this.requires_avatar = true;
+            this.requires_header = true;
         }
 
         public override Object? get_widget(Plugins.WidgetType widget_type) {
             label = new Label("") { xalign=0, vexpand=true, visible=true, wrap=true };
-            label.get_style_context().add_class("dim-label");
-
-            name_label = new Label("") { xalign=0, vexpand=true, visible=true, use_markup=true };
-            
-            image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true };
-
-            Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
-            Box content_box = new Box(Orientation.VERTICAL, 0) { visible=true };
-
-            content_box.add(name_label);
-            content_box.add(label);
-            image_content_box.add(image);
-            image_content_box.add(content_box);
-
             update();
-            return image_content_box;
+            return label;
         }
 
         public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
@@ -154,18 +151,8 @@ namespace Dino.Ui.ConversationSummary {
         }
 
         private void update() {
-            if (image == null || label == null) return;
-
-            image.set_conversation_participant(stream_interactor, conversation, jid);
-
-            string display_name = Markup.escape_text(Util.get_participant_display_name(stream_interactor, conversation, jid));
-            string color = Util.get_name_hex_color(stream_interactor, conversation.account, jid, Util.is_dark_theme(name_label));
-            name_label.label = @"<span foreground=\"#$color\">$display_name</span>";
-
             string new_text = "";
-
             new_text = rtt_message;
-
             label.label = new_text;
         }
     }

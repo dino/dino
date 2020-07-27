@@ -24,6 +24,9 @@ public class ChatInputController : Object {
     private Plugins.InputFieldStatus input_field_status;
     private ChatTextViewController chat_text_view_controller;
 
+    public Timer? wait_interval_timer = null;
+    public ulong microsec;
+
     public ChatInputController(ChatInput.View chat_input, StreamInteractor stream_interactor) {
         this.chat_input = chat_input;
         this.status_description_label = chat_input.chat_input_status;
@@ -61,8 +64,10 @@ public class ChatInputController : Object {
 
         Timeout.add_seconds(10, () => {
             string current_message = chat_input.chat_text_view.text_view.buffer.text;
-            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL && current_message != "") {
+            string previous_message = stream_interactor.get_module(RttManager.IDENTITY).get_previous_message(conversation);
+            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL && current_message != "" && previous_message!=current_message) {
                 stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
+                stream_interactor.get_module(RttManager.IDENTITY).save_previous_message(conversation, current_message);
             }
             return true;
         });
@@ -173,31 +178,19 @@ public class ChatInputController : Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
     }
 
-    private bool generate_rtt() {
-        string current_message = chat_input.chat_text_view.text_view.buffer.text;
-        string previous_message = stream_interactor.get_module(RttManager.IDENTITY).get_previous_message(conversation);
-
-        if (current_message == previous_message) return false;
-
-        stream_interactor.get_module(RttManager.IDENTITY).message_compare(conversation, previous_message, current_message);
-        stream_interactor.get_module(RttManager.IDENTITY).save_previous_message(conversation, current_message);
-
-        if(current_message == "") {
-            stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xmpp.Xep.RealTimeText.Module.EVENT_NEW);
-            //  return false;
-        }
-
-        // TODO(Wolfie) if event is set to new here in this method then rtt end with event new (with all text erased in a.e.), insted of starting with new. In practice everything seems to be  working fine here.
-
-        return true;
-    }
-
     private void on_text_input_changed() {
         if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
-            Timeout.add(150, () => {
-                bool res = generate_rtt();
-                return res;
-            });
+            
+            if (wait_interval_timer != null) {
+                wait_interval_timer.elapsed(out microsec);
+                ulong millisec = microsec / 1000;
+                if (millisec < 700) stream_interactor.get_module(RttManager.IDENTITY).generate_wait(conversation, millisec.to_string());
+            }
+
+            wait_interval_timer = new Timer();
+
+            string current_message = chat_input.chat_text_view.text_view.buffer.text;
+            bool res = stream_interactor.get_module(RttManager.IDENTITY).generate_rtt(conversation, current_message);
         }
 
         if (chat_input.chat_text_view.text_view.buffer.text != "") {
@@ -205,7 +198,6 @@ public class ChatInputController : Object {
         } else {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation); 
             //  stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xmpp.Xep.RealTimeText.Module.EVENT_NEW); //TODO(Wolfie) probably send "reset" event with empty text + empty queue before setting event to RealTimeText.Module.EVENT_NEW
-            //TODO(Wolfie) bug: when switching conversation this sets older conversation to new even though input of older conv is not empty.
         }
     }
 

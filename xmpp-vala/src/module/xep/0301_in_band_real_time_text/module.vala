@@ -88,6 +88,13 @@ namespace Xmpp.Xep.RealTimeText {
             return erase_text;
         }
 
+        public StanzaNode generate_w_element(XmppStream stream, string? wait_interval) {
+            StanzaNode wait_action_element = new StanzaNode.build(ACTION_ELEMENT_WAIT, NS_URI);
+            wait_action_element.put_attribute(ATTRIBUTE_WAIT_INTERVAL, wait_interval, NS_URI);
+
+            return wait_action_element;
+        }
+
         public void send_rtt(XmppStream stream, Jid jid, string message_type, string sequence, string? event, ArrayList<StanzaNode>? action_elements = null) {
             MessageStanza message = new MessageStanza() { to=jid, type_=message_type };
             RttStanzaNode rtt_node = new RttStanzaNode(action_elements) { seq=sequence, event=event };
@@ -122,9 +129,9 @@ namespace Xmpp.Xep.RealTimeText {
                 
                     //get action element subnodes
                     if (is_sequence) { 
-                        if (event!=EVENT_RESET) {
+                        if (event==EVENT_NEW || event==EVENT_EDIT) {
                             rtt_received(from_jid, message, rtt_stanza_node.get_all_subnodes());
-                        } else {
+                        } else if (event==EVENT_RESET) {
                             reset_rtt_received(from_jid, message, rtt_stanza_node.get_subnode("t", NS_URI));
                         } 
                     } else {

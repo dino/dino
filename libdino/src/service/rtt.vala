@@ -69,6 +69,14 @@ namespace Dino {
             }
         }
 
+        public void generate_wait(Conversation conversation, string wait_interval) {
+            XmppStream? stream = stream_interactor.get_stream(conversation.account);
+            if (stream != null) {
+                StanzaNode wait_action_element = stream.get_module(Xep.RealTimeText.Module.IDENTITY).generate_w_element(stream, wait_interval);
+                set_action_element(conversation, wait_action_element);  
+            }       
+        }
+
         private void set_action_element(Conversation conversation, StanzaNode ae) {
             if (action_elements_sent.has_key(conversation)) {
                 action_elements_sent[conversation].offer(ae);
@@ -76,7 +84,7 @@ namespace Dino {
                 action_elements_sent[conversation] = new Gee.ArrayQueue<StanzaNode>();
                 action_elements_sent[conversation].offer(ae);
 
-                Timeout.add(300, () => {
+                Timeout.add(700, () => {
                     bool res = schedule_rtt(conversation);
                     return res;
                 });
@@ -109,11 +117,22 @@ namespace Dino {
             event[conversation] = event_;
         }
 
-        public async void set_received_action_element(Account account, Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements) {
+        public async void on_rtt_received(Account account, Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements) {
             Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
             if (conversation == null) return;
 
+            if (!received_action_elements.has_key(conversation) || !received_action_elements[conversation].has_key(jid) || received_action_elements[conversation][jid].is_empty) {
+                set_received_action_element(conversation, jid, action_elements);
+
+                //create Idle for schedule_receive
+                create_idle(account, jid, stanza);
+            } else {
+                set_received_action_element(conversation, jid, action_elements);
+            }
+        }
+
+        private void set_received_action_element(Conversation conversation, Jid jid, Gee.List<StanzaNode> action_elements) {    
             if (received_action_elements.has_key(conversation)) {
                 if (received_action_elements[conversation].has_key(jid)) {
                     foreach(StanzaNode ae in action_elements) {
@@ -191,6 +210,25 @@ namespace Dino {
             rtt_setting_changed(conversation);
         }
 
+        public bool generate_rtt(Conversation conversation, string current_message) {
+            // This method is called in a Timeout, the returned bool tells if the Timeout should be continued or not.
+
+            string previous_message = get_previous_message(conversation);
+    
+            if (current_message == previous_message) return false;
+    
+            message_compare(conversation, previous_message, current_message);
+            save_previous_message(conversation, current_message);
+    
+            if(previous_message == "") {
+                set_event(conversation, Xmpp.Xep.RealTimeText.Module.EVENT_NEW);
+                return false;
+            }
+
+            return true;
+        }
+    
+
         public bool schedule_rtt(Conversation conversation) {
             XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) return true;
@@ -220,7 +258,15 @@ namespace Dino {
             return false;
         }
 
-        public bool schedule_receiving(Account account, Jid jid, MessageStanza message_stanza) {
+        public async void wait_nap (uint interval, int priority = GLib.Priority.DEFAULT) {
+            Timeout.add(interval, () => {
+                wait_nap.callback ();
+                return false;
+              }, priority);
+            yield;
+          }
+
+        public async bool schedule_receiving(Account account, Jid jid, MessageStanza message_stanza) {
             Conversation.Type type = message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? Conversation.Type.GROUPCHAT : Conversation.Type.CHAT;
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid.bare_jid, account, type);
             if (conversation==null) return false;
@@ -260,14 +306,21 @@ namespace Dino {
                     rtt_message.erase(position_, length_);
                 }
 
+                //resolving for event 'wait'
+                else if (action_element.name == RealTimeText.Module.ACTION_ELEMENT_WAIT) {
+                    int? wait_interval = int.parse(action_element.get_attribute(RealTimeText.Module.ATTRIBUTE_WAIT_INTERVAL, RealTimeText.NS_URI));
+                    if (wait_interval == null) wait_interval = 0;
+                    
+                    yield wait_nap (wait_interval);
+                    return true;
+                }
+
                 //setting the rtt_builder with new processed rtt
                 if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid)) {
                     rtt_builder[conversation][jid] = rtt_message.str;
                 } else {
                     rtt_builder[conversation] = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
                     rtt_builder[conversation][jid] = rtt_message.str;
-
-                    //  check_if_stale(rtt_builder[conversation][jid]);
                 }
 
                 rtt_processed(conversation, jid, rtt_message.str);
@@ -277,12 +330,6 @@ namespace Dino {
             return false;
         }
 
-        public bool check_if_stale(Conversation conversation, Jid jid, string rtt_message) {
-            if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid) && rtt_builder[conversation][jid] == rtt_message) {
-                return true;
-            }
-            return false;
-        }
 
         public void reset_rtt_received(Account account, Jid jid, MessageStanza message_stanza, StanzaNode text_node) {
             Conversation.Type type = message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? Conversation.Type.GROUPCHAT : Conversation.Type.CHAT;
@@ -306,7 +353,7 @@ namespace Dino {
         private async void handle_event(Account account, Jid jid, MessageStanza stanza, string event_) {
             Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
-            
+
             switch (event_) {
                 case "new": unset_rtt_builder(conversation, jid); break;
                 case "edit": break;
@@ -333,15 +380,29 @@ namespace Dino {
             }
         }
 
+        private bool create_idle(Account account, Jid jid, MessageStanza stanza) {
+            bool repeat = true;
+            Idle.add(() => {
+                schedule_receiving.begin(account, jid, stanza, (_, res) => {
+                    // if repeat == true then it means that receive queue is not empty and hence a new Idle will be created.
+                    repeat = schedule_receiving.end(res);
+                    if (repeat) create_idle(account, jid, stanza);
+                });
+
+                return false;
+            });
+
+            if(!repeat) return true;
+            else return false;
+        }
+
         private void on_account_added(Account account) {
+            bool repeat = true;
+            uint? idle = null;
+
             this.account = account;
             stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).rtt_received.connect((jid, stanza, action_elements) => {
-                set_received_action_element.begin(account, jid, stanza, action_elements);
-
-                Idle.add(() => {
-                    bool res = schedule_receiving(account, jid, stanza);
-                    return res;
-                });
+                on_rtt_received.begin(account, jid, stanza, action_elements);
             });
 
             stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).reset_rtt_received.connect((jid, stanza, text_node) => {
