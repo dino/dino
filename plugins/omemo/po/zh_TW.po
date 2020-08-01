@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 19:27+0200\n"
-"PO-Revision-Date: 2020-05-04 01:11+0000\n"
+"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"PO-Revision-Date: 2020-06-13 04:41+0000\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -171,7 +171,7 @@ msgstr ""
 msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
-msgstr "您將能夠與 %s 使用此金鑰的裝置互相傳送加密訊息。"
+msgstr "您將能夠與 %s 所使用此金鑰的裝置互相傳送加密訊息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -191,7 +191,7 @@ msgstr "新的來自此聯絡人的加密金鑰將會被自動接收。"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
-msgstr "自己的金鑰"
+msgstr "此裝置金鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New keys"
@@ -199,16 +199,16 @@ msgstr "新金鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Associated keys"
-msgstr "連結的金鑰"
+msgstr "其它裝置上的金鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
-msgstr "未啟用的金鑰"
+msgstr "不再使用的金鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
-msgstr "新的來自您其它裝置的加密金鑰將會被自動接收。"
+msgstr "來自您其它裝置的新加密金鑰將會被自動接收。"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -224,12 +224,12 @@ msgstr "已核驗"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
-msgstr "未使用"
+msgstr "不再使用"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 #: plugins/omemo/src/ui/account_settings_widget.vala:45
 msgid "Own fingerprint"
-msgstr "自己的指紋"
+msgstr "此裝置指紋"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 msgid "Will be generated on first connection"

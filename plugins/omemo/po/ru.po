@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 19:27+0200\n"
-"PO-Revision-Date: 2020-02-04 16:50+0000\n"
+"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"PO-Revision-Date: 2020-06-02 11:41+0000\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ru/>\n"
 "Language: ru\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -50,11 +50,11 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints differ"
-msgstr ""
+msgstr "Отпечатки отличаются"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 msgid "Fingerprints match"
-msgstr ""
+msgstr "Отпечатки схожи"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -76,6 +76,8 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"Будущие сообщения, отправленные %s с устройства, использующего этот ключ, "
+"будут соответствующим образом выделены в окне чата."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -99,7 +101,7 @@ msgstr "Подтвердить отпечаток"
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
-msgstr "Сверьте этот отпечаток с ключом, отображаемым у контакта."
+msgstr "Сверить этот отпечаток с ключом, отображаемым у контакта."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
@@ -111,6 +113,8 @@ msgstr "Отклонить ключ"
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr ""
+"Заблокировать зашифрованную связь с устройством контакта, использующего этот "
+"ключ."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -122,6 +126,8 @@ msgstr "Принять ключ"
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
+"Разрешает зашифрованную связь с устройством контакта, использующего этот "
+"ключ."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -136,9 +142,11 @@ msgstr "принят"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, fuzzy, c-format
+#, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
-msgstr "Это означает, что %s теперь может отправлять и принимать сообщения."
+msgstr ""
+"Это означает, что %s теперь может отправлять и принимать зашифрованные "
+"сообщения."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
@@ -159,6 +167,8 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
+"Это означает что они не смогут использоваться %s для расшифровки ваших "
+"сообщений, и вы также не увидите сообщений зашифрованных ими."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
@@ -166,6 +176,9 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
+"Вы не увидите зашифрованных сообщений от устройства %s, которое использует "
+"этот ключ. И наоборот, это устройство больше не сможет расшифровывать ваши "
+"сообщения."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
@@ -173,6 +186,8 @@ msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
+"Вы сможете обмениваться зашифрованными сообщениями с устройством %s, которое "
+"использует этот ключ."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -188,7 +203,7 @@ msgstr "Автоматически принимать новые ключи"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
+msgstr "Новые ключи шифрования от этого контакта будут приняты автоматически."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -210,6 +225,7 @@ msgstr "Неактивные ключи"
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
+"Новые ключи шифрования от других ваших устройств будут приняты автоматически."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 19:27+0200\n"
-"PO-Revision-Date: 2019-12-21 12:21+0000\n"
+"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"PO-Revision-Date: 2020-06-24 11:41+0000\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/dino/"
 "translations/hu/>\n"
 "Language: hu\n"
@@ -16,19 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 4.2-dev\n"
 
 #: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Üdvözöljük Dino!"
 
 #: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
-msgstr ""
+msgstr "Jelentkezzen be, vagy hozzon létre egy fiókot az induláshoz."
 
 #: main/src/ui/main_window.vala:200
 msgid "Set up account"
-msgstr ""
+msgstr "Fiók beállítása"
 
 #: main/src/ui/main_window.vala:208
 msgid "No active accounts"
@@ -43,7 +43,7 @@ msgid "Today"
 msgstr "Ma"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:89
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:315
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
 msgid "Yesterday"
 msgstr "Tegnap"
 
@@ -52,7 +52,7 @@ msgid "%a, %b %d"
 msgstr "%a, %b %d"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:98
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:311
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
@@ -81,8 +81,8 @@ msgid "File transfer failed"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
-#, c-format
-msgid "%s, %s and %i others are typing"
+#, fuzzy, c-format
+msgid "%s, %s and %i others are typing…"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
@@ -100,23 +100,23 @@ msgstr ""
 msgid "%s is typing…"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/message_widget.vala:157
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "Message too long"
 msgstr "Az üzenet túl hosszú"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:184
+#: main/src/ui/conversation_content_view/message_widget.vala:186
 msgid "edited"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:141
-#: main/src/ui/notifications.vala:163
+#: main/src/ui/notifications.vala:162
 msgid "Accept"
 msgstr "Elfogadás"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 #: main/src/ui/notifications.vala:107 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:162
+#: main/src/ui/notifications.vala:161
 msgid "Deny"
 msgstr "Tiltás"
 
@@ -124,87 +124,87 @@ msgstr "Tiltás"
 msgid "This contact would like to add you to their contact list"
 msgstr "Ez az ismerős hozzá szeretne adni téged az ismerőslistájához"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:167
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Titkosítatlan"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:203
 msgid "Unable to send message"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H:%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %I:%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H:%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %I:%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H:%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:318
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H:%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:319
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:275
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%I:%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:322
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:279
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:345
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i perccel ezelőtt"
 msgstr[1] "%i perccel ezelőtt"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:324
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:281
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
 msgid "Just now"
 msgstr "Most"
 
 #: main/src/ui/notifications.vala:67
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 msgid "Image sent"
 msgstr ""
 
 #: main/src/ui/notifications.vala:67
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 msgid "File sent"
 msgstr ""
 
 #: main/src/ui/notifications.vala:69
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 msgid "Image received"
 msgstr "Kép érkezett"
 
 #: main/src/ui/notifications.vala:69
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 msgid "File received"
 msgstr "Fájl érkezett"
 
@@ -214,7 +214,7 @@ msgstr "Feliratkozási kérés"
 
 #: main/src/ui/notifications.vala:113
 #: main/src/ui/manage_accounts/add_account_dialog.vala:258
-#: main/src/ui/add_conversation/conference_details_fragment.vala:188
+#: main/src/ui/add_conversation/conference_details_fragment.vala:189
 #, c-format
 msgid "Could not connect to %s"
 msgstr ""
@@ -229,11 +229,11 @@ msgstr ""
 msgid "%s invited you to %s"
 msgstr ""
 
-#: main/src/ui/notifications.vala:150
+#: main/src/ui/notifications.vala:151
 msgid "Permission request"
 msgstr ""
 
-#: main/src/ui/notifications.vala:151
+#: main/src/ui/notifications.vala:152
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr ""
@@ -252,7 +252,7 @@ msgid "Select avatar"
 msgstr "Profilkép választása"
 
 #: main/src/ui/manage_accounts/dialog.vala:152
-#: main/src/ui/conversation_view_controller.vala:178
+#: main/src/ui/conversation_view_controller.vala:205
 msgid "Select"
 msgstr "Választ"
 
@@ -260,7 +260,7 @@ msgstr "Választ"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
-#: main/src/ui/conversation_view_controller.vala:178
+#: main/src/ui/conversation_view_controller.vala:205
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -318,7 +318,7 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
 #: main/src/ui/manage_accounts/add_account_dialog.vala:306
 #: main/src/ui/manage_accounts/add_account_dialog.vala:382
-#: main/src/ui/add_conversation/conference_details_fragment.vala:191
+#: main/src/ui/add_conversation/conference_details_fragment.vala:192
 msgid "Invalid address"
 msgstr ""
 
@@ -356,17 +356,17 @@ msgstr ""
 msgid "Check %s for information on how to sign up"
 msgstr ""
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:162
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:187
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:165
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:190
 #: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
 msgid "Me"
 msgstr "Én"
 
-#: main/src/ui/chat_input/chat_input_controller.vala:175
+#: main/src/ui/chat_input/chat_input_controller.vala:177
 msgid "This conference does not allow you to send messages."
 msgstr ""
 
-#: main/src/ui/chat_input/chat_input_controller.vala:175
+#: main/src/ui/chat_input/chat_input_controller.vala:177
 msgid "Request permission"
 msgstr ""
 
@@ -388,7 +388,7 @@ msgstr "Csatlakozás"
 msgid "%s from %s"
 msgstr ""
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:27
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "Hozzáadás"
@@ -422,31 +422,31 @@ msgstr "Indítás"
 msgid "Joining…"
 msgstr "Csatlakozás…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:169
+#: main/src/ui/add_conversation/conference_details_fragment.vala:170
 msgid "Password required to enter room"
 msgstr "A szobába való belépéshez jelszó szükséges"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:174
+#: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Banned from joining or creating conference"
 msgstr "A csatlakozás egy konferenciához, vagy új létrehozása le van tiltva"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:176
+#: main/src/ui/add_conversation/conference_details_fragment.vala:177
 msgid "Room does not exist"
 msgstr "A szoba nem létezik"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:178
+#: main/src/ui/add_conversation/conference_details_fragment.vala:179
 msgid "Not allowed to create room"
 msgstr "Szoba létrehozása nem engedélyezett"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:180
+#: main/src/ui/add_conversation/conference_details_fragment.vala:181
 msgid "Members-only room"
 msgstr "Csak tagoknak engedélyezett szoba"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:183
+#: main/src/ui/add_conversation/conference_details_fragment.vala:184
 msgid "Choose a different nick"
 msgstr "Válassz egy másik becenevet"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:185
+#: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Too many occupants in room"
 msgstr "Túl sok résztvevő van a szobában"
 
@@ -466,28 +466,28 @@ msgstr "Tag"
 msgid "User"
 msgstr "Felhasználó"
 
-#: main/src/ui/occupant_menu/view.vala:29
-#: main/src/ui/occupant_menu/view.vala:38
+#: main/src/ui/occupant_menu/view.vala:40
+#: main/src/ui/occupant_menu/view.vala:49
 msgid "Invite"
 msgstr "Meghívás"
 
-#: main/src/ui/occupant_menu/view.vala:37
+#: main/src/ui/occupant_menu/view.vala:48
 msgid "Invite to Conference"
 msgstr "Meghívás a konferenciába"
 
-#: main/src/ui/occupant_menu/view.vala:88
+#: main/src/ui/occupant_menu/view.vala:94
 msgid "Start private conversation"
 msgstr "Privát beszélgetés indítása"
 
-#: main/src/ui/occupant_menu/view.vala:96
+#: main/src/ui/occupant_menu/view.vala:102
 msgid "Kick"
 msgstr "Kirúgás"
 
-#: main/src/ui/occupant_menu/view.vala:102
+#: main/src/ui/occupant_menu/view.vala:108
 msgid "Grant write permission"
 msgstr ""
 
-#: main/src/ui/occupant_menu/view.vala:108
+#: main/src/ui/occupant_menu/view.vala:114
 msgid "Revoke write permission"
 msgstr ""
 
@@ -508,7 +508,7 @@ msgstr ""
 msgid "With %s"
 msgstr ""
 
-#: main/src/ui/conversation_view_controller.vala:178
+#: main/src/ui/conversation_view_controller.vala:205
 msgid "Select file"
 msgstr ""
 
@@ -607,15 +607,15 @@ msgid "Communication and status updates in either direction are blocked"
 msgstr ""
 "Mind a két irányból le van tiltva a kommunikáció és az állapotjelentések"
 
-#: main/src/ui/contact_details/permissions_provider.vala:21
+#: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request"
 msgstr ""
 
-#: main/src/ui/contact_details/permissions_provider.vala:23
+#: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Permissions"
 msgstr ""
 
-#: main/src/ui/contact_details/permissions_provider.vala:23
+#: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
 msgstr ""
 
@@ -661,11 +661,17 @@ msgid "Default: %s"
 msgstr "Alapértelmezett: %s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
+#: main/data/shortcuts.ui:37
 msgid "Search messages"
 msgstr ""
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
+msgstr ""
+
+#: main/data/chat_input.ui:22 main/data/file_send_overlay.ui:28
+#: main/data/shortcuts.ui:44
+msgid "Send a file"
 msgstr ""
 
 #: main/data/message_item_widget_edit_mode.ui:60
@@ -798,10 +804,6 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Ismerős hozzáadása"
 
-#: main/data/file_send_overlay.ui:28
-msgid "Send a file"
-msgstr ""
-
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
 msgstr ""
@@ -811,14 +813,18 @@ msgid "General"
 msgstr "Általános"
 
 #: main/data/shortcuts.ui:32
+msgid "Conversation"
+msgstr ""
+
+#: main/data/shortcuts.ui:52
 msgid "Navigation"
 msgstr "Navigáció"
 
-#: main/data/shortcuts.ui:37
+#: main/data/shortcuts.ui:57
 msgid "Jump to next conversation"
 msgstr ""
 
-#: main/data/shortcuts.ui:44
+#: main/data/shortcuts.ui:64
 msgid "Jump to previous conversation"
 msgstr ""
 

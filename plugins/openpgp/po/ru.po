@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 19:27+0200\n"
-"PO-Revision-Date: 2018-03-23 18:26+0000\n"
+"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"PO-Revision-Date: 2020-06-02 11:41+0000\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ru/>\n"
 "Language: ru\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
@@ -31,7 +31,7 @@ msgstr "Ошибка в GnuPG"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "Нет доступных ключей. Стоит сгенерировать!"
+msgstr "Нет доступных ключей. Стоило бы сгенерировать один!"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
@@ -47,7 +47,7 @@ msgstr "Запрос GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "Нет ключа в связке"
+msgstr "Отсутствует ключ в связке"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"

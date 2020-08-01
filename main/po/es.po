@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 19:27+0200\n"
-"PO-Revision-Date: 2020-05-17 17:21+0000\n"
+"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"PO-Revision-Date: 2020-05-25 16:41+0000\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/"
 "translations/es/>\n"
 "Language: es\n"
@@ -43,7 +43,7 @@ msgid "Today"
 msgstr "Hoy"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:89
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:315
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
 msgid "Yesterday"
 msgstr "Ayer"
 
@@ -52,7 +52,7 @@ msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:98
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:311
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
 #, no-c-format
 msgid "%b %d"
 msgstr "%d %b"
@@ -81,8 +81,8 @@ msgid "File transfer failed"
 msgstr "Transferencia de archivo fallida"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
-#, c-format
-msgid "%s, %s and %i others are typing"
+#, fuzzy, c-format
+msgid "%s, %s and %i others are typing…"
 msgstr "%s, %s y otros %i están escribiendo"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
@@ -100,23 +100,23 @@ msgstr "%s y %s están escribiendo…"
 msgid "%s is typing…"
 msgstr "%s está escribiendo…"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:157
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "Message too long"
 msgstr "Mensaje demasiado largo"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:184
+#: main/src/ui/conversation_content_view/message_widget.vala:186
 msgid "edited"
 msgstr "editado"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:141
-#: main/src/ui/notifications.vala:163
+#: main/src/ui/notifications.vala:162
 msgid "Accept"
 msgstr "Aceptar"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 #: main/src/ui/notifications.vala:107 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:162
+#: main/src/ui/notifications.vala:161
 msgid "Deny"
 msgstr "Denegar"
 
@@ -124,87 +124,87 @@ msgstr "Denegar"
 msgid "This contact would like to add you to their contact list"
 msgstr "A este contacto le gustaría añadirte a su lista de contactos"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:167
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Sin cifrar"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:203
 msgid "Unable to send message"
 msgstr "No se pudo enviar el mensaje"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d %b, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d %b, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:318
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:319
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:275
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:322
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:279
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:345
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "hace %i min"
 msgstr[1] "hace %i mins"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:324
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:281
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
 msgid "Just now"
 msgstr "Ahora"
 
 #: main/src/ui/notifications.vala:67
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 msgid "Image sent"
 msgstr "Imagen enviada"
 
 #: main/src/ui/notifications.vala:67
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 msgid "File sent"
 msgstr "Archivo enviado"
 
 #: main/src/ui/notifications.vala:69
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 msgid "Image received"
 msgstr "Imagen recibida"
 
 #: main/src/ui/notifications.vala:69
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:195
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 msgid "File received"
 msgstr "Archivo recibido"
 
@@ -214,7 +214,7 @@ msgstr "Solicitud de suscripción"
 
 #: main/src/ui/notifications.vala:113
 #: main/src/ui/manage_accounts/add_account_dialog.vala:258
-#: main/src/ui/add_conversation/conference_details_fragment.vala:188
+#: main/src/ui/add_conversation/conference_details_fragment.vala:189
 #, c-format
 msgid "Could not connect to %s"
 msgstr "No se pudo conectar a %s"
@@ -229,11 +229,11 @@ msgstr "Invitación para %s"
 msgid "%s invited you to %s"
 msgstr "%s te invitó a %s"
 
-#: main/src/ui/notifications.vala:150
+#: main/src/ui/notifications.vala:151
 msgid "Permission request"
 msgstr "Solicitud de permiso"
 
-#: main/src/ui/notifications.vala:151
+#: main/src/ui/notifications.vala:152
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%s solicita permiso para escribir en %s"
@@ -252,7 +252,7 @@ msgid "Select avatar"
 msgstr "Seleccionar imagen de perfil"
 
 #: main/src/ui/manage_accounts/dialog.vala:152
-#: main/src/ui/conversation_view_controller.vala:178
+#: main/src/ui/conversation_view_controller.vala:205
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -260,7 +260,7 @@ msgstr "Seleccionar"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
-#: main/src/ui/conversation_view_controller.vala:178
+#: main/src/ui/conversation_view_controller.vala:205
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -318,7 +318,7 @@ msgstr "Ya puedes usar tu cuenta %s."
 #: main/src/ui/manage_accounts/add_account_dialog.vala:296
 #: main/src/ui/manage_accounts/add_account_dialog.vala:306
 #: main/src/ui/manage_accounts/add_account_dialog.vala:382
-#: main/src/ui/add_conversation/conference_details_fragment.vala:191
+#: main/src/ui/add_conversation/conference_details_fragment.vala:192
 msgid "Invalid address"
 msgstr "Dirección inválida"
 
@@ -356,17 +356,17 @@ msgstr "Registro"
 msgid "Check %s for information on how to sign up"
 msgstr "Mira %s para mas información sobre el registro"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:162
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:187
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:165
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:190
 #: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
 msgid "Me"
 msgstr "Yo"
 
-#: main/src/ui/chat_input/chat_input_controller.vala:175
+#: main/src/ui/chat_input/chat_input_controller.vala:177
 msgid "This conference does not allow you to send messages."
 msgstr "Esta conversación no permite que escribas mensajes."
 
-#: main/src/ui/chat_input/chat_input_controller.vala:175
+#: main/src/ui/chat_input/chat_input_controller.vala:177
 msgid "Request permission"
 msgstr "Solicitar permiso"
 
@@ -388,7 +388,7 @@ msgstr "Unirse"
 msgid "%s from %s"
 msgstr "%s de %s"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:27
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "Añadir"
@@ -422,32 +422,32 @@ msgstr "Iniciar"
 msgid "Joining…"
 msgstr "Uniéndose…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:169
+#: main/src/ui/add_conversation/conference_details_fragment.vala:170
 msgid "Password required to enter room"
 msgstr "Contraseña requerida para entrar en la conversación en grupo"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:174
+#: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Banned from joining or creating conference"
 msgstr ""
 "Tu entrada ha sido prohibida o no puedes crear la conversación en grupo"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:176
+#: main/src/ui/add_conversation/conference_details_fragment.vala:177
 msgid "Room does not exist"
 msgstr "La conversación en grupo no existe"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:178
+#: main/src/ui/add_conversation/conference_details_fragment.vala:179
 msgid "Not allowed to create room"
 msgstr "No está permitido crear la conversación en grupo"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:180
+#: main/src/ui/add_conversation/conference_details_fragment.vala:181
 msgid "Members-only room"
 msgstr "La conversación es solo para miembros"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:183
+#: main/src/ui/add_conversation/conference_details_fragment.vala:184
 msgid "Choose a different nick"
 msgstr "Elige un alias diferente"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:185
+#: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Too many occupants in room"
 msgstr "La conversación tiene demasiados ocupantes"
 
@@ -467,28 +467,28 @@ msgstr "Miembro"
 msgid "User"
 msgstr "Usuario"
 
-#: main/src/ui/occupant_menu/view.vala:29
-#: main/src/ui/occupant_menu/view.vala:38
+#: main/src/ui/occupant_menu/view.vala:40
+#: main/src/ui/occupant_menu/view.vala:49
 msgid "Invite"
 msgstr "Invitar"
 
-#: main/src/ui/occupant_menu/view.vala:37
+#: main/src/ui/occupant_menu/view.vala:48
 msgid "Invite to Conference"
 msgstr "Invitar a Conversación en grupo"
 
-#: main/src/ui/occupant_menu/view.vala:88
+#: main/src/ui/occupant_menu/view.vala:94
 msgid "Start private conversation"
 msgstr "Iniciar conversación privada"
 
-#: main/src/ui/occupant_menu/view.vala:96
+#: main/src/ui/occupant_menu/view.vala:102
 msgid "Kick"
 msgstr "Expulsar"
 
-#: main/src/ui/occupant_menu/view.vala:102
+#: main/src/ui/occupant_menu/view.vala:108
 msgid "Grant write permission"
 msgstr "Conceder permiso para escribir"
 
-#: main/src/ui/occupant_menu/view.vala:108
+#: main/src/ui/occupant_menu/view.vala:114
 msgid "Revoke write permission"
 msgstr "Revocar permiso para escribir"
 
@@ -509,7 +509,7 @@ msgstr "En %s"
 msgid "With %s"
 msgstr "Con %s"
 
-#: main/src/ui/conversation_view_controller.vala:178
+#: main/src/ui/conversation_view_controller.vala:205
 msgid "Select file"
 msgstr "Seleccionar archivo"
 
@@ -607,15 +607,15 @@ msgstr "Bloquear"
 msgid "Communication and status updates in either direction are blocked"
 msgstr "Las comunicaciones y las actualizaciones de presencia serán bloqueadas"
 
-#: main/src/ui/contact_details/permissions_provider.vala:21
+#: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request"
 msgstr "Solicitar"
 
-#: main/src/ui/contact_details/permissions_provider.vala:23
+#: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Permissions"
 msgstr "Permisos"
 
-#: main/src/ui/contact_details/permissions_provider.vala:23
+#: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
 msgstr "Solicitar permiso para enviar mensajes"
 
@@ -661,12 +661,18 @@ msgid "Default: %s"
 msgstr "Por defecto: %s"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
+#: main/data/shortcuts.ui:37
 msgid "Search messages"
 msgstr "Buscar mensajes"
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
 msgstr "Miembros"
+
+#: main/data/chat_input.ui:22 main/data/file_send_overlay.ui:28
+#: main/data/shortcuts.ui:44
+msgid "Send a file"
+msgstr "Envía un archivo"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
@@ -797,10 +803,6 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Añadir contacto"
 
-#: main/data/file_send_overlay.ui:28
-msgid "Send a file"
-msgstr ""
-
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
 msgstr "Enviar"
@@ -810,14 +812,18 @@ msgid "General"
 msgstr "General"
 
 #: main/data/shortcuts.ui:32
+msgid "Conversation"
+msgstr ""
+
+#: main/data/shortcuts.ui:52
 msgid "Navigation"
 msgstr "Navegación"
 
-#: main/data/shortcuts.ui:37
+#: main/data/shortcuts.ui:57
 msgid "Jump to next conversation"
 msgstr "Saltar a siguiente conversación"
 
-#: main/data/shortcuts.ui:44
+#: main/data/shortcuts.ui:64
 msgid "Jump to previous conversation"
 msgstr "Saltar a conversación previa"
 

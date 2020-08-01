@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 19:27+0200\n"
-"PO-Revision-Date: 2020-05-04 01:11+0000\n"
+"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"PO-Revision-Date: 2020-08-01 20:43+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.2-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
@@ -42,11 +42,11 @@ msgstr "将指纹与联系人设备上显示的指纹按逐个字符进行比较
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints differ"
-msgstr ""
+msgstr "指纹不匹配"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 msgid "Fingerprints match"
-msgstr ""
+msgstr "指纹匹配"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
@@ -67,7 +67,7 @@ msgstr "验证密钥"
 msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
-msgstr ""
+msgstr "之后由 %s 从使用该密钥的设备发送的消息将会相应地在聊天窗口中高亮。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -102,7 +102,7 @@ msgstr "拒绝密钥"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
-msgstr ""
+msgstr "阻止与该联络人使用该密钥的设备的加密通信。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -113,7 +113,7 @@ msgstr "接受密钥"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
-msgstr ""
+msgstr "允许与该联络人使用该密钥的设备的加密通信。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -128,9 +128,9 @@ msgstr "接受"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, fuzzy, c-format
+#, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
-msgstr "这意味着%s 可以使用它来接收和发送消息。"
+msgstr "这意味着%s 可以使用它来接收和发送加密消息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
@@ -150,7 +150,7 @@ msgstr "拒绝"
 msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
-msgstr ""
+msgstr "这意味着它不能被 %s 用于解密你的讯息，并且你将不会看到由它加密的讯息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
@@ -158,13 +158,15 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
+"你将不会看到 %s 的使用该密钥的设备的加密讯息。反过来，那个设备再也不能解密你"
+"的讯息了。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
 msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
-msgstr ""
+msgstr "你将能够与 %s 的使用该密钥的设备交换加密讯息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -180,11 +182,11 @@ msgstr "自动接受新密钥"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
+msgstr "来自该联络人的新加密密钥将被自动接受。"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
-msgstr "自己的钥匙"
+msgstr "自己的密钥"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New keys"
@@ -196,12 +198,12 @@ msgstr "关联密钥"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
-msgstr ""
+msgstr "不活动的密钥"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
-msgstr ""
+msgstr "来自你其他设备的新加密密钥将被自动接受。"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
@@ -217,7 +219,7 @@ msgstr "验证的"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
-msgstr "未使用的"
+msgstr "不再使用"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 #: plugins/omemo/src/ui/account_settings_widget.vala:45

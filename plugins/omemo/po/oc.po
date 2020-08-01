@@ -1,16 +1,25 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: dino-omemo-0.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"Language: en\n"
+"PO-Revision-Date: 2020-06-22 10:41+0000\n"
+"Language-Team: none\n"
+"Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.2-dev\n"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
-msgstr ""
+msgstr "Gerir"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
@@ -27,7 +36,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
-msgstr ""
+msgstr "Gestion de las claus"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
@@ -47,11 +56,11 @@ msgstr ""
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
 #: plugins/omemo/src/ui/manage_key_dialog.vala:88
 msgid "Cancel"
-msgstr ""
+msgstr "Anullar"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:40
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 msgid "Verify key"
@@ -113,11 +122,11 @@ msgstr ""
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid "This key is currently %s."
-msgstr ""
+msgstr "La clau es actualament %s."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 msgid "accepted"
-msgstr ""
+msgstr "acceptada"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -127,7 +136,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
-msgstr ""
+msgstr "verificada"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid ""
@@ -136,7 +145,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 msgid "rejected"
-msgstr ""
+msgstr "regetada"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
@@ -161,7 +170,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
-msgstr ""
+msgstr "Tornar"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "OMEMO Key Management"
