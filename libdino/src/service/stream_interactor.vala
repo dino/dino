@@ -9,6 +9,7 @@ public class StreamInteractor : Object {
 
     public signal void account_added(Account account);
     public signal void account_removed(Account account);
+    public signal void stream_resumed(Account account, XmppStream stream);
     public signal void stream_negotiated(Account account, XmppStream stream);
     public signal void attached_modules(Account account, XmppStream stream);
 
@@ -70,6 +71,8 @@ public class StreamInteractor : Object {
             var flag = stream.get_flag(Xep.StreamManagement.Flag.IDENTITY);
             if (flag == null || flag.resumed == false) {
                 stream_negotiated(account, stream);
+            } else if (flag != null && flag.resumed == true) {
+                stream_resumed(account, stream);
             }
         });
     }

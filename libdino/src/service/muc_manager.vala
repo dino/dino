@@ -21,7 +21,8 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void conference_removed(Account account, Jid jid);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Account, Gee.List<Jid>> mucs_joining = new HashMap<Account, ArrayList<Jid>>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, HashSet<Jid>> mucs_todo = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, HashSet<Jid>> mucs_joining = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
     private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
     private ReceivedMessageListener received_message_listener;
     private HashMap<Account, BookmarksProvider> bookmarks_provider = new HashMap<Account, BookmarksProvider>(Account.hash_func, Account.equals_func);
@@ -42,6 +43,13 @@ public class MucManager : StreamInteractionModule, Object {
                 part(conversation.account, conversation.counterpart);
             }
         });
+        stream_interactor.stream_resumed.connect((account, stream) => self_ping(account));
+        Timeout.add_seconds(60 * 3, () => {
+            foreach (Account account in stream_interactor.get_accounts()) {
+                self_ping(account);
+            }
+            return true;
+        });
     }
 
     public async Muc.JoinResult? join(Account account, Jid jid, string? nick, string? password) {
@@ -58,9 +66,14 @@ public class MucManager : StreamInteractionModule, Object {
         }
 
         if (!mucs_joining.has_key(account)) {
-            mucs_joining[account] = new ArrayList<Jid>(Jid.equals_bare_func);
+            mucs_joining[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
         }
         mucs_joining[account].add(jid);
+
+        if (!mucs_todo.has_key(account)) {
+            mucs_todo[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
+        }
+        mucs_todo[account].add(jid.with_resource(nick_));
 
         Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since);
 
@@ -84,6 +97,8 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void part(Account account, Jid jid) {
+        mucs_todo[account].remove(jid);
+
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
         unset_autojoin(account, stream, jid);
@@ -122,6 +137,11 @@ public class MucManager : StreamInteractionModule, Object {
         stream.get_module(Xep.Muc.Module.IDENTITY).change_nick(stream, conversation.counterpart, new_nick);
 
         conversation.nickname = new_nick;
+
+        if (mucs_todo.has_key(conversation.account)) {
+            mucs_todo[conversation.account].remove(conversation.counterpart);
+            mucs_todo[conversation.account].add(conversation.counterpart.with_resource(new_nick));
+        }
 
         // Update nick in bookmark
         Set<Conference>? conferences = yield bookmarks_provider[conversation.account].get_conferences(stream);
@@ -464,6 +484,29 @@ public class MucManager : StreamInteractionModule, Object {
                 }
             }
         });
+    }
+
+    private void self_ping(Account account) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) return;
+
+        if (!mucs_todo.has_key(account)) return;
+
+        foreach (Jid jid in mucs_todo[account]) {
+
+            bool joined = false;
+
+            Xmpp.Xep.MucSelfPing.is_joined.begin(stream, jid, (_, res) => {
+                joined = Xmpp.Xep.MucSelfPing.is_joined.end(res);
+            });
+
+            Timeout.add_seconds(10, () => {
+                if (joined || !mucs_todo.has_key(account) || stream_interactor.get_stream(account) != stream) return false;
+
+                join.begin(account, jid.bare_jid, jid.resourcepart, null);
+                return false;
+            });
+        }
     }
 
     private class ReceivedMessageListener : MessageListener {
