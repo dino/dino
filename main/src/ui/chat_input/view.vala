@@ -83,6 +83,11 @@ public class View : Box {
         do_focus();
     }
 
+    public void save_input_buffer(Conversation conversation, string text) {
+        debug(chat_text_view.text_view.buffer.text);
+        entry_cache[conversation] = text;
+    }
+
     public void set_input_state(Plugins.InputFieldStatus.MessageType message_type) {
         switch (message_type) {
             case Plugins.InputFieldStatus.MessageType.NONE:

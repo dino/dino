@@ -75,7 +75,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         });
     }
 
-    private void clear_chat_state(Conversation conversation, Jid jid) {
+    public void clear_chat_state(Conversation conversation, Jid jid) {
         if (!(typing_since.has_key(conversation) && typing_since[conversation].has_key(jid))) return;
 
         typing_since[conversation].unset(jid);

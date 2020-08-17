@@ -16,6 +16,7 @@ namespace Dino {
 
         public signal void start_scheduling(Message message, Conversation conversation);
         public signal void rtt_processed(Conversation conversation, Jid jid, string rtt_message);
+        public signal void self_rtt_processed(Conversation conversation, Jid jid, string rtt_message);
         public signal void event_received(Conversation conversation, Jid jid, string event_);
         public signal void cancel_event_received(Conversation conversation);
         public signal void rtt_setting_changed(Conversation conversation);
@@ -126,7 +127,7 @@ namespace Dino {
                 set_received_action_element(conversation, jid, action_elements);
 
                 //create Idle for schedule_receive
-                create_idle(account, jid, stanza);
+                create_idle(conversation, jid, stanza);
             } else {
                 set_received_action_element(conversation, jid, action_elements);
             }
@@ -216,7 +217,7 @@ namespace Dino {
             string previous_message = get_previous_message(conversation);
     
             if (current_message == previous_message) return false;
-    
+
             message_compare(conversation, previous_message, current_message);
             save_previous_message(conversation, current_message);
     
@@ -266,12 +267,10 @@ namespace Dino {
             yield;
           }
 
-        public async bool schedule_receiving(Account account, Jid jid, MessageStanza message_stanza) {
+        public async bool schedule_receiving(Conversation conversation, Jid jid, MessageStanza message_stanza) {
             Conversation.Type type = message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? Conversation.Type.GROUPCHAT : Conversation.Type.CHAT;
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid.bare_jid, account, type);
-            if (conversation==null) return false;
 
-            StanzaNode action_element = get_received_action_element(conversation, jid);
+            StanzaNode? action_element = get_received_action_element(conversation, jid);
             StringBuilder rtt_message;
 
             if (action_element != null) {
@@ -280,19 +279,30 @@ namespace Dino {
                 } else {
                     rtt_message = new StringBuilder();
                 }
+
+                Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, conversation.account);
                 
-                //resolving for event 'new'
+                //resolving for a.e. 'insert'
                 if (action_element.name == RealTimeText.Module.ACTION_ELEMENT_INSERT) {
                     int? position = int.parse(action_element.get_attribute(RealTimeText.Module.ATTRIBUTE_POSITION, RealTimeText.NS_URI));
                     if (position == null || position > (int)rtt_message.len) position = (int)rtt_message.len;
 
                     string? new_text = action_element.get_string_content();
                     if (new_text == null) new_text = " ";
+
+                    if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
+                        int cursor_pos = rtt_message.str.index_of_char('|');
+                        rtt_message.erase(cursor_pos, 1);
+                    }
                    
                     rtt_message.insert(position, new_text);
+
+                    if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
+                        rtt_message.insert(position + new_text.char_count(), "|");
+                    }
                 }
 
-                //resolving for event 'edit'
+                //resolving for a.e. 'erase'
                 else if (action_element.name == RealTimeText.Module.ACTION_ELEMENT_ERASE) {
                     int? position = int.parse(action_element.get_attribute(RealTimeText.Module.ATTRIBUTE_POSITION, RealTimeText.NS_URI));
                     if (position == null || position > (int)rtt_message.len) position = (int)rtt_message.len;
@@ -302,11 +312,22 @@ namespace Dino {
 
                     int position_ = position - length > 0 ? position-length : 0;
                     int length_ = position - length > 0 ? length : position;
+
+                    if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
+
+                        int cursor_pos = rtt_message.str.index_of_char('|');
+                        rtt_message.erase(cursor_pos, 1);
+                    }
                     
                     rtt_message.erase(position_, length_);
+
+                    if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
+                        rtt_message.insert(position - length, "|");
+                    }
+
                 }
 
-                //resolving for event 'wait'
+                //resolving for a.e. 'wait'
                 else if (action_element.name == RealTimeText.Module.ACTION_ELEMENT_WAIT) {
                     int? wait_interval = int.parse(action_element.get_attribute(RealTimeText.Module.ATTRIBUTE_WAIT_INTERVAL, RealTimeText.NS_URI));
                     if (wait_interval == null) wait_interval = 0;
@@ -314,6 +335,9 @@ namespace Dino {
                     yield wait_nap (wait_interval);
                     return true;
                 }
+
+                // removing cursor if it is the only charcter present
+                if (rtt_message.str == "|") rtt_message.erase();
 
                 //setting the rtt_builder with new processed rtt
                 if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid)) {
@@ -323,7 +347,11 @@ namespace Dino {
                     rtt_builder[conversation][jid] = rtt_message.str;
                 }
 
-                rtt_processed(conversation, jid, rtt_message.str);
+                if (jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null) {
+                    self_rtt_processed(conversation, jid, rtt_message.str);
+                } else {
+                    rtt_processed(conversation, jid, rtt_message.str);
+                }
 
                 return true;
             }
@@ -380,13 +408,13 @@ namespace Dino {
             }
         }
 
-        private bool create_idle(Account account, Jid jid, MessageStanza stanza) {
+        private bool create_idle(Conversation conversation, Jid jid, MessageStanza stanza) {
             bool repeat = true;
             Idle.add(() => {
-                schedule_receiving.begin(account, jid, stanza, (_, res) => {
+                schedule_receiving.begin(conversation, jid, stanza, (_, res) => {
                     // if repeat == true then it means that receive queue is not empty and hence a new Idle will be created.
                     repeat = schedule_receiving.end(res);
-                    if (repeat) create_idle(account, jid, stanza);
+                    if (repeat) create_idle(conversation, jid, stanza);
                 });
 
                 return false;

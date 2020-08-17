@@ -26,6 +26,7 @@ public class ChatInputController : Object {
 
     public Timer? wait_interval_timer = null;
     public ulong microsec;
+    public bool rtt = true;
 
     public ChatInputController(ChatInput.View chat_input, StreamInteractor stream_interactor) {
         this.chat_input = chat_input;
@@ -47,6 +48,7 @@ public class ChatInputController : Object {
         chat_input.rtt_widget.rtt_setting_changed.connect((rtt_setting) => {
             stream_interactor.get_module(RttManager.IDENTITY).on_rtt_setting_changed(conversation, rtt_setting);
         });
+        stream_interactor.get_module(RttManager.IDENTITY).self_rtt_processed.connect(update_input_buffer);
 
         chat_input.file_button.clicked.connect(() => file_picker_selected());
 
@@ -62,16 +64,30 @@ public class ChatInputController : Object {
             return true;
         });
 
-        Timeout.add_seconds(10, () => {
-            string current_message = chat_input.chat_text_view.text_view.buffer.text;
-            string previous_message = stream_interactor.get_module(RttManager.IDENTITY).get_previous_message(conversation);
-            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL && current_message != "" && previous_message!=current_message) {
-                stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
-                stream_interactor.get_module(RttManager.IDENTITY).save_previous_message(conversation, current_message);
-            }
-            return true;
-        });
+        //  Timeout.add_seconds(10, () => {
+        //      string current_message = chat_input.chat_text_view.text_view.buffer.text;
+        //      string previous_message = stream_interactor.get_module(RttManager.IDENTITY).get_previous_message(conversation);
+        //      if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL && current_message != "" && previous_message!=current_message) {
+        //          stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
+        //          stream_interactor.get_module(RttManager.IDENTITY).save_previous_message(conversation, current_message);
+        //      }
+        //      return true;
+        //  });
 
+    }
+
+    public void update_input_buffer(Conversation conversation, Xmpp.Jid jid, string text) {
+        if (this.conversation == conversation) {
+            rtt = false;
+            chat_input.chat_text_view.text_view.buffer.text = text;
+            //  set_event(conversation, RealTimeText.Module.EVENT_EDIT);
+            rtt = true;
+        } else {
+            rtt = false;
+            chat_input.save_input_buffer(conversation, text);
+            rtt = true;
+        }
+        
     }
 
     public void set_conversation(Conversation conversation) {
@@ -179,19 +195,24 @@ public class ChatInputController : Object {
     }
 
     private void on_text_input_changed() {
-        if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
-            
-            if (wait_interval_timer != null) {
-                wait_interval_timer.elapsed(out microsec);
-                ulong millisec = microsec / 1000;
-                if (millisec < 700) stream_interactor.get_module(RttManager.IDENTITY).generate_wait(conversation, millisec.to_string());
+        if (rtt) {
+            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+
+                if (wait_interval_timer != null) {
+                    wait_interval_timer.elapsed(out microsec);
+                    ulong millisec = microsec / 1000;
+                    if (millisec < 700) stream_interactor.get_module(RttManager.IDENTITY).generate_wait(conversation, millisec.to_string());
+                }
+
+                wait_interval_timer = new Timer();
+
+                string current_message = chat_input.chat_text_view.text_view.buffer.text;
+                bool res = stream_interactor.get_module(RttManager.IDENTITY).generate_rtt(conversation, current_message);
             }
-
-            wait_interval_timer = new Timer();
-
-            string current_message = chat_input.chat_text_view.text_view.buffer.text;
-            bool res = stream_interactor.get_module(RttManager.IDENTITY).generate_rtt(conversation, current_message);
-        }
+        } 
+        //  else {
+        //      rtt = true;
+        //  }
 
         if (chat_input.chat_text_view.text_view.buffer.text != "") {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);

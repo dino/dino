@@ -69,11 +69,11 @@ namespace Dino.Ui.ConversationSummary {
         public void generate_new(Conversation conversation, Jid jid, string rtt_message) {
             meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
             item_collection.insert_item(meta_items[jid]);
+            stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).clear_chat_state(conversation, jid);
             stale_timer = new Timer();
             
             Timeout.add_seconds(5, () => {
                 if (current_conversation == null || current_conversation != conversation || !meta_items.has_key(jid)) return false;
-                debug(current_conversation.counterpart.to_string());
 
                 seconds = stale_timer.elapsed (out microseconds);
                 bool is_stale = seconds > 5.0 ? true : false;
@@ -85,21 +85,63 @@ namespace Dino.Ui.ConversationSummary {
             });
         }
 
+        public void check_priority_muc(Conversation conversation, Jid jid, string rtt_message) {
+            Xep.Muc.Affiliation? affiliation =  stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, jid, conversation.account);
+            int priority = get_priority(affiliation);
+            
+
+            foreach(Jid jid_ in meta_items.keys) {
+                Xep.Muc.Affiliation? affiliation_ =  stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(meta_items[jid_].conversation.counterpart, jid_, meta_items[jid_].conversation.account);
+                int priority_ = get_priority(affiliation_);
+                if (priority_ > priority) {
+                    delete_rtt(jid);
+                    generate_new(conversation, jid, rtt_message);
+                }
+            }
+
+        }
+
+        public int get_priority(Xep.Muc.Affiliation? affiliation) {
+            int priority = 0;
+            switch (affiliation) {
+                case Xep.Muc.Affiliation.OWNER:
+                    priority = 1; break;
+                case Xep.Muc.Affiliation.ADMIN:
+                    priority = 2; break;
+                case Xep.Muc.Affiliation.MEMBER:
+                    priority = 3; break;
+                case Xep.Muc.Affiliation.OUTCAST:
+                    priority = 4; break;
+                case Xep.Muc.Affiliation.NONE:
+                    priority = 5; break;
+            }
+            return priority;
+        }
+
         private void init_rtt() {
            HashMap<Jid, string>? active_rtt = stream_interactor.get_module(RttManager.IDENTITY).get_active_rtt(current_conversation);
            if (active_rtt == null) return;
 
            foreach(Jid jid in active_rtt.keys) {
-                if (active_rtt[jid] != "") { 
-                    generate_new(current_conversation, jid, active_rtt[jid]);
+                if (active_rtt[jid] != "" || active_rtt[jid] != "|") {
+                    if (current_conversation.type_ == Conversation.Type.GROUPCHAT && meta_items.size >= 3) {
+                        check_priority_muc(current_conversation, jid, active_rtt[jid]);   
+                    } else {
+                        generate_new(current_conversation, jid, active_rtt[jid]);
+
+                    }
                 }
             }
         }
 
         private void update_rtt(Jid jid, string rtt_message) {
             if (!meta_items.has_key(jid)) {
-                generate_new(current_conversation, jid, rtt_message);  
-            } else if (meta_items.has_key(jid) && rtt_message != "") {
+                if (current_conversation.type_ == Conversation.Type.GROUPCHAT && meta_items.size >=3) {
+                    check_priority_muc(current_conversation, jid, rtt_message);   
+                } else {
+                    generate_new(current_conversation, jid, rtt_message);  
+                }
+            } else if (meta_items.has_key(jid) && (rtt_message != "" || rtt_message != "|")) {
                 meta_items[jid].set_new(rtt_message);
             }
             
@@ -122,7 +164,7 @@ namespace Dino.Ui.ConversationSummary {
         public override DateTime sort_time { get; set; default=new DateTime.now_utc().add_years(10); }
 
         private StreamInteractor stream_interactor;
-        private Conversation conversation;
+        public Conversation conversation;
         public string rtt_message;
         private Label label;
 

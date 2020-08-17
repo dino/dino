@@ -131,7 +131,7 @@ namespace Xmpp.Xep.RealTimeText {
                     if (is_sequence) { 
                         if (event==EVENT_NEW || event==EVENT_EDIT) {
                             rtt_received(from_jid, message, rtt_stanza_node.get_all_subnodes());
-                        } else if (event==EVENT_RESET) {
+                        } else if (event == EVENT_RESET) {
                             reset_rtt_received(from_jid, message, rtt_stanza_node.get_subnode("t", NS_URI));
                         } 
                     } else {
