@@ -47,6 +47,10 @@ public class ChatInputController : Object {
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
         chat_input.rtt_widget.rtt_setting_changed.connect((rtt_setting) => {
             stream_interactor.get_module(RttManager.IDENTITY).on_rtt_setting_changed(conversation, rtt_setting);
+            if (rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+                string current_message = chat_input.chat_text_view.text_view.buffer.text;
+                if (current_message != "") stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
+            }
         });
         stream_interactor.get_module(RttManager.IDENTITY).self_rtt_processed.connect(update_input_buffer);
 
