@@ -129,7 +129,7 @@ namespace Dino {
         public async void on_rtt_received(Account account, Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements) {
             Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
-            if (conversation == null || conversation.rtt_setting == Conversation.RttSetting.OFF) return;
+            if (conversation == null) return;
 
             if (!received_action_elements.has_key(conversation) || !received_action_elements[conversation].has_key(jid) || received_action_elements[conversation][jid].is_empty) {
                 set_received_action_element(conversation, jid, action_elements);
@@ -200,6 +200,10 @@ namespace Dino {
             string message_type = conversation.type_ == Conversation.Type.GROUPCHAT ? MessageStanza.TYPE_GROUPCHAT : MessageStanza.TYPE_CHAT;
             stream.get_module(RealTimeText.Module.IDENTITY).send_rtt(stream, conversation.counterpart, message_type, sequence.to_string(), RealTimeText.Module.EVENT_RESET, action_element);
             save_previous_message(conversation, body);
+
+            if (action_elements_sent.has_key(conversation)) {
+                action_elements_sent.unset(conversation);
+            }
         }
 
         public void on_rtt_setting_changed(Conversation conversation, Conversation.RttSetting rtt_setting) {
@@ -213,7 +217,7 @@ namespace Dino {
                 stream.get_module(Xmpp.Xep.RealTimeText.Module.IDENTITY).send_rtt(stream, conversation.counterpart, message_type, random_seq().to_string(), RealTimeText.Module.EVENT_CANCEL);
                 
                 // removing all incomplete rtt in the conversation
-                if (rtt_builder.has_key(conversation)) {
+                if (rtt_builder.has_key(conversation) && conversation.type_ != Conversation.Type.GROUPCHAT) {
                     rtt_builder[conversation] = new HashMap<Jid, ArrayList<unichar>>(Jid.hash_func, Jid.equals_func);
                 }
             }
@@ -305,12 +309,12 @@ namespace Dino {
                    
                     unichar c;
                     for (int i = 0; new_text.get_next_char (ref i, out c);) {
-                        rtt_message.insert(position, c);
+                        if (position <= rtt_message.size) rtt_message.insert(position, c);
                     }
 
                     if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
                         int cursor_pos = position + new_text.char_count();
-                        rtt_message.insert(cursor_pos, '│');
+                        if (cursor_pos <= rtt_message.size) rtt_message.insert(cursor_pos, '│');
                     }
                 }
 
@@ -335,7 +339,7 @@ namespace Dino {
 
                     if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
                         int cursor_pos = position - length >= 0 ? position - length : 0;
-                        rtt_message.insert(cursor_pos, '│');
+                        if (cursor_pos <= rtt_message.size) rtt_message.insert(cursor_pos, '│');
                     }
 
                 }
@@ -367,12 +371,9 @@ namespace Dino {
 
                 if (muc_ids_sent.contains(message_stanza.id)) {
                     return true;
-                } 
-                else if (jid.equals_bare(conversation.account.full_jid) || MessageCarbons.MessageFlag.get_flag(message_stanza) != null || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)) {
+                } else if (jid.equals_bare(conversation.account.full_jid) || MessageCarbons.MessageFlag.get_flag(message_stanza) != null || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)) {
                     self_rtt_processed(conversation, jid, str);
-                } 
-                
-                else {
+                } else {
                     rtt_processed(conversation, jid, str);
                 }
 
@@ -387,17 +388,28 @@ namespace Dino {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
 
             if (conversation == null) return;
+
+            if (received_action_elements.has_key(conversation) && received_action_elements[conversation].has_key(jid)) {
+                received_action_elements[conversation].unset(jid);
+            }
+
+            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, conversation.account);
             
             string? body = text_node.get_string_content();
             if (body == null) body = "";
-            body += "│";  //cursor
-
+            
+            if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
+                body += "│";  //cursor
+            }
+            
             ArrayList<unichar> rtt_message =  new ArrayList<unichar>();
             
             unichar c;
             for (int i = 0; body.get_next_char (ref i, out c);) {
                 rtt_message.add(c);
             }
+
+            if (body == "" || body == "│") return;
 
             if (rtt_builder.has_key(conversation)) { 
                 rtt_builder[conversation][jid] = rtt_message;
@@ -408,10 +420,11 @@ namespace Dino {
 
             if (muc_ids_sent.contains(message_stanza.id)) {
                 muc_ids_sent.remove(message_stanza.id);
+            } else if (jid.equals_bare(conversation.account.full_jid) || MessageCarbons.MessageFlag.get_flag(message_stanza) != null || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)) {
+                //  self_rtt_processed(conversation, jid, body);
             } else {
                 rtt_processed(conversation, jid, body);
             }
-
         }
 
         private async void handle_event(Account account, Jid jid, MessageStanza stanza, string event_) {

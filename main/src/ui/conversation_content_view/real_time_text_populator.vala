@@ -14,6 +14,7 @@ namespace Dino.Ui.ConversationSummary {
         public Conversation? current_conversation;
         private ChatInputController chat_input_controller;
         private Plugins.ConversationItemCollection? item_collection;
+        
         private Timer stale_timer;
         private ulong microseconds;
 	    private double seconds;
@@ -66,7 +67,7 @@ namespace Dino.Ui.ConversationSummary {
 
         public void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 
-        public void generate_new(Conversation conversation, Jid jid, string rtt_message) {
+        private void generate_new(Conversation conversation, Jid jid, string rtt_message) {
             meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
             item_collection.insert_item(meta_items[jid]);
             stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).clear_chat_state(conversation, jid);
@@ -85,23 +86,30 @@ namespace Dino.Ui.ConversationSummary {
             });
         }
 
-        public void check_priority_muc(Conversation conversation, Jid jid, string rtt_message) {
+        private void check_priority_muc(Conversation conversation, Jid jid, string rtt_message) {
             Xep.Muc.Affiliation? affiliation =  stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, jid, conversation.account);
             int priority = get_priority(affiliation);
             
+            int max_priority = 0;
+            Jid? max_jid = null;
 
             foreach(Jid jid_ in meta_items.keys) {
                 Xep.Muc.Affiliation? affiliation_ =  stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(meta_items[jid_].conversation.counterpart, jid_, meta_items[jid_].conversation.account);
                 int priority_ = get_priority(affiliation_);
-                if (priority_ > priority) {
-                    delete_rtt(jid);
-                    generate_new(conversation, jid, rtt_message);
-                }
+                
+                if (priority_ > max_priority) {
+                    max_priority = priority_;
+                    max_jid = jid_;
+                }       
             }
 
+            if (max_priority > priority) {
+                delete_rtt(max_jid);
+                generate_new(conversation, jid, rtt_message);
+            }
         }
 
-        public int get_priority(Xep.Muc.Affiliation? affiliation) {
+        private int get_priority(Xep.Muc.Affiliation? affiliation) {
             int priority = 0;
             switch (affiliation) {
                 case Xep.Muc.Affiliation.OWNER:
@@ -119,26 +127,36 @@ namespace Dino.Ui.ConversationSummary {
         }
 
         private void init_rtt() {
-           HashMap<Jid, ArrayList<unichar>>? active_rtt = stream_interactor.get_module(RttManager.IDENTITY).get_active_rtt(current_conversation);
-           if (active_rtt == null) return;
+            //in case of MUC, RTT are recieved in 'off' state too. They should be processed but not displayed on UI.
+            if (current_conversation.rtt_setting == Conversation.RttSetting.OFF) return;
 
-           foreach(Jid jid in active_rtt.keys) {
-               string str = "";
-               foreach(unichar c in active_rtt[jid]){
-                   str += c.to_string();
-               }
-                if (str != "" || str != "│") {
-                    if (current_conversation.type_ == Conversation.Type.GROUPCHAT && meta_items.size >= 3) {
-                        check_priority_muc(current_conversation, jid, str);   
-                    } else {
-                        generate_new(current_conversation, jid, str);
+            HashMap<Jid, ArrayList<unichar>>? active_rtt = stream_interactor.get_module(RttManager.IDENTITY).get_active_rtt(current_conversation);
+            if (active_rtt == null) return;
 
-                    }
+            foreach(Jid jid in active_rtt.keys) {
+                //Don't create rtt widget if rtt is from ourself.
+                Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, current_conversation.account);
+                if (jid.equals_bare(current_conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)) return;
+
+                string str = "";
+                foreach(unichar c in active_rtt[jid]){
+                    str += c.to_string();
+                }
+
+                if (str == "" || str == "│") return;
+
+                if (current_conversation.type_ == Conversation.Type.GROUPCHAT && meta_items.size >= 3) {
+                    check_priority_muc(current_conversation, jid, str);   
+                } else {
+                    generate_new(current_conversation, jid, str);
+
                 }
             }
         }
 
         private void update_rtt(Jid jid, string rtt_message) {
+            if (current_conversation.rtt_setting == Conversation.RttSetting.OFF) return;
+
             if (!meta_items.has_key(jid)) {
                 if (current_conversation.type_ == Conversation.Type.GROUPCHAT && meta_items.size >=3) {
                     check_priority_muc(current_conversation, jid, rtt_message);   

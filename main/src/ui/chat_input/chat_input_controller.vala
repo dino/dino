@@ -26,7 +26,12 @@ public class ChatInputController : Object {
 
     public Timer? wait_interval_timer = null;
     public ulong microsec;
-    public bool rtt = true;
+    public bool input_buffer_change_unlock = true;
+
+    public Timer? reset_timer = null;
+    public ulong reset_microseconds;
+	public double? reset_seconds = null;
+
 
     public ChatInputController(ChatInput.View chat_input, StreamInteractor stream_interactor) {
         this.chat_input = chat_input;
@@ -68,29 +73,31 @@ public class ChatInputController : Object {
             return true;
         });
 
-        //  Timeout.add_seconds(10, () => {
-        //      string current_message = chat_input.chat_text_view.text_view.buffer.text;
-        //      string previous_message = stream_interactor.get_module(RttManager.IDENTITY).get_previous_message(conversation);
-        //      if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL && current_message != "" && previous_message!=current_message) {
-        //          stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
-        //          stream_interactor.get_module(RttManager.IDENTITY).save_previous_message(conversation, current_message);
-        //      }
-        //      return true;
-        //  });
+        Timeout.add_seconds(10, () => {
+            string current_message = chat_input.chat_text_view.text_view.buffer.text;
+
+            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+                if (reset_timer != null) reset_seconds = reset_timer.elapsed (out reset_microseconds);
+
+                if (reset_seconds != null && reset_seconds < 10) {
+                    stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
+                }
+            }
+            return true;
+        });
 
     }
 
     public void update_input_buffer(Conversation conversation, Xmpp.Jid jid, string text) {
+        input_buffer_change_unlock = false;
+
         if (this.conversation == conversation) {
-            rtt = false;
             chat_input.chat_text_view.text_view.buffer.text = text;
-            //  set_event(conversation, RealTimeText.Module.EVENT_EDIT);
-            rtt = true;
         } else {
-            rtt = false;
             chat_input.save_input_buffer(conversation, text);
-            rtt = true;
         }
+
+        input_buffer_change_unlock = true;
         
     }
 
@@ -198,8 +205,10 @@ public class ChatInputController : Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
     }
 
-    private void on_text_input_changed() {
-        if (rtt) {
+    private void on_text_input_changed() {        
+        reset_timer = new Timer();
+
+        if (input_buffer_change_unlock) {
             if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
 
                 if (wait_interval_timer != null) {
@@ -219,7 +228,6 @@ public class ChatInputController : Object {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
         } else {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation); 
-            //  stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xmpp.Xep.RealTimeText.Module.EVENT_NEW); //TODO(Wolfie) probably send "reset" event with empty text + empty queue before setting event to RealTimeText.Module.EVENT_NEW
         }
     }
 
