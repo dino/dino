@@ -213,10 +213,7 @@ public class ChatInputController : Object {
                 string current_message = chat_input.chat_text_view.text_view.buffer.text;
                 bool res = stream_interactor.get_module(RttManager.IDENTITY).generate_rtt(conversation, current_message);
             }
-        } 
-        //  else {
-        //      rtt = true;
-        //  }
+        }
 
         if (chat_input.chat_text_view.text_view.buffer.text != "") {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);

@@ -43,13 +43,13 @@ namespace  Dino {
 
         private void convert_to_indices(string message){
             unichar c;
-            for (int i = 0; message.get_next_char (ref i, out c);) {
+            for (int i = 0, index=0; message.get_next_char (ref i, out c); ++index) {
 
                 if (message_to_indices.has_key(c.to_string())) {
-                    message_to_indices[c.to_string()].add(i-1);  
+                    message_to_indices[c.to_string()].add(index);  
                 } else {
                     message_to_indices[c.to_string()] = new ArrayList<int>();
-                    message_to_indices[c.to_string()].add(i-1);
+                    message_to_indices[c.to_string()].add(index);
                 }
             }
         }

@@ -119,15 +119,19 @@ namespace Dino.Ui.ConversationSummary {
         }
 
         private void init_rtt() {
-           HashMap<Jid, string>? active_rtt = stream_interactor.get_module(RttManager.IDENTITY).get_active_rtt(current_conversation);
+           HashMap<Jid, ArrayList<unichar>>? active_rtt = stream_interactor.get_module(RttManager.IDENTITY).get_active_rtt(current_conversation);
            if (active_rtt == null) return;
 
            foreach(Jid jid in active_rtt.keys) {
-                if (active_rtt[jid] != "" || active_rtt[jid] != "|") {
+               string str = "";
+               foreach(unichar c in active_rtt[jid]){
+                   str += c.to_string();
+               }
+                if (str != "" || str != "│") {
                     if (current_conversation.type_ == Conversation.Type.GROUPCHAT && meta_items.size >= 3) {
-                        check_priority_muc(current_conversation, jid, active_rtt[jid]);   
+                        check_priority_muc(current_conversation, jid, str);   
                     } else {
-                        generate_new(current_conversation, jid, active_rtt[jid]);
+                        generate_new(current_conversation, jid, str);
 
                     }
                 }
@@ -141,7 +145,7 @@ namespace Dino.Ui.ConversationSummary {
                 } else {
                     generate_new(current_conversation, jid, rtt_message);  
                 }
-            } else if (meta_items.has_key(jid) && (rtt_message != "" || rtt_message != "|")) {
+            } else if (meta_items.has_key(jid) && (rtt_message != "" || rtt_message != "│")) {
                 meta_items[jid].set_new(rtt_message);
             }
             
