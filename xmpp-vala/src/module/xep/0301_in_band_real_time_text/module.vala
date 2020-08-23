@@ -48,9 +48,9 @@ namespace Xmpp.Xep.RealTimeText {
         public HashMap<Jid, int> previous_sequence = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
 
         public signal void rtt_sent(Jid jid, MessageStanza message);
-        public signal void rtt_received(Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements);
-        public signal void reset_rtt_received(Jid jid, MessageStanza stanza, StanzaNode text);
-        public signal void event_received(Jid jid, MessageStanza stanza, string event);
+        public signal void rtt_received(Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements, Jid? to_jid = null);
+        public signal void reset_rtt_received(Jid jid, MessageStanza stanza, StanzaNode text, Jid? to_jid = null);
+        public signal void event_received(Jid jid, MessageStanza stanza, string event, Jid? to_jid = null);
 
         public override void attach(XmppStream stream) {
             stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
@@ -108,6 +108,7 @@ namespace Xmpp.Xep.RealTimeText {
 
         private void on_received_message(XmppStream stream, MessageStanza message) {
             Jid? from_jid = message.from;
+            Jid? to_jid = MessageCarbons.MessageFlag.get_flag(message) != null ? message.to : null;
             StanzaNode? rtt_stanza_node = message.stanza.get_subnode("rtt", NS_URI);
             
             if (rtt_stanza_node != null) {
@@ -118,7 +119,7 @@ namespace Xmpp.Xep.RealTimeText {
                 if (event == EVENT_RESET || event == EVENT_NEW) ignore[from_jid] = false;
                 
                 //  handle_event(string event);
-                event_received(from_jid, message, event);
+                event_received(from_jid, message, event, to_jid);
 
                 if (!ignore[from_jid]) {
                     // sequence resolution
@@ -130,13 +131,12 @@ namespace Xmpp.Xep.RealTimeText {
                     //get action element subnodes
                     if (is_sequence) { 
                         if (event==EVENT_NEW || event==EVENT_EDIT) {
-                            rtt_received(from_jid, message, rtt_stanza_node.get_all_subnodes());
+                            rtt_received(from_jid, message, rtt_stanza_node.get_all_subnodes(), to_jid);
                         } else if (event == EVENT_RESET) {
-                            reset_rtt_received(from_jid, message, rtt_stanza_node.get_subnode("t", NS_URI));
+                            reset_rtt_received(from_jid, message, rtt_stanza_node.get_subnode("t", NS_URI), to_jid);
                         } 
                     } else {
                         ignore[from_jid] = true;
-                        //TODO(Wolfie) handle loss of sync  https://xmpp.org/extensions/xep-0301.html#recovery_from_loss_of_sync
                         //TODO(WOlffie) handle memeory leaks in ignore and seq hash maps.
                     }
                 }

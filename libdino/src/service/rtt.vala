@@ -126,9 +126,8 @@ namespace Dino {
             event[conversation] = event_;
         }
 
-        public async void on_rtt_received(Account account, Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements) {
-            Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+        public async void on_rtt_received(Account account, Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements, Jid? to_jid) {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(to_jid ?? jid, account, stanza.type_);
             if (conversation == null) return;
 
             if (!received_action_elements.has_key(conversation) || !received_action_elements[conversation].has_key(jid) || received_action_elements[conversation][jid].is_empty) {
@@ -310,6 +309,7 @@ namespace Dino {
                     unichar c;
                     for (int i = 0; new_text.get_next_char (ref i, out c);) {
                         if (position <= rtt_message.size) rtt_message.insert(position, c);
+                        position += 1;
                     }
 
                     if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
@@ -383,10 +383,8 @@ namespace Dino {
         }
 
 
-        public async void reset_rtt_received(Account account, Jid jid, MessageStanza message_stanza, StanzaNode text_node) {
-            Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, message_stanza);
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
-
+        public async void reset_rtt_received(Account account, Jid jid, MessageStanza message_stanza, StanzaNode text_node, Jid? to_jid) {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(to_jid ?? jid, account, message_stanza.type_);
             if (conversation == null) return;
 
             if (received_action_elements.has_key(conversation) && received_action_elements[conversation].has_key(jid)) {
@@ -427,9 +425,8 @@ namespace Dino {
             }
         }
 
-        private async void handle_event(Account account, Jid jid, MessageStanza stanza, string event_) {
-            Message message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
+        private async void handle_event(Account account, Jid jid, MessageStanza stanza, string event_, Jid? to_jid) {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(to_jid ?? jid, account, stanza.type_);
 
             switch (event_) {
                 case "new": unset_rtt_builder(conversation, jid); break;
@@ -489,17 +486,16 @@ namespace Dino {
                 }
             });
 
-            stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).rtt_received.connect((jid, stanza, action_elements) => {
-                on_rtt_received.begin(account, jid, stanza, action_elements);
+            stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).rtt_received.connect((jid, stanza, action_elements, to_jid) => {
+                on_rtt_received.begin(account, jid, stanza, action_elements, to_jid);
             });
 
-            stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).reset_rtt_received.connect((jid, stanza, text_node) => {
-                reset_rtt_received(account, jid, stanza, text_node);
+            stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).reset_rtt_received.connect((jid, stanza, text_node, to_jid) => {
+                reset_rtt_received(account, jid, stanza, text_node, to_jid);
             });
 
-            stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).event_received.connect((jid, stanza, event) => {
-                //  unset_rtt_builder.begin(account, jid, stanza, event);
-                handle_event.begin(account, jid, stanza, event);
+            stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).event_received.connect((jid, stanza, event, to_jid) => {
+                handle_event.begin(account, jid, stanza, event, to_jid);
             });
 
             stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
