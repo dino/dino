@@ -12,6 +12,8 @@ public class ContentProvider : ContentItemCollection, Object {
     private Conversation? current_conversation;
     private Plugins.ConversationItemCollection? item_collection;
 
+    private HashMap<int, ContentMetaItem> content_item_id_map = new HashMap<int, ContentMetaItem>();
+
     public ContentProvider(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
     }
@@ -26,17 +28,28 @@ public class ContentProvider : ContentItemCollection, Object {
     }
 
     public void insert_item(ContentItem item) {
-        item_collection.insert_item(create_content_meta_item(item));
+        ContentMetaItem content_meta_item = create_content_meta_item(item);
+        item_collection.insert_item(content_meta_item);
+
+        content_item_id_map[item.id] = content_meta_item;
     }
 
     public void remove_item(ContentItem item) { }
 
+    public ContentMetaItem? get_item_for_id(int id) {
+        if (content_item_id_map.has_key(id)) {
+            return content_item_id_map[id];
+        }
+        return null;
+    }
 
     public Gee.List<ContentMetaItem> populate_latest(Conversation conversation, int n) {
         Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_n_latest(conversation, n);
         Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
         foreach (ContentItem item in items) {
-            ret.add(create_content_meta_item(item));
+            ContentMetaItem content_meta_item = create_content_meta_item(item);
+            content_item_id_map[item.id] = content_meta_item;
+            ret.add(content_meta_item);
         }
         return ret;
     }
@@ -45,7 +58,9 @@ public class ContentProvider : ContentItemCollection, Object {
         Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
         Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_before(conversation, before_item, n);
         foreach (ContentItem item in items) {
-            ret.add(create_content_meta_item(item));
+            ContentMetaItem content_meta_item = create_content_meta_item(item);
+            content_item_id_map[item.id] = content_meta_item;
+            ret.add(content_meta_item);
         }
         return ret;
     }
@@ -54,7 +69,9 @@ public class ContentProvider : ContentItemCollection, Object {
         Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
         Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_after(conversation, after_item, n);
         foreach (ContentItem item in items) {
-            ret.add(create_content_meta_item(item));
+            ContentMetaItem content_meta_item = create_content_meta_item(item);
+            content_item_id_map[item.id] = content_meta_item;
+            ret.add(content_meta_item);
         }
         return ret;
     }

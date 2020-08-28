@@ -205,11 +205,12 @@ public class ChatInputController : Object {
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
     }
 
-    private void on_text_input_changed() {        
+    private void on_text_input_changed() {
         reset_timer = new Timer();
 
         if (input_buffer_change_unlock) {
             if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+                stream_interactor.get_module(RttManager.IDENTITY).lmc_id = null;
 
                 if (wait_interval_timer != null) {
                     wait_interval_timer.elapsed(out microsec);

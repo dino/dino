@@ -14,20 +14,43 @@ namespace Dino.Ui.ConversationSummary {
         public Conversation? current_conversation;
         private ChatInputController chat_input_controller;
         private Plugins.ConversationItemCollection? item_collection;
+        private ContentProvider content_populator;
         
         private Timer stale_timer;
         private ulong microseconds;
 	    private double seconds;
 
         private HashMap<Jid, MetaRttItem> meta_items;
+        private HashMap<Jid, MetaRttItem> lmc_meta_items;
 
-        public RealTimeTextPopulator(StreamInteractor stream_interactor) {
+
+        public RealTimeTextPopulator(StreamInteractor stream_interactor, ContentProvider content_populator) {
             this.stream_interactor = stream_interactor;
+            this.content_populator = content_populator;
 
             stream_interactor.get_module(RttManager.IDENTITY).rtt_processed.connect((conversation, jid, rtt_message) => {
                 if (current_conversation != null && current_conversation.equals(conversation)) {
                     update_rtt(jid, rtt_message);
                 }
+            });
+            
+            stream_interactor.get_module(RttManager.IDENTITY).received_correction.connect((conversation, jid, rtt_message, content_item) => {
+                if (current_conversation != null && current_conversation.equals(conversation)) {
+                    Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(content_item.jid.bare_jid, current_conversation.account);
+                    if (content_item.jid.equals_bare(current_conversation.account.full_jid) || (own_muc_jid != null && content_item.jid.resourcepart == own_muc_jid.resourcepart)) return;
+                    update_rtt(jid, rtt_message, content_item);
+                }
+            });
+
+            stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect((content_item) => {
+                //  if (current_conversation != null && current_conversation.equals(conversation)) {
+                    Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(content_item.jid.bare_jid, current_conversation.account);
+                    if (content_item.jid.equals_bare(current_conversation.account.full_jid) || (own_muc_jid != null && content_item.jid.resourcepart == own_muc_jid.resourcepart)) return;
+
+                    ContentMetaItem? message_meta_item = content_populator.get_item_for_id(content_item.id);
+                    if (message_meta_item != null && lmc_meta_items.has_key(content_item.jid)) item_collection.insert_item(message_meta_item);
+                    delete_rtt(content_item.jid, content_item);
+                //  }
             });
 
             stream_interactor.get_module(RttManager.IDENTITY).event_received.connect((conversation, jid, event) => {
@@ -60,6 +83,7 @@ namespace Dino.Ui.ConversationSummary {
             current_conversation = conversation;
             this.item_collection = item_collection;
             this.meta_items = new HashMap<Jid, MetaRttItem>(Jid.hash_func, Jid.equals_func);
+            this.lmc_meta_items = new HashMap<Jid, MetaRttItem>(Jid.hash_func, Jid.equals_func);
             init_rtt();
         }
 
@@ -67,19 +91,32 @@ namespace Dino.Ui.ConversationSummary {
 
         public void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 
-        private void generate_new(Conversation conversation, Jid jid, string rtt_message) {
-            meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
-            item_collection.insert_item(meta_items[jid]);
+        private void generate_new(Conversation conversation, Jid jid, string rtt_message, ContentItem? content_item = null) {            
+            if (content_item != null) {
+                ContentMetaItem? message_meta_item = content_populator.get_item_for_id(content_item.id);
+                if (message_meta_item != null) item_collection.remove_item(message_meta_item);
+                lmc_meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
+                lmc_meta_items[jid].sort_time = content_item.sort_time;
+                item_collection.insert_item(lmc_meta_items[jid]);
+            } else {
+                meta_items[jid] = new MetaRttItem(stream_interactor, current_conversation, jid, rtt_message);
+                item_collection.insert_item(meta_items[jid]);
+            }
+
             stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).clear_chat_state(conversation, jid);
             stale_timer = new Timer();
             
             Timeout.add_seconds(5, () => {
-                if (current_conversation == null || current_conversation != conversation || !meta_items.has_key(jid)) return false;
+                if (current_conversation == null || current_conversation != conversation || (!meta_items.has_key(jid) && !lmc_meta_items.has_key(jid))) return false;
 
                 seconds = stale_timer.elapsed (out microseconds);
                 bool is_stale = seconds > 5.0 ? true : false;
                 if (is_stale) {
-                    delete_rtt(jid);
+                    delete_rtt(jid, content_item);
+                    if (content_item != null) {
+                        ContentMetaItem? message_meta_item = content_populator.get_item_for_id(content_item.id);
+                        if (message_meta_item != null) item_collection.insert_item(message_meta_item);
+                    }
                     return false;
                 }
                 return true;
@@ -154,30 +191,45 @@ namespace Dino.Ui.ConversationSummary {
             }
         }
 
-        private void update_rtt(Jid jid, string rtt_message) {
+        private void update_rtt(Jid jid, string rtt_message, ContentItem? content_item = null) {
             if (current_conversation.rtt_setting == Conversation.RttSetting.OFF) return;
 
-            if (!meta_items.has_key(jid)) {
-                if (current_conversation.type_ == Conversation.Type.GROUPCHAT && meta_items.size >=3) {
-                    check_priority_muc(current_conversation, jid, rtt_message);   
-                } else {
-                    generate_new(current_conversation, jid, rtt_message);  
+            if (content_item == null) {
+                if (!meta_items.has_key(jid)) {
+                    if (current_conversation.type_ == Conversation.Type.GROUPCHAT && meta_items.size >=3) {
+                        check_priority_muc(current_conversation, jid, rtt_message);
+                    } else {
+                        generate_new(current_conversation, jid, rtt_message, content_item);  
+                    }
+                } else if (meta_items.has_key(jid) && (rtt_message != "" || rtt_message != "│")) {
+                    meta_items[jid].set_new(rtt_message);
                 }
-            } else if (meta_items.has_key(jid) && (rtt_message != "" || rtt_message != "│")) {
-                meta_items[jid].set_new(rtt_message);
+            } else {
+                if (!lmc_meta_items.has_key(jid)) {
+                    generate_new(current_conversation, jid, rtt_message, content_item);  
+                } else if (lmc_meta_items.has_key(jid) && (rtt_message != "" || rtt_message != "│")) {
+                    lmc_meta_items[jid].set_new(rtt_message);
+                }
             }
             
             stale_timer.reset();
             
-            if (meta_items.has_key(jid) && rtt_message.char_count() == 0) {
-                delete_rtt(jid);
+            if ((meta_items.has_key(jid) || lmc_meta_items.has_key(jid)) && rtt_message.char_count() == 0) {
+                delete_rtt(jid, content_item);
             } 
         }
 
-        private void delete_rtt(Jid jid){
-            if (meta_items.has_key(jid)) {
-                item_collection.remove_item(meta_items[jid]);
-                meta_items.unset(jid);
+        private void delete_rtt(Jid jid, ContentItem? content_item = null){
+            if (content_item == null) {
+                if (meta_items.has_key(jid)) {
+                    item_collection.remove_item(meta_items[jid]);
+                    meta_items.unset(jid);
+                }
+            } else {
+                if (lmc_meta_items.has_key(jid)) {
+                    item_collection.remove_item(lmc_meta_items[jid]);
+                    lmc_meta_items.unset(jid);
+                }
             }
         }
     }

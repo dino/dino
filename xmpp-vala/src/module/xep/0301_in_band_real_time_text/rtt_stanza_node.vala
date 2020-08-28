@@ -15,12 +15,10 @@ namespace Xmpp {
             set { stanza_node.set_attribute(ATTRIBUTE_SEQUENCE, value); }
         }
 
-        //TODO(Wolfie) look into id attribute (to work in conjuction with message correction)
-    
-        //  public virtual string? id {
-        //      get { return stanza_node.get_attribute(ATTRIBUTE_ID); }
-        //      set { stanza_node.set_attribute(ATTRIBUTE_ID, value); }
-        //  }
+        public virtual string? id {
+            get { return stanza_node.get_attribute(ATTRIBUTE_ID); }
+            set { if (value != null) stanza_node.set_attribute(ATTRIBUTE_ID, value); }
+        }
     
         public virtual string event {
             get {

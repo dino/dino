@@ -144,6 +144,18 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         return false;
     }
 
+    public int get_message_id_to_be_updated(Conversation conversation, Jid from_jid, Jid counterpart, string replace_id) {
+        if (!last_messages.has_key(conversation) || !last_messages[conversation].has_key(from_jid)) return -1;
+        Message original_message = last_messages[conversation][from_jid];
+        if (original_message.stanza_id != replace_id) return -1;
+
+        int message_id_to_be_updated = get_latest_correction_message_id(conversation.account.id, replace_id, db.get_jid_id(counterpart), counterpart.resourcepart);
+        if (message_id_to_be_updated == -1) {
+            message_id_to_be_updated = original_message.id;
+        }
+        return message_id_to_be_updated;
+    }
+
     private void on_received_correction(Conversation conversation, int message_id) {
         ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message_id);
         received_correction(content_item);

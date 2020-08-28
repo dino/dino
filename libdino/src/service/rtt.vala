@@ -13,6 +13,7 @@ namespace Dino {
         Account account;
         private Conversation conversation;
         public string id { get { return IDENTITY.id; } }
+        public string? lmc_id {get; set; default=null;}
 
         public signal void start_scheduling(Message message, Conversation conversation);
         public signal void rtt_processed(Conversation conversation, Jid jid, string rtt_message);
@@ -20,14 +21,19 @@ namespace Dino {
         public signal void event_received(Conversation conversation, Jid jid, string event_);
         public signal void cancel_event_received(Conversation conversation);
         public signal void rtt_setting_changed(Conversation conversation);
+        public signal void received_correction(Conversation conversation, Jid jid, string rtt_message, ContentItem content_item);
   
         private HashMap<Conversation, Gee.Queue<StanzaNode>> action_elements_sent = new  HashMap<Conversation, Gee.ArrayQueue<StanzaNode>>(Conversation.hash_func, Conversation.equals_func);
         private HashMap<Conversation, int> seq = new  HashMap<Conversation, int>(Conversation.hash_func, Conversation.equals_func);
+        private HashMap<Conversation, int> lmc_seq = new  HashMap<Conversation, int>(Conversation.hash_func, Conversation.equals_func);
         private HashMap<Conversation, string> event = new  HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
         private HashMap<Conversation, string>? previous_message =  new  HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
 
+        // user can compose both correction and new message at same time, so different hash maps for normal and lmc rtt messages
         private HashMap<Conversation, HashMap<Jid, Gee.Queue<StanzaNode>>> received_action_elements = new HashMap<Conversation, HashMap<Jid, Gee.ArrayQueue<StanzaNode>>>(Conversation.hash_func, Conversation.equals_func);
         private HashMap<Conversation, HashMap<Jid, ArrayList<unichar>>> rtt_builder = new HashMap<Conversation, HashMap<Jid, ArrayList<unichar>>>(Conversation.hash_func, Conversation.equals_func);
+        private HashMap<Conversation, HashMap<Jid, Gee.Queue<StanzaNode>>> lmc_received_action_elements = new HashMap<Conversation, HashMap<Jid, Gee.ArrayQueue<StanzaNode>>>(Conversation.hash_func, Conversation.equals_func);
+        private HashMap<Conversation, HashMap<Jid, ArrayList<unichar>>> lmc_rtt_builder = new HashMap<Conversation, HashMap<Jid, ArrayList<unichar>>>(Conversation.hash_func, Conversation.equals_func);
 
         private ArrayList<string> muc_ids_sent = new ArrayList<string>();
 
@@ -126,17 +132,20 @@ namespace Dino {
             event[conversation] = event_;
         }
 
-        public async void on_rtt_received(Account account, Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements, Jid? to_jid) {
+        public async void on_rtt_received(Account account, Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements, Jid? to_jid, string? lmc_id) {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(to_jid ?? jid, account, stanza.type_);
+
             if (conversation == null) return;
 
             if (!received_action_elements.has_key(conversation) || !received_action_elements[conversation].has_key(jid) || received_action_elements[conversation][jid].is_empty) {
-                set_received_action_element(conversation, jid, action_elements);
+                if (lmc_id == null) set_received_action_element(conversation, jid, action_elements);
+                else set_lmc_received_action_element(conversation, jid, action_elements);
 
                 //create Idle for schedule_receive
-                create_idle(conversation, jid, stanza);
+                create_idle(conversation, jid, stanza, to_jid, lmc_id);
             } else {
-                set_received_action_element(conversation, jid, action_elements);
+                if (lmc_id == null) set_received_action_element(conversation, jid, action_elements);
+                else set_lmc_received_action_element(conversation, jid, action_elements);
             }
         }
 
@@ -169,6 +178,35 @@ namespace Dino {
             return null;
         }
 
+        private void set_lmc_received_action_element(Conversation conversation, Jid jid, Gee.List<StanzaNode> action_elements) {    
+            if (lmc_received_action_elements.has_key(conversation)) {
+                if (lmc_received_action_elements[conversation].has_key(jid)) {
+                    foreach(StanzaNode ae in action_elements) {
+                        lmc_received_action_elements[conversation][jid].offer(ae);
+                    }
+                } else {
+                    lmc_received_action_elements[conversation][jid] = new Gee.ArrayQueue<StanzaNode>();
+                    foreach(StanzaNode ae in action_elements) {
+                        lmc_received_action_elements[conversation][jid].offer(ae);
+                    }
+                }
+            } else {
+                lmc_received_action_elements[conversation] = new HashMap<Jid, Gee.Queue<StanzaNode>>(Jid.hash_func, Jid.equals_func);
+                lmc_received_action_elements[conversation][jid] = new Gee.ArrayQueue<StanzaNode>();
+                foreach(StanzaNode ae in action_elements) {
+                    lmc_received_action_elements[conversation][jid].offer(ae);
+                }
+            }
+        }
+
+        public StanzaNode? get_lmc_received_action_element(Conversation conversation, Jid jid) {
+            if (lmc_received_action_elements.has_key(conversation) && lmc_received_action_elements[conversation].has_key(jid)){
+                if (!lmc_received_action_elements[conversation][jid].is_empty) return lmc_received_action_elements[conversation][jid].poll();
+                else return null;
+            }
+            return null;
+        }
+
         public void unset_rtt_builder(Conversation conversation, Jid jid) {
             if (conversation == null) return;
 
@@ -177,9 +215,24 @@ namespace Dino {
             }
         }
 
+        public void unset_lmc_rtt_builder(Conversation conversation, Jid jid) {
+            if (conversation == null) return;
+
+            if (lmc_rtt_builder.has_key(conversation) && lmc_rtt_builder[conversation].has_key(jid)) {
+                lmc_rtt_builder[conversation].unset(jid);
+            }
+        }
+
         public HashMap<Jid, ArrayList<unichar>>? get_active_rtt(Conversation conversation) {
             if (rtt_builder.has_key(conversation)) {
                 return rtt_builder[conversation];
+            }
+            return null;
+        }
+
+        public HashMap<Jid, ArrayList<unichar>>? get_active_lmc_rtt(Conversation conversation) {
+            if (lmc_rtt_builder.has_key(conversation)) {
+                return lmc_rtt_builder[conversation];
             }
             return null;
         }
@@ -252,18 +305,29 @@ namespace Dino {
                 if (!event.has_key(conversation)) event[conversation] = RealTimeText.Module.EVENT_NEW;
                 if (!seq.has_key(conversation)) seq[conversation] = random_seq();
 
-                int sequence = seq[conversation];
+                int sequence = lmc_id == null ? seq[conversation] : lmc_seq[conversation];
 
-                if (event[conversation] == RealTimeText.Module.EVENT_NEW) {
-                    sequence = random_seq();
-                    seq[conversation] = sequence;
+                if (lmc_id == null) {
+                    if (event[conversation] == RealTimeText.Module.EVENT_NEW) {
+                        sequence = random_seq();
+                        seq[conversation] = sequence;
+                    } else {
+                        sequence = seq[conversation] + 1;
+                        seq[conversation] = seq[conversation] + 1;
+                    }
                 } else {
-                    sequence = seq[conversation] + 1;
-                    seq[conversation] = seq[conversation] + 1;
+                    if (event[conversation] == RealTimeText.Module.EVENT_NEW) {
+                        sequence = random_seq();
+                        lmc_seq[conversation] = sequence;
+                    } else {
+                        sequence = lmc_seq[conversation] + 1;
+                        lmc_seq[conversation] = lmc_seq[conversation] + 1;
+                    }
                 }
 
                 string message_type = conversation.type_ == Conversation.Type.GROUPCHAT ? MessageStanza.TYPE_GROUPCHAT : MessageStanza.TYPE_CHAT;
-                stream.get_module(RealTimeText.Module.IDENTITY).send_rtt(stream, conversation.counterpart, message_type, sequence.to_string(), event[conversation], action_elements);
+                stream.get_module(RealTimeText.Module.IDENTITY).send_rtt(stream, conversation.counterpart, message_type, sequence.to_string(), event[conversation], action_elements, lmc_id);
+                lmc_id = null;
                 set_event(conversation, RealTimeText.Module.EVENT_EDIT);
                 return true;
             }
@@ -279,17 +343,28 @@ namespace Dino {
             yield;
         }
 
-        public async bool schedule_receiving(Conversation conversation, Jid jid, MessageStanza message_stanza) {
+        public async bool schedule_receiving(Conversation conversation, Jid jid, MessageStanza message_stanza, Jid? to_jid = null, string? lmc_id = null) {
             Conversation.Type type = message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? Conversation.Type.GROUPCHAT : Conversation.Type.CHAT;
 
-            StanzaNode? action_element = get_received_action_element(conversation, jid);
+            StanzaNode? action_element = null;
+            if (lmc_id == null)  action_element = get_received_action_element(conversation, jid);
+            else action_element = get_lmc_received_action_element(conversation, jid);
+
             ArrayList<unichar> rtt_message;
 
             if (action_element != null) {
-                if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid)) {
-                    rtt_message = rtt_builder[conversation][jid];
+                if (lmc_id == null) {
+                    if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid)) {
+                        rtt_message = rtt_builder[conversation][jid];
+                    } else {
+                        rtt_message = new ArrayList<unichar>();
+                    }
                 } else {
-                    rtt_message = new ArrayList<unichar>();
+                    if (lmc_rtt_builder.has_key(conversation) && lmc_rtt_builder[conversation].has_key(jid)) {
+                        rtt_message = lmc_rtt_builder[conversation][jid];
+                    } else {
+                        rtt_message = new ArrayList<unichar>();
+                    }
                 }
 
                 Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, conversation.account);
@@ -313,7 +388,7 @@ namespace Dino {
                     }
 
                     if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {
-                        int cursor_pos = position + new_text.char_count();
+                        int cursor_pos = position;
                         if (cursor_pos <= rtt_message.size) rtt_message.insert(cursor_pos, '│');
                     }
                 }
@@ -357,11 +432,20 @@ namespace Dino {
                 if (rtt_message.size == 1 && rtt_message.get(0) == '│') rtt_message.remove('│');
 
                 //setting the rtt_builder with new processed rtt
-                if (rtt_builder.has_key(conversation)) { 
-                    rtt_builder[conversation][jid] = rtt_message;
+                if (lmc_id == null) {
+                    if (rtt_builder.has_key(conversation)) { 
+                        rtt_builder[conversation][jid] = rtt_message;
+                    } else {
+                        rtt_builder[conversation] = new HashMap<Jid, ArrayList<unichar>>(Jid.hash_func, Jid.equals_func);
+                        rtt_builder[conversation][jid] = rtt_message;
+                    }
                 } else {
-                    rtt_builder[conversation] = new HashMap<Jid, ArrayList<unichar>>(Jid.hash_func, Jid.equals_func);
-                    rtt_builder[conversation][jid] = rtt_message;
+                    if (lmc_rtt_builder.has_key(conversation)) { 
+                        lmc_rtt_builder[conversation][jid] = rtt_message;
+                    } else {
+                        lmc_rtt_builder[conversation] = new HashMap<Jid, ArrayList<unichar>>(Jid.hash_func, Jid.equals_func);
+                        lmc_rtt_builder[conversation][jid] = rtt_message;
+                    } 
                 }
 
                 string str = "";
@@ -369,7 +453,13 @@ namespace Dino {
                     str = str + c.to_string();
                 }
 
-                if (muc_ids_sent.contains(message_stanza.id)) {
+                if (lmc_id != null) {
+                    Jid? counterpart = to_jid ?? jid;
+                    int current_correction_message_id = stream_interactor.get_module(MessageCorrection.IDENTITY).get_message_id_to_be_updated(conversation, jid, counterpart, lmc_id);
+                    ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, current_correction_message_id);
+                    received_correction(conversation, jid, str, content_item);
+
+                } else if (muc_ids_sent.contains(message_stanza.id)) {
                     return true;
                 } else if (jid.equals_bare(conversation.account.full_jid) || MessageCarbons.MessageFlag.get_flag(message_stanza) != null || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)) {
                     self_rtt_processed(conversation, jid, str);
@@ -381,7 +471,6 @@ namespace Dino {
             }
             return false;
         }
-
 
         public async void reset_rtt_received(Account account, Jid jid, MessageStanza message_stanza, StanzaNode text_node, Jid? to_jid) {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(to_jid ?? jid, account, message_stanza.type_);
@@ -419,7 +508,7 @@ namespace Dino {
             if (muc_ids_sent.contains(message_stanza.id)) {
                 muc_ids_sent.remove(message_stanza.id);
             } else if (jid.equals_bare(conversation.account.full_jid) || MessageCarbons.MessageFlag.get_flag(message_stanza) != null || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)) {
-                //  self_rtt_processed(conversation, jid, body);
+                //  do nothing
             } else {
                 rtt_processed(conversation, jid, body);
             }
@@ -429,7 +518,7 @@ namespace Dino {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(to_jid ?? jid, account, stanza.type_);
 
             switch (event_) {
-                case "new": unset_rtt_builder(conversation, jid); break;
+                case "new": unset_rtt_builder(conversation, jid); unset_lmc_rtt_builder(conversation, jid); break;
                 case "edit": break;
                 case "reset": break;
                 case "init": handle_init(conversation); break;
@@ -454,14 +543,15 @@ namespace Dino {
             }
         }
 
-        private bool create_idle(Conversation conversation, Jid jid, MessageStanza stanza) {
+        private bool create_idle(Conversation conversation, Jid jid, MessageStanza stanza, Jid? to_jid = null, string? lmc_id) {
             bool repeat = true;
             Idle.add(() => {
-                schedule_receiving.begin(conversation, jid, stanza, (_, res) => {
+                schedule_receiving.begin(conversation, jid, stanza, to_jid, lmc_id, (_, res) => {
                     // if repeat == true then it means that receive queue is not empty and hence a new Idle will be created.
                     repeat = schedule_receiving.end(res);
+
                     if (repeat) {
-                        create_idle(conversation, jid, stanza);
+                        create_idle(conversation, jid, stanza, to_jid, lmc_id);
                     } else {
                         muc_ids_sent.remove(stanza.id);
                     }
@@ -486,8 +576,8 @@ namespace Dino {
                 }
             });
 
-            stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).rtt_received.connect((jid, stanza, action_elements, to_jid) => {
-                on_rtt_received.begin(account, jid, stanza, action_elements, to_jid);
+            stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).rtt_received.connect((jid, stanza, action_elements, to_jid, lmc_id) => {
+                on_rtt_received.begin(account, jid, stanza, action_elements, to_jid, lmc_id);
             });
 
             stream_interactor.module_manager.get_module(account, Xep.RealTimeText.Module.IDENTITY).reset_rtt_received.connect((jid, stanza, text_node, to_jid) => {
@@ -499,9 +589,7 @@ namespace Dino {
             });
 
             stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect((message, conversation) => {
-                if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(message.from)) {
-                    rtt_builder[conversation].unset(message.from);
-                }
+                unset_rtt_builder(conversation, message.from);
 
                 if (received_action_elements.has_key(conversation) && received_action_elements[conversation].has_key(message.from)) {
                     received_action_elements[conversation].unset(message.from);
@@ -514,12 +602,20 @@ namespace Dino {
                 }
             });
 
+            stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect((content_item) => {
+                MessageItem message_item = content_item as MessageItem;
+                unset_lmc_rtt_builder(message_item.conversation, message_item.jid);
+
+                if (lmc_received_action_elements.has_key(message_item.conversation) && lmc_received_action_elements[message_item.conversation].has_key(message_item.jid)) {
+                    lmc_received_action_elements[message_item.conversation].unset(message_item.jid);
+                }
+            });
+
             stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => {
                 Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid.bare_jid, account); 
 
-                if (rtt_builder.has_key(conversation) && rtt_builder[conversation].has_key(jid)) {
-                    rtt_builder[conversation].unset(jid);
-                }
+                unset_rtt_builder(conversation, jid);
+                unset_lmc_rtt_builder(conversation, jid);
             });
         }
     }

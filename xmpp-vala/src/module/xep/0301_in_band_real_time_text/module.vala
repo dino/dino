@@ -48,7 +48,8 @@ namespace Xmpp.Xep.RealTimeText {
         public HashMap<Jid, int> previous_sequence = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
 
         public signal void rtt_sent(Jid jid, MessageStanza message);
-        public signal void rtt_received(Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements, Jid? to_jid = null);
+
+        public signal void rtt_received(Jid jid, MessageStanza stanza, Gee.List<StanzaNode> action_elements, Jid? to_jid = null, string? lmc_id);
         public signal void reset_rtt_received(Jid jid, MessageStanza stanza, StanzaNode text, Jid? to_jid = null);
         public signal void event_received(Jid jid, MessageStanza stanza, string event, Jid? to_jid = null);
 
@@ -95,9 +96,9 @@ namespace Xmpp.Xep.RealTimeText {
             return wait_action_element;
         }
 
-        public void send_rtt(XmppStream stream, Jid jid, string message_type, string sequence, string? event, ArrayList<StanzaNode>? action_elements = null) {
+        public void send_rtt(XmppStream stream, Jid jid, string message_type, string sequence, string? event, ArrayList<StanzaNode>? action_elements = null, string? lmc_id = null) {
             MessageStanza message = new MessageStanza() { to=jid, type_=message_type };
-            RttStanzaNode rtt_node = new RttStanzaNode(action_elements) { seq=sequence, event=event };
+            RttStanzaNode rtt_node = new RttStanzaNode(action_elements) { seq=sequence, event=event, id=lmc_id };
            
             message.stanza.put_node(rtt_node.stanza_node);
             MessageProcessingHints.set_message_hint(message, MessageProcessingHints.HINT_NO_STORE);
@@ -121,6 +122,8 @@ namespace Xmpp.Xep.RealTimeText {
                 //  handle_event(string event);
                 event_received(from_jid, message, event, to_jid);
 
+                string? rtt_lmc_id = rtt_stanza_node.get_attribute("id", NS_URI); 
+
                 if (!ignore[from_jid]) {
                     // sequence resolution
                     int received_sequence = int.parse(rtt_stanza_node.get_attribute("seq", NS_URI));
@@ -131,7 +134,7 @@ namespace Xmpp.Xep.RealTimeText {
                     //get action element subnodes
                     if (is_sequence) { 
                         if (event==EVENT_NEW || event==EVENT_EDIT) {
-                            rtt_received(from_jid, message, rtt_stanza_node.get_all_subnodes(), to_jid);
+                            rtt_received(from_jid, message, rtt_stanza_node.get_all_subnodes(), to_jid, rtt_lmc_id);
                         } else if (event == EVENT_RESET) {
                             reset_rtt_received(from_jid, message, rtt_stanza_node.get_subnode("t", NS_URI), to_jid);
                         } 
