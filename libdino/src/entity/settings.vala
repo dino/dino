@@ -11,6 +11,7 @@ public class Settings : Object {
         send_marker_ = col_to_bool_or_default("send_marker", true);
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
+        omemo_default_ = col_to_bool_or_default("omemo_default", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -63,6 +64,18 @@ public class Settings : Object {
                     .value(db.settings.value, value.to_string())
                     .perform();
             convert_utf8_smileys_ = value;
+        }
+    }
+
+    private bool omemo_default_;
+    public bool omemo_default {
+        get { return omemo_default_; }
+        set {
+            db.settings.upsert()
+                    .value(db.settings.key, "omemo_default", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
+            omemo_default_ = value;
         }
     }
 }
