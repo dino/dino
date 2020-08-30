@@ -409,7 +409,7 @@ namespace Dino {
                     }
 
                     for (int i = 0; i < length_; i++) {
-                        rtt_message.remove_at(position_);
+                        if(position_ < rtt_message.size) rtt_message.remove_at(position_);
                     }
 
                     if (!(jid.equals_bare(conversation.account.full_jid) || (own_muc_jid != null && jid.resourcepart == own_muc_jid.resourcepart)  ||  MessageCarbons.MessageFlag.get_flag(message_stanza) != null)) {

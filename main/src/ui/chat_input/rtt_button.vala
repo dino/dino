@@ -20,7 +20,7 @@ public class RttButton : MenuButton {
         this.stream_interactor = stream_interactor;
 
         use_popover = true;
-        image = new Image.from_icon_name("dino-rtt-active-symbolic", IconSize.BUTTON);
+        image = new Image.from_icon_name("dino-rtt-inactive-symbolic", IconSize.BUTTON);
         get_style_context().add_class("flat");
 
         Builder builder = new Builder.from_resource("/im/dino/Dino/menu_rtt.ui");
@@ -91,7 +91,7 @@ public class RttButton : MenuButton {
     }
 
     private void update_rtt_menu_icon() {
-        set_icon(conversation.rtt_setting == Conversation.RttSetting.OFF ? "dino-rtt-active-symbolic" : "dino-rtt-active-symbolic");
+        set_icon(conversation.rtt_setting == Conversation.RttSetting.OFF ? "dino-rtt-inactive-symbolic" : "dino-rtt-active-symbolic");
     }
 
     private void update_visibility() {
