@@ -4,6 +4,10 @@ namespace Dino.Plugins.OpenPgp {
 
 public class PgpFileDecryptor : FileDecryptor, Object {
 
+    public Encryption get_encryption() {
+        return Encryption.PGP;
+    }
+
     public FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) {
         return receive_data;
     }

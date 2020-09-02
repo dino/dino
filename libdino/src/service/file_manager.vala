@@ -313,6 +313,15 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.size = (int)file_meta.size;
         file_transfer.info = info;
 
+        var encryption = file_provider.get_encryption(file_transfer, receive_data, file_meta);
+        if (encryption != Encryption.NONE) file_transfer.encryption = encryption;
+
+        foreach (FileDecryptor decryptor in file_decryptors) {
+            if (decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
+                file_transfer.encryption = decryptor.get_encryption();
+            }
+        }
+
         file_transfer.persist(db);
 
         if (is_sender_trustworthy(file_transfer, conversation)) {
@@ -389,6 +398,7 @@ public class HttpFileReceiveData : FileReceiveData {
 public interface FileProvider : Object {
     public signal void file_incoming(string info, Jid from, DateTime time, DateTime local_time, Conversation conversation, FileReceiveData receive_data, FileMeta file_meta);
 
+    public abstract Encryption get_encryption(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta);
     public abstract FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError;
     public abstract FileReceiveData? get_file_receive_data(FileTransfer file_transfer);
 
@@ -419,6 +429,7 @@ public interface FileEncryptor : Object {
 }
 
 public interface FileDecryptor : Object {
+    public abstract Encryption get_encryption();
     public abstract FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data);
     public abstract FileMeta prepare_download_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta);
     public abstract bool can_decrypt_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data);

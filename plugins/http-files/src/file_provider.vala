@@ -92,6 +92,10 @@ public class FileProvider : Dino.FileProvider, Object {
         return file_meta;
     }
 
+    public Encryption get_encryption(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) {
+        return Encryption.NONE;
+    }
+
     public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) assert(false);

@@ -42,12 +42,12 @@ public class EncryptionHelper : JingleFileEncryptionHelper, Object {
         return new Xep.Jet.Options(Omemo.NS_URI, AES_128_GCM_URI);
     }
 
-    public FileMeta complete_meta(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta, Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer) {
+    public Encryption get_encryption(Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer) {
         Xep.Jet.SecurityParameters? security = jingle_transfer.security as Xep.Jet.SecurityParameters;
         if (security != null && security.encoding.get_type_uri() == Omemo.NS_URI) {
-            file_transfer.encryption = Encryption.OMEMO;
+            return Encryption.OMEMO;
         }
-        return file_meta;
+        return Encryption.NONE;
     }
 }
 }

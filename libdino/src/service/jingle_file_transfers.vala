@@ -11,7 +11,7 @@ public interface JingleFileEncryptionHelper : Object {
     public abstract async bool can_encrypt(Conversation conversation, FileTransfer file_transfer, Jid? full_jid = null);
     public abstract string? get_precondition_name(Conversation conversation, FileTransfer file_transfer);
     public abstract Object? get_precondition_options(Conversation conversation, FileTransfer file_transfer);
-    public abstract FileMeta complete_meta(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta, Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer);
+    public abstract Encryption get_encryption(Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer);
 }
 
 public class JingleFileEncryptionHelperTransferOnly : JingleFileEncryptionHelper, Object  {
@@ -27,8 +27,8 @@ public class JingleFileEncryptionHelperTransferOnly : JingleFileEncryptionHelper
     public Object? get_precondition_options(Conversation conversation, FileTransfer file_transfer) {
         return null;
     }
-    public FileMeta complete_meta(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta, Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer) {
-        return file_meta;
+    public Encryption get_encryption(Xmpp.Xep.JingleFileTransfer.FileTransfer jingle_transfer) {
+        return Encryption.NONE;
     }
 }
 
@@ -79,15 +79,19 @@ public class JingleFileProvider : FileProvider, Object {
     }
 
     public async FileMeta get_meta_info(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError {
+        return file_meta;
+    }
+
+    public Encryption get_encryption(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) {
         Xmpp.Xep.JingleFileTransfer.FileTransfer? jingle_file_transfer = file_transfers[file_transfer.info];
         if (jingle_file_transfer == null) {
             throw new FileReceiveError.DOWNLOAD_FAILED("Transfer data not available anymore");
         }
-        FileMeta meta = file_meta;
         foreach (JingleFileEncryptionHelper helper in JingleFileHelperRegistry.instance.encryption_helpers.values) {
-            meta = helper.complete_meta(file_transfer, receive_data, meta, jingle_file_transfer);
+            var encryption = helper.get_encryption(jingle_file_transfer);
+            if (encryption != Encryption.NONE) return encryption;
         }
-        return meta;
+        return Encryption.NONE;
     }
 
     public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError {
@@ -96,9 +100,6 @@ public class JingleFileProvider : FileProvider, Object {
         Xmpp.Xep.JingleFileTransfer.FileTransfer? jingle_file_transfer = file_transfers[file_transfer.info];
         if (jingle_file_transfer == null) {
             throw new FileReceiveError.DOWNLOAD_FAILED("Transfer data not available anymore");
-        }
-        foreach (JingleFileEncryptionHelper helper in JingleFileHelperRegistry.instance.encryption_helpers.values) {
-            helper.complete_meta(file_transfer, receive_data, file_meta, jingle_file_transfer);
         }
         try {
             jingle_file_transfer.accept(stream);

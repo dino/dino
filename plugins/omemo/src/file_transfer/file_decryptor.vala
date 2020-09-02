@@ -13,6 +13,10 @@ public class OmemoFileDecryptor : FileDecryptor, Object {
 
     private Regex url_regex = /^aesgcm:\/\/(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$/;
 
+    public Encryption get_encryption() {
+        return Encryption.OMEMO;
+    }
+
     public FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) assert(false);
