@@ -50,7 +50,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
             debug("MAM: [%s] Reset catchup_id", account.bare_jid.to_string());
             current_catchup_id.unset(account);
-            mam_times[account] = new HashMap<string, DateTime>();
         });
     }
 
@@ -107,6 +106,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
+        mam_times[account] = new HashMap<string, DateTime>();
+
         stream_interactor.module_manager.get_module(account, Xmpp.MessageModule.IDENTITY).received_message.connect( (stream, message) => {
             on_message_received.begin(account, message);
         });
