@@ -80,7 +80,6 @@ public class Module : XmppStreamModule, Iq.Handler {
 
         Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
         ItemsResult? result = ItemsResult.create_from_iq(iq_result);
-        stream.get_flag(Flag.IDENTITY).set_entity_items(iq_result.from, result != null ? result.items : null);
 
         return result;
     }

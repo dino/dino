@@ -97,7 +97,8 @@ public class EntityInfo : StreamInteractionModule, Object {
         string? caps_hash = EntityCapabilities.get_caps_hash(presence);
         if (caps_hash == null) return;
 
-        /*db.entity.upsert()
+        /* TODO check might_be_groupchat before storing
+        db.entity.upsert()
                 .value(db.entity.account_id, account.id, true)
                 .value(db.entity.jid_id, db.get_jid_id(presence.from), true)
                 .value(db.entity.resource, presence.from.resourcepart, true)

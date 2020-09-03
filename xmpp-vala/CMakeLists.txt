@@ -74,7 +74,7 @@ SOURCES
     "src/module/xep/0082_date_time_profiles.vala"
     "src/module/xep/0084_user_avatars.vala"
     "src/module/xep/0085_chat_state_notifications.vala"
-    "src/module/xep/0115_entitiy_capabilities.vala"
+    "src/module/xep/0115_entity_capabilities.vala"
     "src/module/xep/0166_jingle.vala"
     "src/module/xep/0184_message_delivery_receipts.vala"
     "src/module/xep/0191_blocking_command.vala"
