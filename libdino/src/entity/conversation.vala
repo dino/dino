@@ -39,6 +39,9 @@ public class Conversation : Object {
     public enum NotifySetting { DEFAULT, ON, OFF, HIGHLIGHT }
     public NotifySetting notify_setting { get; set; default = NotifySetting.DEFAULT; }
 
+    public enum RttSetting { RECEIVE, BIDIRECTIONAL, OFF }
+    public RttSetting rtt_setting { get; set; default = RttSetting.OFF; }
+
     public enum Setting { DEFAULT, ON, OFF }
     public Setting send_typing { get; set; default = Setting.DEFAULT; }
 
@@ -70,6 +73,7 @@ public class Conversation : Object {
         if (read_up_to != null) this.read_up_to = db.get_message_by_id(read_up_to);
         read_up_to_item = row[db.conversation.read_up_to_item];
         notify_setting = (NotifySetting) row[db.conversation.notification];
+        rtt_setting = (RttSetting) row[db.conversation.rtt_setting];
         send_typing = (Setting) row[db.conversation.send_typing];
         send_marker = (Setting) row[db.conversation.send_marker];
 
@@ -85,6 +89,7 @@ public class Conversation : Object {
                 .value(db.conversation.encryption, encryption)
                 .value(db.conversation.active, active)
                 .value(db.conversation.notification, notify_setting)
+                .value(db.conversation.rtt_setting, rtt_setting)
                 .value(db.conversation.send_typing, send_typing)
                 .value(db.conversation.send_marker, send_marker);
         if (read_up_to != null) {
@@ -190,6 +195,8 @@ public class Conversation : Object {
                 update.set(db.conversation.send_typing, send_typing); break;
             case "send-marker":
                 update.set(db.conversation.send_marker, send_marker); break;
+            case "rtt-setting":
+                update.set(db.conversation.rtt_setting, rtt_setting); break;
         }
         update.perform();
     }

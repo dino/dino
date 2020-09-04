@@ -89,6 +89,9 @@ public class MessageItemWidget : SizeRequestBin {
     ulong realize_id = -1;
     ulong style_updated_id = -1;
 
+    public Timer? wait_interval_timer = null;
+    public ulong microsec;
+
     construct {
         this.add(label);
         this.size_request_mode = SizeRequestMode.HEIGHT_FOR_WIDTH;
@@ -127,11 +130,31 @@ public class MessageItemWidget : SizeRequestBin {
         }
 
         edit_mode.chat_text_view.text_view.buffer.text = message.body;
+        edit_mode.chat_text_view.text_view.buffer.changed.connect( () => {
+            on_text_input_changed(message_item.conversation, edit_mode, message);
+        });
 
         this.remove(label);
         this.add(edit_mode);
 
         edit_mode.chat_text_view.text_view.grab_focus();
+    }
+
+    private void on_text_input_changed(Conversation conversation, MessageItemEditMode edit_mode, Message message) {
+        if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+            stream_interactor.get_module(RttManager.IDENTITY).lmc_id = message.edit_to ?? message.stanza_id;
+
+            if (wait_interval_timer != null) {
+                wait_interval_timer.elapsed(out microsec);
+                ulong millisec = microsec / 1000;
+                if (millisec < 700) stream_interactor.get_module(RttManager.IDENTITY).generate_wait(conversation, millisec.to_string());
+            }
+
+            wait_interval_timer = new Timer();
+
+            string current_message = edit_mode.chat_text_view.text_view.buffer.text;
+            bool res = stream_interactor.get_module(RttManager.IDENTITY).generate_rtt(conversation, current_message);
+        }
     }
 
     public void unset_edit_mode() {

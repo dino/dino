@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 16;
+    private const int VERSION = 17;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -168,12 +168,13 @@ public class Database : Qlite.Database {
         public Column<int> read_up_to = new Column.Integer("read_up_to");
         public Column<int> read_up_to_item = new Column.Integer("read_up_to_item") { not_null=true, default="-1", min_version=15 };
         public Column<int> notification = new Column.Integer("notification") { min_version=3 };
+        public Column<int> rtt_setting = new Column.Integer("rtt_setting") { min_version=17 };
         public Column<int> send_typing = new Column.Integer("send_typing") { min_version=3 };
         public Column<int> send_marker = new Column.Integer("send_marker") { min_version=3 };
 
         internal ConversationTable(Database db) {
             base(db, "conversation");
-            init({id, account_id, jid_id, resource, active, last_active, type_, encryption, read_up_to, read_up_to_item, notification, send_typing, send_marker});
+            init({id, account_id, jid_id, resource, active, last_active, type_, encryption, read_up_to, read_up_to_item, notification, rtt_setting, send_typing, send_marker});
         }
     }
 

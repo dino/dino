@@ -24,6 +24,15 @@ public class ChatInputController : Object {
     private Plugins.InputFieldStatus input_field_status;
     private ChatTextViewController chat_text_view_controller;
 
+    public Timer? wait_interval_timer = null;
+    public ulong microsec;
+    public bool input_buffer_change_unlock = true;
+
+    public Timer? reset_timer = null;
+    public ulong reset_microseconds;
+	public double? reset_seconds = null;
+
+
     public ChatInputController(ChatInput.View chat_input, StreamInteractor stream_interactor) {
         this.chat_input = chat_input;
         this.status_description_label = chat_input.chat_input_status;
@@ -41,6 +50,14 @@ public class ChatInputController : Object {
         chat_text_view_controller.send_text.connect(send_text);
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
+        chat_input.rtt_widget.rtt_setting_changed.connect((rtt_setting) => {
+            stream_interactor.get_module(RttManager.IDENTITY).on_rtt_setting_changed(conversation, rtt_setting);
+            if (rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+                string current_message = chat_input.chat_text_view.text_view.buffer.text;
+                if (current_message != "") stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
+            }
+        });
+        stream_interactor.get_module(RttManager.IDENTITY).self_rtt_processed.connect(update_input_buffer);
 
         chat_input.file_button.clicked.connect(() => file_picker_selected());
 
@@ -48,13 +65,40 @@ public class ChatInputController : Object {
         stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect(update_moderated_input_status);
 
         status_description_label.activate_link.connect((uri) => {
-            if (uri == OPEN_CONVERSATION_DETAILS_URI){
+            if (uri == OPEN_CONVERSATION_DETAILS_URI) {
                 ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
                 contact_details_dialog.set_transient_for((Gtk.Window) chat_input.get_toplevel());
                 contact_details_dialog.present();
             }
             return true;
         });
+
+        Timeout.add_seconds(10, () => {
+            string current_message = chat_input.chat_text_view.text_view.buffer.text;
+
+            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+                if (reset_timer != null) reset_seconds = reset_timer.elapsed (out reset_microseconds);
+
+                if (reset_seconds != null && reset_seconds < 10) {
+                    stream_interactor.get_module(RttManager.IDENTITY).send_reset(conversation, current_message);
+                }
+            }
+            return true;
+        });
+
+    }
+
+    public void update_input_buffer(Conversation conversation, Xmpp.Jid jid, string text) {
+        input_buffer_change_unlock = false;
+
+        if (this.conversation == conversation) {
+            chat_input.chat_text_view.text_view.buffer.text = text;
+        } else {
+            chat_input.save_input_buffer(conversation, text);
+        }
+
+        input_buffer_change_unlock = true;
+        
     }
 
     public void set_conversation(Conversation conversation) {
@@ -62,6 +106,7 @@ public class ChatInputController : Object {
 
         reset_input_field_status();
 
+        chat_input.rtt_widget.set_conversation(conversation);
         chat_input.encryption_widget.set_conversation(conversation);
 
         chat_input.initialize_for_conversation(conversation);
@@ -161,10 +206,29 @@ public class ChatInputController : Object {
     }
 
     private void on_text_input_changed() {
+        reset_timer = new Timer();
+
+        if (input_buffer_change_unlock) {
+            if (conversation.rtt_setting == Conversation.RttSetting.BIDIRECTIONAL) {
+                stream_interactor.get_module(RttManager.IDENTITY).lmc_id = null;
+
+                if (wait_interval_timer != null) {
+                    wait_interval_timer.elapsed(out microsec);
+                    ulong millisec = microsec / 1000;
+                    if (millisec < 700) stream_interactor.get_module(RttManager.IDENTITY).generate_wait(conversation, millisec.to_string());
+                }
+
+                wait_interval_timer = new Timer();
+
+                string current_message = chat_input.chat_text_view.text_view.buffer.text;
+                bool res = stream_interactor.get_module(RttManager.IDENTITY).generate_rtt(conversation, current_message);
+            }
+        }
+
         if (chat_input.chat_text_view.text_view.buffer.text != "") {
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_entered(conversation);
         } else {
-            stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation);
+            stream_interactor.get_module(ChatInteraction.IDENTITY).on_message_cleared(conversation); 
         }
     }
 

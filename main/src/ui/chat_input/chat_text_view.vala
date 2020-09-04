@@ -14,17 +14,23 @@ public class ChatTextViewController : Object {
     public OccupantsTabCompletor occupants_tab_completor;
 
     private ChatTextView widget;
+    private Conversation? conversation;
+    private StreamInteractor? stream_interactor;
 
     public ChatTextViewController(ChatTextView widget, StreamInteractor stream_interactor) {
         this.widget = widget;
+        this.stream_interactor = stream_interactor;
         occupants_tab_completor = new OccupantsTabCompletor(stream_interactor, widget.text_view);
 
         widget.send_text.connect(() => {
             send_text();
+            stream_interactor.get_module(RttManager.IDENTITY).set_event(conversation, Xep.RealTimeText.Module.EVENT_NEW);
         });
+
     }
 
     public void initialize_for_conversation(Conversation conversation) {
+        this.conversation = conversation;
         occupants_tab_completor.initialize_for_conversation(conversation);
         widget.initialize_for_conversation(conversation);
     }
@@ -39,6 +45,7 @@ public class ChatTextView : ScrolledWindow {
     private int vscrollbar_min_height;
     private SmileyConverter smiley_converter;
     public EditHistory edit_history;
+    private int num_keystrokes;
 
     construct {
         max_content_height = 300;
@@ -84,6 +91,7 @@ public class ChatTextView : ScrolledWindow {
         if (event.keyval == Key.Escape) {
             cancel_input();
         }
+
         return false;
     }
 }

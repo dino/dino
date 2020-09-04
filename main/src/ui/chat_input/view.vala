@@ -26,17 +26,20 @@ public class View : Box {
     [GtkChild] public Separator file_separator;
     [GtkChild] public Label chat_input_status;
 
+    public RttButton rtt_widget;
     public EncryptionButton encryption_widget;
 
     public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
+        rtt_widget = new RttButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
         encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
 
         file_button.get_style_context().add_class("dino-attach-button");
 
+        rtt_widget.get_style_context().add_class("dino-chatinput-button");
         encryption_widget.get_style_context().add_class("dino-chatinput-button");
-
+        
         // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
         if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
             MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
@@ -51,8 +54,11 @@ public class View : Box {
             emoji_button.set_popover(chooser);
 
             outer_box.add(emoji_button);
+
+            stream_interactor.get_module(RttManager.IDENTITY).cancel_event_received.connect(popup_label);
         }
 
+        outer_box.add(rtt_widget);
         outer_box.add(encryption_widget);
 
         Util.force_css(frame, "* { border-radius: 3px; }");
@@ -75,6 +81,11 @@ public class View : Box {
         }
 
         do_focus();
+    }
+
+    public void save_input_buffer(Conversation conversation, string text) {
+        debug(chat_text_view.text_view.buffer.text);
+        entry_cache[conversation] = text;
     }
 
     public void set_input_state(Plugins.InputFieldStatus.MessageType message_type) {
@@ -108,6 +119,22 @@ public class View : Box {
 
     public void do_focus() {
         chat_text_view.text_view.grab_focus();
+    }
+
+    public void popup_label(Conversation current_conversation) {
+        if (current_conversation == conversation) {
+            rtt_widget.popover.popup();
+            rtt_widget.update_rtt_menu_state();
+            rtt_widget.status_label.label = _("Peer has Real Time Text switched off, switching setting to Receive only");
+            rtt_widget.status_label.visible = true;
+
+            Timeout.add_seconds(5, () => {
+                rtt_widget.popover.popdown();
+                rtt_widget.status_label.visible = false;
+                return false;
+            });
+        }
+
     }
 }
 

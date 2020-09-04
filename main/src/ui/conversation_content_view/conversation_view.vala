@@ -58,6 +58,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_conversation_addition_populator(new ChatStatePopulator(stream_interactor));
+        app.plugin_registry.register_conversation_addition_populator(new RealTimeTextPopulator(stream_interactor, content_populator));
         app.plugin_registry.register_conversation_addition_populator(new DateSeparatorPopulator(stream_interactor));
 
         // Rather than connecting to the leave event of the main_event_box directly,
