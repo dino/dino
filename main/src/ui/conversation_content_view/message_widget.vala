@@ -193,7 +193,9 @@ public class MessageItemWidget : SizeRequestBin {
 
                 message.bind_property("marked", this, "marked");
                 this.notify["marked"].connect(() => {
-                    update_label();
+                    /* Only update when the state actually changes so we don't recurse infinitely */
+                    if (message.marked != Message.Marked.SENDING && message.marked != Message.Marked.UNSENT)
+                        update_label();
                 });
             } else {
                 int time_diff = (- (int) message.local_time.difference(new DateTime.now_utc()) / 1000);
