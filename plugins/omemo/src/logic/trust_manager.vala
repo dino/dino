@@ -304,9 +304,10 @@ public class TrustManager {
                 }
             }
 
+            string? payload = encrypted.get_deep_string_content("payload");
+            string? iv_node = header.get_deep_string_content("iv");
+
             foreach (StanzaNode key_node in our_nodes) {
-                string? payload = encrypted.get_deep_string_content("payload");
-                string? iv_node = header.get_deep_string_content("iv");
                 string? key_node_content = key_node.get_string_content();
                 if (payload == null || iv_node == null || key_node_content == null) continue;
                 uint8[] key;
@@ -413,7 +414,11 @@ public class TrustManager {
                 }
             }
 
-            if (our_nodes.size == 0 && module.store.local_registration_id != sid) {
+            if (
+                payload != null && // Ratchet forwarding doesn't contain payload and might not include us, which is ok
+                our_nodes.size == 0 && // The message was not encrypted to us
+                module.store.local_registration_id != sid // Message from this device. Never encrypted to itself.
+            ) {
                 db.identity_meta.update_last_message_undecryptable(identity_id, sid, message.time);
                 trust_manager.bad_message_state_updated(conversation.account, message.from, sid);
             }
