@@ -46,6 +46,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         stream_interactor.account_added.connect(on_account_added);
 
         stream_interactor.stream_negotiated.connect(send_unsent_chat_messages);
+        stream_interactor.stream_resumed.connect(send_unsent_chat_messages);
 
         stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
             debug("MAM: [%s] Reset catchup_id", account.bare_jid.to_string());
@@ -662,7 +663,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
                 if (stream != stream_interactor.get_stream(conversation.account)) {
                     Timeout.add_seconds(3, () => {
-                        send_xmpp_message(message, conversation, true);
+                        send_unsent_chat_messages(conversation.account);
                         return false;
                     });
                 }
