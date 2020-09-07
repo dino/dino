@@ -2,7 +2,7 @@ using Gee;
 
 namespace Xmpp.Xep.ServiceDiscovery {
 
-private const string NS_URI = "http://jabber.org/protocol/disco";
+public const string NS_URI = "http://jabber.org/protocol/disco";
 public const string NS_URI_INFO = NS_URI + "#info";
 public const string NS_URI_ITEMS = NS_URI + "#items";
 
