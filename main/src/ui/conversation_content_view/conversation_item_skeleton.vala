@@ -64,11 +64,6 @@ public class ConversationItemSkeleton : EventBox {
         update_margin();
     }
 
-    public void set_edit_mode() {
-        if (content_meta_item == null) return;
-
-    }
-
     private void update_margin() {
         if (item.requires_header && show_skeleton && metadata_header == null) {
             metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };

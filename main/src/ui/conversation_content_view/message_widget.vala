@@ -50,7 +50,6 @@ public class MessageMetaItem : ContentMetaItem {
             Plugins.MessageAction action1 = new Plugins.MessageAction();
             action1.icon_name = "document-edit-symbolic";
             action1.callback = (button, content_meta_item_activated, widget) => {
-                message_item_widget.set_edit_mode();
                 this.in_edit_mode = true;
             };
             actions.add(action1);
