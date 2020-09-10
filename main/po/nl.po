@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"PO-Revision-Date: 2020-01-16 00:21+0000\n"
+"POT-Creation-Date: 2020-09-10 20:10+0200\n"
+"PO-Revision-Date: 2020-09-05 19:21+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/translations/"
 "nl/>\n"
 "Language: nl\n"
@@ -16,187 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
-
-#: main/src/ui/main_window.vala:198
-msgid "Welcome to Dino!"
-msgstr "Welkom bij Dino!"
-
-#: main/src/ui/main_window.vala:199
-msgid "Sign in or create an account to get started."
-msgstr "Log in of maak een account om te beginnen."
-
-#: main/src/ui/main_window.vala:200
-msgid "Set up account"
-msgstr "Account instellen"
-
-#: main/src/ui/main_window.vala:208
-msgid "No active accounts"
-msgstr "Geen accounts actief"
-
-#: main/src/ui/main_window.vala:209
-msgid "Manage accounts"
-msgstr "Accounts beheren"
-
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
-msgid "Today"
-msgstr "Vandaag"
-
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
-msgid "Yesterday"
-msgstr "Gisteren"
-
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
-msgid "%a, %b %d"
-msgstr "%a, %b %d"
-
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
-#, no-c-format
-msgid "%b %d"
-msgstr "%d %b"
-
-#: main/src/ui/conversation_content_view/file_default_widget.vala:46
-#, c-format
-msgid "Downloading %s…"
-msgstr "Downloaden %s…"
-
-#: main/src/ui/conversation_content_view/file_default_widget.vala:52
-#, c-format
-msgid "%s offered: %s"
-msgstr "%s bood aan: %s"
-
-#: main/src/ui/conversation_content_view/file_default_widget.vala:54
-#, c-format
-msgid "File offered: %s"
-msgstr "Bestand aangeboden: %s"
-
-#: main/src/ui/conversation_content_view/file_default_widget.vala:56
-msgid "File offered"
-msgstr "Bestand aangeboden"
-
-#: main/src/ui/conversation_content_view/file_default_widget.vala:62
-msgid "File transfer failed"
-msgstr "Bestandsoverdracht mislukt"
-
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
-#, fuzzy, c-format
-msgid "%s, %s and %i others are typing…"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
-#, c-format
-msgid "%s, %s and %s are typing…"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
-#, c-format
-msgid "%s and %s are typing…"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
-#, c-format
-msgid "%s is typing…"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/message_widget.vala:158
-msgid "Message too long"
-msgstr "Bericht te lang"
-
-#: main/src/ui/conversation_content_view/message_widget.vala:186
-msgid "edited"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/subscription_notification.vala:37
-#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:141
-#: main/src/ui/notifications.vala:162
-msgid "Accept"
-msgstr "Toestaan"
-
-#: main/src/ui/conversation_content_view/subscription_notification.vala:38
-#: main/src/ui/notifications.vala:107 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:161
-msgid "Deny"
-msgstr "Afwijzen"
-
-#: main/src/ui/conversation_content_view/subscription_notification.vala:48
-msgid "This contact would like to add you to their contact list"
-msgstr "Dit contact wil u toevoegen aan zijn/haar contacten"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:167
-#: main/data/menu_encryption.ui:14
-msgid "Unencrypted"
-msgstr "Onversleuteld"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:203
-msgid "Unable to send message"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
-#, no-c-format
-msgid "%x, %H∶%M"
-msgstr "%x, %H∶%M"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
-#, no-c-format
-msgid "%x, %l∶%M %p"
-msgstr "%x, %l∶%M %p"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
-#, no-c-format
-msgid "%b %d, %H∶%M"
-msgstr "%d %b, %H:%M"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
-#, no-c-format
-msgid "%b %d, %l∶%M %p"
-msgstr "%d %b, %l∶%M %p"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
-#, no-c-format
-msgid "%a, %H∶%M"
-msgstr "%a, %H∶%M"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
-#, no-c-format
-msgid "%a, %l∶%M %p"
-msgstr "%a, %l∶%M %p"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#, no-c-format
-msgid "%H∶%M"
-msgstr "%H∶%M"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:275
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#, no-c-format
-msgid "%l∶%M %p"
-msgstr "%l∶%M %p"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:279
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:345
-#, c-format
-msgid "%i min ago"
-msgid_plural "%i mins ago"
-msgstr[0] "%i min geleden"
-msgstr[1] "%i min geleden"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:281
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-msgid "Just now"
-msgstr "Zojuist"
+"X-Generator: Weblate 4.3-dev\n"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 msgid "Image sent"
-msgstr "Afbeelding verzonden"
+msgstr "Afbeelding verstuurd"
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 msgid "File sent"
-msgstr "Bestand verzonden"
+msgstr "Bestand verstuurd"
 
 #: main/src/ui/notifications.vala:69
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
@@ -210,14 +40,26 @@ msgstr "Bestand ontvangen"
 
 #: main/src/ui/notifications.vala:99
 msgid "Subscription request"
-msgstr "Abonneringsverzoek"
+msgstr "Abonneerverzoek"
+
+#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:141
+#: main/src/ui/notifications.vala:162
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+msgid "Accept"
+msgstr "Toestaan"
+
+#: main/src/ui/notifications.vala:107 main/src/ui/notifications.vala:140
+#: main/src/ui/notifications.vala:161
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+msgid "Deny"
+msgstr "Weigeren"
 
 #: main/src/ui/notifications.vala:113
-#: main/src/ui/manage_accounts/add_account_dialog.vala:258
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
+#: main/src/ui/manage_accounts/add_account_dialog.vala:258
 #, c-format
 msgid "Could not connect to %s"
-msgstr "Kon geen verbinding maken met %s"
+msgstr "Kan geen verbinding maken met %s"
 
 #: main/src/ui/notifications.vala:129
 #, c-format
@@ -227,134 +69,16 @@ msgstr "Uitnodiging voor %s"
 #: main/src/ui/notifications.vala:130
 #, c-format
 msgid "%s invited you to %s"
-msgstr "uitnodiging van %s voor %s"
+msgstr "%s heeft je uitgenodigd voor %s"
 
 #: main/src/ui/notifications.vala:151
 msgid "Permission request"
-msgstr ""
+msgstr "Machtigingsverzoek"
 
 #: main/src/ui/notifications.vala:152
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:125
-#, c-format
-msgid "Remove account %s?"
-msgstr "Account %s verwijderen?"
-
-#: main/src/ui/manage_accounts/dialog.vala:128
-msgid "Remove"
-msgstr "Verwijderen"
-
-#: main/src/ui/manage_accounts/dialog.vala:152
-msgid "Select avatar"
-msgstr "Kies een avatar"
-
-#: main/src/ui/manage_accounts/dialog.vala:152
-#: main/src/ui/conversation_view_controller.vala:205
-msgid "Select"
-msgstr "Selecteren"
-
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:15
-#: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/add_conversation/select_contact_dialog.vala:38
-#: main/src/ui/conversation_view_controller.vala:205
-#: main/data/message_item_widget_edit_mode.ui:54
-#: main/data/add_conversation/add_groupchat_dialog.ui:11
-#: main/data/add_conversation/add_contact_dialog.ui:12
-msgid "Cancel"
-msgstr "Annuleren"
-
-#: main/src/ui/manage_accounts/dialog.vala:159
-msgid "Images"
-msgstr "Afbeeldingen"
-
-#: main/src/ui/manage_accounts/dialog.vala:163
-msgid "All files"
-msgstr "Alle bestanden"
-
-#: main/src/ui/manage_accounts/dialog.vala:219
-msgid "Connecting…"
-msgstr "Verbinding maken…"
-
-#: main/src/ui/manage_accounts/dialog.vala:221
-msgid "Connected"
-msgstr "Verbonden"
-
-#: main/src/ui/manage_accounts/dialog.vala:223
-msgid "Disconnected"
-msgstr "Verbinding verbroken"
-
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "Verkeerd wachtwoord"
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "Ongeldig TLS-certificaat"
-
-#: main/src/ui/manage_accounts/dialog.vala:237
-#: main/src/ui/manage_accounts/dialog.vala:239
-msgid "Error"
-msgstr "Fout"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:82
-msgid "Add Account"
-msgstr "Account toevoegen"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:166
-#, c-format
-msgid "Sign in to %s"
-msgstr "Inloggen bij %s"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:210
-#, c-format
-msgid "You can now use the account %s."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:263
-#: main/src/ui/manage_accounts/add_account_dialog.vala:296
-#: main/src/ui/manage_accounts/add_account_dialog.vala:306
-#: main/src/ui/manage_accounts/add_account_dialog.vala:382
-#: main/src/ui/add_conversation/conference_details_fragment.vala:192
-msgid "Invalid address"
-msgstr "Ongeldig adress"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:278
-msgid "Wrong username or password"
-msgstr "Verkeerde gebruikersnaam of wachtwoord"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:281
-msgid "Something went wrong"
-msgstr "Er ging iets mis"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:321
-msgid "No response from server"
-msgstr "Geen antwoord van server"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:327
-#, c-format
-msgid "Register on %s"
-msgstr "Registreren bij %s"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:330
-msgid "The server requires to sign up through a website"
-msgstr "De server vereist registratie via een website"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:332
-msgid "Open website"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:344
-msgid "Register"
-msgstr "Registreren"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:346
-#, c-format
-msgid "Check %s for information on how to sign up"
-msgstr "Bekijk %s voor meer informatie over hoe te registreren"
+msgstr "%s verzoekt toestemming om te mogen schrijven in %s"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:165
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:190
@@ -362,93 +86,41 @@ msgstr "Bekijk %s voor meer informatie over hoe te registreren"
 msgid "Me"
 msgstr "Ik"
 
-#: main/src/ui/chat_input/chat_input_controller.vala:177
-msgid "This conference does not allow you to send messages."
-msgstr ""
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
+#, no-c-format
+msgid "%b %d"
+msgstr "%d %b"
 
-#: main/src/ui/chat_input/chat_input_controller.vala:177
-msgid "Request permission"
-msgstr ""
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
+msgid "Yesterday"
+msgstr "Gisteren"
 
-#: main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr "Deelnemen aan kanaal"
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#, no-c-format
+msgid "%H∶%M"
+msgstr "%H∶%M"
 
-#: main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:66
-#: main/src/ui/add_conversation/add_conference_dialog.vala:142
-#: main/src/ui/add_conversation/conference_details_fragment.vala:157
-msgid "Join"
-msgstr "Deelnemen"
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr "%l∶%M %p"
 
-#: main/src/ui/util/helper.vala:127
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:345
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
 #, c-format
-msgid "%s from %s"
-msgstr "%s in %s"
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "%i min. geleden"
+msgstr[1] "%i min. geleden"
 
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
-#: main/data/add_conversation/add_contact_dialog.ui:24
-msgid "Add"
-msgstr "Toevoegen"
-
-#: main/src/ui/add_conversation/add_conference_dialog.vala:47
-#: main/src/ui/add_conversation/add_conference_dialog.vala:118
-#: main/data/manage_accounts/add_account_dialog.ui:99
-#: main/data/manage_accounts/add_account_dialog.ui:410
-#: main/data/manage_accounts/add_account_dialog.ui:490
-msgid "Next"
-msgstr "Volgende"
-
-#: main/src/ui/add_conversation/add_conference_dialog.vala:147
-#: main/data/manage_accounts/add_account_dialog.ui:175
-#: main/data/manage_accounts/add_account_dialog.ui:267
-msgid "Back"
-msgstr "Terug"
-
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr "Gesprek beginnen"
-
-#: main/src/ui/add_conversation/select_contact_dialog.vala:98
-msgid "Start"
-msgstr "Beginnen"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:149
-msgid "Joining…"
-msgstr "Deelnemen…"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:170
-msgid "Password required to enter room"
-msgstr "Wachtwoord voor groepsgesprek vereist"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:175
-msgid "Banned from joining or creating conference"
-msgstr "Deelnemen aan of aanmaken van groepsgesprekken verboden"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:177
-msgid "Room does not exist"
-msgstr "Groepsgesprek bestaat niet"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:179
-msgid "Not allowed to create room"
-msgstr "Aanmaken van groepsgesprek niet toegestaan"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:181
-msgid "Members-only room"
-msgstr "Groepsgesprek is alleen-leden"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:184
-msgid "Choose a different nick"
-msgstr "Kies een andere bijnaam"
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:186
-msgid "Too many occupants in room"
-msgstr "Groepsgesprek heeft te veel deelnemers"
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+msgid "Just now"
+msgstr "Zojuist"
 
 #: main/src/ui/occupant_menu/list.vala:105
 msgid "Owner"
@@ -473,52 +145,239 @@ msgstr "Uitnodigen"
 
 #: main/src/ui/occupant_menu/view.vala:48
 msgid "Invite to Conference"
-msgstr "Uitnodigen in groepsgesprek"
+msgstr "Uitnodigen voor groepsgesprek"
 
 #: main/src/ui/occupant_menu/view.vala:94
 msgid "Start private conversation"
-msgstr "Privégesprek beginnen"
+msgstr "Privégesprek starten"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Kick"
-msgstr "Schoppen"
+msgstr "Wegsturen"
 
 #: main/src/ui/occupant_menu/view.vala:108
 msgid "Grant write permission"
-msgstr ""
+msgstr "Schrijfmachtiging verlenen"
 
 #: main/src/ui/occupant_menu/view.vala:114
 msgid "Revoke write permission"
-msgstr ""
+msgstr "Schrijfmachtiging weigeren"
+
+#: main/src/ui/conversation_view_controller.vala:205
+msgid "Select file"
+msgstr "Kies een bestand"
+
+#: main/src/ui/conversation_view_controller.vala:205
+#: main/src/ui/manage_accounts/dialog.vala:152
+msgid "Select"
+msgstr "Kiezen"
+
+#: main/src/ui/conversation_view_controller.vala:205
+#: main/src/ui/add_conversation/select_contact_dialog.vala:38
+#: main/src/ui/add_conversation/add_conference_dialog.vala:15
+#: main/src/ui/add_conversation/add_conference_dialog.vala:122
+#: main/src/ui/application.vala:200 main/src/ui/manage_accounts/dialog.vala:152
+#: main/data/message_item_widget_edit_mode.ui:54
+#: main/data/add_conversation/add_groupchat_dialog.ui:11
+#: main/data/add_conversation/add_contact_dialog.ui:12
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: main/src/ui/util/helper.vala:127
+#, c-format
+msgid "%s from %s"
+msgstr "%s op %s"
+
+#: main/src/ui/chat_input/chat_input_controller.vala:177
+msgid "This conference does not allow you to send messages."
+msgstr "In deze conferentie mag je geen berichten versturen."
+
+#: main/src/ui/chat_input/chat_input_controller.vala:177
+msgid "Request permission"
+msgstr "Toestemming vragen"
+
+#: main/src/ui/conversation_titlebar/search_entry.vala:11
+#: main/data/shortcuts.ui:37
+msgid "Search messages"
+msgstr "Zoeken naar berichten"
+
+#: main/src/ui/conversation_titlebar/occupants_entry.vala:37
+msgid "Members"
+msgstr "Deelnemers"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:97
+#: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
+#: main/data/shortcuts.ui:17 main/data/conversation_list_titlebar.ui:16
+msgid "Start Conversation"
+msgstr "Gesprek starten"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:98
+msgid "Start"
+msgstr "Starten"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:26
+#: main/src/ui/application.vala:200 main/data/menu_add.ui:13
+#: main/data/shortcuts.ui:24
+msgid "Join Channel"
+msgstr "Deelnemen aan kanaal"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:118
+#: main/data/manage_accounts/add_account_dialog.ui:99
+#: main/data/manage_accounts/add_account_dialog.ui:410
+#: main/data/manage_accounts/add_account_dialog.ui:490
+msgid "Next"
+msgstr "Volgende"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:66
+#: main/src/ui/add_conversation/add_conference_dialog.vala:142
+#: main/src/ui/add_conversation/conference_details_fragment.vala:157
+#: main/src/ui/application.vala:200
+msgid "Join"
+msgstr "Deelnemen"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:147
+#: main/data/manage_accounts/add_account_dialog.ui:175
+#: main/data/manage_accounts/add_account_dialog.ui:267
+msgid "Back"
+msgstr "Terug"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:149
+msgid "Joining…"
+msgstr "Bezig met deelnemen…"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:170
+msgid "Password required to enter room"
+msgstr "Wachtwoord voor groepsgesprek vereist"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:175
+msgid "Banned from joining or creating conference"
+msgstr "Deelnemen aan of aanmaken van groepsgesprekken verboden"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:177
+msgid "Room does not exist"
+msgstr "Groepsgesprek bestaat niet"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:179
+msgid "Not allowed to create room"
+msgstr "Aanmaken van groepsgesprek niet toegestaan"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:181
+msgid "Members-only room"
+msgstr "Groepsgesprek is alleen voor leden"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:184
+msgid "Choose a different nick"
+msgstr "Kies een andere bijnaam"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:186
+msgid "Too many occupants in room"
+msgstr "Groepsgesprek heeft te veel deelnemers"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:192
+#: main/src/ui/manage_accounts/add_account_dialog.vala:263
+#: main/src/ui/manage_accounts/add_account_dialog.vala:296
+#: main/src/ui/manage_accounts/add_account_dialog.vala:306
+#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+msgid "Invalid address"
+msgstr "Ongeldig adres"
+
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
+#: main/data/add_conversation/add_contact_dialog.ui:24
+msgid "Add"
+msgstr "Toevoegen"
 
 #: main/src/ui/global_search.vala:140
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i zoekresultaat"
+msgstr[1] "%i zoekresultaten"
 
 #: main/src/ui/global_search.vala:167
 #, c-format
 msgid "In %s"
-msgstr "In %s"
+msgstr "Op %s"
 
 #: main/src/ui/global_search.vala:167
 #, c-format
 msgid "With %s"
 msgstr "Met %s"
 
-#: main/src/ui/conversation_view_controller.vala:205
-msgid "Select file"
-msgstr ""
+#: main/src/ui/contact_details/settings_provider.vala:12
+#: main/src/ui/contact_details/blocking_provider.vala:31
+#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
+msgid "Settings"
+msgstr "Instellingen"
+
+#: main/src/ui/contact_details/settings_provider.vala:13
+msgid "Local Settings"
+msgstr "Lokale instellingen"
+
+#: main/src/ui/contact_details/settings_provider.vala:28
+#: main/data/settings_dialog.ui:22
+msgid "Send typing notifications"
+msgstr "Aan-het-typenmeldingen versturen"
+
+#: main/src/ui/contact_details/settings_provider.vala:33
+#: main/data/settings_dialog.ui:34
+msgid "Send read receipts"
+msgstr "Leesbevestigingen versturen"
+
+#: main/src/ui/contact_details/settings_provider.vala:38
+#: main/src/ui/contact_details/settings_provider.vala:47
+msgid "Notifications"
+msgstr "Meldingen"
+
+#: main/src/ui/contact_details/settings_provider.vala:83
+#: main/src/ui/contact_details/settings_provider.vala:123
+#: main/src/ui/contact_details/settings_provider.vala:125
+msgid "On"
+msgstr "Aan"
+
+#: main/src/ui/contact_details/settings_provider.vala:85
+#: main/src/ui/contact_details/settings_provider.vala:123
+#: main/src/ui/contact_details/settings_provider.vala:126
+msgid "Off"
+msgstr "Uit"
+
+#: main/src/ui/contact_details/settings_provider.vala:87
+msgid "Only when mentioned"
+msgstr "Alleen bij vermeldingen"
+
+#: main/src/ui/contact_details/settings_provider.vala:89
+#: main/src/ui/contact_details/settings_provider.vala:124
+#, c-format
+msgid "Default: %s"
+msgstr "Standaard: %s"
+
+#: main/src/ui/contact_details/permissions_provider.vala:23
+msgid "Request"
+msgstr "Verzoek sturen"
+
+#: main/src/ui/contact_details/permissions_provider.vala:25
+msgid "Permissions"
+msgstr "Machtigingen"
+
+#: main/src/ui/contact_details/permissions_provider.vala:25
+msgid "Request permission to send messages"
+msgstr "Vraag toestemming om berichten te versturen"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr "Groepsgespreksgegevens"
+msgstr "Groepsgesprekinformatie"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr "Contactgegevens"
+msgstr "Contactpersooninformatie"
+
+#: main/src/ui/contact_details/blocking_provider.vala:31
+msgid "Block"
+msgstr "Blokkeren"
+
+#: main/src/ui/contact_details/blocking_provider.vala:31
+msgid "Communication and status updates in either direction are blocked"
+msgstr "Communicatie en statusupdates worden in beide richtingen geblokkeerd"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
@@ -534,36 +393,35 @@ msgstr "Blijvend"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:57
 msgid "The room will persist after the last occupant leaves"
-msgstr ""
-"Het groepsgesprek blijft bestaan wanneer de laatste deelnemer het verlaat"
+msgstr "Het groepsgesprek blijft bestaan als de laatste deelnemer het verlaat"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Publicly searchable"
-msgstr "Publiek vindbaar"
+msgstr "Openbaar"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
-msgstr "Deelnemers kunnen onderwerp aanpassen"
+msgstr "Deelnemers mogen het onderwerp aanpassen"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "Toestemming om JID's te bekijken"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "Wie mag de JID's bekijken?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
-#: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:211
 #: main/data/add_conversation/conference_details_fragment.ui:175
 #: main/data/add_conversation/add_groupchat_dialog.ui:147
+#: main/data/manage_accounts/dialog.ui:170
+#: main/data/manage_accounts/add_account_dialog.ui:211
 msgid "Password"
 msgstr "Wachtwoord"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
-msgstr ""
+msgstr "Een wachtwoord om toegang tot het gesprek te beperken"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
@@ -587,96 +445,264 @@ msgstr "Berichtgeschiedenis"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
-msgstr "Maximaal aantal berichten uit geschiedenis dat groepsgesprek weergeeft"
+msgstr "Het maximumaantal berichten dat het groepsgesprek toont"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
-msgstr "Gespreksconfiguratie"
+msgstr "Gespreksinstellingen"
 
-#: main/src/ui/contact_details/blocking_provider.vala:31
-#: main/src/ui/contact_details/settings_provider.vala:12
-#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
-msgid "Settings"
-msgstr "Instellingen"
+#: main/src/ui/main_window.vala:198
+msgid "Welcome to Dino!"
+msgstr "Welkom bij Dino!"
 
-#: main/src/ui/contact_details/blocking_provider.vala:31
-msgid "Block"
-msgstr "Blokkeren"
+#: main/src/ui/main_window.vala:199
+msgid "Sign in or create an account to get started."
+msgstr "Log in of maak een account om aan de slag te gaan."
 
-#: main/src/ui/contact_details/blocking_provider.vala:31
-msgid "Communication and status updates in either direction are blocked"
-msgstr "Communicatie en statusupdates worden in beide richtingen geblokkeerd"
+#: main/src/ui/main_window.vala:200
+msgid "Set up account"
+msgstr "Account instellen"
 
-#: main/src/ui/contact_details/permissions_provider.vala:23
-msgid "Request"
-msgstr ""
+#: main/src/ui/main_window.vala:208
+msgid "No active accounts"
+msgstr "Geen actieve accounts"
 
-#: main/src/ui/contact_details/permissions_provider.vala:25
-msgid "Permissions"
-msgstr ""
+#: main/src/ui/main_window.vala:209
+msgid "Manage accounts"
+msgstr "Accounts beheren"
 
-#: main/src/ui/contact_details/permissions_provider.vala:25
-msgid "Request permission to send messages"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:13
-msgid "Local Settings"
-msgstr "Lokale instellingen"
-
-#: main/src/ui/contact_details/settings_provider.vala:28
-#: main/data/settings_dialog.ui:22
-msgid "Send typing notifications"
-msgstr "Aan-het-typen-meldingen sturen"
-
-#: main/src/ui/contact_details/settings_provider.vala:33
-#: main/data/settings_dialog.ui:34
-msgid "Send read receipts"
-msgstr "Leesbevestigingen sturen"
-
-#: main/src/ui/contact_details/settings_provider.vala:38
-#: main/src/ui/contact_details/settings_provider.vala:47
-msgid "Notifications"
-msgstr "Meldingen"
-
-#: main/src/ui/contact_details/settings_provider.vala:83
-#: main/src/ui/contact_details/settings_provider.vala:123
-#: main/src/ui/contact_details/settings_provider.vala:125
-msgid "On"
-msgstr "Aan"
-
-#: main/src/ui/contact_details/settings_provider.vala:85
-#: main/src/ui/contact_details/settings_provider.vala:123
-#: main/src/ui/contact_details/settings_provider.vala:126
-msgid "Off"
-msgstr "Uit"
-
-#: main/src/ui/contact_details/settings_provider.vala:87
-msgid "Only when mentioned"
-msgstr "Enkel wanneer vermeld"
-
-#: main/src/ui/contact_details/settings_provider.vala:89
-#: main/src/ui/contact_details/settings_provider.vala:124
+#: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
-msgid "Default: %s"
-msgstr "Standaard: %s"
+msgid "Remove account %s?"
+msgstr "Wil je '%s' verwijderen?"
 
-#: main/src/ui/conversation_titlebar/search_entry.vala:11
-#: main/data/shortcuts.ui:37
-msgid "Search messages"
-msgstr "Zoek berichten"
+#: main/src/ui/manage_accounts/dialog.vala:128
+msgid "Remove"
+msgstr "Verwijderen"
 
-#: main/src/ui/conversation_titlebar/occupants_entry.vala:37
-msgid "Members"
-msgstr "Leden"
+#: main/src/ui/manage_accounts/dialog.vala:152
+msgid "Select avatar"
+msgstr "Kies een profielfoto"
+
+#: main/src/ui/manage_accounts/dialog.vala:159
+msgid "Images"
+msgstr "Afbeeldingen"
+
+#: main/src/ui/manage_accounts/dialog.vala:163
+msgid "All files"
+msgstr "Alle bestanden"
+
+#: main/src/ui/manage_accounts/dialog.vala:219
+msgid "Connecting…"
+msgstr "Bezig met verbinden…"
+
+#: main/src/ui/manage_accounts/dialog.vala:221
+msgid "Connected"
+msgstr "Verbonden"
+
+#: main/src/ui/manage_accounts/dialog.vala:223
+msgid "Disconnected"
+msgstr "Verbinding verbroken"
+
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Onjuist wachtwoord"
+
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "Ongeldig TLS-certificaat"
+
+#: main/src/ui/manage_accounts/dialog.vala:237
+#: main/src/ui/manage_accounts/dialog.vala:239
+msgid "Error"
+msgstr "Fout"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:82
+msgid "Add Account"
+msgstr "Account toevoegen"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:166
+#, c-format
+msgid "Sign in to %s"
+msgstr "Inloggen op %s"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:210
+#, c-format
+msgid "You can now use the account %s."
+msgstr "Je kunt '%s' nu gebruiken."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:278
+msgid "Wrong username or password"
+msgstr "Onjuiste gebruikersnaam of wachtwoord"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:281
+msgid "Something went wrong"
+msgstr "Er is iets misgegaan"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:321
+msgid "No response from server"
+msgstr "Geen antwoord van server"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
+#, c-format
+msgid "Register on %s"
+msgstr "Registreren op %s"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:330
+msgid "The server requires to sign up through a website"
+msgstr "De server vereist registratie via een website"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:332
+msgid "Open website"
+msgstr "Website openen"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:344
+msgid "Register"
+msgstr "Registreren"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:346
+#, c-format
+msgid "Check %s for information on how to sign up"
+msgstr "Ga naar %s voor meer informatie over het registreren"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:157
+msgid "Message too long"
+msgstr "Het bericht is te lang"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:185
+msgid "edited"
+msgstr "bewerkt"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
+#, c-format
+msgid "%s, %s and %i others are typing…"
+msgstr "%s, %s en %i anderen zijn aan het typen…"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
+#, c-format
+msgid "%s, %s and %s are typing…"
+msgstr "%s, %s en %s zijn aan het typen…"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
+#, c-format
+msgid "%s and %s are typing…"
+msgstr "%s zijn %s aan het typen…"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
+#, c-format
+msgid "%s is typing…"
+msgstr "%s is aan het typen…"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Onversleuteld"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+msgid "Unable to send message"
+msgstr "Het bericht kan niet worden verstuurd"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x, %H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%d %b, %H:%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%d %b, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%a, %H∶%M"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%a, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:48
+msgid "This contact would like to add you to their contact list"
+msgstr "Deze contactpersoon wil je toevoegen aan zijn/haar lijst"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#, c-format
+msgid "Downloading %s…"
+msgstr "Bezig met downloaden van %s…"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#, c-format
+msgid "%s offered: %s"
+msgstr "%s biedt aan: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#, c-format
+msgid "File offered: %s"
+msgstr "Bestand aangeboden: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+msgid "File offered"
+msgstr "Bestand aangeboden"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:62
+msgid "File transfer failed"
+msgstr "Bestandsoverdracht mislukt"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
+msgid "Today"
+msgstr "Vandaag"
+
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
+msgid "%a, %b %d"
+msgstr "%a, %b %d"
 
 #: main/data/chat_input.ui:22 main/data/file_send_overlay.ui:28
 #: main/data/shortcuts.ui:44
 msgid "Send a file"
-msgstr ""
+msgstr "Verstuur een bestand"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
-msgstr ""
+msgstr "Bericht bijwerken"
+
+#: main/data/unified_main_content.ui:48
+msgid "Click here to start a conversation or join a channel."
+msgstr "Klik hier om een gesprek te starten of deel te nemen aan een kanaal."
+
+#: main/data/unified_main_content.ui:100
+msgid "You have no open chats"
+msgstr "Je hebt geen geopende gesprekken"
+
+#: main/data/add_conversation/conference_details_fragment.ui:19
+#: main/data/add_conversation/add_groupchat_dialog.ui:49
+#: main/data/add_conversation/add_contact_dialog.ui:49
+msgid "Account"
+msgstr "Account"
+
+#: main/data/add_conversation/conference_details_fragment.ui:123
+#: main/data/add_conversation/add_groupchat_dialog.ui:120
+msgid "Nick"
+msgstr "Bijnaam"
+
+#: main/data/add_conversation/add_groupchat_dialog.ui:175
+#: main/data/add_conversation/add_contact_dialog.ui:102
+msgid "Alias"
+msgstr "Alias"
+
+#: main/data/add_conversation/add_contact_dialog.ui:8
+msgid "Add Contact"
+msgstr "Contactpersoon toevoegen"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -686,9 +712,89 @@ msgstr "Melding tonen bij nieuw bericht"
 msgid "Convert smileys to emojis"
 msgstr "Smileys omzetten naar emoji’s"
 
-#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:7
+#: main/data/im.dino.Dino.appdata.xml.in:8
+msgid "Modern XMPP Chat Client"
+msgstr "Een moderne XMPP-chatclient"
+
+#: main/data/im.dino.Dino.appdata.xml.in:10
+msgid ""
+"Dino is a modern open-source chat client for the desktop. It focuses on "
+"providing a clean and reliable Jabber/XMPP experience while having your "
+"privacy in mind."
+msgstr ""
+"Dino is een moderne, vrije chattoepassing voor je computer. Dino biedt een "
+"eenvoudige en betrouwbare Jabber-/XMPP-ervaring, met privacy in het "
+"achterhoofd."
+
+#: main/data/im.dino.Dino.appdata.xml.in:11
+msgid ""
+"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
+"configuring privacy-related features such as read receipts and typing "
+"notifications."
+msgstr ""
+"Dino ondersteunt end-to-endversleuteling met OMEMO en OpenPGP en staat je "
+"toe privacy-gerelateerde functies, zoals leesbevestigingen en aan-het-"
+"typenmeldingen, in te stellen."
+
+#: main/data/im.dino.Dino.appdata.xml.in:12
+msgid ""
+"Dino fetches history from the server and synchronizes messages with other "
+"devices."
+msgstr ""
+"Dino haalt de geschiedenis op van de server en synchroniseert berichten met "
+"andere apparaten."
+
+#: main/data/global_search.ui:37
+msgid "No active search"
+msgstr "Geen actieve zoekopdracht"
+
+#: main/data/global_search.ui:52
+msgid "Type to start a search"
+msgstr "Typ om te beginnen met zoeken"
+
+#: main/data/global_search.ui:85
+msgid "No matching messages"
+msgstr "Geen overeenkomende berichten"
+
+#: main/data/global_search.ui:100
+msgid "Check the spelling or try to remove filters"
+msgstr "Controleer de spelling of verwijder filters"
+
+#: main/data/file_send_overlay.ui:80
+msgid "Send"
+msgstr "Versturen"
+
+#: main/data/shortcuts.ui:12
+msgid "General"
+msgstr "Algemeen"
+
+#: main/data/shortcuts.ui:32
+msgid "Conversation"
+msgstr "Gesprek"
+
+#: main/data/shortcuts.ui:52
+msgid "Navigation"
+msgstr "Navigatie"
+
+#: main/data/shortcuts.ui:57
+msgid "Jump to next conversation"
+msgstr "Ga naar volgend gesprek"
+
+#: main/data/shortcuts.ui:64
+msgid "Jump to previous conversation"
+msgstr "Ga naar vorig gesprek"
+
+#: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:9
 msgid "Accounts"
 msgstr "Accounts"
+
+#: main/data/menu_app.ui:17
+msgid "Keyboard Shortcuts"
+msgstr "Sneltoetsen"
+
+#: main/data/menu_app.ui:21
+msgid "About Dino"
+msgstr "Over Dino"
 
 #: main/data/manage_accounts/dialog.ui:200
 msgid "Local alias"
@@ -713,7 +819,7 @@ msgstr "Account aanmaken"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr "Kon geen beveiligde verbinding opstellen"
+msgstr "Kan geen beveiligde verbinding opzetten"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
@@ -729,11 +835,11 @@ msgstr "Of voer een serveradres in"
 
 #: main/data/manage_accounts/add_account_dialog.ui:389
 msgid "Sign in instead"
-msgstr "Met bestaand account inloggen"
+msgstr "Inloggen op account"
 
 #: main/data/manage_accounts/add_account_dialog.ui:470
 msgid "Pick another server"
-msgstr "Kies een andere server"
+msgstr "Andere server kiezen"
 
 #: main/data/manage_accounts/add_account_dialog.ui:542
 msgid "All set up!"
@@ -743,125 +849,15 @@ msgstr "Klaar!"
 msgid "Finish"
 msgstr "Voltooien"
 
-#: main/data/menu_app.ui:17
-msgid "Keyboard Shortcuts"
-msgstr "Sneltoetsen"
-
-#: main/data/menu_app.ui:21
-msgid "About Dino"
-msgstr "Over Dino"
-
-#: main/data/im.dino.Dino.appdata.xml.in:8
-msgid "Modern XMPP Chat Client"
-msgstr "Moderne XMPP-chatcliënt"
-
-#: main/data/im.dino.Dino.appdata.xml.in:10
-msgid ""
-"Dino is a modern open-source chat client for the desktop. It focuses on "
-"providing a clean and reliable Jabber/XMPP experience while having your "
-"privacy in mind."
-msgstr ""
-"Dino is een moderne, vrije chattoepassing voor uw bureaublad. Ze biedt een "
-"eenvoudige en betrouwbare Jabber/XMPP-ervaring, met uw privacy in het "
-"achterhoofd."
-
-#: main/data/im.dino.Dino.appdata.xml.in:11
-msgid ""
-"It supports end-to-end encryption with OMEMO and OpenPGP and allows "
-"configuring privacy-related features such as read receipts and typing "
-"notifications."
-msgstr ""
-"Ze ondersteunt eind-tot-eind-versleuteling met OMEMO en OpenPGP, en staat u "
-"toe privacy-gerelateerde functies, zoals leesbevestigingen en typmeldingen, "
-"in te stellen."
-
-#: main/data/im.dino.Dino.appdata.xml.in:12
-msgid ""
-"Dino fetches history from the server and synchronizes messages with other "
-"devices."
-msgstr ""
-"Dino haalt de geschiedenis op van de server en synchroniseert berichten met "
-"andere apparaten."
-
-#: main/data/add_conversation/conference_details_fragment.ui:19
-#: main/data/add_conversation/add_groupchat_dialog.ui:49
-#: main/data/add_conversation/add_contact_dialog.ui:49
-msgid "Account"
-msgstr "Account"
-
-#: main/data/add_conversation/conference_details_fragment.ui:123
-#: main/data/add_conversation/add_groupchat_dialog.ui:120
-msgid "Nick"
-msgstr "Schermnaam"
-
-#: main/data/add_conversation/add_groupchat_dialog.ui:175
-#: main/data/add_conversation/add_contact_dialog.ui:102
-msgid "Alias"
-msgstr "Alias"
-
-#: main/data/add_conversation/add_contact_dialog.ui:8
-msgid "Add Contact"
-msgstr "Contact toevoegen"
-
-#: main/data/file_send_overlay.ui:80
-msgid "Send"
-msgstr ""
-
-#: main/data/shortcuts.ui:12
-msgid "General"
-msgstr "Algemeen"
-
-#: main/data/shortcuts.ui:32
-msgid "Conversation"
-msgstr ""
-
-#: main/data/shortcuts.ui:52
-msgid "Navigation"
-msgstr "Navigatie"
-
-#: main/data/shortcuts.ui:57
-msgid "Jump to next conversation"
-msgstr "Verspring naar volgend gesprek"
-
-#: main/data/shortcuts.ui:64
-msgid "Jump to previous conversation"
-msgstr "Verspring naar vorige gesprek"
-
-#: main/data/global_search.ui:37
-msgid "No active search"
-msgstr "Geen actieve zoekopdracht"
-
-#: main/data/global_search.ui:52
-msgid "Type to start a search"
-msgstr "Typ om te beginnen zoeken"
-
-#: main/data/global_search.ui:85
-msgid "No matching messages"
-msgstr "Geen overeenkomende berichten"
-
-#: main/data/global_search.ui:100
-msgid "Check the spelling or try to remove filters"
-msgstr "Controleer de spelling of probeer filters te verwijderen"
-
-#: main/data/unified_main_content.ui:48
-msgid "Click here to start a conversation or join a channel."
-msgstr "Klik hier om een gesprek te beginnen of een kanaal te openen."
-
-#: main/data/unified_main_content.ui:100
-msgid "You have no open chats"
-msgstr "Je hebt geen open chats"
-
 #~ msgid "No active conversations"
 #~ msgstr "Geen gesprekken actief"
 
 #~ msgid "Main window with conversations"
 #~ msgstr "Hoofdvenster met gesprekken"
 
-#, c-format
 #~ msgid "%s, %s and %i others"
 #~ msgstr "%s, %s en %i anderen"
 
-#, c-format
 #~ msgid "You can now start using %s"
 #~ msgstr "U kunt %s nu beginnen gebruiken"
 
@@ -871,11 +867,9 @@ msgstr "Je hebt geen open chats"
 #~ msgid "Save"
 #~ msgstr "Opslaan"
 
-#, c-format
 #~ msgid "%s, %s and %s"
 #~ msgstr "%s, %s en %s"
 
-#, c-format
 #~ msgid "%s and %s"
 #~ msgstr "%s en %s"
 
@@ -887,7 +881,6 @@ msgstr "Je hebt geen open chats"
 #~ msgid "has stopped typing"
 #~ msgstr "is gestopt met typen"
 
-#, c-format
 #~ msgid "%i search results"
 #~ msgstr "%i zoekresultaten"
 

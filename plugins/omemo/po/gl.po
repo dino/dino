@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"POT-Creation-Date: 2020-09-10 20:10+0200\n"
 "PO-Revision-Date: 2020-04-15 00:11+0000\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/gl/>\n"
@@ -18,22 +18,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.0-dev\n"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:73
-msgid "Manage"
-msgstr "Xestionar"
-
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
-msgid "This contact has new devices"
-msgstr "Este contacto ten novos dispositivos"
-
-#: plugins/omemo/src/ui/own_notifications.vala:29
-msgid "OMEMO trust decision required"
-msgstr "Precisa decidir sobre a confianza OMEMO"
-
-#: plugins/omemo/src/ui/own_notifications.vala:31
+#: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format
-msgid "Did you add a new device for account %s?"
-msgstr "Engadiches un novo dispositivo para a conta %s?"
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:153
+msgid "Manage devices"
+msgstr ""
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
@@ -195,6 +195,43 @@ msgstr ""
 msgid "Back"
 msgstr "Atrás"
 
+#: plugins/omemo/src/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "Xestionar"
+
+#: plugins/omemo/src/ui/device_notification_populator.vala:83
+msgid "This contact has new devices"
+msgstr "Este contacto ten novos dispositivos"
+
+#: plugins/omemo/src/ui/account_settings_widget.vala:42
+#: plugins/omemo/src/ui/account_settings_widget.vala:45
+msgid "Own fingerprint"
+msgstr "Pegada dixital propia"
+
+#: plugins/omemo/src/ui/account_settings_widget.vala:42
+msgid "Will be generated on first connection"
+msgstr "Crearase na primeira conexión"
+
+#: plugins/omemo/src/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "Precisa decidir sobre a confianza OMEMO"
+
+#: plugins/omemo/src/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "Engadiches un novo dispositivo para a conta %s?"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:42
+msgid "Encryption"
+msgstr "Cifrado"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#, c-format
+msgid "%d OMEMO device"
+msgid_plural "%d OMEMO devices"
+msgstr[0] "%d dispositivo OMEMO"
+msgstr[1] "%d dispositivos OMEMO"
+
 #: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "OMEMO Key Management"
 msgstr "Xestión das chaves OMEMO"
@@ -246,33 +283,12 @@ msgstr "Verificada"
 msgid "Unused"
 msgstr "Sen usar"
 
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-#: plugins/omemo/src/ui/account_settings_widget.vala:45
-msgid "Own fingerprint"
-msgstr "Pegada dixital propia"
-
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connection"
-msgstr "Crearase na primeira conexión"
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-msgid "Encryption"
-msgstr "Cifrado"
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-#, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d dispositivo OMEMO"
-msgstr[1] "%d dispositivos OMEMO"
-
 #~ msgid "Not matching"
 #~ msgstr "Non coinciden"
 
 #~ msgid "Matching"
 #~ msgstr "Coinciden"
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed, any future messages sent by %s using this key will be "
 #~ "highlighted accordingly in the chat window."
@@ -292,7 +308,6 @@ msgstr[1] "%d dispositivos OMEMO"
 #~ "Comezar aceptando esta chave durante a comunicación co seu contacto "
 #~ "asociado"
 
-#, c-format
 #~ msgid ""
 #~ "This means it cannot be used by %s to receive messages, and any messages "
 #~ "sent by it will be ignored."
@@ -300,7 +315,6 @@ msgstr[1] "%d dispositivos OMEMO"
 #~ "Esto significa que non pode ser utilizada por %s para recibir mensaxes, e "
 #~ "calquera mensaxe enviada con ela será ignorada."
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed, any future messages sent by %s using this key will be "
 #~ "ignored and none of your messages will be readable using this key."
@@ -309,7 +323,6 @@ msgstr[1] "%d dispositivos OMEMO"
 #~ "esta chave será ignorada e ningunha das súas mensaxes serán lexibles "
 #~ "usando esta chave."
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed this key will be usable by %s to receive and send messages."
 #~ msgstr ""

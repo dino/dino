@@ -149,10 +149,10 @@ public class BadMessagesWidget : Box {
             }
         }
         if (badness_type == BadnessType.UNTRUSTED) {
-            sb.append("%s has been using an untrusted device. You won't see messages from devices that you do not trust.".printf(who));
-            sb.append(" <a href=\"\">%s</a>".printf("Manage devices"));
+            sb.append(_("%s has been using an untrusted device. You won't see messages from devices that you do not trust.").printf(who));
+            sb.append(" <a href=\"\">%s</a>".printf(_("Manage devices")));
         } else {
-            sb.append("%s does not trust this device. That means, you might be missing messages.".printf(who));
+            sb.append(_("%s does not trust this device. That means, you might be missing messages.").printf(who));
         }
         Label label = new Label(sb.str) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
         label.get_style_context().add_class("dim-label");

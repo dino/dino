@@ -1,17 +1,21 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: dino-omemo-0.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 20:10+0200\n"
-"PO-Revision-Date: 2020-09-05 19:21+0000\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-omemo/"
-"nl/>\n"
-"Language: nl\n"
+"PO-Revision-Date: 2020-08-21 05:36+0000\n"
+"Language-Team: none\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Weblate 4.2.1-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format
@@ -32,37 +36,37 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
-msgstr "Sleutel beheren"
+msgstr "Spravovat klíč"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
 msgstr ""
-"Vergelijk de vingerafdruk, letter voor letter, met die op het apparaat van "
-"je contactpersoon."
+"Porovnejte otisk klíče, znak po znaku, s tím, který je zobrazen na zařízení "
+"vašeho kontaktu."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints differ"
-msgstr "Vingerafdrukken wijken af"
+msgstr "Otisky klíčů se liší"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 msgid "Fingerprints match"
-msgstr "Vingerafdrukken komen overeen"
+msgstr "Otisky klíčů odpovídají"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
 #: plugins/omemo/src/ui/manage_key_dialog.vala:88
 msgid "Cancel"
-msgstr "Annuleren"
+msgstr "Zrušit"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:40
 msgid "Confirm"
-msgstr "Bevestigen"
+msgstr "Potvrdit"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 msgid "Verify key"
-msgstr "Sleutel verifiëren"
+msgstr "Ověřit klíč"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
@@ -70,12 +74,12 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Toekomstige berichten van %s van het apparaat dat deze sleutel gebruikt, "
-"worden gemarkeerd in het gespreksvenster."
+"Budoucí zprávy, s odesílatelem %s, ze zařízení, které používá tento klíč, "
+"budou odpovídajícím způsobem zvýrazněny v okně chatu."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
-msgstr "Vingerafdrukken komen niet overeen"
+msgstr "Otisky klíčů se neshodují"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:72
 #, c-format
@@ -84,81 +88,77 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Zorg dat je de juiste vingerafdrukken vergelijkt. Als de vingerafdrukken "
-"niet overeenkomen, kan het zijn dat het account van %s gehackt is. Overweeg "
-"in dat geval deze sleutel te weigeren."
+"Ověřte, zda porovnáváte správný otisk klíče. Pokud se otisky neshodují, účet "
+"%s může být ohrožen a měli byste zvážit zamítnutí tohoto klíče."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid "Verify key fingerprint"
-msgstr "Vingerafdruk van sleutel verifiëren"
+msgstr "Ověření otisku klíče"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
-"Vergelijk de vingerafdruk van deze sleutel met de vingerafdruk die wordt "
-"getoond op het apparaat van je contactpersoon."
+"Porovnejte otisk tohoto klíče s otiskem zobrazeným na zařízení kontaktu."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #: plugins/omemo/src/ui/contact_details_dialog.vala:256
 msgid "Reject key"
-msgstr "Sleutel weigeren"
+msgstr "Odmítnout klíč"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Blokkeer versleutelde communicatie met het apparaat van deze contactpersoon "
-"dat deze sleutel gebruikt."
+"Zablokujte šifrovanou komunikaci se zařízením kontaktu, které tento klíč "
+"používá."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #: plugins/omemo/src/ui/contact_details_dialog.vala:251
 msgid "Accept key"
-msgstr "Sleutel accepteren"
+msgstr "Přijmout klíč"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Sta versleutelde communicatie toe met het apparaat van deze contactpersoon "
-"dat deze sleutel gebruikt."
+"Povolit šifrovanou komunikaci se zařízením kontaktu, které používá tento "
+"klíč."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid "This key is currently %s."
-msgstr "Deze sleutel is momenteel %s."
+msgstr "Tento klíč je v současné době %s."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 msgid "accepted"
-msgstr "geaccepteerd"
+msgstr "akceptován"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
-"Dit betekent dat %s deze kan gebruiken om berichten te ontvangen en "
-"versturen."
+"To znamená, že jej %s může používat k přijímání a odesílání šifrovaných "
+"zpráv."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
-msgstr "geverifieerd"
+msgstr "ověřen"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
-msgstr ""
-"Er is vastgesteld dat deze sleutel overeenkomt met de sleutel op het "
-"apparaat van de contactpersoon."
+msgstr "Navíc bylo ověřeno, že odpovídá klíči v zařízení kontaktu."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 msgid "rejected"
-msgstr "geweigerd"
+msgstr "odmítnut"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
@@ -166,8 +166,8 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
-"De sleutel kan niet door %s worden gebruikt om berichten te ont- en "
-"versleutelen."
+"To znamená, že jej %s nemůže použít k dešifrování zpráv a vy neuvidíte "
+"zprávy šifrované tímto klíčem."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
@@ -175,8 +175,8 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Je ziet geen versleutelde berichten van het apparaat van %s dat deze sleutel "
-"gebruikt. Daarnaast kan het apparaat jouw berichten niet meer ontsleutelen."
+"Ze zařízení %s, které používá tento klíč, se šifrované zprávy nezobrazí. "
+"Toto zařízení už také nebude schopno rozluštit vaše zprávy."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
@@ -184,183 +184,97 @@ msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
-"Je kunt versleutelde berichten uitwisselen met het apparaat van %s dat deze "
-"sleutel gebruikt."
+"Budete si moci vyměňovat šifrované zprávy se zařízením %s, které tento klíč "
+"používá."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
-msgstr "Terug"
+msgstr "Zpět"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
-msgstr "Beheren"
+msgstr "Spravovat"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
-msgstr "Deze contactpersoon heeft nieuwe apparaten"
+msgstr "Tento kontakt má nová zařízení"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 #: plugins/omemo/src/ui/account_settings_widget.vala:45
 msgid "Own fingerprint"
-msgstr "Mijn vingerafdruk"
+msgstr "Otisk vlastního klíče"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 msgid "Will be generated on first connection"
-msgstr "Wordt bij de eerste verbinding gegenereerd"
+msgstr "Budou generovány při prvním připojení"
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr "OMEMO-vertrouwenskeuze vereist"
+msgstr "Vyžaduje se rozhodnutí o důvěře OMEMO"
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Heb je een nieuw apparaat toegevoegd aan %s?"
+msgstr "Přidali jste nové zařízení pro účet %s?"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 msgid "Encryption"
-msgstr "Versleuteling"
+msgstr "Šifrování"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
-msgstr[0] "%d OMEMO-apparaat"
-msgstr[1] "%d OMEMO-apparaten"
+msgstr[0] "%d OMEMO zařízení"
+msgstr[1] "%d OMEMO zařízení"
+msgstr[2] "%d OMEMO zařízení"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "OMEMO Key Management"
-msgstr "OMEMO-sleutelbeheer"
+msgstr "OMEMO Správa klíčů"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "Automatically accept new keys"
-msgstr "Nieuwe sleutels automatisch accepteren"
+msgstr "Automaticky přijímat nové klíče"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
-"Nieuwe sleutels van deze contactpersoon worden automatisch geaccepteerd."
+msgstr "Nové šifrovací klíče od tohoto kontaktu budou automaticky přijímány."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
-msgstr "Mijn sleutel"
+msgstr "Vlastní klíč"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New keys"
-msgstr "Nieuwe sleutels"
+msgstr "Nové klíče"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Associated keys"
-msgstr "Geassocieerde sleutels"
+msgstr "Přidružené klíče"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
-msgstr "Inactieve sleutels"
+msgstr "Neaktivní klíče"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Nieuwe sleutels van je andere apparaten worden automatisch geaccepteerd."
+"Nové šifrovací klíče z vašich ostatních zařízení budou automaticky přijímány."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
-msgstr "Geaccepteerd"
+msgstr "Přijat"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:324
 msgid "Rejected"
-msgstr "Geweigerd"
+msgstr "Odmítnut"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:329
 msgid "Verified"
-msgstr "Geverifieerd"
+msgstr "Ověřen"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
-msgstr "Ongebruikt"
-
-#~ msgid "Not matching"
-#~ msgstr "Komen niet overeen"
-
-#~ msgid "Matching"
-#~ msgstr "Komen overeen"
-
-#~ msgid ""
-#~ "Once confirmed, any future messages sent by %s using this key will be "
-#~ "highlighted accordingly in the chat window."
-#~ msgstr ""
-#~ "Zodra bevestigd, worden nieuwe berichten verstuurd door %s met deze "
-#~ "sleutel uitgelicht in het chatvenster."
-
-#~ msgid ""
-#~ "Stop accepting this key during communication with its associated contact."
-#~ msgstr ""
-#~ "Accepteer niet langer deze sleutel tijdens communicatie met het "
-#~ "bijbehorende contact."
-
-#~ msgid ""
-#~ "Start accepting this key during communication with its associated contact"
-#~ msgstr ""
-#~ "Accepteer deze sleutel tijdens communicatie met het bijbehorende contact"
-
-#~ msgid ""
-#~ "This means it cannot be used by %s to receive messages, and any messages "
-#~ "sent by it will be ignored."
-#~ msgstr ""
-#~ "Dit betekent dat het niet gebruikt kan worden door %s om berichten te "
-#~ "ontvangen. Berichten die hiermee verstuurd worden worden genegeerd."
-
-#~ msgid ""
-#~ "Once confirmed, any future messages sent by %s using this key will be "
-#~ "ignored and none of your messages will be readable using this key."
-#~ msgstr ""
-#~ "Zodra bevestigd, worden toekomstige berichten die verstuurd worden door "
-#~ "%s met deze sleutel genegeerd en zullen geen van je berichten leesbaar "
-#~ "zijn met deze sleutel."
-
-#~ msgid ""
-#~ "Once confirmed this key will be usable by %s to receive and send messages."
-#~ msgstr ""
-#~ "Zodra bevestigd kan deze sleutel gebruikt worden door %s om berichten te "
-#~ "ontvangen en te versturen."
-
-#~ msgid ""
-#~ "When this contact adds new encryption keys to their account, "
-#~ "automatically accept them."
-#~ msgstr ""
-#~ "Indien dit contact nieuwe encryptiesleutels toevoegt aan hun account, "
-#~ "automatisch accepteren."
-
-#~ msgid ""
-#~ "When you add new encryption keys to your account, automatically accept "
-#~ "them."
-#~ msgstr ""
-#~ "Nieuwe encryptiesleutels die aan het account worden toegevoegd "
-#~ "automatisch accepteren."
-
-#, fuzzy
-#~ msgid ""
-#~ "Start accepting this key during communication with its associated contact."
-#~ msgstr ""
-#~ "Accepteer deze sleutel tijdens communicatie met het bijbehorende contact"
-
-#~ msgid "Reject Key"
-#~ msgstr "Sleutel Afwijzen"
-
-#~ msgid "Accept Key"
-#~ msgstr "Sleutel Aanvaarden"
-
-#~ msgid "Unknown device (0x%.8x)"
-#~ msgstr "Onbekend apparaat (0x%.8x)"
-
-#~ msgid "Other devices"
-#~ msgstr "Andere apparaten"
-
-#~ msgid "- None -"
-#~ msgstr "- Geen -"
-
-#~ msgid "OMEMO"
-#~ msgstr "OMEMO"
-
-#~ msgid "Database error"
-#~ msgstr "Databasefout"
+msgstr "Nepoužit"

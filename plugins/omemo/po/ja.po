@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"POT-Creation-Date: 2020-09-10 20:10+0200\n"
 "PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: none\n"
 "Language: ja\n"
@@ -17,22 +17,22 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.0-dev\n"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:73
-msgid "Manage"
-msgstr "管理"
-
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
-msgid "This contact has new devices"
-msgstr "この連絡先に新しいデバイスが追加されました"
-
-#: plugins/omemo/src/ui/own_notifications.vala:29
-msgid "OMEMO trust decision required"
-msgstr "OMEMO 信頼選択が必要です"
-
-#: plugins/omemo/src/ui/own_notifications.vala:31
+#: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format
-msgid "Did you add a new device for account %s?"
-msgstr "アカウント %s に新しいデバイスを追加しましたか？"
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:153
+msgid "Manage devices"
+msgstr "デバイスを管理"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
@@ -187,6 +187,42 @@ msgstr ""
 msgid "Back"
 msgstr "戻る"
 
+#: plugins/omemo/src/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "管理"
+
+#: plugins/omemo/src/ui/device_notification_populator.vala:83
+msgid "This contact has new devices"
+msgstr "この連絡先に新しいデバイスが追加されました"
+
+#: plugins/omemo/src/ui/account_settings_widget.vala:42
+#: plugins/omemo/src/ui/account_settings_widget.vala:45
+msgid "Own fingerprint"
+msgstr "自身のフィンガープリント"
+
+#: plugins/omemo/src/ui/account_settings_widget.vala:42
+msgid "Will be generated on first connection"
+msgstr "最初の接続で生成されます"
+
+#: plugins/omemo/src/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "OMEMO 信頼選択が必要です"
+
+#: plugins/omemo/src/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "アカウント %s に新しいデバイスを追加しましたか？"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:42
+msgid "Encryption"
+msgstr "暗号化"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#, c-format
+msgid "%d OMEMO device"
+msgid_plural "%d OMEMO devices"
+msgstr[0] "%d 台の OMEMO デバイス"
+
 #: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "OMEMO Key Management"
 msgstr "OMEMO キー管理"
@@ -237,35 +273,12 @@ msgstr "検証済み"
 msgid "Unused"
 msgstr "未使用"
 
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-#: plugins/omemo/src/ui/account_settings_widget.vala:45
-msgid "Own fingerprint"
-msgstr "自身のフィンガープリント"
-
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connection"
-msgstr "最初の接続で生成されます"
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-msgid "Encryption"
-msgstr "暗号化"
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-#, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d 台の OMEMO デバイス"
-
-#~ msgid "Manage devices"
-#~ msgstr "デバイスを管理"
-
 #~ msgid "Not matching"
 #~ msgstr "一致しない"
 
 #~ msgid "Matching"
 #~ msgstr "一致"
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed, any future messages sent by %s using this key will be "
 #~ "highlighted accordingly in the chat window."
@@ -283,7 +296,6 @@ msgstr[0] "%d 台の OMEMO デバイス"
 #~ msgstr ""
 #~ "関連付けられた連絡先とトークをする際に、このキーを許可するようにします"
 
-#, c-format
 #~ msgid ""
 #~ "This means it cannot be used by %s to receive messages, and any messages "
 #~ "sent by it will be ignored."
@@ -291,7 +303,6 @@ msgstr[0] "%d 台の OMEMO デバイス"
 #~ "このキーを使って %s からのメッセージを受信できません。また、当該アドレスか"
 #~ "らのメッセージはすべて無視されます。"
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed, any future messages sent by %s using this key will be "
 #~ "ignored and none of your messages will be readable using this key."
@@ -299,7 +310,6 @@ msgstr[0] "%d 台の OMEMO デバイス"
 #~ "一度確認すると、今後このキーを使って %s から送信されるメッセージは無視さ"
 #~ "れ、このキーを使ったご自身のメッセージも読み取れなくなります。"
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed this key will be usable by %s to receive and send messages."
 #~ msgstr ""

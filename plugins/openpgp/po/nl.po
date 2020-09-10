@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"PO-Revision-Date: 2017-11-17 20:52+0000\n"
+"POT-Creation-Date: 2020-09-10 20:10+0200\n"
+"PO-Revision-Date: 2020-09-05 19:21+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/nl/>\n"
 "Language: nl\n"
@@ -11,13 +11,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr "Publiceren van sleutels uitgeschakeld"
+msgstr "Sleutelpublicatie uitgeschakeld"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
@@ -25,19 +25,19 @@ msgstr "Fout in GnuPG"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "Geen sleutels beschikbaar. Genereer er een!"
+msgstr "Geen sleutels beschikbaar. Genereer een sleutel!"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "Selecteer een sleutel"
+msgstr "Kies een sleutel"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
-msgstr "Laden…"
+msgstr "Bezig met laden…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr "GnuPG inroepen"
+msgstr "Bezig met aanroepen van GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
