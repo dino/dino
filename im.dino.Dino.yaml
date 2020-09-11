@@ -1,0 +1,44 @@
+app-id: im.dino.Dino
+command: dino
+
+runtime: org.gnome.Platform
+runtime-version: "3.36"
+sdk: org.gnome.Sdk
+
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+
+cleanup:
+  - '*.la'
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - /share/vala
+
+modules:
+  - name: libqrencode
+    sources:
+      - type: archive
+        url: https://fukuchi.org/works/qrencode/qrencode-4.1.0.tar.bz2
+        sha512: 50ccc65f748cc1007dccd8d0eee0063b870c3e8a5fe5b8b2a813881151a86748a36844bcfa6ab08c82674b80e9b5bcbfd564ade92562cc49e01cbfa45376b4a9
+
+  - name: libsignal-protocol-c
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DBUILD_SHARED_LIBS=true
+    sources:
+      - type: archive
+        url: https://github.com/signalapp/libsignal-protocol-c/archive/v2.3.2.tar.gz
+        sha256: f3826f3045352e14027611c95449bfcfe39bfd3d093d578c70f70eee0c85000d
+
+  - name: dino
+    buildsystem: cmake-ninja
+    builddir: true
+    sources:
+      - type: git
+        url: https://github.com/dino/dino.git
