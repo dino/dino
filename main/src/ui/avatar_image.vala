@@ -69,12 +69,12 @@ public class AvatarImage : Misc {
         Jid[] jids = this.jids;
         if (drawer == null && jids.length == 0) {
             switch (conversation.type_) {
-                case CHAT:
-                case GROUPCHAT_PM:
+                case Conversation.Type.CHAT:
+                case Conversation.Type.GROUPCHAT_PM:
                     // In direct chats or group chats, conversation avatar is same as counterpart avatar
                     jids = { conversation.counterpart };
                     break;
-                case GROUPCHAT:
+                case Conversation.Type.GROUPCHAT:
                     string user_color = Util.get_avatar_hex_color(stream_interactor, account, conversation.counterpart, conversation);
                     if (avatar_manager.has_avatar_cached(account, conversation.counterpart)) {
                         drawer = new AvatarDrawer().tile(avatar_manager.get_cached_avatar(account, conversation.counterpart), "#", user_color);
