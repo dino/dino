@@ -44,8 +44,6 @@ public class AvatarImage : Misc {
     }
 
     public override bool draw(Cairo.Context ctx_in) {
-        if (drawer == null) return false;
-
         Cairo.Context ctx = ctx_in;
         int width = this.width, height = this.height, base_factor = 1;
         if (use_image_surface == -1) {
@@ -53,7 +51,7 @@ public class AvatarImage : Misc {
             use_image_surface = 1;
         }
         if (use_image_surface == 1) {
-            ctx_in.scale(1f/scale_factor, 1f/scale_factor);
+            ctx_in.scale(1f / scale_factor, 1f / scale_factor);
             if (cached_surface != null) {
                 ctx_in.set_source_surface(cached_surface, 0, 0);
                 ctx_in.paint();
@@ -67,10 +65,66 @@ public class AvatarImage : Misc {
             ctx = new Cairo.Context(cached_surface);
         }
 
+        AvatarDrawer drawer = this.drawer;
+        Jid[] jids = this.jids;
+        if (drawer == null && jids.length == 0) {
+            switch (conversation.type_) {
+                case CHAT:
+                case GROUPCHAT_PM:
+                    // In direct chats or group chats, conversation avatar is same as counterpart avatar
+                    jids = { conversation.counterpart };
+                    break;
+                case GROUPCHAT:
+                    string user_color = Util.get_avatar_hex_color(stream_interactor, account, conversation.counterpart, conversation);
+                    if (avatar_manager.has_avatar_cached(account, conversation.counterpart)) {
+                        drawer = new AvatarDrawer().tile(avatar_manager.get_cached_avatar(account, conversation.counterpart), "#", user_color);
+                        if (allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
+                    } else {
+                        Gee.List<Jid>? occupants = muc_manager.get_other_offline_members(conversation.counterpart, account);
+                        if (muc_manager.is_private_room(account, conversation.counterpart) && occupants != null && occupants.size > 0) {
+                            jids = occupants.to_array();
+                        } else {
+                            drawer = new AvatarDrawer().tile(null, "#", user_color);
+                            if (allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
+                        }
+                        try_load_avatar_async(conversation.counterpart);
+                    }
+                    break;
+            }
+        }
+        if (drawer == null && jids.length > 0) {
+            drawer = new AvatarDrawer();
+            for (int i = 0; i < (jids.length <= 4 ? jids.length : 3); i++) {
+                Jid avatar_jid = jids[i];
+                Jid? real_avatar_jid = null;
+                if (conversation.type_ != Conversation.Type.CHAT && avatar_jid.equals_bare(conversation.counterpart) && muc_manager.is_private_room(account, conversation.counterpart.bare_jid)) {
+                    // In private room, consider real jid
+                    real_avatar_jid = muc_manager.get_real_jid(avatar_jid, account) ?? avatar_jid;
+                }
+                string display_name = Util.get_participant_display_name(stream_interactor, conversation, jids[i]);
+                string user_color = Util.get_avatar_hex_color(stream_interactor, account, jids[i], conversation);
+                if (avatar_manager.has_avatar_cached(account, avatar_jid)) {
+                    drawer.tile(avatar_manager.get_cached_avatar(account, avatar_jid), display_name, user_color);
+                } else if (real_avatar_jid != null && avatar_manager.has_avatar_cached(account, real_avatar_jid)) {
+                    drawer.tile(avatar_manager.get_cached_avatar(account, avatar_jid), display_name, user_color);
+                } else {
+                    drawer.tile(null, display_name, user_color);
+                    try_load_avatar_async(avatar_jid);
+                    if (real_avatar_jid != null) try_load_avatar_async(real_avatar_jid);
+                }
+            }
+            if (jids.length > 4) {
+                drawer.plus();
+            }
+            if (allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
+        }
+
+
+        if (drawer == null) return false;
         drawer.size(height, width)
-            .scale(base_factor)
-            .font(get_pango_context().get_font_description().get_family())
-            .draw_on_context(ctx);
+                .scale(base_factor)
+                .font(get_pango_context().get_font_description().get_family())
+                .draw_on_context(ctx);
 
         if (use_image_surface == 1) {
             ctx_in.set_source_surface(ctx.get_target(), 0, 0);
@@ -79,6 +133,20 @@ public class AvatarImage : Misc {
         }
 
         return true;
+    }
+
+    private void try_load_avatar_async(Jid jid) {
+        if (avatar_manager.has_avatar(account, jid)) {
+            avatar_manager.get_avatar.begin(account, jid, (_, res) => {
+                var avatar = avatar_manager.get_avatar.end(res);
+                if (avatar != null) force_redraw();
+            });
+        }
+    }
+
+    private void force_redraw() {
+        this.cached_surface = null;
+        queue_draw();
     }
 
     private void disconnect_stream_interactor() {
@@ -105,12 +173,12 @@ public class AvatarImage : Misc {
 
     private void update_avatar_if_jid(Jid jid) {
         if (jid.equals_bare(this.conversation.counterpart)) {
-            update_avatar_async.begin();
+            force_redraw();
             return;
         }
         foreach (Jid ours in this.jids) {
             if (jid.equals_bare(ours)) {
-                update_avatar_async.begin();
+                force_redraw();
                 return;
             }
         }
@@ -118,7 +186,7 @@ public class AvatarImage : Misc {
 
     private void on_connection_changed(Account account, ConnectionManager.ConnectionState state) {
         if (!account.equals(this.account)) return;
-        update_avatar_async.begin();
+        force_redraw();
     }
 
     private void on_roster_updated(Account account, Jid jid, Roster.Item roster_item) {
@@ -148,26 +216,18 @@ public class AvatarImage : Misc {
     }
 
     public void set_conversation(StreamInteractor stream_interactor, Conversation conversation) {
-        set_avatar_async.begin(stream_interactor, conversation, new Jid[0]);
+        set_avatar(stream_interactor, conversation, new Jid[0]);
     }
 
     public void set_conversation_participant(StreamInteractor stream_interactor, Conversation conversation, Jid sub_jid) {
-        set_avatar_async.begin(stream_interactor, conversation, new Jid[] {sub_jid});
+        set_avatar(stream_interactor, conversation, new Jid[] {sub_jid});
     }
 
     public void set_conversation_participants(StreamInteractor stream_interactor, Conversation conversation, Jid[] sub_jids) {
-        set_avatar_async.begin(stream_interactor, conversation, sub_jids);
+        set_avatar(stream_interactor, conversation, sub_jids);
     }
 
-    private async void update_avatar_async() {
-        this.cached_surface = null;
-        this.drawer = yield Util.get_conversation_participants_avatar_drawer(stream_interactor, conversation, jids);
-        if (allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
-
-        queue_draw();
-    }
-
-    private async void set_avatar_async(StreamInteractor stream_interactor, Conversation conversation, Jid[] jids) {
+    private void set_avatar(StreamInteractor stream_interactor, Conversation conversation, Jid[] jids) {
         if (this.stream_interactor != null && stream_interactor != this.stream_interactor) {
             disconnect_stream_interactor();
         }
@@ -184,14 +244,14 @@ public class AvatarImage : Misc {
         this.conversation = conversation;
         this.jids = jids;
 
-        yield update_avatar_async();
+        force_redraw();
     }
 
     public void set_text(string text, bool gray = true) {
         disconnect_stream_interactor();
         this.drawer = new AvatarDrawer().tile(null, text, null);
         if (gray) drawer.grayscale();
-        queue_draw();
+        force_redraw();
     }
 }
 

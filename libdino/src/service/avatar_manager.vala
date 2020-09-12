@@ -67,6 +67,48 @@ public class AvatarManager : StreamInteractionModule, Object {
         return image;
     }
 
+    private string? get_avatar_hash(Account account, Jid jid_) {
+        Jid jid = jid_;
+        if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid_, account)) {
+            jid = jid_.bare_jid;
+        }
+        if (user_avatars.has_key(jid)) {
+            return user_avatars[jid];
+        } else if (vcard_avatars.has_key(jid)) {
+            return vcard_avatars[jid];
+        } else {
+            return null;
+        }
+    }
+
+    public bool has_avatar_cached(Account account, Jid jid) {
+        string? hash = get_avatar_hash(account, jid);
+        return hash != null && cached_pixbuf.has_key(hash);
+    }
+
+    public async bool has_avatar_stored(Account account, Jid jid) {
+        string? hash = get_avatar_hash(account, jid);
+        if (hash == null) return false;
+        if (cached_pixbuf.has_key(hash)) return true;
+        try {
+            if ((yield File.new_for_path(Path.build_filename(folder, hash)).query_info_async(FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NONE)) != null) return true;
+        } catch (IOError ignored) {
+            return false;
+        }
+        return false;
+    }
+
+    public bool has_avatar(Account account, Jid jid) {
+        return get_avatar_hash(account, jid) != null;
+    }
+
+    public Pixbuf? get_cached_avatar(Account account, Jid jid_) {
+        string? hash = get_avatar_hash(account, jid_);
+        if (hash == null) return null;
+        if (cached_pixbuf.has_key(hash)) return cached_pixbuf[hash];
+        return null;
+    }
+
     public async Pixbuf? get_avatar(Account account, Jid jid_) {
         Jid jid = jid_;
         if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid_, account)) {
@@ -229,13 +271,13 @@ public class AvatarManager : StreamInteractionModule, Object {
     public async Pixbuf? get_image(string id) {
         try {
             File file = File.new_for_path(Path.build_filename(folder, id));
-            FileInputStream stream = yield file.read_async();
+            FileInputStream stream = yield file.read_async(Priority.LOW);
 
             uint8 fbuf[1024];
             size_t size;
 
             Checksum checksum = new Checksum (ChecksumType.SHA1);
-            while ((size = yield stream.read_async(fbuf)) > 0) {
+            while ((size = yield stream.read_async(fbuf, Priority.LOW)) > 0) {
                 checksum.update(fbuf, size);
             }
 
