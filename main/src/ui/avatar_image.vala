@@ -106,7 +106,7 @@ public class AvatarImage : Misc {
                 if (avatar_manager.has_avatar_cached(account, avatar_jid)) {
                     drawer.tile(avatar_manager.get_cached_avatar(account, avatar_jid), display_name, user_color);
                 } else if (real_avatar_jid != null && avatar_manager.has_avatar_cached(account, real_avatar_jid)) {
-                    drawer.tile(avatar_manager.get_cached_avatar(account, avatar_jid), display_name, user_color);
+                    drawer.tile(avatar_manager.get_cached_avatar(account, real_avatar_jid), display_name, user_color);
                 } else {
                     drawer.tile(null, display_name, user_color);
                     try_load_avatar_async(avatar_jid);
