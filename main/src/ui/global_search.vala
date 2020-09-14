@@ -119,6 +119,7 @@ public class GlobalSearch : Overlay {
 
     private void clear_search() {
         results_box.@foreach((widget) => { widget.destroy(); });
+        loaded_results = 0;
     }
 
     private void set_search(string search) {
