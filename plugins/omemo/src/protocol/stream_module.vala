@@ -5,7 +5,7 @@ using Signal;
 
 namespace Dino.Plugins.Omemo {
 
-private const string NS_URI = "eu.siacs.conversations.axolotl";
+internal const string NS_URI = "eu.siacs.conversations.axolotl";
 private const string NODE_DEVICELIST = NS_URI + ".devicelist";
 private const string NODE_BUNDLES = NS_URI + ".bundles";
 private const string NODE_VERIFICATION = NS_URI + ".verification";
