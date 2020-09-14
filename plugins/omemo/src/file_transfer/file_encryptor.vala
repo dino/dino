@@ -20,13 +20,15 @@ public class OmemoFileEncryptor : Dino.FileEncryptor, Object {
     }
 
     public FileMeta encrypt_file(Conversation conversation, FileTransfer file_transfer) throws FileSendError {
+        const uint KEY_SIZE = 32;
+        const uint IV_SIZE = 12;
         var omemo_http_file_meta = new OmemoHttpFileMeta();
 
         try {
             //Create a key and use it to encrypt the file
-            uint8[] iv = new uint8[16];
+            uint8[] iv = new uint8[IV_SIZE];
             Plugin.get_context().randomize(iv);
-            uint8[] key = new uint8[32];
+            uint8[] key = new uint8[KEY_SIZE];
             Plugin.get_context().randomize(key);
 
             SymmetricCipher cipher = new SymmetricCipher("AES-GCM");

@@ -12,6 +12,8 @@ private const string AES_128_GCM_URI = "urn:xmpp:ciphers:aes-128-gcm-nopadding";
 public class Module : XmppStreamModule, Jet.EnvelopEncoding {
     public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0396_jet_omemo");
     private Omemo.Plugin plugin;
+    const uint KEY_SIZE = 16;
+    const uint IV_SIZE = 12;
 
     public Module(Omemo.Plugin plugin) {
         this.plugin = plugin;
@@ -21,7 +23,7 @@ public class Module : XmppStreamModule, Jet.EnvelopEncoding {
         if (stream.get_module(Jet.Module.IDENTITY) != null) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
             stream.get_module(Jet.Module.IDENTITY).register_envelop_encoding(this);
-            stream.get_module(Jet.Module.IDENTITY).register_cipher(new AesGcmCipher(16, AES_128_GCM_URI));
+            stream.get_module(Jet.Module.IDENTITY).register_cipher(new AesGcmCipher(KEY_SIZE, IV_SIZE, AES_128_GCM_URI));
         }
     }
 
@@ -113,17 +115,19 @@ public class Module : XmppStreamModule, Jet.EnvelopEncoding {
 }
 
 public class AesGcmCipher : Jet.Cipher, Object {
-    private int key_size;
+    private uint key_size;
+    private uint default_iv_size;
     private string uri;
-    public AesGcmCipher(int key_size, string uri) {
+    public AesGcmCipher(uint key_size, uint default_iv_size, string uri) {
         this.key_size = key_size;
+        this.default_iv_size = default_iv_size;
         this.uri = uri;
     }
     public string get_cipher_uri() {
         return uri;
     }
     public Jet.TransportSecret generate_random_secret() {
-        uint8[] iv = new uint8[16];
+        uint8[] iv = new uint8[default_iv_size];
         Omemo.Plugin.get_context().randomize(iv);
         uint8[] key = new uint8[key_size];
         Omemo.Plugin.get_context().randomize(key);

@@ -138,6 +138,8 @@ public class TrustManager {
     }
 
     public EncryptState encrypt(MessageStanza message, Jid self_jid, Gee.List<Jid> recipients, XmppStream stream, Account account) {
+        const uint KEY_SIZE = 16;
+        const uint IV_SIZE = 12;
         EncryptState status = new EncryptState();
         if (!Plugin.ensure_context()) return status;
         if (message.to == null) return status;
@@ -146,9 +148,9 @@ public class TrustManager {
 
         try {
             //Create a key and use it to encrypt the message
-            uint8[] key = new uint8[16];
+            uint8[] key = new uint8[KEY_SIZE];
             Plugin.get_context().randomize(key);
-            uint8[] iv = new uint8[16];
+            uint8[] iv = new uint8[IV_SIZE];
             Plugin.get_context().randomize(iv);
 
             uint8[] aes_encrypt_result = aes_encrypt(Cipher.AES_GCM_NOPADDING, key, iv, message.body.data);

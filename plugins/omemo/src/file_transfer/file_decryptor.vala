@@ -48,14 +48,8 @@ public class OmemoFileDecryptor : FileDecryptor, Object {
             MatchInfo match_info;
             this.url_regex.match(omemo_http_receive_data.original_url, 0, out match_info);
             uint8[] iv_and_key = hex_to_bin(match_info.fetch(2).up());
-            uint8[] iv, key;
-            if (iv_and_key.length == 44) {
-                iv = iv_and_key[0:12];
-                key = iv_and_key[12:44];
-            } else {
-                iv = iv_and_key[0:16];
-                key = iv_and_key[16:48];
-            }
+            uint8[] iv = iv_and_key[0:iv_and_key.length-16];
+            uint8[] key = iv_and_key[iv_and_key.length-16:iv_and_key.length];
 
             file_transfer.encryption = Encryption.OMEMO;
             debug("Decrypting file %s from %s", file_transfer.file_name, file_transfer.server_file_name);
