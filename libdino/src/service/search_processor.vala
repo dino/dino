@@ -31,7 +31,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
         foreach(string word in query.split(" ")) {
             if (word.has_prefix("with:")) {
                 if (with == null) {
-                    with = word.substring(5);
+                    @with = word.substring(5);
                 } else {
                     return db.message.select().where("0");
                 }
