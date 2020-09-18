@@ -291,7 +291,7 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         remote_sent_selected_candidate = true;
         remote_selected_candidate = candidate;
-        debug("Remote selected candidate %s", candidate.cid);
+        debug("Remote selected candidate %s", candidate != null ? candidate.cid : "(null)");
         try_completing_negotiation();
     }
     private void handle_activated(string cid) throws Jingle.IqError {
