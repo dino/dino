@@ -218,7 +218,11 @@ public class JingleFileSender : FileSender, Object {
                     throw new FileSendError.ENCRYPTION_FAILED("Should have created a precondition, but did not");
                 }
             }
-            yield stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).offer_file_stream(stream, full_jid, file_transfer.input_stream, file_transfer.server_file_name, file_meta.size, precondition_name, precondition_options);
+            try {
+                yield stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).offer_file_stream(stream, full_jid, file_transfer.input_stream, file_transfer.server_file_name, file_meta.size, precondition_name, precondition_options);
+            } catch (Error e) {
+                throw new FileSendError.UPLOAD_FAILED(@"offer_file_stream failed: $(e.message)");
+            }
             return;
         }
     }
