@@ -1,5 +1,7 @@
 Unicode True
 
+SetCompressor /SOLID lzma
+
 !define MUI_PRODUCT "Dino"
 !define MUI_PRODUCT_NAME ${MUI_PRODUCT}
 !define MUI_BRANDINGTEXT ${MUI_PRODUCT}
