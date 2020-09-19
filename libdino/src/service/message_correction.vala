@@ -146,7 +146,9 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
 
     private void on_received_correction(Conversation conversation, int message_id) {
         ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message_id);
-        received_correction(content_item);
+        if (content_item != null) {
+            received_correction(content_item);
+        }
     }
 
     private int get_latest_correction_message_id(int account_id, string stanza_id, int counterpart_jid_id, string? counterpart_resource) {
