@@ -188,10 +188,16 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     }
 
     private void show_about_window() {
+        string? version = Dino.VERSION.strip().length == 0 ? null : Dino.VERSION;
+        if (version != null && !version.contains("git")) {
+            switch (version.substring(0, 3)) {
+                case "0.2": version = @"$version - <span font_style='italic'>Mexican Caribbean Coral Reefs</span>"; break;
+            }
+        }
         show_about_dialog(get_active_window(),
                     logo_icon_name: "im.dino.Dino",
                     program_name: "Dino",
-                    version: Dino.VERSION.strip().length == 0 ? null : Dino.VERSION,
+                    version: version,
                     comments: "Dino. Communicating happiness.",
                     website: "https://dino.im/",
                     website_label: "dino.im",

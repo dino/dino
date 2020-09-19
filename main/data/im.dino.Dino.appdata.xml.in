@@ -26,7 +26,7 @@
   <developer_name>Dino Development Team</developer_name>
   <url type="homepage">https://dino.im</url>
   <url type="bugtracker">https://github.com/dino/dino/issues</url>
-  <url type="donation">https://liberapay.com/Dino</url>
+  <url type="donation">https://dino.im/#donate</url>
   <url type="translate">https://hosted.weblate.org/projects/dino/</url>
   <!-- TODO: Point this to a webpage with documentation when there is one
   <url type="help">http://dino.im/help/</url>
