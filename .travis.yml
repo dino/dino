@@ -1,5 +1,9 @@
 language: generic
 
+arch:
+ - amd64
+ - ppc64le
+
 services:
   - docker
 
