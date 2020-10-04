@@ -293,12 +293,9 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
         init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings });
-        try {
-            exec("PRAGMA synchronous=0");
-        } catch (Error e) { }
-        try {
-            exec("PRAGMA secure_delete=1");
-        } catch (Error e) { }
+        exec("PRAGMA journal_mode = WAL");
+        exec("PRAGMA synchronous = NORMAL");
+        exec("PRAGMA secure_delete = ON");
     }
 
     public override void migrate(long oldVersion) {
