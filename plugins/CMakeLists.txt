@@ -1,3 +1,7 @@
+if(WIN32)
+    add_link_options("-Wl,--export-all-symbols")
+endif(WIN32)
+
 if(DINO_PLUGIN_ENABLED_http-files)
   add_subdirectory(http-files)
 endif(DINO_PLUGIN_ENABLED_http-files)
