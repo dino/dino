@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 20:10+0200\n"
-"PO-Revision-Date: 2020-06-11 02:41+0000\n"
+"POT-Creation-Date: 2020-10-07 20:51+0200\n"
+"PO-Revision-Date: 2020-09-13 09:36+0000\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
 "Language: it\n"
@@ -16,7 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
+
+#: main/src/ui/file_send_overlay.vala:52
+msgid "The file exceeds the server's maximum upload size."
+msgstr ""
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
@@ -287,19 +291,19 @@ msgstr "Indirizzo non valido"
 msgid "Add"
 msgstr "Aggiungi"
 
-#: main/src/ui/global_search.vala:140
+#: main/src/ui/global_search.vala:141
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
 msgstr[0] "%i risultato per la ricerca"
 msgstr[1] "%i risultati per la ricerca"
 
-#: main/src/ui/global_search.vala:167
+#: main/src/ui/global_search.vala:168
 #, c-format
 msgid "In %s"
 msgstr "In %s"
 
-#: main/src/ui/global_search.vala:167
+#: main/src/ui/global_search.vala:168
 #, c-format
 msgid "With %s"
 msgstr "Con %s"
@@ -576,9 +580,9 @@ msgid "edited"
 msgstr "modificato"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
-#, fuzzy, c-format
+#, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr "%s, %s e %i altri stanno scrivendo"
+msgstr "%s, %s e %i altri stanno scrivendo…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
@@ -773,7 +777,7 @@ msgstr "Generali"
 
 #: main/data/shortcuts.ui:32
 msgid "Conversation"
-msgstr ""
+msgstr "Conversazione"
 
 #: main/data/shortcuts.ui:52
 msgid "Navigation"

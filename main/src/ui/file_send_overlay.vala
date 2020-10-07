@@ -49,7 +49,7 @@ public class FileSendOverlay : Gtk.EventBox {
     }
 
     public void set_file_too_large() {
-        info_label.label= "The file exceeds the server's maximum upload size.";
+        info_label.label= _("The file exceeds the server's maximum upload size.");
         Util.force_error_color(info_label);
         send_button.sensitive = false;
         can_send = false;

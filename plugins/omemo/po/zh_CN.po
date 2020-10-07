@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 20:10+0200\n"
+"POT-Creation-Date: 2020-10-07 20:51+0200\n"
 "PO-Revision-Date: 2020-08-01 20:43+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
@@ -12,6 +12,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.2-dev\n"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:141
+msgid "Your contact"
+msgstr ""
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format

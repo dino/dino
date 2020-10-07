@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 20:10+0200\n"
-"PO-Revision-Date: 2020-08-11 16:32+0000\n"
+"POT-Creation-Date: 2020-10-07 20:51+0200\n"
+"PO-Revision-Date: 2020-09-21 17:39+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "fr/>\n"
 "Language: fr\n"
@@ -15,7 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.2-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:141
+msgid "Your contact"
+msgstr ""
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format
@@ -23,6 +27,8 @@ msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
+"%s a utilisé un appareil non fiable. Vous ne verrez pas les messages "
+"provenant d'appareils en lesquels vous n'avez pas confiance."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:153
 msgid "Manage devices"
@@ -33,6 +39,8 @@ msgstr "Gérer les appareils"
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""
+"%s ne fait pas confiance à cet appareil. Cela signifie qu'il se peut que "
+"vous manquiez des messages."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"

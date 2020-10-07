@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo 20180123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 20:10+0200\n"
+"POT-Creation-Date: 2020-10-07 20:51+0200\n"
 "PO-Revision-Date: 2020-01-14 05:21+0000\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Language: ca\n"
@@ -15,6 +15,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.11-dev\n"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:141
+msgid "Your contact"
+msgstr ""
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format

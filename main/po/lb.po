@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Luxembourgish (Dino)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 20:10+0200\n"
+"POT-Creation-Date: 2020-10-07 20:51+0200\n"
 "PO-Revision-Date: 2020-04-15 00:11+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "translations/lb/>\n"
@@ -12,6 +12,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.0-dev\n"
+
+#: main/src/ui/file_send_overlay.vala:52
+msgid "The file exceeds the server's maximum upload size."
+msgstr ""
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
@@ -282,19 +286,19 @@ msgstr "Ongülteg Adress"
 msgid "Add"
 msgstr "Bäisetzen"
 
-#: main/src/ui/global_search.vala:140
+#: main/src/ui/global_search.vala:141
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
 msgstr[0] "%i Sichresultat"
 msgstr[1] "%i Sichresultater"
 
-#: main/src/ui/global_search.vala:167
+#: main/src/ui/global_search.vala:168
 #, c-format
 msgid "In %s"
 msgstr "An %s"
 
-#: main/src/ui/global_search.vala:167
+#: main/src/ui/global_search.vala:168
 #, c-format
 msgid "With %s"
 msgstr "Mat %s"

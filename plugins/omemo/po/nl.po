@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 20:10+0200\n"
-"PO-Revision-Date: 2020-09-05 19:21+0000\n"
+"POT-Creation-Date: 2020-10-07 20:51+0200\n"
+"PO-Revision-Date: 2020-09-13 09:36+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "nl/>\n"
 "Language: nl\n"
@@ -13,22 +13,28 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.3-dev\n"
 
+#: plugins/omemo/src/ui/bad_messages_populator.vala:141
+msgid "Your contact"
+msgstr ""
+
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
+"%s is een onvertrouwd apparaat. Berichten van onvertrouwde apparaten worden "
+"niet getoond."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:153
 msgid "Manage devices"
-msgstr ""
+msgstr "Apparaten beheren"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:155
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
-msgstr ""
+msgstr "%s vertrouwt dit apparaat niet. Je mist hierdoor mogelijk berichten."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"

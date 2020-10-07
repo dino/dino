@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 20:10+0200\n"
+"POT-Creation-Date: 2020-10-07 20:51+0200\n"
 "PO-Revision-Date: 2020-06-24 11:41+0000\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/dino/translations/"
 "pl/>\n"
@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.2-dev\n"
+
+#: main/src/ui/file_send_overlay.vala:52
+msgid "The file exceeds the server's maximum upload size."
+msgstr ""
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
@@ -289,7 +293,7 @@ msgstr "Niepoprawny adres"
 msgid "Add"
 msgstr "Dodaj"
 
-#: main/src/ui/global_search.vala:140
+#: main/src/ui/global_search.vala:141
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
@@ -297,12 +301,12 @@ msgstr[0] "%i wynik wyszukiwania"
 msgstr[1] "%i wyniki wyszukiwania"
 msgstr[2] "%i wyników wyszukiwania"
 
-#: main/src/ui/global_search.vala:167
+#: main/src/ui/global_search.vala:168
 #, c-format
 msgid "In %s"
 msgstr "W %s"
 
-#: main/src/ui/global_search.vala:167
+#: main/src/ui/global_search.vala:168
 #, c-format
 msgid "With %s"
 msgstr "Z %s"

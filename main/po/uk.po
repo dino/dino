@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 20:10+0200\n"
+"POT-Creation-Date: 2020-10-07 20:51+0200\n"
 "PO-Revision-Date: 2020-07-07 03:14+0000\n"
 "Language-Team: none\n"
 "Language: uk\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.2-dev\n"
+
+#: main/src/ui/file_send_overlay.vala:52
+msgid "The file exceeds the server's maximum upload size."
+msgstr ""
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
@@ -288,7 +292,7 @@ msgstr "Недійсна адреса"
 msgid "Add"
 msgstr "Додати"
 
-#: main/src/ui/global_search.vala:140
+#: main/src/ui/global_search.vala:141
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
@@ -296,12 +300,12 @@ msgstr[0] "%i результат пошуку"
 msgstr[1] "%i результати пошуку"
 msgstr[2] "%i результатів пошуку"
 
-#: main/src/ui/global_search.vala:167
+#: main/src/ui/global_search.vala:168
 #, c-format
 msgid "In %s"
 msgstr ""
 
-#: main/src/ui/global_search.vala:167
+#: main/src/ui/global_search.vala:168
 #, c-format
 msgid "With %s"
 msgstr ""

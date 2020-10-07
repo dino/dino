@@ -138,7 +138,7 @@ public class BadMessagesWidget : Box {
         this.visible = true;
 
         var sb = new StringBuilder();
-        string who = "Your contact";
+        string who = _("Your contact");
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             var occupants = plugin.app.stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
             if (occupants == null) return;
