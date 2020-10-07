@@ -170,7 +170,7 @@ public class FileDefaultWidgetController : Object {
                     try{
                         AppInfo.launch_default_for_uri(file_uri, null);
                     } catch (Error err) {
-                        print("Tried to open " + file_uri);
+                        warning("Failed to open %s - %s", file_uri, err.message);
                     }
                 }
                 break;

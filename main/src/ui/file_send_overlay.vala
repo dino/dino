@@ -48,13 +48,6 @@ public class FileSendOverlay : Gtk.EventBox {
         });
     }
 
-    public void set_file_too_large() {
-        info_label.label= _("The file exceeds the server's maximum upload size.");
-        Util.force_error_color(info_label);
-        send_button.sensitive = false;
-        can_send = false;
-    }
-
     private async void load_file_widget(File file, FileInfo file_info) {
         string file_name = file_info.get_display_name();
         string mime_type = file_info.get_content_type();
@@ -86,6 +79,13 @@ public class FileSendOverlay : Gtk.EventBox {
         }
 
         file_widget_insert.add(widget);
+    }
+
+    public void set_file_too_large() {
+        info_label.label= _("The file exceeds the server's maximum upload size.");
+        Util.force_error_color(info_label);
+        send_button.sensitive = false;
+        can_send = false;
     }
 }
 
