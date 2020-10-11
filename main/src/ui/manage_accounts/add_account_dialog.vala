@@ -64,10 +64,13 @@ public class AddAccountDialog : Gtk.Dialog {
 
     private static string[] server_list = new string[]{
         "5222.de",
+	"dismail.de",
+	"intux.de",
+	"parloteo.es",
         "jabber.fr",
         "movim.eu",
         "yax.im"
-    };
+};
 
     private StreamInteractor stream_interactor;
     private Database db;
