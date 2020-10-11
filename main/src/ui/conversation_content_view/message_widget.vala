@@ -87,6 +87,7 @@ public class MessageItemWidget : SizeRequestBin {
 
     ulong realize_id = -1;
     ulong style_updated_id = -1;
+    ulong marked_notify_handler_id = -1;
 
     construct {
         this.add(label);
@@ -186,12 +187,16 @@ public class MessageItemWidget : SizeRequestBin {
             theme_dependent = true;
         }
 
+        // Append "pending..." iff message has not been sent yet
         if (message.direction == Message.DIRECTION_SENT && (message.marked == Message.Marked.SENDING || message.marked == Message.Marked.UNSENT)) {
             if (message.local_time.compare(new DateTime.now_utc().add_seconds(-10)) < 0) {
                 markup_text += " <span size='small' color='%s'>%s</span>".printf(gray_color, "pending…");
 
-                message.bind_property("marked", this, "marked");
-                this.notify["marked"].connect(() => {
+                // Update the label as soon as the sent state changes
+                var binding = message.bind_property("marked", this, "marked");
+                marked_notify_handler_id = this.notify["marked"].connect(() => {
+                    binding.unbind();
+                    this.disconnect(marked_notify_handler_id);
                     update_label();
                 });
             } else {
