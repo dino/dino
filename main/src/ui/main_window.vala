@@ -51,9 +51,8 @@ public class MainWindow : Gtk.Window {
         setup_headerbar();
         setup_stack();
 
-        paned.bind_property("mode-transition-type", headerbar_paned, "mode-transition-type", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        paned.bind_property("transition-type", headerbar_paned, "transition-type", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("mode-transition-duration", headerbar_paned, "mode-transition-duration", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-        paned.bind_property("child-transition-type", headerbar_paned, "child-transition-type", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("child-transition-duration", headerbar_paned, "child-transition-duration", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("visible-child-name", headerbar_paned, "visible-child-name", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
     }
@@ -61,7 +60,7 @@ public class MainWindow : Gtk.Window {
     private void setup_unified() {
         Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
         paned = (Hdy.Leaflet) builder.get_object("paned");
-        paned.notify["fold"].connect_after(() => update_headerbar());
+        paned.notify["folded"].connect_after(() => update_headerbar());
         box.add(paned);
         left_stack = (Stack) builder.get_object("left_stack");
         right_stack = (Stack) builder.get_object("right_stack");
@@ -77,13 +76,13 @@ public class MainWindow : Gtk.Window {
 
     private void update_headerbar() {
         if (!Util.use_csd()) return;
-        conversation_titlebar_csd.back_button = headerbar_paned.fold == Hdy.Fold.FOLDED;
+        conversation_titlebar_csd.back_button = headerbar_paned.folded;
         set_window_buttons();
     }
 
     private void show_list_pane() {
         paned.visible_child_name = "list-pane";
-        if (headerbar_paned.fold == Hdy.Fold.FOLDED) {
+        if (headerbar_paned.folded) {
             conversation_selector.unselect_row(conversation_selector.get_selected_row());
         }
     }
@@ -131,7 +130,7 @@ public class MainWindow : Gtk.Window {
         Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
         if (gtk_settings == null) return;
 
-        if (headerbar_paned.fold == Hdy.Fold.FOLDED) {
+        if (headerbar_paned.folded) {
             conversation_list_titlebar_csd.decoration_layout = gtk_settings.gtk_decoration_layout;
             conversation_titlebar_csd.decoration_layout = "";
         } else {

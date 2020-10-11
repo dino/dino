@@ -4,8 +4,7 @@
         <property name="orientation">horizontal</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="mode-transition-type">slide</property>
-        <property name="child-transition-type">slide</property>
+        <property name="transition-type">slide</property>
         <child>
             <object class="GtkStack" id="left_stack">
                 <property name="visible">True</property>
