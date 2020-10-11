@@ -272,13 +272,6 @@ public static Regex get_url_regex() {
     return URL_REGEX;
 }
 
-public static Regex get_code_block_regex() {
-    if (CODE_BLOCK_REGEX == null) {
-        CODE_BLOCK_REGEX = /(?:^|\n)(```([^\n]*)\n(?:[^\n]|\n[^`]|\n`[^`]|\n``[^`]|\n```[^\n])+\n```)(?:\n|$)/s;
-    }
-    return CODE_BLOCK_REGEX;
-}
-
 public static Map<unichar, unichar> get_matching_chars() {
     if (MATCHING_CHARS == null) {
         MATCHING_CHARS = new HashMap<unichar, unichar>();
@@ -364,19 +357,6 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     }
 
     if (parse_text_markup) {
-        // Try to match preformatted code blocks first
-        MatchInfo code_block_match_info;
-        get_code_block_regex().match(s.down().strip(), 0, out code_block_match_info);
-        if (code_block_match_info.matches()) {
-            int start, end;
-            code_block_match_info.fetch_pos(1, out start, out end);
-            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                "<tt>" +
-                s[start:end] +
-                "</tt>" +
-                parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
-        }
-
         string[] markup_string = new string[]{"`", "_", "*", "~"};
         string[] convenience_tag = new string[]{"tt", "i", "b", "s"};
 
