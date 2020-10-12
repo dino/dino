@@ -100,6 +100,8 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public override void detach(XmppStream stream) {
+        active_info_requests.clear();
+
         remove_identity(stream, own_identity);
 
         stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI_INFO, this);
