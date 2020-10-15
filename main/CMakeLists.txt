@@ -25,6 +25,7 @@ set(RESOURCE_LIST
     icons/dino-status-chat.svg
     icons/dino-status-dnd.svg
     icons/dino-status-online.svg
+    icons/im.dino.Dino.svg
     icons/im.dino.Dino-symbolic.svg
     icons/dino-tick-symbolic.svg
 
