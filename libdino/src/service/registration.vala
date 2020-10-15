@@ -28,7 +28,7 @@ public class Register : StreamInteractionModule, Object{
         stream.add_module(new Tls.Module());
         stream.add_module(new Iq.Module());
         stream.add_module(new Xep.SrvRecordsTls.Module());
-        stream.add_module(new Sasl.Module(account.bare_jid.to_string(), account.password));
+        stream.add_module(new Sasl.Module(account.bare_jid.to_string(), account));
 
         ConnectionManager.ConnectionError.Source? ret = null;
 

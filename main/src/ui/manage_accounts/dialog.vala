@@ -45,7 +45,20 @@ public class Dialog : Gtk.Dialog {
         });
         image_button.clicked.connect(show_select_avatar);
         alias_hybrid.entry.key_release_event.connect(() => { selected_account.alias = alias_hybrid.text; return false; });
-        password_hybrid.entry.key_release_event.connect(() => { selected_account.password = password_hybrid.text; return false; });
+        password_hybrid.switched_to_label.connect(() => {
+            active_switch.sensitive = false;
+            password_hybrid.sensitive = false;
+            var password = password_hybrid.text;
+            password_hybrid.text = _("Saving…");
+            password_hybrid.visibility = true;
+            selected_account.set_password.begin(password, (obj, res) => {
+                // Password storing successful, set GUI back to what it was
+                active_switch.sensitive = true;
+                password_hybrid.sensitive = true;
+                password_hybrid.visibility = false;
+                password_hybrid.text = password;
+            });
+        });
 
         Util.LabelHybridGroup label_hybrid_group = new Util.LabelHybridGroup();
         label_hybrid_group.add(alias_hybrid);
@@ -195,7 +208,14 @@ public class Dialog : Gtk.Dialog {
 
         alias_hybrid.text = account.alias ?? "";
         password_hybrid.entry.input_purpose = InputPurpose.PASSWORD;
-        password_hybrid.text = account.password;
+        password_hybrid.visibility = true;
+        password_hybrid.sensitive = false;
+        password_hybrid.text = _("Loading…");
+        account.get_password.begin((obj, res) => {
+            password_hybrid.visibility = false;
+            password_hybrid.sensitive = true;
+            password_hybrid.text = account.get_password.end(res);
+        });
 
         update_status_label(account);
 
