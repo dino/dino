@@ -84,15 +84,20 @@ public class ConversationManager : StreamInteractionModule, Object {
         return null;
     }
 
-    public Conversation? approx_conversation_for_stanza(Jid jid, Account account, string msg_ty) {
+    public Conversation? approx_conversation_for_stanza(Jid from, Jid to, Account account, string msg_ty) {
         if (msg_ty == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
-            return get_conversation(jid.bare_jid, account, Conversation.Type.GROUPCHAT);
-        } else if (msg_ty == Xmpp.MessageStanza.TYPE_CHAT && jid.is_full() &&
-                get_conversation(jid.bare_jid, account, Conversation.Type.GROUPCHAT) != null) {
-            var pm = get_conversation(jid, account, Conversation.Type.GROUPCHAT_PM);
+            return get_conversation(from.bare_jid, account, Conversation.Type.GROUPCHAT);
+        }
+
+        Jid counterpart = from.equals_bare(account.bare_jid) ? to : from;
+
+        if (msg_ty == Xmpp.MessageStanza.TYPE_CHAT && counterpart.is_full() &&
+                get_conversation(counterpart.bare_jid, account, Conversation.Type.GROUPCHAT) != null) {
+            var pm = get_conversation(counterpart, account, Conversation.Type.GROUPCHAT_PM);
             if (pm != null) return pm;
         }
-        return get_conversation(jid.bare_jid, account, Conversation.Type.CHAT);
+
+        return get_conversation(counterpart.bare_jid, account, Conversation.Type.CHAT);
     }
 
     public Conversation? get_conversation_by_id(int id) {
