@@ -6,13 +6,6 @@ public class Plugin : RootInterface, Object {
 
     public Dino.Application app;
 
-    //  private class ConvData {
-    //      public int ReadUpToId;
-    //      public int Timestamp;
-    //  }
-    //  private int interval = 0;
-    //  private HashMap<int, ConvData> conv_data = new HashMap<int, ConvData>();
-
     [CCode (has_target = false)]
     private delegate void notification_callback(void* conv);
 
@@ -46,18 +39,11 @@ public class Plugin : RootInterface, Object {
 
         app.stream_interactor.get_module(NotificationEvents.IDENTITY).notify_content_item.connect((item, conversation) => {
             if (item.type_ == "message") {
-                // key: conversation.id value: { conversation.read_up_to.id, last-time-notification-send }
-                //  var conv = conv_data.get(conversation.id);
-                //  if (conv.ReadUpToId == conversation.read_up_to.id) {
-                //    if (now < conv.Timestamp + interval) {
-                //        return;
-                //    }
-                //  }
                 var message_item = (MessageItem)item;
-                //var message = item.encryption == Encryption.NONE ? message_item.message.body : "*encrypted*";
                 var message = message_item.message.body;
                 var sender = conversation.nickname != null ? conversation.nickname : conversation.counterpart.to_string();
-                if (show_message(sender, message, "", "", this) != 0) {
+                var avatar = null;
+                if (show_message(sender, message, avatar, null, this) != 0) {
                     stderr.printf("Error sending notification.");
                 };
             }
