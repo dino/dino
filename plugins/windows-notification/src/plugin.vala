@@ -16,11 +16,14 @@ public class Plugin : RootInterface, Object {
     [CCode (has_target = false)]
     private delegate void notification_callback(void* conv);
 
-    [CCode (cname = "init", cheader_filename = "wintoast.h")]
-    private static extern int init(notification_callback callback);
+    [CCode (cname = "load_library", cheader_filename = "wintoast.h")]
+    private static extern int load_library();
 
-    [CCode (cname = "uninit", cheader_filename = "wintoast.h")]
-    private static extern void uninit();
+    [CCode (cname = "init_library", cheader_filename = "wintoast.h")]
+    private static extern int init_library(notification_callback callback);
+
+    [CCode (cname = "uninit_library", cheader_filename = "wintoast.h")]
+    private static extern void uninit_library();
 
     [CCode (cname = "show_message", cheader_filename = "wintoast.h")]
     private static extern int show_message(char* sender, char* message, char* imagePath, char* protocolName, void *conv);
@@ -36,8 +39,10 @@ public class Plugin : RootInterface, Object {
 
     public void registered(Dino.Application app) {
         this.app = app;
-
-        init(onclick_callback);
+        if (load_library() != 1 ||
+            init_library(onclick_callback) != 1) {
+            return;
+        }
 
         app.stream_interactor.get_module(NotificationEvents.IDENTITY).notify_content_item.connect((item, conversation) => {
             if (item.type_ == "message") {
@@ -52,13 +57,15 @@ public class Plugin : RootInterface, Object {
                 //var message = item.encryption == Encryption.NONE ? message_item.message.body : "*encrypted*";
                 var message = message_item.message.body;
                 var sender = conversation.nickname != null ? conversation.nickname : conversation.counterpart.to_string();
-                show_message(sender, message + "\n", "", "", this);
+                if (show_message(sender, message, "", "", this) != 0) {
+                    stderr.printf("Error sending notification.");
+                };
             }
         });
     }
 
     public void shutdown() {
-        uninit();
+        uninit_library();
     }
 }
 
