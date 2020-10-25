@@ -59,7 +59,7 @@ public class Plugin : RootInterface, Object {
         }
         var avatar_manager = app.stream_interactor.get_module(AvatarManager.IDENTITY);
         var avatar = avatar_manager.get_avatar_filepath(conversation.account, conversation.counterpart);
-        if (!toaster.show_message(display_name, text, avatar, conversation.id, this, onclick_callback)) {
+        if (!toaster.show_message(display_name, text, avatar, conversation.id, onclick_callback)) {
             stderr.printf("Error sending notification.");
         };
     }
