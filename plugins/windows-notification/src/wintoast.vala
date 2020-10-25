@@ -40,7 +40,7 @@ namespace Dino.Plugins.WindowsNotification {
             }
         }
 
-        public bool show_message(string sender, string message, string image_path, int conv_id, void* class_obj, NotificationCallback callback) {
+        public bool show_message(string sender, string message, string? image_path, int conv_id, void* class_obj, NotificationCallback callback) {
             if (valid && library_show_message != null) {
                 return library_show_message(sender, message, image_path, conv_id, class_obj, callback) == 0;
             }
