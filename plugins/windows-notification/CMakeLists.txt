@@ -10,11 +10,11 @@ vala_precompile(WINDOWS_NOTIFICATION_VALA_C
 SOURCES
     src/plugin.vala
     src/register_plugin.vala
+    src/helper.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
-    #${CMAKE_CURRENT_SOURCE_DIR}/vapi/openal.vapi
 PACKAGES
     ${WINDOWS_NOTIFICATION_PACKAGES}
 )
