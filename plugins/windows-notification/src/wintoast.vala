@@ -3,14 +3,14 @@ namespace Dino.Plugins.WindowsNotification {
         [CCode (has_target = false)]
         private delegate void FunctionPointer();
         
-        [CCode (has_target = false)]
-        public delegate void NotificationCallback(void* conv);
+        [CCode (has_target = true)]
+        public delegate void NotificationCallback(int conv_id);
 
         [CCode (has_target = false)]
-        private delegate int PidginWinToastLibInitType(NotificationCallback callback);
+        private delegate int DinoWinToastLibInitType();
 
         [CCode (has_target = false)]
-        private delegate int PidginWinToastLibShowMessageType(char* sender, char* message, char* image_path, char* protocolName, void *conv);
+        private delegate int DinoWinToastLibShowMessageType(char* sender, char* message, char* image_path, int conv_id, void* class_obj, NotificationCallback callback);
 
         [CCode (cname = "LoadLibrary", cheader_filename = "libloaderapi.h")]
         private static extern void* load_library(char* lib_name);
@@ -22,15 +22,15 @@ namespace Dino.Plugins.WindowsNotification {
         private static extern FunctionPointer get_proc_address(void* lib_handle, char* func_name);
 
         private void* library_handle = null;
-        private PidginWinToastLibInitType library_init = null;
-        private PidginWinToastLibShowMessageType library_show_message = null;
+        private DinoWinToastLibInitType library_init = null;
+        private DinoWinToastLibShowMessageType library_show_message = null;
 
         public bool valid { get; private set; }
 
-        public WinToast(NotificationCallback callback) {
+        public WinToast() {
             valid = load();
             if (valid) {
-                valid = library_init(callback) == 0;
+                valid = library_init() == 0;
             }
         }
 
@@ -40,30 +40,30 @@ namespace Dino.Plugins.WindowsNotification {
             }
         }
 
-        public bool show_message(string sender, string message, string image_path, void *conv) {
+        public bool show_message(string sender, string message, string image_path, int conv_id, void* class_obj, NotificationCallback callback) {
             if (valid && library_show_message != null) {
-                return library_show_message(sender, message, image_path, null, conv) == 0;
+                return library_show_message(sender, message, image_path, conv_id, class_obj, callback) == 0;
             }
             return false;
         }
 
         private bool load() {
-            library_handle = load_library("PidginWinToastLib.dll");
+            library_handle = load_library("DinoWinToastLib.dll");
             if (library_handle == null) {
                 return false;
             }
             
-            FunctionPointer function = get_proc_address(library_handle, "pidginWinToastLibInit");
+            FunctionPointer function = get_proc_address(library_handle, "dinoWinToastLibInit");
             if (function == null) {
                 return false;
             }
-            library_init = (PidginWinToastLibInitType)function;
+            library_init = (DinoWinToastLibInitType)function;
         
-            function = get_proc_address(library_handle, "pidginWinToastLibShowMessage");
+            function = get_proc_address(library_handle, "dinoWinToastLibShowMessage");
             if (function == null) {
                 return false;
             }
-            library_show_message = (PidginWinToastLibShowMessageType)function;
+            library_show_message = (DinoWinToastLibShowMessageType)function;
             return true;
         }
     }

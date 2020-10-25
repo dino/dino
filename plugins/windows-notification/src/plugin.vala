@@ -8,18 +8,13 @@ public class Plugin : RootInterface, Object {
     private ulong signal_handler = 0;
     private WinToast toaster;
 
-    private void onclick_callback() {
-        // TODO:
-        // This callback should:
-        // * Open Dino
-        // * Open Conversation from notification
-        // * Go to line
-        // The callback will probably need to receive at least one parameter more. Not difficult to do.
+    private void onclick_callback(int conv_id) {
+        this.app.activate_action("open-conversation", conv_id);
     }
 
     public void registered(Dino.Application app) {
         this.app = app;
-        this.toaster = new WinToast(onclick_callback);
+        this.toaster = new WinToast();
         if (toaster.valid) {
             signal_handler = app.stream_interactor.get_module(NotificationEvents.IDENTITY).notify_content_item.connect(on_notify);
         }
@@ -64,7 +59,7 @@ public class Plugin : RootInterface, Object {
         }
         var avatar_manager = app.stream_interactor.get_module(AvatarManager.IDENTITY);
         var avatar = avatar_manager.get_avatar_filepath(conversation.account, conversation.counterpart);
-        if (!toaster.show_message(display_name, text, avatar, this)) {
+        if (!toaster.show_message(display_name, text, avatar, conversation.id, this, onclick_callback)) {
             stderr.printf("Error sending notification.");
         };
     }
