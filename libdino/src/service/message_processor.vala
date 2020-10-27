@@ -130,7 +130,10 @@ public class MessageProcessor : StreamInteractionModule, Object {
             string? id = message.stanza.get_deep_attribute(mam_flag.ns_ver + ":result", "id");
             if (id == null) return;
             StanzaNode? delay_node = message.stanza.get_deep_subnode(mam_flag.ns_ver + ":result", "urn:xmpp:forward:0:forwarded", "urn:xmpp:delay:delay");
-            if (delay_node == null) return;
+            if (delay_node == null) {
+                warning("MAM result did not contain delayed time %s", message.stanza.to_string());
+                return;
+            }
             DateTime? time = DelayedDelivery.get_time_for_node(delay_node);
             if (time == null) return;
             mam_times[account][id] = time;
@@ -253,40 +256,51 @@ public class MessageProcessor : StreamInteractionModule, Object {
         while (iq != null) {
             string? earliest_id = iq.stanza.get_deep_string_content("urn:xmpp:mam:2:fin", "http://jabber.org/protocol/rsm" + ":set", "first");
             if (earliest_id == null) return true;
+            string? latest_id = iq.stanza.get_deep_string_content("urn:xmpp:mam:2:fin", "http://jabber.org/protocol/rsm" + ":set", "last");
 
-            if (!mam_times[account].has_key(earliest_id)) error("wtf");
+            // We wait until all the messages from the page are processed (and we got the `mam_times` from them)
+            Idle.add(get_mam_range.callback, Priority.LOW);
+            yield;
 
-            debug("MAM: [%s] Update from_id %s", account.bare_jid.to_string(), earliest_id);
-            if (!current_catchup_id.has_key(account)) {
-                debug("MAM: [%s] We get our first MAM page", account.bare_jid.to_string());
-                string? latest_id = iq.stanza.get_deep_string_content("urn:xmpp:mam:2:fin", "http://jabber.org/protocol/rsm" + ":set", "last");
-                if (!mam_times[account].has_key(latest_id)) error("wtf2");
-                current_catchup_id[account] = (int) db.mam_catchup.insert()
-                        .value(db.mam_catchup.account_id, account.id)
-                        .value(db.mam_catchup.from_id, earliest_id)
-                        .value(db.mam_catchup.from_time, (long)mam_times[account][earliest_id].to_unix())
-                        .value(db.mam_catchup.to_id, latest_id)
-                        .value(db.mam_catchup.to_time, (long)mam_times[account][latest_id].to_unix())
-                        .perform();
+            int wait_ms = 1000;
+
+
+            if (mam_times[account].has_key(earliest_id) && (current_catchup_id.has_key(account) || mam_times[account].has_key(latest_id))) {
+
+                debug("MAM: [%s] Update from_id %s", account.bare_jid.to_string(), earliest_id);
+                if (!current_catchup_id.has_key(account)) {
+                    debug("MAM: [%s] We get our first MAM page", account.bare_jid.to_string());
+                    current_catchup_id[account] = (int) db.mam_catchup.insert()
+                            .value(db.mam_catchup.account_id, account.id)
+                            .value(db.mam_catchup.from_id, earliest_id)
+                            .value(db.mam_catchup.from_time, (long)mam_times[account][earliest_id].to_unix())
+                            .value(db.mam_catchup.to_id, latest_id)
+                            .value(db.mam_catchup.to_time, (long)mam_times[account][latest_id].to_unix())
+                            .perform();
+                } else {
+                    // Update existing id
+                    db.mam_catchup.update()
+                            .set(db.mam_catchup.from_id, earliest_id)
+                            .set(db.mam_catchup.from_time, (long)mam_times[account][earliest_id].to_unix())
+                            .with(db.mam_catchup.id, "=", current_catchup_id[account])
+                            .perform();
+                }
+
+                TimeSpan catchup_time_ago = (new DateTime.now_utc()).difference(mam_times[account][earliest_id]);
+
+                if (catchup_time_ago > 14 * TimeSpan.DAY) {
+                    wait_ms = 2000;
+                } else if (catchup_time_ago > 5 * TimeSpan.DAY) {
+                    wait_ms = 1000;
+                } else if (catchup_time_ago > 2 * TimeSpan.DAY) {
+                    wait_ms = 200;
+                } else if (catchup_time_ago > TimeSpan.DAY) {
+                    wait_ms = 50;
+                } else {
+                    wait_ms = 10;
+                }
             } else {
-                // Update existing id
-                db.mam_catchup.update()
-                        .set(db.mam_catchup.from_id, earliest_id)
-                        .set(db.mam_catchup.from_time, (long)mam_times[account][earliest_id].to_unix()) // need to make sure we have this
-                        .with(db.mam_catchup.id, "=", current_catchup_id[account])
-                        .perform();
-            }
-
-            TimeSpan catchup_time_ago = (new DateTime.now_utc()).difference(mam_times[account][earliest_id]);
-            int wait_ms = 10;
-            if (catchup_time_ago > 14 * TimeSpan.DAY) {
-                wait_ms = 2000;
-            } else if (catchup_time_ago > 5 * TimeSpan.DAY) {
-                wait_ms = 1000;
-            } else if (catchup_time_ago > 2 * TimeSpan.DAY) {
-                wait_ms = 200;
-            } else if (catchup_time_ago > TimeSpan.DAY) {
-                wait_ms = 50;
+                warning("Didn't have time for MAM id; earliest_id:%s latest_id:%s", mam_times[account].has_key(earliest_id).to_string(), mam_times[account].has_key(latest_id).to_string());
             }
 
             mam_times[account] = new HashMap<string, DateTime>();
