@@ -454,11 +454,11 @@ namespace GPG {
 
         
         [CCode (cname = "gpgme_data_new_from_mem")]
-        public static GPGError.Error new_from_memory(out Data d, uint8[] buffer, bool copy);
+        public static GPGError.Error new_from_memory(out Data d, char[] buffer, bool copy);
 
         public static Data create_from_memory(uint8[] buffer, bool copy) throws GLib.Error {
             Data data;
-            throw_if_error(new_from_memory(out data, buffer, copy));
+            throw_if_error(new_from_memory(out data, (char[]) buffer, copy));
             return data;
         }
 

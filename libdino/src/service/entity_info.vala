@@ -37,7 +37,7 @@ public class EntityInfo : StreamInteractionModule, Object {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).cache = cache;
 
             string? hash = EntityCapabilities.get_server_caps_hash(stream);
-            entity_caps_hashes[new Jid(account.domainpart)] = hash;
+            entity_caps_hashes[account.bare_jid.domain_jid] = hash;
         });
         stream_interactor.module_manager.initialize_account_modules.connect(initialize_modules);
     }

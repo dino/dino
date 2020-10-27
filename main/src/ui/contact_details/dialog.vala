@@ -36,7 +36,8 @@ public class Dialog : Gtk.Dialog {
 
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
         if (Util.use_csd()) {
-            (get_header_bar() as HeaderBar).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+            // TODO get_header_bar directly returns a HeaderBar in vala > 0.48
+            ((HeaderBar) get_header_bar()).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
         }
         setup_top();
 

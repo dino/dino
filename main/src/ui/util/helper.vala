@@ -441,7 +441,7 @@ public string summarize_whitespaces_to_space(string s) {
 }
 
 public bool use_csd() {
-    return (GLib.Application.get_default() as Application).use_csd();
+    return ((Application) GLib.Application.get_default()).use_csd();
 }
 
 }

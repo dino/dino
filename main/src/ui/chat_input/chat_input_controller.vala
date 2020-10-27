@@ -129,12 +129,12 @@ public class ChatInputController : Object {
                     }
                     return;
                 case "/nick":
-                    stream_interactor.get_module(MucManager.IDENTITY).change_nick(conversation, token[1]);
+                    stream_interactor.get_module(MucManager.IDENTITY).change_nick.begin(conversation, token[1]);
                     return;
                 case "/ping":
                     Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
                     try {
-                        stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping(stream, conversation.counterpart.with_resource(token[1]), null);
+                        stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping.begin(stream, conversation.counterpart.with_resource(token[1]), null);
                     } catch (Xmpp.InvalidJidError e) {
                         warning("Could not ping invalid Jid: %s", e.message);
                     }

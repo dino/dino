@@ -59,7 +59,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         this.jid = jid;
 
         if (Environment.get_variable("GTK_CSD") != "0") {
-            (get_header_bar() as HeaderBar).set_subtitle(jid.bare_jid.to_string());
+            ((HeaderBar) get_header_bar()).set_subtitle(jid.bare_jid.to_string());
         }
 
         keys_listbox.row_activated.connect(on_key_entry_clicked);

@@ -45,28 +45,6 @@ public class AvatarManager : StreamInteractionModule, Object {
         });
     }
 
-    private async Pixbuf? get_avatar_by_hash(string hash) {
-        if (cached_pixbuf.has_key(hash)) {
-            return cached_pixbuf[hash];
-        }
-        if (pending_pixbuf.has_key(hash)) {
-            pending_pixbuf[hash].add(new SourceFuncWrapper(get_avatar_by_hash.callback));
-            yield;
-            return cached_pixbuf[hash];
-        }
-        pending_pixbuf[hash] = new ArrayList<SourceFuncWrapper>();
-        Pixbuf? image = yield get_image(hash);
-        if (image != null) {
-            cached_pixbuf[hash] = image;
-        } else {
-            db.avatar.delete().with(db.avatar.hash, "=", hash).perform();
-        }
-        foreach (SourceFuncWrapper sfw in pending_pixbuf[hash]) {
-            sfw.sfun();
-        }
-        return image;
-    }
-
     private string? get_avatar_hash(Account account, Jid jid_) {
         Jid jid = jid_;
         if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid_, account)) {
@@ -84,18 +62,6 @@ public class AvatarManager : StreamInteractionModule, Object {
     public bool has_avatar_cached(Account account, Jid jid) {
         string? hash = get_avatar_hash(account, jid);
         return hash != null && cached_pixbuf.has_key(hash);
-    }
-
-    public async bool has_avatar_stored(Account account, Jid jid) {
-        string? hash = get_avatar_hash(account, jid);
-        if (hash == null) return false;
-        if (cached_pixbuf.has_key(hash)) return true;
-        try {
-            if ((yield File.new_for_path(Path.build_filename(folder, hash)).query_info_async(FileAttribute.STANDARD_NAME, FileQueryInfoFlags.NONE)) != null) return true;
-        } catch (IOError ignored) {
-            return false;
-        }
-        return false;
     }
 
     public bool has_avatar(Account account, Jid jid) {

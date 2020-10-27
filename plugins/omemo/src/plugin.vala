@@ -65,7 +65,7 @@ public class Plugin : RootInterface, Object {
             foreach(Dino.Entities.Account account in this.app.stream_interactor.get_accounts()) {
                 if(account.id == variant.get_int32()) {
                     ContactDetailsDialog dialog = new ContactDetailsDialog(this, account, account.bare_jid);
-                    dialog.set_transient_for((this.app as Gtk.Application).get_active_window());
+                    dialog.set_transient_for(((Gtk.Application) this.app).get_active_window());
                     dialog.present();
                 }
             }

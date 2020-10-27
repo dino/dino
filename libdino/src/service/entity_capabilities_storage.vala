@@ -16,7 +16,7 @@ public class EntityCapabilitiesStorage : Xep.EntityCapabilities.Storage, Object 
     }
 
     public void store_features(string entity, Gee.List<string> features) {
-        if (features_cache.contains(entity)) return;
+        if (features_cache.has_key(entity)) return;
 
         foreach (string feature in features) {
             db.entity_feature.insert()

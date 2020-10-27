@@ -293,9 +293,14 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
         init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings });
-        exec("PRAGMA journal_mode = WAL");
-        exec("PRAGMA synchronous = NORMAL");
-        exec("PRAGMA secure_delete = ON");
+
+        try {
+            exec("PRAGMA journal_mode = WAL");
+            exec("PRAGMA synchronous = NORMAL");
+            exec("PRAGMA secure_delete = ON");
+        } catch (Error e) {
+            error("Failed to set database properties: %s", e.message);
+        }
     }
 
     public override void migrate(long oldVersion) {

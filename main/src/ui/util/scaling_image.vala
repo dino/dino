@@ -148,21 +148,6 @@ class ScalingImage : Misc {
         return buffer;
     }
 
-    private static Gdk.Pixbuf crop_corners(Gdk.Pixbuf pixbuf, double radius = 3) {
-        Cairo.Context ctx = new Cairo.Context(new Cairo.ImageSurface(Cairo.Format.ARGB32, pixbuf.width, pixbuf.height));
-        Gdk.cairo_set_source_pixbuf(ctx, pixbuf, 0, 0);
-        double degrees = Math.PI / 180.0;
-        ctx.new_sub_path();
-        ctx.arc(pixbuf.width - radius, radius, radius, -90 * degrees, 0 * degrees);
-        ctx.arc(pixbuf.width - radius, pixbuf.height - radius, radius, 0 * degrees, 90 * degrees);
-        ctx.arc(radius, pixbuf.height - radius, radius, 90 * degrees, 180 * degrees);
-        ctx.arc(radius, radius, radius, 180 * degrees, 270 * degrees);
-        ctx.close_path();
-        ctx.clip();
-        ctx.paint();
-        return Gdk.pixbuf_get_from_surface(ctx.get_target(), 0, 0, pixbuf.width, pixbuf.height);
-    }
-
     public override void get_preferred_width(out int minimum_width, out int natural_width) {
         minimum_width = int.max(0, min_width);
         double exact_width = -1, exact_height = -1;

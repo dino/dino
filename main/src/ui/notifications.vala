@@ -55,12 +55,11 @@ public class Notifications : Object {
         string text = "";
         switch (content_item.type_) {
             case MessageItem.TYPE:
-                Message message = (content_item as MessageItem).message;
+                Message message = ((MessageItem) content_item).message;
                 text = message.body;
                 break;
             case FileItem.TYPE:
-                FileItem file_item = content_item as FileItem;
-                FileTransfer transfer = file_item.file_transfer;
+                FileTransfer transfer = ((FileItem) content_item).file_transfer;
 
                 bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
                 if (transfer.direction == Message.DIRECTION_SENT) {

@@ -49,11 +49,11 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
         switch (content_item.type_) {
             case MessageItem.TYPE:
-                Message message = (content_item as MessageItem).message;
+                Message message = ((MessageItem) content_item).message;
                 if (message.direction == Message.DIRECTION_SENT) return false;
                 break;
             case FileItem.TYPE:
-                FileTransfer file_transfer = (content_item as FileItem).file_transfer;
+                FileTransfer file_transfer = ((FileItem) content_item).file_transfer;
                 // Don't notify on file transfers in a groupchat set to "mention only"
                 if (notify == Conversation.NotifySetting.HIGHLIGHT) return false;
                 if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return false;
@@ -64,7 +64,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
             Jid? nick = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
             if (nick == null) return false;
 
-            Entities.Message message = (content_item as MessageItem).message;
+            Entities.Message message = ((MessageItem) content_item).message;
             return Regex.match_simple("\\b" + Regex.escape_string(nick.resourcepart) + "\\b", message.body, RegexCompileFlags.CASELESS);
         }
         return true;

@@ -24,7 +24,8 @@ class AccountComboBox : ComboBox {
                 do {
                     Value val;
                     list_store.get_value(iter, 1, out val);
-                    if ((val as Account).equals(value)) {
+                    Account? account = val as Account;
+                    if (account != null && account.equals(value)) {
                         active = i;
                         break;
                     }

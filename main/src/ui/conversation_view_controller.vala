@@ -176,10 +176,14 @@ public class ConversationViewController : Object {
         if (clipboard.wait_is_image_available()) {
             clipboard.request_image((_, pixbuf) => {
                 File file = File.new_for_path(Path.build_filename(FileManager.get_storage_dir(), Xmpp.random_uuid() + ".png"));
-                DataOutputStream fos = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
-                pixbuf.save_to_stream_async.begin(fos, "png", null, () => {
-                    open_send_file_overlay(file);
-                });
+                try {
+                    FileOutputStream fos = file.create(FileCreateFlags.REPLACE_DESTINATION);
+                    pixbuf.save_to_stream_async.begin(fos, "png", null, () => {
+                        open_send_file_overlay(file);
+                    });
+                } catch (Error e) {
+                    warning("Could not create file to store pasted image in %s, %s", file.get_path(), e.message);
+                }
             });
         }
     }
@@ -191,8 +195,12 @@ public class ConversationViewController : Object {
                     string[] uris = selection_data.get_uris();
                     // For now we only process the first dragged file
                     if (uris.length >= 1) {
-                        string file_path = Filename.from_uri(uris[0]);
-                        open_send_file_overlay(File.new_for_path(file_path));
+                        try  {
+                            string file_path = Filename.from_uri(uris[0]);
+                            open_send_file_overlay(File.new_for_path(file_path));
+                        } catch (ConvertError e) {
+                            warning("Could not handle dragged file %s, %s", uris[0], e.message);
+                        }
                     }
                     break;
                 default:
