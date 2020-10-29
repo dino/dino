@@ -407,7 +407,7 @@ public class Module : XmppStreamModule {
         Gee.List<Feature> features = new ArrayList<Feature>();
 
         foreach (ServiceDiscovery.Identity identity in info_result.identities) {
-            if (identity.category == "conference") {
+            if (identity.category == "conference" && identity.name != null) {
                 stream.get_flag(Flag.IDENTITY).set_room_name(jid, identity.name);
             }
         }
