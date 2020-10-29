@@ -383,7 +383,7 @@ public class Module : XmppStreamModule {
             if (query_result != null) {
 
                 foreach (ServiceDiscovery.Identity identity in query_result.identities) {
-                    if (identity.category == "conference") {
+                    if (identity.category == "conference" && identity.name != null) {
                         stream.get_flag(Flag.IDENTITY).set_room_name(jid, identity.name);
                         room_name_set(stream, jid, identity.name);
                     }
