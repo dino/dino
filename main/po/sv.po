@@ -19,7 +19,7 @@ msgstr ""
 
 #: main/src/ui/file_send_overlay.vala:52
 msgid "The file exceeds the server's maximum upload size."
-msgstr ""
+msgstr "Filen är större än vad servern tillåter."
 
 #: main/src/ui/notifications.vala:67
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
@@ -160,11 +160,11 @@ msgstr "Kasta ut"
 
 #: main/src/ui/occupant_menu/view.vala:108
 msgid "Grant write permission"
-msgstr ""
+msgstr "Ge skrivrättigheter"
 
 #: main/src/ui/occupant_menu/view.vala:114
 msgid "Revoke write permission"
-msgstr ""
+msgstr "Återkalla skrivrättigheter"
 
 #: main/src/ui/conversation_view_controller.vala:205
 msgid "Select file"
@@ -193,11 +193,11 @@ msgstr "%s från %s"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:177
 msgid "This conference does not allow you to send messages."
-msgstr ""
+msgstr "Den här konferensen låter dig inte skicka meddelanden."
 
 #: main/src/ui/chat_input/chat_input_controller.vala:177
 msgid "Request permission"
-msgstr ""
+msgstr "Be om tillstånd"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
@@ -356,15 +356,15 @@ msgstr "Standard: %s"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request"
-msgstr ""
+msgstr "Fråga"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Permissions"
-msgstr ""
+msgstr "Tillstånd"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "Be om tillstånd att skicka meddelanden"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
