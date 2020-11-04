@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-07 20:51+0200\n"
-"PO-Revision-Date: 2020-08-01 20:43+0000\n"
+"POT-Creation-Date: 2020-11-04 18:02+0100\n"
+"PO-Revision-Date: 2020-10-26 14:26+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -11,28 +11,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.2-dev\n"
+"X-Generator: Weblate 4.3.2-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:141
 msgid "Your contact"
-msgstr ""
+msgstr "您的联系人"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
-msgstr ""
+msgstr "%s 使用的是未受信任的设备。您将不会看到从您不信任的设备上发来的信息。"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:153
 msgid "Manage devices"
-msgstr ""
+msgstr "管理设备"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:155
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
-msgstr ""
+msgstr "%s 不信任该设备。这意味着您可能会错过消息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"

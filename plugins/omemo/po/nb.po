@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-07 20:51+0200\n"
-"PO-Revision-Date: 2020-09-13 09:36+0000\n"
+"POT-Creation-Date: 2020-11-04 18:02+0100\n"
+"PO-Revision-Date: 2020-10-10 10:49+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/nb_NO/>\n"
 "Language: nb\n"
@@ -20,10 +20,10 @@ msgstr ""
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:141
 msgid "Your contact"
-msgstr ""
+msgstr "Din kontakt"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
@@ -36,7 +36,7 @@ msgid "Manage devices"
 msgstr "Håndter enheter"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:155
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""

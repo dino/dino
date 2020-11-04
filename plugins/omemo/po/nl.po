@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-07 20:51+0200\n"
-"PO-Revision-Date: 2020-09-13 09:36+0000\n"
+"POT-Creation-Date: 2020-11-04 18:02+0100\n"
+"PO-Revision-Date: 2020-10-10 10:49+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "nl/>\n"
 "Language: nl\n"
@@ -15,7 +15,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:141
 msgid "Your contact"
-msgstr ""
+msgstr "Je contactpersoon"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format

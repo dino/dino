@@ -7,78 +7,78 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-07 20:51+0200\n"
-"PO-Revision-Date: 2020-09-02 21:36+0000\n"
+"POT-Creation-Date: 2020-11-04 18:01+0100\n"
+"PO-Revision-Date: 2020-10-28 16:26+0000\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.3.2-dev\n"
 
-#: main/src/ui/file_send_overlay.vala:52
+#: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
-msgstr ""
+msgstr "檔案大小超過了伺服器的的上傳限制。"
 
-#: main/src/ui/notifications.vala:67
+#: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 msgid "Image sent"
 msgstr "影像已傳送"
 
-#: main/src/ui/notifications.vala:67
+#: main/src/ui/notifications.vala:66
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 msgid "File sent"
 msgstr "檔案已傳送"
 
-#: main/src/ui/notifications.vala:69
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 msgid "Image received"
 msgstr "影像已接收"
 
-#: main/src/ui/notifications.vala:69
+#: main/src/ui/notifications.vala:68
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 msgid "File received"
 msgstr "檔案已接收"
 
-#: main/src/ui/notifications.vala:99
+#: main/src/ui/notifications.vala:98
 msgid "Subscription request"
 msgstr "線上狀態訂閱請求"
 
-#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:141
-#: main/src/ui/notifications.vala:162
+#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
+#: main/src/ui/notifications.vala:161
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 msgid "Accept"
 msgstr "同意"
 
-#: main/src/ui/notifications.vala:107 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:161
+#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
+#: main/src/ui/notifications.vala:160
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "拒絕"
 
-#: main/src/ui/notifications.vala:113
+#: main/src/ui/notifications.vala:112
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
 #: main/src/ui/manage_accounts/add_account_dialog.vala:258
 #, c-format
 msgid "Could not connect to %s"
 msgstr "無法連線到 %s"
 
-#: main/src/ui/notifications.vala:129
+#: main/src/ui/notifications.vala:128
 #, c-format
 msgid "Invitation to %s"
 msgstr "邀請加入 %s"
 
-#: main/src/ui/notifications.vala:130
+#: main/src/ui/notifications.vala:129
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s 邀請您加入 %s"
 
-#: main/src/ui/notifications.vala:151
+#: main/src/ui/notifications.vala:150
 msgid "Permission request"
 msgstr "權限請求"
 
-#: main/src/ui/notifications.vala:152
+#: main/src/ui/notifications.vala:151
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%s 請求權限以寫入 %s"
@@ -165,16 +165,16 @@ msgstr "同意寫入權限"
 msgid "Revoke write permission"
 msgstr "撤回寫入權限"
 
-#: main/src/ui/conversation_view_controller.vala:205
+#: main/src/ui/conversation_view_controller.vala:213
 msgid "Select file"
 msgstr "選取檔案"
 
-#: main/src/ui/conversation_view_controller.vala:205
+#: main/src/ui/conversation_view_controller.vala:213
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
 msgstr "選取"
 
-#: main/src/ui/conversation_view_controller.vala:205
+#: main/src/ui/conversation_view_controller.vala:213
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
@@ -566,11 +566,11 @@ msgstr "註冊"
 msgid "Check %s for information on how to sign up"
 msgstr "查閱 %s 以取得關於如何註冊的資訊"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:157
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "Message too long"
 msgstr "訊息太長"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:185
+#: main/src/ui/conversation_content_view/message_widget.vala:186
 msgid "edited"
 msgstr "已編輯"
 

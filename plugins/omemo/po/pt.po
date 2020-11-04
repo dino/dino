@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-07 20:51+0200\n"
-"PO-Revision-Date: 2020-09-28 20:29+0000\n"
+"POT-Creation-Date: 2020-11-04 18:02+0100\n"
+"PO-Revision-Date: 2020-10-15 19:26+0000\n"
 "Language-Team: none\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:141
 msgid "Your contact"
-msgstr ""
+msgstr "O seu contacto"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format
