@@ -19,7 +19,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:141
 msgid "Your contact"
-msgstr ""
+msgstr "Din kontakt"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:152
 #, c-format
@@ -37,6 +37,7 @@ msgstr "Hantera enheter"
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""
+"%s litar inte på den här enheten. Du kanske inte ser alla meddelanden."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
