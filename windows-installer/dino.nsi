@@ -43,7 +43,7 @@ CreateShortcut "$SMPROGRAMS\Dino\License.lnk" "$INSTDIR\LICENSE" "" "notepad.exe
 CreateShortcut "$SMPROGRAMS\Dino\Dino website.lnk" "https://dino.im" "" "$INSTDIR\logo.ico"
 
 # set application ID
-ApplicationID::Set "$SMPROGRAMS\Dino\Dino.lnk" "Dino"
+ApplicationID::Set "$SMPROGRAMS\Dino\Dino.lnk" "Dino" "true"
 
 SectionEnd
 
