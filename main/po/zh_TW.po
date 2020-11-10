@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-04 18:01+0100\n"
+"POT-Creation-Date: 2020-11-10 13:28+0100\n"
 "PO-Revision-Date: 2020-10-28 16:26+0000\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
@@ -63,6 +63,16 @@ msgstr "拒絕"
 #, c-format
 msgid "Could not connect to %s"
 msgstr "無法連線到 %s"
+
+#: main/src/ui/notifications.vala:115
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "密碼錯誤"
+
+#: main/src/ui/notifications.vala:118
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "無效的 TLS 憑證"
 
 #: main/src/ui/notifications.vala:128
 #, c-format
@@ -505,14 +515,6 @@ msgstr "已連線"
 msgid "Disconnected"
 msgstr "連線已斷開"
 
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "密碼錯誤"
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "無效的 TLS 憑證"
-
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
 msgid "Error"
@@ -531,6 +533,28 @@ msgstr "登入到 %s"
 #, c-format
 msgid "You can now use the account %s."
 msgstr "您現在可以使用帳號 %s 了。"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:245
+#, c-format
+msgid "The server could not prove that it is %s."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:247
+msgid ""
+"Its security certificate is not trusted by your operating system."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:249
+msgid "Its security certificate is issued to another domain."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:251
+msgid "Its security certificate will only become valid in the future."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:253
+msgid "Its security certificate is expired."
+msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"

@@ -41,11 +41,11 @@ msgstr "Cargament…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr ""
+msgstr "Consultacion de GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr ""
+msgstr "La clau es pas al trocèl"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"

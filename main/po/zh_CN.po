@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-04 18:01+0100\n"
+"POT-Creation-Date: 2020-11-10 13:28+0100\n"
 "PO-Revision-Date: 2020-10-26 14:26+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
@@ -64,6 +64,16 @@ msgstr "拒绝"
 #, c-format
 msgid "Could not connect to %s"
 msgstr "无法连接到%s"
+
+#: main/src/ui/notifications.vala:115
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "密码错误"
+
+#: main/src/ui/notifications.vala:118
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "无效的 TLS 证书"
 
 #: main/src/ui/notifications.vala:128
 #, c-format
@@ -506,14 +516,6 @@ msgstr "已连接"
 msgid "Disconnected"
 msgstr "已断开连接"
 
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "密码错误"
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "无效的 TLS 证书"
-
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
 msgid "Error"
@@ -532,6 +534,28 @@ msgstr "登录到%s"
 #, c-format
 msgid "You can now use the account %s."
 msgstr "你现在可以使用账户 %s 了。"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:245
+#, c-format
+msgid "The server could not prove that it is %s."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:247
+msgid ""
+"Its security certificate is not trusted by your operating system."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:249
+msgid "Its security certificate is issued to another domain."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:251
+msgid "Its security certificate will only become valid in the future."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:253
+msgid "Its security certificate is expired."
+msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"

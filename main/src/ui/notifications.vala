@@ -112,10 +112,10 @@ public class Notifications : Object {
         Notification notification = new Notification(_("Could not connect to %s").printf(account.bare_jid.domainpart));
         switch (error.source) {
             case ConnectionManager.ConnectionError.Source.SASL:
-                notification.set_body("Wrong password");
+                notification.set_body(_("Wrong password"));
                 break;
             case ConnectionManager.ConnectionError.Source.TLS:
-                notification.set_body("Invalid TLS certificate");
+                notification.set_body(_("Invalid TLS certificate"));
                 break;
         }
         GLib.Application.get_default().send_notification(account.id.to_string() + "-connection-error", notification);

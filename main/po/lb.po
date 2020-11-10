@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Luxembourgish (Dino)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-04 18:01+0100\n"
+"POT-Creation-Date: 2020-11-10 13:28+0100\n"
 "PO-Revision-Date: 2020-04-15 00:11+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "translations/lb/>\n"
@@ -59,6 +59,16 @@ msgstr "Verweigeren"
 #, c-format
 msgid "Could not connect to %s"
 msgstr "Konnt net op %s connectéieren"
+
+#: main/src/ui/notifications.vala:115
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Falsch Passwuert"
+
+#: main/src/ui/notifications.vala:118
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "Invaliden TLS Zertifikat"
 
 #: main/src/ui/notifications.vala:128
 #, c-format
@@ -503,14 +513,6 @@ msgstr "Verbonnen"
 msgid "Disconnected"
 msgstr "Getrennt"
 
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "Falsch Passwuert"
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "Invaliden TLS Zertifikat"
-
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
 msgid "Error"
@@ -529,6 +531,28 @@ msgstr "Bei %s umellen"
 #, c-format
 msgid "You can now use the account %s."
 msgstr "Du kanns elo den Account %s benotzen."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:245
+#, c-format
+msgid "The server could not prove that it is %s."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:247
+msgid ""
+"Its security certificate is not trusted by your operating system."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:249
+msgid "Its security certificate is issued to another domain."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:251
+msgid "Its security certificate will only become valid in the future."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:253
+msgid "Its security certificate is expired."
+msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"

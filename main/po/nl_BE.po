@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-04 18:01+0100\n"
+"POT-Creation-Date: 2020-11-10 13:28+0100\n"
 "PO-Revision-Date: 2019-01-12 20:06+0000\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/dino/"
 "translations/nl_BE/>\n"
@@ -64,6 +64,16 @@ msgstr "Afwijzen"
 #, c-format
 msgid "Could not connect to %s"
 msgstr "Kon geen verbinding maken met %s"
+
+#: main/src/ui/notifications.vala:115
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Verkeerd paswoord"
+
+#: main/src/ui/notifications.vala:118
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "Ongeldig TLS-certificaat"
 
 #: main/src/ui/notifications.vala:128
 #, c-format
@@ -511,14 +521,6 @@ msgstr "Verbonden"
 msgid "Disconnected"
 msgstr "Verbinding verbroken"
 
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "Verkeerd paswoord"
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "Ongeldig TLS-certificaat"
-
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
 msgid "Error"
@@ -536,6 +538,28 @@ msgstr "Inloggen bij %s"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:210
 #, c-format
 msgid "You can now use the account %s."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:245
+#, c-format
+msgid "The server could not prove that it is %s."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:247
+msgid ""
+"Its security certificate is not trusted by your operating system."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:249
+msgid "Its security certificate is issued to another domain."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:251
+msgid "Its security certificate will only become valid in the future."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:253
+msgid "Its security certificate is expired."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278

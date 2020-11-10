@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-04 18:01+0100\n"
+"POT-Creation-Date: 2020-11-10 13:28+0100\n"
 "PO-Revision-Date: 2020-10-10 10:49+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
@@ -59,6 +59,16 @@ msgstr "Ablehnen"
 #, c-format
 msgid "Could not connect to %s"
 msgstr "Verbindung zu %s konnte nicht hergestellt werden"
+
+#: main/src/ui/notifications.vala:115
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Passwort falsch"
+
+#: main/src/ui/notifications.vala:118
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "Ungültiges TLS-Zertifikat"
 
 #: main/src/ui/notifications.vala:128
 #, c-format
@@ -505,14 +515,6 @@ msgstr "Verbunden"
 msgid "Disconnected"
 msgstr "Nicht verbunden"
 
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "Passwort falsch"
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "Ungültiges TLS-Zertifikat"
-
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
 msgid "Error"
@@ -531,6 +533,28 @@ msgstr "Bei %s einloggen"
 #, c-format
 msgid "You can now use the account %s."
 msgstr "Du kannst das Konto %s jetzt benutzen."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:245
+#, c-format
+msgid "The server could not prove that it is %s."
+msgstr "Der Server konnte nicht beweisen, dass er %s ist."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:247
+msgid ""
+"Its security certificate is not trusted by your operating system."
+msgstr "Sein Sicherheitszertifikat wird von deinem Betriebssystem nicht akzeptiert."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:249
+msgid "Its security certificate is issued to another domain."
+msgstr "Sein Sicherheitszertifikat ist für eine andere Domain ausgestellt."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:251
+msgid "Its security certificate will only become valid in the future."
+msgstr "Sein Sicherheitszertifikat ist erst in der Zukunft gültig."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:253
+msgid "Its security certificate is expired."
+msgstr "Sein Sicherheitszertifikat ist abgelaufen."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"

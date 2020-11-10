@@ -242,15 +242,15 @@ public class AddAccountDialog : Gtk.Dialog {
             } else {
                 jid_entry.sensitive = true;
                 if (server_status.error_flags != null) {
-                    string error_desc = "The server could not prove that it is %s.".printf("<b>" + login_jid.domainpart + "</b>");
+                    string error_desc = _("The server could not prove that it is %s.").printf("<b>" + login_jid.domainpart + "</b>");
                     if (TlsCertificateFlags.UNKNOWN_CA in server_status.error_flags) {
-                        error_desc += " " + "Its security certificate is not trusted by your computer's operating system.";
+                        error_desc += " " + _("Its security certificate is not trusted by your operating system.");
                     } else if (TlsCertificateFlags.BAD_IDENTITY in server_status.error_flags) {
-                        error_desc += " " + "Its security certificate is issued to another domain.";
+                        error_desc += " " + _("Its security certificate is issued to another domain.");
                     } else if (TlsCertificateFlags.NOT_ACTIVATED in server_status.error_flags) {
-                        error_desc += " " + "Its security certificate will only become valid in the future.";
+                        error_desc += " " + _("Its security certificate will only become valid in the future.");
                     } else if (TlsCertificateFlags.EXPIRED in server_status.error_flags) {
-                        error_desc += " " + "Its security certificate is expired.";
+                        error_desc += " " + _("Its security certificate is expired.");
                     }
                     sign_in_tls_label.label = error_desc;
                     show_tls_error();
