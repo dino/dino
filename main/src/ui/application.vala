@@ -138,11 +138,14 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         });
         add_action(accept_muc_invite_action);
 
-        SimpleAction accept_voice_request_action = new SimpleAction("accept-voice-request", VariantType.INT32);
+        SimpleAction accept_voice_request_action = new SimpleAction("accept-voice-request", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.STRING}));
         accept_voice_request_action.activate.connect((variant) => {
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
+            int conversation_id = variant.get_child_value(0).get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
             if (conversation == null) return;
-            stream_interactor.get_module(MucManager.IDENTITY).change_role(conversation.account, conversation.counterpart, conversation.nickname, "participant");
+
+            string nick = variant.get_child_value(1).get_string();
+            stream_interactor.get_module(MucManager.IDENTITY).change_role(conversation.account, conversation.counterpart, nick, "participant");
         });
         add_action(accept_voice_request_action);
 

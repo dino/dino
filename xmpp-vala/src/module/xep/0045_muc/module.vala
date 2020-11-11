@@ -69,7 +69,7 @@ public class Module : XmppStreamModule {
     public signal void received_occupant_role(XmppStream stream, Jid jid, Role? role);
     public signal void subject_set(XmppStream stream, string? subject, Jid jid);
     public signal void invite_received(XmppStream stream, Jid room_jid, Jid from_jid, string? password, string? reason);
-    public signal void voice_request_received(XmppStream stream, Jid room_jid, Jid from_jid, string? nick, string? role, string? label); 
+    public signal void voice_request_received(XmppStream stream, Jid room_jid, Jid from_jid, string nick);
     public signal void room_info_updated(XmppStream stream, Jid muc_jid);
 
     public signal void self_removed_from_room(XmppStream stream, Jid jid, StatusCode code);
@@ -559,8 +559,6 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 Gee.List<StanzaNode>? fields = x_field_node.get_subnodes("field", DataForms.NS_URI);
                 Jid? from_jid = null;
                 string? nick = null;
-                string? role = null;
-                string? label = null;
                 
                 if (fields.size!=0){ 
                     foreach (var field_node in fields){
@@ -579,13 +577,19 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                         }
                         else if (var_ == "muc#role"){
                             StanzaNode? value_node = field_node.get_subnode("value", DataForms.NS_URI);
-                            if (value_node != null) role = value_node.get_string_content();                            
-                        }
-                        else if (var_ == "muc#request_allow"){
-                            label = field_node.get_attribute("label");                            
+                            if (value_node != null) {
+                                if (value_node.get_string_content() != "participant") {
+                                    warning("Voice request with role other than participant");
+                                }
+                            }
                         }
                     }
-                    outer.voice_request_received(stream, message.from, from_jid, nick, role, label);
+                    if (from_jid == null || nick == null) {
+                        warning("Voice request without from_jid or nick");
+                        return false;
+                    }
+
+                    outer.voice_request_received(stream, message.from, from_jid, nick);
                     return true;
                 }
             }

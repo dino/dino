@@ -141,7 +141,7 @@ public class Notifications : Object {
         GLib.Application.get_default().send_notification(null, notification);
     }
     
-    private async void on_voice_request_received(Account account, Jid room_jid, Jid from_jid, string? nick, string? role, string? label) {
+    private async void on_voice_request_received(Account account, Jid room_jid, Jid from_jid, string nick) {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
         if (conversation == null) return;
 
@@ -156,9 +156,10 @@ public class Notifications : Object {
             notification.set_icon(get_pixbuf_icon(jid_avatar));
         } catch (Error e) { }
 
-        notification.set_default_action_and_target_value("app.accept-voice-request", new Variant.int32(conversation.id));
+        Variant variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.string(nick)});
+        notification.set_default_action_and_target_value("app.accept-voice-request", variant);
         notification.add_button_with_target_value(_("Deny"), "app.deny-voice-request", conversation.id);
-        notification.add_button_with_target_value(_("Accept"), "app.accept-voice-request", conversation.id);
+        notification.add_button_with_target_value(_("Accept"), "app.accept-voice-request", variant);
         GLib.Application.get_default().send_notification(null, notification);
     }
 
