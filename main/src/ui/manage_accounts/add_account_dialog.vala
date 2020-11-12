@@ -64,6 +64,7 @@ public class AddAccountDialog : Gtk.Dialog {
 
     private static string[] server_list = new string[]{
         "5222.de",
+        "blabber.im",
         "jabber.fr",
         "movim.eu",
         "yax.im"
