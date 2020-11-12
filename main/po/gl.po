@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-10 13:28+0100\n"
-"PO-Revision-Date: 2020-10-10 10:49+0000\n"
+"POT-Creation-Date: 2020-11-12 18:24+0100\n"
+"PO-Revision-Date: 2020-11-12 05:28+0000\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/"
 "translations/gl/>\n"
 "Language: gl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -47,13 +47,13 @@ msgid "Subscription request"
 msgstr "Solicitude de subscrición"
 
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:161
+#: main/src/ui/notifications.vala:162
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Aceptar"
 
 #: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
-#: main/src/ui/notifications.vala:160
+#: main/src/ui/notifications.vala:161
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Rexeitar"
@@ -190,7 +190,7 @@ msgstr "Escoller"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:200 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:203 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -230,7 +230,7 @@ msgid "Start"
 msgstr "Comezar"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:200 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:203 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Unirse a unha canle"
@@ -246,7 +246,7 @@ msgstr "Seguinte"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:200
+#: main/src/ui/application.vala:203
 msgid "Join"
 msgstr "Unirse"
 
@@ -542,24 +542,24 @@ msgstr "Agora é posible usar a conta %s."
 #: main/src/ui/manage_accounts/add_account_dialog.vala:245
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr ""
+msgstr "O servidor non puido probar que é %s."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:247
-msgid ""
-"Its security certificate is not trusted by your operating system."
+msgid "Its security certificate is not trusted by your operating system."
 msgstr ""
+"O teu sistema non estableceu a confianza no seu certificado de seguridade."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:249
 msgid "Its security certificate is issued to another domain."
-msgstr ""
+msgstr "O seu certificado de seguridade foi proporcionado para outro dominio."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:251
 msgid "Its security certificate will only become valid in the future."
-msgstr ""
+msgstr "O seu certificado de seguridade só terá validez no futuro."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:253
 msgid "Its security certificate is expired."
-msgstr ""
+msgstr "O certificado de seguridade caducou."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:278
 msgid "Wrong username or password"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-04 18:02+0100\n"
+"POT-Creation-Date: 2020-11-12 18:24+0100\n"
 "PO-Revision-Date: 2020-10-23 13:26+0000\n"
 "Language-Team: none\n"
 "Language: sv\n"
@@ -36,8 +36,7 @@ msgstr "Hantera enheter"
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
-msgstr ""
-"%s litar inte på den här enheten. Du kanske inte ser alla meddelanden."
+msgstr "%s litar inte på den här enheten. Du kanske inte ser alla meddelanden."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"

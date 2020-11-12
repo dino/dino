@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-10 13:28+0100\n"
+"POT-Creation-Date: 2020-11-12 18:24+0100\n"
 "PO-Revision-Date: 2020-10-10 10:49+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
@@ -42,13 +42,13 @@ msgid "Subscription request"
 msgstr "Kontaktanfrage"
 
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:161
+#: main/src/ui/notifications.vala:162
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Annehmen"
 
 #: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
-#: main/src/ui/notifications.vala:160
+#: main/src/ui/notifications.vala:161
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Ablehnen"
@@ -185,7 +185,7 @@ msgstr "Auswählen"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:200 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:203 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -225,7 +225,7 @@ msgid "Start"
 msgstr "Starten"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:200 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:203 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Kanal beitreten"
@@ -241,7 +241,7 @@ msgstr "Weiter"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:200
+#: main/src/ui/application.vala:203
 msgid "Join"
 msgstr "Beitreten"
 
@@ -540,9 +540,9 @@ msgid "The server could not prove that it is %s."
 msgstr "Der Server konnte nicht beweisen, dass er %s ist."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:247
-msgid ""
-"Its security certificate is not trusted by your operating system."
-msgstr "Sein Sicherheitszertifikat wird von deinem Betriebssystem nicht akzeptiert."
+msgid "Its security certificate is not trusted by your operating system."
+msgstr ""
+"Sein Sicherheitszertifikat wird von deinem Betriebssystem nicht akzeptiert."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:249
 msgid "Its security certificate is issued to another domain."

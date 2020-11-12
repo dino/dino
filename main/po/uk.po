@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-10 13:28+0100\n"
+"POT-Creation-Date: 2020-11-12 18:24+0100\n"
 "PO-Revision-Date: 2020-07-07 03:14+0000\n"
 "Language-Team: none\n"
 "Language: uk\n"
@@ -47,13 +47,13 @@ msgid "Subscription request"
 msgstr "Необхідна авторизація"
 
 #: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:161
+#: main/src/ui/notifications.vala:162
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Прийняти"
 
 #: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
-#: main/src/ui/notifications.vala:160
+#: main/src/ui/notifications.vala:161
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Відхилити"
@@ -191,7 +191,7 @@ msgstr "Вибрати"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:200 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:203 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -231,7 +231,7 @@ msgid "Start"
 msgstr "Почати"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:200 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:203 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Приєднатись до каналу"
@@ -247,7 +247,7 @@ msgstr "Далі"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:200
+#: main/src/ui/application.vala:203
 msgid "Join"
 msgstr "Приєднатися"
 
@@ -546,8 +546,7 @@ msgid "The server could not prove that it is %s."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:247
-msgid ""
-"Its security certificate is not trusted by your operating system."
+msgid "Its security certificate is not trusted by your operating system."
 msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:249

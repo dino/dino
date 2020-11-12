@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-04 18:02+0100\n"
-"PO-Revision-Date: 2020-05-17 17:21+0000\n"
+"POT-Creation-Date: 2020-11-12 18:24+0100\n"
+"PO-Revision-Date: 2020-11-12 17:21+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/fr/>\n"
 "Language: fr\n"
@@ -16,13 +16,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr "La publication des clefs est désactivée"
+msgstr "La publication des clés est désactivée"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
@@ -30,7 +30,7 @@ msgstr "Erreur dans GnuPG"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "Aucune clef n’est disponible. Générez en une !"
+msgstr "Aucune clé n’est disponible. Générez-en une !"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
