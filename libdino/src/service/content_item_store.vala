@@ -49,24 +49,12 @@ public class ContentItemStore : StreamInteractionModule, Object {
             DateTime local_time = new DateTime.from_unix_utc(row[db.content_item.local_time]);
             switch (provider) {
                 case 1:
-                    RowOption row_option = db.message.select().with(db.message.id, "=", foreign_id)
-                            .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
-                            .row();
-                    if (row_option.is_present()) {
-                        Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
-                        if (message == null) {
-                            try {
-                                message = new Message.from_row(db, row_option.inner);
-                            } catch (InvalidJidError e) {
-                                warning("Ignoring message with invalid Jid: %s", e.message);
-                            }
-                        }
-                        if (message != null) {
-                            var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
-                            message_item.display_time = time;
-                            message_item.sort_time = local_time;
-                            items.add(message_item);
-                        }
+                    Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
+                    if (message != null) {
+                        var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
+                        message_item.display_time = time;
+                        message_item.sort_time = local_time;
+                        items.add(message_item);
                     }
                     break;
                 case 2:
