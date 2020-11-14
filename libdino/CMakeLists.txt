@@ -49,7 +49,8 @@ SOURCES
     src/service/stream_interactor.vala
     src/service/util.vala
 
-    src/util.vala
+    src/util/util.vala
+    src/util/weak_map.vala
 CUSTOM_VAPIS
     "${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi"
     "${CMAKE_BINARY_DIR}/exports/qlite.vapi"
@@ -89,3 +90,24 @@ set_target_properties(libdino PROPERTIES PREFIX "" VERSION 0.0 SOVERSION 0)
 install(TARGETS libdino ${TARGET_INSTALL})
 install(FILES ${CMAKE_BINARY_DIR}/exports/dino.vapi ${CMAKE_BINARY_DIR}/exports/dino.deps DESTINATION ${VAPI_INSTALL_DIR})
 install(FILES ${CMAKE_BINARY_DIR}/exports/dino.h ${CMAKE_BINARY_DIR}/exports/dino_i18n.h DESTINATION ${INCLUDE_INSTALL_DIR})
+
+if(BUILD_TESTS)
+    vala_precompile(LIBDINO_TEST_VALA_C
+    SOURCES
+        "tests/weak_map.vala"
+        "tests/testcase.vala"
+        "tests/common.vala"
+    CUSTOM_VAPIS
+        ${CMAKE_BINARY_DIR}/exports/dino_internal.vapi
+        ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
+        ${CMAKE_BINARY_DIR}/exports/qlite.vapi
+    PACKAGES
+        ${LIBDINO_PACKAGES}
+    OPTIONS
+        ${LIBDINO_EXTRA_OPTIONS}
+    )
+
+    add_definitions(${VALA_CFLAGS})
+    add_executable(libdino-test ${LIBDINO_TEST_VALA_C})
+    target_link_libraries(libdino-test libdino)
+endif(BUILD_TESTS)
