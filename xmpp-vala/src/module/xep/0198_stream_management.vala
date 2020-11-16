@@ -39,7 +39,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
     }
 
     internal async void write_node(XmppStream stream, StanzaNode node) {
-        StanzaWriter? writer = stream.writer;
+        StanzaWriter? writer = ((IoXmppStream)stream).writer;
         if (writer == null) return;
         try {
             stream.log.node("OUT", node, stream);
@@ -104,14 +104,11 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
 
     private void check_resume(XmppStream stream) {
         if (stream_has_sm_feature(stream) && session_id != null) {
-            Tls.Flag? tls_flag = stream.get_flag(Tls.Flag.IDENTITY);
-            if (tls_flag != null && tls_flag.finished) {
-                StanzaNode node = new StanzaNode.build("resume", NS_URI).add_self_xmlns()
-                    .put_attribute("h", h_inbound.to_string())
-                    .put_attribute("previd", session_id);
-                write_node.begin(stream, node);
-                stream.add_flag(new Flag());
-            }
+            StanzaNode node = new StanzaNode.build("resume", NS_URI).add_self_xmlns()
+                .put_attribute("h", h_inbound.to_string())
+                .put_attribute("previd", session_id);
+            write_node.begin(stream, node);
+            stream.add_flag(new Flag());
         }
     }
 
@@ -137,7 +134,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
                     h_inbound = 0;
                     session_id = node.get_attribute("id", NS_URI);
                     flags = stream.flags;
-                    stream.write_obj = this;
+                    ((IoXmppStream)stream).write_obj = this;
                 } else if (node.name == "resumed") {
                     stream.get_flag(Flag.IDENTITY).resumed = true;
 
@@ -152,7 +149,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
                     }
                     in_flight_stanzas.clear();
                     check_queue(stream);
-                    stream.write_obj = this;
+                    ((IoXmppStream)stream).write_obj = this;
                 } else if (node.name == "failed") {
                     stream.received_features_node(stream);
                     session_id = null;

@@ -46,8 +46,6 @@ public class ModuleManager {
         lock(module_map) {
             module_map[account] = new ArrayList<XmppStreamModule>();
             module_map[account].add(new Iq.Module());
-            module_map[account].add(new Tls.Module());
-            module_map[account].add(new Xep.SrvRecordsTls.Module());
             module_map[account].add(new Sasl.Module(account.bare_jid.to_string(), account.password));
             module_map[account].add(new Xep.StreamManagement.Module());
             module_map[account].add(new Bind.Module(account.resourcepart));

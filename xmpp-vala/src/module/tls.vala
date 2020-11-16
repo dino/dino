@@ -23,10 +23,11 @@ namespace Xmpp.Tls {
         private void received_nonza(XmppStream stream, StanzaNode node) {
             if (node.ns_uri == NS_URI && node.name == "proceed") {
                 try {
-                    var io_stream = stream.get_stream();
+                    StartTlsXmppStream? tls_xmpp_stream = stream as StartTlsXmppStream;
+                    var io_stream = tls_xmpp_stream.get_stream();
                     if (io_stream == null) return;
                     var conn = TlsClientConnection.new(io_stream, identity);
-                    stream.reset_stream(conn);
+                    tls_xmpp_stream.reset_stream(conn);
 
                     conn.accept_certificate.connect(on_invalid_certificate);
                     var flag = stream.get_flag(Flag.IDENTITY);

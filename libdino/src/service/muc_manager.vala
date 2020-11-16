@@ -97,6 +97,8 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public void part(Account account, Jid jid) {
+        if (!mucs_todo.has_key(account) || !mucs_todo[account].contains(jid)) return;
+
         mucs_todo[account].remove(jid);
 
         XmppStream? stream = stream_interactor.get_stream(account);

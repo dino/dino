@@ -20,13 +20,20 @@ set(ENGINE_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_
 
 vala_precompile(ENGINE_VALA_C
 SOURCES
+    "src/core/direct_tls_xmpp_stream.vala"
+    "src/core/io_xmpp_stream.vala"
+    "src/core/module_flag.vala"
+    "src/core/starttls_xmpp_stream.vala"
+    "src/core/stream_connect.vala"
+    "src/core/tls_xmpp_stream.vala"
+    "src/core/xmpp_stream.vala"
+
     "src/core/namespace_state.vala"
     "src/core/stanza_attribute.vala"
     "src/core/stanza_node.vala"
     "src/core/stanza_reader.vala"
     "src/core/stanza_writer.vala"
     "src/core/xmpp_log.vala"
-    "src/core/xmpp_stream.vala"
 
     "src/module/bind.vala"
     "src/module/bookmarks_provider.vala"
@@ -48,7 +55,6 @@ SOURCES
     "src/module/stanza.vala"
     "src/module/stanza_error.vala"
     "src/module/stream_error.vala"
-    "src/module/tls.vala"
     "src/module/util.vala"
 
     "src/module/xep/0048_bookmarks.vala"
@@ -91,7 +97,6 @@ SOURCES
     "src/module/xep/0334_message_processing_hints.vala"
     "src/module/xep/0359_unique_stable_stanza_ids.vala"
     "src/module/xep/0363_http_file_upload.vala"
-    "src/module/xep/0368_srv_records_tls.vala"
     "src/module/xep/0380_explicit_encryption.vala"
     "src/module/xep/0391_jingle_encrypted_transports.vala"
     "src/module/xep/0410_muc_self_ping.vala"
