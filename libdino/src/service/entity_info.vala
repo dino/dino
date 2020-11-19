@@ -42,32 +42,35 @@ public class EntityInfo : StreamInteractionModule, Object {
         stream_interactor.module_manager.initialize_account_modules.connect(initialize_modules);
     }
 
-    public async Identity? get_identity(Account account, Jid jid) {
-        Gee.Set<ServiceDiscovery.Identity>? identities = null;
-
+    public async Gee.Set<Identity>? get_identities(Account account, Jid jid) {
         if (jid_identity.has_key(jid)) {
-            identities = jid_identity[jid];
+            return jid_identity[jid];
         }
 
-        if (identities == null) {
-            string? hash = entity_caps_hashes[jid];
-            if (hash != null) {
-                identities = get_identities(hash);
-            }
+        string? hash = entity_caps_hashes[jid];
+        if (hash != null) {
+            Gee.Set<Identity>? identities = get_stored_identities(hash);
+            if (identities != null) return identities;
+        }
 
-            if (identities == null) {
-                ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, hash);
-                identities = info_result.identities;
+        ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, hash);
+        if (info_result != null) {
+            return info_result.identities;
+        }
+
+        return null;
+    }
+
+    public async Identity? get_identity(Account account, Jid jid) {
+        Gee.Set<ServiceDiscovery.Identity>? identities = yield get_identities(account, jid);
+        if (identities == null) return null;
+
+        foreach (var identity in identities) {
+            if (identity.category == Identity.CATEGORY_CLIENT) {
+                return identity;
             }
         }
 
-        if (identities != null) {
-            foreach (var identity in identities) {
-                if (identity.category == Identity.CATEGORY_CLIENT) {
-                    return identity;
-                }
-            }
-        }
         return null;
     }
 
@@ -78,7 +81,7 @@ public class EntityInfo : StreamInteractionModule, Object {
 
         string? hash = entity_caps_hashes[jid];
         if (hash != null) {
-            Gee.List<string>? features = get_features(hash);
+            Gee.List<string>? features = get_stored_features(hash);
             if (features != null) {
                 return features.contains(feature);
             }
@@ -132,9 +135,10 @@ public class EntityInfo : StreamInteractionModule, Object {
                     .value(db.entity_identity.entity_name, identity.name)
                     .perform();
         }
+        entity_identity[entity] = identities;
     }
 
-    private Gee.List<string>? get_features(string entity) {
+    private Gee.List<string>? get_stored_features(string entity) {
         Gee.List<string>? features = entity_features[entity];
         if (features != null) {
             return features;
@@ -152,7 +156,7 @@ public class EntityInfo : StreamInteractionModule, Object {
         return features;
     }
 
-    private Gee.Set<Identity> get_identities(string entity) {
+    private Gee.Set<Identity>? get_stored_identities(string entity) {
         Gee.Set<Identity>? identities = entity_identity[entity];
         if (identities != null) {
             return identities;
@@ -164,6 +168,11 @@ public class EntityInfo : StreamInteractionModule, Object {
             var identity = new Identity(row[db.entity_identity.category], row[db.entity_identity.type], row[db.entity_identity.entity_name]);
             identities.add(identity);
         }
+
+        if (entity_identity.size == 0) {
+            return null;
+        }
+        entity_identity[entity] = identities;
         return identities;
     }
 
@@ -209,9 +218,7 @@ public class CapsCacheImpl : CapsCache, Object {
     }
 
     public async Gee.Set<Identity> get_entity_identities(Jid jid) {
-        var ret = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
-        ret.add(yield entity_info.get_identity(account, jid));
-        return ret;
+        return yield entity_info.get_identities(account, jid);
     }
 }
 }
