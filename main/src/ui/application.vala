@@ -5,7 +5,6 @@ using Dino.Ui;
 using Xmpp;
 
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
-    private Notifications notifications;
     private MainWindow window;
     public MainWindowController controller;
 
@@ -29,8 +28,11 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         create_actions();
 
         startup.connect(() => {
-            notifications = new Notifications(stream_interactor);
-            notifications.start();
+            stream_interactor.get_module(NotificationEvents.IDENTITY).register_notification_provider(new GNotificationsNotifier(stream_interactor));
+            FreeDesktopNotifier free_desktop_notifier = FreeDesktopNotifier.try_create(stream_interactor);
+            if (free_desktop_notifier != null) {
+                stream_interactor.get_module(NotificationEvents.IDENTITY).register_notification_provider(free_desktop_notifier);
+            }
         });
 
         activate.connect(() => {
@@ -40,8 +42,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 window = new MainWindow(this, stream_interactor, db, config);
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.delete_event.connect(window.hide_on_delete);
-
-                notifications.conversation_selected.connect((conversation) => controller.select_conversation(conversation));
             }
             window.present();
         });
@@ -99,7 +99,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         open_conversation_action.activate.connect((variant) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
             if (conversation != null) controller.select_conversation(conversation);
-            window.present();
+            Util.present_window(window);
         });
         add_action(open_conversation_action);
 

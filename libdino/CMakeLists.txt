@@ -11,6 +11,7 @@ SOURCES
     src/application.vala
 
     src/dbus/login1.vala
+    src/dbus/notifications.vala
     src/dbus/upower.vala
 
     src/entity/account.vala
@@ -49,6 +50,7 @@ SOURCES
     src/service/stream_interactor.vala
     src/service/util.vala
 
+    src/util/display_name.vala
     src/util/util.vala
     src/util/weak_map.vala
 CUSTOM_VAPIS
