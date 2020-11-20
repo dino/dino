@@ -31,7 +31,14 @@ COMMENT
 
 add_definitions(${VALA_CFLAGS})
 add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${CMAKE_BINARY_DIR}/exports/DinoWinToastLib.h)
-target_link_libraries(windows-notification libdino ${WINDOWS_NOTIFICATION_PACKAGES} "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastLib.lib")
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(WINTOASTLIB "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastLib_AMD64.lib")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(WINTOASTLIB "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastLib_x86.lib")
+endif()
+
+target_link_libraries(windows-notification libdino ${WINDOWS_NOTIFICATION_PACKAGES} ${WINTOASTLIB})
 set_target_properties(windows-notification PROPERTIES PREFIX "")
 set_target_properties(windows-notification PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
 
