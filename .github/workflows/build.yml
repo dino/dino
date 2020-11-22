@@ -5,8 +5,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - run: echo "deb http://deb.debian.org/debian stable-backports main" | sudo tee /etc/apt/sources.list.d/backports.list
+      - run: curl -s https://ftp-master.debian.org/keys/archive-key-10.asc | sudo apt-key add -
       - run: sudo apt-get update
-      - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-3-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libgspell-1-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libwebrtc-audio-processing-dev
+      - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-3-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libgspell-1-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libwebrtc-audio-processing-dev libhandy-1-dev
       - run: ./configure --with-tests --with-libsignal-in-tree
       - run: make
       - run: build/xmpp-vala-test
