@@ -1,3 +1,8 @@
+set(GETTEXT_PACKAGE "dino-windows-notifications")
+find_package(Gettext)
+include(${GETTEXT_USE_FILE})
+gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../main/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
+
 find_packages(WINDOWS_NOTIFICATION_PACKAGES REQUIRED
     Gee
     GLib
@@ -10,8 +15,7 @@ vala_precompile(WINDOWS_NOTIFICATION_VALA_C
 SOURCES
     src/plugin.vala
     src/register_plugin.vala
-    src/helper.vala
-    src/wintoast.vala
+    src/win_notification_provider.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
@@ -49,8 +53,9 @@ COMMENT
     Copy header file DinoWinToastDllExport.h
 )
 
-add_definitions(${VALA_CFLAGS})
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${CMAKE_BINARY_DIR}/exports/DinoWinToastLib.h ${CMAKE_BINARY_DIR}/exports/DinoWinToastTemplate.h ${CMAKE_BINARY_DIR}/exports/DinoWinToastDllExport.h)
+add_dependencies(omemo ${GETTEXT_PACKAGE}-translations)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(WINTOASTLIB "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastLib_AMD64.lib")
