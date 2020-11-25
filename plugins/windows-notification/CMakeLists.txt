@@ -16,6 +16,8 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/DinoWinToastLib.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/DinoWinToastTemplate.vapi
 PACKAGES
     ${WINDOWS_NOTIFICATION_PACKAGES}
 )
@@ -29,8 +31,26 @@ COMMENT
     Copy header file DinoWinToastLib.h
 )
 
+add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/DinoWinToastTemplate.h"
+COMMAND
+    cp "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastTemplate.h" "${CMAKE_BINARY_DIR}/exports/DinoWinToastTemplate.h"
+DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastTemplate.h"
+COMMENT
+    Copy header file DinoWinToastTemplate.h
+)
+
+add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/DinoWinToastDllExport.h"
+COMMAND
+    cp "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastDllExport.h" "${CMAKE_BINARY_DIR}/exports/DinoWinToastDllExport.h"
+DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastDllExport.h"
+COMMENT
+    Copy header file DinoWinToastDllExport.h
+)
+
 add_definitions(${VALA_CFLAGS})
-add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${CMAKE_BINARY_DIR}/exports/DinoWinToastLib.h)
+add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${CMAKE_BINARY_DIR}/exports/DinoWinToastLib.h ${CMAKE_BINARY_DIR}/exports/DinoWinToastTemplate.h ${CMAKE_BINARY_DIR}/exports/DinoWinToastDllExport.h)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(WINTOASTLIB "${CMAKE_CURRENT_SOURCE_DIR}/src/DinoWinToastLib_AMD64.lib")
