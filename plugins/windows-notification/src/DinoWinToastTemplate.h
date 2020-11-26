@@ -9,33 +9,33 @@ extern "C" {
   typedef void* dino_wintoasttemplate;
 
   typedef enum {
-    System,
-    Short,
-    Long
+    Duration_System,
+    Duration_Short,
+    Duration_Long
   } dino_wintoasttemplate_duration;
 
   typedef enum {
-    Default = 0,
-    Silent = 1,
-    Loop = 2
+    AudioOption_Default = 0,
+    AudioOption_Silent = 1,
+    AudioOption_Loop = 2
   } dino_wintoasttemplate_audiooption;
 
   typedef enum {
-    FirstLine = 0,
-    SecondLine,
-    ThirdLine
+    TextField_FirstLine = 0,
+    TextField_SecondLine,
+    TextField_ThirdLine
   } dino_wintoasttemplate_textfield;
 
   typedef enum {
-    ImageAndText01 = 0,
-    ImageAndText02,
-    ImageAndText03,
-    ImageAndText04,
-    Text01,
-    Text02,
-    Text03,
-    Text04,
-    WinToastTemplateTypeCount
+    TemplateType_ImageAndText01 = 0,
+    TemplateType_ImageAndText02,
+    TemplateType_ImageAndText03,
+    TemplateType_ImageAndText04,
+    TemplateType_Text01,
+    TemplateType_Text02,
+    TemplateType_Text03,
+    TemplateType_Text04,
+    TemplateType_WinToastTemplateTypeCount
   } dino_wintoasttemplate_wintoasttemplatetype;
 
   DINOWINTOASTLIB_API dino_wintoasttemplate dino_wintoasttemplate_new(dino_wintoasttemplate_wintoasttemplatetype templ);

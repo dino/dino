@@ -1,27 +1,27 @@
 [CCode (cheader_filename = "DinoWinToastTemplate.h")]
 namespace DinoWinToast {
-    [CCode (cname = "dino_wintoasttemplate_duration", cprefix = "")]
+    [CCode (cname = "dino_wintoasttemplate_duration", cprefix = "Duration_")]
     public enum Duration {
         System,
         Short,
         Long
     }
     
-    [CCode (cname = "dino_wintoasttemplate_audiooption", cprefix = "")]
+    [CCode (cname = "dino_wintoasttemplate_audiooption", cprefix = "AudioOption_")]
     public enum AudioOption {
         Default,
         Silent,
         Loop
     }
     
-    [CCode (cname = "dino_wintoasttemplate_textfield", cprefix = "")]
+    [CCode (cname = "dino_wintoasttemplate_textfield", cprefix = "TextField_")]
     public enum TextField {
         FirstLine,
         SecondLine,
         ThirdLine
     }
     
-    [CCode (cname = "dino_wintoasttemplate_wintoasttemplatetype", cprefix = "")]
+    [CCode (cname = "dino_wintoasttemplate_wintoasttemplatetype", cprefix = "TemplateType_")]
     public enum TemplateType {
         ImageAndText01,
         ImageAndText02,

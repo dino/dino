@@ -1,13 +1,45 @@
 [CCode (cheader_filename = "DinoWinToastLib.h")]
 namespace DinoWinToast {
 
-    [CCode (cname = "dinoWinToastLibNotificationCallback", has_target = true)]
-    public delegate void NotificationCallback(int conv_id);
+    [CCode (cname = "dinoWinToastLib_Notification_Reason", cprefix = "Reason_")]
+    public enum Reason {
+        Activated,
+        ApplicationHidden,
+        TimedOut
+    }
 
-    [CCode (cname = "dinoWinToastLibInit")]
+    [CCode (cname = "dinoWinToastLib_Notification_Callback_Simple", has_target = true)]
+    public delegate void NotificationCallbackSimple();
+
+    [CCode (cname = "dinoWinToastLib_Notification_Callback_ActivatedWithActionIndex", has_target = true)]
+    public delegate void NotificationCallbackWithActionIndex(int actionId);
+
+    [CCode (cname = "dinoWinToastLib_Notification_Callback_Dismissed", has_target = true)]
+    public delegate void NotificationCallbackDismissed(Reason reason);
+
+    [CCode (cname = "dinoWinToastLib_Notification_Callbacks", free_function = "dinoWinToastLib_DestroyCallbacks")]
+    [Compact]
+    public class Callbacks {
+        [CCode (delegate_target_cname = "activated_context", destroy_notify_cname = "activated_free")]
+        public NotificationCallbackSimple activated;
+
+        [CCode (delegate_target_cname = "activatedWithIndex_context", destroy_notify_cname = "activatedWithIndex_free")]
+        public NotificationCallbackWithActionIndex activatedWithIndex;
+
+        [CCode (delegate_target_cname = "dismissed_context", destroy_notify_cname = "dismissed_free")]
+        public NotificationCallbackDismissed dismissed;
+
+        [CCode (delegate_target_cname = "failed_context", destroy_notify_cname = "failed_free")]
+        public NotificationCallbackSimple failed;
+
+        [CCode (cname = "dinoWinToastLib_NewCallbacks")]
+        public Callbacks();
+    }
+
+    [CCode (cname = "dinoWinToastLib_Init")]
     public int Init();
     
-    [CCode (cname = "dinoWinToastLibShowMessage")]
-    public int ShowMessage(DinoWinToastTemplate templ, int conv_id, NotificationCallback callback);
+    [CCode (cname = "dinoWinToastLib_ShowMessage")]
+    public int ShowMessage(DinoWinToastTemplate templ, Callbacks callbacks);
 }
 

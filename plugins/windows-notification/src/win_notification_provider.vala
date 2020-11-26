@@ -2,6 +2,7 @@ using Dino;
 using Dino.Entities;
 using DinoWinToast;
 using Xmpp;
+using Gee;
 
 namespace Dino.Plugins.WindowsNotification {
     public class WindowsNotificationProvider : NotificationProvider, Object {
@@ -50,33 +51,37 @@ namespace Dino.Plugins.WindowsNotification {
             string summary = _("Subscription request");
             string body = Markup.escape_text(conversation.counterpart.to_string());
 
-            if (!show_message(summary, body, get_avatar(conversation), conversation.id, stub)) { // missing actions
+            DinoWinToastTemplate template;
+            var image_path = get_avatar(conversation);
+            if (image_path != null) {
+                template = new DinoWinToastTemplate(TemplateType.ImageAndText02);
+                template.setImagePath(image_path);
+            } else {
+                template = new DinoWinToastTemplate(TemplateType.Text02);
+            }
+            
+            template.setTextField(summary, TextField.FirstLine);
+            template.setTextField(body, TextField.SecondLine);
+
+            template.addAction(_("Accept"));
+            template.addAction(_("Deny"));
+            
+            var callbacks = new Callbacks();
+            callbacks.activated = () => {
+                app.activate_action("open-conversation", conversation.id);
+            };
+
+            callbacks.activatedWithIndex = (index) => {
+                if (index == 0) {
+                    app.activate_action("accept-subscription", conversation.id);
+                } else if (index == 1) {
+                    app.activate_action("deny-subscription", conversation.id);
+                }
+            };
+
+            if (!ShowMessage(template, callbacks) == 0) {
                 warning("Failed showing subscription request notification");
             }
-    
-            //  HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
-            //  hash_table["image-data"] = yield get_conversation_icon(conversation);
-            //  string[] actions = new string[] {"default", "Open conversation", "accept", _("Accept"), "deny", _("Deny")};
-            //  try {
-            //      uint32 notification_id = dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
-    
-            //      if (!conversation_notifications.has_key(conversation)) {
-            //          conversation_notifications[conversation] = new ArrayList<uint32>();
-            //      }
-            //      conversation_notifications[conversation].add(notification_id);
-    
-            //      add_action_listener(notification_id, "default", () => {
-            //          GLib.Application.get_default().activate_action("open-conversation", new Variant.int32(conversation.id));
-            //      });
-            //      add_action_listener(notification_id, "accept", () => {
-            //          GLib.Application.get_default().activate_action("accept-subscription", new Variant.int32(conversation.id));
-            //      });
-            //      add_action_listener(notification_id, "deny", () => {
-            //          GLib.Application.get_default().activate_action("deny-subscription", new Variant.int32(conversation.id));
-            //      });
-            //  } catch (Error e) {
-            //      warning("Failed showing subscription request notification: %s", e.message);
-            //  }
         }
 
         public async void notify_connection_error(Account account, ConnectionManager.ConnectionError error) {
@@ -97,7 +102,7 @@ namespace Dino.Plugins.WindowsNotification {
                     break;
             }
     
-            if (!show_message(summary, body, null, 0, stub)) {
+            if (!show_message(summary, body, null, null)) {
                 warning("Failed showing connection error notification");
             }
         }
@@ -109,14 +114,38 @@ namespace Dino.Plugins.WindowsNotification {
             string summary = _("Invitation to %s").printf(display_room);
             string body = _("%s invited you to %s").printf(inviter_display_name, display_room);
 
+            DinoWinToastTemplate template;
+            var image_path = get_avatar(conversation);
+            if (image_path != null) {
+                template = new DinoWinToastTemplate(TemplateType.ImageAndText02);
+                template.setImagePath(image_path);
+            } else {
+                template = new DinoWinToastTemplate(TemplateType.Text02);
+            }
+            
+            template.setTextField(summary, TextField.FirstLine);
+            template.setTextField(body, TextField.SecondLine);
+
+            template.addAction(_("Accept"));
+            template.addAction(_("Deny"));
+            
             Conversation group_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
-            if (!show_message(summary, body, get_avatar(direct_conversation), group_conversation.id, stub)) { // action not enabled yet
+            var callbacks = new Callbacks();
+            callbacks.activated = () => {
+                app.activate_action("open-muc-join", group_conversation.id);
+            };
+
+            callbacks.activatedWithIndex = (index) => {
+                if (index == 0) {
+                    app.activate_action("deny-invite", group_conversation.id);
+                } else if (index == 1) {
+                    app.activate_action("open-muc-join", group_conversation.id);
+                }
+            };
+
+            if (!ShowMessage(template, callbacks)) {
                 warning("Failed showing muc invite notification");
             }
-    
-            //  HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
-            //  hash_table["image-data"] = yield get_conversation_icon(direct_conversation);
-            //  string[] actions = new string[] {"default", "", "reject", _("Reject"), "accept", _("Accept")};
     
             //  try {
             //      uint32 notification_id = dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
@@ -137,32 +166,38 @@ namespace Dino.Plugins.WindowsNotification {
         }
 
         public async void notify_voice_request(Conversation conversation, Jid from_jid) {
-
             string display_name = Dino.get_participant_display_name(stream_interactor, conversation, from_jid);
             string display_room = Dino.get_conversation_display_name(stream_interactor, conversation, _("%s from %s"));
             string summary = _("Permission request");
             string body = _("%s requests the permission to write in %s").printf(display_name, display_room);
 
-            if (!show_message(summary, body, get_avatar(conversation), conversation.id, stub)) { // missing actions
+            DinoWinToastTemplate template;
+            var image_path = get_avatar(conversation);
+            if (image_path != null) {
+                template = new DinoWinToastTemplate(TemplateType.ImageAndText02);
+                template.setImagePath(image_path);
+            } else {
+                template = new DinoWinToastTemplate(TemplateType.Text02);
+            }
+            
+            template.setTextField(summary, TextField.FirstLine);
+            template.setTextField(body, TextField.SecondLine);
+
+            template.addAction(_("Accept"));
+            template.addAction(_("Deny"));
+            
+            var callbacks = new Callbacks();
+            callbacks.activatedWithIndex = (index) => {
+                if (index == 0) {
+                    app.activate_action("deny-invite", conversation.id);
+                } else if (index == 1) {
+                    app.activate_action("open-muc-join", conversation.id);
+                }
+            };
+
+            if (!ShowMessage(template, callbacks) == 0) {
                 warning("Failed showing voice request notification");
             }
-    
-            //  HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
-            //  hash_table["image-data"] = yield get_conversation_icon(conversation);
-            //  string[] actions = new string[] {"deny", _("Deny"), "accept", _("Accept")};
-    
-            //  try {
-            //      uint32 notification_id = dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
-    
-            //      add_action_listener(notification_id, "accept", () => {
-            //          GLib.Application.get_default().activate_action("deny-invite", new Variant.int32(conversation.id));
-            //      });
-            //      add_action_listener(notification_id, "deny", () => {
-            //          GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(conversation.id));
-            //      });
-            //  } catch (Error e) {
-            //      warning("Failed showing voice request notification: %s", e.message);
-            //  }
         }
     
         public async void retract_content_item_notifications() {
@@ -185,7 +220,7 @@ namespace Dino.Plugins.WindowsNotification {
             //  content_notifications.unset(conversation);
         }
 
-        private bool show_message(string sender, string message, string? image_path, int conv_id, NotificationCallback callback) {
+        private bool show_message(string sender, string message, string? image_path, Callbacks? callbacks = null) {
             DinoWinToastTemplate template;
             if (image_path != null) {
                 template = new DinoWinToastTemplate(TemplateType.ImageAndText02);
@@ -196,7 +231,10 @@ namespace Dino.Plugins.WindowsNotification {
             
             template.setTextField(sender, TextField.FirstLine);
             template.setTextField(message, TextField.SecondLine);
-            return ShowMessage(template, conv_id, callback) == 0;
+            if (callbacks != null) {
+                return ShowMessage(template, callbacks) == 0;
+            }
+            return ShowMessage(template, new Callbacks()) == 0;
         }
 
         private async void notify_content_item(Conversation conversation, string conversation_display_name, string? participant_display_name, string body_) {
@@ -206,16 +244,11 @@ namespace Dino.Plugins.WindowsNotification {
             }
 
             var avatar = get_avatar(conversation);
-            if (!show_message(conversation_display_name, body, avatar, conversation.id, onclick_callback)) {
+            var callbacks = new Callbacks();
+            callbacks.activated = () => app.activate_action("open-conversation", conversation.id);
+            if (!show_message(conversation_display_name, body, avatar, callbacks)) {
                 warning("Failed showing content item notification");
             }
-        }
-
-        private void onclick_callback(int conv_id) {
-            this.app.activate_action("open-conversation", conv_id);
-        }
-
-        private void stub(int conv_id) {
         }
 
         private string? get_avatar(Conversation conversation) {
