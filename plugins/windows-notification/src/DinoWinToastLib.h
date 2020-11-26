@@ -39,7 +39,8 @@ extern "C" {
   DINOWINTOASTLIB_API void dinoWinToastLib_DestroyCallbacks(dinoWinToastLib_Notification_Callbacks* callbacks);
 
   DINOWINTOASTLIB_API int dinoWinToastLib_Init();
-  DINOWINTOASTLIB_API int dinoWinToastLib_ShowMessage(dino_wintoasttemplate templ, dinoWinToastLib_Notification_Callbacks* callbacks);
+  DINOWINTOASTLIB_API int64_t dinoWinToastLib_ShowMessage(dino_wintoasttemplate templ, dinoWinToastLib_Notification_Callbacks* callbacks);
+  DINOWINTOASTLIB_API int dinoWinToastLib_RemoveNotification(int64_t notification_id);
 #ifdef __cplusplus
 } // extern "C"
 #endif

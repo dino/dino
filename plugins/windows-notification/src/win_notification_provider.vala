@@ -7,16 +7,22 @@ using Gee;
 namespace Dino.Plugins.WindowsNotification {
     public class WindowsNotificationProvider : NotificationProvider, Object {
 
-        // TODO:
-        // 1. Actions
-        // 2. Dismissed
-
         private StreamInteractor stream_interactor;
         private Dino.Application app;
+        private GLib.Queue<int64?> notifications_to_be_removed;
+        private HashMap<Conversation, int64?> content_notifications;
+        private HashMap<Conversation, Gee.List<int64?>> conversation_notifications;
+
+        private class Notification {
+            public int64? id;
+        }
 
         private WindowsNotificationProvider(Dino.Application app) {
             this.stream_interactor = app.stream_interactor;
             this.app = app;
+            this.notifications_to_be_removed = new GLib.Queue<int64?>();
+            this.content_notifications = new HashMap<Conversation, int64?>(Conversation.hash_func, Conversation.equals_func);
+            this.conversation_notifications = new HashMap<Conversation, Gee.List<int64?>>(Conversation.hash_func, Conversation.equals_func);
         }
 
         public static WindowsNotificationProvider? try_create(Dino.Application app) {
@@ -65,10 +71,12 @@ namespace Dino.Plugins.WindowsNotification {
 
             template.addAction(_("Accept"));
             template.addAction(_("Deny"));
-            
+
+            var notification = new Notification();            
             var callbacks = new Callbacks();
             callbacks.activated = () => {
                 app.activate_action("open-conversation", conversation.id);
+                add_to_removal_queue(notification.id);
             };
 
             callbacks.activatedWithIndex = (index) => {
@@ -77,10 +85,20 @@ namespace Dino.Plugins.WindowsNotification {
                 } else if (index == 1) {
                     app.activate_action("deny-subscription", conversation.id);
                 }
+                add_to_removal_queue(notification.id);
             };
 
-            if (!ShowMessage(template, callbacks) == 0) {
+            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
+            callbacks.failed = () => add_to_removal_queue(notification.id);
+
+            notification.id = ShowMessage(template, callbacks);
+            if (notification.id == -1) {
                 warning("Failed showing subscription request notification");
+            } else {
+                if (!conversation_notifications.has_key(conversation)) {
+                    conversation_notifications[conversation] = new ArrayList<int64?>();
+                }
+                conversation_notifications[conversation].add(notification.id);
             }
         }
 
@@ -101,8 +119,20 @@ namespace Dino.Plugins.WindowsNotification {
                     body = "Connection";
                     break;
             }
-    
-            if (!show_message(summary, body, null, null)) {
+            
+            var notification = new Notification();
+            var callbacks = new Callbacks();
+            callbacks.activated = () => add_to_removal_queue(notification.id);
+            callbacks.activatedWithIndex = (index) => add_to_removal_queue(notification.id);
+            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
+            callbacks.failed = () => add_to_removal_queue(notification.id);
+
+            DinoWinToastTemplate template = new DinoWinToastTemplate(TemplateType.Text02);
+            template.setTextField(summary, TextField.FirstLine);
+            template.setTextField(body, TextField.SecondLine);
+
+            notification.id = ShowMessage(template, callbacks);
+            if (notification.id == -1) {
                 warning("Failed showing connection error notification");
             }
         }
@@ -115,7 +145,7 @@ namespace Dino.Plugins.WindowsNotification {
             string body = _("%s invited you to %s").printf(inviter_display_name, display_room);
 
             DinoWinToastTemplate template;
-            var image_path = get_avatar(conversation);
+            var image_path = get_avatar(direct_conversation);
             if (image_path != null) {
                 template = new DinoWinToastTemplate(TemplateType.ImageAndText02);
                 template.setImagePath(image_path);
@@ -130,9 +160,11 @@ namespace Dino.Plugins.WindowsNotification {
             template.addAction(_("Deny"));
             
             Conversation group_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
+            var notification = new Notification();
             var callbacks = new Callbacks();
             callbacks.activated = () => {
                 app.activate_action("open-muc-join", group_conversation.id);
+                add_to_removal_queue(notification.id);
             };
 
             callbacks.activatedWithIndex = (index) => {
@@ -141,28 +173,16 @@ namespace Dino.Plugins.WindowsNotification {
                 } else if (index == 1) {
                     app.activate_action("open-muc-join", group_conversation.id);
                 }
+                add_to_removal_queue(notification.id);
             };
 
-            if (!ShowMessage(template, callbacks)) {
+            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
+            callbacks.failed = () => add_to_removal_queue(notification.id);
+
+            notification.id = ShowMessage(template, callbacks);
+            if (notification.id == -1) {
                 warning("Failed showing muc invite notification");
             }
-    
-            //  try {
-            //      uint32 notification_id = dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
-    
-            //      Conversation group_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
-            //      add_action_listener(notification_id, "default", () => {
-            //          GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(group_conversation.id));
-            //      });
-            //      add_action_listener(notification_id, "accept", () => {
-            //          GLib.Application.get_default().activate_action("deny-invite", new Variant.int32(group_conversation.id));
-            //      });
-            //      add_action_listener(notification_id, "deny", () => {
-            //          GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(group_conversation.id));
-            //      });
-            //  } catch (Error e) {
-                
-            //  }
         }
 
         public async void notify_voice_request(Conversation conversation, Jid from_jid) {
@@ -186,6 +206,7 @@ namespace Dino.Plugins.WindowsNotification {
             template.addAction(_("Accept"));
             template.addAction(_("Deny"));
             
+            var notification = new Notification();
             var callbacks = new Callbacks();
             callbacks.activatedWithIndex = (index) => {
                 if (index == 0) {
@@ -193,34 +214,45 @@ namespace Dino.Plugins.WindowsNotification {
                 } else if (index == 1) {
                     app.activate_action("open-muc-join", conversation.id);
                 }
+                add_to_removal_queue(notification.id);
             };
 
-            if (!ShowMessage(template, callbacks) == 0) {
+            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
+            callbacks.failed = () => add_to_removal_queue(notification.id);
+            callbacks.activated = () => add_to_removal_queue(notification.id);
+
+            notification.id = ShowMessage(template, callbacks);
+            if (notification.id == -1) {
                 warning("Failed showing voice request notification");
             }
         }
     
         public async void retract_content_item_notifications() {
-            //  if (content_notifications != null) {
-            //      foreach (uint32 id in content_notifications.values) {
-            //          try {
-            //              dbus_notifications.close_notification(id);
-            //          } catch (Error e) { }
-            //      }
-            //      content_notifications.clear();
-            //  }
+            foreach (int64 id in content_notifications.values) {
+                RemoveNotification(id);
+            }
+            content_notifications.clear();
         }
     
         public async void retract_conversation_notifications(Conversation conversation) {
-            //  if (content_notifications.has_key(conversation)) {
-            //      try {
-            //          dbus_notifications.close_notification(content_notifications[conversation]);
-            //      } catch (Error e) { }
-            //  }
-            //  content_notifications.unset(conversation);
+            if (conversation_notifications.has_key(conversation)) {
+                var conversation_items = conversation_notifications[conversation];
+                foreach (int64 id in conversation_items) {
+                    RemoveNotification(id);
+                }
+                conversation_items.clear();
+            }
         }
 
-        private bool show_message(string sender, string message, string? image_path, Callbacks? callbacks = null) {
+        private async void notify_content_item(Conversation conversation, string conversation_display_name, string? participant_display_name, string body_) {
+            clear_queue();
+
+            string body = body_;
+            if (participant_display_name != null) {
+                body = @"$participant_display_name: $body";
+            }
+
+            var image_path = get_avatar(conversation);
             DinoWinToastTemplate template;
             if (image_path != null) {
                 template = new DinoWinToastTemplate(TemplateType.ImageAndText02);
@@ -229,31 +261,43 @@ namespace Dino.Plugins.WindowsNotification {
                 template = new DinoWinToastTemplate(TemplateType.Text02);
             }
             
-            template.setTextField(sender, TextField.FirstLine);
-            template.setTextField(message, TextField.SecondLine);
-            if (callbacks != null) {
-                return ShowMessage(template, callbacks) == 0;
-            }
-            return ShowMessage(template, new Callbacks()) == 0;
-        }
+            template.setTextField(conversation_display_name, TextField.FirstLine);
+            template.setTextField(body, TextField.SecondLine);
 
-        private async void notify_content_item(Conversation conversation, string conversation_display_name, string? participant_display_name, string body_) {
-            string body = body_;
-            if (participant_display_name != null) {
-                body = @"$participant_display_name: $body";
-            }
-
-            var avatar = get_avatar(conversation);
+            var notification = new Notification();
             var callbacks = new Callbacks();
-            callbacks.activated = () => app.activate_action("open-conversation", conversation.id);
-            if (!show_message(conversation_display_name, body, avatar, callbacks)) {
+            callbacks.activated = () => {
+                app.activate_action("open-conversation", conversation.id);
+                add_to_removal_queue(notification.id);
+            };
+            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
+            callbacks.failed = () => add_to_removal_queue(notification.id);
+            callbacks.activatedWithIndex = (index) => add_to_removal_queue(notification.id);
+
+            notification.id = ShowMessage(template, callbacks);
+            if (notification.id == -1) {
                 warning("Failed showing content item notification");
+            } else {
+                content_notifications[conversation] = notification.id;
             }
         }
 
         private string? get_avatar(Conversation conversation) {
             var avatar_manager = app.stream_interactor.get_module(AvatarManager.IDENTITY);
             return avatar_manager.get_avatar_filepath(conversation.account, conversation.counterpart);
+        }
+
+        private void clear_queue() {
+            int64? id = null;
+            while ((id = notifications_to_be_removed.pop_head()) != null) {
+                RemoveNotification(id);
+            }
+        }
+
+        private void add_to_removal_queue(int64? id) {
+            if (id != null && id != -1 && id != 1 && id != 0) {
+                notifications_to_be_removed.push_head(id);
+            }
         }
     }
 }

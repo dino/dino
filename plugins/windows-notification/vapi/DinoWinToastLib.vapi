@@ -40,6 +40,9 @@ namespace DinoWinToast {
     public int Init();
     
     [CCode (cname = "dinoWinToastLib_ShowMessage")]
-    public int ShowMessage(DinoWinToastTemplate templ, Callbacks callbacks);
+    public int64 ShowMessage(DinoWinToastTemplate templ, Callbacks callbacks);
+
+    [CCode (cname = "dinoWinToastLib_RemoveNotification")]
+    public bool RemoveNotification(int64 notification_id);
 }
 
