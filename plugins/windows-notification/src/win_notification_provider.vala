@@ -9,8 +9,8 @@ namespace Dino.Plugins.WindowsNotification {
 
         private StreamInteractor stream_interactor;
         private Dino.Application app;
-        private GLib.Queue<int64?> notifications_to_be_removed;
-        private HashMap<Conversation, int64?> content_notifications;
+        private Gee.List<int64?> notifications_to_be_removed;
+        private Gee.List<int64?> content_notifications;
         private HashMap<Conversation, Gee.List<int64?>> conversation_notifications;
 
         private class Notification {
@@ -20,8 +20,8 @@ namespace Dino.Plugins.WindowsNotification {
         private WindowsNotificationProvider(Dino.Application app) {
             this.stream_interactor = app.stream_interactor;
             this.app = app;
-            this.notifications_to_be_removed = new GLib.Queue<int64?>();
-            this.content_notifications = new HashMap<Conversation, int64?>(Conversation.hash_func, Conversation.equals_func);
+            this.notifications_to_be_removed = new Gee.ArrayList<int64?>();
+            this.content_notifications = new Gee.ArrayList<int64?>();
             this.conversation_notifications = new HashMap<Conversation, Gee.List<int64?>>(Conversation.hash_func, Conversation.equals_func);
         }
 
@@ -228,7 +228,7 @@ namespace Dino.Plugins.WindowsNotification {
         }
     
         public async void retract_content_item_notifications() {
-            foreach (int64 id in content_notifications.values) {
+            foreach (int64 id in content_notifications) {
                 RemoveNotification(id);
             }
             content_notifications.clear();
@@ -278,7 +278,7 @@ namespace Dino.Plugins.WindowsNotification {
             if (notification.id == -1) {
                 warning("Failed showing content item notification");
             } else {
-                content_notifications[conversation] = notification.id;
+                content_notifications.add(notification.id);
             }
         }
 
@@ -288,15 +288,15 @@ namespace Dino.Plugins.WindowsNotification {
         }
 
         private void clear_queue() {
-            int64? id = null;
-            while ((id = notifications_to_be_removed.pop_head()) != null) {
+            foreach (var id in notifications_to_be_removed) {
                 RemoveNotification(id);
             }
+            notifications_to_be_removed.clear();
         }
 
         private void add_to_removal_queue(int64? id) {
             if (id != null && id != -1 && id != 1 && id != 0) {
-                notifications_to_be_removed.push_head(id);
+                notifications_to_be_removed.add(id);
             }
         }
     }
