@@ -35,6 +35,8 @@ public class AddConferenceDialog : Gtk.Dialog {
         setup_jid_add_view();
         setup_conference_details_view();
         show_jid_add_view();
+
+        set_default_size(400, 520);
     }
 
     private void show_jid_add_view() {

@@ -1,82 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
     <template class="DinoUiSelectJidFragment">
-        <property name="height_request">500</property>
-        <property name="width_request">460</property>
+        <property name="height_request">480</property>
         <property name="visible">True</property>
         <child>
-            <object class="GtkGrid">
-                <property name="expand">True</property>
-                <property name="margin-top">20</property>
-                <property name="margin-right">80</property>
-                <property name="margin-bottom">20</property>
-                <property name="margin-left">80</property>
-                <property name="orientation">vertical</property>
-                <property name="row-spacing">10</property>
+            <object class="HdyClamp">
+                <property name="margin-right">18</property>
+                <property name="margin-left">18</property>
+                <property name="maximum-size">300</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
-                    <object class="GtkEntry" id="entry">
-                        <property name="activates_default">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="visible">True</property>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkBox">
+                    <object class="GtkGrid">
                         <property name="expand">True</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                         <property name="orientation">vertical</property>
+                        <property name="row-spacing">10</property>
                         <property name="visible">True</property>
                         <child>
-                            <object class="GtkFrame">
+                            <object class="GtkEntry" id="entry">
+                                <property name="activates_default">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="visible">True</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="expand">True</property>
+                                <property name="orientation">vertical</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <object class="GtkScrolledWindow" id="scrolled_window">
-                                        <property name="hscrollbar_policy">never</property>
-                                        <property name="expand">True</property>
+                                    <object class="GtkFrame">
                                         <property name="visible">True</property>
                                         <child>
-                                            <object class="GtkBox" id="box">
-                                                <property name="orientation">vertical</property>
+                                            <object class="GtkScrolledWindow" id="scrolled_window">
+                                                <property name="hscrollbar_policy">never</property>
+                                                <property name="expand">True</property>
                                                 <property name="visible">True</property>
+                                                <child>
+                                                    <object class="GtkBox" id="box">
+                                                        <property name="orientation">vertical</property>
+                                                        <property name="visible">True</property>
+                                                    </object>
+                                                </child>
                                             </object>
                                         </child>
                                     </object>
                                 </child>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkToolbar">
-                                <property name="visible">True</property>
-                                <style>
-                                    <class name="inline-toolbar"/>
-                                </style>
                                 <child>
-                                    <object class="GtkToolItem">
+                                    <object class="GtkToolbar">
                                         <property name="visible">True</property>
+                                        <style>
+                                            <class name="inline-toolbar"/>
+                                        </style>
                                         <child>
-                                            <object class="GtkBox">
+                                            <object class="GtkToolItem">
                                                 <property name="visible">True</property>
                                                 <child>
-                                                    <object class="GtkButton" id="add_button">
+                                                    <object class="GtkBox">
                                                         <property name="visible">True</property>
                                                         <child>
-                                                            <object class="GtkImage">
-                                                                <property name="icon-name">list-add-symbolic</property>
-                                                                <property name="icon-size">1</property>
+                                                            <object class="GtkButton" id="add_button">
                                                                 <property name="visible">True</property>
+                                                                <child>
+                                                                    <object class="GtkImage">
+                                                                        <property name="icon-name">list-add-symbolic</property>
+                                                                        <property name="icon-size">1</property>
+                                                                        <property name="visible">True</property>
+                                                                    </object>
+                                                                </child>
                                                             </object>
                                                         </child>
-                                                    </object>
-                                                </child>
-                                                <child>
-                                                    <object class="GtkButton" id="remove_button">
-                                                        <property name="sensitive">False</property>
-                                                        <property name="visible">True</property>
                                                         <child>
-                                                            <object class="GtkImage">
-                                                                <property name="icon-name">list-remove-symbolic</property>
-                                                                <property name="icon-size">1</property>
+                                                            <object class="GtkButton" id="remove_button">
+                                                                <property name="sensitive">False</property>
                                                                 <property name="visible">True</property>
+                                                                <child>
+                                                                    <object class="GtkImage">
+                                                                        <property name="icon-name">list-remove-symbolic</property>
+                                                                        <property name="icon-size">1</property>
+                                                                        <property name="visible">True</property>
+                                                                    </object>
+                                                                </child>
                                                             </object>
                                                         </child>
                                                     </object>

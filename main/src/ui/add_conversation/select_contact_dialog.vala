@@ -27,6 +27,8 @@ public class SelectContactDialog : Gtk.Dialog {
 
         setup_view();
         setup_headerbar();
+
+        set_default_size(400, 520);
     }
 
     public void set_filter(string str) {
