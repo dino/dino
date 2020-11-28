@@ -9,7 +9,7 @@ namespace Dino.Plugins.WindowsNotification {
 
         private StreamInteractor stream_interactor;
         private Dino.Application app;
-        private Gee.List<int64?> notifications_to_be_removed;
+        private Gee.List<int64?> marked_for_removal;
         private Gee.List<int64?> content_notifications;
         private HashMap<Conversation, Gee.List<int64?>> conversation_notifications;
 
@@ -20,7 +20,7 @@ namespace Dino.Plugins.WindowsNotification {
         private WindowsNotificationProvider(Dino.Application app) {
             this.stream_interactor = app.stream_interactor;
             this.app = app;
-            this.notifications_to_be_removed = new Gee.ArrayList<int64?>();
+            this.marked_for_removal = new Gee.ArrayList<int64?>();
             this.content_notifications = new Gee.ArrayList<int64?>();
             this.conversation_notifications = new HashMap<Conversation, Gee.List<int64?>>(Conversation.hash_func, Conversation.equals_func);
         }
@@ -76,7 +76,7 @@ namespace Dino.Plugins.WindowsNotification {
             var callbacks = new Callbacks();
             callbacks.activated = () => {
                 app.activate_action("open-conversation", conversation.id);
-                add_to_removal_queue(notification.id);
+                mark_for_removal(notification.id);
             };
 
             callbacks.activatedWithIndex = (index) => {
@@ -85,11 +85,11 @@ namespace Dino.Plugins.WindowsNotification {
                 } else if (index == 1) {
                     app.activate_action("deny-subscription", conversation.id);
                 }
-                add_to_removal_queue(notification.id);
+                mark_for_removal(notification.id);
             };
 
-            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
-            callbacks.failed = () => add_to_removal_queue(notification.id);
+            callbacks.dismissed = (reason) => mark_for_removal(notification.id);
+            callbacks.failed = () => mark_for_removal(notification.id);
 
             notification.id = ShowMessage(template, callbacks);
             if (notification.id == -1) {
@@ -122,10 +122,10 @@ namespace Dino.Plugins.WindowsNotification {
             
             var notification = new Notification();
             var callbacks = new Callbacks();
-            callbacks.activated = () => add_to_removal_queue(notification.id);
-            callbacks.activatedWithIndex = (index) => add_to_removal_queue(notification.id);
-            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
-            callbacks.failed = () => add_to_removal_queue(notification.id);
+            callbacks.activated = () => mark_for_removal(notification.id);
+            callbacks.activatedWithIndex = (index) => mark_for_removal(notification.id);
+            callbacks.dismissed = (reason) => mark_for_removal(notification.id);
+            callbacks.failed = () => mark_for_removal(notification.id);
 
             DinoWinToastTemplate template = new DinoWinToastTemplate(TemplateType.Text02);
             template.setTextField(summary, TextField.FirstLine);
@@ -164,7 +164,7 @@ namespace Dino.Plugins.WindowsNotification {
             var callbacks = new Callbacks();
             callbacks.activated = () => {
                 app.activate_action("open-muc-join", group_conversation.id);
-                add_to_removal_queue(notification.id);
+                mark_for_removal(notification.id);
             };
 
             callbacks.activatedWithIndex = (index) => {
@@ -173,11 +173,11 @@ namespace Dino.Plugins.WindowsNotification {
                 } else if (index == 1) {
                     app.activate_action("open-muc-join", group_conversation.id);
                 }
-                add_to_removal_queue(notification.id);
+                mark_for_removal(notification.id);
             };
 
-            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
-            callbacks.failed = () => add_to_removal_queue(notification.id);
+            callbacks.dismissed = (reason) => mark_for_removal(notification.id);
+            callbacks.failed = () => mark_for_removal(notification.id);
 
             notification.id = ShowMessage(template, callbacks);
             if (notification.id == -1) {
@@ -214,12 +214,12 @@ namespace Dino.Plugins.WindowsNotification {
                 } else if (index == 1) {
                     app.activate_action("open-muc-join", conversation.id);
                 }
-                add_to_removal_queue(notification.id);
+                mark_for_removal(notification.id);
             };
 
-            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
-            callbacks.failed = () => add_to_removal_queue(notification.id);
-            callbacks.activated = () => add_to_removal_queue(notification.id);
+            callbacks.dismissed = (reason) => mark_for_removal(notification.id);
+            callbacks.failed = () => mark_for_removal(notification.id);
+            callbacks.activated = () => mark_for_removal(notification.id);
 
             notification.id = ShowMessage(template, callbacks);
             if (notification.id == -1) {
@@ -245,7 +245,7 @@ namespace Dino.Plugins.WindowsNotification {
         }
 
         private async void notify_content_item(Conversation conversation, string conversation_display_name, string? participant_display_name, string body_) {
-            clear_queue();
+            clear_marked();
 
             string body = body_;
             if (participant_display_name != null) {
@@ -268,11 +268,11 @@ namespace Dino.Plugins.WindowsNotification {
             var callbacks = new Callbacks();
             callbacks.activated = () => {
                 app.activate_action("open-conversation", conversation.id);
-                add_to_removal_queue(notification.id);
+                mark_for_removal(notification.id);
             };
-            callbacks.dismissed = (reason) => add_to_removal_queue(notification.id);
-            callbacks.failed = () => add_to_removal_queue(notification.id);
-            callbacks.activatedWithIndex = (index) => add_to_removal_queue(notification.id);
+            callbacks.dismissed = (reason) => mark_for_removal(notification.id);
+            callbacks.failed = () => mark_for_removal(notification.id);
+            callbacks.activatedWithIndex = (index) => mark_for_removal(notification.id);
 
             notification.id = ShowMessage(template, callbacks);
             if (notification.id == -1) {
@@ -287,16 +287,16 @@ namespace Dino.Plugins.WindowsNotification {
             return avatar_manager.get_avatar_filepath(conversation.account, conversation.counterpart);
         }
 
-        private void clear_queue() {
-            foreach (var id in notifications_to_be_removed) {
+        private void clear_marked() {
+            foreach (var id in marked_for_removal) {
                 RemoveNotification(id);
             }
-            notifications_to_be_removed.clear();
+            marked_for_removal.clear();
         }
 
-        private void add_to_removal_queue(int64? id) {
+        private void mark_for_removal(int64? id) {
             if (id != null && id != -1 && id != 1 && id != 0) {
-                notifications_to_be_removed.add(id);
+                marked_for_removal.add(id);
             }
         }
     }
