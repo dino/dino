@@ -169,9 +169,9 @@ namespace Dino.Plugins.WindowsNotification {
 
             callbacks.activatedWithIndex = (index) => {
                 if (index == 0) {
-                    app.activate_action("deny-invite", group_conversation.id);
-                } else if (index == 1) {
                     app.activate_action("open-muc-join", group_conversation.id);
+                } else if (index == 1) {
+                    app.activate_action("deny-invite", group_conversation.id);
                 }
                 mark_for_removal(notification.id);
             };
@@ -210,9 +210,9 @@ namespace Dino.Plugins.WindowsNotification {
             var callbacks = new Callbacks();
             callbacks.activatedWithIndex = (index) => {
                 if (index == 0) {
-                    app.activate_action("deny-invite", conversation.id);
+                    app.activate_action("accept-voice-request", conversation.id);
                 } else if (index == 1) {
-                    app.activate_action("open-muc-join", conversation.id);
+                    app.activate_action("deny-voice-request", conversation.id);
                 }
                 mark_for_removal(notification.id);
             };
