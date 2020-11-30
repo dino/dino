@@ -183,10 +183,10 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
                 GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(group_conversation.id));
             });
             add_action_listener(notification_id, "accept", () => {
-                GLib.Application.get_default().activate_action("deny-invite", new Variant.int32(group_conversation.id));
+                GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(group_conversation.id));
             });
             add_action_listener(notification_id, "deny", () => {
-                GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(group_conversation.id));
+                GLib.Application.get_default().activate_action("deny-invite", new Variant.int32(group_conversation.id));
             });
         } catch (Error e) {
             warning("Failed showing muc invite notification: %s", e.message);
@@ -211,10 +211,10 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
             uint32 notification_id = dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
 
             add_action_listener(notification_id, "accept", () => {
-                GLib.Application.get_default().activate_action("deny-invite", new Variant.int32(conversation.id));
+                GLib.Application.get_default().activate_action("accept-voice-request", new Variant.int32(conversation.id));
             });
             add_action_listener(notification_id, "deny", () => {
-                GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(conversation.id));
+                GLib.Application.get_default().activate_action("deny-voice-request", new Variant.int32(conversation.id));
             });
         } catch (Error e) {
             warning("Failed showing voice request notification: %s", e.message);
