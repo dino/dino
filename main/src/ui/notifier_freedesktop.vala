@@ -15,43 +15,48 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
     private HashMap<Conversation, Gee.List<uint32>> conversation_notifications = new HashMap<Conversation, Gee.List<uint32>>(Conversation.hash_func, Conversation.equals_func);
     private HashMap<uint32, HashMap<string, ListenerFuncWrapper>> action_listeners = new HashMap<uint32, HashMap<string, ListenerFuncWrapper>>();
 
-    private FreeDesktopNotifier(StreamInteractor stream_interactor, DBusNotifications dbus_notifications) {
+    private FreeDesktopNotifier(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
+
+    }
+
+    private void set_dbus_notifications(DBusNotifications dbus_notifications) throws Error {
         this.dbus_notifications = dbus_notifications;
 
-        try {
-            string[] caps;
-            dbus_notifications.get_capabilities(out caps);
-            foreach (string cap in caps) {
-                switch (cap) {
-                    case "body-markup":
-                        supports_body_markup = true;
-                        break;
-                }
+        string[] caps;
+        dbus_notifications.get_capabilities(out caps);
+        foreach (string cap in caps) {
+            switch (cap) {
+                case "body-markup":
+                    supports_body_markup = true;
+                    break;
             }
-
-            dbus_notifications.action_invoked.connect((id, action) => {
-                if (action_listeners.has_key(id) && action_listeners[id].has_key(action)) {
-                    action_listeners[id][action].func();
-                }
-            });
-
-            dbus_notifications.notification_closed.connect((id) => {
-                action_listeners.unset(id);
-            });
-        } catch (Error e) {
-            warning("Failed accessing fdo notification server: %s", e.message);
         }
+
+        dbus_notifications.action_invoked.connect((id, action) => {
+            if (action_listeners.has_key(id) && action_listeners[id].has_key(action)) {
+                action_listeners[id][action].func();
+            }
+        });
+
+        dbus_notifications.notification_closed.connect((id) => {
+            action_listeners.unset(id);
+        });
     }
 
     public static FreeDesktopNotifier? try_create(StreamInteractor stream_interactor) {
         DBusNotifications? dbus_notifications = get_notifications_dbus();
         if (dbus_notifications == null) return null;
 
-        FreeDesktopNotifier notifier = new FreeDesktopNotifier(stream_interactor, dbus_notifications);
-        notifier.dbus_notifications = dbus_notifications;
+        try {
+            FreeDesktopNotifier notifier = new FreeDesktopNotifier(stream_interactor);
+            notifier.set_dbus_notifications(dbus_notifications);
+            return notifier;
+        } catch (Error e) {
+            debug("Failed accessing fdo notification server: %s", e.message);
+        }
 
-        return notifier;
+        return null;
     }
 
     public double get_priority() {
@@ -59,7 +64,8 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
     }
 
     public async void notify_message(Message message, Conversation conversation, string conversation_display_name, string? participant_display_name) {
-        yield notify_content_item(conversation, conversation_display_name, participant_display_name, message.body);
+        string body = supports_body_markup ? Markup.escape_text(message.body) : message.body;
+        yield notify_content_item(conversation, conversation_display_name, participant_display_name, body);
     }
 
     public async void notify_file(FileTransfer file_transfer, Conversation conversation, bool is_image, string conversation_display_name, string? participant_display_name) {
@@ -81,7 +87,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         string body = body_;
         if (participant_display_name != null) {
             if (supports_body_markup) {
-                body = @"<b>$(Markup.escape_text(participant_display_name)):</b> $(Markup.escape_text(body))";
+                body = @"<b>$(Markup.escape_text(participant_display_name)):</b> $body";
             } else {
                 body = @"$participant_display_name: $body";
             }

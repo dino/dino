@@ -29,7 +29,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         startup.connect(() => {
             stream_interactor.get_module(NotificationEvents.IDENTITY).register_notification_provider(new GNotificationsNotifier(stream_interactor));
-            FreeDesktopNotifier free_desktop_notifier = FreeDesktopNotifier.try_create(stream_interactor);
+            FreeDesktopNotifier? free_desktop_notifier = FreeDesktopNotifier.try_create(stream_interactor);
             if (free_desktop_notifier != null) {
                 stream_interactor.get_module(NotificationEvents.IDENTITY).register_notification_provider(free_desktop_notifier);
             }
