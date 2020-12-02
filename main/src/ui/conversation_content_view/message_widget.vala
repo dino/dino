@@ -91,6 +91,7 @@ public class MessageItemWidget : SizeRequestBin {
 
     construct {
         this.add(label);
+        label.activate_link.connect(on_label_activate_link);
         this.size_request_mode = SizeRequestMode.HEIGHT_FOR_WIDTH;
     }
 
@@ -216,6 +217,14 @@ public class MessageItemWidget : SizeRequestBin {
             label.disconnect(style_updated_id);
         }
         return markup_text;
+    }
+
+    public static bool on_label_activate_link(string uri) {
+        // Always handle xmpp URIs with Dino
+        if (!uri.has_prefix("xmpp:")) return false;
+        File file = File.new_for_uri(uri);
+        Dino.Application.get_default().open(new File[]{file}, "");
+        return true;
     }
 }
 
