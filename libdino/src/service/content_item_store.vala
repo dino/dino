@@ -46,14 +46,12 @@ public class ContentItemStore : StreamInteractionModule, Object {
             int provider = row[db.content_item.content_type];
             int foreign_id = row[db.content_item.foreign_id];
             DateTime time = new DateTime.from_unix_utc(row[db.content_item.time]);
-            DateTime local_time = new DateTime.from_unix_utc(row[db.content_item.local_time]);
             switch (provider) {
                 case 1:
                     Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
                     if (message != null) {
                         var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
-                        message_item.display_time = time;
-                        message_item.sort_time = local_time;
+                        message_item.time = time;
                         items.add(message_item);
                     }
                     break;
@@ -122,36 +120,34 @@ public class ContentItemStore : StreamInteractionModule, Object {
         QueryBuilder select = db.content_item.select()
             .with(db.content_item.conversation_id, "=", conversation.id)
             .with(db.content_item.hide, "=", false)
-            .order_by(db.content_item.local_time, "DESC")
             .order_by(db.content_item.time, "DESC")
+            .order_by(db.content_item.id, "DESC")
             .limit(count);
 
         return get_items_from_query(select, conversation);
     }
 
     public Gee.List<ContentItem> get_before(Conversation conversation, ContentItem item, int count) {
-        long local_time = (long) item.sort_time.to_unix();
-        long time = (long) item.display_time.to_unix();
+        long time = (long) item.time.to_unix();
         QueryBuilder select = db.content_item.select()
-            .where(@"local_time < ? OR (local_time = ? AND time < ?) OR (local_time = ? AND time = ? AND id < ?)", { local_time.to_string(), local_time.to_string(), time.to_string(), local_time.to_string(), time.to_string(), item.id.to_string() })
+            .where(@"time < ? OR (time = ? AND id < ?)", { time.to_string(), time.to_string(), item.id.to_string() })
             .with(db.content_item.conversation_id, "=", conversation.id)
             .with(db.content_item.hide, "=", false)
-            .order_by(db.content_item.local_time, "DESC")
             .order_by(db.content_item.time, "DESC")
+            .order_by(db.content_item.id, "DESC")
             .limit(count);
 
         return get_items_from_query(select, conversation);
     }
 
     public Gee.List<ContentItem> get_after(Conversation conversation, ContentItem item, int count) {
-        long local_time = (long) item.sort_time.to_unix();
-        long time = (long) item.display_time.to_unix();
+        long time = (long) item.time.to_unix();
         QueryBuilder select = db.content_item.select()
-            .where(@"local_time > ? OR (local_time = ? AND time > ?) OR (local_time = ? AND time = ? AND id > ?)", { local_time.to_string(), local_time.to_string(), time.to_string(), local_time.to_string(), time.to_string(), item.id.to_string() })
+            .where(@"time > ? OR (time = ? AND id > ?)", { time.to_string(), time.to_string(), item.id.to_string() })
             .with(db.content_item.conversation_id, "=", conversation.id)
             .with(db.content_item.hide, "=", false)
-            .order_by(db.content_item.local_time, "ASC")
             .order_by(db.content_item.time, "ASC")
+            .order_by(db.content_item.id, "ASC")
             .limit(count);
 
         return get_items_from_query(select, conversation);
@@ -228,17 +224,15 @@ public abstract class ContentItem : Object {
     public int id { get; set; }
     public string type_ { get; set; }
     public Jid jid { get; set; }
-    public DateTime sort_time { get; set; }
-    public DateTime display_time { get; set; }
+    public DateTime time { get; set; }
     public Encryption encryption { get; set; }
     public Entities.Message.Marked mark { get; set; }
 
-    ContentItem(int id, string ty, Jid jid, DateTime sort_time, DateTime display_time, Encryption encryption, Entities.Message.Marked mark) {
+    ContentItem(int id, string ty, Jid jid, DateTime time, Encryption encryption, Entities.Message.Marked mark) {
         this.id = id;
         this.type_ = ty;
         this.jid = jid;
-        this.sort_time = sort_time;
-        this.display_time = display_time;
+        this.time = time;
         this.encryption = encryption;
         this.mark = mark;
     }
@@ -248,10 +242,7 @@ public abstract class ContentItem : Object {
     }
 
     public static int compare_func(ContentItem a, ContentItem b) {
-        int res = a.sort_time.compare(b.sort_time);
-        if (res == 0) {
-            res = a.display_time.compare(b.display_time);
-        }
+        int res = a.time.compare(b.time);
         if (res == 0) {
             res = a.id - b.id > 0 ? 1 : -1;
         }
@@ -266,7 +257,7 @@ public class MessageItem : ContentItem {
     public Conversation conversation;
 
     public MessageItem(Message message, Conversation conversation, int id) {
-        base(id, TYPE, message.from, message.local_time, message.time, message.encryption, message.marked);
+        base(id, TYPE, message.from, message.time, message.encryption, message.marked);
 
         this.message = message;
         this.conversation = conversation;
@@ -287,7 +278,7 @@ public class FileItem : ContentItem {
         } else if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
             mark = file_to_message_state(file_transfer.state);
         }
-        base(id, TYPE, file_transfer.from, file_transfer.local_time, file_transfer.time, file_transfer.encryption, mark);
+        base(id, TYPE, file_transfer.from, file_transfer.time, file_transfer.encryption, mark);
 
         this.file_transfer = file_transfer;
         this.conversation = conversation;

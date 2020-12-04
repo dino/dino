@@ -79,10 +79,8 @@ public abstract class ContentMetaItem : Plugins.MetaConversationItem {
 
     protected ContentMetaItem(ContentItem content_item) {
         this.jid = content_item.jid;
-        this.sort_time = content_item.sort_time;
-        this.seccondary_sort_indicator = (long) content_item.display_time.to_unix();
-        this.tertiary_sort_indicator = content_item.id;
-        this.display_time = content_item.display_time;
+        this.time = content_item.time;
+        this.secondary_sort_indicator = content_item.id;
         this.encryption = content_item.encryption;
         this.mark = content_item.mark;
 

@@ -38,7 +38,7 @@ class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Plugins.Conver
     private void on_inserted_item(Plugins.MetaConversationItem item) {
         if (!(item is ContentMetaItem)) return;
 
-        DateTime time = item.sort_time.to_local();
+        DateTime time = item.time.to_local();
         DateTime msg_date = new DateTime.local(time.get_year(), time.get_month(), time.get_day_of_month(), 0, 0, 0);
         if (!insert_times.contains(msg_date)) {
             if (insert_times.lower(msg_date) != null) {
@@ -52,13 +52,13 @@ class DateSeparatorPopulator : Plugins.ConversationItemPopulator, Plugins.Conver
 }
 
 public class MetaDateItem : Plugins.MetaConversationItem {
-    public override DateTime sort_time { get; set; }
+    public override DateTime time { get; set; }
 
     private DateTime date;
 
     public MetaDateItem(DateTime date) {
         this.date = date;
-        this.sort_time = date;
+        this.time = date;
     }
 
     public override Object? get_widget(Plugins.WidgetType widget_type) {

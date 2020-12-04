@@ -149,47 +149,6 @@ public class FileManager : StreamInteractionModule, Object {
         return false;
     }
 
-    public Gee.List<FileTransfer> get_latest_transfers(Account account, Jid counterpart, int n) {
-        Qlite.QueryBuilder select = db.file_transfer.select()
-                .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(counterpart))
-                .with(db.file_transfer.account_id, "=", account.id)
-                .order_by(db.file_transfer.local_time, "DESC")
-                .limit(n);
-        return get_transfers_from_qry(select);
-    }
-
-    public Gee.List<FileTransfer> get_transfers_before(Account account, Jid counterpart, DateTime before, int n) {
-        Qlite.QueryBuilder select = db.file_transfer.select()
-                .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(counterpart))
-                .with(db.file_transfer.account_id, "=", account.id)
-                .with(db.file_transfer.local_time, "<", (long)before.to_unix())
-                .order_by(db.file_transfer.local_time, "DESC")
-                .limit(n);
-        return get_transfers_from_qry(select);
-    }
-
-    public Gee.List<FileTransfer> get_transfers_after(Account account, Jid counterpart, DateTime after, int n) {
-        Qlite.QueryBuilder select = db.file_transfer.select()
-                .with(db.file_transfer.counterpart_id, "=", db.get_jid_id(counterpart))
-                .with(db.file_transfer.account_id, "=", account.id)
-                .with(db.file_transfer.local_time, ">", (long)after.to_unix())
-                .limit(n);
-        return get_transfers_from_qry(select);
-    }
-
-    private Gee.List<FileTransfer> get_transfers_from_qry(Qlite.QueryBuilder select) {
-        Gee.List<FileTransfer> ret = new ArrayList<FileTransfer>();
-        foreach (Qlite.Row row in select) {
-            try {
-                FileTransfer file_transfer = new FileTransfer.from_row(db, row, get_storage_dir());
-                ret.insert(0, file_transfer);
-            } catch (InvalidJidError e) {
-                warning("Ignoring file transfer with invalid Jid: %s", e.message);
-            }
-        }
-        return ret;
-    }
-
     public void add_provider(FileProvider file_provider) {
         file_providers.add(file_provider);
         file_provider.file_incoming.connect((info, from, time, local_time, conversation, receive_data, file_meta) => {

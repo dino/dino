@@ -62,7 +62,7 @@ class ChatStatePopulator : Plugins.ConversationItemPopulator, Plugins.Conversati
 }
 
 private class MetaChatStateItem : Plugins.MetaConversationItem {
-    public override DateTime sort_time { get; set; default=new DateTime.now_utc().add_years(10); }
+    public override DateTime time { get; set; default=new DateTime.now_utc().add_years(10); }
 
     private StreamInteractor stream_interactor;
     private Conversation conversation;

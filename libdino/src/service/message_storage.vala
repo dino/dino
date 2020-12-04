@@ -40,7 +40,6 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.account_id, "=", conversation.account.id)
                 .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
-                .order_by(db.message.local_time, "DESC")
                 .order_by(db.message.time, "DESC")
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
                 .limit(count);
@@ -111,7 +110,6 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .with(db.message.stanza_id, "=", stanza_id)
-                .order_by(db.message.local_time, "DESC")
                 .order_by(db.message.time, "DESC")
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id);
 
@@ -139,7 +137,6 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .with(db.message.server_id, "=", server_id)
-                .order_by(db.message.local_time, "DESC")
                 .order_by(db.message.time, "DESC")
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id);
 

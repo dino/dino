@@ -138,7 +138,7 @@ public class ConversationSelectorRow : ListBoxRow {
     protected void update_time_label(DateTime? new_time = null) {
         if (last_content_item != null) {
             time_label.visible = true;
-            time_label.label = get_relative_time(last_content_item.display_time.to_local());
+            time_label.label = get_relative_time(last_content_item.time.to_local());
         }
     }
 

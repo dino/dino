@@ -37,11 +37,10 @@ public class ChatInteraction : StreamInteractionModule, Object {
         if (read_up_to_item == null) return 0;
 
         Database db = Dino.Application.get_default().db;
-        string local_time = read_up_to_item.sort_time.to_unix().to_string();
-        string time = read_up_to_item.display_time.to_unix().to_string();
+        string time = read_up_to_item.time.to_unix().to_string();
         string id = read_up_to_item.id.to_string();
         return (int)db.content_item.select()
-                .where(@"local_time > ? OR (local_time = ? AND time > ?) OR (local_time = ? AND time = ? AND id > ?)", { local_time, local_time, time, local_time, time, id })
+                .where(@"time > ? OR (time = ? AND id > ?)", { time, time, id })
                 .with(db.content_item.conversation_id, "=", conversation.id)
                 .with(db.content_item.hide, "=", false)
                 .count();

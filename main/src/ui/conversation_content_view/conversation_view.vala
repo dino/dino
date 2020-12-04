@@ -293,8 +293,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
     public void insert_item(Plugins.MetaConversationItem item) {
         if (meta_items.size > 0) {
-            bool after_last = meta_items.last().sort_time.compare(item.sort_time) <= 0;
-            bool within_range = meta_items.last().sort_time.compare(item.sort_time) > 0 && meta_items.first().sort_time.compare(item.sort_time) < 0;
+            bool after_last = meta_items.last().time.compare(item.time) <= 0;
+            bool within_range = meta_items.last().time.compare(item.time) > 0 && meta_items.first().time.compare(item.time) < 0;
             bool accept = within_range || (at_current_content && after_last);
             if (!accept) {
                 return;
@@ -398,11 +398,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             Dino.Application app = Dino.Application.get_default();
             if (item_skeletons.size == 1) {
                 foreach (Plugins.ConversationAdditionPopulator populator in app.plugin_registry.conversation_addition_populators) {
-                    populator.populate_timespan(conversation, item.sort_time, new DateTime.now_utc());
+                    populator.populate_timespan(conversation, item.time, new DateTime.now_utc());
                 }
             } else {
                 foreach (Plugins.ConversationAdditionPopulator populator in app.plugin_registry.conversation_addition_populators) {
-                    populator.populate_timespan(conversation, item.sort_time, meta_items.higher(item).sort_time);
+                    populator.populate_timespan(conversation, item.time, meta_items.higher(item).time);
                 }
             }
         }
@@ -410,8 +410,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     }
 
     private bool can_merge(Plugins.MetaConversationItem upper_item /*more recent, displayed below*/, Plugins.MetaConversationItem lower_item /*less recent, displayed above*/) {
-        return upper_item.display_time != null && lower_item.display_time != null &&
-            upper_item.display_time.difference(lower_item.display_time) < TimeSpan.MINUTE &&
+        return upper_item.time != null && lower_item.time != null &&
+            upper_item.time.difference(lower_item.time) < TimeSpan.MINUTE &&
             upper_item.jid != null && lower_item.jid != null &&
             upper_item.jid.equals(lower_item.jid) &&
             upper_item.encryption == lower_item.encryption &&
@@ -470,15 +470,10 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     }
 
     private static int compare_meta_items(Plugins.MetaConversationItem a, Plugins.MetaConversationItem b) {
-        int cmp1 = a.sort_time.compare(b.sort_time);
-        if (cmp1 == 0) {
-            double cmp2 = a.seccondary_sort_indicator - b.seccondary_sort_indicator;
-            if (cmp2 == 0) {
-                return (int) (a.tertiary_sort_indicator - b.tertiary_sort_indicator);
-            }
-            return (int) cmp2;
-        }
-        return cmp1;
+        int cmp1 = a.time.compare(b.time);
+        if (cmp1 != 0) return cmp1;
+
+        return a.secondary_sort_indicator - b.secondary_sort_indicator;
     }
 
     private void clear() {

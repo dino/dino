@@ -110,7 +110,6 @@ public class BadMessageItem : Plugins.MetaConversationItem {
 
     private Plugin plugin;
     private Conversation conversation;
-    private DateTime date;
     private Jid problem_jid;
     private BadnessType badness_type;
 
@@ -118,8 +117,7 @@ public class BadMessageItem : Plugins.MetaConversationItem {
         this.plugin = plugin;
         this.conversation = conversation;
         this.problem_jid = jid;
-        this.date = date;
-        this.sort_time = date;
+        this.time = date;
         this.badness_type = badness_type;
     }
 

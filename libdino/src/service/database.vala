@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 17;
+    private const int VERSION = 18;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -62,7 +62,7 @@ public class Database : Qlite.Database {
         internal ContentItemTable(Database db) {
             base(db, "content_item");
             init({id, conversation_id, time, local_time, content_type, foreign_id, hide});
-            index("contentitem_conversation_hide_localtime_time_idx", {conversation_id, hide, local_time, time});
+            index("contentitem_conversation_hide_time_idx", {conversation_id, hide, time});
             unique({content_type, foreign_id}, "IGNORE");
         }
     }
@@ -89,7 +89,7 @@ public class Database : Qlite.Database {
                 type_, time, local_time, body, encryption, marked});
 
             // get latest messages
-            index("message_account_counterpart_localtime_idx", {account_id, counterpart_id, local_time});
+            index("message_account_counterpart_time_idx", {account_id, counterpart_id, time});
 
             // deduplication
             index("message_account_counterpart_stanzaid_idx", {account_id, counterpart_id, stanza_id});
@@ -152,7 +152,6 @@ public class Database : Qlite.Database {
             base(db, "file_transfer");
             init({id, account_id, counterpart_id, counterpart_resource, our_resource, direction, time, local_time,
                     encryption, file_name, path, mime_type, size, state, provider, info});
-            index("filetransfer_localtime_counterpart_idx", {local_time, counterpart_id});
         }
     }
 
@@ -398,6 +397,19 @@ public class Database : Qlite.Database {
                 error("Failed to upgrade to database version 17: %s", e.message);
             }
         }
+        if (oldVersion < 18) {
+            try {
+                exec("DROP INDEX contentitem_conversation_hide_localtime_time_idx");
+                exec("CREATE INDEX contentitem_conversation_hide_time_idx ON content_item (conversation_id, hide, time)");
+
+                exec("DROP INDEX message_account_counterpart_localtime_idx");
+                exec("CREATE INDEX message_account_counterpart_time_idx ON message (account_id, counterpart_id, time)");
+
+                exec("DROP INDEX filetransfer_localtime_counterpart_idx");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 18: %s", e.message);
+            }
+        }
     }
 
     public ArrayList<Account> get_accounts() {
@@ -448,22 +460,22 @@ public class Database : Qlite.Database {
 
         if (before != null) {
             if (id > 0) {
-                select.where(@"local_time < ? OR (local_time = ? AND message.id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
+                select.where(@"time < ? OR (time = ? AND message.id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
             } else {
                 select.with(message.id, "<", id);
             }
         }
         if (after != null) {
             if (id > 0) {
-                select.where(@"local_time > ? OR (local_time = ? AND message.id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
+                select.where(@"time > ? OR (time = ? AND message.id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
             } else {
-                select.with(message.local_time, ">", (long) after.to_unix());
+                select.with(message.time, ">", (long) after.to_unix());
             }
             if (id > 0) {
                 select.with(message.id, ">", id);
             }
         } else {
-            select.order_by(message.local_time, "DESC");
+            select.order_by(message.time, "DESC");
         }
 
         select.with(message.counterpart_id, "=", get_jid_id(jid))

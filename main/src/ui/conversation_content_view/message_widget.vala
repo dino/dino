@@ -190,7 +190,7 @@ public class MessageItemWidget : SizeRequestBin {
 
         // Append "pending..." iff message has not been sent yet
         if (message.direction == Message.DIRECTION_SENT && (message.marked == Message.Marked.SENDING || message.marked == Message.Marked.UNSENT)) {
-            if (message.local_time.compare(new DateTime.now_utc().add_seconds(-10)) < 0) {
+            if (message.time.compare(new DateTime.now_utc().add_seconds(-10)) < 0) {
                 markup_text += " <span size='small' color='%s'>%s</span>".printf(gray_color, "pending…");
 
                 // Update the label as soon as the sent state changes
@@ -201,7 +201,7 @@ public class MessageItemWidget : SizeRequestBin {
                     update_label();
                 });
             } else {
-                int time_diff = (- (int) message.local_time.difference(new DateTime.now_utc()) / 1000);
+                int time_diff = (- (int) message.time.difference(new DateTime.now_utc()) / 1000);
                 Timeout.add(10000 - time_diff, () => {
                    update_label();
                     return false;

@@ -146,8 +146,8 @@ public class GlobalSearch : Overlay {
 
     private void append_messages(Gee.List<MessageItem> messages) {
         foreach (MessageItem item in messages) {
-            Gee.List<MessageItem> before_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_before_message(item.conversation, item.message.local_time, item.message.id, 1);
-            Gee.List<MessageItem> after_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_after_message(item.conversation, item.message.local_time, item.message.id, 1);
+            Gee.List<MessageItem> before_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_before_message(item.conversation, item.message.time, item.message.id, 1);
+            Gee.List<MessageItem> after_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_after_message(item.conversation, item.message.time, item.message.id, 1);
 
             Box context_box = new Box(Orientation.VERTICAL, 5) { visible=true };
             if (before_message != null && before_message.size > 0) {
@@ -161,7 +161,7 @@ public class GlobalSearch : Overlay {
                 context_box.add(get_context_message_widget(after_message.first()));
             }
 
-            Label date_label = new Label(ConversationSummary.ItemMetaDataHeader.get_relative_time(item.display_time.to_local())) { xalign=0, visible=true };
+            Label date_label = new Label(ConversationSummary.ItemMetaDataHeader.get_relative_time(item.time.to_local())) { xalign=0, visible=true };
             date_label.get_style_context().add_class("dim-label");
 
             string display_name = Util.get_conversation_display_name(stream_interactor, item.conversation);

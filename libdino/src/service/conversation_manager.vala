@@ -177,7 +177,7 @@ public class ConversationManager : StreamInteractionModule, Object {
 
             if (stanza != null) {
                 bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
-                bool is_recent = message.local_time.compare(new DateTime.now_utc().add_days(-3)) > 0;
+                bool is_recent = message.time.compare(new DateTime.now_utc().add_days(-3)) > 0;
                 if (is_mam_message && !is_recent) return false;
             }
             stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
@@ -188,7 +188,7 @@ public class ConversationManager : StreamInteractionModule, Object {
     private void handle_sent_message(Entities.Message message, Conversation conversation) {
         conversation.last_active = message.time;
 
-        bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+        bool is_recent = message.time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
         if (is_recent) {
             start_conversation(conversation);
         }

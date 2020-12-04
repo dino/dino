@@ -146,7 +146,7 @@ public class ItemMetaDataHeader : Box {
 
         this.add(received_image);
 
-        if (item.display_time != null) {
+        if (item.time != null) {
             update_time();
         }
 
@@ -170,7 +170,7 @@ public class ItemMetaDataHeader : Box {
     }
 
     private void update_time() {
-        time_label.label = get_relative_time(item.display_time.to_local()).to_string();
+        time_label.label = get_relative_time(item.time.to_local()).to_string();
 
         time_update_timeout = Timeout.add_seconds((int) get_next_time_change(), () => {
             if (this.parent == null) return false;
@@ -226,7 +226,7 @@ public class ItemMetaDataHeader : Box {
 
     private int get_next_time_change() {
         DateTime now = new DateTime.now_local();
-        DateTime item_time = item.display_time;
+        DateTime item_time = item.time;
         TimeSpan timespan = now.difference(item_time);
 
         if (timespan < 10 * TimeSpan.MINUTE) {
