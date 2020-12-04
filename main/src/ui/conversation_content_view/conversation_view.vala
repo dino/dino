@@ -412,6 +412,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private bool can_merge(Plugins.MetaConversationItem upper_item /*more recent, displayed below*/, Plugins.MetaConversationItem lower_item /*less recent, displayed above*/) {
         return upper_item.display_time != null && lower_item.display_time != null &&
             upper_item.display_time.difference(lower_item.display_time) < TimeSpan.MINUTE &&
+            upper_item.jid != null && lower_item.jid != null &&
             upper_item.jid.equals(lower_item.jid) &&
             upper_item.encryption == lower_item.encryption &&
             (upper_item.mark == Message.Marked.WONTSEND) == (lower_item.mark == Message.Marked.WONTSEND);

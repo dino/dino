@@ -137,9 +137,12 @@ public class BadMessagesWidget : Box {
         this.halign = Align.CENTER;
         this.visible = true;
 
-        var sb = new StringBuilder();
-        string who = _("Your contact");
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+        string who = "";
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            who = Dino.get_participant_display_name(plugin.app.stream_interactor, conversation, jid);
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            who = jid.to_string();
+            // `jid` is a real JID. In MUCs, try to show nicks instead (given that the JID is currently online)
             var occupants = plugin.app.stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
             if (occupants == null) return;
             foreach (Jid occupant in occupants) {
@@ -148,13 +151,15 @@ public class BadMessagesWidget : Box {
                 }
             }
         }
+
+        string warning_text = "";
         if (badness_type == BadnessType.UNTRUSTED) {
-            sb.append(_("%s has been using an untrusted device. You won't see messages from devices that you do not trust.").printf(who));
-            sb.append(" <a href=\"\">%s</a>".printf(_("Manage devices")));
+            warning_text = _("%s has been using an untrusted device. You won't see messages from devices that you do not trust.").printf(who) +
+                    " <a href=\"\">%s</a>".printf(_("Manage devices"));
         } else {
-            sb.append(_("%s does not trust this device. That means, you might be missing messages.").printf(who));
+            warning_text += _("%s does not trust this device. That means, you might be missing messages.").printf(who);
         }
-        Label label = new Label(sb.str) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
+        Label label = new Label(warning_text) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
         label.get_style_context().add_class("dim-label");
         this.add(label);
 

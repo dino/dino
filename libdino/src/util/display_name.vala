@@ -84,8 +84,8 @@ namespace Dino {
             }
         }
 
-    // If it's us (jid=our real full JID), display our nick
-    if (conversation.type_ == Conversation.Type.GROUPCHAT_PM && conversation.account.bare_jid.equals_bare(jid)) {
+        // If it's us (jid=our real full JID), display our nick
+        if (conversation.type_ == Conversation.Type.GROUPCHAT_PM && conversation.account.bare_jid.equals_bare(jid)) {
             var muc_conv = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(conversation.counterpart.bare_jid, conversation.account, Conversation.Type.GROUPCHAT);
             if (muc_conv != null && muc_conv.nickname != null) {
                 return muc_conv.nickname;
