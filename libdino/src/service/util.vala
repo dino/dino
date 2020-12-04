@@ -60,7 +60,7 @@ public class Util {
 #if _WIN32
         string fileName = fileInfo.get_name();
         int fileNameLength = fileName.length;
-        int extIndex = fileName.index_of(".");
+        int extIndex = fileName.last_index_of(".");
         if (extIndex < fileNameLength)
         {
             string extension = fileName.substring(extIndex, fileNameLength - extIndex);
