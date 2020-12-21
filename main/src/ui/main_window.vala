@@ -132,7 +132,7 @@ public class MainWindow : Gtk.Window {
 
         if (headerbar_paned.folded) {
             conversation_list_titlebar_csd.decoration_layout = gtk_settings.gtk_decoration_layout;
-            conversation_titlebar_csd.decoration_layout = "";
+            conversation_titlebar_csd.decoration_layout = gtk_settings.gtk_decoration_layout;
         } else {
             string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
             conversation_list_titlebar_csd.decoration_layout = buttons[0] + ":";
