@@ -400,10 +400,10 @@ public class Database : Qlite.Database {
         if (oldVersion < 18) {
             try {
                 exec("DROP INDEX contentitem_conversation_hide_localtime_time_idx");
-                exec("CREATE INDEX contentitem_conversation_hide_time_idx ON content_item (conversation_id, hide, time)");
+                exec("CREATE INDEX IF NOT EXISTS contentitem_conversation_hide_time_idx ON content_item (conversation_id, hide, time)");
 
                 exec("DROP INDEX message_account_counterpart_localtime_idx");
-                exec("CREATE INDEX message_account_counterpart_time_idx ON message (account_id, counterpart_id, time)");
+                exec("CREATE INDEX IF NOT EXISTS message_account_counterpart_time_idx ON message (account_id, counterpart_id, time)");
 
                 exec("DROP INDEX filetransfer_localtime_counterpart_idx");
             } catch (Error e) {
