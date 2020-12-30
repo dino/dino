@@ -107,15 +107,6 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         } catch (Error e) {
             warning("Failed showing content item notification: %s", e.message);
         }
-
-        // Don't set urgency hint in GNOME, produces "Window is active" notification
-        var desktop_env = Environment.get_variable("XDG_CURRENT_DESKTOP");
-        if (desktop_env == null || !desktop_env.down().contains("gnome")) {
-            var app = (GLib.Application.get_default() as Application);
-            if (app.active_window != null) {
-                app.active_window.urgency_hint = true;
-            }
-        }
     }
 
     public async void notify_subscription_request(Conversation conversation) {

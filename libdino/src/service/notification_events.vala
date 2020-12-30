@@ -10,10 +10,6 @@ public class NotificationEvents : StreamInteractionModule, Object {
     public string id { get { return IDENTITY.id; } }
 
     public signal void notify_content_item(ContentItem content_item, Conversation conversation);
-    public signal void notify_subscription_request(Conversation conversation);
-    public signal void notify_connection_error(Account account, ConnectionManager.ConnectionError error);
-    public signal void notify_muc_invite(Account account, Jid room_jid, Jid from_jid, string? password, string? reason);
-    public signal void notify_voice_request(Account account, Jid room_jid, Jid from_jid, string nick);
 
     private StreamInteractor stream_interactor;
     private NotificationProvider? notifier;
@@ -77,7 +73,10 @@ public class NotificationEvents : StreamInteractionModule, Object {
                     if (!highlight) return;
                 }
 
-                notifier.notify_message.begin(message, conversation, conversation_display_name, participant_display_name);
+                notify_content_item(item, conversation);
+                if (notify != Conversation.NotifySetting.OFF) {
+                    notifier.notify_message.begin(message, conversation, conversation_display_name, participant_display_name);
+                }
                 break;
             case FileItem.TYPE:
                 FileTransfer file_transfer = ((FileItem) item).file_transfer;
@@ -87,7 +86,10 @@ public class NotificationEvents : StreamInteractionModule, Object {
                 if (notify == Conversation.NotifySetting.HIGHLIGHT) return;
                 if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return;
 
-                notifier.notify_file.begin(file_transfer, conversation, is_image, conversation_display_name, participant_display_name);
+                notify_content_item(item, conversation);
+                if (notify != Conversation.NotifySetting.OFF) {
+                    notifier.notify_file.begin(file_transfer, conversation, is_image, conversation_display_name, participant_display_name);
+                }
                 break;
         }
     }
