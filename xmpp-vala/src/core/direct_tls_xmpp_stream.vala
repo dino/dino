@@ -4,11 +4,11 @@ public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
     uint16 port;
     TlsXmppStream.OnInvalidCert on_invalid_cert_outer;
 
-    public DirectTlsXmppStream(Jid remote_name, string host, uint16 port, TlsXmppStream.OnInvalidCert on_invalid_cert) {
+    public DirectTlsXmppStream(Jid remote_name, string host, uint16 port, owned TlsXmppStream.OnInvalidCert on_invalid_cert) {
         base(remote_name);
         this.host = host;
         this.port = port;
-        this.on_invalid_cert_outer = on_invalid_cert;
+        this.on_invalid_cert_outer = (owned)on_invalid_cert;
     }
 
     public override async void connect() throws IOStreamError {
@@ -21,7 +21,7 @@ public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
             tls_connection.set_advertised_protocols(new string[]{"xmpp-client"});
 #endif
             tls_connection.accept_certificate.connect(on_invalid_certificate);
-            tls_connection.accept_certificate.connect(on_invalid_cert_outer);
+            tls_connection.accept_certificate.connect((cert, flags) => on_invalid_cert_outer(cert, flags));
             reset_stream(tls_connection);
 
             yield setup();

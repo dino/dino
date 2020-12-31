@@ -13,7 +13,7 @@ namespace Xmpp {
         public IOStreamError? io_error { get; set; }
     }
 
-    public async XmppStreamResult establish_stream(Jid bare_jid, Gee.List<XmppStreamModule> modules, string? log_options, TlsXmppStream.OnInvalidCert on_invalid_cert) {
+    public async XmppStreamResult establish_stream(Jid bare_jid, Gee.List<XmppStreamModule> modules, string? log_options, owned TlsXmppStream.OnInvalidCert on_invalid_cert) {
         Jid remote = bare_jid.domain_jid;
 
         //Lookup xmpp-client and xmpps-client SRV records
@@ -58,9 +58,9 @@ namespace Xmpp {
         foreach (SrvTargetInfo target in targets) {
             try {
                 if (target.service == "xmpp-client") {
-                    stream = new StartTlsXmppStream(remote, target.host, target.port, on_invalid_cert);
+                    stream = new StartTlsXmppStream(remote, target.host, target.port, (owned)on_invalid_cert);
                 } else {
-                    stream = new DirectTlsXmppStream(remote, target.host, target.port, on_invalid_cert);
+                    stream = new DirectTlsXmppStream(remote, target.host, target.port, (owned)on_invalid_cert);
                 }
                 stream.log = new XmppLog(bare_jid.to_string(), log_options);
 
