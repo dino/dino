@@ -29,7 +29,9 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Iq.Module());
         list.add(new Sasl.Module(account.bare_jid.to_string(), account.password));
 
-        XmppStreamResult stream_result = yield Xmpp.establish_stream(account.bare_jid.domain_jid, list, Application.print_xmpp);
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(account.bare_jid.domain_jid, list, Application.print_xmpp,
+                (_, peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(account.domainpart, peer_cert, errors); }
+        );
 
         if (stream_result.stream == null) {
             if (stream_result.tls_errors != null) {
@@ -80,7 +82,9 @@ public class Register : StreamInteractionModule, Object{
         Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
         list.add(new Iq.Module());
 
-        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp);
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (_, peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
 
         if (stream_result.stream == null) {
             if (stream_result.io_error != null) {
@@ -125,7 +129,9 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Iq.Module());
         list.add(new Xep.InBandRegistration.Module());
 
-        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp);
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (_, peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
 
         if (stream_result.stream == null) {
             return null;
@@ -169,7 +175,9 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Iq.Module());
         list.add(new Xep.InBandRegistration.Module());
 
-        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp);
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (_, peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
 
         if (stream_result.stream == null) {
             return null;

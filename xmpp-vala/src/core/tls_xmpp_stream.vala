@@ -2,6 +2,12 @@ public abstract class Xmpp.TlsXmppStream : IoXmppStream {
 
     public TlsCertificateFlags? errors;
 
+    public delegate bool OnInvalidCert(GLib.TlsConnection conn, GLib.TlsCertificate peer_cert, GLib.TlsCertificateFlags errors);
+
+    protected TlsXmppStream(Jid remote_name) {
+        base(remote_name);
+    }
+
     protected bool on_invalid_certificate(TlsCertificate peer_cert, TlsCertificateFlags errors) {
         this.errors = errors;
 
@@ -13,7 +19,7 @@ public abstract class Xmpp.TlsXmppStream : IoXmppStream {
                 error_str += @"$(f), ";
             }
         }
-        warning(@"Tls Certificate Errors: $(error_str)");
+        warning(@"[%p, %s] Tls Certificate Errors: %s", this, this.remote_name, error_str);
         return false;
     }
 }
