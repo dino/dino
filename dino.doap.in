@@ -160,6 +160,14 @@
     </implements>
     <implements>
       <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0245.html" />
+        <xmpp:version>1.0</xmpp:version>
+        <xmpp:status>complete</xmpp:status>
+        <xmpp:since>0.1.0</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0280.html" />
         <xmpp:status>complete</xmpp:status>
       </xmpp:SupportedXep>
