@@ -273,5 +273,11 @@
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0391.html" />
       </xmpp:SupportedXep>
     </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0398.html" />
+        <xmpp:status>complete</xmpp:status>
+      </xmpp:SupportedXep>
+    </implements>
   </Project>
 </rdf:RDF>
