@@ -279,5 +279,10 @@
         <xmpp:status>complete</xmpp:status>
       </xmpp:SupportedXep>
     </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0410.html" />
+      </xmpp:SupportedXep>
+    </implements>
   </Project>
 </rdf:RDF>
