@@ -8,45 +8,49 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-11 19:14+0100\n"
-"PO-Revision-Date: 2020-02-04 16:50+0000\n"
+"PO-Revision-Date: 2020-12-31 17:29+0000\n"
 "Language-Team: none\n"
-"Language: tr\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.4.1-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
+#, fuzzy
 msgid "Key publishing disabled"
-msgstr "Anahtar yayınlama devre dışı"
+msgstr "Публікація ключа відключена"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
+#, fuzzy
 msgid "Error in GnuPG"
-msgstr "GnuPG'de Hata"
+msgstr "Помилка у GnuPG"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "Anahtar yok. Bir tane oluşturun!"
+msgstr ""
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "Anahtar seçin"
+msgstr "Вибрати ключ"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
-msgstr "Yükleniyor…"
+msgstr "Завантаження…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr "GnuPG sorgu"
+msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
+#, fuzzy
 msgid "Key not in keychain"
-msgstr "Anahtar anahtarlıkta değil"
+msgstr "Відсутній ключ у зв’язці"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "Şifreleme"
+msgstr "Шифрування"

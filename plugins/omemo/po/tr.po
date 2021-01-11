@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 18:24+0100\n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
 "PO-Revision-Date: 2020-10-10 10:49+0000\n"
 "Language-Team: none\n"
 "Language: tr\n"
@@ -17,11 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.3-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:141
-msgid "Your contact"
-msgstr "Kişiniz"
-
-#: plugins/omemo/src/ui/bad_messages_populator.vala:152
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
@@ -30,11 +26,11 @@ msgstr ""
 "%s güvenilmeyen bir cihaz kullanıyor. Güvenmediğiniz cihazlardan gelen "
 "mesajları görmezsiniz."
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:153
+#: plugins/omemo/src/ui/bad_messages_populator.vala:156
 msgid "Manage devices"
 msgstr "Cİhazları yönet"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -283,6 +279,9 @@ msgstr "Onaylandı"
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
 msgstr "Kullanılmamış"
+
+#~ msgid "Your contact"
+#~ msgstr "Kişiniz"
 
 #~ msgid "Not matching"
 #~ msgstr "Eşleşmiyor"

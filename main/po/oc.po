@@ -7,107 +7,60 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 18:24+0100\n"
-"PO-Revision-Date: 2020-10-10 10:49+0000\n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
+"PO-Revision-Date: 2020-11-14 14:28+0000\n"
 "Language-Team: none\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
 msgstr ""
 "Lo fichièr es mai pesuc que la talha maximala de mandadís sul servidor."
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-msgid "Image sent"
-msgstr "Imatge enviat"
-
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-msgid "File sent"
-msgstr "Fichièr enviat"
-
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-msgid "Image received"
-msgstr "Imatge recebuda"
-
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-msgid "File received"
-msgstr "Fichièr recebut"
-
-#: main/src/ui/notifications.vala:98
-msgid "Subscription request"
-msgstr "Demanda d’abonament"
-
-#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:162
-#: main/src/ui/conversation_content_view/subscription_notification.vala:37
-msgid "Accept"
-msgstr "Acceptar"
-
-#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
-#: main/src/ui/notifications.vala:161
-#: main/src/ui/conversation_content_view/subscription_notification.vala:38
-msgid "Deny"
-msgstr "Regetar"
-
-#: main/src/ui/notifications.vala:112
-#: main/src/ui/add_conversation/conference_details_fragment.vala:189
-#: main/src/ui/manage_accounts/add_account_dialog.vala:258
-#, c-format
-msgid "Could not connect to %s"
-msgstr "Connexion impossibla a %s"
-
-#: main/src/ui/notifications.vala:115
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "Marrit senhal"
-
-#: main/src/ui/notifications.vala:118
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "Lo certificat TLS es invalid"
-
-#: main/src/ui/notifications.vala:128
-#, c-format
-msgid "Invitation to %s"
-msgstr "Convit a %s"
-
-#: main/src/ui/notifications.vala:129
-#, c-format
-msgid "%s invited you to %s"
-msgstr "%s vos convidèt a %s"
-
-#: main/src/ui/notifications.vala:150
-msgid "Permission request"
-msgstr "Demanda d’autorizacion"
-
-#: main/src/ui/notifications.vala:151
-#, c-format
-msgid "%s requests the permission to write in %s"
-msgstr "%s demanda l’autorizacion d’escriure dins %s"
-
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:165
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:190
-#: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
+#: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
+#: main/src/ui/util/helper.vala:134
 msgid "Me"
 msgstr "Ieu"
 
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:74
+msgid "Image sent"
+msgstr "Imatge enviat"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:74
+msgid "File sent"
+msgstr "Fichièr enviat"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:76
+msgid "Image received"
+msgstr "Imatge recebuda"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:76
+msgid "File received"
+msgstr "Fichièr recebut"
+
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:334
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:126
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:338
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:117
 msgid "Yesterday"
 msgstr "Ièr"
 
@@ -190,14 +143,14 @@ msgstr "Seleccionar"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:203 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:220 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
 msgstr "Anullar"
 
-#: main/src/ui/util/helper.vala:127
+#: main/src/ui/util/helper.vala:118
 #, c-format
 msgid "%s from %s"
 msgstr "%s de %s"
@@ -230,7 +183,7 @@ msgid "Start"
 msgstr "Començar"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:203 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:220 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Rejónher una sala"
@@ -246,7 +199,7 @@ msgstr "Seguent"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:203
+#: main/src/ui/application.vala:220
 msgid "Join"
 msgstr "Rejónher"
 
@@ -288,11 +241,19 @@ msgstr "Causissètz un escais-nom diferent"
 msgid "Too many occupants in room"
 msgstr "Tròp de participants a la sala"
 
+#: main/src/ui/add_conversation/conference_details_fragment.vala:189
+#: main/src/ui/notifier_gnotifications.vala:82
+#: main/src/ui/notifier_freedesktop.vala:142
+#: main/src/ui/manage_accounts/add_account_dialog.vala:261
+#, c-format
+msgid "Could not connect to %s"
+msgstr "Connexion impossibla a %s"
+
 #: main/src/ui/add_conversation/conference_details_fragment.vala:192
-#: main/src/ui/manage_accounts/add_account_dialog.vala:263
-#: main/src/ui/manage_accounts/add_account_dialog.vala:296
-#: main/src/ui/manage_accounts/add_account_dialog.vala:306
-#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+#: main/src/ui/manage_accounts/add_account_dialog.vala:266
+#: main/src/ui/manage_accounts/add_account_dialog.vala:299
+#: main/src/ui/manage_accounts/add_account_dialog.vala:309
+#: main/src/ui/manage_accounts/add_account_dialog.vala:388
 msgid "Invalid address"
 msgstr "L’adreça es invalida"
 
@@ -317,6 +278,53 @@ msgstr "En %s"
 #, c-format
 msgid "With %s"
 msgstr "Amb %s"
+
+#: main/src/ui/notifier_gnotifications.vala:69
+#: main/src/ui/notifier_freedesktop.vala:113
+msgid "Subscription request"
+msgstr "Demanda d’abonament"
+
+#: main/src/ui/notifier_gnotifications.vala:75
+#: main/src/ui/notifier_gnotifications.vala:109
+#: main/src/ui/notifier_gnotifications.vala:125
+#: main/src/ui/notifier_freedesktop.vala:118
+#: main/src/ui/notifier_freedesktop.vala:173
+#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+msgid "Accept"
+msgstr "Acceptar"
+
+#: main/src/ui/notifier_gnotifications.vala:76
+#: main/src/ui/notifier_gnotifications.vala:108
+#: main/src/ui/notifier_gnotifications.vala:124
+#: main/src/ui/notifier_freedesktop.vala:118
+#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+msgid "Deny"
+msgstr "Regetar"
+
+#: main/src/ui/notifier_gnotifications.vala:98
+#: main/src/ui/notifier_freedesktop.vala:165
+#, c-format
+msgid "Invitation to %s"
+msgstr "Convit a %s"
+
+#: main/src/ui/notifier_gnotifications.vala:99
+#: main/src/ui/notifier_freedesktop.vala:166
+#, c-format
+msgid "%s invited you to %s"
+msgstr "%s vos convidèt a %s"
+
+#: main/src/ui/notifier_gnotifications.vala:116
+#: main/src/ui/notifier_freedesktop.vala:197
+msgid "Permission request"
+msgstr "Demanda d’autorizacion"
+
+#: main/src/ui/notifier_gnotifications.vala:117
+#: main/src/ui/notifier_freedesktop.vala:198
+#, c-format
+msgid "%s requests the permission to write in %s"
+msgstr "%s demanda l’autorizacion d’escriure dins %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:12
 #: main/src/ui/contact_details/blocking_provider.vala:31
@@ -487,6 +495,20 @@ msgstr "I a pas cap de compte actiu"
 msgid "Manage accounts"
 msgstr "Gerir los comptes"
 
+#: main/src/ui/notifier_freedesktop.vala:146
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Marrit senhal"
+
+#: main/src/ui/notifier_freedesktop.vala:149
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "Lo certificat TLS es invalid"
+
+#: main/src/ui/notifier_freedesktop.vala:173
+msgid "Reject"
+msgstr ""
+
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
@@ -529,76 +551,76 @@ msgstr "Error"
 msgid "Add Account"
 msgstr "Ajustar un compte"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:166
+#: main/src/ui/manage_accounts/add_account_dialog.vala:153
+#, c-format
+msgid "The server could not prove that it is %s."
+msgstr "Lo servidor a pas pogut provar qu’es %s."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:155
+msgid "Its security certificate is not trusted by your operating system."
+msgstr "Vòstre sistèma operatiu se fisa pas del certificat prepausat."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:157
+msgid "Its security certificate is issued to another domain."
+msgstr "Son certificat de seguretat foguèt provesit per un autre domeni."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:159
+msgid "Its security certificate will only become valid in the future."
+msgstr "Son certificat de seguretat serà pas que valid dins lo futur."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:161
+msgid "Its security certificate is expired."
+msgstr "Son certificat a expirat."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:180
 #, c-format
 msgid "Sign in to %s"
 msgstr "Se connectar a %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:210
+#: main/src/ui/manage_accounts/add_account_dialog.vala:224
 #, c-format
 msgid "You can now use the account %s."
 msgstr "Ara podètz utilizar lo compte %s."
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:245
-#, c-format
-msgid "The server could not prove that it is %s."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:247
-msgid "Its security certificate is not trusted by your operating system."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:249
-msgid "Its security certificate is issued to another domain."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:251
-msgid "Its security certificate will only become valid in the future."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:253
-msgid "Its security certificate is expired."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:278
+#: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Wrong username or password"
 msgstr "Marrit nom d’utilizaire o senhal"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:281
+#: main/src/ui/manage_accounts/add_account_dialog.vala:284
 msgid "Something went wrong"
 msgstr "Quicòm a trucat"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:321
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
 msgid "No response from server"
 msgstr "Cap de responsa del servidor"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:327
+#: main/src/ui/manage_accounts/add_account_dialog.vala:333
 #, c-format
 msgid "Register on %s"
 msgstr "Se marcar sus %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:330
+#: main/src/ui/manage_accounts/add_account_dialog.vala:336
 msgid "The server requires to sign up through a website"
 msgstr "Lo servidor requesís una inscripcion via lo site web"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:332
+#: main/src/ui/manage_accounts/add_account_dialog.vala:338
 msgid "Open website"
 msgstr "Dobrir lo site web"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:344
+#: main/src/ui/manage_accounts/add_account_dialog.vala:350
 msgid "Register"
 msgstr "Se marcar"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:346
+#: main/src/ui/manage_accounts/add_account_dialog.vala:352
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Consultatz %s per mai d’informacions tocant cossí se marchar"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:158
+#: main/src/ui/conversation_content_view/message_widget.vala:159
 msgid "Message too long"
 msgstr "Lo messatge es tròp long"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:186
+#: main/src/ui/conversation_content_view/message_widget.vala:187
 msgid "edited"
 msgstr "modificat"
 
@@ -688,11 +710,11 @@ msgstr "Fichièr ofrit"
 msgid "File transfer failed"
 msgstr "Fracàs del transferiment de fichièr"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:111
 msgid "Today"
 msgstr "Uèi"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:124
 msgid "%a, %b %d"
 msgstr "%a, %b %d"
 

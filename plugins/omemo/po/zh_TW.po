@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 18:24+0100\n"
-"PO-Revision-Date: 2020-10-07 01:20+0000\n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
+"PO-Revision-Date: 2020-11-24 05:28+0000\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -16,24 +16,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:141
-msgid "Your contact"
-msgstr ""
-
-#: plugins/omemo/src/ui/bad_messages_populator.vala:152
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr "%s 使用了未信任的裝置。您不會看見來自未被您信任裝置的訊息。"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:153
+#: plugins/omemo/src/ui/bad_messages_populator.vala:156
 msgid "Manage devices"
 msgstr "管理裝置"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -192,7 +188,7 @@ msgstr "此連絡人有新的裝置"
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 #: plugins/omemo/src/ui/account_settings_widget.vala:45
 msgid "Own fingerprint"
-msgstr "此裝置指紋"
+msgstr "本裝置指紋"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 msgid "Will be generated on first connection"
@@ -231,7 +227,7 @@ msgstr "新的來自此聯絡人的加密金鑰將會被自動接收。"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
-msgstr "此裝置金鑰"
+msgstr "本裝置金鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New keys"
@@ -243,7 +239,7 @@ msgstr "其它裝置上的金鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
-msgstr "不再使用的金鑰"
+msgstr "長時間未用過的金鑰"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
@@ -265,6 +261,9 @@ msgstr "已核驗"
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
 msgstr "不再使用"
+
+#~ msgid "Your contact"
+#~ msgstr "您的聯絡人"
 
 #~ msgid "Not matching"
 #~ msgstr "不吻合"

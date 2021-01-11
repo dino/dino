@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 18:24+0100\n"
-"PO-Revision-Date: 2020-10-22 03:26+0000\n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
+"PO-Revision-Date: 2020-12-31 17:29+0000\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/dino/"
 "translations/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -15,98 +15,51 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.3.1\n"
+"X-Generator: Weblate 4.4.1-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
 msgstr "O arquivo ultrapassa o máximo do tamanho de upload."
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-msgid "Image sent"
-msgstr "Imagem enviada"
-
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-msgid "File sent"
-msgstr "Arquivo enviado"
-
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-msgid "Image received"
-msgstr "Imagem recebida"
-
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-msgid "File received"
-msgstr "Arquivo recebido"
-
-#: main/src/ui/notifications.vala:98
-msgid "Subscription request"
-msgstr "Pedido de assinatura"
-
-#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:162
-#: main/src/ui/conversation_content_view/subscription_notification.vala:37
-msgid "Accept"
-msgstr "Aceitar"
-
-#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
-#: main/src/ui/notifications.vala:161
-#: main/src/ui/conversation_content_view/subscription_notification.vala:38
-msgid "Deny"
-msgstr "Negar"
-
-#: main/src/ui/notifications.vala:112
-#: main/src/ui/add_conversation/conference_details_fragment.vala:189
-#: main/src/ui/manage_accounts/add_account_dialog.vala:258
-#, c-format
-msgid "Could not connect to %s"
-msgstr "Não foi possível se conectar a %s"
-
-#: main/src/ui/notifications.vala:115
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "Senha incorreta"
-
-#: main/src/ui/notifications.vala:118
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "Certificado TLS inválido"
-
-#: main/src/ui/notifications.vala:128
-#, c-format
-msgid "Invitation to %s"
-msgstr "Convite para %s"
-
-#: main/src/ui/notifications.vala:129
-#, c-format
-msgid "%s invited you to %s"
-msgstr "%s te convidou para %s"
-
-#: main/src/ui/notifications.vala:150
-msgid "Permission request"
-msgstr "Pedido de permissão"
-
-#: main/src/ui/notifications.vala:151
-#, c-format
-msgid "%s requests the permission to write in %s"
-msgstr "%s está pedindo permissão para escrever em %s"
-
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:165
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:190
-#: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
+#: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
+#: main/src/ui/util/helper.vala:134
 msgid "Me"
 msgstr "Eu"
 
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:74
+msgid "Image sent"
+msgstr "Imagem enviada"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:74
+msgid "File sent"
+msgstr "Arquivo enviado"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:76
+msgid "Image received"
+msgstr "Imagem recebida"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:76
+msgid "File received"
+msgstr "Arquivo recebido"
+
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:334
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:126
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:338
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:117
 msgid "Yesterday"
 msgstr "Ontem"
 
@@ -166,7 +119,7 @@ msgstr "Iniciar conversa privada"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Kick"
-msgstr "Kick"
+msgstr "Expulsar"
 
 #: main/src/ui/occupant_menu/view.vala:108
 msgid "Grant write permission"
@@ -189,14 +142,14 @@ msgstr "Selecionar"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:203 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:220 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: main/src/ui/util/helper.vala:127
+#: main/src/ui/util/helper.vala:118
 #, c-format
 msgid "%s from %s"
 msgstr "%s de %s"
@@ -222,17 +175,17 @@ msgstr "Membros"
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
 #: main/data/shortcuts.ui:17 main/data/conversation_list_titlebar.ui:16
 msgid "Start Conversation"
-msgstr "Iniciar conversa"
+msgstr "Iniciar Conversa"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
 msgstr "Iniciar"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:203 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:220 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
-msgstr "Juntar-se a um canal"
+msgstr "Juntar-se a um Canal"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:118
@@ -245,7 +198,7 @@ msgstr "Próximo"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:203
+#: main/src/ui/application.vala:220
 msgid "Join"
 msgstr "Juntar-se"
 
@@ -273,7 +226,7 @@ msgstr "Sala não existe"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:179
 msgid "Not allowed to create room"
-msgstr "Não permitido criar sala"
+msgstr "Sem permissão de criar sala"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:181
 msgid "Members-only room"
@@ -285,13 +238,21 @@ msgstr "Escolha um apelido diferente"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Too many occupants in room"
-msgstr "Número máximo da sala"
+msgstr "Capacidade de usuários na sala excedida"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:189
+#: main/src/ui/notifier_gnotifications.vala:82
+#: main/src/ui/notifier_freedesktop.vala:142
+#: main/src/ui/manage_accounts/add_account_dialog.vala:261
+#, c-format
+msgid "Could not connect to %s"
+msgstr "Não foi possível se conectar a %s"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:192
-#: main/src/ui/manage_accounts/add_account_dialog.vala:263
-#: main/src/ui/manage_accounts/add_account_dialog.vala:296
-#: main/src/ui/manage_accounts/add_account_dialog.vala:306
-#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+#: main/src/ui/manage_accounts/add_account_dialog.vala:266
+#: main/src/ui/manage_accounts/add_account_dialog.vala:299
+#: main/src/ui/manage_accounts/add_account_dialog.vala:309
+#: main/src/ui/manage_accounts/add_account_dialog.vala:388
 msgid "Invalid address"
 msgstr "Endereço inválido"
 
@@ -317,6 +278,53 @@ msgstr "Em %s"
 msgid "With %s"
 msgstr "Com %s"
 
+#: main/src/ui/notifier_gnotifications.vala:69
+#: main/src/ui/notifier_freedesktop.vala:113
+msgid "Subscription request"
+msgstr "Pedido de assinatura"
+
+#: main/src/ui/notifier_gnotifications.vala:75
+#: main/src/ui/notifier_gnotifications.vala:109
+#: main/src/ui/notifier_gnotifications.vala:125
+#: main/src/ui/notifier_freedesktop.vala:118
+#: main/src/ui/notifier_freedesktop.vala:173
+#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+msgid "Accept"
+msgstr "Aceitar"
+
+#: main/src/ui/notifier_gnotifications.vala:76
+#: main/src/ui/notifier_gnotifications.vala:108
+#: main/src/ui/notifier_gnotifications.vala:124
+#: main/src/ui/notifier_freedesktop.vala:118
+#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+msgid "Deny"
+msgstr "Negar"
+
+#: main/src/ui/notifier_gnotifications.vala:98
+#: main/src/ui/notifier_freedesktop.vala:165
+#, c-format
+msgid "Invitation to %s"
+msgstr "Convite para %s"
+
+#: main/src/ui/notifier_gnotifications.vala:99
+#: main/src/ui/notifier_freedesktop.vala:166
+#, c-format
+msgid "%s invited you to %s"
+msgstr "%s te convidou para %s"
+
+#: main/src/ui/notifier_gnotifications.vala:116
+#: main/src/ui/notifier_freedesktop.vala:197
+msgid "Permission request"
+msgstr "Pedido de permissão"
+
+#: main/src/ui/notifier_gnotifications.vala:117
+#: main/src/ui/notifier_freedesktop.vala:198
+#, c-format
+msgid "%s requests the permission to write in %s"
+msgstr "%s está pedindo permissão para escrever em %s"
+
 #: main/src/ui/contact_details/settings_provider.vala:12
 #: main/src/ui/contact_details/blocking_provider.vala:31
 #: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
@@ -325,7 +333,7 @@ msgstr "Configurações"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
-msgstr "Configurações locais"
+msgstr "Configurações Locais"
 
 #: main/src/ui/contact_details/settings_provider.vala:28
 #: main/data/settings_dialog.ui:22
@@ -382,7 +390,7 @@ msgstr "Detalhes da Conferência"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr "Detalhes do contato"
+msgstr "Detalhes do Contato"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
@@ -406,7 +414,7 @@ msgstr "Persistente"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:57
 msgid "The room will persist after the last occupant leaves"
-msgstr "A sala vai continuar depois do último integrante sair"
+msgstr "A sala vai continuar existindo mesmo que o último integrante saia"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Publicly searchable"
@@ -458,15 +466,15 @@ msgstr "Histórico de mensagens"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
-msgstr "Quantidade máxima de histórico gerado pela sala"
+msgstr "Quantidade máxima de histórico armazenado na sala"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
-msgstr "Configuração da sala"
+msgstr "Configuração da Sala"
 
 #: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
-msgstr "Seja bem vindo ao Dino!"
+msgstr "Bem vindo ao Dino!"
 
 #: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
@@ -483,6 +491,20 @@ msgstr "Nenhuma conta ativa"
 #: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
 msgstr "Gerenciar contas"
+
+#: main/src/ui/notifier_freedesktop.vala:146
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Senha incorreta"
+
+#: main/src/ui/notifier_freedesktop.vala:149
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "Certificado TLS inválido"
+
+#: main/src/ui/notifier_freedesktop.vala:173
+msgid "Reject"
+msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -524,78 +546,80 @@ msgstr "Erro"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
 msgid "Add Account"
-msgstr "Adicionar conta"
+msgstr "Adicionar Conta"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:166
+#: main/src/ui/manage_accounts/add_account_dialog.vala:153
+#, c-format
+msgid "The server could not prove that it is %s."
+msgstr "O servidor contactado não conseguiu provar que representa %s."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:155
+msgid "Its security certificate is not trusted by your operating system."
+msgstr ""
+"O certificado de segurança do servidor não é considerado confiável por seu "
+"sistema operacional."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:157
+msgid "Its security certificate is issued to another domain."
+msgstr "Seu certificado de segurança for emitido para outro domínio."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:159
+msgid "Its security certificate will only become valid in the future."
+msgstr "Seu certificado de segurança se tornará válido apenas no futuro."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:161
+msgid "Its security certificate is expired."
+msgstr "Seu certificado de segurança está expirado."
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:180
 #, c-format
 msgid "Sign in to %s"
-msgstr "Registrar-se em %s"
+msgstr "Entre em %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:210
+#: main/src/ui/manage_accounts/add_account_dialog.vala:224
 #, c-format
 msgid "You can now use the account %s."
 msgstr "Você agora pode usar a conta %s."
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:245
-#, c-format
-msgid "The server could not prove that it is %s."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:247
-msgid "Its security certificate is not trusted by your operating system."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:249
-msgid "Its security certificate is issued to another domain."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:251
-msgid "Its security certificate will only become valid in the future."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:253
-msgid "Its security certificate is expired."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:278
-msgid "Wrong username or password"
-msgstr "Nome ou Senha errada"
-
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
+msgid "Wrong username or password"
+msgstr "Nome ou senha incorretos"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:284
 msgid "Something went wrong"
 msgstr "Algo deu errado"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:321
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
 msgid "No response from server"
 msgstr "Sem resposta do servidor"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:327
+#: main/src/ui/manage_accounts/add_account_dialog.vala:333
 #, c-format
 msgid "Register on %s"
 msgstr "Registre-se em %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:330
+#: main/src/ui/manage_accounts/add_account_dialog.vala:336
 msgid "The server requires to sign up through a website"
-msgstr "O servidor requer que se inscreva através de um site"
+msgstr "O servidor requer registro através de um site"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:332
+#: main/src/ui/manage_accounts/add_account_dialog.vala:338
 msgid "Open website"
 msgstr "Abrir website"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:344
+#: main/src/ui/manage_accounts/add_account_dialog.vala:350
 msgid "Register"
 msgstr "Registrar"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:346
+#: main/src/ui/manage_accounts/add_account_dialog.vala:352
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr "Verifique %s para informação de como se inscrever"
+msgstr "Verifique %s para informação de como se registrar"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:158
+#: main/src/ui/conversation_content_view/message_widget.vala:159
 msgid "Message too long"
 msgstr "Mensagem muito longa"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:186
+#: main/src/ui/conversation_content_view/message_widget.vala:187
 msgid "edited"
 msgstr "editado"
 
@@ -622,7 +646,7 @@ msgstr "%s está digitando…"
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr "Não-criptografado"
+msgstr "Sem Criptografia"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Unable to send message"
@@ -641,12 +665,12 @@ msgstr "%x, %l∶%M %p"
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr "%b %d, %H∶%M"
+msgstr "%d de %b, %H∶%M"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr "%b %d, %l∶%M %p"
+msgstr "%d de %b, %l∶%M %p"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
 #, no-c-format
@@ -665,7 +689,7 @@ msgstr "Este contato gostaria de adicioná-lo à sua lista de contatos"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:46
 #, c-format
 msgid "Downloading %s…"
-msgstr "Fazendo download de %s…"
+msgstr "Baixando %s…"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:52
 #, c-format
@@ -685,11 +709,11 @@ msgstr "Arquivo oferecido"
 msgid "File transfer failed"
 msgstr "Transferência de arquivo falhou"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:111
 msgid "Today"
 msgstr "Hoje"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:124
 msgid "%a, %b %d"
 msgstr "%a, %b %d"
 
@@ -704,7 +728,7 @@ msgstr "Atualizar mensagem"
 
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
-msgstr "Clique aqui para inicial uma conversa or entrar em um canal."
+msgstr "Clique aqui para inicial uma conversa ou entrar em um canal."
 
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
@@ -728,7 +752,7 @@ msgstr "Pseudônimo"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr "Adicionar contato"
+msgstr "Adicionar Contato"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
@@ -740,7 +764,7 @@ msgstr "Converter smileys para emojis"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
-msgstr "Moderno cliente de chat XMPP"
+msgstr "Cliente de Chat XMPP Moderno"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -748,9 +772,9 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino é um moderno chat de código aberto para desktop. Ele é focado em prover "
-"uma transparente e confiável experiência Jabber/XMPP, tendo em mente a sua "
-"privacidade."
+"Dino é um cliente moderno de código aberto de chat para desktop. Ele foca em "
+"oferecer uma experiência Jabber/XMPP transparente e confiável levando em "
+"consideração a sua privacidade."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -758,9 +782,9 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
-"Suporte criptografia ponta a ponta com OMEMO e OpenPGP e permite configurar "
-"privacidade—características relacionadas às notificações de leitura, "
-"recebimento e escrita."
+"Ele suporta criptografia ponta-a-ponta com OMEMO e OpenPGP e, além disso, "
+"permite configurar funcionalidades relativas à privacidade como notificações "
+"de leitura, recebimento e escrita."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
@@ -776,7 +800,7 @@ msgstr "Sem busca ativa"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr "Escreva para iniciar a busca"
+msgstr "Escreva para iniciar uma busca"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
@@ -832,11 +856,11 @@ msgstr "Nenhuma conta configurada"
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
-msgstr "Adicionar conta"
+msgstr "Adicionar uma conta"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr "Registrar"
+msgstr "Entrar"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:328
@@ -853,7 +877,7 @@ msgstr "Conectar"
 
 #: main/data/manage_accounts/add_account_dialog.ui:340
 msgid "Choose a public server"
-msgstr "Escolha um servidor publico"
+msgstr "Escolha um servidor público"
 
 #: main/data/manage_accounts/add_account_dialog.ui:369
 msgid "Or specify a server address"
@@ -865,7 +889,7 @@ msgstr "Entrar em vez disso"
 
 #: main/data/manage_accounts/add_account_dialog.ui:470
 msgid "Pick another server"
-msgstr "Escolha outro servidor"
+msgstr "Escolher outro servidor"
 
 #: main/data/manage_accounts/add_account_dialog.ui:542
 msgid "All set up!"
