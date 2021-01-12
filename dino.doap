@@ -4,17 +4,17 @@
     <name>Dino</name>
     <short-name>dino</short-name>
     <shortdesc xml:lang="en">Modern XMPP Chat Client</shortdesc>
-    <shortdesc xml:lang="zh_TW">現代化的 XMPP 用戶端聊天軟件</shortdesc>
-    <shortdesc xml:lang="zh_CN">现代 XMPP 聊天客户端</shortdesc>
+    <shortdesc xml:lang="zh-TW">現代化的 XMPP 用戶端聊天軟件</shortdesc>
+    <shortdesc xml:lang="zh-CN">现代 XMPP 聊天客户端</shortdesc>
     <shortdesc xml:lang="tr">Modern XMPP Sohbet İstemcisi</shortdesc>
     <shortdesc xml:lang="sv">Modern XMPP-chattklient</shortdesc>
     <shortdesc xml:lang="ru">Современный XMPP клиент</shortdesc>
     <shortdesc xml:lang="ro">Client XMPP de discuții modern</shortdesc>
-    <shortdesc xml:lang="pt_BR">Cliente de Chat XMPP Moderno</shortdesc>
+    <shortdesc xml:lang="pt-BR">Cliente de Chat XMPP Moderno</shortdesc>
     <shortdesc xml:lang="pt">Moderno cliente de chat XMPP</shortdesc>
     <shortdesc xml:lang="pl">Nowoczesny komunikator XMPP</shortdesc>
     <shortdesc xml:lang="oc">Client XMPP modèrn</shortdesc>
-    <shortdesc xml:lang="nl_BE">Modernen XMPP-chatcliënt</shortdesc>
+    <shortdesc xml:lang="nl-BE">Modernen XMPP-chatcliënt</shortdesc>
     <shortdesc xml:lang="nl">Een moderne XMPP-chatclient</shortdesc>
     <shortdesc xml:lang="nb">Moderne XMPP-sludreklient</shortdesc>
     <shortdesc xml:lang="lt">Šiuolaikinė XMPP pokalbių kliento programa</shortdesc>
@@ -32,12 +32,12 @@
     <shortdesc xml:lang="de">Modernes XMPP-Chat-Programm</shortdesc>
     <shortdesc xml:lang="ca">Client de xat XMPP modern</shortdesc>
     <shortdesc xml:lang="ar">تطبيق حديث للدردشة عبر XMPP</shortdesc>
-    <description xml:lang="zh_TW">
+    <description xml:lang="zh-TW">
       Dino 是一個爲桌面打造的現代化開放原始碼用戶端聊天軟件。它致力於提供一份簡洁而可靠的 Jabber/XMPP 體驗，同時亦尊重您的私隱。
       它支持 OMEMO 和 OpenPGP 兩種端到端加密方式，並且容許設定私隱相關的特性譬如已讀回條和正在輸入提示。
       Dino 從伺服器取得訊息並與其他裝置同步。
     </description>
-    <description xml:lang="zh_CN">
+    <description xml:lang="zh-CN">
       Dino 是一个现代的开源聊天桌面客户端。它致力于提供一个清爽又可靠的 Jabber/XMPP 体验，同时又保护您的隐私。
       它支持 OMEMO 和 OpenPGP 端对端加密并允许配置隐私相关的特性比如已读回执和输入提醒。
       Dino 从服务器获取消息并和其他设备同步。
@@ -62,7 +62,7 @@
       Suportă criptare de la un capăt la altul prin intermediul OMEMO și OpenPGP, și permite configurarea caracteristicilor legate de confidențialitate precum trimiterea notificărilor de primire și tastare.
       Dino preia istoricul discuțiilor de pe server și sincronizează mesajele cu celelalte dispozitive.
     </description>
-    <description xml:lang="pt_BR">
+    <description xml:lang="pt-BR">
       Dino é um cliente moderno de código aberto de chat para desktop. Ele foca em oferecer uma experiência Jabber/XMPP transparente e confiável levando em consideração a sua privacidade.
       Ele suporta criptografia ponta-a-ponta com OMEMO e OpenPGP e, além disso, permite configurar funcionalidades relativas à privacidade como notificações de leitura, recebimento e escrita.
       Dino obtém o histórico do servidor e sincroniza mensagens com outros dispositivos.
@@ -82,7 +82,7 @@
       Compatible amb lo chiframent OMEMO e OpenPGP del cap a la fin e permet de configurar de foncionalitats ligadas amb la confidencialitat coma los acusats de lectura e las notificacions d’escritura.
       Dino recupèra l’istoric del servidor e sincroniza los messatges amb d’autres periferics.
     </description>
-    <description xml:lang="nl_BE">
+    <description xml:lang="nl-BE">
       Dino is een moderne, vrije chattoepassing voor uw bureaublad. Ze biedt een eenvoudige en betrouwbare Jabber/XMPP-ervaring, met uw privacy in het achterhoofd.
       Ze ondersteunt eind-tot-eind-versleuteling met OMEMO en OpenPGP, en laat u toe privacygerelateerde functies, gelijk leesbevestigingen en typmeldingen, in te stellen.
       Dino haalt de geschiedenis op van de server en synchroniseert berichten met andere apparaten.
@@ -345,6 +345,11 @@
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0245.html"/>
         <xmpp:version>1.0</xmpp:version>
         <xmpp:status>complete</xmpp:status>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0249.html" />
       </xmpp:SupportedXep>
     </implements>
     <implements>
