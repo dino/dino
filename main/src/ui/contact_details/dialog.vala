@@ -85,11 +85,11 @@ public class Dialog : Gtk.Dialog {
         ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
         Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3, visible=true };
         list_row.add(row);
-        Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, visible=true };
+        Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, wrap=true, visible=true };
         if (description != null && description != "") {
             Box box = new Box(Orientation.VERTICAL, 0) { visible=true };
             box.add(label_label);
-            Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true, visible=true };
+            Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true, wrap=true, visible=true };
             desc_label.set_markup("<span size='small'>%s</span>".printf(Markup.escape_text(description)));
             desc_label.get_style_context().add_class("dim-label");
             box.add(desc_label);
@@ -117,7 +117,7 @@ public class Dialog : Gtk.Dialog {
 
         int pref_height, pref_width;
         get_content_area().get_preferred_height(null, out pref_height);
-        get_preferred_width(out pref_width, null);
+        get_default_size(out pref_width, null);
         resize(pref_width, int.min(500, pref_height));
     }
 
