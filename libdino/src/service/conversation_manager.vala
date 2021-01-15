@@ -8,6 +8,8 @@ public class ConversationManager : StreamInteractionModule, Object {
     public static ModuleIdentity<ConversationManager> IDENTITY = new ModuleIdentity<ConversationManager>("conversation_manager");
     public string id { get { return IDENTITY.id; } }
 
+    private Dino.Entities.Settings settings = Dino.Application.get_default().settings;
+
     public signal void conversation_activated(Conversation conversation);
     public signal void conversation_deactivated(Conversation conversation);
 
@@ -46,6 +48,9 @@ public class ConversationManager : StreamInteractionModule, Object {
 
         // Create a new converation
         Conversation conversation = new Conversation(jid, account, type);
+        if (settings.omemo_default) {
+            conversation.encryption = Encryption.OMEMO;
+        }
         add_conversation(conversation);
         conversation.persist(db);
         return conversation;
