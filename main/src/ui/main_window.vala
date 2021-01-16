@@ -24,6 +24,7 @@ public class MainWindow : Gtk.Window {
     public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL, visible=true };
     public Hdy.Leaflet headerbar_paned = new Hdy.Leaflet() { visible=true };
     public Hdy.TitleBar titlebar = new Hdy.TitleBar() { visible=true };
+    public Hdy.HeaderGroup headergroup = new Hdy.HeaderGroup();
     public Hdy.Leaflet paned;
     public Revealer search_revealer;
     public SearchEntry search_entry;
@@ -45,8 +46,6 @@ public class MainWindow : Gtk.Window {
         restore_window_size();
 
         this.get_style_context().add_class("dino-main");
-        Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
-        this.realize.connect(set_window_buttons);
         setup_unified();
         setup_headerbar();
         setup_stack();
@@ -55,6 +54,8 @@ public class MainWindow : Gtk.Window {
         paned.bind_property("mode-transition-duration", headerbar_paned, "mode-transition-duration", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("child-transition-duration", headerbar_paned, "child-transition-duration", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("visible-child-name", headerbar_paned, "visible-child-name", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+        headerbar_paned.bind_property("folded", headergroup, "decorate-all", BindingFlags.SYNC_CREATE);
     }
 
     private void setup_unified() {
@@ -76,13 +77,12 @@ public class MainWindow : Gtk.Window {
 
     private void update_headerbar() {
         if (!Util.use_csd()) return;
-        conversation_titlebar_csd.back_button = headerbar_paned.folded;
-        set_window_buttons();
+        conversation_titlebar_csd.back_button = paned.folded;
     }
 
     private void show_list_pane() {
         paned.visible_child_name = "list-pane";
-        if (headerbar_paned.folded) {
+        if (paned.folded) {
             conversation_selector.unselect_row(conversation_selector.get_selected_row());
         }
     }
@@ -99,6 +99,7 @@ public class MainWindow : Gtk.Window {
         if (Util.use_csd()) {
             conversation_list_titlebar_csd = new ConversationListTitlebarCsd() { visible=true };
             headerbar_paned.add_with_properties(conversation_list_titlebar_csd, "name", "list-pane");
+            headergroup.add_gtk_header_bar(conversation_list_titlebar_csd);
             conversation_list_group.add_widget(conversation_list_titlebar_csd);
 
             Separator sep = new Separator(Orientation.HORIZONTAL) { visible = true };
@@ -109,6 +110,7 @@ public class MainWindow : Gtk.Window {
             conversation_titlebar_csd.back_pressed.connect(() => show_list_pane());
             conversation_titlebar = conversation_titlebar_csd;
             headerbar_paned.add_with_properties(conversation_titlebar_csd, "name", "view-pane");
+            headergroup.add_gtk_header_bar(conversation_titlebar_csd);
             conversation_view_group.add_widget(conversation_titlebar);
 
             titlebar.add(headerbar_paned);
@@ -122,21 +124,6 @@ public class MainWindow : Gtk.Window {
             conversation_view_group.add_widget(conversation_titlebar);
 
             box.add(headerbar_paned);
-        }
-    }
-
-    private void set_window_buttons() {
-        if (!Util.use_csd()) return;
-        Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
-        if (gtk_settings == null) return;
-
-        if (headerbar_paned.folded) {
-            conversation_list_titlebar_csd.decoration_layout = gtk_settings.gtk_decoration_layout;
-            conversation_titlebar_csd.decoration_layout = gtk_settings.gtk_decoration_layout;
-        } else {
-            string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
-            conversation_list_titlebar_csd.decoration_layout = buttons[0] + ":";
-            conversation_titlebar_csd.decoration_layout = ((buttons.length == 2) ? ":" + buttons[1] : "");
         }
     }
 
