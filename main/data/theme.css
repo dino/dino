@@ -74,6 +74,11 @@ window.dino-main .dino-sidebar > frame {
     border-bottom: 1px solid @borders;
 }
 
+window.dino-main list.sidebar {
+    border-left: 0px;
+    border-right: 0px;
+}
+
 .message-box {
     transition: background .05s ease;
 }
