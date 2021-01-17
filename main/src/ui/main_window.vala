@@ -50,6 +50,12 @@ public class MainWindow : Gtk.Window {
         setup_headerbar();
         setup_stack();
 
+        if (!Util.use_csd()) {
+            box.add(headerbar_paned);
+            box.add(new Separator(Orientation.VERTICAL) { visible = true });
+        }
+        box.add(paned);
+
         paned.bind_property("transition-type", headerbar_paned, "transition-type", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("mode-transition-duration", headerbar_paned, "mode-transition-duration", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         paned.bind_property("child-transition-duration", headerbar_paned, "child-transition-duration", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -62,7 +68,6 @@ public class MainWindow : Gtk.Window {
         Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
         paned = (Hdy.Leaflet) builder.get_object("paned");
         paned.notify["folded"].connect_after(() => update_headerbar());
-        box.add(paned);
         left_stack = (Stack) builder.get_object("left_stack");
         right_stack = (Stack) builder.get_object("right_stack");
         conversation_view = (ConversationView) builder.get_object("conversation_view");
@@ -76,8 +81,7 @@ public class MainWindow : Gtk.Window {
     }
 
     private void update_headerbar() {
-        if (!Util.use_csd()) return;
-        conversation_titlebar_csd.back_button = paned.folded;
+        conversation_titlebar.back_button = paned.folded;
     }
 
     private void show_list_pane() {
@@ -119,11 +123,14 @@ public class MainWindow : Gtk.Window {
             headerbar_paned.add_with_properties(conversation_list_titlebar, "name", "list-pane");
             conversation_list_group.add_widget(conversation_list_titlebar);
 
+            Separator sep = new Separator(Orientation.HORIZONTAL) { visible = true };
+            sep.get_style_context().add_class("sidebar");
+            headerbar_paned.add(sep);
+
             conversation_titlebar = new ConversationTitlebarNoCsd() { visible=true };
+            conversation_titlebar.back_pressed.connect(() => show_list_pane());
             headerbar_paned.add_with_properties(conversation_titlebar, "name", "view-pane");
             conversation_view_group.add_widget(conversation_titlebar);
-
-            box.add(headerbar_paned);
         }
     }
 
