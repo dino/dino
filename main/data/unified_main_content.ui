@@ -67,6 +67,15 @@
             </packing>
         </child>
         <child>
+            <object class="GtkSeparator" id="paned_separator">
+                <property name="orientation">vertical</property>
+                <property name="visible">True</property>
+                <style>
+                    <class name="sidebar"/>
+                </style>
+            </object>
+        </child>
+        <child>
             <object class="GtkOverlay">
                 <property name="visible">True</property>
                 <child>
