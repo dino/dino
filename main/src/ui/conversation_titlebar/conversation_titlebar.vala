@@ -10,6 +10,10 @@ public interface ConversationTitlebar : Widget {
     public abstract string? subtitle { get; set; }
     public abstract string? title { get; set; }
 
+    public abstract bool back_button { get; set; }
+
+    public signal void back_pressed();
+
     public abstract void insert_entry(Plugins.ConversationTitlebarEntry entry);
 }
 
@@ -28,6 +32,12 @@ public class ConversationTitlebarNoCsd : ConversationTitlebar, Gtk.Box {
         }
     }
 
+    private Revealer back_revealer;
+    public bool back_button {
+        get { return back_revealer.reveal_child; }
+        set { back_revealer.reveal_child = value; }
+    }
+
     private Box widgets_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=15, valign=Align.END, visible=true };
     private Label title_label = new Label("") { visible=true };
     private Label subtitle_label = new Label("") { use_markup=true, ellipsize=EllipsizeMode.END, visible=false };
@@ -35,6 +45,13 @@ public class ConversationTitlebarNoCsd : ConversationTitlebar, Gtk.Box {
     construct {
         Box content_box = new Box(Orientation.HORIZONTAL, 0) { margin=5, margin_start=15, margin_end=10, hexpand=true, visible=true };
         this.add(content_box);
+
+        back_revealer = new Revealer() { visible = true, transition_type = RevealerTransitionType.SLIDE_RIGHT, transition_duration = 200, can_focus = false, reveal_child = false };
+        Button back_button = new Button.from_icon_name("go-previous-symbolic") { visible = true, valign = Align.CENTER, use_underline = true, relief = ReliefStyle.NONE };
+        back_button.get_style_context().add_class("image-button");
+        back_button.clicked.connect(() => back_pressed());
+        back_revealer.add(back_button);
+        content_box.add(back_revealer);
 
         Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true, visible=true };
         content_box.add(titles_box);
@@ -70,7 +87,6 @@ public class ConversationTitlebarCsd : ConversationTitlebar, Gtk.HeaderBar {
         get { return back_revealer.reveal_child; }
         set { back_revealer.reveal_child = value; }
     }
-    public signal void back_pressed();
 
     public ConversationTitlebarCsd() {
         this.get_style_context().add_class("dino-right");
