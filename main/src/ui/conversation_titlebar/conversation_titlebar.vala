@@ -54,7 +54,9 @@ public class ConversationTitlebarNoCsd : ConversationTitlebar, Gtk.Box {
         content_box.add(back_revealer);
 
         Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true, visible=true };
-        content_box.add(titles_box);
+        ScrolledWindow titles_scroll = new ScrolledWindow(null, null) { vscrollbar_policy=NEVER, hscrollbar_policy=NEVER, visible=true };
+        titles_scroll.add(titles_box);
+        content_box.add(titles_scroll);
 
         titles_box.add(title_label);
         subtitle_label.attributes = new AttrList();
