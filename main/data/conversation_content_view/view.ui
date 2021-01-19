@@ -4,6 +4,7 @@
         <property name="expand">True</property>
         <property name="homogeneous">False</property>
         <property name="spacing">0</property>
+        <property name="width_request">350</property>
         <property name="visible">True</property>
         <child>
             <object class="GtkStack" id="stack">
