@@ -9,7 +9,6 @@ find_packages(OMEMO_PACKAGES REQUIRED
     GModule
     GObject
     GTK3
-    Soup
     Qrencode
 )
 
