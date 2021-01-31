@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 18:24+0100\n"
-"PO-Revision-Date: 2020-09-13 09:36+0000\n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
+"PO-Revision-Date: 2020-11-25 11:28+0000\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/it/>\n"
 "Language: it\n"
@@ -11,13 +11,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:141
-msgid "Your contact"
-msgstr ""
-
-#: plugins/omemo/src/ui/bad_messages_populator.vala:152
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
@@ -26,11 +22,11 @@ msgstr ""
 "%s sta usando un dispositivo non verificato. Non vedrai messaggi inviati da "
 "un dispositivo che non hai verificato."
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:153
+#: plugins/omemo/src/ui/bad_messages_populator.vala:156
 msgid "Manage devices"
 msgstr "Gestisci dispositivi"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -288,6 +284,9 @@ msgstr "Verificata"
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
 msgstr "Inutilizzata"
+
+#~ msgid "Your contact"
+#~ msgstr "Il tuo contatto"
 
 #~ msgid "Not matching"
 #~ msgstr "Non corrispondenti"

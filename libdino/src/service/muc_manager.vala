@@ -26,6 +26,7 @@ public class MucManager : StreamInteractionModule, Object {
     private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
     private ReceivedMessageListener received_message_listener;
     private HashMap<Account, BookmarksProvider> bookmarks_provider = new HashMap<Account, BookmarksProvider>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, Gee.List<Jid>> invites = new HashMap<Account, Gee.List<Jid>>(Account.hash_func, Account.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         MucManager m = new MucManager(stream_interactor);
@@ -364,7 +365,10 @@ public class MucManager : StreamInteractionModule, Object {
             subject_set(account, jid, subject);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).invite_received.connect( (stream, room_jid, from_jid, password, reason) => {
-            invite_received(account, room_jid, from_jid, password, reason);
+            on_invite_received(account, room_jid, from_jid, password, reason);
+        });
+        stream_interactor.module_manager.get_module(account, Xep.DirectMucInvitations.Module.IDENTITY).invite_received.connect( (stream, room_jid, from_jid, password, reason) => {
+            on_invite_received(account, room_jid, from_jid, password, reason);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).voice_request_received.connect( (stream, room_jid, from_jid, nick) => {
             voice_request_received(account, room_jid, from_jid, nick);
@@ -407,6 +411,22 @@ public class MucManager : StreamInteractionModule, Object {
         } else {
             sync_autojoin_active(account, conferences);
         }
+    }
+
+    private void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
+        if (!invites.has_key(account)) {
+            invites[account] = new LinkedList<Jid>(Jid.equals_func);
+        }
+        if (invites[account].contains(room_jid)) return;
+        invites[account].add(room_jid);
+
+        invite_received(account, room_jid, from_jid, password, reason);
+
+        Timeout.add_seconds(5, () => {
+            // We don't want to show the same invite (direct+mediated) twice, but a distinct invite is fine
+            invites[account].remove(room_jid);
+            return false;
+        });
     }
 
     private void join_all_active(Account account) {

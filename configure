@@ -7,10 +7,8 @@ prefix:,program-prefix:,exec-prefix:,lib-suffix:,\
 bindir:,libdir:,includedir:,datadir:,\
 host:,build:,\
 sbindir:,sysconfdir:,libexecdir:,localstatedir:,sharedstatedir:,mandir:,infodir:,\
-enable-dependency-tracking,disable-dependency-tracking,\
-disable-silent-rules,disable-maintainer-mode\
  -n './configure' -- "$@"`
-if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+if [ $? != 0 ] ; then echo "-- Ignoring unrecognized options." >&2 ; fi
 
 eval set -- "$OPTS"
 
@@ -87,8 +85,7 @@ Fine tuning of the installation directories:
 
 For compatibility with autotools, these options will be silently ignored:
 --host, --build, --sbindir, --sysconfdir, --libexecdir, --sharedstatedir,
---localstatedir, --mandir, --infodir, --enable-dependency-tracking,
---disable-dependency-tracking
+--localstatedir, --mandir, --infodir
 
 Some influential environment variables:
   CC                         C compiler command
@@ -134,11 +131,7 @@ while true; do
         --sharedstatedir ) SHAREDSTATEDIR="$2"; shift; shift ;;
         --mandir ) MANDIR="$2"; shift; shift ;;
         --infodir ) INFODIR="$2"; shift; shift ;;
-        # Ignore for autotools compat
         --host | --build ) shift; shift ;;
-        --disable-dependency-tracking | --enable-dependency-tracking ) shift ;;
-        # Ignore for debian compat
-        --disable-silent-rules | --disable-maintainer-mode ) shift ;;
         -h | --help ) help; exit 0 ;;
         -- ) shift; break ;;
         * ) break ;;

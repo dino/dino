@@ -28,11 +28,22 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         create_actions();
 
         startup.connect(() => {
-            stream_interactor.get_module(NotificationEvents.IDENTITY).register_notification_provider(new GNotificationsNotifier(stream_interactor));
+            NotificationEvents notification_events = stream_interactor.get_module(NotificationEvents.IDENTITY);
+            notification_events.register_notification_provider(new GNotificationsNotifier(stream_interactor));
             FreeDesktopNotifier? free_desktop_notifier = FreeDesktopNotifier.try_create(stream_interactor);
             if (free_desktop_notifier != null) {
-                stream_interactor.get_module(NotificationEvents.IDENTITY).register_notification_provider(free_desktop_notifier);
+                notification_events.register_notification_provider(free_desktop_notifier);
             }
+            notification_events.notify_content_item.connect((content_item, conversation) => {
+                // Set urgency hint also if (normal) notifications are disabled
+                // Don't set urgency hint in GNOME, produces "Window is active" notification
+                var desktop_env = Environment.get_variable("XDG_CURRENT_DESKTOP");
+                if (desktop_env == null || !desktop_env.down().contains("gnome")) {
+                    if (this.active_window != null) {
+                        this.active_window.urgency_hint = true;
+                    }
+                }
+            });
         });
 
         activate.connect(() => {

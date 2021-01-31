@@ -141,7 +141,7 @@ public class AddAccountDialog : Gtk.Dialog {
         animate_window_resize(sign_in_jid_box);
     }
 
-    private void show_tls_error() {
+    private void show_tls_error(string domain, TlsCertificateFlags error_flags) {
         sign_in_tls_box.visible = true;
         stack.visible_child_name = "tls_error";
         sign_in_jid_box.visible = false;
@@ -149,6 +149,20 @@ public class AddAccountDialog : Gtk.Dialog {
         create_account_box.visible = false;
         register_box.visible = false;
         success_box.visible = false;
+
+        string error_desc = _("The server could not prove that it is %s.").printf("<b>" + domain + "</b>");
+        if (TlsCertificateFlags.UNKNOWN_CA in error_flags) {
+            error_desc += " " + _("Its security certificate is not trusted by your operating system.");
+        } else if (TlsCertificateFlags.BAD_IDENTITY in error_flags) {
+            error_desc += " " + _("Its security certificate is issued to another domain.");
+        } else if (TlsCertificateFlags.NOT_ACTIVATED in error_flags) {
+            error_desc += " " + _("Its security certificate will only become valid in the future.");
+        } else if (TlsCertificateFlags.EXPIRED in error_flags) {
+            error_desc += " " + _("Its security certificate is expired.");
+        }
+        sign_in_tls_label.label = error_desc;
+
+        animate_window_resize(sign_in_tls_box);
     }
 
     private void show_sign_in_password() {
@@ -242,18 +256,7 @@ public class AddAccountDialog : Gtk.Dialog {
             } else {
                 jid_entry.sensitive = true;
                 if (server_status.error_flags != null) {
-                    string error_desc = _("The server could not prove that it is %s.").printf("<b>" + login_jid.domainpart + "</b>");
-                    if (TlsCertificateFlags.UNKNOWN_CA in server_status.error_flags) {
-                        error_desc += " " + _("Its security certificate is not trusted by your operating system.");
-                    } else if (TlsCertificateFlags.BAD_IDENTITY in server_status.error_flags) {
-                        error_desc += " " + _("Its security certificate is issued to another domain.");
-                    } else if (TlsCertificateFlags.NOT_ACTIVATED in server_status.error_flags) {
-                        error_desc += " " + _("Its security certificate will only become valid in the future.");
-                    } else if (TlsCertificateFlags.EXPIRED in server_status.error_flags) {
-                        error_desc += " " + _("Its security certificate is expired.");
-                    }
-                    sign_in_tls_label.label = error_desc;
-                    show_tls_error();
+                    show_tls_error(login_jid.domainpart, server_status.error_flags);
                 } else {
                     sign_in_jid_error_label.label = _("Could not connect to %s").printf(login_jid.domainpart);
                 }
@@ -290,7 +293,7 @@ public class AddAccountDialog : Gtk.Dialog {
     private void on_select_server_continue() {
         try {
             server_jid = new Jid(server_entry.text);
-            request_show_register_form.begin();
+            request_show_register_form.begin(server_jid);
         } catch (InvalidJidError e) {
             warning("Invalid address from interface allowed server: %s", e.message);
             display_notification(_("Invalid address"));
@@ -300,23 +303,26 @@ public class AddAccountDialog : Gtk.Dialog {
     private void on_server_list_row_activated(ListBox box, ListBoxRow row) {
         try {
             server_jid = new Jid(list_box_jids[row]);
-            request_show_register_form.begin();
+            request_show_register_form.begin(server_jid);
         } catch (InvalidJidError e) {
             warning("Invalid address from selected server: %s", e.message);
             display_notification(_("Invalid address"));
         }
     }
 
-    private async void request_show_register_form() {
+    private async void request_show_register_form(Jid server_jid) {
         select_server_continue_stack.visible_child_name = "spinner";
-        form = yield Register.get_registration_form(server_jid);
+        Register.RegistrationFormReturn form_return = yield Register.get_registration_form(server_jid);
         if (select_server_continue_stack == null) {
             return;
         }
         select_server_continue_stack.visible_child_name = "label";
-        if (form != null) {
+        if (form_return.form != null) {
+            form = form_return.form;
             set_register_form(server_jid, form);
             show_register_form();
+        } else if (form_return.error_flags != null) {
+            show_tls_error(server_jid.domainpart, form_return.error_flags);
         } else {
             display_notification(_("No response from server"));
         }

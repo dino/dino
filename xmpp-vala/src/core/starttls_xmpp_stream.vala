@@ -4,11 +4,13 @@ public class Xmpp.StartTlsXmppStream : TlsXmppStream {
 
     string host;
     uint16 port;
+    TlsXmppStream.OnInvalidCert on_invalid_cert_outer;
 
-    public StartTlsXmppStream(Jid remote, string host, uint16 port) {
-        this.remote_name = remote;
+    public StartTlsXmppStream(Jid remote, string host, uint16 port, owned TlsXmppStream.OnInvalidCert on_invalid_cert) {
+        base(remote);
         this.host = host;
         this.port = port;
+        this.on_invalid_cert_outer = (owned)on_invalid_cert;
     }
 
     public override async void connect() throws IOStreamError {
@@ -40,6 +42,7 @@ public class Xmpp.StartTlsXmppStream : TlsXmppStream {
                 reset_stream(conn);
 
                 conn.accept_certificate.connect(on_invalid_certificate);
+                conn.accept_certificate.connect((cert, flags) => on_invalid_cert_outer(cert, flags));
             } catch (Error e) {
                 stderr.printf("Failed to start TLS: %s\n", e.message);
             }

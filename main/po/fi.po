@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 18:24+0100\n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
 "PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
 "translations/fi/>\n"
@@ -22,92 +22,45 @@ msgstr ""
 msgid "The file exceeds the server's maximum upload size."
 msgstr ""
 
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-msgid "Image sent"
-msgstr "Kuva lähetetty"
-
-#: main/src/ui/notifications.vala:66
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-msgid "File sent"
-msgstr "Tiedosto lähetetty"
-
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-msgid "Image received"
-msgstr "Kuva vastaanotettu"
-
-#: main/src/ui/notifications.vala:68
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-msgid "File received"
-msgstr "Tiedosto vastaanotettu"
-
-#: main/src/ui/notifications.vala:98
-msgid "Subscription request"
-msgstr "Yhteyspyyntö"
-
-#: main/src/ui/notifications.vala:105 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:162
-#: main/src/ui/conversation_content_view/subscription_notification.vala:37
-msgid "Accept"
-msgstr "Hyväksy"
-
-#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:139
-#: main/src/ui/notifications.vala:161
-#: main/src/ui/conversation_content_view/subscription_notification.vala:38
-msgid "Deny"
-msgstr "Hylkää"
-
-#: main/src/ui/notifications.vala:112
-#: main/src/ui/add_conversation/conference_details_fragment.vala:189
-#: main/src/ui/manage_accounts/add_account_dialog.vala:258
-#, fuzzy, c-format
-msgid "Could not connect to %s"
-msgstr "Ei voitu yhdistää: %s"
-
-#: main/src/ui/notifications.vala:115
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr "Väärä salasana"
-
-#: main/src/ui/notifications.vala:118
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr "TLS-varmenne ei kelpaa"
-
-#: main/src/ui/notifications.vala:128
-#, fuzzy, c-format
-msgid "Invitation to %s"
-msgstr "Kutsu %s"
-
-#: main/src/ui/notifications.vala:129
-#, fuzzy, c-format
-msgid "%s invited you to %s"
-msgstr "%s on kutsunut sinut %s-ryhmään"
-
-#: main/src/ui/notifications.vala:150
-msgid "Permission request"
-msgstr ""
-
-#: main/src/ui/notifications.vala:151
-#, c-format
-msgid "%s requests the permission to write in %s"
-msgstr ""
-
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:165
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:190
-#: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
+#: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
+#: main/src/ui/util/helper.vala:134
 msgid "Me"
 msgstr "Minä"
 
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:74
+msgid "Image sent"
+msgstr "Kuva lähetetty"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:74
+msgid "File sent"
+msgstr "Tiedosto lähetetty"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:76
+msgid "Image received"
+msgstr "Kuva vastaanotettu"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:76
+msgid "File received"
+msgstr "Tiedosto vastaanotettu"
+
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:334
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:126
 #, no-c-format
 msgid "%b %d"
 msgstr "%d. %b"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:338
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:117
 msgid "Yesterday"
 msgstr "Eilen"
 
@@ -190,14 +143,14 @@ msgstr "Valitse"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:203 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:220 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: main/src/ui/util/helper.vala:127
+#: main/src/ui/util/helper.vala:118
 #, c-format
 msgid "%s from %s"
 msgstr ""
@@ -230,7 +183,7 @@ msgid "Start"
 msgstr "Aloita"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:203 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:220 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Liity kanavalle"
@@ -246,7 +199,7 @@ msgstr "Seuraava"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:203
+#: main/src/ui/application.vala:220
 msgid "Join"
 msgstr "Liity"
 
@@ -288,11 +241,19 @@ msgstr "Valitse jokin muu nimimerkki"
 msgid "Too many occupants in room"
 msgstr "Liikaa käyttäjiä huoneessa"
 
+#: main/src/ui/add_conversation/conference_details_fragment.vala:189
+#: main/src/ui/notifier_gnotifications.vala:82
+#: main/src/ui/notifier_freedesktop.vala:142
+#: main/src/ui/manage_accounts/add_account_dialog.vala:261
+#, fuzzy, c-format
+msgid "Could not connect to %s"
+msgstr "Ei voitu yhdistää: %s"
+
 #: main/src/ui/add_conversation/conference_details_fragment.vala:192
-#: main/src/ui/manage_accounts/add_account_dialog.vala:263
-#: main/src/ui/manage_accounts/add_account_dialog.vala:296
-#: main/src/ui/manage_accounts/add_account_dialog.vala:306
-#: main/src/ui/manage_accounts/add_account_dialog.vala:382
+#: main/src/ui/manage_accounts/add_account_dialog.vala:266
+#: main/src/ui/manage_accounts/add_account_dialog.vala:299
+#: main/src/ui/manage_accounts/add_account_dialog.vala:309
+#: main/src/ui/manage_accounts/add_account_dialog.vala:388
 msgid "Invalid address"
 msgstr "Väärä osoite"
 
@@ -316,6 +277,53 @@ msgstr ""
 #: main/src/ui/global_search.vala:168
 #, c-format
 msgid "With %s"
+msgstr ""
+
+#: main/src/ui/notifier_gnotifications.vala:69
+#: main/src/ui/notifier_freedesktop.vala:113
+msgid "Subscription request"
+msgstr "Yhteyspyyntö"
+
+#: main/src/ui/notifier_gnotifications.vala:75
+#: main/src/ui/notifier_gnotifications.vala:109
+#: main/src/ui/notifier_gnotifications.vala:125
+#: main/src/ui/notifier_freedesktop.vala:118
+#: main/src/ui/notifier_freedesktop.vala:173
+#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+msgid "Accept"
+msgstr "Hyväksy"
+
+#: main/src/ui/notifier_gnotifications.vala:76
+#: main/src/ui/notifier_gnotifications.vala:108
+#: main/src/ui/notifier_gnotifications.vala:124
+#: main/src/ui/notifier_freedesktop.vala:118
+#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+msgid "Deny"
+msgstr "Hylkää"
+
+#: main/src/ui/notifier_gnotifications.vala:98
+#: main/src/ui/notifier_freedesktop.vala:165
+#, fuzzy, c-format
+msgid "Invitation to %s"
+msgstr "Kutsu %s"
+
+#: main/src/ui/notifier_gnotifications.vala:99
+#: main/src/ui/notifier_freedesktop.vala:166
+#, fuzzy, c-format
+msgid "%s invited you to %s"
+msgstr "%s on kutsunut sinut %s-ryhmään"
+
+#: main/src/ui/notifier_gnotifications.vala:116
+#: main/src/ui/notifier_freedesktop.vala:197
+msgid "Permission request"
+msgstr ""
+
+#: main/src/ui/notifier_gnotifications.vala:117
+#: main/src/ui/notifier_freedesktop.vala:198
+#, c-format
+msgid "%s requests the permission to write in %s"
 msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:12
@@ -485,6 +493,20 @@ msgstr "Ei aktiivisia tilejä"
 msgid "Manage accounts"
 msgstr "Hallitse tilejä"
 
+#: main/src/ui/notifier_freedesktop.vala:146
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Väärä salasana"
+
+#: main/src/ui/notifier_freedesktop.vala:149
+#: main/src/ui/manage_accounts/dialog.vala:234
+msgid "Invalid TLS certificate"
+msgstr "TLS-varmenne ei kelpaa"
+
+#: main/src/ui/notifier_freedesktop.vala:173
+msgid "Reject"
+msgstr ""
+
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
@@ -527,76 +549,76 @@ msgstr "Virhe"
 msgid "Add Account"
 msgstr "Lisää tili"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:166
-#, fuzzy, c-format
-msgid "Sign in to %s"
-msgstr "Kirjaudu sisään %s-ryhmään"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:210
-#, c-format
-msgid "You can now use the account %s."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:245
+#: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
 msgid "The server could not prove that it is %s."
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:247
+#: main/src/ui/manage_accounts/add_account_dialog.vala:155
 msgid "Its security certificate is not trusted by your operating system."
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:249
+#: main/src/ui/manage_accounts/add_account_dialog.vala:157
 msgid "Its security certificate is issued to another domain."
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:251
+#: main/src/ui/manage_accounts/add_account_dialog.vala:159
 msgid "Its security certificate will only become valid in the future."
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:253
+#: main/src/ui/manage_accounts/add_account_dialog.vala:161
 msgid "Its security certificate is expired."
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:278
+#: main/src/ui/manage_accounts/add_account_dialog.vala:180
+#, fuzzy, c-format
+msgid "Sign in to %s"
+msgstr "Kirjaudu sisään %s-ryhmään"
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:224
+#, c-format
+msgid "You can now use the account %s."
+msgstr ""
+
+#: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Wrong username or password"
 msgstr "Väärä käyttäjätunnus tai salasana"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:281
+#: main/src/ui/manage_accounts/add_account_dialog.vala:284
 msgid "Something went wrong"
 msgstr "Jokin meni pieleen"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:321
+#: main/src/ui/manage_accounts/add_account_dialog.vala:327
 msgid "No response from server"
 msgstr "Palvelin ei vastaa"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:327
+#: main/src/ui/manage_accounts/add_account_dialog.vala:333
 #, c-format
 msgid "Register on %s"
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:330
+#: main/src/ui/manage_accounts/add_account_dialog.vala:336
 msgid "The server requires to sign up through a website"
 msgstr "Palvelin vatii kirjautumaan verkkosivuston kautta"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:332
+#: main/src/ui/manage_accounts/add_account_dialog.vala:338
 msgid "Open website"
 msgstr ""
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:344
+#: main/src/ui/manage_accounts/add_account_dialog.vala:350
 msgid "Register"
 msgstr "Rekisteröity"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:346
+#: main/src/ui/manage_accounts/add_account_dialog.vala:352
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Tarkista %s ohjeet kirjautumiseen"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:158
+#: main/src/ui/conversation_content_view/message_widget.vala:159
 msgid "Message too long"
 msgstr "Viesti liian pitkä"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:186
+#: main/src/ui/conversation_content_view/message_widget.vala:187
 msgid "edited"
 msgstr "muokattu"
 
@@ -686,11 +708,11 @@ msgstr ""
 msgid "File transfer failed"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:111
 msgid "Today"
 msgstr "Tänään"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:124
 msgid "%a, %b %d"
 msgstr "%a, %b %d"
 

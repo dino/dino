@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 18:24+0100\n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
 "PO-Revision-Date: 2020-10-26 14:26+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
@@ -13,22 +13,18 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.3.2-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:141
-msgid "Your contact"
-msgstr "您的联系人"
-
-#: plugins/omemo/src/ui/bad_messages_populator.vala:152
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr "%s 使用的是未受信任的设备。您将不会看到从您不信任的设备上发来的信息。"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:153
+#: plugins/omemo/src/ui/bad_messages_populator.vala:156
 msgid "Manage devices"
 msgstr "管理设备"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -260,6 +256,9 @@ msgstr "验证的"
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
 msgstr "不再使用"
+
+#~ msgid "Your contact"
+#~ msgstr "您的联系人"
 
 #~ msgid "Not matching"
 #~ msgstr "不匹配"

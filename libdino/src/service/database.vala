@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 18;
+    private const int VERSION = 19;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -254,6 +254,19 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class ConversationSettingsTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> conversation_id = new Column.Integer("conversation_id") {not_null=true};
+        public Column<string> key = new Column.Text("key") { not_null=true };
+        public Column<string> value = new Column.Text("value");
+
+        internal ConversationSettingsTable(Database db) {
+            base(db, "conversation_settings");
+            init({id, conversation_id, key, value});
+            index("settings_conversationid_key", { conversation_id, key }, true);
+        }
+    }
+
     public AccountTable account { get; private set; }
     public JidTable jid { get; private set; }
     public EntityTable entity { get; private set; }
@@ -269,6 +282,7 @@ public class Database : Qlite.Database {
     public RosterTable roster { get; private set; }
     public MamCatchupTable mam_catchup { get; private set; }
     public SettingsTable settings { get; private set; }
+    public ConversationSettingsTable conversation_settings { get; private set; }
 
     public Map<int, Jid> jid_table_cache = new HashMap<int, Jid>();
     public Map<Jid, int> jid_table_reverse = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
@@ -291,7 +305,8 @@ public class Database : Qlite.Database {
         roster = new RosterTable(this);
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings });
+        conversation_settings = new ConversationSettingsTable(this);
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
@@ -400,10 +415,10 @@ public class Database : Qlite.Database {
         if (oldVersion < 18) {
             try {
                 exec("DROP INDEX contentitem_conversation_hide_localtime_time_idx");
-                exec("CREATE INDEX contentitem_conversation_hide_time_idx ON content_item (conversation_id, hide, time)");
+                exec("CREATE INDEX IF NOT EXISTS contentitem_conversation_hide_time_idx ON content_item (conversation_id, hide, time)");
 
                 exec("DROP INDEX message_account_counterpart_localtime_idx");
-                exec("CREATE INDEX message_account_counterpart_time_idx ON message (account_id, counterpart_id, time)");
+                exec("CREATE INDEX IF NOT EXISTS message_account_counterpart_time_idx ON message (account_id, counterpart_id, time)");
 
                 exec("DROP INDEX filetransfer_localtime_counterpart_idx");
             } catch (Error e) {

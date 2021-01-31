@@ -39,7 +39,7 @@ public class ConversationTitlebarNoCsd : ConversationTitlebar, Gtk.Box {
     }
 
     private Box widgets_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=15, valign=Align.END, visible=true };
-    private Label title_label = new Label("") { visible=true };
+    private Label title_label = new Label("") { ellipsize=EllipsizeMode.END, visible=true };
     private Label subtitle_label = new Label("") { use_markup=true, ellipsize=EllipsizeMode.END, visible=false };
 
     construct {

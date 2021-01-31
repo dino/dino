@@ -1,0 +1,287 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
+"PO-Revision-Date: 2021-01-10 15:32+0000\n"
+"Language-Team: none\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.4.1-dev\n"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#, c-format
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+"%s telah menggunakan perangkat tidak dikenal. Anda tidak akan melihat pesan "
+"dari perangkat yang tidak Anda kenal."
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:156
+msgid "Manage devices"
+msgstr "Atur perangkat"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
+"%s tidak mengenali perangkat ini. Artinya, Anda mungkin kehilangan pesan."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:35
+msgid "Manage Key"
+msgstr "Atur kunci"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contact's device."
+msgstr ""
+"Bandingkan sidik jari karakter demi karakter, dengan yang tampil di "
+"perangkat kontak Anda."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+msgid "Fingerprints differ"
+msgstr "Sidik jari berbeda"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:38
+msgid "Fingerprints match"
+msgstr "Sidik jari cocok"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
+#: plugins/omemo/src/ui/manage_key_dialog.vala:82
+#: plugins/omemo/src/ui/manage_key_dialog.vala:88
+msgid "Cancel"
+msgstr "Batal"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:40
+msgid "Confirm"
+msgstr "Konfirmasi"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:60
+msgid "Verify key"
+msgstr "Verifikasi kunci"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:61
+#, c-format
+msgid ""
+"Future messages sent by %s from the device that uses this key will be "
+"highlighted accordingly in the chat window."
+msgstr ""
+"Pesan mendatang yang dikirim oleh %s dari perangkat yang menggunakan kunci "
+"ini akan ditandai di halaman percakapan."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:71
+msgid "Fingerprints do not match"
+msgstr "Sidik jari tidak cocok"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:72
+#, c-format
+msgid ""
+"Please verify that you are comparing the correct fingerprint. If "
+"fingerprints do not match, %s's account may be compromised and you should "
+"consider rejecting this key."
+msgstr ""
+"Harap Anda memverifikasi sidik jari dengan benar. Jika sidik jari tidak "
+"cocok, akun %s mungkin telah disusupi dan pertimbangkan untuk menolak kunci "
+"ini."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+msgid "Verify key fingerprint"
+msgstr "Verifikasi sidik jari kunci"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+msgid ""
+"Compare this key's fingerprint with the fingerprint displayed on the "
+"contact's device."
+msgstr ""
+"Bandingkan sidik jari kunci ini dengan sidik jari yang ditampilkan perangkat "
+"kontak."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
+#: plugins/omemo/src/ui/contact_details_dialog.vala:256
+msgid "Reject key"
+msgstr "Tolak kunci"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+msgid ""
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Blokir komunikasi terenkripsi dengan perangkat kontak yang menggunakan kunci "
+"ini."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
+#: plugins/omemo/src/ui/contact_details_dialog.vala:251
+msgid "Accept key"
+msgstr "Terima kunci"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+msgid ""
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Izinkan komunikasi terenkripsi dengan perangkat kontak yang menggunakan "
+"kunci ini."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#, c-format
+msgid "This key is currently %s."
+msgstr "Status kunci saat ini %s."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+msgid "accepted"
+msgstr "diterima"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
+msgstr ""
+"Artinya dapat digunakan oleh %s untuk menerima dan mengirim pesan "
+"terenkripsi."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+msgid "verified"
+msgstr "Terverifikasi"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+msgid ""
+"Additionally it has been verified to match the key on the contact's device."
+msgstr "Telah terverifikasi dengan mencocokkan kunci pada perangkat kontak."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+msgid "rejected"
+msgstr "ditolak"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#, c-format
+msgid ""
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
+msgstr ""
+"Artinya tidak dapat digunakan oleh %s untuk menguraikan pesan Anda, dan Anda "
+"tidak akan melihat pesan dienkripsi dengannya."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:153
+#, c-format
+msgid ""
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
+msgstr ""
+"Anda tidak akan melihat pesan terenkripsi dari perangkat %s yang menggunakan "
+"kunci ini. Sebaliknya, perangkat itu tidak dapat lagi menguraikan pesan Anda."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:161
+#, c-format
+msgid ""
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
+msgstr ""
+"Anda dapat bertukar pesan terenkripsi dengan perangkat %s yang menggunakan "
+"kunci ini."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:167
+msgid "Back"
+msgstr "Kembali"
+
+#: plugins/omemo/src/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "Pengaturan"
+
+#: plugins/omemo/src/ui/device_notification_populator.vala:83
+msgid "This contact has new devices"
+msgstr "Kontak memiliki perangkat baru"
+
+#: plugins/omemo/src/ui/account_settings_widget.vala:42
+#: plugins/omemo/src/ui/account_settings_widget.vala:45
+msgid "Own fingerprint"
+msgstr "Sidik jari sendiri"
+
+#: plugins/omemo/src/ui/account_settings_widget.vala:42
+msgid "Will be generated on first connection"
+msgstr "Akan dibuat pada koneksi pertama"
+
+#: plugins/omemo/src/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "Memerlukan persetujuan atas OMEMO"
+
+#: plugins/omemo/src/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "Apakah Anda menambahkan perangkat baru untuk akun %s?"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:42
+msgid "Encryption"
+msgstr "Enkripsi"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#, c-format
+msgid "%d OMEMO device"
+msgid_plural "%d OMEMO devices"
+msgstr[0] "%d OMEMO perangkat"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+msgid "OMEMO Key Management"
+msgstr "Pengaturan kunci OMEMO"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+msgid "Automatically accept new keys"
+msgstr "Otomatis mengkonfirmasi kunci baru"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "New encryption keys from this contact will be accepted automatically."
+msgstr "Kunci enkripsi baru dari kontak ini akan diterima secara otomatis."
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
+msgid "Own key"
+msgstr "Kunci milik sendiri"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:50
+msgid "New keys"
+msgstr "Kunci baru"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:51
+msgid "Associated keys"
+msgstr "Kunci terkait"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+msgid "Inactive keys"
+msgstr "Kunci non-aktif"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:84
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr ""
+"Kunci enkripsi baru dari perangkat Anda yang lain akan diterima secara "
+"otomatis."
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:319
+msgid "Accepted"
+msgstr "Diterima"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:324
+msgid "Rejected"
+msgstr "Ditolak"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:329
+msgid "Verified"
+msgstr "Terverifikasi"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:336
+msgid "Unused"
+msgstr "Tidak terpakai"
+
+#~ msgid "Your contact"
+#~ msgstr "Kontak anda"

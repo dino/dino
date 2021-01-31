@@ -11,6 +11,7 @@ public class Settings : Object {
         send_marker_ = col_to_bool_or_default("send_marker", true);
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
+        check_spelling = col_to_bool_or_default("check_spelling", true);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -63,6 +64,18 @@ public class Settings : Object {
                     .value(db.settings.value, value.to_string())
                     .perform();
             convert_utf8_smileys_ = value;
+        }
+    }
+
+    private bool check_spelling_;
+    public bool check_spelling {
+        get { return check_spelling_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "check_spelling", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            check_spelling_ = value;
         }
     }
 }

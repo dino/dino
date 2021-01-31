@@ -39,6 +39,7 @@ public class ChatTextView : ScrolledWindow {
     private int vscrollbar_min_height;
     private SmileyConverter smiley_converter;
     public EditHistory edit_history;
+    private SpellChecker spell_checker;
 
     construct {
         max_content_height = 300;
@@ -47,6 +48,7 @@ public class ChatTextView : ScrolledWindow {
 
         smiley_converter = new SmileyConverter(text_view);
         edit_history = new EditHistory(text_view);
+        spell_checker = new SpellChecker(text_view);
 
         this.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
         this.vadjustment.notify["upper"].connect_after(on_upper_notify);
@@ -57,6 +59,7 @@ public class ChatTextView : ScrolledWindow {
 
     public void initialize_for_conversation(Conversation conversation) {
         edit_history.initialize_for_conversation(conversation);
+        spell_checker.initialize_for_conversation(conversation);
     }
 
     public override void get_preferred_height(out int min_height, out int nat_height) {

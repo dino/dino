@@ -34,6 +34,10 @@ public abstract class Xmpp.XmppStream {
     protected bool setup_needed = false;
     protected bool disconnected = false;
 
+    protected XmppStream(Jid remote_name) {
+        this.remote_name = remote_name;
+    }
+
     public abstract async void connect() throws IOStreamError;
 
     public abstract async void disconnect() throws IOStreamError, XmlError, IOError;
@@ -41,7 +45,7 @@ public abstract class Xmpp.XmppStream {
     public abstract async StanzaNode read() throws IOStreamError;
 
     [Version (deprecated = true, deprecated_since = "0.1", replacement = "write_async")]
-            public abstract void write(StanzaNode node);
+    public abstract void write(StanzaNode node);
 
     public abstract async void write_async(StanzaNode node) throws IOStreamError;
 

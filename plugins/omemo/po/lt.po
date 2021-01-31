@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 18:24+0100\n"
-"PO-Revision-Date: 2020-10-13 09:26+0000\n"
+"POT-Creation-Date: 2021-01-11 19:14+0100\n"
+"PO-Revision-Date: 2020-11-21 18:29+0000\n"
 "Language-Team: none\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
@@ -16,28 +16,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:141
-msgid "Your contact"
-msgstr "Jūsų adresatas"
-
-#: plugins/omemo/src/ui/bad_messages_populator.vala:152
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
+"%s naudoja nepatikimą įrenginį. Jūs nematysite žinučių iš įrenginių, kuriais "
+"nepasitikite."
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:153
+#: plugins/omemo/src/ui/bad_messages_populator.vala:156
 msgid "Manage devices"
 msgstr "Tvarkyti įrenginius"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""
+"%s nepasitiki šiuo įrenginiu. Tai reiškia, kad galite nematyti žinučių."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
@@ -283,6 +282,9 @@ msgstr "Patikrintas"
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
 msgstr "Nenaudojamas"
+
+#~ msgid "Your contact"
+#~ msgstr "Jūsų adresatas"
 
 #~ msgid "Not matching"
 #~ msgstr "Nesutampa"

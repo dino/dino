@@ -11,6 +11,10 @@ public abstract class Xmpp.IoXmppStream : XmppStream {
 
     internal WriteNodeFunc? write_obj = null;
 
+    protected IoXmppStream(Jid remote_name) {
+        base(remote_name);
+    }
+
     public override async void disconnect() throws IOStreamError, XmlError, IOError {
         disconnected = true;
         if (writer == null || reader == null || stream == null) {

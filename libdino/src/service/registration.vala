@@ -29,7 +29,9 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Iq.Module());
         list.add(new Sasl.Module(account.bare_jid.to_string(), account.password));
 
-        XmppStreamResult stream_result = yield Xmpp.establish_stream(account.bare_jid.domain_jid, list, Application.print_xmpp);
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(account.bare_jid.domain_jid, list, Application.print_xmpp,
+                (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(account.domainpart, peer_cert, errors); }
+        );
 
         if (stream_result.stream == null) {
             if (stream_result.tls_errors != null) {
@@ -80,7 +82,9 @@ public class Register : StreamInteractionModule, Object{
         Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
         list.add(new Iq.Module());
 
-        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp);
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
 
         if (stream_result.stream == null) {
             if (stream_result.io_error != null) {
@@ -120,15 +124,30 @@ public class Register : StreamInteractionModule, Object{
         return ret;
     }
 
-    public static async Xep.InBandRegistration.Form? get_registration_form(Jid jid) {
+    public class RegistrationFormReturn {
+        public Xep.InBandRegistration.Form? form { get; set; }
+        public TlsCertificateFlags? error_flags { get; set; }
+    }
+
+    public static async RegistrationFormReturn get_registration_form(Jid jid) {
+        RegistrationFormReturn ret = new RegistrationFormReturn();
+
         Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
         list.add(new Iq.Module());
         list.add(new Xep.InBandRegistration.Module());
 
-        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp);
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
 
         if (stream_result.stream == null) {
-            return null;
+            if (stream_result.io_error != null) {
+                debug("Error connecting to stream: %s", stream_result.io_error.message);
+            }
+            if (stream_result.tls_errors != null) {
+                ret.error_flags = stream_result.tls_errors;
+            }
+            return ret;
         }
         XmppStream stream = stream_result.stream;
 
@@ -153,15 +172,14 @@ public class Register : StreamInteractionModule, Object{
 
         yield;
 
-        Xep.InBandRegistration.Form? form = null;
         if (stream.negotiation_complete) {
-            form = yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).get_from_server(stream, jid);
+            ret.form = yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).get_from_server(stream, jid);
         }
         try {
             yield stream.disconnect();
         } catch (Error e) {}
 
-        return form;
+        return ret;
     }
 
     public static async string? submit_form(Jid jid, Xep.InBandRegistration.Form form) {
@@ -169,7 +187,9 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Iq.Module());
         list.add(new Xep.InBandRegistration.Module());
 
-        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp);
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
 
         if (stream_result.stream == null) {
             return null;
