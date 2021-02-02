@@ -36,6 +36,7 @@
                                                 <property name="margin-top">20</property>
                                                 <property name="margin-bottom">12</property>
                                                 <property name="column-spacing">10</property>
+                                                <property name="expand">False</property>
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <object class="DinoUiAvatarImage" id="avatar">
