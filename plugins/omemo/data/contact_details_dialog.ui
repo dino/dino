@@ -2,7 +2,6 @@
 <interface>
     <template class="DinoPluginsOmemoContactDetailsDialog">
         <property name="modal">True</property>
-        <property name="resizable">False</property>
         <child internal-child="vbox">
             <object class="GtkBox">
                 <property name="visible">True</property>
@@ -37,6 +36,8 @@
                                                             <object class="GtkLabel" id="automatically_accept_new_label">
                                                                 <property name="visible">True</property>
                                                                 <property name="halign">start</property>
+                                                                <property name="xalign">0</property>
+                                                                <property name="wrap">True</property>
                                                                 <attributes>
                                                                     <attribute name="scale" value="1.1"/>
                                                                 </attributes>
@@ -114,8 +115,10 @@
                                                             <object class="GtkLabel" id="own_fingerprint_label">
                                                                 <property name="visible">True</property>
                                                                 <property name="halign">start</property>
-                                                                <property name="justify">right</property>
                                                                 <property name="hexpand">True</property>
+                                                                <property name="max_width_chars">35</property>
+                                                                <property name="xalign">0</property>
+                                                                <property name="wrap">True</property>
                                                             </object>
                                                         </child>
                                                         <child>
