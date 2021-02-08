@@ -288,7 +288,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
 public class FingerprintRow : ListBoxRow {
 
     private Image trust_image = new Image() { visible = true, halign = Align.END, icon_size = IconSize.BUTTON };
-    private Label fingerprint_label = new Label("") { use_markup=true, justify=Justification.RIGHT, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false };
+    private Label fingerprint_label = new Label("") { use_markup=true, max_width_chars=35, wrap=true, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false, xalign = 0 };
     private Label trust_label = new Label(null) { visible = true, hexpand = true, xalign = 0 };
 
     public Row row;
