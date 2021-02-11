@@ -164,7 +164,7 @@ public class ItemMetaDataHeader : Box {
             this.reorder_child(unencrypted_image, 3);
             Util.force_error_color(unencrypted_image);
         } else if (conversation.encryption == Encryption.NONE && unencrypted_image != null) {
-            unencrypted_image.destroy();
+            this.remove(unencrypted_image);
             unencrypted_image = null;
         }
     }

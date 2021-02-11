@@ -329,7 +329,7 @@ public class AddAccountDialog : Gtk.Dialog {
     }
 
     private void set_register_form(Jid server, Xep.InBandRegistration.Form form) {
-        form_box.foreach((widget) => { widget.destroy(); });
+        form_box.foreach((widget) => { form_box.remove(widget); });
         register_title.label = _("Register on %s").printf(server.to_string());
 
         if (form.oob != null) {

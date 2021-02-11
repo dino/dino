@@ -119,7 +119,7 @@ public class View : Popover {
             
         }
 
-        if (jid_menu != null) jid_menu.destroy();
+        if (jid_menu != null) stack.remove(jid_menu);
         stack.add_named(outer_box, "menu");
         stack.visible_child_name = "menu";
         jid_menu = outer_box;

@@ -128,7 +128,7 @@ public class Dialog : Gtk.Dialog {
         ok_button.label = _("Remove");
         ok_button.get_style_context().add_class("destructive-action");
         if (msg.run() == Gtk.ResponseType.OK) {
-            account_item.destroy();
+            account_list.remove(account_item);
             if (account_item.account.enabled) account_disabled(account_item.account);
             account_item.account.remove();
             if (account_list.get_row_at_index(0) != null) {
