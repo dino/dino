@@ -339,6 +339,10 @@ public class AddAccountDialog : Gtk.Dialog {
             register_form_continue.visible = true;
             register_form_continue.grab_focus();
         } else if (form.fields.size > 0) {
+            if (form.instructions != null && form.instructions != "") {
+                form_box.add(new Label(form.instructions) { halign=Align.CENTER, xalign=0, margin_top=7,
+                    wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, visible=true });
+            }
             foreach (Xep.DataForms.DataForm.Field field in form.fields) {
                 Widget? field_widget = Util.get_data_form_field_widget(field);
                 if (field.label != null && field.label != "" && field_widget != null) {
