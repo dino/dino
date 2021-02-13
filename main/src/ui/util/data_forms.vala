@@ -11,7 +11,7 @@ public static Widget? get_data_form_field_widget(DataForms.DataForm.Field field)
     switch (field.type_) {
         case DataForms.DataForm.Type.BOOLEAN:
             DataForms.DataForm.BooleanField boolean_field = field as DataForms.DataForm.BooleanField;
-            Switch sw = new Switch() { active=boolean_field.value, valign=Align.CENTER, visible=true };
+            Switch sw = new Switch() { active=boolean_field.value, halign=Align.START, valign=Align.CENTER, visible=true };
             sw.state_set.connect((state) => {
                 boolean_field.value = state;
                 return false;
