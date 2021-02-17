@@ -9,6 +9,8 @@ public class DataForm {
     public StanzaNode stanza_node { get; set; }
     public Gee.List<Field> fields = new ArrayList<Field>();
     public string? form_type = null;
+    public string? instructions = null;
+    public string? title = null;
 
     public StanzaNode get_submit_node() {
         stanza_node.set_attribute("type", "submit");
@@ -214,6 +216,16 @@ public class DataForm {
                 case "text-single":
                     fields.add(new TextSingleField(field_node)); break;
             }
+        }
+
+        StanzaNode? instructions_node = node.get_subnode("instructions", NS_URI);
+        if (instructions_node != null) {
+            instructions = instructions_node.get_string_content();
+        }
+
+        StanzaNode? title_node = node.get_subnode("title", NS_URI);
+        if (title_node != null) {
+            title = title_node.get_string_content();
         }
     }
 
