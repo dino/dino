@@ -69,7 +69,7 @@ public class FileManager : StreamInteractionModule, Object {
 
             yield save_file(file_transfer);
 
-            file_transfer.persist(db);
+            stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
             conversation.last_active = file_transfer.time;
             received_file(file_transfer, conversation);
         } catch (Error e) {
@@ -281,7 +281,7 @@ public class FileManager : StreamInteractionModule, Object {
             }
         }
 
-        file_transfer.persist(db);
+        stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
 
         if (is_sender_trustworthy(file_transfer, conversation)) {
             try {

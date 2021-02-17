@@ -36,6 +36,7 @@ SOURCES
     src/service/entity_capabilities_storage.vala
     src/service/entity_info.vala
     src/service/file_manager.vala
+    src/service/file_transfer_storage.vala
     src/service/jingle_file_transfers.vala
     src/service/message_correction.vala
     src/service/message_processor.vala
