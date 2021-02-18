@@ -7,7 +7,7 @@ extern "C"
 {
 #endif
 
-    gboolean TryCreateShortcut(gchar* aumid);
+    gboolean TryCreateShortcut(const gchar* aumid);
 
 #ifdef __cplusplus
 }

@@ -148,7 +148,7 @@ int32_t TryCreateShortcutInternal(const std::wstring& aumid)
 
 extern "C"
 {
-    gboolean TryCreateShortcut(gchar* aumid)
+    gboolean TryCreateShortcut(const gchar* aumid)
     {
         auto result = char_to_wstr(aumid);
         if (result.empty())

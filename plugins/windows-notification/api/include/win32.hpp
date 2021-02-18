@@ -19,7 +19,7 @@ extern "C"
 {
 #endif
     gboolean SupportsModernNotifications();
-    gboolean SetAppModelID(gchar* aumid);
+    gboolean SetAppModelID(const gchar* aumid);
 #ifdef __cplusplus
 }
 #endif

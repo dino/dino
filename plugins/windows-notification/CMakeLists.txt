@@ -12,20 +12,28 @@ vala_precompile(WINDOWS_NOTIFICATION_VALA_C
 SOURCES
     src/plugin.vala
     src/register_plugin.vala
+    # src/win_notification_provider.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
     ${CMAKE_CURRENT_SOURCE_DIR}/vapi/win32.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/winrt.vapi
     ${CMAKE_CURRENT_SOURCE_DIR}/vapi/shortcutcreator.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/toastnotification.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/enums.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/callbacks.vapi
 PACKAGES
     ${WINDOWS_NOTIFICATION_PACKAGES}
 )
 
 set(WINDOWS_API_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/win32.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/winrt.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/converter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/shortcutcreator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/toastnotification.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/callbacks.cpp
 )
 
 add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${WINDOWS_API_SOURCES})
@@ -33,6 +41,7 @@ add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${WINDOWS
 target_include_directories(windows-notification
     PRIVATE
     ${PROJECT_SOURCE_DIR}/api/include
+    ${PROJECT_SOURCE_DIR}/yolort/include
 )
 
 find_library(shlwapi_LIBRARY shlwapi libshlwapi libshlwapi.a HINTS ${CMAKE_C_IMPLICIT_LINK_DIRECTORIES})
@@ -57,8 +66,7 @@ endif(NOT mincore_LIBRARY)
 
 target_link_libraries(windows-notification libdino ${shlwapi_LIBRARY} ${propsys_LIBRARY} ${ntdll_LIBRARY} ${mincore_LIBRARY} ${WINDOWS_NOTIFICATION_PACKAGES})
 target_compile_features(windows-notification PRIVATE cxx_std_20)
-# target_compile_options(windows-notification PRIVATE -municode -DUNICODE -fcoroutines -iquote ../../include/winrt/yolort_impl)
-target_compile_options(windows-notification PRIVATE -municode -DUNICODE -fcoroutines)
+target_compile_options(windows-notification PRIVATE -municode -DUNICODE -fcoroutines -iquote ${PROJECT_SOURCE_DIR}/yolort/include/winrt/yolort_impl)
 
 set_target_properties(windows-notification PROPERTIES PREFIX "")
 set_target_properties(windows-notification PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)

@@ -47,7 +47,7 @@ extern "C"
         return FALSE;
     }
 
-    gboolean SetAppModelID(gchar* aumid)
+    gboolean SetAppModelID(const gchar* aumid)
     {
         auto result = char_to_wstr(aumid);
         if (result.empty())
