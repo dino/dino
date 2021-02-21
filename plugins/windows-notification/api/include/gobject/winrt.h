@@ -1,5 +1,5 @@
-#ifndef __WINRT_GLIB_H__
-#define __WINRT_GLIB_H__
+#ifndef __WINRT_GLIB_2_H__
+#define __WINRT_GLIB_2_H__
 
 #ifdef __cplusplus
 extern "C"
@@ -12,4 +12,4 @@ gboolean winrt_InitApartment();
 }
 #endif
 
-#endif // __WINRT_GLIB_H__
+#endif // __WINRT_GLIB_2_H__

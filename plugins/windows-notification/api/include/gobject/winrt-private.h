@@ -3,6 +3,6 @@
 
 #include <glib.h>
 #include "winrt.h"
-//#include "gobject/winrt-headers.h"
+#include "gobject/winrt-headers.h"
 
 #endif // __WINRT_GLIB_H_PRIVATE__

@@ -12,6 +12,8 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <tuple>
 
 #include "winrt-toast-notification-private.h"
 #include "winrt-event-token-private.h"
@@ -25,15 +27,28 @@ typedef struct
   winrt::Windows::UI::Notifications::ToastNotification data;
 } _winrtWindowsUINotificationsToastNotificationPrivate;
 
+template<class T>
+class Callback {
+public:
+  T callback;
+  void* context;
+  void(*free)(void*);
+  winrtEventToken* token;
+
+  void Clear()
+  {
+    callback = nullptr;
+    context = nullptr;
+    free = nullptr;
+    g_clear_object(&token);
+  }
+};
+
 typedef struct
 {
-  Notification_Callback_Simple activated;
-  void* activated_context;
-  void(*activated_free)(void*);
+  Callback<NotificationCallbackActivated> activated;
 
-  Notification_Callback_Simple failed;
-  void* failed_context;
-  void(*failed_free)(void*);
+  Callback<NotificationCallbackSimple> failed;
 
   // Notification_Callback_ActivatedWithActionIndex callback;
   // void* context;
@@ -52,17 +67,24 @@ static void winrt_windows_ui_notifications_toast_notification_finalize(GObject* 
 {
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE (self);
 
-  delete priv->notification;
-
-  // TODO: save token to remove the notification
-  if (priv->activated && priv->activated_context && priv->activated_free)
+  if (winrt_event_token_operator_bool(priv->activated.token))
   {
-    priv->activated_free(priv->activated_context);
+    priv->notification->data.Activated(*winrt_event_token_get_internal(priv->activated.token));
+    g_clear_object(&priv->activated.token);
   }
 
-  if (priv->failed && priv->failed_context && priv->failed_free)
+  delete priv->notification;
+
+  if (priv->activated.callback && priv->activated.context && priv->activated.free)
   {
-    priv->failed_free(priv->failed_context);
+    priv->activated.free(priv->activated.context);
+    priv->activated.Clear();
+  }
+
+  if (priv->failed.callback && priv->failed.context && priv->failed.free)
+  {
+    priv->failed.free(priv->failed.context);
+    priv->failed.Clear();
   }
 
   G_OBJECT_CLASS(winrt_windows_ui_notifications_toast_notification_parent_class)->dispose(self);
@@ -188,43 +210,67 @@ char* winrt_windows_ui_notifications_toast_notification_get_Group(winrtWindowsUI
   return  wstr_to_char(std::wstring(winrt_windows_ui_notifications_toast_notification_get_internal(self)->Group()));
 }
 
-winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(winrtWindowsUINotificationsToastNotification* self, Notification_Callback_Simple callback, void* context, void(*free)(void*))
+winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackActivated callback, void* context, void(*free)(void*))
 {
+  g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), NULL);
+  g_return_val_if_fail (callback != nullptr && context != nullptr && free != nullptr, NULL);
+
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self); 
 
-  if (priv->activated && priv->activated_context && priv->activated_free)
-  {
-    // TODO: should also save token to unregister it
-    priv->activated_free(priv->activated_context);
-  }
+  winrt_windows_ui_notifications_toast_notification_RemoveActivatedAction(self, priv->activated.token);
 
-  priv->activated = callback;
-  priv->activated_context = context;
-  priv->activated_free = free;
+  priv->activated.callback = callback;
+  priv->activated.context = context;
+  priv->activated.free = free;
 
   auto token = priv->notification->data.Activated([&](auto sender, winrt::Windows::Foundation::IInspectable inspectable)
   {
+    std::wstring arguments;
+    std::vector<std::tuple<std::wstring, std::wstring>> user_input;
+    {
+      auto args = inspectable.try_as<winrt::Windows::UI::Notifications::IToastActivatedEventArgs>();
+      if (args != nullptr)
+      {
+        arguments = std::wstring(args.Arguments());
+      }
+    }
+
+    {
+      auto args = inspectable.try_as<winrt::Windows::UI::Notifications::IToastActivatedEventArgs2>();
+      if (args != nullptr)
+      {
+        for (const auto& item : args.UserInput())
+        {
+          auto value = winrt::unbox_value_or<winrt::hstring>(item.Value(), winrt::hstring());
+          user_input.emplace_back(std::make_tuple(std::wstring(item.Key()), std::wstring(value)));
+        }
+      }
+    }
+    
     std::cout << "Notification activated!" << std::endl;
-    priv->activated(priv->activated_context);
+    priv->activated.callback(wstr_to_char(arguments.data()), nullptr, user_input.size(), priv->activated.context);
   });
-  return winrt_event_token_new_from_token(&token);
-  return nullptr;
+  priv->activated.token = winrt_event_token_new_from_token(&token);
+  return priv->activated.token;
 }
 
 void winrt_windows_ui_notifications_toast_notification_RemoveActivatedAction(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token)
 {
+  g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self));
+
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
-  if (winrt_event_token_operator_bool(token))
+  if (winrt_event_token_get_value(token) == winrt_event_token_get_value(priv->activated.token))
   {
-    priv->notification->data.Activated(*winrt_event_token_get_internal(token));
-  }
+      if (winrt_event_token_operator_bool(token))
+      {
+        priv->notification->data.Activated(*winrt_event_token_get_internal(token));
+      }
 
-  if (priv->activated && priv->activated_context && priv->activated_free)
-  {
-    priv->activated_free(priv->activated_context);
-    priv->activated = nullptr;
-    priv->activated_context = nullptr;
-    priv->activated_free = nullptr;
+      if (priv->activated.callback && priv->activated.context && priv->activated.free)
+      {
+        priv->activated.free(priv->activated.context);
+        priv->activated.Clear();
+      }
   }
 }

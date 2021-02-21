@@ -68,10 +68,9 @@ gboolean winrt_event_token_operator_bool(winrtEventToken* self)
   return winrt_event_token_get_internal(self)->operator bool();
 }
 
-gint64 winrt_event_token_create_toast_notifier_get_value(winrtEventToken* self)
+gint64 winrt_event_token_get_value(winrtEventToken* self)
 {
   g_return_val_if_fail (WINRT_IS_EVENT_TOKEN (self), 0);
 
-  //return winrt_event_token_get_internal(self)->value;
-  return 0;
+  return winrt_event_token_get_internal(self)->value;
 }

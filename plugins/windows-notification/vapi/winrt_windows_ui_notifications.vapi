@@ -1,10 +1,10 @@
 [CCode (cheader_filename = "gobject/winrt-glib.h")]
 namespace winrt.Windows.UI.Notifications {
-    [CCode (cname = "Notification_Callback_Simple", has_target = true)]
+    [CCode (cname = "NotificationCallbackSimple", has_target = true)]
     public delegate void NotificationCallbackSimple();
 
-    //  [CCode (cname = "Notification_Callback_ActivatedWithActionIndex", has_target = true)]
-    //  public delegate void NotificationCallbackWithActionIndex(int actionId);
+    [CCode (cname = "NotificationCallbackActivated", has_target = true)]
+    public delegate void NotificationCallbackActivated(string? arguments, string[]? userInput);
 
     //  [CCode (cname = "Notification_Callback_Dismissed", has_target = true)]
     //  public delegate void NotificationCallbackDismissed(DismissedReason reason);
@@ -15,7 +15,7 @@ namespace winrt.Windows.UI.Notifications {
         public bool ExpiresOnReboot { get; set; }
         public string Tag { get; set; } // TODO: check if valac is cleaning this string
         public string Group { get; set; }
-        public winrt.EventToken Activated(owned NotificationCallbackSimple handler);
+        public winrt.EventToken Activated(owned NotificationCallbackActivated handler);
         public void RemoveActivatedAction(winrt.EventToken token);
     }
 }

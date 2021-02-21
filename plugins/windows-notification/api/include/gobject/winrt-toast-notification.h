@@ -25,25 +25,25 @@ extern "C"
 {
 #endif
 
-typedef void(*Notification_Callback_Simple)(void* userdata);
-typedef void(*Notification_Callback_ActivatedWithActionIndex)(int action_id, void* userdata);
+typedef void(*NotificationCallbackSimple)(void* userdata);
+typedef void(*NotificationCallbackActivated)(const gchar* arguments, gchar** userInput, gint count, void* userdata);
 //typedef void(*Notification_Callback_Dismissed)(Dismissed_Reason reason, void* userdata);
 
-winrtWindowsUINotificationsToastNotification* winrt_windows_ui_notifications_toast_notification_new(const char* doc);
+winrtWindowsUINotificationsToastNotification* winrt_windows_ui_notifications_toast_notification_new(const gchar* doc);
 
 void winrt_windows_ui_notifications_toast_notification_set_ExpiresOnReboot(winrtWindowsUINotificationsToastNotification* self, gboolean value);
 gboolean winrt_windows_ui_notifications_toast_notification_get_ExpiresOnReboot(winrtWindowsUINotificationsToastNotification* self);
 
-void winrt_windows_ui_notifications_toast_notification_set_Tag(winrtWindowsUINotificationsToastNotification* self, const char* value);
-char* winrt_windows_ui_notifications_toast_notification_get_Tag(winrtWindowsUINotificationsToastNotification* self);
+void winrt_windows_ui_notifications_toast_notification_set_Tag(winrtWindowsUINotificationsToastNotification* self, const gchar* value);
+gchar* winrt_windows_ui_notifications_toast_notification_get_Tag(winrtWindowsUINotificationsToastNotification* self);
 
-void winrt_windows_ui_notifications_toast_notification_set_Group(winrtWindowsUINotificationsToastNotification* self, const char* value);
-char* winrt_windows_ui_notifications_toast_notification_get_Group(winrtWindowsUINotificationsToastNotification* self);
+void winrt_windows_ui_notifications_toast_notification_set_Group(winrtWindowsUINotificationsToastNotification* self, const gchar* value);
+gchar* winrt_windows_ui_notifications_toast_notification_get_Group(winrtWindowsUINotificationsToastNotification* self);
 
-winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(winrtWindowsUINotificationsToastNotification* self, Notification_Callback_Simple callback, void* context, void(*free)(void*));
+winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackActivated callback, void* context, void(*free)(void*));
 void winrt_windows_ui_notifications_toast_notification_RemoveActivatedAction(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token);
 
-winrtEventToken* winrt_windows_ui_notifications_toast_notification_Failed(winrtWindowsUINotificationsToastNotification* self, Notification_Callback_Simple callback, void* context, void(*free)(void*));
+winrtEventToken* winrt_windows_ui_notifications_toast_notification_Failed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackSimple callback, void* context, void(*free)(void*));
 //winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(winrtWindowsUINotificationsToastNotification* self, Notification_Callback_Dismissed callback, void* context, void(*free)(void*));
 
 #ifdef __cplusplus
