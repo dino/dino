@@ -20,20 +20,20 @@ CUSTOM_VAPIS
     ${CMAKE_CURRENT_SOURCE_DIR}/vapi/win32.vapi
     ${CMAKE_CURRENT_SOURCE_DIR}/vapi/winrt.vapi
     ${CMAKE_CURRENT_SOURCE_DIR}/vapi/shortcutcreator.vapi
-    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/toastnotification.vapi
     ${CMAKE_CURRENT_SOURCE_DIR}/vapi/enums.vapi
-    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/callbacks.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/winrt_windows_ui_notifications.vapi
 PACKAGES
     ${WINDOWS_NOTIFICATION_PACKAGES}
 )
 
 set(WINDOWS_API_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt-enums.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt-event-token.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt-toast-notification.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/win32.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/winrt.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/converter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/shortcutcreator.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/toastnotification.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/callbacks.cpp
 )
 
 add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${WINDOWS_API_SOURCES})
@@ -41,6 +41,7 @@ add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${WINDOWS
 target_include_directories(windows-notification
     PRIVATE
     ${PROJECT_SOURCE_DIR}/api/include
+    ${PROJECT_SOURCE_DIR}/api/include/gobject
     ${PROJECT_SOURCE_DIR}/yolort/include
 )
 
@@ -66,7 +67,8 @@ endif(NOT mincore_LIBRARY)
 
 target_link_libraries(windows-notification libdino ${shlwapi_LIBRARY} ${propsys_LIBRARY} ${ntdll_LIBRARY} ${mincore_LIBRARY} ${WINDOWS_NOTIFICATION_PACKAGES})
 target_compile_features(windows-notification PRIVATE cxx_std_20)
-target_compile_options(windows-notification PRIVATE -municode -DUNICODE -fcoroutines -iquote ${PROJECT_SOURCE_DIR}/yolort/include/winrt/yolort_impl)
+target_compile_definitions(windows-notification PRIVATE WINRT_GLIB_H_INSIDE)
+target_compile_options(windows-notification PRIVATE -municode $<$<COMPILE_LANGUAGE:CXX>:-fcoroutines -iquote ${PROJECT_SOURCE_DIR}/yolort/include/winrt/yolort_impl>)
 
 set_target_properties(windows-notification PROPERTIES PREFIX "")
 set_target_properties(windows-notification PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)

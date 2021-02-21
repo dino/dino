@@ -12,26 +12,19 @@ namespace Dino.Plugins.WindowsNotification {
         private Gee.List<int64?> marked_for_removal;
         private Gee.List<int64?> content_notifications;
         private HashMap<Conversation, Gee.List<int64?>> conversation_notifications;
+        private bool supportsModernNotifications;
 
         private class Notification {
             public int64? id;
         }
 
-        private WindowsNotificationProvider(Dino.Application app) {
+        public WindowsNotificationProvider(Dino.Application app, bool supportsModernNotifications) {
+            this.supportsModernNotifications = supportsModernNotifications;
             this.stream_interactor = app.stream_interactor;
             this.app = app;
             this.marked_for_removal = new Gee.ArrayList<int64?>();
             this.content_notifications = new Gee.ArrayList<int64?>();
             this.conversation_notifications = new HashMap<Conversation, Gee.List<int64?>>(Conversation.hash_func, Conversation.equals_func);
-        }
-
-        public static WindowsNotificationProvider? try_create(Dino.Application app) {
-            var valid = Init() == 0;
-            if (valid) {
-                return new WindowsNotificationProvider(app);
-            }
-            warning("Unable to initialize Windows notification provider");
-            return null;
         }
 
         public double get_priority() {

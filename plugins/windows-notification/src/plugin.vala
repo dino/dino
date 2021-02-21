@@ -10,7 +10,7 @@ public class Plugin : RootInterface, Object {
     public int m { get; set; }
 
     public void registered(Dino.Application app) {
-        if (!WinRTApi.Initialize())
+        if (!winrt.InitApartment())
         {
             // log error, return
         }
@@ -25,35 +25,23 @@ public class Plugin : RootInterface, Object {
             // log error, return
         }
 
-        var notification = new ToastNotification.ToastNotification();
-        int test = 2;
-        notification.Activated = new Callbacks.SimpleNotificationCallback()
         {
-            callback = () => {
-                test = 3;
-            }
-        };
+            var m = new winrt.Windows.UI.Notifications.ToastNotification("Test");
+            var token = m.Activated(() => {
+                var i = 2;
+            });
+            m.RemoveActivatedAction(token);
 
-        notification.ActivatedWithIndex = new Callbacks.ActivatedWithActionIndexNotificationCallback()
-        {
-            callback = (index) => {
-                test = index;
-            }
-        };
 
-        notification.Dismissed = new Callbacks.DismissedNotificationCallback()
-        {
-            callback = (reason) => {
-                var m = reason;
-            }
-        };
+            var h = m.ExpiresOnReboot;
+            m.ExpiresOnReboot = false;
 
-        notification.Failed = new Callbacks.SimpleNotificationCallback()
-        {
-            callback = () => {
-                var m = 2;
-            }
-        };
+            var a = m.Tag;
+            m.Tag = "a";
+
+            a = m.Group;
+            m.Group = "a";
+        }
         
         //  var provider = new WindowsNotificationProvider(app, Win32Api.SupportsModernNotifications());
         //  app.stream_interactor.get_module(NotificationEvents.IDENTITY).register_notification_provider(provider);
