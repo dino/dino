@@ -56,8 +56,8 @@ winrt::event_token* winrt_event_token_get_internal(winrtEventToken *self)
 winrtEventToken* winrt_event_token_new_from_token(winrt::event_token* token)
 {
   auto ret = static_cast<winrtEventToken*>(g_object_new (WINRT_TYPE_EVENT_TOKEN, NULL));
-//   winrtEventTokenPrivate* priv = WINRT_EVENT_TOKEN_GET_PRIVATE(ret);
-//   priv->token = new winrt::event_token(*token);
+  winrtEventTokenPrivate* priv = WINRT_EVENT_TOKEN_GET_PRIVATE(ret);
+  priv->token = new winrt::event_token(*token);
   return ret;
 }
 

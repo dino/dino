@@ -252,6 +252,7 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
     priv->activated.callback(wsview_to_char(arguments.data()), nullptr /* user_input */ , 0 /* user_input.size() */, priv->activated.context);
   });
   priv->activated.token = winrt_event_token_new_from_token(&token);
+  g_object_ref(priv->activated.token);
   return priv->activated.token;
 }
 
