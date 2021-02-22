@@ -27,7 +27,7 @@ public class Plugin : RootInterface, Object {
 
         {
             var m = new winrt.Windows.UI.Notifications.ToastNotification("Test");
-            var token = m.Activated(() => {
+            var token = m.Activated((c, d) => {
                 var i = 2;
             });
             m.RemoveActivatedAction(token);

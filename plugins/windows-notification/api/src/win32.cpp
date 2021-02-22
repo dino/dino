@@ -6,22 +6,22 @@
 
 std::optional<std::wstring> GetCurrentModulePath()
 {
-    std::array<wchar_t, MAX_PATH> exePath;
+    std::wstring exePath(MAX_PATH, 0);
     auto charWritten = GetModuleFileName(nullptr, exePath.data(), exePath.size());
     if (charWritten > 0)
     {
-        return std::wstring(exePath.data());
+        return exePath;
     }
     return std::nullopt;
 }
 
 std::optional<std::wstring> GetShortcutPath()
 {
-    std::array<wchar_t, MAX_PATH> shortcutPath;
+    std::wstring shortcutPath(MAX_PATH, 0);
     auto charWritten = GetEnvironmentVariable(L"APPDATA", shortcutPath.data(), shortcutPath.size());
     if (charWritten > 0)
     {
-        return std::wstring(shortcutPath.data());
+        return shortcutPath;
     }
     return std::nullopt;
 }
@@ -49,7 +49,7 @@ extern "C"
 
     gboolean SetAppModelID(const gchar* aumid)
     {
-        auto result = char_to_wstr(aumid);
+        auto result = sview_to_wstr(aumid);
         if (result.empty())
         {
             return FALSE;

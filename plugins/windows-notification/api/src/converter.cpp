@@ -3,7 +3,7 @@
 #include "converter.hpp"
 
 // Convert a wide Unicode string to an UTF8 string
-std::string wstr_to_str(const std::wstring& wstr)
+std::string wstr_to_str(const std::wstring_view wstr)
 {
     if(wstr.empty())
     {
@@ -15,7 +15,7 @@ std::string wstr_to_str(const std::wstring& wstr)
     return strTo;
 }
 
-char* wstr_to_char(const std::wstring& wstr)
+char* wsview_to_char(const std::wstring_view wstr)
 {
     if(wstr.empty())
     {
@@ -28,7 +28,7 @@ char* wstr_to_char(const std::wstring& wstr)
 }
 
 // Convert an UTF8 string to a wide Unicode String
-std::wstring std_to_wstr(const std::string &str)
+std::wstring sview_to_wstr(const std::string_view str)
 {
     if(str.empty())
     {
@@ -37,17 +37,5 @@ std::wstring std_to_wstr(const std::string &str)
     int final_size = MultiByteToWideChar(CP_UTF8, 0, str.data(), (int)str.size(), nullptr, 0);
     std::wstring wstrTo(final_size, 0);
     MultiByteToWideChar(CP_UTF8, 0, str.data(), (int)str.size(), wstrTo.data(), final_size);
-    return wstrTo;
-}
-
-std::wstring char_to_wstr(const char* str) // TODO: how to be safe from non-null terminated strings?
-{
-    if(str == nullptr)
-    {
-        return std::wstring();
-    }
-    int final_size = MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), nullptr, 0);
-    std::wstring wstrTo(final_size, 0);
-    MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), wstrTo.data(), final_size);
     return wstrTo;
 }

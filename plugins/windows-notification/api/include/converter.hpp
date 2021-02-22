@@ -1,7 +1,7 @@
 #pragma once
 
-#include <glib.h>
 #include <string>
+#include <string_view>
 
-std::wstring char_to_wstr(const gchar* str);
-char* wstr_to_char(const std::wstring& wstr);
+std::wstring sview_to_wstr(const std::string_view str);
+char* wsview_to_char(const std::wstring_view wstr);

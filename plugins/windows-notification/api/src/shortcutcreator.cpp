@@ -150,7 +150,7 @@ extern "C"
 {
     gboolean TryCreateShortcut(const gchar* aumid)
     {
-        auto result = char_to_wstr(aumid);
+        auto result = sview_to_wstr(aumid);
         if (result.empty())
         {
             return FALSE;

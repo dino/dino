@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <tuple>
 
@@ -147,7 +148,7 @@ winrtWindowsUINotificationsToastNotification* winrt_windows_ui_notifications_toa
 
   auto ret = static_cast<winrtWindowsUINotificationsToastNotification*>(g_object_new (WINRT_TYPE_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION, NULL));
   winrt::Windows::Data::Xml::Dom::XmlDocument xmlDoc;
-  xmlDoc.LoadXml(char_to_wstr(doc));
+  xmlDoc.LoadXml(sview_to_wstr(doc));
   winrt_windows_ui_notifications_toast_notification_set_internal(ret, winrt::Windows::UI::Notifications::ToastNotification{ xmlDoc });
   return ret;
 }
@@ -170,7 +171,7 @@ void winrt_windows_ui_notifications_toast_notification_set_Tag(winrtWindowsUINot
 {
   g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self));
 
-  winrt_windows_ui_notifications_toast_notification_get_internal(self)->Tag(char_to_wstr(value));
+  winrt_windows_ui_notifications_toast_notification_get_internal(self)->Tag(sview_to_wstr(value));
 }
 
 /**
@@ -185,14 +186,14 @@ char* winrt_windows_ui_notifications_toast_notification_get_Tag(winrtWindowsUINo
 {
   g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), FALSE);
 
-  return  wstr_to_char(std::wstring(winrt_windows_ui_notifications_toast_notification_get_internal(self)->Tag()));
+  return wsview_to_char(winrt_windows_ui_notifications_toast_notification_get_internal(self)->Tag());
 }
 
 void winrt_windows_ui_notifications_toast_notification_set_Group(winrtWindowsUINotificationsToastNotification* self, const char* value)
 {
   g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self));
 
-  winrt_windows_ui_notifications_toast_notification_get_internal(self)->Group(char_to_wstr(value));
+  winrt_windows_ui_notifications_toast_notification_get_internal(self)->Group(sview_to_wstr(value));
 }
 
 /**
@@ -207,7 +208,7 @@ char* winrt_windows_ui_notifications_toast_notification_get_Group(winrtWindowsUI
 {
   g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), FALSE);
 
-  return  wstr_to_char(std::wstring(winrt_windows_ui_notifications_toast_notification_get_internal(self)->Group()));
+  return  wsview_to_char(winrt_windows_ui_notifications_toast_notification_get_internal(self)->Group());
 }
 
 winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackActivated callback, void* context, void(*free)(void*))
@@ -248,7 +249,7 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
     }
     
     std::cout << "Notification activated!" << std::endl;
-    priv->activated.callback(wstr_to_char(arguments.data()), nullptr, user_input.size(), priv->activated.context);
+    priv->activated.callback(wsview_to_char(arguments.data()), nullptr /* user_input */ , 0 /* user_input.size() */, priv->activated.context);
   });
   priv->activated.token = winrt_event_token_new_from_token(&token);
   return priv->activated.token;
