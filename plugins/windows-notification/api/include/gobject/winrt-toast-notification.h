@@ -27,7 +27,7 @@ extern "C"
 
 typedef void(*NotificationCallbackSimple)(void* userdata);
 typedef void(*NotificationCallbackActivated)(const gchar* arguments, gchar** userInput, gint count, void* userdata);
-//typedef void(*Notification_Callback_Dismissed)(Dismissed_Reason reason, void* userdata);
+//typedef void(*NotificationCallbackDismissed)(WinrtDismissedReason reason, void* userdata);
 
 winrtWindowsUINotificationsToastNotification* winrt_windows_ui_notifications_toast_notification_new(const gchar* doc);
 
@@ -44,7 +44,7 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
 void winrt_windows_ui_notifications_toast_notification_RemoveActivatedAction(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token);
 
 winrtEventToken* winrt_windows_ui_notifications_toast_notification_Failed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackSimple callback, void* context, void(*free)(void*));
-//winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(winrtWindowsUINotificationsToastNotification* self, Notification_Callback_Dismissed callback, void* context, void(*free)(void*));
+//winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackDismissed callback, void* context, void(*free)(void*));
 
 #ifdef __cplusplus
 }

@@ -11,6 +11,7 @@
 #include "winrt.h"
 #include "winrt-toast-notification.h"
 #include "winrt-event-token.h"
+#include "winrt-toast-notifier.h"
 
 #undef WINRT_GLIB_H_INSIDE
 

@@ -1,15 +1,3 @@
-/**
- * SECTION:winrt-toast-notification-manager
- * @Title: winrtWindowsUINotificationsToastNotification
- * @short_description: A read-only database
- *
- * #winrtWindowsUINotificationsToastNotification is a class that allows read-only access to a
- * Xapian database at a given path.
- *
- * Typically, you will use #winrtWindowsUINotificationsToastNotification to open a database for
- * querying, by using the #XapianEnquire class.
- */
-
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -50,10 +38,6 @@ typedef struct
   Callback<NotificationCallbackActivated> activated;
 
   Callback<NotificationCallbackSimple> failed;
-
-  // Notification_Callback_ActivatedWithActionIndex callback;
-  // void* context;
-  // void(*free)(void*);
 
   // Notification_Callback_Dismissed callback;
   // void* context;

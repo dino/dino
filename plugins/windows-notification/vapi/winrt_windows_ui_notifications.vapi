@@ -18,4 +18,11 @@ namespace winrt.Windows.UI.Notifications {
         public winrt.EventToken Activated(owned NotificationCallbackActivated handler);
         public void RemoveActivatedAction(winrt.EventToken token);
     }
+
+    [CCode (type_id = "winrt_windows_ui_notifications_toast_notifier_get_type ()")]
+	public class ToastNotifier : GLib.Object {
+		public ToastNotifier(string aumid);
+        public void Show(ToastNotification notification);
+        public void Hide(ToastNotification notification);
+    }
 }

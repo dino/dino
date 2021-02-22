@@ -26,12 +26,12 @@ public class Plugin : RootInterface, Object {
         }
 
         {
+            var notifier = new winrt.Windows.UI.Notifications.ToastNotifier(AUMID);
             var m = new winrt.Windows.UI.Notifications.ToastNotification("Test");
             var token = m.Activated((c, d) => {
                 var i = 2;
             });
             m.RemoveActivatedAction(token);
-
 
             var h = m.ExpiresOnReboot;
             m.ExpiresOnReboot = false;
@@ -41,6 +41,8 @@ public class Plugin : RootInterface, Object {
 
             a = m.Group;
             m.Group = "a";
+
+            notifier.Show(m);
         }
         
         //  var provider = new WindowsNotificationProvider(app, Win32Api.SupportsModernNotifications());
