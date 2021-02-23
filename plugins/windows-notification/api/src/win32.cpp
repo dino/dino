@@ -10,6 +10,7 @@ std::optional<std::wstring> GetCurrentModulePath()
     auto charWritten = GetModuleFileName(nullptr, exePath.data(), exePath.size());
     if (charWritten > 0)
     {
+        exePath.resize(charWritten);
         return exePath;
     }
     return std::nullopt;
@@ -21,6 +22,7 @@ std::optional<std::wstring> GetShortcutPath()
     auto charWritten = GetEnvironmentVariable(L"APPDATA", shortcutPath.data(), shortcutPath.size());
     if (charWritten > 0)
     {
+        shortcutPath.resize(charWritten);
         return shortcutPath;
     }
     return std::nullopt;
