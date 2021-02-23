@@ -16,7 +16,7 @@ namespace winrt.Windows.UI.Notifications {
         public string Tag { get; set; } // TODO: check if valac is cleaning this string
         public string Group { get; set; }
         public winrt.EventToken Activated(owned NotificationCallbackActivated handler);
-        public void RemoveActivatedAction(winrt.EventToken token);
+        public void RemoveActivated(winrt.EventToken token);
     }
 
     [CCode (type_id = "winrt_windows_ui_notifications_toast_notifier_get_type ()")]

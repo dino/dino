@@ -31,7 +31,7 @@ public class Plugin : RootInterface, Object {
             var token = m.Activated((c, d) => {
                 var i = 2;
             });
-            m.RemoveActivatedAction(token);
+            m.RemoveActivated(token);
 
             var h = m.ExpiresOnReboot;
             m.ExpiresOnReboot = false;

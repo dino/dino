@@ -41,7 +41,7 @@ void winrt_windows_ui_notifications_toast_notification_set_Group(winrtWindowsUIN
 gchar* winrt_windows_ui_notifications_toast_notification_get_Group(winrtWindowsUINotificationsToastNotification* self);
 
 winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackActivated callback, void* context, void(*free)(void*));
-void winrt_windows_ui_notifications_toast_notification_RemoveActivatedAction(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token);
+void winrt_windows_ui_notifications_toast_notification_RemoveActivated(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token);
 
 winrtEventToken* winrt_windows_ui_notifications_toast_notification_Failed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackSimple callback, void* context, void(*free)(void*));
 //winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackDismissed callback, void* context, void(*free)(void*));
