@@ -10,8 +10,8 @@ find_packages(WINDOWS_NOTIFICATION_PACKAGES REQUIRED
 
 vala_precompile(WINDOWS_NOTIFICATION_VALA_C
 SOURCES
-    src/plugin.vala
-    src/register_plugin.vala
+    src/windows_notifications_plugin.vala
+    src/windows_notifications_register_plugin.vala
     # src/win_notification_provider.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
