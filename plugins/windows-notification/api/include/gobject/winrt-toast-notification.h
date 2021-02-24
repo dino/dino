@@ -25,9 +25,9 @@ extern "C"
 {
 #endif
 
-typedef void(*NotificationCallbackSimple)(void* userdata);
+typedef void(*NotificationCallbackFailed)(void* userdata);
 typedef void(*NotificationCallbackActivated)(const gchar* arguments, gchar** userInput, gint count, void* userdata);
-//typedef void(*NotificationCallbackDismissed)(WinrtDismissedReason reason, void* userdata);
+typedef void(*NotificationCallbackDismissed)(winrt_Windows_UI_Notifications_Toast_Dismissal_Reason reason, void* userdata);
 
 winrtWindowsUINotificationsToastNotification* winrt_windows_ui_notifications_toast_notification_new(const gchar* doc);
 
@@ -43,8 +43,11 @@ gchar* winrt_windows_ui_notifications_toast_notification_get_Group(winrtWindowsU
 winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackActivated callback, void* context, void(*free)(void*));
 void winrt_windows_ui_notifications_toast_notification_RemoveActivated(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token);
 
-winrtEventToken* winrt_windows_ui_notifications_toast_notification_Failed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackSimple callback, void* context, void(*free)(void*));
-//winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackDismissed callback, void* context, void(*free)(void*));
+winrtEventToken* winrt_windows_ui_notifications_toast_notification_Failed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackFailed callback, void* context, void(*free)(void*));
+void winrt_windows_ui_notifications_toast_notification_RemoveFailed(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token);
+
+winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackDismissed callback, void* context, void(*free)(void*));
+void winrt_windows_ui_notifications_toast_notification_RemoveDismissed(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token);
 
 #ifdef __cplusplus
 }

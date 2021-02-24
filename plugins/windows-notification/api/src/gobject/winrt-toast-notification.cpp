@@ -60,8 +60,8 @@ struct _winrtWindowsUINotificationsToastNotificationPrivate
   winrt::Windows::UI::Notifications::ToastNotification data;
 
   std::list<std::shared_ptr<Callback<NotificationCallbackActivated>>> activated;
-  std::list<std::shared_ptr<Callback<NotificationCallbackSimple>>> failed;
-  std::list<std::shared_ptr<Callback<NotificationCallbackSimple>>> dismissed;
+  std::list<std::shared_ptr<Callback<NotificationCallbackFailed>>> failed;
+  std::list<std::shared_ptr<Callback<NotificationCallbackDismissed>>> dismissed;
 };
 
 typedef struct
@@ -251,7 +251,6 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
       }
     }
     
-    std::cout << "Notification activated!" << std::endl;
     callback(wsview_to_char(arguments), nullptr /* user_input */ , 0 /* user_input.size() */, context);
   });
   auto new_token = winrt_event_token_new_from_token(&token);
@@ -261,6 +260,46 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
   return new_token;
 }
 
+winrtEventToken* winrt_windows_ui_notifications_toast_notification_Failed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackFailed callback, void* context, void(*free)(void*))
+{
+  g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), NULL);
+  g_return_val_if_fail (callback != nullptr && context != nullptr && free != nullptr, NULL);
+
+  winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
+
+  auto token = priv->notification->data.Failed([=](auto sender, auto toastFailedEventArgs)
+  {
+    callback(context);
+  });
+
+  auto new_token = winrt_event_token_new_from_token(&token);
+  g_object_ref(new_token);
+
+  priv->notification->failed.push_back(std::make_shared<Callback<NotificationCallbackFailed>>(callback, context, free, new_token));
+  return new_token;
+}
+
+winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(winrtWindowsUINotificationsToastNotification* self, NotificationCallbackDismissed callback, void* context, void(*free)(void*))
+{
+  g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), NULL);
+  g_return_val_if_fail (callback != nullptr && context != nullptr && free != nullptr, NULL);
+
+  winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
+
+  auto token = priv->notification->data.Dismissed([=](auto sender, winrt::Windows::UI::Notifications::ToastDismissedEventArgs dismissed)
+  {
+    auto reason = dismissed.Reason();
+    callback(static_cast<winrt_Windows_UI_Notifications_Toast_Dismissal_Reason>(reason), context);
+  });
+
+  auto new_token = winrt_event_token_new_from_token(&token);
+  g_object_ref(new_token);
+
+  priv->notification->dismissed.push_back(std::make_shared<Callback<NotificationCallbackDismissed>>(callback, context, free, new_token));
+  return new_token;
+}
+
+// TODO: refactor `Remove{Activated,Failed,Dismissed}` methods into one to deduplicate code
 void winrt_windows_ui_notifications_toast_notification_RemoveActivated(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token)
 {
   g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self));
@@ -273,6 +312,46 @@ void winrt_windows_ui_notifications_toast_notification_RemoveActivated(winrtWind
         if (winrt_event_token_operator_bool(callback->token))
         {
           priv->notification->data.Activated(*winrt_event_token_get_internal(callback->token));
+        }
+        g_object_unref(callback->token);
+        return true;
+      }
+      return false;
+    });
+}
+
+void winrt_windows_ui_notifications_toast_notification_RemoveFailed(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token)
+{
+  g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self));
+
+  winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
+
+  priv->notification->failed.remove_if([&](const auto& callback) {
+      if (winrt_event_token_get_value(token) == winrt_event_token_get_value(callback->token))
+      { 
+        if (winrt_event_token_operator_bool(callback->token))
+        {
+          priv->notification->data.Failed(*winrt_event_token_get_internal(callback->token));
+        }
+        g_object_unref(callback->token);
+        return true;
+      }
+      return false;
+    });
+}
+
+void winrt_windows_ui_notifications_toast_notification_RemoveDismissed(winrtWindowsUINotificationsToastNotification* self, winrtEventToken* token)
+{
+  g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self));
+
+  winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
+
+  priv->notification->dismissed.remove_if([&](const auto& callback) {
+      if (winrt_event_token_get_value(token) == winrt_event_token_get_value(callback->token))
+      { 
+        if (winrt_event_token_operator_bool(callback->token))
+        {
+          priv->notification->data.Dismissed(*winrt_event_token_get_internal(callback->token));
         }
         g_object_unref(callback->token);
         return true;

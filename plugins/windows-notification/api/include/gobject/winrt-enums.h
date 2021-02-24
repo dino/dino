@@ -5,25 +5,25 @@
 
 G_BEGIN_DECLS
 
-#define WINRT_TYPE_DISMISSED_REASON (winrt_dismissed_reason_get_type ())
+#define WINRT_TYPE_DISMISSED_REASON (winrt_windows_ui_notifications_toast_dismissal_reason_get_type ())
 
 /**
  * WinrtDismissedReason:
- * @WINRT_DISMISSED_REASON_ACTIVATED: Notification was activated, clicked or through
+ * @WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON_ACTIVATED: Notification was activated, clicked or through
  * a button
- * @WINRT_DISMISSED_REASON_APPLICATION_HIDDEN: Application was hidden
- * @WINRT_DISMISSED_REASON_TIMED_OUT: Notification timed out
+ * @WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON_APPLICATION_HIDDEN: Application was hidden
+ * @WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON_TIMED_OUT: Notification timed out
  *
  * Reasons for a notification dismissal
  *
  */
 typedef enum {
-  WINRT_DISMISSED_REASON_ACTIVATED,
-  WINRT_DISMISSED_REASON_APPLICATION_HIDDEN,
-  WINRT_DISMISSED_REASON_TIMED_OUT,
-} WinrtDismissedReason;
+  WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON_ACTIVATED,
+  WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON_APPLICATION_HIDDEN,
+  WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON_TIMED_OUT,
+} winrt_Windows_UI_Notifications_Toast_Dismissal_Reason;
 
-GType winrt_dismissed_reason_get_type (void);
+GType winrt_windows_ui_notifications_toast_dismissal_reason_get_type (void);
 
 G_END_DECLS
 
