@@ -95,6 +95,16 @@ static void winrt_windows_ui_notifications_toast_notification_finalize(GObject* 
     g_object_unref(token);
   }
 
+  for (const auto& item : priv->notification->dismissed)
+  {
+    auto token = item->token;
+    if (winrt_event_token_operator_bool(token))
+    {
+      priv->notification->data.Dismissed(*winrt_event_token_get_internal(token));
+    }
+    g_object_unref(token);
+  }
+
   delete priv->notification;
 
   G_OBJECT_CLASS(winrt_windows_ui_notifications_toast_notification_parent_class)->dispose(self);
