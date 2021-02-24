@@ -27,7 +27,7 @@ extern "C"
 
 typedef void(*NotificationCallbackFailed)(void* userdata);
 typedef void(*NotificationCallbackActivated)(const gchar* arguments, gchar** userInput, gint count, void* userdata);
-typedef void(*NotificationCallbackDismissed)(winrt_Windows_UI_Notifications_Toast_Dismissal_Reason reason, void* userdata);
+typedef void(*NotificationCallbackDismissed)(winrtWindowsUINotificationsToastDismissalReason reason, void* userdata);
 
 winrtWindowsUINotificationsToastNotification* winrt_windows_ui_notifications_toast_notification_new(const gchar* doc);
 

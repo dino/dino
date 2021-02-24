@@ -299,7 +299,7 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(win
   auto token = priv->notification->data.Dismissed([=](auto sender, winrt::Windows::UI::Notifications::ToastDismissedEventArgs dismissed)
   {
     auto reason = dismissed.Reason();
-    callback(static_cast<winrt_Windows_UI_Notifications_Toast_Dismissal_Reason>(reason), context);
+    callback(static_cast<winrtWindowsUINotificationsToastDismissalReason>(reason), context);
   });
 
   auto new_token = winrt_event_token_new_from_token(&token);

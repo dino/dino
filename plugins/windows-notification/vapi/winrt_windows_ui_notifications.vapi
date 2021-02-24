@@ -3,7 +3,7 @@ using winrt;
 [CCode (cheader_filename = "gobject/winrt-glib.h")]
 namespace winrt.Windows.UI.Notifications {
 
-    [CCode (cname = "winrt_Windows_UI_Notifications_Toast_Dismissal_Reason", cprefix = "WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON_", type_id = "winrt_windows_ui_notifications_toast_dismissal_reason_get_type ()")]
+    [CCode (type_id = "winrt_windows_ui_notifications_toast_dismissal_reason_get_type ()")]
     public enum ToastDismissalReason
     {
         Activated,
@@ -11,7 +11,7 @@ namespace winrt.Windows.UI.Notifications {
         TimedOut
     }
 
-    [CCode (cname = "winrt_Windows_UI_Notifications_Toast_Template_Type", cprefix = "WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_TEMPLATE_TYPE_", type_id = "winrt_windows_ui_notifications_toast_template_type_get_type ()")]
+    [CCode (type_id = "winrt_windows_ui_notifications_toast_template_type_get_type ()")]
     public enum ToastTemplateType
     {
         ToastImageAndText01,
