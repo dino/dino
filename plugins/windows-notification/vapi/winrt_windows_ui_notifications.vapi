@@ -11,6 +11,19 @@ namespace winrt.Windows.UI.Notifications {
         TimedOut
     }
 
+    [CCode (cname = "winrt_Windows_UI_Notifications_Toast_Template_Type", cprefix = "WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_TEMPLATE_TYPE_", type_id = "winrt_windows_ui_notifications_toast_template_type_get_type ()")]
+    public enum ToastTemplateType
+    {
+        ToastImageAndText01,
+        ToastImageAndText02,
+        ToastImageAndText03,
+        ToastImageAndText04,
+        ToastText01,
+        ToastText02,
+        ToastText03,
+        ToastText04
+    }
+
     [CCode (cname = "NotificationCallbackFailed", has_target = true)]
     public delegate void NotificationCallbackFailed();
 
