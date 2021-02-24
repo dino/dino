@@ -83,9 +83,9 @@ void winrt_windows_ui_notifications_toast_notifier_set_internal(winrtWindowsUINo
  */
 winrtWindowsUINotificationsToastNotifier* winrt_windows_ui_notifications_toast_notifier_new(const gchar* aumid)
 {
-  g_return_val_if_fail (aumid == NULL, NULL);
+  g_return_val_if_fail (aumid != NULL, NULL);
 
-  auto ret = static_cast<winrtWindowsUINotificationsToastNotifier*>(g_object_new (WINRT_TYPE_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION, NULL));
+  auto ret = static_cast<winrtWindowsUINotificationsToastNotifier*>(g_object_new (WINRT_TYPE_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFIER, NULL));
   auto notifier = winrt::Windows::UI::Notifications::ToastNotificationManager::CreateToastNotifier(sview_to_wstr(aumid));
   winrt_windows_ui_notifications_toast_notifier_set_internal(ret, notifier);
   return ret;

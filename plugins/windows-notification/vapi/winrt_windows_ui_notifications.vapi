@@ -1,3 +1,5 @@
+using winrt;
+
 [CCode (cheader_filename = "gobject/winrt-glib.h")]
 namespace winrt.Windows.UI.Notifications {
     [CCode (cname = "NotificationCallbackSimple", has_target = true)]
@@ -15,8 +17,8 @@ namespace winrt.Windows.UI.Notifications {
         public bool ExpiresOnReboot { get; set; }
         public string Tag { get; set; } // TODO: check if valac is cleaning this string
         public string Group { get; set; }
-        public winrt.EventToken Activated(owned NotificationCallbackActivated handler);
-        public void RemoveActivated(winrt.EventToken token);
+        public EventToken Activated(owned NotificationCallbackActivated handler);
+        public void RemoveActivated(EventToken token);
     }
 
     [CCode (type_id = "winrt_windows_ui_notifications_toast_notifier_get_type ()")]

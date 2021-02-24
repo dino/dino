@@ -2,7 +2,9 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <list>
 #include <tuple>
+#include <memory>
 
 #include "winrt-toast-notification-private.h"
 #include "winrt-event-token-private.h"
@@ -11,23 +13,19 @@
 #define WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(obj) \
   ((winrtWindowsUINotificationsToastNotificationPrivate*) winrt_windows_ui_notifications_toast_notification_get_instance_private ((winrtWindowsUINotificationsToastNotification*) (obj)))
 
-typedef struct
-{
-  winrt::Windows::UI::Notifications::ToastNotification data;
-} _winrtWindowsUINotificationsToastNotificationPrivate;
-
 template<class T>
-class Callback {
-public:
+struct Callback {
   T callback;
   void* context;
   void(*free)(void*);
+  winrtEventToken* token;
 
-  Callback(T callback, void* context, void(*free)(void*))
+  Callback(T callback, void* context, void(*free)(void*), winrtEventToken* token)
   {
     this->callback = callback;
     this->free = free;
     this->context = context;
+    this->token = token;
   }
 
   ~Callback()
@@ -42,30 +40,32 @@ public:
       this->free(this->context);
     }
 
-    callback = nullptr;
-    context = nullptr;
-    free = nullptr;
+    this->callback = nullptr;
+    this->context = nullptr;
+    this->free = nullptr;
+    this->token = nullptr;
   }
 
   // delete copy
   Callback(const Callback&) = delete;
   Callback& operator=(const Callback&) = delete;
 
-  // allow move
-  Callback(Callback&&) = default;
-  Callback& operator=(Callback&&) = default;
+  // delete move
+  Callback(Callback&&) = delete;
+  Callback& operator=(Callback&&) = delete;
+};
+
+struct _winrtWindowsUINotificationsToastNotificationPrivate
+{ 
+  winrt::Windows::UI::Notifications::ToastNotification data;
+
+  std::list<std::shared_ptr<Callback<NotificationCallbackActivated>>> activated;
+  std::list<std::shared_ptr<Callback<NotificationCallbackSimple>>> failed;
+  std::list<std::shared_ptr<Callback<NotificationCallbackSimple>>> dismissed;
 };
 
 typedef struct
 {
-  std::unordered_map<winrtEventToken*, Callback<NotificationCallbackActivated>> activated;
-
-  std::unordered_map<winrtEventToken*, Callback<NotificationCallbackSimple>> failed;
-
-  // Notification_Callback_Dismissed callback;
-  // void* context;
-  // void(*free)(void*);
-
   _winrtWindowsUINotificationsToastNotificationPrivate* notification;
 } winrtWindowsUINotificationsToastNotificationPrivate;
 
@@ -75,27 +75,25 @@ static void winrt_windows_ui_notifications_toast_notification_finalize(GObject* 
 {
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE (self);
 
-  for (const auto& item : priv->activated)
+  for (const auto& item : priv->notification->activated)
   {
-    auto token = std::get<0>(item);
+    auto token = item->token;
     if (winrt_event_token_operator_bool(token))
     {
       priv->notification->data.Activated(*winrt_event_token_get_internal(token));
     }
     g_object_unref(token);
   }
-  priv->activated.clear();
 
-  for (const auto& item : priv->failed)
+  for (const auto& item : priv->notification->failed)
   {
-    auto token = std::get<0>(item);
+    auto token = item->token;
     if (winrt_event_token_operator_bool(token))
     {
       priv->notification->data.Failed(*winrt_event_token_get_internal(token));
     }
     g_object_unref(token);
   }
-  priv->failed.clear();
 
   delete priv->notification;
 
@@ -155,7 +153,7 @@ void winrt_windows_ui_notifications_toast_notification_set_internal(winrtWindows
  */
 winrtWindowsUINotificationsToastNotification* winrt_windows_ui_notifications_toast_notification_new(const char* doc)
 {
-  g_return_val_if_fail (doc == NULL, NULL);
+  g_return_val_if_fail (doc != NULL, NULL);
 
   auto ret = static_cast<winrtWindowsUINotificationsToastNotification*>(g_object_new (WINRT_TYPE_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION, NULL));
   winrt::Windows::Data::Xml::Dom::XmlDocument xmlDoc;
@@ -229,7 +227,7 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
 
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
-  auto token = priv->notification->data.Activated([&](auto sender, winrt::Windows::Foundation::IInspectable inspectable)
+  auto token = priv->notification->data.Activated([=](auto sender, winrt::Windows::Foundation::IInspectable inspectable)
   {
     std::wstring arguments;
     std::vector<std::tuple<std::wstring, std::wstring>> user_input;
@@ -254,12 +252,12 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
     }
     
     std::cout << "Notification activated!" << std::endl;
-    callback(wsview_to_char(arguments.data()), nullptr /* user_input */ , 0 /* user_input.size() */, context);
+    callback(wsview_to_char(arguments), nullptr /* user_input */ , 0 /* user_input.size() */, context);
   });
   auto new_token = winrt_event_token_new_from_token(&token);
   g_object_ref(new_token);
 
-  priv->activated.emplace(new_token, Callback<NotificationCallbackActivated>(callback, context, free));
+  priv->notification->activated.push_back(std::make_shared<Callback<NotificationCallbackActivated>>(callback, context, free, new_token));
   return new_token;
 }
 
@@ -269,15 +267,16 @@ void winrt_windows_ui_notifications_toast_notification_RemoveActivated(winrtWind
 
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
-  auto item = priv->activated.find(token);
-  if (item != priv->activated.end())
-  {
-      auto local_token = std::get<0>(*item);
-      if (winrt_event_token_operator_bool(local_token))
-      {
-        priv->notification->data.Activated(*winrt_event_token_get_internal(local_token));
+  priv->notification->activated.remove_if([&](const auto& callback) {
+      if (winrt_event_token_get_value(token) == winrt_event_token_get_value(callback->token))
+      { 
+        if (winrt_event_token_operator_bool(callback->token))
+        {
+          priv->notification->data.Activated(*winrt_event_token_get_internal(callback->token));
+        }
+        g_object_unref(callback->token);
+        return true;
       }
-
-      priv->activated.erase(item);
-  }
+      return false;
+    });
 }

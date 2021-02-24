@@ -131,7 +131,7 @@ int32_t TryCreateShortcutInternal(const std::wstring& aumid)
 
     if (shortcutPath && exePath)
     {
-        auto path = shortcutPath.value() + LR"(\Microsoft\Windows\Start Menu\Programs\Testando.lnk)";
+        auto path = shortcutPath.value() + LR"(\Microsoft\Windows\Start Menu\Programs\Dino.lnk)";
         if (!std::filesystem::exists(path))
         {
             return InstallShortcut(exePath.value(), aumid, path);
