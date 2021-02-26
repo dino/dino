@@ -1,7 +1,7 @@
-using Gee;
 using Dino.Entities;
 using Dino.Plugins.WindowsNotification.Vapi;
 using winrt.Windows.UI.Notifications;
+using Xmpp;
 
 namespace Dino.Plugins.WindowsNotification {
 public class Plugin : RootInterface, Object {
@@ -9,6 +9,69 @@ public class Plugin : RootInterface, Object {
     private static string AUMID = "org.dino.Dino";
     private ToastNotifier notifier;
     private ToastNotification notification; // Notifications remove their actions when they get out of scope
+
+    private delegate void NodeFunction(StanzaNode node);
+
+    private StanzaNode Build(string xml) {
+        var reader = new Xmpp.StanzaReader.for_string(xml);
+
+        StanzaNode root_node = null;
+        var loop = new MainLoop();
+        reader.read_node
+            .begin((obj, res) => {
+              root_node = reader.read_node.end(res);
+              loop.quit();
+        });
+        loop.run();
+
+        ExecuteOnAllSubNodes(root_node, (node) => {
+            node.ns_uri = "";
+            foreach (var attr in node.attributes){
+                attr.ns_uri = "";
+            }
+        });
+
+        return root_node;
+    }
+
+    private Gee.ArrayList<StanzaNode> FindRecursive(StanzaNode node, string tag_name, Gee.List<StanzaAttribute>? attributes) {
+        var ret = new Gee.ArrayList<StanzaNode>();
+        FindRecursiveInternal(node, tag_name, attributes, ret);
+        return ret;
+    }
+
+    private void FindRecursiveInternal(StanzaNode root_node, string tag_name, Gee.List<StanzaAttribute>? attributes, Gee.List<StanzaNode> list) {
+        if (root_node.name == tag_name) {
+            if (attributes != null) {
+                foreach (var attr in attributes) {
+                    var node_attr = root_node.get_attribute_raw(attr.name, attr.ns_uri);
+                    if (node_attr != null && node_attr.equals(attr)) {
+                        list.add(root_node);
+                        break;
+                    }
+                }
+            }
+            else {
+                list.add(root_node);
+            }
+        }
+        foreach (var node in root_node.get_all_subnodes()) {
+            FindRecursiveInternal(node, tag_name, attributes, list);
+        }
+    }
+
+    private string ToXml(StanzaNode node) {
+        var namespace_state = new NamespaceState();
+        namespace_state.set_current("");
+        return node.to_xml(namespace_state);
+    }
+
+    private void ExecuteOnAllSubNodes(StanzaNode root_node, NodeFunction func) {
+        func(root_node);
+        foreach (var node in root_node.get_all_subnodes()) {
+            ExecuteOnAllSubNodes(node, func);
+        }
+    }
 
     public void registered(Dino.Application app) {
         if (!winrt.InitApartment())
@@ -27,79 +90,33 @@ public class Plugin : RootInterface, Object {
         }
 
         {
-            var text = "<toast launch=\"action=viewPhoto&amp;photoId=92187\">
-            <visual>
-              <binding template=\"ToastGeneric\">
-                <image placement=\"appLogoOverride\" hint-crop=\"circle\" src=\"C:\\Users\\user\\Pictures\\dino\\669-64x64\"/>
-                <text>Adam Wilson tagged you in a photo</text>
-                <text>On top of McClellan Butte - with Andrew Bares</text>
-                <image src=\"C:\\Users\\user\\Pictures\\dino\\883-360x202.jpg\"/>
-              </binding>
-            </visual>
-            <actions>
-              <action
-                content=\"Like\"
-                activationType=\"background\"
-                arguments=\"likePhoto&amp;photoId=92187\"/>
-              <action
-                content=\"Comment\"
-                arguments=\"action=commentPhoto&amp;photoId=92187\"/>
-            </actions>
-          </toast>";
-
-          text = "<toast launch=\"action=viewEvent&amp;eventId=63851\">
-          <visual>
-            <binding template=\"ToastGeneric\">
-              <text>Surface Launch Party</text>
-              <text>Studio S / Ballroom</text>
-              <text>4:00 PM, 10/26/2015</text>
-            </binding>
-          </visual>
-          <actions>
-            <input id=\"status\" type=\"selection\" defaultInput=\"yes\">
-              <selection id=\"yes\" content=\"Going\"/>
-              <selection id=\"maybe\" content=\"Maybe\"/>
-              <selection id=\"no\" content=\"Decline\"/>
-            </input>
-            <action
-              activationType=\"background\"
-              arguments=\"action=rsvpEvent&amp;eventId=63851\"
-              content=\"RSVP\"/>
-            <action
-              activationType=\"system\"
-              arguments=\"dismiss\"
-              content=\"\"/>
-          </actions>
-        </toast>";
-
-            this.notifier = new ToastNotifier(AUMID);
-            this.notification = new ToastNotification(text);
-            var token = notification.Activated((c, d) => {
-                var i = 2;
-                stdout.printf("Yay! Activated 1!\n");
-            });
-            notification.RemoveActivated(token);
-
-            token = notification.Activated((c, d) => {
-              var i = 2;
-              stdout.printf("Yay! Activated 2!\n");
-            });
-
-            var token2 = notification.Failed(() => {
-              stdout.printf("Failed! :/\n");
-            });
-            notification.RemoveFailed(token2);
-
-            var give_me_reason = ToastDismissalReason.TimedOut;
-            var give_me_template = ToastTemplateType.ToastText01;
+            var give_me_template = ToastTemplateType.ToastText02;
             var template = ToastNotificationManager.GetTemplateContent(give_me_template);
+            var node = Build(template);
+            {
+                var attributes = new Gee.ArrayList<StanzaAttribute>();
+                attributes.add(new StanzaAttribute.build("", "id", "1"));
+                attributes.add(new StanzaAttribute.build("", "id", "2"));
 
-            var token3 = notification.Dismissed((reason) => {
-              stdout.printf("Dismissed! :(\n");
-              var r = reason;
-              var m = 2;
+                var nodes = FindRecursive(node, "text", attributes);
+                foreach (var node_ in nodes) {
+                    var attr = node_.get_attribute_raw("id", "");
+                    if (attr != null) {
+                        if (attr.val == "1") {
+                            node_.put_node(new StanzaNode.text("Header!"));
+                        } else if (attr.val == "2") {
+                            node_.put_node(new StanzaNode.text("Text!"));
+                        }
+                    }
+                }
+            }
+            
+            this.notifier = new ToastNotifier(AUMID);
+            this.notification = new ToastNotification(ToXml(node));
+            var token = notification.Activated((c, d) => {
+              stdout.printf("\nYay! Activated!\n");
+              stdout.flush();
             });
-            notification.RemoveDismissed(token3);
 
             notifier.Show(notification);
         }
