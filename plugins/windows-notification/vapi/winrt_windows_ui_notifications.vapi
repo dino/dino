@@ -56,4 +56,10 @@ namespace winrt.Windows.UI.Notifications {
         public void Show(ToastNotification notification);
         public void Hide(ToastNotification notification);
     }
+
+    [Compact]
+    [CCode]
+    public class ToastNotificationManager {
+        public static string GetTemplateContent(ToastTemplateType type);
+    }
 }
