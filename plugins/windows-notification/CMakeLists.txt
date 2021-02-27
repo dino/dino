@@ -1,3 +1,8 @@
+set(GETTEXT_PACKAGE "dino-windows-notifications")
+find_package(Gettext)
+include(${GETTEXT_USE_FILE})
+gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../main/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
+
 project(windows-notification)
 
 find_packages(WINDOWS_NOTIFICATION_PACKAGES REQUIRED
@@ -13,7 +18,7 @@ SOURCES
     src/windows_notifications_plugin.vala
     src/windows_notifications_register_plugin.vala
     src/toast_notification_builder.vala
-    # src/win_notification_provider.vala
+    src/win_notification_provider.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
@@ -38,7 +43,9 @@ set(WINDOWS_API_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/shortcutcreator.cpp
 )
 
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${WINDOWS_API_SOURCES})
+add_dependencies(windows-notification ${GETTEXT_PACKAGE}-translations)
 
 target_include_directories(windows-notification
     PRIVATE
