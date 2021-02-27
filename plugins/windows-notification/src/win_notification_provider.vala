@@ -213,7 +213,7 @@ namespace Dino.Plugins.WindowsNotification {
                 marked_for_removal.add(notification_id);
             });
 
-            notification.Dismissed((reason) =>  marked_for_removal.add(notification_id));
+            notification.Dismissed((reason) => marked_for_removal.add(notification_id));
 
             notification.Failed(() => marked_for_removal.add(notification_id));
 
