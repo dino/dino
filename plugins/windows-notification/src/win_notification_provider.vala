@@ -7,6 +7,8 @@ using Gee;
 namespace Dino.Plugins.WindowsNotification {
     public class WindowsNotificationProvider : NotificationProvider, Object {
 
+        private delegate void DelegateToUi();
+
         private static uint notification_counter = 0;
         private ToastNotifier notifier;
         private StreamInteractor stream_interactor;
@@ -63,16 +65,18 @@ namespace Dino.Plugins.WindowsNotification {
 
             var notification_id = generate_id();
             notification.Activated((argument, user_input) => {
-                if (argument != null) {
-                    app.activate_action(argument, conversation.id);
-                } else {
-                    app.activate_action("open-conversation", conversation.id);
-                }
-
+                run_on_ui(() => {
+                    if (argument != null) {
+                        app.activate_action(argument, conversation.id);
+                    } else {
+                        app.activate_action("open-conversation", conversation.id);
+                    }
+                });
+    
                 marked_for_removal.add(notification_id);
             });
 
-            notification.Dismissed((reason) =>  marked_for_removal.add(notification_id));
+            notification.Dismissed((reason) => marked_for_removal.add(notification_id));
 
             notification.Failed(() => marked_for_removal.add(notification_id));
 
@@ -137,16 +141,18 @@ namespace Dino.Plugins.WindowsNotification {
             var notification_id = generate_id();
             var group_conversation_id = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT).id;
             notification.Activated((argument, user_input) => {
-                if (argument != null) {
-                    app.activate_action(argument, group_conversation_id);
-                } else {
-                    app.activate_action("open-muc-join", group_conversation_id);
-                }
+                run_on_ui(() => {
+                    if (argument != null) {
+                        app.activate_action(argument, group_conversation_id);
+                    } else {
+                        app.activate_action("open-muc-join", group_conversation_id);
+                    }
+                });
 
                 marked_for_removal.add(notification_id);
             });
 
-            notification.Dismissed((reason) =>  marked_for_removal.add(notification_id));
+            notification.Dismissed((reason) => marked_for_removal.add(notification_id));
 
             notification.Failed(() => marked_for_removal.add(notification_id));
 
@@ -172,13 +178,13 @@ namespace Dino.Plugins.WindowsNotification {
             var notification_id = generate_id();
             notification.Activated((argument, user_input) => {
                 if (argument != null) {
-                    app.activate_action(argument, conversation.id);
+                    run_on_ui(() => app.activate_action(argument, conversation.id));
                 }
 
                 marked_for_removal.add(notification_id);
             });
 
-            notification.Dismissed((reason) =>  marked_for_removal.add(notification_id));
+            notification.Dismissed((reason) => marked_for_removal.add(notification_id));
 
             notification.Failed(() => marked_for_removal.add(notification_id));
 
@@ -203,7 +209,7 @@ namespace Dino.Plugins.WindowsNotification {
 
             var notification_id = generate_id();
             notification.Activated((argument, user_input) => {
-                app.activate_action("open-conversation", conversation.id);
+                run_on_ui(() => app.activate_action("open-conversation", conversation.id));
                 marked_for_removal.add(notification_id);
             });
 
@@ -254,6 +260,10 @@ namespace Dino.Plugins.WindowsNotification {
 
         private uint generate_id() {
             return AtomicUint.add(ref notification_counter, 1);
+        }
+
+        private void run_on_ui(DelegateToUi func) {
+            Idle.add(() => { func(); return false; }, GLib.Priority.HIGH);
         }
     }
 }
