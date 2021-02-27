@@ -10,7 +10,7 @@ char* wsview_to_char(const std::wstring_view wstr)
         return nullptr;
     }
     int final_size = WideCharToMultiByte(CP_UTF8, 0, wstr.data(), (int)wstr.size(), nullptr, 0, nullptr, nullptr);
-    char* strTo = new char[final_size];
+    char* strTo = new char[final_size + 1]{ 0 };
     WideCharToMultiByte(CP_UTF8, 0, wstr.data(), (int)wstr.size(), strTo, final_size, nullptr, nullptr);
     return strTo;
 }

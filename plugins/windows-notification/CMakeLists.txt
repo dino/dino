@@ -12,6 +12,7 @@ vala_precompile(WINDOWS_NOTIFICATION_VALA_C
 SOURCES
     src/windows_notifications_plugin.vala
     src/windows_notifications_register_plugin.vala
+    src/toast_notification_builder.vala
     # src/win_notification_provider.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
