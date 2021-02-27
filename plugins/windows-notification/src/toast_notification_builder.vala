@@ -41,7 +41,10 @@ namespace Dino.Plugins.WindowsNotification {
             return this;
         }
 
-        // legacy templates: https://docs.microsoft.com/en-us/previous-versions/windows/apps/hh761494(v=win.10)
+        // Legacy templates, for both Windows 8.1 and Windows 10:
+        // https://docs.microsoft.com/en-us/previous-versions/windows/apps/hh761494(v=win.10)
+        // Eventually modern adaptive templates might be desired:
+        // https://docs.microsoft.com/en-us/windows/uwp/design/shell/tiles-and-notifications/adaptive-interactive-toasts?tabs=builder-syntax
         public ToastNotification Build() {
             ToastTemplateType templateType = _header != null ? ToastTemplateType.ToastText02 : ToastTemplateType.ToastText01;
             if (_imagePath != null) {
