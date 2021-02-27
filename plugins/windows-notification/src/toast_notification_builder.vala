@@ -45,7 +45,7 @@ namespace Dino.Plugins.WindowsNotification {
         // https://docs.microsoft.com/en-us/previous-versions/windows/apps/hh761494(v=win.10)
         // Eventually modern adaptive templates might be desired:
         // https://docs.microsoft.com/en-us/windows/uwp/design/shell/tiles-and-notifications/adaptive-interactive-toasts?tabs=builder-syntax
-        public ToastNotification Build() {
+        public async ToastNotification Build() {
             ToastTemplateType templateType = _header != null ? ToastTemplateType.ToastText02 : ToastTemplateType.ToastText01;
             if (_imagePath != null) {
                 if (templateType == ToastTemplateType.ToastText02) {
@@ -55,7 +55,7 @@ namespace Dino.Plugins.WindowsNotification {
                 }
             }
 
-            var template = BuildStanzaFromXml(ToastNotificationManager.GetTemplateContent(templateType));
+            var template = yield BuildStanzaFromXml(ToastNotificationManager.GetTemplateContent(templateType));
             { // add header and body
                 var attributes = new Gee.ArrayList<StanzaAttribute>();
                 attributes.add(new StanzaAttribute.build("", "id", "1"));
@@ -105,17 +105,10 @@ namespace Dino.Plugins.WindowsNotification {
             return new ToastNotification(xml);
         }
 
-        private StanzaNode BuildStanzaFromXml(string xml) {
+        private async StanzaNode BuildStanzaFromXml(string xml) {
             var reader = new Xmpp.StanzaReader.for_string(xml);
 
-            StanzaNode root_node = null;
-            var loop = new MainLoop();
-            reader.read_node
-                .begin((obj, res) => {
-                root_node = reader.read_node.end(res);
-                loop.quit();
-            });
-            loop.run();
+            StanzaNode root_node = yield reader.read_node();
 
             ExecuteOnAllSubNodes(root_node, (node) => {
                 node.ns_uri = "";

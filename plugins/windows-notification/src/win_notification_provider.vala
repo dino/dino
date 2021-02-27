@@ -55,7 +55,7 @@ namespace Dino.Plugins.WindowsNotification {
             string body = Markup.escape_text(conversation.counterpart.to_string());
 
             var image_path = get_avatar(conversation);
-            var notification = new ToastNotificationBuilder()
+            var notification = yield new ToastNotificationBuilder()
                 .SetHeader(summary)
                 .SetBody(body)
                 .SetImage(image_path)
@@ -108,7 +108,7 @@ namespace Dino.Plugins.WindowsNotification {
                     break;
             }
 
-            var notification = new ToastNotificationBuilder()
+            var notification = yield new ToastNotificationBuilder()
                 .SetHeader(summary)
                 .SetBody(body)
                 .Build();
@@ -130,7 +130,7 @@ namespace Dino.Plugins.WindowsNotification {
             string body = _("%s invited you to %s").printf(inviter_display_name, display_room);
 
             var image_path = get_avatar(direct_conversation);
-            var notification = new ToastNotificationBuilder()
+            var notification = yield new ToastNotificationBuilder()
                 .SetHeader(summary)
                 .SetBody(body)
                 .SetImage(image_path)
@@ -167,7 +167,7 @@ namespace Dino.Plugins.WindowsNotification {
             string body = _("%s requests the permission to write in %s").printf(display_name, display_room);
 
             var image_path = get_avatar(conversation);
-            var notification = new ToastNotificationBuilder()
+            var notification = yield new ToastNotificationBuilder()
                 .SetHeader(summary)
                 .SetBody(body)
                 .SetImage(image_path)
@@ -201,7 +201,7 @@ namespace Dino.Plugins.WindowsNotification {
             }
 
             var image_path = get_avatar(conversation);
-            var notification = new ToastNotificationBuilder()
+            var notification = yield new ToastNotificationBuilder()
                 .SetHeader(conversation_display_name)
                 .SetBody(body)
                 .SetImage(image_path)
