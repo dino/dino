@@ -26,6 +26,11 @@ public class Util {
         }
         assert_not_reached();
     }
+
+    public static bool is_cleartext_allowed_for_host(string host) {
+        string cleartext_hosts = Environment.get_variable("DINO_CLEARTEXT_HOSTS");
+        return host in (cleartext_hosts != null ? cleartext_hosts : "localhost").split(",");
+    }
 }
 
 }

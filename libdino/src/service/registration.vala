@@ -30,6 +30,7 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Sasl.Module(account.bare_jid.to_string(), account.password));
 
         XmppStreamResult stream_result = yield Xmpp.establish_stream(account.bare_jid.domain_jid, list, Application.print_xmpp,
+                                                                     Util.is_cleartext_allowed_for_host(account.bare_jid.domain_jid.to_string()),
                 (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(account.domainpart, peer_cert, errors); }
         );
 
@@ -83,6 +84,7 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Iq.Module());
 
         XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                                                                     Util.is_cleartext_allowed_for_host(jid.domain_jid.to_string()),
                 (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
         );
 
@@ -137,6 +139,7 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Xep.InBandRegistration.Module());
 
         XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                                                                     Util.is_cleartext_allowed_for_host(jid.domain_jid.to_string()),
                 (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
         );
 
@@ -188,6 +191,7 @@ public class Register : StreamInteractionModule, Object{
         list.add(new Xep.InBandRegistration.Module());
 
         XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                                                                     Util.is_cleartext_allowed_for_host(jid.domain_jid.to_string()),
                 (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
         );
 

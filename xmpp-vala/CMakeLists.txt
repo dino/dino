@@ -20,6 +20,7 @@ set(ENGINE_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_
 
 vala_precompile(ENGINE_VALA_C
 SOURCES
+    "src/core/cleartext_xmpp_stream.vala"
     "src/core/direct_tls_xmpp_stream.vala"
     "src/core/io_xmpp_stream.vala"
     "src/core/module_flag.vala"

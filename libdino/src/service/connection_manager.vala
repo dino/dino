@@ -198,6 +198,7 @@ public class ConnectionManager : Object {
 
             change_connection_state(account, ConnectionState.CONNECTING);
             stream_result = yield Xmpp.establish_stream(account.bare_jid, module_manager.get_modules(account, resource), log_options,
+                                                        Util.is_cleartext_allowed_for_host(account.bare_jid.domain_jid.to_string()),
                     (peer_cert, errors) => { return on_invalid_certificate(account.domainpart, peer_cert, errors); }
             );
             connections[account].stream = stream_result.stream;

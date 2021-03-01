@@ -13,12 +13,9 @@ namespace Xmpp {
         public IOStreamError? io_error { get; set; }
     }
 
-    public async XmppStreamResult establish_stream(Jid bare_jid, Gee.List<XmppStreamModule> modules, string? log_options, owned TlsXmppStream.OnInvalidCert on_invalid_cert) {
-        Jid remote = bare_jid.domain_jid;
-        TlsXmppStream.OnInvalidCertWrapper on_invalid_cert_wrapper = new TlsXmppStream.OnInvalidCertWrapper(on_invalid_cert);
-
-        //Lookup xmpp-client and xmpps-client SRV records
-        GLib.List<SrvTargetInfo>? targets = new GLib.List<SrvTargetInfo>();
+    private async GLib.List<SrvTargetInfo> get_srv_targets(Jid remote) {
+        // Lookup xmpp-client and xmpps-client SRV records
+        GLib.List<SrvTargetInfo> targets = new GLib.List<SrvTargetInfo>();
         GLibFixes.Resolver resolver = GLibFixes.Resolver.get_default();
         try {
             GLib.List<SrvTarget> xmpp_services = yield resolver.lookup_service_async("xmpp-client", "tcp", remote.to_string(), null);
@@ -52,6 +49,21 @@ namespace Xmpp {
             targets.append(new SrvTargetInfo() { host=remote.to_string(), port=5222, service="xmpp-client", priority=uint16.MAX});
         }
 
+        return targets;
+    }
+
+    public async XmppStreamResult establish_stream(Jid bare_jid, Gee.List<XmppStreamModule> modules, string? log_options, bool? allow_cleartext, owned TlsXmppStream.OnInvalidCert on_invalid_cert) {
+        TlsXmppStream.OnInvalidCertWrapper on_invalid_cert_wrapper = new TlsXmppStream.OnInvalidCertWrapper(on_invalid_cert);
+        GLib.List<SrvTargetInfo> targets = yield get_srv_targets(bare_jid.domain_jid);
+        if(allow_cleartext == true) {
+            // Clear text connection will always have the lowest priority
+            targets.append(new SrvTargetInfo() {
+                host=bare_jid.domain_jid.to_string(),
+                port=5222,
+                service="x-cleartext-xmpp-client"
+            });
+        }
+
         // Try all connection options from lowest to highest priority
         TlsXmppStream? stream = null;
         TlsCertificateFlags? tls_errors = null;
@@ -59,9 +71,13 @@ namespace Xmpp {
         foreach (SrvTargetInfo target in targets) {
             try {
                 if (target.service == "xmpp-client") {
-                    stream = new StartTlsXmppStream(remote, target.host, target.port, on_invalid_cert_wrapper);
+                    stream = new StartTlsXmppStream(bare_jid.domain_jid, target.host, target.port, on_invalid_cert_wrapper);
+                } else if (target.service == "x-cleartext-xmpp-client") {
+                    // "x-cleartext-xmpp-client" is not something found in real SRV records.
+                    // It's a bogus service name for clear text XMPP conections, since a "real" one does not exist.
+                    stream = new ClearTextXmppStream(bare_jid.domain_jid, target.host, target.port);
                 } else {
-                    stream = new DirectTlsXmppStream(remote, target.host, target.port, on_invalid_cert_wrapper);
+                    stream = new DirectTlsXmppStream(bare_jid.domain_jid, target.host, target.port, on_invalid_cert_wrapper);
                 }
                 stream.log = new XmppLog(bare_jid.to_string(), log_options);
 
