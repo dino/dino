@@ -14,7 +14,7 @@ gboolean winrt_InitApartment()
     {
         auto message = wsview_to_char(e.message());
         std::cerr << message << '\n';
-        delete[] message;
+        g_free(message);
         if (e.code() == -2147417850 /* RPC_E_CHANGED_MODE */) // harmless
         {
             return true;

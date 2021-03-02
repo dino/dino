@@ -270,7 +270,9 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
       }
     }
     
-    callback(wsview_to_char(arguments), nullptr /* user_input */ , 0 /* user_input.size() */, context);
+    auto args = wsview_to_char(arguments);
+    callback_data->callback(args, nullptr /* user_input */ , 0 /* user_input.size() */, callback_data->context);
+    g_free(args);
   });
   callback_data->SetToken(winrt_event_token_new_from_token(&token));
 
