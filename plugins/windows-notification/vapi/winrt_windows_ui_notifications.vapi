@@ -37,8 +37,6 @@ namespace winrt.Windows.UI.Notifications {
 	public class ToastNotification : GLib.Object {
 		public ToastNotification(string doc);
         public bool ExpiresOnReboot { get; set; }
-        public string Tag { get; set; } // TODO: check if valac is cleaning this string
-        public string Group { get; set; }
 
         public EventToken Activated(owned NotificationCallbackActivated handler);
         public void RemoveActivated(EventToken token);
@@ -48,6 +46,11 @@ namespace winrt.Windows.UI.Notifications {
 
         public EventToken Dismissed(owned NotificationCallbackDismissed handler);
         public void RemoveDismissed(EventToken token);
+        
+        public string GetTag();
+        public void SetTag(string tag);
+        public string GetGroup();
+        public void SetGroup(string group);
     }
 
     [CCode (type_id = "winrt_windows_ui_notifications_toast_notifier_get_type ()")]

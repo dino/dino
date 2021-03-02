@@ -194,7 +194,7 @@ gboolean winrt_windows_ui_notifications_toast_notification_get_ExpiresOnReboot(w
   return winrt_windows_ui_notifications_toast_notification_get_internal(self)->ExpiresOnReboot();
 }
 
-void winrt_windows_ui_notifications_toast_notification_set_Tag(winrtWindowsUINotificationsToastNotification* self, const char* value)
+void winrt_windows_ui_notifications_toast_notification_SetTag(winrtWindowsUINotificationsToastNotification* self, const char* value)
 {
   g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self));
 
@@ -202,21 +202,21 @@ void winrt_windows_ui_notifications_toast_notification_set_Tag(winrtWindowsUINot
 }
 
 /**
- * winrt_windows_ui_notifications_toast_notification_get_Tag:
+ * winrt_windows_ui_notifications_toast_notification_GetTag:
  * @manager: a #winrtWindowsUINotificationsToastNotification
  *
  * Returns the value of the tag
  * 
  * Returns: (transfer full): the value
  */
-char* winrt_windows_ui_notifications_toast_notification_get_Tag(winrtWindowsUINotificationsToastNotification* self)
+char* winrt_windows_ui_notifications_toast_notification_GetTag(winrtWindowsUINotificationsToastNotification* self)
 {
   g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), FALSE);
 
   return wsview_to_char(winrt_windows_ui_notifications_toast_notification_get_internal(self)->Tag());
 }
 
-void winrt_windows_ui_notifications_toast_notification_set_Group(winrtWindowsUINotificationsToastNotification* self, const char* value)
+void winrt_windows_ui_notifications_toast_notification_SetGroup(winrtWindowsUINotificationsToastNotification* self, const char* value)
 {
   g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self));
 
@@ -224,14 +224,14 @@ void winrt_windows_ui_notifications_toast_notification_set_Group(winrtWindowsUIN
 }
 
 /**
- * winrt_windows_ui_notifications_toast_notification_get_Group:
+ * winrt_windows_ui_notifications_toast_notification_GetGroup:
  * @manager: a #winrtWindowsUINotificationsToastNotification
  *
  * Returns the value of the group
  * 
  * Returns: (transfer full): the value
  */
-char* winrt_windows_ui_notifications_toast_notification_get_Group(winrtWindowsUINotificationsToastNotification* self)
+char* winrt_windows_ui_notifications_toast_notification_GetGroup(winrtWindowsUINotificationsToastNotification* self)
 {
   g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), FALSE);
 
