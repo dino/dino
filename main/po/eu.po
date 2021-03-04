@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-11 19:14+0100\n"
+"POT-Creation-Date: 2021-03-04 09:31-0600\n"
 "PO-Revision-Date: 2020-11-18 11:29+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
 "eu/>\n"
@@ -66,19 +66,19 @@ msgid "Yesterday"
 msgstr "Atzo"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:272
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:345
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -86,7 +86,7 @@ msgstr[0] "orain dela min %i"
 msgstr[1] "orain dela %i min"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:278
 msgid "Just now"
 msgstr "Orain"
 
@@ -254,7 +254,7 @@ msgstr "Ezin izan da %s(e)ra konektatu"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
 #: main/src/ui/manage_accounts/add_account_dialog.vala:299
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
-#: main/src/ui/manage_accounts/add_account_dialog.vala:388
+#: main/src/ui/manage_accounts/add_account_dialog.vala:397
 msgid "Invalid address"
 msgstr "Helbide ez balioduna"
 
@@ -607,11 +607,11 @@ msgstr "Zerbitzariak webgune baten bidez izena ematea eskatzen du"
 msgid "Open website"
 msgstr "Webgunea ireki"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:350
+#: main/src/ui/manage_accounts/add_account_dialog.vala:359
 msgid "Register"
 msgstr "Izena eman"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:352
+#: main/src/ui/manage_accounts/add_account_dialog.vala:361
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Ikusi %s izena ematearen inguruko informazioa lortzeko"
@@ -644,41 +644,41 @@ msgstr "%s eta %s idazten ari dira…"
 msgid "%s is typing…"
 msgstr "%s idazten ari da…"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:164
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Enkriptatu gabe"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:200
 msgid "Unable to send message"
 msgstr "Ezin da mezua bidali"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:259
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:264
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:268
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
@@ -762,6 +762,10 @@ msgstr "Mezu berri bat heltzerakoan jakinarazi"
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
 msgstr "Irrifartxoak emotikono bihurtu"
+
+#: main/data/settings_dialog.ui:70
+msgid "Check spelling"
+msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"

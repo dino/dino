@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-11 19:14+0100\n"
-"PO-Revision-Date: 2020-10-10 10:49+0000\n"
+"POT-Creation-Date: 2021-03-04 09:31-0600\n"
+"PO-Revision-Date: 2021-01-16 13:32+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
 "Language: de\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.5-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -60,19 +60,19 @@ msgid "Yesterday"
 msgstr "Gestern"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:272
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:345
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -80,7 +80,7 @@ msgstr[0] "vor %i min"
 msgstr[1] "vor %i min"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:278
 msgid "Just now"
 msgstr "Gerade eben"
 
@@ -248,7 +248,7 @@ msgstr "Verbindung zu %s konnte nicht hergestellt werden"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
 #: main/src/ui/manage_accounts/add_account_dialog.vala:299
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
-#: main/src/ui/manage_accounts/add_account_dialog.vala:388
+#: main/src/ui/manage_accounts/add_account_dialog.vala:397
 msgid "Invalid address"
 msgstr "Ungültige Adresse"
 
@@ -502,7 +502,7 @@ msgstr "Ungültiges TLS-Zertifikat"
 
 #: main/src/ui/notifier_freedesktop.vala:173
 msgid "Reject"
-msgstr ""
+msgstr "Ablehnen"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -603,11 +603,11 @@ msgstr "Der Server erfordert die Registrierung durch eine Webseite"
 msgid "Open website"
 msgstr "Webseite öffnen"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:350
+#: main/src/ui/manage_accounts/add_account_dialog.vala:359
 msgid "Register"
 msgstr "Registrieren"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:352
+#: main/src/ui/manage_accounts/add_account_dialog.vala:361
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Eventuell sind auf %s Informationen zur Registrierung zu finden"
@@ -640,41 +640,41 @@ msgstr "%s und %s tippen…"
 msgid "%s is typing…"
 msgstr "%s tippt…"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:164
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Unverschlüsselt"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:200
 msgid "Unable to send message"
 msgstr "Nachricht kann nicht gesendet werden"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:259
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d. %b, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:264
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d. %b, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:268
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
@@ -759,6 +759,10 @@ msgstr "Benachrichtigen bei Empfang einer neuen Nachricht"
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
 msgstr "Smileys zu Emojis umwandeln"
+
+#: main/data/settings_dialog.ui:70
+msgid "Check spelling"
+msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"

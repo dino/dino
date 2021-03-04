@@ -8,45 +8,43 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-04 09:31-0600\n"
-"PO-Revision-Date: 2020-08-21 05:36+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: none\n"
-"Language: cs\n"
+"Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.2.1-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr "Publikování klíčů zakázáno"
+msgstr ""
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
-msgstr "Chyba v GnuPG"
+msgstr ""
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "Nejsou k dispozici žádné klíče. Vygenerujte jeden!"
+msgstr ""
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "Vybrat klíč"
+msgstr ""
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
-msgstr "Načítání…"
+msgstr ""
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr "Dotazování GnuPG"
+msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "Klíč není v klíčence"
+msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "Šifrování"
+msgstr ""
