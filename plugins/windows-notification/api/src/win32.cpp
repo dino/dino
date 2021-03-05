@@ -5,7 +5,11 @@
 #include "converter.hpp"
 #include "ginvoke.hpp"
 
-std::optional<std::wstring> GetCurrentModulePath()
+win32_error::win32_error() noexcept
+    : win32_error{::GetLastError()}
+{}
+
+std::wstring GetCurrentModulePath()
 {
     std::wstring exePath(MAX_PATH, 0);
     auto charWritten = GetModuleFileName(nullptr, exePath.data(), exePath.size());
@@ -14,10 +18,10 @@ std::optional<std::wstring> GetCurrentModulePath()
         exePath.resize(charWritten);
         return exePath;
     }
-    return std::nullopt;
+    throw win32_error{};
 }
 
-std::optional<std::wstring> GetShortcutPath()
+std::wstring GetShortcutPath()
 {
     std::wstring shortcutPath(MAX_PATH, 0);
     auto charWritten = GetEnvironmentVariable(L"APPDATA", shortcutPath.data(), shortcutPath.size());
@@ -26,7 +30,7 @@ std::optional<std::wstring> GetShortcutPath()
         shortcutPath.resize(charWritten);
         return shortcutPath;
     }
-    return std::nullopt;
+    throw win32_error{};
 }
 
 bool ImplSetProcessAumid(const char *const aumid)

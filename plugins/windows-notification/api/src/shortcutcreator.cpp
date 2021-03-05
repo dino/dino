@@ -136,19 +136,15 @@ bool ImplEnsureAumiddedShortcutExists(const char *const aumid)
     auto exePath = GetCurrentModulePath();
     auto shortcutPath = GetShortcutPath();
 
-    if (shortcutPath && exePath)
+    auto path = shortcutPath + LR"(\Microsoft\Windows\Start Menu\Programs\Dino.lnk)";
+    if (!std::filesystem::exists(path))
     {
-        auto path = shortcutPath.value() + LR"(\Microsoft\Windows\Start Menu\Programs\Dino.lnk)";
-        if (!std::filesystem::exists(path))
-        {
-            return SUCCEEDED(InstallShortcut(exePath.value(), waumid, path));
-        }
-        else
-        {
-            return SUCCEEDED(ValidateShortcut(path, waumid));
-        }
+        return SUCCEEDED(InstallShortcut(exePath, waumid, path));
     }
-    return false;
+    else
+    {
+        return SUCCEEDED(ValidateShortcut(path, waumid));
+    }
 }
 
 extern "C"
