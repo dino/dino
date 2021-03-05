@@ -125,7 +125,7 @@ int32_t ValidateShortcut(const std::wstring& shortcut_path, const std::wstring& 
     return hr;
 }
 
-bool TryCreateShortcutInternal(const char *const aumid)
+bool ImplEnsureAumiddedShortcutExists(const char *const aumid)
 {
     auto waumid = sview_to_wstr(aumid);
     if (waumid.empty())
@@ -153,8 +153,8 @@ bool TryCreateShortcutInternal(const char *const aumid)
 
 extern "C"
 {
-    gboolean TryCreateShortcut(const gchar* aumid) noexcept
+    gboolean EnsureAumiddedShortcutExists(const gchar* aumid) noexcept
     {
-        return g_try_invoke(TryCreateShortcutInternal, aumid);
+        return g_try_invoke(ImplEnsureAumiddedShortcutExists, aumid);
     }
 }

@@ -29,7 +29,7 @@ std::optional<std::wstring> GetShortcutPath()
     return std::nullopt;
 }
 
-bool SetAppModelIDInternal(const char *const aumid)
+bool ImplSetProcessAumid(const char *const aumid)
 {
     auto waumid = sview_to_wstr(aumid);
     if (waumid.empty())
@@ -44,7 +44,7 @@ extern "C"
     // Not available in mingw headers, but linking works.
     NTSTATUS NTAPI RtlGetVersion(PRTL_OSVERSIONINFOW);
 
-    gboolean SupportsModernNotifications() noexcept
+    gboolean IsWindows10() noexcept
     {
         RTL_OSVERSIONINFOW rovi = { 0 };
         rovi.dwOSVersionInfoSize = sizeof(rovi);
@@ -55,9 +55,8 @@ extern "C"
         return FALSE;
     }
 
-    gboolean SetAppModelID(const gchar* aumid) noexcept
+    gboolean SetProcessAumid(const gchar* aumid) noexcept
     {
-        return g_try_invoke(SetAppModelIDInternal, aumid);
+        return g_try_invoke(ImplSetProcessAumid, aumid);
     }
 }
-

@@ -10,7 +10,7 @@
 #define NOEXCEPT
 #endif
 
-EXTERN gboolean TryCreateShortcut(const gchar* aumid) NOEXCEPT;
+EXTERN gboolean EnsureAumiddedShortcutExists(const gchar* aumid) NOEXCEPT;
 
 #undef EXTERN
 #undef NOEXCEPT

@@ -12,7 +12,7 @@ namespace Dino.Plugins.WindowsNotification {
     }
 
     public class ToastNotificationBuilder  {
-        private static bool _supportsModernFeatures = SupportsModernNotifications();
+        private static bool _supportsModernFeatures = IsWindows10();
         private Gee.List<Button> _buttons = new Gee.ArrayList<Button>();
         private string _header = null;
         private string _body = null;

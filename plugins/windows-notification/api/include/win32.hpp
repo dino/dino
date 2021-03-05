@@ -19,8 +19,8 @@ std::optional<std::wstring> GetShortcutPath();
 #define NOEXCEPT
 #endif
 
-EXTERN gboolean SupportsModernNotifications() NOEXCEPT;
-EXTERN gboolean SetAppModelID(const gchar* aumid) NOEXCEPT;
+EXTERN gboolean IsWindows10() NOEXCEPT;
+EXTERN gboolean SetProcessAumid(const gchar* aumid) NOEXCEPT;
 
 #undef EXTERN
 #undef NOEXCEPT

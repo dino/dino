@@ -15,12 +15,12 @@ namespace Dino.Plugins.WindowsNotification {
                 // log error, return
             }
 
-            if (!Win32Api.SetAppModelID(AUMID))
+            if (!Win32Api.SetProcessAumid(AUMID))
             {
                 // log error, return
             }
 
-            if (!ShortcutCreator.TryCreateShortcut(AUMID))
+            if (!ShortcutCreator.EnsureAumiddedShortcutExists(AUMID))
             {
                 // log error, return
             }

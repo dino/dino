@@ -1,9 +1,9 @@
 [CCode (cheader_filename = "win32.h")]
 namespace Dino.Plugins.WindowsNotification.Vapi.Win32Api {
-    [CCode (cname = "SupportsModernNotifications")]
-    public bool SupportsModernNotifications();
+    [CCode (cname = "IsWindows10")]
+    public bool IsWindows10();
 
-    [CCode (cname = "SetAppModelID")]
-    public bool SetAppModelID(string aumid);
+    [CCode (cname = "SetProcessAumid")]
+    public bool SetProcessAumid(string aumid);
 }
 
