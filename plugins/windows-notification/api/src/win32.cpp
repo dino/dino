@@ -44,7 +44,7 @@ extern "C"
     // Not available in mingw headers, but linking works.
     NTSTATUS NTAPI RtlGetVersion(PRTL_OSVERSIONINFOW);
 
-    gboolean SupportsModernNotifications()
+    gboolean SupportsModernNotifications() noexcept
     {
         RTL_OSVERSIONINFOW rovi = { 0 };
         rovi.dwOSVersionInfoSize = sizeof(rovi);
@@ -55,7 +55,7 @@ extern "C"
         return FALSE;
     }
 
-    gboolean SetAppModelID(const gchar* aumid)
+    gboolean SetAppModelID(const gchar* aumid) noexcept
     {
         return g_try_invoke(SetAppModelIDInternal, aumid);
     }

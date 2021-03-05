@@ -153,7 +153,7 @@ bool TryCreateShortcutInternal(const char *const aumid)
 
 extern "C"
 {
-    gboolean TryCreateShortcut(const gchar* aumid)
+    gboolean TryCreateShortcut(const gchar* aumid) noexcept
     {
         return g_try_invoke(TryCreateShortcutInternal, aumid);
     }

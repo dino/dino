@@ -12,14 +12,15 @@
 std::optional<std::wstring> GetCurrentModulePath();
 std::optional<std::wstring> GetShortcutPath();
 
+#define EXTERN    extern "C"
+#define NOEXCEPT  noexcept
+#else
+#define EXTERN
+#define NOEXCEPT
 #endif
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-    gboolean SupportsModernNotifications();
-    gboolean SetAppModelID(const gchar* aumid);
-#ifdef __cplusplus
-}
-#endif
+EXTERN gboolean SupportsModernNotifications() NOEXCEPT;
+EXTERN gboolean SetAppModelID(const gchar* aumid) NOEXCEPT;
+
+#undef EXTERN
+#undef NOEXCEPT

@@ -3,12 +3,14 @@
 #include <glib.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+#define EXTERN    extern "C"
+#define NOEXCEPT  noexcept
+#else
+#define EXTERN
+#define NOEXCEPT
 #endif
 
-    gboolean TryCreateShortcut(const gchar* aumid);
+EXTERN gboolean TryCreateShortcut(const gchar* aumid) NOEXCEPT;
 
-#ifdef __cplusplus
-}
-#endif
+#undef EXTERN
+#undef NOEXCEPT
