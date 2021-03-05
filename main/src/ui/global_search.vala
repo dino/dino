@@ -96,7 +96,7 @@ public class GlobalSearch : Overlay {
                     avatar.set_conversation(stream_interactor, suggestion.conversation);
                 }
                 if (display_name != suggestion.jid.to_string()) {
-                    label.set_markup(@"$display_name <span font_weight='light' fgalpha='80%'>$(suggestion.jid)</span>");
+                    label.set_markup("%s <span font_weight='light' fgalpha='80%'>%s</span>".printf(Markup.escape_text(display_name), Markup.escape_text(suggestion.jid.to_string())));
                 } else {
                     label.label = display_name;
                 }
@@ -257,7 +257,7 @@ public class GlobalSearch : Overlay {
         string display_name = Util.get_participant_display_name(stream_interactor, item.conversation, item.jid);
         string color = Util.get_name_hex_color(stream_interactor, item.message.account, item.jid, false); // TODO Util.is_dark_theme(name_label)
         Label name_label = new Label("") { ellipsize=EllipsizeMode.END, use_markup=true, xalign=0, visible=true };
-        name_label.label = @"<span size='small' foreground=\"#$color\">$display_name</span>";
+        name_label.label = "<span size='small' foreground=\"#%s\">%s</span>".printf(color, Markup.escape_text(display_name));
         grid.attach(name_label, 1, 0, 1, 1);
         return grid;
     }
