@@ -21,10 +21,10 @@ std::wstring GetExePath()
     throw win32_error{};
 }
 
-std::wstring GetShortcutPath()
+std::wstring GetEnv(const wchar_t *const variable_name)
 {
     std::wstring shortcutPath(MAX_PATH, 0);
-    auto charWritten = GetEnvironmentVariable(L"APPDATA", shortcutPath.data(), shortcutPath.size());
+    auto charWritten = GetEnvironmentVariable(variable_name, shortcutPath.data(), shortcutPath.size());
     if (charWritten > 0)
     {
         shortcutPath.resize(charWritten);

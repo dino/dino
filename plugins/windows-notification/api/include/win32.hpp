@@ -31,7 +31,7 @@ private:
 };
 
 std::wstring GetExePath();
-std::wstring GetShortcutPath();
+std::wstring GetEnv(const wchar_t *variable_name);
 
 #define EXTERN    extern "C"
 #define NOEXCEPT  noexcept
