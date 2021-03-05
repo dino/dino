@@ -9,7 +9,7 @@ win32_error::win32_error() noexcept
     : win32_error{::GetLastError()}
 {}
 
-std::wstring GetCurrentModulePath()
+std::wstring GetExePath()
 {
     std::wstring exePath(MAX_PATH, 0);
     auto charWritten = GetModuleFileName(nullptr, exePath.data(), exePath.size());

@@ -133,7 +133,7 @@ bool ImplEnsureAumiddedShortcutExists(const char *const aumid)
         return false;
     }
 
-    auto exePath = GetCurrentModulePath();
+    auto exePath = GetExePath();
     auto shortcutPath = GetShortcutPath();
 
     auto path = shortcutPath + LR"(\Microsoft\Windows\Start Menu\Programs\Dino.lnk)";

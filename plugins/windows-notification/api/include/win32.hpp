@@ -30,7 +30,7 @@ private:
     mutable std::array<char,22+1> msg;
 };
 
-std::wstring GetCurrentModulePath();
+std::wstring GetExePath();
 std::wstring GetShortcutPath();
 
 #define EXTERN    extern "C"
