@@ -185,7 +185,16 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction open_shortcuts_action = new SimpleAction("open_shortcuts", null);
         open_shortcuts_action.activate.connect((variant) => {
             Builder builder = new Builder.from_resource("/im/dino/Dino/shortcuts.ui");
-            var dialog = (ShortcutsWindow) builder.get_object("shortcuts-window");
+            ShortcutsWindow dialog = (ShortcutsWindow) builder.get_object("shortcuts-window");
+            if (!use_csd()) {
+                // Hack to prevent CRITICAL in Gtk when trying to destroy non-existant headerbar
+                Widget shortcuts_hack = dialog.get_titlebar();
+                dialog.destroy.connect_after(() => {
+                    shortcuts_hack = null;
+                });
+                dialog.set_titlebar(null);
+            }
+            dialog.title = _("Keyboard Shortcuts");
             dialog.set_transient_for(get_active_window());
             dialog.present();
         });
@@ -217,15 +226,25 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 case "0.2": version = @"$version - <span font_style='italic'>Mexican Caribbean Coral Reefs</span>"; break;
             }
         }
-        show_about_dialog(get_active_window(),
-                    logo_icon_name: "im.dino.Dino",
-                    program_name: "Dino",
-                    version: version,
-                    comments: "Dino. Communicating happiness.",
-                    website: "https://dino.im/",
-                    website_label: "dino.im",
-                    copyright: "Copyright © 2016-2020 - Dino Team",
-                    license_type: License.GPL_3_0);
+        Gtk.AboutDialog dialog = new Gtk.AboutDialog();
+        dialog.destroy_with_parent = true;
+        dialog.transient_for = window;
+        dialog.modal = true;
+        dialog.title = _("About Dino");
+
+        dialog.logo_icon_name = "im.dino.Dino";
+        dialog.program_name = "Dino";
+        dialog.version = version;
+        dialog.comments = "Dino. Communicating happiness.";
+        dialog.website = "https://dino.im/";
+        dialog.website_label = "dino.im";
+        dialog.copyright = "Copyright © 2016-2021 - Dino Team";
+        dialog.license_type = License.GPL_3_0;
+
+        if (!use_csd()) {
+            dialog.set_titlebar(null);
+        }
+        dialog.present();
     }
 
     private void show_join_muc_dialog(Account? account, string jid) {
