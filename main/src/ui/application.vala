@@ -15,6 +15,12 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
     public SearchPathGenerator? search_path_generator { get; set; }
 
+    internal static bool print_version = false;
+    private const OptionEntry[] options = {
+        { "version", 0, 0, OptionArg.NONE, ref print_version, "Display version number", null },
+        { null }
+    };
+
     public Application() throws Error {
         Object(application_id: "im.dino.Dino", flags: ApplicationFlags.HANDLES_OPEN);
         init();
@@ -26,8 +32,14 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
 
         create_actions();
+        add_main_option_entries(options);
 
         startup.connect(() => {
+            if (print_version) {
+                print(@"Dino $(Dino.VERSION)\n");
+                Process.exit(0);
+            }
+
             NotificationEvents notification_events = stream_interactor.get_module(NotificationEvents.IDENTITY);
             notification_events.register_notification_provider(new GNotificationsNotifier(stream_interactor));
             FreeDesktopNotifier? free_desktop_notifier = FreeDesktopNotifier.try_create(stream_interactor);
