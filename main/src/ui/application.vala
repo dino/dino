@@ -17,7 +17,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
     internal static bool print_version = false;
     private const OptionEntry[] options = {
-        { "version", 'v', 0, OptionArg.NONE, ref print_version, "Display version number", null },
+        { "version", 0, 0, OptionArg.NONE, ref print_version, "Display version number", null },
         { null }
     };
 
@@ -39,7 +39,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 print(@"Dino $(Dino.VERSION)\n");
                 Process.exit(0);
             }
-
 
             NotificationEvents notification_events = stream_interactor.get_module(NotificationEvents.IDENTITY);
             notification_events.register_notification_provider(new GNotificationsNotifier(stream_interactor));
