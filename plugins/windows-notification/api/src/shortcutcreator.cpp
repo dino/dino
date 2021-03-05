@@ -4,6 +4,7 @@
 #include "shortcutcreator.h"
 #include "win32.hpp"
 #include "converter.hpp"
+#include "ginvoke.hpp"
 
 #ifdef UNICODE
     #define _UNICODE
@@ -124,8 +125,14 @@ int32_t ValidateShortcut(const std::wstring& shortcut_path, const std::wstring& 
     return hr;
 }
 
-int32_t TryCreateShortcutInternal(const std::wstring& aumid)
+bool TryCreateShortcutInternal(const char *const aumid)
 {
+    auto waumid = sview_to_wstr(aumid);
+    if (waumid.empty())
+    {
+        return false;
+    }
+
     auto exePath = GetCurrentModulePath();
     auto shortcutPath = GetShortcutPath();
 
@@ -134,27 +141,20 @@ int32_t TryCreateShortcutInternal(const std::wstring& aumid)
         auto path = shortcutPath.value() + LR"(\Microsoft\Windows\Start Menu\Programs\Dino.lnk)";
         if (!std::filesystem::exists(path))
         {
-            return InstallShortcut(exePath.value(), aumid, path);
+            return SUCCEEDED(InstallShortcut(exePath.value(), waumid, path));
         }
         else
         {
-            return ValidateShortcut(path, aumid);
+            return SUCCEEDED(ValidateShortcut(path, waumid));
         }
-        
-        return S_OK;
     }
-    return S_FALSE;
+    return false;
 }
 
 extern "C"
 {
     gboolean TryCreateShortcut(const gchar* aumid)
     {
-        auto result = sview_to_wstr(aumid);
-        if (result.empty())
-        {
-            return FALSE;
-        }
-        return SUCCEEDED(TryCreateShortcutInternal(result));
+        return g_try_invoke(TryCreateShortcutInternal, aumid);
     }
 }

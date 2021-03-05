@@ -3,6 +3,7 @@
 
 #include "win32.hpp"
 #include "converter.hpp"
+#include "ginvoke.hpp"
 
 std::optional<std::wstring> GetCurrentModulePath()
 {
@@ -28,9 +29,14 @@ std::optional<std::wstring> GetShortcutPath()
     return std::nullopt;
 }
 
-bool SetAppModelIDInternal(const std::wstring& aumid)
+bool SetAppModelIDInternal(const char *const aumid)
 {
-    return SUCCEEDED(SetCurrentProcessExplicitAppUserModelID(aumid.c_str()));
+    auto waumid = sview_to_wstr(aumid);
+    if (waumid.empty())
+    {
+        return false;
+    }
+    return SUCCEEDED(SetCurrentProcessExplicitAppUserModelID(waumid.c_str()));
 }
 
 extern "C"
@@ -51,12 +57,7 @@ extern "C"
 
     gboolean SetAppModelID(const gchar* aumid)
     {
-        auto result = sview_to_wstr(aumid);
-        if (result.empty())
-        {
-            return FALSE;
-        }
-        return SetAppModelIDInternal(result);
+        return g_try_invoke(SetAppModelIDInternal, aumid);
     }
 }
 
