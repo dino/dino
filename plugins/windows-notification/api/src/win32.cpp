@@ -9,6 +9,8 @@ win32_error::win32_error() noexcept
     : win32_error{::GetLastError()}
 {}
 
+constexpr auto noncharacter = L'\uFFFF';
+
 std::wstring GetExePath()
 {
     std::wstring exePath(MAX_PATH, 0);
@@ -23,14 +25,18 @@ std::wstring GetExePath()
 
 std::wstring GetEnv(const wchar_t *const variable_name)
 {
-    std::wstring shortcutPath(MAX_PATH, 0);
-    auto charWritten = GetEnvironmentVariable(variable_name, shortcutPath.data(), shortcutPath.size());
-    if (charWritten > 0)
-    {
-        shortcutPath.resize(charWritten);
-        return shortcutPath;
-    }
-    throw win32_error{};
+    const auto bufsize = ::GetEnvironmentVariableW(variable_name, nullptr, 0);
+    if (not bufsize)
+        throw win32_error{};
+    std::wstring buf(bufsize, noncharacter);
+    const auto res =
+        ::GetEnvironmentVariableW(variable_name, buf.data(), bufsize);
+    if (const auto e = ::GetLastError())
+        throw win32_error{e};
+    if (not res or res >= bufsize) // not entirely sure this isn't just paranoia
+        throw std::runtime_error{"GetEnvironmentVariableW misbehaved"};
+    buf.resize(res);
+    return buf;
 }
 
 bool ImplSetProcessAumid(const char *const aumid)
