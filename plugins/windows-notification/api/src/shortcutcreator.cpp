@@ -79,6 +79,11 @@ bool ImplEnsureAumiddedShortcutExists(
         checked(store->GetValue,(PKEY_AppUserModel_ID, aumid_prop));
         if (aumid_prop.str().get() != aumid)
             checked(store->SetValue,(PKEY_AppUserModel_ID, property{aumid}));
+
+        std::array<wchar_t, MAX_PATH+1> targ_path;
+        checked(lnk->GetPath,(targ_path.data(), targ_path.size(), nullptr, 0));
+        if (targ_path.data() != exe_path)
+            checked(lnk->SetPath,(exe_path.c_str()));
     }
     else
     {
