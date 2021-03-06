@@ -96,12 +96,14 @@ public abstract class Column<T> {
         }
     }
 
-    public class Real : Column<double> {
-        public Real(string name) {
+    public class NullableReal : Column<double?> {
+        public NullableReal(string name) {
             base(name, FLOAT);
         }
 
-        public override double get(Row row, string? table_name = DEFALT_TABLE_NAME) {
+        public override bool not_null { get { return false; } set {} }
+
+        public override double? get(Row row, string? table_name = DEFALT_TABLE_NAME) {
             return row.get_real(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
@@ -109,7 +111,7 @@ public abstract class Column<T> {
             return !row.has_real(name, table_name == DEFALT_TABLE_NAME ? table.name : table_name);
         }
 
-        internal override void bind(Statement stmt, int index, double value) {
+        internal override void bind(Statement stmt, int index, double? value) {
             stmt.bind_double(index, value);
         }
     }
