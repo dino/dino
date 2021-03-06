@@ -39,7 +39,7 @@ std::wstring GetEnv(const wchar_t *const variable_name)
     return buf;
 }
 
-bool ImplSetProcessAumid(const char *const aumid)
+static bool ImplSetProcessAumid(const std::string_view aumid)
 {
     auto waumid = sview_to_wstr(aumid);
     if (waumid.empty())

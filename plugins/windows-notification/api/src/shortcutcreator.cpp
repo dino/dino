@@ -125,7 +125,8 @@ int32_t ValidateShortcut(const std::wstring& shortcut_path, const std::wstring& 
     return hr;
 }
 
-bool ImplEnsureAumiddedShortcutExists(const char *const aumid)
+static bool ImplEnsureAumiddedShortcutExists(
+    const std::string_view menu_rel_path, const std::string_view aumid)
 {
     auto waumid = sview_to_wstr(aumid);
     if (waumid.empty())
@@ -135,7 +136,8 @@ bool ImplEnsureAumiddedShortcutExists(const char *const aumid)
 
     auto exePath = GetExePath();
 
-    auto path = GetEnv(L"APPDATA") + LR"(\Microsoft\Windows\Start Menu\Programs\Dino.lnk)";
+    auto path = GetEnv(L"APPDATA") + LR"(\Microsoft\Windows\Start Menu\)"
+        + sview_to_wstr(menu_rel_path) + L".lnk";
     if (!std::filesystem::exists(path))
     {
         return SUCCEEDED(InstallShortcut(exePath, waumid, path));
@@ -150,6 +152,7 @@ extern "C"
 {
     gboolean EnsureAumiddedShortcutExists(const gchar* aumid) noexcept
     {
-        return g_try_invoke(ImplEnsureAumiddedShortcutExists, aumid);
+        return g_try_invoke(
+            ImplEnsureAumiddedShortcutExists, R"(Programs\Dino)", aumid);
     }
 }
