@@ -41,7 +41,7 @@ std::wstring GetEnv(const wchar_t *const variable_name)
 
 static bool ImplSetProcessAumid(const std::string_view aumid)
 {
-    auto waumid = sview_to_wstr(aumid);
+    const auto waumid = sview_to_wstr(aumid);
     if (waumid.empty())
     {
         return false;
@@ -65,7 +65,7 @@ extern "C"
         return FALSE;
     }
 
-    gboolean SetProcessAumid(const gchar* aumid) noexcept
+    gboolean SetProcessAumid(const gchar *const aumid) noexcept
     {
         return g_try_invoke(ImplSetProcessAumid, aumid);
     }
