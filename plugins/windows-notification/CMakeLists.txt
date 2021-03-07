@@ -60,11 +60,6 @@ if(NOT shlwapi_LIBRARY)
     message(FATAL_ERROR "shlwapi library not found")
 endif(NOT shlwapi_LIBRARY)
 
-find_library(propsys_LIBRARY propsys libpropsys libpropsys.a HINTS ${CMAKE_C_IMPLICIT_LINK_DIRECTORIES})
-if(NOT propsys_LIBRARY)
-    message(FATAL_ERROR "propsys library not found")
-endif(NOT propsys_LIBRARY)
-
 find_library(ntdll_LIBRARY ntdll libntdll libntdll.a HINTS ${CMAKE_C_IMPLICIT_LINK_DIRECTORIES})
 if(NOT ntdll_LIBRARY)
     message(FATAL_ERROR "ntdll library not found")
