@@ -40,6 +40,7 @@ set(WINDOWS_API_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/win32.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/converter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/ginvoke.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/shortcutcreator.cpp
 )
 
