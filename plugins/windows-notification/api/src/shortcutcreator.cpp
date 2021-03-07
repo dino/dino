@@ -13,6 +13,47 @@
 
 #include <memory>
 
+namespace dyn
+{
+    inline auto load_module(const wchar_t *const path, const char *const dbgnym)
+    {
+        const auto mod = ::LoadLibraryW(path);
+        if (mod)
+            return mod;
+        const win32_error e{};
+        g_warning("failed to load %s", dbgnym );
+        throw e;
+    }
+
+    template<typename T>
+    inline T &load_symbol(
+        const wchar_t *const mod_path, const char *const mod_dbgnym,
+        const char *const symbol )
+    {
+        const auto p = reinterpret_cast<T *>(
+            ::GetProcAddress(load_module(mod_path, mod_dbgnym), symbol));
+        if (p)
+            return *p;
+        const win32_error e{};
+        g_warning("couldn't find %s in %s", symbol, mod_dbgnym);
+        throw e;
+    }
+
+#define dyn_load_symbol(mod_name, symbol) \
+    ::dyn::load_symbol<decltype(::symbol)>(L ## mod_name, mod_name, #symbol)
+
+    // PropVariantToString is a pain to use, and
+    // MinGW 6.0.0 doesn't have libpropsys.a in the first place;
+    // MinGW 9.0.0 doesn't have PropVariantToStringAlloc in its libpropsys.a.
+    // So...
+    constexpr auto PropVariantToStringAlloc = [](const auto &... arg)
+    {
+        static const auto &f =
+            dyn_load_symbol("propsys.dll", PropVariantToStringAlloc);
+        return f(arg...);
+    };
+}
+
 namespace {
 
 #define checked(func, args) \
@@ -42,7 +83,7 @@ struct property
     auto str() const
     {
         wchar_t *str;
-        checked(::PropVariantToStringAlloc,(var, &str));
+        checked(dyn::PropVariantToStringAlloc,(var, &str));
         return std::unique_ptr
             <wchar_t, decltype(&::CoTaskMemFree)>
             {    str,          &::CoTaskMemFree };
