@@ -241,6 +241,12 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         dialog.copyright = "Copyright © 2016-2021 - Dino Team";
         dialog.license_type = License.GPL_3_0;
 
+        dialog.response.connect((response_id) => {
+            if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT) {
+                dialog.destroy();
+            }
+        });
+
         if (!use_csd()) {
             dialog.set_titlebar(null);
         }
