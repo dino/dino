@@ -219,6 +219,8 @@ namespace Dino.Plugins.WindowsNotification {
 
             notifications[notification_id] = notification;
             notifier.Show(notification);
+
+            content_notifications.add(notification_id);
         }
 
         private string? get_avatar(Conversation conversation) {

@@ -104,5 +104,5 @@ void winrt_windows_ui_notifications_toast_notifier_Hide(winrtWindowsUINotificati
   g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFIER (self));
   g_return_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (toast_notification));
 
-  return winrt_windows_ui_notifications_toast_notifier_get_internal(self)->Hide(*winrt_windows_ui_notifications_toast_notification_get_internal(toast_notification));
+  winrt_windows_ui_notifications_toast_notifier_get_internal(self)->Hide(*winrt_windows_ui_notifications_toast_notification_get_internal(toast_notification));
 }
