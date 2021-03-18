@@ -29,6 +29,7 @@ std::wstring GetEnv(const wchar_t *const variable_name)
     if (not bufsize)
         throw win32_error{};
     std::wstring buf(bufsize, noncharacter);
+    ::SetLastError(0);
     const auto res =
         ::GetEnvironmentVariableW(variable_name, buf.data(), bufsize);
     if (const auto e = ::GetLastError())
