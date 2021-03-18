@@ -60,9 +60,9 @@ template<typename OStream>
 inline auto &describe_argument(OStream &s, const  char *     const a) { return s << std::quoted(a); }
 // TODO: overload for const GString *
 template<typename OStream>
-inline auto &describe_argument(OStream &s, std::wstring_view const a) { return s << std::quoted(a); }
+inline auto &describe_argument(OStream &s, std::wstring_view const a) = delete;  // not implemented
 template<typename OStream>
-inline auto &describe_argument(OStream &s, const std::wstring &    a) { return s << std::quoted(a); }
+inline auto &describe_argument(OStream &s, const std::wstring &    a) = delete;  // not implemented
 template<typename OStream>
 inline auto &describe_argument(OStream &s, const wchar_t *   const a) = delete;  // not implemented
 // TODO: handle wide strings maybe
