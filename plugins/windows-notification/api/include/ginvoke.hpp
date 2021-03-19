@@ -66,6 +66,8 @@ template<typename OStream>
 inline auto &describe_argument(OStream &s, const wchar_t *   const a) = delete;  // not implemented
 // TODO: handle wide strings maybe
 
+inline impl::varstring describe_arguments() noexcept { return {""}; }
+
 template<typename... Arg>
 inline impl::varstring describe_arguments(const Arg &... a) noexcept try
 {
