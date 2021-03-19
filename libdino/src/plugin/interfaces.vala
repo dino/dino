@@ -84,6 +84,31 @@ public abstract interface ConversationAdditionPopulator : ConversationItemPopula
     public virtual void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 }
 
+public abstract interface VideoCallPlugin : Object {
+    // Video widget
+    public abstract VideoCallWidget? create_widget(WidgetType type);
+
+    // Devices
+    public signal void devices_changed(string media, bool incoming);
+    public abstract Gee.List<MediaDevice> get_devices(string media, bool incoming);
+    public abstract MediaDevice? get_device(Xmpp.Xep.JingleRtp.Stream stream, bool incoming);
+    public abstract void set_pause(Xmpp.Xep.JingleRtp.Stream stream, bool pause);
+    public abstract void set_device(Xmpp.Xep.JingleRtp.Stream stream, MediaDevice? device);
+}
+
+public abstract interface VideoCallWidget : Object {
+    public signal void resolution_changed(uint width, uint height);
+    public abstract void display_stream(Xmpp.Xep.JingleRtp.Stream stream); // TODO: Multi participant
+    public abstract void display_device(MediaDevice device);
+    public abstract void detach();
+}
+
+public abstract interface MediaDevice : Object {
+    public abstract string id { get; }
+    public abstract string display_name { get; }
+    public abstract string detail_name { get; }
+}
+
 public abstract interface NotificationPopulator : Object {
     public abstract string id { get; }
     public abstract void init(Conversation conversation, NotificationCollection summary, WidgetType type);

@@ -12,6 +12,7 @@ public class Registry {
     internal Gee.Collection<ConversationTitlebarEntry> conversation_titlebar_entries = new Gee.TreeSet<ConversationTitlebarEntry>((a, b) => {
         return (int)(a.order - b.order);
     });
+    public VideoCallPlugin? video_call_plugin;
 
     public bool register_encryption_list_entry(EncryptionListEntry entry) {
         lock(encryption_list_entries) {

@@ -15,6 +15,7 @@ SOURCES
     src/dbus/upower.vala
 
     src/entity/account.vala
+    src/entity/call.vala
     src/entity/conversation.vala
     src/entity/encryption.vala
     src/entity/file_transfer.vala
@@ -27,6 +28,8 @@ SOURCES
 
     src/service/avatar_manager.vala
     src/service/blocking_manager.vala
+    src/service/call_store.vala
+    src/service/calls.vala
     src/service/chat_interaction.vala
     src/service/connection_manager.vala
     src/service/content_item_store.vala
