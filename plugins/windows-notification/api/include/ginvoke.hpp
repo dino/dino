@@ -15,7 +15,6 @@
 #include <exception>
 #include <cstdint>
 #include <cinttypes>
-#include <cassert>
 
 #include <glib.h>
 
