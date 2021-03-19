@@ -77,7 +77,7 @@ inline impl::varstring describe_arguments(const Arg &... a) noexcept try
 }
 catch (...)
 {
-    return {"<failed to stringify>"};
+    return {"<failed to stringify arguments>"};
 }
 
 

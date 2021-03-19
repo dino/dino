@@ -24,7 +24,7 @@ namespace glib::impl
         catch (...)
         {
             g_free(const_cast<char *>(ptr));
-            return {{ e.code(), {"<failed to stringify>"} }};
+            return {{ e.code(), {"<failed to stringify error>"} }};
         }
     }
     catch (...)
