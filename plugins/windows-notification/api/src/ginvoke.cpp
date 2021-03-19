@@ -20,6 +20,8 @@ namespace glib::impl
             if (not wmsg.empty())
             {
                 ptr = wsview_to_char(wmsg);
+                if (not ptr)
+                    throw 42;
                 std::string msg{ptr};
                 g_free(const_cast<char *>(ptr));  // WTF? Deletion is not modification!
                 return {{ e.code(), {std::move(msg)} }};
