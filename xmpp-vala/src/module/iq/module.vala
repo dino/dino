@@ -10,6 +10,8 @@ namespace Xmpp.Iq {
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
         public async Iq.Stanza send_iq_async(XmppStream stream, Iq.Stanza iq) {
+            assert(iq.type_ == Iq.Stanza.TYPE_GET || iq.type_ == Iq.Stanza.TYPE_SET);
+
             Iq.Stanza? return_stanza = null;
             send_iq(stream, iq, (_, result_iq) => {
                 return_stanza = result_iq;

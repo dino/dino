@@ -21,19 +21,13 @@ public class Module : Jingle.Transport, XmppStreamModule {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    public async bool is_transport_available(XmppStream stream, Jid full_jid) {
-        return yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
+    public async bool is_transport_available(XmppStream stream, uint8 components, Jid full_jid) {
+        return components == 1 && yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
     }
 
-    public string transport_ns_uri() {
-        return NS_URI;
-    }
-    public Jingle.TransportType transport_type() {
-        return Jingle.TransportType.STREAMING;
-    }
-    public int transport_priority() {
-        return 1;
-    }
+    public string ns_uri { get { return NS_URI; } }
+    public Jingle.TransportType type_ { get { return Jingle.TransportType.STREAMING; } }
+    public int priority { get { return 1; } }
     private Gee.List<Candidate> get_proxies(XmppStream stream) {
         Gee.List<Candidate> result = new ArrayList<Candidate>();
         int i = 1 << 15;
@@ -70,20 +64,21 @@ public class Module : Jingle.Transport, XmppStreamModule {
     }
     private void select_candidates(XmppStream stream, Jid local_full_jid, string dstaddr, Parameters result) {
         result.local_candidates.add_all(get_proxies(stream));
-        result.local_candidates.add_all(start_local_listeners(stream, local_full_jid, dstaddr, out result.listener));
+        //result.local_candidates.add_all(start_local_listeners(stream, local_full_jid, dstaddr, out result.listener));
         result.local_candidates.sort((c1, c2) => {
             if (c1.priority < c2.priority) { return 1; }
             if (c1.priority > c2.priority) { return -1; }
             return 0;
         });
     }
-    public Jingle.TransportParameters create_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid) {
+    public Jingle.TransportParameters create_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid) {
+        assert(components == 1);
         Parameters result = new Parameters.create(local_full_jid, peer_full_jid, random_uuid());
         string dstaddr = calculate_dstaddr(result.sid, local_full_jid, peer_full_jid);
         select_candidates(stream, local_full_jid, dstaddr, result);
         return result;
     }
-    public Jingle.TransportParameters parse_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
+    public Jingle.TransportParameters parse_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
         Parameters result = Parameters.parse(local_full_jid, peer_full_jid, transport);
         string dstaddr = calculate_dstaddr(result.sid, local_full_jid, peer_full_jid);
         select_candidates(stream, local_full_jid, dstaddr, result);
@@ -335,6 +330,8 @@ class LocalListener {
 }
 
 class Parameters : Jingle.TransportParameters, Object {
+    public string ns_uri { get { return NS_URI; } }
+    public uint8 components { get { return 1; } }
     public Jingle.Role role { get; private set; }
     public string sid { get; private set; }
     public string remote_dstaddr { get; private set; }
@@ -352,6 +349,7 @@ class Parameters : Jingle.TransportParameters, Object {
     Candidate? local_selected_candidate = null;
     SocketConnection? local_selected_candidate_conn = null;
     weak Jingle.Session? session = null;
+    weak Jingle.Content? content = null;
     XmppStream? hack = null;
 
     string? waiting_for_activation_cid = null;
@@ -367,9 +365,11 @@ class Parameters : Jingle.TransportParameters, Object {
         this.local_full_jid = local_full_jid;
         this.peer_full_jid = peer_full_jid;
     }
+
     public Parameters.create(Jid local_full_jid, Jid peer_full_jid, string sid) {
         this(Jingle.Role.INITIATOR, sid, local_full_jid, peer_full_jid, null);
     }
+
     public static Parameters parse(Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
         string? dstaddr = transport.get_attribute("dstaddr");
         string? mode = transport.get_attribute("mode");
@@ -386,9 +386,11 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         return result;
     }
-    public string transport_ns_uri() {
-        return NS_URI;
+
+    public void set_content(Jingle.Content content) {
+
     }
+
     public StanzaNode to_transport_stanza_node() {
         StanzaNode transport = new StanzaNode.build("transport", NS_URI)
             .add_self_xmlns()
@@ -405,7 +407,8 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         return transport;
     }
-    public void on_transport_accept(StanzaNode transport) throws Jingle.IqError {
+
+    public void handle_transport_accept(StanzaNode transport) throws Jingle.IqError {
         Parameters other = Parameters.parse(local_full_jid, peer_full_jid, transport);
         if (other.sid != sid) {
             throw new Jingle.IqError.BAD_REQUEST("invalid sid");
@@ -413,7 +416,8 @@ class Parameters : Jingle.TransportParameters, Object {
         remote_candidates = other.remote_candidates;
         remote_dstaddr = other.remote_dstaddr;
     }
-    public void on_transport_info(StanzaNode transport) throws Jingle.IqError {
+
+    public void handle_transport_info(StanzaNode transport) throws Jingle.IqError {
         StanzaNode? candidate_error = transport.get_subnode("candidate-error", NS_URI);
         StanzaNode? candidate_used = transport.get_subnode("candidate-used", NS_URI);
         StanzaNode? activated = transport.get_subnode("activated", NS_URI);
@@ -449,6 +453,7 @@ class Parameters : Jingle.TransportParameters, Object {
             handle_proxy_error();
         }
     }
+
     private void handle_remote_candidate(string? cid) throws Jingle.IqError {
         if (remote_sent_selected_candidate) {
             throw new Jingle.IqError.BAD_REQUEST("remote candidate already specified");
@@ -470,6 +475,7 @@ class Parameters : Jingle.TransportParameters, Object {
         debug("Remote selected candidate %s", candidate != null ? candidate.cid : "(null)");
         try_completing_negotiation();
     }
+
     private void handle_activated(string cid) throws Jingle.IqError {
         if (waiting_for_activation_cid == null || cid != waiting_for_activation_cid) {
             throw new Jingle.IqError.BAD_REQUEST("unexpected proxy activation message");
@@ -477,6 +483,7 @@ class Parameters : Jingle.TransportParameters, Object {
         Idle.add((owned)waiting_for_activation_callback);
         waiting_for_activation_cid = null;
     }
+
     private void handle_proxy_error() throws Jingle.IqError {
         if (waiting_for_activation_cid == null) {
             throw new Jingle.IqError.BAD_REQUEST("unexpected proxy error message");
@@ -486,6 +493,7 @@ class Parameters : Jingle.TransportParameters, Object {
         waiting_for_activation_error = true;
 
     }
+
     private void try_completing_negotiation() {
         if (!remote_sent_selected_candidate || !local_determined_selected_candidate) {
             return;
@@ -500,7 +508,7 @@ class Parameters : Jingle.TransportParameters, Object {
 
         if (num_candidates == 0) {
             // Notify Jingle of the failed transport.
-            session.set_transport_connection(hack, null);
+            content_set_transport_connection(null);
             return;
         }
 
@@ -525,7 +533,7 @@ class Parameters : Jingle.TransportParameters, Object {
                 if (strong == null) {
                     return;
                 }
-                strong.set_transport_connection(hack, local_selected_candidate_conn);
+                content_set_transport_connection(local_selected_candidate_conn);
             } else {
                 wait_for_remote_activation.begin(local_selected_candidate, local_selected_candidate_conn);
             }
@@ -538,15 +546,16 @@ class Parameters : Jingle.TransportParameters, Object {
                 SocketConnection? conn = listener.get_connection(remote_selected_candidate.cid);
                 if (conn == null) {
                     // Remote hasn't actually connected to us?!
-                    strong.set_transport_connection(hack, null);
+                    content_set_transport_connection(null);
                     return;
                 }
-                strong.set_transport_connection(hack, conn);
+                content_set_transport_connection(conn);
             } else {
                 connect_to_local_candidate.begin(remote_selected_candidate);
             }
         }
     }
+
     public async void wait_for_remote_activation(Candidate candidate, SocketConnection conn) {
         debug("Waiting for remote activation of %s", candidate.cid);
         waiting_for_activation_cid = candidate.cid;
@@ -558,11 +567,12 @@ class Parameters : Jingle.TransportParameters, Object {
             return;
         }
         if (!waiting_for_activation_error) {
-            strong.set_transport_connection(hack, conn);
+            content_set_transport_connection(conn);
         } else {
-            strong.set_transport_connection(hack, null);
+            content_set_transport_connection(null);
         }
     }
+
     public async void connect_to_local_candidate(Candidate candidate) {
         debug("Connecting to candidate %s", candidate.cid);
         try {
@@ -587,11 +597,11 @@ class Parameters : Jingle.TransportParameters, Object {
                 throw new IOError.PROXY_FAILED("activation iq error");
             }
 
-            Jingle.Session? strong = session;
-            if (strong == null) {
+            Jingle.Content? strong_content = content;
+            if (strong_content == null) {
                 return;
             }
-            strong.send_transport_info(hack, new StanzaNode.build("transport", NS_URI)
+            strong_content.send_transport_info(new StanzaNode.build("transport", NS_URI)
                 .add_self_xmlns()
                 .put_attribute("sid", sid)
                 .put_node(new StanzaNode.build("activated", NS_URI)
@@ -599,20 +609,21 @@ class Parameters : Jingle.TransportParameters, Object {
                 )
             );
 
-            strong.set_transport_connection(hack, conn);
+            content_set_transport_connection(conn);
         } catch (Error e) {
-            Jingle.Session? strong = session;
-            if (strong == null) {
+            Jingle.Content? strong_content = content;
+            if (strong_content == null) {
                 return;
             }
-            strong.send_transport_info(hack, new StanzaNode.build("transport", NS_URI)
+            strong_content.send_transport_info(new StanzaNode.build("transport", NS_URI)
                 .add_self_xmlns()
                 .put_attribute("sid", sid)
                 .put_node(new StanzaNode.build("proxy-error", NS_URI))
             );
-            strong.set_transport_connection(hack, null);
+            content_set_transport_connection(null);
         }
     }
+
     public async SocketConnection connect_to_socks5(Candidate candidate, string dstaddr) throws Error {
         SocketClient socket_client = new SocketClient() { timeout=NEGOTIATION_TIMEOUT };
 
@@ -685,6 +696,7 @@ class Parameters : Jingle.TransportParameters, Object {
 
         return conn;
     }
+
     public async void try_connecting_to_candidates(XmppStream stream, Jingle.Session session) throws Error {
         remote_candidates.sort((c1, c2) => {
             // sort from priorities from high to low
@@ -705,7 +717,7 @@ class Parameters : Jingle.TransportParameters, Object {
                 local_selected_candidate = candidate;
                 local_selected_candidate_conn = conn;
                 debug("Selected candidate %s", candidate.cid);
-                session.send_transport_info(stream, new StanzaNode.build("transport", NS_URI)
+                content.send_transport_info(new StanzaNode.build("transport", NS_URI)
                     .add_self_xmlns()
                     .put_attribute("sid", sid)
                     .put_node(new StanzaNode.build("candidate-used", NS_URI)
@@ -722,7 +734,7 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         local_determined_selected_candidate = true;
         local_selected_candidate = null;
-        session.send_transport_info(stream, new StanzaNode.build("transport", NS_URI)
+        content.send_transport_info(new StanzaNode.build("transport", NS_URI)
             .add_self_xmlns()
             .put_attribute("sid", sid)
             .put_node(new StanzaNode.build("candidate-error", NS_URI))
@@ -730,10 +742,26 @@ class Parameters : Jingle.TransportParameters, Object {
         // Try remote candidates
         try_completing_negotiation();
     }
-    public void create_transport_connection(XmppStream stream, Jingle.Session session) {
-        this.session = session;
+
+    private Jingle.StreamingConnection connection = new Jingle.StreamingConnection();
+
+    private void content_set_transport_connection(IOStream? ios) {
+        IOStream? iostream = ios;
+        Jingle.Content? strong_content = content;
+        if (strong_content == null) return;
+
+        if (strong_content.security_params != null) {
+            iostream = strong_content.security_params.wrap_stream(iostream);
+        }
+        connection.init.begin(iostream);
+    }
+
+    public void create_transport_connection(XmppStream stream, Jingle.Content content) {
+        this.session = content.session;
+        this.content = content;
         this.hack = stream;
         try_connecting_to_candidates.begin(stream, session);
+        this.content.set_transport_connection(connection, 1);
     }
 }
 
