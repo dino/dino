@@ -194,6 +194,15 @@ public static bool is_24h_format() {
     return is24h == 1;
 }
 
+public static string format_time(DateTime datetime, string format_24h, string format_12h) {
+    string format = Util.is_24h_format() ? format_24h : format_12h;
+    if (!get_charset(null)) {
+        // No UTF-8 support, use simple colon for time instead
+        format = format.replace("∶", ":");
+    }
+    return datetime.format(format);
+}
+
 public static Regex get_url_regex() {
     if (URL_REGEX == null) {
         URL_REGEX = /\b(((http|ftp)s?:\/\/|(ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc|urn):)\S+)/;

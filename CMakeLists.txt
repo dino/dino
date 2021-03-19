@@ -11,7 +11,7 @@ else ()
 endif ()
 
 # Prepare Plugins
-set(DEFAULT_PLUGINS omemo;openpgp;http-files;ice)
+set(DEFAULT_PLUGINS omemo;openpgp;http-files;ice;rtp)
 foreach (plugin ${DEFAULT_PLUGINS})
     if ("$CACHE{DINO_PLUGIN_ENABLED_${plugin}}" STREQUAL "")
         if (NOT DEFINED DINO_PLUGIN_ENABLED_${plugin}})
@@ -96,6 +96,7 @@ macro(AddCFlagIfSupported list flag)
     endif ()
 endmacro()
 
+
 if ("Ninja" STREQUAL ${CMAKE_GENERATOR})
     AddCFlagIfSupported(CMAKE_C_FLAGS -fdiagnostics-color)
 endif ()
@@ -105,6 +106,7 @@ AddCFlagIfSupported(CMAKE_C_FLAGS -Wall)
 AddCFlagIfSupported(CMAKE_C_FLAGS -Wextra)
 AddCFlagIfSupported(CMAKE_C_FLAGS -Werror=format-security)
 AddCFlagIfSupported(CMAKE_C_FLAGS -Wno-duplicate-decl-specifier)
+AddCFlagIfSupported(CMAKE_C_FLAGS -fno-omit-frame-pointer)
 
 if (NOT VALA_WARN)
   set(VALA_WARN "conversion")

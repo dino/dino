@@ -86,14 +86,24 @@ window.dino-main .dino-conversation .message-box.edit-mode:hover {
     background: alpha(@theme_selected_bg_color, 0.12);
 }
 
-window.dino-main .file-box-outer {
+window.dino-main .file-box-outer,
+window.dino-main .call-box-outer {
     background: @theme_base_color;
     border-radius: 3px;
     border: 1px solid alpha(@theme_fg_color, 0.1);
 }
 
-window.dino-main .file-box {
+window.dino-main .file-box,
+window.dino-main .call-box {
     margin: 12px 16px 12px 12px;
+}
+
+window.dino-main .call-box-outer.incoming {
+    border-color: alpha(@theme_selected_bg_color, 0.3);
+}
+
+window.dino-main .incoming-call-box {
+    background: alpha(@theme_selected_bg_color, 0.1);
 }
 
 window.dino-main .dino-sidebar > frame.collapsed {
@@ -203,4 +213,87 @@ box.dino-input-error label.input-status-highlight-once {
     animation-timing-function: linear;
     animation-iteration-count: 1;
     animation-name: input-error-highlight;
+}
+
+/* Call window */
+
+.dino-call-window .titlebar {
+    min-height: 0;
+}
+
+.dino-call-window headerbar, .call-button {
+    box-shadow: none;
+}
+
+.dino-call-window .titlebutton.close:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0);
+    box-shadow: none;
+}
+
+.dino-call-window button.call-button {
+    outline: 0;
+    border-radius: 1000px;
+}
+.dino-call-window button.white-button {
+    color: #1d1c1d;
+    background: rgba(255,255,255,0.9);
+    border: lightgrey;
+}
+
+.dino-call-window button.transparent-white-button {
+    color: white;
+    background: rgba(255,255,255,0.15);
+    border: none;
+}
+
+.dino-call-window button.call-mediadevice-settings-button {
+    border-radius: 1000px;
+    min-height: 0;
+    min-width: 0;
+    padding: 3px;
+    margin: 2px;
+    transition-duration: 0;
+}
+
+.dino-call-window button.call-mediadevice-settings-button:hover,
+.dino-call-window button.call-mediadevice-settings-button:checked { /* Effect that makes the button slightly larger on hover :) */
+    border-radius: 1000px;
+    min-height: 0;
+    min-width: 0;
+    padding: 5px;
+    margin: 0;
+}
+
+.dino-call-window .unencrypted-box {
+    color: @error_color;
+    padding: 10px;
+    border-radius: 5px;
+    background: rgba(0,0,0,0.5);
+}
+
+.dino-call-window .call-header-bar {
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0));
+    border: 0;
+    border-radius: 0;
+}
+
+.dino-call-window .call-header-bar,
+.dino-call-window .call-header-bar image {
+    color: #ededec;
+}
+
+.dino-call-window .call-bottom-bar {
+    background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.3));
+    border: 0;
+}
+
+.dino-call-window .video-placeholder-box {
+    background-color: #212121;
+}
+
+.dino-call-window .text-no-controls {
+    background: white;
+    border-radius: 5px;
+    padding: 5px 10px;
 }
