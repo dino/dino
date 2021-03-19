@@ -11,16 +11,48 @@ win32_error::win32_error() noexcept
 
 constexpr auto noncharacter = L'\uFFFF';
 
+template<DWORD InitialGuess, typename Oracle>
+static std::wstring GetStringOfGuessableLength(const Oracle &take_a_guess)
+{
+    constexpr auto grow = [](const std::size_t s) { return s + s/2; };
+    static_assert(
+        grow(InitialGuess) != InitialGuess, "imminent infinite loop");
+
+    std::wstring buf(InitialGuess, noncharacter);
+    auto maybe_len = take_a_guess(buf.data(), static_cast<DWORD>(buf.size()));
+
+    if (not maybe_len) do
+    {
+        constexpr auto dw_max = std::size_t{std::numeric_limits<DWORD>::max()};
+        if (buf.size() == dw_max)
+            throw std::runtime_error{"wat, string too long for DWORD?"};
+        buf.resize(std::min(grow(buf.size()), dw_max));
+        maybe_len = take_a_guess(buf.data(), static_cast<DWORD>(buf.size()));
+    }
+    while (not maybe_len);
+
+    buf.resize(*maybe_len);
+    return buf;
+}
+
 std::wstring GetExePath()
 {
-    std::wstring exePath(MAX_PATH, 0);
-    auto charWritten = GetModuleFileName(nullptr, exePath.data(), exePath.size());
-    if (charWritten > 0)
+    const auto try_get_exe_path = [](
+        const auto buf, const auto bufsize) -> std::optional<std::size_t>
     {
-        exePath.resize(charWritten);
-        return exePath;
-    }
-    throw win32_error{};
+        constexpr HMODULE exe_module = nullptr;
+        ::SetLastError(0);  // just in case
+        const auto res = ::GetModuleFileNameW(exe_module, buf, bufsize);
+        if (const auto e = ::GetLastError();
+          e == ERROR_INSUFFICIENT_BUFFER or res == bufsize)
+            return {};
+        else if (not e)
+            return res;
+        else
+            throw win32_error{e};
+    };
+
+    return GetStringOfGuessableLength<MAX_PATH+1>(try_get_exe_path);
 }
 
 std::wstring GetEnv(const wchar_t *const variable_name)
