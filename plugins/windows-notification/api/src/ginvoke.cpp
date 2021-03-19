@@ -16,10 +16,16 @@ namespace glib::impl
         const char *ptr = nullptr;
         try
         {
-            ptr = wsview_to_char(e.message());
-            std::string msg{ptr};
-            g_free(const_cast<char *>(ptr));  // WTF? Deletion is not modification!
-            return {{ e.code(), {std::move(msg)} }};
+            const auto wmsg = std::wstring_view{e.message()};
+            if (not wmsg.empty())
+            {
+                ptr = wsview_to_char(wmsg);
+                std::string msg{ptr};
+                g_free(const_cast<char *>(ptr));  // WTF? Deletion is not modification!
+                return {{ e.code(), {std::move(msg)} }};
+            }
+            else
+                return {{ e.code(), {"<no error description>"} }};
         }
         catch (...)
         {
