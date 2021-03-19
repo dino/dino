@@ -59,7 +59,7 @@ namespace {
 #define checked(func, args) \
     if (const auto hr = ((func)args); FAILED(hr)) \
     { \
-        g_warning("%s%s failed: hresult %#08" PRIX32, \
+        g_warning("%s%s failed: hresult 0x%08" PRIX32, \
             #func, #args, static_cast<std::uint32_t>(hr)); \
         winrt::throw_hresult(hr); \
     }
@@ -76,7 +76,7 @@ struct property
     ~property()
     {
         if (const auto hr = ::PropVariantClear(&var); FAILED(hr))
-            g_critical("PropVariantClear failed: hresult %#08" PRIX32,
+            g_critical("PropVariantClear failed: hresult 0x%08" PRIX32,
                 static_cast<std::uint32_t>(hr));
     }
 
