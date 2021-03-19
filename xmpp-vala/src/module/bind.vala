@@ -69,6 +69,10 @@ namespace Xmpp.Bind {
         public Jid? my_jid;
         public bool finished = false;
 
+        public static Jid? get_my_jid(XmppStream stream) {
+            return stream.get_flag(IDENTITY).my_jid;
+        }
+
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
     }
