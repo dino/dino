@@ -31,6 +31,12 @@ namespace impl
     using varstring_t = std::variant<std::string, static_c_str>;
     struct varstring : varstring_t
     {
+        varstring(std::string  &&s) noexcept : varstring_t{std::move(s)} {}
+        varstring(static_c_str &&s) noexcept : varstring_t{std::move(s)} {}
+        varstring(std::nullptr_t) = delete;
+        varstring(const varstring &) = delete;
+        varstring(varstring &&) = default;
+
         const char* c_str() const && = delete;
         const char* c_str() const &
         {
@@ -75,7 +81,7 @@ inline impl::varstring describe_arguments(const Arg &... a) noexcept try
     ((describe_argument(ss,a) << ','), ...);
     auto s = std::move(ss).str();
     s.pop_back();
-    return {s};
+    return {std::move(s)};
 }
 catch (...)
 {
