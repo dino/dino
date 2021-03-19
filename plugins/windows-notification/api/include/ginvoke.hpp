@@ -68,10 +68,10 @@ inline auto &describe_argument(OStream &s, const wchar_t *   const a) = delete; 
 // TODO: handle wide strings maybe
 
 template<typename... Arg>
-inline impl::varstring describe_arguments(const Arg &...a) noexcept try
+inline impl::varstring describe_arguments(const Arg &... a) noexcept try
 {
     std::ostringstream ss;
-    ((describe_argument(ss,a)<<','), ...);
+    ((describe_argument(ss,a) << ','), ...);
     auto s = std::move(ss).str();
     s.pop_back();
     return {s};
@@ -84,7 +84,7 @@ catch (...)
 
 #define FORMAT "%s(%s) failed: %s"
 template<typename... Arg>
-inline void log_invocation_failure(const char *e, const char *func_name, const Arg &...a) noexcept
+inline void log_invocation_failure(const char *e, const char *func_name, const Arg &... a) noexcept
 {
     const auto args = describe_arguments(a...);
     g_warning(FORMAT, func_name, args.c_str(), e);
@@ -99,7 +99,7 @@ inline void log_invocation_failure_desc(const char* e, const char* e_desc, const
 
 
 template<typename Invokable, typename... Arg>
-inline gboolean try_invoke(const char *func_name, Invokable &&i, const Arg &...a) noexcept try
+inline gboolean try_invoke(const char *func_name, Invokable &&i, const Arg &... a) noexcept try
 {
     return std::invoke(std::forward<Invokable>(i), a...);
 }

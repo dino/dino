@@ -21,14 +21,14 @@ namespace dyn
         if (mod)
             return mod;
         const win32_error e{};
-        g_warning("failed to load %s", dbgnym );
+        g_warning("failed to load %s", dbgnym);
         throw e;
     }
 
     template<typename T>
     inline T &load_symbol(
         const wchar_t *const mod_path, const char *const mod_dbgnym,
-        const char *const symbol )
+        const char *const symbol)
     {
         const auto p = reinterpret_cast<T *>(
             ::GetProcAddress(load_module(mod_path, mod_dbgnym), symbol));
