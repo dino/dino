@@ -79,7 +79,7 @@ static bool ImplSetProcessAumid(const std::string_view aumid)
     {
         return false;
     }
-    return SUCCEEDED(SetCurrentProcessExplicitAppUserModelID(waumid.c_str()));
+    return SUCCEEDED(::SetCurrentProcessExplicitAppUserModelID(waumid.c_str()));
 }
 
 extern "C"

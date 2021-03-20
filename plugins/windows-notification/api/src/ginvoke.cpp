@@ -24,15 +24,15 @@ namespace glib::impl
                     throw 42;
                 std::string msg{ptr};
                 g_free(const_cast<char *>(ptr));  // WTF? Deletion is not modification!
-                return {{ e.code(), {std::move(msg)} }};
+                return {{ e.code(), std::move(msg) }};
             }
             else
-                return {{ e.code(), {"<no error description>"} }};
+                return {{ e.code(), "<no error description>" }};
         }
         catch (...)
         {
             g_free(const_cast<char *>(ptr));
-            return {{ e.code(), {"<failed to stringify error>"} }};
+            return {{ e.code(), "<failed to stringify error>" }};
         }
     }
     catch (...)
