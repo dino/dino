@@ -55,8 +55,11 @@ namespace impl
     std::optional<hresult> get_if_hresult_error(std::exception_ptr) noexcept;
 }
 
-template<typename OStream, typename T>
+template<typename OStream, typename T, std::enable_if_t<!std::is_enum_v<T>,int> = 0>
 inline auto &describe_argument(OStream &s, const T &a) { return s << a; }
+template<typename OStream, typename T, std::enable_if_t< std::is_enum_v<T>,int> = 0>
+inline auto &describe_argument(OStream &s, const T &a) { return s << static_cast<std::underlying_type_t<T>>(a); }
+
 template<typename OStream>
 inline auto &describe_argument(OStream &s,  std::string_view const a) { return s << std::quoted(a); }
 template<typename OStream>
