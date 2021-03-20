@@ -99,6 +99,9 @@ private:
 bool ImplEnsureAumiddedShortcutExists(
     const std::string_view menu_rel_path, const std::string_view narrow_aumid)
 {
+    if (menu_rel_path.empty())
+        throw std::runtime_error{"empty menu-relative shortcut path"};
+
     const auto aumid = sview_to_wstr(narrow_aumid);
     if (aumid.empty())
     {
