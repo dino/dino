@@ -8,15 +8,17 @@
 #include "winrt-enums.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+#define EXTERN    extern "C"
+#define NOEXCEPT  noexcept
+#else
+#define EXTERN
+#define NOEXCEPT
 #endif
 
-gboolean winrt_InitApartment();
-char* winrt_windows_ui_notifications_toast_notification_manager_GetTemplateContent(winrtWindowsUINotificationsToastTemplateType type);
+EXTERN gboolean winrt_InitApartment();
+EXTERN char* winrt_windows_ui_notifications_toast_notification_manager_GetTemplateContent(winrtWindowsUINotificationsToastTemplateType type) NOEXCEPT;
 
-#ifdef __cplusplus
-}
-#endif
+#undef EXTERN
+#undef NOEXCEPT
 
 #endif // __WINRT_GLIB_2_H__
