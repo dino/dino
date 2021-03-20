@@ -153,6 +153,7 @@ extern "C"
     gboolean EnsureAumiddedShortcutExists(const gchar *const aumid) noexcept
     {
         return g_try_invoke(
-            ImplEnsureAumiddedShortcutExists, R"(Programs\Dino)", aumid);
+            ImplEnsureAumiddedShortcutExists, R"(Programs\Dino)", aumid)
+                .value_or(false);
     }
 }

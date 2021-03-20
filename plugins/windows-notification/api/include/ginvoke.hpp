@@ -104,16 +104,31 @@ inline void log_invocation_failure_desc(const char* e, const char* e_desc, const
 }
 #undef FORMAT
 
+struct regular_void {};
 
 template<typename Invokable, typename... Arg>
-inline gboolean try_invoke(const char *func_name, Invokable &&i, const Arg &... a) noexcept try
+inline auto invoke(Invokable &&i, const Arg &... a)
 {
-    return std::invoke(std::forward<Invokable>(i), a...);
+    if constexpr (std::is_void_v<decltype(std::invoke(std::forward<Invokable>(i), a...))>)
+    {
+        std::invoke(std::forward<Invokable>(i), a...);
+        return regular_void{};
+    }
+    else
+        return std::invoke(std::forward<Invokable>(i), a...);
+}
+
+template<typename Invokable, typename... Arg>
+inline auto try_invoke(const char *func_name, Invokable &&i, const Arg &... a) noexcept
+    -> std::optional<decltype(invoke(std::forward<Invokable>(i), a...))>
+try
+{
+    return invoke(std::forward<Invokable>(i), a...);
 }
 catch (const std::exception &e)
 {
     log_invocation_failure(e.what(), func_name, a...);
-    return FALSE;
+    return {};
 }
 catch (...)
 {
@@ -126,7 +141,7 @@ catch (...)
     else
         log_invocation_failure("unknown error", func_name, a...);
 
-    return FALSE;
+    return {};
 }
 
 }  // namespace glib
