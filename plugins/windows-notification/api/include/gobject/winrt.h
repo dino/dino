@@ -15,7 +15,7 @@
 #define NOEXCEPT
 #endif
 
-EXTERN gboolean winrt_InitApartment();
+EXTERN gboolean winrt_InitApartment() NOEXCEPT;
 EXTERN char* winrt_windows_ui_notifications_toast_notification_manager_GetTemplateContent(winrtWindowsUINotificationsToastTemplateType type) NOEXCEPT;
 
 #undef EXTERN

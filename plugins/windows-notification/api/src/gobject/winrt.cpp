@@ -1,28 +1,26 @@
-#include <iostream>
 
 #include "gobject/winrt-private.h"
 #include "converter.hpp"
 #include "ginvoke.hpp"
 
-gboolean winrt_InitApartment()
+#include <windows.h>
+
+static void ImplInitApartment()
 {
-    try
+    const auto res = ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    if (FAILED(res))
     {
-        winrt::init_apartment();
-        return true;
+        if (res == RPC_E_CHANGED_MODE)  // seems harmless
+            g_info("attempted to change COM apartment mode of thread %" PRIu32,
+                ::GetCurrentThreadId());
+        else
+            winrt::throw_hresult(res);
     }
-    catch(const winrt::hresult_error& e)
-    {
-        auto message = wsview_to_char(e.message());
-        std::cerr << message << '\n';
-        g_free(message);
-        if (e.code() == -2147417850 /* RPC_E_CHANGED_MODE */) // harmless
-        {
-            return true;
-        }
-    }
-    
-    return false;
+}
+
+gboolean winrt_InitApartment() noexcept
+{
+    return g_try_invoke0(ImplInitApartment).has_value();
 }
 
 static char* ImplGetTemplateContent(winrtWindowsUINotificationsToastTemplateType type)
