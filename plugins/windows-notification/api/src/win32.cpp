@@ -90,7 +90,7 @@ extern "C"
 
     gboolean IsWindows10() noexcept
     {
-        RTL_OSVERSIONINFOW rovi = { 0 };
+        RTL_OSVERSIONINFOW rovi = {};
         rovi.dwOSVersionInfoSize = sizeof(rovi);
         if (S_OK == RtlGetVersion(&rovi))
         {

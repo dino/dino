@@ -70,9 +70,9 @@ struct _winrtWindowsUINotificationsToastNotificationPrivate
 { 
   winrt::Windows::UI::Notifications::ToastNotification data;
 
-  std::list<std::shared_ptr<Callback<NotificationCallbackActivated>>> activated;
-  std::list<std::shared_ptr<Callback<NotificationCallbackFailed>>> failed;
-  std::list<std::shared_ptr<Callback<NotificationCallbackDismissed>>> dismissed;
+  std::list<std::shared_ptr<Callback<NotificationCallbackActivated>>> activated{};
+  std::list<std::shared_ptr<Callback<NotificationCallbackFailed>>> failed{};
+  std::list<std::shared_ptr<Callback<NotificationCallbackDismissed>>> dismissed{};
 };
 
 typedef struct
