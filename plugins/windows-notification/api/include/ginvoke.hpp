@@ -133,5 +133,6 @@ catch (...)
 
 
 #define g_try_invoke(invokable, ...)  glib::try_invoke(#invokable, invokable, __VA_ARGS__)
+#define g_try_invoke0(invokable)      glib::try_invoke(#invokable, invokable)
 
 #endif
