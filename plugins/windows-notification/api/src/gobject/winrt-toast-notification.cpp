@@ -211,7 +211,7 @@ void winrt_windows_ui_notifications_toast_notification_SetTag(winrtWindowsUINoti
  */
 char* winrt_windows_ui_notifications_toast_notification_GetTag(winrtWindowsUINotificationsToastNotification* self)
 {
-  g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), FALSE);
+  g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), nullptr);
 
   return wsview_to_char(winrt_windows_ui_notifications_toast_notification_get_internal(self)->Tag());
 }
@@ -233,7 +233,7 @@ void winrt_windows_ui_notifications_toast_notification_SetGroup(winrtWindowsUINo
  */
 char* winrt_windows_ui_notifications_toast_notification_GetGroup(winrtWindowsUINotificationsToastNotification* self)
 {
-  g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), FALSE);
+  g_return_val_if_fail (WINRT_IS_WINDOWS_UI_NOTIFICATIONS_TOAST_NOTIFICATION (self), nullptr);
 
   return  wsview_to_char(winrt_windows_ui_notifications_toast_notification_get_internal(self)->Group());
 }
