@@ -12,7 +12,7 @@ static void ImplInitApartment()
     {
         if (res == RPC_E_CHANGED_MODE)  // seems harmless
             g_info("attempted to change COM apartment mode of thread %" PRIu32,
-                ::GetCurrentThreadId());
+                std::uint32_t{::GetCurrentThreadId()});
         else
             winrt::throw_hresult(res);
     }
