@@ -104,12 +104,20 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                     best_index = i;
                 }
             }
-            return device.caps.copy_nth(best_index);
+            return caps_copy_nth(device.caps, best_index);
         } else if (device.caps.get_size() > 0) {
-            return device.caps.copy_nth(0);
+            return caps_copy_nth(device.caps, 0);
         } else {
             return new Gst.Caps.any();
         }
+    }
+
+    // Backport from gst_caps_copy_nth added in GStreamer 1.16
+    private static Gst.Caps caps_copy_nth(Gst.Caps source, uint index) {
+        Gst.Caps target = new Gst.Caps.empty();
+        target.flags = source.flags;
+        target.append_structure_full(source.get_structure(index).copy(), source.get_features(index).copy());
+        return target;
     }
 
     private void create() {
