@@ -6,6 +6,10 @@ if(DINO_PLUGIN_ENABLED_ice)
   add_subdirectory(ice)
 endif(DINO_PLUGIN_ENABLED_ice)
 
+if(DINO_PLUGIN_ENABLED_rtp)
+  add_subdirectory(rtp)
+endif(DINO_PLUGIN_ENABLED_rtp)
+
 if(DINO_PLUGIN_ENABLED_openpgp)
   add_subdirectory(gpgme-vala)
   add_subdirectory(openpgp)

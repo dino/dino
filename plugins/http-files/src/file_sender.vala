@@ -81,12 +81,6 @@ public class HttpFileSender : FileSender, Object {
         }
     }
 
-    public async long get_max_file_size(Account account) {
-        lock (max_file_sizes) {
-            return max_file_sizes[account];
-        }
-    }
-
     private static void transfer_more_bytes(InputStream stream, Soup.MessageBody body) {
         uint8[] bytes = new uint8[4096];
         ssize_t read = stream.read(bytes);
