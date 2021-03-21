@@ -7,17 +7,12 @@
 GType \
 type_name ## _get_type (void) \
 { \
-  static volatile gsize g_define_id__volatile = 0; \
-  if (g_once_init_enter (&g_define_id__volatile)) \
-    { \
-      static const GEnumValue v[] = { \
-        values \
-        { 0, NULL, NULL }, \
-      }; \
-      GType g_define_id = g_enum_register_static (g_intern_static_string (#TypeName), v); \
-      g_once_init_leave (&g_define_id__volatile, g_define_id); \
-    } \
-  return g_define_id__volatile; \
+  static constexpr GEnumValue v[] = { \
+    values \
+    { 0, NULL, NULL }, \
+  }; \
+  static const auto enum_type_id = g_enum_register_static (g_intern_static_string (#TypeName), v); \
+  return enum_type_id; \
 }
 
 WINRT_GLIB_DEFINE_ENUM_TYPE (winrtWindowsUINotificationsToastDismissalReason, winrt_windows_ui_notifications_toast_dismissal_reason,
