@@ -1,0 +1,114 @@
+using Gee;
+using Xmpp.Xep;
+using Xmpp;
+
+public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.TransportParameters, Object {
+    public string ns_uri { get { return NS_URI; } }
+    public string remote_pwd { get; private set; }
+    public string remote_ufrag { get; private set; }
+    public string local_pwd { get; private set; }
+    public string local_ufrag { get; private set; }
+
+    public ConcurrentList<Candidate> local_candidates = new ConcurrentList<Candidate>(Candidate.equals_func);
+    public ConcurrentList<Candidate> unsent_local_candidates = new ConcurrentList<Candidate>(Candidate.equals_func);
+    public Gee.List<Candidate> remote_candidates = new ArrayList<Candidate>(Candidate.equals_func);
+
+    public Jid local_full_jid { get; private set; }
+    public Jid peer_full_jid { get; private set; }
+    private uint8 components_;
+    public uint8 components { get { return components_; } }
+
+    public bool incoming { get; private set; default = false; }
+    private bool connection_created = false;
+
+    private weak Jingle.Content? content = null;
+
+    protected IceUdpTransportParameters(uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode? node = null) {
+        this.components_ = components;
+        this.local_full_jid = local_full_jid;
+        this.peer_full_jid = peer_full_jid;
+        if (node != null) {
+            incoming = true;
+            remote_pwd = node.get_attribute("pwd");
+            remote_ufrag = node.get_attribute("ufrag");
+            foreach (StanzaNode candidateNode in node.get_subnodes("candidate")) {
+                remote_candidates.add(Candidate.parse(candidateNode));
+            }
+        }
+    }
+
+    public void init(string ufrag, string pwd) {
+        this.local_ufrag = ufrag;
+        this.local_pwd = pwd;
+        debug("Initialized for %s", pwd);
+    }
+
+    public void set_content(Jingle.Content content) {
+        this.content = content;
+        this.content.weak_ref(unset_content);
+    }
+
+    public void unset_content() {
+        this.content = null;
+    }
+
+    public StanzaNode to_transport_stanza_node() {
+        var node = new StanzaNode.build("transport", NS_URI)
+                .add_self_xmlns()
+                .put_attribute("ufrag", local_ufrag)
+                .put_attribute("pwd", local_pwd);
+        foreach (Candidate candidate in unsent_local_candidates) {
+            node.put_node(candidate.to_xml());
+        }
+        unsent_local_candidates.clear();
+        return node;
+    }
+
+    public virtual void handle_transport_accept(StanzaNode node) throws Jingle.IqError {
+        string? pwd = node.get_attribute("pwd");
+        string? ufrag = node.get_attribute("ufrag");
+        if (pwd != null) remote_pwd = pwd;
+        if (ufrag != null) remote_ufrag = ufrag;
+        foreach (StanzaNode candidateNode in node.get_subnodes("candidate")) {
+            remote_candidates.add(Candidate.parse(candidateNode));
+        }
+    }
+
+    public virtual void handle_transport_info(StanzaNode node) throws Jingle.IqError {
+        string? pwd = node.get_attribute("pwd");
+        string? ufrag = node.get_attribute("ufrag");
+        if (pwd != null) remote_pwd = pwd;
+        if (ufrag != null) remote_ufrag = ufrag;
+        uint8 components = 0;
+        foreach (StanzaNode candidateNode in node.get_subnodes("candidate")) {
+            remote_candidates.add(Candidate.parse(candidateNode));
+        }
+    }
+
+    public virtual void create_transport_connection(XmppStream stream, Jingle.Content content) {
+        connection_created = true;
+
+        check_send_transport_info();
+    }
+
+    public void add_local_candidate_threadsafe(Candidate candidate) {
+        if (local_candidates.contains(candidate)) return;
+
+        debug("New local candidate %u %s %s:%u", candidate.component, candidate.type_.to_string(), candidate.ip, candidate.port);
+        unsent_local_candidates.add(candidate);
+        local_candidates.add(candidate);
+
+        if (this.content != null && (this.connection_created || !this.incoming)) {
+            Timeout.add(50, () => {
+                check_send_transport_info();
+                return false;
+            });
+        }
+    }
+
+    private void check_send_transport_info() {
+        if (this.content != null && unsent_local_candidates.size > 0) {
+            content.send_transport_info(to_transport_stanza_node());
+        }
+    }
+}
