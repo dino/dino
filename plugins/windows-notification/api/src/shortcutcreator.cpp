@@ -70,17 +70,13 @@ private:
     PROPVARIANT var;
 };
 
-bool ImplEnsureAumiddedShortcutExists(
+void ImplEnsureAumiddedShortcutExists(
     const std::string_view menu_rel_path, const std::string_view narrow_aumid)
 {
     if (menu_rel_path.empty())
         throw std::runtime_error{"empty menu-relative shortcut path"};
 
     const auto aumid = sview_to_wstr(narrow_aumid);
-    if (aumid.empty())
-    {
-        return false;
-    }
 
     const auto exe_path = GetExePath();
     const auto shortcut_path = GetEnv(L"APPDATA")
@@ -116,8 +112,6 @@ bool ImplEnsureAumiddedShortcutExists(
         constexpr auto set_file_as_current = TRUE;
         checked(file->Save,(shortcut_path.c_str(), set_file_as_current));
     }
-
-    return true;
 }
 
 #undef checked
@@ -131,6 +125,6 @@ extern "C"
     {
         return g_try_invoke(
             ImplEnsureAumiddedShortcutExists, R"(Programs\Dino)", aumid)
-                .value_or(false);
+                .has_value();
     }
 }

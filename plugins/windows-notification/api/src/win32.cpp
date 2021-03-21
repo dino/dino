@@ -76,10 +76,6 @@ std::wstring GetEnv(const wchar_t *const variable_name)
 static bool ImplSetProcessAumid(const std::string_view aumid)
 {
     const auto waumid = sview_to_wstr(aumid);
-    if (waumid.empty())
-    {
-        return false;
-    }
     return SUCCEEDED(::SetCurrentProcessExplicitAppUserModelID(waumid.c_str()));
 }
 
