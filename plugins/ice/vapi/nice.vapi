@@ -8,6 +8,7 @@ namespace Nice {
 		public Agent (GLib.MainContext ctx, Nice.Compatibility compat);
 		public bool add_local_address (Nice.Address addr);
 		public uint add_stream (uint n_components);
+		public bool attach_recv (uint stream_id, uint component_id, GLib.MainContext ctx, Nice.AgentRecvFunc func);
 		[Version (since = "0.1.16")]
 		public async void close_async ();
 		[CCode (cname = "nice_agent_new_reliable", has_construct_function = false)]
@@ -58,7 +59,7 @@ namespace Nice {
 		public bool restart ();
 		[Version (since = "0.1.6")]
 		public bool restart_stream (uint stream_id);
-		public int send (uint stream_id, uint component_id, uint len, string buf);
+		public int send (uint stream_id, uint component_id, [CCode (array_length_cname = "len", array_length_pos = 2.5, array_length_type = "guint", type = "const gchar*")] uint8[] buf);
 		[Version (since = "0.1.5")]
 		public int send_messages_nonblocking (uint stream_id, uint component_id, [CCode (array_length_cname = "n_messages", array_length_pos = 3.5, array_length_type = "guint")] Nice.OutputMessage[] messages, GLib.Cancellable? cancellable = null) throws GLib.Error;
 		public bool set_local_credentials (uint stream_id, string ufrag, string pwd);
@@ -209,7 +210,7 @@ namespace Nice {
 		public void set_ipv4 (uint32 addr_ipv4);
 		public void set_ipv6 (uint8 addr_ipv6);
 		public void set_port (uint port);
-		public void to_string (string dst);
+		public void to_string ([CCode (array_length = false, type = "gchar*")] char[] dst);
 	}
 	[CCode (cheader_filename = "nice.h", has_type_id = false)]
 	[Version (since = "0.1.5")]
@@ -343,8 +344,8 @@ namespace Nice {
 		TCP,
 		TLS
 	}
-	[CCode (cheader_filename = "nice.h", instance_pos = 5.9)]
-	public delegate void AgentRecvFunc (Nice.Agent agent, uint stream_id, uint component_id, uint len, string buf);
+	[CCode (cheader_filename = "nice.h", instance_pos = 4.9)]
+	public delegate void AgentRecvFunc (Nice.Agent agent, uint stream_id, uint component_id, [CCode (array_length_cname = "len", array_length_pos = 3.5, array_length_type = "guint", type = "gchar*")] uint8[] buf);
 	[CCode (cheader_filename = "nice.h", cname = "NICE_AGENT_MAX_REMOTE_CANDIDATES")]
 	public const int AGENT_MAX_REMOTE_CANDIDATES;
 	[CCode (cheader_filename = "nice.h", cname = "NICE_CANDIDATE_DIRECTION_MS_PREF_ACTIVE")]

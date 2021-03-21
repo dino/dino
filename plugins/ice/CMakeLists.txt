@@ -10,6 +10,9 @@ find_packages(ICE_PACKAGES REQUIRED
 vala_precompile(ICE_VALA_C
 SOURCES
     src/plugin.vala
+    src/module.vala
+    src/transport_parameters.vala
+    src/util.vala
     src/register_plugin.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
@@ -21,7 +24,7 @@ OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi
 )
 
-add_definitions(${VALA_CFLAGS})
+add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="ice")
 add_library(ice SHARED ${ICE_VALA_C})
 target_link_libraries(ice libdino ${ICE_PACKAGES})
 set_target_properties(ice PROPERTIES PREFIX "")
