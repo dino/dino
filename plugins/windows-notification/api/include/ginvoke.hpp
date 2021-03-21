@@ -55,25 +55,33 @@ namespace impl
     std::optional<hresult> get_if_hresult_error(std::exception_ptr) noexcept;
 }
 
-template<typename OStream, typename T, std::enable_if_t<!std::is_enum_v<T>,int> = 0>
-inline auto &describe_argument(OStream &s, const T &a) { return s << a; }
-template<typename OStream, typename T, std::enable_if_t< std::is_enum_v<T>,int> = 0>
-inline auto &describe_argument(OStream &s, const T &a) { return s << static_cast<std::underlying_type_t<T>>(a); }
+template<typename OStream, typename T,
+    std::enable_if_t<!std::is_enum_v<T>,int> = 0>
+inline auto &describe_argument(OStream &s, const T &a)
+{ return s << a; }
+template<typename OStream, typename T,
+    std::enable_if_t< std::is_enum_v<T>,int> = 0>
+inline auto &describe_argument(OStream &s, const T &a)
+{ return s << static_cast<std::underlying_type_t<T>>(a); }
 
 template<typename OStream>
-inline auto &describe_argument(OStream &s,  std::string_view const a) { return s << std::quoted(a); }
+inline auto &describe_argument(OStream &s,  std::string_view const a)
+{ return s << std::quoted(a); }
 template<typename OStream>
-inline auto &describe_argument(OStream &s, const  std::string &    a) { return s << std::quoted(a); }
+inline auto &describe_argument(OStream &s, const  std::string &    a)
+{ return s << std::quoted(a); }
 template<typename OStream>
-inline auto &describe_argument(OStream &s, const  char *     const a) { return s << std::quoted(a); }
+inline auto &describe_argument(OStream &s, const  char *     const a)
+{ return s << std::quoted(a); }
 // TODO: overload for const GString *
+
+// not implemented (TODO maybe):
 template<typename OStream>
-inline auto &describe_argument(OStream &s, std::wstring_view const a) = delete;  // not implemented
+inline auto &describe_argument(OStream &s, std::wstring_view const a) = delete;
 template<typename OStream>
-inline auto &describe_argument(OStream &s, const std::wstring &    a) = delete;  // not implemented
+inline auto &describe_argument(OStream &s, const std::wstring &    a) = delete;
 template<typename OStream>
-inline auto &describe_argument(OStream &s, const wchar_t *   const a) = delete;  // not implemented
-// TODO: handle wide strings maybe
+inline auto &describe_argument(OStream &s, const wchar_t *   const a) = delete;
 
 inline impl::varstring describe_arguments() noexcept { return {""}; }
 
@@ -94,13 +102,15 @@ catch (...)
 
 #define FORMAT "%s(%s) failed: %s"
 template<typename... Arg>
-inline void log_invocation_failure(const char *e, const char *func_name, const Arg &... a) noexcept
+inline void log_invocation_failure(const char *e,
+    const char *func_name, const Arg &... a) noexcept
 {
     const auto args = describe_arguments(a...);
     g_warning(FORMAT, func_name, args.c_str(), e);
 }
 template<typename... Arg>
-inline void log_invocation_failure_desc(const char* e, const char* e_desc, const char* func_name, const Arg&... a) noexcept
+inline void log_invocation_failure_desc(const char *e, const char *e_desc,
+    const char *func_name, const Arg &... a) noexcept
 {
     const auto args = describe_arguments(a...);
     g_warning(FORMAT": %s", func_name, args.c_str(), e, e_desc);
@@ -112,7 +122,8 @@ struct regular_void {};
 template<typename Invokable, typename... Arg>
 inline auto invoke(Invokable &&i, const Arg &... a)
 {
-    if constexpr (std::is_void_v<decltype(std::invoke(std::forward<Invokable>(i), a...))>)
+    using R = decltype(std::invoke(std::forward<Invokable>(i), a...));
+    if constexpr (std::is_void_v<R>)
     {
         std::invoke(std::forward<Invokable>(i), a...);
         return regular_void{};
@@ -122,7 +133,8 @@ inline auto invoke(Invokable &&i, const Arg &... a)
 }
 
 template<typename Invokable, typename... Arg>
-inline auto try_invoke(const char *func_name, Invokable &&i, const Arg &... a) noexcept
+inline auto try_invoke(
+    const char *func_name, Invokable &&i, const Arg &... a) noexcept
     -> std::optional<decltype(invoke(std::forward<Invokable>(i), a...))>
 try
 {
@@ -139,7 +151,8 @@ catch (...)
     {
         auto hr = make_array("hresult 0x01234567\0");
         hexify32(static_cast<std::uint32_t>(e->code), std::end(hr)-1);
-        log_invocation_failure_desc(std::begin(hr), e->message.c_str(), func_name, a...);
+        log_invocation_failure_desc(
+            std::begin(hr), e->message.c_str(), func_name, a...);
     }
     else
         log_invocation_failure("unknown error", func_name, a...);
@@ -150,7 +163,10 @@ catch (...)
 }  // namespace glib
 
 
-#define g_try_invoke(invokable, ...)  glib::try_invoke(#invokable, invokable, __VA_ARGS__)
-#define g_try_invoke0(invokable)      glib::try_invoke(#invokable, invokable)
+#define g_try_invoke(invokable, ...) \
+    glib::try_invoke(#invokable, invokable, __VA_ARGS__)
+
+#define g_try_invoke0(invokable) \
+    glib::try_invoke(#invokable, invokable)
 
 #endif

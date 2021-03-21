@@ -5,7 +5,8 @@
 
 G_BEGIN_DECLS
 
-#define WINRT_TYPE_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON (winrtWindowsUINotificationsToastDismissalReason_get_type ())
+#define WINRT_TYPE_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON \
+  (winrtWindowsUINotificationsToastDismissalReason_get_type())
 
 /**
  * winrt_Windows_UI_Notifications_Toast_Dismissal_Reason:
@@ -23,9 +24,10 @@ typedef enum {
   WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_DISMISSAL_REASON_TimedOut,
 } winrtWindowsUINotificationsToastDismissalReason;
 
-GType winrt_windows_ui_notifications_toast_dismissal_reason_get_type (void);
+GType winrt_windows_ui_notifications_toast_dismissal_reason_get_type();
 
-#define WINRT_TYPE_WINDOWS_UI_NOTIFICATIONS_TOAST_TEMPLATE_TYPE (winrt_windows_ui_notifications_toast_template_type_get_type ())
+#define WINRT_TYPE_WINDOWS_UI_NOTIFICATIONS_TOAST_TEMPLATE_TYPE \
+  (winrt_windows_ui_notifications_toast_template_type_get_type())
 
 /**
  * winrtWindowsUINotificationsToastTemplateType:
@@ -52,7 +54,7 @@ typedef enum {
   WINRT_WINDOWS_UI_NOTIFICATIONS_TOAST_TEMPLATE_TYPE_ToastText04,
 } winrtWindowsUINotificationsToastTemplateType;
 
-GType winrt_windows_ui_notifications_toast_template_type_get_type (void);
+GType winrt_windows_ui_notifications_toast_template_type_get_type();
 
 G_END_DECLS
 

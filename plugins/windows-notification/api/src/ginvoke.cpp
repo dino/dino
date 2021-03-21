@@ -7,11 +7,12 @@
 
 namespace glib::impl
 {
-    std::optional<hresult> get_if_hresult_error(const std::exception_ptr p) noexcept try
+    std::optional<hresult> get_if_hresult_error(
+        const std::exception_ptr p) noexcept try
     {
         std::rethrow_exception(p);
     }
-    catch (const winrt::hresult_error& e)
+    catch (const winrt::hresult_error &e)
     {
         const char *ptr = nullptr;
         try
@@ -23,7 +24,8 @@ namespace glib::impl
                 if (not ptr)
                     throw 42;
                 std::string msg{ptr};
-                g_free(const_cast<char *>(ptr));  // WTF? Deletion is not modification!
+                g_free(const_cast<char *>(ptr));
+                // ^ WTF? Deletion is not modification! ^
                 return {{ e.code(), std::move(msg) }};
             }
             else

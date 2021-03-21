@@ -1,17 +1,17 @@
 #include "winrt-enums.h"
 
-#define WINRT_GLIB_DEFINE_ENUM_VALUE(value,nick) \
+#define WINRT_GLIB_DEFINE_ENUM_VALUE(value, nick) \
   { value, #value, nick },
 
-#define WINRT_GLIB_DEFINE_ENUM_TYPE(TypeName,type_name,values) \
-GType \
-type_name ## _get_type (void) \
+#define WINRT_GLIB_DEFINE_ENUM_TYPE(TypeName, type_name, values) \
+GType type_name##_get_type() \
 { \
   static constexpr GEnumValue v[] = { \
     values \
     { 0, NULL, NULL }, \
   }; \
-  static const auto enum_type_id = g_enum_register_static (g_intern_static_string (#TypeName), v); \
+  static const auto enum_type_id = \
+    g_enum_register_static(g_intern_static_string(#TypeName), v); \
   return enum_type_id; \
 }
 
