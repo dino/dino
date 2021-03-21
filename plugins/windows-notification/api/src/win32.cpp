@@ -5,6 +5,8 @@
 #include "converter.hpp"
 #include "ginvoke.hpp"
 
+#include <winrt/base.h>
+
 win32_error::win32_error() noexcept
     : win32_error{::GetLastError()}
 {}
@@ -73,10 +75,10 @@ std::wstring GetEnv(const wchar_t *const variable_name)
 }
 
 
-static bool ImplSetProcessAumid(const std::string_view aumid)
+static void ImplSetProcessAumid(const std::string_view aumid)
 {
-    const auto waumid = sview_to_wstr(aumid);
-    return SUCCEEDED(::SetCurrentProcessExplicitAppUserModelID(waumid.c_str()));
+    winrt::check_hresult(::SetCurrentProcessExplicitAppUserModelID(
+        sview_to_wstr(aumid).c_str()));
 }
 
 extern "C"
@@ -97,6 +99,6 @@ extern "C"
 
     gboolean SetProcessAumid(const gchar *const aumid) noexcept
     {
-        return g_try_invoke(ImplSetProcessAumid, aumid).value_or(false);
+        return g_try_invoke(ImplSetProcessAumid, aumid).has_value();
     }
 }
