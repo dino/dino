@@ -37,7 +37,7 @@ static void winrt_windows_ui_notifications_toast_notifier_class_init (winrtWindo
   gobject_class->finalize = winrt_windows_ui_notifications_toast_notifier_finalize;
 }
 
-static void winrt_windows_ui_notifications_toast_notifier_init (winrtWindowsUINotificationsToastNotifier *self)
+static void winrt_windows_ui_notifications_toast_notifier_init (winrtWindowsUINotificationsToastNotifier */*self*/)
 {
 }
 

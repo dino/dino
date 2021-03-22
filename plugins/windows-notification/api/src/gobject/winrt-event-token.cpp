@@ -26,7 +26,7 @@ static void winrt_event_token_class_init (winrtEventTokenClass* klass)
   gobject_class->finalize = winrt_event_token_finalize;
 }
 
-static void winrt_event_token_init (winrtEventToken *self)
+static void winrt_event_token_init (winrtEventToken */*self*/)
 {
 }
 

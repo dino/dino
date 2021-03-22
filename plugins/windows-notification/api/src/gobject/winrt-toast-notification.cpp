@@ -130,7 +130,7 @@ static void winrt_windows_ui_notifications_toast_notification_class_init (winrtW
   gobject_class->finalize = winrt_windows_ui_notifications_toast_notification_finalize;
 }
 
-static void winrt_windows_ui_notifications_toast_notification_init (winrtWindowsUINotificationsToastNotification *self)
+static void winrt_windows_ui_notifications_toast_notification_init (winrtWindowsUINotificationsToastNotification */*self*/)
 {
 }
 
@@ -251,7 +251,7 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Activated(win
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
   auto callback_data = std::make_shared<Callback<NotificationCallbackActivated>>(callback, context, free);
-  auto token = priv->notification->data.Activated([=](auto sender, winrt::Windows::Foundation::IInspectable inspectable)
+  auto token = priv->notification->data.Activated([=](auto /*sender*/, winrt::Windows::Foundation::IInspectable inspectable)
   {
     std::wstring arguments;
     std::vector<std::tuple<std::wstring, std::wstring>> user_input;
@@ -293,7 +293,7 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Failed(winrtW
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
   auto callback_data = std::make_shared<Callback<NotificationCallbackFailed>>(callback, context, free);
-  auto token = priv->notification->data.Failed([=](auto sender, auto toastFailedEventArgs)
+  auto token = priv->notification->data.Failed([=](auto /*sender*/, auto /*toastFailedEventArgs*/)
   {
     callback_data->callback(callback_data->context);
   });
@@ -312,7 +312,7 @@ winrtEventToken* winrt_windows_ui_notifications_toast_notification_Dismissed(win
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
   auto callback_data = std::make_shared<Callback<NotificationCallbackDismissed>>(callback, context, free);
-  auto token = priv->notification->data.Dismissed([=](auto sender, winrt::Windows::UI::Notifications::ToastDismissedEventArgs dismissed)
+  auto token = priv->notification->data.Dismissed([=](auto /*sender*/, winrt::Windows::UI::Notifications::ToastDismissedEventArgs dismissed)
   {
     auto reason = dismissed.Reason();
     callback_data->callback(static_cast<winrtWindowsUINotificationsToastDismissalReason>(reason), callback_data->context);
