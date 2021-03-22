@@ -30,11 +30,11 @@ public:
   
 
   Callback(T callback, void* context, void(*free)(void*))
-  {
-    this->callback = callback;
-    this->free = free;
-    this->context = context;
-  }
+    : token   {}
+    , callback{callback}
+    , context {context}
+    , free    {free}
+  {}
 
   ~Callback()
   {
