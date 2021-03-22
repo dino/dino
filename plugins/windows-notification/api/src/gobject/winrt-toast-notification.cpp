@@ -2,13 +2,18 @@
 #include <string>
 #include <string_view>
 #include <vector>
-#include <list>
 #include <tuple>
 #include <memory>
 
 #include "winrt-toast-notification-private.h"
 #include "winrt-event-token-private.h"
 #include "converter.hpp"
+
+template<typename Cont, typename Pred>
+inline void erase_if(Cont &c, Pred p)
+{
+  c.erase(std::remove_if(c.begin(), c.end(), std::move(p)), c.end());
+}
 
 #define WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(obj) \
   ((winrtWindowsUINotificationsToastNotificationPrivate*) winrt_windows_ui_notifications_toast_notification_get_instance_private ((winrtWindowsUINotificationsToastNotification*) (obj)))
@@ -70,9 +75,9 @@ struct _winrtWindowsUINotificationsToastNotificationPrivate
 { 
   winrt::Windows::UI::Notifications::ToastNotification data;
 
-  std::list<std::shared_ptr<Callback<NotificationCallbackActivated>>> activated{};
-  std::list<std::shared_ptr<Callback<NotificationCallbackFailed>>> failed{};
-  std::list<std::shared_ptr<Callback<NotificationCallbackDismissed>>> dismissed{};
+  std::vector<std::shared_ptr<Callback<NotificationCallbackActivated>>> activated{};
+  std::vector<std::shared_ptr<Callback<NotificationCallbackFailed>>> failed{};
+  std::vector<std::shared_ptr<Callback<NotificationCallbackDismissed>>> dismissed{};
 };
 
 typedef struct
@@ -326,7 +331,7 @@ void winrt_windows_ui_notifications_toast_notification_RemoveActivated(winrtWind
 
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
-  priv->notification->activated.remove_if([&](const auto& callback) {
+  erase_if(priv->notification->activated, [&](const auto& callback) {
       if (winrt_event_token_get_value(token) == winrt_event_token_get_value(callback->GetToken()))
       { 
         if (winrt_event_token_operator_bool(callback->GetToken()))
@@ -345,7 +350,7 @@ void winrt_windows_ui_notifications_toast_notification_RemoveFailed(winrtWindows
 
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
-  priv->notification->failed.remove_if([&](const auto& callback) {
+  erase_if(priv->notification->failed, [&](const auto& callback) {
       if (winrt_event_token_get_value(token) == winrt_event_token_get_value(callback->GetToken()))
       { 
         if (winrt_event_token_operator_bool(callback->GetToken()))
@@ -364,7 +369,7 @@ void winrt_windows_ui_notifications_toast_notification_RemoveDismissed(winrtWind
 
   winrtWindowsUINotificationsToastNotificationPrivate* priv = WINRT_WINDOWS_UI_NOTIFICATION_TOAST_NOTIFICATION_GET_PRIVATE(self);
 
-  priv->notification->dismissed.remove_if([&](const auto& callback) {
+  erase_if(priv->notification->dismissed, [&](const auto& callback) {
       if (winrt_event_token_get_value(token) == winrt_event_token_get_value(callback->GetToken()))
       { 
         if (winrt_event_token_operator_bool(callback->GetToken()))
