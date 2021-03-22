@@ -74,7 +74,7 @@ endif(NOT mincore_LIBRARY)
 target_link_libraries(windows-notification libdino ${shlwapi_LIBRARY} ${propsys_LIBRARY} ${ntdll_LIBRARY} ${mincore_LIBRARY} ${WINDOWS_NOTIFICATION_PACKAGES})
 target_compile_features(windows-notification PRIVATE cxx_std_20)
 target_compile_definitions(windows-notification PRIVATE WINRT_GLIB_H_INSIDE)
-target_compile_options(windows-notification PRIVATE -municode $<$<COMPILE_LANGUAGE:CXX>:-iquote ${PROJECT_SOURCE_DIR}/yolort/include/winrt/yolort_impl>)
+target_compile_options(windows-notification PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-iquote ${PROJECT_SOURCE_DIR}/yolort/include/winrt/yolort_impl>)
 
 set_target_properties(windows-notification PROPERTIES PREFIX "")
 set_target_properties(windows-notification PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
