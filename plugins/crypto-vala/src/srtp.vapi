@@ -1,8 +1,11 @@
+[CCode (cheader_filename="srtp.h")]
+namespace Crypto.Srtp {
+
 [Compact]
-[CCode (cname = "srtp_session_t", free_function = "srtp_destroy", cheader_filename="srtp.h")]
-public class Dino.Plugins.Rtp.SrtpSession {
+[CCode (cname = "srtp_session_t", free_function = "srtp_destroy")]
+public class Session {
     [CCode (cname = "srtp_create")]
-    public SrtpSession(SrtpEncryption encr, SrtpAuthentication auth, uint tag_len, SrtpPrf prf, SrtpFlags flags);
+    public Session(Encryption encr, Authentication auth, uint tag_len, Prf prf, Flags flags);
     [CCode (cname = "srtp_setkey")]
     public int setkey(uint8[] key, uint8[] salt);
     [CCode (cname = "srtp_setkeystring")]
@@ -20,7 +23,7 @@ public class Dino.Plugins.Rtp.SrtpSession {
     private int rtcp_recv([CCode (array_length = false)] uint8[] buf, ref size_t len);
 
     public uint8[] encrypt_rtp(uint8[] input, uint tag_len = 10) throws GLib.Error {
-        uint8[] buf = new uint8[input.length+tag_len];
+        uint8[] buf = new uint8[input.length + tag_len];
         GLib.Memory.copy(buf, input, input.length);
         size_t buf_use = input.length;
         int res = rtp_send(buf, ref buf_use, buf.length);
@@ -33,7 +36,7 @@ public class Dino.Plugins.Rtp.SrtpSession {
     }
 
     public uint8[] encrypt_rtcp(uint8[] input, uint tag_len = 10) throws GLib.Error {
-        uint8[] buf = new uint8[input.length+tag_len+4];
+        uint8[] buf = new uint8[input.length + tag_len + 4];
         GLib.Memory.copy(buf, input, input.length);
         size_t buf_use = input.length;
         int res = rtcp_send(buf, ref buf_use, buf.length);
@@ -73,31 +76,32 @@ public class Dino.Plugins.Rtp.SrtpSession {
 }
 
 [Flags]
-[CCode (cname = "unsigned", cprefix = "", cheader_filename="srtp.h", has_type_id = false)]
-public enum Dino.Plugins.Rtp.SrtpFlags {
+[CCode (cname = "unsigned", cprefix = "", has_type_id = false)]
+public enum Flags {
     SRTP_UNENCRYPTED,
     SRTCP_UNENCRYPTED,
     SRTP_UNAUTHENTICATED,
-
     SRTP_RCC_MODE1,
     SRTP_RCC_MODE2,
     SRTP_RCC_MODE3
 }
 
-[CCode (cname = "int", cprefix = "SRTP_ENCR_", cheader_filename="srtp.h", has_type_id = false)]
-public enum Dino.Plugins.Rtp.SrtpEncryption {
+[CCode (cname = "int", cprefix = "SRTP_ENCR_", has_type_id = false)]
+public enum Encryption {
     NULL,
     AES_CM,
     AES_F8
 }
 
-[CCode (cname = "int", cprefix = "SRTP_AUTH_", cheader_filename="srtp.h", has_type_id = false)]
-public enum Dino.Plugins.Rtp.SrtpAuthentication {
+[CCode (cname = "int", cprefix = "SRTP_AUTH_", has_type_id = false)]
+public enum Authentication {
     NULL,
     HMAC_SHA1
 }
 
-[CCode (cname = "int", cprefix = "SRTP_PRF_", cheader_filename="srtp.h", has_type_id = false)]
-public enum Dino.Plugins.Rtp.SrtpPrf {
+[CCode (cname = "int", cprefix = "SRTP_PRF_", has_type_id = false)]
+public enum Prf {
     AES_CM
+}
+
 }

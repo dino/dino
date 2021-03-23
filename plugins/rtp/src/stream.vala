@@ -53,8 +53,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     private Gst.Pad send_rtp_sink_pad;
     private Gst.Pad send_rtp_src_pad;
 
-    private SrtpSession? local_crypto_session;
-    private SrtpSession? remote_crypto_session;
+    private Crypto.Srtp.Session? local_crypto_session;
+    private Crypto.Srtp.Session? remote_crypto_session;
 
     public Stream(Plugin plugin, Xmpp.Xep.Jingle.Content content) {
         base(content);
@@ -149,11 +149,11 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 
     private void prepare_local_crypto() {
         if (local_crypto != null && local_crypto_session == null) {
-            local_crypto_session = new SrtpSession(
-                    local_crypto.crypto_suite == Xep.JingleRtp.Crypto.F8_128_HMAC_SHA1_80 ? SrtpEncryption.AES_F8 : SrtpEncryption.AES_CM,
-                    SrtpAuthentication.HMAC_SHA1,
+            local_crypto_session = new Crypto.Srtp.Session(
+                    local_crypto.crypto_suite == Xep.JingleRtp.Crypto.F8_128_HMAC_SHA1_80 ? Crypto.Srtp.Encryption.AES_F8 : Crypto.Srtp.Encryption.AES_CM,
+                    Crypto.Srtp.Authentication.HMAC_SHA1,
                     local_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10,
-                    SrtpPrf.AES_CM,
+                    Crypto.Srtp.Prf.AES_CM,
                     0
             );
             local_crypto_session.setkey(local_crypto.key, local_crypto.salt);
@@ -284,11 +284,11 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 
     private void prepare_remote_crypto() {
         if (remote_crypto != null && remote_crypto_session == null) {
-            remote_crypto_session = new SrtpSession(
-                    remote_crypto.crypto_suite == Xep.JingleRtp.Crypto.F8_128_HMAC_SHA1_80 ? SrtpEncryption.AES_F8 : SrtpEncryption.AES_CM,
-                    SrtpAuthentication.HMAC_SHA1,
+            remote_crypto_session = new Crypto.Srtp.Session(
+                    remote_crypto.crypto_suite == Xep.JingleRtp.Crypto.F8_128_HMAC_SHA1_80 ? Crypto.Srtp.Encryption.AES_F8 : Crypto.Srtp.Encryption.AES_CM,
+                    Crypto.Srtp.Authentication.HMAC_SHA1,
                     remote_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10,
-                    SrtpPrf.AES_CM,
+                    Crypto.Srtp.Prf.AES_CM,
                     0
             );
             remote_crypto_session.setkey(remote_crypto.key, remote_crypto.salt);
