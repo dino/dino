@@ -58,7 +58,7 @@ namespace Dino.Plugins.WindowsNotification {
             var notification = yield new ToastNotificationBuilder()
                 .SetHeader(summary)
                 .SetBody(body)
-                .SetImage(image_path)
+                .SetAppLogo(image_path)
                 .AddButton(_("Accept"), "accept-subscription")
                 .AddButton(_("Deny"), "deny-subscription")
                 .Build();
@@ -133,7 +133,7 @@ namespace Dino.Plugins.WindowsNotification {
             var notification = yield new ToastNotificationBuilder()
                 .SetHeader(summary)
                 .SetBody(body)
-                .SetImage(image_path)
+                .SetAppLogo(image_path)
                 .AddButton(_("Accept"), "open-muc-join")
                 .AddButton(_("Deny"), "deny-invite")
                 .Build();
@@ -170,7 +170,7 @@ namespace Dino.Plugins.WindowsNotification {
             var notification = yield new ToastNotificationBuilder()
                 .SetHeader(summary)
                 .SetBody(body)
-                .SetImage(image_path)
+                .SetAppLogo(image_path)
                 .AddButton(_("Accept"), "accept-voice-request")
                 .AddButton(_("Deny"), "deny-voice-request")
                 .Build();
@@ -204,7 +204,7 @@ namespace Dino.Plugins.WindowsNotification {
             var notification = yield new ToastNotificationBuilder()
                 .SetHeader(conversation_display_name)
                 .SetBody(body)
-                .SetImage(image_path)
+                .SetAppLogo(image_path)
                 .Build();
 
             var notification_id = generate_id();
