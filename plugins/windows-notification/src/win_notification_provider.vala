@@ -206,16 +206,12 @@ namespace Dino.Plugins.WindowsNotification {
             }
 
             var image_path = get_avatar(conversation);
-            var builder = new ToastNotificationBuilder()
+            var notification = yield new ToastNotificationBuilder()
                 .SetHeader(conversation_display_name)
                 .SetBody(body)
-                .SetAppLogo(image_path);
-            
-            if (inlineImagePath != null) {
-                builder.SetInlineImage(inlineImagePath);
-            }
-
-            var notification = yield builder.Build();
+                .SetAppLogo(image_path)
+                .SetInlineImage(inlineImagePath)
+                .Build();
 
             var notification_id = generate_id();
             notification.Activated((argument, user_input) => {

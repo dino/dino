@@ -41,28 +41,28 @@ namespace Dino.Plugins.WindowsNotification {
             return this;
         }
 
-        public ToastNotificationBuilder SetHeader(string header) {
+        public ToastNotificationBuilder SetHeader(string? header) {
             _header = header;
             return this;
         }
 
-        public ToastNotificationBuilder SetBody(string body) {
+        public ToastNotificationBuilder SetBody(string? body) {
             _body = body;
             return this;
         }
 
-        public ToastNotificationBuilder SetAppLogo(string applogo_path) {
+        public ToastNotificationBuilder SetAppLogo(string? applogo_path) {
             _appLogo = applogo_path;
+            return this;
+        }
+
+        public ToastNotificationBuilder SetInlineImage(string? image_path) {
+            _inlineImage = image_path;
             return this;
         }
 
         public ToastNotificationBuilder SetScenario(Scenario scenario) {
             _scenario = scenario;
-            return this;
-        }
-
-        public ToastNotificationBuilder SetInlineImage(string image_path) {
-            _inlineImage = image_path;
             return this;
         }
 
