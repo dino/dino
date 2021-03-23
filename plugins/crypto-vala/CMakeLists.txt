@@ -10,6 +10,7 @@ SOURCES
     "src/cipher.vala"
     "src/cipher_converter.vala"
     "src/error.vala"
+    "src/random.vala"
 CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/vapi/gcrypt.vapi"
 PACKAGES

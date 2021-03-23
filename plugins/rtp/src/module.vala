@@ -200,65 +200,23 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
         plugin.close_stream(rtp_stream);
     }
 
-//    public uint32 get_session_id(string id) {
-//        return (uint32) id.split("-")[0].to_int();
-//    }
-//
-//    public string create_feed(string media, bool incoming) {
-//        init();
-//        string id = random_uuid();
-//        if (media == "audio") {
-//            id = "0-" + id;
-//        } else {
-//            id = "1-" + id;
-//        }
-//        MediaDevice? device = plugin.get_preferred_device(media, incoming);
-//        Feed feed;
-//        if (incoming) {
-//            if (media == "audio") {
-//                feed = new IncomingAudioFeed(id, this, device);
-//            } else if (media == "video") {
-//                feed = new IncomingVideoFeed(id, this, device);
-//            } else {
-//                critical("Incoming feed of media '%s' not supported", media);
-//                return id;
-//            }
-//        } else {
-//            if (media == "audio") {
-//                string? matching_incoming_feed_id = null;
-//                foreach (Feed match in plugin.feeds.values) {
-//                    if (match is IncomingAudioFeed) {
-//                        matching_incoming_feed_id = match.id;
-//                    }
-//                }
-//                feed = new OutgoingAudioFeed(id, this, device);
-//            } else if (media == "video") {
-//                feed = new OutgoingVideoFeed(id, this, device);
-//            } else {
-//                critical("Outgoing feed of media '%s' not supported", media);
-//                return id;
-//            }
-//        }
-//        plugin.add_feed(id, feed);
-//        return id;
-//    }
-//
-//    public void connect_feed(string id, JingleRtp.PayloadType payload, Jingle.DatagramConnection connection) {
-//        if (!plugin.feeds.has_key(id)) {
-//            critical("Tried to connect feed with id %s, but no such feed found", id);
-//            return;
-//        }
-//        Feed feed = plugin.feeds[id];
-//        feed.connect(payload, connection);
-//    }
-//
-//    public void destroy_feed(string id) {
-//        if (!plugin.feeds.has_key(id)) {
-//            critical("Tried to destroy feed with id %s, but no such feed found", id);
-//            return;
-//        }
-//        Feed feed = plugin.feeds[id];
-//        feed.destroy();
-//        plugin.feeds.remove(id);
-//    }
+    public override JingleRtp.Crypto? generate_local_crypto() {
+        uint8[] keyAndSalt = new uint8[30];
+        Crypto.randomize(keyAndSalt);
+        return JingleRtp.Crypto.create(JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_80, keyAndSalt);
+    }
+
+    public override JingleRtp.Crypto? pick_remote_crypto(Gee.List<JingleRtp.Crypto> cryptos) {
+        foreach (JingleRtp.Crypto crypto in cryptos) {
+            if (crypto.is_valid) return crypto;
+        }
+        return null;
+    }
+
+    public override JingleRtp.Crypto? pick_local_crypto(JingleRtp.Crypto? remote) {
+        if (remote == null || !remote.is_valid) return null;
+        uint8[] keyAndSalt = new uint8[30];
+        Crypto.randomize(keyAndSalt);
+        return remote.rekey(keyAndSalt);
+    }
 }

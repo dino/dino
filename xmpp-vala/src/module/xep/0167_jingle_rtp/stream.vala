@@ -17,6 +17,20 @@ public abstract class Xmpp.Xep.JingleRtp.Stream : Object {
         }
         return null;
     }}
+    public JingleRtp.Crypto? local_crypto { get {
+        var content_params = content.content_params;
+        if (content_params is Parameters) {
+            return ((Parameters)content_params).local_crypto;
+        }
+        return null;
+    }}
+    public JingleRtp.Crypto? remote_crypto { get {
+        var content_params = content.content_params;
+        if (content_params is Parameters) {
+            return ((Parameters)content_params).remote_crypto;
+        }
+        return null;
+    }}
     public bool sending { get {
         return content.session.senders_include_us(content.senders);
     }}

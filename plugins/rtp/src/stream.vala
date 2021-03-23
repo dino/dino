@@ -53,6 +53,9 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     private Gst.Pad send_rtp_sink_pad;
     private Gst.Pad send_rtp_src_pad;
 
+    private SrtpSession? local_crypto_session;
+    private SrtpSession? remote_crypto_session;
+
     public Stream(Plugin plugin, Xmpp.Xep.Jingle.Content content) {
         base(content);
         this.plugin = plugin;
@@ -144,6 +147,20 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         plugin.unpause();
     }
 
+    private void prepare_local_crypto() {
+        if (local_crypto != null && local_crypto_session == null) {
+            local_crypto_session = new SrtpSession(
+                    local_crypto.crypto_suite == Xep.JingleRtp.Crypto.F8_128_HMAC_SHA1_80 ? SrtpEncryption.AES_F8 : SrtpEncryption.AES_CM,
+                    SrtpAuthentication.HMAC_SHA1,
+                    local_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10,
+                    SrtpPrf.AES_CM,
+                    0
+            );
+            local_crypto_session.setkey(local_crypto.key, local_crypto.salt);
+            debug("Setting up encryption with key params %s", local_crypto.key_params);
+        }
+    }
+
     private Gst.FlowReturn on_new_sample(Gst.App.Sink sink) {
         if (sink == null) {
             debug("Sink is null");
@@ -153,9 +170,16 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         Gst.Buffer buffer = sample.get_buffer();
         uint8[] data;
         buffer.extract_dup(0, buffer.get_size(), out data);
+        prepare_local_crypto();
         if (sink == send_rtp) {
+            if (local_crypto_session != null) {
+                data = local_crypto_session.encrypt_rtp(data, local_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10);
+            }
             on_send_rtp_data(new Bytes.take(data));
         } else if (sink == send_rtcp) {
+            if (local_crypto_session != null) {
+                data = local_crypto_session.encrypt_rtcp(data, local_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10);
+            }
             on_send_rtcp_data(new Bytes.take(data));
         } else {
             warning("unknown sample");
@@ -258,15 +282,47 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         recv_rtp_src_pad = null;
     }
 
+    private void prepare_remote_crypto() {
+        if (remote_crypto != null && remote_crypto_session == null) {
+            remote_crypto_session = new SrtpSession(
+                    remote_crypto.crypto_suite == Xep.JingleRtp.Crypto.F8_128_HMAC_SHA1_80 ? SrtpEncryption.AES_F8 : SrtpEncryption.AES_CM,
+                    SrtpAuthentication.HMAC_SHA1,
+                    remote_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10,
+                    SrtpPrf.AES_CM,
+                    0
+            );
+            remote_crypto_session.setkey(remote_crypto.key, remote_crypto.salt);
+            debug("Setting up decryption with key params %s", remote_crypto.key_params);
+        }
+    }
+
     public override void on_recv_rtp_data(Bytes bytes) {
+        prepare_remote_crypto();
+        uint8[] data = bytes.get_data();
+        if (remote_crypto_session != null) {
+            try {
+                data = remote_crypto_session.decrypt_rtp(data);
+            } catch (Error e) {
+                warning("%s (%d)", e.message, e.code);
+            }
+        }
         if (push_recv_data) {
-            recv_rtp.push_buffer(new Gst.Buffer.wrapped_bytes(bytes));
+            recv_rtp.push_buffer(new Gst.Buffer.wrapped((owned) data));
         }
     }
 
     public override void on_recv_rtcp_data(Bytes bytes) {
+        prepare_remote_crypto();
+        uint8[] data = bytes.get_data();
+        if (remote_crypto_session != null) {
+            try {
+                data = remote_crypto_session.decrypt_rtcp(data);
+            } catch (Error e) {
+                warning("%s (%d)", e.message, e.code);
+            }
+        }
         if (push_recv_data) {
-            recv_rtcp.push_buffer(new Gst.Buffer.wrapped_bytes(bytes));
+            recv_rtcp.push_buffer(new Gst.Buffer.wrapped((owned) data));
         }
     }
 

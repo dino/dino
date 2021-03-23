@@ -20,6 +20,9 @@ public abstract class Module : XmppStreamModule {
 
     public abstract async Gee.List<PayloadType> get_supported_payloads(string media);
     public abstract async PayloadType? pick_payload_type(string media, Gee.List<PayloadType> payloads);
+    public abstract Crypto? generate_local_crypto();
+    public abstract Crypto? pick_remote_crypto(Gee.List<Crypto> cryptos);
+    public abstract Crypto? pick_local_crypto(Crypto? remote);
     public abstract Stream create_stream(Jingle.Content content);
     public abstract void close_stream(Stream stream);
 
@@ -36,6 +39,7 @@ public abstract class Module : XmppStreamModule {
 
         // Create audio content
         Parameters audio_content_parameters = new Parameters(this, "audio", yield get_supported_payloads("audio"));
+        audio_content_parameters.local_crypto = generate_local_crypto();
         Jingle.Transport? audio_transport = yield jingle_module.select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());
         if (audio_transport == null) {
             throw new Jingle.Error.NO_SHARED_PROTOCOLS("No suitable audio transports");
@@ -52,6 +56,7 @@ public abstract class Module : XmppStreamModule {
         if (video) {
             // Create video content
             Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"));
+            video_content_parameters.local_crypto = generate_local_crypto();
             Jingle.Transport? video_transport = yield stream.get_module(Jingle.Module.IDENTITY).select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());
             if (video_transport == null) {
                 throw new Jingle.Error.NO_SHARED_PROTOCOLS("No suitable video transports");
@@ -92,6 +97,7 @@ public abstract class Module : XmppStreamModule {
         if (content == null) {
             // Content for video does not yet exist -> create it
             Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"));
+            video_content_parameters.local_crypto = generate_local_crypto();
             Jingle.Transport? video_transport = yield stream.get_module(Jingle.Module.IDENTITY).select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());
             if (video_transport == null) {
                 throw new Jingle.Error.NO_SHARED_PROTOCOLS("No suitable video transports");
@@ -148,26 +154,130 @@ public abstract class Module : XmppStreamModule {
 }
 
 public class Crypto {
-    public string cryptoSuite { get; private set; }
-    public string keyParams { get; private set; }
-    public string? sessionParams { get; private set; }
-    public string? tag { get; private set; }
+    public const string AES_CM_128_HMAC_SHA1_80 = "AES_CM_128_HMAC_SHA1_80";
+    public const string AES_CM_128_HMAC_SHA1_32 = "AES_CM_128_HMAC_SHA1_32";
+    public const string F8_128_HMAC_SHA1_80 = "F8_128_HMAC_SHA1_80";
+
+    public string crypto_suite { get; private set; }
+    public string key_params { get; private set; }
+    public string? session_params { get; private set; }
+    public string tag { get; private set; }
+
+    public uint8[] key_and_salt { owned get {
+        if (!key_params.has_prefix("inline:")) return null;
+        int endIndex = key_params.index_of("|");
+        if (endIndex < 0) endIndex = key_params.length;
+        string sub = key_params.substring(7, endIndex - 7);
+        return Base64.decode(sub);
+    }}
+
+    public string? lifetime { owned get {
+        if (!key_params.has_prefix("inline:")) return null;
+        int firstIndex = key_params.index_of("|");
+        if (firstIndex < 0) return null;
+        int endIndex = key_params.index_of("|", firstIndex + 1);
+        if (endIndex < 0) {
+            if (key_params.index_of(":", firstIndex) > 0) return null; // Is MKI
+            endIndex = key_params.length;
+        }
+        return key_params.substring(firstIndex + 1, endIndex);
+    }}
+
+    public int mki { get {
+        if (!key_params.has_prefix("inline:")) return -1;
+        int firstIndex = key_params.index_of("|");
+        if (firstIndex < 0) return -1;
+        int splitIndex = key_params.index_of(":", firstIndex);
+        if (splitIndex < 0) return -1;
+        int secondIndex = key_params.index_of("|", firstIndex + 1);
+        if (secondIndex < 0) {
+            return int.parse(key_params.substring(firstIndex + 1, splitIndex));
+        } else if (splitIndex > secondIndex) {
+            return int.parse(key_params.substring(secondIndex + 1, splitIndex));
+        }
+        return -1;
+    }}
+
+    public int mki_length { get {
+        if (!key_params.has_prefix("inline:")) return -1;
+        int firstIndex = key_params.index_of("|");
+        if (firstIndex < 0) return -1;
+        int splitIndex = key_params.index_of(":", firstIndex);
+        if (splitIndex < 0) return -1;
+        int secondIndex = key_params.index_of("|", firstIndex + 1);
+        if (secondIndex < 0 || splitIndex > secondIndex) {
+            return int.parse(key_params.substring(splitIndex + 1, key_params.length));
+        }
+        return -1;
+    }}
+
+    public bool is_valid { get {
+        switch(crypto_suite) {
+            case AES_CM_128_HMAC_SHA1_80:
+            case AES_CM_128_HMAC_SHA1_32:
+            case F8_128_HMAC_SHA1_80:
+                return key_and_salt.length == 30;
+        }
+        return false;
+    }}
+
+    public uint8[] key { owned get {
+        uint8[] key_and_salt = key_and_salt;
+        switch(crypto_suite) {
+            case AES_CM_128_HMAC_SHA1_80:
+            case AES_CM_128_HMAC_SHA1_32:
+            case F8_128_HMAC_SHA1_80:
+                if (key_and_salt.length >= 16) return key_and_salt[0:16];
+                break;
+        }
+        return null;
+    }}
+
+    public uint8[] salt { owned get {
+        uint8[] keyAndSalt = key_and_salt;
+        switch(crypto_suite) {
+            case AES_CM_128_HMAC_SHA1_80:
+            case AES_CM_128_HMAC_SHA1_32:
+            case F8_128_HMAC_SHA1_80:
+                if (keyAndSalt.length >= 30) return keyAndSalt[16:30];
+                break;
+        }
+        return null;
+    }}
+
+    public static Crypto create(string crypto_suite, uint8[] key_and_salt, string? session_params = null, string tag = "1") {
+        Crypto crypto = new Crypto();
+        crypto.crypto_suite = crypto_suite;
+        crypto.key_params = "inline:" + Base64.encode(key_and_salt);
+        crypto.session_params = session_params;
+        crypto.tag = tag;
+        return crypto;
+    }
+
+    public Crypto rekey(uint8[] key_and_salt) {
+        Crypto crypto = new Crypto();
+        crypto.crypto_suite = crypto_suite;
+        crypto.key_params = "inline:" + Base64.encode(key_and_salt);
+        crypto.session_params = session_params;
+        crypto.tag = tag;
+        return crypto;
+    }
 
     public static Crypto parse(StanzaNode node) {
         Crypto crypto = new Crypto();
-        crypto.cryptoSuite = node.get_attribute("crypto-suite");
-        crypto.keyParams = node.get_attribute("key-params");
-        crypto.sessionParams = node.get_attribute("session-params");
+        crypto.crypto_suite = node.get_attribute("crypto-suite");
+        crypto.key_params = node.get_attribute("key-params");
+        crypto.session_params = node.get_attribute("session-params");
         crypto.tag = node.get_attribute("tag");
         return crypto;
     }
 
     public StanzaNode to_xml() {
         StanzaNode node = new StanzaNode.build("crypto", NS_URI)
-                .put_attribute("crypto-suite", cryptoSuite)
-                .put_attribute("key-params", keyParams);
-        if (sessionParams != null) node.put_attribute("session-params", sessionParams);
-        if (tag != null) node.put_attribute("tag", tag);
+                .put_attribute("crypto-suite", crypto_suite)
+                .put_attribute("key-params", key_params)
+                .put_attribute("tag", tag);
+        if (session_params != null) node.put_attribute("session-params", session_params);
         return node;
     }
 }
