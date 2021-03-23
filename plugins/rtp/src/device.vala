@@ -59,7 +59,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         if (element == null) create();
         links++;
         if (mixer != null) return mixer;
-        if (is_sink && media == "audio") return plugin.echoprobe;
+        if (is_sink && media == "audio") return filter;
         return element;
     }
 
@@ -146,9 +146,10 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             element.@set("sync", false);
         }
         if (is_sink && media == "audio") {
-//            mixer = Gst.ElementFactory.make("audiomixer", @"$id-mixer");
-//            pipe.add(mixer);
-//            mixer.link(plugin.echoprobe);
+            filter = Gst.ElementFactory.make("capsfilter", @"$id-caps-filter");
+            filter.@set("caps", get_best_caps());
+            pipe.add(filter);
+            filter.link(plugin.echoprobe);
             plugin.echoprobe.link(element);
         }
         plugin.unpause();
@@ -173,6 +174,13 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             pipe.remove(mixer);
             mixer = null;
         } else if (is_sink && media == "audio") {
+            if (filter != null) {
+                filter.set_locked_state(true);
+                filter.set_state(Gst.State.NULL);
+                filter.unlink(plugin.echoprobe);
+                pipe.remove(filter);
+                filter = null;
+            }
             plugin.echoprobe.unlink(element);
         }
         element.set_locked_state(true);

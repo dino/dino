@@ -202,7 +202,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
         string decode = element_name ?? get_decode_element_name(media, codec);
         if (depay == null || decode == null) return null;
         string decode_prefix = get_decode_prefix(media, codec, decode) ?? "";
-        return @"$depay name=$base_name-rtp-depay ! $decode_prefix$decode name=$base_name-decode ! $(media)convert name=$base_name-convert";
+        string resample = media == "audio" ? @" ! audioresample name=$base_name-resample" : "";
+        return @"$depay name=$base_name-rtp-depay ! $decode_prefix$decode name=$base_name-decode ! $(media)convert name=$base_name-convert$resample";
     }
 
     public Gst.Element? get_decode_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
@@ -224,11 +225,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
         if (pay == null || encode == null) return null;
         string encode_prefix = get_encode_prefix(media, codec, encode) ?? "";
         string encode_suffix = get_encode_suffix(media, codec, encode) ?? "";
-        if (media == "audio") {
-            return @"audioconvert name=$base_name-convert ! audioresample name=$base_name-resample ! $encode_prefix$encode$encode_suffix ! $pay pt=$pt name=$base_name-rtp-pay";
-        } else {
-            return @"$(media)convert name=$base_name-convert ! $encode_prefix$encode$encode_suffix ! $pay pt=$pt name=$base_name-rtp-pay";
-        }
+        string resample = media == "audio" ? @" ! audioresample name=$base_name-resample" : "";
+        return @"$(media)convert name=$base_name-convert$resample ! $encode_prefix$encode$encode_suffix ! $pay pt=$pt name=$base_name-rtp-pay";
     }
 
     public Gst.Element? get_encode_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
