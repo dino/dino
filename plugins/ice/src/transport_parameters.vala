@@ -172,7 +172,12 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     private void on_component_state_changed(uint stream_id, uint component_id, uint state) {
         if (stream_id != this.stream_id) return;
         debug("stream %u component %u state changed to %s", stream_id, component_id, agent.get_component_state(stream_id, component_id).to_string());
-        if (is_component_ready(agent, stream_id, component_id) && connections.has_key((uint8) component_id) && !connections[(uint8)component_id].ready) {
+        may_consider_ready(stream_id, component_id);
+    }
+
+    private void may_consider_ready(uint stream_id, uint component_id) {
+        if (stream_id != this.stream_id) return;
+        if (connections.has_key((uint8) component_id) && is_component_ready(agent, stream_id, component_id) && connections.has_key((uint8) component_id) && !connections[(uint8)component_id].ready) {
             connections[(uint8)component_id].ready = true;
         }
     }
@@ -189,7 +194,11 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
     private void on_recv(Nice.Agent agent, uint stream_id, uint component_id, uint8[] data) {
         if (stream_id != this.stream_id) return;
-        if (is_component_ready(agent, stream_id, component_id) && connections.has_key((uint8) component_id)) {
+        may_consider_ready(stream_id, component_id);
+        if (connections.has_key((uint8) component_id)) {
+            if (!connections[(uint8) component_id].ready) {
+                debug("on_recv stream %u component %u when state %s", stream_id, component_id, agent.get_component_state(stream_id, component_id).to_string());
+            }
             connections[(uint8) component_id].datagram_received(new Bytes(data));
         } else {
             debug("on_recv stream %u component %u length %u", stream_id, component_id, data.length);
