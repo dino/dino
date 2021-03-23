@@ -209,8 +209,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         Nice.Candidate candidate = new Nice.Candidate(type);
         candidate.component_id = c.component;
         char[] foundation = new char[Nice.CANDIDATE_MAX_FOUNDATION];
-        string foundation_str = c.foundation.to_string();
-        Memory.copy(foundation, foundation_str.data, foundation_str.length);
+        Memory.copy(foundation, c.foundation.data, size_t.min(c.foundation.length, Nice.CANDIDATE_MAX_FOUNDATION - 1));
         candidate.foundation = foundation;
         candidate.addr = Nice.Address();
         candidate.addr.init();
@@ -237,7 +236,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             default: assert_not_reached();
         }
         candidate.component = (uint8) nc.component_id;
-        candidate.foundation = (uint8) int.parse((string)nc.foundation);
+        candidate.foundation = ((string)nc.foundation).dup();
         candidate.generation = 0;
         candidate.id = Random.next_int().to_string("%08x"); // TODO
 

@@ -4,7 +4,7 @@ using Xmpp;
 
 public class Xmpp.Xep.JingleIceUdp.Candidate {
     public uint8 component;
-    public uint8 foundation;
+    public string foundation;
     public uint8 generation;
     public string id;
     public string ip;
@@ -19,7 +19,7 @@ public class Xmpp.Xep.JingleIceUdp.Candidate {
     public static Candidate parse(StanzaNode node) throws Jingle.IqError {
         Candidate candidate = new Candidate();
         candidate.component = (uint8) node.get_attribute_uint("component");
-        candidate.foundation = (uint8) node.get_attribute_uint("foundation");
+        candidate.foundation = (string) node.get_attribute("foundation");
         candidate.generation = (uint8) node.get_attribute_uint("generation");
         candidate.id = node.get_attribute("id");
         candidate.ip = node.get_attribute("ip");
