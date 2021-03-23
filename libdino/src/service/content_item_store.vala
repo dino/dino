@@ -56,9 +56,13 @@ public class ContentItemStore : StreamInteractionModule, Object {
                     }
                     break;
                 case 2:
-                    FileTransfer? file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_call_by_id(foreign_id);
+                    FileTransfer? file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_id(foreign_id, conversation);
                     if (file_transfer != null) {
-                        var file_item = new FileItem(file_transfer, conversation, row[db.content_item.id]);
+                        Message? message = null;
+                        if (file_transfer.provider == 0 && file_transfer.info != null) {
+                            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
+                        }
+                        var file_item = new FileItem(file_transfer, conversation, row[db.content_item.id], message);
                         items.add(file_item);
                     }
                     break;

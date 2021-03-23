@@ -27,10 +27,10 @@ namespace Dino {
 
         public void add_file(FileTransfer file_transfer) {
             file_transfer.persist(db);
-            cache_call(file_transfer);
+            cache_file(file_transfer);
         }
 
-        public FileTransfer? get_call_by_id(int id) {
+        public FileTransfer? get_file_by_id(int id, Conversation conversation) {
             FileTransfer? file_transfer = files_by_db_id[id];
             if (file_transfer != null) {
                 return file_transfer;
@@ -38,15 +38,20 @@ namespace Dino {
 
             RowOption row_option = db.file_transfer.select().with(db.file_transfer.id, "=", id).row();
 
-            return create_call_from_row_opt(row_option);
+            return create_file_from_row_opt(row_option, conversation);
         }
 
-        private FileTransfer? create_call_from_row_opt(RowOption row_opt) {
+        private FileTransfer? create_file_from_row_opt(RowOption row_opt, Conversation conversation) {
             if (!row_opt.is_present()) return null;
 
             try {
                 FileTransfer file_transfer = new FileTransfer.from_row(db, row_opt.inner, FileManager.get_storage_dir());
-                cache_call(file_transfer);
+
+                if (conversation.type_.is_muc_semantic()) {
+                    file_transfer.ourpart = conversation.counterpart.with_resource(file_transfer.ourpart.resourcepart);
+                }
+
+                cache_file(file_transfer);
                 return file_transfer;
             } catch (InvalidJidError e) {
                 warning("Got file transfer with invalid Jid: %s", e.message);
@@ -54,7 +59,7 @@ namespace Dino {
             return null;
         }
 
-        private void cache_call(FileTransfer file_transfer) {
+        private void cache_file(FileTransfer file_transfer) {
             files_by_db_id[file_transfer.id] = file_transfer;
         }
     }
