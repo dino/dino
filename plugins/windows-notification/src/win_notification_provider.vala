@@ -46,8 +46,13 @@ namespace Dino.Plugins.WindowsNotification {
             } else {
                 text = is_image ? _("Image received") : _("File received");
             }
+
+            string? inlineImagePath = null;
+            if (file_transfer.state == FileTransfer.State.COMPLETE) {
+                inlineImagePath = file_transfer.get_file().get_path();
+            }
     
-            yield notify_content_item(conversation, conversation_display_name, participant_display_name, text);
+            yield notify_content_item(conversation, conversation_display_name, participant_display_name, text, inlineImagePath);
         }
 
         public async void notify_subscription_request(Conversation conversation) {
@@ -192,7 +197,7 @@ namespace Dino.Plugins.WindowsNotification {
             notifier.Show(notification);
         }
 
-        private async void notify_content_item(Conversation conversation, string conversation_display_name, string? participant_display_name, string body_) {
+        private async void notify_content_item(Conversation conversation, string conversation_display_name, string? participant_display_name, string body_, string? inlineImagePath = null) {
             clear_marked();
 
             string body = body_;
@@ -201,11 +206,16 @@ namespace Dino.Plugins.WindowsNotification {
             }
 
             var image_path = get_avatar(conversation);
-            var notification = yield new ToastNotificationBuilder()
+            var builder = new ToastNotificationBuilder()
                 .SetHeader(conversation_display_name)
                 .SetBody(body)
-                .SetAppLogo(image_path)
-                .Build();
+                .SetAppLogo(image_path);
+            
+            if (inlineImagePath != null) {
+                builder.SetInlineImage(inlineImagePath);
+            }
+
+            var notification = yield builder.Build();
 
             var notification_id = generate_id();
             notification.Activated((argument, user_input) => {
