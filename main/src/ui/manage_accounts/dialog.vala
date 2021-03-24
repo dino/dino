@@ -45,11 +45,7 @@ public class Dialog : Gtk.Dialog {
         });
         image_button.clicked.connect(show_select_avatar);
         alias_hybrid.entry.key_release_event.connect(() => { selected_account.alias = alias_hybrid.text; return false; });
-        alias_hybrid.label.max_width_chars = 0;
-        alias_hybrid.label.ellipsize = Pango.EllipsizeMode.END;
         password_hybrid.entry.key_release_event.connect(() => { selected_account.password = password_hybrid.text; return false; });
-        password_hybrid.label.max_width_chars = 0;
-        password_hybrid.label.ellipsize = Pango.EllipsizeMode.END;
 
         Util.LabelHybridGroup label_hybrid_group = new Util.LabelHybridGroup();
         label_hybrid_group.add(alias_hybrid);
