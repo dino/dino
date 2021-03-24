@@ -5,7 +5,7 @@ namespace Dino.Ui.Util {
 
 public class LabelHybrid : Stack {
 
-    public Label label = new Label("") { visible=true };
+    public Label label = new Label("") { visible=true, max_width_chars=1, ellipsize=Pango.EllipsizeMode.END };
     protected Button button = new Button() { relief=ReliefStyle.NONE, visible=true };
 
     internal virtual void init(Widget widget) {
