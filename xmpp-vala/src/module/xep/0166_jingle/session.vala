@@ -24,9 +24,10 @@ public class Xmpp.Xep.Jingle.Session : Object {
     public Jid peer_full_jid { get; private set; }
     public bool we_initiated { get; private set; }
 
-    public HashMap<string, Content> contents = new HashMap<string, Content>();
+    public HashMap<string, Content> contents_map = new HashMap<string, Content>();
+    public Gee.List<Content> contents = new ArrayList<Content>(); // Keep the order contents
 
-    public SecurityParameters? security { get { return contents.values.to_array()[0].security_params; } }
+    public SecurityParameters? security { get { return contents.to_array()[0].security_params; } }
 
     public Session.initiate_sent(XmppStream stream, string sid, Jid local_full_jid, Jid peer_full_jid) {
         this.stream = stream;
@@ -94,7 +95,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
         } else if (action.has_prefix("transport-")) {
             ContentNode content_node = get_single_content_node(jingle);
-            if (!contents.has_key(content_node.name)) {
+            if (!contents_map.has_key(content_node.name)) {
                 throw new IqError.BAD_REQUEST("unknown content");
             }
 
@@ -102,7 +103,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                 throw new IqError.BAD_REQUEST("missing transport node");
             }
 
-            Content content = contents[content_node.name];
+            Content content = contents_map[content_node.name];
 
             if (content_node.creator != content.content_creator) {
                 throw new IqError.BAD_REQUEST("unknown content; creator");
@@ -128,11 +129,11 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
         } else if (action == "description-info") {
             ContentNode content_node = get_single_content_node(jingle);
-            if (!contents.has_key(content_node.name)) {
+            if (!contents_map.has_key(content_node.name)) {
                 throw new IqError.BAD_REQUEST("unknown content");
             }
 
-            Content content = contents[content_node.name];
+            Content content = contents_map[content_node.name];
 
             if (content_node.creator != content.content_creator) {
                 throw new IqError.BAD_REQUEST("unknown content; creator");
@@ -149,7 +150,8 @@ public class Xmpp.Xep.Jingle.Session : Object {
     }
 
     internal void insert_content(Content content) {
-        this.contents[content.content_name] = content;
+        this.contents_map[content.content_name] = content;
+        this.contents.add(content);
         content.set_session(this);
     }
 
@@ -209,7 +211,8 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
     public async void add_content(Content content) {
         content.session = this;
-        this.contents[content.content_name] = content;
+        this.contents_map[content.content_name] = content;
+        contents.add(content);
 
         StanzaNode content_add_node = new StanzaNode.build("jingle", NS_URI)
                 .add_self_xmlns()
@@ -228,9 +231,9 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
     private void handle_content_accept(ContentNode content_node) throws IqError {
         if (content_node.description == null || content_node.transport == null) throw new IqError.BAD_REQUEST("missing description or transport node");
-        if (!contents.has_key(content_node.name)) throw new IqError.BAD_REQUEST("unknown content");
+        if (!contents_map.has_key(content_node.name)) throw new IqError.BAD_REQUEST("unknown content");
 
-        Content content = contents[content_node.name];
+        Content content = contents_map[content_node.name];
 
         if (content_node.creator != content.content_creator) warning("Counterpart accepts content with an unexpected `creator`");
         if (content_node.senders != content.senders) warning("Counterpart accepts content with an unexpected `senders`");
@@ -242,7 +245,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
     private void handle_content_modify(XmppStream stream, StanzaNode jingle_node, Iq.Stanza iq) throws IqError {
         ContentNode content_node = get_single_content_node(jingle_node);
 
-        Content? content = contents[content_node.name];
+        Content? content = contents_map[content_node.name];
 
         if (content == null) throw new IqError.BAD_REQUEST("no such content");
         if (content_node.creator != content.content_creator) throw new IqError.BAD_REQUEST("mismatching creator");
@@ -301,7 +304,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
             }
         }
 
-        foreach (Content content in contents.values) {
+        foreach (Content content in contents) {
             content.terminate(false, reason_name, reason_text);
         }
 
@@ -336,7 +339,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                 .add_self_xmlns()
                 .put_attribute("action", "session-accept")
                 .put_attribute("sid", sid);
-        foreach (Content content in contents.values) {
+        foreach (Content content in contents) {
             StanzaNode content_node = new StanzaNode.build("content", NS_URI)
                     .put_attribute("creator", "initiator")
                     .put_attribute("name", content.content_name)
@@ -345,12 +348,13 @@ public class Xmpp.Xep.Jingle.Session : Object {
                     .put_node(content.transport_params.to_transport_stanza_node());
             jingle.put_node(content_node);
         }
+
         Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
 
 
-        foreach (Content content in contents.values) {
-            content.on_accept(stream);
+        foreach (Content content2 in contents) {
+            content2.on_accept(stream);
         }
 
         state = State.ACTIVE;
@@ -359,7 +363,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
     internal void accept_content(Content content) {
         if (state == State.INITIATE_RECEIVED) {
             bool all_accepted = true;
-            foreach (Content c in contents.values) {
+            foreach (Content c in contents) {
                 if (c.state != Content.State.WANTS_TO_BE_ACCEPTED) {
                     all_accepted = false;
                 }
@@ -413,7 +417,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
             } else {
                 reason_str = "local session-terminate";
             }
-            foreach (Content content in contents.values) {
+            foreach (Content content in contents) {
                 content.terminate(true, reason_name, reason_text);
             }
         }

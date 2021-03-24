@@ -12,6 +12,7 @@ public abstract class Module : XmppStreamModule, Jingle.Transport {
     public override void attach(XmppStream stream) {
         stream.get_module(Jingle.Module.IDENTITY).register_transport(this);
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
+        stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, "urn:xmpp:jingle:apps:dtls:0");
     }
     public override void detach(XmppStream stream) {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);

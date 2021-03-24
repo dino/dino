@@ -125,7 +125,7 @@ namespace Dino {
             call.state = Call.State.ESTABLISHING;
 
             if (sessions.has_key(call)) {
-                foreach (Xep.Jingle.Content content in sessions[call].contents.values) {
+                foreach (Xep.Jingle.Content content in sessions[call].contents) {
                     content.accept();
                 }
             } else {
@@ -146,7 +146,7 @@ namespace Dino {
             call.state = Call.State.DECLINED;
 
             if (sessions.has_key(call)) {
-                foreach (Xep.Jingle.Content content in sessions[call].contents.values) {
+                foreach (Xep.Jingle.Content content in sessions[call].contents) {
                     content.reject();
                 }
                 remove_call_from_datastructures(call);
@@ -223,16 +223,6 @@ namespace Dino {
             foreach (Jid full_jid in full_jids) {
                 bool supports_rtc = yield stream.get_module(Xep.JingleRtp.Module.IDENTITY).is_available(stream, full_jid);
                 if (!supports_rtc) continue;
-
-                // dtls support indicates webRTC support. Clients tend to not do normal ice udp in that case. Except Dino.
-                bool supports_dtls = yield stream_interactor.get_module(EntityInfo.IDENTITY).has_feature(conversation.account, full_jid, "urn:xmpp:jingle:apps:dtls:0");
-                if (supports_dtls) {
-                    Xep.ServiceDiscovery.Identity? identity = yield stream_interactor.get_module(EntityInfo.IDENTITY).get_identity(conversation.account, full_jid);
-                    bool is_dino = identity != null && identity.name == "Dino";
-
-                    if (!is_dino) continue;
-                }
-
                 ret.add(full_jid);
             }
             return ret;
@@ -253,7 +243,7 @@ namespace Dino {
 
         private void on_incoming_call(Account account, Xep.Jingle.Session session) {
             bool counterpart_wants_video = false;
-            foreach (Xep.Jingle.Content content in session.contents.values) {
+            foreach (Xep.Jingle.Content content in session.contents) {
                 Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
                 if (rtp_content_parameter == null) continue;
                 if (rtp_content_parameter.media == "video" && session.senders_include_us(content.senders)) {
@@ -391,7 +381,7 @@ namespace Dino {
                 on_incoming_content_add(stream, call, session, content)
             );
 
-            foreach (Xep.Jingle.Content content in session.contents.values) {
+            foreach (Xep.Jingle.Content content in session.contents) {
                 Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
                 if (rtp_content_parameter == null) continue;
 
@@ -446,7 +436,7 @@ namespace Dino {
 
             Xep.Jingle.Module jingle_module = stream_interactor.module_manager.get_module(account, Xep.Jingle.Module.IDENTITY);
             jingle_module.session_initiate_received.connect((stream, session) => {
-                foreach (Xep.Jingle.Content content in session.contents.values) {
+                foreach (Xep.Jingle.Content content in session.contents) {
                     Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
                     if (rtp_content_parameter != null) {
                         on_incoming_call(account, session);
@@ -460,7 +450,7 @@ namespace Dino {
                 if (!call_by_sid[account].has_key(session.sid)) return;
                 Call call = call_by_sid[account][session.sid];
 
-                foreach (Xep.Jingle.Content content in session.contents.values) {
+                foreach (Xep.Jingle.Content content in session.contents) {
                     if (name == null || content.content_name == name) {
                         Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
                         if (rtp_content_parameter != null) {

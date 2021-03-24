@@ -34,7 +34,7 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         this.parent = parent;
         this.media = media;
         this.ssrc = ssrc;
-        this.rtcp_mux = rtcp_mux;
+        this.rtcp_mux = true;
         this.bandwidth = bandwidth;
         this.bandwidth_type = bandwidth_type;
         this.encryption_required = encryption_required;
@@ -174,6 +174,9 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         if (local_crypto != null) {
             ret.put_node(new StanzaNode.build("encryption", NS_URI)
                 .put_node(local_crypto.to_xml()));
+        }
+        if (rtcp_mux) {
+            ret.put_node(new StanzaNode.build("rtcp-mux", NS_URI));
         }
         return ret;
     }

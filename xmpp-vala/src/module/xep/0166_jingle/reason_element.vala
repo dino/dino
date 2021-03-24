@@ -24,6 +24,7 @@ namespace  Xmpp.Xep.Jingle.ReasonElement {
         BUSY,
         CANCEL,
         DECLINE,
+        GONE,
         SUCCESS
     };
 }

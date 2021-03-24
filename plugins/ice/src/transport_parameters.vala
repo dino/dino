@@ -9,9 +9,11 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     private bool we_want_connection;
     private bool remote_credentials_set;
     private Map<uint8, DatagramConnection> connections = new HashMap<uint8, DatagramConnection>();
+    private DtlsSrtp? dtls_srtp;
 
     private class DatagramConnection : Jingle.DatagramConnection {
         private Nice.Agent agent;
+        private DtlsSrtp? dtls_srtp;
         private uint stream_id;
         private string? error;
         private ulong sent;
@@ -20,8 +22,9 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         private ulong recv_reported;
         private ulong datagram_received_id;
 
-        public DatagramConnection(Nice.Agent agent, uint stream_id, uint8 component_id) {
+        public DatagramConnection(Nice.Agent agent, DtlsSrtp? dtls_srtp, uint stream_id, uint8 component_id) {
             this.agent = agent;
+            this.dtls_srtp = dtls_srtp;
             this.stream_id = stream_id;
             this.component_id = component_id;
             this.datagram_received_id = this.datagram_received.connect((datagram) => {
@@ -41,7 +44,12 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
         public override void send_datagram(Bytes datagram) {
             if (this.agent != null && is_component_ready(agent, stream_id, component_id)) {
-                agent.send(stream_id, component_id, datagram.get_data());
+                uint8[] encrypted_data = null;
+                if (dtls_srtp != null) {
+                    encrypted_data = dtls_srtp.process_outgoing_data(component_id, datagram.get_data());
+                    if (encrypted_data == null) return;
+                }
+                agent.send(stream_id, component_id, encrypted_data ?? datagram.get_data());
                 sent += datagram.length;
                 if (sent > sent_reported + 100000) {
                     debug("Sent %lu bytes via stream %u component %u", sent, stream_id, component_id);
@@ -55,6 +63,20 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         base(components, local_full_jid, peer_full_jid, node);
         this.we_want_connection = (node == null);
         this.agent = agent;
+
+        if (this.peer_fingerprint != null || !incoming) {
+            dtls_srtp = DtlsSrtp.setup();
+            dtls_srtp.send_data.connect((data) => {
+                agent.send(stream_id, 1, data);
+            });
+            this.own_fingerprint = dtls_srtp.get_own_fingerprint(GnuTLS.DigestAlgorithm.SHA256);
+            if (incoming) {
+                dtls_srtp.set_peer_fingerprint(this.peer_fingerprint);
+            } else {
+                dtls_srtp.setup_dtls_connection(true);
+            }
+        }
+
         agent.candidate_gathering_done.connect(on_candidate_gathering_done);
         agent.initial_binding_request_received.connect(on_initial_binding_request_received);
         agent.component_state_changed.connect(on_component_state_changed);
@@ -112,6 +134,12 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     public override void handle_transport_accept(StanzaNode transport) throws Jingle.IqError {
         debug("on_transport_accept from %s", peer_full_jid.to_string());
         base.handle_transport_accept(transport);
+
+        if (dtls_srtp != null && peer_fingerprint != null) {
+            dtls_srtp.set_peer_fingerprint(this.peer_fingerprint);
+        } else {
+            dtls_srtp = null;
+        }
     }
 
     public override void handle_transport_info(StanzaNode transport) throws Jingle.IqError {
@@ -163,8 +191,15 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             int new_candidates = agent.set_remote_candidates(stream_id, i, candidates);
             debug("Initiated component %u with %i remote candidates", i, new_candidates);
 
-            connections[i] = new DatagramConnection(agent, stream_id, i);
+            connections[i] = new DatagramConnection(agent, dtls_srtp, stream_id, i);
             content.set_transport_connection(connections[i], i);
+        }
+
+        if (incoming && dtls_srtp != null) {
+            Jingle.DatagramConnection rtp_datagram = (Jingle.DatagramConnection) content.get_transport_connection(1);
+            rtp_datagram.notify["ready"].connect(() => {
+                dtls_srtp.setup_dtls_connection(false);
+            });
         }
         base.create_transport_connection(stream, content);
     }
@@ -194,12 +229,17 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
     private void on_recv(Nice.Agent agent, uint stream_id, uint component_id, uint8[] data) {
         if (stream_id != this.stream_id) return;
+        uint8[] decrypt_data = null;
+        if (dtls_srtp != null) {
+            decrypt_data = dtls_srtp.process_incoming_data(component_id, data);
+            if (decrypt_data == null) return;
+        }
         may_consider_ready(stream_id, component_id);
         if (connections.has_key((uint8) component_id)) {
             if (!connections[(uint8) component_id].ready) {
                 debug("on_recv stream %u component %u when state %s", stream_id, component_id, agent.get_component_state(stream_id, component_id).to_string());
             }
-            connections[(uint8) component_id].datagram_received(new Bytes(data));
+            connections[(uint8) component_id].datagram_received(new Bytes(decrypt_data ?? data));
         } else {
             debug("on_recv stream %u component %u length %u", stream_id, component_id, data.length);
         }

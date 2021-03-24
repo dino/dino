@@ -50,7 +50,7 @@ namespace Xmpp.Xep.JingleRtp {
         public void send_mute(Jingle.Session session, bool mute, string media) {
             string node_name = mute ? "mute" : "unmute";
 
-            foreach (Jingle.Content content in session.contents.values) {
+            foreach (Jingle.Content content in session.contents) {
                 Parameters? parameters = content.content_params as Parameters;
                 if (parameters != null && parameters.media == media) {
                     StanzaNode session_info_content = new StanzaNode.build(node_name, NS_URI).add_self_xmlns().put_attribute("name", content.content_name);

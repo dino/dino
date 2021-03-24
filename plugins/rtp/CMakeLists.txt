@@ -2,6 +2,7 @@ find_packages(RTP_PACKAGES REQUIRED
     Gee
     GLib
     GModule
+    GnuTLS
     GObject
     GTK3
     Gst

@@ -84,7 +84,7 @@ public abstract class Module : XmppStreamModule {
         Jid receiver_full_jid = session.peer_full_jid;
 
         Jingle.Content? content = null;
-        foreach (Jingle.Content c in session.contents.values) {
+        foreach (Jingle.Content c in session.contents) {
             Parameters? parameters = c.content_params as Parameters;
             if (parameters == null) continue;
 
