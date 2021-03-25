@@ -47,6 +47,12 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         device_monitor.show_all = true;
         device_monitor.get_bus().add_watch(Priority.DEFAULT, on_device_monitor_message);
         device_monitor.start();
+        foreach (Gst.Device device in device_monitor.get_devices()) {
+            if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) continue;
+            if (device.properties.get_string("device.class") == "monitor") continue;
+            if (devices.any_match((it) => it.matches(device))) continue;
+            devices.add(new Device(this, device));
+        }
 
         pipe = new Gst.Pipeline(null);
 
@@ -163,24 +169,28 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     private bool on_device_monitor_message(Gst.Bus bus, Gst.Message message) {
         Gst.Device old_device = null;
         Gst.Device device = null;
+        Device old = null;
         switch (message.type) {
             case Gst.MessageType.DEVICE_ADDED:
                 message.parse_device_added(out device);
                 if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
                 if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
+                if (devices.any_match((it) => it.matches(device))) return Source.CONTINUE;
                 devices.add(new Device(this, device));
                 break;
             case Gst.MessageType.DEVICE_CHANGED:
                 message.parse_device_changed(out device, out old_device);
                 if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
                 if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
-                devices.first_match((it) => it.matches(old_device)).update(device);
+                old = devices.first_match((it) => it.matches(old_device));
+                if (old != null) old.update(device);
                 break;
             case Gst.MessageType.DEVICE_REMOVED:
                 message.parse_device_removed(out device);
                 if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
                 if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
-                devices.remove(devices.first_match((it) => it.matches(device)));
+                old = devices.first_match((it) => it.matches(device));
+                if (old != null) devices.remove(old);
                 break;
         }
         if (device != null) {
