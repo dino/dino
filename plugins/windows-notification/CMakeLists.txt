@@ -27,7 +27,11 @@ PACKAGES
 )
 
 set(WINDOWS_API_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/unity.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt-enums.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt-event-token.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt-toast-notification.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt-toast-notifier.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/api/src/gobject/winrt.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/win32.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/converter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/api/src/shortcutcreator.cpp
