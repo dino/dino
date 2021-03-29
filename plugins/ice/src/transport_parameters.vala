@@ -65,10 +65,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         this.agent = agent;
 
         if (this.peer_fingerprint != null || !incoming) {
-            dtls_srtp = DtlsSrtp.setup();
-            dtls_srtp.send_data.connect((data) => {
-                agent.send(stream_id, 1, data);
-            });
+            dtls_srtp = setup_dtls(this);
             this.own_fingerprint = dtls_srtp.get_own_fingerprint(GnuTLS.DigestAlgorithm.SHA256);
             if (incoming) {
                 dtls_srtp.set_peer_fingerprint(this.peer_fingerprint);
@@ -103,6 +100,16 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         }
 
         agent.gather_candidates(stream_id);
+    }
+
+    private static DtlsSrtp setup_dtls(TransportParameters tp) {
+        var weak_self = new WeakRef(tp);
+        DtlsSrtp dtls_srtp = DtlsSrtp.setup();
+        dtls_srtp.send_data.connect((data) => {
+            TransportParameters self = (TransportParameters) weak_self.get();
+            if (self != null) self.agent.send(self.stream_id, 1, data);
+        });
+        return dtls_srtp;
     }
 
     private void on_candidate_gathering_done(uint stream_id) {
