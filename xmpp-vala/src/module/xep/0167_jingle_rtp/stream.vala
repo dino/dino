@@ -37,6 +37,13 @@ public abstract class Xmpp.Xep.JingleRtp.Stream : Object {
     public bool receiving { get {
         return content.session.senders_include_counterpart(content.senders);
     }}
+    public bool rtcp_mux { get {
+        var content_params = content.content_params;
+        if (content_params is Parameters) {
+            return ((Parameters)content_params).rtcp_mux;
+        }
+        return false;
+    }}
 
     protected Stream(Jingle.Content content) {
         this.content = content;

@@ -127,6 +127,7 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
     }
 
     public void handle_accept(XmppStream stream, Jingle.Session session, Jingle.Content content, StanzaNode description_node) {
+        rtcp_mux = description_node.get_subnode("rtcp-mux") != null;
         Gee.List<StanzaNode> payload_type_nodes = description_node.get_subnodes("payload-type");
         if (payload_type_nodes.size == 0) {
             warning("Counterpart didn't include any payload types");
