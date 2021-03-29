@@ -53,8 +53,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     private Gst.Pad send_rtp_sink_pad;
     private Gst.Pad send_rtp_src_pad;
 
-    private Crypto.Srtp.Session? local_crypto_session;
-    private Crypto.Srtp.Session? remote_crypto_session;
+    private Crypto.Srtp.Session? crypto_session = new Crypto.Srtp.Session();
 
     public Stream(Plugin plugin, Xmpp.Xep.Jingle.Content content) {
         base(content);
@@ -148,15 +147,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     }
 
     private void prepare_local_crypto() {
-        if (local_crypto != null && local_crypto_session == null) {
-            local_crypto_session = new Crypto.Srtp.Session(
-                    local_crypto.crypto_suite == Xep.JingleRtp.Crypto.F8_128_HMAC_SHA1_80 ? Crypto.Srtp.Encryption.AES_F8 : Crypto.Srtp.Encryption.AES_CM,
-                    Crypto.Srtp.Authentication.HMAC_SHA1,
-                    local_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10,
-                    Crypto.Srtp.Prf.AES_CM,
-                    0
-            );
-            local_crypto_session.setkey(local_crypto.key, local_crypto.salt);
+        if (local_crypto != null && !crypto_session.has_encrypt) {
+            crypto_session.set_encryption_key(local_crypto.crypto_suite, local_crypto.key, local_crypto.salt);
             debug("Setting up encryption with key params %s", local_crypto.key_params);
         }
     }
@@ -172,15 +164,19 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         buffer.extract_dup(0, buffer.get_size(), out data);
         prepare_local_crypto();
         if (sink == send_rtp) {
-            if (local_crypto_session != null) {
-                data = local_crypto_session.encrypt_rtp(data, local_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10);
+            if (crypto_session.has_encrypt) {
+                data = crypto_session.encrypt_rtp(data);
             }
             on_send_rtp_data(new Bytes.take(data));
         } else if (sink == send_rtcp) {
-            if (local_crypto_session != null) {
-                data = local_crypto_session.encrypt_rtcp(data, local_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10);
+            if (crypto_session.has_encrypt) {
+                data = crypto_session.encrypt_rtcp(data);
             }
-            on_send_rtcp_data(new Bytes.take(data));
+            if (rtcp_mux) {
+                on_send_rtp_data(new Bytes.take(data));
+            } else {
+                on_send_rtcp_data(new Bytes.take(data));
+            }
         } else {
             warning("unknown sample");
         }
@@ -283,25 +279,22 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     }
 
     private void prepare_remote_crypto() {
-        if (remote_crypto != null && remote_crypto_session == null) {
-            remote_crypto_session = new Crypto.Srtp.Session(
-                    remote_crypto.crypto_suite == Xep.JingleRtp.Crypto.F8_128_HMAC_SHA1_80 ? Crypto.Srtp.Encryption.AES_F8 : Crypto.Srtp.Encryption.AES_CM,
-                    Crypto.Srtp.Authentication.HMAC_SHA1,
-                    remote_crypto.crypto_suite == Xep.JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_32 ? 4 : 10,
-                    Crypto.Srtp.Prf.AES_CM,
-                    0
-            );
-            remote_crypto_session.setkey(remote_crypto.key, remote_crypto.salt);
+        if (remote_crypto != null && crypto_session.has_decrypt) {
+            crypto_session.set_decryption_key(remote_crypto.crypto_suite, remote_crypto.key, remote_crypto.salt);
             debug("Setting up decryption with key params %s", remote_crypto.key_params);
         }
     }
 
     public override void on_recv_rtp_data(Bytes bytes) {
+        if (rtcp_mux && bytes.length >= 2 && bytes.get(1) >= 192 && bytes.get(1) < 224) {
+            on_recv_rtcp_data(bytes);
+            return;
+        }
         prepare_remote_crypto();
         uint8[] data = bytes.get_data();
-        if (remote_crypto_session != null) {
+        if (crypto_session.has_decrypt) {
             try {
-                data = remote_crypto_session.decrypt_rtp(data);
+                data = crypto_session.decrypt_rtp(data);
             } catch (Error e) {
                 warning("%s (%d)", e.message, e.code);
             }
@@ -314,9 +307,9 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     public override void on_recv_rtcp_data(Bytes bytes) {
         prepare_remote_crypto();
         uint8[] data = bytes.get_data();
-        if (remote_crypto_session != null) {
+        if (crypto_session.has_decrypt) {
             try {
-                data = remote_crypto_session.decrypt_rtcp(data);
+                data = crypto_session.decrypt_rtcp(data);
             } catch (Error e) {
                 warning("%s (%d)", e.message, e.code);
             }

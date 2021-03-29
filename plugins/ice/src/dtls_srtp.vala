@@ -12,8 +12,7 @@ public class DtlsSrtp {
     private uint pull_timeout = uint.MAX;
     private string peer_fingerprint;
 
-    private Crypto.Srtp.Session encrypt_session;
-    private Crypto.Srtp.Session decrypt_session;
+    private Crypto.Srtp.Session srtp_session = new Crypto.Srtp.Session();
 
     public static DtlsSrtp setup() throws GLib.Error {
         var obj = new DtlsSrtp();
@@ -30,9 +29,19 @@ public class DtlsSrtp {
     }
 
     public uint8[] process_incoming_data(uint component_id, uint8[] data) {
-        if (decrypt_session != null) {
-            if (component_id == 1) return decrypt_session.decrypt_rtp(data);
-            if (component_id == 2) return decrypt_session.decrypt_rtcp(data);
+        if (srtp_session.has_decrypt) {
+            try {
+                if (component_id == 1) {
+                    if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
+                        return srtp_session.decrypt_rtcp(data);
+                    }
+                    return srtp_session.decrypt_rtp(data);
+                }
+                if (component_id == 2) return srtp_session.decrypt_rtcp(data);
+            } catch (Error e) {
+                warning("%s (%d)", e.message, e.code);
+                return null;
+            }
         } else if (component_id == 1) {
             on_data_rec(data);
         }
@@ -40,9 +49,19 @@ public class DtlsSrtp {
     }
 
     public uint8[] process_outgoing_data(uint component_id, uint8[] data) {
-        if (encrypt_session != null) {
-            if (component_id == 1) return encrypt_session.encrypt_rtp(data);
-            if (component_id == 2) return encrypt_session.encrypt_rtcp(data);
+        if (srtp_session.has_encrypt) {
+            try {
+                if (component_id == 1) {
+                    if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
+                        return srtp_session.encrypt_rtcp(data);
+                    }
+                    return srtp_session.encrypt_rtp(data);
+                }
+                if (component_id == 2) return srtp_session.encrypt_rtcp(data);
+            } catch (Error e) {
+                warning("%s (%d)", e.message, e.code);
+                return null;
+            }
         }
         return null;
     }
@@ -123,19 +142,13 @@ public class DtlsSrtp {
             warning("SRTP client/server key/salt null");
         }
 
-        Crypto.Srtp.Session encrypt_session = new Crypto.Srtp.Session(Crypto.Srtp.Encryption.AES_CM, Crypto.Srtp.Authentication.HMAC_SHA1, 10, Crypto.Srtp.Prf.AES_CM, 0);
-        Crypto.Srtp.Session decrypt_session = new Crypto.Srtp.Session(Crypto.Srtp.Encryption.AES_CM, Crypto.Srtp.Authentication.HMAC_SHA1, 10, Crypto.Srtp.Prf.AES_CM, 0);
-
         if (server) {
-            encrypt_session.setkey(server_key.extract(), server_salt.extract());
-            decrypt_session.setkey(client_key.extract(), client_salt.extract());
+            srtp_session.set_encryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, server_key.extract(), server_salt.extract());
+            srtp_session.set_decryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, client_key.extract(), client_salt.extract());
         } else {
-            encrypt_session.setkey(client_key.extract(), client_salt.extract());
-            decrypt_session.setkey(server_key.extract(), server_salt.extract());
+            srtp_session.set_encryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, client_key.extract(), client_salt.extract());
+            srtp_session.set_decryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, server_key.extract(), server_salt.extract());
         }
-
-        this.encrypt_session = (owned)encrypt_session;
-        this.decrypt_session = (owned)decrypt_session;
     }
 
     private static ssize_t pull_function(void* transport_ptr, uint8[] buffer) {
