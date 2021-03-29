@@ -122,25 +122,25 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
                 channels = 2,
                 clockrate = 48000,
                 name = "opus",
-                id = 96
+                id = 99
             });
             yield add_if_supported(list, media, new JingleRtp.PayloadType() {
                 channels = 1,
                 clockrate = 32000,
                 name = "speex",
-                id = 97
+                id = 100
             });
             yield add_if_supported(list, media, new JingleRtp.PayloadType() {
                 channels = 1,
                 clockrate = 16000,
                 name = "speex",
-                id = 98
+                id = 101
             });
             yield add_if_supported(list, media, new JingleRtp.PayloadType() {
                 channels = 1,
                 clockrate = 8000,
                 name = "speex",
-                id = 99
+                id = 102
             });
             yield add_if_supported(list, media, new JingleRtp.PayloadType() {
                 channels = 1,
