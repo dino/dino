@@ -40,6 +40,9 @@ public class EntityInfo : StreamInteractionModule, Object {
             entity_caps_hashes[account.bare_jid.domain_jid] = hash;
         });
         stream_interactor.module_manager.initialize_account_modules.connect(initialize_modules);
+
+        remove_old_entities();
+        Timeout.add_seconds(60 * 60, () => { remove_old_entities(); return true; });
     }
 
     public async Gee.Set<Identity>? get_identities(Account account, Jid jid) {
@@ -94,24 +97,28 @@ public class EntityInfo : StreamInteractionModule, Object {
     }
 
     private void on_received_available_presence(Account account, Presence.Stanza presence) {
-        bool is_gc = stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(presence.from.bare_jid, account);
+        bool is_gc = stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(presence.from.bare_jid, account);
         if (is_gc) return;
 
         string? caps_hash = EntityCapabilities.get_caps_hash(presence);
         if (caps_hash == null) return;
 
-        /* TODO check might_be_groupchat before storing
         db.entity.upsert()
-                .value(db.entity.account_id, account.id, true)
-                .value(db.entity.jid_id, db.get_jid_id(presence.from), true)
-                .value(db.entity.resource, presence.from.resourcepart, true)
-                .value(db.entity.last_seen, (long)(new DateTime.now_local()).to_unix())
-                .value(db.entity.caps_hash, caps_hash)
-                .perform();*/
+            .value(db.entity.account_id, account.id, true)
+            .value(db.entity.jid_id, db.get_jid_id(presence.from), true)
+            .value(db.entity.resource, presence.from.resourcepart, true)
+            .value(db.entity.last_seen, (long)(new DateTime.now_local()).to_unix())
+            .value(db.entity.caps_hash, caps_hash)
+            .perform();
 
         if (caps_hash != null) {
             entity_caps_hashes[presence.from] = caps_hash;
         }
+    }
+
+    private void remove_old_entities() {
+        long timestamp = (long)(new DateTime.now_local().add_days(-14)).to_unix();
+        db.entity.delete().with(db.entity.last_seen, "<", timestamp).perform();
     }
 
     private void store_features(string entity, Gee.List<string> features) {
