@@ -403,10 +403,6 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
             plugin_stream.pause();
         } else {
             plugin_stream.unpause();
-            Timeout.add_seconds(3, () => {
-                dump_dot();
-                return false;
-            });
         }
     }
 
