@@ -279,7 +279,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     }
 
     private void prepare_remote_crypto() {
-        if (remote_crypto != null && crypto_session.has_decrypt) {
+        if (remote_crypto != null && !crypto_session.has_decrypt) {
             crypto_session.set_decryption_key(remote_crypto.crypto_suite, remote_crypto.key, remote_crypto.salt);
             debug("Setting up decryption with key params %s", remote_crypto.key_params);
         }
@@ -339,6 +339,11 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     }
 
     public void on_ssrc_pad_added(string ssrc, Gst.Pad pad) {
+        debug("New ssrc %s with pad %s", ssrc, pad.name);
+        if (participant_ssrc != null && participant_ssrc != ssrc) {
+            warning("Got second ssrc on stream (old: %s, new: %s), ignoring", participant_ssrc, ssrc);
+            return;
+        }
         participant_ssrc = ssrc;
         recv_rtp_src_pad = pad;
         if (decode != null) {
