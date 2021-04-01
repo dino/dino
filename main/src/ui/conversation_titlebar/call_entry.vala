@@ -116,9 +116,9 @@ namespace Dino.Ui {
         private async void update_visibility() {
             if (conversation.type_ == Conversation.Type.CHAT) {
                 Conversation conv_bak = conversation;
-                Gee.List<Jid>? resources = yield stream_interactor.get_module(Calls.IDENTITY).get_call_resources(conversation);
+                bool can_do_calls = yield stream_interactor.get_module(Calls.IDENTITY).can_do_calls(conversation);
                 if (conv_bak != conversation) return;
-                visible = resources != null && resources.size > 0;
+                visible = can_do_calls;
             } else {
                 visible = false;
             }

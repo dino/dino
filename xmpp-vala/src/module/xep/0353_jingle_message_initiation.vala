@@ -1,7 +1,7 @@
 using Gee;
 
 namespace Xmpp.Xep.JingleMessageInitiation {
-    private const string NS_URI = "urn:xmpp:jingle-message:0";
+    public const string NS_URI = "urn:xmpp:jingle-message:0";
 
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0353_jingle_message_initiation");
@@ -10,6 +10,17 @@ namespace Xmpp.Xep.JingleMessageInitiation {
         public signal void session_retracted(Jid from, Jid to, string sid);
         public signal void session_accepted(Jid from, string sid);
         public signal void session_rejected(Jid from, Jid to, string sid);
+
+        public void send_session_propose_to_peer(XmppStream stream, Jid to, string sid, Gee.List<StanzaNode> descriptions) {
+            StanzaNode propose_node = new StanzaNode.build("propose", NS_URI).add_self_xmlns().put_attribute("id", sid, NS_URI);
+            foreach (StanzaNode desc_node in descriptions) {
+                propose_node.put_node(desc_node);
+            }
+
+            MessageStanza accepted_message = new MessageStanza() { to=to };
+            accepted_message.stanza.put_node(propose_node);
+            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, accepted_message);
+        }
 
         public void send_session_accept_to_self(XmppStream stream, string sid) {
             MessageStanza accepted_message = new MessageStanza() { to=Bind.Flag.get_my_jid(stream).bare_jid };
@@ -58,7 +69,6 @@ namespace Xmpp.Xep.JingleMessageInitiation {
             switch (mi_node.name) {
                 case "accept":
                 case "proceed":
-                    if (!message.from.equals_bare(Bind.Flag.get_my_jid(stream))) return;
                     session_accepted(message.from, mi_node.get_attribute("id"));
                     break;
                 case "propose":

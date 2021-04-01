@@ -249,12 +249,4 @@ public class DtlsSrtp {
         }
         return sb.str;
     }
-
-    private uint8[] uint8_pt_to_a(uint8* data, uint size) {
-        uint8[size] ret = new uint8[size];
-        for (int i = 0; i < size; i++) {
-            ret[i] = data[i];
-        }
-        return ret;
-    }
 }

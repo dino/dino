@@ -26,7 +26,7 @@ public abstract class Module : XmppStreamModule {
     public abstract Stream create_stream(Jingle.Content content);
     public abstract void close_stream(Stream stream);
 
-    public async Jingle.Session start_call(XmppStream stream, Jid receiver_full_jid, bool video) throws Jingle.Error {
+    public async Jingle.Session start_call(XmppStream stream, Jid receiver_full_jid, bool video, string? sid = null) throws Jingle.Error {
 
         Jingle.Module jingle_module = stream.get_module(Jingle.Module.IDENTITY);
 
@@ -72,7 +72,7 @@ public abstract class Module : XmppStreamModule {
 
         // Create session
         try {
-            Jingle.Session session = yield jingle_module.create_session(stream, contents, receiver_full_jid);
+            Jingle.Session session = yield jingle_module.create_session(stream, contents, receiver_full_jid, sid);
             return session;
         } catch (Jingle.Error e) {
             throw new Jingle.Error.GENERAL(@"Couldn't create Jingle session: $(e.message)");

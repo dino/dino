@@ -102,7 +102,7 @@ namespace Xmpp.Xep.Jingle {
             return (yield is_jingle_available(stream, full_jid)) && (yield select_transport(stream, type, components, full_jid, Set.empty())) != null;
         }
 
-        public async Session create_session(XmppStream stream, Gee.List<Content> contents, Jid receiver_full_jid, string sid = random_uuid()) throws Error {
+        public async Session create_session(XmppStream stream, Gee.List<Content> contents, Jid receiver_full_jid, string? sid = null) throws Error {
             if (!yield is_jingle_available(stream, receiver_full_jid)) {
                 throw new Error.NO_SHARED_PROTOCOLS("No Jingle support");
             }
@@ -111,7 +111,7 @@ namespace Xmpp.Xep.Jingle {
                 throw new Error.GENERAL("Couldn't determine own JID");
             }
 
-            Session session = new Session.initiate_sent(stream, sid, my_jid, receiver_full_jid);
+            Session session = new Session.initiate_sent(stream, sid ?? random_uuid(), my_jid, receiver_full_jid);
             session.terminated.connect((session, stream, _1, _2, _3) => { stream.get_flag(Flag.IDENTITY).remove_session(session.sid); });
 
             foreach (Content content in contents) {

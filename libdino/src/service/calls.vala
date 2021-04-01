@@ -21,15 +21,16 @@ namespace Dino {
         public string id { get { return IDENTITY.id; } }
 
         private StreamInteractor stream_interactor;
+        private Database db;
         private Xep.JingleRtp.SessionInfoType session_info_type;
 
         private HashMap<Account, HashMap<Call, string>> sid_by_call = new HashMap<Account, HashMap<Call, string>>(Account.hash_func, Account.equals_func);
         private HashMap<Account, HashMap<string, Call>> call_by_sid = new HashMap<Account, HashMap<string, Call>>(Account.hash_func, Account.equals_func);
         public HashMap<Call, Xep.Jingle.Session> sessions = new HashMap<Call, Xep.Jingle.Session>(Call.hash_func, Call.equals_func);
 
-        public Call? mi_accepted_call = null;
-        public string? mi_accepted_sid = null;
-        public bool mi_accepted_video = false;
+        public HashMap<Account, Call> jmi_call = new HashMap<Account, Call>(Account.hash_func, Account.equals_func);
+        public HashMap<Account, string> jmi_sid = new HashMap<Account, string>(Account.hash_func, Account.equals_func);
+        public HashMap<Account, bool> jmi_video = new HashMap<Account, bool>(Account.hash_func, Account.equals_func);
 
         private HashMap<Call, bool> counterpart_sends_video = new HashMap<Call, bool>(Call.hash_func, Call.equals_func);
         private HashMap<Call, bool> we_should_send_video = new HashMap<Call, bool>(Call.hash_func, Call.equals_func);
@@ -46,6 +47,7 @@ namespace Dino {
 
         private Calls(StreamInteractor stream_interactor, Database db) {
             this.stream_interactor = stream_interactor;
+            this.db = db;
 
             stream_interactor.account_added.connect(on_account_added);
         }
@@ -75,27 +77,48 @@ namespace Dino {
 
             stream_interactor.get_module(CallStore.IDENTITY).add_call(call, conversation);
 
-            XmppStream? stream = stream_interactor.get_stream(conversation.account);
-            if (stream == null) return null;
-
-            Gee.List<Jid> call_resources = yield get_call_resources(conversation);
-            if (call_resources.size > 0) {
-                Jid full_jid = call_resources[0];
-                Xep.Jingle.Session session = yield stream.get_module(Xep.JingleRtp.Module.IDENTITY).start_call(stream, full_jid, video);
-                sessions[call] = session;
-                call_by_sid[call.account][session.sid] = call;
-                sid_by_call[call.account][call] = session.sid;
-
-                connect_session_signals(call, session);
-            }
-
             we_should_send_video[call] = video;
             we_should_send_audio[call] = true;
+
+            if (yield has_jmi_resources(conversation)) {
+                XmppStream? stream = stream_interactor.get_stream(conversation.account);
+                jmi_call[conversation.account] = call;
+                jmi_video[conversation.account] = video;
+                jmi_sid[conversation.account] = Xmpp.random_uuid();
+
+                call_by_sid[call.account][jmi_sid[conversation.account]] = call;
+
+                var descriptions = new ArrayList<StanzaNode>();
+                descriptions.add(new StanzaNode.build("description", "urn:xmpp:jingle:apps:rtp:1").add_self_xmlns().put_attribute("media", "audio"));
+                if (video) {
+                    descriptions.add(new StanzaNode.build("description", "urn:xmpp:jingle:apps:rtp:1").add_self_xmlns().put_attribute("media", "video"));
+                }
+
+                stream.get_module(Xmpp.Xep.JingleMessageInitiation.Module.IDENTITY).send_session_propose_to_peer(stream, conversation.counterpart, jmi_sid[call.account], descriptions);
+            } else {
+                Gee.List<Jid> call_resources = yield get_call_resources(conversation);
+                if (call_resources.size == 0) {
+                    warning("No call resources");
+                    return null;
+                }
+                yield call_resource(conversation.account, call_resources[0], call, video);
+            }
 
             conversation.last_active = call.time;
             call_outgoing(call, conversation);
 
             return call;
+        }
+
+        private async void call_resource(Account account, Jid full_jid, Call call, bool video, string? sid = null) {
+            XmppStream? stream = stream_interactor.get_stream(account);
+            if (stream == null) return;
+
+            Xep.Jingle.Session session = yield stream.get_module(Xep.JingleRtp.Module.IDENTITY).start_call(stream, full_jid, video, sid);
+            sessions[call] = session;
+            sid_by_call[call.account][call] = session.sid;
+
+            connect_session_signals(call, session);
         }
 
         public void end_call(Conversation conversation, Call call) {
@@ -130,15 +153,17 @@ namespace Dino {
                 }
             } else {
                 // Only a JMI so far
-                XmppStream stream = stream_interactor.get_stream(call.account);
+                Account account = call.account;
+                string sid = sid_by_call[call.account][call];
+                XmppStream stream = stream_interactor.get_stream(account);
                 if (stream == null) return;
 
-                mi_accepted_call = call;
-                mi_accepted_sid = sid_by_call[call.account][call];
-                mi_accepted_video = we_should_send_video[call];
+                jmi_call[account] = call;
+                jmi_sid[account] = sid;
+                jmi_video[account] = we_should_send_video[call];
 
-                stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_accept_to_self(stream, mi_accepted_sid);
-                stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_proceed_to_peer(stream, call.counterpart, mi_accepted_sid);
+                stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_accept_to_self(stream, sid);
+                stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_proceed_to_peer(stream, call.counterpart, sid);
             }
         }
 
@@ -211,7 +236,11 @@ namespace Dino {
             // If video_feed == null && !mute we're trying to mute a non-existant feed. It will be muted as soon as it is created.
         }
 
-        public async Gee.List<Jid> get_call_resources(Conversation conversation) {
+        public async bool can_do_calls(Conversation conversation) {
+            return (yield get_call_resources(conversation)).size > 0 || yield has_jmi_resources(conversation);
+        }
+
+        private async Gee.List<Jid> get_call_resources(Conversation conversation) {
             ArrayList<Jid> ret = new ArrayList<Jid>();
 
             XmppStream? stream = stream_interactor.get_stream(conversation.account);
@@ -226,6 +255,15 @@ namespace Dino {
                 ret.add(full_jid);
             }
             return ret;
+        }
+
+        private async bool has_jmi_resources(Conversation conversation) {
+            int64 jmi_resources = db.entity.select()
+                    .with(db.entity.jid_id, "=", db.get_jid_id(conversation.counterpart))
+                    .join_with(db.entity_feature, db.entity.caps_hash, db.entity_feature.entity)
+                    .with(db.entity_feature.feature, "=", Xep.JingleMessageInitiation.NS_URI)
+                    .count();
+            return jmi_resources > 0;
         }
 
         public bool should_we_send_video(Call call) {
@@ -252,13 +290,14 @@ namespace Dino {
             }
 
             // Session might have already been accepted via Jingle Message Initiation
-            bool already_accepted = mi_accepted_sid == session.sid && mi_accepted_call.account.equals(account) &&
-                    mi_accepted_call.counterpart.equals_bare(session.peer_full_jid) &&
-                    mi_accepted_video == counterpart_wants_video;
+            bool already_accepted = jmi_sid.contains(account) &&
+                    jmi_sid[account] == session.sid && jmi_call[account].account.equals(account) &&
+                    jmi_call[account].counterpart.equals_bare(session.peer_full_jid) &&
+                    jmi_video[account] == counterpart_wants_video;
 
             Call? call = null;
             if (already_accepted) {
-                call = mi_accepted_call;
+                call = jmi_call[account];
             } else {
                 call = create_received_call(account, session.peer_full_jid, account.full_jid, counterpart_wants_video);
             }
@@ -334,16 +373,15 @@ namespace Dino {
             }
             if (call.state == Call.State.IN_PROGRESS) {
                 call.state = Call.State.ENDED;
-                call_terminated(call, reason_name, reason_text);
             } else if (call.state == Call.State.RINGING || call.state == Call.State.ESTABLISHING) {
                 if (reason_name == Xep.Jingle.ReasonElement.DECLINE) {
                     call.state = Call.State.DECLINED;
                 } else {
                     call.state = Call.State.FAILED;
                 }
-                call_terminated(call, reason_name, reason_text);
             }
 
+            call_terminated(call, reason_name, reason_text);
             remove_call_from_datastructures(call);
         }
 
@@ -478,11 +516,21 @@ namespace Dino {
             mi_module.session_accepted.connect((from, sid) => {
                 if (!call_by_sid[account].has_key(sid)) return;
 
-                // Ignore session-accepted from ourselves
-                if (!from.equals(account.full_jid)) {
+                if (from.equals_bare(account.bare_jid)) { // Carboned message from our account
+                    // Ignore carbon from ourselves
+                    if (from.equals(account.full_jid)) return;
+
                     Call call = call_by_sid[account][sid];
                     call.state = Call.State.OTHER_DEVICE_ACCEPTED;
                     remove_call_from_datastructures(call);
+                } else if (from.equals_bare(call_by_sid[account][sid].counterpart)) { // Message from our peer
+                    // We proposed the call
+                    if (jmi_sid.has_key(account) && jmi_sid[account] == sid) {
+                        call_resource(account, from, jmi_call[account], jmi_video[account], jmi_sid[account]);
+                        jmi_call.unset(account);
+                        jmi_sid.unset(account);
+                        jmi_video.unset(account);
+                    }
                 }
             });
             mi_module.session_rejected.connect((from, to, sid) => {

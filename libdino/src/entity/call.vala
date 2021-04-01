@@ -77,6 +77,8 @@ namespace Dino.Entities {
                     .value(db.call.state, State.ENDED); // No point in persisting states that can't survive a restart
             if (end_time != null) {
                 builder.value(db.call.end_time, (long) end_time.to_unix());
+            } else {
+                builder.value(db.call.end_time, (long) local_time.to_unix());
             }
             id = (int) builder.perform();
 
