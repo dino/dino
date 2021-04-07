@@ -3,6 +3,12 @@ public abstract class Xmpp.TlsXmppStream : IoXmppStream {
     public TlsCertificateFlags? errors;
 
     public delegate bool OnInvalidCert(GLib.TlsCertificate peer_cert, GLib.TlsCertificateFlags errors);
+    public class OnInvalidCertWrapper {
+        public OnInvalidCert func;
+        public OnInvalidCertWrapper(owned OnInvalidCert func) {
+            this.func = (owned) func;
+        }
+    }
 
     protected TlsXmppStream(Jid remote_name) {
         base(remote_name);
