@@ -235,16 +235,23 @@ box.dino-input-error label.input-status-highlight-once {
     outline: 0;
     border-radius: 1000px;
 }
+
 .dino-call-window button.white-button {
     color: #1d1c1d;
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.85);
     border: lightgrey;
+}
+.dino-call-window button.white-button:hover {
+    background: rgba(255,255,255,1);
 }
 
 .dino-call-window button.transparent-white-button {
     color: white;
     background: rgba(255,255,255,0.15);
     border: none;
+}
+.dino-call-window button.transparent-white-button:hover {
+    background: rgba(255,255,255,0.25);
 }
 
 .dino-call-window button.call-mediadevice-settings-button {
@@ -265,11 +272,21 @@ box.dino-input-error label.input-status-highlight-once {
     margin: 0;
 }
 
-.dino-call-window .unencrypted-box {
-    color: @error_color;
-    padding: 10px;
+.dino-call-window .encryption-box {
+    color: rgba(255,255,255,0.7);
     border-radius: 5px;
     background: rgba(0,0,0,0.5);
+    padding: 0px;
+    border: none;
+    box-shadow: none;
+}
+
+.dino-call-window .encryption-box.unencrypted {
+    color: @error_color;
+}
+
+.dino-call-window .encryption-box:hover {
+    background: rgba(20,20,20,0.5);
 }
 
 .dino-call-window .call-header-bar {

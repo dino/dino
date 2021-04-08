@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 20;
+    private const int VERSION = 21;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -165,11 +165,12 @@ public class Database : Qlite.Database {
         public Column<long> time = new Column.Long("time") { not_null = true };
         public Column<long> local_time = new Column.Long("local_time") { not_null = true };
         public Column<long> end_time = new Column.Long("end_time");
+        public Column<int> encryption = new Column.Integer("encryption") { min_version=21 };
         public Column<int> state = new Column.Integer("state");
 
         internal CallTable(Database db) {
             base(db, "call");
-            init({id, account_id, counterpart_id, counterpart_resource, our_resource, direction, time, local_time, end_time, state});
+            init({id, account_id, counterpart_id, counterpart_resource, our_resource, direction, time, local_time, end_time, encryption, state});
         }
     }
 

@@ -13,8 +13,9 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
     public ConcurrentList<Candidate> unsent_local_candidates = new ConcurrentList<Candidate>(Candidate.equals_func);
     public Gee.List<Candidate> remote_candidates = new ArrayList<Candidate>(Candidate.equals_func);
 
-    public string? own_fingerprint = null;
-    public string? peer_fingerprint = null;
+    public uint8[]? own_fingerprint = null;
+    public uint8[]? peer_fingerprint = null;
+    public string? peer_fp_algo = null;
 
     public Jid local_full_jid { get; private set; }
     public Jid peer_full_jid { get; private set; }
@@ -24,7 +25,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
     public bool incoming { get; private set; default = false; }
     private bool connection_created = false;
 
-    private weak Jingle.Content? content = null;
+    protected weak Jingle.Content? content = null;
 
     protected IceUdpTransportParameters(uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode? node = null) {
         this.components_ = components;
@@ -38,9 +39,10 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
                 remote_candidates.add(Candidate.parse(candidateNode));
             }
 
-            StanzaNode? fingerprint_node = node.get_subnode("fingerprint", "urn:xmpp:jingle:apps:dtls:0");
+            StanzaNode? fingerprint_node = node.get_subnode("fingerprint", DTLS_NS_URI);
             if (fingerprint_node != null) {
-                peer_fingerprint = fingerprint_node.get_deep_string_content();
+                peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_deep_string_content());
+                peer_fp_algo = fingerprint_node.get_attribute("hash");
             }
         }
     }
@@ -67,10 +69,10 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
                 .put_attribute("pwd", local_pwd);
 
         if (own_fingerprint != null) {
-            var fingerprint_node = new StanzaNode.build("fingerprint", "urn:xmpp:jingle:apps:dtls:0")
+            var fingerprint_node = new StanzaNode.build("fingerprint", DTLS_NS_URI)
                     .add_self_xmlns()
                     .put_attribute("hash", "sha-256")
-                    .put_node(new StanzaNode.text(own_fingerprint));
+                    .put_node(new StanzaNode.text(format_fingerprint(own_fingerprint)));
             if (incoming) {
                 fingerprint_node.put_attribute("setup", "active");
             } else {
@@ -95,9 +97,10 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
             remote_candidates.add(Candidate.parse(candidateNode));
         }
 
-        StanzaNode? fingerprint_node = node.get_subnode("fingerprint", "urn:xmpp:jingle:apps:dtls:0");
+        StanzaNode? fingerprint_node = node.get_subnode("fingerprint", DTLS_NS_URI);
         if (fingerprint_node != null) {
-            peer_fingerprint = fingerprint_node.get_deep_string_content();
+            peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_deep_string_content());
+            peer_fp_algo = fingerprint_node.get_attribute("hash");
         }
     }
 
@@ -137,5 +140,31 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         if (this.content != null && unsent_local_candidates.size > 0) {
             content.send_transport_info(to_transport_stanza_node());
         }
+    }
+
+
+
+    private string format_fingerprint(uint8[] fingerprint) {
+        var sb = new StringBuilder();
+        for (int i = 0; i < fingerprint.length; i++) {
+            sb.append("%02x".printf(fingerprint[i]));
+            if (i < fingerprint.length - 1) {
+                sb.append(":");
+            }
+        }
+        return sb.str;
+    }
+
+    private uint8[] fingerprint_to_bytes(string? fingerprint_) {
+        if (fingerprint_ == null) return null;
+
+        string fingerprint = fingerprint_.replace(":", "").up();
+
+        uint8[] bin = new uint8[fingerprint.length / 2];
+        const string HEX = "0123456789ABCDEF";
+        for (int i = 0; i < fingerprint.length / 2; i++) {
+            bin[i] = (uint8) (HEX.index_of_char(fingerprint[i*2]) << 4) | HEX.index_of_char(fingerprint[i*2+1]);
+        }
+        return bin;
     }
 }

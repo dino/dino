@@ -1,5 +1,7 @@
 public abstract class Xmpp.Xep.JingleRtp.Stream : Object {
+
     public Jingle.Content content { get; protected set; }
+
     public string name { get {
         return content.content_name;
     }}

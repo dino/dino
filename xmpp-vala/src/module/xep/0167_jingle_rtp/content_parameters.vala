@@ -116,6 +116,9 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
             remote_crypto = null;
             local_crypto = null;
         }
+        if (remote_crypto != null && local_crypto != null) {
+            content.encryption = new Xmpp.Xep.Jingle.ContentEncryption() { encryption_ns = "", encryption_name = "SRTP", our_key=local_crypto.key, peer_key=remote_crypto.key };
+        }
 
         this.stream = parent.create_stream(content);
         rtp_datagram.datagram_received.connect(this.stream.on_recv_rtp_data);

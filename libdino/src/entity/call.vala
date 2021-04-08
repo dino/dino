@@ -32,6 +32,7 @@ namespace Dino.Entities {
         public DateTime time { get; set; }
         public DateTime local_time { get; set; }
         public DateTime end_time { get; set; }
+        public Encryption encryption { get; set; default=Encryption.NONE; }
 
         public State state { get; set; }
 
@@ -57,6 +58,7 @@ namespace Dino.Entities {
             time = new DateTime.from_unix_utc(row[db.call.time]);
             local_time = new DateTime.from_unix_utc(row[db.call.local_time]);
             end_time = new DateTime.from_unix_utc(row[db.call.end_time]);
+            encryption = (Encryption) row[db.call.encryption];
             state = (State) row[db.call.state];
 
             notify.connect(on_update);
@@ -74,6 +76,7 @@ namespace Dino.Entities {
                     .value(db.call.direction, direction)
                     .value(db.call.time, (long) time.to_unix())
                     .value(db.call.local_time, (long) local_time.to_unix())
+                    .value(db.call.encryption, encryption)
                     .value(db.call.state, State.ENDED); // No point in persisting states that can't survive a restart
             if (end_time != null) {
                 builder.value(db.call.end_time, (long) end_time.to_unix());
@@ -116,6 +119,8 @@ namespace Dino.Entities {
                     update_builder.set(db.call.local_time, (long) local_time.to_unix()); break;
                 case "end-time":
                     update_builder.set(db.call.end_time, (long) end_time.to_unix()); break;
+                case "encryption":
+                    update_builder.set(db.call.encryption, encryption); break;
                 case "state":
                     // No point in persisting states that can't survive a restart
                     if (state == State.RINGING || state == State.ESTABLISHING || state == State.IN_PROGRESS) return;

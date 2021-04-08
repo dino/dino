@@ -316,10 +316,12 @@ public class CallItem : ContentItem {
     public Conversation conversation;
 
     public CallItem(Call call, Conversation conversation, int id) {
-        base(id, TYPE, call.from, call.time, Encryption.NONE, Message.Marked.NONE);
+        base(id, TYPE, call.from, call.time, call.encryption, Message.Marked.NONE);
 
         this.call = call;
         this.conversation = conversation;
+
+        call.bind_property("encryption", this, "encryption");
     }
 }
 

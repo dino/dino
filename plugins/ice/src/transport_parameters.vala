@@ -68,9 +68,11 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             dtls_srtp = setup_dtls(this);
             this.own_fingerprint = dtls_srtp.get_own_fingerprint(GnuTLS.DigestAlgorithm.SHA256);
             if (incoming) {
-                dtls_srtp.set_peer_fingerprint(this.peer_fingerprint);
+                dtls_srtp.set_peer_fingerprint(this.peer_fingerprint, this.peer_fp_algo == "sha-256" ? GnuTLS.DigestAlgorithm.SHA256 : GnuTLS.DigestAlgorithm.NULL);
             } else {
-                dtls_srtp.setup_dtls_connection(true);
+                dtls_srtp.setup_dtls_connection.begin(true, (_, res) => {
+                    this.content.encryption = dtls_srtp.setup_dtls_connection.end(res);
+                });
             }
         }
 
@@ -143,7 +145,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         base.handle_transport_accept(transport);
 
         if (dtls_srtp != null && peer_fingerprint != null) {
-            dtls_srtp.set_peer_fingerprint(this.peer_fingerprint);
+            dtls_srtp.set_peer_fingerprint(this.peer_fingerprint, this.peer_fp_algo == "sha-256" ? GnuTLS.DigestAlgorithm.SHA256 : GnuTLS.DigestAlgorithm.NULL);
         } else {
             dtls_srtp = null;
         }
@@ -205,7 +207,9 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         if (incoming && dtls_srtp != null) {
             Jingle.DatagramConnection rtp_datagram = (Jingle.DatagramConnection) content.get_transport_connection(1);
             rtp_datagram.notify["ready"].connect(() => {
-                dtls_srtp.setup_dtls_connection(false);
+                dtls_srtp.setup_dtls_connection.begin(false, (_, res) => {
+                    this.content.encryption = dtls_srtp.setup_dtls_connection.end(res);
+                });
             });
         }
         base.create_transport_connection(stream, content);

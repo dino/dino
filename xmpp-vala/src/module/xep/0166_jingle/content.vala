@@ -34,6 +34,8 @@ public class Xmpp.Xep.Jingle.Content : Object {
     public weak Session session;
     public Map<uint8, ComponentConnection> component_connections = new HashMap<uint8, ComponentConnection>(); // TODO private
 
+    public ContentEncryption? encryption { get; set; }
+
     // INITIATE_SENT | INITIATE_RECEIVED | CONNECTING
     public Set<string> tried_transport_methods = new HashSet<string>();
 
@@ -233,4 +235,11 @@ public class Xmpp.Xep.Jingle.Content : Object {
     public void send_transport_info(StanzaNode transport) {
         session.send_transport_info(this, transport);
     }
+}
+
+public class Xmpp.Xep.Jingle.ContentEncryption : Object {
+    public string encryption_ns { get; set; }
+    public string encryption_name { get; set; }
+    public uint8[] our_key { get; set; }
+    public uint8[] peer_key { get; set; }
 }

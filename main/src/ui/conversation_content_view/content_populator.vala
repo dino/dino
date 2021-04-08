@@ -88,6 +88,7 @@ public abstract class ContentMetaItem : Plugins.MetaConversationItem {
         this.mark = content_item.mark;
 
         content_item.bind_property("mark", this, "mark");
+        content_item.bind_property("encryption", this, "encryption");
 
         this.can_merge = true;
         this.requires_avatar = true;

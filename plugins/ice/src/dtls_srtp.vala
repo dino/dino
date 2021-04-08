@@ -10,7 +10,10 @@ public class DtlsSrtp {
     private Mutex buffer_mutex = new Mutex();
     private Gee.LinkedList<Bytes> buffer_queue = new Gee.LinkedList<Bytes>();
     private uint pull_timeout = uint.MAX;
-    private string peer_fingerprint;
+
+    private DigestAlgorithm? peer_fp_algo = null;
+    private uint8[] peer_fingerprint = null;
+    private uint8[] own_fingerprint;
 
     private Crypto.Srtp.Session srtp_session = new Crypto.Srtp.Session();
 
@@ -20,12 +23,13 @@ public class DtlsSrtp {
         return obj;
     }
 
-    internal string get_own_fingerprint(DigestAlgorithm digest_algo) {
-        return format_certificate(own_cert[0], digest_algo);
+    internal uint8[] get_own_fingerprint(DigestAlgorithm digest_algo) {
+        return own_fingerprint;
     }
 
-    public void set_peer_fingerprint(string fingerprint) {
+    public void set_peer_fingerprint(uint8[] fingerprint, DigestAlgorithm digest_algo) {
         this.peer_fingerprint = fingerprint;
+        this.peer_fp_algo = digest_algo;
     }
 
     public uint8[] process_incoming_data(uint component_id, uint8[] data) {
@@ -94,10 +98,11 @@ public class DtlsSrtp {
 
         cert.sign(cert, private_key);
 
+        own_fingerprint = get_fingerprint(cert, DigestAlgorithm.SHA256);
         own_cert = new X509.Certificate[] { (owned)cert };
     }
 
-    public async void setup_dtls_connection(bool server) {
+    public async Xmpp.Xep.Jingle.ContentEncryption setup_dtls_connection(bool server) {
         InitFlags server_or_client = server ? InitFlags.SERVER : InitFlags.CLIENT;
         debug("Setting up DTLS connection. We're %s", server_or_client.to_string());
 
@@ -149,6 +154,7 @@ public class DtlsSrtp {
             srtp_session.set_encryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, client_key.extract(), client_salt.extract());
             srtp_session.set_decryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, server_key.extract(), server_salt.extract());
         }
+        return new Xmpp.Xep.Jingle.ContentEncryption() { encryption_ns=Xmpp.Xep.JingleIceUdp.DTLS_NS_URI, encryption_name = "DTLS-SRTP", our_key=own_fingerprint, peer_key=peer_fingerprint };
     }
 
     private static ssize_t pull_function(void* transport_ptr, uint8[] buffer) {
@@ -226,24 +232,40 @@ public class DtlsSrtp {
         X509.Certificate peer_cert = X509.Certificate.create();
         peer_cert.import(ref cert_datums[0], CertificateFormat.DER);
 
-        string peer_fp_str = format_certificate(peer_cert, DigestAlgorithm.SHA256);
-        if (peer_fp_str.down() != this.peer_fingerprint.down()) {
-            warning("First cert in peer cert list doesn't equal advertised one %s vs %s", peer_fp_str, this.peer_fingerprint);
+        uint8[] real_peer_fp = get_fingerprint(peer_cert, peer_fp_algo);
+
+        if (real_peer_fp.length != this.peer_fingerprint.length) {
+            warning("Fingerprint lengths not equal %i vs %i", real_peer_fp.length, peer_fingerprint.length);
             return false;
+        }
+
+        for (int i = 0; i < real_peer_fp.length; i++) {
+            if (real_peer_fp[i] != this.peer_fingerprint[i]) {
+                warning("First cert in peer cert list doesn't equal advertised one: %s vs %s", format_fingerprint(real_peer_fp), format_fingerprint(peer_fingerprint));
+                return false;
+            }
         }
 
         return true;
     }
 
-    private string format_certificate(X509.Certificate certificate, DigestAlgorithm digest_algo) {
+    private uint8[] get_fingerprint(X509.Certificate certificate, DigestAlgorithm digest_algo) {
         uint8[] buf = new uint8[512];
         size_t buf_out_size = 512;
         certificate.get_fingerprint(digest_algo, buf, ref buf_out_size);
 
-        var sb = new StringBuilder();
+        uint8[] ret = new uint8[buf_out_size];
         for (int i = 0; i < buf_out_size; i++) {
-            sb.append("%02x".printf(buf[i]));
-            if (i < buf_out_size - 1) {
+            ret[i] = buf[i];
+        }
+        return ret;
+    }
+
+    private string format_fingerprint(uint8[] fingerprint) {
+        var sb = new StringBuilder();
+        for (int i = 0; i < fingerprint.length; i++) {
+            sb.append("%02x".printf(fingerprint[i]));
+            if (i < fingerprint.length - 1) {
                 sb.append(":");
             }
         }

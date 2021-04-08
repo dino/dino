@@ -14,6 +14,7 @@ namespace Dino {
         public signal void counterpart_ringing(Call call);
         public signal void counterpart_sends_video_updated(Call call, bool mute);
         public signal void info_received(Call call, Xep.JingleRtp.CallSessionInfo session_info);
+        public signal void encryption_updated(Call call, Xep.Jingle.ContentEncryption? encryption);
 
         public signal void stream_created(Call call, string media);
 
@@ -22,7 +23,6 @@ namespace Dino {
 
         private StreamInteractor stream_interactor;
         private Database db;
-        private Xep.JingleRtp.SessionInfoType session_info_type;
 
         private HashMap<Account, HashMap<Call, string>> sid_by_call = new HashMap<Account, HashMap<Call, string>>(Account.hash_func, Account.equals_func);
         private HashMap<Account, HashMap<string, Call>> call_by_sid = new HashMap<Account, HashMap<string, Call>>(Account.hash_func, Account.equals_func);
@@ -38,7 +38,10 @@ namespace Dino {
 
         private HashMap<Call, Xep.JingleRtp.Parameters> audio_content_parameter = new HashMap<Call, Xep.JingleRtp.Parameters>(Call.hash_func, Call.equals_func);
         private HashMap<Call, Xep.JingleRtp.Parameters> video_content_parameter = new HashMap<Call, Xep.JingleRtp.Parameters>(Call.hash_func, Call.equals_func);
+        private HashMap<Call, Xep.Jingle.Content> audio_content = new HashMap<Call, Xep.Jingle.Content>(Call.hash_func, Call.equals_func);
         private HashMap<Call, Xep.Jingle.Content> video_content = new HashMap<Call, Xep.Jingle.Content>(Call.hash_func, Call.equals_func);
+        private HashMap<Call, Xep.Jingle.ContentEncryption> video_encryption = new HashMap<Call, Xep.Jingle.ContentEncryption>(Call.hash_func, Call.equals_func);
+        private HashMap<Call, Xep.Jingle.ContentEncryption> audio_encryption = new HashMap<Call, Xep.Jingle.ContentEncryption>(Call.hash_func, Call.equals_func);
 
         public static void start(StreamInteractor stream_interactor, Database db) {
             Calls m = new Calls(stream_interactor, db);
@@ -290,7 +293,7 @@ namespace Dino {
             }
 
             // Session might have already been accepted via Jingle Message Initiation
-            bool already_accepted = jmi_sid.contains(account) &&
+            bool already_accepted = jmi_sid.has_key(account) &&
                     jmi_sid[account] == session.sid && jmi_call[account].account.equals(account) &&
                     jmi_call[account].counterpart.equals_bare(session.peer_full_jid) &&
                     jmi_video[account] == counterpart_wants_video;
@@ -365,6 +368,7 @@ namespace Dino {
             if (call.state == Call.State.RINGING || call.state == Call.State.ESTABLISHING) {
                 call.state = Call.State.IN_PROGRESS;
             }
+            update_call_encryption(call);
         }
 
         private void on_call_terminated(Call call, bool we_terminated, string? reason_name, string? reason_text) {
@@ -429,6 +433,7 @@ namespace Dino {
 
         private void connect_content_signals(Call call, Xep.Jingle.Content content, Xep.JingleRtp.Parameters rtp_content_parameter) {
             if (rtp_content_parameter.media == "audio") {
+                audio_content[call] = content;
                 audio_content_parameter[call] = rtp_content_parameter;
             } else if (rtp_content_parameter.media == "video") {
                 video_content[call] = content;
@@ -450,6 +455,36 @@ namespace Dino {
                     on_counterpart_mute_update(call, false, "video");
                 }
             });
+
+            content.notify["encryption"].connect((obj, _) => {
+                if (rtp_content_parameter.media == "audio") {
+                    audio_encryption[call] = ((Xep.Jingle.Content) obj).encryption;
+                } else if (rtp_content_parameter.media == "video") {
+                    video_encryption[call] = ((Xep.Jingle.Content) obj).encryption;
+                }
+            });
+        }
+
+        private void update_call_encryption(Call call) {
+            if (audio_encryption[call] == null) {
+                call.encryption = Encryption.NONE;
+                encryption_updated(call, null);
+                return;
+            }
+
+            bool consistent_encryption = video_encryption[call] != null && audio_encryption[call].encryption_ns == video_encryption[call].encryption_ns;
+
+            if (video_content[call] == null || consistent_encryption) {
+                if (audio_encryption[call].encryption_ns == Xep.JingleIceUdp.DTLS_NS_URI) {
+                    call.encryption = Encryption.DTLS_SRTP;
+                } else if (audio_encryption[call].encryption_name == "SRTP") {
+                    call.encryption = Encryption.SRTP;
+                }
+                encryption_updated(call, audio_encryption[call]);
+            } else {
+                call.encryption = Encryption.NONE;
+                encryption_updated(call, null);
+            }
         }
 
         private void remove_call_from_datastructures(Call call) {
@@ -465,7 +500,10 @@ namespace Dino {
 
             audio_content_parameter.unset(call);
             video_content_parameter.unset(call);
+            audio_content.unset(call);
             video_content.unset(call);
+            audio_encryption.unset(call);
+            video_encryption.unset(call);
         }
 
         private void on_account_added(Account account) {
@@ -526,7 +564,7 @@ namespace Dino {
                 } else if (from.equals_bare(call_by_sid[account][sid].counterpart)) { // Message from our peer
                     // We proposed the call
                     if (jmi_sid.has_key(account) && jmi_sid[account] == sid) {
-                        call_resource(account, from, jmi_call[account], jmi_video[account], jmi_sid[account]);
+                        call_resource.begin(account, from, jmi_call[account], jmi_video[account], jmi_sid[account]);
                         jmi_call.unset(account);
                         jmi_sid.unset(account);
                         jmi_video.unset(account);
