@@ -179,11 +179,11 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
         var remove_nrs = new ArrayList<int>();
         foreach (int nr in in_flight_stanzas.keys) {
             if (nr <= h) {
-                in_flight_stanzas[nr].promise.set_value(null);
                 remove_nrs.add(nr);
             }
         }
         foreach (int nr in remove_nrs) {
+            in_flight_stanzas[nr].promise.set_value(null);
             in_flight_stanzas.unset(nr);
         }
     }
