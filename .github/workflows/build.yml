@@ -30,7 +30,7 @@ jobs:
           sudo pip3 install appimage-builder
     
       - name: Build AppImage
-        run: appimage-builder
+        run: appimage-builder --skip-test
       #- name: Build Appimage
       #  uses: AppImageCrafters/build-appimage@master
       #  with:
