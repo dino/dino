@@ -40,6 +40,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             yield base.terminate(we_terminated, reason_string, reason_text);
             this.disconnect(datagram_received_id);
             agent = null;
+            dtls_srtp_handler = null;
         }
 
         public override void send_datagram(Bytes datagram) {
@@ -323,5 +324,12 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         if (candidate.ip.has_prefix("fe80::")) return null;
 
         return candidate;
+    }
+
+    public override void dispose() {
+        base.dispose();
+        agent = null;
+        dtls_srtp_handler = null;
+        connections.clear();
     }
 }

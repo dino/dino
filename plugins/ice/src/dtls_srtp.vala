@@ -216,9 +216,7 @@ public class Handler {
     private static int pull_timeout_function(void* transport_ptr, uint ms) {
         Handler self = transport_ptr as Handler;
 
-        DateTime current_time = new DateTime.now_utc();
-        current_time.add_seconds(ms/1000);
-        int64 end_time = current_time.to_unix();
+        int64 end_time = get_monotonic_time() + ms * 1000;
 
         self.buffer_mutex.lock();
         while (self.buffer_queue.size == 0) {
@@ -228,9 +226,9 @@ public class Handler {
                 return -1;
             }
 
-            DateTime new_current_time = new DateTime.now_utc();
-            if (new_current_time.compare(current_time) > 0) {
-                break;
+            if (get_monotonic_time() > end_time) {
+                self.buffer_mutex.unlock();
+                return 0;
             }
         }
         self.buffer_mutex.unlock();

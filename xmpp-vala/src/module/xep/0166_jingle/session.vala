@@ -210,9 +210,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
     }
 
     public async void add_content(Content content) {
-        content.session = this;
-        this.contents_map[content.content_name] = content;
-        contents.add(content);
+        insert_content(content);
 
         StanzaNode content_add_node = new StanzaNode.build("jingle", NS_URI)
                 .add_self_xmlns()

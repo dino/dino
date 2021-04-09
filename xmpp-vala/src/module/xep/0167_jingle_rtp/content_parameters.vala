@@ -84,30 +84,34 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         Jingle.DatagramConnection rtcp_datagram = (Jingle.DatagramConnection) content.get_transport_connection(2);
 
         ulong rtcp_ready_handler_id = 0;
-        rtcp_ready_handler_id = rtcp_datagram.notify["ready"].connect(() => {
+        rtcp_ready_handler_id = rtcp_datagram.notify["ready"].connect((rtcp_datagram, _) => {
             this.stream.on_rtcp_ready();
 
-            rtcp_datagram.disconnect(rtcp_ready_handler_id);
+            ((Jingle.DatagramConnection)rtcp_datagram).disconnect(rtcp_ready_handler_id);
             rtcp_ready_handler_id = 0;
         });
 
         ulong rtp_ready_handler_id = 0;
-        rtp_ready_handler_id = rtp_datagram.notify["ready"].connect(() => {
+        rtp_ready_handler_id = rtp_datagram.notify["ready"].connect((rtp_datagram, _) => {
             this.stream.on_rtp_ready();
             if (rtcp_mux) {
                 this.stream.on_rtcp_ready();
             }
             connection_ready();
 
-            rtp_datagram.disconnect(rtp_ready_handler_id);
+            ((Jingle.DatagramConnection)rtp_datagram).disconnect(rtp_ready_handler_id);
             rtp_ready_handler_id = 0;
         });
 
-        session.notify["state"].connect((obj, _) => {
+        ulong session_state_handler_id = 0;
+        session_state_handler_id = session.notify["state"].connect((obj, _) => {
             Jingle.Session session2 = (Jingle.Session) obj;
             if (session2.state == Jingle.Session.State.ENDED) {
                 if (rtcp_ready_handler_id != 0) rtcp_datagram.disconnect(rtcp_ready_handler_id);
                 if (rtp_ready_handler_id != 0) rtp_datagram.disconnect(rtp_ready_handler_id);
+                if (session_state_handler_id != 0) {
+                    session2.disconnect(session_state_handler_id);
+                }
             }
         });
 

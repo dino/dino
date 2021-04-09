@@ -107,6 +107,7 @@ public class Xmpp.Xep.Jingle.Content : Object {
 
     public void terminate(bool we_terminated, string? reason_name, string? reason_text) {
         content_params.terminate(we_terminated, reason_name, reason_text);
+        transport_params.dispose();
 
         foreach (ComponentConnection connection in component_connections.values) {
             connection.terminate(we_terminated, reason_name, reason_text);
