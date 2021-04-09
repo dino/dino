@@ -355,9 +355,20 @@ namespace Dino {
         private void on_incoming_content_add(XmppStream stream, Call call, Xep.Jingle.Session session, Xep.Jingle.Content content) {
             Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
 
-            if (rtp_content_parameter == null || session.senders_include_us(content.senders)) {
+            if (rtp_content_parameter == null) {
                 content.reject();
                 return;
+            }
+
+            // Our peer shouldn't tell us to start sending, that's for us to initiate
+            if (session.senders_include_us(content.senders)) {
+                if (session.senders_include_counterpart(content.senders)) {
+                    // If our peer wants to send, let them
+                    content.modify(session.we_initiated ? Xep.Jingle.Senders.RESPONDER : Xep.Jingle.Senders.INITIATOR);
+                } else {
+                    // If only we're supposed to send, reject
+                    content.reject();
+                }
             }
 
             connect_content_signals(call, content, rtp_content_parameter);
