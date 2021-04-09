@@ -112,9 +112,8 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
         notifier.notify_call.begin(call, conversation, video, conversation_display_name);
         call.notify["state"].connect(() => {
-
             if (call.state != Call.State.RINGING) {
-                notifier.retract_call_notification(call, conversation);
+                notifier.retract_call_notification.begin(call, conversation);
             }
         });
     }

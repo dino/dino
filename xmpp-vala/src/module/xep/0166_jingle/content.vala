@@ -201,12 +201,6 @@ public class Xmpp.Xep.Jingle.Content : Object {
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
     }
 
-    void verify_content(ContentNode content) throws IqError {
-        if (content.name != content_name || content.creator != content_creator) {
-            throw new IqError.BAD_REQUEST("unknown content");
-        }
-    }
-
     public void set_transport_connection(ComponentConnection? conn, uint8 component = 1) {
         debug(@"set_transport_connection: %s, %s, %i, %s, overwrites: %s", this.content_name, this.state.to_string(), component, (conn != null).to_string(), component_connections.has_key(component).to_string());
 

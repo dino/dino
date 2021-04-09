@@ -109,7 +109,6 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         string? ufrag = node.get_attribute("ufrag");
         if (pwd != null) remote_pwd = pwd;
         if (ufrag != null) remote_ufrag = ufrag;
-        uint8 components = 0;
         foreach (StanzaNode candidateNode in node.get_subnodes("candidate")) {
             remote_candidates.add(Candidate.parse(candidateNode));
         }

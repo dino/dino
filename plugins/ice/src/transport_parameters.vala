@@ -111,7 +111,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     }
 
     private static DtlsSrtp.Handler setup_dtls(TransportParameters tp) {
-        var weak_self = new WeakRef(tp);
+        var weak_self = WeakRef(tp);
         DtlsSrtp.Handler dtls_srtp = DtlsSrtp.setup();
         dtls_srtp.send_data.connect((data) => {
             TransportParameters self = (TransportParameters) weak_self.get();

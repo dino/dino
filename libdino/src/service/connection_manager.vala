@@ -170,7 +170,7 @@ public class ConnectionManager : Object {
     public async void disconnect_account(Account account) {
         if (connections.has_key(account)) {
             make_offline(account);
-            connections[account].disconnect_account();
+            connections[account].disconnect_account.begin();
             connections.unset(account);
         }
     }

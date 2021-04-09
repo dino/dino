@@ -23,10 +23,9 @@ public class Handler {
 
     private X509.Certificate[] own_cert;
     private X509.PrivateKey private_key;
-    private Cond buffer_cond = new Cond();
-    private Mutex buffer_mutex = new Mutex();
+    private Cond buffer_cond = Cond();
+    private Mutex buffer_mutex = Mutex();
     private Gee.LinkedList<Bytes> buffer_queue = new Gee.LinkedList<Bytes>();
-    private uint pull_timeout = uint.MAX;
 
     private bool running = false;
     private bool stop = false;
@@ -34,7 +33,7 @@ public class Handler {
 
     private Crypto.Srtp.Session srtp_session = new Crypto.Srtp.Session();
 
-    public uint8[] process_incoming_data(uint component_id, uint8[] data) {
+    public uint8[]? process_incoming_data(uint component_id, uint8[] data) {
         if (srtp_session.has_decrypt) {
             try {
                 if (component_id == 1) {
@@ -54,7 +53,7 @@ public class Handler {
         return null;
     }
 
-    public uint8[] process_outgoing_data(uint component_id, uint8[] data) {
+    public uint8[]? process_outgoing_data(uint component_id, uint8[] data) {
         if (srtp_session.has_encrypt) {
             try {
                 if (component_id == 1) {
@@ -127,7 +126,7 @@ public class Handler {
         buffer_mutex.unlock();
 
         InitFlags server_or_client = mode == Mode.SERVER ? InitFlags.SERVER : InitFlags.CLIENT;
-        debug("Setting up DTLS connection. We're %s", server_or_client.to_string());
+        debug("Setting up DTLS connection. We're %s", mode.to_string());
 
         CertificateCredentials cert_cred = CertificateCredentials.create();
         int err = cert_cred.set_x509_key(own_cert, private_key);
@@ -181,7 +180,7 @@ public class Handler {
             warning("SRTP client/server key/salt null");
         }
 
-        debug("Finished DTLS connection. We're %s", server_or_client.to_string());
+        debug("Finished DTLS connection. We're %s", mode.to_string());
         if (mode == Mode.SERVER) {
             srtp_session.set_encryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, server_key.extract(), server_salt.extract());
             srtp_session.set_decryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, client_key.extract(), client_salt.extract());
