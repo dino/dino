@@ -94,6 +94,9 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         ulong rtp_ready_handler_id = 0;
         rtp_ready_handler_id = rtp_datagram.notify["ready"].connect(() => {
             this.stream.on_rtp_ready();
+            if (rtcp_mux) {
+                this.stream.on_rtcp_ready();
+            }
             connection_ready();
 
             rtp_datagram.disconnect(rtp_ready_handler_id);

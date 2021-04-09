@@ -1,8 +1,25 @@
 using GnuTLS;
 
-public class DtlsSrtp {
+namespace Dino.Plugins.Ice.DtlsSrtp {
+
+public static Handler setup() throws GLib.Error {
+    var obj = new Handler();
+    obj.generate_credentials();
+    return obj;
+}
+
+public class Handler {
 
     public signal void send_data(uint8[] data);
+
+    public bool ready { get {
+        return srtp_session.has_encrypt && srtp_session.has_decrypt;
+    }}
+
+    public Mode mode { get; set; default = Mode.CLIENT; }
+    public uint8[] own_fingerprint { get; private set; }
+    public uint8[] peer_fingerprint { get; set; }
+    public string peer_fp_algo { get; set; }
 
     private X509.Certificate[] own_cert;
     private X509.PrivateKey private_key;
@@ -11,26 +28,11 @@ public class DtlsSrtp {
     private Gee.LinkedList<Bytes> buffer_queue = new Gee.LinkedList<Bytes>();
     private uint pull_timeout = uint.MAX;
 
-    private DigestAlgorithm? peer_fp_algo = null;
-    private uint8[] peer_fingerprint = null;
-    private uint8[] own_fingerprint;
+    private bool running = false;
+    private bool stop = false;
+    private bool restart = false;
 
     private Crypto.Srtp.Session srtp_session = new Crypto.Srtp.Session();
-
-    public static DtlsSrtp setup() throws GLib.Error {
-        var obj = new DtlsSrtp();
-        obj.generate_credentials();
-        return obj;
-    }
-
-    internal uint8[] get_own_fingerprint(DigestAlgorithm digest_algo) {
-        return own_fingerprint;
-    }
-
-    public void set_peer_fingerprint(uint8[] fingerprint, DigestAlgorithm digest_algo) {
-        this.peer_fingerprint = fingerprint;
-        this.peer_fp_algo = digest_algo;
-    }
 
     public uint8[] process_incoming_data(uint component_id, uint8[] data) {
         if (srtp_session.has_decrypt) {
@@ -77,7 +79,7 @@ public class DtlsSrtp {
         buffer_mutex.unlock();
     }
 
-    private void generate_credentials() throws GLib.Error {
+    internal void generate_credentials() throws GLib.Error {
         int err = 0;
 
         private_key = X509.PrivateKey.create();
@@ -102,8 +104,29 @@ public class DtlsSrtp {
         own_cert = new X509.Certificate[] { (owned)cert };
     }
 
-    public async Xmpp.Xep.Jingle.ContentEncryption setup_dtls_connection(bool server) {
-        InitFlags server_or_client = server ? InitFlags.SERVER : InitFlags.CLIENT;
+    public void stop_dtls_connection() {
+        buffer_mutex.lock();
+        stop = true;
+        buffer_cond.signal();
+        buffer_mutex.unlock();
+    }
+
+    public async Xmpp.Xep.Jingle.ContentEncryption? setup_dtls_connection() {
+        buffer_mutex.lock();
+        if (stop) {
+            restart = true;
+            buffer_mutex.unlock();
+            return null;
+        }
+        if (running || ready) {
+            buffer_mutex.unlock();
+            return null;
+        }
+        running = true;
+        restart = false;
+        buffer_mutex.unlock();
+
+        InitFlags server_or_client = mode == Mode.SERVER ? InitFlags.SERVER : InitFlags.CLIENT;
         debug("Setting up DTLS connection. We're %s", server_or_client.to_string());
 
         CertificateCredentials cert_cred = CertificateCredentials.create();
@@ -131,7 +154,7 @@ public class DtlsSrtp {
                 DateTime current_time = new DateTime.now_utc();
                 if (maximum_time.compare(current_time) < 0) {
                     warning("DTLS handshake timeouted");
-                    return -1;
+                    return ErrorCode.APPLICATION_ERROR_MIN + 1;
                 }
             } while (err < 0 && !((ErrorCode)err).is_fatal());
             Idle.add(setup_dtls_connection.callback);
@@ -139,6 +162,17 @@ public class DtlsSrtp {
         });
         yield;
         err = thread.join();
+        buffer_mutex.lock();
+        if (stop) {
+            stop = false;
+            running = false;
+            bool restart = restart;
+            buffer_mutex.unlock();
+            if (restart) return yield setup_dtls_connection();
+            return null;
+        }
+        buffer_mutex.unlock();
+        throw_if_error(err);
 
         uint8[] km = new uint8[150];
         Datum? client_key, client_salt, server_key, server_salt;
@@ -147,7 +181,8 @@ public class DtlsSrtp {
             warning("SRTP client/server key/salt null");
         }
 
-        if (server) {
+        debug("Finished DTLS connection. We're %s", server_or_client.to_string());
+        if (mode == Mode.SERVER) {
             srtp_session.set_encryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, server_key.extract(), server_salt.extract());
             srtp_session.set_decryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, client_key.extract(), client_salt.extract());
         } else {
@@ -158,24 +193,28 @@ public class DtlsSrtp {
     }
 
     private static ssize_t pull_function(void* transport_ptr, uint8[] buffer) {
-        DtlsSrtp self = transport_ptr as DtlsSrtp;
+        Handler self = transport_ptr as Handler;
 
         self.buffer_mutex.lock();
         while (self.buffer_queue.size == 0) {
             self.buffer_cond.wait(self.buffer_mutex);
+            if (self.stop) {
+                self.buffer_mutex.unlock();
+                return -1;
+            }
         }
-        owned Bytes data = self.buffer_queue.remove_at(0);
+        Bytes data = self.buffer_queue.remove_at(0);
         self.buffer_mutex.unlock();
 
-        uint8[] data_uint8 = Bytes.unref_to_data(data);
+        uint8[] data_uint8 = Bytes.unref_to_data((owned) data);
         Memory.copy(buffer, data_uint8, data_uint8.length);
 
         // The callback should return 0 on connection termination, a positive number indicating the number of bytes received, and -1 on error.
-        return (ssize_t)data.length;
+        return (ssize_t)data_uint8.length;
     }
 
     private static int pull_timeout_function(void* transport_ptr, uint ms) {
-        DtlsSrtp self = transport_ptr as DtlsSrtp;
+        Handler self = transport_ptr as Handler;
 
         DateTime current_time = new DateTime.now_utc();
         current_time.add_seconds(ms/1000);
@@ -184,6 +223,10 @@ public class DtlsSrtp {
         self.buffer_mutex.lock();
         while (self.buffer_queue.size == 0) {
             self.buffer_cond.wait_until(self.buffer_mutex, end_time);
+            if (self.stop) {
+                self.buffer_mutex.unlock();
+                return -1;
+            }
 
             DateTime new_current_time = new DateTime.now_utc();
             if (new_current_time.compare(current_time) > 0) {
@@ -197,7 +240,7 @@ public class DtlsSrtp {
     }
 
     private static ssize_t push_function(void* transport_ptr, uint8[] buffer) {
-        DtlsSrtp self = transport_ptr as DtlsSrtp;
+        Handler self = transport_ptr as Handler;
         self.send_data(buffer);
 
         // The callback should return a positive number indicating the bytes sent, and -1 on error.
@@ -205,7 +248,7 @@ public class DtlsSrtp {
     }
 
     private static int verify_function(Session session) {
-        DtlsSrtp self = session.get_transport_pointer() as DtlsSrtp;
+        Handler self = session.get_transport_pointer() as Handler;
         try {
             bool valid = self.verify_peer_cert(session);
             if (!valid) {
@@ -232,7 +275,17 @@ public class DtlsSrtp {
         X509.Certificate peer_cert = X509.Certificate.create();
         peer_cert.import(ref cert_datums[0], CertificateFormat.DER);
 
-        uint8[] real_peer_fp = get_fingerprint(peer_cert, peer_fp_algo);
+        DigestAlgorithm algo;
+        switch (peer_fp_algo) {
+            case "sha-256":
+                algo = DigestAlgorithm.SHA256;
+                break;
+            default:
+                warning("Unkown peer fingerprint algorithm: %s", peer_fp_algo);
+                return false;
+        }
+
+        uint8[] real_peer_fp = get_fingerprint(peer_cert, algo);
 
         if (real_peer_fp.length != this.peer_fingerprint.length) {
             warning("Fingerprint lengths not equal %i vs %i", real_peer_fp.length, peer_fingerprint.length);
@@ -248,27 +301,34 @@ public class DtlsSrtp {
 
         return true;
     }
+}
 
-    private uint8[] get_fingerprint(X509.Certificate certificate, DigestAlgorithm digest_algo) {
-        uint8[] buf = new uint8[512];
-        size_t buf_out_size = 512;
-        certificate.get_fingerprint(digest_algo, buf, ref buf_out_size);
+private uint8[] get_fingerprint(X509.Certificate certificate, DigestAlgorithm digest_algo) {
+    uint8[] buf = new uint8[512];
+    size_t buf_out_size = 512;
+    certificate.get_fingerprint(digest_algo, buf, ref buf_out_size);
 
-        uint8[] ret = new uint8[buf_out_size];
-        for (int i = 0; i < buf_out_size; i++) {
-            ret[i] = buf[i];
-        }
-        return ret;
+    uint8[] ret = new uint8[buf_out_size];
+    for (int i = 0; i < buf_out_size; i++) {
+        ret[i] = buf[i];
     }
+    return ret;
+}
 
-    private string format_fingerprint(uint8[] fingerprint) {
-        var sb = new StringBuilder();
-        for (int i = 0; i < fingerprint.length; i++) {
-            sb.append("%02x".printf(fingerprint[i]));
-            if (i < fingerprint.length - 1) {
-                sb.append(":");
-            }
+private string format_fingerprint(uint8[] fingerprint) {
+    var sb = new StringBuilder();
+    for (int i = 0; i < fingerprint.length; i++) {
+        sb.append("%02x".printf(fingerprint[i]));
+        if (i < fingerprint.length - 1) {
+            sb.append(":");
         }
-        return sb.str;
     }
+    return sb.str;
+}
+
+
+public enum Mode {
+    CLIENT, SERVER
+}
+
 }

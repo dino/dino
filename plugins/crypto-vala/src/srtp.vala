@@ -6,8 +6,8 @@ public class Crypto.Srtp {
     public const string F8_128_HMAC_SHA1_80 = "F8_128_HMAC_SHA1_80";
 
     public class Session {
-        public bool has_encrypt { get; private set; }
-        public bool has_decrypt { get; private set; }
+        public bool has_encrypt { get; private set; default = false; }
+        public bool has_decrypt { get; private set; default = false; }
 
         private Context encrypt_context;
         private Context decrypt_context;

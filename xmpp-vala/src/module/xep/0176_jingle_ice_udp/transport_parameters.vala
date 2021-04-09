@@ -14,8 +14,10 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
     public Gee.List<Candidate> remote_candidates = new ArrayList<Candidate>(Candidate.equals_func);
 
     public uint8[]? own_fingerprint = null;
+    public string? own_setup = null;
     public uint8[]? peer_fingerprint = null;
     public string? peer_fp_algo = null;
+    public string? peer_setup = null;
 
     public Jid local_full_jid { get; private set; }
     public Jid peer_full_jid { get; private set; }
@@ -41,8 +43,9 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
 
             StanzaNode? fingerprint_node = node.get_subnode("fingerprint", DTLS_NS_URI);
             if (fingerprint_node != null) {
-                peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_deep_string_content());
+                peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_string_content());
                 peer_fp_algo = fingerprint_node.get_attribute("hash");
+                peer_setup = fingerprint_node.get_attribute("setup");
             }
         }
     }
@@ -73,11 +76,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
                     .add_self_xmlns()
                     .put_attribute("hash", "sha-256")
                     .put_node(new StanzaNode.text(format_fingerprint(own_fingerprint)));
-            if (incoming) {
-                fingerprint_node.put_attribute("setup", "active");
-            } else {
-                fingerprint_node.put_attribute("setup", "actpass");
-            }
+            fingerprint_node.put_attribute("setup", own_setup);
             node.put_node(fingerprint_node);
         }
 
@@ -101,6 +100,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         if (fingerprint_node != null) {
             peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_deep_string_content());
             peer_fp_algo = fingerprint_node.get_attribute("hash");
+            peer_setup = fingerprint_node.get_attribute("setup");
         }
     }
 
@@ -141,8 +141,6 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
             content.send_transport_info(to_transport_stanza_node());
         }
     }
-
-
 
     private string format_fingerprint(uint8[] fingerprint) {
         var sb = new StringBuilder();

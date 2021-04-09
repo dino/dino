@@ -9,11 +9,11 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     private bool we_want_connection;
     private bool remote_credentials_set;
     private Map<uint8, DatagramConnection> connections = new HashMap<uint8, DatagramConnection>();
-    private DtlsSrtp? dtls_srtp;
+    private DtlsSrtp.Handler? dtls_srtp_handler;
 
     private class DatagramConnection : Jingle.DatagramConnection {
         private Nice.Agent agent;
-        private DtlsSrtp? dtls_srtp;
+        private DtlsSrtp.Handler? dtls_srtp_handler;
         private uint stream_id;
         private string? error;
         private ulong sent;
@@ -22,9 +22,9 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         private ulong recv_reported;
         private ulong datagram_received_id;
 
-        public DatagramConnection(Nice.Agent agent, DtlsSrtp? dtls_srtp, uint stream_id, uint8 component_id) {
+        public DatagramConnection(Nice.Agent agent, DtlsSrtp.Handler? dtls_srtp_handler, uint stream_id, uint8 component_id) {
             this.agent = agent;
-            this.dtls_srtp = dtls_srtp;
+            this.dtls_srtp_handler = dtls_srtp_handler;
             this.stream_id = stream_id;
             this.component_id = component_id;
             this.datagram_received_id = this.datagram_received.connect((datagram) => {
@@ -45,8 +45,8 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         public override void send_datagram(Bytes datagram) {
             if (this.agent != null && is_component_ready(agent, stream_id, component_id)) {
                 uint8[] encrypted_data = null;
-                if (dtls_srtp != null) {
-                    encrypted_data = dtls_srtp.process_outgoing_data(component_id, datagram.get_data());
+                if (dtls_srtp_handler != null) {
+                    encrypted_data = dtls_srtp_handler.process_outgoing_data(component_id, datagram.get_data());
                     if (encrypted_data == null) return;
                 }
                 agent.send(stream_id, component_id, encrypted_data ?? datagram.get_data());
@@ -65,13 +65,18 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         this.agent = agent;
 
         if (this.peer_fingerprint != null || !incoming) {
-            dtls_srtp = setup_dtls(this);
-            this.own_fingerprint = dtls_srtp.get_own_fingerprint(GnuTLS.DigestAlgorithm.SHA256);
+            dtls_srtp_handler = setup_dtls(this);
+            own_fingerprint = dtls_srtp_handler.own_fingerprint;
             if (incoming) {
-                dtls_srtp.set_peer_fingerprint(this.peer_fingerprint, this.peer_fp_algo == "sha-256" ? GnuTLS.DigestAlgorithm.SHA256 : GnuTLS.DigestAlgorithm.NULL);
+                own_setup = "active";
+                dtls_srtp_handler.mode = DtlsSrtp.Mode.CLIENT;
+                dtls_srtp_handler.peer_fingerprint = peer_fingerprint;
+                dtls_srtp_handler.peer_fp_algo = peer_fp_algo;
             } else {
-                dtls_srtp.setup_dtls_connection.begin(true, (_, res) => {
-                    this.content.encryption = dtls_srtp.setup_dtls_connection.end(res);
+                own_setup = "actpass";
+                dtls_srtp_handler.mode = DtlsSrtp.Mode.SERVER;
+                dtls_srtp_handler.setup_dtls_connection.begin((_, res) => {
+                    this.content.encryption = dtls_srtp_handler.setup_dtls_connection.end(res) ?? this.content.encryption;
                 });
             }
         }
@@ -104,9 +109,9 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         agent.gather_candidates(stream_id);
     }
 
-    private static DtlsSrtp setup_dtls(TransportParameters tp) {
+    private static DtlsSrtp.Handler setup_dtls(TransportParameters tp) {
         var weak_self = new WeakRef(tp);
-        DtlsSrtp dtls_srtp = DtlsSrtp.setup();
+        DtlsSrtp.Handler dtls_srtp = DtlsSrtp.setup();
         dtls_srtp.send_data.connect((data) => {
             TransportParameters self = (TransportParameters) weak_self.get();
             if (self != null) self.agent.send(self.stream_id, 1, data);
@@ -144,10 +149,15 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         debug("on_transport_accept from %s", peer_full_jid.to_string());
         base.handle_transport_accept(transport);
 
-        if (dtls_srtp != null && peer_fingerprint != null) {
-            dtls_srtp.set_peer_fingerprint(this.peer_fingerprint, this.peer_fp_algo == "sha-256" ? GnuTLS.DigestAlgorithm.SHA256 : GnuTLS.DigestAlgorithm.NULL);
+        if (dtls_srtp_handler != null && peer_fingerprint != null) {
+            dtls_srtp_handler.peer_fingerprint = peer_fingerprint;
+            dtls_srtp_handler.peer_fp_algo = peer_fp_algo;
+            if (peer_setup == "passive") {
+                dtls_srtp_handler.mode = DtlsSrtp.Mode.CLIENT;
+                dtls_srtp_handler.stop_dtls_connection();
+            }
         } else {
-            dtls_srtp = null;
+            dtls_srtp_handler = null;
         }
     }
 
@@ -200,18 +210,10 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             int new_candidates = agent.set_remote_candidates(stream_id, i, candidates);
             debug("Initiated component %u with %i remote candidates", i, new_candidates);
 
-            connections[i] = new DatagramConnection(agent, dtls_srtp, stream_id, i);
+            connections[i] = new DatagramConnection(agent, dtls_srtp_handler, stream_id, i);
             content.set_transport_connection(connections[i], i);
         }
 
-        if (incoming && dtls_srtp != null) {
-            Jingle.DatagramConnection rtp_datagram = (Jingle.DatagramConnection) content.get_transport_connection(1);
-            rtp_datagram.notify["ready"].connect(() => {
-                dtls_srtp.setup_dtls_connection.begin(false, (_, res) => {
-                    this.content.encryption = dtls_srtp.setup_dtls_connection.end(res);
-                });
-            });
-        }
         base.create_transport_connection(stream, content);
     }
 
@@ -219,11 +221,16 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         if (stream_id != this.stream_id) return;
         debug("stream %u component %u state changed to %s", stream_id, component_id, agent.get_component_state(stream_id, component_id).to_string());
         may_consider_ready(stream_id, component_id);
+        if (incoming && dtls_srtp_handler != null && !dtls_srtp_handler.ready && is_component_ready(agent, stream_id, component_id) && dtls_srtp_handler.mode == DtlsSrtp.Mode.CLIENT) {
+            dtls_srtp_handler.setup_dtls_connection.begin((_, res) => {
+                this.content.encryption = dtls_srtp_handler.setup_dtls_connection.end(res) ?? this.content.encryption;
+            });
+        }
     }
 
     private void may_consider_ready(uint stream_id, uint component_id) {
         if (stream_id != this.stream_id) return;
-        if (connections.has_key((uint8) component_id) && is_component_ready(agent, stream_id, component_id) && connections.has_key((uint8) component_id) && !connections[(uint8)component_id].ready) {
+        if (connections.has_key((uint8) component_id) && !connections[(uint8)component_id].ready && is_component_ready(agent, stream_id, component_id) && (dtls_srtp_handler == null || dtls_srtp_handler.ready)) {
             connections[(uint8)component_id].ready = true;
         }
     }
@@ -241,8 +248,8 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     private void on_recv(Nice.Agent agent, uint stream_id, uint component_id, uint8[] data) {
         if (stream_id != this.stream_id) return;
         uint8[] decrypt_data = null;
-        if (dtls_srtp != null) {
-            decrypt_data = dtls_srtp.process_incoming_data(component_id, data);
+        if (dtls_srtp_handler != null) {
+            decrypt_data = dtls_srtp_handler.process_incoming_data(component_id, data);
             if (decrypt_data == null) return;
         }
         may_consider_ready(stream_id, component_id);
