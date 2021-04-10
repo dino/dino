@@ -14,6 +14,9 @@ public class Dino.Ui.CallWindowController : Object {
 
     private Plugins.VideoCallWidget? own_video = null;
     private Plugins.VideoCallWidget? counterpart_video = null;
+    private int window_height = -1;
+    private int window_width = -1;
+    private bool window_size_changed = false;
 
     public CallWindowController(CallWindow call_window, Call call, StreamInteractor stream_interactor) {
         this.call_window = call_window;
@@ -26,7 +29,7 @@ public class Dino.Ui.CallWindowController : Object {
         this.counterpart_video = call_plugin.create_widget(Plugins.WidgetType.GTK);
 
         call_window.counterpart_display_name = Util.get_conversation_display_name(stream_interactor, conversation);
-        call_window.set_default_size(640, 480);
+        call_window.set_default_size(704, 528); // 640x480 * 1.1
         call_window.set_video_fallback(stream_interactor, conversation);
 
         this.call_window.bottom_bar.video_enabled = calls.should_we_send_video(call);
@@ -77,18 +80,40 @@ public class Dino.Ui.CallWindowController : Object {
             call_window.set_own_video_ratio((int)width, (int)height);
         });
         counterpart_video.resolution_changed.connect((width, height) => {
+            if (window_size_changed) return;
             if (width == 0 || height == 0) return;
-            if (width / height > 640 / 480) {
-                call_window.resize(640, (int) (height * 640 / width));
+            if (width > height) {
+                call_window.resize(704, (int) (height * 704 / width));
             } else {
-                call_window.resize((int) (width * 480 / height), 480);
+                call_window.resize((int) (width * 704 / height), 704);
             }
+            capture_window_size();
+        });
+        call_window.configure_event.connect((event) => {
+            if (window_width == -1 || window_height == -1) return false;
+            int current_height = this.call_window.get_allocated_height();
+            int current_width = this.call_window.get_allocated_width();
+            if (window_width != current_width || window_height != current_height) {
+                debug("Call window size changed by user. Disabling auto window-to-video size adaptation. %i->%i x %i->%i", window_width, current_width, window_height, current_height);
+                window_size_changed = true;
+            }
+            return false;
+        });
+        call_window.realize.connect(() => {
+            capture_window_size();
         });
 
         call.notify["state"].connect(on_call_state_changed);
         calls.call_terminated.connect(on_call_terminated);
 
         update_own_video();
+    }
+
+    private void capture_window_size() {
+        Allocation allocation;
+        this.call_window.get_allocation(out allocation);
+        this.window_height = this.call_window.get_allocated_height();
+        this.window_width = this.call_window.get_allocated_width();
     }
 
     private void end_call() {
