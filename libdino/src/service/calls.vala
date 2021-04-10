@@ -375,13 +375,6 @@ namespace Dino {
             content.accept();
         }
 
-        private void on_connection_ready(Call call) {
-            if (call.state == Call.State.RINGING || call.state == Call.State.ESTABLISHING) {
-                call.state = Call.State.IN_PROGRESS;
-            }
-            update_call_encryption(call);
-        }
-
         private void on_call_terminated(Call call, bool we_terminated, string? reason_name, string? reason_text) {
             if (call.state == Call.State.RINGING || call.state == Call.State.IN_PROGRESS || call.state == Call.State.ESTABLISHING) {
                 call.end_time = new DateTime.now_utc();
@@ -452,7 +445,7 @@ namespace Dino {
             }
 
             rtp_content_parameter.stream_created.connect((stream) => on_stream_created(call, rtp_content_parameter.media, stream));
-            rtp_content_parameter.connection_ready.connect((status) => on_connection_ready(call));
+            rtp_content_parameter.connection_ready.connect((status) => on_connection_ready(call, content, rtp_content_parameter.media));
 
             content.senders_modify_incoming.connect((content, proposed_senders) => {
                 if (content.session.senders_include_us(content.senders) != content.session.senders_include_us(proposed_senders)) {
@@ -466,36 +459,32 @@ namespace Dino {
                     on_counterpart_mute_update(call, false, "video");
                 }
             });
-
-            content.notify["encryption"].connect((obj, _) => {
-                if (rtp_content_parameter.media == "audio") {
-                    audio_encryption[call] = ((Xep.Jingle.Content) obj).encryption;
-                } else if (rtp_content_parameter.media == "video") {
-                    video_encryption[call] = ((Xep.Jingle.Content) obj).encryption;
-                }
-            });
         }
 
-        private void update_call_encryption(Call call) {
-            if (audio_encryption[call] == null) {
+        private void on_connection_ready(Call call, Xep.Jingle.Content content, string media) {
+            if (call.state == Call.State.RINGING || call.state == Call.State.ESTABLISHING) {
+                call.state = Call.State.IN_PROGRESS;
+            }
+
+            if (media == "audio") {
+                audio_encryption[call] = content.encryption;
+            } else if (media == "video") {
+                video_encryption[call] = content.encryption;
+            }
+
+            if ((audio_encryption.has_key(call) && audio_encryption[call] == null) || (video_encryption.has_key(call) && video_encryption[call] == null)) {
                 call.encryption = Encryption.NONE;
                 encryption_updated(call, null);
                 return;
             }
 
-            bool consistent_encryption = video_encryption[call] != null && audio_encryption[call].encryption_ns == video_encryption[call].encryption_ns;
-
-            if (video_content[call] == null || consistent_encryption) {
-                if (audio_encryption[call].encryption_ns == Xep.JingleIceUdp.DTLS_NS_URI) {
-                    call.encryption = Encryption.DTLS_SRTP;
-                } else if (audio_encryption[call].encryption_name == "SRTP") {
-                    call.encryption = Encryption.SRTP;
-                }
-                encryption_updated(call, audio_encryption[call]);
-            } else {
-                call.encryption = Encryption.NONE;
-                encryption_updated(call, null);
+            Xep.Jingle.ContentEncryption encryption = audio_encryption[call] ?? video_encryption[call];
+            if (encryption.encryption_ns == Xep.JingleIceUdp.DTLS_NS_URI) {
+                call.encryption = Encryption.DTLS_SRTP;
+            } else if (encryption.encryption_name == "SRTP") {
+                call.encryption = Encryption.SRTP;
             }
+            encryption_updated(call, encryption);
         }
 
         private void remove_call_from_datastructures(Call call) {
