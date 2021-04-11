@@ -300,7 +300,17 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             }
         }
         if (push_recv_data) {
-            recv_rtp.push_buffer(new Gst.Buffer.wrapped((owned) data));
+            Gst.Buffer buffer = new Gst.Buffer.wrapped((owned) data);
+            // FIXME: VAPI file in Vala < 0.49.1 has a bug that results in broken ownership of buffer in push_buffer()
+            // We workaround by using the plain signal. The signal unfortunately will cause an unnecessary copy of
+            // the underlying buffer, so and some point we should move over to the new version (once we require
+            // Vala >= 0.50)
+#if FIXED_APPSRC_PUSH_BUFFER_IN_VAPI
+            recv_rtp.push_buffer((owned) buffer);
+#else
+            Gst.FlowReturn ret;
+            GLib.Signal.emit_by_name(recv_rtp, "push-buffer", buffer, out ret);
+#endif
         }
     }
 
@@ -315,7 +325,14 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             }
         }
         if (push_recv_data) {
-            recv_rtcp.push_buffer(new Gst.Buffer.wrapped((owned) data));
+            Gst.Buffer buffer = new Gst.Buffer.wrapped((owned) data);
+            // See above
+#if FIXED_APPSRC_PUSH_BUFFER_IN_VAPI
+            recv_rtcp.push_buffer((owned) buffer);
+#else
+            Gst.FlowReturn ret;
+            GLib.Signal.emit_by_name(recv_rtcp, "push-buffer", buffer, out ret);
+#endif
         }
     }
 
