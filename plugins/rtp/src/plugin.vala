@@ -70,7 +70,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 
         // Audio echo probe
         echoprobe = Gst.ElementFactory.make("webrtcechoprobe", "echo-probe");
-        pipe.add(echoprobe);
+        if (echoprobe != null) pipe.add(echoprobe);
 
         // Pipeline
         pipe.auto_flush_bus = true;
@@ -178,6 +178,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 if (devices.any_match((it) => it.matches(device))) return Source.CONTINUE;
                 devices.add(new Device(this, device));
                 break;
+#if GST_1_16
             case Gst.MessageType.DEVICE_CHANGED:
                 message.parse_device_changed(out device, out old_device);
                 if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
@@ -185,6 +186,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 old = devices.first_match((it) => it.matches(old_device));
                 if (old != null) old.update(device);
                 break;
+#endif
             case Gst.MessageType.DEVICE_REMOVED:
                 message.parse_device_removed(out device);
                 if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;

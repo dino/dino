@@ -9,6 +9,10 @@ find_packages(RTP_PACKAGES REQUIRED
     GstApp
 )
 
+if(Gst_VERSION VERSION_GREATER "1.16")
+    set(RTP_DEFINITIONS GST_1_16)
+endif()
+
 vala_precompile(RTP_VALA_C
 SOURCES
     src/codec_util.vala
@@ -25,6 +29,8 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
 PACKAGES
     ${RTP_PACKAGES}
+DEFINITIONS
+    ${RTP_DEFINITIONS}
 OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi
 )

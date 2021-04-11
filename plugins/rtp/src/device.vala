@@ -130,11 +130,13 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             filter.@set("caps", get_best_caps());
             pipe.add(filter);
             element.link(filter);
-            if (media == "audio") {
+            if (media == "audio" && plugin.echoprobe != null) {
                 dsp = Gst.ElementFactory.make("webrtcdsp", @"$id-dsp");
-                dsp.@set("probe", plugin.echoprobe.name);
-                pipe.add(dsp);
-                filter.link(dsp);
+                if (dsp != null) {
+                    dsp.@set("probe", plugin.echoprobe.name);
+                    pipe.add(dsp);
+                    filter.link(dsp);
+                }
             }
             tee = Gst.ElementFactory.make("tee", @"$id-tee");
             tee.@set("allow-not-linked", true);
@@ -149,15 +151,19 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             filter = Gst.ElementFactory.make("capsfilter", @"$id-caps-filter");
             filter.@set("caps", get_best_caps());
             pipe.add(filter);
-            filter.link(plugin.echoprobe);
-            plugin.echoprobe.link(element);
+            if (plugin.echoprobe != null) {
+                filter.link(plugin.echoprobe);
+                plugin.echoprobe.link(element);
+            } else {
+                filter.link(element);
+            }
         }
         plugin.unpause();
     }
 
     private void destroy() {
         if (mixer != null) {
-            if (is_sink && media == "audio") {
+            if (is_sink && media == "audio" && plugin.echoprobe != null) {
                 plugin.echoprobe.unlink(mixer);
             }
             int linked_sink_pads = 0;
@@ -177,11 +183,17 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             if (filter != null) {
                 filter.set_locked_state(true);
                 filter.set_state(Gst.State.NULL);
-                filter.unlink(plugin.echoprobe);
+                if (plugin.echoprobe != null) {
+                    filter.unlink(plugin.echoprobe);
+                } else {
+                    filter.unlink(element);
+                }
                 pipe.remove(filter);
                 filter = null;
             }
-            plugin.echoprobe.unlink(element);
+            if (plugin.echoprobe != null) {
+                plugin.echoprobe.unlink(element);
+            }
         }
         element.set_locked_state(true);
         element.set_state(Gst.State.NULL);
