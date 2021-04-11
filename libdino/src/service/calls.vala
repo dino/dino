@@ -136,6 +136,7 @@ namespace Dino {
                     sessions[call].terminate(Xep.Jingle.ReasonElement.CANCEL, null, "cancel");
                 } else {
                     // Only a JMI so far
+                    stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_retract_to_peer(stream, call.counterpart, jmi_sid[call.account]);
                 }
                 call.state = Call.State.MISSED;
             } else {
@@ -206,6 +207,11 @@ namespace Dino {
 
         public void mute_own_video(Call call, bool mute) {
             we_should_send_video[call] = !mute;
+
+            if (!sessions.has_key(call)) {
+                // Call hasn't been established yet
+                return;
+            }
 
             Xep.JingleRtp.Module rtp_module = stream_interactor.module_manager.get_module(call.account, Xep.JingleRtp.Module.IDENTITY);
 

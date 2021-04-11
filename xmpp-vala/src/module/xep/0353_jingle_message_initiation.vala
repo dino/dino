@@ -22,6 +22,14 @@ namespace Xmpp.Xep.JingleMessageInitiation {
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, accepted_message);
         }
 
+        public void send_session_retract_to_peer(XmppStream stream, Jid to, string sid) {
+            MessageStanza retract_message = new MessageStanza() { to=to };
+            retract_message.stanza.put_node(
+                    new StanzaNode.build("retract", NS_URI).add_self_xmlns()
+                            .put_attribute("id", sid, NS_URI));
+            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, retract_message);
+        }
+
         public void send_session_accept_to_self(XmppStream stream, string sid) {
             MessageStanza accepted_message = new MessageStanza() { to=Bind.Flag.get_my_jid(stream).bare_jid };
             accepted_message.stanza.put_node(
