@@ -284,6 +284,10 @@ window.dino-main .dino-chatinput-button button:checked:backdrop {
     background-color: @theme_base_color;
 }
 
+.dino-unread-label {
+    color: @theme_selected_bg_color;
+}
+
 
 /*Chat input warning*/
 
