@@ -176,8 +176,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             SList<Nice.Candidate> candidates = new SList<Nice.Candidate>();
             foreach (JingleIceUdp.Candidate candidate in remote_candidates) {
                 if (candidate.component == i) {
-                    Nice.Candidate nc = candidate_to_nice(candidate);
-                    candidates.append(nc);
+                    candidates.append(candidate_to_nice(candidate));
                 }
             }
             int new_candidates = agent.set_remote_candidates(stream_id, i, candidates);
@@ -203,9 +202,8 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             foreach (JingleIceUdp.Candidate candidate in remote_candidates) {
                 if (candidate.ip.has_prefix("fe80::")) continue;
                 if (candidate.component == i) {
-                    Nice.Candidate nc = candidate_to_nice(candidate);
-                    candidates.append(nc);
-                    debug("remote candidate: %s", agent.generate_local_candidate_sdp(nc));
+                    candidates.append(candidate_to_nice(candidate));
+                    debug("remote candidate: %s", agent.generate_local_candidate_sdp(candidate_to_nice(candidate)));
                 }
             }
             int new_candidates = agent.set_remote_candidates(stream_id, i, candidates);

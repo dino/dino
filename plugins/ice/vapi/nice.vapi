@@ -164,7 +164,7 @@ namespace Nice {
 		[Version (since = "0.1.5")]
 		public signal void streams_removed ([CCode (array_length = false, array_null_terminated = true)] uint[] stream_ids);
 	}
-	[CCode (cheader_filename = "nice.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "nice_candidate_get_type ()")]
+	[CCode (cheader_filename = "nice.h", copy_function = "nice_candidate_copy", free_function = "nice_candidate_free")]
 	[Compact]
 	public class Candidate {
 		public Nice.Address addr;
