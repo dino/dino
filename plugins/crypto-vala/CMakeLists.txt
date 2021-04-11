@@ -1,9 +1,9 @@
 find_package(GCrypt REQUIRED)
+find_package(Srtp2 REQUIRED)
 find_packages(CRYPTO_VALA_PACKAGES REQUIRED
     GLib
     GObject
     GIO
-    Srtp2
 )
 
 vala_precompile(CRYPTO_VALA_C
@@ -18,8 +18,6 @@ CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/vapi/libsrtp2.vapi"
 PACKAGES
     ${CRYPTO_VALA_PACKAGES}
-OPTIONS
-    --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi
 GENERATE_VAPI
     crypto-vala
 GENERATE_HEADER
@@ -29,6 +27,6 @@ GENERATE_HEADER
 set(CFLAGS ${VALA_CFLAGS})
 add_definitions(${CFLAGS})
 add_library(crypto-vala STATIC ${CRYPTO_VALA_C})
-target_link_libraries(crypto-vala ${CRYPTO_VALA_PACKAGES} gcrypt)
+target_link_libraries(crypto-vala ${CRYPTO_VALA_PACKAGES} gcrypt libsrtp2)
 set_property(TARGET crypto-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 

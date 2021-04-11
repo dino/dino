@@ -3,13 +3,13 @@ find_package(Gettext)
 include(${GETTEXT_USE_FILE})
 gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
 
+find_package(Qrencode REQUIRED)
 find_packages(OMEMO_PACKAGES REQUIRED
     Gee
     GLib
     GModule
     GObject
     GTK3
-    Qrencode
 )
 
 set(RESOURCE_LIST
@@ -66,18 +66,17 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/libqrencode.vapi
 PACKAGES
     ${OMEMO_PACKAGES}
 GRESOURCES
     ${OMEMO_GRESOURCES_XML}
-OPTIONS
-    --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi
 )
 
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\"  -DG_LOG_DOMAIN="OMEMO")
 add_library(omemo SHARED ${OMEMO_VALA_C} ${OMEMO_GRESOURCES_TARGET})
 add_dependencies(omemo ${GETTEXT_PACKAGE}-translations)
-target_link_libraries(omemo libdino signal-protocol-vala crypto-vala ${OMEMO_PACKAGES})
+target_link_libraries(omemo libdino signal-protocol-vala crypto-vala ${OMEMO_PACKAGES} libqrencode)
 set_target_properties(omemo PROPERTIES PREFIX "")
 set_target_properties(omemo PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
 
