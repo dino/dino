@@ -277,7 +277,7 @@ namespace GnuTLS {
         public uint size;
 
         public uint8[] extract() {
-            uint8[size] ret = new uint8[size];
+            uint8[] ret = new uint8[size];
             for (int i = 0; i < size; i++) {
                 ret[i] = data[i];
             }
