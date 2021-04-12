@@ -156,6 +156,9 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             if (peer_setup == "passive") {
                 dtls_srtp_handler.mode = DtlsSrtp.Mode.CLIENT;
                 dtls_srtp_handler.stop_dtls_connection();
+                dtls_srtp_handler.setup_dtls_connection.begin((_, res) => {
+                    this.content.encryption = dtls_srtp_handler.setup_dtls_connection.end(res) ?? this.content.encryption;
+                });
             }
         } else {
             dtls_srtp_handler = null;

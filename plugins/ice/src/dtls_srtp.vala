@@ -153,7 +153,13 @@ public class Handler {
                 DateTime current_time = new DateTime.now_utc();
                 if (maximum_time.compare(current_time) < 0) {
                     warning("DTLS handshake timeouted");
-                    return ErrorCode.APPLICATION_ERROR_MIN + 1;
+                    err = ErrorCode.APPLICATION_ERROR_MIN + 1;
+                    break;
+                }
+                if (stop) {
+                    debug("DTLS handshake stopped");
+                    err = ErrorCode.APPLICATION_ERROR_MIN + 2;
+                    break;
                 }
             } while (err < 0 && !((ErrorCode)err).is_fatal());
             Idle.add(setup_dtls_connection.callback);
@@ -167,11 +173,17 @@ public class Handler {
             running = false;
             bool restart = restart;
             buffer_mutex.unlock();
-            if (restart) return yield setup_dtls_connection();
+            if (restart) {
+                debug("Restarting DTLS handshake");
+                return yield setup_dtls_connection();
+            }
             return null;
         }
         buffer_mutex.unlock();
-        throw_if_error(err);
+        if (err != ErrorCode.SUCCESS) {
+            warning("DTLS handshake failed: %s", ((ErrorCode)err).to_string());
+            return null;
+        }
 
         uint8[] km = new uint8[150];
         Datum? client_key, client_salt, server_key, server_salt;
@@ -199,6 +211,7 @@ public class Handler {
             self.buffer_cond.wait(self.buffer_mutex);
             if (self.stop) {
                 self.buffer_mutex.unlock();
+                debug("DTLS handshake pull_function stopped");
                 return -1;
             }
         }
@@ -222,6 +235,7 @@ public class Handler {
             self.buffer_cond.wait_until(self.buffer_mutex, end_time);
             if (self.stop) {
                 self.buffer_mutex.unlock();
+                debug("DTLS handshake pull_timeout_function stopped");
                 return -1;
             }
 

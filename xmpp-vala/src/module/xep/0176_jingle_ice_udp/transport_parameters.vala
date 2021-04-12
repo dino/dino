@@ -98,7 +98,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
 
         StanzaNode? fingerprint_node = node.get_subnode("fingerprint", DTLS_NS_URI);
         if (fingerprint_node != null) {
-            peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_deep_string_content());
+            peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_string_content());
             peer_fp_algo = fingerprint_node.get_attribute("hash");
             peer_setup = fingerprint_node.get_attribute("setup");
         }
