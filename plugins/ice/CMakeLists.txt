@@ -1,4 +1,4 @@
-find_package(Nice REQUIRED)
+find_package(Nice 0.1.15 REQUIRED)
 find_package(GnuTLS REQUIRED)
 find_packages(ICE_PACKAGES REQUIRED
     Gee
