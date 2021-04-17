@@ -278,6 +278,22 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         Gst.deinit();
     }
 
+    public bool supports(string media) {
+        if (rtpbin == null) return false;
+
+        if (media == "audio") {
+            if (get_devices("audio", false).is_empty) return false;
+            if (get_devices("audio", true).is_empty) return false;
+        }
+
+        if (media == "video") {
+            if (Gst.ElementFactory.make("gtksink", null) == null) return false;
+            if (get_devices("video", false).is_empty) return false;
+        }
+
+        return true;
+    }
+
     public VideoCallWidget? create_widget(WidgetType type) {
         if (type == WidgetType.GTK) {
             return new VideoWidget(this);

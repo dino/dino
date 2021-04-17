@@ -225,6 +225,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public string? get_encode_element_name(string media, string? codec) {
+        if (!is_element_supported(get_pay_element_name(media, codec))) return null;
         foreach (string candidate in get_encode_candidates(media, codec)) {
             if (is_element_supported(candidate)) return candidate;
         }

@@ -83,7 +83,7 @@ namespace Dino {
             we_should_send_video[call] = video;
             we_should_send_audio[call] = true;
 
-            if (yield has_jmi_resources(conversation)) {
+            if (has_jmi_resources(conversation)) {
                 XmppStream? stream = stream_interactor.get_stream(conversation.account);
                 jmi_call[conversation.account] = call;
                 jmi_video[conversation.account] = video;
@@ -245,8 +245,28 @@ namespace Dino {
             // If video_feed == null && !mute we're trying to mute a non-existant feed. It will be muted as soon as it is created.
         }
 
-        public async bool can_do_calls(Conversation conversation) {
-            return (yield get_call_resources(conversation)).size > 0 || yield has_jmi_resources(conversation);
+        public async bool can_do_audio_calls_async(Conversation conversation) {
+            if (!can_do_audio_calls()) return false;
+            return (yield get_call_resources(conversation)).size > 0 || has_jmi_resources(conversation);
+        }
+
+        private bool can_do_audio_calls() {
+            Plugins.VideoCallPlugin? plugin = Application.get_default().plugin_registry.video_call_plugin;
+            if (plugin == null) return false;
+
+            return plugin.supports("audio");
+        }
+
+        public async bool can_do_video_calls_async(Conversation conversation) {
+            if (!can_do_video_calls()) return false;
+            return (yield get_call_resources(conversation)).size > 0 || has_jmi_resources(conversation);
+        }
+
+        private bool can_do_video_calls() {
+            Plugins.VideoCallPlugin? plugin = Application.get_default().plugin_registry.video_call_plugin;
+            if (plugin == null) return false;
+
+            return plugin.supports("video");
         }
 
         private async Gee.List<Jid> get_call_resources(Conversation conversation) {
@@ -266,7 +286,7 @@ namespace Dino {
             return ret;
         }
 
-        private async bool has_jmi_resources(Conversation conversation) {
+        private bool has_jmi_resources(Conversation conversation) {
             int64 jmi_resources = db.entity.select()
                     .with(db.entity.jid_id, "=", db.get_jid_id(conversation.counterpart))
                     .join_with(db.entity_feature, db.entity.caps_hash, db.entity_feature.entity)
@@ -289,6 +309,11 @@ namespace Dino {
         }
 
         private void on_incoming_call(Account account, Xep.Jingle.Session session) {
+            if (!can_do_audio_calls()) {
+                warning("Incoming call but no call support detected. Ignoring.");
+                return;
+            }
+
             bool counterpart_wants_video = false;
             foreach (Xep.Jingle.Content content in session.contents) {
                 Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
@@ -550,6 +575,11 @@ namespace Dino {
 
             Xep.JingleMessageInitiation.Module mi_module = stream_interactor.module_manager.get_module(account, Xep.JingleMessageInitiation.Module.IDENTITY);
             mi_module.session_proposed.connect((from, to, sid, descriptions) => {
+                if (!can_do_audio_calls()) {
+                    warning("Incoming call but no call support detected. Ignoring.");
+                    return;
+                }
+
                 bool audio_requested = descriptions.any_match((description) => description.ns_uri == Xep.JingleRtp.NS_URI && description.get_attribute("media") == "audio");
                 bool video_requested = descriptions.any_match((description) => description.ns_uri == Xep.JingleRtp.NS_URI && description.get_attribute("media") == "video");
                 if (!audio_requested && !video_requested) return;

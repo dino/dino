@@ -34,6 +34,9 @@ namespace Dino.Ui {
         private StreamInteractor stream_interactor;
         private Conversation conversation;
 
+        private ModelButton audio_button = new ModelButton() { text="Audio call", visible=true };
+        private ModelButton video_button = new ModelButton() { text="Video call", visible=true };
+
         public CallButton(StreamInteractor stream_interactor) {
             this.stream_interactor = stream_interactor;
 
@@ -42,7 +45,6 @@ namespace Dino.Ui {
 
             Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu();
             Box box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
-            ModelButton audio_button = new ModelButton() { text="Audio call", visible=true };
             audio_button.clicked.connect(() => {
                 stream_interactor.get_module(Calls.IDENTITY).initiate_call.begin(conversation, false, (_, res) => {
                     Call call = stream_interactor.get_module(Calls.IDENTITY).initiate_call.end(res);
@@ -50,7 +52,7 @@ namespace Dino.Ui {
                 });
             });
             box.add(audio_button);
-            ModelButton video_button = new ModelButton() { text="Video call", visible=true };
+
             video_button.clicked.connect(() => {
                 stream_interactor.get_module(Calls.IDENTITY).initiate_call.begin(conversation, true, (_, res) => {
                     Call call = stream_interactor.get_module(Calls.IDENTITY).initiate_call.end(res);
@@ -116,9 +118,12 @@ namespace Dino.Ui {
         private async void update_visibility() {
             if (conversation.type_ == Conversation.Type.CHAT) {
                 Conversation conv_bak = conversation;
-                bool can_do_calls = yield stream_interactor.get_module(Calls.IDENTITY).can_do_calls(conversation);
+                bool audio_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_audio_calls_async(conversation);
+                bool video_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_audio_calls_async(conversation);
                 if (conv_bak != conversation) return;
-                visible = can_do_calls;
+
+                visible = audio_works;
+                video_button.visible = video_works;
             } else {
                 visible = false;
             }

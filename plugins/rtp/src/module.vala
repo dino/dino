@@ -64,13 +64,13 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
     }
 
     private async bool is_payload_supported(string media, JingleRtp.PayloadType payload_type) {
-        string codec = CodecUtil.get_codec_from_payload(media, payload_type);
+        string? codec = CodecUtil.get_codec_from_payload(media, payload_type);
         if (codec == null) return false;
         if (unsupported_codecs.contains(codec)) return false;
         if (supported_codecs.contains(codec)) return true;
 
-        string encode_element = codec_util.get_encode_element_name(media, codec);
-        string decode_element = codec_util.get_decode_element_name(media, codec);
+        string? encode_element = codec_util.get_encode_element_name(media, codec);
+        string? decode_element = codec_util.get_decode_element_name(media, codec);
         if (encode_element == null || decode_element == null) {
             debug("No suitable encoder or decoder found for %s", codec);
             unsupported_codecs.add(codec);
