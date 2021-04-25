@@ -29,6 +29,7 @@ compile_gresources(
 
 vala_precompile(OMEMO_VALA_C
 SOURCES
+    src/dtls_srtp_verification_draft.vala
     src/plugin.vala
     src/register_plugin.vala
     src/trust_level.vala
@@ -39,7 +40,8 @@ SOURCES
     src/jingle/jet_omemo.vala
 
     src/logic/database.vala
-    src/logic/encrypt_state.vala
+    src/logic/decrypt.vala
+    src/logic/encrypt.vala
     src/logic/manager.vala
     src/logic/pre_key_store.vala
     src/logic/session_store.vala

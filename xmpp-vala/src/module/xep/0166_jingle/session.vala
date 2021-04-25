@@ -221,7 +221,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                     .put_attribute("name", content.content_name)
                     .put_attribute("senders", content.senders.to_string())
                     .put_node(content.content_params.get_description_node())
-                    .put_node(content.transport_params.to_transport_stanza_node()));
+                    .put_node(content.transport_params.to_transport_stanza_node("content-add")));
 
         Iq.Stanza iq = new Iq.Stanza.set(content_add_node) { to=peer_full_jid };
         yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
@@ -343,7 +343,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                     .put_attribute("name", content.content_name)
                     .put_attribute("senders", content.senders.to_string())
                     .put_node(content.content_params.get_description_node())
-                    .put_node(content.transport_params.to_transport_stanza_node());
+                    .put_node(content.transport_params.to_transport_stanza_node("session-accept"));
             jingle.put_node(content_node);
         }
 
@@ -379,7 +379,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                         .put_attribute("name", content.content_name)
                         .put_attribute("senders", content.senders.to_string())
                         .put_node(content.content_params.get_description_node())
-                        .put_node(content.transport_params.to_transport_stanza_node()));
+                        .put_node(content.transport_params.to_transport_stanza_node("content-accept")));
 
             Iq.Stanza iq = new Iq.Stanza.set(content_accept_node) { to=peer_full_jid };
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
@@ -477,7 +477,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                 .put_node(new StanzaNode.build("content", NS_URI)
                 .put_attribute("creator", "initiator")
                 .put_attribute("name", content.content_name)
-                .put_node(transport_params.to_transport_stanza_node())
+                .put_node(transport_params.to_transport_stanza_node("transport-accept"))
         );
         Iq.Stanza iq_response = new Iq.Stanza.set(jingle_response) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq_response);
@@ -493,7 +493,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                 .put_node(new StanzaNode.build("content", NS_URI)
                 .put_attribute("creator", "initiator")
                 .put_attribute("name", content.content_name)
-                .put_node(transport_params.to_transport_stanza_node())
+                .put_node(transport_params.to_transport_stanza_node("transport-replace"))
         );
         Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);

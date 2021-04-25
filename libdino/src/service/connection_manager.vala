@@ -350,7 +350,9 @@ public class ConnectionManager : Object {
             foreach (Account account in connections.keys) {
                 try {
                     make_offline(account);
-                    yield connections[account].stream.disconnect();
+                    if (connections[account].stream != null) {
+                        yield connections[account].stream.disconnect();
+                    }
                 } catch (Error e) {
                     debug("Error disconnecting stream %p: %s", connections[account].stream, e.message);
                 }

@@ -109,6 +109,9 @@ SOURCES
     "src/module/xep/0176_jingle_ice_udp/jingle_ice_udp_module.vala"
     "src/module/xep/0176_jingle_ice_udp/transport_parameters.vala"
 
+    "src/module/xep/0384_omemo/omemo_encryptor.vala"
+    "src/module/xep/0384_omemo/omemo_decryptor.vala"
+
     "src/module/xep/0184_message_delivery_receipts.vala"
     "src/module/xep/0191_blocking_command.vala"
     "src/module/xep/0198_stream_management.vala"

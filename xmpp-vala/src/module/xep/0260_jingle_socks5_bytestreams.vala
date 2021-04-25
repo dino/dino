@@ -391,7 +391,7 @@ class Parameters : Jingle.TransportParameters, Object {
 
     }
 
-    public StanzaNode to_transport_stanza_node() {
+    public StanzaNode to_transport_stanza_node(string action_type) {
         StanzaNode transport = new StanzaNode.build("transport", NS_URI)
             .add_self_xmlns()
             .put_attribute("dstaddr", local_dstaddr);

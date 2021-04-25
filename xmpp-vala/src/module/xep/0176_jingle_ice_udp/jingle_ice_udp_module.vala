@@ -4,7 +4,7 @@ using Xmpp;
 
 namespace Xmpp.Xep.JingleIceUdp {
 
-private const string NS_URI = "urn:xmpp:jingle:transports:ice-udp:1";
+public const string NS_URI = "urn:xmpp:jingle:transports:ice-udp:1";
 public const string DTLS_NS_URI = "urn:xmpp:jingle:apps:dtls:0";
 
 public abstract class Module : XmppStreamModule, Jingle.Transport {

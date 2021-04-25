@@ -13,11 +13,12 @@ public class Manager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private TrustManager trust_manager;
+    private HashMap<Account, OmemoEncryptor> encryptors;
     private Map<Entities.Message, MessageState> message_states = new HashMap<Entities.Message, MessageState>(Entities.Message.hash_func, Entities.Message.equals_func);
 
     private class MessageState {
         public Entities.Message msg { get; private set; }
-        public EncryptState last_try { get; private set; }
+        public Xep.Omemo.EncryptState last_try { get; private set; }
         public int waiting_other_sessions { get; set; }
         public int waiting_own_sessions { get; set; }
         public bool waiting_own_devicelist { get; set; }
@@ -26,11 +27,11 @@ public class Manager : StreamInteractionModule, Object {
         public bool will_send_now { get; private set; }
         public bool active_send_attempt { get; set; }
 
-        public MessageState(Entities.Message msg, EncryptState last_try) {
+        public MessageState(Entities.Message msg, Xep.Omemo.EncryptState last_try) {
             update_from_encrypt_status(msg, last_try);
         }
 
-        public void update_from_encrypt_status(Entities.Message msg, EncryptState new_try) {
+        public void update_from_encrypt_status(Entities.Message msg, Xep.Omemo.EncryptState new_try) {
             this.msg = msg;
             this.last_try = new_try;
             this.waiting_other_sessions = new_try.other_unknown;
@@ -59,10 +60,11 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private Manager(StreamInteractor stream_interactor, Database db, TrustManager trust_manager) {
+    private Manager(StreamInteractor stream_interactor, Database db, TrustManager trust_manager, HashMap<Account, OmemoEncryptor> encryptors) {
         this.stream_interactor = stream_interactor;
         this.db = db;
         this.trust_manager = trust_manager;
+        this.encryptors = encryptors;
 
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
@@ -125,7 +127,7 @@ public class Manager : StreamInteractionModule, Object {
             }
 
             //Attempt to encrypt the message
-            EncryptState enc_state = trust_manager.encrypt(message_stanza, conversation.account.bare_jid, recipients, stream, conversation.account);
+            Xep.Omemo.EncryptState enc_state = encryptors[conversation.account].encrypt(message_stanza, conversation.account.bare_jid, recipients, stream);
             MessageState state;
             lock (message_states) {
                 if (message_states.has_key(message)) {
@@ -411,8 +413,8 @@ public class Manager : StreamInteractionModule, Object {
         return true; // TODO wait for stream?
     }
 
-    public static void start(StreamInteractor stream_interactor, Database db, TrustManager trust_manager) {
-        Manager m = new Manager(stream_interactor, db, trust_manager);
+    public static void start(StreamInteractor stream_interactor, Database db, TrustManager trust_manager, HashMap<Account, OmemoEncryptor> encryptors) {
+        Manager m = new Manager(stream_interactor, db, trust_manager, encryptors);
         stream_interactor.add_module(m);
     }
 }

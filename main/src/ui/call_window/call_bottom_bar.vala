@@ -100,16 +100,25 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
             encryption_button.get_style_context().add_class("unencrypted");
 
             popover.add(new Label("This call isn't encrypted.") { margin=10, visible=true } );
+        } else if (encryption.encryption_name == "OMEMO") {
+            encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.BUTTON);
+            encryption_button.get_style_context().remove_class("unencrypted");
+
+            popover.add(new Label("This call is encrypted with OMEMO.") { margin=10, visible=true } );
         } else {
             encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.BUTTON);
             encryption_button.get_style_context().remove_class("unencrypted");
 
             Grid encryption_info_grid = new Grid() { margin=10, row_spacing=3, column_spacing=5, visible=true };
             encryption_info_grid.attach(new Label("<b>This call is end-to-end encrypted.</b>") { use_markup=true, xalign=0, visible=true }, 1, 1, 2, 1);
-            encryption_info_grid.attach(new Label("Peer key") { xalign=0, visible=true }, 1, 2, 1, 1);
-            encryption_info_grid.attach(new Label("Your key") { xalign=0, visible=true }, 1, 3, 1, 1);
-            encryption_info_grid.attach(new Label("<span font_family='monospace'>" + format_fingerprint(encryption.peer_key) + "</span>") { use_markup=true, max_width_chars=25, ellipsize=EllipsizeMode.MIDDLE, xalign=0, hexpand=true, visible=true }, 2, 2, 1, 1);
-            encryption_info_grid.attach(new Label("<span font_family='monospace'>" + format_fingerprint(encryption.our_key) + "</span>") { use_markup=true, max_width_chars=25, ellipsize=EllipsizeMode.MIDDLE, xalign=0, hexpand=true, visible=true }, 2, 3, 1, 1);
+            if (encryption.peer_key.length > 0) {
+                encryption_info_grid.attach(new Label("Peer key") { xalign=0, visible=true }, 1, 2, 1, 1);
+                encryption_info_grid.attach(new Label("<span font_family='monospace'>" + format_fingerprint(encryption.peer_key) + "</span>") { use_markup=true, max_width_chars=25, ellipsize=EllipsizeMode.MIDDLE, xalign=0, hexpand=true, visible=true }, 2, 2, 1, 1);
+            }
+            if (encryption.our_key.length > 0) {
+                encryption_info_grid.attach(new Label("Your key") { xalign=0, visible=true }, 1, 3, 1, 1);
+                encryption_info_grid.attach(new Label("<span font_family='monospace'>" + format_fingerprint(encryption.our_key) + "</span>") { use_markup=true, max_width_chars=25, ellipsize=EllipsizeMode.MIDDLE, xalign=0, hexpand=true, visible=true }, 2, 3, 1, 1);
+            }
 
             popover.add(encryption_info_grid);
         }

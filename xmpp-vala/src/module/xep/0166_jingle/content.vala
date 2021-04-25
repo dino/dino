@@ -34,9 +34,8 @@ public class Xmpp.Xep.Jingle.Content : Object {
     public weak Session session;
     public Map<uint8, ComponentConnection> component_connections = new HashMap<uint8, ComponentConnection>(); // TODO private
 
-    public ContentEncryption? encryption { get; set; }
+    public HashMap<string, ContentEncryption> encryptions = new HashMap<string, ContentEncryption>();
 
-    // INITIATE_SENT | INITIATE_RECEIVED | CONNECTING
     public Set<string> tried_transport_methods = new HashSet<string>();
 
 

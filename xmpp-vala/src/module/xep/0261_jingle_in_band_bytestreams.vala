@@ -73,7 +73,7 @@ class Parameters : Jingle.TransportParameters, Object {
 
     }
 
-    public StanzaNode to_transport_stanza_node() {
+    public StanzaNode to_transport_stanza_node(string action_type) {
         return new StanzaNode.build("transport", NS_URI)
             .add_self_xmlns()
             .put_attribute("block-size", block_size.to_string())

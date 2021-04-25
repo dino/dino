@@ -77,7 +77,10 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
                 own_setup = "actpass";
                 dtls_srtp_handler.mode = DtlsSrtp.Mode.SERVER;
                 dtls_srtp_handler.setup_dtls_connection.begin((_, res) => {
-                    this.content.encryption = dtls_srtp_handler.setup_dtls_connection.end(res) ?? this.content.encryption;
+                    var content_encryption = dtls_srtp_handler.setup_dtls_connection.end(res);
+                    if (content_encryption != null) {
+                        this.content.encryptions[content_encryption.encryption_ns] = content_encryption;
+                    }
                 });
             }
         }
@@ -157,7 +160,10 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
                 dtls_srtp_handler.mode = DtlsSrtp.Mode.CLIENT;
                 dtls_srtp_handler.stop_dtls_connection();
                 dtls_srtp_handler.setup_dtls_connection.begin((_, res) => {
-                    this.content.encryption = dtls_srtp_handler.setup_dtls_connection.end(res) ?? this.content.encryption;
+                    var content_encryption = dtls_srtp_handler.setup_dtls_connection.end(res);
+                    if (content_encryption != null) {
+                        this.content.encryptions[content_encryption.encryption_ns] = content_encryption;
+                    }
                 });
             }
         } else {
@@ -225,7 +231,10 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         may_consider_ready(stream_id, component_id);
         if (incoming && dtls_srtp_handler != null && !dtls_srtp_handler.ready && is_component_ready(agent, stream_id, component_id) && dtls_srtp_handler.mode == DtlsSrtp.Mode.CLIENT) {
             dtls_srtp_handler.setup_dtls_connection.begin((_, res) => {
-                this.content.encryption = dtls_srtp_handler.setup_dtls_connection.end(res) ?? this.content.encryption;
+                Jingle.ContentEncryption? encryption = dtls_srtp_handler.setup_dtls_connection.end(res);
+                if (encryption != null) {
+                    this.content.encryptions[encryption.encryption_ns] = encryption;
+                }
             });
         }
     }

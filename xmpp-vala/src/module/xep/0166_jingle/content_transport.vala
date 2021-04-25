@@ -21,7 +21,7 @@ namespace Xmpp.Xep.Jingle {
         public abstract uint8 components { get; }
 
         public abstract void set_content(Content content);
-        public abstract StanzaNode to_transport_stanza_node();
+        public abstract StanzaNode to_transport_stanza_node(string action_type);
         public abstract void handle_transport_accept(StanzaNode transport) throws IqError;
         public abstract void handle_transport_info(StanzaNode transport) throws IqError;
         public abstract void create_transport_connection(XmppStream stream, Content content);

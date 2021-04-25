@@ -65,13 +65,13 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         this.content = null;
     }
 
-    public StanzaNode to_transport_stanza_node() {
+    public StanzaNode to_transport_stanza_node(string action_type) {
         var node = new StanzaNode.build("transport", NS_URI)
                 .add_self_xmlns()
                 .put_attribute("ufrag", local_ufrag)
                 .put_attribute("pwd", local_pwd);
 
-        if (own_fingerprint != null) {
+        if (own_fingerprint != null && action_type != "transport-info") {
             var fingerprint_node = new StanzaNode.build("fingerprint", DTLS_NS_URI)
                     .add_self_xmlns()
                     .put_attribute("hash", "sha-256")
@@ -137,7 +137,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
 
     private void check_send_transport_info() {
         if (this.content != null && unsent_local_candidates.size > 0) {
-            content.send_transport_info(to_transport_stanza_node());
+            content.send_transport_info(to_transport_stanza_node("transport-info"));
         }
     }
 

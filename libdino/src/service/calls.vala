@@ -40,8 +40,8 @@ namespace Dino {
         private HashMap<Call, Xep.JingleRtp.Parameters> video_content_parameter = new HashMap<Call, Xep.JingleRtp.Parameters>(Call.hash_func, Call.equals_func);
         private HashMap<Call, Xep.Jingle.Content> audio_content = new HashMap<Call, Xep.Jingle.Content>(Call.hash_func, Call.equals_func);
         private HashMap<Call, Xep.Jingle.Content> video_content = new HashMap<Call, Xep.Jingle.Content>(Call.hash_func, Call.equals_func);
-        private HashMap<Call, Xep.Jingle.ContentEncryption> video_encryption = new HashMap<Call, Xep.Jingle.ContentEncryption>(Call.hash_func, Call.equals_func);
-        private HashMap<Call, Xep.Jingle.ContentEncryption> audio_encryption = new HashMap<Call, Xep.Jingle.ContentEncryption>(Call.hash_func, Call.equals_func);
+        private HashMap<Call, HashMap<string, Xep.Jingle.ContentEncryption>> video_encryptions = new HashMap<Call, HashMap<string, Xep.Jingle.ContentEncryption>>(Call.hash_func, Call.equals_func);
+        private HashMap<Call, HashMap<string, Xep.Jingle.ContentEncryption>> audio_encryptions = new HashMap<Call, HashMap<string, Xep.Jingle.ContentEncryption>>(Call.hash_func, Call.equals_func);
 
         public static void start(StreamInteractor stream_interactor, Database db) {
             Calls m = new Calls(stream_interactor, db);
@@ -498,24 +498,46 @@ namespace Dino {
             }
 
             if (media == "audio") {
-                audio_encryption[call] = content.encryption;
+                audio_encryptions[call] = content.encryptions;
             } else if (media == "video") {
-                video_encryption[call] = content.encryption;
+                video_encryptions[call] = content.encryptions;
             }
 
-            if ((audio_encryption.has_key(call) && audio_encryption[call] == null) || (video_encryption.has_key(call) && video_encryption[call] == null)) {
+            if ((audio_encryptions.has_key(call) && audio_encryptions[call].is_empty) || (video_encryptions.has_key(call) && video_encryptions[call].is_empty)) {
                 call.encryption = Encryption.NONE;
                 encryption_updated(call, null);
                 return;
             }
 
-            Xep.Jingle.ContentEncryption encryption = audio_encryption[call] ?? video_encryption[call];
-            if (encryption.encryption_ns == Xep.JingleIceUdp.DTLS_NS_URI) {
-                call.encryption = Encryption.DTLS_SRTP;
-            } else if (encryption.encryption_name == "SRTP") {
-                call.encryption = Encryption.SRTP;
+            HashMap<string, Xep.Jingle.ContentEncryption> encryptions = audio_encryptions[call] ?? video_encryptions[call];
+
+            Xep.Jingle.ContentEncryption? omemo_encryption = null, dtls_encryption = null, srtp_encryption = null;
+            foreach (string encr_name in encryptions.keys) {
+                if (video_encryptions.has_key(call) && !video_encryptions[call].has_key(encr_name)) continue;
+
+                var encryption = encryptions[encr_name];
+                if (encryption.encryption_ns == "http://gultsch.de/xmpp/drafts/omemo/dlts-srtp-verification") {
+                    omemo_encryption = encryption;
+                } else if (encryption.encryption_ns == Xep.JingleIceUdp.DTLS_NS_URI) {
+                    dtls_encryption = encryption;
+                } else if (encryption.encryption_name == "SRTP") {
+                    srtp_encryption = encryption;
+                }
             }
-            encryption_updated(call, encryption);
+
+            if (omemo_encryption != null && dtls_encryption != null) {
+                call.encryption = Encryption.OMEMO;
+                encryption_updated(call, omemo_encryption);
+            } else if (dtls_encryption != null) {
+                call.encryption = Encryption.DTLS_SRTP;
+                encryption_updated(call, dtls_encryption);
+            } else if (srtp_encryption != null) {
+                call.encryption = Encryption.SRTP;
+                encryption_updated(call, srtp_encryption);
+            } else {
+                call.encryption = Encryption.NONE;
+                encryption_updated(call, null);
+            }
         }
 
         private void remove_call_from_datastructures(Call call) {
@@ -533,8 +555,8 @@ namespace Dino {
             video_content_parameter.unset(call);
             audio_content.unset(call);
             video_content.unset(call);
-            audio_encryption.unset(call);
-            video_encryption.unset(call);
+            audio_encryptions.unset(call);
+            video_encryptions.unset(call);
         }
 
         private void on_account_added(Account account) {

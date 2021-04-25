@@ -3,7 +3,7 @@ using Xmpp;
 
 namespace Xmpp.Xep.Jingle {
 
-    internal const string NS_URI = "urn:xmpp:jingle:1";
+    public const string NS_URI = "urn:xmpp:jingle:1";
     private const string ERROR_NS_URI = "urn:xmpp:jingle:errors:1";
 
     // This module can only be attached to one stream at a time.
@@ -131,7 +131,7 @@ namespace Xmpp.Xep.Jingle {
                         .put_attribute("name", content.content_name)
                         .put_attribute("senders", content.senders.to_string())
                         .put_node(content.content_params.get_description_node())
-                        .put_node(content.transport_params.to_transport_stanza_node());
+                        .put_node(content.transport_params.to_transport_stanza_node("session-initiate"));
                 if (content.security_params != null) {
                     content_node.put_node(content.security_params.to_security_stanza_node(stream, my_jid, receiver_full_jid));
                 }

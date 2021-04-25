@@ -1,3 +1,4 @@
+using Gee;
 using Dino.Entities;
 
 extern const string GETTEXT_PACKAGE;
@@ -20,6 +21,7 @@ public class Plugin : RootInterface, Object {
                 }
                 return true;
             } catch (Error e) {
+                warning("Error initializing Signal Context %s", e.message);
                 return false;
             }
         }
@@ -33,6 +35,9 @@ public class Plugin : RootInterface, Object {
     public DeviceNotificationPopulator device_notification_populator;
     public OwnNotifications own_notifications;
     public TrustManager trust_manager;
+    public DecryptMessageListener decrypt_message_listener;
+    public HashMap<Account, OmemoDecryptor> decryptors = new HashMap<Account, OmemoDecryptor>(Account.hash_func, Account.equals_func);
+    public HashMap<Account, OmemoEncryptor> encryptors = new HashMap<Account, OmemoEncryptor>(Account.hash_func, Account.equals_func);
 
     public void registered(Dino.Application app) {
         ensure_context();
@@ -43,22 +48,33 @@ public class Plugin : RootInterface, Object {
         this.contact_details_provider = new ContactDetailsProvider(this);
         this.device_notification_populator = new DeviceNotificationPopulator(this, this.app.stream_interactor);
         this.trust_manager = new TrustManager(this.app.stream_interactor, this.db);
+
         this.app.plugin_registry.register_encryption_list_entry(list_entry);
         this.app.plugin_registry.register_account_settings_entry(settings_entry);
         this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
         this.app.plugin_registry.register_notification_populator(device_notification_populator);
         this.app.plugin_registry.register_conversation_addition_populator(new BadMessagesPopulator(this.app.stream_interactor, this));
+
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
-            list.add(new StreamModule());
-            list.add(new JetOmemo.Module(this));
+            Signal.Store signal_store = Plugin.get_context().create_store();
+            list.add(new StreamModule(signal_store));
+            decryptors[account] = new OmemoDecryptor(account, app.stream_interactor, trust_manager, db, signal_store);
+            list.add(decryptors[account]);
+            encryptors[account] = new OmemoEncryptor(account, trust_manager,signal_store);
+            list.add(encryptors[account]);
+            list.add(new JetOmemo.Module());
+            list.add(new DtlsSrtpVerificationDraft.StreamModule());
             this.own_notifications = new OwnNotifications(this, this.app.stream_interactor, account);
         });
+
+        decrypt_message_listener = new DecryptMessageListener(decryptors);
+        app.stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(decrypt_message_listener);
 
         app.stream_interactor.get_module(FileManager.IDENTITY).add_file_decryptor(new OmemoFileDecryptor());
         app.stream_interactor.get_module(FileManager.IDENTITY).add_file_encryptor(new OmemoFileEncryptor());
         JingleFileHelperRegistry.instance.add_encryption_helper(Encryption.OMEMO, new JetOmemo.EncryptionHelper(app.stream_interactor));
 
-        Manager.start(this.app.stream_interactor, db, trust_manager);
+        Manager.start(this.app.stream_interactor, db, trust_manager, encryptors);
 
         SimpleAction own_keys_action = new SimpleAction("own-keys", VariantType.INT32);
         own_keys_action.activate.connect((variant) => {
