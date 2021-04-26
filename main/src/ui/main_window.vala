@@ -13,7 +13,7 @@ public class MainWindow : Gtk.Window {
     public new string? title { get; set; }
     public string? subtitle { get; set; }
 
-    public WelcomePlceholder welcome_placeholder = new WelcomePlceholder() { visible=true };
+    public WelcomePlaceholder welcome_placeholder = new WelcomePlaceholder() { visible=true };
     public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
     public ConversationView conversation_view;
     public ConversationSelector conversation_selector;
@@ -230,8 +230,8 @@ public class MainWindow : Gtk.Window {
     }
 }
 
-public class WelcomePlceholder : MainWindowPlaceholder {
-    public WelcomePlceholder() {
+public class WelcomePlaceholder : MainWindowPlaceholder {
+    public WelcomePlaceholder() {
         title_label.label = _("Welcome to Dino!");
         label.label = _("Sign in or create an account to get started.");
         primary_button.label = _("Set up account");

@@ -29,7 +29,7 @@ public class ConversationView : Gtk.Overlay {
         white_revealer.visible = true;
         white_revealer.reveal_child = true;
         widget.destroy.connect(() => {
-            revealer.destroy();
+            revealer.destroy(); // GTK4: this.remove_overlay(revealer);
             white_revealer.reveal_child = false;
             chat_input.do_focus();
         });

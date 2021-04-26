@@ -1,0 +1,286 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-11 15:56+0200\n"
+"PO-Revision-Date: 2021-03-08 22:02+0000\n"
+"Language-Team: none\n"
+"Language: eo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.5.1\n"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#, c-format
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+"%s uzas nefidatan aparaton. Vi ne vidos mesaĝojn el aparatoj, kiujn vi ne "
+"fidas."
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:156
+msgid "Manage devices"
+msgstr "Administri aparatojn"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
+"%s ne fidas ĉi tiun aparaton. Tio signifas, ke eble mankas al vi mesaĝoj."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:35
+msgid "Manage Key"
+msgstr "Administri Ŝlosilon"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contact's device."
+msgstr ""
+"Komparu la fingropremaĵon, signon post signo, kun la fingropremaĵo montrata "
+"sur la aparato de via kontakto."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+msgid "Fingerprints differ"
+msgstr "Fingropremaĵoj diferencas"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:38
+msgid "Fingerprints match"
+msgstr "Fingropremaĵoj kongruas"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
+#: plugins/omemo/src/ui/manage_key_dialog.vala:82
+#: plugins/omemo/src/ui/manage_key_dialog.vala:88
+msgid "Cancel"
+msgstr "Nuligi"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:40
+msgid "Confirm"
+msgstr "Konfirmi"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:60
+msgid "Verify key"
+msgstr "Konfirmi ŝlosilon"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:61
+#, c-format
+msgid ""
+"Future messages sent by %s from the device that uses this key will be "
+"highlighted accordingly in the chat window."
+msgstr ""
+"Mesaĝoj sendotaj de %s per la aparato kiu uzas ĉi tiun ŝlosilon estos "
+"emfazitaj laŭe en la babila fenestro."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:71
+msgid "Fingerprints do not match"
+msgstr "Fingropremaĵoj ne kongruas"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:72
+#, c-format
+msgid ""
+"Please verify that you are comparing the correct fingerprint. If "
+"fingerprints do not match, %s's account may be compromised and you should "
+"consider rejecting this key."
+msgstr ""
+"Bonvolu konfirmi, ke vi komparas la ĝustan fingropremaĵon. Se fingropremaĵoj "
+"ne kongruas, la konto de %s eble estas kompromitita, kaj vi konsideru "
+"rifuzon de ĉi tiu ŝlosilo."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+msgid "Verify key fingerprint"
+msgstr "Konfirmi ŝlosilan fingropremaĵon"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+msgid ""
+"Compare this key's fingerprint with the fingerprint displayed on the "
+"contact's device."
+msgstr ""
+"Komparu la fingropremaĵon de ĉi tiu ŝlosilo kun la fingropremaĵo montrata "
+"sur la aparato de la kontakto."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
+#: plugins/omemo/src/ui/contact_details_dialog.vala:256
+msgid "Reject key"
+msgstr "Rifuzi ŝlosilon"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+msgid ""
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Rifuzi ĉifritan komunikadon al la aparato de la kontakto, kiu uzas ĉi tiun "
+"ŝlosilon."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
+#: plugins/omemo/src/ui/contact_details_dialog.vala:251
+msgid "Accept key"
+msgstr "Akcepti ŝlosilon"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+msgid ""
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Akcepti ĉifritan komunikadon al la aparato de la kontakto, kiu uzas ĉi tiun "
+"ŝlosilon."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#, c-format
+msgid "This key is currently %s."
+msgstr "Ĉi tiu ŝlosilo estas aktuale %s."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+msgid "accepted"
+msgstr "akceptata"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
+msgstr ""
+"Ĉi tio signifas, ke ĝi povas esti uzata de %s por ricevi kaj sendi ĉifritajn "
+"mesaĝojn."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+msgid "verified"
+msgstr "konfirmita"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+msgid ""
+"Additionally it has been verified to match the key on the contact's device."
+msgstr ""
+"Krome ĝi estis kontrolita pri kongruo kun la ŝlosilo ĉe la aparato de la "
+"kontakto."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+msgid "rejected"
+msgstr "rifuzita"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#, c-format
+msgid ""
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
+msgstr ""
+"Tio signifas, ke ĝi ne povas esti uzata de %s por malĉifri viajn mesaĝojn, "
+"kaj vi ne vidos mesaĝojn ĉifritajn per ĝi."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:153
+#, c-format
+msgid ""
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
+msgstr ""
+"Vi ne vidos ĉifritajn mesaĝojn el la aparato de %s kiu uzas ĉi tiun "
+"ŝlosilon. Male, tiu aparato ne plu povos malĉifri viajn mesaĝojn."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:161
+#, c-format
+msgid ""
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
+msgstr ""
+"Vi povos interŝanĝi ĉifritajn mesaĝojn kun la aparato de %s kiu uzas ĉi tiun "
+"ŝlosilon."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:167
+msgid "Back"
+msgstr "Reen"
+
+#: plugins/omemo/src/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "Administri"
+
+#: plugins/omemo/src/ui/device_notification_populator.vala:83
+msgid "This contact has new devices"
+msgstr "Ĉi tiu kontakto havas novajn aparatojn"
+
+#: plugins/omemo/src/ui/account_settings_widget.vala:42
+#: plugins/omemo/src/ui/account_settings_widget.vala:45
+msgid "Own fingerprint"
+msgstr "Propra fingropremaĵo"
+
+#: plugins/omemo/src/ui/account_settings_widget.vala:42
+msgid "Will be generated on first connection"
+msgstr "Estos farita dum unua konekto"
+
+#: plugins/omemo/src/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "Necesas OMEMO-decido pri fidindeco"
+
+#: plugins/omemo/src/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "Ĉu vi aldonis novan aparaton por la konto %s?"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:42
+msgid "Encryption"
+msgstr "Ĉifrado"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#, c-format
+msgid "%d OMEMO device"
+msgid_plural "%d OMEMO devices"
+msgstr[0] "%d OMEMO-aparato"
+msgstr[1] "%d OMEMO-aparatoj"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+msgid "OMEMO Key Management"
+msgstr "Administrado de OMEMO-Ŝlosiloj"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+msgid "Automatically accept new keys"
+msgstr "Aŭtomate akcepti novajn ŝlosilojn"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "New encryption keys from this contact will be accepted automatically."
+msgstr "Novaj ĉifraj ŝlosiloj de ĉi tiu kontakto estos aŭtomate akceptitaj."
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
+msgid "Own key"
+msgstr "Propra ŝlosilo"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:50
+msgid "New keys"
+msgstr "Novaj ŝlosiloj"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:51
+msgid "Associated keys"
+msgstr "Asociitaj ŝlosiloj"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+msgid "Inactive keys"
+msgstr "Neaktivaj ŝlosiloj"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:84
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr ""
+"Novaj ĉifraj ŝlosiloj de viaj aliaj aparatoj estos aŭtomate akceptitaj."
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:319
+msgid "Accepted"
+msgstr "Akceptita"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:324
+msgid "Rejected"
+msgstr "Rifuzita"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:329
+msgid "Verified"
+msgstr "Konfirmita"
+
+#: plugins/omemo/src/ui/contact_details_dialog.vala:336
+msgid "Unused"
+msgstr "Ne uzata"

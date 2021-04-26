@@ -48,7 +48,7 @@ public class SelectJidFragment : Gtk.Box {
     public void set_filter(string str) {
         if (entry.text != str) entry.text = str;
 
-        foreach (AddListRow row in added_rows) row.destroy();
+        foreach (AddListRow row in added_rows) filterable_list.remove(row);
         added_rows.clear();
 
         string[] ? values = str == "" ? null : str.split(" ");

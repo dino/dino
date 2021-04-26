@@ -256,12 +256,14 @@ public class Database : Qlite.Database {
         session = new SessionTable(this);
         content_item_meta = new ContentItemMetaTable(this);
         init({identity_meta, trust, identity, signed_pre_key, pre_key, session, content_item_meta});
+
         try {
-            exec("PRAGMA synchronous=0");
-        } catch (Error e) { }
-        try {
-            exec("PRAGMA secure_delete=1");
-        } catch (Error e) { }
+            exec("PRAGMA journal_mode = WAL");
+            exec("PRAGMA synchronous = NORMAL");
+            exec("PRAGMA secure_delete = ON");
+        } catch (Error e) {
+            error("Failed to set OMEMO database properties: %s", e.message);
+        }
     }
 
     public override void migrate(long oldVersion) {

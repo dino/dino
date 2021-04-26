@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-11 19:14+0100\n"
-"PO-Revision-Date: 2021-01-09 11:43+0000\n"
+"POT-Creation-Date: 2021-04-11 15:56+0200\n"
+"PO-Revision-Date: 2021-03-08 22:02+0000\n"
 "Language-Team: none\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.4.1-dev\n"
+"X-Generator: Weblate 4.5.1\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -64,26 +64,26 @@ msgid "Yesterday"
 msgstr "Kemarin"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:272
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:345
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i menit yang lalu"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:278
 msgid "Just now"
 msgstr "Sesaat lalu"
 
@@ -141,7 +141,7 @@ msgstr "Pilih"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:220 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:257 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -181,7 +181,7 @@ msgid "Start"
 msgstr "Mulai"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:220 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:257 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Bergabung dengan Channel"
@@ -197,7 +197,7 @@ msgstr "Selanjutnya"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:220
+#: main/src/ui/application.vala:257
 msgid "Join"
 msgstr "Bergabung"
 
@@ -241,7 +241,7 @@ msgstr "Terlalu banyak penghuni di kamar"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
 #: main/src/ui/notifier_gnotifications.vala:82
-#: main/src/ui/notifier_freedesktop.vala:142
+#: main/src/ui/notifier_freedesktop.vala:144
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
@@ -251,7 +251,7 @@ msgstr "Tidak terhubung ke %s"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
 #: main/src/ui/manage_accounts/add_account_dialog.vala:299
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
-#: main/src/ui/manage_accounts/add_account_dialog.vala:388
+#: main/src/ui/manage_accounts/add_account_dialog.vala:397
 msgid "Invalid address"
 msgstr "Alamat tidak valid"
 
@@ -259,6 +259,14 @@ msgstr "Alamat tidak valid"
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "Tambah"
+
+#: main/src/ui/application.vala:197 main/data/menu_app.ui:17
+msgid "Keyboard Shortcuts"
+msgstr "Kombinasi tombol"
+
+#: main/src/ui/application.vala:233 main/data/menu_app.ui:21
+msgid "About Dino"
+msgstr "Tentang Dino"
 
 #: main/src/ui/global_search.vala:141
 #, c-format
@@ -277,16 +285,16 @@ msgid "With %s"
 msgstr "Pada %s"
 
 #: main/src/ui/notifier_gnotifications.vala:69
-#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/notifier_freedesktop.vala:114
 msgid "Subscription request"
 msgstr "Meminta ijin"
 
 #: main/src/ui/notifier_gnotifications.vala:75
 #: main/src/ui/notifier_gnotifications.vala:109
 #: main/src/ui/notifier_gnotifications.vala:125
-#: main/src/ui/notifier_freedesktop.vala:118
-#: main/src/ui/notifier_freedesktop.vala:173
-#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:177
+#: main/src/ui/notifier_freedesktop.vala:210
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Terima"
@@ -294,31 +302,31 @@ msgstr "Terima"
 #: main/src/ui/notifier_gnotifications.vala:76
 #: main/src/ui/notifier_gnotifications.vala:108
 #: main/src/ui/notifier_gnotifications.vala:124
-#: main/src/ui/notifier_freedesktop.vala:118
-#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:210
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Tolak"
 
 #: main/src/ui/notifier_gnotifications.vala:98
-#: main/src/ui/notifier_freedesktop.vala:165
+#: main/src/ui/notifier_freedesktop.vala:168
 #, c-format
 msgid "Invitation to %s"
 msgstr "Undangan untuk %s"
 
 #: main/src/ui/notifier_gnotifications.vala:99
-#: main/src/ui/notifier_freedesktop.vala:166
+#: main/src/ui/notifier_freedesktop.vala:169
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s mengundang anda ke %s"
 
 #: main/src/ui/notifier_gnotifications.vala:116
-#: main/src/ui/notifier_freedesktop.vala:197
+#: main/src/ui/notifier_freedesktop.vala:201
 msgid "Permission request"
 msgstr "Permintaan ijin"
 
 #: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:198
+#: main/src/ui/notifier_freedesktop.vala:202
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%smeminta ijin untuk menulis ke dalam %s"
@@ -490,19 +498,19 @@ msgstr "Tidak ada akun aktif"
 msgid "Manage accounts"
 msgstr "Atur akun"
 
-#: main/src/ui/notifier_freedesktop.vala:146
+#: main/src/ui/notifier_freedesktop.vala:148
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "Password salah"
 
-#: main/src/ui/notifier_freedesktop.vala:149
+#: main/src/ui/notifier_freedesktop.vala:151
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr "Sertifikat TLS tidak valid"
 
-#: main/src/ui/notifier_freedesktop.vala:173
+#: main/src/ui/notifier_freedesktop.vala:177
 msgid "Reject"
-msgstr ""
+msgstr "Tolak"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -579,7 +587,7 @@ msgstr "Akun dapat digunakan %s."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Wrong username or password"
-msgstr "Username atau kata sandi salah"
+msgstr "Nama pengguna atau kata sandi salah"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:284
 msgid "Something went wrong"
@@ -602,11 +610,11 @@ msgstr "Server ini mengharuskan pendaftaran melalui website"
 msgid "Open website"
 msgstr "Buka website"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:350
+#: main/src/ui/manage_accounts/add_account_dialog.vala:359
 msgid "Register"
 msgstr "Daftar"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:352
+#: main/src/ui/manage_accounts/add_account_dialog.vala:361
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Periksa %s untuk informasi pendaftaran"
@@ -639,41 +647,41 @@ msgstr "%s dan%s sedang mengetik…"
 msgid "%s is typing…"
 msgstr "%s sedang mengetik…"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:164
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Tidak terenkripsi"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:200
 msgid "Unable to send message"
 msgstr "Tidak bisa mengirimkan pesan"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:259
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d %b, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:264
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d %b, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:268
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
@@ -758,6 +766,10 @@ msgstr "Beri tahu saat ada pesan"
 msgid "Convert smileys to emojis"
 msgstr "Ubah smiley menjadi emoji"
 
+#: main/data/settings_dialog.ui:70
+msgid "Check spelling"
+msgstr "Periksa ejaan"
+
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
 msgstr "Aplikasi chat XMPP modern"
@@ -832,14 +844,6 @@ msgstr "Pesan sebelumnya"
 #: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:9
 msgid "Accounts"
 msgstr "Akun"
-
-#: main/data/menu_app.ui:17
-msgid "Keyboard Shortcuts"
-msgstr "Kombinasi tombol"
-
-#: main/data/menu_app.ui:21
-msgid "About Dino"
-msgstr "Tentang Dino"
 
 #: main/data/manage_accounts/dialog.ui:200
 msgid "Local alias"

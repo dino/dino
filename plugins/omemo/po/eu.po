@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-11 19:14+0100\n"
-"PO-Revision-Date: 2020-05-11 10:41+0000\n"
+"POT-Creation-Date: 2021-04-11 15:56+0200\n"
+"PO-Revision-Date: 2021-03-24 16:29+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "eu/>\n"
 "Language: eu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.5.2-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:155
 #, c-format
@@ -24,16 +24,20 @@ msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
+"%s erabiltzaileak fidagarritasun gutxiko gailu bat erabiltzen egon da. Ez "
+"duzu mezurik ikusiko konfiantza ematen ez dizuten gailuengandik."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:156
 msgid "Manage devices"
-msgstr ""
+msgstr "Gailuak kudeatu"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:158
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""
+"%s erabiltzailea ez da gailu honetaz fidatzen. Honek mezu batzuk gal "
+"ditzakezula esan nahi du."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
@@ -75,6 +79,8 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"%s erabiltzaileak etorkizunean gako hau erabiltzen duen gailutik bidalitako "
+"mezuak nabarmenduko dira txat leihoan."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -113,6 +119,8 @@ msgstr "Gakoa ukatu"
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr ""
+"Enkriptatutako komunikazioa blokeatu gako hau erabiltzen duen kontaktuaren "
+"gailuarekin."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
@@ -124,6 +132,8 @@ msgstr "Gakoa onartu"
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
+"Enkriptatutako komunikazioa baimendu gako hau erabiltzen duen kontaktuaren "
+"gailuarekin."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
@@ -164,6 +174,9 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
+"Honek esan nahi du %s erabiltzaileak ezin duela erabili zure mezuak "
+"deszifratzeko, eta zuk ez dituzula gako honekin enkriptatutako mezuak "
+"ikusiko."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
@@ -171,6 +184,9 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
+"Ez dituzu ikusiko gako hau erabiltzen duen %s kontaktuaren gailutik "
+"igorritako mezuak. Era berean, hemendik aurrera gailu horrek ez da zure "
+"mezuak deszifratzeko gai izango."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
@@ -178,6 +194,8 @@ msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
+"Gako hau erabiltzen duen %s kontaktuaren gailuarekin enkriptatutako mezuak "
+"elkar-trukatzeko gai izango zara."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
@@ -231,6 +249,7 @@ msgstr "Gako berriak automatikoki onartu"
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
+"Kontaktu honen enkriptatze gako berriak onartuak izango dira automatikoki."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
@@ -252,6 +271,8 @@ msgstr "Gako ez aktiboak"
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
+"Zure beste gailuen enkriptatze gako berriak onartuak izango dira "
+"automatikoki."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"

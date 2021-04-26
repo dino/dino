@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-11 19:14+0100\n"
-"PO-Revision-Date: 2020-10-10 10:49+0000\n"
+"POT-Creation-Date: 2021-04-11 15:56+0200\n"
+"PO-Revision-Date: 2021-03-05 16:50+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
 "Language: de\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 4.5.1-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -60,19 +60,19 @@ msgid "Yesterday"
 msgstr "Gestern"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:272
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:345
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -80,7 +80,7 @@ msgstr[0] "vor %i min"
 msgstr[1] "vor %i min"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:278
 msgid "Just now"
 msgstr "Gerade eben"
 
@@ -138,7 +138,7 @@ msgstr "Auswählen"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:220 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:257 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -178,7 +178,7 @@ msgid "Start"
 msgstr "Starten"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:220 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:257 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Kanal beitreten"
@@ -194,7 +194,7 @@ msgstr "Weiter"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:220
+#: main/src/ui/application.vala:257
 msgid "Join"
 msgstr "Beitreten"
 
@@ -238,7 +238,7 @@ msgstr "Zu viele Nutzer im Raum"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
 #: main/src/ui/notifier_gnotifications.vala:82
-#: main/src/ui/notifier_freedesktop.vala:142
+#: main/src/ui/notifier_freedesktop.vala:144
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
@@ -248,7 +248,7 @@ msgstr "Verbindung zu %s konnte nicht hergestellt werden"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
 #: main/src/ui/manage_accounts/add_account_dialog.vala:299
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
-#: main/src/ui/manage_accounts/add_account_dialog.vala:388
+#: main/src/ui/manage_accounts/add_account_dialog.vala:397
 msgid "Invalid address"
 msgstr "Ungültige Adresse"
 
@@ -256,6 +256,14 @@ msgstr "Ungültige Adresse"
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "Hinzufügen"
+
+#: main/src/ui/application.vala:197 main/data/menu_app.ui:17
+msgid "Keyboard Shortcuts"
+msgstr "Tastenkombinationen"
+
+#: main/src/ui/application.vala:233 main/data/menu_app.ui:21
+msgid "About Dino"
+msgstr "Info zu Dino"
 
 #: main/src/ui/global_search.vala:141
 #, c-format
@@ -275,16 +283,16 @@ msgid "With %s"
 msgstr "Mit %s"
 
 #: main/src/ui/notifier_gnotifications.vala:69
-#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/notifier_freedesktop.vala:114
 msgid "Subscription request"
 msgstr "Kontaktanfrage"
 
 #: main/src/ui/notifier_gnotifications.vala:75
 #: main/src/ui/notifier_gnotifications.vala:109
 #: main/src/ui/notifier_gnotifications.vala:125
-#: main/src/ui/notifier_freedesktop.vala:118
-#: main/src/ui/notifier_freedesktop.vala:173
-#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:177
+#: main/src/ui/notifier_freedesktop.vala:210
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Annehmen"
@@ -292,31 +300,31 @@ msgstr "Annehmen"
 #: main/src/ui/notifier_gnotifications.vala:76
 #: main/src/ui/notifier_gnotifications.vala:108
 #: main/src/ui/notifier_gnotifications.vala:124
-#: main/src/ui/notifier_freedesktop.vala:118
-#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:210
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Ablehnen"
 
 #: main/src/ui/notifier_gnotifications.vala:98
-#: main/src/ui/notifier_freedesktop.vala:165
+#: main/src/ui/notifier_freedesktop.vala:168
 #, c-format
 msgid "Invitation to %s"
 msgstr "Einladung zu %s"
 
 #: main/src/ui/notifier_gnotifications.vala:99
-#: main/src/ui/notifier_freedesktop.vala:166
+#: main/src/ui/notifier_freedesktop.vala:169
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s hat dich in %s eingeladen"
 
 #: main/src/ui/notifier_gnotifications.vala:116
-#: main/src/ui/notifier_freedesktop.vala:197
+#: main/src/ui/notifier_freedesktop.vala:201
 msgid "Permission request"
 msgstr "Berechtigungsanfrage"
 
 #: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:198
+#: main/src/ui/notifier_freedesktop.vala:202
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%s erbittet die Berechtigung zum Schreiben in %s"
@@ -490,19 +498,19 @@ msgstr "Keine Konten aktiv"
 msgid "Manage accounts"
 msgstr "Konten verwalten"
 
-#: main/src/ui/notifier_freedesktop.vala:146
+#: main/src/ui/notifier_freedesktop.vala:148
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "Passwort falsch"
 
-#: main/src/ui/notifier_freedesktop.vala:149
+#: main/src/ui/notifier_freedesktop.vala:151
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr "Ungültiges TLS-Zertifikat"
 
-#: main/src/ui/notifier_freedesktop.vala:173
+#: main/src/ui/notifier_freedesktop.vala:177
 msgid "Reject"
-msgstr ""
+msgstr "Ablehnen"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -603,11 +611,11 @@ msgstr "Der Server erfordert die Registrierung durch eine Webseite"
 msgid "Open website"
 msgstr "Webseite öffnen"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:350
+#: main/src/ui/manage_accounts/add_account_dialog.vala:359
 msgid "Register"
 msgstr "Registrieren"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:352
+#: main/src/ui/manage_accounts/add_account_dialog.vala:361
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Eventuell sind auf %s Informationen zur Registrierung zu finden"
@@ -640,41 +648,41 @@ msgstr "%s und %s tippen…"
 msgid "%s is typing…"
 msgstr "%s tippt…"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:164
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Unverschlüsselt"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:200
 msgid "Unable to send message"
 msgstr "Nachricht kann nicht gesendet werden"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:259
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d. %b, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:264
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d. %b, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:268
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
@@ -760,6 +768,10 @@ msgstr "Benachrichtigen bei Empfang einer neuen Nachricht"
 msgid "Convert smileys to emojis"
 msgstr "Smileys zu Emojis umwandeln"
 
+#: main/data/settings_dialog.ui:70
+msgid "Check spelling"
+msgstr "Rechtschreibung prüfen"
+
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
 msgstr "Modernes XMPP-Chat-Programm"
@@ -835,14 +847,6 @@ msgstr "Zur letzten Konversation springen"
 #: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:9
 msgid "Accounts"
 msgstr "Konten"
-
-#: main/data/menu_app.ui:17
-msgid "Keyboard Shortcuts"
-msgstr "Tastenkombinationen"
-
-#: main/data/menu_app.ui:21
-msgid "About Dino"
-msgstr "Info zu Dino"
 
 #: main/data/manage_accounts/dialog.ui:200
 msgid "Local alias"

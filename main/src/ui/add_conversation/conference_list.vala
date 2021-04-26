@@ -49,7 +49,7 @@ protected class ConferenceList : FilterableList {
 
     private void remove_conference(Account account, Jid jid) {
         if (widgets.has_key(account) && widgets[account].has_key(jid)) {
-            widgets[account][jid].destroy();
+            remove(widgets[account][jid]);
             widgets[account].unset(jid);
         }
     }

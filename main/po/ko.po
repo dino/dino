@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-11 19:14+0100\n"
+"POT-Creation-Date: 2021-04-11 15:56+0200\n"
 "PO-Revision-Date: 2020-08-08 22:32+0000\n"
 "Language-Team: none\n"
 "Language: ko\n"
@@ -64,26 +64,26 @@ msgid "Yesterday"
 msgstr "어제"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:269
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
 #, no-c-format
 msgid "%H∶%M"
 msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:272
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:345
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i 분 이전에"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:278
 msgid "Just now"
 msgstr "방금 전"
 
@@ -141,7 +141,7 @@ msgstr "선택"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:220 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:257 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -181,7 +181,7 @@ msgid "Start"
 msgstr "시작"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:220 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:257 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "채널 참가"
@@ -197,7 +197,7 @@ msgstr "다음"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:220
+#: main/src/ui/application.vala:257
 msgid "Join"
 msgstr "참가"
 
@@ -241,7 +241,7 @@ msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
 #: main/src/ui/notifier_gnotifications.vala:82
-#: main/src/ui/notifier_freedesktop.vala:142
+#: main/src/ui/notifier_freedesktop.vala:144
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
@@ -251,7 +251,7 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
 #: main/src/ui/manage_accounts/add_account_dialog.vala:299
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
-#: main/src/ui/manage_accounts/add_account_dialog.vala:388
+#: main/src/ui/manage_accounts/add_account_dialog.vala:397
 msgid "Invalid address"
 msgstr ""
 
@@ -259,6 +259,14 @@ msgstr ""
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "추가"
+
+#: main/src/ui/application.vala:197 main/data/menu_app.ui:17
+msgid "Keyboard Shortcuts"
+msgstr ""
+
+#: main/src/ui/application.vala:233 main/data/menu_app.ui:21
+msgid "About Dino"
+msgstr ""
 
 #: main/src/ui/global_search.vala:141
 #, c-format
@@ -277,16 +285,16 @@ msgid "With %s"
 msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:69
-#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/notifier_freedesktop.vala:114
 msgid "Subscription request"
 msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:75
 #: main/src/ui/notifier_gnotifications.vala:109
 #: main/src/ui/notifier_gnotifications.vala:125
-#: main/src/ui/notifier_freedesktop.vala:118
-#: main/src/ui/notifier_freedesktop.vala:173
-#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:177
+#: main/src/ui/notifier_freedesktop.vala:210
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 msgid "Accept"
 msgstr ""
@@ -294,31 +302,31 @@ msgstr ""
 #: main/src/ui/notifier_gnotifications.vala:76
 #: main/src/ui/notifier_gnotifications.vala:108
 #: main/src/ui/notifier_gnotifications.vala:124
-#: main/src/ui/notifier_freedesktop.vala:118
-#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:210
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:98
-#: main/src/ui/notifier_freedesktop.vala:165
+#: main/src/ui/notifier_freedesktop.vala:168
 #, c-format
 msgid "Invitation to %s"
 msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:99
-#: main/src/ui/notifier_freedesktop.vala:166
+#: main/src/ui/notifier_freedesktop.vala:169
 #, c-format
 msgid "%s invited you to %s"
 msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:116
-#: main/src/ui/notifier_freedesktop.vala:197
+#: main/src/ui/notifier_freedesktop.vala:201
 msgid "Permission request"
 msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:198
+#: main/src/ui/notifier_freedesktop.vala:202
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr ""
@@ -490,17 +498,17 @@ msgstr "활성화 된 계정이 없습니다"
 msgid "Manage accounts"
 msgstr "계정 관리"
 
-#: main/src/ui/notifier_freedesktop.vala:146
+#: main/src/ui/notifier_freedesktop.vala:148
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "잘못 된 비밀번호"
 
-#: main/src/ui/notifier_freedesktop.vala:149
+#: main/src/ui/notifier_freedesktop.vala:151
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr ""
 
-#: main/src/ui/notifier_freedesktop.vala:173
+#: main/src/ui/notifier_freedesktop.vala:177
 msgid "Reject"
 msgstr ""
 
@@ -602,11 +610,11 @@ msgstr ""
 msgid "Open website"
 msgstr "웹사이트 열기"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:350
+#: main/src/ui/manage_accounts/add_account_dialog.vala:359
 msgid "Register"
 msgstr "등록"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:352
+#: main/src/ui/manage_accounts/add_account_dialog.vala:361
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr ""
@@ -639,41 +647,41 @@ msgstr "%s 와(과) %s 이(가) 입력 중…"
 msgid "%s is typing…"
 msgstr "%s 이(가) 입력 중…"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:164
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:200
 msgid "Unable to send message"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:259
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:261
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:264
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:265
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:268
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr ""
@@ -758,6 +766,10 @@ msgstr ""
 msgid "Convert smileys to emojis"
 msgstr ""
 
+#: main/data/settings_dialog.ui:70
+msgid "Check spelling"
+msgstr ""
+
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
 msgstr ""
@@ -824,14 +836,6 @@ msgstr ""
 
 #: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:9
 msgid "Accounts"
-msgstr ""
-
-#: main/data/menu_app.ui:17
-msgid "Keyboard Shortcuts"
-msgstr ""
-
-#: main/data/menu_app.ui:21
-msgid "About Dino"
 msgstr ""
 
 #: main/data/manage_accounts/dialog.ui:200

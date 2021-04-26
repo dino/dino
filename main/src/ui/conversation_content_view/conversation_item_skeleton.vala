@@ -32,13 +32,7 @@ public class ConversationItemSkeleton : EventBox {
         this.get_style_context().add_class("message-box");
 
         item.bind_property("in-edit-mode", this, "item-in-edit-mode");
-        this.notify["item-in-edit-mode"].connect(() => {
-            if (item.in_edit_mode) {
-                this.get_style_context().add_class("edit-mode");
-            } else {
-                this.get_style_context().remove_class("edit-mode");
-            }
-        });
+        this.notify["item-in-edit-mode"].connect(update_edit_mode);
 
         widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
         if (widget != null) {
@@ -92,6 +86,14 @@ public class ConversationItemSkeleton : EventBox {
         } else {
             image_content_box.margin_top = 4;
             image_content_box.margin_bottom = 4;
+        }
+    }
+
+    private void update_edit_mode() {
+        if (item.in_edit_mode) {
+            this.get_style_context().add_class("edit-mode");
+        } else {
+            this.get_style_context().remove_class("edit-mode");
         }
     }
 }
@@ -164,7 +166,7 @@ public class ItemMetaDataHeader : Box {
             this.reorder_child(unencrypted_image, 3);
             Util.force_error_color(unencrypted_image);
         } else if (conversation.encryption == Encryption.NONE && unencrypted_image != null) {
-            unencrypted_image.destroy();
+            this.remove(unencrypted_image);
             unencrypted_image = null;
         }
     }

@@ -10,6 +10,7 @@
   <summary xml:lang="zh_CN">现代 XMPP 聊天客户端</summary>
   <summary xml:lang="tr">Modern XMPP Sohbet İstemcisi</summary>
   <summary xml:lang="sv">Modern XMPP-chattklient</summary>
+  <summary xml:lang="sq">Klient Modern Fjalosjesh XMPP</summary>
   <summary xml:lang="ru">Современный XMPP клиент</summary>
   <summary xml:lang="ro">Client XMPP de discuții modern</summary>
   <summary xml:lang="pt_BR">Cliente de Chat XMPP Moderno</summary>
@@ -31,6 +32,7 @@
   <summary xml:lang="fa">پایگاه نوین گپ XMPP</summary>
   <summary xml:lang="eu">XMPP txat bezero modernoa</summary>
   <summary xml:lang="es">Cliente de XMPP moderno</summary>
+  <summary xml:lang="eo">Moderna XMPP-Retebabililo</summary>
   <summary xml:lang="de">Modernes XMPP-Chat-Programm</summary>
   <summary xml:lang="ca">Client de xat XMPP modern</summary>
   <summary xml:lang="ar">تطبيق حديث للدردشة عبر XMPP</summary>
@@ -40,6 +42,7 @@
     <p xml:lang="zh_CN">Dino 是一个现代的开源聊天桌面客户端。它致力于提供一个清爽又可靠的 Jabber/XMPP 体验，同时又保护您的隐私。</p>
     <p xml:lang="tr">Dino masaüstü bilgisayarlar için modern, açık kaynaklı bir sohbet uygulamasıdır. Gizlilik hassasiyetinizi göz önünde bulundurarak temiz ve güvenilir bir Jabber/XMPP deneyimi sunmaya odaklanır.</p>
     <p xml:lang="sv">Dino är en moden chattklient för skrivbordet med öppen källkod. Den erbjuder en elegant och pålitligt upplevelse av Jabber/XMPP samtidigt som den ser efter din integritet.</p>
+    <p xml:lang="sq">Dino është një klient modern fjalosjesh, me burim të hapur, për desktop. Ai përqendrohet në dhënien e një mënyre funksionimi të qartë dhe të qëndrueshme për protokoll Jabber/XMPP, teksa ka në mendje privatësinë tuaj.</p>
     <p xml:lang="ru">Dino - это современный клиент для чатов с открытым исходным кодом, направленный на надёжное и приватное использование Jabber/XMPP на персональных компьютерах.</p>
     <p xml:lang="ro">Dino este un client de chat modern, cu sursă deschisă, pentru calculatoare. Se concentrează să furnizeze o experiență Jabber/XMPP clară și fiabilă, ținând cont de confidențialitatea dumneavoastră.</p>
     <p xml:lang="pt_BR">Dino é um cliente moderno de código aberto de chat para desktop. Ele foca em oferecer uma experiência Jabber/XMPP transparente e confiável levando em consideração a sua privacidade.</p>
@@ -61,6 +64,7 @@
     <p xml:lang="fi">Dino on nykyaikainen avoimen lähdekoodin jutteluohjelma työpöydälle. Se keskittyy tarjoamaan selkeän ja luotettavan Jabber/XMPP-kokemuksen unohtamatta yksityisyyttäsi.</p>
     <p xml:lang="eu">Dino mahaigainerako iturburu irekiko txat bezero moderno bat da. Jabber/XMPP esperientzia garbi eta fidagarri bat ematen du zure pribatutasuna kontuan hartzeaz gain.</p>
     <p xml:lang="es">Dino es un cliente de mensajería moderno y libre para escritorio. Está enfocado en proveer una experiencia Jabber/XMPP limpia y confiable teniendo tu privacidad en mente.</p>
+    <p xml:lang="eo">Dino estas moderna malfermfonta retbabililo por la tabla komputilo. Ĝi celas provizi puran kaj fidindan sperton de Jabber/XMPP, protektante vian privatecon.</p>
     <p xml:lang="de">Dino ist ein modernes, quelloffenes Chat-Programm für den Desktop. Es bietet ein aufgeräumtes und robustes Jabber-/XMPP-Erlebnis und legt einen Schwerpunkt auf Privatsphäre.</p>
     <p xml:lang="ca">Dino és un client de xat lliure i modern per a l'escriptori. Està centrat en proveir una experiència neta i fiable de Jabber/XMPP, sempre tenint en compte la vostra privacitat.</p>
     <p xml:lang="ar">إنّ Dino برنامج عصري ومفتوح المصدر للدردشة صُمّم لسطح المكتب. ويُركّز علي تقديم تجربة نظيفة وموثوق منها لجابر/XMPP مع أخذ خصوصيتكم بعين الإعتبار.</p>
@@ -69,6 +73,7 @@
     <p xml:lang="zh_CN">它支持 OMEMO 和 OpenPGP 端对端加密并允许配置隐私相关的特性比如已读回执和输入提醒。</p>
     <p xml:lang="tr">OMEMO ve OpenPGP ile baştan sona şifreleme destekler ve "okundu" bilgisi, "yazıyor..." bildirimi gibi gizlilikle alakalı özelliklerin ayarlanabilmesini sağlar.</p>
     <p xml:lang="sv">Dino stödjer end-to-end-kryptering med OMEMO och OpenPGP och tillåter konfigurering av funktioner med integritetspåverkan som läsbekräftelser och skriftaviseringar.</p>
+    <p xml:lang="sq">Mbulon fshehtëzim skaj-më-skaj me OMEMO dhe OpenPGP dhe lejon formësim veçorish të lidhura me privatësinë, bie fjala, dëshmish leximi dhe njoftime shtypjeje.</p>
     <p xml:lang="ru">Он поддерживает сквозное шифрование через OMEMO и OpenPGP и позволяет настраивать такие функции, как уведомления о прочтении и наборе сообщений.</p>
     <p xml:lang="ro">Suportă criptare de la un capăt la altul prin intermediul OMEMO și OpenPGP, și permite configurarea caracteristicilor legate de confidențialitate precum trimiterea notificărilor de primire și tastare.</p>
     <p xml:lang="pt_BR">Ele suporta criptografia ponta-a-ponta com OMEMO e OpenPGP e, além disso, permite configurar funcionalidades relativas à privacidade como notificações de leitura, recebimento e escrita.</p>
@@ -90,6 +95,7 @@
     <p xml:lang="fi">Se tukee päästä päähän -salausta OMEMO:n ja OpenPGP:n avulla ja  mahdollistaa yksityisyyteen liittyvien ominaisuuksien, kuten lukukuittausten ja kirjoitusilmoitusten asetusten määrittämisen.</p>
     <p xml:lang="eu">Amaieratik amaierarako enkriptazioa onartzen du OMEMO eta OpenPGPrekin eta pribatutasun ezaugarriak konfiguratzea baimentzen du irakurtze markak eta idazketa jakinarazpenak bezala.</p>
     <p xml:lang="es">Soporta cifrado de extremo a extremo a través de OMEMO y OpenPGP y permite configurar las características relacionadas con la privacidad, como confirmaciones de lectura y notificaciones de escritura.</p>
+    <p xml:lang="eo">Ĝi subtenas fin-al-finan ĉifradon per OMEMO kaj OpenPGP kaj permesas agordi funkciojn pri privateco kiel kvitancojn de legiteco kaj sciigojn pri tajpado.</p>
     <p xml:lang="de">Er unterstützt Ende-zu-Ende Verschlüsselung mit OMEMO und OpenPGP und enthält Privatsphäre-Einstellungen zu Lesebestätigungen und Tippbenachrichtigungen.</p>
     <p xml:lang="ca">Implementa xifratge punt a punt amb OMEMO i OpenPGP, i permet configurar funcionalitats relacionades amb la privacitat com per exemple rebuts de lectura i notificacions d'escriptura.</p>
     <p xml:lang="ar">وهو يدعم التشفير بواسطة OMEMO و OpenPGP يسمح بإعداد ميزات الخصوصية كالإيصالات المقروءة والإخطارات عند الكتابة.</p>
@@ -98,6 +104,7 @@
     <p xml:lang="zh_CN">Dino 从服务器获取消息并和其他设备同步。</p>
     <p xml:lang="tr">Dino sunucudan konuşma geçmişini sunucudan çeker ve diğer cihazlara senkronize eder.</p>
     <p xml:lang="sv">Dino hämtar historik från servern och synkroniserar meddelanden med andra enheter.</p>
+    <p xml:lang="sq">Dino e sjell historikun prej shërbyesve dhe njëkohëson mesazhet në pajisje të tjera.</p>
     <p xml:lang="ru">Dino загружает историю с сервера и синхронизирует сообщения с другими устройствами.</p>
     <p xml:lang="ro">Dino preia istoricul discuțiilor de pe server și sincronizează mesajele cu celelalte dispozitive.</p>
     <p xml:lang="pt_BR">Dino obtém o histórico do servidor e sincroniza mensagens com outros dispositivos.</p>
@@ -119,6 +126,7 @@
     <p xml:lang="fi">Dino hakee historian palvelimelta ja synkronisoi viestit muiden laitteiden kanssa.</p>
     <p xml:lang="eu">Dinok zerbitzaritik hartzen du historia eta beste gailuekin mezuak sinkronizatzen ditu.</p>
     <p xml:lang="es">Dino recupera los mensajes desde el servidor y sincroniza los mensajes con otros dispositivos.</p>
+    <p xml:lang="eo">Dino prenas historion el la servilo kaj sinkronigas mesaĝojn kun aliaj aparatoj.</p>
     <p xml:lang="de">Dino ruft Gesprächsverläufe vom Server ab und synchronisiert Nachrichten mit anderen Geräten.</p>
     <p xml:lang="ca">Dino recupera l'historial del servidor i sincronitza els missatges amb altres dispositius.</p>
     <p xml:lang="ar">يقوم Dino بجلب السِجلّ مِن السيرفر ثم يُزامِن الرسائل مع الأجهزة الأخرى.</p>

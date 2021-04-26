@@ -56,27 +56,14 @@ public class ContentItemStore : StreamInteractionModule, Object {
                     }
                     break;
                 case 2:
-                    RowOption row_option = db.file_transfer.select().with(db.file_transfer.id, "=", foreign_id).row();
-                    if (row_option.is_present()) {
-                        try {
-                            string storage_dir = FileManager.get_storage_dir();
-                            FileTransfer file_transfer = new FileTransfer.from_row(db, row_option.inner, storage_dir);
-                            if (conversation.type_.is_muc_semantic()) {
-                                try {
-                                    // resourcepart wasn't set before, so we pick nickname instead (which isn't accurate if nickname is changed)
-                                    file_transfer.ourpart = conversation.counterpart.with_resource(file_transfer.ourpart.resourcepart ?? conversation.nickname);
-                                } catch (InvalidJidError e) {
-                                    warning("Failed setting file transfer Jid: %s", e.message);
-                                }
-                            }
-                            Message? message = null;
-                            if (file_transfer.provider == 0 && file_transfer.info != null) {
-                                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
-                            }
-                            items.add(new FileItem(file_transfer, conversation, row[db.content_item.id], message));
-                        } catch (InvalidJidError e) {
-                            warning("Ignoring file transfer with invalid Jid: %s", e.message);
+                    FileTransfer? file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_id(foreign_id, conversation);
+                    if (file_transfer != null) {
+                        Message? message = null;
+                        if (file_transfer.provider == 0 && file_transfer.info != null) {
+                            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
                         }
+                        var file_item = new FileItem(file_transfer, conversation, row[db.content_item.id], message);
+                        items.add(file_item);
                     }
                     break;
             }

@@ -47,7 +47,6 @@ class OccupantsWidget : MenuButton, Plugins.ConversationTitlebarWidget {
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             OccupantMenu.View new_menu = new OccupantMenu.View(stream_interactor, conversation);
             set_popover(new_menu);
-            if (menu != null) menu.destroy();
             menu = new_menu;
         }
     }

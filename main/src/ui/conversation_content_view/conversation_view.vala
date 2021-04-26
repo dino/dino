@@ -318,9 +318,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private void remove_item(Plugins.MetaConversationItem item) {
         ConversationItemSkeleton? skeleton = item_item_skeletons[item];
         if (skeleton != null) {
-            widgets[item].destroy();
+            main.remove(skeleton);
             widgets.unset(item);
-            skeleton.destroy();
             item_skeletons.remove(skeleton);
             item_item_skeletons.unset(item);
 
@@ -356,7 +355,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
     public void remove_notification(Widget widget) {
         notification_revealer.reveal_child = false;
-        widget.destroy();
+        notifications.remove(widget);
     }
 
     private Widget insert_new(Plugins.MetaConversationItem item) {
@@ -484,11 +483,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         item_skeletons.clear();
         item_item_skeletons.clear();
         widgets.clear();
-        main.@foreach((widget) => { widget.destroy(); });
+        main.@foreach((widget) => { main.remove(widget); });
     }
 
     private void clear_notifications() {
-        notifications.@foreach((widget) => { widget.destroy(); });
+        notifications.@foreach((widget) => { notifications.remove(widget); });
         notification_revealer.transition_duration = 0;
         notification_revealer.set_reveal_child(false);
     }

@@ -22,7 +22,7 @@ GENERATE_HEADER
 
 set(CFLAGS ${VALA_CFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_definitions(${CFLAGS})
-add_library(crypto-vala ${CRYPTO_VALA_C})
+add_library(crypto-vala STATIC ${CRYPTO_VALA_C})
 target_link_libraries(crypto-vala ${CRYPTO_VALA_PACKAGES} gcrypt)
 set_property(TARGET crypto-vala PROPERTY POSITION_INDEPENDENT_CODE ON)
 
