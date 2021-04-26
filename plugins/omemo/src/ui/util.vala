@@ -51,9 +51,8 @@ public static string fingerprint_markup(string s) {
             b = (uint8) (b * factor);
         }
 
-        if (i % 32 == 0 && i != 0) markup += "\n";
         markup += @"<span foreground=\"$("#%02x%02x%02x".printf(r, g, b))\">$four_chars</span>";
-        if (i % 8 == 4 && i % 32 != 28) markup += " ";
+        if (i % 8 == 4) markup += " ";
     }
 
     return "<span font_family='monospace' font='8'>" + markup + "</span>";
