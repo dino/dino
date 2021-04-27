@@ -1,4 +1,4 @@
-/* gcrypt.vapi
+/* gpg-error.vapi
  *
  * Copyright:
  *   2008 Jiqing Qiang
@@ -441,6 +441,9 @@ namespace GPGError {
 		public Error.from_errno (ErrorSource source, int err);
 		public ErrorCode code { [CCode (cname = "gpg_err_code")] get; }
 		public ErrorSource source { [CCode (cname = "gpg_err_source")] get; }
+
+		[CCode (cname = "gpgme_strerror_r")]
+		public int strerror_r(uint8[] buf);
 
 		[CCode (cname = "gpg_strerror")]
 		public unowned string to_string ();

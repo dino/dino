@@ -56,6 +56,13 @@ GRESOURCES
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="OpenPGP" -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_library(openpgp SHARED ${OPENPGP_VALA_C} ${OPENPGP_GRESOURCES_TARGET})
 add_dependencies(openpgp ${GETTEXT_PACKAGE}-translations)
+if(UNIX AND APPLE)
+    # for some reason, Dino on OS X can't load plugins named .dylib,
+    # even though that's the native dlopen()able extension on OS X.
+    add_custom_command(OUTPUT openpgp.so COMMAND ${CMAKE_COMMAND} -E create_symlink openpgp.dylib ${CMAKE_BINARY_DIR}/plugins/openpgp.so)
+    add_custom_target(openpgp-symlink-workaround DEPENDS openpgp.so)
+    add_dependencies(openpgp openpgp-symlink-workaround)
+endif(UNIX AND APPLE)
 target_link_libraries(openpgp libdino gpgme-vala ${OPENPGP_PACKAGES})
 set_target_properties(openpgp PROPERTIES PREFIX "")
 set_target_properties(openpgp PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
