@@ -83,7 +83,19 @@ namespace Dino {
             we_should_send_video[call] = video;
             we_should_send_audio[call] = true;
 
-            if (has_jmi_resources(conversation)) {
+            Gee.List<Jid> call_resources = yield get_call_resources(conversation);
+
+            bool do_jmi = false;
+            Jid? jid_for_direct = null;
+            if (yield contains_jmi_resources(conversation.account, call_resources)) {
+                do_jmi = true;
+            } else if (!call_resources.is_empty) {
+                jid_for_direct = call_resources[0];
+            } else if (has_jmi_resources(conversation)) {
+                do_jmi = true;
+            }
+
+            if (do_jmi) {
                 XmppStream? stream = stream_interactor.get_stream(conversation.account);
                 jmi_call[conversation.account] = call;
                 jmi_video[conversation.account] = video;
@@ -92,19 +104,14 @@ namespace Dino {
                 call_by_sid[call.account][jmi_sid[conversation.account]] = call;
 
                 var descriptions = new ArrayList<StanzaNode>();
-                descriptions.add(new StanzaNode.build("description", "urn:xmpp:jingle:apps:rtp:1").add_self_xmlns().put_attribute("media", "audio"));
+                descriptions.add(new StanzaNode.build("description", Xep.JingleRtp.NS_URI).add_self_xmlns().put_attribute("media", "audio"));
                 if (video) {
-                    descriptions.add(new StanzaNode.build("description", "urn:xmpp:jingle:apps:rtp:1").add_self_xmlns().put_attribute("media", "video"));
+                    descriptions.add(new StanzaNode.build("description", Xep.JingleRtp.NS_URI).add_self_xmlns().put_attribute("media", "video"));
                 }
 
                 stream.get_module(Xmpp.Xep.JingleMessageInitiation.Module.IDENTITY).send_session_propose_to_peer(stream, conversation.counterpart, jmi_sid[call.account], descriptions);
-            } else {
-                Gee.List<Jid> call_resources = yield get_call_resources(conversation);
-                if (call_resources.size == 0) {
-                    warning("No call resources");
-                    return null;
-                }
-                yield call_resource(conversation.account, call_resources[0], call, video);
+            } else if (jid_for_direct != null) {
+                yield call_resource(conversation.account, jid_for_direct, call, video);
             }
 
             conversation.last_active = call.time;
@@ -284,6 +291,17 @@ namespace Dino {
                 ret.add(full_jid);
             }
             return ret;
+        }
+
+        private async bool contains_jmi_resources(Account account, Gee.List<Jid> full_jids) {
+            XmppStream? stream = stream_interactor.get_stream(account);
+            if (stream == null) return false;
+
+            foreach (Jid full_jid in full_jids) {
+                bool does_jmi = yield stream_interactor.get_module(EntityInfo.IDENTITY).has_feature(account, full_jid, Xep.JingleMessageInitiation.NS_URI);
+                if (does_jmi) return true;
+            }
+            return false;
         }
 
         private bool has_jmi_resources(Conversation conversation) {
