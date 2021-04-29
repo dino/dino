@@ -63,7 +63,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
         return supported;
     }
 
-    private async bool supports(string media, JingleRtp.PayloadType payload_type) {
+    private async bool is_payload_supported(string media, JingleRtp.PayloadType payload_type) {
         string codec = CodecUtil.get_codec_from_payload(media, payload_type);
         if (codec == null) return false;
         if (unsupported_codecs.contains(codec)) return false;
@@ -77,7 +77,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
             return false;
         }
 
-        string encode_bin = codec_util.get_encode_bin_description(media, codec, encode_element);
+        string encode_bin = codec_util.get_encode_bin_description(media, codec, null, encode_element);
         while (!(yield pipeline_works(media, encode_bin))) {
             debug("%s not suited for encoding %s", encode_element, codec);
             codec_util.mark_element_unsupported(encode_element);
@@ -87,11 +87,11 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
                 unsupported_codecs.add(codec);
                 return false;
             }
-            encode_bin = codec_util.get_encode_bin_description(media, codec, encode_element);
+            encode_bin = codec_util.get_encode_bin_description(media, codec, null, encode_element);
         }
         debug("using %s to encode %s", encode_element, codec);
 
-        string decode_bin = codec_util.get_decode_bin_description(media, codec, decode_element);
+        string decode_bin = codec_util.get_decode_bin_description(media, codec, null, decode_element);
         while (!(yield pipeline_works(media, @"$encode_bin ! $decode_bin"))) {
             debug("%s not suited for decoding %s", decode_element, codec);
             codec_util.mark_element_unsupported(decode_element);
@@ -101,7 +101,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
                 unsupported_codecs.add(codec);
                 return false;
             }
-            decode_bin = codec_util.get_decode_bin_description(media, codec, decode_element);
+            decode_bin = codec_util.get_decode_bin_description(media, codec, null, decode_element);
         }
         debug("using %s to decode %s", decode_element, codec);
 
@@ -109,8 +109,21 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
         return true;
     }
 
+    public override bool is_header_extension_supported(string media, JingleRtp.HeaderExtension ext) {
+        if (media == "video" && ext.uri == "urn:3gpp:video-orientation") return true;
+        return false;
+    }
+
+    public override Gee.List<JingleRtp.HeaderExtension> get_suggested_header_extensions(string media) {
+        Gee.List<JingleRtp.HeaderExtension> exts = new ArrayList<JingleRtp.HeaderExtension>();
+        if (media == "video") {
+            exts.add(new JingleRtp.HeaderExtension(1, "urn:3gpp:video-orientation"));
+        }
+        return exts;
+    }
+
     public async void add_if_supported(Gee.List<JingleRtp.PayloadType> list, string media, JingleRtp.PayloadType payload_type) {
-        if (yield supports(media, payload_type)) {
+        if (yield is_payload_supported(media, payload_type)) {
             list.add(payload_type);
         }
     }
@@ -118,58 +131,34 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
     public override async Gee.List<JingleRtp.PayloadType> get_supported_payloads(string media) {
         Gee.List<JingleRtp.PayloadType> list = new ArrayList<JingleRtp.PayloadType>(JingleRtp.PayloadType.equals_func);
         if (media == "audio") {
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                channels = 2,
-                clockrate = 48000,
-                name = "opus",
-                id = 99
-            });
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                channels = 1,
-                clockrate = 32000,
-                name = "speex",
-                id = 100
-            });
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                channels = 1,
-                clockrate = 16000,
-                name = "speex",
-                id = 101
-            });
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                channels = 1,
-                clockrate = 8000,
-                name = "speex",
-                id = 102
-            });
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                channels = 1,
-                clockrate = 8000,
-                name = "PCMU",
-                id = 0
-            });
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                channels = 1,
-                clockrate = 8000,
-                name = "PCMA",
-                id = 8
-            });
+            var opus = new JingleRtp.PayloadType() { channels = 2, clockrate = 48000, name = "opus", id = 99 };
+            opus.parameters["useinbandfec"] = "1";
+            var speex32 = new JingleRtp.PayloadType() { channels = 1, clockrate = 32000, name = "speex", id = 100 };
+            var speex16 = new JingleRtp.PayloadType() { channels = 1, clockrate = 16000, name = "speex", id = 101 };
+            var speex8 = new JingleRtp.PayloadType() { channels = 1, clockrate = 8000, name = "speex", id = 102 };
+            var pcmu = new JingleRtp.PayloadType() { channels = 1, clockrate = 8000, name = "PCMU", id = 0 };
+            var pcma = new JingleRtp.PayloadType() { channels = 1, clockrate = 8000, name = "PCMA", id = 8 };
+            yield add_if_supported(list, media, opus);
+            yield add_if_supported(list, media, speex32);
+            yield add_if_supported(list, media, speex16);
+            yield add_if_supported(list, media, speex8);
+            yield add_if_supported(list, media, pcmu);
+            yield add_if_supported(list, media, pcma);
         } else if (media == "video") {
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                clockrate = 90000,
-                name = "H264",
-                id = 96
-            });
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                clockrate = 90000,
-                name = "VP9",
-                id = 97
-            });
-            yield add_if_supported(list, media, new JingleRtp.PayloadType() {
-                clockrate = 90000,
-                name = "VP8",
-                id = 98
-            });
+            var h264 = new JingleRtp.PayloadType() { clockrate = 90000, name = "H264", id = 96 };
+            var vp9 = new JingleRtp.PayloadType() { clockrate = 90000, name = "VP9", id = 97 };
+            var vp8 = new JingleRtp.PayloadType() { clockrate = 90000, name = "VP8", id = 98 };
+            var rtcp_fbs = new ArrayList<JingleRtp.RtcpFeedback>();
+            rtcp_fbs.add(new JingleRtp.RtcpFeedback("goog-remb"));
+            rtcp_fbs.add(new JingleRtp.RtcpFeedback("ccm", "fir"));
+            rtcp_fbs.add(new JingleRtp.RtcpFeedback("nack"));
+            rtcp_fbs.add(new JingleRtp.RtcpFeedback("nack", "pli"));
+            h264.rtcp_fbs.add_all(rtcp_fbs);
+            vp9.rtcp_fbs.add_all(rtcp_fbs);
+            vp8.rtcp_fbs.add_all(rtcp_fbs);
+            yield add_if_supported(list, media, h264);
+            yield add_if_supported(list, media, vp9);
+            yield add_if_supported(list, media, vp8);
         } else {
             warning("Unsupported media type: %s", media);
         }
@@ -179,16 +168,42 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
     public override async JingleRtp.PayloadType? pick_payload_type(string media, Gee.List<JingleRtp.PayloadType> payloads) {
         if (media == "audio") {
             foreach (JingleRtp.PayloadType type in payloads) {
-                if (yield supports(media, type)) return type;
+                if (yield is_payload_supported(media, type)) return adjust_payload_type(media, type.clone());
             }
         } else if (media == "video") {
+            // We prefer H.264 (best support for hardware acceleration and good overall codec quality)
+            JingleRtp.PayloadType? h264 = payloads.first_match((it) => it.name.up() == "H264");
+            if (h264 != null && yield is_payload_supported(media, h264)) return adjust_payload_type(media, h264.clone());
+            // Take first of the list that we do support otherwise
             foreach (JingleRtp.PayloadType type in payloads) {
-                if (yield supports(media, type)) return type;
+                if (yield is_payload_supported(media, type)) return adjust_payload_type(media, type.clone());
             }
         } else {
             warning("Unsupported media type: %s", media);
         }
         return null;
+    }
+
+    public JingleRtp.PayloadType adjust_payload_type(string media, JingleRtp.PayloadType type) {
+        var iter = type.rtcp_fbs.iterator();
+        while (iter.next()) {
+            var fb = iter.@get();
+            switch (fb.type_) {
+                case "goog-remb":
+                    if (fb.subtype != null) iter.remove();
+                    break;
+                case "ccm":
+                    if (fb.subtype != "fir") iter.remove();
+                    break;
+                case "nack":
+                    if (fb.subtype != null && fb.subtype != "pli") iter.remove();
+                    break;
+                default:
+                    iter.remove();
+                    break;
+            }
+        }
+        return type;
     }
 
     public override JingleRtp.Stream create_stream(Jingle.Content content) {

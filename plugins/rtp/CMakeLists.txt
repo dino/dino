@@ -1,3 +1,4 @@
+find_package(GstRtp REQUIRED)
 find_packages(RTP_PACKAGES REQUIRED
     Gee
     GLib
@@ -27,6 +28,7 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/gstreamer-rtp-1.0.vapi
 PACKAGES
     ${RTP_PACKAGES}
 DEFINITIONS
@@ -35,7 +37,7 @@ DEFINITIONS
 
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="rtp" -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_library(rtp SHARED ${RTP_VALA_C})
-target_link_libraries(rtp libdino crypto-vala ${RTP_PACKAGES})
+target_link_libraries(rtp libdino crypto-vala ${RTP_PACKAGES} gstreamer-rtp-1.0)
 set_target_properties(rtp PROPERTIES PREFIX "")
 set_target_properties(rtp PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
 

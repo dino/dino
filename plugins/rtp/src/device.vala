@@ -126,19 +126,20 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         element = device.create_element(id);
         pipe.add(element);
         if (is_source) {
-            filter = Gst.ElementFactory.make("capsfilter", @"$id-caps-filter");
+            element.@set("do-timestamp", true);
+            filter = Gst.ElementFactory.make("capsfilter", @"caps_filter_$id");
             filter.@set("caps", get_best_caps());
             pipe.add(filter);
             element.link(filter);
             if (media == "audio" && plugin.echoprobe != null) {
-                dsp = Gst.ElementFactory.make("webrtcdsp", @"$id-dsp");
+                dsp = Gst.ElementFactory.make("webrtcdsp", @"dsp_$id");
                 if (dsp != null) {
                     dsp.@set("probe", plugin.echoprobe.name);
                     pipe.add(dsp);
                     filter.link(dsp);
                 }
             }
-            tee = Gst.ElementFactory.make("tee", @"$id-tee");
+            tee = Gst.ElementFactory.make("tee", @"tee_$id");
             tee.@set("allow-not-linked", true);
             pipe.add(tee);
             (dsp ?? filter).link(tee);
@@ -148,7 +149,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             element.@set("sync", false);
         }
         if (is_sink && media == "audio") {
-            filter = Gst.ElementFactory.make("capsfilter", @"$id-caps-filter");
+            filter = Gst.ElementFactory.make("capsfilter", @"caps_filter_$id");
             filter.@set("caps", get_best_caps());
             pipe.add(filter);
             if (plugin.echoprobe != null) {

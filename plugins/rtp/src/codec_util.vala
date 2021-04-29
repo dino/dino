@@ -6,7 +6,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     private Set<string> supported_elements = new HashSet<string>();
     private Set<string> unsupported_elements = new HashSet<string>();
 
-    public static Gst.Caps get_caps(string media, JingleRtp.PayloadType payload_type) {
+    public static Gst.Caps get_caps(string media, JingleRtp.PayloadType payload_type, bool incoming) {
         Gst.Caps caps = new Gst.Caps.simple("application/x-rtp",
                 "media", typeof(string), media,
                 "payload", typeof(int), payload_type.id);
@@ -18,6 +18,15 @@ public class Dino.Plugins.Rtp.CodecUtil {
         }
         if (payload_type.name != null) {
             s.set("encoding-name", typeof(string), payload_type.name.up());
+        }
+        if (incoming) {
+            foreach (JingleRtp.RtcpFeedback rtcp_fb in payload_type.rtcp_fbs) {
+                if (rtcp_fb.subtype == null) {
+                    s.set(@"rtcp-fb-$(rtcp_fb.type_)", typeof(bool), true);
+                } else {
+                    s.set(@"rtcp-fb-$(rtcp_fb.type_)-$(rtcp_fb.subtype)", typeof(bool), true);
+                }
+            }
         }
         return caps;
     }
@@ -122,32 +131,82 @@ public class Dino.Plugins.Rtp.CodecUtil {
         return new string[0];
     }
 
-    public static string? get_encode_prefix(string media, string codec, string encode) {
+    public static string? get_encode_prefix(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         if (encode == "msdkh264enc") return "video/x-raw,format=NV12 ! ";
         if (encode == "vaapih264enc") return "video/x-raw,format=NV12 ! ";
         return null;
     }
 
-    public static string? get_encode_suffix(string media, string codec, string encode) {
+    public static string? get_encode_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         // H264
-        const string h264_suffix = " ! video/x-h264,profile=constrained-baseline ! h264parse";
-        if (encode == "msdkh264enc") return @" bitrate=256 rate-control=vbr target-usage=7$h264_suffix";
-        if (encode == "vaapih264enc") return @" bitrate=256 quality-level=7 tune=low-power$h264_suffix";
-        if (encode == "x264enc") return @" byte-stream=1 bitrate=256 profile=baseline speed-preset=ultrafast tune=zerolatency$h264_suffix";
-        if (media == "video" && codec == "h264") return h264_suffix;
+        if (encode == "msdkh264enc") return @" rate-control=vbr";
+        if (encode == "vaapih264enc") return @" tune=low-power";
+        if (encode == "x264enc") return @" byte-stream=1 profile=baseline speed-preset=ultrafast tune=zerolatency";
 
         // VP8
-        if (encode == "msdkvp8enc") return " bitrate=256 rate-control=vbr target-usage=7";
-        if (encode == "vaapivp8enc") return " bitrate=256 rate-control=vbr quality-level=7";
-        if (encode == "vp8enc") return " target-bitrate=256000 deadline=1 error-resilient=1";
+        if (encode == "msdkvp8enc") return " rate-control=vbr";
+        if (encode == "vaapivp8enc") return " rate-control=vbr";
+        if (encode == "vp8enc") return " deadline=1 error-resilient=1";
 
         // OPUS
-        if (encode == "opusenc") return " audio-type=voice";
+        if (encode == "opusenc") {
+            if (payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " audio-type=voice inband-fec=true";
+            return " audio-type=voice";
+        }
 
         return null;
     }
 
-    public static string? get_decode_prefix(string media, string codec, string decode) {
+    public static string? get_encode_suffix(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
+        // H264
+        if (media == "video" && codec == "h264") return " ! video/x-h264,profile=constrained-baseline ! h264parse";
+        return null;
+    }
+
+    public uint update_bitrate(string media, JingleRtp.PayloadType payload_type, Gst.Element encode_element, uint bitrate) {
+        Gst.Bin? encode_bin = encode_element as Gst.Bin;
+        if (encode_bin == null) return 0;
+        string? codec = get_codec_from_payload(media, payload_type);
+        string? encode_name = get_encode_element_name(media, codec);
+        if (encode_name == null) return 0;
+        Gst.Element encode = encode_bin.get_by_name(@"$(encode_bin.name)_encode");
+
+        bitrate = uint.min(2048000, bitrate);
+
+        switch (encode_name) {
+            case "msdkh264enc":
+            case "vaapih264enc":
+            case "x264enc":
+            case "msdkvp8enc":
+            case "vaapivp8enc":
+                bitrate = uint.min(2048000, bitrate);
+                encode.set("bitrate", bitrate);
+                return bitrate;
+            case "vp8enc":
+                bitrate = uint.min(2147483, bitrate);
+                encode.set("target-bitrate", bitrate * 1000);
+                return bitrate;
+        }
+
+        return 0;
+    }
+
+    public static string? get_decode_prefix(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
+        return null;
+    }
+
+    public static string? get_decode_args(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
+        if (decode == "opusdec" && payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " use-inband-fec=true";
+        if (decode == "vaapivp9dec" || decode == "vaapivp8dec" || decode == "vaapih264dec") return " max-errors=100";
+        return null;
+    }
+
+    public static string? get_decode_suffix(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
+        return null;
+    }
+
+    public static string? get_depay_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
+        if (codec == "vp8") return " wait-for-keyframe=true";
         return null;
     }
 
@@ -195,21 +254,24 @@ public class Dino.Plugins.Rtp.CodecUtil {
         unsupported_elements.add(element_name);
     }
 
-    public string? get_decode_bin_description(string media, string? codec, string? element_name = null, string? name = null) {
+    public string? get_decode_bin_description(string media, string? codec, JingleRtp.PayloadType? payload_type, string? element_name = null, string? name = null) {
         if (codec == null) return null;
         string base_name = name ?? @"encode-$codec-$(Random.next_int())";
         string depay = get_depay_element_name(media, codec);
         string decode = element_name ?? get_decode_element_name(media, codec);
         if (depay == null || decode == null) return null;
-        string decode_prefix = get_decode_prefix(media, codec, decode) ?? "";
-        string resample = media == "audio" ? @" ! audioresample name=$base_name-resample" : "";
-        return @"$depay name=$base_name-rtp-depay ! $decode_prefix$decode name=$base_name-decode ! $(media)convert name=$base_name-convert$resample";
+        string decode_prefix = get_decode_prefix(media, codec, decode, payload_type) ?? "";
+        string decode_args = get_decode_args(media, codec, decode, payload_type) ?? "";
+        string decode_suffix = get_decode_suffix(media, codec, decode, payload_type) ?? "";
+        string depay_args = get_depay_args(media, codec, decode, payload_type) ?? "";
+        string resample = media == "audio" ? @" ! audioresample name=$(base_name)_resample" : "";
+        return @"$depay$depay_args name=$(base_name)_rtp_depay ! $decode_prefix$decode$decode_args name=$(base_name)_$(codec)_decode$decode_suffix ! $(media)convert name=$(base_name)_convert$resample";
     }
 
     public Gst.Element? get_decode_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
         string? codec = get_codec_from_payload(media, payload_type);
         string base_name = name ?? @"encode-$codec-$(Random.next_int())";
-        string? desc = get_decode_bin_description(media, codec, null, base_name);
+        string? desc = get_decode_bin_description(media, codec, payload_type, null, base_name);
         if (desc == null) return null;
         debug("Pipeline to decode %s %s: %s", media, codec, desc);
         Gst.Element bin = Gst.parse_bin_from_description(desc, true);
@@ -217,22 +279,23 @@ public class Dino.Plugins.Rtp.CodecUtil {
         return bin;
     }
 
-    public string? get_encode_bin_description(string media, string? codec, string? element_name = null, uint pt = 96, string? name = null) {
+    public string? get_encode_bin_description(string media, string? codec, JingleRtp.PayloadType? payload_type, string? element_name = null, string? name = null) {
         if (codec == null) return null;
-        string base_name = name ?? @"encode-$codec-$(Random.next_int())";
+        string base_name = name ?? @"encode_$(codec)_$(Random.next_int())";
         string pay = get_pay_element_name(media, codec);
         string encode = element_name ?? get_encode_element_name(media, codec);
         if (pay == null || encode == null) return null;
-        string encode_prefix = get_encode_prefix(media, codec, encode) ?? "";
-        string encode_suffix = get_encode_suffix(media, codec, encode) ?? "";
-        string resample = media == "audio" ? @" ! audioresample name=$base_name-resample" : "";
-        return @"$(media)convert name=$base_name-convert$resample ! $encode_prefix$encode$encode_suffix ! $pay pt=$pt name=$base_name-rtp-pay";
+        string encode_prefix = get_encode_prefix(media, codec, encode, payload_type) ?? "";
+        string encode_args = get_encode_args(media, codec, encode, payload_type) ?? "";
+        string encode_suffix = get_encode_suffix(media, codec, encode, payload_type) ?? "";
+        string resample = media == "audio" ? @" ! audioresample name=$(base_name)_resample" : "";
+        return @"$(media)convert name=$(base_name)_convert$resample ! $encode_prefix$encode$encode_args name=$(base_name)_encode$encode_suffix ! $pay pt=$(payload_type != null ? payload_type.id : 96) name=$(base_name)_rtp_pay";
     }
 
     public Gst.Element? get_encode_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
         string? codec = get_codec_from_payload(media, payload_type);
-        string base_name = name ?? @"encode-$codec-$(Random.next_int())";
-        string? desc = get_encode_bin_description(media, codec, null, payload_type.id, base_name);
+        string base_name = name ?? @"encode_$(codec)_$(Random.next_int())";
+        string? desc = get_encode_bin_description(media, codec, payload_type, null, base_name);
         if (desc == null) return null;
         debug("Pipeline to encode %s %s: %s", media, codec, desc);
         Gst.Element bin = Gst.parse_bin_from_description(desc, true);

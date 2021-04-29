@@ -33,6 +33,13 @@ public abstract class Xmpp.Xep.JingleRtp.Stream : Object {
         }
         return null;
     }}
+    public Gee.List<JingleRtp.HeaderExtension>? header_extensions { get {
+        var content_params = content.content_params;
+        if (content_params is Parameters) {
+            return ((Parameters)content_params).header_extensions;
+        }
+        return null;
+    }}
     public bool sending { get {
         return content.session.senders_include_us(content.senders);
     }}

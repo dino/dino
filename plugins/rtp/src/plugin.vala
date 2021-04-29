@@ -65,6 +65,9 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         }
         rtpbin.pad_added.connect(on_rtp_pad_added);
         rtpbin.@set("latency", 100);
+        rtpbin.@set("do-lost", true);
+        rtpbin.@set("do-sync-event", true);
+        rtpbin.@set("drop-on-latency", true);
         rtpbin.connect("signal::request-pt-map", request_pt_map, this);
         pipe.add(rtpbin);
 
@@ -159,6 +162,17 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 break;
             case Gst.MessageType.QOS:
                 // Ignore
+                break;
+            case Gst.MessageType.LATENCY:
+                if (message.src != null && message.src.name != null && message.src is Gst.Element) {
+                    Gst.Query latency_query = new Gst.Query.latency();
+                    if (((Gst.Element)message.src).query(latency_query)) {
+                        bool live;
+                        Gst.ClockTime min_latency, max_latency;
+                        latency_query.parse_latency(out live, out min_latency, out max_latency);
+                        debug("Latency message from %s: live=%s, min_latency=%s, max_latency=%s", message.src.name, live.to_string(), min_latency.to_string(), max_latency.to_string());
+                    }
+                }
                 break;
             default:
                 debug("Pipe bus message: %s", message.type.to_string());

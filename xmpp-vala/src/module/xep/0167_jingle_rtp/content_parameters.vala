@@ -17,6 +17,7 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
     public bool encryption_required { get; private set; default = false; }
     public PayloadType? agreed_payload_type { get; private set; }
     public Gee.List<PayloadType> payload_types = new ArrayList<PayloadType>(PayloadType.equals_func);
+    public Gee.List<HeaderExtension> header_extensions = new ArrayList<HeaderExtension>();
     public Gee.List<Crypto> remote_cryptos = new ArrayList<Crypto>();
     public Crypto? local_crypto = null;
     public Crypto? remote_crypto = null;
@@ -54,8 +55,11 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
                 this.remote_cryptos.add(Crypto.parse(crypto));
             }
         }
-        foreach (StanzaNode payloadType in node.get_subnodes("payload-type")) {
+        foreach (StanzaNode payloadType in node.get_subnodes(PayloadType.NAME)) {
             this.payload_types.add(PayloadType.parse(payloadType));
+        }
+        foreach (StanzaNode subnode in node.get_subnodes(HeaderExtension.NAME, HeaderExtension.NS_URI)) {
+            this.header_extensions.add(HeaderExtension.parse(subnode));
         }
     }
 
@@ -65,6 +69,11 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
             debug("no usable payload type");
             content.reject();
             return;
+        }
+        // Drop unsupported header extensions
+        var iter = header_extensions.iterator();
+        while(iter.next()) {
+            if (!parent.is_header_extension_supported(media, iter.@get())) iter.remove();
         }
         remote_crypto = parent.pick_remote_crypto(remote_cryptos);
         if (local_crypto == null && remote_crypto != null) {
@@ -151,7 +160,7 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
 
         Gee.List<StanzaNode> crypto_nodes = description_node.get_deep_subnodes("encryption", "crypto");
         if (crypto_nodes.size == 0) {
-            warning("Counterpart didn't include any cryptos");
+            debug("Counterpart didn't include any cryptos");
             if (encryption_required) {
                 return;
             }
@@ -182,6 +191,9 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
                 ret.put_node(payload_type.to_xml());
             }
         }
+        foreach (HeaderExtension ext in header_extensions) {
+            ret.put_node(ext.to_xml());
+        }
         if (local_crypto != null) {
             ret.put_node(new StanzaNode.build("encryption", NS_URI)
                 .put_node(local_crypto.to_xml()));
@@ -190,5 +202,29 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
             ret.put_node(new StanzaNode.build("rtcp-mux", NS_URI));
         }
         return ret;
+    }
+}
+
+public class Xmpp.Xep.JingleRtp.HeaderExtension {
+    public const string NS_URI = "urn:xmpp:jingle:apps:rtp:rtp-hdrext:0";
+    public const string NAME = "rtp-hdrext";
+
+    public uint8 id { get; private set; }
+    public string uri { get; private set; }
+
+    public HeaderExtension(uint8 id, string uri) {
+        this.id = id;
+        this.uri = uri;
+    }
+
+    public static HeaderExtension parse(StanzaNode node) {
+        return new HeaderExtension((uint8) node.get_attribute_int("id"), node.get_attribute("uri"));
+    }
+
+    public StanzaNode to_xml() {
+        return new StanzaNode.build(NAME, NS_URI)
+                .add_self_xmlns()
+                .put_attribute("id", id.to_string())
+                .put_attribute("uri", uri);
     }
 }

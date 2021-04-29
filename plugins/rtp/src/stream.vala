@@ -19,9 +19,12 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     private Gst.App.Src recv_rtp;
     private Gst.App.Src recv_rtcp;
     private Gst.Element encode;
+    private Gst.RTP.BasePayload encode_pay;
     private Gst.Element decode;
+    private Gst.RTP.BaseDepayload decode_depay;
     private Gst.Element input;
     private Gst.Element output;
+    private Gst.Element session;
 
     private Device _input_device;
     public Device input_device { get { return _input_device; } set {
@@ -85,15 +88,15 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
 
         // Create app elements
-        send_rtp = Gst.ElementFactory.make("appsink", @"rtp-sink-$rtpid") as Gst.App.Sink;
+        send_rtp = Gst.ElementFactory.make("appsink", @"rtp_sink_$rtpid") as Gst.App.Sink;
         send_rtp.async = false;
-        send_rtp.caps = CodecUtil.get_caps(media, payload_type);
+        send_rtp.caps = CodecUtil.get_caps(media, payload_type, false);
         send_rtp.emit_signals = true;
         send_rtp.sync = false;
         send_rtp.new_sample.connect(on_new_sample);
         pipe.add(send_rtp);
 
-        send_rtcp = Gst.ElementFactory.make("appsink", @"rtcp-sink-$rtpid") as Gst.App.Sink;
+        send_rtcp = Gst.ElementFactory.make("appsink", @"rtcp_sink_$rtpid") as Gst.App.Sink;
         send_rtcp.async = false;
         send_rtcp.caps = new Gst.Caps.empty_simple("application/x-rtcp");
         send_rtcp.emit_signals = true;
@@ -101,14 +104,14 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         send_rtcp.new_sample.connect(on_new_sample);
         pipe.add(send_rtcp);
 
-        recv_rtp = Gst.ElementFactory.make("appsrc", @"rtp-src-$rtpid") as Gst.App.Src;
-        recv_rtp.caps = CodecUtil.get_caps(media, payload_type);
+        recv_rtp = Gst.ElementFactory.make("appsrc", @"rtp_src_$rtpid") as Gst.App.Src;
+        recv_rtp.caps = CodecUtil.get_caps(media, payload_type, true);
         recv_rtp.do_timestamp = true;
         recv_rtp.format = Gst.Format.TIME;
         recv_rtp.is_live = true;
         pipe.add(recv_rtp);
 
-        recv_rtcp = Gst.ElementFactory.make("appsrc", @"rtcp-src-$rtpid") as Gst.App.Src;
+        recv_rtcp = Gst.ElementFactory.make("appsrc", @"rtcp_src_$rtpid") as Gst.App.Src;
         recv_rtcp.caps = new Gst.Caps.empty_simple("application/x-rtcp");
         recv_rtcp.do_timestamp = true;
         recv_rtcp.format = Gst.Format.TIME;
@@ -122,7 +125,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         recv_rtcp.get_static_pad("src").link(recv_rtcp_sink_pad);
 
         // Connect input
-        encode = codec_util.get_encode_bin(media, payload_type, @"encode-$rtpid");
+        encode = codec_util.get_encode_bin(media, payload_type, @"encode_$rtpid");
+        encode_pay = (Gst.RTP.BasePayload)((Gst.Bin)encode).get_by_name(@"encode_$(rtpid)_rtp_pay");
         pipe.add(encode);
         send_rtp_sink_pad = rtpbin.get_request_pad(@"send_rtp_sink_$rtpid");
         encode.get_static_pad("src").link(send_rtp_sink_pad);
@@ -131,7 +135,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
 
         // Connect output
-        decode = codec_util.get_decode_bin(media, payload_type, @"decode-$rtpid");
+        decode = codec_util.get_decode_bin(media, payload_type, @"decode_$rtpid");
+        decode_depay = (Gst.RTP.BaseDepayload)((Gst.Bin)encode).get_by_name(@"decode_$(rtpid)_rtp_depay");
         pipe.add(decode);
         if (output != null) {
             decode.link(output);
@@ -144,6 +149,110 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         created = true;
         push_recv_data = true;
         plugin.unpause();
+
+        GLib.Signal.emit_by_name(rtpbin, "get-session", rtpid, out session);
+        if (session != null && payload_type.rtcp_fbs.any_match((it) => it.type_ == "goog-remb")) {
+            Object internal_session;
+            session.@get("internal-session", out internal_session);
+            if (internal_session != null) {
+                internal_session.connect("signal::on-feedback-rtcp", on_feedback_rtcp, this);
+            }
+            Timeout.add(1000, () => remb_adjust());
+        }
+        if (media == "video") {
+            codec_util.update_bitrate(media, payload_type, encode, 256);
+        }
+    }
+
+    private uint remb = 256;
+    private int last_packets_lost = -1;
+    private uint64 last_packets_received;
+    private uint64 last_octets_received;
+    private bool remb_adjust() {
+        unowned Gst.Structure? stats;
+        if (session == null) {
+            debug("Session for %u finished, turning off remb adjustment", rtpid);
+            return Source.REMOVE;
+        }
+        session.get("stats", out stats);
+        if (stats == null) {
+            warning("No stats for session %u", rtpid);
+            return Source.REMOVE;
+        }
+        unowned ValueArray? source_stats;
+        stats.get("source-stats", typeof(ValueArray), out source_stats);
+        if (source_stats == null) {
+            warning("No source-stats for session %u", rtpid);
+            return Source.REMOVE;
+        }
+        foreach (Value value in source_stats.values) {
+            unowned Gst.Structure source_stat = (Gst.Structure) value.get_boxed();
+            uint ssrc;
+            if (!source_stat.get_uint("ssrc", out ssrc)) continue;
+            if (ssrc.to_string() == participant_ssrc) {
+                int packets_lost;
+                uint64 packets_received, octets_received;
+                source_stat.get_int("packets-lost", out packets_lost);
+                source_stat.get_uint64("packets-received", out packets_received);
+                source_stat.get_uint64("octets-received", out octets_received);
+                int new_lost = packets_lost - last_packets_lost;
+                uint64 new_received = packets_received - last_packets_received;
+                uint64 new_octets = octets_received - last_octets_received;
+                if (new_received == 0) continue;
+                last_packets_lost = packets_lost;
+                last_packets_received = packets_received;
+                last_octets_received = octets_received;
+                double loss_rate = (double)new_lost / (double)(new_lost + new_received);
+                if (new_lost <= 0 || loss_rate < 0.02) {
+                    remb = (uint)(1.08 * (double)remb);
+                } else if (loss_rate > 0.1) {
+                    remb = (uint)((1.0 - 0.5 * loss_rate) * (double)remb);
+                }
+                remb = uint.max(remb, (uint)((new_octets * 8) / 1000));
+                remb = uint.max(16, remb); // Never go below 16
+                uint8[] data = new uint8[] {
+                    143, 206, 0, 5,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0,
+                    'R', 'E', 'M', 'B',
+                    1, 0, 0, 0,
+                    0, 0, 0, 0
+                };
+                data[4] = (uint8)((encode_pay.ssrc >> 24) & 0xff);
+                data[5] = (uint8)((encode_pay.ssrc >> 16) & 0xff);
+                data[6] = (uint8)((encode_pay.ssrc >> 8) & 0xff);
+                data[7] = (uint8)(encode_pay.ssrc & 0xff);
+                uint8 br_exp = 0;
+                uint32 br_mant = remb * 1000;
+                uint8 bits = (uint8)Math.log2(br_mant);
+                if (bits > 16) {
+                    br_exp = (uint8)bits - 16;
+                    br_mant = br_mant >> br_exp;
+                }
+                data[17] = (uint8)((br_exp << 2) | ((br_mant >> 16) & 0x3));
+                data[18] = (uint8)((br_mant >> 8) & 0xff);
+                data[19] = (uint8)(br_mant & 0xff);
+                data[20] = (uint8)((ssrc >> 24) & 0xff);
+                data[21] = (uint8)((ssrc >> 16) & 0xff);
+                data[22] = (uint8)((ssrc >> 8) & 0xff);
+                data[23] = (uint8)(ssrc & 0xff);
+                encrypt_and_send_rtcp(data);
+            }
+        }
+        return Source.CONTINUE;
+    }
+
+    private static void on_feedback_rtcp(Gst.Element session, uint type, uint fbtype, uint sender_ssrc, uint media_ssrc, Gst.Buffer? fci, Stream self) {
+        if (type == 206 && fbtype == 15 && fci != null && sender_ssrc.to_string() == self.participant_ssrc) {
+            // https://tools.ietf.org/html/draft-alvestrand-rmcat-remb-03
+            uint8[] data;
+            fci.extract_dup(0, fci.get_size(), out data);
+            if (data[0] != 'R' || data[1] != 'E' || data[2] != 'M' || data[3] != 'B') return;
+            uint8 br_exp = data[5] >> 2;
+            uint32 br_mant = (((uint32)data[5] & 0x3) << 16) + ((uint32)data[6] << 8) + (uint32)data[7];
+            uint bitrate = (br_mant << br_exp) / 1000;
+            self.codec_util.update_bitrate(self.media, self.payload_type, self.encode, bitrate * 8);
+        }
     }
 
     private void prepare_local_crypto() {
@@ -167,20 +276,24 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             if (crypto_session.has_encrypt) {
                 data = crypto_session.encrypt_rtp(data);
             }
-            on_send_rtp_data(new Bytes.take(data));
+            on_send_rtp_data(new Bytes.take((owned) data));
         } else if (sink == send_rtcp) {
-            if (crypto_session.has_encrypt) {
-                data = crypto_session.encrypt_rtcp(data);
-            }
-            if (rtcp_mux) {
-                on_send_rtp_data(new Bytes.take(data));
-            } else {
-                on_send_rtcp_data(new Bytes.take(data));
-            }
+            encrypt_and_send_rtcp((owned) data);
         } else {
             warning("unknown sample");
         }
         return Gst.FlowReturn.OK;
+    }
+
+    private void encrypt_and_send_rtcp(owned uint8[] data) {
+        if (crypto_session.has_encrypt) {
+            data = crypto_session.encrypt_rtcp(data);
+        }
+        if (rtcp_mux) {
+            on_send_rtp_data(new Bytes.take((owned) data));
+        } else {
+            on_send_rtcp_data(new Bytes.take((owned) data));
+        }
     }
 
     private static Gst.PadProbeReturn drop_probe() {
@@ -211,6 +324,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         encode.get_static_pad("src").unlink(send_rtp_sink_pad);
         pipe.remove(encode);
         encode = null;
+        encode_pay = null;
 
         // Disconnect RTP sending
         if (send_rtp_src_pad != null) {
@@ -243,6 +357,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         decode.set_state(Gst.State.NULL);
         pipe.remove(decode);
         decode = null;
+        decode_depay = null;
         output = null;
 
         // Disconnect output device
@@ -276,6 +391,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         send_rtcp_src_pad = null;
         send_rtp_src_pad = null;
         recv_rtp_src_pad = null;
+
+        session = null;
     }
 
     private void prepare_remote_crypto() {
@@ -284,6 +401,9 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             debug("Setting up decryption with key params %s", remote_crypto.key_params);
         }
     }
+
+    private uint16 previous_video_orientation_degree = uint16.MAX;
+    public signal void video_orientation_changed(uint16 degree);
 
     public override void on_recv_rtp_data(Bytes bytes) {
         if (rtcp_mux && bytes.length >= 2 && bytes.get(1) >= 192 && bytes.get(1) < 224) {
@@ -301,6 +421,33 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
         if (push_recv_data) {
             Gst.Buffer buffer = new Gst.Buffer.wrapped((owned) data);
+            Gst.RTP.Buffer rtp_buffer;
+            if (Gst.RTP.Buffer.map(buffer, Gst.MapFlags.READ, out rtp_buffer)) {
+                if (rtp_buffer.get_extension()) {
+                    Xmpp.Xep.JingleRtp.HeaderExtension? ext = header_extensions.first_match((it) => it.uri == "urn:3gpp:video-orientation");
+                    if (ext != null) {
+                        unowned uint8[] extension_data;
+                        if (rtp_buffer.get_extension_onebyte_header(ext.id, 0, out extension_data) && extension_data.length == 1) {
+                            bool camera = (extension_data[0] & 0x8) > 0;
+                            bool flip = (extension_data[0] & 0x4) > 0;
+                            uint8 rotation = extension_data[0] & 0x3;
+                            uint16 rotation_degree = uint16.MAX;
+                            switch(rotation) {
+                                case 0: rotation_degree = 0; break;
+                                case 1: rotation_degree = 90; break;
+                                case 2: rotation_degree = 180; break;
+                                case 3: rotation_degree = 270; break;
+                            }
+                            if (rotation_degree != previous_video_orientation_degree) {
+                                video_orientation_changed(rotation_degree);
+                                previous_video_orientation_degree = rotation_degree;
+                            }
+                        }
+                    }
+                }
+                rtp_buffer.unmap();
+            }
+
             // FIXME: VAPI file in Vala < 0.49.1 has a bug that results in broken ownership of buffer in push_buffer()
             // We workaround by using the plain signal. The signal unfortunately will cause an unnecessary copy of
             // the underlying buffer, so and some point we should move over to the new version (once we require
@@ -449,6 +596,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 public class Dino.Plugins.Rtp.VideoStream : Stream {
     private Gee.List<Gst.Element> outputs = new ArrayList<Gst.Element>();
     private Gst.Element output_tee;
+    private Gst.Element rotate;
+    private ulong video_orientation_changed_handler;
 
     public VideoStream(Plugin plugin, Xmpp.Xep.Jingle.Content content) {
         base(plugin, content);
@@ -456,11 +605,15 @@ public class Dino.Plugins.Rtp.VideoStream : Stream {
     }
 
     public override void create() {
+        video_orientation_changed_handler = video_orientation_changed.connect(on_video_orientation_changed);
         plugin.pause();
-        output_tee = Gst.ElementFactory.make("tee", null);
+        rotate = Gst.ElementFactory.make("videoflip", @"video_rotate_$rtpid");
+        pipe.add(rotate);
+        output_tee = Gst.ElementFactory.make("tee", @"video_tee_$rtpid");
         output_tee.@set("allow-not-linked", true);
         pipe.add(output_tee);
-        add_output(output_tee);
+        rotate.link(output_tee);
+        add_output(rotate);
         base.create();
         foreach (Gst.Element output in outputs) {
             output_tee.link(output);
@@ -468,19 +621,44 @@ public class Dino.Plugins.Rtp.VideoStream : Stream {
         plugin.unpause();
     }
 
+    private void on_video_orientation_changed(uint16 degree) {
+        if (rotate != null) {
+            switch (degree) {
+                case 0:
+                    rotate.@set("method", 0);
+                    break;
+                case 90:
+                    rotate.@set("method", 1);
+                    break;
+                case 180:
+                    rotate.@set("method", 2);
+                    break;
+                case 270:
+                    rotate.@set("method", 3);
+                    break;
+            }
+        }
+    }
+
     public override void destroy() {
         foreach (Gst.Element output in outputs) {
             output_tee.unlink(output);
         }
         base.destroy();
+        rotate.set_locked_state(true);
+        rotate.set_state(Gst.State.NULL);
+        rotate.unlink(output_tee);
+        pipe.remove(rotate);
+        rotate = null;
         output_tee.set_locked_state(true);
         output_tee.set_state(Gst.State.NULL);
         pipe.remove(output_tee);
         output_tee = null;
+        disconnect(video_orientation_changed_handler);
     }
 
     public override void add_output(Gst.Element element) {
-        if (element == output_tee) {
+        if (element == output_tee || element == rotate) {
             base.add_output(element);
             return;
         }
@@ -491,7 +669,7 @@ public class Dino.Plugins.Rtp.VideoStream : Stream {
     }
 
     public override void remove_output(Gst.Element element) {
-        if (element == output_tee) {
+        if (element == output_tee || element == rotate) {
             base.remove_output(element);
             return;
         }

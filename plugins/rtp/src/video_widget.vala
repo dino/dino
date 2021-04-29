@@ -19,7 +19,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         this.plugin = plugin;
 
         id = last_id++;
-        element = Gst.ElementFactory.make("gtksink", @"video-widget-$id");
+        element = Gst.ElementFactory.make("gtksink", @"video_widget_$id");
         if (element != null) {
             Gtk.Widget widget;
             element.@get("widget", out widget);
@@ -51,8 +51,8 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         if (connected_stream == null) return;
         plugin.pause();
         pipe.add(element);
-        convert = Gst.parse_bin_from_description(@"videoconvert name=video-widget-$id-convert", true);
-        convert.name = @"video-widget-$id-prepare";
+        convert = Gst.parse_bin_from_description(@"videoconvert name=video_widget_$(id)_convert", true);
+        convert.name = @"video_widget_$(id)_prepare";
         pipe.add(convert);
         convert.link(element);
         connected_stream.add_output(convert);
@@ -68,8 +68,8 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         if (connected_device == null) return;
         plugin.pause();
         pipe.add(element);
-        convert = Gst.parse_bin_from_description(@"videoflip method=horizontal-flip name=video-widget-$id-flip ! videoconvert name=video-widget-$id-convert", true);
-        convert.name = @"video-widget-$id-prepare";
+        convert = Gst.parse_bin_from_description(@"videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
+        convert.name = @"video_widget_$(id)_prepare";
         pipe.add(convert);
         convert.link(element);
         connected_device.link_source().link(convert);
