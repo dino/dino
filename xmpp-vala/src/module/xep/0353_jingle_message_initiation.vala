@@ -17,47 +17,35 @@ namespace Xmpp.Xep.JingleMessageInitiation {
                 propose_node.put_node(desc_node);
             }
 
-            MessageStanza accepted_message = new MessageStanza() { to=to };
+            MessageStanza accepted_message = new MessageStanza() { to=to, type_=MessageStanza.TYPE_CHAT };
             accepted_message.stanza.put_node(propose_node);
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, accepted_message);
         }
 
         public void send_session_retract_to_peer(XmppStream stream, Jid to, string sid) {
-            MessageStanza retract_message = new MessageStanza() { to=to };
-            retract_message.stanza.put_node(
-                    new StanzaNode.build("retract", NS_URI).add_self_xmlns()
-                            .put_attribute("id", sid, NS_URI));
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, retract_message);
+            send_jmi_message(stream, "retract", to, sid);
         }
 
         public void send_session_accept_to_self(XmppStream stream, string sid) {
-            MessageStanza accepted_message = new MessageStanza() { to=Bind.Flag.get_my_jid(stream).bare_jid };
-            accepted_message.stanza.put_node(
-                    new StanzaNode.build("accept", NS_URI).add_self_xmlns()
-                            .put_attribute("id", sid, NS_URI));
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, accepted_message);
+            send_jmi_message(stream, "accept", Bind.Flag.get_my_jid(stream).bare_jid, sid);
         }
 
         public void send_session_reject_to_self(XmppStream stream, string sid) {
-            MessageStanza accepted_message = new MessageStanza() { to=Bind.Flag.get_my_jid(stream).bare_jid };
-            accepted_message.stanza.put_node(
-                    new StanzaNode.build("reject", NS_URI).add_self_xmlns()
-                            .put_attribute("id", sid, NS_URI));
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, accepted_message);
+            send_jmi_message(stream, "reject", Bind.Flag.get_my_jid(stream).bare_jid, sid);
         }
 
         public void send_session_proceed_to_peer(XmppStream stream, Jid to, string sid) {
-            MessageStanza accepted_message = new MessageStanza() { to=to };
-            accepted_message.stanza.put_node(
-                    new StanzaNode.build("proceed", NS_URI).add_self_xmlns()
-                            .put_attribute("id", sid, NS_URI));
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, accepted_message);
+            send_jmi_message(stream, "proceed", to, sid);
         }
 
         public void send_session_reject_to_peer(XmppStream stream, Jid to, string sid) {
-            MessageStanza accepted_message = new MessageStanza() { to=to };
+            send_jmi_message(stream, "reject", to, sid);
+        }
+
+        private void send_jmi_message(XmppStream stream, string name, Jid to, string sid) {
+            MessageStanza accepted_message = new MessageStanza() { to=to, type_=MessageStanza.TYPE_CHAT };
             accepted_message.stanza.put_node(
-                    new StanzaNode.build("reject", NS_URI).add_self_xmlns()
+                    new StanzaNode.build(name, NS_URI).add_self_xmlns()
                             .put_attribute("id", sid, NS_URI));
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, accepted_message);
         }
@@ -95,7 +83,6 @@ namespace Xmpp.Xep.JingleMessageInitiation {
                     session_retracted(message.from, message.to, mi_node.get_attribute("id"));
                     break;
                 case "reject":
-                    if (!message.from.equals_bare(Bind.Flag.get_my_jid(stream))) return;
                     session_rejected(message.from, message.to, mi_node.get_attribute("id"));
                     break;
             }

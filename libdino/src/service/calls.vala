@@ -185,8 +185,8 @@ namespace Dino {
                 if (stream == null) return;
 
                 string sid = sid_by_call[call.account][call];
-                stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_reject_to_self(stream, sid);
                 stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_reject_to_peer(stream, call.counterpart, sid);
+                stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_reject_to_self(stream, sid);
                 remove_call_from_datastructures(call);
             }
         }
@@ -632,6 +632,11 @@ namespace Dino {
             mi_module.session_rejected.connect((from, to, sid) => {
                 if (!call_by_sid[account].has_key(sid)) return;
                 Call call = call_by_sid[account][sid];
+
+                bool outgoing_reject = call.direction == Call.DIRECTION_OUTGOING && from.equals_bare(call.counterpart);
+                bool incoming_reject = call.direction == Call.DIRECTION_INCOMING && from.equals_bare(account.bare_jid);
+                if (!(outgoing_reject || incoming_reject)) return;
+
                 call.state = Call.State.DECLINED;
                 remove_call_from_datastructures(call);
                 call_terminated(call, null, null);
@@ -639,6 +644,11 @@ namespace Dino {
             mi_module.session_retracted.connect((from, to, sid) => {
                 if (!call_by_sid[account].has_key(sid)) return;
                 Call call = call_by_sid[account][sid];
+
+                bool outgoing_retract = call.direction == Call.DIRECTION_OUTGOING && from.equals_bare(call.counterpart);
+                bool incoming_retract = call.direction == Call.DIRECTION_INCOMING && from.equals_bare(account.bare_jid);
+                if (!(outgoing_retract || incoming_retract)) return;
+
                 call.state = Call.State.MISSED;
                 remove_call_from_datastructures(call);
                 call_terminated(call, null, null);
