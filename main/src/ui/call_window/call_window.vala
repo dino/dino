@@ -158,13 +158,13 @@ namespace Dino.Ui {
         public void set_status(string state) {
             switch (state) {
                 case "requested":
-                    header_bar.subtitle = _("Sending a call request…");
+                    header_bar.subtitle = _("Calling…");
                     break;
                 case "ringing":
                     header_bar.subtitle = _("Ringing…");
                     break;
                 case "establishing":
-                    header_bar.subtitle = _("Establishing a (peer-to-peer) connection…");
+                    header_bar.subtitle = _("Connecting…");
                     break;
                 default:
                     header_bar.subtitle = null;

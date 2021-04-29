@@ -268,13 +268,19 @@ public class FileTransfer : Object {
         content.accept();
 
         Jingle.StreamingConnection connection = content.component_connections.values.to_array()[0] as Jingle.StreamingConnection;
-        IOStream? io_stream = yield connection.stream.wait_async();
-        FileTransferInputStream ft_stream = new FileTransferInputStream(io_stream.input_stream, size);
-        io_stream.output_stream.close();
-        ft_stream.closed.connect(() => {
-            session.terminate(Jingle.ReasonElement.SUCCESS, null, null);
-        });
-        this.stream = ft_stream;
+        try {
+            IOStream io_stream = yield connection.stream.wait_async();
+            FileTransferInputStream ft_stream = new FileTransferInputStream(io_stream.input_stream, size);
+            io_stream.output_stream.close();
+            ft_stream.closed.connect(() => {
+                session.terminate(Jingle.ReasonElement.SUCCESS, null, null);
+            });
+            this.stream = ft_stream;
+        } catch (FutureError.EXCEPTION e) {
+            warning("Error accepting Jingle file-transfer: %s", connection.stream.exception.message);
+        } catch (FutureError e) {
+            warning("FutureError accepting Jingle file-transfer: %s", e.message);
+        }
     }
 
     public void reject(XmppStream stream) {

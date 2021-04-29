@@ -3,8 +3,6 @@ using Gtk;
 
 public class Dino.Ui.CallWindowController : Object {
 
-    public signal void terminated();
-
     private CallWindow call_window;
     private Call call;
     private Conversation conversation;
@@ -40,8 +38,16 @@ public class Dino.Ui.CallWindowController : Object {
             call_window.set_status("requested");
         }
 
-        call_window.bottom_bar.hang_up.connect(end_call);
-        call_window.destroy.connect(end_call);
+        call_window.bottom_bar.hang_up.connect(() => {
+            calls.end_call(conversation, call);
+            call_window.close();
+            call_window.destroy();
+            this.dispose();
+        });
+        call_window.destroy.connect(() => {
+            calls.end_call(conversation, call);
+            this.dispose();
+        });
 
         call_window.bottom_bar.notify["audio-enabled"].connect(() => {
             calls.mute_own_audio(call, !call_window.bottom_bar.audio_enabled);
@@ -114,16 +120,6 @@ public class Dino.Ui.CallWindowController : Object {
         this.call_window.get_allocation(out allocation);
         this.window_height = this.call_window.get_allocated_height();
         this.window_width = this.call_window.get_allocated_width();
-    }
-
-    private void end_call() {
-        call.notify["state"].disconnect(on_call_state_changed);
-        calls.call_terminated.disconnect(on_call_terminated);
-
-        calls.end_call(conversation, call);
-        call_window.close();
-        call_window.destroy();
-        terminated();
     }
 
     private void on_call_state_changed() {
@@ -233,5 +229,11 @@ public class Dino.Ui.CallWindowController : Object {
             own_video.detach();
             call_window.unset_own_video();
         }
+    }
+
+    public override void dispose() {
+        base.dispose();
+        call.notify["state"].disconnect(on_call_state_changed);
+        calls.call_terminated.disconnect(on_call_terminated);
     }
 }

@@ -98,7 +98,7 @@ class Parameters : Jingle.TransportParameters, Object {
         if (content.security_params != null) {
             iostream = content.security_params.wrap_stream(iostream);
         }
-        connection.init.begin(iostream);
+        connection.set_stream.begin(iostream);
         debug("set transport conn ibb");
         content.set_transport_connection(connection, 1);
     }

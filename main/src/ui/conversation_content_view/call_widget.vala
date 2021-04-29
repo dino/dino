@@ -154,7 +154,7 @@ namespace Dino.Ui {
                 case Call.State.FAILED:
                     image.set_from_icon_name("dino-phone-hangup-symbolic", IconSize.LARGE_TOOLBAR);
                     title_label.label = _("Call failed");
-                    subtitle_label.label = "This call failed to establish";
+                    subtitle_label.label = "Call failed to establish";
                     break;
             }
         }

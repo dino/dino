@@ -25,7 +25,6 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
     private MenuButton video_settings_button = new MenuButton() { halign=Align.END, valign=Align.END };
     public VideoSettingsPopover? video_settings_popover;
 
-    private EventBox encryption_event_box = new EventBox() { visible=true };
     private MenuButton encryption_button = new MenuButton() { relief=ReliefStyle.NONE, height_request=30, width_request=30, margin_start=20, margin_bottom=25, halign=Align.START, valign=Align.END };
     private Image encryption_image = new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON) { visible=true };
 

@@ -216,9 +216,9 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
     }
 
     public override JingleRtp.Crypto? generate_local_crypto() {
-        uint8[] keyAndSalt = new uint8[30];
-        Crypto.randomize(keyAndSalt);
-        return JingleRtp.Crypto.create(JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_80, keyAndSalt);
+        uint8[] key_and_salt = new uint8[30];
+        Crypto.randomize(key_and_salt);
+        return JingleRtp.Crypto.create(JingleRtp.Crypto.AES_CM_128_HMAC_SHA1_80, key_and_salt);
     }
 
     public override JingleRtp.Crypto? pick_remote_crypto(Gee.List<JingleRtp.Crypto> cryptos) {
@@ -230,8 +230,8 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
 
     public override JingleRtp.Crypto? pick_local_crypto(JingleRtp.Crypto? remote) {
         if (remote == null || !remote.is_valid) return null;
-        uint8[] keyAndSalt = new uint8[30];
-        Crypto.randomize(keyAndSalt);
-        return remote.rekey(keyAndSalt);
+        uint8[] key_and_salt = new uint8[30];
+        Crypto.randomize(key_and_salt);
+        return remote.rekey(key_and_salt);
     }
 }

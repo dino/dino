@@ -36,7 +36,7 @@ public class Xmpp.Xep.Jingle.Content : Object {
 
     public HashMap<string, ContentEncryption> encryptions = new HashMap<string, ContentEncryption>();
 
-    public Set<string> tried_transport_methods = new HashSet<string>();
+    private Set<string> tried_transport_methods = new HashSet<string>();
 
 
     public Content.initiate_sent(string content_name, Senders senders,
@@ -109,7 +109,7 @@ public class Xmpp.Xep.Jingle.Content : Object {
         transport_params.dispose();
 
         foreach (ComponentConnection connection in component_connections.values) {
-            connection.terminate(we_terminated, reason_name, reason_text);
+            connection.terminate.begin(we_terminated, reason_name, reason_text);
         }
     }
 

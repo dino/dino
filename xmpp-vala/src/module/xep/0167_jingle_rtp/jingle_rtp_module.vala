@@ -83,7 +83,7 @@ public abstract class Module : XmppStreamModule {
         }
     }
 
-    public async Jingle.Content add_outgoing_video_content(XmppStream stream, Jingle.Session session) {
+    public async Jingle.Content add_outgoing_video_content(XmppStream stream, Jingle.Session session) throws Jingle.Error {
         Jid my_jid = session.local_full_jid;
         Jid receiver_full_jid = session.peer_full_jid;
 
@@ -168,7 +168,7 @@ public class Crypto {
     public string? session_params { get; private set; }
     public string tag { get; private set; }
 
-    public uint8[] key_and_salt { owned get {
+    public uint8[]? key_and_salt { owned get {
         if (!key_params.has_prefix("inline:")) return null;
         int endIndex = key_params.index_of("|");
         if (endIndex < 0) endIndex = key_params.length;
@@ -221,30 +221,30 @@ public class Crypto {
             case AES_CM_128_HMAC_SHA1_80:
             case AES_CM_128_HMAC_SHA1_32:
             case F8_128_HMAC_SHA1_80:
-                return key_and_salt.length == 30;
+                return key_and_salt != null && key_and_salt.length == 30;
         }
         return false;
     }}
 
-    public uint8[] key { owned get {
-        uint8[] key_and_salt = key_and_salt;
+    public uint8[]? key { owned get {
+        uint8[]? key_and_salt = key_and_salt;
         switch(crypto_suite) {
             case AES_CM_128_HMAC_SHA1_80:
             case AES_CM_128_HMAC_SHA1_32:
             case F8_128_HMAC_SHA1_80:
-                if (key_and_salt.length >= 16) return key_and_salt[0:16];
+                if (key_and_salt != null && key_and_salt.length >= 16) return key_and_salt[0:16];
                 break;
         }
         return null;
     }}
 
-    public uint8[] salt { owned get {
-        uint8[] keyAndSalt = key_and_salt;
+    public uint8[]? salt { owned get {
+        uint8[]? key_and_salt = key_and_salt;
         switch(crypto_suite) {
             case AES_CM_128_HMAC_SHA1_80:
             case AES_CM_128_HMAC_SHA1_32:
             case F8_128_HMAC_SHA1_80:
-                if (keyAndSalt.length >= 30) return keyAndSalt[16:30];
+                if (key_and_salt != null && key_and_salt.length >= 30) return key_and_salt[16:30];
                 break;
         }
         return null;

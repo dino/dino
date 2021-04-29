@@ -256,7 +256,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     }
 
     private void prepare_local_crypto() {
-        if (local_crypto != null && !crypto_session.has_encrypt) {
+        if (local_crypto != null && local_crypto.is_valid && !crypto_session.has_encrypt) {
             crypto_session.set_encryption_key(local_crypto.crypto_suite, local_crypto.key, local_crypto.salt);
             debug("Setting up encryption with key params %s", local_crypto.key_params);
         }
@@ -396,7 +396,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     }
 
     private void prepare_remote_crypto() {
-        if (remote_crypto != null && !crypto_session.has_decrypt) {
+        if (remote_crypto != null && remote_crypto.is_valid && !crypto_session.has_decrypt) {
             crypto_session.set_decryption_key(remote_crypto.crypto_suite, remote_crypto.key, remote_crypto.salt);
             debug("Setting up decryption with key params %s", remote_crypto.key_params);
         }

@@ -65,7 +65,6 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
 
                         stream.get_flag(Xep.Jingle.Flag.IDENTITY).get_session.begin(jingle_sid, (_, res) => {
                             Xep.Jingle.Session? session = stream.get_flag(Xep.Jingle.Flag.IDENTITY).get_session.end(res);
-                            if (session != null) print(@"$(session.contents_map.has_key(content_name))\n");
                             if (session == null || !session.contents_map.has_key(content_name)) return;
                             var encryption = new OmemoContentEncryption() { encryption_ns=NS_URI, encryption_name="OMEMO", our_key=new uint8[0], peer_key=new uint8[0], peer_device_id=device_id_by_jingle_sid[jingle_sid] };
                             session.contents_map[content_name].encryptions[NS_URI] = encryption;

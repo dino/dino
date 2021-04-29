@@ -152,7 +152,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         return sb.str;
     }
 
-    private uint8[] fingerprint_to_bytes(string? fingerprint_) {
+    private uint8[]? fingerprint_to_bytes(string? fingerprint_) {
         if (fingerprint_ == null) return null;
 
         string fingerprint = fingerprint_.replace(":", "").up();

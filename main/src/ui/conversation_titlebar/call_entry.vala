@@ -92,9 +92,6 @@ namespace Dino.Ui {
             call_window.present();
 
             update_button_state();
-            call_controller.terminated.connect(() => {
-                update_button_state();
-            });
         }
 
         public new void set_conversation(Conversation conversation) {
@@ -119,7 +116,7 @@ namespace Dino.Ui {
             if (conversation.type_ == Conversation.Type.CHAT) {
                 Conversation conv_bak = conversation;
                 bool audio_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_audio_calls_async(conversation);
-                bool video_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_audio_calls_async(conversation);
+                bool video_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_video_calls_async(conversation);
                 if (conv_bak != conversation) return;
 
                 visible = audio_works;

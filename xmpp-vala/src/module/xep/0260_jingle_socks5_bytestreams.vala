@@ -28,6 +28,7 @@ public class Module : Jingle.Transport, XmppStreamModule {
     public string ns_uri { get { return NS_URI; } }
     public Jingle.TransportType type_ { get { return Jingle.TransportType.STREAMING; } }
     public int priority { get { return 1; } }
+
     private Gee.List<Candidate> get_proxies(XmppStream stream) {
         Gee.List<Candidate> result = new ArrayList<Candidate>();
         int i = 1 << 15;
@@ -37,6 +38,7 @@ public class Module : Jingle.Transport, XmppStreamModule {
         }
         return result;
     }
+
     private Gee.List<Candidate> start_local_listeners(XmppStream stream, Jid local_full_jid, string dstaddr, out LocalListener? local_listener) {
         Gee.List<Candidate> result = new ArrayList<Candidate>();
         SocketListener listener = new SocketListener();
@@ -62,15 +64,17 @@ public class Module : Jingle.Transport, XmppStreamModule {
         }
         return result;
     }
+
     private void select_candidates(XmppStream stream, Jid local_full_jid, string dstaddr, Parameters result) {
         result.local_candidates.add_all(get_proxies(stream));
-        //result.local_candidates.add_all(start_local_listeners(stream, local_full_jid, dstaddr, out result.listener));
+        result.local_candidates.add_all(start_local_listeners(stream, local_full_jid, dstaddr, out result.listener));
         result.local_candidates.sort((c1, c2) => {
             if (c1.priority < c2.priority) { return 1; }
             if (c1.priority > c2.priority) { return -1; }
             return 0;
         });
     }
+
     public Jingle.TransportParameters create_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid) {
         assert(components == 1);
         Parameters result = new Parameters.create(local_full_jid, peer_full_jid, random_uuid());
@@ -78,6 +82,7 @@ public class Module : Jingle.Transport, XmppStreamModule {
         select_candidates(stream, local_full_jid, dstaddr, result);
         return result;
     }
+
     public Jingle.TransportParameters parse_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
         Parameters result = Parameters.parse(local_full_jid, peer_full_jid, transport);
         string dstaddr = calculate_dstaddr(result.sid, local_full_jid, peer_full_jid);
@@ -146,6 +151,7 @@ public class Candidate : Socks5Bytestreams.Proxy {
     public Candidate.build(string cid, string host, Jid jid, int port, int local_priority, CandidateType type) {
         this(cid, host, jid, port, type.type_preference() + local_priority, type);
     }
+
     public Candidate.proxy(string cid, Socks5Bytestreams.Proxy proxy, int local_priority) {
         this.build(cid, proxy.host, proxy.jid, proxy.port, local_priority, CandidateType.PROXY);
     }
@@ -170,6 +176,7 @@ public class Candidate : Socks5Bytestreams.Proxy {
 
         return new Candidate(cid, host, jid, port, priority, type);
     }
+
     public StanzaNode to_xml() {
         return new StanzaNode.build("candidate", NS_URI)
             .put_attribute("cid", cid)
@@ -210,6 +217,7 @@ class LocalListener {
         this.inner = inner;
         this.dstaddr = dstaddr;
     }
+
     public LocalListener.empty() {
         this.inner = null;
         this.dstaddr = "";
@@ -233,6 +241,7 @@ class LocalListener {
             handle_conn.begin(((StringWrapper)cid).str, conn);
         }
     }
+
     async void handle_conn(string cid, SocketConnection conn) {
         conn.socket.timeout = NEGOTIATION_TIMEOUT;
         size_t read;
@@ -418,39 +427,39 @@ class Parameters : Jingle.TransportParameters, Object {
     }
 
     public void handle_transport_info(StanzaNode transport) throws Jingle.IqError {
-        StanzaNode? candidate_error = transport.get_subnode("candidate-error", NS_URI);
-        StanzaNode? candidate_used = transport.get_subnode("candidate-used", NS_URI);
-        StanzaNode? activated = transport.get_subnode("activated", NS_URI);
-        StanzaNode? proxy_error = transport.get_subnode("proxy-error", NS_URI);
-        int num_children = 0;
-        if (candidate_error != null) { num_children += 1; }
-        if (candidate_used != null) { num_children += 1; }
-        if (activated != null) { num_children += 1; }
-        if (proxy_error != null) { num_children += 1; }
-        if (num_children == 0) {
-            throw new Jingle.IqError.UNSUPPORTED_INFO("unknown transport-info");
-        } else if (num_children > 1) {
-            throw new Jingle.IqError.BAD_REQUEST("transport-info with more than one child");
+        ArrayList<StanzaNode> socks5_nodes = new ArrayList<StanzaNode>();
+        foreach (StanzaNode node in transport.sub_nodes) {
+            if (node.ns_uri == NS_URI) socks5_nodes.add(node);
         }
-        if (candidate_error != null) {
-            handle_remote_candidate(null);
-        }
-        if (candidate_used != null) {
-            string? cid = candidate_used.get_attribute("cid");
-            if (cid == null) {
-                throw new Jingle.IqError.BAD_REQUEST("missing cid");
-            }
-            handle_remote_candidate(cid);
-        }
-        if (activated != null) {
-            string? cid = activated.get_attribute("cid");
-            if (cid == null) {
-                throw new Jingle.IqError.BAD_REQUEST("missing cid");
-            }
-            handle_activated(cid);
-        }
-        if (proxy_error != null) {
-            handle_proxy_error();
+        if (socks5_nodes.is_empty) { warning("No socks5 subnodes in transport node"); return; }
+        if (socks5_nodes.size > 1) { warning("Too many socks5 subnodes in transport node"); return; }
+
+        StanzaNode node = socks5_nodes[0];
+
+        switch (node.name) {
+            case "activated":
+                string? cid = node.get_attribute("cid");
+                if (cid == null) {
+                    throw new Jingle.IqError.BAD_REQUEST("missing cid");
+                }
+                handle_activated(cid);
+                break;
+            case "candidate-used":
+                string? cid = node.get_attribute("cid");
+                if (cid == null) {
+                    throw new Jingle.IqError.BAD_REQUEST("missing cid");
+                }
+                handle_remote_candidate(cid);
+                break;
+            case "candidate-error":
+                handle_remote_candidate(null);
+                break;
+            case "proxy-error":
+                handle_proxy_error();
+                break;
+            default:
+                warning("Unknown transport-info: %s", transport.to_string());
+                break;
         }
     }
 
@@ -499,32 +508,22 @@ class Parameters : Jingle.TransportParameters, Object {
             return;
         }
 
-        Candidate? remote = remote_selected_candidate;
-        Candidate? local = local_selected_candidate;
-
-        int num_candidates = 0;
-        if (remote != null) { num_candidates += 1; }
-        if (local != null) { num_candidates += 1; }
-
-        if (num_candidates == 0) {
-            // Notify Jingle of the failed transport.
-            content_set_transport_connection(null);
+        if (remote_selected_candidate == null && local_selected_candidate == null) {
+            content_set_transport_connection_error(new IOError.FAILED("No candidates"));
             return;
         }
 
         bool remote_wins;
-        if (num_candidates == 1) {
-            remote_wins = remote != null;
-        } else {
-            if (local.priority < remote.priority) {
-                remote_wins = true;
-            } else if (local.priority > remote.priority) {
-                remote_wins = false;
-            } else {
+        if (remote_selected_candidate != null && local_selected_candidate != null) {
+            if (local_selected_candidate.priority == remote_selected_candidate.priority) {
                 // equal priority -> XEP-0260 says that the candidate offered
                 // by the initiator wins, so the one that the remote chose
                 remote_wins = role == Jingle.Role.INITIATOR;
+            } else {
+                remote_wins = local_selected_candidate.priority < remote_selected_candidate.priority;
             }
+        } else {
+            remote_wins = remote_selected_candidate != null;
         }
 
         if (!remote_wins) {
@@ -545,8 +544,7 @@ class Parameters : Jingle.TransportParameters, Object {
                 }
                 SocketConnection? conn = listener.get_connection(remote_selected_candidate.cid);
                 if (conn == null) {
-                    // Remote hasn't actually connected to us?!
-                    content_set_transport_connection(null);
+                    content_set_transport_connection_error(new IOError.FAILED("Remote hasn't actually connected to us?!"));
                     return;
                 }
                 content_set_transport_connection(conn);
@@ -569,7 +567,7 @@ class Parameters : Jingle.TransportParameters, Object {
         if (!waiting_for_activation_error) {
             content_set_transport_connection(conn);
         } else {
-            content_set_transport_connection(null);
+            content_set_transport_connection_error(new IOError.FAILED("waiting_for_activation_error"));
         }
     }
 
@@ -620,7 +618,7 @@ class Parameters : Jingle.TransportParameters, Object {
                 .put_attribute("sid", sid)
                 .put_node(new StanzaNode.build("proxy-error", NS_URI))
             );
-            content_set_transport_connection(null);
+            content_set_transport_connection_error(new IOError.FAILED("Connect to local candidate error: %s", e.message));
         }
     }
 
@@ -745,15 +743,19 @@ class Parameters : Jingle.TransportParameters, Object {
 
     private Jingle.StreamingConnection connection = new Jingle.StreamingConnection();
 
-    private void content_set_transport_connection(IOStream? ios) {
-        IOStream? iostream = ios;
+    private void content_set_transport_connection(IOStream ios) {
+        IOStream iostream = ios;
         Jingle.Content? strong_content = content;
         if (strong_content == null) return;
 
         if (strong_content.security_params != null) {
             iostream = strong_content.security_params.wrap_stream(iostream);
         }
-        connection.init.begin(iostream);
+        connection.set_stream.begin(iostream);
+    }
+
+    private void content_set_transport_connection_error(Error e) {
+        connection.set_error(e);
     }
 
     public void create_transport_connection(XmppStream stream, Jingle.Content content) {
