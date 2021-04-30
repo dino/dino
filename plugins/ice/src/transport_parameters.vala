@@ -60,13 +60,13 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         }
     }
 
-    public TransportParameters(Nice.Agent agent, Xep.ExternalServiceDiscovery.Service? turn_service, string? turn_ip, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode? node = null) {
+    public TransportParameters(Nice.Agent agent, DtlsSrtp.CredentialsCapsule? credentials, Xep.ExternalServiceDiscovery.Service? turn_service, string? turn_ip, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode? node = null) {
         base(components, local_full_jid, peer_full_jid, node);
         this.we_want_connection = (node == null);
         this.agent = agent;
 
         if (this.peer_fingerprint != null || !incoming) {
-            dtls_srtp_handler = setup_dtls(this);
+            dtls_srtp_handler = setup_dtls(this, credentials);
             own_fingerprint = dtls_srtp_handler.own_fingerprint;
             if (incoming) {
                 own_setup = "active";
@@ -113,9 +113,9 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         agent.gather_candidates(stream_id);
     }
 
-    private static DtlsSrtp.Handler setup_dtls(TransportParameters tp) {
+    private static DtlsSrtp.Handler setup_dtls(TransportParameters tp, DtlsSrtp.CredentialsCapsule credentials) {
         var weak_self = WeakRef(tp);
-        DtlsSrtp.Handler dtls_srtp = DtlsSrtp.setup();
+        DtlsSrtp.Handler dtls_srtp = new DtlsSrtp.Handler.with_cert(credentials);
         dtls_srtp.send_data.connect((data) => {
             TransportParameters self = (TransportParameters) weak_self.get();
             if (self != null) self.agent.send(self.stream_id, 1, data);

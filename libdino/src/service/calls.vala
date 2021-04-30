@@ -14,7 +14,7 @@ namespace Dino {
         public signal void counterpart_ringing(Call call);
         public signal void counterpart_sends_video_updated(Call call, bool mute);
         public signal void info_received(Call call, Xep.JingleRtp.CallSessionInfo session_info);
-        public signal void encryption_updated(Call call, Xep.Jingle.ContentEncryption? encryption);
+        public signal void encryption_updated(Call call, Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption, bool same);
 
         public signal void stream_created(Call call, string media);
 
@@ -523,7 +523,7 @@ namespace Dino {
 
             if ((audio_encryptions.has_key(call) && audio_encryptions[call].is_empty) || (video_encryptions.has_key(call) && video_encryptions[call].is_empty)) {
                 call.encryption = Encryption.NONE;
-                encryption_updated(call, null);
+                encryption_updated(call, null, null, true);
                 return;
             }
 
@@ -545,16 +545,26 @@ namespace Dino {
 
             if (omemo_encryption != null && dtls_encryption != null) {
                 call.encryption = Encryption.OMEMO;
-                encryption_updated(call, omemo_encryption);
+                Xep.Jingle.ContentEncryption? video_encryption = video_encryptions.has_key(call) ? video_encryptions[call]["http://gultsch.de/xmpp/drafts/omemo/dlts-srtp-verification"] : null;
+                omemo_encryption.peer_key = dtls_encryption.peer_key;
+                omemo_encryption.our_key = dtls_encryption.our_key;
+                encryption_updated(call, omemo_encryption, video_encryption, true);
             } else if (dtls_encryption != null) {
                 call.encryption = Encryption.DTLS_SRTP;
-                encryption_updated(call, dtls_encryption);
+                Xep.Jingle.ContentEncryption? video_encryption = video_encryptions.has_key(call) ? video_encryptions[call][Xep.JingleIceUdp.DTLS_NS_URI] : null;
+                bool same = true;
+                if (video_encryption != null && dtls_encryption.peer_key.length == video_encryption.peer_key.length) {
+                    for (int i = 0; i < dtls_encryption.peer_key.length; i++) {
+                        if (dtls_encryption.peer_key[i] != video_encryption.peer_key[i]) { same = false; break; }
+                    }
+                }
+                encryption_updated(call, dtls_encryption, video_encryption, same);
             } else if (srtp_encryption != null) {
                 call.encryption = Encryption.SRTP;
-                encryption_updated(call, srtp_encryption);
+                encryption_updated(call, srtp_encryption, video_encryptions[call]["SRTP"], false);
             } else {
                 call.encryption = Encryption.NONE;
-                encryption_updated(call, null);
+                encryption_updated(call, null, null, true);
             }
         }
 

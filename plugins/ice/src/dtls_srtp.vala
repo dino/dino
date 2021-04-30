@@ -2,10 +2,10 @@ using GnuTLS;
 
 namespace Dino.Plugins.Ice.DtlsSrtp {
 
-public static Handler setup() throws GLib.Error {
-    var obj = new Handler();
-    obj.generate_credentials();
-    return obj;
+public class CredentialsCapsule {
+    public uint8[] own_fingerprint;
+    public X509.Certificate[] own_cert;
+    public X509.PrivateKey private_key;
 }
 
 public class Handler {
@@ -21,8 +21,7 @@ public class Handler {
     public uint8[] peer_fingerprint { get; set; }
     public string peer_fp_algo { get; set; }
 
-    private X509.Certificate[] own_cert;
-    private X509.PrivateKey private_key;
+    private CredentialsCapsule credentials;
     private Cond buffer_cond = Cond();
     private Mutex buffer_mutex = Mutex();
     private Gee.LinkedList<Bytes> buffer_queue = new Gee.LinkedList<Bytes>();
@@ -32,6 +31,11 @@ public class Handler {
     private bool restart = false;
 
     private Crypto.Srtp.Session srtp_session = new Crypto.Srtp.Session();
+
+    public Handler.with_cert(CredentialsCapsule creds) {
+        this.credentials = creds;
+        this.own_fingerprint = creds.own_fingerprint;
+    }
 
     public uint8[]? process_incoming_data(uint component_id, uint8[] data) {
         if (srtp_session.has_decrypt) {
@@ -78,10 +82,10 @@ public class Handler {
         buffer_mutex.unlock();
     }
 
-    internal void generate_credentials() throws GLib.Error {
+    internal static CredentialsCapsule generate_credentials() throws GLib.Error {
         int err = 0;
 
-        private_key = X509.PrivateKey.create();
+        X509.PrivateKey private_key = X509.PrivateKey.create();
         err = private_key.generate(PKAlgorithm.RSA, 2048);
         throw_if_error(err);
 
@@ -99,8 +103,15 @@ public class Handler {
 
         cert.sign(cert, private_key);
 
-        own_fingerprint = get_fingerprint(cert, DigestAlgorithm.SHA256);
-        own_cert = new X509.Certificate[] { (owned)cert };
+        uint8[] own_fingerprint = get_fingerprint(cert, DigestAlgorithm.SHA256);
+        X509.Certificate[] own_cert = new X509.Certificate[] { (owned)cert };
+
+        var creds = new CredentialsCapsule();
+        creds.own_fingerprint = own_fingerprint;
+        creds.own_cert = (owned) own_cert;
+        creds.private_key = (owned) private_key;
+
+        return creds;
     }
 
     public void stop_dtls_connection() {
@@ -129,7 +140,7 @@ public class Handler {
         debug("Setting up DTLS connection. We're %s", mode.to_string());
 
         CertificateCredentials cert_cred = CertificateCredentials.create();
-        int err = cert_cred.set_x509_key(own_cert, private_key);
+        int err = cert_cred.set_x509_key(credentials.own_cert, credentials.private_key);
         throw_if_error(err);
 
         Session? session = Session.create(server_or_client | InitFlags.DATAGRAM);
@@ -200,7 +211,7 @@ public class Handler {
             srtp_session.set_encryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, client_key.extract(), client_salt.extract());
             srtp_session.set_decryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, server_key.extract(), server_salt.extract());
         }
-        return new Xmpp.Xep.Jingle.ContentEncryption() { encryption_ns=Xmpp.Xep.JingleIceUdp.DTLS_NS_URI, encryption_name = "DTLS-SRTP", our_key=own_fingerprint, peer_key=peer_fingerprint };
+        return new Xmpp.Xep.Jingle.ContentEncryption() { encryption_ns=Xmpp.Xep.JingleIceUdp.DTLS_NS_URI, encryption_name = "DTLS-SRTP", our_key=credentials.own_fingerprint, peer_key=peer_fingerprint };
     }
 
     private static ssize_t pull_function(void* transport_ptr, uint8[] buffer) {

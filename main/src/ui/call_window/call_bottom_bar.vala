@@ -89,40 +89,52 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
         this.get_style_context().add_class("call-bottom-bar");
     }
 
-    public void set_encryption(Xmpp.Xep.Jingle.ContentEncryption? encryption) {
+    public void set_encryption(Xmpp.Xep.Jingle.ContentEncryption? audio_encryption, Xmpp.Xep.Jingle.ContentEncryption? video_encryption, bool same) {
         encryption_button.visible = true;
 
         Popover popover = new Popover(encryption_button);
-
-        if (encryption == null) {
+        if (audio_encryption == null) {
             encryption_image.set_from_icon_name("changes-allow-symbolic", IconSize.BUTTON);
             encryption_button.get_style_context().add_class("unencrypted");
 
             popover.add(new Label("This call isn't encrypted.") { margin=10, visible=true } );
-        } else if (encryption.encryption_name == "OMEMO") {
-            encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.BUTTON);
-            encryption_button.get_style_context().remove_class("unencrypted");
-
-            popover.add(new Label("This call is encrypted with OMEMO.") { margin=10, visible=true } );
-        } else {
-            encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.BUTTON);
-            encryption_button.get_style_context().remove_class("unencrypted");
-
-            Grid encryption_info_grid = new Grid() { margin=10, row_spacing=3, column_spacing=5, visible=true };
-            encryption_info_grid.attach(new Label("<b>This call is end-to-end encrypted.</b>") { use_markup=true, xalign=0, visible=true }, 1, 1, 2, 1);
-            if (encryption.peer_key.length > 0) {
-                encryption_info_grid.attach(new Label("Peer key") { xalign=0, visible=true }, 1, 2, 1, 1);
-                encryption_info_grid.attach(new Label("<span font_family='monospace'>" + format_fingerprint(encryption.peer_key) + "</span>") { use_markup=true, max_width_chars=25, ellipsize=EllipsizeMode.MIDDLE, xalign=0, hexpand=true, visible=true }, 2, 2, 1, 1);
-            }
-            if (encryption.our_key.length > 0) {
-                encryption_info_grid.attach(new Label("Your key") { xalign=0, visible=true }, 1, 3, 1, 1);
-                encryption_info_grid.attach(new Label("<span font_family='monospace'>" + format_fingerprint(encryption.our_key) + "</span>") { use_markup=true, max_width_chars=25, ellipsize=EllipsizeMode.MIDDLE, xalign=0, hexpand=true, visible=true }, 2, 3, 1, 1);
-            }
-
-            popover.add(encryption_info_grid);
+            return;
         }
 
+        encryption_image.set_from_icon_name("changes-prevent-symbolic", IconSize.BUTTON);
+        encryption_button.get_style_context().remove_class("unencrypted");
+
+        Box box = new Box(Orientation.VERTICAL, 5) { margin=10, visible=true };
+        if (audio_encryption.encryption_name == "OMEMO") {
+            box.add(new Label("<b>This call is encrypted with OMEMO.</b>") { use_markup=true, xalign=0, visible=true } );
+        } else {
+            box.add(new Label("<b>This call is end-to-end encrypted.</b>") { use_markup=true, xalign=0, visible=true });
+        }
+
+        if (same) {
+            box.add(create_media_encryption_grid(audio_encryption));
+        } else {
+            box.add(new Label("<b>Audio</b>") { use_markup=true, xalign=0, visible=true });
+            box.add(create_media_encryption_grid(audio_encryption));
+            box.add(new Label("<b>Video</b>") { use_markup=true, xalign=0, visible=true });
+            box.add(create_media_encryption_grid(video_encryption));
+        }
+        popover.add(box);
+
         encryption_button.set_popover(popover);
+    }
+
+    private Grid create_media_encryption_grid(Xmpp.Xep.Jingle.ContentEncryption? encryption) {
+        Grid ret = new Grid() { row_spacing=3, column_spacing=5, visible=true };
+        if (encryption.peer_key.length > 0) {
+            ret.attach(new Label("Peer call key") { xalign=0, visible=true }, 1, 2, 1, 1);
+            ret.attach(new Label("<span font_family='monospace'>" + format_fingerprint(encryption.peer_key) + "</span>") { use_markup=true, max_width_chars=25, ellipsize=EllipsizeMode.MIDDLE, xalign=0, hexpand=true, visible=true }, 2, 2, 1, 1);
+        }
+        if (encryption.our_key.length > 0) {
+            ret.attach(new Label("Your call key") { xalign=0, visible=true }, 1, 3, 1, 1);
+            ret.attach(new Label("<span font_family='monospace'>" + format_fingerprint(encryption.our_key) + "</span>") { use_markup=true, max_width_chars=25, ellipsize=EllipsizeMode.MIDDLE, xalign=0, hexpand=true, visible=true }, 2, 3, 1, 1);
+        }
+        return ret;
     }
 
     public AudioSettingsPopover? show_audio_device_choices(bool show) {

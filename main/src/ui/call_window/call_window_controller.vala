@@ -76,9 +76,9 @@ public class Dino.Ui.CallWindowController : Object {
                 call_window.set_status("ringing");
             }
         });
-        calls.encryption_updated.connect((call, encryption) => {
+        calls.encryption_updated.connect((call, audio_encryption, video_encryption, same) => {
             if (!this.call.equals(call)) return;
-            call_window.bottom_bar.set_encryption(encryption);
+            call_window.bottom_bar.set_encryption(audio_encryption, video_encryption, same);
         });
 
         own_video.resolution_changed.connect((width, height) => {

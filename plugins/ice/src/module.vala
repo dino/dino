@@ -10,6 +10,7 @@ public class Dino.Plugins.Ice.Module : JingleIceUdp.Module {
     public Xep.ExternalServiceDiscovery.Service? turn_service = null;
 
     private weak Nice.Agent? agent;
+    private HashMap<string, DtlsSrtp.CredentialsCapsule> cerds = new HashMap<string, DtlsSrtp.CredentialsCapsule>();
 
     private Nice.Agent get_agent() {
         Nice.Agent? agent = this.agent;
@@ -29,11 +30,23 @@ public class Dino.Plugins.Ice.Module : JingleIceUdp.Module {
     }
 
     public override Jingle.TransportParameters create_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid) {
-        return new TransportParameters(get_agent(), turn_service, turn_ip, components, local_full_jid, peer_full_jid);
+        DtlsSrtp.CredentialsCapsule? cred = get_create_credentials(local_full_jid, peer_full_jid);
+        return new TransportParameters(get_agent(), cred, turn_service, turn_ip, components, local_full_jid, peer_full_jid);
     }
 
     public override Jingle.TransportParameters parse_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
-        return new TransportParameters(get_agent(), turn_service, turn_ip, components, local_full_jid, peer_full_jid, transport);
+        DtlsSrtp.CredentialsCapsule? cred = get_create_credentials(local_full_jid, peer_full_jid);
+        return new TransportParameters(get_agent(), cred, turn_service, turn_ip, components, local_full_jid, peer_full_jid, transport);
+    }
+
+    private DtlsSrtp.CredentialsCapsule? get_create_credentials(Jid local_full_jid, Jid peer_full_jid) {
+        string from_to_id = local_full_jid.to_string() + peer_full_jid.to_string();
+        try {
+            if (!cerds.has_key(from_to_id)) cerds[from_to_id] = DtlsSrtp.Handler.generate_credentials();
+        } catch (Error e) {
+            warning("Error creating dtls credentials: %s", e.message);
+        }
+        return cerds[from_to_id];
     }
 
     private void agent_unweak() {
