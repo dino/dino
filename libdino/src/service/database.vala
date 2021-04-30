@@ -406,21 +406,21 @@ public class Database : Qlite.Database {
         }
         if (oldVersion < 17) {
             try {
-                exec("DROP INDEX contentitem_localtime_counterpart_idx");
-                exec("CREATE INDEX contentitem_conversation_hide_localtime_time_idx ON content_item (conversation_id, hide, local_time, time)");
+                exec("DROP INDEX IF EXISTS contentitem_localtime_counterpart_idx");
+                exec("CREATE INDEX IF NOT EXISTS contentitem_conversation_hide_localtime_time_idx ON content_item (conversation_id, hide, local_time, time)");
             } catch (Error e) {
                 error("Failed to upgrade to database version 17: %s", e.message);
             }
         }
         if (oldVersion < 18) {
             try {
-                exec("DROP INDEX contentitem_conversation_hide_localtime_time_idx");
+                exec("DROP INDEX IF EXISTS contentitem_conversation_hide_localtime_time_idx");
                 exec("CREATE INDEX IF NOT EXISTS contentitem_conversation_hide_time_idx ON content_item (conversation_id, hide, time)");
 
-                exec("DROP INDEX message_account_counterpart_localtime_idx");
+                exec("DROP INDEX IF EXISTS message_account_counterpart_localtime_idx");
                 exec("CREATE INDEX IF NOT EXISTS message_account_counterpart_time_idx ON message (account_id, counterpart_id, time)");
 
-                exec("DROP INDEX filetransfer_localtime_counterpart_idx");
+                exec("DROP INDEX IF EXISTS filetransfer_localtime_counterpart_idx");
             } catch (Error e) {
                 error("Failed to upgrade to database version 18: %s", e.message);
             }
