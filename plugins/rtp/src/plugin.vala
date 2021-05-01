@@ -136,11 +136,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 pipe.set_state(Gst.State.PLAYING);
                 break;
             case Gst.MessageType.STATE_CHANGED:
-                Gst.State new_state;
-                message.parse_state_changed(null, out new_state, null);
-                if (message.src is Gst.Element) {
-                    debug("%s changed state to %s", ((Gst.Element)message.src).name, new_state.to_string());
-                }
+                // Ignore
                 break;
             case Gst.MessageType.STREAM_STATUS:
                 Gst.StreamStatusType status;

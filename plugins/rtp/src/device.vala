@@ -87,6 +87,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             return Gst.Caps.from_string("audio/x-raw,rate=48000,channels=1");
         } else if (media == "video" && device.caps.get_size() > 0) {
             int best_index = 0;
+            Value? best_fraction = null;
             int best_fps = 0;
             int best_width = 0;
             int best_height = 0;
@@ -94,7 +95,28 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                 unowned Gst.Structure? that = device.caps.get_structure(i);
                 if (!that.has_name("video/x-raw")) continue;
                 int num = 0, den = 0, width = 0, height = 0;
-                if (!that.has_field("framerate") || !that.get_fraction("framerate", out num, out den)) continue;
+                if (!that.has_field("framerate")) continue;
+                Value framerate = that.get_value("framerate");
+                if (framerate.type() == typeof(Gst.Fraction)) {
+                    num = Gst.Value.get_fraction_numerator(framerate);
+                    den = Gst.Value.get_fraction_denominator(framerate);
+                } else if (framerate.type() == typeof(Gst.ValueList)) {
+                    for(uint j = 0; j < Gst.ValueList.get_size(framerate); j++) {
+                        Value fraction = Gst.ValueList.get_value(framerate, j);
+                        int in_num = Gst.Value.get_fraction_numerator(fraction);
+                        int in_den = Gst.Value.get_fraction_denominator(fraction);
+                        int fps = den > 0 ? (num/den) : 0;
+                        int in_fps = in_den > 0 ? (in_num/in_den) : 0;
+                        if (in_fps > fps) {
+                            best_fraction = fraction;
+                            num = in_num;
+                            den = in_den;
+                        }
+                    }
+                } else {
+                    debug("Unknown type for framerate: %s", framerate.type_name());
+                }
+                if (den == 0) continue;
                 if (!that.has_field("width") || !that.get_int("width", out width)) continue;
                 if (!that.has_field("height") || !that.get_int("height", out height)) continue;
                 int fps = num/den;
@@ -105,7 +127,14 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                     best_index = i;
                 }
             }
-            return caps_copy_nth(device.caps, best_index);
+            Gst.Caps res = caps_copy_nth(device.caps, best_index);
+            unowned Gst.Structure? that = res.get_structure(0);
+            Value framerate = that.get_value("framerate");
+            if (framerate.type() == typeof(Gst.ValueList)) {
+                that.set_value("framerate", best_fraction);
+            }
+            debug("Selected caps %s", res.to_string());
+            return res;
         } else if (device.caps.get_size() > 0) {
             return caps_copy_nth(device.caps, 0);
         } else {

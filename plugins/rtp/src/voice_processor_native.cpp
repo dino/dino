@@ -75,7 +75,7 @@ dino_plugins_rtp_voice_processor_analyze_reverse_stream(void *native_ptr, GstAud
     memcpy(frame.data_, audio_buffer.planes[0], frame.samples_per_channel_ * info->bpf);
 
     int err = apm->AnalyzeReverseStream(&frame);
-    if (err < 0) g_warning("ProcessReverseStream %i", err);
+    if (err < 0) g_warning("voice_processor_native.cpp: ProcessReverseStream %i", err);
 
     gst_audio_buffer_unmap(&audio_buffer);
 }
@@ -108,7 +108,7 @@ extern "C" void dino_plugins_rtp_voice_processor_adjust_stream_delay(void *nativ
     g_debug("voice_processor_native.cpp: Stream delay metrics: %i %i %f", median, std, fraction_poor_delays);
     if (fraction_poor_delays > 0.5) {
         native->stream_delay = std::max(0, native->stream_delay + std::min(-10, std::max(median, 10)));
-        g_debug("Adjusted stream delay %i", native->stream_delay);
+        g_debug("voice_processor_native.cpp: Adjusted stream delay %i", native->stream_delay);
     }
 }
 
@@ -130,7 +130,7 @@ dino_plugins_rtp_voice_processor_process_stream(void *native_ptr, GstAudioInfo *
     apm->set_stream_delay_ms(native->stream_delay);
     int err = apm->ProcessStream(&frame);
     if (err >= 0) memcpy(audio_buffer.planes[0], frame.data_, frame.samples_per_channel_ * info->bpf);
-    if (err < 0) g_warning("ProcessStream %i", err);
+    if (err < 0) g_warning("voice_processor_native.cpp: ProcessStream %i", err);
 
     gst_audio_buffer_unmap(&audio_buffer);
 }
