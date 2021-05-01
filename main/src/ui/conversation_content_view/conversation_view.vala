@@ -45,6 +45,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     ContentMetaItem? current_meta_item = null;
     int last_y_root = -1;
 
+    private UnreadIndicatorItem? unread_indicator = null;
+
     public ConversationView init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
@@ -267,6 +269,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         // Clear data structures
         clear_notifications();
         this.conversation = conversation;
+        this.unread_indicator = null;
 
         // Init for new conversation
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
@@ -285,17 +288,22 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             do_insert_item(item);
         }
 
-        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
-        int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
-        if(read_up_to_item != null && current_num_unread > 0) {
-            do_insert_item(new UnreadIndicatorItem(read_up_to_item));
-        }
+        update_unread_indicator();
 
         Application app = GLib.Application.get_default() as Application;
         foreach (Plugins.NotificationPopulator populator in app.plugin_registry.notification_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK);
         }
         Idle.add(() => { on_value_notify(); return false; });
+    }
+
+    private void update_unread_indicator() {
+        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+        int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
+        if(read_up_to_item != null && current_num_unread > 0 && unread_indicator == null) {
+            unread_indicator = new UnreadIndicatorItem(read_up_to_item);
+            do_insert_item(unread_indicator);
+        }
     }
 
     public void insert_item(Plugins.MetaConversationItem item) {
@@ -307,6 +315,9 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
                 return;
             }
         }
+
+        update_unread_indicator();
+
         do_insert_item(item);
     }
 
