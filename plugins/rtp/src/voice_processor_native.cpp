@@ -11,6 +11,8 @@
 struct _DinoPluginsRtpVoiceProcessorNative {
     webrtc::AudioProcessing *apm;
     gint stream_delay;
+    gint last_median;
+    gint last_poor_delays;
 };
 
 extern "C" void *dino_plugins_rtp_adjust_to_running_time(GstBaseTransform *transform, GstBuffer *buffer) {
@@ -26,6 +28,8 @@ extern "C" void *dino_plugins_rtp_voice_processor_init_native(gint stream_delay)
     config.Set<webrtc::ExperimentalAgc>(new webrtc::ExperimentalAgc(true, 85));
     native->apm = webrtc::AudioProcessing::Create(config);
     native->stream_delay = stream_delay;
+    native->last_median = 0;
+    native->last_poor_delays = 0;
     return native;
 }
 
@@ -65,19 +69,19 @@ dino_plugins_rtp_voice_processor_analyze_reverse_stream(void *native_ptr, GstAud
     webrtc::StreamConfig config(SAMPLE_RATE, SAMPLE_CHANNELS, false);
     webrtc::AudioProcessing *apm = native->apm;
 
-    GstAudioBuffer audio_buffer;
-    gst_audio_buffer_map(&audio_buffer, info, buffer, GST_MAP_READ);
+    GstMapInfo map;
+    gst_buffer_map(buffer, &map, GST_MAP_READ);
 
     webrtc::AudioFrame frame;
     frame.num_channels_ = info->channels;
     frame.sample_rate_hz_ = info->rate;
     frame.samples_per_channel_ = gst_buffer_get_size(buffer) / info->bpf;
-    memcpy(frame.data_, audio_buffer.planes[0], frame.samples_per_channel_ * info->bpf);
+    memcpy(frame.data_, map.data, frame.samples_per_channel_ * info->bpf);
 
     int err = apm->AnalyzeReverseStream(&frame);
     if (err < 0) g_warning("voice_processor_native.cpp: ProcessReverseStream %i", err);
 
-    gst_audio_buffer_unmap(&audio_buffer);
+    gst_buffer_unmap(buffer, &map);
 }
 
 extern "C" void dino_plugins_rtp_voice_processor_notify_gain_level(void *native_ptr, gint gain_level) {
@@ -101,14 +105,17 @@ extern "C" bool dino_plugins_rtp_voice_processor_get_stream_has_voice(void *nati
 extern "C" void dino_plugins_rtp_voice_processor_adjust_stream_delay(void *native_ptr) {
     _DinoPluginsRtpVoiceProcessorNative *native = (_DinoPluginsRtpVoiceProcessorNative *) native_ptr;
     webrtc::AudioProcessing *apm = native->apm;
-    int median, std;
+    int median, std, poor_delays;
     float fraction_poor_delays;
     apm->echo_cancellation()->GetDelayMetrics(&median, &std, &fraction_poor_delays);
-    if (fraction_poor_delays < 0) return;
-    g_debug("voice_processor_native.cpp: Stream delay metrics: %i %i %f", median, std, fraction_poor_delays);
-    if (fraction_poor_delays > 0.5) {
-        native->stream_delay = std::max(0, native->stream_delay + std::min(-10, std::max(median, 10)));
-        g_debug("voice_processor_native.cpp: Adjusted stream delay %i", native->stream_delay);
+    poor_delays = (int)(fraction_poor_delays * 100.0);
+    if (fraction_poor_delays < 0 || (native->last_median == median && native->last_poor_delays == poor_delays)) return;
+    g_debug("voice_processor_native.cpp: Stream delay metrics: median=%i std=%i poor_delays=%i%%", median, std, poor_delays);
+    native->last_median = median;
+    native->last_poor_delays = poor_delays;
+    if (poor_delays > 90) {
+        native->stream_delay = std::min(std::max(0, native->stream_delay + std::min(48, std::max(median, -48))), 384);
+        g_debug("voice_processor_native.cpp: set stream_delay=%i", native->stream_delay);
     }
 }
 
@@ -118,21 +125,21 @@ dino_plugins_rtp_voice_processor_process_stream(void *native_ptr, GstAudioInfo *
     webrtc::StreamConfig config(SAMPLE_RATE, SAMPLE_CHANNELS, false);
     webrtc::AudioProcessing *apm = native->apm;
 
-    GstAudioBuffer audio_buffer;
-    gst_audio_buffer_map(&audio_buffer, info, buffer, GST_MAP_READWRITE);
+    GstMapInfo map;
+    gst_buffer_map(buffer, &map, GST_MAP_READWRITE);
 
     webrtc::AudioFrame frame;
     frame.num_channels_ = info->channels;
     frame.sample_rate_hz_ = info->rate;
     frame.samples_per_channel_ = info->rate / 100;
-    memcpy(frame.data_, audio_buffer.planes[0], frame.samples_per_channel_ * info->bpf);
+    memcpy(frame.data_, map.data, frame.samples_per_channel_ * info->bpf);
 
     apm->set_stream_delay_ms(native->stream_delay);
     int err = apm->ProcessStream(&frame);
-    if (err >= 0) memcpy(audio_buffer.planes[0], frame.data_, frame.samples_per_channel_ * info->bpf);
+    if (err >= 0) memcpy(map.data, frame.data_, frame.samples_per_channel_ * info->bpf);
     if (err < 0) g_warning("voice_processor_native.cpp: ProcessStream %i", err);
 
-    gst_audio_buffer_unmap(&audio_buffer);
+    gst_buffer_unmap(buffer, &map);
 }
 
 extern "C" void dino_plugins_rtp_voice_processor_destroy_native(void *native_ptr) {

@@ -123,7 +123,7 @@ public class Dino.Plugins.Rtp.VoiceProcessor : Audio.Filter {
         }
         analyze_reverse_stream(native, echo_probe.audio_info, buffer);
         if (adjust_delay_timeout_id == 0 && echo_probe != null) {
-            adjust_delay_timeout_id = Timeout.add(5000, adjust_delay);
+            adjust_delay_timeout_id = Timeout.add(1000, adjust_delay);
         }
     }
 

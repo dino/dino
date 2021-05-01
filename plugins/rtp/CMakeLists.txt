@@ -17,7 +17,7 @@ if(Gst_VERSION VERSION_GREATER "1.16")
 endif()
 
 if(WebRTCAudioProcessing_VERSION GREATER "0.4")
-    message(WARNING "Ignoring WebRTCAudioProcessing, only versions < 0.4 supported so far")
+    message(STATUS "Ignoring WebRTCAudioProcessing, only versions < 0.4 supported so far")
     unset(WebRTCAudioProcessing_FOUND)
 endif()
 
@@ -25,8 +25,9 @@ if(WebRTCAudioProcessing_FOUND)
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} WITH_VOICE_PROCESSOR)
     set(RTP_VOICE_PROCESSOR_VALA src/voice_processor.vala)
     set(RTP_VOICE_PROCESSOR_CXX src/voice_processor_native.cpp)
+    set(RTP_VOICE_PROCESSOR_LIB webrtc-audio-processing)
 else()
-    message(WARNING "WebRTCAudioProcessing not found, build without voice pre-processing!")
+    message(STATUS "WebRTCAudioProcessing not found, build without voice pre-processing!")
 endif()
 
 vala_precompile(RTP_VALA_C
@@ -53,7 +54,7 @@ DEFINITIONS
 
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="rtp" -I${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_library(rtp SHARED ${RTP_VALA_C} ${RTP_VOICE_PROCESSOR_CXX})
-target_link_libraries(rtp libdino crypto-vala ${RTP_PACKAGES} gstreamer-rtp-1.0 webrtc-audio-processing)
+target_link_libraries(rtp libdino crypto-vala ${RTP_PACKAGES} gstreamer-rtp-1.0 ${RTP_VOICE_PROCESSOR_LIB})
 set_target_properties(rtp PROPERTIES PREFIX "")
 set_target_properties(rtp PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
 
