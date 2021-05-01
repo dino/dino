@@ -132,12 +132,14 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             filter.@set("caps", get_best_caps());
             pipe.add(filter);
             element.link(filter);
+#if WITH_VOICE_PROCESSOR
             if (media == "audio" && plugin.echoprobe != null) {
-                dsp = new VoiceProcessor(plugin.echoprobe, element as Gst.Audio.StreamVolume);
+                dsp = new VoiceProcessor(plugin.echoprobe as EchoProbe, element as Gst.Audio.StreamVolume);
                 dsp.name = @"dsp_$id";
                 pipe.add(dsp);
                 filter.link(dsp);
             }
+#endif
             tee = Gst.ElementFactory.make("tee", @"tee_$id");
             tee.@set("allow-not-linked", true);
             pipe.add(tee);
