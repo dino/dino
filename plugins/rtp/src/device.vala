@@ -37,6 +37,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     private Gst.Element dsp;
     private Gst.Element mixer;
     private Gst.Element filter;
+    private Gst.Element rate;
     private int links = 0;
 
     public Device(Plugin plugin, Gst.Device device) {
@@ -132,12 +133,10 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             pipe.add(filter);
             element.link(filter);
             if (media == "audio" && plugin.echoprobe != null) {
-                dsp = Gst.ElementFactory.make("webrtcdsp", @"dsp_$id");
-                if (dsp != null) {
-                    dsp.@set("probe", plugin.echoprobe.name);
-                    pipe.add(dsp);
-                    filter.link(dsp);
-                }
+                dsp = new VoiceProcessor(plugin.echoprobe, element as Gst.Audio.StreamVolume);
+                dsp.name = @"dsp_$id";
+                pipe.add(dsp);
+                filter.link(dsp);
             }
             tee = Gst.ElementFactory.make("tee", @"tee_$id");
             tee.@set("allow-not-linked", true);
@@ -153,7 +152,11 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             filter.@set("caps", get_best_caps());
             pipe.add(filter);
             if (plugin.echoprobe != null) {
-                filter.link(plugin.echoprobe);
+                rate = Gst.ElementFactory.make("audiorate", @"rate_$id");
+                rate.@set("tolerance", 100000000);
+                pipe.add(rate);
+                filter.link(rate);
+                rate.link(plugin.echoprobe);
                 plugin.echoprobe.link(element);
             } else {
                 filter.link(element);
@@ -184,13 +187,16 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             if (filter != null) {
                 filter.set_locked_state(true);
                 filter.set_state(Gst.State.NULL);
-                if (plugin.echoprobe != null) {
-                    filter.unlink(plugin.echoprobe);
-                } else {
-                    filter.unlink(element);
-                }
+                filter.unlink(rate ?? ((Gst.Element)plugin.echoprobe) ?? element);
                 pipe.remove(filter);
                 filter = null;
+            }
+            if (rate != null) {
+                rate.set_locked_state(true);
+                rate.set_state(Gst.State.NULL);
+                rate.unlink(plugin.echoprobe);
+                pipe.remove(rate);
+                rate = null;
             }
             if (plugin.echoprobe != null) {
                 plugin.echoprobe.unlink(element);

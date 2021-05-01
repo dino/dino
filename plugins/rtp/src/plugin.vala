@@ -8,7 +8,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     public Gst.DeviceMonitor device_monitor { get; private set; }
     public Gst.Pipeline pipe { get; private set; }
     public Gst.Bin rtpbin { get; private set; }
-    public Gst.Element echoprobe { get; private set; }
+    public EchoProbe echoprobe { get; private set; }
 
     private Gee.List<Stream> streams = new ArrayList<Stream>();
     private Gee.List<Device> devices = new ArrayList<Device>();
@@ -72,7 +72,8 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         pipe.add(rtpbin);
 
         // Audio echo probe
-        echoprobe = Gst.ElementFactory.make("webrtcechoprobe", "echo-probe");
+//        echoprobe = Gst.ElementFactory.make("webrtcechoprobe", "echo-probe");
+        echoprobe = new EchoProbe();
         if (echoprobe != null) pipe.add(echoprobe);
 
         // Pipeline
