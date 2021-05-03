@@ -4,6 +4,7 @@ namespace Dino.Plugins {
 
 public class Registry {
     internal ArrayList<EncryptionListEntry> encryption_list_entries = new ArrayList<EncryptionListEntry>();
+    internal HashMap<string, CallEncryptionEntry> call_encryption_entries = new HashMap<string, CallEncryptionEntry>();
     internal ArrayList<AccountSettingsEntry> account_settings_entries = new ArrayList<AccountSettingsEntry>();
     internal ArrayList<ContactDetailsProvider> contact_details_entries = new ArrayList<ContactDetailsProvider>();
     internal Map<string, TextCommand> text_commands = new HashMap<string, TextCommand>();
@@ -23,6 +24,13 @@ public class Registry {
             encryption_list_entries.sort((a,b) => b.name.collate(a.name));
             return true;
         }
+    }
+
+    public bool register_call_entryption_entry(string ns, CallEncryptionEntry entry) {
+        lock (call_encryption_entries) {
+            call_encryption_entries[ns] = entry;
+        }
+        return true;
     }
 
     public bool register_account_settings_entry(AccountSettingsEntry entry) {

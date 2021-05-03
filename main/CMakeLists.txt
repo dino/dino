@@ -139,6 +139,7 @@ SOURCES
 
     src/ui/call_window/audio_settings_popover.vala
     src/ui/call_window/call_bottom_bar.vala
+    src/ui/call_window/call_encryption_button.vala
     src/ui/call_window/call_window.vala
     src/ui/call_window/call_window_controller.vala
     src/ui/call_window/video_settings_popover.vala

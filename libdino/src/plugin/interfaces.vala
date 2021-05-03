@@ -29,6 +29,16 @@ public interface EncryptionListEntry : Object {
     public abstract Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item);
 }
 
+public interface CallEncryptionEntry : Object {
+    public abstract CallEncryptionWidget? get_widget(Account account, Xmpp.Xep.Jingle.ContentEncryption encryption);
+}
+
+public interface CallEncryptionWidget : Object {
+    public abstract string? get_title();
+    public abstract bool show_keys();
+    public abstract string? get_icon_name();
+}
+
 public abstract class AccountSettingsEntry : Object {
     public abstract string id { get; }
     public virtual Priority priority { get { return Priority.DEFAULT; } }

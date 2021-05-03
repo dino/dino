@@ -35,7 +35,6 @@ public class Plugin : RootInterface, Object {
     public DeviceNotificationPopulator device_notification_populator;
     public OwnNotifications own_notifications;
     public TrustManager trust_manager;
-    public DecryptMessageListener decrypt_message_listener;
     public HashMap<Account, OmemoDecryptor> decryptors = new HashMap<Account, OmemoDecryptor>(Account.hash_func, Account.equals_func);
     public HashMap<Account, OmemoEncryptor> encryptors = new HashMap<Account, OmemoEncryptor>(Account.hash_func, Account.equals_func);
 
@@ -54,6 +53,7 @@ public class Plugin : RootInterface, Object {
         this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
         this.app.plugin_registry.register_notification_populator(device_notification_populator);
         this.app.plugin_registry.register_conversation_addition_populator(new BadMessagesPopulator(this.app.stream_interactor, this));
+        this.app.plugin_registry.register_call_entryption_entry(DtlsSrtpVerificationDraft.NS_URI, new CallEncryptionEntry(db));
 
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
             Signal.Store signal_store = Plugin.get_context().create_store();
@@ -67,9 +67,7 @@ public class Plugin : RootInterface, Object {
             this.own_notifications = new OwnNotifications(this, this.app.stream_interactor, account);
         });
 
-        decrypt_message_listener = new DecryptMessageListener(decryptors);
-        app.stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(decrypt_message_listener);
-
+        app.stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new DecryptMessageListener(decryptors));
         app.stream_interactor.get_module(FileManager.IDENTITY).add_file_decryptor(new OmemoFileDecryptor());
         app.stream_interactor.get_module(FileManager.IDENTITY).add_file_encryptor(new OmemoFileEncryptor());
         JingleFileHelperRegistry.instance.add_encryption_helper(Encryption.OMEMO, new JetOmemo.EncryptionHelper(app.stream_interactor));

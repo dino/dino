@@ -78,7 +78,22 @@ public class Dino.Ui.CallWindowController : Object {
         });
         calls.encryption_updated.connect((call, audio_encryption, video_encryption, same) => {
             if (!this.call.equals(call)) return;
-            call_window.bottom_bar.set_encryption(audio_encryption, video_encryption, same);
+
+            string? title = null;
+            string? icon_name = null;
+            bool show_keys = true;
+            Plugins.Registry registry = Dino.Application.get_default().plugin_registry;
+            Plugins.CallEncryptionEntry? encryption_entry = audio_encryption != null ? registry.call_encryption_entries[audio_encryption.encryption_ns] : null;
+            if (encryption_entry != null) {
+                Plugins.CallEncryptionWidget? encryption_widgets = encryption_entry.get_widget(call.account, audio_encryption);
+                if (encryption_widgets != null) {
+                    title = encryption_widgets.get_title();
+                    icon_name = encryption_widgets.get_icon_name();
+                    show_keys = encryption_widgets.show_keys();
+                }
+            }
+            call_window.bottom_bar.encryption_button.set_info(title, show_keys, audio_encryption, same ? null :video_encryption);
+            call_window.bottom_bar.encryption_button.set_icon(audio_encryption != null, icon_name);
         });
 
         own_video.resolution_changed.connect((width, height) => {

@@ -66,7 +66,7 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
                         stream.get_flag(Xep.Jingle.Flag.IDENTITY).get_session.begin(jingle_sid, (_, res) => {
                             Xep.Jingle.Session? session = stream.get_flag(Xep.Jingle.Flag.IDENTITY).get_session.end(res);
                             if (session == null || !session.contents_map.has_key(content_name)) return;
-                            var encryption = new OmemoContentEncryption() { encryption_ns=NS_URI, encryption_name="OMEMO", our_key=new uint8[0], peer_key=new uint8[0], peer_device_id=device_id_by_jingle_sid[jingle_sid] };
+                            var encryption = new OmemoContentEncryption() { encryption_ns=NS_URI, encryption_name="OMEMO", our_key=new uint8[0], peer_key=new uint8[0], sid=device_id_by_jingle_sid[jingle_sid], jid=iq.from.bare_jid };
                             session.contents_map[content_name].encryptions[NS_URI] = encryption;
 
                             if (iq.stanza.get_deep_attribute(Xep.Jingle.NS_URI + ":jingle", "action") == "session-accept") {
@@ -143,7 +143,7 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
 
         private void on_content_add_received(XmppStream stream, Xep.Jingle.Content content) {
             if (!content_names_by_jingle_sid.has_key(content.session.sid) || content_names_by_jingle_sid[content.session.sid].contains(content.content_name)) {
-                var encryption = new OmemoContentEncryption() { encryption_ns=NS_URI, encryption_name="OMEMO", our_key=new uint8[0], peer_key=new uint8[0], peer_device_id=device_id_by_jingle_sid[content.session.sid] };
+                var encryption = new OmemoContentEncryption() { encryption_ns=NS_URI, encryption_name="OMEMO", our_key=new uint8[0], peer_key=new uint8[0], sid=device_id_by_jingle_sid[content.session.sid], jid=content.peer_full_jid.bare_jid };
                 content.encryptions[encryption.encryption_ns] = encryption;
             }
         }
@@ -188,7 +188,8 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
     }
 
     public class OmemoContentEncryption : Xep.Jingle.ContentEncryption {
-        public int peer_device_id { get; set; }
+        public Jid jid { get; set; }
+        public int sid { get; set; }
     }
 }
 

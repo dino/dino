@@ -75,7 +75,7 @@ namespace Dino {
             call.account = conversation.account;
             call.counterpart = conversation.counterpart;
             call.ourpart = conversation.account.full_jid;
-            call.time = call.local_time = new DateTime.now_utc();
+            call.time = call.local_time = call.end_time = new DateTime.now_utc();
             call.state = Call.State.RINGING;
 
             stream_interactor.get_module(CallStore.IDENTITY).add_call(call, conversation);
@@ -380,7 +380,7 @@ namespace Dino {
                 call.counterpart = from;
             }
             call.account = account;
-            call.time = call.local_time = new DateTime.now_utc();
+            call.time = call.local_time = call.end_time = new DateTime.now_utc();
             call.state = Call.State.RINGING;
 
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(call.counterpart.bare_jid, account, Conversation.Type.CHAT);

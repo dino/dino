@@ -59,9 +59,10 @@ namespace Dino.Plugins.Omemo {
                             message.real_jid = possible_jid;
                         }
 
-                        trust_manager.message_device_id_map[message] = data.sid;
                         message.body = cleartext;
                         message.encryption = Encryption.OMEMO;
+
+                        trust_manager.message_device_id_map[message] = data.sid;
                         return true;
                     } catch (Error e) {
                         debug("Decrypting message from %s/%d failed: %s", possible_jid.to_string(), data.sid, e.message);
