@@ -326,6 +326,14 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 bool right_is_default = false;
                 right.device.properties.get_boolean("is-default", out right_is_default);
 
+                // default DirectSound device on Windows has (NULL) as guid
+                if (left.device.properties.get_string("device.guid") == "(NULL)") {
+                    left_is_default = true;
+                }
+                if (right.device.properties.get_string("device.guid") == "(NULL)") {
+                    right_is_default = true;
+                }
+
                 // Prefer pipewire
                 if (left_is_pipewire && !right_is_pipewire) return -1;
                 if (right_is_pipewire && !left_is_pipewire) return 1;
