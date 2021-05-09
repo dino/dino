@@ -270,7 +270,7 @@ namespace Dino.Plugins.WindowsNotification {
             return AtomicUint.add(ref notification_counter, 1);
         }
 
-        private void run_on_ui(DelegateToUi func) {
+        private void run_on_ui(owned DelegateToUi func) {
             Idle.add(() => { func(); return false; }, GLib.Priority.HIGH);
         }
     }
