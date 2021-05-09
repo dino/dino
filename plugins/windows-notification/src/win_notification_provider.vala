@@ -9,7 +9,7 @@ namespace Dino.Plugins.WindowsNotification {
 
         private delegate void DelegateToUi();
 
-        private static uint notification_counter = 0;
+        private static uint32 notification_counter = 0;
         private ToastNotifier notifier;
         private StreamInteractor stream_interactor;
         private Dino.Application app;
@@ -18,8 +18,9 @@ namespace Dino.Plugins.WindowsNotification {
         
         // we must keep a reference to the notification itself or else their actions are disabled
         private HashMap<uint, ToastNotification> notifications;
-        private Gee.List<uint?> content_notifications;
-        private HashMap<Conversation, Gee.List<uint?>> conversation_notifications;
+        private Gee.List<uint32> content_notifications;
+        private HashMap<Conversation, Gee.List<uint32>> conversation_notifications;
+        private HashMap<Call, uint32> call_notifications;
 
         public WindowsNotificationProvider(Dino.Application app, ToastNotifier notifier) {
             this.notifier = notifier;
@@ -27,7 +28,8 @@ namespace Dino.Plugins.WindowsNotification {
             this.app = app;
             this.marked_for_removal = new Gee.ArrayList<uint?>();
             this.content_notifications = new Gee.ArrayList<uint?>();
-            this.conversation_notifications = new HashMap<Conversation, Gee.List<uint?>>(Conversation.hash_func, Conversation.equals_func);
+            this.conversation_notifications = new HashMap<Conversation, Gee.List<uint32>>(Conversation.hash_func, Conversation.equals_func);
+            this.call_notifications = new HashMap<Call, uint32>(Call.hash_func, Call.equals_func);
             this.notifications = new HashMap<uint, ToastNotification>();
         }
 
@@ -88,7 +90,7 @@ namespace Dino.Plugins.WindowsNotification {
             notifications[notification_id] = notification;
 
             if (!conversation_notifications.has_key(conversation)) {
-                conversation_notifications[conversation] = new ArrayList<uint?>();
+                conversation_notifications[conversation] = new ArrayList<uint32>();
             }
             conversation_notifications[conversation].add(notification_id);
             
@@ -251,6 +253,52 @@ namespace Dino.Plugins.WindowsNotification {
             }
         }
 
+        public async void notify_call(Call call, Conversation conversation, bool video, string conversation_display_name) {
+            string summary = Markup.escape_text(conversation_display_name);
+            string body =  video ? _("Incoming video call") : _("Incoming call");
+
+            var image_path = get_avatar(conversation);
+            var notification = yield new ToastNotificationBuilder()
+                .SetHeader(summary)
+                .SetBody(body)
+                .SetAppLogo(image_path)
+                .AddButton(_("Accept"), "accept-call")
+                .AddButton(_("Deny"), "deny-call", null, ActivationType.Background)
+                .SetScenario(Scenario.IncomingCall)
+                .Build();
+
+            var notification_id = generate_id();
+            notification.Activated((argument, user_input) => {
+                run_on_ui(() => {
+                    if (argument != null) {
+                        app.activate_action(argument, call.id);
+                    } else {
+                        app.activate_action("open-conversation", conversation.id);
+                    }
+                });
+    
+                marked_for_removal.add(notification_id);
+            });
+
+            notification.Dismissed((reason) => marked_for_removal.add(notification_id));
+
+            notification.Failed(() => marked_for_removal.add(notification_id));
+
+            notifications[notification_id] = notification;
+
+            call_notifications[call] = notification_id;
+            
+            notifier.Show(notification);
+        }
+
+        public async void retract_call_notification(Call call, Conversation conversation) {
+            if (call_notifications.has_key(call)) {
+                var notification_id = call_notifications[call];
+                remove_notification(notification_id);
+                call_notifications.unset(call);
+            }
+        }
+
         private void clear_marked() {
             foreach (var id in marked_for_removal) {
                 remove_notification(id);
@@ -266,7 +314,7 @@ namespace Dino.Plugins.WindowsNotification {
             }
         }
 
-        private uint generate_id() {
+        private uint32 generate_id() {
             return AtomicUint.add(ref notification_counter, 1);
         }
 
