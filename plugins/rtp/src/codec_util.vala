@@ -206,7 +206,9 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public static string? get_depay_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
+#if GST_1_16
         if (codec == "vp8") return " wait-for-keyframe=true";
+#endif
         return null;
     }
 
@@ -271,7 +273,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
 
     public Gst.Element? get_decode_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
         string? codec = get_codec_from_payload(media, payload_type);
-        string base_name = name ?? @"encode-$codec-$(Random.next_int())";
+        string base_name = name ?? @"decode_$(codec)_$(Random.next_int())";
         string? desc = get_decode_bin_description(media, codec, payload_type, null, base_name);
         if (desc == null) return null;
         debug("Pipeline to decode %s %s: %s", media, codec, desc);
