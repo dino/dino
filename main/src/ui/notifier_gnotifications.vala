@@ -65,6 +65,25 @@ namespace Dino.Ui {
             }
         }
 
+        public async void notify_call(Call call, Conversation conversation, bool video, string conversation_display_name) {
+            Notification notification = new Notification(conversation_display_name);
+            string body = _("Incoming call");
+            notification.set_body(body);
+            notification.set_urgent(true);
+
+            notification.set_icon(new ThemedIcon.from_names(new string[] {"call-start-symbolic"}));
+
+            notification.set_default_action_and_target_value("app.open-conversation", new Variant.int32(conversation.id));
+            notification.add_button_with_target_value(_("Deny"), "app.deny-call", new Variant.int32(call.id));
+            notification.add_button_with_target_value(_("Accept"), "app.accept-call", new Variant.int32(call.id));
+
+            GLib.Application.get_default().send_notification(call.id.to_string(), notification);
+        }
+
+        private async void retract_call_notification(Call call, Conversation conversation) {
+            GLib.Application.get_default().withdraw_notification(call.id.to_string());
+        }
+
         public async void notify_subscription_request(Conversation conversation) {
             Notification notification = new Notification(_("Subscription request"));
             notification.set_body(conversation.counterpart.to_string());

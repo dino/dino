@@ -29,6 +29,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
         stream_interactor.get_module(FileManager.IDENTITY).received_file.connect(insert_file_transfer);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_received.connect(announce_message);
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(announce_message);
+        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect(insert_call);
+        stream_interactor.get_module(Calls.IDENTITY).call_outgoing.connect(insert_call);
     }
 
     public void init(Conversation conversation, ContentItemCollection item_collection) {
@@ -51,7 +53,6 @@ public class ContentItemStore : StreamInteractionModule, Object {
                     Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
                     if (message != null) {
                         var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
-                        message_item.time = time;
                         items.add(message_item);
                     }
                     break;
@@ -64,6 +65,13 @@ public class ContentItemStore : StreamInteractionModule, Object {
                         }
                         var file_item = new FileItem(file_transfer, conversation, row[db.content_item.id], message);
                         items.add(file_item);
+                    }
+                    break;
+                case 3:
+                    Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(foreign_id);
+                    if (call != null) {
+                        var call_item = new CallItem(call, conversation, row[db.content_item.id]);
+                        items.add(call_item);
                     }
                     break;
             }
@@ -175,6 +183,15 @@ public class ContentItemStore : StreamInteractionModule, Object {
             }
             new_item(item, conversation);
         }
+    }
+
+    private void insert_call(Call call, Conversation conversation) {
+        CallItem item = new CallItem(call, conversation, -1);
+        item.id = db.add_content_item(conversation, call.time, call.local_time, 3, call.id, false);
+        if (collection_conversations.has_key(conversation)) {
+            collection_conversations.get(conversation).insert_item(item);
+        }
+        new_item(item, conversation);
     }
 
     public bool get_item_hide(ContentItem content_item) {
@@ -293,6 +310,22 @@ public class FileItem : ContentItem {
                 return Entities.Message.Marked.WONTSEND;
         }
         assert_not_reached();
+    }
+}
+
+public class CallItem : ContentItem {
+    public const string TYPE = "call";
+
+    public Call call;
+    public Conversation conversation;
+
+    public CallItem(Call call, Conversation conversation, int id) {
+        base(id, TYPE, call.from, call.time, call.encryption, Message.Marked.NONE);
+
+        this.call = call;
+        this.conversation = conversation;
+
+        call.bind_property("encryption", this, "encryption");
     }
 }
 

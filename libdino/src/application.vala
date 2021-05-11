@@ -39,6 +39,8 @@ public interface Application : GLib.Application {
         AvatarManager.start(stream_interactor, db);
         RosterManager.start(stream_interactor, db);
         FileManager.start(stream_interactor, db);
+        Calls.start(stream_interactor, db);
+        CallStore.start(stream_interactor, db);
         ContentItemStore.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
         NotificationEvents.start(stream_interactor);

@@ -110,13 +110,13 @@ public class XmppLog {
 
     public void node(string what, StanzaNode node, XmppStream stream) {
         if (should_log_node(node)) {
-            stderr.printf("%sXMPP %s [%s %p %s]%s\n%s\n", use_ansi ? ANSI_COLOR_WHITE : "", what, ident, stream, new DateTime.now_local().to_string(), use_ansi ? ANSI_COLOR_END : "", use_ansi ? node.to_ansi_string(hide_ns) : node.to_string());
+            stderr.printf("%sXMPP %s [%s stream:%p thread:%p %s]%s\n%s\n", use_ansi ? ANSI_COLOR_WHITE : "", what, ident, stream, Thread.self<Thread>(), new DateTime.now_local().to_string(), use_ansi ? ANSI_COLOR_END : "", use_ansi ? node.to_ansi_string(hide_ns) : node.to_string());
         }
     }
 
     public void str(string what, string str, XmppStream stream) {
         if (should_log_str(str)) {
-            stderr.printf("%sXMPP %s [%s %p %s]%s\n%s\n", use_ansi ? ANSI_COLOR_WHITE : "", what, ident, stream, new DateTime.now_local().to_string(), use_ansi ? ANSI_COLOR_END : "", str);
+            stderr.printf("%sXMPP %s [%s stream:%p thread:%p %s]%s\n%s\n", use_ansi ? ANSI_COLOR_WHITE : "", what, ident, stream, Thread.self<Thread>(), new DateTime.now_local().to_string(), use_ansi ? ANSI_COLOR_END : "", str);
         }
     }
 

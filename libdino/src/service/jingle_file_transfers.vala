@@ -103,7 +103,7 @@ public class JingleFileProvider : FileProvider, Object {
             throw new FileReceiveError.DOWNLOAD_FAILED("Transfer data not available anymore");
         }
         try {
-            jingle_file_transfer.accept(stream);
+            yield jingle_file_transfer.accept(stream);
         } catch (IOError e) {
             throw new FileReceiveError.DOWNLOAD_FAILED("Establishing connection did not work");
         }
@@ -202,8 +202,11 @@ public class JingleFileSender : FileSender, Object {
         if (stream == null) throw new FileSendError.UPLOAD_FAILED("No stream available");
         JingleFileEncryptionHelper? helper = JingleFileHelperRegistry.instance.get_encryption_helper(file_transfer.encryption);
         bool must_encrypt = helper != null && yield helper.can_encrypt(conversation, file_transfer);
+        // TODO(hrxi): Prioritization of transports (and resources?).
         foreach (Jid full_jid in stream.get_flag(Presence.Flag.IDENTITY).get_resources(conversation.counterpart)) {
-            // TODO(hrxi): Prioritization of transports (and resources?).
+            if (full_jid.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid)) {
+                continue;
+            }
             if (!yield stream.get_module(Xep.JingleFileTransfer.Module.IDENTITY).is_available(stream, full_jid)) {
                 continue;
             }

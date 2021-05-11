@@ -198,6 +198,14 @@ public class ConversationSelectorRow : ListBoxRow {
                         message_label.label = (file_is_image ? _("Image received") : _("File received") );
                     }
                     break;
+                case CallItem.TYPE:
+                    CallItem call_item = (CallItem) last_content_item;
+                    Call call = call_item.call;
+
+                    nick_label.label = call.direction == Call.DIRECTION_OUTGOING ? _("Me") + ": " : "";
+                    message_label.attributes.insert(attr_style_new(Pango.Style.ITALIC));
+                    message_label.label = call.direction == Call.DIRECTION_OUTGOING ? _("Outgoing call") : _("Incoming call");
+                    break;
             }
             nick_label.visible = true;
             message_label.visible = true;

@@ -17,7 +17,7 @@ void main(string[] args) {
         Gtk.init(ref args);
         Dino.Ui.Application app = new Dino.Ui.Application() { search_path_generator=search_path_generator };
         Plugins.Loader loader = new Plugins.Loader(app);
-        loader.loadAll();
+        loader.load_all();
 
         app.run(args);
         loader.shutdown();

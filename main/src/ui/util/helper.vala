@@ -122,15 +122,15 @@ public static string get_participant_display_name(StreamInteractor stream_intera
     return Dino.get_participant_display_name(stream_interactor, conversation, participant, me_is_me ? _("Me") : null);
 }
 
-private static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
+public static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
     return Dino.get_real_display_name(stream_interactor, account, jid, me_is_me ? _("Me") : null);
 }
 
-private static string get_groupchat_display_name(StreamInteractor stream_interactor, Account account, Jid jid) {
+public static string get_groupchat_display_name(StreamInteractor stream_interactor, Account account, Jid jid) {
     return Dino.get_groupchat_display_name(stream_interactor, account, jid);
 }
 
-private static string get_occupant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid jid, bool me_is_me = false, bool muc_real_name = false) {
+public static string get_occupant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid jid, bool me_is_me = false, bool muc_real_name = false) {
     return Dino.get_occupant_display_name(stream_interactor, conversation, jid, me_is_me ? _("Me") : null);
 }
 
@@ -192,6 +192,15 @@ public static bool is_24h_format() {
         is24h = p_format.strip() == "" ? 1 : -1;
     }
     return is24h == 1;
+}
+
+public static string format_time(DateTime datetime, string format_24h, string format_12h) {
+    string format = Util.is_24h_format() ? format_24h : format_12h;
+    if (!get_charset(null)) {
+        // No UTF-8 support, use simple colon for time instead
+        format = format.replace("∶", ":");
+    }
+    return datetime.format(format);
 }
 
 public static Regex get_url_regex() {

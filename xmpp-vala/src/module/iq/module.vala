@@ -6,10 +6,15 @@ namespace Xmpp.Iq {
     public class Module : XmppStreamNegotiationModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "iq_module");
 
+        public signal void preprocess_incoming_iq_set_get(XmppStream stream, Stanza iq_stanza);
+        public signal void preprocess_outgoing_iq_set_get(XmppStream stream, Stanza iq_stanza);
+
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
         public async Iq.Stanza send_iq_async(XmppStream stream, Iq.Stanza iq) {
+            assert(iq.type_ == Iq.Stanza.TYPE_GET || iq.type_ == Iq.Stanza.TYPE_SET);
+
             Iq.Stanza? return_stanza = null;
             send_iq(stream, iq, (_, result_iq) => {
                 return_stanza = result_iq;
@@ -21,6 +26,7 @@ namespace Xmpp.Iq {
 
         public delegate void OnResult(XmppStream stream, Iq.Stanza iq);
         public void send_iq(XmppStream stream, Iq.Stanza iq, owned OnResult? listener = null) {
+            preprocess_outgoing_iq_set_get(stream, iq);
             stream.write(iq.stanza);
             if (listener != null) {
                 responseListeners[iq.id] = new ResponseListener((owned) listener);
@@ -68,6 +74,7 @@ namespace Xmpp.Iq {
             } else {
                 Gee.List<StanzaNode> children = node.get_all_subnodes();
                 if (children.size == 1 && namespaceRegistrants.has_key(children[0].ns_uri)) {
+                    preprocess_incoming_iq_set_get(stream, iq);
                     Gee.List<Handler> handlers = namespaceRegistrants[children[0].ns_uri];
                     foreach (Handler handler in handlers) {
                         if (iq.type_ == Iq.Stanza.TYPE_GET) {

@@ -32,9 +32,6 @@ public class FileWidget : SizeRequestBox {
         DEFAULT
     }
 
-    private const int MAX_HEIGHT = 300;
-    private const int MAX_WIDTH = 600;
-
     private StreamInteractor stream_interactor;
     private FileTransfer file_transfer;
     public FileTransfer.State file_transfer_state { get; set; }
