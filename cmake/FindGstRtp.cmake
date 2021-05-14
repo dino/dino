@@ -8,6 +8,11 @@ find_pkg_config_with_fallback(GstRtp
     DEPENDS Gst
 )
 
+if(GstRtp_FOUND AND NOT GstRtp_VERSION)
+    find_package(Gst)
+    set(GstRtp_VERSION ${Gst_VERSION})
+endif()
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GstRtp
     REQUIRED_VARS GstRtp_LIBRARY

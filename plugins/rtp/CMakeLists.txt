@@ -12,7 +12,7 @@ find_packages(RTP_PACKAGES REQUIRED
     GstAudio
 )
 
-if(Gst_VERSION VERSION_GREATER "1.16")
+if(GstRtp_VERSION VERSION_GREATER "1.16")
     set(RTP_DEFINITIONS GST_1_16)
 endif()
 
