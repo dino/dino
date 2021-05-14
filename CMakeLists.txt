@@ -203,6 +203,7 @@ add_subdirectory(qlite)
 add_subdirectory(xmpp-vala)
 add_subdirectory(libdino)
 add_subdirectory(main)
+add_subdirectory(crypto-vala)
 add_subdirectory(plugins)
 
 # uninstall target

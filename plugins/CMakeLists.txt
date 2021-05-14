@@ -16,7 +16,6 @@ if(DINO_PLUGIN_ENABLED_openpgp)
 endif(DINO_PLUGIN_ENABLED_openpgp)
 
 if(DINO_PLUGIN_ENABLED_omemo)
-  add_subdirectory(crypto-vala)
   add_subdirectory(omemo)
   add_subdirectory(signal-protocol)
 endif(DINO_PLUGIN_ENABLED_omemo)
