@@ -72,7 +72,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
         string? encode_element = codec_util.get_encode_element_name(media, codec);
         string? decode_element = codec_util.get_decode_element_name(media, codec);
         if (encode_element == null || decode_element == null) {
-            debug("No suitable encoder or decoder found for %s", codec);
+            warning("No suitable encoder or decoder found for %s", codec);
             unsupported_codecs.add(codec);
             return false;
         }
@@ -83,7 +83,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
             codec_util.mark_element_unsupported(encode_element);
             encode_element = codec_util.get_encode_element_name(media, codec);
             if (encode_element == null) {
-                debug("No suitable encoder found for %s", codec);
+                warning("No suitable encoder found for %s", codec);
                 unsupported_codecs.add(codec);
                 return false;
             }
@@ -97,7 +97,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
             codec_util.mark_element_unsupported(decode_element);
             decode_element = codec_util.get_decode_element_name(media, codec);
             if (decode_element == null) {
-                debug("No suitable decoder found for %s", codec);
+                warning("No suitable decoder found for %s", codec);
                 unsupported_codecs.add(codec);
                 return false;
             }

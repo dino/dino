@@ -212,7 +212,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
         return null;
     }
 
-    public bool is_element_supported(string element_name) {
+    public bool is_element_supported(string? element_name) {
+        if (element_name == null) return false;
         if (unsupported_elements.contains(element_name)) return false;
         if (supported_elements.contains(element_name)) return true;
         var test_element = Gst.ElementFactory.make(element_name, @"test-$element_name");
@@ -220,14 +221,14 @@ public class Dino.Plugins.Rtp.CodecUtil {
             supported_elements.add(element_name);
             return true;
         } else {
-            debug("%s is not supported on this platform", element_name);
+            warning("%s is not supported on this platform", element_name);
             unsupported_elements.add(element_name);
             return false;
         }
     }
 
     public string? get_encode_element_name(string media, string? codec) {
-        if (!is_element_supported(get_pay_element_name(media, codec))) return null;
+        if (get_pay_element_name(media, codec) == null) return null;
         foreach (string candidate in get_encode_candidates(media, codec)) {
             if (is_element_supported(candidate)) return candidate;
         }
@@ -235,12 +236,13 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public string? get_pay_element_name(string media, string? codec) {
-        string candidate = get_pay_candidate(media, codec);
-        if (is_element_supported(candidate)) return candidate;
+        string? candidate = get_pay_candidate(media, codec);
+        if (candidate != null && is_element_supported(candidate)) return candidate;
         return null;
     }
 
     public string? get_decode_element_name(string media, string? codec) {
+        if (get_depay_element_name(media, codec) == null) return null;
         foreach (string candidate in get_decode_candidates(media, codec)) {
             if (is_element_supported(candidate)) return candidate;
         }
@@ -248,8 +250,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public string? get_depay_element_name(string media, string? codec) {
-        string candidate = get_depay_candidate(media, codec);
-        if (is_element_supported(candidate)) return candidate;
+        string? candidate = get_depay_candidate(media, codec);
+        if (candidate != null && is_element_supported(candidate)) return candidate;
         return null;
     }
 
@@ -260,8 +262,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
     public string? get_decode_bin_description(string media, string? codec, JingleRtp.PayloadType? payload_type, string? element_name = null, string? name = null) {
         if (codec == null) return null;
         string base_name = name ?? @"encode-$codec-$(Random.next_int())";
-        string depay = get_depay_element_name(media, codec);
-        string decode = element_name ?? get_decode_element_name(media, codec);
+        string? depay = get_depay_element_name(media, codec);
+        string? decode = element_name ?? get_decode_element_name(media, codec);
         if (depay == null || decode == null) return null;
         string decode_prefix = get_decode_prefix(media, codec, decode, payload_type) ?? "";
         string decode_args = get_decode_args(media, codec, decode, payload_type) ?? "";
@@ -285,8 +287,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
     public string? get_encode_bin_description(string media, string? codec, JingleRtp.PayloadType? payload_type, string? element_name = null, string? name = null) {
         if (codec == null) return null;
         string base_name = name ?? @"encode_$(codec)_$(Random.next_int())";
-        string pay = get_pay_element_name(media, codec);
-        string encode = element_name ?? get_encode_element_name(media, codec);
+        string? pay = get_pay_element_name(media, codec);
+        string? encode = element_name ?? get_encode_element_name(media, codec);
         if (pay == null || encode == null) return null;
         string encode_prefix = get_encode_prefix(media, codec, encode, payload_type) ?? "";
         string encode_args = get_encode_args(media, codec, encode, payload_type) ?? "";
