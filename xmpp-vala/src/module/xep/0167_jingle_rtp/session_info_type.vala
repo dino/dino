@@ -53,7 +53,10 @@ namespace Xmpp.Xep.JingleRtp {
             foreach (Jingle.Content content in session.contents) {
                 Parameters? parameters = content.content_params as Parameters;
                 if (parameters != null && parameters.media == media) {
-                    StanzaNode session_info_content = new StanzaNode.build(node_name, NS_URI).add_self_xmlns().put_attribute("name", content.content_name);
+                    StanzaNode session_info_content = new StanzaNode.build(node_name, NS_URI)
+                            .add_self_xmlns()
+                            .put_attribute("name", content.content_name)
+                            .put_attribute("creator", content.content_creator.to_string());
                     session.send_session_info(session_info_content);
                 }
             }

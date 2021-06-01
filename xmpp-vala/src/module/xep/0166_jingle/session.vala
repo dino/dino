@@ -444,91 +444,70 @@ public class Xmpp.Xep.Jingle.Session : Object {
     internal void send_session_info(StanzaNode child_node) {
         if (state == State.ENDED) return;
 
-        StanzaNode node = new StanzaNode.build("jingle", NS_URI).add_self_xmlns()
-                .put_attribute("action", "session-info")
-                .put_attribute("sid", sid)
-                // TODO put `initiator`?
-                .put_node(child_node);
-        Iq.Stanza iq = new Iq.Stanza.set(node) { to=peer_full_jid };
+        StanzaNode jingle_node = build_outer_session_node("session-info").put_node(child_node);
+        Iq.Stanza iq = new Iq.Stanza.set(jingle_node) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
     }
 
     internal void send_content_modify(Content content, Senders senders) {
         if (state == State.ENDED) return;
 
-        StanzaNode node = new StanzaNode.build("jingle", NS_URI).add_self_xmlns()
-                .put_attribute("action", "content-modify")
-                .put_attribute("sid", sid)
-                .put_node(new StanzaNode.build("content", NS_URI)
-                    .put_attribute("creator", content.content_creator.to_string())
-                    .put_attribute("name", content.content_name)
+        StanzaNode jingle_node = build_outer_session_node("content-modify")
+                .put_node(content.build_outer_content_node()
                     .put_attribute("senders", senders.to_string()));
-        Iq.Stanza iq = new Iq.Stanza.set(node) { to=peer_full_jid };
+
+        Iq.Stanza iq = new Iq.Stanza.set(jingle_node) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
     }
 
     internal void send_transport_accept(Content content, TransportParameters transport_params) {
         if (state == State.ENDED) return;
 
-        StanzaNode jingle_response = new StanzaNode.build("jingle", NS_URI)
-                .add_self_xmlns()
-                .put_attribute("action", "transport-accept")
-                .put_attribute("sid", sid)
-                .put_node(new StanzaNode.build("content", NS_URI)
-                .put_attribute("creator", "initiator")
-                .put_attribute("name", content.content_name)
-                .put_node(transport_params.to_transport_stanza_node("transport-accept"))
-        );
-        Iq.Stanza iq_response = new Iq.Stanza.set(jingle_response) { to=peer_full_jid };
+        StanzaNode jingle_node = build_outer_session_node("transport-accept")
+                .put_node(content.build_outer_content_node()
+                    .put_node(transport_params.to_transport_stanza_node("transport-accept")));
+
+        Iq.Stanza iq_response = new Iq.Stanza.set(jingle_node) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq_response);
     }
 
     internal void send_transport_replace(Content content, TransportParameters transport_params) {
         if (state == State.ENDED) return;
 
-        StanzaNode jingle = new StanzaNode.build("jingle", NS_URI)
-                .add_self_xmlns()
-                .put_attribute("action", "transport-replace")
-                .put_attribute("sid", sid)
-                .put_node(new StanzaNode.build("content", NS_URI)
-                .put_attribute("creator", "initiator")
-                .put_attribute("name", content.content_name)
-                .put_node(transport_params.to_transport_stanza_node("transport-replace"))
-        );
-        Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
+        StanzaNode jingle_node = build_outer_session_node("transport-replace")
+                .put_node(content.build_outer_content_node()
+                    .put_node(transport_params.to_transport_stanza_node("transport-replace")));
+
+        Iq.Stanza iq = new Iq.Stanza.set(jingle_node) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
     }
 
     internal void send_transport_reject(Content content, StanzaNode transport_node) {
         if (state == State.ENDED) return;
 
-        StanzaNode jingle_response = new StanzaNode.build("jingle", NS_URI)
-                .add_self_xmlns()
-                .put_attribute("action", "transport-reject")
-                .put_attribute("sid", sid)
-                .put_node(new StanzaNode.build("content", NS_URI)
-                .put_attribute("creator", "initiator")
-                .put_attribute("name", content.content_name)
-                .put_node(transport_node)
-        );
-        Iq.Stanza iq_response = new Iq.Stanza.set(jingle_response) { to=peer_full_jid };
+        StanzaNode jingle_node = build_outer_session_node("transport-reject")
+                .put_node(content.build_outer_content_node().put_node(transport_node));
+
+        Iq.Stanza iq_response = new Iq.Stanza.set(jingle_node) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq_response);
     }
 
     internal void send_transport_info(Content content, StanzaNode transport) {
         if (state == State.ENDED) return;
 
-        StanzaNode jingle = new StanzaNode.build("jingle", NS_URI)
-                .add_self_xmlns()
-                .put_attribute("action", "transport-info")
-                .put_attribute("sid", sid)
-                .put_node(new StanzaNode.build("content", NS_URI)
-                .put_attribute("creator", "initiator")
-                .put_attribute("name", content.content_name)
-                .put_node(transport)
-        );
-        Iq.Stanza iq = new Iq.Stanza.set(jingle) { to=peer_full_jid };
+        StanzaNode jingle_node = build_outer_session_node("transport-info")
+                .put_node(content.build_outer_content_node().put_node(transport));
+
+        Iq.Stanza iq = new Iq.Stanza.set(jingle_node) { to=peer_full_jid };
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
+    }
+
+    private StanzaNode build_outer_session_node(string action) {
+        return new StanzaNode.build("jingle", NS_URI)
+                .add_self_xmlns()
+                .put_attribute("action", action)
+                .put_attribute("initiator", we_initiated ? local_full_jid.to_string() : peer_full_jid.to_string())
+                .put_attribute("sid", sid);
     }
 
     public bool senders_include_us(Senders senders) {

@@ -229,6 +229,12 @@ public class Xmpp.Xep.Jingle.Content : Object {
     public void send_transport_info(StanzaNode transport) {
         session.send_transport_info(this, transport);
     }
+
+    internal StanzaNode build_outer_content_node() {
+        return new StanzaNode.build("content", NS_URI)
+                .put_attribute("creator", content_creator.to_string())
+                .put_attribute("name", content_name);
+    }
 }
 
 public class Xmpp.Xep.Jingle.ContentEncryption : Object {
