@@ -138,10 +138,11 @@ public class FileProvider : Dino.FileProvider, Object {
     }
 
     private string extract_file_name_from_url(string url) {
-        string ret = Uri.unescape_string(url.substring(url.last_index_of("/") + 1));
+        string ret = url;
         if (ret.contains("#")) {
             ret = ret.substring(0, ret.last_index_of("#"));
         }
+        ret = Uri.unescape_string(ret.substring(ret.last_index_of("/") + 1));
         return ret;
     }
 
