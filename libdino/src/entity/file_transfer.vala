@@ -45,7 +45,18 @@ public class FileTransfer : Object {
         }
     }
 
-    public string file_name { get; set; }
+    private string file_name_;
+    public string file_name {
+        get { return file_name_; }
+        set {
+            file_name_ = Path.get_basename(value);
+            if (file_name_ == Path.DIR_SEPARATOR_S || file_name_ == ".") {
+                file_name_ = "unknown filename";
+            } else if (file_name_.has_prefix(".")) {
+                file_name_ = "_" + file_name_;
+            }
+        }
+    }
     private string? server_file_name_ = null;
     public string server_file_name {
         get { return server_file_name_ ?? file_name; }
