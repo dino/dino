@@ -63,9 +63,7 @@ public class AddAccountDialog : Gtk.Dialog {
     [GtkChild] private Button success_continue_button;
 
     private static string[] server_list = new string[]{
-        "5222.de",
         "jabber.fr",
-        "movim.eu",
         "yax.im"
     };
 
