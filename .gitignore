@@ -6,3 +6,9 @@ Makefile
 .idea
 .sqlite3
 gschemas.compiled
+
+/appimage-builder-cache
+/AppDir
+.directory
+
+*.AppImage

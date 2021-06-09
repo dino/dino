@@ -11,3 +11,24 @@ jobs:
       - run: make
       - run: build/xmpp-vala-test
       - run: build/signal-protocol-vala-test
+
+  Appimage:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare AppImage build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace
+          sudo wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool
+          sudo chmod +x /usr/local/bin/appimagetool
+          sudo pip3 install appimage-builder
+    
+      - name: Build AppImage
+        run: appimage-builder --skip-test
+          
+      - name: Save AppImage
+        uses: actions/upload-artifact@master
+        with:
+          name: Dino_Appimage
+          path: ./*.AppImage
