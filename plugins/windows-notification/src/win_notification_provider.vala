@@ -14,7 +14,7 @@ namespace Dino.Plugins.WindowsNotification {
         private StreamInteractor stream_interactor;
         private Dino.Application app;
 
-        private Gee.List<uint?> marked_for_removal;
+        private Gee.List<uint32> marked_for_removal;
         
         // we must keep a reference to the notification itself or else their actions are disabled
         private HashMap<uint, ToastNotification> notifications;
@@ -26,8 +26,8 @@ namespace Dino.Plugins.WindowsNotification {
             this.notifier = notifier;
             this.stream_interactor = app.stream_interactor;
             this.app = app;
-            this.marked_for_removal = new Gee.ArrayList<uint?>();
-            this.content_notifications = new Gee.ArrayList<uint?>();
+            this.marked_for_removal = new Gee.ArrayList<uint32>();
+            this.content_notifications = new Gee.ArrayList<uint32>();
             this.conversation_notifications = new HashMap<Conversation, Gee.List<uint32>>(Conversation.hash_func, Conversation.equals_func);
             this.call_notifications = new HashMap<Call, uint32>(Call.hash_func, Call.equals_func);
             this.notifications = new HashMap<uint, ToastNotification>();
