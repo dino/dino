@@ -7,6 +7,7 @@ public class Settings : Object {
     public Settings.from_db(Database db) {
         this.db = db;
 
+        prefer_omemo_ = col_to_bool_or_default("prefer_omemo", true);
         send_typing_ = col_to_bool_or_default("send_typing", true);
         send_marker_ = col_to_bool_or_default("send_marker", true);
         notifications_ = col_to_bool_or_default("notifications", true);
@@ -76,6 +77,18 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
+        }
+    }
+
+    private bool prefer_omemo_;
+    public bool prefer_omemo {
+        get { return prefer_omemo_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "prefer_omemo", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            prefer_omemo_ = value;
         }
     }
 }

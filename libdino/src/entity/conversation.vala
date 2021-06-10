@@ -50,6 +50,7 @@ public class Conversation : Object {
         this.account = account;
         this.counterpart = jid;
         this.type_ = type;
+        this.encryption = get_default_encryption();
     }
 
     public Conversation.from_row(Database db, Qlite.Row row) throws InvalidJidError {
@@ -74,6 +75,19 @@ public class Conversation : Object {
         send_marker = (Setting) row[db.conversation.send_marker];
 
         notify.connect(on_update);
+        var enc = get_default_encryption();
+
+        if (enc != encryption)
+            encryption = enc;
+    }
+
+    public Encryption get_default_encryption() {
+        if (this.encryption == Encryption.NONE
+                && Application.get_default().settings.prefer_omemo) {
+            return Encryption.OMEMO;
+        }
+
+        return encryption;
     }
 
     public void persist(Database db) {
