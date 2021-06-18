@@ -48,11 +48,13 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         device_monitor.get_bus().add_watch(Priority.DEFAULT, on_device_monitor_message);
         device_monitor.start();
         foreach (Gst.Device device in device_monitor.get_devices()) {
-            if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) continue;
-            if (device.properties.get_string("device.api") == "wasapi") continue;
-            if (device.properties.get_string("device.class") == "monitor") continue;
-            if (devices.any_match((it) => it.matches(device))) continue;
-            devices.add(new Device(this, device));
+            if (device.properties != null) {
+                if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) continue;
+                if (device.properties.get_string("device.api") == "wasapi") continue;
+                if (device.properties.get_string("device.class") == "monitor") continue;
+                if (devices.any_match((it) => it.matches(device))) continue;
+                devices.add(new Device(this, device));
+            }
         }
 
         pipe = new Gst.Pipeline(null);
@@ -186,6 +188,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         switch (message.type) {
             case Gst.MessageType.DEVICE_ADDED:
                 message.parse_device_added(out device);
+                if (device.properties == null) return Source.CONTINUE;
                 if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
                 if (device.properties.get_string("device.api") == "wasapi") return Source.CONTINUE;
                 if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
@@ -195,6 +198,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 #if GST_1_16
             case Gst.MessageType.DEVICE_CHANGED:
                 message.parse_device_changed(out device, out old_device);
+                if (device.properties == null) return Source.CONTINUE;
                 if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
                 if (device.properties.get_string("device.api") == "wasapi") return Source.CONTINUE;
                 if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
@@ -204,6 +208,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 #endif
             case Gst.MessageType.DEVICE_REMOVED:
                 message.parse_device_removed(out device);
+                if (device.properties == null) return Source.CONTINUE;
                 if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
                 if (device.properties.get_string("device.api") == "wasapi") return Source.CONTINUE;
                 if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
@@ -212,19 +217,22 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 break;
         }
         if (device != null) {
-            switch (device.device_class) {
-                case "Audio/Source":
-                    devices_changed("audio", false);
-                    break;
-                case "Audio/Sink":
-                    devices_changed("audio", true);
-                    break;
-                case "Video/Source":
-                    devices_changed("video", false);
-                    break;
-                case "Video/Sink":
-                    devices_changed("video", true);
-                    break;
+            string type = null;
+            if (device.has_classes("Audio")) {
+                type = "audio";
+            } else if (device.has_classes("Video")) {
+                type = "video";
+            }
+
+            bool? is_sink = null;
+            if (device.has_classes("Source")) {
+                is_sink = false;
+            } else if (device.has_classes("Sink")) {
+                is_sink = true;
+            }
+
+            if (type != null && is_sink != null) {
+                devices_changed(type, is_sink);
             }
         }
         return Source.CONTINUE;
