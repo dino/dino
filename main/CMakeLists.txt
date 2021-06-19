@@ -211,8 +211,20 @@ OPTIONS
     ${MAIN_EXTRA_OPTIONS}
 )
 
-add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DDINO_VERSION=\"${PROJECT_VERSION}\")
-add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c)
+if (PROJECT_VERSION MATCHES "([0-9]+)[.]([0-9]+)[.]([0-9]+)")
+    set(DINO_NUMERIC_VERSION "${CMAKE_MATCH_1},${CMAKE_MATCH_2},${CMAKE_MATCH_3},0")
+else()
+    set(DINO_NUMERIC_VERSION "0,0,0,0")
+endif ()
+
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DDINO_VERSION=\"${PROJECT_VERSION}\" -DDINO_NUMERIC_VERSION=${DINO_NUMERIC_VERSION})
+if(WIN32)
+    add_link_options("-Wl,--export-all-symbols")
+    set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> --use-temp-file -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
+    add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c dino-info.rc)
+else(WIN32)
+    add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET} src/emojichooser.c)
+endif(WIN32)
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_include_directories(dino PRIVATE src)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})

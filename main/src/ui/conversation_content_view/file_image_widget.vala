@@ -46,7 +46,7 @@ public class FileImageWidget : EventBox {
         if (image == null) throw new Error(-1, 0, "Error loading image");
 
         FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-        string? mime_type = file_info.get_content_type();
+        string? mime_type = Dino.Util.get_content_type(file_info);
 
         file_default_widget = new FileDefaultWidget() { valign=Align.END, vexpand=false };
         file_default_widget.stack_event_box.visible = false;

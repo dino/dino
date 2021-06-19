@@ -165,7 +165,7 @@ public class FileDefaultWidgetController : Object {
             case FileTransfer.State.COMPLETE:
                 if (event_button.button == 1) {
                     try{
-                        AppInfo.launch_default_for_uri(file_uri, null);
+                        Dino.Util.launch_default_for_uri(file_uri);
                     } catch (Error err) {
                         warning("Failed to open %s - %s", file_uri, err.message);
                     }

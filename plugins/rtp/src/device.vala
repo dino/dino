@@ -17,19 +17,19 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         return plugin.pipe;
     }}
     public string? media { get {
-        if (device.device_class.has_prefix("Audio/")) {
+        if (device.has_classes("Audio")) {
             return "audio";
-        } else if (device.device_class.has_prefix("Video/")) {
+        } else if (device.has_classes("Video")) {
             return "video";
         } else {
             return null;
         }
     }}
     public bool is_source { get {
-        return device.device_class.has_suffix("/Source");
+        return device.has_classes("Source");
     }}
     public bool is_sink { get {
-        return device.device_class.has_suffix("/Sink");
+        return device.has_classes("Sink");
     }}
 
     private Gst.Element element;
