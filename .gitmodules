@@ -2,6 +2,3 @@
 	path = plugins/signal-protocol/libsignal-protocol-c
 	url = https://github.com/WhisperSystems/libsignal-protocol-c.git
 	branch = v2.3.3
-[submodule "plugins/windows-notification/yolort-builder"]
-	path = plugins/windows-notification/yolort-builder
-	url = https://github.com/Yuubi-san/YoloRT.git
