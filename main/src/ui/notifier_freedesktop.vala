@@ -10,6 +10,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
     private StreamInteractor stream_interactor;
     private DBusNotifications dbus_notifications;
     private bool supports_body_markup = false;
+    private bool supports_body_hyperlinks = false;
 
     private HashMap<Conversation, uint32> content_notifications = new HashMap<Conversation, uint32>(Conversation.hash_func, Conversation.equals_func);
     private HashMap<Conversation, Gee.List<uint32>> conversation_notifications = new HashMap<Conversation, Gee.List<uint32>>(Conversation.hash_func, Conversation.equals_func);
@@ -30,6 +31,9 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
             switch (cap) {
                 case "body-markup":
                     supports_body_markup = true;
+                    break;
+                case "body-hyperlinks":
+                    supports_body_hyperlinks = true;
                     break;
             }
         }
@@ -65,7 +69,15 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
     }
 
     public async void notify_message(Message message, Conversation conversation, string conversation_display_name, string? participant_display_name) {
-        string body = supports_body_markup ? Markup.escape_text(message.body) : message.body;
+        string body  = "";
+        if(supports_body_hyperlinks){
+            body = Util.parse_add_markup(message.body, null, true, true);
+        }else{
+            if (supports_body_markup)
+                body = Markup.escape_text(message.body);
+            else
+                body = message.body;
+        }
         yield notify_content_item(conversation, conversation_display_name, participant_display_name, body);
     }
 
@@ -119,6 +131,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         hash_table["image-path"] = "call-start-symbolic";
         hash_table["sound-name"] = new Variant.string("phone-incoming-call");
         hash_table["urgency"] = new Variant.byte(2);
+        hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
         string[] actions = new string[] {"default", "Open conversation", "reject", _("Reject"), "accept", _("Accept")};
         try {
             uint32 notification_id = dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
