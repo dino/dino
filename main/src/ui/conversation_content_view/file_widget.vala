@@ -195,7 +195,7 @@ public class FileDefaultWidgetController : Object {
                     try {
                         (save_dialog as Gtk.FileChooser).set_file (GLib.File.new_for_path (GLib.Path.build_filename (file_uri.substring(7))));
                     } catch (GLib.Error error) {
-                        warning("Faild to open save dialog: %s\n", error.message);
+                        warning("Failed to open save dialog: %s\n", error.message);
                     }
                     save_dialog.response.connect(save_as);
                     save_dialog.show();
