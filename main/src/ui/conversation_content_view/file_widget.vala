@@ -160,6 +160,24 @@ public class FileDefaultWidgetController : Object {
         widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.size);
     }
 
+    private void save_as(Gtk.Dialog dialog, int response_id) {
+        var save_dialog = dialog as Gtk.FileChooserDialog;
+        File file_src;
+        switch (response_id) {
+            case Gtk.ResponseType.ACCEPT:
+                file_src = GLib.File.new_for_path (GLib.Path.build_filename (file_uri.substring(7)));
+                    try{
+                        file_src.copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);	
+                    } catch (Error err) {
+                        warning("Failed copy file %s - %s", file_uri, err.message);
+                    }
+            break;
+            default:
+            break;
+        }
+        dialog.destroy ();
+    }
+
     private bool on_clicked(EventButton event_button) {
         switch (state) {
             case FileTransfer.State.COMPLETE:
@@ -169,6 +187,18 @@ public class FileDefaultWidgetController : Object {
                     } catch (Error err) {
                         warning("Failed to open %s - %s", file_uri, err.message);
                     }
+                }
+                if (event_button.button == 3) {
+                    var save_dialog = new Gtk.FileChooserDialog ("Save as file", this as Gtk.Window, Gtk.FileChooserAction.SAVE, Gtk.Stock.CANCEL, Gtk.ResponseType.CANCEL, Gtk.Stock.SAVE, Gtk.ResponseType.ACCEPT);
+                    save_dialog.set_do_overwrite_confirmation (true);
+                    save_dialog.set_modal(true);
+                    try {
+                        (save_dialog as Gtk.FileChooser).set_file (GLib.File.new_for_path (GLib.Path.build_filename (file_uri.substring(7))));
+                    } catch (GLib.Error error) {
+                        warning("Faild to open save dialog: %s\n", error.message);
+                    }
+                    save_dialog.response.connect(save_as);
+                    save_dialog.show();
                 }
                 break;
             case FileTransfer.State.NOT_STARTED:
