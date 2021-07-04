@@ -10,8 +10,7 @@ class SettingsDialog : Dialog {
     [GtkChild] private CheckButton notification_checkbutton;
     [GtkChild] private CheckButton emoji_checkbutton;
     [GtkChild] private CheckButton check_spelling_checkbutton;
-    [GtkChild] private CheckButton auto_preview_checkbutton;
-    
+    [GtkChild] private CheckButton auto_preview_checkbutton;    
 
     Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
@@ -34,4 +33,5 @@ class SettingsDialog : Dialog {
         auto_preview_checkbutton.toggled.connect(() => { settings.auto_preview = auto_preview_checkbutton.active; });
     }
 }
+
 }
