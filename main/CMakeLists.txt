@@ -13,6 +13,7 @@ find_packages(MAIN_PACKAGES REQUIRED
     GTK3
     ICU
     Gspell
+    Soup
 )
 
 set(RESOURCE_LIST
@@ -173,6 +174,7 @@ SOURCES
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/message_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
+    src/ui/conversation_content_view/preview_viewer.vala
 
     src/ui/conversation_titlebar/call_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala

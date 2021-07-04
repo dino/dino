@@ -72,8 +72,7 @@ public class MessageMetaItem : ContentMetaItem {
     }
 }
 
-public class MessageItemWidget : SizeRequestBin {
-
+public class MessageItemWidget : SizeRequestBox {
     public signal void edit_cancelled();
     public signal void edit_sent(string text);
 
@@ -93,6 +92,8 @@ public class MessageItemWidget : SizeRequestBin {
         this.add(label);
         label.activate_link.connect(on_label_activate_link);
         this.size_request_mode = SizeRequestMode.HEIGHT_FOR_WIDTH;
+        this.orientation = Gtk.Orientation.VERTICAL;
+        this.homogeneous = false;
     }
 
     public MessageItemWidget(StreamInteractor stream_interactor, ContentItem content_item) {
@@ -145,6 +146,39 @@ public class MessageItemWidget : SizeRequestBin {
 
     public void update_label() {
         label.label = generate_markup_text(content_item);
+        generate_previews(content_item);
+    }
+    
+    private void generate_previews(ContentItem item){
+        MessageItem message_item = item as MessageItem;
+        var text = message_item.message.body;
+
+        foreach (var widget in get_children()){
+            if(widget is PreviewWidget)
+                remove(widget);
+        }       
+
+        MatchInfo match_info;
+        Util.get_url_regex().match(text, 0, out match_info);
+        while (match_info.matches()) {
+            int start, end;
+            match_info.fetch_pos(0, out start, out end);
+            string link = text[start:end];
+            try{
+                var prase =GLib.Uri.parse(link,GLib.UriFlags.NONE);
+                if (prase.get_scheme ()  == "https"||prase.get_scheme ()  == "http"){
+                    pack_end(new PreviewWidget(link,Dino.Application.get_default().settings.auto_preview ),false);
+                } 
+            }catch (Error e) {
+                warning(e.message);
+            }
+            try{
+                match_info.next();
+            }catch (GLib.RegexError e) {
+                warning(@"Regex Error - $(e.message)");
+                return;
+            }
+        }
     }
 
     private string generate_markup_text(ContentItem item) {
@@ -161,7 +195,7 @@ public class MessageItemWidget : SizeRequestBin {
         if (message.body.has_prefix("/me ")) {
             markup_text = markup_text.substring(4);
         }
-
+        
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             markup_text = Util.parse_add_markup(markup_text, conversation.nickname, true, true);
         } else {

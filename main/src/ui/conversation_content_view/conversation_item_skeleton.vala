@@ -123,6 +123,11 @@ public class ItemMetaDataHeader : Box {
 
         update_name_label();
         name_label.style_updated.connect(update_name_label);
+        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
+            if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
+                update_name_label();
+            }
+        });
 
         conversation.notify["encryption"].connect(update_unencrypted_icon);
         item.notify["encryption"].connect(update_encryption_icon);
