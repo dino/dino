@@ -127,6 +127,11 @@ public class MessageItemWidget : SizeRequestBox {
                 unset_edit_mode();
             });
         }
+        foreach (var widget in get_children()){
+            if(widget is PreviewWidget){
+                widget.visible= false;
+            }
+        }
 
         edit_mode.chat_text_view.text_view.buffer.text = message.body;
 
@@ -142,15 +147,20 @@ public class MessageItemWidget : SizeRequestBox {
         label.grab_focus();
         label.selectable = false;
         label.selectable = true;
+        foreach (var widget in get_children()){
+            if(widget is PreviewWidget){
+                widget.visible= true;
+            }
+        }
     }
 
     public void update_label() {
         label.label = generate_markup_text(content_item);
-        generate_previews(content_item);
+        Idle.add(()=>{generate_previews(); return false;});
     }
     
-    private void generate_previews(ContentItem item){
-        MessageItem message_item = item as MessageItem;
+    private void generate_previews(){
+        MessageItem message_item = content_item as MessageItem;
         var text = message_item.message.body;
 
         foreach (var widget in get_children()){

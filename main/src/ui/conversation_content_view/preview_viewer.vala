@@ -2,6 +2,7 @@ using Gdk;
 using Gtk;
 namespace Dino.Ui.ConversationSummary {
 public class PreviewDownloadManager:Object{
+    const int max_size = 16*1024*1024;
     static Soup.Session sesion ;
     public delegate void DataCallback (File file);   
     private static HashTable<string,PreviewDownloadInProgess> downloadsInProgess ;
@@ -10,7 +11,7 @@ public class PreviewDownloadManager:Object{
         lock(downloadsInProgess){
             if(downloadsInProgess==null){
                 sesion = new Soup.Session();
-                sesion.add_feature(new Soup.ContentSniffer());
+                sesion.user_agent ="RandomPreviewGenerator/0.0 (sojuz151@gmail.com) "; //wikipeida likes this
                 downloadsInProgess =  new HashTable<string,PreviewDownloadInProgess>(str_hash, str_equal);
             }
             PreviewDownloadInProgess dip;
@@ -27,19 +28,23 @@ public class PreviewDownloadManager:Object{
         public enum Status{
             NOTSTARTED,
             INPROGRESS,
-            FINISHED
+            FINISHED,
         }
         public Status status;
-        public signal void finished_event (File file);
+        public signal void finished_event (File file,string? error_info);
         public Mutex mutex = Mutex();
         public File file ;
-        string uri;
 
+        string uri;
+        public string? error_message = null;
+        private static string get_storage_dir(){
+            return  Path.build_filename(Environment.get_user_cache_dir(), "dino","previews");
+        }
         public PreviewDownloadInProgess(string uri){
             this.uri = uri;
 
             var checsum = GLib.Checksum.compute_for_string(GLib.ChecksumType.SHA256,uri );
-            var path = Path.build_filename(Dino.get_storage_dir(), "files", checsum);
+            var path = Path.build_filename(get_storage_dir(), checsum);
             file = File.new_for_path(path);            
             if(GLib.FileUtils.test(path,GLib.FileTest.EXISTS)){
                 status = Status.FINISHED;                 
@@ -47,35 +52,62 @@ public class PreviewDownloadManager:Object{
                 status =  Status.NOTSTARTED;
             }
         }
-        
+        private async void download_routin( Soup.Message message){
+            try{                
+                var ns = yield sesion.send_async(message);
+                uint8[] line ;  
+                DirUtils.create_with_parents(get_storage_dir(), 0700);
+                FileOutputStream fs = file.create (FileCreateFlags.PRIVATE);
+                var file_size = message.response_headers.get_content_length();
+                if (file_size>max_size){
+                    error_message=@"File too big ($file_size bytes)";
+                }else{
+                    file_size=0;
+                    while( (line= (yield ns.read_bytes_async(1024)).get_data())!=null){
+                        file_size+=1024;
+                        if (file_size>max_size){
+                            error_message=@"File too big ($file_size bytes)";
+                            break;
+                        }
+                        fs.write(line);
+                    }
+                }
 
+            }
+            catch (Error e) {
+                error_message=@"Failed, error code $(e.message)";
+            }
+            if (message.status_code!= Soup.Status.OK){
+                error_message=@"Failed, status code $(message.status_code)";
+            }
+            if (error_message!=null){
+                sesion.cancel_message(message,Soup.Status.CANCELLED);
+                try {
+                    yield file.delete_async();
+                } catch (Error e) {
+
+                }
+                
+            }
+            mutex.lock();
+            status= Status.FINISHED;
+            this.finished_event(file,error_message);
+            mutex.unlock();
+            message.unref();    
+        }
+        
         public void start_download(){
             status = Status.INPROGRESS;
-            Soup.Message message =new  Soup.Message("GET", uri);  
+            var message =new  Soup.Message("GET", uri);  
             message.ref();
-            sesion.queue_message(message,(sesion,msg)=>{
-                try{
-                    FileOutputStream os = file.create (FileCreateFlags.PRIVATE);
-                    os.write_async.begin(msg.response_body.data,GLib.Priority.DEFAULT,null,(obj, res) => {
-                        mutex.lock();
-                        status= Status.FINISHED;
-                        this.finished_event(file);
-                        mutex.unlock();
-                        message.unref();                        
-                    });
-                }catch (Error e) {
-                    warning(e.message);
-                }
-            }); 
+            download_routin.begin(message);
         }
     }
 }              
 
 public class PreviewWidget:Frame{   
-
     static Regex regex_zalgo = /< *meta[^<]*property= *"og:([^"]+)"[^<]*content= *"([^"]+)"/;
     static Regex regex_title = /<title>(.*?)<\/title>/;
-    public delegate void DataCallback (File file);
 
     public string uri;
 
@@ -112,7 +144,7 @@ public class PreviewWidget:Frame{
                 break;
             }
             case FINISHED:{
-                handle_file.begin(dip.file);
+                handle_file.begin(dip.file,dip.error_message);
                 break;
             }
         }
@@ -184,14 +216,18 @@ public class PreviewWidget:Frame{
                     break;    
                 }
                 case FINISHED:{
-                    add_minature.begin(dip.file);
+                    add_minature.begin(dip.file,dip.error_message);
                     break;
                 }
             }        
             dip.mutex.unlock();
         }
     }
-    private async void add_minature(File file){
+    private async void add_minature(File file,string? error_info ){
+        if (error_info!=null){
+            (get_child() as Gtk.Box).pack_start(new Label(error_info){visible=true},false);
+            return;
+        }
         Thread<ScalingImage?> thread = new Thread<ScalingImage?> (null, () => {
             ScalingImage image = new ScalingImage() { halign=Align.START, visible = true, max_width = 300, max_height = 100 };
             Gdk.Pixbuf pixbuf;
@@ -216,7 +252,7 @@ public class PreviewWidget:Frame{
         var box = get_child() as Gtk.Box;
         box.pack_start(image,false);
     }
-    static bool is_mime_image(string type){
+    public static  bool is_mime_image(string type){
         foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
             foreach (string mime_type in pixbuf_format.get_mime_types()) {
                 if (mime_type == type) {
@@ -231,8 +267,14 @@ public class PreviewWidget:Frame{
         fiw.load_from_file.begin (file,"Preview",600,300,()=>{this.add(fiw);});
     }
 
-    public async void handle_file(File file ){       
+    public async void handle_file(File file,string? error_info ){       
         try {
+            if(get_child()!=null)
+                remove(get_child()); 
+            if (error_info!=null){
+                add(new Label(error_info){visible=true});
+                return;
+            }
             var os = new DataInputStream(yield  file.read_async());     
             uint8[] line ;  
             var buffer = new ByteArray();
@@ -241,16 +283,13 @@ public class PreviewWidget:Frame{
             }
             bool isOk ;
             var mime = ContentType.guess(null,buffer.data,out isOk);
-            if(get_child()!=null)
-                remove(get_child());    
+   
             if(mime.to_string()=="text/html"){
                 handle_OGP(buffer);
             }else if (is_mime_image(mime.to_string())){
                 handle_image(file);
-            }
-            else{
-                this.add(new Label(@"No preview for $mime"));
-            }
+            }else
+                add(new Label(@"Unsuported mime type $mime"){visible=true});
         } catch (Error e) {
             warning(e.message);
         }
