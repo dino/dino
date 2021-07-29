@@ -437,6 +437,9 @@ populate_emoji_chooser (gpointer data)
   if (!chooser->data)
     {
       bytes = g_resources_lookup_data ("/org/gtk/libgtk/emoji/emoji.data", 0, NULL);
+      if (bytes == NULL) {
+        bytes = g_resources_lookup_data ("/org/gtk/libgtk/emoji/en.data", 0, NULL);
+      }
       chooser->data = g_variant_ref_sink (g_variant_new_from_bytes (G_VARIANT_TYPE ("a(auss)"), bytes, TRUE));
     }
 
