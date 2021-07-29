@@ -104,7 +104,7 @@ public class ItemMetaDataHeader : Box {
     [GtkChild] public Label dot_label;
     [GtkChild] public Label time_label;
     public Image received_image = new Image() { opacity=0.4 };
-    public Image? unencrypted_image = null;
+    public Widget? encryption_image = null;
 
     public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON", 17, 12);
 
@@ -124,27 +124,9 @@ public class ItemMetaDataHeader : Box {
         update_name_label();
         name_label.style_updated.connect(update_name_label);
 
-        Application app = GLib.Application.get_default() as Application;
-
-        ContentMetaItem ci = item as ContentMetaItem;
-        if (ci != null) {
-            foreach(var e in app.plugin_registry.encryption_list_entries) {
-                if (e.encryption == item.encryption) {
-                    Object? w = e.get_encryption_icon(conversation, ci.content_item);
-                    if (w != null) {
-                        this.add(w as Widget);
-                    } else {
-                        Image image = new Image.from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER) { opacity=0.4, visible = true };
-                        this.add(image);
-                    }
-                    break;
-                }
-            }
-        }
-        if (item.encryption == Encryption.NONE) {
-            conversation.notify["encryption"].connect(update_unencrypted_icon);
-            update_unencrypted_icon();
-        }
+        conversation.notify["encryption"].connect(update_unencrypted_icon);
+        item.notify["encryption"].connect(update_encryption_icon);
+        update_encryption_icon();
 
         this.add(received_image);
 
@@ -157,17 +139,51 @@ public class ItemMetaDataHeader : Box {
         update_received_mark();
     }
 
+    private void update_encryption_icon() {
+        Application app = GLib.Application.get_default() as Application;
+
+        ContentMetaItem ci = item as ContentMetaItem;
+        if (item.encryption != Encryption.NONE && ci != null) {
+            Widget? widget = null;
+            foreach(var e in app.plugin_registry.encryption_list_entries) {
+                if (e.encryption == item.encryption) {
+                    widget = e.get_encryption_icon(conversation, ci.content_item) as Widget;
+                    break;
+                }
+            }
+            if (widget == null) {
+                widget = new Image.from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER) { opacity=0.4, visible = true };
+            }
+            update_encryption_image(widget);
+        }
+        if (item.encryption == Encryption.NONE) {
+            update_unencrypted_icon();
+        }
+    }
+
     private void update_unencrypted_icon() {
-        if (conversation.encryption != Encryption.NONE && unencrypted_image == null) {
-            unencrypted_image = new Image() { opacity=0.4, visible = true };
-            unencrypted_image.set_from_icon_name("dino-changes-allowed-symbolic", ICON_SIZE_HEADER);
-            unencrypted_image.tooltip_text = _("Unencrypted");
-            this.add(unencrypted_image);
-            this.reorder_child(unencrypted_image, 3);
-            Util.force_error_color(unencrypted_image);
-        } else if (conversation.encryption == Encryption.NONE && unencrypted_image != null) {
-            this.remove(unencrypted_image);
-            unencrypted_image = null;
+        if (item.encryption != Encryption.NONE) return;
+
+        if (conversation.encryption != Encryption.NONE && encryption_image == null) {
+            Image image = new Image() { opacity=0.4, visible = true };
+            image.set_from_icon_name("dino-changes-allowed-symbolic", ICON_SIZE_HEADER);
+            image.tooltip_text = _("Unencrypted");
+            update_encryption_image(image);
+            Util.force_error_color(image);
+        } else if (conversation.encryption == Encryption.NONE && encryption_image != null) {
+            update_encryption_image(null);
+        }
+    }
+
+    private void update_encryption_image(Widget? widget) {
+        if (encryption_image != null) {
+            this.remove(encryption_image);
+            encryption_image = null;
+        }
+        if (widget != null) {
+            this.add(widget);
+            this.reorder_child(widget, 3);
+            encryption_image = widget;
         }
     }
 

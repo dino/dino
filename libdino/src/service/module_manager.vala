@@ -79,6 +79,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.Jet.Module());
             module_map[account].add(new Xep.LastMessageCorrection.Module());
             module_map[account].add(new Xep.DirectMucInvitations.Module());
+            module_map[account].add(new Xep.JingleMessageInitiation.Module());
             initialize_account_modules(account, module_map[account]);
         }
     }

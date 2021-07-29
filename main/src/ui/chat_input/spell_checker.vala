@@ -1,6 +1,5 @@
 using Gdk;
 using Gee;
-using Gspell;
 
 using Dino.Entities;
 
@@ -9,12 +8,14 @@ namespace Dino.Ui {
 public class SpellChecker {
 
     private Conversation? conversation;
-    private TextView text_view;
-    private TextBuffer text_buffer;
+    private Gtk.TextView text_input;
 
     public SpellChecker(Gtk.TextView text_input) {
-        this.text_view = TextView.get_from_gtk_text_view(text_input);
-        this.text_buffer = TextBuffer.get_from_gtk_text_buffer(text_view.view.buffer);
+        this.text_input = text_input;
+
+        // We can't keep a reference to GspellTextView/Buffer around, otherwise they'd get freed twice
+        Gspell.TextView text_view = Gspell.TextView.get_from_gtk_text_view(text_input);
+        Gspell.TextBuffer text_buffer = Gspell.TextBuffer.get_from_gtk_text_buffer(text_view.view.buffer);
 
         text_view.basic_setup();
         text_buffer.spell_checker.notify["language"].connect(lang_changed);
@@ -32,11 +33,14 @@ public class SpellChecker {
     public void initialize_for_conversation(Conversation conversation) {
         this.conversation = conversation;
 
+        Gspell.TextView text_view = Gspell.TextView.get_from_gtk_text_view(text_input);
+        Gspell.TextBuffer text_buffer = Gspell.TextBuffer.get_from_gtk_text_buffer(text_view.view.buffer);
+
         if (!Dino.Application.get_default().settings.check_spelling) {
             text_buffer.set_spell_checker(null);
             return;
         }
-        if (text_buffer.spell_checker == null) text_buffer.spell_checker = new Checker(null);
+        if (text_buffer.spell_checker == null) text_buffer.spell_checker = new Gspell.Checker(null);
 
         // Set the conversation language (from cache or db)
         text_buffer.spell_checker.notify["language"].disconnect(lang_changed);
@@ -48,7 +52,7 @@ public class SpellChecker {
                 .single().row();
         if (row_option.is_present()) {
             string lang_code = row_option.inner[db.conversation_settings.value];
-            Language? lang = Language.lookup(lang_code);
+            Gspell.Language? lang = Gspell.Language.lookup(lang_code);
             text_buffer.spell_checker.language = lang;
         } else {
             text_buffer.spell_checker.language = null;
@@ -60,8 +64,11 @@ public class SpellChecker {
     private void lang_changed() {
         var db = Dino.Application.get_default().db;
 
-        Checker spell_checker = text_buffer.spell_checker;
+        Gspell.TextView text_view = Gspell.TextView.get_from_gtk_text_view(text_input);
+        Gspell.TextBuffer text_buffer = Gspell.TextBuffer.get_from_gtk_text_buffer(text_view.view.buffer);
+        Gspell.Checker spell_checker = text_buffer.spell_checker;
         if (spell_checker.language.get_code() == null) return;
+
         db.conversation_settings.upsert()
                 .value(db.conversation_settings.conversation_id, conversation.id, true)
                 .value(db.conversation_settings.key, "lang", true)

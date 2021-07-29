@@ -5,6 +5,7 @@ using Xmpp.Xep;
 namespace Xmpp.Xep.JingleSocks5Bytestreams {
 
 private const string NS_URI = "urn:xmpp:jingle:transports:s5b:1";
+private const int NEGOTIATION_TIMEOUT = 3;
 
 public class Module : Jingle.Transport, XmppStreamModule {
     public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0260_jingle_socks5_bytestreams");
@@ -20,20 +21,15 @@ public class Module : Jingle.Transport, XmppStreamModule {
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return IDENTITY.id; }
 
-    public async bool is_transport_available(XmppStream stream, Jid full_jid) {
-        return yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
+    public async bool is_transport_available(XmppStream stream, uint8 components, Jid full_jid) {
+        return components == 1 && yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, full_jid, NS_URI);
     }
 
-    public string transport_ns_uri() {
-        return NS_URI;
-    }
-    public Jingle.TransportType transport_type() {
-        return Jingle.TransportType.STREAMING;
-    }
-    public int transport_priority() {
-        return 1;
-    }
-    private Gee.List<Candidate> get_local_candidates(XmppStream stream) {
+    public string ns_uri { get { return NS_URI; } }
+    public Jingle.TransportType type_ { get { return Jingle.TransportType.STREAMING; } }
+    public int priority { get { return 1; } }
+
+    private Gee.List<Candidate> get_proxies(XmppStream stream) {
         Gee.List<Candidate> result = new ArrayList<Candidate>();
         int i = 1 << 15;
         foreach (Socks5Bytestreams.Proxy proxy in stream.get_module(Socks5Bytestreams.Module.IDENTITY).get_proxies(stream)) {
@@ -42,16 +38,62 @@ public class Module : Jingle.Transport, XmppStreamModule {
         }
         return result;
     }
-    public Jingle.TransportParameters create_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid) {
+
+    private Gee.List<Candidate> start_local_listeners(XmppStream stream, Jid local_full_jid, string dstaddr, out LocalListener? local_listener) {
+        Gee.List<Candidate> result = new ArrayList<Candidate>();
+        SocketListener listener = new SocketListener();
+        int i = 1 << 15;
+        foreach (string ip_address in stream.get_module(Socks5Bytestreams.Module.IDENTITY).get_local_ip_addresses()) {
+            InetSocketAddress addr = new InetSocketAddress.from_string(ip_address, 0);
+            SocketAddress effective_any;
+            string cid = random_uuid();
+            try {
+                listener.add_address(addr, SocketType.STREAM, SocketProtocol.DEFAULT, new StringWrapper(cid), out effective_any);
+            } catch (Error e) {
+                continue;
+            }
+            InetSocketAddress effective = (InetSocketAddress)effective_any;
+            result.add(new Candidate.build(cid, ip_address, local_full_jid, (int)effective.port, i, CandidateType.DIRECT));
+            i -= 1;
+        }
+        if (!result.is_empty) {
+            local_listener = new LocalListener(listener, dstaddr);
+            local_listener.start();
+        } else {
+            local_listener = new LocalListener.empty();
+        }
+        return result;
+    }
+
+    private void select_candidates(XmppStream stream, Jid local_full_jid, string dstaddr, Parameters result) {
+        result.local_candidates.add_all(get_proxies(stream));
+        result.local_candidates.add_all(start_local_listeners(stream, local_full_jid, dstaddr, out result.listener));
+        result.local_candidates.sort((c1, c2) => {
+            if (c1.priority < c2.priority) { return 1; }
+            if (c1.priority > c2.priority) { return -1; }
+            return 0;
+        });
+    }
+
+    public Jingle.TransportParameters create_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid) {
+        assert(components == 1);
         Parameters result = new Parameters.create(local_full_jid, peer_full_jid, random_uuid());
-        result.local_candidates.add_all(get_local_candidates(stream));
+        string dstaddr = calculate_dstaddr(result.sid, local_full_jid, peer_full_jid);
+        select_candidates(stream, local_full_jid, dstaddr, result);
         return result;
     }
-    public Jingle.TransportParameters parse_transport_parameters(XmppStream stream, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
+
+    public Jingle.TransportParameters parse_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
         Parameters result = Parameters.parse(local_full_jid, peer_full_jid, transport);
-        result.local_candidates.add_all(get_local_candidates(stream));
+        string dstaddr = calculate_dstaddr(result.sid, local_full_jid, peer_full_jid);
+        select_candidates(stream, local_full_jid, dstaddr, result);
         return result;
     }
+}
+
+private string calculate_dstaddr(string sid, Jid first_jid, Jid second_jid) {
+    string hashed = sid + first_jid.to_string() + second_jid.to_string();
+    return Checksum.compute_for_string(ChecksumType.SHA1, hashed);
 }
 
 public enum CandidateType {
@@ -109,6 +151,7 @@ public class Candidate : Socks5Bytestreams.Proxy {
     public Candidate.build(string cid, string host, Jid jid, int port, int local_priority, CandidateType type) {
         this(cid, host, jid, port, type.type_preference() + local_priority, type);
     }
+
     public Candidate.proxy(string cid, Socks5Bytestreams.Proxy proxy, int local_priority) {
         this.build(cid, proxy.host, proxy.jid, proxy.port, local_priority, CandidateType.PROXY);
     }
@@ -133,6 +176,7 @@ public class Candidate : Socks5Bytestreams.Proxy {
 
         return new Candidate(cid, host, jid, port, priority, type);
     }
+
     public StanzaNode to_xml() {
         return new StanzaNode.build("candidate", NS_URI)
             .put_attribute("cid", cid)
@@ -156,13 +200,154 @@ bool bytes_equal(uint8[] a, uint8[] b) {
     return true;
 }
 
+class StringWrapper : GLib.Object {
+    public string str { get; set; }
+
+    public StringWrapper(string str) {
+        this.str = str;
+    }
+}
+
+class LocalListener {
+    SocketListener? inner;
+    string dstaddr;
+    HashMap<string, SocketConnection> connections = new HashMap<string, SocketConnection>();
+
+    public LocalListener(SocketListener inner, string dstaddr) {
+        this.inner = inner;
+        this.dstaddr = dstaddr;
+    }
+
+    public LocalListener.empty() {
+        this.inner = null;
+        this.dstaddr = "";
+    }
+
+    public void start() {
+        if (inner == null) {
+            return;
+        }
+        run.begin();
+    }
+    async void run() {
+        while (true) {
+            Object cid;
+            SocketConnection conn;
+            try {
+                conn = yield inner.accept_async(null, out cid);
+            } catch (Error e) {
+                break;
+            }
+            handle_conn.begin(((StringWrapper)cid).str, conn);
+        }
+    }
+
+    async void handle_conn(string cid, SocketConnection conn) {
+        conn.socket.timeout = NEGOTIATION_TIMEOUT;
+        size_t read;
+        size_t written;
+        uint8[] read_buffer = new uint8[1024];
+        ByteArray write_buffer = new ByteArray();
+
+        try {
+            // 05 SOCKS version 5
+            // ?? number of authentication methods
+            yield conn.input_stream.read_all_async(read_buffer[0:2], GLib.Priority.DEFAULT, null, out read);
+            if (read != 2) {
+                throw new IOError.PROXY_FAILED("wanted client hello message consisting of 2 bytes, only got %d bytes".printf((int)read));
+            }
+            if (read_buffer[0] != 0x05 || read_buffer[1] == 0) {
+                throw new IOError.PROXY_FAILED("wanted 05 xx, got %02x %02x".printf(read_buffer[0], read_buffer[1]));
+            }
+            int num_auth_methods = read_buffer[1];
+            // ?? authentication method (num_auth_methods times)
+            yield conn.input_stream.read_all_async(read_buffer[0:num_auth_methods], GLib.Priority.DEFAULT, null, out read);
+            bool found_null_auth = false;
+            for (int i = 0; i < read; i++) {
+                if (read_buffer[i] == 0x00) {
+                    found_null_auth = true;
+                    break;
+                }
+            }
+            if (read != num_auth_methods || !found_null_auth) {
+                throw new IOError.PROXY_FAILED("peer didn't offer null auth");
+            }
+            // 05 SOCKS version 5
+            // 00 nop authentication
+            yield conn.output_stream.write_all_async({0x05, 0x00}, GLib.Priority.DEFAULT, null, out written);
+
+            // 05 SOCKS version 5
+            // 01 connect
+            // 00 reserved
+            // 03 address type: domain name
+            // ?? length of the domain
+            // .. domain
+            // 00 port 0 (upper half)
+            // 00 port 0 (lower half)
+            yield conn.input_stream.read_all_async(read_buffer[0:4], GLib.Priority.DEFAULT, null, out read);
+            if (read != 4) {
+                throw new IOError.PROXY_FAILED("wanted connect message consisting of 4 bytes, only got %d bytes".printf((int)read));
+            }
+            if (read_buffer[0] != 0x05 || read_buffer[1] != 0x01 || read_buffer[3] != 0x03) {
+                throw new IOError.PROXY_FAILED("wanted 05 00 ?? 03, got %02x %02x %02x %02x".printf(read_buffer[0], read_buffer[1], read_buffer[2], read_buffer[3]));
+            }
+            yield conn.input_stream.read_all_async(read_buffer[0:1], GLib.Priority.DEFAULT, null, out read);
+            if (read != 1) {
+                throw new IOError.PROXY_FAILED("wanted length of dstaddr consisting of 1 byte, only got %d bytes".printf((int)read));
+            }
+            int dstaddr_len = read_buffer[0];
+            yield conn.input_stream.read_all_async(read_buffer[0:dstaddr_len+2], GLib.Priority.DEFAULT, null, out read);
+            if (read != dstaddr_len + 2) {
+                throw new IOError.PROXY_FAILED("wanted dstaddr and port consisting of %d bytes, got %d bytes".printf(dstaddr_len + 2, (int)read));
+            }
+            if (!bytes_equal(read_buffer[0:dstaddr_len], dstaddr.data)) {
+                string repr = ((string)read_buffer[0:dstaddr.length]).make_valid().escape();
+                throw new IOError.PROXY_FAILED(@"wanted dstaddr $(dstaddr), got $(repr)");
+            }
+            if (read_buffer[dstaddr_len] != 0x00 || read_buffer[dstaddr_len + 1] != 0x00) {
+                throw new IOError.PROXY_FAILED("wanted 00 00, got %02x %02x".printf(read_buffer[dstaddr_len], read_buffer[dstaddr_len + 1]));
+            }
+
+            // 05 SOCKS version 5
+            // 00 success
+            // 00 reserved
+            // 03 address type: domain name
+            // ?? length of the domain
+            // .. domain
+            // 00 port 0 (upper half)
+            // 00 port 0 (lower half)
+            write_buffer.append({0x05, 0x00, 0x00, 0x03});
+            write_buffer.append({(uint8)dstaddr.length});
+            write_buffer.append(dstaddr.data);
+            write_buffer.append({0x00, 0x00});
+            yield conn.output_stream.write_all_async(write_buffer.data, GLib.Priority.DEFAULT, null, out written);
+
+            conn.socket.timeout = 0;
+            if (!connections.has_key(cid)) {
+                connections[cid] = conn;
+            }
+        } catch (Error e) {
+        }
+    }
+
+    public SocketConnection? get_connection(string cid) {
+        if (!connections.has_key(cid)) {
+            return null;
+        }
+        return connections[cid];
+    }
+}
+
 class Parameters : Jingle.TransportParameters, Object {
+    public string ns_uri { get { return NS_URI; } }
+    public uint8 components { get { return 1; } }
     public Jingle.Role role { get; private set; }
     public string sid { get; private set; }
     public string remote_dstaddr { get; private set; }
     public string local_dstaddr { get; private set; }
     public Gee.List<Candidate> local_candidates = new ArrayList<Candidate>();
     public Gee.List<Candidate> remote_candidates = new ArrayList<Candidate>();
+    public LocalListener? listener = null;
 
     Jid local_full_jid;
     Jid peer_full_jid;
@@ -173,16 +358,13 @@ class Parameters : Jingle.TransportParameters, Object {
     Candidate? local_selected_candidate = null;
     SocketConnection? local_selected_candidate_conn = null;
     weak Jingle.Session? session = null;
+    weak Jingle.Content? content = null;
     XmppStream? hack = null;
 
     string? waiting_for_activation_cid = null;
     SourceFunc waiting_for_activation_callback;
     bool waiting_for_activation_error = false;
 
-    private static string calculate_dstaddr(string sid, Jid first_jid, Jid second_jid) {
-        string hashed = sid + first_jid.to_string() + second_jid.to_string();
-        return Checksum.compute_for_string(ChecksumType.SHA1, hashed);
-    }
     private Parameters(Jingle.Role role, string sid, Jid local_full_jid, Jid peer_full_jid, string? remote_dstaddr) {
         this.role = role;
         this.sid = sid;
@@ -192,9 +374,11 @@ class Parameters : Jingle.TransportParameters, Object {
         this.local_full_jid = local_full_jid;
         this.peer_full_jid = peer_full_jid;
     }
+
     public Parameters.create(Jid local_full_jid, Jid peer_full_jid, string sid) {
         this(Jingle.Role.INITIATOR, sid, local_full_jid, peer_full_jid, null);
     }
+
     public static Parameters parse(Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
         string? dstaddr = transport.get_attribute("dstaddr");
         string? mode = transport.get_attribute("mode");
@@ -211,10 +395,12 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         return result;
     }
-    public string transport_ns_uri() {
-        return NS_URI;
+
+    public void set_content(Jingle.Content content) {
+
     }
-    public StanzaNode to_transport_stanza_node() {
+
+    public StanzaNode to_transport_stanza_node(string action_type) {
         StanzaNode transport = new StanzaNode.build("transport", NS_URI)
             .add_self_xmlns()
             .put_attribute("dstaddr", local_dstaddr);
@@ -230,7 +416,8 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         return transport;
     }
-    public void on_transport_accept(StanzaNode transport) throws Jingle.IqError {
+
+    public void handle_transport_accept(StanzaNode transport) throws Jingle.IqError {
         Parameters other = Parameters.parse(local_full_jid, peer_full_jid, transport);
         if (other.sid != sid) {
             throw new Jingle.IqError.BAD_REQUEST("invalid sid");
@@ -238,42 +425,44 @@ class Parameters : Jingle.TransportParameters, Object {
         remote_candidates = other.remote_candidates;
         remote_dstaddr = other.remote_dstaddr;
     }
-    public void on_transport_info(StanzaNode transport) throws Jingle.IqError {
-        StanzaNode? candidate_error = transport.get_subnode("candidate-error", NS_URI);
-        StanzaNode? candidate_used = transport.get_subnode("candidate-used", NS_URI);
-        StanzaNode? activated = transport.get_subnode("activated", NS_URI);
-        StanzaNode? proxy_error = transport.get_subnode("proxy-error", NS_URI);
-        int num_children = 0;
-        if (candidate_error != null) { num_children += 1; }
-        if (candidate_used != null) { num_children += 1; }
-        if (activated != null) { num_children += 1; }
-        if (proxy_error != null) { num_children += 1; }
-        if (num_children == 0) {
-            throw new Jingle.IqError.UNSUPPORTED_INFO("unknown transport-info");
-        } else if (num_children > 1) {
-            throw new Jingle.IqError.BAD_REQUEST("transport-info with more than one child");
+
+    public void handle_transport_info(StanzaNode transport) throws Jingle.IqError {
+        ArrayList<StanzaNode> socks5_nodes = new ArrayList<StanzaNode>();
+        foreach (StanzaNode node in transport.sub_nodes) {
+            if (node.ns_uri == NS_URI) socks5_nodes.add(node);
         }
-        if (candidate_error != null) {
-            handle_remote_candidate(null);
-        }
-        if (candidate_used != null) {
-            string? cid = candidate_used.get_attribute("cid");
-            if (cid == null) {
-                throw new Jingle.IqError.BAD_REQUEST("missing cid");
-            }
-            handle_remote_candidate(cid);
-        }
-        if (activated != null) {
-            string? cid = activated.get_attribute("cid");
-            if (cid == null) {
-                throw new Jingle.IqError.BAD_REQUEST("missing cid");
-            }
-            handle_activated(cid);
-        }
-        if (proxy_error != null) {
-            handle_proxy_error();
+        if (socks5_nodes.is_empty) { warning("No socks5 subnodes in transport node"); return; }
+        if (socks5_nodes.size > 1) { warning("Too many socks5 subnodes in transport node"); return; }
+
+        StanzaNode node = socks5_nodes[0];
+
+        switch (node.name) {
+            case "activated":
+                string? cid = node.get_attribute("cid");
+                if (cid == null) {
+                    throw new Jingle.IqError.BAD_REQUEST("missing cid");
+                }
+                handle_activated(cid);
+                break;
+            case "candidate-used":
+                string? cid = node.get_attribute("cid");
+                if (cid == null) {
+                    throw new Jingle.IqError.BAD_REQUEST("missing cid");
+                }
+                handle_remote_candidate(cid);
+                break;
+            case "candidate-error":
+                handle_remote_candidate(null);
+                break;
+            case "proxy-error":
+                handle_proxy_error();
+                break;
+            default:
+                warning("Unknown transport-info: %s", transport.to_string());
+                break;
         }
     }
+
     private void handle_remote_candidate(string? cid) throws Jingle.IqError {
         if (remote_sent_selected_candidate) {
             throw new Jingle.IqError.BAD_REQUEST("remote candidate already specified");
@@ -295,6 +484,7 @@ class Parameters : Jingle.TransportParameters, Object {
         debug("Remote selected candidate %s", candidate != null ? candidate.cid : "(null)");
         try_completing_negotiation();
     }
+
     private void handle_activated(string cid) throws Jingle.IqError {
         if (waiting_for_activation_cid == null || cid != waiting_for_activation_cid) {
             throw new Jingle.IqError.BAD_REQUEST("unexpected proxy activation message");
@@ -302,6 +492,7 @@ class Parameters : Jingle.TransportParameters, Object {
         Idle.add((owned)waiting_for_activation_callback);
         waiting_for_activation_cid = null;
     }
+
     private void handle_proxy_error() throws Jingle.IqError {
         if (waiting_for_activation_cid == null) {
             throw new Jingle.IqError.BAD_REQUEST("unexpected proxy error message");
@@ -311,37 +502,28 @@ class Parameters : Jingle.TransportParameters, Object {
         waiting_for_activation_error = true;
 
     }
+
     private void try_completing_negotiation() {
         if (!remote_sent_selected_candidate || !local_determined_selected_candidate) {
             return;
         }
 
-        Candidate? remote = remote_selected_candidate;
-        Candidate? local = local_selected_candidate;
-
-        int num_candidates = 0;
-        if (remote != null) { num_candidates += 1; }
-        if (local != null) { num_candidates += 1; }
-
-        if (num_candidates == 0) {
-            // Notify Jingle of the failed transport.
-            session.set_transport_connection(hack, null);
+        if (remote_selected_candidate == null && local_selected_candidate == null) {
+            content_set_transport_connection_error(new IOError.FAILED("No candidates"));
             return;
         }
 
         bool remote_wins;
-        if (num_candidates == 1) {
-            remote_wins = remote != null;
-        } else {
-            if (local.priority < remote.priority) {
-                remote_wins = true;
-            } else if (local.priority > remote.priority) {
-                remote_wins = false;
-            } else {
+        if (remote_selected_candidate != null && local_selected_candidate != null) {
+            if (local_selected_candidate.priority == remote_selected_candidate.priority) {
                 // equal priority -> XEP-0260 says that the candidate offered
                 // by the initiator wins, so the one that the remote chose
                 remote_wins = role == Jingle.Role.INITIATOR;
+            } else {
+                remote_wins = local_selected_candidate.priority < remote_selected_candidate.priority;
             }
+        } else {
+            remote_wins = remote_selected_candidate != null;
         }
 
         if (!remote_wins) {
@@ -350,14 +532,28 @@ class Parameters : Jingle.TransportParameters, Object {
                 if (strong == null) {
                     return;
                 }
-                strong.set_transport_connection(hack, local_selected_candidate_conn);
+                content_set_transport_connection(local_selected_candidate_conn);
             } else {
                 wait_for_remote_activation.begin(local_selected_candidate, local_selected_candidate_conn);
             }
         } else {
-            connect_to_local_candidate.begin(remote_selected_candidate);
+            if (remote_selected_candidate.type_ == CandidateType.DIRECT) {
+                Jingle.Session? strong = session;
+                if (strong == null) {
+                    return;
+                }
+                SocketConnection? conn = listener.get_connection(remote_selected_candidate.cid);
+                if (conn == null) {
+                    content_set_transport_connection_error(new IOError.FAILED("Remote hasn't actually connected to us?!"));
+                    return;
+                }
+                content_set_transport_connection(conn);
+            } else {
+                connect_to_local_candidate.begin(remote_selected_candidate);
+            }
         }
     }
+
     public async void wait_for_remote_activation(Candidate candidate, SocketConnection conn) {
         debug("Waiting for remote activation of %s", candidate.cid);
         waiting_for_activation_cid = candidate.cid;
@@ -369,11 +565,12 @@ class Parameters : Jingle.TransportParameters, Object {
             return;
         }
         if (!waiting_for_activation_error) {
-            strong.set_transport_connection(hack, conn);
+            content_set_transport_connection(conn);
         } else {
-            strong.set_transport_connection(hack, null);
+            content_set_transport_connection_error(new IOError.FAILED("waiting_for_activation_error"));
         }
     }
+
     public async void connect_to_local_candidate(Candidate candidate) {
         debug("Connecting to candidate %s", candidate.cid);
         try {
@@ -398,11 +595,11 @@ class Parameters : Jingle.TransportParameters, Object {
                 throw new IOError.PROXY_FAILED("activation iq error");
             }
 
-            Jingle.Session? strong = session;
-            if (strong == null) {
+            Jingle.Content? strong_content = content;
+            if (strong_content == null) {
                 return;
             }
-            strong.send_transport_info(hack, new StanzaNode.build("transport", NS_URI)
+            strong_content.send_transport_info(new StanzaNode.build("transport", NS_URI)
                 .add_self_xmlns()
                 .put_attribute("sid", sid)
                 .put_node(new StanzaNode.build("activated", NS_URI)
@@ -410,22 +607,23 @@ class Parameters : Jingle.TransportParameters, Object {
                 )
             );
 
-            strong.set_transport_connection(hack, conn);
+            content_set_transport_connection(conn);
         } catch (Error e) {
-            Jingle.Session? strong = session;
-            if (strong == null) {
+            Jingle.Content? strong_content = content;
+            if (strong_content == null) {
                 return;
             }
-            strong.send_transport_info(hack, new StanzaNode.build("transport", NS_URI)
+            strong_content.send_transport_info(new StanzaNode.build("transport", NS_URI)
                 .add_self_xmlns()
                 .put_attribute("sid", sid)
                 .put_node(new StanzaNode.build("proxy-error", NS_URI))
             );
-            strong.set_transport_connection(hack, null);
+            content_set_transport_connection_error(new IOError.FAILED("Connect to local candidate error: %s", e.message));
         }
     }
+
     public async SocketConnection connect_to_socks5(Candidate candidate, string dstaddr) throws Error {
-        SocketClient socket_client = new SocketClient() { timeout=3 };
+        SocketClient socket_client = new SocketClient() { timeout=NEGOTIATION_TIMEOUT };
 
         string address = @"[$(candidate.host)]:$(candidate.port)";
         debug("Connecting to SOCKS5 server at %s", address);
@@ -444,7 +642,10 @@ class Parameters : Jingle.TransportParameters, Object {
 
         yield conn.input_stream.read_all_async(read_buffer[0:2], GLib.Priority.DEFAULT, null, out read);
         // 05 SOCKS version 5
-        // 01 success
+        // 00 nop authentication
+        if (read != 2) {
+            throw new IOError.PROXY_FAILED("wanted 05 00, only got %d bytes".printf((int)read));
+        }
         if (read_buffer[0] != 0x05 || read_buffer[1] != 0x00) {
             throw new IOError.PROXY_FAILED("wanted 05 00, got %02x %02x".printf(read_buffer[0], read_buffer[1]));
         }
@@ -472,6 +673,9 @@ class Parameters : Jingle.TransportParameters, Object {
         // .. domain
         // 00 port 0 (upper half)
         // 00 port 0 (lower half)
+        if (read != write_buffer.len) {
+            throw new IOError.PROXY_FAILED("wanted server success response consisting of %d bytes, only got %d bytes".printf((int)write_buffer.len, (int)read));
+        }
         if (read_buffer[0] != 0x05 || read_buffer[1] != 0x00 || read_buffer[3] != 0x03) {
             throw new IOError.PROXY_FAILED("wanted 05 00 ?? 03, got %02x %02x %02x %02x".printf(read_buffer[0], read_buffer[1], read_buffer[2], read_buffer[3]));
         }
@@ -486,10 +690,11 @@ class Parameters : Jingle.TransportParameters, Object {
             throw new IOError.PROXY_FAILED("wanted port 00 00, got %02x %02x".printf(read_buffer[5+dstaddr.length], read_buffer[5+dstaddr.length+1]));
         }
 
-        conn.get_socket().set_timeout(0);
+        conn.socket.timeout = 0;
 
         return conn;
     }
+
     public async void try_connecting_to_candidates(XmppStream stream, Jingle.Session session) throws Error {
         remote_candidates.sort((c1, c2) => {
             // sort from priorities from high to low
@@ -510,7 +715,7 @@ class Parameters : Jingle.TransportParameters, Object {
                 local_selected_candidate = candidate;
                 local_selected_candidate_conn = conn;
                 debug("Selected candidate %s", candidate.cid);
-                session.send_transport_info(stream, new StanzaNode.build("transport", NS_URI)
+                content.send_transport_info(new StanzaNode.build("transport", NS_URI)
                     .add_self_xmlns()
                     .put_attribute("sid", sid)
                     .put_node(new StanzaNode.build("candidate-used", NS_URI)
@@ -527,7 +732,7 @@ class Parameters : Jingle.TransportParameters, Object {
         }
         local_determined_selected_candidate = true;
         local_selected_candidate = null;
-        session.send_transport_info(stream, new StanzaNode.build("transport", NS_URI)
+        content.send_transport_info(new StanzaNode.build("transport", NS_URI)
             .add_self_xmlns()
             .put_attribute("sid", sid)
             .put_node(new StanzaNode.build("candidate-error", NS_URI))
@@ -535,10 +740,30 @@ class Parameters : Jingle.TransportParameters, Object {
         // Try remote candidates
         try_completing_negotiation();
     }
-    public void create_transport_connection(XmppStream stream, Jingle.Session session) {
-        this.session = session;
+
+    private Jingle.StreamingConnection connection = new Jingle.StreamingConnection();
+
+    private void content_set_transport_connection(IOStream ios) {
+        IOStream iostream = ios;
+        Jingle.Content? strong_content = content;
+        if (strong_content == null) return;
+
+        if (strong_content.security_params != null) {
+            iostream = strong_content.security_params.wrap_stream(iostream);
+        }
+        connection.set_stream.begin(iostream);
+    }
+
+    private void content_set_transport_connection_error(Error e) {
+        connection.set_error(e);
+    }
+
+    public void create_transport_connection(XmppStream stream, Jingle.Content content) {
+        this.session = content.session;
+        this.content = content;
         this.hack = stream;
         try_connecting_to_candidates.begin(stream, session);
+        this.content.set_transport_connection(connection, 1);
     }
 }
 

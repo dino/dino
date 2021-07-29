@@ -87,6 +87,7 @@ public class ConversationViewController : Object {
         app.plugin_registry.register_contact_titlebar_entry(new MenuEntry(stream_interactor));
         app.plugin_registry.register_contact_titlebar_entry(search_menu_entry);
         app.plugin_registry.register_contact_titlebar_entry(new OccupantsEntry(stream_interactor));
+        app.plugin_registry.register_contact_titlebar_entry(new CallTitlebarEntry(stream_interactor));
         foreach(var entry in app.plugin_registry.conversation_titlebar_entries) {
             titlebar.insert_entry(entry);
         }

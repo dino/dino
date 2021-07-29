@@ -8,7 +8,6 @@ find_pkg_config_with_fallback(GIO
 )
 
 if(GIO_FOUND AND NOT GIO_VERSION)
-    # TODO
     find_package(GLib ${GLib_GLOBAL_VERSION})
     set(GIO_VERSION ${GLib_VERSION})
 endif()

@@ -68,7 +68,10 @@ public class ContentProvider : ContentItemCollection, Object {
             return new MessageMetaItem(content_item, stream_interactor);
         } else if (content_item.type_ == FileItem.TYPE) {
             return new FileMetaItem(content_item, stream_interactor);
+        } else if (content_item.type_ == CallItem.TYPE) {
+            return new CallMetaItem(content_item, stream_interactor);
         }
+        critical("Got unknown content item type %s", content_item.type_);
         return null;
     }
 }
@@ -85,6 +88,7 @@ public abstract class ContentMetaItem : Plugins.MetaConversationItem {
         this.mark = content_item.mark;
 
         content_item.bind_property("mark", this, "mark");
+        content_item.bind_property("encryption", this, "encryption");
 
         this.can_merge = true;
         this.requires_avatar = true;
