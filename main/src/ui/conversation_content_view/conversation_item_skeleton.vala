@@ -9,6 +9,7 @@ namespace Dino.Ui.ConversationSummary {
 
 public class ConversationItemSkeleton : EventBox {
 
+    public signal void nick_clicked(string nick);
     public bool show_skeleton { get; set; default=false; }
     public bool last_group_item { get; set; default=true; }
 
@@ -61,6 +62,7 @@ public class ConversationItemSkeleton : EventBox {
     private void update_margin() {
         if (item.requires_header && show_skeleton && metadata_header == null) {
             metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
+            metadata_header.nick_clicked.connect((t, a) => nick_clicked(a));
             header_content_box.add(metadata_header);
             header_content_box.reorder_child(metadata_header, 0);
         }
@@ -100,6 +102,9 @@ public class ConversationItemSkeleton : EventBox {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/item_metadata_header.ui")]
 public class ItemMetaDataHeader : Box {
+
+    public signal void nick_clicked(string nick);
+    [GtkChild] public EventBox name_button;
     [GtkChild] public Label name_label;
     [GtkChild] public Label dot_label;
     [GtkChild] public Label time_label;
@@ -124,6 +129,8 @@ public class ItemMetaDataHeader : Box {
         update_name_label();
         name_label.style_updated.connect(update_name_label);
 
+        name_button.button_press_event.connect(handle_name_click);
+
         conversation.notify["encryption"].connect(update_unencrypted_icon);
         item.notify["encryption"].connect(update_encryption_icon);
         update_encryption_icon();
@@ -137,6 +144,15 @@ public class ItemMetaDataHeader : Box {
         item.bind_property("mark", this, "item-mark");
         this.notify["item-mark"].connect_after(update_received_mark);
         update_received_mark();
+    }
+
+    private bool handle_name_click(EventButton event) {
+        // If left click
+        if(event.button == 1) {
+            string name = Markup.escape_text(Util.get_participant_display_name(stream_interactor, conversation, item.jid));
+            nick_clicked(name);
+        }
+        return false;
     }
 
     private void update_encryption_icon() {

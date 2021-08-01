@@ -46,6 +46,8 @@ public class ConversationViewController : Object {
         // drag 'n drop file upload
         view.drag_data_received.connect(this.on_drag_data_received);
 
+        view.conversation_frame.nick_clicked.connect((t, a) => mention_nick(a));
+
         // forward key presses
         view.chat_input.key_press_event.connect(forward_key_press_to_chat_input);
         view.conversation_frame.key_press_event.connect(forward_key_press_to_chat_input);
@@ -139,6 +141,26 @@ public class ConversationViewController : Object {
     public void unset_conversation() {
         conversation_display_name = null;
         conversation_topic = null;
+    }
+
+    private void mention_nick(string nick) {
+        unowned TextBuffer buffer = view.chat_input.chat_text_view.text_view.buffer;
+        string oldString = buffer.text;
+        int pos = buffer.cursor_position;
+
+        if (oldString == "" || pos == 0) {
+            buffer.text = nick + ", " + oldString;
+        } else {
+            unichar before = buffer.text.get_char(pos - 1);
+            unichar after = buffer.text.length > pos ? buffer.text.get_char(pos) : '\0';
+
+            if (before == '\n') {
+                buffer.insert_at_cursor(nick + ", ", -1);
+            } else {
+                Regex whitespace = /\s/;
+                buffer.insert_at_cursor((whitespace.match(before.to_string(), 0) ? "" : " ") + nick + (whitespace.match(after.to_string(), 0) ? "" : " "), -1);
+            }
+        }
     }
 
     private void update_file_upload_status() {

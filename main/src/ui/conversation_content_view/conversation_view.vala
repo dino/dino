@@ -10,6 +10,7 @@ namespace Dino.Ui.ConversationSummary {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/view.ui")]
 public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins.NotificationCollection {
 
+    public signal void nick_clicked(string nick);
     public Conversation? conversation { get; private set; }
 
     [GtkChild] public ScrolledWindow scrolled;
@@ -363,6 +364,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
         // Fill datastructure
         ConversationItemSkeleton item_skeleton = new ConversationItemSkeleton(stream_interactor, conversation, item, !animate) { visible=true };
+        item_skeleton.nick_clicked.connect((t, a) => nick_clicked(a));
+
         item_item_skeletons[item] = item_skeleton;
         int index = lower_item != null ? item_skeletons.index_of(item_item_skeletons[lower_item]) + 1 : 0;
         item_skeletons.insert(index, item_skeleton);
