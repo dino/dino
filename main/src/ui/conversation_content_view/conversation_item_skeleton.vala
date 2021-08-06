@@ -78,7 +78,7 @@ public class ConversationItemSkeleton : EventBox {
         }
         if (item.requires_avatar && show_skeleton && image == null) {
             image_button = new EventBox() { visible=true };
-            image_button.button_press_event.connect((t, a) => handle_name_or_avatar_click(a));
+            image_button.button_release_event.connect((t, a) => handle_name_or_avatar_click(a));
             image_content_box.add(image_button);
             image_content_box.reorder_child(image_button, 0);
 
@@ -143,7 +143,7 @@ public class ItemMetaDataHeader : Box {
         update_name_label();
         name_label.style_updated.connect(update_name_label);
 
-        name_button.button_press_event.connect((t, a) => nick_clicked(a));
+        name_button.button_release_event.connect((t, a) => nick_clicked(a));
 
         conversation.notify["encryption"].connect(update_unencrypted_icon);
         item.notify["encryption"].connect(update_encryption_icon);
