@@ -187,7 +187,7 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkGrid">
                     <property name="visible">1</property>
                     <!-- Remember to keep tooltips here in sync with section headings above -->
                     <child>
@@ -204,6 +204,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="people.button">
@@ -219,6 +223,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="body.button">
@@ -234,6 +242,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="top_attach">0</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="nature.button">
@@ -249,6 +261,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="top_attach">0</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="food.button">
@@ -264,6 +280,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">4</property>
+                        <property name="top_attach">0</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="travel.button">
@@ -279,6 +299,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="activities.button">
@@ -294,6 +318,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="objects.button">
@@ -309,6 +337,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="top_attach">1</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="symbols.button">
@@ -324,6 +356,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="top_attach">1</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="flags.button">
@@ -339,6 +375,10 @@
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="left_attach">4</property>
+                        <property name="top_attach">1</property>
+                      </packing>
                     </child>
                   </object>
                 </child>
