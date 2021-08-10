@@ -2,7 +2,9 @@ namespace Crypto {
 
 public errordomain Error {
     ILLEGAL_ARGUMENTS,
-    GCRYPT
+    GCRYPT,
+    AUTHENTICATION_FAILED,
+    UNKNOWN
 }
 
 internal void may_throw_gcrypt_error(GCrypt.Error e) throws Error {

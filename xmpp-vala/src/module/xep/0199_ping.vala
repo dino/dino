@@ -23,7 +23,7 @@ namespace Xmpp.Xep.Ping {
         }
 
         public async void on_iq_get(XmppStream stream, Iq.Stanza iq) {
-            yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, new Iq.Stanza.result(iq));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
         }
 
         public override string get_ns() { return NS_URI; }

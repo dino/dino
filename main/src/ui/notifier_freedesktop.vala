@@ -14,6 +14,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
     private HashMap<Conversation, uint32> content_notifications = new HashMap<Conversation, uint32>(Conversation.hash_func, Conversation.equals_func);
     private HashMap<Conversation, Gee.List<uint32>> conversation_notifications = new HashMap<Conversation, Gee.List<uint32>>(Conversation.hash_func, Conversation.equals_func);
     private HashMap<uint32, HashMap<string, ListenerFuncWrapper>> action_listeners = new HashMap<uint32, HashMap<string, ListenerFuncWrapper>>();
+    private HashMap<Call, uint32> call_notifications = new HashMap<Call, uint32>(Call.hash_func, Call.equals_func);
 
     private FreeDesktopNotifier(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -108,6 +109,43 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         } catch (Error e) {
             warning("Failed showing content item notification: %s", e.message);
         }
+    }
+
+    public async void notify_call(Call call, Conversation conversation, bool video, string conversation_display_name) {
+        string summary = Markup.escape_text(conversation_display_name);
+        string body =  video ? _("Incoming video call") : _("Incoming call");
+
+        HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
+        hash_table["image-path"] = "call-start-symbolic";
+        hash_table["sound-name"] = new Variant.string("phone-incoming-call");
+        hash_table["urgency"] = new Variant.byte(2);
+        string[] actions = new string[] {"default", "Open conversation", "reject", _("Reject"), "accept", _("Accept")};
+        try {
+            uint32 notification_id = dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
+            call_notifications[call] = notification_id;
+
+            add_action_listener(notification_id, "default", () => {
+                GLib.Application.get_default().activate_action("open-conversation", new Variant.int32(conversation.id));
+            });
+            add_action_listener(notification_id, "reject", () => {
+                GLib.Application.get_default().activate_action("deny-call", new Variant.int32(call.id));
+            });
+            add_action_listener(notification_id, "accept", () => {
+                GLib.Application.get_default().activate_action("accept-call", new Variant.int32(call.id));
+            });
+        } catch (Error e) {
+            warning("Failed showing subscription request notification: %s", e.message);
+        }
+    }
+
+    public async void retract_call_notification(Call call, Conversation conversation) {
+        if (!call_notifications.has_key(call)) return;
+        uint32 notification_id = call_notifications[call];
+        try {
+            dbus_notifications.close_notification(notification_id);
+            action_listeners.unset(notification_id);
+            call_notifications.unset(call);
+        } catch (Error e) { }
     }
 
     public async void notify_subscription_request(Conversation conversation) {

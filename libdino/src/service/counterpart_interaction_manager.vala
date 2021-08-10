@@ -67,8 +67,8 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xep.ChatMarkers.Module.IDENTITY).marker_received.connect( (stream, jid, marker, id, message_stanza) => {
             on_chat_marker_received.begin(account, jid, marker, id, message_stanza);
         });
-        stream_interactor.module_manager.get_module(account, Xep.MessageDeliveryReceipts.Module.IDENTITY).receipt_received.connect((stream, jid, id) => {
-            on_receipt_received(account, jid, id);
+        stream_interactor.module_manager.get_module(account, Xep.MessageDeliveryReceipts.Module.IDENTITY).receipt_received.connect((stream, jid, id, stanza) => {
+            on_receipt_received(account, jid, id, stanza);
         });
         stream_interactor.module_manager.get_module(account, Xep.ChatStateNotifications.Module.IDENTITY).chat_state_received.connect((stream, jid, state, stanza) => {
             on_chat_state_received.begin(account, jid, state, stanza);
@@ -198,8 +198,8 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_receipt_received(Account account, Jid jid, string id) {
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account, Conversation.Type.CHAT);
+    private void on_receipt_received(Account account, Jid jid, string id, MessageStanza stanza) {
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(stanza.from, stanza.to, account, stanza.type_);
         if (conversation == null) return;
         handle_chat_marker(conversation, jid,Xep.ChatMarkers.MARKER_RECEIVED, id);
     }

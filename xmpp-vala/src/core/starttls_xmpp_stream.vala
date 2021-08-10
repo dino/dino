@@ -16,7 +16,7 @@ public class Xmpp.StartTlsXmppStream : TlsXmppStream {
     public override async void connect() throws IOStreamError {
         try {
             SocketClient client = new SocketClient();
-            debug("Connecting to %s %i (starttls)", host, port);
+            debug("Connecting to %s:%i (starttls)", host, port);
             IOStream stream = yield client.connect_to_host_async(host, port);
             reset_stream(stream);
 

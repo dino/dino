@@ -32,6 +32,7 @@
   <summary xml:lang="fa">پایگاه نوین گپ XMPP</summary>
   <summary xml:lang="eu">XMPP txat bezero modernoa</summary>
   <summary xml:lang="es">Cliente de XMPP moderno</summary>
+  <summary xml:lang="eo">Moderna XMPP-Retebabililo</summary>
   <summary xml:lang="de">Modernes XMPP-Chat-Programm</summary>
   <summary xml:lang="ca">Client de xat XMPP modern</summary>
   <summary xml:lang="ar">تطبيق حديث للدردشة عبر XMPP</summary>
@@ -63,6 +64,7 @@
     <p xml:lang="fi">Dino on nykyaikainen avoimen lähdekoodin jutteluohjelma työpöydälle. Se keskittyy tarjoamaan selkeän ja luotettavan Jabber/XMPP-kokemuksen unohtamatta yksityisyyttäsi.</p>
     <p xml:lang="eu">Dino mahaigainerako iturburu irekiko txat bezero moderno bat da. Jabber/XMPP esperientzia garbi eta fidagarri bat ematen du zure pribatutasuna kontuan hartzeaz gain.</p>
     <p xml:lang="es">Dino es un cliente de mensajería moderno y libre para escritorio. Está enfocado en proveer una experiencia Jabber/XMPP limpia y confiable teniendo tu privacidad en mente.</p>
+    <p xml:lang="eo">Dino estas moderna malfermfonta retbabililo por la tabla komputilo. Ĝi celas provizi puran kaj fidindan sperton de Jabber/XMPP, protektante vian privatecon.</p>
     <p xml:lang="de">Dino ist ein modernes, quelloffenes Chat-Programm für den Desktop. Es bietet ein aufgeräumtes und robustes Jabber-/XMPP-Erlebnis und legt einen Schwerpunkt auf Privatsphäre.</p>
     <p xml:lang="ca">Dino és un client de xat lliure i modern per a l'escriptori. Està centrat en proveir una experiència neta i fiable de Jabber/XMPP, sempre tenint en compte la vostra privacitat.</p>
     <p xml:lang="ar">إنّ Dino برنامج عصري ومفتوح المصدر للدردشة صُمّم لسطح المكتب. ويُركّز علي تقديم تجربة نظيفة وموثوق منها لجابر/XMPP مع أخذ خصوصيتكم بعين الإعتبار.</p>
@@ -93,6 +95,7 @@
     <p xml:lang="fi">Se tukee päästä päähän -salausta OMEMO:n ja OpenPGP:n avulla ja  mahdollistaa yksityisyyteen liittyvien ominaisuuksien, kuten lukukuittausten ja kirjoitusilmoitusten asetusten määrittämisen.</p>
     <p xml:lang="eu">Amaieratik amaierarako enkriptazioa onartzen du OMEMO eta OpenPGPrekin eta pribatutasun ezaugarriak konfiguratzea baimentzen du irakurtze markak eta idazketa jakinarazpenak bezala.</p>
     <p xml:lang="es">Soporta cifrado de extremo a extremo a través de OMEMO y OpenPGP y permite configurar las características relacionadas con la privacidad, como confirmaciones de lectura y notificaciones de escritura.</p>
+    <p xml:lang="eo">Ĝi subtenas fin-al-finan ĉifradon per OMEMO kaj OpenPGP kaj permesas agordi funkciojn pri privateco kiel kvitancojn de legiteco kaj sciigojn pri tajpado.</p>
     <p xml:lang="de">Er unterstützt Ende-zu-Ende Verschlüsselung mit OMEMO und OpenPGP und enthält Privatsphäre-Einstellungen zu Lesebestätigungen und Tippbenachrichtigungen.</p>
     <p xml:lang="ca">Implementa xifratge punt a punt amb OMEMO i OpenPGP, i permet configurar funcionalitats relacionades amb la privacitat com per exemple rebuts de lectura i notificacions d'escriptura.</p>
     <p xml:lang="ar">وهو يدعم التشفير بواسطة OMEMO و OpenPGP يسمح بإعداد ميزات الخصوصية كالإيصالات المقروءة والإخطارات عند الكتابة.</p>
@@ -123,6 +126,7 @@
     <p xml:lang="fi">Dino hakee historian palvelimelta ja synkronisoi viestit muiden laitteiden kanssa.</p>
     <p xml:lang="eu">Dinok zerbitzaritik hartzen du historia eta beste gailuekin mezuak sinkronizatzen ditu.</p>
     <p xml:lang="es">Dino recupera los mensajes desde el servidor y sincroniza los mensajes con otros dispositivos.</p>
+    <p xml:lang="eo">Dino prenas historion el la servilo kaj sinkronigas mesaĝojn kun aliaj aparatoj.</p>
     <p xml:lang="de">Dino ruft Gesprächsverläufe vom Server ab und synchronisiert Nachrichten mit anderen Geräten.</p>
     <p xml:lang="ca">Dino recupera l'historial del servidor i sincronitza els missatges amb altres dispositius.</p>
     <p xml:lang="ar">يقوم Dino بجلب السِجلّ مِن السيرفر ثم يُزامِن الرسائل مع الأجهزة الأخرى.</p>

@@ -14,7 +14,7 @@ public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
     public override async void connect() throws IOStreamError {
         SocketClient client = new SocketClient();
         try {
-            debug("Connecting to %s %i (tls)", host, port);
+            debug("Connecting to %s:%i (tls)", host, port);
             IOStream? io_stream = yield client.connect_to_host_async(host, port);
             TlsConnection tls_connection = TlsClientConnection.new(io_stream, new NetworkAddress(remote_name.to_string(), port));
 #if ALPN_SUPPORT

@@ -331,7 +331,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         if (conversation == null) return;
 
         // MAM state database update
-        Xep.MessageArchiveManagement.MessageFlag mam_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message_stanza);
+        Xep.MessageArchiveManagement.MessageFlag? mam_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message_stanza);
         if (mam_flag == null) {
             if (current_catchup_id.has_key(account)) {
                 string? stanza_id = UniqueStableStanzaIDs.get_stanza_id(message_stanza, account.bare_jid);

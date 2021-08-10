@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 19;
+    private const int VERSION = 21;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -155,6 +155,25 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class CallTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<int> counterpart_id = new Column.Integer("counterpart_id") { not_null = true };
+        public Column<string> counterpart_resource = new Column.Text("counterpart_resource");
+        public Column<string> our_resource = new Column.Text("our_resource");
+        public Column<bool> direction = new Column.BoolInt("direction") { not_null = true };
+        public Column<long> time = new Column.Long("time") { not_null = true };
+        public Column<long> local_time = new Column.Long("local_time") { not_null = true };
+        public Column<long> end_time = new Column.Long("end_time");
+        public Column<int> encryption = new Column.Integer("encryption") { min_version=21 };
+        public Column<int> state = new Column.Integer("state");
+
+        internal CallTable(Database db) {
+            base(db, "call");
+            init({id, account_id, counterpart_id, counterpart_resource, our_resource, direction, time, local_time, end_time, encryption, state});
+        }
+    }
+
     public class ConversationTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
@@ -275,6 +294,7 @@ public class Database : Qlite.Database {
     public MessageCorrectionTable message_correction { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
+    public CallTable call { get; private set; }
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
     public EntityIdentityTable entity_identity { get; private set; }
@@ -298,6 +318,7 @@ public class Database : Qlite.Database {
         message_correction = new MessageCorrectionTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
+        call = new CallTable(this);
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
         entity_identity = new EntityIdentityTable(this);
@@ -306,7 +327,7 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, call, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
@@ -406,21 +427,21 @@ public class Database : Qlite.Database {
         }
         if (oldVersion < 17) {
             try {
-                exec("DROP INDEX contentitem_localtime_counterpart_idx");
-                exec("CREATE INDEX contentitem_conversation_hide_localtime_time_idx ON content_item (conversation_id, hide, local_time, time)");
+                exec("DROP INDEX IF EXISTS contentitem_localtime_counterpart_idx");
+                exec("CREATE INDEX IF NOT EXISTS contentitem_conversation_hide_localtime_time_idx ON content_item (conversation_id, hide, local_time, time)");
             } catch (Error e) {
                 error("Failed to upgrade to database version 17: %s", e.message);
             }
         }
         if (oldVersion < 18) {
             try {
-                exec("DROP INDEX contentitem_conversation_hide_localtime_time_idx");
+                exec("DROP INDEX IF EXISTS contentitem_conversation_hide_localtime_time_idx");
                 exec("CREATE INDEX IF NOT EXISTS contentitem_conversation_hide_time_idx ON content_item (conversation_id, hide, time)");
 
-                exec("DROP INDEX message_account_counterpart_localtime_idx");
+                exec("DROP INDEX IF EXISTS message_account_counterpart_localtime_idx");
                 exec("CREATE INDEX IF NOT EXISTS message_account_counterpart_time_idx ON message (account_id, counterpart_id, time)");
 
-                exec("DROP INDEX filetransfer_localtime_counterpart_idx");
+                exec("DROP INDEX IF EXISTS filetransfer_localtime_counterpart_idx");
             } catch (Error e) {
                 error("Failed to upgrade to database version 18: %s", e.message);
             }

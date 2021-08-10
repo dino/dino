@@ -3,7 +3,9 @@ namespace Dino.Entities {
 public enum Encryption {
         NONE,
         PGP,
-        OMEMO
+        OMEMO,
+        DTLS_SRTP,
+        SRTP,
 }
 
 }

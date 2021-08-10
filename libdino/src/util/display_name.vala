@@ -36,7 +36,7 @@ namespace Dino {
         return participant.bare_jid.to_string();
     }
 
-    private static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, string? self_word = null) {
+    public static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, string? self_word = null) {
         if (jid.equals_bare(account.bare_jid)) {
             if (self_word != null || account.alias == null || account.alias.length == 0) {
                 return self_word;
@@ -50,7 +50,7 @@ namespace Dino {
         return null;
     }
 
-    private static string get_groupchat_display_name(StreamInteractor stream_interactor, Account account, Jid jid) {
+    public static string get_groupchat_display_name(StreamInteractor stream_interactor, Account account, Jid jid) {
         MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
         string? room_name = muc_manager.get_room_name(account, jid);
         if (room_name != null && room_name != jid.localpart) {
@@ -72,7 +72,7 @@ namespace Dino {
         return jid.to_string();
     }
 
-    private static string get_occupant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid jid, string? self_word = null, bool muc_real_name = false) {
+    public static string get_occupant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid jid, string? self_word = null, bool muc_real_name = false) {
         if (muc_real_name) {
             MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
             if (muc_manager.is_private_room(conversation.account, jid.bare_jid)) {

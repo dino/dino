@@ -25,10 +25,8 @@ public class StreamModule : XmppStreamModule {
     public signal void bundle_fetched(Jid jid, int device_id, Bundle bundle);
     public signal void bundle_fetch_failed(Jid jid, int device_id);
 
-    public StreamModule() {
-        if (Plugin.ensure_context()) {
-            this.store = Plugin.get_context().create_store();
-        }
+    public StreamModule(Store store) {
+        this.store = store;
     }
 
     public override void attach(XmppStream stream) {

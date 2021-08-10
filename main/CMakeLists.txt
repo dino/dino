@@ -5,6 +5,8 @@ gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TAR
 
 find_packages(MAIN_PACKAGES REQUIRED
     Gee
+    Gst
+    GstVideo
     GLib
     GModule
     GObject
@@ -21,7 +23,14 @@ set(RESOURCE_LIST
     icons/dino-emoticon-symbolic.svg
     icons/dino-qr-code-symbolic.svg
     icons/dino-security-high-symbolic.svg
+    icons/dino-microphone-off-symbolic.svg
+    icons/dino-microphone-symbolic.svg
     icons/dino-party-popper-symbolic.svg
+    icons/dino-phone-hangup-symbolic.svg
+    icons/dino-phone-in-talk-symbolic.svg
+    icons/dino-phone-missed-symbolic.svg
+    icons/dino-phone-ring-symbolic.svg
+    icons/dino-phone-symbolic.svg
     icons/dino-status-away.svg
     icons/dino-status-chat.svg
     icons/dino-status-dnd.svg
@@ -29,6 +38,8 @@ set(RESOURCE_LIST
     icons/im.dino.Dino.svg
     icons/im.dino.Dino-symbolic.svg
     icons/dino-tick-symbolic.svg
+    icons/dino-video-off-symbolic.svg
+    icons/dino-video-symbolic.svg
 
     icons/dino-device-desktop-symbolic.svg
     icons/dino-device-phone-symbolic.svg
@@ -46,6 +57,8 @@ set(RESOURCE_LIST
     add_conversation/conference_details_fragment.ui
     add_conversation/list_row.ui
     add_conversation/select_jid_fragment.ui
+
+    call_widget.ui
     chat_input.ui
     contact_details_dialog.ui
     conversation_list_titlebar.ui
@@ -124,6 +137,13 @@ SOURCES
     src/ui/add_conversation/select_contact_dialog.vala
     src/ui/add_conversation/select_jid_fragment.vala
 
+    src/ui/call_window/audio_settings_popover.vala
+    src/ui/call_window/call_bottom_bar.vala
+    src/ui/call_window/call_encryption_button.vala
+    src/ui/call_window/call_window.vala
+    src/ui/call_window/call_window_controller.vala
+    src/ui/call_window/video_settings_popover.vala
+
     src/ui/chat_input/chat_input_controller.vala
     src/ui/chat_input/chat_text_view.vala
     src/ui/chat_input/edit_history.vala
@@ -142,6 +162,7 @@ SOURCES
     src/ui/conversation_selector/conversation_selector_row.vala
     src/ui/conversation_selector/conversation_selector.vala
 
+    src/ui/conversation_content_view/call_widget.vala
     src/ui/conversation_content_view/chat_state_populator.vala
     src/ui/conversation_content_view/content_populator.vala
     src/ui/conversation_content_view/conversation_item_skeleton.vala
@@ -153,6 +174,7 @@ SOURCES
     src/ui/conversation_content_view/message_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
 
+    src/ui/conversation_titlebar/call_entry.vala
     src/ui/conversation_titlebar/menu_entry.vala
     src/ui/conversation_titlebar/occupants_entry.vala
     src/ui/conversation_titlebar/search_entry.vala

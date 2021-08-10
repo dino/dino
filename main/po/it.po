@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-04 09:31-0600\n"
+"POT-Creation-Date: 2021-04-11 15:56+0200\n"
 "PO-Revision-Date: 2020-11-25 11:28+0000\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
@@ -143,7 +143,7 @@ msgstr "Seleziona"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:220 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:257 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -183,7 +183,7 @@ msgid "Start"
 msgstr "Inizia"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:220 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:257 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Entra nel canale"
@@ -199,7 +199,7 @@ msgstr "Avanti"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:220
+#: main/src/ui/application.vala:257
 msgid "Join"
 msgstr "Partecipa"
 
@@ -243,7 +243,7 @@ msgstr "La stanza ha troppi partecipanti"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
 #: main/src/ui/notifier_gnotifications.vala:82
-#: main/src/ui/notifier_freedesktop.vala:142
+#: main/src/ui/notifier_freedesktop.vala:144
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
@@ -261,6 +261,14 @@ msgstr "Indirizzo non valido"
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
 msgstr "Aggiungi"
+
+#: main/src/ui/application.vala:197 main/data/menu_app.ui:17
+msgid "Keyboard Shortcuts"
+msgstr "Scorciatoie da tastiera"
+
+#: main/src/ui/application.vala:233 main/data/menu_app.ui:21
+msgid "About Dino"
+msgstr "Informazioni su Dino"
 
 #: main/src/ui/global_search.vala:141
 #, c-format
@@ -280,16 +288,16 @@ msgid "With %s"
 msgstr "Con %s"
 
 #: main/src/ui/notifier_gnotifications.vala:69
-#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/notifier_freedesktop.vala:114
 msgid "Subscription request"
 msgstr "Richiesta di iscrizione"
 
 #: main/src/ui/notifier_gnotifications.vala:75
 #: main/src/ui/notifier_gnotifications.vala:109
 #: main/src/ui/notifier_gnotifications.vala:125
-#: main/src/ui/notifier_freedesktop.vala:118
-#: main/src/ui/notifier_freedesktop.vala:173
-#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:177
+#: main/src/ui/notifier_freedesktop.vala:210
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 msgid "Accept"
 msgstr "Accetta"
@@ -297,31 +305,31 @@ msgstr "Accetta"
 #: main/src/ui/notifier_gnotifications.vala:76
 #: main/src/ui/notifier_gnotifications.vala:108
 #: main/src/ui/notifier_gnotifications.vala:124
-#: main/src/ui/notifier_freedesktop.vala:118
-#: main/src/ui/notifier_freedesktop.vala:205
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:210
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Rifiuta"
 
 #: main/src/ui/notifier_gnotifications.vala:98
-#: main/src/ui/notifier_freedesktop.vala:165
+#: main/src/ui/notifier_freedesktop.vala:168
 #, c-format
 msgid "Invitation to %s"
 msgstr "Invito per %s"
 
 #: main/src/ui/notifier_gnotifications.vala:99
-#: main/src/ui/notifier_freedesktop.vala:166
+#: main/src/ui/notifier_freedesktop.vala:169
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s ti ha invitato a %s"
 
 #: main/src/ui/notifier_gnotifications.vala:116
-#: main/src/ui/notifier_freedesktop.vala:197
+#: main/src/ui/notifier_freedesktop.vala:201
 msgid "Permission request"
 msgstr "Richiesta di autorizzazione"
 
 #: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:198
+#: main/src/ui/notifier_freedesktop.vala:202
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%s ha chiesto il permesso di scrivere in %s"
@@ -495,17 +503,17 @@ msgstr "Nessun account attivo"
 msgid "Manage accounts"
 msgstr "Gestisci account"
 
-#: main/src/ui/notifier_freedesktop.vala:146
+#: main/src/ui/notifier_freedesktop.vala:148
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "Password sbagliata"
 
-#: main/src/ui/notifier_freedesktop.vala:149
+#: main/src/ui/notifier_freedesktop.vala:151
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr "Il certificato TLS non è valido"
 
-#: main/src/ui/notifier_freedesktop.vala:173
+#: main/src/ui/notifier_freedesktop.vala:177
 msgid "Reject"
 msgstr ""
 
@@ -843,14 +851,6 @@ msgstr "Passa alla conversazione precedente"
 #: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:9
 msgid "Accounts"
 msgstr "Account"
-
-#: main/data/menu_app.ui:17
-msgid "Keyboard Shortcuts"
-msgstr "Scorciatoie da tastiera"
-
-#: main/data/menu_app.ui:21
-msgid "About Dino"
-msgstr "Informazioni su Dino"
 
 #: main/data/manage_accounts/dialog.ui:200
 msgid "Local alias"

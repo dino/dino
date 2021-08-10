@@ -8,6 +8,7 @@ namespace Dino {
 public class ConnectionManager : Object {
 
     public signal void stream_opened(Account account, XmppStream stream);
+    public signal void stream_attached_modules(Account account, XmppStream stream);
     public signal void connection_state_changed(Account account, ConnectionState state);
     public signal void connection_error(Account account, ConnectionError error);
 
@@ -169,7 +170,7 @@ public class ConnectionManager : Object {
     public async void disconnect_account(Account account) {
         if (connections.has_key(account)) {
             make_offline(account);
-            connections[account].disconnect_account();
+            connections[account].disconnect_account.begin();
             connections.unset(account);
         }
     }
@@ -225,6 +226,7 @@ public class ConnectionManager : Object {
 
         connections[account].established = new DateTime.now_utc();
         stream.attached_modules.connect((stream) => {
+            stream_attached_modules(account, stream);
             change_connection_state(account, ConnectionState.CONNECTED);
         });
         stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
@@ -348,7 +350,9 @@ public class ConnectionManager : Object {
             foreach (Account account in connections.keys) {
                 try {
                     make_offline(account);
-                    yield connections[account].stream.disconnect();
+                    if (connections[account].stream != null) {
+                        yield connections[account].stream.disconnect();
+                    }
                 } catch (Error e) {
                     debug("Error disconnecting stream %p: %s", connections[account].stream, e.message);
                 }

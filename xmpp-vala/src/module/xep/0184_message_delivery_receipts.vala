@@ -4,7 +4,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0184_message_delivery_receipts");
 
-        public signal void receipt_received(XmppStream stream, Jid jid, string id);
+        public signal void receipt_received(XmppStream stream, Jid jid, string id, MessageStanza stanza);
 
         private SendPipelineListener send_pipeline_listener = new SendPipelineListener();
 
@@ -37,7 +37,7 @@ namespace Xmpp.Xep.MessageDeliveryReceipts {
         private void received_message(XmppStream stream, MessageStanza message) {
             StanzaNode? received_node = message.stanza.get_subnode("received", NS_URI);
             if (received_node != null) {
-                receipt_received(stream, message.from, received_node.get_attribute("id", NS_URI));
+                receipt_received(stream, message.from, received_node.get_attribute("id", NS_URI), message);
             }
         }
     }
