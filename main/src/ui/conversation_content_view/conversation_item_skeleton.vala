@@ -105,7 +105,6 @@ public class ItemMetaDataHeader : Box {
     [GtkChild] public Label time_label;
     public Image received_image = new Image() { opacity=0.4 };
     public Widget? encryption_image = null;
-    ulong updated_roster_handler_id;
 
     public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON", 17, 12);
 
@@ -115,6 +114,7 @@ public class ItemMetaDataHeader : Box {
     public Entities.Message.Marked item_mark { get; set; }
     private ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
     private uint time_update_timeout = 0;
+    private ulong updated_roster_handler_id;
 
     public ItemMetaDataHeader(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.stream_interactor = stream_interactor;
