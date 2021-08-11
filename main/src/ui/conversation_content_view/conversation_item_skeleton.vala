@@ -105,6 +105,7 @@ public class ItemMetaDataHeader : Box {
     [GtkChild] public Label time_label;
     public Image received_image = new Image() { opacity=0.4 };
     public Widget? encryption_image = null;
+    ulong updated_roster_handler_id;
 
     public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON", 17, 12);
 
@@ -123,8 +124,8 @@ public class ItemMetaDataHeader : Box {
 
         update_name_label();
         name_label.style_updated.connect(update_name_label);
-        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
-            if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
+        updated_roster_handler_id = stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
+            if (this.conversation.account.equals(account) && this.conversation.counterpart.equals(jid)) {
                 update_name_label();
             }
         });        
@@ -306,6 +307,9 @@ public class ItemMetaDataHeader : Box {
         if (time_update_timeout != 0) {
             Source.remove(time_update_timeout);
             time_update_timeout = 0;
+        }
+        if (time_update_timeout != 0){
+            stream_interactor.get_module(RosterManager.IDENTITY).disconnect(updated_roster_handler_id);
         }
     }
 }
