@@ -308,9 +308,9 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
                     int start, end;
                     match_info.fetch_pos(2, out start, out end);
                     return parse_add_markup(s[0:start-1], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                        "<span alpha='40%'>" +  s[start-1:start] + "</span>" +
+                        "<span alpha='50%'>" +  s[start-1:start] + "</span>" +
                         @"<$(convenience_tag[i])>" + s[start:end] + @"</$(convenience_tag[i])>" +
-                        "<span alpha='40%'>" + s[end:end+1] + "</span>" +
+                        "<span alpha='50%'>" + s[end:end+1] + "</span>" +
                         parse_add_markup(s[end+1:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
                 }
             } catch (RegexError e) {
