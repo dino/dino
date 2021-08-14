@@ -86,6 +86,14 @@ window.dino-main .dino-conversation .message-box.edit-mode:hover {
     background: alpha(@theme_selected_bg_color, 0.12);
 }
 
+window.dino-main .dino-conversation .message-box.error {
+    background: alpha(@error_color, 0.1);
+}
+
+window.dino-main .dino-conversation .message-box.error:hover {
+    background: alpha(@error_color, 0.12);
+}
+
 window.dino-main .file-box-outer,
 window.dino-main .call-box-outer {
     background: @theme_base_color;

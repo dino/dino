@@ -16,6 +16,7 @@ public class ConversationItemSkeleton : EventBox {
     public Conversation conversation { get; set; }
     public Plugins.MetaConversationItem item;
     public bool item_in_edit_mode { get; set; }
+    public Entities.Message.Marked item_mark { get; set; }
     public ContentMetaItem? content_meta_item = null;
     public Widget? widget = null;
 
@@ -33,6 +34,10 @@ public class ConversationItemSkeleton : EventBox {
 
         item.bind_property("in-edit-mode", this, "item-in-edit-mode");
         this.notify["item-in-edit-mode"].connect(update_edit_mode);
+
+        item.bind_property("mark", this, "item-mark", BindingFlags.SYNC_CREATE);
+        this.notify["item-mark"].connect(update_error_mode);
+        update_error_mode();
 
         widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
         if (widget != null) {
@@ -94,6 +99,14 @@ public class ConversationItemSkeleton : EventBox {
             this.get_style_context().add_class("edit-mode");
         } else {
             this.get_style_context().remove_class("edit-mode");
+        }
+    }
+
+    private void update_error_mode() {
+        if (item_mark == Message.Marked.ERROR) {
+            this.get_style_context().add_class("error");
+        } else {
+            this.get_style_context().remove_class("error");
         }
     }
 }
