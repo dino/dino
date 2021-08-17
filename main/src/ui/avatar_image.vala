@@ -152,6 +152,7 @@ public class AvatarImage : Misc {
     private void disconnect_stream_interactor() {
         if (stream_interactor != null) {
             presence_manager.show_received.disconnect(on_show_received);
+            presence_manager.received_offline_presence.disconnect(on_show_received);
             avatar_manager.received_avatar.disconnect(on_received_avatar);
             stream_interactor.connection_manager.connection_state_changed.disconnect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.disconnect(on_roster_updated);
@@ -234,6 +235,7 @@ public class AvatarImage : Misc {
         if (this.stream_interactor != stream_interactor) {
             this.stream_interactor = stream_interactor;
             presence_manager.show_received.connect(on_show_received);
+            presence_manager.received_offline_presence.connect(on_show_received);
             stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect(on_received_avatar);
             stream_interactor.connection_manager.connection_state_changed.connect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
