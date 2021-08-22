@@ -18,6 +18,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     [GtkChild] private Box message_menu_box;
     [GtkChild] private Button button1;
     [GtkChild] private Image button1_icon;
+    [GtkChild] private Button button2;
+    [GtkChild] private Image button2_icon;
     [GtkChild] private Box notifications;
     [GtkChild] private Box main;
     [GtkChild] private EventBox main_event_box;
@@ -78,8 +80,12 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         main_event_box.motion_notify_event.connect(on_motion_notify_event);
 
         button1.clicked.connect(() => {
-            current_meta_item.get_item_actions(Plugins.WidgetType.GTK)[0].callback(button1, current_meta_item, currently_highlighted.widget);
+            current_meta_item.get_item_actions(Plugins.WidgetType.GTK)[1].callback(button1, current_meta_item, currently_highlighted.widget);
             update_message_menu();
+        });
+
+        button2.clicked.connect(() => {
+            current_meta_item.get_item_actions(Plugins.WidgetType.GTK)[0].callback(button2, current_meta_item, currently_highlighted.widget);
         });
 
         return this;
@@ -187,9 +193,14 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
         var actions = current_meta_item.get_item_actions(Plugins.WidgetType.GTK);
         message_menu_box.visible = actions != null && actions.size > 0;
+
         if (actions != null && actions.size == 1) {
+            button1.visible = false;
+        }
+
+        if (actions != null && actions.size == 2) {
             button1.visible = true;
-            button1_icon.set_from_icon_name(actions[0].icon_name, IconSize.SMALL_TOOLBAR);
+            button1_icon.set_from_icon_name(actions[1].icon_name, IconSize.SMALL_TOOLBAR);
         }
     }
 

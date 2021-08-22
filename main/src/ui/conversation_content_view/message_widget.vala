@@ -47,14 +47,6 @@ public class MessageMetaItem : ContentMetaItem {
 
         bool allowed = stream_interactor.get_module(MessageCorrection.IDENTITY).is_own_correction_allowed(message_item.conversation, message_item.message);
         Gee.List<Plugins.MessageAction> actions = new ArrayList<Plugins.MessageAction>();
-        if (allowed && !in_edit_mode) {
-            Plugins.MessageAction action1 = new Plugins.MessageAction();
-            action1.icon_name = "document-edit-symbolic";
-            action1.callback = (button, content_meta_item_activated, widget) => {
-                this.in_edit_mode = true;
-            };
-            actions.add(action1);
-        }
 
         Plugins.MessageAction action2 = new Plugins.MessageAction();
         action2.icon_name = "go-previous-symbolic-rtl";
@@ -64,6 +56,15 @@ public class MessageMetaItem : ContentMetaItem {
             on_quote_text(nick, text_to_quote);
         };
         actions.add(action2);
+
+        if (allowed && !in_edit_mode) {
+            Plugins.MessageAction action1 = new Plugins.MessageAction();
+            action1.icon_name = "document-edit-symbolic";
+            action1.callback = (button, content_meta_item_activated, widget) => {
+                this.in_edit_mode = true;
+            };
+            actions.add(action1);
+        }
 
         return actions;
     }

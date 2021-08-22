@@ -58,6 +58,21 @@
                                                                     </child>
                                                                 </object>
                                                             </child>
+                                                            <child>
+                                                                <object class="GtkButton" id="button2">
+                                                                    <property name="vexpand">False</property>
+                                                                    <property name="halign">end</property>
+                                                                    <property name="valign">end</property>
+                                                                    <property name="visible">True</property>
+                                                                    <child>
+                                                                        <object class="GtkImage" id="button2_icon">
+                                                                            <property name="icon-name">go-previous-symbolic-rtl</property>
+                                                                            <property name="icon-size">1</property>
+                                                                            <property name="visible">True</property>
+                                                                        </object>
+                                                                    </child>
+                                                                </object>
+                                                            </child>
                                                         </object>
                                                     </child>
                                             </object>
