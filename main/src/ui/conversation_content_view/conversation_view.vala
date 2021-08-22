@@ -10,6 +10,7 @@ namespace Dino.Ui.ConversationSummary {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/view.ui")]
 public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins.NotificationCollection {
 
+    public signal void on_quote_text(string nick, string text);
     public Conversation? conversation { get; private set; }
 
     [GtkChild] public ScrolledWindow scrolled;
@@ -308,6 +309,9 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             insert_new(item);
             if (item as ContentMetaItem != null) {
                 content_items.add(item);
+
+                MessageMetaItem current_item = item as MessageMetaItem;
+                current_item.on_quote_text.connect((t, nick, text) => on_quote_text(nick, text));
             }
             meta_items.add(item);
         }

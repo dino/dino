@@ -10,6 +10,7 @@ namespace Dino.Ui.ConversationSummary {
 
 public class MessageMetaItem : ContentMetaItem {
 
+    public signal void on_quote_text(string nick, string text);
     private StreamInteractor stream_interactor;
     private MessageItemWidget message_item_widget;
     private MessageItem message_item;
@@ -54,6 +55,16 @@ public class MessageMetaItem : ContentMetaItem {
             };
             actions.add(action1);
         }
+
+        Plugins.MessageAction action2 = new Plugins.MessageAction();
+        action2.icon_name = "go-previous-symbolic-rtl";
+        action2.callback = (button, content_meta_item_activated, widget) => {
+            string nick = Util.get_participant_display_name(stream_interactor, message_item.conversation, message_item.message.from);
+            string text_to_quote = ((MessageItem) message_item_widget.content_item).message.body;
+            on_quote_text(nick, text_to_quote);
+        };
+        actions.add(action2);
+
         return actions;
     }
 
