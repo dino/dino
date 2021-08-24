@@ -114,7 +114,7 @@ public class ItemMetaDataHeader : Box {
     public Entities.Message.Marked item_mark { get; set; }
     private ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
     private uint time_update_timeout = 0;
-    private ulong updated_roster_handler_id;
+    private ulong updated_roster_handler_id = 0;
 
     public ItemMetaDataHeader(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.stream_interactor = stream_interactor;
@@ -302,15 +302,15 @@ public class ItemMetaDataHeader : Box {
     }
 
     public override void dispose() {
-        base.dispose();
-
         if (time_update_timeout != 0) {
             Source.remove(time_update_timeout);
             time_update_timeout = 0;
         }
-        if (time_update_timeout != 0){
+        if (updated_roster_handler_id != 0){
             stream_interactor.get_module(RosterManager.IDENTITY).disconnect(updated_roster_handler_id);
+            updated_roster_handler_id = 0;
         }
+        base.dispose();
     }
 }
 
