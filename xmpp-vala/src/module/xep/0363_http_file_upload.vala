@@ -72,6 +72,11 @@ public class Module : XmppStreamModule {
                 Idle.add((owned) callback);
                 return;
             }
+            if (url_get.ascii_down(4).has_prefix("http://") || url_put.ascii_down(4).has_prefix("http://")) {
+                e = new HttpFileTransferError.SLOT_REQUEST("Error getting upload/download url: server is misconfigured and sent us a URL without TLS enabled");
+                Idle.add((owned) callback);
+                return;
+            }
 
             slot_result.headers = new HashMap<string, string>();
 
