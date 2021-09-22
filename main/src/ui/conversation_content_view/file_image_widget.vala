@@ -68,7 +68,7 @@ public class FileImageWidget : EventBox {
             pointer_inside = false;
             Timeout.add(20, () => {
                 if (!pointer_inside) {
-                    file_default_widget.visible = false;
+//                    file_default_widget.visible = false;
                 }
                 return false;
             });

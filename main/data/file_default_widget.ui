@@ -90,7 +90,7 @@
                         </child>
 			<child>
 				<object class="GtkMenuButton" id="file_menu">
-					<property name="visible">True</property>
+					<property name="visible">False</property>
 					<child>
 						<object class="GtkImage">
 		                                        <property name="visible">True</property>

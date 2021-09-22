@@ -162,8 +162,7 @@ public class FileDefaultWidgetController : Object {
         ModelButton opendir_button = new ModelButton() { text=_("Open dir"), visible=true };
         opendir_button.clicked.connect(() => {
                    try{
-			if(settings.last_file_uri=="") settings.last_file_uri = GLib.Path.get_dirname(file_uri);
-                        AppInfo.launch_default_for_uri(settings.last_file_uri, null);
+                        AppInfo.launch_default_for_uri(GLib.Path.get_dirname(file_uri), null);
                     } catch (Error err) {
                         warning("Failed to open %s - %s", file_uri, err.message);
                     }
@@ -176,7 +175,8 @@ public class FileDefaultWidgetController : Object {
                     save_dialog.set_modal(true);
                     try {
 			if(settings.last_file_uri=="") settings.last_file_uri = GLib.Path.get_dirname(file_uri);
-                        (save_dialog as Gtk.FileChooser).set_file (GLib.File.new_for_uri(settings.last_file_uri.concat("/" , GLib.File.new_for_uri(file_uri).get_basename())));
+			(save_dialog as Gtk.FileChooser).set_current_name(GLib.Uri.escape_string(GLib.Path.get_basename(file_uri)));
+                        (save_dialog as Gtk.FileChooser).set_uri(settings.last_file_uri.concat("/", GLib.Uri.escape_string(GLib.Path.get_basename(GLib.Uri.unescape_string(file_uri)))));
                     } catch (GLib.Error error) {
                         warning("Faild to open save dialog: %s\n", error.message);
                     }
@@ -185,6 +185,16 @@ public class FileDefaultWidgetController : Object {
 
         });
         box.add(save_button);
+        ModelButton opensdir_button = new ModelButton() { text=_("Open save dir"), visible=true };
+        opensdir_button.clicked.connect(() => {
+                   try{
+			if(settings.last_file_uri=="") settings.last_file_uri = GLib.Path.get_dirname(file_uri);
+                        AppInfo.launch_default_for_uri(settings.last_file_uri, null);
+                    } catch (Error err) {
+                        warning("Failed to open %s - %s", file_uri, err.message);
+                    }
+        });
+        box.add(opensdir_button);
 
         Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu();
         popover_menu.add(box);
@@ -193,8 +203,6 @@ public class FileDefaultWidgetController : Object {
         this.widget.file_menu.clicked.connect(() => {
             popover_menu.visible = true;
         });
-
-
     }
 
     public void set_file_transfer(FileTransfer file_transfer, StreamInteractor stream_interactor) {

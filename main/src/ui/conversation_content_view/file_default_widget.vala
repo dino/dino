@@ -42,6 +42,7 @@ public class FileDefaultWidget : EventBox {
             case FileTransfer.State.COMPLETE:
                 mime_label.label = mime_description;
                 image_stack.set_visible_child_name("content_type_image");
+		file_menu.visible = true;
                 break;
             case FileTransfer.State.IN_PROGRESS:
                 mime_label.label = _("Downloading %s…").printf(get_size_string(size));
@@ -70,7 +71,6 @@ public class FileDefaultWidget : EventBox {
         pointer_inside = true;
         Timeout.add(20, () => {
             if (pointer_inside) {
-                event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
                 content_type_image.opacity = 0.7;
                 if (state == FileTransfer.State.NOT_STARTED) {
                     image_stack.set_visible_child_name("download_image");
@@ -85,7 +85,6 @@ public class FileDefaultWidget : EventBox {
         pointer_inside = false;
         Timeout.add(20, () => {
             if (!pointer_inside) {
-                event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.XTERM));
                 content_type_image.opacity = 0.5;
                 if (state == FileTransfer.State.NOT_STARTED) {
                     image_stack.set_visible_child_name("content_type_image");
