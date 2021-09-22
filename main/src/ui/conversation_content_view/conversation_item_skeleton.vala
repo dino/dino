@@ -16,6 +16,7 @@ public class ConversationItemSkeleton : EventBox {
     public Conversation conversation { get; set; }
     public Plugins.MetaConversationItem item;
     public bool item_in_edit_mode { get; set; }
+    public Entities.Message.Marked item_mark { get; set; }
     public ContentMetaItem? content_meta_item = null;
     public Widget? widget = null;
 
@@ -33,6 +34,10 @@ public class ConversationItemSkeleton : EventBox {
 
         item.bind_property("in-edit-mode", this, "item-in-edit-mode");
         this.notify["item-in-edit-mode"].connect(update_edit_mode);
+
+        item.bind_property("mark", this, "item-mark", BindingFlags.SYNC_CREATE);
+        this.notify["item-mark"].connect(update_error_mode);
+        update_error_mode();
 
         widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
         if (widget != null) {
@@ -96,6 +101,14 @@ public class ConversationItemSkeleton : EventBox {
             this.get_style_context().remove_class("edit-mode");
         }
     }
+
+    private void update_error_mode() {
+        if (item_mark == Message.Marked.ERROR) {
+            this.get_style_context().add_class("error");
+        } else {
+            this.get_style_context().remove_class("error");
+        }
+    }
 }
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/item_metadata_header.ui")]
@@ -114,6 +127,7 @@ public class ItemMetaDataHeader : Box {
     public Entities.Message.Marked item_mark { get; set; }
     private ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
     private uint time_update_timeout = 0;
+    private ulong updated_roster_handler_id = 0;
 
     public ItemMetaDataHeader(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.stream_interactor = stream_interactor;
@@ -123,6 +137,11 @@ public class ItemMetaDataHeader : Box {
 
         update_name_label();
         name_label.style_updated.connect(update_name_label);
+        updated_roster_handler_id = stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
+            if (this.conversation.account.equals(account) && this.conversation.counterpart.equals(jid)) {
+                update_name_label();
+            }
+        });        
 
         conversation.notify["encryption"].connect(update_unencrypted_icon);
         item.notify["encryption"].connect(update_encryption_icon);
@@ -296,12 +315,15 @@ public class ItemMetaDataHeader : Box {
     }
 
     public override void dispose() {
-        base.dispose();
-
         if (time_update_timeout != 0) {
             Source.remove(time_update_timeout);
             time_update_timeout = 0;
         }
+        if (updated_roster_handler_id != 0){
+            stream_interactor.get_module(RosterManager.IDENTITY).disconnect(updated_roster_handler_id);
+            updated_roster_handler_id = 0;
+        }
+        base.dispose();
     }
 }
 

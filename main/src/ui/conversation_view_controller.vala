@@ -80,6 +80,11 @@ public class ConversationViewController : Object {
                 update_conversation_topic(subject);
             }
         });
+        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
+            if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
+                update_conversation_display_name();
+            }
+        });
 
         stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(update_file_upload_status);
 

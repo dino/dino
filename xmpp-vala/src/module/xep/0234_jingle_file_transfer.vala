@@ -105,9 +105,11 @@ public class Module : Jingle.ContentType, XmppStreamModule {
             yield io_stream.input_stream.close_async();
             yield io_stream.output_stream.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE|OutputStreamSpliceFlags.CLOSE_TARGET);
             yield connection.terminate(true);
-        } catch (Jingle.Error e) {
-            session.terminate(Jingle.ReasonElement.FAILED_TRANSPORT, e.message, e.message);
-            throw new Jingle.Error.GENERAL(@"couldn't create Jingle session: $(e.message)");
+        } catch (Error e) {
+            if (session != null) {
+                session.terminate(Jingle.ReasonElement.FAILED_TRANSPORT, e.message, e.message);
+            }
+            throw new Jingle.Error.GENERAL("Couldn't send file via Jingle: %s", e.message);
         }
     }
 

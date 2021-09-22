@@ -407,6 +407,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
     public void terminate(string? reason_name, string? reason_text, string? local_reason) {
         if (state == State.ENDED) return;
+        debug("Jingle session %s terminated: %s; %s; %s", this.sid, reason_name ?? "-", reason_text ?? "-", local_reason ?? "-");
 
         if (state == State.ACTIVE) {
             string reason_str;

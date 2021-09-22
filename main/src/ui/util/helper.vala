@@ -154,10 +154,33 @@ public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, 
     image.set_from_surface(surface);
 }
 
+public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
+    Gtk.CssProvider provider = force_color(label, css_color);
+    Gdk.RGBA color_rgba = label.get_style_context().get_color(StateFlags.NORMAL);
+    label.get_style_context().remove_provider(provider);
+    return color_rgba;
+}
+
+public static Gdk.RGBA get_label_pango_class_color(Label label, string css_class) {
+    label.get_style_context().add_class(css_class);
+    Gdk.RGBA color_rgba = label.get_style_context().get_color(StateFlags.NORMAL);
+    label.get_style_context().remove_class(css_class);
+    return color_rgba;
+}
+
+public static string rgba_to_hex(Gdk.RGBA rgba) {
+    return "#%02x%02x%02x%02x".printf(
+            (uint)(Math.round(rgba.red*255)),
+            (uint)(Math.round(rgba.green*255)),
+            (uint)(Math.round(rgba.blue*255)),
+            (uint)(Math.round(rgba.alpha*255)))
+            .up();
+}
+
 private const string force_background_css = "%s { background-color: %s; }";
 private const string force_color_css = "%s { color: %s; }";
 
-public static void force_css(Gtk.Widget widget, string css) {
+public static Gtk.CssProvider force_css(Gtk.Widget widget, string css) {
     var p = new Gtk.CssProvider();
     try {
         p.load_from_data(css);
@@ -165,14 +188,15 @@ public static void force_css(Gtk.Widget widget, string css) {
     } catch (GLib.Error err) {
         // handle err
     }
+    return p;
 }
 
 public static void force_background(Gtk.Widget widget, string color, string selector = "*") {
     force_css(widget, force_background_css.printf(selector, color));
 }
 
-public static void force_color(Gtk.Widget widget, string color, string selector = "*") {
-    force_css(widget, force_color_css.printf(selector, color));
+public static Gtk.CssProvider force_color(Gtk.Widget widget, string color, string selector = "*") {
+    return force_css(widget, force_color_css.printf(selector, color));
 }
 
 public static void force_error_color(Gtk.Widget widget, string selector = "*") {
@@ -308,9 +332,9 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
                     int start, end;
                     match_info.fetch_pos(2, out start, out end);
                     return parse_add_markup(s[0:start-1], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                        "<span color='#999'>" +  s[start-1:start] + "</span>" +
+                        "<span alpha='50%'>" +  s[start-1:start] + "</span>" +
                         @"<$(convenience_tag[i])>" + s[start:end] + @"</$(convenience_tag[i])>" +
-                        "<span color='#999'>" + s[end:end+1] + "</span>" +
+                        "<span alpha='50%'>" + s[end:end+1] + "</span>" +
                         parse_add_markup(s[end+1:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
                 }
             } catch (RegexError e) {

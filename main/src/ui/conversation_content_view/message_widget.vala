@@ -77,6 +77,12 @@ public class MessageItemWidget : SizeRequestBin {
     public signal void edit_cancelled();
     public signal void edit_sent(string text);
 
+    enum AdditionalInfo {
+        NONE,
+        PENDING,
+        DELIVERY_FAILED
+    }
+
     StreamInteractor stream_interactor;
     public ContentItem content_item;
     public Message.Marked marked { get; set; }
@@ -84,6 +90,7 @@ public class MessageItemWidget : SizeRequestBin {
     Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, vexpand=true, visible=true };
     MessageItemEditMode? edit_mode = null;
     ChatTextViewController? controller = null;
+    AdditionalInfo additional_info = AdditionalInfo.NONE;
 
     ulong realize_id = -1;
     ulong style_updated_id = -1;
@@ -98,6 +105,34 @@ public class MessageItemWidget : SizeRequestBin {
     public MessageItemWidget(StreamInteractor stream_interactor, ContentItem content_item) {
         this.stream_interactor = stream_interactor;
         this.content_item = content_item;
+
+        Message message = ((MessageItem) content_item).message;
+        if (message.direction == Message.DIRECTION_SENT && !(message.marked in Message.MARKED_RECEIVED)) {
+            var binding = message.bind_property("marked", this, "marked");
+            marked_notify_handler_id = this.notify["marked"].connect(() => {
+                // Currently "pending", but not anymore
+                if (additional_info == AdditionalInfo.PENDING &&
+                        message.marked != Message.Marked.SENDING && message.marked != Message.Marked.UNSENT) {
+                    update_label();
+                }
+
+                // Currently "error", but not anymore
+                if (additional_info == AdditionalInfo.DELIVERY_FAILED && message.marked != Message.Marked.ERROR) {
+                    update_label();
+                }
+
+                // Currently not error, but should be
+                if (additional_info != AdditionalInfo.DELIVERY_FAILED && message.marked == Message.Marked.ERROR) {
+                    update_label();
+                }
+
+                // Nothing bad can happen anymore
+                if (message.marked in Message.MARKED_RECEIVED) {
+                    binding.unbind();
+                    this.disconnect(marked_notify_handler_id);
+                }
+            });
+        }
 
         update_label();
     }
@@ -181,32 +216,34 @@ public class MessageItemWidget : SizeRequestBin {
             markup_text = @"<span size=\'$size_str\'>" + markup_text + "</span>";
         }
 
-        string gray_color = Util.is_dark_theme(label) ? "#808080" : "#909090";
+        string gray_color = Util.rgba_to_hex(Util.get_label_pango_class_color(label, "dim-label"));
 
         if (message.edit_to != null) {
-            markup_text += " <span size='small' color='%s'>(%s)</span>".printf(gray_color, _("edited"));
+            markup_text += "  <span size='small' color='%s'>(%s)</span>".printf(gray_color, _("edited"));
             theme_dependent = true;
         }
 
-        // Append "pending..." iff message has not been sent yet
+        // Append message status info
+        additional_info = AdditionalInfo.NONE;
         if (message.direction == Message.DIRECTION_SENT && (message.marked == Message.Marked.SENDING || message.marked == Message.Marked.UNSENT)) {
+            // Append "pending..." iff message has not been sent yet
             if (message.time.compare(new DateTime.now_utc().add_seconds(-10)) < 0) {
-                markup_text += " <span size='small' color='%s'>%s</span>".printf(gray_color, "pending…");
-
-                // Update the label as soon as the sent state changes
-                var binding = message.bind_property("marked", this, "marked");
-                marked_notify_handler_id = this.notify["marked"].connect(() => {
-                    binding.unbind();
-                    this.disconnect(marked_notify_handler_id);
-                    update_label();
-                });
+                markup_text += "  <span size='small' color='%s'>%s</span>".printf(gray_color, _("pending…"));
+                theme_dependent = true;
+                additional_info = AdditionalInfo.PENDING;
             } else {
                 int time_diff = (- (int) message.time.difference(new DateTime.now_utc()) / 1000);
                 Timeout.add(10000 - time_diff, () => {
-                   update_label();
+                    update_label();
                     return false;
                 });
             }
+        } else if (message.direction == Message.DIRECTION_SENT && message.marked == Message.Marked.ERROR) {
+            // Append "delivery failed" if there was a server error
+            string error_color = Util.rgba_to_hex(Util.get_label_pango_color(label, "@error_color"));
+            markup_text += "  <span size='small' color='%s'>%s</span>".printf(error_color, _("delivery failed"));
+            theme_dependent = true;
+            additional_info = AdditionalInfo.DELIVERY_FAILED;
         }
 
         if (theme_dependent && realize_id == -1) {

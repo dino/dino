@@ -16,8 +16,11 @@ public class Message : Object {
         UNSENT,
         WONTSEND,
         SENDING,
-        SENT
+        SENT,
+        ERROR
     }
+
+    public static Marked[] MARKED_RECEIVED = new Marked[] { Marked.READ, Marked.RECEIVED, Marked.ACKNOWLEDGED };
 
     public enum Type {
         ERROR,

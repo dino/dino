@@ -74,7 +74,7 @@ public class Stanza : Object {
     }
 
     public ErrorStanza? get_error() {
-        return new ErrorStanza.from_stanza(this.stanza);
+        return ErrorStanza.from_stanza(this.stanza);
     }
 }
 
