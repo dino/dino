@@ -120,14 +120,81 @@ public class FileDefaultWidgetController : Object {
     public string file_transfer_path { get; set; }
     public string file_transfer_state { get; set; }
     public string file_transfer_mime_type { get; set; }
+    public Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
     private StreamInteractor? stream_interactor;
     private string file_uri;
     private FileTransfer.State state;
 
+    private void save_as(Gtk.Dialog dialog, int response_id) {
+        var save_dialog = dialog as Gtk.FileChooserDialog;
+        File file_src;
+        switch (response_id) {
+            case Gtk.ResponseType.ACCEPT:
+		    file_src = GLib.File.new_for_uri(file_uri);
+                    try{
+                        file_src.copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);
+			settings.last_file_uri = GLib.Path.get_dirname(save_dialog.get_uri());
+                    } catch (Error err) {
+                        warning("Failed copy file %s - %s", file_uri, err.message);
+                    }
+            break;
+            default:
+            break;
+        }
+        dialog.destroy ();
+    }
+
     public FileDefaultWidgetController(FileDefaultWidget widget) {
         this.widget = widget;
         widget.button_release_event.connect(on_clicked);
+
+	Box box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
+        ModelButton open_button = new ModelButton() { text=_("Open file"), visible=true };
+        open_button.clicked.connect(() => {
+                    try{
+                        AppInfo.launch_default_for_uri(file_uri, null);
+                    } catch (Error err) {
+                        warning("Failed to open %s - %s", file_uri, err.message);
+                    }
+        });
+        box.add(open_button);
+        ModelButton opendir_button = new ModelButton() { text=_("Open dir"), visible=true };
+        opendir_button.clicked.connect(() => {
+                   try{
+			if(settings.last_file_uri=="") settings.last_file_uri = GLib.Path.get_dirname(file_uri);
+                        AppInfo.launch_default_for_uri(settings.last_file_uri, null);
+                    } catch (Error err) {
+                        warning("Failed to open %s - %s", file_uri, err.message);
+                    }
+        });
+        box.add(opendir_button);
+        ModelButton save_button = new ModelButton() { text=_("Save file"), visible=true };
+        save_button.clicked.connect(() => {
+                    var save_dialog = new Gtk.FileChooserDialog ("Save as file", this as Gtk.Window, Gtk.FileChooserAction.SAVE, Gtk.Stock.CANCEL, Gtk.ResponseType.CANCEL, Gtk.Stock.SAVE, Gtk.ResponseType.ACCEPT);
+                    save_dialog.set_do_overwrite_confirmation (true);
+                    save_dialog.set_modal(true);
+                    try {
+			if(settings.last_file_uri=="") settings.last_file_uri = GLib.Path.get_dirname(file_uri);
+                        (save_dialog as Gtk.FileChooser).set_file (GLib.File.new_for_uri(settings.last_file_uri.concat("/" , GLib.File.new_for_uri(file_uri).get_basename())));
+                    } catch (GLib.Error error) {
+                        warning("Faild to open save dialog: %s\n", error.message);
+                    }
+                    save_dialog.response.connect(save_as);
+                    save_dialog.show();
+
+        });
+        box.add(save_button);
+
+        Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu();
+        popover_menu.add(box);
+        this.widget.file_menu.popover = popover_menu;
+
+        this.widget.file_menu.clicked.connect(() => {
+            popover_menu.visible = true;
+        });
+
+
     }
 
     public void set_file_transfer(FileTransfer file_transfer, StreamInteractor stream_interactor) {
@@ -160,46 +227,10 @@ public class FileDefaultWidgetController : Object {
         widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.size);
     }
 
-    private void save_as(Gtk.Dialog dialog, int response_id) {
-        var save_dialog = dialog as Gtk.FileChooserDialog;
-        File file_src;
-        switch (response_id) {
-            case Gtk.ResponseType.ACCEPT:
-                file_src = GLib.File.new_for_path (GLib.Path.build_filename (file_uri.substring(7)));
-                    try{
-                        file_src.copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);	
-                    } catch (Error err) {
-                        warning("Failed copy file %s - %s", file_uri, err.message);
-                    }
-            break;
-            default:
-            break;
-        }
-        dialog.destroy ();
-    }
-
     private bool on_clicked(EventButton event_button) {
         switch (state) {
             case FileTransfer.State.COMPLETE:
-                if (event_button.button == 1) {
-                    try{
-                        AppInfo.launch_default_for_uri(file_uri, null);
-                    } catch (Error err) {
-                        warning("Failed to open %s - %s", file_uri, err.message);
-                    }
-                }
-                if (event_button.button == 3) {
-                    var save_dialog = new Gtk.FileChooserDialog ("Save as file", this as Gtk.Window, Gtk.FileChooserAction.SAVE, Gtk.Stock.CANCEL, Gtk.ResponseType.CANCEL, Gtk.Stock.SAVE, Gtk.ResponseType.ACCEPT);
-                    save_dialog.set_do_overwrite_confirmation (true);
-                    save_dialog.set_modal(true);
-                    try {
-                        (save_dialog as Gtk.FileChooser).set_file (GLib.File.new_for_path (GLib.Path.build_filename (file_uri.substring(7))));
-                    } catch (GLib.Error error) {
-                        warning("Failed to open save dialog: %s\n", error.message);
-                    }
-                    save_dialog.response.connect(save_as);
-                    save_dialog.show();
-                }
+		return false;
                 break;
             case FileTransfer.State.NOT_STARTED:
                 assert(stream_interactor != null && file_transfer != null);

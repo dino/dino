@@ -15,6 +15,7 @@ public class FileDefaultWidget : EventBox {
     [GtkChild] public Image content_type_image;
     [GtkChild] public Spinner spinner;
     [GtkChild] public EventBox stack_event_box;
+    [GtkChild] public MenuButton file_menu;
 
     private FileTransfer.State state;
     private bool pointer_inside = false;
