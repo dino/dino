@@ -70,13 +70,12 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
 
     public async void notify_message(Message message, Conversation conversation, string conversation_display_name, string? participant_display_name) {
         string body  = "";
-        if(supports_body_hyperlinks){
-            body = Util.parse_add_markup(message.body, null, true, true);
-        }else{
-            if (supports_body_markup)
-                body = Markup.escape_text(message.body);
-            else
-                body = message.body;
+        if (supports_body_hyperlinks) {
+            body = Util.parse_add_markup(message.body, null, true, false);
+        } else if (supports_body_markup) {
+            body = Markup.escape_text(message.body);
+        } else {
+            body = message.body;
         }
         yield notify_content_item(conversation, conversation_display_name, participant_display_name, body);
     }
