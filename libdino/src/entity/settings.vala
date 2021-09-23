@@ -7,6 +7,7 @@ public class Settings : Object {
     public Settings.from_db(Database db) {
         this.db = db;
 
+        trayicon = col_to_bool_or_default("trayicon", true);
         send_typing_ = col_to_bool_or_default("send_typing", true);
         send_marker_ = col_to_bool_or_default("send_marker", true);
         notifications_ = col_to_bool_or_default("notifications", true);
@@ -76,6 +77,17 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
+        }
+    }
+    private bool trayicon_;
+    public bool trayicon {
+        get { return trayicon_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "trayicon", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            trayicon_ = value;
         }
     }
 }

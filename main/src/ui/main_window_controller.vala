@@ -72,6 +72,7 @@ public class MainWindowController : Object {
             return false;
         });
         window.focus_in_event.connect(() => {
+            trayicon.set_from_icon_name("im.dino.Dino");
             stream_interactor.get_module(ChatInteraction.IDENTITY).on_window_focus_in(conversation);
             window.urgency_hint = false;
             return false;

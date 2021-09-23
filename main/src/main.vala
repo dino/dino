@@ -1,8 +1,10 @@
+using Gtk;
 using Dino.Entities;
 using Dino.Ui;
 
 extern const string GETTEXT_PACKAGE;
 extern const string LOCALE_INSTALL_DIR;
+StatusIcon trayicon;
 
 namespace Dino {
 
