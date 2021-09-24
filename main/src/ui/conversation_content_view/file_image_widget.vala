@@ -68,7 +68,7 @@ public class FileImageWidget : EventBox {
             pointer_inside = false;
             Timeout.add(20, () => {
                 if (!pointer_inside) {
-//                    file_default_widget.visible = false;
+                    file_default_widget.visible = false;
                 }
                 return false;
             });
@@ -78,6 +78,7 @@ public class FileImageWidget : EventBox {
 
         file_default_widget.enter_notify_event.connect(() => { pointer_inside = true; return false; });
         file_default_widget.leave_notify_event.connect(() => { pointer_inside = true; return false; });
+        file_default_widget.file_menu.clicked.connect(() => { pointer_inside = true; });
 
         this.add(overlay);
     }

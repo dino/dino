@@ -201,7 +201,7 @@ public class FileDefaultWidgetController : Object {
         this.widget.file_menu.popover = popover_menu;
 
         this.widget.file_menu.clicked.connect(() => {
-            popover_menu.visible = true;
+		popover_menu.visible = true;
         });
     }
 
@@ -238,7 +238,13 @@ public class FileDefaultWidgetController : Object {
     private bool on_clicked(EventButton event_button) {
         switch (state) {
             case FileTransfer.State.COMPLETE:
-		return false;
+		if(this.widget.file_menu.popover.visible==false) {
+                    try{
+                        AppInfo.launch_default_for_uri(file_uri, null);
+                    } catch (Error err) {
+                        warning("Failed to open %s - %s", file_uri, err.message);
+                    }
+		}
                 break;
             case FileTransfer.State.NOT_STARTED:
                 assert(stream_interactor != null && file_transfer != null);

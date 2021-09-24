@@ -71,6 +71,7 @@ public class FileDefaultWidget : EventBox {
         pointer_inside = true;
         Timeout.add(20, () => {
             if (pointer_inside) {
+		event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
                 content_type_image.opacity = 0.7;
                 if (state == FileTransfer.State.NOT_STARTED) {
                     image_stack.set_visible_child_name("download_image");
