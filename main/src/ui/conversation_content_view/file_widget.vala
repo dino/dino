@@ -238,7 +238,7 @@ public class FileDefaultWidgetController : Object {
     private bool on_clicked(EventButton event_button) {
         switch (state) {
             case FileTransfer.State.COMPLETE:
-		if(this.widget.file_menu.popover.visible==false) {
+		if (event_button.button == 1 && this.widget.file_menu.popover.visible==false) {
                     try{
                         AppInfo.launch_default_for_uri(file_uri, null);
                     } catch (Error err) {
