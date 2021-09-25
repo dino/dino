@@ -83,26 +83,19 @@ namespace Dino.Ui {
                     image.set_from_icon_name("dino-phone-ring-symbolic", IconSize.LARGE_TOOLBAR);
                     if (call.direction == Call.DIRECTION_INCOMING) {
                         bool video = stream_interactor.get_module(Calls.IDENTITY).should_we_send_video(call);
-                        title_label.label = video ? _("Video call incoming") : _("Call incoming");
+                        title_label.label = video ? _("Incoming video call") : _("Incoming call");
                         subtitle_label.label = "Ring ring…!";
                         incoming_call_revealer.reveal_child = true;
                         incoming_call_revealer.get_style_context().add_class("incoming");
                     } else {
-                        title_label.label = _("Establishing call");
+                        title_label.label = _("Calling…");
                         subtitle_label.label = "Ring ring…?";
                     }
                     break;
                 case Call.State.ESTABLISHING:
-                    image.set_from_icon_name("dino-phone-ring-symbolic", IconSize.LARGE_TOOLBAR);
-                    if (call.direction == Call.DIRECTION_INCOMING) {
-                        bool video = stream_interactor.get_module(Calls.IDENTITY).should_we_send_video(call);
-                        title_label.label = video ? _("Video call establishing") : _("Call establishing");
-                        subtitle_label.label = "Connecting…";
-                    }
-                    break;
                 case Call.State.IN_PROGRESS:
                     image.set_from_icon_name("dino-phone-in-talk-symbolic", IconSize.LARGE_TOOLBAR);
-                    title_label.label = _("Call in progress…");
+                    title_label.label = _("Call started");
                     string duration = get_duration_string((new DateTime.now_utc()).difference(call.local_time));
                     subtitle_label.label = _("Started %s ago").printf(duration);
 
@@ -127,29 +120,27 @@ namespace Dino.Ui {
                     string duration = get_duration_string(call.end_time.difference(call.local_time));
                     subtitle_label.label = _("Ended at %s").printf(formated_end) +
                             " · " +
-                            _("Lasted for %s").printf(duration);
+                            _("Lasted %s").printf(duration);
                     break;
                 case Call.State.MISSED:
                     image.set_from_icon_name("dino-phone-missed-symbolic", IconSize.LARGE_TOOLBAR);
                     title_label.label = _("Call missed");
-                    string who = null;
                     if (call.direction == Call.DIRECTION_INCOMING) {
-                        who = "You";
+                        subtitle_label.label = _("You missed this call");
                     } else {
-                        who = Util.get_participant_display_name(stream_interactor, conversation, call.to);
+                        string who = Util.get_participant_display_name(stream_interactor, conversation, call.to);
+                        subtitle_label.label = _("%s missed this call").printf(who);
                     }
-                    subtitle_label.label = "%s missed this call".printf(who);
                     break;
                 case Call.State.DECLINED:
                     image.set_from_icon_name("dino-phone-hangup-symbolic", IconSize.LARGE_TOOLBAR);
                     title_label.label = _("Call declined");
-                    string who = null;
                     if (call.direction == Call.DIRECTION_INCOMING) {
-                        who = "You";
+                        subtitle_label.label = _("You declined this call");
                     } else {
-                        who = Util.get_participant_display_name(stream_interactor, conversation, call.to);
+                        string who = Util.get_participant_display_name(stream_interactor, conversation, call.to);
+                        subtitle_label.label = _("%s declined this call").printf(who);
                     }
-                    subtitle_label.label = "%s declined this call".printf(who);
                     break;
                 case Call.State.FAILED:
                     image.set_from_icon_name("dino-phone-hangup-symbolic", IconSize.LARGE_TOOLBAR);
@@ -189,7 +180,7 @@ namespace Dino.Ui {
                 return ret;
             }
 
-            return _("seconds");
+            return _("a few seconds");
         }
 
         private int get_next_time_change() {
