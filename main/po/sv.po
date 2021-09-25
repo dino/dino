@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-24 20:40+0200\n"
-"PO-Revision-Date: 2021-03-05 16:50+0000\n"
+"POT-Creation-Date: 2021-09-25 16:10+0200\n"
+"PO-Revision-Date: 2021-09-25 14:07+0000\n"
 "Language-Team: none\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.5.1-dev\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -54,16 +54,17 @@ msgid "File received"
 msgstr "Fil mottagen"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
-#: main/src/ui/conversation_content_view/call_widget.vala:119
+#: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Outgoing call"
-msgstr ""
+msgstr "Utgående samtal"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:127
-#: main/src/ui/conversation_content_view/call_widget.vala:119
+#: main/src/ui/conversation_content_view/call_widget.vala:86
+#: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Incoming call"
-msgstr ""
+msgstr "Inkommande samtal"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
@@ -77,14 +78,14 @@ msgid "Yesterday"
 msgstr "Igår"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:349
-#: main/src/ui/conversation_content_view/call_widget.vala:126
+#: main/src/ui/conversation_content_view/call_widget.vala:119
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:306
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H : %M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:350
-#: main/src/ui/conversation_content_view/call_widget.vala:126
+#: main/src/ui/conversation_content_view/call_widget.vala:119
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:307
 #, no-c-format
 msgid "%l∶%M %p"
@@ -179,6 +180,14 @@ msgstr "Be om tillstånd"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:19
 msgid "Start call"
+msgstr "Starta samtal"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:37
+msgid "Audio call"
+msgstr ""
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:38
+msgid "Video call"
 msgstr ""
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
@@ -191,12 +200,13 @@ msgid "Members"
 msgstr "Medlemmar"
 
 #: main/src/ui/call_window/call_window.vala:161
+#: main/src/ui/conversation_content_view/call_widget.vala:91
 msgid "Calling…"
-msgstr ""
+msgstr "Ringer…"
 
 #: main/src/ui/call_window/call_window.vala:164
 msgid "Ringing…"
-msgstr ""
+msgstr "Ringer…"
 
 #: main/src/ui/call_window/call_window.vala:167
 #: main/src/ui/manage_accounts/dialog.vala:219
@@ -206,12 +216,12 @@ msgstr "Ansluter…"
 #: main/src/ui/call_window/call_window.vala:181
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "%s avslutade samtalet"
 
 #: main/src/ui/call_window/call_window.vala:183
 #, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s avvisade samtalet"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
@@ -548,8 +558,9 @@ msgid "Manage accounts"
 msgstr "Hantera konton"
 
 #: main/src/ui/notifier_freedesktop.vala:127
+#: main/src/ui/conversation_content_view/call_widget.vala:86
 msgid "Incoming video call"
-msgstr ""
+msgstr "Inkommande videosamtal"
 
 #: main/src/ui/notifier_freedesktop.vala:134
 #: main/src/ui/notifier_freedesktop.vala:227 main/data/call_widget.ui:84
@@ -679,11 +690,11 @@ msgstr "redigerad"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:231
 msgid "pending…"
-msgstr ""
+msgstr "väntar…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:244
 msgid "delivery failed"
-msgstr ""
+msgstr "leverans misslyckades"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
@@ -705,81 +716,79 @@ msgstr "%s och %s skriver…"
 msgid "%s is typing…"
 msgstr "%s skriver…"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:86
-msgid "Video call incoming"
+#: main/src/ui/conversation_content_view/call_widget.vala:98
+msgid "Call started"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:86
-msgid "Call incoming"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:91
-msgid "Establishing call"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:99
-msgid "Video call establishing"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:99
-msgid "Call establishing"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:105
-msgid "Call in progress…"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:107
+#: main/src/ui/conversation_content_view/call_widget.vala:100
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "Startade för %s sedan"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:120
+#: main/src/ui/conversation_content_view/call_widget.vala:113
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "Du hanterade detta samtal på en annan enhet"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:125
+#: main/src/ui/conversation_content_view/call_widget.vala:118
 msgid "Call ended"
-msgstr ""
+msgstr "Samtal avlutat"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:128
+#: main/src/ui/conversation_content_view/call_widget.vala:121
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "Avslutades %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:130
+#: main/src/ui/conversation_content_view/call_widget.vala:123
 #, c-format
-msgid "Lasted for %s"
+msgid "Lasted %s"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:134
+#: main/src/ui/conversation_content_view/call_widget.vala:127
 msgid "Call missed"
+msgstr "Missat samtal"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:129
+msgid "You missed this call"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:145
+#: main/src/ui/conversation_content_view/call_widget.vala:132
+#, c-format
+msgid "%s missed this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Call declined"
+msgstr "Avvisat samtal"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:139
+msgid "You declined this call"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:156
+#: main/src/ui/conversation_content_view/call_widget.vala:142
+#, c-format
+msgid "%s declined this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:147
 msgid "Call failed"
-msgstr ""
+msgstr "Samtal misslyckades"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:178
+#: main/src/ui/conversation_content_view/call_widget.vala:169
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i timme"
+msgstr[1] "%i timmar"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:185
+#: main/src/ui/conversation_content_view/call_widget.vala:176
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i minut"
+msgstr[1] "%i minuter"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:192
-msgid "seconds"
+#: main/src/ui/conversation_content_view/call_widget.vala:183
+msgid "a few seconds"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:189
@@ -1033,6 +1042,31 @@ msgstr "Färdigt!"
 #: main/data/manage_accounts/add_account_dialog.ui:578
 msgid "Finish"
 msgstr "Slutför"
+
+#~ msgid "Video call incoming"
+#~ msgstr "Inkommande videosamtal"
+
+#~ msgid "Call incoming"
+#~ msgstr "Inkommande samtal"
+
+#~ msgid "Establishing call"
+#~ msgstr "Upprättar samtal"
+
+#~ msgid "Video call establishing"
+#~ msgstr "Upprättar videosamtal"
+
+#~ msgid "Call establishing"
+#~ msgstr "Upprättar samtal"
+
+#~ msgid "Call in progress…"
+#~ msgstr "Samtal pågår…"
+
+#, c-format
+#~ msgid "Lasted for %s"
+#~ msgstr "Varade i %s"
+
+#~ msgid "seconds"
+#~ msgstr "några sekunder"
 
 #~ msgid "No active conversations"
 #~ msgstr "Inga aktiva chattar"

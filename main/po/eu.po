@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-24 20:40+0200\n"
+"POT-Creation-Date: 2021-09-25 16:10+0200\n"
 "PO-Revision-Date: 2021-03-06 02:54+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
 "eu/>\n"
@@ -56,14 +56,15 @@ msgid "File received"
 msgstr "Fitxategia jaso da"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
-#: main/src/ui/conversation_content_view/call_widget.vala:119
+#: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Outgoing call"
 msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:127
-#: main/src/ui/conversation_content_view/call_widget.vala:119
+#: main/src/ui/conversation_content_view/call_widget.vala:86
+#: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Incoming call"
 msgstr ""
 
@@ -79,14 +80,14 @@ msgid "Yesterday"
 msgstr "Atzo"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:349
-#: main/src/ui/conversation_content_view/call_widget.vala:126
+#: main/src/ui/conversation_content_view/call_widget.vala:119
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:306
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:350
-#: main/src/ui/conversation_content_view/call_widget.vala:126
+#: main/src/ui/conversation_content_view/call_widget.vala:119
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:307
 #, no-c-format
 msgid "%l∶%M %p"
@@ -183,6 +184,14 @@ msgstr "Baimena eskatu"
 msgid "Start call"
 msgstr ""
 
+#: main/src/ui/conversation_titlebar/call_entry.vala:37
+msgid "Audio call"
+msgstr ""
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:38
+msgid "Video call"
+msgstr ""
+
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
 msgid "Search messages"
@@ -193,6 +202,7 @@ msgid "Members"
 msgstr "Kideak"
 
 #: main/src/ui/call_window/call_window.vala:161
+#: main/src/ui/conversation_content_view/call_widget.vala:91
 msgid "Calling…"
 msgstr ""
 
@@ -550,6 +560,7 @@ msgid "Manage accounts"
 msgstr "Kontuak kudeatu"
 
 #: main/src/ui/notifier_freedesktop.vala:127
+#: main/src/ui/conversation_content_view/call_widget.vala:86
 msgid "Incoming video call"
 msgstr ""
 
@@ -707,81 +718,79 @@ msgstr "%s eta %s idazten ari dira…"
 msgid "%s is typing…"
 msgstr "%s idazten ari da…"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:86
-msgid "Video call incoming"
+#: main/src/ui/conversation_content_view/call_widget.vala:98
+msgid "Call started"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:86
-msgid "Call incoming"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:91
-msgid "Establishing call"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:99
-msgid "Video call establishing"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:99
-msgid "Call establishing"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:105
-msgid "Call in progress…"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:107
+#: main/src/ui/conversation_content_view/call_widget.vala:100
 #, c-format
 msgid "Started %s ago"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:120
+#: main/src/ui/conversation_content_view/call_widget.vala:113
 msgid "You handled this call on another device"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:125
+#: main/src/ui/conversation_content_view/call_widget.vala:118
 msgid "Call ended"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:128
+#: main/src/ui/conversation_content_view/call_widget.vala:121
 #, c-format
 msgid "Ended at %s"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:130
+#: main/src/ui/conversation_content_view/call_widget.vala:123
 #, c-format
-msgid "Lasted for %s"
+msgid "Lasted %s"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:134
+#: main/src/ui/conversation_content_view/call_widget.vala:127
 msgid "Call missed"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:145
+#: main/src/ui/conversation_content_view/call_widget.vala:129
+msgid "You missed this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:132
+#, c-format
+msgid "%s missed this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Call declined"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:156
+#: main/src/ui/conversation_content_view/call_widget.vala:139
+msgid "You declined this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:142
+#, c-format
+msgid "%s declined this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:147
 msgid "Call failed"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:178
+#: main/src/ui/conversation_content_view/call_widget.vala:169
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:185
+#: main/src/ui/conversation_content_view/call_widget.vala:176
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: main/src/ui/conversation_content_view/call_widget.vala:192
-msgid "seconds"
+#: main/src/ui/conversation_content_view/call_widget.vala:183
+msgid "a few seconds"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:189
