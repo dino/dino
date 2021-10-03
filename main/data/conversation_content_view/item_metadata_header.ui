@@ -4,15 +4,20 @@
         <property name="spacing">4</property>
         <property name="orientation">horizontal</property>
         <child>
-            <object class="GtkLabel" id="name_label">
-                <property name="use_markup">True</property>
-                <property name="ellipsize">end</property>
-                <property name="xalign">0</property>
-                <property name="valign">start</property>
+            <object class="GtkEventBox" id="name_button">
                 <property name="visible">True</property>
-                <attributes>
-                    <attribute name="scale" value="0.8"/>
-                </attributes>
+                <child>
+                    <object class="GtkLabel" id="name_label">
+                        <property name="use_markup">True</property>
+                        <property name="ellipsize">end</property>
+                        <property name="xalign">0</property>
+                        <property name="valign">start</property>
+                        <property name="visible">True</property>
+                        <attributes>
+                            <attribute name="scale" value="0.8"/>
+                        </attributes>
+                    </object>
+                </child>
             </object>
         </child>
         <child>

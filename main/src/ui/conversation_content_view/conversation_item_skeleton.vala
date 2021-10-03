@@ -9,6 +9,7 @@ namespace Dino.Ui.ConversationSummary {
 
 public class ConversationItemSkeleton : EventBox {
 
+    public signal void nick_clicked(string nick);
     public bool show_skeleton { get; set; default=false; }
     public bool last_group_item { get; set; default=true; }
 
@@ -23,6 +24,7 @@ public class ConversationItemSkeleton : EventBox {
     private Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
     private Box header_content_box = new Box(Orientation.VERTICAL, 0) { visible=true };
     private ItemMetaDataHeader? metadata_header = null;
+    public EventBox? image_button = null;
     private AvatarImage? image = null;
 
     public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item, bool initial_item) {
@@ -63,17 +65,31 @@ public class ConversationItemSkeleton : EventBox {
         update_margin();
     }
 
+    private bool handle_name_or_avatar_click(EventButton event) {
+        // If left click
+        if(event.button == 1) {
+            string name = Util.get_participant_display_name(stream_interactor, conversation, item.jid);
+            nick_clicked(name);
+        }
+        return false;
+    }
+
     private void update_margin() {
         if (item.requires_header && show_skeleton && metadata_header == null) {
             metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
+            metadata_header.nick_clicked.connect((t, a) => handle_name_or_avatar_click(a));
             header_content_box.add(metadata_header);
             header_content_box.reorder_child(metadata_header, 0);
         }
         if (item.requires_avatar && show_skeleton && image == null) {
+            image_button = new EventBox() { visible=true };
+            image_button.button_release_event.connect((t, a) => handle_name_or_avatar_click(a));
+            image_content_box.add(image_button);
+            image_content_box.reorder_child(image_button, 0);
+
             image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true, allow_gray = false };
             image.set_conversation_participant(stream_interactor, conversation, item.jid);
-            image_content_box.add(image);
-            image_content_box.reorder_child(image, 0);
+            image_button.add(image);
         }
 
         if (image != null) {
@@ -113,6 +129,9 @@ public class ConversationItemSkeleton : EventBox {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/item_metadata_header.ui")]
 public class ItemMetaDataHeader : Box {
+
+    public signal bool nick_clicked(EventButton e);
+    [GtkChild] public EventBox name_button;
     [GtkChild] public Label name_label;
     [GtkChild] public Label dot_label;
     [GtkChild] public Label time_label;
@@ -142,6 +161,8 @@ public class ItemMetaDataHeader : Box {
                 update_name_label();
             }
         });        
+
+        name_button.button_release_event.connect((t, a) => nick_clicked(a));
 
         conversation.notify["encryption"].connect(update_unencrypted_icon);
         item.notify["encryption"].connect(update_encryption_icon);
