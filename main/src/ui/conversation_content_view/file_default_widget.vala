@@ -9,12 +9,12 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/file_default_widget.ui")]
 public class FileDefaultWidget : EventBox {
 
-    [GtkChild] public Stack image_stack;
-    [GtkChild] public Label name_label;
-    [GtkChild] public Label mime_label;
-    [GtkChild] public Image content_type_image;
-    [GtkChild] public Spinner spinner;
-    [GtkChild] public EventBox stack_event_box;
+    [GtkChild] public unowned Stack image_stack;
+    [GtkChild] public unowned Label name_label;
+    [GtkChild] public unowned Label mime_label;
+    [GtkChild] public unowned Image content_type_image;
+    [GtkChild] public unowned Spinner spinner;
+    [GtkChild] public unowned EventBox stack_event_box;
 
     private FileTransfer.State state;
 

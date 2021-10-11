@@ -14,13 +14,13 @@ public class GlobalSearch : Overlay {
     private int loaded_results = -1;
     private Mutex reloading_mutex = Mutex();
 
-    [GtkChild] public SearchEntry search_entry;
-    [GtkChild] public Label entry_number_label;
-    [GtkChild] public ScrolledWindow results_scrolled;
-    [GtkChild] public Box results_box;
-    [GtkChild] public Stack results_empty_stack;
-    [GtkChild] public Frame auto_complete_overlay;
-    [GtkChild] public ListBox auto_complete_list;
+    [GtkChild] public unowned SearchEntry search_entry;
+    [GtkChild] public unowned Label entry_number_label;
+    [GtkChild] public unowned ScrolledWindow results_scrolled;
+    [GtkChild] public unowned Box results_box;
+    [GtkChild] public unowned Stack results_empty_stack;
+    [GtkChild] public unowned Frame auto_complete_overlay;
+    [GtkChild] public unowned ListBox auto_complete_list;
 
     public GlobalSearch init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;

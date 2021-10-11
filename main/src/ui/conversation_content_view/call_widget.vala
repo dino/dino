@@ -27,12 +27,12 @@ namespace Dino.Ui {
     [GtkTemplate (ui = "/im/dino/Dino/call_widget.ui")]
     public class CallWidget : SizeRequestBox {
 
-        [GtkChild] public Image image;
-        [GtkChild] public Label title_label;
-        [GtkChild] public Label subtitle_label;
-        [GtkChild] public Revealer incoming_call_revealer;
-        [GtkChild] public Button accept_call_button;
-        [GtkChild] public Button reject_call_button;
+        [GtkChild] public unowned Image image;
+        [GtkChild] public unowned Label title_label;
+        [GtkChild] public unowned Label subtitle_label;
+        [GtkChild] public unowned Revealer incoming_call_revealer;
+        [GtkChild] public unowned Button accept_call_button;
+        [GtkChild] public unowned Button reject_call_button;
 
         private StreamInteractor stream_interactor;
         private Call call;

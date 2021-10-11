@@ -19,11 +19,11 @@ protected class AddContactDialog : Gtk.Dialog {
         set { jid_entry.text = value; }
     }
 
-    [GtkChild] private AccountComboBox account_combobox;
-    [GtkChild] private Button ok_button;
-    [GtkChild] private Button cancel_button;
-    [GtkChild] private Entry jid_entry;
-    [GtkChild] private Entry alias_entry;
+    [GtkChild] private unowned AccountComboBox account_combobox;
+    [GtkChild] private unowned Button ok_button;
+    [GtkChild] private unowned Button cancel_button;
+    [GtkChild] private unowned Entry jid_entry;
+    [GtkChild] private unowned Entry alias_entry;
 
     private StreamInteractor stream_interactor;
 

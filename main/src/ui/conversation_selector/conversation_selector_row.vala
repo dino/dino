@@ -12,17 +12,17 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_row.ui")]
 public class ConversationSelectorRow : ListBoxRow {
 
-    [GtkChild] protected AvatarImage image;
-    [GtkChild] protected Label name_label;
-    [GtkChild] protected Label time_label;
-    [GtkChild] protected Label nick_label;
-    [GtkChild] protected Label message_label;
-    [GtkChild] protected Label unread_count_label;
-    [GtkChild] protected Button x_button;
-    [GtkChild] protected Revealer time_revealer;
-    [GtkChild] protected Revealer xbutton_revealer;
-    [GtkChild] protected Revealer unread_count_revealer;
-    [GtkChild] public Revealer main_revealer;
+    [GtkChild] protected unowned AvatarImage image;
+    [GtkChild] protected unowned Label name_label;
+    [GtkChild] protected unowned Label time_label;
+    [GtkChild] protected unowned Label nick_label;
+    [GtkChild] protected unowned Label message_label;
+    [GtkChild] protected unowned Label unread_count_label;
+    [GtkChild] protected unowned Button x_button;
+    [GtkChild] protected unowned Revealer time_revealer;
+    [GtkChild] protected unowned Revealer xbutton_revealer;
+    [GtkChild] protected unowned Revealer unread_count_revealer;
+    [GtkChild] public unowned Revealer main_revealer;
 
     public Conversation conversation { get; private set; }
 

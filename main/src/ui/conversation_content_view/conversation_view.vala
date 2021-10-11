@@ -12,16 +12,16 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
     public Conversation? conversation { get; private set; }
 
-    [GtkChild] public ScrolledWindow scrolled;
-    [GtkChild] private Revealer notification_revealer;
-    [GtkChild] private Box message_menu_box;
-    [GtkChild] private Button button1;
-    [GtkChild] private Image button1_icon;
-    [GtkChild] private Box notifications;
-    [GtkChild] private Box main;
-    [GtkChild] private EventBox main_event_box;
-    [GtkChild] private EventBox main_wrap_event_box;
-    [GtkChild] private Stack stack;
+    [GtkChild] public unowned ScrolledWindow scrolled;
+    [GtkChild] private unowned Revealer notification_revealer;
+    [GtkChild] private unowned Box message_menu_box;
+    [GtkChild] private unowned Button button1;
+    [GtkChild] private unowned Image button1_icon;
+    [GtkChild] private unowned Box notifications;
+    [GtkChild] private unowned Box main;
+    [GtkChild] private unowned EventBox main_event_box;
+    [GtkChild] private unowned EventBox main_wrap_event_box;
+    [GtkChild] private unowned Stack stack;
 
     private StreamInteractor stream_interactor;
     private Gee.TreeSet<Plugins.MetaConversationItem> content_items = new Gee.TreeSet<Plugins.MetaConversationItem>(compare_meta_items);

@@ -8,9 +8,9 @@ namespace Dino.Plugins.OpenPgp {
 [GtkTemplate (ui = "/im/dino/Dino/openpgp/account_settings_item.ui")]
 
 private class AccountSettingsWidget : Stack, Plugins.AccountSettingsWidget {
-    [GtkChild] private Label label;
-    [GtkChild] private Button button;
-    [GtkChild] private ComboBox combobox;
+    [GtkChild] private unowned Label label;
+    [GtkChild] private unowned Button button;
+    [GtkChild] private unowned ComboBox combobox;
 
     private Plugin plugin;
     private Account current_account;

@@ -113,9 +113,9 @@ public class ConversationItemSkeleton : EventBox {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/item_metadata_header.ui")]
 public class ItemMetaDataHeader : Box {
-    [GtkChild] public Label name_label;
-    [GtkChild] public Label dot_label;
-    [GtkChild] public Label time_label;
+    [GtkChild] public unowned Label name_label;
+    [GtkChild] public unowned Label dot_label;
+    [GtkChild] public unowned Label time_label;
     public Image received_image = new Image() { opacity=0.4 };
     public Widget? encryption_image = null;
 

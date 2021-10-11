@@ -215,10 +215,10 @@ public class NoAccountsPlaceholder : MainWindowPlaceholder {
 
 [GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
 public class MainWindowPlaceholder : Box {
-    [GtkChild] public Label title_label;
-    [GtkChild] public Label label;
-    [GtkChild] public Button primary_button;
-    [GtkChild] public Button secondary_button;
+    [GtkChild] public unowned Label title_label;
+    [GtkChild] public unowned Label label;
+    [GtkChild] public unowned Button primary_button;
+    [GtkChild] public unowned Button secondary_button;
 }
 
 }
