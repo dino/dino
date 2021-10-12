@@ -206,6 +206,8 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 old = devices.first_match((it) => it.matches(device));
                 if (old != null) devices.remove(old);
                 break;
+            default:
+                break;
         }
         if (device != null) {
             switch (device.device_class) {

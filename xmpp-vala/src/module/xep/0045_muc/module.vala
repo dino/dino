@@ -193,6 +193,8 @@ public class Module : XmppStreamModule {
                 case Affiliation.ADMIN:
                     if (other_affiliation == Affiliation.OWNER) return false;
                     break;
+                default:
+                    return false;
             }
             return true;
         } catch (InvalidJidError e) {
