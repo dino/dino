@@ -26,18 +26,11 @@ public class NotificationEvents : StreamInteractionModule, Object {
         stream_interactor.get_module(PresenceManager.IDENTITY).received_subscription_request.connect(on_received_subscription_request);
 
         stream_interactor.get_module(MucManager.IDENTITY).invite_received.connect(on_invite_received);
-        stream_interactor.get_module(MucManager.IDENTITY).voice_request_received.connect((account, room_jid, from_jid, nick) => {
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
-            if (conversation == null) return;
-            notifier.notify_voice_request.begin(conversation, from_jid);
-        });
+        stream_interactor.get_module(MucManager.IDENTITY).voice_request_received.connect(on_voice_request_received);
 
         stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect(on_call_incoming);
         stream_interactor.connection_manager.connection_error.connect((account, error) => notifier.notify_connection_error.begin(account, error));
-        stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((conversation) => {
-            notifier.retract_content_item_notifications.begin();
-            notifier.retract_conversation_notifications.begin(conversation);
-        });
+        stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect(on_focused_in);
     }
 
     public void register_notification_provider(NotificationProvider notification_provider) {
@@ -100,6 +93,12 @@ public class NotificationEvents : StreamInteractionModule, Object {
         }
     }
 
+    private void on_voice_request_received(Account account, Jid room_jid, Jid from_jid, string nick) {
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
+        if (conversation == null) return;
+        notifier.notify_voice_request.begin(conversation, from_jid);
+    }
+
     private void on_received_subscription_request(Jid jid, Account account) {
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
         if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus(conversation)) return;
@@ -128,6 +127,11 @@ public class NotificationEvents : StreamInteractionModule, Object {
             inviter_display_name = get_participant_display_name(stream_interactor, direct_conversation, from_jid);
         }
         notifier.notify_muc_invite.begin(account, room_jid, from_jid, inviter_display_name);
+    }
+
+    private void on_focused_in(Conversation conversation) {
+        notifier.retract_content_item_notifications.begin();
+        notifier.retract_conversation_notifications.begin(conversation);
     }
 }
 

@@ -37,8 +37,8 @@ public class ConversationViewController : Object {
         this.app = GLib.Application.get_default() as Application;
 
         this.chat_input_controller = new ChatInputController(view.chat_input, stream_interactor);
-        chat_input_controller.activate_last_message_correction.connect(() => view.conversation_frame.activate_last_message_correction());
-        chat_input_controller.file_picker_selected.connect(() => open_file_picker());
+        chat_input_controller.activate_last_message_correction.connect(view.conversation_frame.activate_last_message_correction);
+        chat_input_controller.file_picker_selected.connect(open_file_picker);
         chat_input_controller.clipboard_pasted.connect(on_clipboard_paste);
 
         view.conversation_frame.init(stream_interactor);

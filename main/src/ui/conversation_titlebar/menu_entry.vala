@@ -28,16 +28,14 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
 
 class MenuWidget : Button, Plugins.ConversationTitlebarWidget {
 
+    private StreamInteractor stream_interactor;
     private Conversation? conversation;
 
     public MenuWidget(StreamInteractor stream_interactor) {
+        this.stream_interactor = stream_interactor;
         image = new Image.from_icon_name("open-menu-symbolic", IconSize.MENU);
 
-        clicked.connect(() => {
-            ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
-            contact_details_dialog.set_transient_for((Window) get_toplevel());
-            contact_details_dialog.present();
-        });
+        clicked.connect(on_clicked);
     }
 
     public new void set_conversation(Conversation conversation) {
@@ -52,6 +50,12 @@ class MenuWidget : Button, Plugins.ConversationTitlebarWidget {
 
     public new void unset_conversation() {
         this.sensitive = false;
+    }
+
+    private void on_clicked() {
+        ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
+        contact_details_dialog.set_transient_for((Window) get_toplevel());
+        contact_details_dialog.present();
     }
 
 }

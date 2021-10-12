@@ -28,54 +28,60 @@ public class GlobalSearch : Overlay {
         search_entry.search_changed.connect(() => {
             set_search(search_entry.text);
         });
-        search_entry.notify["text"].connect_after(() => { update_auto_complete(); });
-        search_entry.notify["cursor-position"].connect_after(() => { update_auto_complete(); });
+        search_entry.notify["text"].connect_after(update_auto_complete);
+        search_entry.notify["cursor-position"].connect_after(update_auto_complete);
 
-        results_scrolled.vadjustment.notify["value"].connect(() => {
-            if (results_scrolled.vadjustment.upper - (results_scrolled.vadjustment.value + results_scrolled.vadjustment.page_size) < 100) {
-                if (!reloading_mutex.trylock()) return;
-                Gee.List<MessageItem> new_messages = stream_interactor.get_module(SearchProcessor.IDENTITY).match_messages(search, loaded_results);
-                if (new_messages.size == 0) {
-                    reloading_mutex.unlock();
-                    return;
-                }
-                loaded_results += new_messages.size;
-                append_messages(new_messages);
-            }
-        });
-        results_scrolled.vadjustment.notify["upper"].connect_after(() => {
-            reloading_mutex.trylock();
-            reloading_mutex.unlock();
-        });
+        results_scrolled.vadjustment.notify["value"].connect(on_scrolled_window_vadjustment_value);
+        results_scrolled.vadjustment.notify["upper"].connect_after(on_scrolled_window_vadjustment_upper);
 
-        event.connect((event) => {
-            if (auto_complete_overlay.visible) {
-                if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Up) {
-                    var row = auto_complete_list.get_selected_row();
-                    var index = row == null ? -1 : row.get_index() - 1;
-                    if (index == -1) index = (int)auto_complete_list.get_children().length() - 1;
-                    auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
-                    return true;
-                }
-                if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Down) {
-                    var row = auto_complete_list.get_selected_row();
-                    var index = row == null ? 0 : row.get_index() + 1;
-                    if (index == auto_complete_list.get_children().length()) index = 0;
-                    auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
-                    return true;
-                }
-                if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Tab ||
-                    event.type == Gdk.EventType.KEY_RELEASE && event.key.keyval == Gdk.Key.Return) {
-                    auto_complete_list.get_selected_row().activate();
-                    return true;
-                }
-            }
-            // TODO: Handle cursor movement in results
-            // TODO: Direct all keystrokes to text input
-            return false;
-        });
+        event.connect(on_event);
 
         return this;
+    }
+
+    private void on_scrolled_window_vadjustment_value() {
+        if (results_scrolled.vadjustment.upper - (results_scrolled.vadjustment.value + results_scrolled.vadjustment.page_size) < 100) {
+            if (!reloading_mutex.trylock()) return;
+            Gee.List<MessageItem> new_messages = stream_interactor.get_module(SearchProcessor.IDENTITY).match_messages(search, loaded_results);
+            if (new_messages.size == 0) {
+                reloading_mutex.unlock();
+                return;
+            }
+            loaded_results += new_messages.size;
+            append_messages(new_messages);
+        }
+    }
+
+    private void on_scrolled_window_vadjustment_upper() {
+        reloading_mutex.trylock();
+        reloading_mutex.unlock();
+    }
+
+    private bool on_event(Gdk.Event event) {
+        if (auto_complete_overlay.visible) {
+            if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Up) {
+                var row = auto_complete_list.get_selected_row();
+                var index = row == null ? -1 : row.get_index() - 1;
+                if (index == -1) index = (int)auto_complete_list.get_children().length() - 1;
+                auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
+                return true;
+            }
+            if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Down) {
+                var row = auto_complete_list.get_selected_row();
+                var index = row == null ? 0 : row.get_index() + 1;
+                if (index == auto_complete_list.get_children().length()) index = 0;
+                auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
+                return true;
+            }
+            if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Tab ||
+                    event.type == Gdk.EventType.KEY_RELEASE && event.key.keyval == Gdk.Key.Return) {
+                auto_complete_list.get_selected_row().activate();
+                return true;
+            }
+        }
+        // TODO: Handle cursor movement in results
+        // TODO: Direct all keystrokes to text input
+        return false;
     }
 
     private void update_auto_complete() {
