@@ -171,7 +171,7 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
 
     public class VerificationSendListener : StanzaListener<MessageStanza> {
 
-        private const string[] after_actions_const = {};
+        private string[] after_actions_const = {};
 
         public override string action_group { get { return "REWRITE_NODES"; } }
         public override string[] after_actions { get { return after_actions_const; } }

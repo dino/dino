@@ -40,7 +40,7 @@ public class Module : XmppStreamModule {
 
 public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
 
-    private const string[] after_actions_const = {"EXTRACT_MESSAGE_1"};
+    private string[] after_actions_const = {"EXTRACT_MESSAGE_1"};
 
     public override string action_group { get { return "EXTRACT_MESSAGE_2"; } }
     public override string[] after_actions { get { return after_actions_const; } }
