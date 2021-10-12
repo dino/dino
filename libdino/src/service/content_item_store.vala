@@ -53,6 +53,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
                     Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
                     if (message != null) {
                         var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
+                        message_item.time = time; // In case of message corrections, the original time should be used
                         items.add(message_item);
                     }
                     break;
