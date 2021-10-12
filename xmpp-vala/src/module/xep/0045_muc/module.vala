@@ -9,7 +9,6 @@ private const string NS_URI_USER = NS_URI + "#user";
 private const string NS_URI_REQUEST = NS_URI + "#request";
 
 public enum MucEnterError {
-    NONE,
     PASSWORD_REQUIRED,
     BANNED,
     ROOM_DOESNT_EXIST,
@@ -286,7 +285,7 @@ public class Module : XmppStreamModule {
             Jid bare_jid = presence.from.bare_jid;
             ErrorStanza? error_stanza = presence.get_error();
             if (flag.get_enter_id(bare_jid) == presence.id) {
-                MucEnterError error = MucEnterError.NONE;
+                MucEnterError? error = null;
                 switch (error_stanza.condition) {
                     case ErrorStanza.CONDITION_NOT_AUTHORIZED:
                         if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.PASSWORD_REQUIRED;
@@ -313,7 +312,7 @@ public class Module : XmppStreamModule {
                         if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.USE_RESERVED_ROOMNICK;
                         break;
                 }
-                if (error != MucEnterError.NONE) {
+                if (error != null) {
                     flag.enter_futures[bare_jid].set_value(new JoinResult() {muc_error=error});
                 } else {
                     flag.enter_futures[bare_jid].set_value(new JoinResult() {stanza_error=error_stanza.condition});

@@ -1,5 +1,7 @@
 public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
 
+    const string[] ADVERTISED_PROTOCOLS = {"xmpp-client"};
+
     string host;
     uint16 port;
     TlsXmppStream.OnInvalidCertWrapper on_invalid_cert;
@@ -18,7 +20,7 @@ public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
             IOStream? io_stream = yield client.connect_to_host_async(host, port);
             TlsConnection tls_connection = TlsClientConnection.new(io_stream, new NetworkAddress(remote_name.to_string(), port));
 #if ALPN_SUPPORT
-            tls_connection.set_advertised_protocols(new string[]{"xmpp-client"});
+            tls_connection.set_advertised_protocols(ADVERTISED_PROTOCOLS);
 #endif
             tls_connection.accept_certificate.connect(on_invalid_certificate);
             tls_connection.accept_certificate.connect((cert, flags) => on_invalid_cert.func(cert, flags));
