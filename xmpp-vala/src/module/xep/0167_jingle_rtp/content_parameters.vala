@@ -133,7 +133,7 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
             local_crypto = null;
         }
         if (remote_crypto != null && local_crypto != null) {
-            var content_encryption = new Xmpp.Xep.Jingle.ContentEncryption() { encryption_ns = "", encryption_name = "SRTP", our_key=local_crypto.key, peer_key=remote_crypto.key };
+            var content_encryption = new Xmpp.Xep.Jingle.ContentEncryption("", "SRTP", local_crypto.key, remote_crypto.key);
             content.encryptions[content_encryption.encryption_name] = content_encryption;
         }
 

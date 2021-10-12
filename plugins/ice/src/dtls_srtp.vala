@@ -211,7 +211,7 @@ public class Handler {
             srtp_session.set_encryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, client_key.extract(), client_salt.extract());
             srtp_session.set_decryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, server_key.extract(), server_salt.extract());
         }
-        return new Xmpp.Xep.Jingle.ContentEncryption() { encryption_ns=Xmpp.Xep.JingleIceUdp.DTLS_NS_URI, encryption_name = "DTLS-SRTP", our_key=credentials.own_fingerprint, peer_key=peer_fingerprint };
+        return new Xmpp.Xep.Jingle.ContentEncryption(Xmpp.Xep.JingleIceUdp.DTLS_NS_URI, "DTLS-SRTP", credentials.own_fingerprint, peer_fingerprint);
     }
 
     private static ssize_t pull_function(void* transport_ptr, uint8[] buffer) {
