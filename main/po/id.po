@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-25 16:10+0200\n"
+"POT-Creation-Date: 2021-10-13 20:03+0200\n"
 "PO-Revision-Date: 2021-03-08 22:02+0000\n"
 "Language-Team: none\n"
 "Language: id\n"
@@ -119,30 +119,30 @@ msgstr "Anggota"
 msgid "User"
 msgstr "Pengguna"
 
-#: main/src/ui/occupant_menu/view.vala:40
-#: main/src/ui/occupant_menu/view.vala:49
+#: main/src/ui/occupant_menu/view.vala:28
+#: main/src/ui/occupant_menu/view.vala:146
 msgid "Invite"
 msgstr "Undang"
 
-#: main/src/ui/occupant_menu/view.vala:48
-msgid "Invite to Conference"
-msgstr "Undang ke Grup"
-
-#: main/src/ui/occupant_menu/view.vala:94
+#: main/src/ui/occupant_menu/view.vala:83
 msgid "Start private conversation"
 msgstr "Mulai percakapan pribadi"
 
-#: main/src/ui/occupant_menu/view.vala:102
+#: main/src/ui/occupant_menu/view.vala:91
 msgid "Kick"
 msgstr "Depak"
 
-#: main/src/ui/occupant_menu/view.vala:108
+#: main/src/ui/occupant_menu/view.vala:97
 msgid "Grant write permission"
 msgstr "Beri ijin menulis"
 
-#: main/src/ui/occupant_menu/view.vala:114
+#: main/src/ui/occupant_menu/view.vala:103
 msgid "Revoke write permission"
 msgstr "Batalkan ijin menulis"
+
+#: main/src/ui/occupant_menu/view.vala:145
+msgid "Invite to Conference"
+msgstr "Undang ke Grup"
 
 #: main/src/ui/conversation_view_controller.vala:219
 msgid "Select file"
@@ -157,7 +157,7 @@ msgstr "Pilih"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:275 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:281 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -233,7 +233,7 @@ msgid "Start"
 msgstr "Mulai"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:275 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:281 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Bergabung dengan Channel"
@@ -249,7 +249,7 @@ msgstr "Selanjutnya"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:275
+#: main/src/ui/application.vala:281
 msgid "Join"
 msgstr "Bergabung"
 
@@ -312,26 +312,26 @@ msgstr "Alamat tidak valid"
 msgid "Add"
 msgstr "Tambah"
 
-#: main/src/ui/application.vala:197 main/data/menu_app.ui:17
+#: main/src/ui/application.vala:203 main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
 msgstr "Kombinasi tombol"
 
-#: main/src/ui/application.vala:251 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:257 main/data/menu_app.ui:21
 msgid "About Dino"
 msgstr "Tentang Dino"
 
-#: main/src/ui/global_search.vala:141
+#: main/src/ui/global_search.vala:147
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
 msgstr[0] "%i hasil pencarian"
 
-#: main/src/ui/global_search.vala:168
+#: main/src/ui/global_search.vala:174
 #, c-format
 msgid "In %s"
 msgstr "di %s"
 
-#: main/src/ui/global_search.vala:168
+#: main/src/ui/global_search.vala:174
 #, c-format
 msgid "With %s"
 msgstr "Pada %s"
@@ -341,7 +341,7 @@ msgstr "Pada %s"
 #: main/src/ui/notifier_gnotifications.vala:127
 #: main/src/ui/notifier_gnotifications.vala:143
 #: main/src/ui/notifier_freedesktop.vala:170
-#: main/src/ui/notifier_freedesktop.vala:260
+#: main/src/ui/notifier_freedesktop.vala:262
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Tolak"
@@ -352,8 +352,8 @@ msgstr "Tolak"
 #: main/src/ui/notifier_gnotifications.vala:144
 #: main/src/ui/notifier_freedesktop.vala:134
 #: main/src/ui/notifier_freedesktop.vala:170
-#: main/src/ui/notifier_freedesktop.vala:227
-#: main/src/ui/notifier_freedesktop.vala:260
+#: main/src/ui/notifier_freedesktop.vala:229
+#: main/src/ui/notifier_freedesktop.vala:262
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/data/call_widget.ui:93
 msgid "Accept"
@@ -365,24 +365,24 @@ msgid "Subscription request"
 msgstr "Meminta ijin"
 
 #: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:218
+#: main/src/ui/notifier_freedesktop.vala:220
 #, c-format
 msgid "Invitation to %s"
 msgstr "Undangan untuk %s"
 
 #: main/src/ui/notifier_gnotifications.vala:118
-#: main/src/ui/notifier_freedesktop.vala:219
+#: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s mengundang anda ke %s"
 
 #: main/src/ui/notifier_gnotifications.vala:135
-#: main/src/ui/notifier_freedesktop.vala:251
+#: main/src/ui/notifier_freedesktop.vala:253
 msgid "Permission request"
 msgstr "Permintaan ijin"
 
 #: main/src/ui/notifier_gnotifications.vala:136
-#: main/src/ui/notifier_freedesktop.vala:252
+#: main/src/ui/notifier_freedesktop.vala:254
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%smeminta ijin untuk menulis ke dalam %s"
@@ -560,7 +560,7 @@ msgid "Incoming video call"
 msgstr ""
 
 #: main/src/ui/notifier_freedesktop.vala:134
-#: main/src/ui/notifier_freedesktop.vala:227 main/data/call_widget.ui:84
+#: main/src/ui/notifier_freedesktop.vala:229 main/data/call_widget.ui:84
 msgid "Reject"
 msgstr "Tolak"
 
@@ -829,26 +829,26 @@ msgstr "%a, %l∶%M %p"
 msgid "This contact would like to add you to their contact list"
 msgstr "Kontak ini ingin menambahkan anda kedalam daftar kontaknya"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#: main/src/ui/conversation_content_view/file_default_widget.vala:40
 #, c-format
 msgid "Downloading %s…"
 msgstr "Mengunduh %s…"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#: main/src/ui/conversation_content_view/file_default_widget.vala:46
 #, c-format
 msgid "%s offered: %s"
 msgstr "%s ditawarkan: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#: main/src/ui/conversation_content_view/file_default_widget.vala:48
 #, c-format
 msgid "File offered: %s"
 msgstr "File ditawarkan: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+#: main/src/ui/conversation_content_view/file_default_widget.vala:50
 msgid "File offered"
 msgstr "File ditawarkan"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:62
+#: main/src/ui/conversation_content_view/file_default_widget.vala:56
 msgid "File transfer failed"
 msgstr "Transfer file gagal"
 

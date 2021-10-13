@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-25 16:10+0200\n"
-"PO-Revision-Date: 2021-03-05 16:50+0000\n"
+"POT-Creation-Date: 2021-10-13 20:03+0200\n"
+"PO-Revision-Date: 2021-09-30 15:35+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.5.1-dev\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -57,7 +57,7 @@ msgstr "Fichier reçu"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Outgoing call"
-msgstr ""
+msgstr "Appel sortant"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -65,7 +65,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Incoming call"
-msgstr ""
+msgstr "Appel entrant"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
@@ -121,30 +121,30 @@ msgstr "Membre"
 msgid "User"
 msgstr "Utilisateur"
 
-#: main/src/ui/occupant_menu/view.vala:40
-#: main/src/ui/occupant_menu/view.vala:49
+#: main/src/ui/occupant_menu/view.vala:28
+#: main/src/ui/occupant_menu/view.vala:146
 msgid "Invite"
 msgstr "Inviter"
 
-#: main/src/ui/occupant_menu/view.vala:48
-msgid "Invite to Conference"
-msgstr "Inviter dans ce salon"
-
-#: main/src/ui/occupant_menu/view.vala:94
+#: main/src/ui/occupant_menu/view.vala:83
 msgid "Start private conversation"
 msgstr "Commencer une discussion privée"
 
-#: main/src/ui/occupant_menu/view.vala:102
+#: main/src/ui/occupant_menu/view.vala:91
 msgid "Kick"
 msgstr "Éjecter du salon"
 
-#: main/src/ui/occupant_menu/view.vala:108
+#: main/src/ui/occupant_menu/view.vala:97
 msgid "Grant write permission"
 msgstr "Accorder la permission d’écrire"
 
-#: main/src/ui/occupant_menu/view.vala:114
+#: main/src/ui/occupant_menu/view.vala:103
 msgid "Revoke write permission"
 msgstr "Révoquer la permission d’écrire"
+
+#: main/src/ui/occupant_menu/view.vala:145
+msgid "Invite to Conference"
+msgstr "Inviter dans ce salon"
 
 #: main/src/ui/conversation_view_controller.vala:219
 msgid "Select file"
@@ -159,7 +159,7 @@ msgstr "Sélectionner"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:275 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:281 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -181,15 +181,15 @@ msgstr "Demander la permission"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:19
 msgid "Start call"
-msgstr ""
+msgstr "Démarrer un appel"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:37
 msgid "Audio call"
-msgstr ""
+msgstr "Appel audio"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:38
 msgid "Video call"
-msgstr ""
+msgstr "Appel vidéo"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
@@ -203,11 +203,11 @@ msgstr "Membres"
 #: main/src/ui/call_window/call_window.vala:161
 #: main/src/ui/conversation_content_view/call_widget.vala:91
 msgid "Calling…"
-msgstr ""
+msgstr "Appel en cours…"
 
 #: main/src/ui/call_window/call_window.vala:164
 msgid "Ringing…"
-msgstr ""
+msgstr "Ça sonne…"
 
 #: main/src/ui/call_window/call_window.vala:167
 #: main/src/ui/manage_accounts/dialog.vala:219
@@ -217,12 +217,12 @@ msgstr "Connexion…"
 #: main/src/ui/call_window/call_window.vala:181
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "%s a arrêté l’appel"
 
 #: main/src/ui/call_window/call_window.vala:183
 #, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s a rejeté cet appel"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
@@ -235,7 +235,7 @@ msgid "Start"
 msgstr "Démarrer"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:275 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:281 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Rejoindre un salon"
@@ -251,7 +251,7 @@ msgstr "Suivant"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:275
+#: main/src/ui/application.vala:281
 msgid "Join"
 msgstr "Rejoindre"
 
@@ -314,27 +314,27 @@ msgstr "Adresse invalide"
 msgid "Add"
 msgstr "Ajouter"
 
-#: main/src/ui/application.vala:197 main/data/menu_app.ui:17
+#: main/src/ui/application.vala:203 main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
 msgstr "Raccourcis clavier"
 
-#: main/src/ui/application.vala:251 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:257 main/data/menu_app.ui:21
 msgid "About Dino"
 msgstr "À propos de Dino"
 
-#: main/src/ui/global_search.vala:141
+#: main/src/ui/global_search.vala:147
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
 msgstr[0] "%i résultat"
 msgstr[1] "%i résultats"
 
-#: main/src/ui/global_search.vala:168
+#: main/src/ui/global_search.vala:174
 #, c-format
 msgid "In %s"
 msgstr "Sur %s"
 
-#: main/src/ui/global_search.vala:168
+#: main/src/ui/global_search.vala:174
 #, c-format
 msgid "With %s"
 msgstr "Avec %s"
@@ -344,7 +344,7 @@ msgstr "Avec %s"
 #: main/src/ui/notifier_gnotifications.vala:127
 #: main/src/ui/notifier_gnotifications.vala:143
 #: main/src/ui/notifier_freedesktop.vala:170
-#: main/src/ui/notifier_freedesktop.vala:260
+#: main/src/ui/notifier_freedesktop.vala:262
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Refuser"
@@ -355,8 +355,8 @@ msgstr "Refuser"
 #: main/src/ui/notifier_gnotifications.vala:144
 #: main/src/ui/notifier_freedesktop.vala:134
 #: main/src/ui/notifier_freedesktop.vala:170
-#: main/src/ui/notifier_freedesktop.vala:227
-#: main/src/ui/notifier_freedesktop.vala:260
+#: main/src/ui/notifier_freedesktop.vala:229
+#: main/src/ui/notifier_freedesktop.vala:262
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/data/call_widget.ui:93
 msgid "Accept"
@@ -368,24 +368,24 @@ msgid "Subscription request"
 msgstr "Demande d’ajout de contact"
 
 #: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:218
+#: main/src/ui/notifier_freedesktop.vala:220
 #, c-format
 msgid "Invitation to %s"
 msgstr "Invitation à %s"
 
 #: main/src/ui/notifier_gnotifications.vala:118
-#: main/src/ui/notifier_freedesktop.vala:219
+#: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s vous a invité(e) à rejoindre le salon %s"
 
 #: main/src/ui/notifier_gnotifications.vala:135
-#: main/src/ui/notifier_freedesktop.vala:251
+#: main/src/ui/notifier_freedesktop.vala:253
 msgid "Permission request"
 msgstr "Demande de permission"
 
 #: main/src/ui/notifier_gnotifications.vala:136
-#: main/src/ui/notifier_freedesktop.vala:252
+#: main/src/ui/notifier_freedesktop.vala:254
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%s demande la permission d’écrire dans %s"
@@ -562,10 +562,10 @@ msgstr "Gérer les comptes"
 #: main/src/ui/notifier_freedesktop.vala:127
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 msgid "Incoming video call"
-msgstr ""
+msgstr "Appel vidéo entrant"
 
 #: main/src/ui/notifier_freedesktop.vala:134
-#: main/src/ui/notifier_freedesktop.vala:227 main/data/call_widget.ui:84
+#: main/src/ui/notifier_freedesktop.vala:229 main/data/call_widget.ui:84
 msgid "Reject"
 msgstr "Rejet"
 
@@ -693,11 +693,11 @@ msgstr "modifié"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:231
 msgid "pending…"
-msgstr ""
+msgstr "en cours d’envoi…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:244
 msgid "delivery failed"
-msgstr ""
+msgstr "échec de l’envoi"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
@@ -721,78 +721,78 @@ msgstr "%s est en train d’écrire…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:98
 msgid "Call started"
-msgstr ""
+msgstr "Appel démarré"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:100
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "A commencé il y a %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:113
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "Vous avez réagi à cet appel depuis un autre client"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:118
 msgid "Call ended"
-msgstr ""
+msgstr "Appel terminé"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:121
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "S’est terminé à %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:123
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "A duré %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:127
 msgid "Call missed"
-msgstr ""
+msgstr "Appel manqué"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:129
 msgid "You missed this call"
-msgstr ""
+msgstr "Vous avez manqué cet appel"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:132
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s a manqué cet appel"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Call declined"
-msgstr ""
+msgstr "Appel rejeté"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "You declined this call"
-msgstr ""
+msgstr "Vous avez rejeté cet appel"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:142
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s a rejeté cet appel"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:147
 msgid "Call failed"
-msgstr ""
+msgstr "Appel échoué"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i heure"
+msgstr[1] "%i heures"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:176
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i minute"
+msgstr[1] "%i minutes"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "a few seconds"
-msgstr ""
+msgstr "quelques secondes"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:189
 #: main/data/menu_encryption.ui:14
@@ -837,26 +837,26 @@ msgstr "%a à %lh %M %p"
 msgid "This contact would like to add you to their contact list"
 msgstr "Cette personne souhaiterait vous ajouter à sa liste de contacts"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#: main/src/ui/conversation_content_view/file_default_widget.vala:40
 #, c-format
 msgid "Downloading %s…"
 msgstr "Téléchargement de %s…"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#: main/src/ui/conversation_content_view/file_default_widget.vala:46
 #, c-format
 msgid "%s offered: %s"
 msgstr "%s proposé au téléchargement : %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#: main/src/ui/conversation_content_view/file_default_widget.vala:48
 #, c-format
 msgid "File offered: %s"
 msgstr "Fichier proposé au téléchargement : %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+#: main/src/ui/conversation_content_view/file_default_widget.vala:50
 msgid "File offered"
 msgstr "Fichier proposé au téléchargement"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:62
+#: main/src/ui/conversation_content_view/file_default_widget.vala:56
 msgid "File transfer failed"
 msgstr "Échec du transfert de fichier"
 

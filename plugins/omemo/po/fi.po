@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-25 16:10+0200\n"
+"POT-Creation-Date: 2021-10-13 20:03+0200\n"
 "PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: none\n"
 "Language: fi\n"
@@ -17,18 +17,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.0-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#: plugins/omemo/src/ui/bad_messages_populator.vala:157
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:156
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
 msgid "Manage devices"
 msgstr ""
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#: plugins/omemo/src/ui/bad_messages_populator.vala:160
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
