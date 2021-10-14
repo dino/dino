@@ -1,6 +1,6 @@
 public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
 
-    const string[] ADVERTISED_PROTOCOLS = {"xmpp-client"};
+    const string[] ADVERTISED_PROTOCOLS = {"xmpp-client", null};
 
     string host;
     uint16 port;
