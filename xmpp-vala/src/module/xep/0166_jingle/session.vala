@@ -264,10 +264,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                 warning("Received invalid session accept: %s", e.message);
             }
         }
-        // TODO(hrxi): more sanity checking, perhaps replace who we're talking to
-        if (!responder.is_full()) {
-            throw new IqError.BAD_REQUEST("invalid responder JID");
-        }
+
         foreach (ContentNode content_node in content_nodes) {
             handle_content_accept(content_node);
         }

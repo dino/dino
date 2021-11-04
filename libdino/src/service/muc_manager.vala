@@ -27,6 +27,7 @@ public class MucManager : StreamInteractionModule, Object {
     private ReceivedMessageListener received_message_listener;
     private HashMap<Account, BookmarksProvider> bookmarks_provider = new HashMap<Account, BookmarksProvider>(Account.hash_func, Account.equals_func);
     private HashMap<Account, Gee.List<Jid>> invites = new HashMap<Account, Gee.List<Jid>>(Account.hash_func, Account.equals_func);
+    public HashMap<Account, Jid> default_muc_server = new HashMap<Account, Jid>(Account.hash_func, Account.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         MucManager m = new MucManager(stream_interactor);
@@ -76,7 +77,7 @@ public class MucManager : StreamInteractionModule, Object {
         }
         mucs_todo[account].add(jid.with_resource(nick_));
 
-        Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since);
+        Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since, null);
 
         mucs_joining[account].remove(jid);
 
@@ -117,10 +118,10 @@ public class MucManager : StreamInteractionModule, Object {
         return yield stream.get_module(Xep.Muc.Module.IDENTITY).get_config_form(stream, jid);
     }
 
-    public void set_config_form(Account account, Jid jid, DataForms.DataForm data_form) {
+    public async void set_config_form(Account account, Jid jid, DataForms.DataForm data_form) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
-        stream.get_module(Xep.Muc.Module.IDENTITY).set_config_form(stream, jid, data_form);
+        yield stream.get_module(Xep.Muc.Module.IDENTITY).set_config_form(stream, jid, data_form);
     }
 
     public void change_subject(Account account, Jid jid, string subject) {
@@ -170,7 +171,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     public void change_affiliation(Account account, Jid jid, string nick, string role) {
         XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation(stream, jid.bare_jid, nick, role);
+        if (stream != null) stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation.begin(stream, jid.bare_jid, null, nick, role);
     }
 
     public void change_role(Account account, Jid jid, string nick, string role) {
@@ -401,6 +402,36 @@ public class MucManager : StreamInteractionModule, Object {
         });
     }
 
+    private async void search_default_muc_server(Account account) {
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) return;
+
+        ServiceDiscovery.ItemsResult? items_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name);
+        if (items_result == null) return;
+
+        for (int i = 0; i < 2; i++) {
+            foreach (Xep.ServiceDiscovery.Item item in items_result.items) {
+
+                // First try the promising items and only afterwards all the others
+                bool promising_upload_item = item.jid.to_string().has_prefix("conference") ||
+                        item.jid.to_string().has_prefix("muc") ||
+                        item.jid.to_string().has_prefix("chat");
+                if ((i == 0 && !promising_upload_item) || (i == 1) && promising_upload_item) continue;
+
+                Gee.Set<Xep.ServiceDiscovery.Identity> identities = yield stream_interactor.get_module(EntityInfo.IDENTITY).get_identities(account, item.jid);
+                if (identities == null) return;
+
+                foreach (Xep.ServiceDiscovery.Identity identity in identities) {
+                    if (identity.category == Xep.ServiceDiscovery.Identity.CATEGORY_CONFERENCE) {
+                        default_muc_server[account] = item.jid;
+                        print(@"$(account.bare_jid) Default MUC: $(item.jid)\n");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     private async void on_stream_negotiated(Account account, XmppStream stream) {
         if (bookmarks_provider[account] == null) return;
 
@@ -410,6 +441,10 @@ public class MucManager : StreamInteractionModule, Object {
             join_all_active(account);
         } else {
             sync_autojoin_active(account, conferences);
+        }
+
+        if (!default_muc_server.has_key(account)) {
+            search_default_muc_server.begin(account);
         }
     }
 

@@ -20,14 +20,9 @@ namespace Dino.Entities {
 
         public int id { get; set; default=-1; }
         public Account account { get; set; }
-        public Jid counterpart { get; set; }
+        public Jid counterpart { get; set; } // For backwards compatibility with db version 21. Not to be used anymore.
+        public Gee.List<Jid> counterparts = new Gee.ArrayList<Jid>(Jid.equals_bare_func);
         public Jid ourpart { get; set; }
-        public Jid? from {
-            get { return direction == DIRECTION_OUTGOING ? ourpart : counterpart; }
-        }
-        public Jid? to {
-            get { return direction == DIRECTION_OUTGOING ? counterpart : ourpart; }
-        }
         public bool direction { get; set; }
         public DateTime time { get; set; }
         public DateTime local_time { get; set; }
@@ -47,6 +42,7 @@ namespace Dino.Entities {
             counterpart = db.get_jid_by_id(row[db.call.counterpart_id]);
             string counterpart_resource = row[db.call.counterpart_resource];
             if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
+            counterparts.add(counterpart);
 
             string our_resource = row[db.call.our_resource];
             if (our_resource != null) {
@@ -61,6 +57,15 @@ namespace Dino.Entities {
             encryption = (Encryption) row[db.call.encryption];
             state = (State) row[db.call.state];
 
+            Qlite.QueryBuilder counterparts_select = db.call_counterpart.select().with(db.call_counterpart.call_id, "=", id);
+            foreach (Qlite.Row counterparts_row in counterparts_select) {
+                Jid peer = db.get_jid_by_id(counterparts_row[db.call_counterpart.jid_id]);
+                if (!counterparts.contains(peer)) { // Legacy: The first peer is also in the `call` table. Don't add twice.
+                    counterparts.add(peer);
+                }
+                if (counterpart == null) counterpart = peer;
+            }
+
             notify.connect(on_update);
         }
 
@@ -70,8 +75,6 @@ namespace Dino.Entities {
             this.db = db;
             Qlite.InsertBuilder builder = db.call.insert()
                     .value(db.call.account_id, account.id)
-                    .value(db.call.counterpart_id, db.get_jid_id(counterpart))
-                    .value(db.call.counterpart_resource, counterpart.resourcepart)
                     .value(db.call.our_resource, ourpart.resourcepart)
                     .value(db.call.direction, direction)
                     .value(db.call.time, (long) time.to_unix())
@@ -83,9 +86,36 @@ namespace Dino.Entities {
             } else {
                 builder.value(db.call.end_time, (long) local_time.to_unix());
             }
+            if (counterpart != null) {
+                builder.value(db.call.counterpart_id, db.get_jid_id(counterpart))
+                    .value(db.call.counterpart_resource, counterpart.resourcepart);
+            }
             id = (int) builder.perform();
 
+            foreach (Jid peer in counterparts) {
+                db.call_counterpart.insert()
+                        .value(db.call_counterpart.call_id, id)
+                        .value(db.call_counterpart.jid_id, db.get_jid_id(peer))
+                        .value(db.call_counterpart.resource, peer.resourcepart)
+                        .perform();
+            }
+
             notify.connect(on_update);
+        }
+
+        public void add_peer(Jid peer) {
+            if (counterpart == null) counterpart = peer;
+
+            if (counterparts.contains(peer)) return;
+
+            counterparts.add(peer);
+            if (db != null) {
+                db.call_counterpart.insert()
+                        .value(db.call_counterpart.call_id, id)
+                        .value(db.call_counterpart.jid_id, db.get_jid_id(peer))
+                        .value(db.call_counterpart.resource, peer.resourcepart)
+                        .perform();
+            }
         }
 
         public bool equals(Call c) {

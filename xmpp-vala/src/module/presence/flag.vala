@@ -20,6 +20,17 @@ public class Flag : XmppStreamFlag {
         return presences[full_jid];
     }
 
+    public Gee.List<Presence.Stanza> get_presences(Jid jid) {
+        Gee.List<Presence.Stanza> ret = new ArrayList<Presence.Stanza>();
+        Gee.List<Jid>? jid_res = resources[jid];
+        if (jid_res == null) return ret;
+
+        foreach (Jid full_jid in jid_res) {
+            ret.add(presences[full_jid]);
+        }
+        return ret;
+    }
+
     public void add_presence(Presence.Stanza presence) {
         if (!resources.has_key(presence.from)) {
             resources[presence.from] = new ArrayList<Jid>(Jid.equals_func);

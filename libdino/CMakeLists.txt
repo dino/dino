@@ -29,6 +29,8 @@ SOURCES
     src/service/avatar_manager.vala
     src/service/blocking_manager.vala
     src/service/call_store.vala
+    src/service/call_state.vala
+    src/service/call_peer_state.vala
     src/service/calls.vala
     src/service/chat_interaction.vala
     src/service/connection_manager.vala

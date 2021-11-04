@@ -759,6 +759,10 @@ class Parameters : Jingle.TransportParameters, Object {
     }
 
     private void content_set_transport_connection_error(Error e) {
+        Jingle.Content? strong_content = content;
+        if (strong_content == null) return;
+
+        strong_content.select_new_transport.begin();
         connection.set_error(e);
     }
 

@@ -186,7 +186,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         }
     }
 
-    private void insert_call(Call call, Conversation conversation) {
+    private void insert_call(Call call, CallState call_state, Conversation conversation) {
         CallItem item = new CallItem(call, conversation, -1);
         item.id = db.add_content_item(conversation, call.time, call.local_time, 3, call.id, false);
         if (collection_conversations.has_key(conversation)) {
@@ -321,7 +321,7 @@ public class CallItem : ContentItem {
     public Conversation conversation;
 
     public CallItem(Call call, Conversation conversation, int id) {
-        base(id, TYPE, call.from, call.time, call.encryption, Message.Marked.NONE);
+        base(id, TYPE, call.direction == Call.DIRECTION_OUTGOING ? conversation.account.bare_jid : conversation.counterpart, call.time, call.encryption, Message.Marked.NONE);
 
         this.call = call;
         this.conversation = conversation;
