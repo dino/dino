@@ -209,18 +209,24 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction accept_call_action = new SimpleAction("accept-call", VariantType.INT32);
         accept_call_action.activate.connect((variant) => {
             Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(variant.get_int32());
-            stream_interactor.get_module(Calls.IDENTITY).accept_call(call);
+            CallState? call_state = stream_interactor.get_module(Calls.IDENTITY).call_states[call];
+            if (call_state == null) return;
+
+            call_state.accept();
 
             var call_window = new CallWindow();
-            call_window.controller = new CallWindowController(call_window, call, stream_interactor);
+            call_window.controller = new CallWindowController(call_window, call_state, stream_interactor);
             call_window.present();
         });
         add_action(accept_call_action);
 
-        SimpleAction deny_call_action = new SimpleAction("deny-call", VariantType.INT32);
+        SimpleAction deny_call_action = new SimpleAction("reject-call", VariantType.INT32);
         deny_call_action.activate.connect((variant) => {
             Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(variant.get_int32());
-            stream_interactor.get_module(Calls.IDENTITY).reject_call(call);
+            CallState? call_state = stream_interactor.get_module(Calls.IDENTITY).call_states[call];
+            if (call_state == null) return;
+
+            call_state.reject();
         });
         add_action(deny_call_action);
     }

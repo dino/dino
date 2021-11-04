@@ -66,19 +66,15 @@
                                 <property name="reveal-child">True</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <object class="GtkBox">
+                                    <object class="GtkBox" id="outer_additional_box">
                                         <property name="visible">True</property>
-                                        <style>
-                                            <class name="incoming-call-box"/>
-                                        </style>
                                         <child>
-                                            <object class="GtkBox">
+                                            <object class="GtkBox" id="incoming_call_box">
                                                 <property name="halign">end</property>
                                                 <property name="orientation">horizontal</property>
                                                 <property name="spacing">5</property>
                                                 <property name="margin">10</property>
                                                 <property name="hexpand">True</property>
-                                                <property name="visible">True</property>
                                                 <child>
                                                     <object class="GtkButton" id="reject_call_button">
                                                         <property name="label" translatable="yes">Reject</property>
@@ -97,6 +93,13 @@
                                                         </style>
                                                     </object>
                                                 </child>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkBox" id="multiparty_peer_box">
+                                                <property name="margin">10</property>
+                                                <property name="spacing">5</property>
+                                                <property name="hexpand">True</property>
                                             </object>
                                         </child>
                                     </object>

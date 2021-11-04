@@ -114,6 +114,11 @@ window.dino-main .incoming-call-box {
     background: alpha(@theme_selected_bg_color, 0.1);
 }
 
+window.dino-main .multiparty-participants {
+    border-top: 1px solid alpha(@theme_fg_color, 0.05);
+    background: alpha(@theme_fg_color, 0.04)
+}
+
 window.dino-main .dino-sidebar > frame.collapsed {
     border-bottom: 1px solid @borders;
 }
@@ -280,20 +285,27 @@ box.dino-input-error label.input-status-highlight-once {
     margin: 0;
 }
 
-.dino-call-window .encryption-box {
+.dino-call-window .black-element {
     color: rgba(255,255,255,0.7);
     border-radius: 5px;
     background: rgba(0,0,0,0.5);
-    padding: 0px;
     border: none;
     box-shadow: none;
 }
 
-.dino-call-window .encryption-box.unencrypted {
+.dino-call-window label.black-element {
+    padding: 5px;
+}
+
+.dino-call-window button.black-element {
+    padding: 0;
+}
+
+.dino-call-window button.black-element.unencrypted {
     color: @error_color;
 }
 
-.dino-call-window .encryption-box:hover {
+.dino-call-window .black-element:hover {
     background: rgba(20,20,20,0.5);
 }
 
@@ -303,9 +315,23 @@ box.dino-input-error label.input-status-highlight-once {
     border-radius: 0;
 }
 
-.dino-call-window .call-header-bar,
-.dino-call-window .call-header-bar image {
+.dino-call-window .call-header-bar {
     color: #ededec;
+}
+
+.dino-call-window .call-header-bar button image {
+    color: alpha(white, 0.7);
+}
+
+.dino-call-window .call-header-bar button:hover image {
+    color: white;
+}
+
+.dino-call-window .participant-title-button {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .dino-call-window .call-bottom-bar {
@@ -313,12 +339,22 @@ box.dino-input-error label.input-status-highlight-once {
     border: 0;
 }
 
-.dino-call-window .video-placeholder-box {
+.dino-call-window {
     background-color: #212121;
 }
 
+.dino-call-window .participant-name {
+    color: white;
+    text-shadow: black;
+}
+
 .dino-call-window .text-no-controls {
+    color: black;
     background: white;
     border-radius: 5px;
     padding: 5px 10px;
+}
+
+.dino-call-window .own-video {
+    box-shadow: 0 0 2px 0 rgba(0,0,0,0.5);
 }
