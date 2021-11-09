@@ -273,7 +273,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
         string decode_suffix = get_decode_suffix(media, codec, decode, payload_type) ?? "";
         string depay_args = get_depay_args(media, codec, decode, payload_type) ?? "";
         string resample = media == "audio" ? @" ! audioresample name=$(base_name)_resample" : "";
-        return @"$depay$depay_args name=$(base_name)_rtp_depay ! $decode_prefix$decode$decode_args name=$(base_name)_$(codec)_decode$decode_suffix ! $(media)convert name=$(base_name)_convert$resample";
+        return @"queue ! $depay$depay_args name=$(base_name)_rtp_depay ! $decode_prefix$decode$decode_args name=$(base_name)_$(codec)_decode$decode_suffix ! $(media)convert name=$(base_name)_convert$resample";
     }
 
     public Gst.Element? get_decode_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
@@ -288,16 +288,29 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public string? get_encode_bin_description(string media, string? codec, JingleRtp.PayloadType? payload_type, string? element_name = null, string? name = null) {
+        string? desc1 = get_encode_bin_without_payloader_description(media, codec, payload_type, element_name, name);
+        string? desc2 = get_payloader_bin_description(media, codec, payload_type, name);
+        return @"$desc1 ! $desc2";
+    }
+
+    public string? get_payloader_bin_description(string media, string? codec, JingleRtp.PayloadType? payload_type, string? name = null) {
         if (codec == null) return null;
         string base_name = name ?? @"encode_$(codec)_$(Random.next_int())";
         string? pay = get_pay_element_name(media, codec);
+        if (pay == null) return null;
+        return @"$pay pt=$(payload_type != null ? payload_type.id : 96) name=$(base_name)_rtp_pay";
+    }
+
+    public string? get_encode_bin_without_payloader_description(string media, string? codec, JingleRtp.PayloadType? payload_type, string? element_name = null, string? name = null) {
+        if (codec == null) return null;
+        string base_name = name ?? @"encode_$(codec)_$(Random.next_int())";
         string? encode = element_name ?? get_encode_element_name(media, codec);
-        if (pay == null || encode == null) return null;
+        if (encode == null) return null;
         string encode_prefix = get_encode_prefix(media, codec, encode, payload_type) ?? "";
         string encode_args = get_encode_args(media, codec, encode, payload_type) ?? "";
         string encode_suffix = get_encode_suffix(media, codec, encode, payload_type) ?? "";
         string resample = media == "audio" ? @" ! audioresample name=$(base_name)_resample" : "";
-        return @"$(media)convert name=$(base_name)_convert$resample ! $encode_prefix$encode$encode_args name=$(base_name)_encode$encode_suffix ! $pay pt=$(payload_type != null ? payload_type.id : 96) name=$(base_name)_rtp_pay";
+        return @"$(media)convert name=$(base_name)_convert$resample ! queue ! $encode_prefix$encode$encode_args name=$(base_name)_encode$encode_suffix";
     }
 
     public Gst.Element? get_encode_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
@@ -306,6 +319,28 @@ public class Dino.Plugins.Rtp.CodecUtil {
         string? desc = get_encode_bin_description(media, codec, payload_type, null, base_name);
         if (desc == null) return null;
         debug("Pipeline to encode %s %s: %s", media, codec, desc);
+        Gst.Element bin = Gst.parse_bin_from_description(desc, true);
+        bin.name = name;
+        return bin;
+    }
+
+    public Gst.Element? get_encode_bin_without_payloader(string media, JingleRtp.PayloadType payload_type, string? name = null) {
+        string? codec = get_codec_from_payload(media, payload_type);
+        string base_name = name ?? @"encode_$(codec)_$(Random.next_int())";
+        string? desc = get_encode_bin_without_payloader_description(media, codec, payload_type, null, base_name);
+        if (desc == null) return null;
+        debug("Pipeline to encode %s %s without payloader: %s", media, codec, desc);
+        Gst.Element bin = Gst.parse_bin_from_description(desc, true);
+        bin.name = name;
+        return bin;
+    }
+
+    public Gst.Element? get_payloader_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
+        string? codec = get_codec_from_payload(media, payload_type);
+        string base_name = name ?? @"encode_$(codec)_$(Random.next_int())";
+        string? desc = get_payloader_bin_description(media, codec, payload_type, base_name);
+        if (desc == null) return null;
+        debug("Pipeline to payload %s %s: %s", media, codec, desc);
         Gst.Element bin = Gst.parse_bin_from_description(desc, true);
         bin.name = name;
         return bin;
