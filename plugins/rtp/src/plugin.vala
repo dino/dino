@@ -5,10 +5,10 @@ using Xmpp.Xep;
 public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     public Dino.Application app { get; private set; }
     public CodecUtil codec_util { get; private set; }
-    public Gst.DeviceMonitor device_monitor { get; private set; }
-    public Gst.Pipeline pipe { get; private set; }
-    public Gst.Bin rtpbin { get; private set; }
-    public Gst.Element echoprobe { get; private set; }
+    public Gst.DeviceMonitor? device_monitor { get; private set; }
+    public Gst.Pipeline? pipe { get; private set; }
+    public Gst.Bin? rtpbin { get; private set; }
+    public Gst.Element? echoprobe { get; private set; }
 
     private Gee.List<Stream> streams = new ArrayList<Stream>();
     private Gee.List<Device> devices = new ArrayList<Device>();
@@ -42,18 +42,22 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         if (pause_count < 0) warning("Pause count below zero!");
     }
 
-    public void startup() {
+    private void init_device_monitor() {
+        if (device_monitor != null) return;
         device_monitor = new Gst.DeviceMonitor();
         device_monitor.show_all = true;
         device_monitor.get_bus().add_watch(Priority.DEFAULT, on_device_monitor_message);
         device_monitor.start();
         foreach (Gst.Device device in device_monitor.get_devices()) {
-            if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) continue;
+            if (device.properties.has_name("pipewire-proplist") && device.has_classes("Audio")) continue;
             if (device.properties.get_string("device.class") == "monitor") continue;
             if (devices.any_match((it) => it.matches(device))) continue;
             devices.add(new Device(this, device));
         }
+    }
 
+    private void init_call_pipe() {
+        if (pipe != null) return;
         pipe = new Gst.Pipeline(null);
 
         // RTP
@@ -66,7 +70,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         rtpbin.pad_added.connect(on_rtp_pad_added);
         rtpbin.@set("latency", 100);
         rtpbin.@set("do-lost", true);
-        rtpbin.@set("do-sync-event", true);
+//        rtpbin.@set("do-sync-event", true);
         rtpbin.@set("drop-on-latency", true);
         rtpbin.connect("signal::request-pt-map", request_pt_map, this);
         pipe.add(rtpbin);
@@ -86,6 +90,20 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         pipe.set_state(Gst.State.PLAYING);
     }
 
+    private void destroy_call_pipe() {
+        if (pipe == null) return;
+        pipe.set_state(Gst.State.NULL);
+        rtpbin = null;
+#if WITH_VOICE_PROCESSOR
+        echoprobe = null;
+#endif
+        pipe = null;
+    }
+
+    public void startup() {
+        init_device_monitor();
+    }
+
     private static Gst.Caps? request_pt_map(Gst.Element rtpbin, uint session, uint pt, Plugin plugin) {
         debug("request-pt-map");
         return null;
@@ -98,7 +116,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
             uint8 rtpid = (uint8)int.parse(split[3]);
             foreach (Stream stream in streams) {
                 if (stream.rtpid == rtpid) {
-                    stream.on_ssrc_pad_added(split[4], pad);
+                    stream.on_ssrc_pad_added((uint32) split[4].to_uint64(), pad);
                 }
             }
         }
@@ -137,6 +155,15 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 break;
             case Gst.MessageType.STATE_CHANGED:
                 // Ignore
+            {
+                unowned Gst.Structure struc = message.get_structure();
+                if (struc != null && message.src is Gst.Element) {
+                    Gst.State oldState, newState, pendingState;
+                    message.parse_state_changed(out oldState, out newState, out pendingState);
+                    debug("State of %s changed. Old: %s, New: %s, Pending; %s", ((Gst.Element)message.src).name, @"$oldState", @"$newState", @"$pendingState");
+                }
+            }
+
                 break;
             case Gst.MessageType.STREAM_STATUS:
                 Gst.StreamStatusType status;
@@ -179,51 +206,39 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     }
 
     private bool on_device_monitor_message(Gst.Bus bus, Gst.Message message) {
-        Gst.Device old_device = null;
-        Gst.Device device = null;
-        Device old = null;
+        Gst.Device? old_gst_device = null;
+        Gst.Device? gst_device = null;
+        Device? device = null;
         switch (message.type) {
             case Gst.MessageType.DEVICE_ADDED:
-                message.parse_device_added(out device);
-                if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
-                if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
-                if (devices.any_match((it) => it.matches(device))) return Source.CONTINUE;
-                devices.add(new Device(this, device));
+                message.parse_device_added(out gst_device);
+                if (gst_device.properties.has_name("pipewire-proplist") && gst_device.has_classes("Audio")) return Source.CONTINUE;
+                if (gst_device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
+                if (devices.any_match((it) => it.matches(gst_device))) return Source.CONTINUE;
+                device = new Device(this, gst_device);
+                devices.add(device);
                 break;
 #if GST_1_16
             case Gst.MessageType.DEVICE_CHANGED:
-                message.parse_device_changed(out device, out old_device);
-                if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
-                if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
-                old = devices.first_match((it) => it.matches(old_device));
-                if (old != null) old.update(device);
+                message.parse_device_changed(out gst_device, out old_gst_device);
+                if (gst_device.properties.has_name("pipewire-proplist") && gst_device.has_classes("Audio")) return Source.CONTINUE;
+                if (gst_device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
+                device = devices.first_match((it) => it.matches(old_gst_device));
+                if (device != null) device.update(gst_device);
                 break;
 #endif
             case Gst.MessageType.DEVICE_REMOVED:
-                message.parse_device_removed(out device);
-                if (device.properties.has_name("pipewire-proplist") && device.device_class.has_prefix("Audio/")) return Source.CONTINUE;
-                if (device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
-                old = devices.first_match((it) => it.matches(device));
-                if (old != null) devices.remove(old);
+                message.parse_device_removed(out gst_device);
+                if (gst_device.properties.has_name("pipewire-proplist") && gst_device.has_classes("Audio")) return Source.CONTINUE;
+                if (gst_device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
+                device = devices.first_match((it) => it.matches(gst_device));
+                if (device != null) devices.remove(device);
                 break;
             default:
                 break;
         }
         if (device != null) {
-            switch (device.device_class) {
-                case "Audio/Source":
-                    devices_changed("audio", false);
-                    break;
-                case "Audio/Sink":
-                    devices_changed("audio", true);
-                    break;
-                case "Video/Source":
-                    devices_changed("video", false);
-                    break;
-                case "Video/Sink":
-                    devices_changed("video", true);
-                    break;
-            }
+            devices_changed(device.media, device.is_sink);
         }
         return Source.CONTINUE;
     }
@@ -253,6 +268,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 //    }
 
     public Stream open_stream(Xmpp.Xep.Jingle.Content content) {
+        init_call_pipe();
         var content_params = content.content_params as Xmpp.Xep.JingleRtp.Parameters;
         if (content_params == null) return null;
         Stream stream;
@@ -271,15 +287,15 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     }
 
     public void shutdown() {
-        device_monitor.stop();
-        pipe.set_state(Gst.State.NULL);
-        rtpbin = null;
-        pipe = null;
+        if (device_monitor != null) {
+            device_monitor.stop();
+        }
+        destroy_call_pipe();
         Gst.deinit();
     }
 
     public bool supports(string media) {
-        if (rtpbin == null) return false;
+        if (!codec_util.is_element_supported("rtpbin")) return false;
 
         if (media == "audio") {
             if (get_devices("audio", false).is_empty) return false;
@@ -287,7 +303,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         }
 
         if (media == "video") {
-            if (Gst.ElementFactory.make("gtksink", null) == null) return false;
+            if (!codec_util.is_element_supported("gtksink")) return false;
             if (get_devices("video", false).is_empty) return false;
         }
 
@@ -295,6 +311,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     }
 
     public VideoCallWidget? create_widget(WidgetType type) {
+        init_call_pipe();
         if (type == WidgetType.GTK) {
             return new VideoWidget(this);
         }
@@ -422,10 +439,11 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         }
     }
 
-    private void dump_dot() {
+    public void dump_dot() {
+        if (pipe == null) return;
         string name = @"pipe-$(pipe.clock.get_time())-$(pipe.current_state)";
         Gst.Debug.bin_to_dot_file(pipe, Gst.DebugGraphDetails.ALL, name);
-        debug("Stored pipe details as %s", name);
+        print(@"Stored pipe details as $name\n");
     }
 
     public void set_pause(Xmpp.Xep.JingleRtp.Stream stream, bool pause) {
