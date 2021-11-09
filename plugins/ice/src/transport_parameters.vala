@@ -252,8 +252,12 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         if (stream_id != this.stream_id) return;
         uint8[] decrypt_data = null;
         if (dtls_srtp_handler != null) {
-            decrypt_data = dtls_srtp_handler.process_incoming_data(component_id, data);
-            if (decrypt_data == null) return;
+            try {
+                decrypt_data = dtls_srtp_handler.process_incoming_data(component_id, data);
+                if (decrypt_data == null) return;
+            } catch (Crypto.Error e) {
+                warning("%s while on_recv stream %u component %u", e.message, stream_id, component_id);
+            }
         }
         may_consider_ready(stream_id, component_id);
         if (connections.has_key((uint8) component_id)) {
