@@ -146,7 +146,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
         // VP8
         if (encode == "msdkvp8enc") return " rate-control=vbr";
         if (encode == "vaapivp8enc") return " rate-control=vbr";
-        if (encode == "vp8enc") return " deadline=1 error-resilient=1";
+        if (encode == "vp8enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30";
 
         // OPUS
         if (encode == "opusenc") {
@@ -159,7 +159,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
 
     public static string? get_encode_suffix(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         // H264
-        if (media == "video" && codec == "h264") return " ! video/x-h264,profile=constrained-baseline ! h264parse";
+        if (media == "video" && codec == "h264") return " ! capsfilter caps=video/x-h264,profile=constrained-baseline ! h264parse";
+        if (media == "video" && codec == "vp8" && encode == "vp8enc") return " ! capsfilter caps=video/x-vp8,profile=(string)1";
         return null;
     }
 
@@ -171,17 +172,18 @@ public class Dino.Plugins.Rtp.CodecUtil {
         if (encode_name == null) return 0;
         Gst.Element encode = encode_bin.get_by_name(@"$(encode_bin.name)_encode");
 
-        bitrate = uint.min(2048000, bitrate);
-
         switch (encode_name) {
             case "msdkh264enc":
             case "vaapih264enc":
             case "x264enc":
+            case "msdkvp9enc":
+            case "vaapivp9enc":
             case "msdkvp8enc":
             case "vaapivp8enc":
                 bitrate = uint.min(2048000, bitrate);
                 encode.set("bitrate", bitrate);
                 return bitrate;
+            case "vp9enc":
             case "vp8enc":
                 bitrate = uint.min(2147483, bitrate);
                 encode.set("target-bitrate", bitrate * 1000);
@@ -198,6 +200,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     public static string? get_decode_args(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
         if (decode == "opusdec" && payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " use-inband-fec=true";
         if (decode == "vaapivp9dec" || decode == "vaapivp8dec" || decode == "vaapih264dec") return " max-errors=100";
+        if (decode == "vp8dec") return " threads=8";
         return null;
     }
 
