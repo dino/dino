@@ -37,40 +37,30 @@ public class Handler {
         this.own_fingerprint = creds.own_fingerprint;
     }
 
-    public uint8[]? process_incoming_data(uint component_id, uint8[] data) {
+    public uint8[]? process_incoming_data(uint component_id, uint8[] data) throws Crypto.Error {
         if (srtp_session.has_decrypt) {
-            try {
-                if (component_id == 1) {
-                    if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
-                        return srtp_session.decrypt_rtcp(data);
-                    }
-                    return srtp_session.decrypt_rtp(data);
+            if (component_id == 1) {
+                if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
+                    return srtp_session.decrypt_rtcp(data);
                 }
-                if (component_id == 2) return srtp_session.decrypt_rtcp(data);
-            } catch (Error e) {
-                warning("%s (%d)", e.message, e.code);
-                return null;
+                return srtp_session.decrypt_rtp(data);
             }
+            if (component_id == 2) return srtp_session.decrypt_rtcp(data);
         } else if (component_id == 1) {
             on_data_rec(data);
         }
         return null;
     }
 
-    public uint8[]? process_outgoing_data(uint component_id, uint8[] data) {
+    public uint8[]? process_outgoing_data(uint component_id, uint8[] data) throws Crypto.Error {
         if (srtp_session.has_encrypt) {
-            try {
-                if (component_id == 1) {
-                    if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
-                        return srtp_session.encrypt_rtcp(data);
-                    }
-                    return srtp_session.encrypt_rtp(data);
+            if (component_id == 1) {
+                if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
+                    return srtp_session.encrypt_rtcp(data);
                 }
-                if (component_id == 2) return srtp_session.encrypt_rtcp(data);
-            } catch (Error e) {
-                warning("%s (%d)", e.message, e.code);
-                return null;
+                return srtp_session.encrypt_rtp(data);
             }
+            if (component_id == 2) return srtp_session.encrypt_rtcp(data);
         }
         return null;
     }
