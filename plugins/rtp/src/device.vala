@@ -1,5 +1,9 @@
+using Xmpp.Xep.JingleRtp;
+using Gee;
+
 public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     public Plugin plugin { get; private set; }
+    public CodecUtil codec_util { get { return plugin.codec_util; } }
     public Gst.Device device { get; private set; }
 
     private string device_name;
@@ -17,28 +21,45 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         return plugin.pipe;
     }}
     public string? media { get {
-        if (device.device_class.has_prefix("Audio/")) {
+        if (device.has_classes("Audio")) {
             return "audio";
-        } else if (device.device_class.has_prefix("Video/")) {
+        } else if (device.has_classes("Video")) {
             return "video";
         } else {
             return null;
         }
     }}
     public bool is_source { get {
-        return device.device_class.has_suffix("/Source");
+        return device.has_classes("Source");
     }}
     public bool is_sink { get {
-        return device.device_class.has_suffix("/Sink");
+        return device.has_classes("Sink");
     }}
 
     private Gst.Element element;
     private Gst.Element tee;
     private Gst.Element dsp;
-    private Gst.Element mixer;
+    private Gst.Base.Aggregator mixer;
     private Gst.Element filter;
-    private Gst.Element rate;
-    private int links = 0;
+    private int links;
+
+    // Codecs
+    private Gee.Map<PayloadType, Gst.Element> codecs = new HashMap<PayloadType, Gst.Element>(PayloadType.hash_func, PayloadType.equals_func);
+    private Gee.Map<PayloadType, Gst.Element> codec_tees = new HashMap<PayloadType, Gst.Element>(PayloadType.hash_func, PayloadType.equals_func);
+    private Gee.Map<PayloadType, Gee.Map<uint, Gst.Element>> payloaders = new HashMap<PayloadType, Gee.Map<uint, Gst.Element>>(PayloadType.hash_func, PayloadType.equals_func);
+    private Gee.Map<PayloadType, Gee.Map<uint, Gst.Element>> payloader_tees = new HashMap<PayloadType, Gee.Map<uint, Gst.Element>>(PayloadType.hash_func, PayloadType.equals_func);
+    private Gee.Map<PayloadType, Gee.Map<uint, uint>> payloader_links = new HashMap<PayloadType, Gee.Map<uint, uint>>(PayloadType.hash_func, PayloadType.equals_func);
+    private Gee.Map<PayloadType, Gee.List<CodecBitrate>> codec_bitrates = new HashMap<PayloadType, Gee.List<CodecBitrate>>(PayloadType.hash_func, PayloadType.equals_func);
+
+    private class CodecBitrate {
+        public uint bitrate;
+        public int64 timestamp;
+
+        public CodecBitrate(uint bitrate) {
+            this.bitrate = bitrate;
+            this.timestamp = get_monotonic_time();
+        }
+    }
 
     public Device(Plugin plugin, Gst.Device device) {
         this.plugin = plugin;
@@ -57,24 +78,153 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     }
 
     public Gst.Element? link_sink() {
+        if (!is_sink) return null;
         if (element == null) create();
         links++;
-        if (mixer != null) return mixer;
-        if (is_sink && media == "audio") return filter;
+        if (mixer != null) {
+            Gst.Element rate = Gst.ElementFactory.make("audiorate", @"$(id)_rate_$(Random.next_int())");
+            pipe.add(rate);
+            rate.link(mixer);
+            return rate;
+        }
+        if (media == "audio") return filter;
         return element;
     }
 
-    public Gst.Element? link_source() {
+    public Gst.Element? link_source(PayloadType? payload_type = null, uint ssrc = Random.next_int(), int seqnum_offset = -1) {
+        if (!is_source) return null;
         if (element == null) create();
         links++;
+        if (payload_type != null && tee != null) {
+            bool new_codec = false;
+            string? codec = CodecUtil.get_codec_from_payload(media, payload_type);
+            if (!codecs.has_key(payload_type)) {
+                codecs[payload_type] = codec_util.get_encode_bin_without_payloader(media, payload_type, @"$(id)_$(codec)_encoder");
+                pipe.add(codecs[payload_type]);
+                new_codec = true;
+            }
+            if (!codec_tees.has_key(payload_type)) {
+                codec_tees[payload_type] = Gst.ElementFactory.make("tee", @"$(id)_$(codec)_tee");
+                codec_tees[payload_type].@set("allow-not-linked", true);
+                pipe.add(codec_tees[payload_type]);
+                codecs[payload_type].link(codec_tees[payload_type]);
+            }
+            if (!payloaders.has_key(payload_type)) {
+                payloaders[payload_type] = new HashMap<uint, Gst.Element>();
+            }
+            if (!payloaders[payload_type].has_key(ssrc)) {
+                payloaders[payload_type][ssrc] = codec_util.get_payloader_bin(media, payload_type, @"$(id)_$(codec)_$(ssrc)");
+                var payload = (Gst.RTP.BasePayload) ((Gst.Bin) payloaders[payload_type][ssrc]).get_by_name(@"$(id)_$(codec)_$(ssrc)_rtp_pay");
+                payload.ssrc = ssrc;
+                payload.seqnum_offset = seqnum_offset;
+                pipe.add(payloaders[payload_type][ssrc]);
+                codec_tees[payload_type].link(payloaders[payload_type][ssrc]);
+            }
+            if (!payloader_tees.has_key(payload_type)) {
+                payloader_tees[payload_type] = new HashMap<uint, Gst.Element>();
+            }
+            if (!payloader_tees[payload_type].has_key(ssrc)) {
+                payloader_tees[payload_type][ssrc] = Gst.ElementFactory.make("tee", @"$(id)_$(codec)_$(ssrc)_tee");
+                payloader_tees[payload_type][ssrc].@set("allow-not-linked", true);
+                pipe.add(payloader_tees[payload_type][ssrc]);
+                payloaders[payload_type][ssrc].link(payloader_tees[payload_type][ssrc]);
+            }
+            if (!payloader_links.has_key(payload_type)) {
+                payloader_links[payload_type] = new HashMap<uint, uint>();
+            }
+            if (!payloader_links[payload_type].has_key(ssrc)) {
+                payloader_links[payload_type][ssrc] = 1;
+            } else {
+                payloader_links[payload_type][ssrc] = payloader_links[payload_type][ssrc] + 1;
+            }
+            if (new_codec) {
+                tee.link(codecs[payload_type]);
+            }
+            return payloader_tees[payload_type][ssrc];
+        }
         if (tee != null) return tee;
         return element;
     }
 
-    public void unlink() {
+    public void update_bitrate(PayloadType payload_type, uint bitrate) {
+        if (codecs.has_key(payload_type)) {
+            lock(codec_bitrates);
+            if (!codec_bitrates.has_key(payload_type)) {
+                codec_bitrates[payload_type] = new ArrayList<CodecBitrate>();
+            }
+            codec_bitrates[payload_type].add(new CodecBitrate(bitrate));
+            var remove = new ArrayList<CodecBitrate>();
+            foreach (CodecBitrate rate in codec_bitrates[payload_type]) {
+                if (rate.timestamp < get_monotonic_time() - 5000000L) {
+                    remove.add(rate);
+                    continue;
+                }
+                if (rate.bitrate < bitrate) {
+                    bitrate = rate.bitrate;
+                }
+            }
+            codec_bitrates[payload_type].remove_all(remove);
+            codec_util.update_bitrate(media, payload_type, codecs[payload_type], bitrate);
+            unlock(codec_bitrates);
+        }
+    }
+
+    public void unlink(Gst.Element? link = null) {
         if (links <= 0) {
             critical("Link count below zero.");
             return;
+        }
+        if (link != null && is_source && tee != null) {
+            PayloadType payload_type = payloader_tees.first_match((entry) => entry.value.any_match((entry) => entry.value == link)).key;
+            uint ssrc = payloader_tees[payload_type].first_match((entry) => entry.value == link).key;
+            payloader_links[payload_type][ssrc] = payloader_links[payload_type][ssrc] - 1;
+            if (payloader_links[payload_type][ssrc] == 0) {
+                plugin.pause();
+
+                codec_tees[payload_type].unlink(payloaders[payload_type][ssrc]);
+                payloaders[payload_type][ssrc].set_locked_state(true);
+                payloaders[payload_type][ssrc].set_state(Gst.State.NULL);
+                payloaders[payload_type][ssrc].unlink(payloader_tees[payload_type][ssrc]);
+                pipe.remove(payloaders[payload_type][ssrc]);
+                payloaders[payload_type].unset(ssrc);
+                payloader_tees[payload_type][ssrc].set_locked_state(true);
+                payloader_tees[payload_type][ssrc].set_state(Gst.State.NULL);
+                pipe.remove(payloader_tees[payload_type][ssrc]);
+                payloader_tees[payload_type].unset(ssrc);
+
+                payloader_links[payload_type].unset(ssrc);
+                plugin.unpause();
+            }
+            if (payloader_links[payload_type].size == 0) {
+                plugin.pause();
+
+                tee.unlink(codecs[payload_type]);
+                codecs[payload_type].set_locked_state(true);
+                codecs[payload_type].set_state(Gst.State.NULL);
+                codecs[payload_type].unlink(codec_tees[payload_type]);
+                pipe.remove(codecs[payload_type]);
+                codecs.unset(payload_type);
+                codec_tees[payload_type].set_locked_state(true);
+                codec_tees[payload_type].set_state(Gst.State.NULL);
+                pipe.remove(codec_tees[payload_type]);
+                codec_tees.unset(payload_type);
+
+                payloaders.unset(payload_type);
+                payloader_tees.unset(payload_type);
+                payloader_links.unset(payload_type);
+                plugin.unpause();
+            }
+        }
+        if (link != null && is_sink && mixer != null) {
+            plugin.pause();
+            link.set_locked_state(true);
+            Gst.Base.AggregatorPad mixer_sink_pad = (Gst.Base.AggregatorPad) link.get_static_pad("src").get_peer();
+            link.get_static_pad("src").unlink(mixer_sink_pad);
+            mixer_sink_pad.set_active(false);
+            link.set_state(Gst.State.NULL);
+            pipe.remove(link);
+            mixer.release_request_pad(mixer_sink_pad);
+            plugin.unpause();
         }
         links--;
         if (links == 0) {
@@ -150,15 +300,59 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         return target;
     }
 
+    private static Gst.PadProbeReturn log_probe(Gst.Pad pad, Gst.PadProbeInfo info) {
+        if ((info.type & Gst.PadProbeType.EVENT_DOWNSTREAM) > 0) {
+            debug("%s.%s probed downstream event %s", pad.get_parent_element().name, pad.name, info.get_event().type.get_name());
+        }
+        if ((info.type & Gst.PadProbeType.EVENT_UPSTREAM) > 0) {
+            var event = info.get_event();
+            if (event.type == Gst.EventType.RECONFIGURE) return Gst.PadProbeReturn.DROP;
+            if (event.type == Gst.EventType.QOS) {
+                Gst.QOSType qos_type;
+                double proportion;
+                Gst.ClockTimeDiff diff;
+                Gst.ClockTime timestamp;
+                event.parse_qos(out qos_type, out proportion, out diff, out timestamp);
+                debug("%s.%s probed qos event: type: %s, proportion: %f, diff: %lli, timestamp: %llu", pad.get_parent_element().name, pad.name, @"$qos_type", proportion, diff, timestamp);
+            } else {
+                debug("%s.%s probed upstream event %s", pad.get_parent_element().name, pad.name, event.type.get_name());
+            }
+        }
+        if ((info.type & Gst.PadProbeType.QUERY_DOWNSTREAM) > 0) {
+            debug("%s.%s probed downstream query %s", pad.get_parent_element().name, pad.name, info.get_query().type.get_name());
+        }
+        if ((info.type & Gst.PadProbeType.QUERY_UPSTREAM) > 0) {
+            debug("%s.%s probed upstream query %s", pad.get_parent_element().name, pad.name, info.get_query().type.get_name());
+        }
+        if ((info.type & Gst.PadProbeType.BUFFER) > 0) {
+            uint id = pad.get_data("no_buffer_probe_timeout");
+            if (id != 0) {
+                Source.remove(id);
+            }
+            string name = @"$(pad.get_parent_element().name).$(pad.name)";
+            id = Timeout.add_seconds(1, () => {
+                debug("%s probed no buffer for 1 second", name);
+                return Source.REMOVE;
+            });
+            pad.set_data("no_buffer_probe_timeout", id);
+        }
+        return Gst.PadProbeReturn.PASS;
+    }
+
     private void create() {
         debug("Creating device %s", id);
         plugin.pause();
         element = device.create_element(id);
+        if (is_sink) {
+            element.@set("async", false);
+            element.@set("sync", false);
+        }
         pipe.add(element);
         if (is_source) {
             element.@set("do-timestamp", true);
             filter = Gst.ElementFactory.make("capsfilter", @"caps_filter_$id");
             filter.@set("caps", get_best_caps());
+            filter.get_static_pad("src").add_probe(Gst.PadProbeType.BLOCK, log_probe);
             pipe.add(filter);
             element.link(filter);
 #if WITH_VOICE_PROCESSOR
@@ -174,22 +368,18 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             pipe.add(tee);
             (dsp ?? filter).link(tee);
         }
-        if (is_sink) {
-            element.@set("async", false);
-            element.@set("sync", false);
-        }
         if (is_sink && media == "audio") {
-            filter = Gst.ElementFactory.make("capsfilter", @"caps_filter_$id");
-            filter.@set("caps", get_best_caps());
-            pipe.add(filter);
-            if (plugin.echoprobe != null) {
-                rate = Gst.ElementFactory.make("audiorate", @"rate_$id");
-                rate.@set("tolerance", 100000000);
-                pipe.add(rate);
-                filter.link(rate);
-                rate.link(plugin.echoprobe);
+            mixer = (Gst.Base.Aggregator) Gst.ElementFactory.make("audiomixer", @"mixer_$id");
+            pipe.add(mixer);
+            mixer.link(pipe);
+            if (plugin.echoprobe != null && !plugin.echoprobe.get_static_pad("src").is_linked()) {
+                mixer.link(plugin.echoprobe);
                 plugin.echoprobe.link(element);
             } else {
+                filter = Gst.ElementFactory.make("capsfilter", @"caps_filter_$id");
+                filter.@set("caps", get_best_caps());
+                pipe.add(filter);
+                mixer.link(filter);
                 filter.link(element);
             }
         }
@@ -197,37 +387,24 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     }
 
     private void destroy() {
-        if (mixer != null) {
-            if (is_sink && media == "audio" && plugin.echoprobe != null) {
-                plugin.echoprobe.unlink(mixer);
+        if (is_sink) {
+            if (mixer != null) {
+                int linked_sink_pads = 0;
+                mixer.foreach_sink_pad((_, pad) => {
+                    if (pad.is_linked()) linked_sink_pads++;
+                    return true;
+                });
+                if (linked_sink_pads > 0) {
+                    warning("%s-mixer still has %i sink pads while being destroyed", id, linked_sink_pads);
+                }
+                mixer.unlink(plugin.echoprobe ?? element);
             }
-            int linked_sink_pads = 0;
-            mixer.foreach_sink_pad((_, pad) => {
-                if (pad.is_linked()) linked_sink_pads++;
-                return true;
-            });
-            if (linked_sink_pads > 0) {
-                warning("%s-mixer still has %i sink pads while being destroyed", id, linked_sink_pads);
-            }
-            mixer.set_locked_state(true);
-            mixer.set_state(Gst.State.NULL);
-            mixer.unlink(element);
-            pipe.remove(mixer);
-            mixer = null;
-        } else if (is_sink && media == "audio") {
             if (filter != null) {
                 filter.set_locked_state(true);
                 filter.set_state(Gst.State.NULL);
-                filter.unlink(rate ?? ((Gst.Element)plugin.echoprobe) ?? element);
+                filter.unlink(element);
                 pipe.remove(filter);
                 filter = null;
-            }
-            if (rate != null) {
-                rate.set_locked_state(true);
-                rate.set_state(Gst.State.NULL);
-                rate.unlink(plugin.echoprobe);
-                pipe.remove(rate);
-                rate = null;
             }
             if (plugin.echoprobe != null) {
                 plugin.echoprobe.unlink(element);
@@ -239,33 +416,41 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         else if (is_source) element.unlink(tee);
         pipe.remove(element);
         element = null;
-        if (filter != null) {
-            filter.set_locked_state(true);
-            filter.set_state(Gst.State.NULL);
-            filter.unlink(dsp ?? tee);
-            pipe.remove(filter);
-            filter = null;
+        if (mixer != null) {
+            mixer.set_locked_state(true);
+            mixer.set_state(Gst.State.NULL);
+            pipe.remove(mixer);
+            mixer = null;
         }
-        if (dsp != null) {
-            dsp.set_locked_state(true);
-            dsp.set_state(Gst.State.NULL);
-            dsp.unlink(tee);
-            pipe.remove(dsp);
-            dsp = null;
-        }
-        if (tee != null) {
-            int linked_src_pads = 0;
-            tee.foreach_src_pad((_, pad) => {
-                if (pad.is_linked()) linked_src_pads++;
-                return true;
-            });
-            if (linked_src_pads != 0) {
-                warning("%s-tee still has %d src pads while being destroyed", id, linked_src_pads);
+        if (is_source) {
+            if (filter != null) {
+                filter.set_locked_state(true);
+                filter.set_state(Gst.State.NULL);
+                filter.unlink(dsp ?? tee);
+                pipe.remove(filter);
+                filter = null;
             }
-            tee.set_locked_state(true);
-            tee.set_state(Gst.State.NULL);
-            pipe.remove(tee);
-            tee = null;
+            if (dsp != null) {
+                dsp.set_locked_state(true);
+                dsp.set_state(Gst.State.NULL);
+                dsp.unlink(tee);
+                pipe.remove(dsp);
+                dsp = null;
+            }
+            if (tee != null) {
+                int linked_src_pads = 0;
+                tee.foreach_src_pad((_, pad) => {
+                    if (pad.is_linked()) linked_src_pads++;
+                    return true;
+                });
+                if (linked_src_pads != 0) {
+                    warning("%s-tee still has %d src pads while being destroyed", id, linked_src_pads);
+                }
+                tee.set_locked_state(true);
+                tee.set_state(Gst.State.NULL);
+                pipe.remove(tee);
+                tee = null;
+            }
         }
         debug("Destroyed device %s", id);
     }
