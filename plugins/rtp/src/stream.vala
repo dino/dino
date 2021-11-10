@@ -91,7 +91,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         send_rtp.async = false;
         send_rtp.caps = CodecUtil.get_caps(media, payload_type, false);
         send_rtp.emit_signals = true;
-        send_rtp.sync = false;
+        send_rtp.sync = true;
         send_rtp.drop = true;
         send_rtp.wait_on_eos = false;
         send_rtp.new_sample.connect(on_new_sample);
@@ -102,7 +102,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         send_rtcp.async = false;
         send_rtcp.caps = new Gst.Caps.empty_simple("application/x-rtcp");
         send_rtcp.emit_signals = true;
-        send_rtcp.sync = false;
+        send_rtcp.sync = true;
         send_rtcp.drop = true;
         send_rtcp.wait_on_eos = false;
         send_rtcp.new_sample.connect(on_new_sample);

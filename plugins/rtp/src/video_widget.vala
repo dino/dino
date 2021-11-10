@@ -25,7 +25,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
             Gtk.Widget widget;
             element.@get("widget", out widget);
             element.@set("async", false);
-            element.@set("sync", false);
+            element.@set("sync", true);
             this.widget = widget;
             add(widget);
             widget.visible = true;
