@@ -201,12 +201,15 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 source_stat.get_uint64("packets-received", out packets_received);
                 source_stat.get_uint64("octets-received", out octets_received);
                 int new_lost = packets_lost - last_packets_lost;
+                if (new_lost < 0) new_lost = 0;
                 uint64 new_received = packets_received - last_packets_received;
+                if (packets_received < last_packets_received) new_received = 0;
                 uint64 new_octets = octets_received - last_octets_received;
-                if (new_received == 0) continue;
+                if (octets_received < last_octets_received) octets_received = 0;
                 last_packets_lost = packets_lost;
                 last_packets_received = packets_received;
                 last_octets_received = octets_received;
+                if (new_received == 0) continue;
                 double loss_rate = (double)new_lost / (double)(new_lost + new_received);
                 if (new_lost <= 0 || loss_rate < 0.02) {
                     remb = (uint)(1.08 * (double)remb);
@@ -256,7 +259,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             uint8 br_exp = data[5] >> 2;
             uint32 br_mant = (((uint32)data[5] & 0x3) << 16) + ((uint32)data[6] << 8) + (uint32)data[7];
             uint bitrate = (br_mant << br_exp) / 1000;
-            self.input_device.update_bitrate(self.payload_type, bitrate * 8);
+            self.input_device.update_bitrate(self.payload_type, bitrate);
         }
     }
 
