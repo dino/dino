@@ -167,8 +167,10 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     }
 
     private int last_packets_lost = -1;
-    private uint64 last_packets_received;
-    private uint64 last_octets_received;
+    private uint64 last_packets_received = 0;
+    private uint64 last_octets_received = 0;
+    private uint max_target_receive_bitrate = 0;
+    private int64 last_remb_time = 0;
     private bool remb_adjust() {
         unowned Gst.Structure? stats;
         if (session == null) {
@@ -210,40 +212,54 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 last_octets_received = octets_received;
                 if (new_received == 0) continue;
                 double loss_rate = (double)new_lost / (double)(new_lost + new_received);
+                uint new_target_receive_bitrate = 256;
                 if (new_lost <= 0 || loss_rate < 0.02) {
-                    target_receive_bitrate = (uint)(1.08 * (double)target_receive_bitrate);
+                    new_target_receive_bitrate = (uint)(1.08 * (double)target_receive_bitrate);
                 } else if (loss_rate > 0.1) {
-                    target_receive_bitrate = (uint)((1.0 - 0.5 * loss_rate) * (double)target_receive_bitrate);
+                    new_target_receive_bitrate = (uint)((1.0 - 0.5 * loss_rate) * (double)target_receive_bitrate);
                 }
-                target_receive_bitrate = uint.max(target_receive_bitrate, (uint)((new_octets * 8) / 1000));
-                target_receive_bitrate = uint.max(16, target_receive_bitrate); // Never go below 16
-                uint8[] data = new uint8[] {
-                    143, 206, 0, 5,
-                    0, 0, 0, 0,
-                    0, 0, 0, 0,
-                    'R', 'E', 'M', 'B',
-                    1, 0, 0, 0,
-                    0, 0, 0, 0
-                };
-                data[4] = (uint8)((our_ssrc >> 24) & 0xff);
-                data[5] = (uint8)((our_ssrc >> 16) & 0xff);
-                data[6] = (uint8)((our_ssrc >> 8) & 0xff);
-                data[7] = (uint8)(our_ssrc & 0xff);
-                uint8 br_exp = 0;
-                uint32 br_mant = target_receive_bitrate * 1000;
-                uint8 bits = (uint8)Math.log2(br_mant);
-                if (bits > 16) {
-                    br_exp = (uint8)bits - 16;
-                    br_mant = br_mant >> br_exp;
+                if (last_remb_time == 0) {
+                    last_remb_time = get_monotonic_time();
+                } else {
+                    int64 time_now = get_monotonic_time();
+                    int64 time_diff = time_now - last_remb_time;
+                    last_remb_time = time_now;
+                    uint actual_bitrate = (uint)(((double)new_octets * 8.0) * (double)time_diff / 1000.0 / 1000000.0);
+                    new_target_receive_bitrate = uint.max(new_target_receive_bitrate, (uint)(0.9 * (double)actual_bitrate));
+                    max_target_receive_bitrate = uint.max(actual_bitrate * 2, max_target_receive_bitrate);
+                    new_target_receive_bitrate = uint.min(new_target_receive_bitrate, max_target_receive_bitrate);
                 }
-                data[17] = (uint8)((br_exp << 2) | ((br_mant >> 16) & 0x3));
-                data[18] = (uint8)((br_mant >> 8) & 0xff);
-                data[19] = (uint8)(br_mant & 0xff);
-                data[20] = (uint8)((ssrc >> 24) & 0xff);
-                data[21] = (uint8)((ssrc >> 16) & 0xff);
-                data[22] = (uint8)((ssrc >> 8) & 0xff);
-                data[23] = (uint8)(ssrc & 0xff);
-                encrypt_and_send_rtcp(data);
+                new_target_receive_bitrate = uint.max(16, new_target_receive_bitrate); // Never go below 16
+                if (new_target_receive_bitrate != target_receive_bitrate) {
+                    target_receive_bitrate = new_target_receive_bitrate;
+                    uint8[] data = new uint8[] {
+                        143, 206, 0, 5,
+                        0, 0, 0, 0,
+                        0, 0, 0, 0,
+                        'R', 'E', 'M', 'B',
+                        1, 0, 0, 0,
+                        0, 0, 0, 0
+                    };
+                    data[4] = (uint8)((our_ssrc >> 24) & 0xff);
+                    data[5] = (uint8)((our_ssrc >> 16) & 0xff);
+                    data[6] = (uint8)((our_ssrc >> 8) & 0xff);
+                    data[7] = (uint8)(our_ssrc & 0xff);
+                    uint8 br_exp = 0;
+                    uint32 br_mant = target_receive_bitrate * 1000;
+                    uint8 bits = (uint8)Math.log2(br_mant);
+                    if (bits > 16) {
+                        br_exp = (uint8)bits - 16;
+                        br_mant = br_mant >> br_exp;
+                    }
+                    data[17] = (uint8)((br_exp << 2) | ((br_mant >> 16) & 0x3));
+                    data[18] = (uint8)((br_mant >> 8) & 0xff);
+                    data[19] = (uint8)(br_mant & 0xff);
+                    data[20] = (uint8)((ssrc >> 24) & 0xff);
+                    data[21] = (uint8)((ssrc >> 16) & 0xff);
+                    data[22] = (uint8)((ssrc >> 8) & 0xff);
+                    data[23] = (uint8)(ssrc & 0xff);
+                    encrypt_and_send_rtcp(data);
+                }
             }
         }
         return Source.CONTINUE;
