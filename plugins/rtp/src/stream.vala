@@ -153,7 +153,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         plugin.unpause();
 
         GLib.Signal.emit_by_name(rtpbin, "get-session", rtpid, out session);
-        if (session != null && payload_type.rtcp_fbs.any_match((it) => it.type_ == "goog-remb")) {
+        if (session != null && remb_enabled) {
             Object internal_session;
             session.@get("internal-session", out internal_session);
             if (internal_session != null) {
@@ -166,7 +166,6 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
     }
 
-    private uint remb = 256;
     private int last_packets_lost = -1;
     private uint64 last_packets_received;
     private uint64 last_octets_received;
@@ -212,12 +211,12 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 if (new_received == 0) continue;
                 double loss_rate = (double)new_lost / (double)(new_lost + new_received);
                 if (new_lost <= 0 || loss_rate < 0.02) {
-                    remb = (uint)(1.08 * (double)remb);
+                    target_receive_bitrate = (uint)(1.08 * (double)target_receive_bitrate);
                 } else if (loss_rate > 0.1) {
-                    remb = (uint)((1.0 - 0.5 * loss_rate) * (double)remb);
+                    target_receive_bitrate = (uint)((1.0 - 0.5 * loss_rate) * (double)target_receive_bitrate);
                 }
-                remb = uint.max(remb, (uint)((new_octets * 8) / 1000));
-                remb = uint.max(16, remb); // Never go below 16
+                target_receive_bitrate = uint.max(target_receive_bitrate, (uint)((new_octets * 8) / 1000));
+                target_receive_bitrate = uint.max(16, target_receive_bitrate); // Never go below 16
                 uint8[] data = new uint8[] {
                     143, 206, 0, 5,
                     0, 0, 0, 0,
@@ -231,7 +230,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 data[6] = (uint8)((our_ssrc >> 8) & 0xff);
                 data[7] = (uint8)(our_ssrc & 0xff);
                 uint8 br_exp = 0;
-                uint32 br_mant = remb * 1000;
+                uint32 br_mant = target_receive_bitrate * 1000;
                 uint8 bits = (uint8)Math.log2(br_mant);
                 if (bits > 16) {
                     br_exp = (uint8)bits - 16;
@@ -258,8 +257,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             if (data[0] != 'R' || data[1] != 'E' || data[2] != 'M' || data[3] != 'B') return;
             uint8 br_exp = data[5] >> 2;
             uint32 br_mant = (((uint32)data[5] & 0x3) << 16) + ((uint32)data[6] << 8) + (uint32)data[7];
-            uint bitrate = (br_mant << br_exp) / 1000;
-            self.input_device.update_bitrate(self.payload_type, bitrate);
+            self.target_send_bitrate = (br_mant << br_exp) / 1000;
+            self.input_device.update_bitrate(self.payload_type, self.target_send_bitrate);
         }
     }
 

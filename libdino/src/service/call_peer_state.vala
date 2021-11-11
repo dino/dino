@@ -260,6 +260,10 @@ public class Dino.PeerState : Object {
                 ret.audio_codec = audio_content_parameter.agreed_payload_type.name;
                 ret.audio_clockrate = audio_content_parameter.agreed_payload_type.clockrate;
             }
+            if (audio_content_parameter.stream != null && audio_content_parameter.stream.remb_enabled) {
+                ret.audio_target_receive_bitrate = audio_content_parameter.stream.target_receive_bitrate;
+                ret.audio_target_send_bitrate = audio_content_parameter.stream.target_send_bitrate;
+            }
         }
 
         if (audio_content != null) {
@@ -277,6 +281,10 @@ public class Dino.PeerState : Object {
 
             if (video_content_parameter.agreed_payload_type != null) {
                 ret.video_codec = video_content_parameter.agreed_payload_type.name;
+            }
+            if (video_content_parameter.stream != null && video_content_parameter.stream.remb_enabled) {
+                ret.video_target_receive_bitrate = video_content_parameter.stream.target_receive_bitrate;
+                ret.video_target_send_bitrate = video_content_parameter.stream.target_send_bitrate;
             }
         }
 
@@ -443,6 +451,8 @@ public class Dino.PeerInfo {
     public ulong? audio_bytes_received { get; set; default=0; }
     public string? audio_codec { get; set; }
     public uint32 audio_clockrate { get; set; }
+    public uint audio_target_receive_bitrate { get; set; default=0; }
+    public uint audio_target_send_bitrate { get; set; default=0; }
 
     public bool video_content_exists { get; set; }
     public bool video_rtp_ready { get; set; }
@@ -450,4 +460,6 @@ public class Dino.PeerInfo {
     public ulong? video_bytes_sent { get; set; default=0; }
     public ulong? video_bytes_received { get; set; default=0; }
     public string? video_codec { get; set; }
+    public uint video_target_receive_bitrate { get; set; default=0; }
+    public uint video_target_send_bitrate { get; set; default=0; }
 }
