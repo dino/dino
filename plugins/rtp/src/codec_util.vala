@@ -97,7 +97,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
                 case "h264":
                     return new string[] {/*"msdkh264enc", */"vaapih264enc", "x264enc"};
                 case "vp9":
-                    return new string[] {/*"msdkvp9enc", */"vaapivp9enc" /*, "vp9enc" */};
+                    return new string[] {/*"msdkvp9enc", */"vaapivp9enc", "vp9enc"};
                 case "vp8":
                     return new string[] {/*"msdkvp8enc", */"vaapivp8enc", "vp8enc"};
             }
@@ -141,15 +141,15 @@ public class Dino.Plugins.Rtp.CodecUtil {
         // H264
         if (encode == "msdkh264enc") return @" rate-control=vbr";
         if (encode == "vaapih264enc") return @" rate-control=vbr tune=low-power";
-        if (encode == "x264enc") return @" byte-stream=1 speed-preset=ultrafast tune=zerolatency";
+        if (encode == "x264enc") return @" byte-stream=1 speed-preset=ultrafast tune=zerolatency bframes=0 cabac=false dct8x8=false";
 
         // VP8
         if (encode == "vaapivp8enc" || encode == "msdkvp8enc") return " rate-control=vbr target-percentage=90";
-        if (encode == "vp8enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr";
+        if (encode == "vp8enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr cpu-used=4";
 
         // VP9
         if (encode == "msdkvp9enc" || encode == "vaapivp9enc") return " rate-control=vbr target-percentage=90";
-        if (encode == "vp9enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr";
+        if (encode == "vp9enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr cpu-used=4";
 
         // OPUS
         if (encode == "opusenc") {
@@ -219,7 +219,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     public static string? get_decode_args(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
         if (decode == "opusdec" && payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " use-inband-fec=true";
         if (decode == "vaapivp9dec" || decode == "vaapivp8dec" || decode == "vaapih264dec") return " max-errors=100";
-        if (decode == "vp8dec") return " threads=8";
+        if (decode == "vp8dec" || decode == "vp9dec") return " threads=8";
         return null;
     }
 
