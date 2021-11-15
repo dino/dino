@@ -163,7 +163,6 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                     debug("State of %s changed. Old: %s, New: %s, Pending; %s", ((Gst.Element)message.src).name, @"$oldState", @"$newState", @"$pendingState");
                 }
             }
-
                 break;
             case Gst.MessageType.STREAM_STATUS:
                 Gst.StreamStatusType status;

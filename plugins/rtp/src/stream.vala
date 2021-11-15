@@ -266,7 +266,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                     last_remb_time = time_now;
                     uint actual_bitrate = (uint)(((double)new_octets * 8.0) * (double)time_diff / 1000.0 / 1000000.0);
                     new_target_receive_bitrate = uint.max(new_target_receive_bitrate, (uint)(0.9 * (double)actual_bitrate));
-                    max_target_receive_bitrate = uint.max(actual_bitrate * 2, max_target_receive_bitrate);
+                    max_target_receive_bitrate = uint.max((uint)(1.5 * (double)actual_bitrate), max_target_receive_bitrate);
                     new_target_receive_bitrate = uint.min(new_target_receive_bitrate, max_target_receive_bitrate);
                 }
                 new_target_receive_bitrate = uint.max(16, new_target_receive_bitrate); // Never go below 16

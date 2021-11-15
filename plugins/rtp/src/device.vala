@@ -36,6 +36,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         return device.has_classes("Sink");
     }}
 
+    private Gst.Caps device_caps;
     private Gst.Element element;
     private Gst.Element tee;
     private Gst.Element dsp;
@@ -46,9 +47,13 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     // Codecs
     private Gee.Map<PayloadType, Gst.Element> codecs = new HashMap<PayloadType, Gst.Element>(PayloadType.hash_func, PayloadType.equals_func);
     private Gee.Map<PayloadType, Gst.Element> codec_tees = new HashMap<PayloadType, Gst.Element>(PayloadType.hash_func, PayloadType.equals_func);
+
+    // Payloaders
     private Gee.Map<PayloadType, Gee.Map<uint, Gst.Element>> payloaders = new HashMap<PayloadType, Gee.Map<uint, Gst.Element>>(PayloadType.hash_func, PayloadType.equals_func);
     private Gee.Map<PayloadType, Gee.Map<uint, Gst.Element>> payloader_tees = new HashMap<PayloadType, Gee.Map<uint, Gst.Element>>(PayloadType.hash_func, PayloadType.equals_func);
     private Gee.Map<PayloadType, Gee.Map<uint, uint>> payloader_links = new HashMap<PayloadType, Gee.Map<uint, uint>>(PayloadType.hash_func, PayloadType.equals_func);
+
+    // Bitrate
     private Gee.Map<PayloadType, Gee.List<CodecBitrate>> codec_bitrates = new HashMap<PayloadType, Gee.List<CodecBitrate>>(PayloadType.hash_func, PayloadType.equals_func);
 
     private class CodecBitrate {
@@ -146,6 +151,51 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         return element;
     }
 
+    private static double get_target_bitrate(Gst.Caps caps) {
+        if (caps == null || caps.get_size() == 0) return uint.MAX;
+        unowned Gst.Structure? that = caps.get_structure(0);
+        int num = 0, den = 0, width = 0, height = 0;
+        if (!that.has_field("width") || !that.get_int("width", out width)) return uint.MAX;
+        if (!that.has_field("height") || !that.get_int("height", out height)) return uint.MAX;
+        if (!that.has_field("framerate")) return uint.MAX;
+        Value framerate = that.get_value("framerate");
+        if (framerate.type() != typeof(Gst.Fraction)) return uint.MAX;
+        num = Gst.Value.get_fraction_numerator(framerate);
+        den = Gst.Value.get_fraction_denominator(framerate);
+        double pxs = ((double)num/(double)den) * (double)width * (double)height;
+        double br = Math.sqrt(Math.sqrt(pxs)) * 100.0 - 3700.0;
+        if (br < 128.0) return 128.0;
+        return br;
+    }
+
+    private const int[] common_widths = {320, 480, 640, 960, 1280, 1920, 2560, 3840};
+    private Gst.Caps get_active_caps(PayloadType payload_type) {
+        return codec_util.get_rescale_caps(codecs[payload_type]) ?? device_caps;
+    }
+    private void apply_caps(PayloadType payload_type, Gst.Caps caps) {
+        plugin.pause();
+        debug("Set scaled caps to %s", caps.to_string());
+        codec_util.update_rescale_caps(codecs[payload_type], caps);
+        plugin.unpause();
+    }
+    private void apply_width(PayloadType payload_type, int new_width, uint bitrate) {
+        int device_caps_width, device_caps_height, active_caps_width, device_caps_framerate_num, device_caps_framerate_den;
+        device_caps.get_structure(0).get_int("width", out device_caps_width);
+        device_caps.get_structure(0).get_int("height", out device_caps_height);
+        device_caps.get_structure(0).get_fraction("framerate", out device_caps_framerate_num, out device_caps_framerate_den);
+        Gst.Caps active_caps = get_active_caps(payload_type);
+        if (active_caps != null && active_caps.get_size() > 0) {
+            active_caps.get_structure(0).get_int("width", out active_caps_width);
+        } else {
+            active_caps_width = device_caps_width;
+        }
+        if (new_width == active_caps_width) return;
+        int new_height = device_caps_height * new_width / device_caps_width;
+        Gst.Caps new_caps = new Gst.Caps.simple("video/x-raw", "width", typeof(int), new_width, "height", typeof(int), new_height, "framerate", typeof(Gst.Fraction), device_caps_framerate_num, device_caps_framerate_den, null);
+        double required_bitrate = get_target_bitrate(new_caps);
+        if (bitrate < required_bitrate) return;
+        apply_caps(payload_type, new_caps);
+    }
     public void update_bitrate(PayloadType payload_type, uint bitrate) {
         if (codecs.has_key(payload_type)) {
             lock(codec_bitrates);
@@ -164,6 +214,36 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                 }
             }
             codec_bitrates[payload_type].remove_all(remove);
+            if (media == "video") {
+                if (bitrate < 128) bitrate = 128;
+                Gst.Caps active_caps = get_active_caps(payload_type);
+                double max_bitrate = get_target_bitrate(device_caps) * 2;
+                double current_target_bitrate = get_target_bitrate(active_caps);
+                int device_caps_width, active_caps_width;
+                device_caps.get_structure(0).get_int("width", out device_caps_width);
+                if (active_caps != null && active_caps.get_size() > 0) {
+                    active_caps.get_structure(0).get_int("width", out active_caps_width);
+                } else {
+                    active_caps_width = device_caps_width;
+                }
+                if (bitrate < 0.75 * current_target_bitrate && active_caps_width > common_widths[0]) {
+                    // Lower video resolution
+                    int i = 1;
+                    for(; i < common_widths.length && common_widths[i] < active_caps_width; i++);
+                    apply_width(payload_type, common_widths[i-1], bitrate);
+                } else if (bitrate > 2 * current_target_bitrate && active_caps_width < device_caps_width) {
+                    // Higher video resolution
+                    int i = 0;
+                    for(; i < common_widths.length && common_widths[i] <= active_caps_width; i++);
+                    if (common_widths[i] > device_caps_width) {
+                        // We never scale up, so just stick with what the device gives
+                        apply_width(payload_type, device_caps_width, bitrate);
+                    } else if (common_widths[i] != active_caps_width) {
+                        apply_width(payload_type, common_widths[i], bitrate);
+                    }
+                }
+                if (bitrate > max_bitrate) bitrate = (uint) max_bitrate;
+            }
             codec_util.update_bitrate(media, payload_type, codecs[payload_type], bitrate);
             unlock(codec_bitrates);
         }
@@ -348,10 +428,11 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             element.@set("sync", false);
         }
         pipe.add(element);
+        device_caps = get_best_caps();
         if (is_source) {
             element.@set("do-timestamp", true);
             filter = Gst.ElementFactory.make("capsfilter", @"caps_filter_$id");
-            filter.@set("caps", get_best_caps());
+            filter.@set("caps", device_caps);
             filter.get_static_pad("src").add_probe(Gst.PadProbeType.BLOCK, log_probe);
             pipe.add(filter);
             element.link(filter);
@@ -377,7 +458,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                 plugin.echoprobe.link(element);
             } else {
                 filter = Gst.ElementFactory.make("capsfilter", @"caps_filter_$id");
-                filter.@set("caps", get_best_caps());
+                filter.@set("caps", device_caps);
                 pipe.add(filter);
                 mixer.link(filter);
                 filter.link(element);

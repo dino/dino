@@ -140,13 +140,16 @@ public class Dino.Plugins.Rtp.CodecUtil {
     public static string? get_encode_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         // H264
         if (encode == "msdkh264enc") return @" rate-control=vbr";
-        if (encode == "vaapih264enc") return @" tune=low-power";
-        if (encode == "x264enc") return @" byte-stream=1 profile=baseline speed-preset=ultrafast tune=zerolatency";
+        if (encode == "vaapih264enc") return @" rate-control=vbr tune=low-power";
+        if (encode == "x264enc") return @" byte-stream=1 speed-preset=ultrafast tune=zerolatency";
 
         // VP8
-        if (encode == "msdkvp8enc") return " rate-control=vbr";
-        if (encode == "vaapivp8enc") return " rate-control=vbr";
-        if (encode == "vp8enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30";
+        if (encode == "vaapivp8enc" || encode == "msdkvp8enc") return " rate-control=vbr target-percentage=90";
+        if (encode == "vp8enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr";
+
+        // VP9
+        if (encode == "msdkvp9enc" || encode == "vaapivp9enc") return " rate-control=vbr target-percentage=90";
+        if (encode == "vp9enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr";
 
         // OPUS
         if (encode == "opusenc") {
@@ -186,11 +189,27 @@ public class Dino.Plugins.Rtp.CodecUtil {
             case "vp9enc":
             case "vp8enc":
                 bitrate = uint.min(2147483, bitrate);
-                encode.set("target-bitrate", bitrate * 1000);
+                encode.set("target-bitrate", bitrate * 1024);
                 return bitrate;
         }
 
         return 0;
+    }
+
+    public void update_rescale_caps(Gst.Element encode_element, Gst.Caps caps) {
+        Gst.Bin? encode_bin = encode_element as Gst.Bin;
+        if (encode_bin == null) return;
+        Gst.Element rescale_caps = encode_bin.get_by_name(@"$(encode_bin.name)_rescale_caps");
+        rescale_caps.set("caps", caps);
+    }
+
+    public Gst.Caps? get_rescale_caps(Gst.Element encode_element) {
+        Gst.Bin? encode_bin = encode_element as Gst.Bin;
+        if (encode_bin == null) return null;
+        Gst.Element rescale_caps = encode_bin.get_by_name(@"$(encode_bin.name)_rescale_caps");
+        Gst.Caps caps;
+        rescale_caps.get("caps", out caps);
+        return caps;
     }
 
     public static string? get_decode_prefix(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
@@ -309,8 +328,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
         string encode_prefix = get_encode_prefix(media, codec, encode, payload_type) ?? "";
         string encode_args = get_encode_args(media, codec, encode, payload_type) ?? "";
         string encode_suffix = get_encode_suffix(media, codec, encode, payload_type) ?? "";
-        string resample = media == "audio" ? @" ! audioresample name=$(base_name)_resample" : "";
-        return @"$(media)convert name=$(base_name)_convert$resample ! queue ! $encode_prefix$encode$encode_args name=$(base_name)_encode$encode_suffix";
+        string rescale = media == "audio" ? @" ! audioresample name=$(base_name)_resample" : @" ! videoscale name=$(base_name)_rescale ! capsfilter name=$(base_name)_rescale_caps";
+        return @"$(media)convert name=$(base_name)_convert$rescale ! queue ! $encode_prefix$encode$encode_args name=$(base_name)_encode$encode_suffix";
     }
 
     public Gst.Element? get_encode_bin(string media, JingleRtp.PayloadType payload_type, string? name = null) {
