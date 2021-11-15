@@ -99,7 +99,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             debug("%s.%s probed upstream query %s", pad.get_parent_element().name, pad.name, info.get_query().type.get_name());
         }
         if ((info.type & Gst.PadProbeType.BUFFER) > 0) {
-            uint id = pad.get_data("no_buffer_probe_timeout");
+            uint id = pad.steal_data("no_buffer_probe_timeout");
             if (id != 0) {
                 Source.remove(id);
             }

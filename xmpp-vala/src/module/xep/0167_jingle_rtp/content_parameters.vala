@@ -151,6 +151,7 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         }
 
         this.stream = parent.create_stream(content);
+        this.stream.weak_ref(() => this.stream = null);
         rtp_datagram.datagram_received.connect(this.stream.on_recv_rtp_data);
         rtcp_datagram.datagram_received.connect(this.stream.on_recv_rtcp_data);
         this.stream.on_send_rtp_data.connect(rtp_datagram.send_datagram);

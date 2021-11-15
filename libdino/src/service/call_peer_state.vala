@@ -251,52 +251,42 @@ public class Dino.PeerState : Object {
 
     public PeerInfo get_info() {
         var ret = new PeerInfo();
+        if (audio_content != null || audio_content_parameter != null) {
+            ret.audio = get_content_info(audio_content, audio_content_parameter);
+        }
+        if (video_content != null || video_content_parameter != null) {
+            ret.video = get_content_info(video_content, video_content_parameter);
+        }
+        return ret;
+    }
 
-        if (audio_content_parameter != null) {
-            ret.audio_rtcp_ready = audio_content_parameter.rtcp_ready;
-            ret.audio_rtp_ready = audio_content_parameter.rtp_ready;
+    private PeerContentInfo get_content_info(Xep.Jingle.Content? content, Xep.JingleRtp.Parameters? parameter) {
+        PeerContentInfo ret = new PeerContentInfo();
+        if (parameter != null) {
+            ret.rtcp_ready = parameter.rtcp_ready;
+            ret.rtp_ready = parameter.rtp_ready;
 
-            if (audio_content_parameter.agreed_payload_type != null) {
-                ret.audio_codec = audio_content_parameter.agreed_payload_type.name;
-                ret.audio_clockrate = audio_content_parameter.agreed_payload_type.clockrate;
+            if (parameter.agreed_payload_type != null) {
+                ret.codec = parameter.agreed_payload_type.name;
+                ret.clockrate = parameter.agreed_payload_type.clockrate;
             }
-            if (audio_content_parameter.stream != null && audio_content_parameter.stream.remb_enabled) {
-                ret.audio_target_receive_bitrate = audio_content_parameter.stream.target_receive_bitrate;
-                ret.audio_target_send_bitrate = audio_content_parameter.stream.target_send_bitrate;
+            if (parameter.stream != null && parameter.stream.remb_enabled) {
+                ret.target_receive_bytes = parameter.stream.target_receive_bitrate;
+                ret.target_send_bytes = parameter.stream.target_send_bitrate;
             }
         }
 
-        if (audio_content != null) {
-            Xmpp.Xep.Jingle.ComponentConnection? component0 = audio_content.get_transport_connection(1);
+        if (content != null) {
+            Xmpp.Xep.Jingle.ComponentConnection? component0 = content.get_transport_connection(1);
             if (component0 != null) {
-                ret.audio_bytes_received = component0.bytes_received;
-                ret.audio_bytes_sent = component0.bytes_sent;
-            }
-        }
-
-        if (video_content_parameter != null) {
-            ret.video_content_exists = true;
-            ret.video_rtcp_ready = video_content_parameter.rtcp_ready;
-            ret.video_rtp_ready = video_content_parameter.rtp_ready;
-
-            if (video_content_parameter.agreed_payload_type != null) {
-                ret.video_codec = video_content_parameter.agreed_payload_type.name;
-            }
-            if (video_content_parameter.stream != null && video_content_parameter.stream.remb_enabled) {
-                ret.video_target_receive_bitrate = video_content_parameter.stream.target_receive_bitrate;
-                ret.video_target_send_bitrate = video_content_parameter.stream.target_send_bitrate;
-            }
-        }
-
-        if (video_content != null) {
-            Xmpp.Xep.Jingle.ComponentConnection? component0 = video_content.get_transport_connection(1);
-            if (component0 != null) {
-                ret.video_bytes_received = component0.bytes_received;
-                ret.video_bytes_sent = component0.bytes_sent;
+                ret.bytes_received = component0.bytes_received;
+                ret.bytes_sent = component0.bytes_sent;
             }
         }
         return ret;
     }
+
+
 
     private void connect_content_signals(Xep.Jingle.Content content, Xep.JingleRtp.Parameters rtp_content_parameter) {
         if (rtp_content_parameter.media == "audio") {
@@ -444,22 +434,18 @@ public class Dino.PeerState : Object {
     }
 }
 
-public class Dino.PeerInfo {
-    public bool audio_rtp_ready { get; set; }
-    public bool audio_rtcp_ready { get; set; }
-    public ulong? audio_bytes_sent { get; set; default=0; }
-    public ulong? audio_bytes_received { get; set; default=0; }
-    public string? audio_codec { get; set; }
-    public uint32 audio_clockrate { get; set; }
-    public uint audio_target_receive_bitrate { get; set; default=0; }
-    public uint audio_target_send_bitrate { get; set; default=0; }
+public class Dino.PeerContentInfo {
+    public bool rtp_ready { get; set; }
+    public bool rtcp_ready { get; set; }
+    public ulong? bytes_sent { get; set; default=0; }
+    public ulong? bytes_received { get; set; default=0; }
+    public string? codec { get; set; }
+    public uint32 clockrate { get; set; }
+    public uint target_receive_bytes { get; set; default=-1; }
+    public uint target_send_bytes { get; set; default=-1; }
+}
 
-    public bool video_content_exists { get; set; }
-    public bool video_rtp_ready { get; set; }
-    public bool video_rtcp_ready { get; set; }
-    public ulong? video_bytes_sent { get; set; default=0; }
-    public ulong? video_bytes_received { get; set; default=0; }
-    public string? video_codec { get; set; }
-    public uint video_target_receive_bitrate { get; set; default=0; }
-    public uint video_target_send_bitrate { get; set; default=0; }
+public class Dino.PeerInfo {
+    public PeerContentInfo? audio = null;
+    public PeerContentInfo? video = null;
 }

@@ -11,7 +11,7 @@ namespace Dino.Entities {
             RINGING,
             ESTABLISHING,
             IN_PROGRESS,
-            OTHER_DEVICE_ACCEPTED,
+            OTHER_DEVICE,
             ENDED,
             DECLINED,
             MISSED,

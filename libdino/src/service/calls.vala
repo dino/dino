@@ -202,16 +202,17 @@ namespace Dino {
                 // Call requested by another of our devices
                 call.direction = Call.DIRECTION_OUTGOING;
                 call.ourpart = from;
+                call.state = Call.State.OTHER_DEVICE;
                 counterpart = to;
             } else {
                 call.direction = Call.DIRECTION_INCOMING;
                 call.ourpart = account.full_jid;
+                call.state = Call.State.RINGING;
                 counterpart = from;
             }
             call.add_peer(counterpart);
             call.account = account;
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
-            call.state = Call.State.RINGING;
 
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(counterpart.bare_jid, account, Conversation.Type.CHAT);
 
@@ -329,7 +330,7 @@ namespace Dino {
                 current_jmi_request_peer[account] = peer_state;
                 current_jmi_request_call[account] = call_states[peer_state.call];
             });
-            mi_module.session_accepted.connect((from, sid) => {
+            mi_module.session_accepted.connect((from, to, sid) => {
                 if (!current_jmi_request_peer.has_key(account) || current_jmi_request_peer[account].sid != sid) return;
 
                 if (from.equals_bare(account.bare_jid)) { // Carboned message from our account
@@ -337,9 +338,9 @@ namespace Dino {
                     if (from.equals(account.full_jid)) return;
 
                     Call call = current_jmi_request_peer[account].call;
-                    call.state = Call.State.OTHER_DEVICE_ACCEPTED;
+                    call.state = Call.State.OTHER_DEVICE;
                     remove_call_from_datastructures(call);
-                } else if (from.equals_bare(current_jmi_request_peer[account].jid)) { // Message from our peer
+                } else if (from.equals_bare(current_jmi_request_peer[account].jid) && to.equals(account.full_jid)) { // Message from our peer
                     // We proposed the call
                     // We know the full jid of our peer now
                     current_jmi_request_call[account].rename_peer(current_jmi_request_peer[account].jid, from);
@@ -383,7 +384,7 @@ namespace Dino {
                 CallState? call_state = get_call_state_for_groupcall(account, muc_jid);
                 if (call_state == null) return;
 
-                call_state.call.state = Call.State.OTHER_DEVICE_ACCEPTED;
+                call_state.call.state = Call.State.OTHER_DEVICE;
                 remove_call_from_datastructures(call_state.call);
             });
             muji_meta_module.call_retracted.connect((from_jid, muc_jid) => {

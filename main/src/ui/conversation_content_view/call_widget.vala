@@ -144,7 +144,7 @@ namespace Dino.Ui {
                     });
 
                     break;
-                case Call.State.OTHER_DEVICE_ACCEPTED:
+                case Call.State.OTHER_DEVICE:
                     image.set_from_icon_name("dino-phone-hangup-symbolic", IconSize.LARGE_TOOLBAR);
                     title_label.label = call.direction == Call.DIRECTION_INCOMING ? _("Incoming call") : _("Outgoing call");
                     subtitle_label.label = _("You handled this call on another device");
