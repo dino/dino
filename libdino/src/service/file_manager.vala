@@ -176,7 +176,13 @@ public class FileManager : StreamInteractionModule, Object {
 
     public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
         if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return true;
-        Jid relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account) ?? conversation.counterpart;
+
+        Jid relevant_jid = conversation.counterpart;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account);
+        }
+        if (relevant_jid == null) return false;
+
         bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
         return in_roster;
     }
