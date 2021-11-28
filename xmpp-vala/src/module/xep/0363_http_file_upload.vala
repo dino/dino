@@ -72,6 +72,11 @@ public class Module : XmppStreamModule {
                 Idle.add((owned) callback);
                 return;
             }
+            if (!url_get.down().has_prefix("https://") || !url_put.down().has_prefix("https://")) {
+                e = new HttpFileTransferError.SLOT_REQUEST("Error getting upload/download url: Received non-https URL from server");
+                Idle.add((owned) callback);
+                return;
+            }
 
             slot_result.headers = new HashMap<string, string>();
 
