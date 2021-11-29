@@ -23,17 +23,17 @@ public class FileSendOverlay : Gtk.EventBox {
     public GLib.List<File> remaing_files;
 
     public FileSendOverlay() {
-
+        close.connect_after(()=>{
+            this.destroy();
+        });
         close_button.clicked.connect(() => {
             this.close();
-            this.destroy();
         });
         send_button.clicked.connect(() => {
             foreach( var file in remaing_files){
                 send_file(file);
             }
             this.close();
-            this.destroy();
         });
        
 
@@ -47,7 +47,7 @@ public class FileSendOverlay : Gtk.EventBox {
 
         this.key_release_event.connect((event) => {
             if (event.keyval == Gdk.Key.Escape) {
-                this.destroy();
+                this.close();
             }
             return false;
         });
