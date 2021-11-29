@@ -22,7 +22,7 @@ public class ConversationViewController : Object {
 
     private Application app;
     private ConversationView view;
-    private Widget? overlay_dialog;
+    private FileSendOverlay? overlay_dialog;
     private ConversationTitlebar titlebar;
     public SearchMenuEntry search_menu_entry = new SearchMenuEntry();
 
@@ -150,7 +150,7 @@ public class ConversationViewController : Object {
         stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.begin(conversation, (_, res) => {
             bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.end(res);
             chat_input_controller.set_file_upload_active(upload_available);
-            if (upload_available && overlay_dialog == null) {
+            if (upload_available) {
                 Gtk.drag_dest_set(view, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
             } else {
                 Gtk.drag_dest_unset(view);
@@ -187,7 +187,7 @@ public class ConversationViewController : Object {
                     pixbuf.save_to_stream_async.begin(fos, "png", null, () => {
                         var list =new GLib.SList<File>();
                         list.append(file);
-                        open_send_file_overlay(list);
+                        open_send_file_overlay_or_add_files(list);
                     });
                 } catch (Error e) {
                     warning("Could not create file to store pasted image in %s, %s", file.get_path(), e.message);
@@ -207,7 +207,7 @@ public class ConversationViewController : Object {
                             foreach (var uri in uris){         
                                 list.append(File.new_for_path( Filename.from_uri(uri)));
                             }
-                            open_send_file_overlay(list);
+                            open_send_file_overlay_or_add_files(list);
                         } catch (ConvertError e) {
                             warning("Could not handle dragged file %s, %s", uris[0], e.message);
                         }
@@ -222,13 +222,19 @@ public class ConversationViewController : Object {
     private void open_file_picker() {
         PreviewFileChooserNative chooser = new PreviewFileChooserNative(_("Select file"), view.get_toplevel() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"),true);
         if (chooser.run() == Gtk.ResponseType.ACCEPT) {
-            open_send_file_overlay(chooser.get_files());
+            open_send_file_overlay_or_add_files(chooser.get_files());
         }
     }
 
 
-    private void open_send_file_overlay(SList<File> file) {
-        FileSendOverlay overlay = new FileSendOverlay(file);
+    private void open_send_file_overlay_or_add_files(SList<File> files) {
+        if (overlay_dialog!=null){
+            overlay_dialog.add_files(files);
+            return;
+        }           
+
+        FileSendOverlay overlay = new FileSendOverlay();
+        overlay.add_files(files);
         overlay.send_file.connect((f) =>{ send_file(f);} );
         stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.begin(conversation, (_, res) => {
             HashMap<int, long> limits = stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.end(res);

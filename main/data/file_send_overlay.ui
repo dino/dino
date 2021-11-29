@@ -60,7 +60,7 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkScrolledWindow" id="files_widget_scroll">
+                    <object class="GtkScrolledWindow">
                         <property name="shadow-type">in</property>
                         <property name="expand">True</property>
                         <property name="visible">True</property>
@@ -70,6 +70,7 @@
                             <object class="GtkBox" id="files_widget">
                                 <property name="visible">True</property>
                                 <property name="orientation">vertical</property>
+                                <property name="spacing">5</property>
                             </object>
                         </child>
                     </object>
@@ -91,6 +92,17 @@
                             </object>
                             <packing>
                                 <property name="pack_type">end</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="add_more">
+                                <property name="label" translatable="yes">Add files</property>
+                                <property name="can_default">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="pack_type">start</property>
                             </packing>
                         </child>
                     </object>

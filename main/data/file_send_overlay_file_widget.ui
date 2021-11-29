@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoUiFileSendOverlayFileWidget">
+        <property name="orientation">horizontal</property>
+        <property name="visible">True</property>
+        <property name="margin_end">14</property>  
+        <child>
+            <object class="GtkFrame" id="error_frame">
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkBox" >
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                            <object class="GtkBox" id="box_for_widget">
+                                <property name="visible">True</property>
+                            </object> 
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="error_label">
+                                <property name="label"></property>
+                                <property name="visible">False</property>
+                            </object>    
+                        </child>
+                    </object>
+                </child>
+            </object>
+            <packing>
+                <property name="pack_type">start</property>
+            </packing>
+        </child>
+        <child>
+            <object class="GtkButton" id="remove_button">
+                <property name="visible">True</property>
+                <child>
+                    <object class="GtkImage">
+                        <property name="visible">True</property>
+                        <property name="icon-name">window-close-symbolic</property>
+                        <property name="icon-size">1</property>
+                    </object>
+                </child>
+            </object>
+            <packing>
+                <property name="pack_type">end</property>
+            </packing>
+        </child>
+    </template>
+</interface>
