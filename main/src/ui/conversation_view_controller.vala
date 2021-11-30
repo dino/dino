@@ -235,25 +235,21 @@ public class ConversationViewController : Object {
 
         FileSendOverlay overlay = new FileSendOverlay();
         overlay.add_files(files);
-        overlay.send_file.connect((f) =>{ send_file(f);} );
+        overlay.send_file.connect((f) =>{ send_file(f);});
         stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.begin(conversation, (_, res) => {
             HashMap<int, long> limits = stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.end(res);
             if (!limits.has_key(0))
                 return ;             
             long limit = limits.values.max(Gee.Functions.get_compare_func_for(typeof(long)));
-            overlay.set_file_size_limit(limit);
+            overlay.file_size_limit.set_value(limit);
         });
 
-        overlay.close.connect(() => {
-            // We don't want drag'n'drop to be active while the overlay is active
+        overlay.destroy.connect(() => {
             overlay_dialog = null;
-            update_file_upload_status();
         });
 
         view.add_overlay_dialog(overlay);
         overlay_dialog = overlay;
-
-        update_file_upload_status();
     }
 
     private void send_file(File file) {
