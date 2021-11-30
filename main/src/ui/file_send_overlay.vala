@@ -25,6 +25,22 @@ public class FileSendOverlay : Gtk.EventBox {
             this.destroy();
         });
         send_button.clicked.connect(() => {
+            var file_count = get_files_count();
+            if(file_count > 10){
+                Gtk.MessageDialog msg = new Gtk.MessageDialog (
+                    new Gtk.Window(),  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
+                    Gtk.MessageType.WARNING, Gtk.ButtonsType.OK_CANCEL,
+                    "Warning");
+                msg.secondary_text = _("You are about to send %i files.").printf(file_count); 
+                Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
+                ok_button.label = _("Send anyway");
+                if (msg.run() != Gtk.ResponseType.OK) {
+                    msg.close();
+                    return ;
+                }                                  
+                msg.close();
+            }
+
             foreach( var child in files_widget.get_children()){
                 var files_widget = (FileWidget) child;
                 if(files_widget.is_ok)
@@ -48,33 +64,33 @@ public class FileSendOverlay : Gtk.EventBox {
             }
             return false;
         });
-        update_send_label();
         add_more.clicked.connect(()=>{
             PreviewFileChooserNative chooser = new PreviewFileChooserNative(_("Select file"), get_toplevel() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"),true);
             if (chooser.run() == Gtk.ResponseType.ACCEPT) {
                 add_files(chooser.get_files());
             }
         });
+        update_send_label();
     }
     public void add_files(SList<File> files) {
         foreach( var file in files){
             //TODO filter exisitng files or sort
             load_file_widget.begin(file);       
         }        
-        update_send_label();
     }
-
-    
-    private void update_send_label() {
-        var remaining_size = 0;
+    private int get_files_count(){
+        var ammount = 0;
         foreach( var child in files_widget.get_children()){
             var files_widget = (FileWidget) child;
             if(files_widget.is_ok)
-                remaining_size++;
+            ammount++;
         }
-        
-        send_button.label = n("Send %i file","Send %i files",remaining_size).printf(remaining_size);
-        
+        return ammount;
+    }
+    
+    private void update_send_label() {
+        var remaining_size = get_files_count();        
+        send_button.label = n("Send %i file","Send %i files",remaining_size).printf(remaining_size);        
         can_send = remaining_size != 0;
         send_button.sensitive = can_send;
         
@@ -186,6 +202,7 @@ public class FileSendOverlay : Gtk.EventBox {
         var box = new FileWidget(this,file,file_info);
         yield box.load_file();
         files_widget.add(box);
+        update_send_label();
     }
 }
 }
