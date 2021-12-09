@@ -11,7 +11,6 @@ vala_precompile(HTTP_FILES_VALA_C
 SOURCES
     src/file_provider.vala
     src/file_sender.vala
-    src/message_filter.vala
     src/plugin.vala
     src/register_plugin.vala
 CUSTOM_VAPIS

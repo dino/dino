@@ -23,7 +23,7 @@ public class FileProvider : Dino.FileProvider, Object {
     private class ReceivedMessageListener : MessageListener {
 
         public string[] after_actions_const = new string[]{ "STORE" };
-        public override string action_group { get { return ""; } }
+        public override string action_group { get { return "MESSAGE_REINTERPRETING"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
         private FileProvider outer;
@@ -39,19 +39,14 @@ public class FileProvider : Dino.FileProvider, Object {
             bool normal_file = oob_url != null && oob_url == message.body && FileProvider.http_url_regex.match(message.body);
             bool omemo_file = FileProvider.omemo_url_regex.match(message.body);
             if (normal_file || omemo_file) {
-                yield outer.on_file_message(message, conversation);
+                outer.on_file_message(message, conversation);
+                return true;
             }
             return false;
         }
     }
 
-    private async void on_file_message(Entities.Message message, Conversation conversation) {
-        // Hide message
-        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
-        if (content_item != null) {
-            stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
-        }
-
+    private void on_file_message(Entities.Message message, Conversation conversation) {
         var additional_info = message.id.to_string();
 
         var receive_data = new HttpFileReceiveData();
