@@ -62,30 +62,30 @@ protected class ConferenceDetailsFragment : Box {
 
     public bool fragment_active { get; set; default=true; }
 
-    [GtkChild] private Stack accounts_stack;
-    [GtkChild] private Button accounts_button;
-    [GtkChild] private Label accounts_label;
-    [GtkChild] private AccountComboBox account_combobox;
+    [GtkChild] private unowned Stack accounts_stack;
+    [GtkChild] private unowned Button accounts_button;
+    [GtkChild] private unowned Label accounts_label;
+    [GtkChild] private unowned AccountComboBox account_combobox;
 
-    [GtkChild] private Stack jid_stack;
-    [GtkChild] private Button jid_button;
-    [GtkChild] private Label jid_label;
-    [GtkChild] private Entry jid_entry;
+    [GtkChild] private unowned Stack jid_stack;
+    [GtkChild] private unowned Button jid_button;
+    [GtkChild] private unowned Label jid_label;
+    [GtkChild] private unowned Entry jid_entry;
 
-    [GtkChild] private Stack nick_stack;
-    [GtkChild] private Button nick_button;
-    [GtkChild] private Label nick_label;
-    [GtkChild] private Entry nick_entry;
+    [GtkChild] private unowned Stack nick_stack;
+    [GtkChild] private unowned Button nick_button;
+    [GtkChild] private unowned Label nick_label;
+    [GtkChild] private unowned Entry nick_entry;
 
-    [GtkChild] private Stack password_stack;
-    [GtkChild] private Button password_button;
-    [GtkChild] private Label password_label;
-    [GtkChild] private Label password_text_label;
-    [GtkChild] private Entry password_entry;
+    [GtkChild] private unowned Stack password_stack;
+    [GtkChild] private unowned Button password_button;
+    [GtkChild] private unowned Label password_label;
+    [GtkChild] private unowned Label password_text_label;
+    [GtkChild] private unowned Entry password_entry;
 
-    [GtkChild] private Revealer notification_revealer;
-    [GtkChild] private Button notification_button;
-    [GtkChild] private Label notification_label;
+    [GtkChild] private unowned Revealer notification_revealer;
+    [GtkChild] private unowned Button notification_button;
+    [GtkChild] private unowned Label notification_label;
 
     private StreamInteractor stream_interactor;
     private Button ok_button_;

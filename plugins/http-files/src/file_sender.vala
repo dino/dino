@@ -42,19 +42,11 @@ public class HttpFileSender : FileSender, Object {
 
         yield upload(file_transfer, send_data, file_meta);
 
-        file_transfer.info = send_data.url_down; // store the message content temporarily so the message gets filtered out
-
         Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(send_data.url_down, conversation);
-
-        message.encryption = send_data.encrypt_message ? conversation.encryption : Encryption.NONE;
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(message, conversation);
-
         file_transfer.info = message.id.to_string();
 
-        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
-        if (content_item != null) {
-            stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
-        }
+        message.encryption = send_data.encrypt_message ? conversation.encryption : Encryption.NONE;
+        stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(message, conversation);
     }
 
     public async bool can_send(Conversation conversation, FileTransfer file_transfer) {
@@ -126,7 +118,7 @@ public class HttpFileSender : FileSender, Object {
     }
 
     private void check_add_oob(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (message.encryption == Encryption.NONE && message_is_file(db, message) && message.body.has_prefix("http")) {
+        if (message.encryption == Encryption.NONE && message.body.has_prefix("http") && message_is_file(db, message)) {
             Xep.OutOfBandData.add_url_to_message(message_stanza, message_stanza.body);
         }
     }

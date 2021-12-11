@@ -327,6 +327,10 @@ class LocalListener {
                 connections[cid] = conn;
             }
         } catch (Error e) {
+            warning("Jingle SOCKS5 bytestream establish error cid %s: %s", cid, e.message);
+            // Send a "general SOCKS server failure" (0x01)
+            yield conn.output_stream.write_all_async({0x05, 0x01}, GLib.Priority.DEFAULT, null, out written);
+            yield conn.output_stream.close_async();
         }
     }
 

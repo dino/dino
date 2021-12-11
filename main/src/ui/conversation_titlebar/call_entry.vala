@@ -34,8 +34,8 @@ namespace Dino.Ui {
         private StreamInteractor stream_interactor;
         private Conversation conversation;
 
-        private ModelButton audio_button = new ModelButton() { text="Audio call", visible=true };
-        private ModelButton video_button = new ModelButton() { text="Video call", visible=true };
+        private ModelButton audio_button = new ModelButton() { text=_("Audio call"), visible=true };
+        private ModelButton video_button = new ModelButton() { text=_("Video call"), visible=true };
 
         public CallButton(StreamInteractor stream_interactor) {
             this.stream_interactor = stream_interactor;

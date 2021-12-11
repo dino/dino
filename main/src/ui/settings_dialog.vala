@@ -5,11 +5,11 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/settings_dialog.ui")]
 class SettingsDialog : Dialog {
 
-    [GtkChild] private CheckButton typing_checkbutton;
-    [GtkChild] private CheckButton marker_checkbutton;
-    [GtkChild] private CheckButton notification_checkbutton;
-    [GtkChild] private CheckButton emoji_checkbutton;
-    [GtkChild] private CheckButton check_spelling_checkbutton;
+    [GtkChild] private unowned CheckButton typing_checkbutton;
+    [GtkChild] private unowned CheckButton marker_checkbutton;
+    [GtkChild] private unowned CheckButton notification_checkbutton;
+    [GtkChild] private unowned CheckButton emoji_checkbutton;
+    [GtkChild] private unowned CheckButton check_spelling_checkbutton;
     [GtkChild] private CheckButton trayicon_checkbutton;
 
     Dino.Entities.Settings settings = Dino.Application.get_default().settings;

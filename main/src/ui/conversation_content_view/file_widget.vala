@@ -175,6 +175,9 @@ public class FileDefaultWidgetController : Object {
                 assert(stream_interactor != null && file_transfer != null);
                 stream_interactor.get_module(FileManager.IDENTITY).download_file.begin(file_transfer);
                 break;
+            default:
+                // Clicking doesn't do anything in FAILED and IN_PROGRESS states
+                break;
         }
         return false;
     }

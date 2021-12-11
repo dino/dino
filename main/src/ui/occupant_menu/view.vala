@@ -11,8 +11,9 @@ public class View : Popover {
     private Conversation conversation;
 
     private Stack stack = new Stack() { vhomogeneous=false, visible=true };
+    private Box list_box = new Box(Orientation.VERTICAL, 1) { visible=true };
     private List? list = null;
-    private ListBox invite_list;
+    private ListBox invite_list = new ListBox() { visible=true };
     private Box? jid_menu = null;
 
     private Jid? selected_jid;
@@ -21,37 +22,12 @@ public class View : Popover {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
 
-        Box list_box = new Box(Orientation.VERTICAL, 1) { visible=true };
 
-        this.show.connect(() => {
-            if (list == null) {
-                list = new List(stream_interactor, conversation) { visible=true };
-                list_box.add(list);
-                list_box.reorder_child(list, 0);
+        this.show.connect(initialize_list);
 
-                list.list_box.row_activated.connect((row) => {
-                    ListRow list_row = row as ListRow;
-                    show_menu(list_row.jid, list_row.name_label.label);
-                });
-            }
-        });
-
-        invite_list = new ListBox() { visible=true };
         invite_list.add(new ListRow.label("+", _("Invite")) {visible=true});
         list_box.add(invite_list);
-        invite_list.row_activated.connect((row) => {
-            hide();
-            Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
-            acc_list.add(conversation.account);
-            SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
-            add_chat_dialog.set_transient_for((Window) get_toplevel());
-            add_chat_dialog.title = _("Invite to Conference");
-            add_chat_dialog.ok_button.label = _("Invite");
-            add_chat_dialog.selected.connect((account, jid) => {
-                stream_interactor.get_module(MucManager.IDENTITY).invite(conversation.account, conversation.counterpart, jid);
-            });
-            add_chat_dialog.present();
-        });
+        invite_list.row_activated.connect(on_invite_clicked);
 
         stack.add_named(list_box, "list");
         add(stack);
@@ -65,6 +41,19 @@ public class View : Popover {
         stack.visible_child_name = "list";
         if (list != null) list.list_box.unselect_all();
         invite_list.unselect_all();
+    }
+
+    private void initialize_list() {
+        if (list == null) {
+            list = new List(stream_interactor, conversation) { visible=true };
+            list_box.add(list);
+            list_box.reorder_child(list, 0);
+
+            list.list_box.row_activated.connect((row) => {
+                ListRow list_row = row as ListRow;
+                show_menu(list_row.jid, list_row.name_label.label);
+            });
+        }
     }
 
     private void show_list() {
@@ -145,6 +134,20 @@ public class View : Popover {
         if (selected_jid == null) return;
 
         stream_interactor.get_module(MucManager.IDENTITY).change_role(conversation.account, conversation.counterpart, selected_jid.resourcepart, role);
+    }
+
+    private void on_invite_clicked() {
+        hide();
+        Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
+        acc_list.add(conversation.account);
+        SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
+        add_chat_dialog.set_transient_for((Window) get_toplevel());
+        add_chat_dialog.title = _("Invite to Conference");
+        add_chat_dialog.ok_button.label = _("Invite");
+        add_chat_dialog.selected.connect((account, jid) => {
+            stream_interactor.get_module(MucManager.IDENTITY).invite(conversation.account, conversation.counterpart, jid);
+        });
+        add_chat_dialog.present();
     }
 }
 

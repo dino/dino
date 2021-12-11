@@ -69,6 +69,8 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
                 selection.append(")");
                 qry.where(selection.str, selection_args);
                 break;
+            case Conversation.Type.GROUPCHAT_PM:
+                break;
         }
 
         foreach (Row row in qry) {

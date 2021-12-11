@@ -7,143 +7,159 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-11 15:56+0200\n"
-"PO-Revision-Date: 2020-08-21 05:36+0000\n"
+"POT-Creation-Date: 2021-10-13 20:03+0200\n"
+"PO-Revision-Date: 2021-07-05 16:32+0000\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.2.1-dev\n"
+"X-Generator: Weblate 4.8-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
-msgstr ""
+msgstr "Velikost souboru překračuje maximální limit nastavený na serveru."
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:165
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:190
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
 #: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
 #: main/src/ui/util/helper.vala:134
 msgid "Me"
-msgstr ""
+msgstr "Já"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
-#: main/src/ui/notifier_freedesktop.vala:74
+#: main/src/ui/notifier_freedesktop.vala:86
 msgid "Image sent"
-msgstr ""
+msgstr "Obrázek byl odeslán"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
-#: main/src/ui/notifier_freedesktop.vala:74
+#: main/src/ui/notifier_freedesktop.vala:86
 msgid "File sent"
-msgstr ""
+msgstr "Soubor byl odeslán"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
-#: main/src/ui/notifier_freedesktop.vala:76
+#: main/src/ui/notifier_freedesktop.vala:88
 msgid "Image received"
-msgstr ""
+msgstr "Obrázek byl přijat"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
-#: main/src/ui/notifier_freedesktop.vala:76
+#: main/src/ui/notifier_freedesktop.vala:88
 msgid "File received"
+msgstr "Soubor byl přijat"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
+#: main/src/ui/conversation_content_view/call_widget.vala:112
+msgid "Outgoing call"
 msgstr ""
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
+#: main/src/ui/notifier_gnotifications.vala:70
+#: main/src/ui/notifier_freedesktop.vala:127
+#: main/src/ui/conversation_content_view/call_widget.vala:86
+#: main/src/ui/conversation_content_view/call_widget.vala:112
+msgid "Incoming call"
+msgstr ""
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
 #, no-c-format
 msgid "%b %d"
-msgstr ""
+msgstr "%d. %b"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:346
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:117
 msgid "Yesterday"
 msgstr "Včera"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:349
+#: main/src/ui/conversation_content_view/call_widget.vala:119
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:306
 #, no-c-format
 msgid "%H∶%M"
-msgstr ""
+msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:272
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:350
+#: main/src/ui/conversation_content_view/call_widget.vala:119
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:307
 #, no-c-format
 msgid "%l∶%M %p"
-msgstr ""
+msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:345
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:311
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Před %i minutou"
+msgstr[1] "Před %i minutami"
+msgstr[2] "Před %i minutami"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:278
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:355
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:313
 msgid "Just now"
-msgstr ""
+msgstr "Nyní"
 
 #: main/src/ui/occupant_menu/list.vala:105
 msgid "Owner"
-msgstr ""
+msgstr "Vlastník"
 
 #: main/src/ui/occupant_menu/list.vala:107
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: main/src/ui/occupant_menu/list.vala:109
 msgid "Member"
-msgstr ""
+msgstr "Člen"
 
 #: main/src/ui/occupant_menu/list.vala:111
 msgid "User"
-msgstr ""
+msgstr "Uživatel"
 
-#: main/src/ui/occupant_menu/view.vala:40
-#: main/src/ui/occupant_menu/view.vala:49
+#: main/src/ui/occupant_menu/view.vala:28
+#: main/src/ui/occupant_menu/view.vala:146
 msgid "Invite"
-msgstr ""
+msgstr "Pozvat"
 
-#: main/src/ui/occupant_menu/view.vala:48
-msgid "Invite to Conference"
-msgstr ""
-
-#: main/src/ui/occupant_menu/view.vala:94
+#: main/src/ui/occupant_menu/view.vala:83
 msgid "Start private conversation"
-msgstr ""
+msgstr "Začít soukromou konverzaci"
 
-#: main/src/ui/occupant_menu/view.vala:102
+#: main/src/ui/occupant_menu/view.vala:91
 msgid "Kick"
-msgstr ""
+msgstr "Vyhodit"
 
-#: main/src/ui/occupant_menu/view.vala:108
+#: main/src/ui/occupant_menu/view.vala:97
 msgid "Grant write permission"
-msgstr ""
+msgstr "Udělit práva pro zapisování"
 
-#: main/src/ui/occupant_menu/view.vala:114
+#: main/src/ui/occupant_menu/view.vala:103
 msgid "Revoke write permission"
-msgstr ""
+msgstr "Odebrat práva pro zapisování"
 
-#: main/src/ui/conversation_view_controller.vala:213
+#: main/src/ui/occupant_menu/view.vala:145
+msgid "Invite to Conference"
+msgstr "Pozvat na konferenci"
+
+#: main/src/ui/conversation_view_controller.vala:219
 msgid "Select file"
-msgstr ""
+msgstr "Vybrat soubor"
 
-#: main/src/ui/conversation_view_controller.vala:213
+#: main/src/ui/conversation_view_controller.vala:219
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
-msgstr ""
+msgstr "Vybrat"
 
-#: main/src/ui/conversation_view_controller.vala:213
+#: main/src/ui/conversation_view_controller.vala:219
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:257 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:281 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -153,40 +169,76 @@ msgstr "Zrušit"
 #: main/src/ui/util/helper.vala:118
 #, c-format
 msgid "%s from %s"
-msgstr ""
+msgstr "%s z %s"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:177
 msgid "This conference does not allow you to send messages."
-msgstr ""
+msgstr "Na této konferenci nemůžete posílat zprávy."
 
 #: main/src/ui/chat_input/chat_input_controller.vala:177
 msgid "Request permission"
+msgstr "Požádat o oprávnění"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:19
+msgid "Start call"
+msgstr ""
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:37
+msgid "Audio call"
+msgstr ""
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:38
+msgid "Video call"
 msgstr ""
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
 msgid "Search messages"
-msgstr ""
+msgstr "Hledat zprávy"
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
+msgstr "Členové"
+
+#: main/src/ui/call_window/call_window.vala:161
+#: main/src/ui/conversation_content_view/call_widget.vala:91
+msgid "Calling…"
+msgstr ""
+
+#: main/src/ui/call_window/call_window.vala:164
+msgid "Ringing…"
+msgstr ""
+
+#: main/src/ui/call_window/call_window.vala:167
+#: main/src/ui/manage_accounts/dialog.vala:219
+msgid "Connecting…"
+msgstr "Připojování…"
+
+#: main/src/ui/call_window/call_window.vala:181
+#, c-format
+msgid "%s ended the call"
+msgstr ""
+
+#: main/src/ui/call_window/call_window.vala:183
+#, c-format
+msgid "%s declined the call"
 msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
 #: main/data/shortcuts.ui:17 main/data/conversation_list_titlebar.ui:16
 msgid "Start Conversation"
-msgstr ""
+msgstr "Začít konverzaci"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
-msgstr ""
+msgstr "Začít"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:257 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:281 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
-msgstr ""
+msgstr "Připojit se ke kanálu"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:118
@@ -194,14 +246,14 @@ msgstr ""
 #: main/data/manage_accounts/add_account_dialog.ui:410
 #: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
-msgstr ""
+msgstr "Další"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:257
+#: main/src/ui/application.vala:281
 msgid "Join"
-msgstr ""
+msgstr "Připojit"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:147
 #: main/data/manage_accounts/add_account_dialog.ui:175
@@ -211,43 +263,43 @@ msgstr "Zpět"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Joining…"
-msgstr ""
+msgstr "Připojování…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:170
 msgid "Password required to enter room"
-msgstr ""
+msgstr "Pro vstup do místnosti je zapotřebí heslo"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Banned from joining or creating conference"
-msgstr ""
+msgstr "Zákaz připojování ke konferencím nebo jejich vytváření"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:177
 msgid "Room does not exist"
-msgstr ""
+msgstr "Místnost neexistuje"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:179
 msgid "Not allowed to create room"
-msgstr ""
+msgstr "Nemáte oprávnění pro vytvoření místnosti"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:181
 msgid "Members-only room"
-msgstr ""
+msgstr "Místnost pouze pro členy"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:184
 msgid "Choose a different nick"
-msgstr ""
+msgstr "Vyberte jinou přezdívku"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Too many occupants in room"
-msgstr ""
+msgstr "V místnosti je příliš mnoho účastníků"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
-#: main/src/ui/notifier_gnotifications.vala:82
-#: main/src/ui/notifier_freedesktop.vala:144
+#: main/src/ui/notifier_gnotifications.vala:101
+#: main/src/ui/notifier_freedesktop.vala:194
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Připojení k %s se nezdařilo"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:192
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
@@ -255,192 +307,196 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
 #: main/src/ui/manage_accounts/add_account_dialog.vala:397
 msgid "Invalid address"
-msgstr ""
+msgstr "Nesprávná adresa"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
-msgstr ""
+msgstr "Přidat"
 
-#: main/src/ui/application.vala:197 main/data/menu_app.ui:17
+#: main/src/ui/application.vala:203 main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Klávesové zkratky"
 
-#: main/src/ui/application.vala:233 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:257 main/data/menu_app.ui:21
 msgid "About Dino"
-msgstr ""
+msgstr "O Dino"
 
-#: main/src/ui/global_search.vala:141
+#: main/src/ui/global_search.vala:147
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%i výsledek hledání"
+msgstr[1] "%i výsledky vyhledávání"
+msgstr[2] "%i výsledků vyhledávání"
 
-#: main/src/ui/global_search.vala:168
+#: main/src/ui/global_search.vala:174
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "V %s"
 
-#: main/src/ui/global_search.vala:168
+#: main/src/ui/global_search.vala:174
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "S %s"
 
-#: main/src/ui/notifier_gnotifications.vala:69
-#: main/src/ui/notifier_freedesktop.vala:114
-msgid "Subscription request"
-msgstr ""
-
-#: main/src/ui/notifier_gnotifications.vala:75
-#: main/src/ui/notifier_gnotifications.vala:109
-#: main/src/ui/notifier_gnotifications.vala:125
-#: main/src/ui/notifier_freedesktop.vala:120
-#: main/src/ui/notifier_freedesktop.vala:177
-#: main/src/ui/notifier_freedesktop.vala:210
-#: main/src/ui/conversation_content_view/subscription_notification.vala:37
-msgid "Accept"
-msgstr ""
-
-#: main/src/ui/notifier_gnotifications.vala:76
-#: main/src/ui/notifier_gnotifications.vala:108
-#: main/src/ui/notifier_gnotifications.vala:124
-#: main/src/ui/notifier_freedesktop.vala:120
-#: main/src/ui/notifier_freedesktop.vala:210
+#: main/src/ui/notifier_gnotifications.vala:77
+#: main/src/ui/notifier_gnotifications.vala:95
+#: main/src/ui/notifier_gnotifications.vala:127
+#: main/src/ui/notifier_gnotifications.vala:143
+#: main/src/ui/notifier_freedesktop.vala:170
+#: main/src/ui/notifier_freedesktop.vala:262
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
-msgstr ""
+msgstr "Zamítnout"
 
-#: main/src/ui/notifier_gnotifications.vala:98
-#: main/src/ui/notifier_freedesktop.vala:168
-#, c-format
-msgid "Invitation to %s"
-msgstr ""
+#: main/src/ui/notifier_gnotifications.vala:78
+#: main/src/ui/notifier_gnotifications.vala:94
+#: main/src/ui/notifier_gnotifications.vala:128
+#: main/src/ui/notifier_gnotifications.vala:144
+#: main/src/ui/notifier_freedesktop.vala:134
+#: main/src/ui/notifier_freedesktop.vala:170
+#: main/src/ui/notifier_freedesktop.vala:229
+#: main/src/ui/notifier_freedesktop.vala:262
+#: main/src/ui/conversation_content_view/subscription_notification.vala:37
+#: main/data/call_widget.ui:93
+msgid "Accept"
+msgstr "Přijmout"
 
-#: main/src/ui/notifier_gnotifications.vala:99
-#: main/src/ui/notifier_freedesktop.vala:169
-#, c-format
-msgid "%s invited you to %s"
-msgstr ""
-
-#: main/src/ui/notifier_gnotifications.vala:116
-#: main/src/ui/notifier_freedesktop.vala:201
-msgid "Permission request"
-msgstr ""
+#: main/src/ui/notifier_gnotifications.vala:88
+#: main/src/ui/notifier_freedesktop.vala:164
+msgid "Subscription request"
+msgstr "Požadavek na odběr"
 
 #: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:202
+#: main/src/ui/notifier_freedesktop.vala:220
+#, c-format
+msgid "Invitation to %s"
+msgstr "Pozvánka do %s"
+
+#: main/src/ui/notifier_gnotifications.vala:118
+#: main/src/ui/notifier_freedesktop.vala:221
+#, c-format
+msgid "%s invited you to %s"
+msgstr "%s Vás pozval do %s"
+
+#: main/src/ui/notifier_gnotifications.vala:135
+#: main/src/ui/notifier_freedesktop.vala:253
+msgid "Permission request"
+msgstr "Žádost o oprávnění"
+
+#: main/src/ui/notifier_gnotifications.vala:136
+#: main/src/ui/notifier_freedesktop.vala:254
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "%s žádá o oprávnění pro zápis do %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:12
 #: main/src/ui/contact_details/blocking_provider.vala:31
 #: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
-msgstr ""
+msgstr "Nastavení"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
-msgstr ""
+msgstr "Lokální Nastavení"
 
 #: main/src/ui/contact_details/settings_provider.vala:28
 #: main/data/settings_dialog.ui:22
 msgid "Send typing notifications"
-msgstr ""
+msgstr "Odesílat notifikace o psaní"
 
 #: main/src/ui/contact_details/settings_provider.vala:33
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Odesiílat potvrzení o přečtení"
 
 #: main/src/ui/contact_details/settings_provider.vala:38
 #: main/src/ui/contact_details/settings_provider.vala:47
 msgid "Notifications"
-msgstr ""
+msgstr "Notifikace"
 
 #: main/src/ui/contact_details/settings_provider.vala:83
 #: main/src/ui/contact_details/settings_provider.vala:123
 #: main/src/ui/contact_details/settings_provider.vala:125
 msgid "On"
-msgstr ""
+msgstr "Zapnuto"
 
 #: main/src/ui/contact_details/settings_provider.vala:85
 #: main/src/ui/contact_details/settings_provider.vala:123
 #: main/src/ui/contact_details/settings_provider.vala:126
 msgid "Off"
-msgstr ""
+msgstr "Vypnuto"
 
 #: main/src/ui/contact_details/settings_provider.vala:87
 msgid "Only when mentioned"
-msgstr ""
+msgstr "Pouze pokud je zmíněno"
 
 #: main/src/ui/contact_details/settings_provider.vala:89
 #: main/src/ui/contact_details/settings_provider.vala:124
 #, c-format
 msgid "Default: %s"
-msgstr ""
+msgstr "Výchozí: %s"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request"
-msgstr ""
+msgstr "Žádost"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Permissions"
-msgstr ""
+msgstr "Oprávnění"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "Požádat o oprávnění k odesílání zpráv"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr ""
+msgstr "Detaily Konference"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr ""
+msgstr "Detaily Kontaktu"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr ""
+msgstr "Zablokovat"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
-msgstr ""
+msgstr "Komunikace a aktualizace stavu jsou blokovány v obou směrech"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
-msgstr ""
+msgstr "Název místnosti"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:53
 msgid "Description of the room"
-msgstr ""
+msgstr "Popis místnosti"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Persistent"
-msgstr ""
+msgstr "Stálá"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:57
 msgid "The room will persist after the last occupant leaves"
-msgstr ""
+msgstr "Místnost bude zachována i poté, co ji opustí poslední účastník"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Publicly searchable"
-msgstr ""
+msgstr "Veřejně vyhledatelná"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
-msgstr ""
+msgstr "Účastníci mohou měnit předmět"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "Oprávnění k náhledu JID"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "Kdo může vidět JID účastníků?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/add_conversation/conference_details_fragment.ui:175
@@ -448,39 +504,39 @@ msgstr ""
 #: main/data/manage_accounts/dialog.ui:170
 #: main/data/manage_accounts/add_account_dialog.ui:211
 msgid "Password"
-msgstr ""
+msgstr "Heslo"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
-msgstr ""
+msgstr "Heslo pro omezení přístupu do místnosti"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
-msgstr ""
+msgstr "Moderováno"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:75
 msgid "Only occupants with voice may send messages"
-msgstr ""
+msgstr "Pouze účastníci s hlasem mohou zasílat zprávy"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Members only"
-msgstr ""
+msgstr "Pouze pro členy"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:79
 msgid "Only members may enter the room"
-msgstr ""
+msgstr "Do místnosti mohou vstoupit pouze členové"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:82
 msgid "Message history"
-msgstr ""
+msgstr "Historie zpráv"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
-msgstr ""
+msgstr "Maximální výše nevyřízených žádostí vydaných místností"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
-msgstr ""
+msgstr "Nastavení místnosti"
 
 #: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
@@ -502,220 +558,307 @@ msgstr "Žádné aktivní účty"
 msgid "Manage accounts"
 msgstr "Správa účtů"
 
-#: main/src/ui/notifier_freedesktop.vala:148
+#: main/src/ui/notifier_freedesktop.vala:127
+#: main/src/ui/conversation_content_view/call_widget.vala:86
+msgid "Incoming video call"
+msgstr ""
+
+#: main/src/ui/notifier_freedesktop.vala:134
+#: main/src/ui/notifier_freedesktop.vala:229 main/data/call_widget.ui:84
+msgid "Reject"
+msgstr "Odmítnout"
+
+#: main/src/ui/notifier_freedesktop.vala:198
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
-msgstr ""
+msgstr "Nesprávné heslo"
 
-#: main/src/ui/notifier_freedesktop.vala:151
+#: main/src/ui/notifier_freedesktop.vala:201
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
-msgstr ""
-
-#: main/src/ui/notifier_freedesktop.vala:177
-msgid "Reject"
-msgstr ""
+msgstr "Neplatný TLS certifikát"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
-msgstr ""
+msgstr "Odstranit účet %s?"
 
 #: main/src/ui/manage_accounts/dialog.vala:128
 msgid "Remove"
-msgstr ""
+msgstr "Odstranit"
 
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select avatar"
-msgstr ""
+msgstr "Vybrat avatar"
 
 #: main/src/ui/manage_accounts/dialog.vala:159
 msgid "Images"
-msgstr ""
+msgstr "Obrázky"
 
 #: main/src/ui/manage_accounts/dialog.vala:163
 msgid "All files"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:219
-msgid "Connecting…"
-msgstr ""
+msgstr "Všechny soubory"
 
 #: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connected"
-msgstr ""
+msgstr "Připojeno"
 
 #: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Disconnected"
-msgstr ""
+msgstr "Odpojeno"
 
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
 msgid "Error"
-msgstr ""
+msgstr "Chyba"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
 msgid "Add Account"
-msgstr ""
+msgstr "Přidat účet"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr ""
+msgstr "Server nemůže dokázat, že je %s."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:155
 msgid "Its security certificate is not trusted by your operating system."
-msgstr ""
+msgstr "Operační systém nedůvěřuje jeho bezpečnostnímu certifikátu."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:157
 msgid "Its security certificate is issued to another domain."
-msgstr ""
+msgstr "Jeho bezpečnostní certifikát byl vydán pro jinou doménu."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:159
 msgid "Its security certificate will only become valid in the future."
-msgstr ""
+msgstr "Jeho bezpečnostní certifikát bude platný až v budoucnu."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:161
 msgid "Its security certificate is expired."
-msgstr ""
+msgstr "Platnost jeho bezpečnostního certifikátu vypršela."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Přihlásit se k %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:224
 #, c-format
 msgid "You can now use the account %s."
-msgstr ""
+msgstr "Účet %s můžete nyní používat."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Nesprávné uživatelské jméno nebo heslo"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:284
 msgid "Something went wrong"
-msgstr ""
+msgstr "Něco se pokazilo"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:327
 msgid "No response from server"
-msgstr ""
+msgstr "Žádná odpověď od serveru"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:333
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "Registrovat na %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:336
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "Server vyžaduje přihlášení prostřednictvím webové stránky"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:338
 msgid "Open website"
-msgstr ""
+msgstr "Otevřít internetovou stránku"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:359
 msgid "Register"
-msgstr ""
+msgstr "Registrovat"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:361
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "Podívejte se na %s pro získání informací ohledně způsobu přihlášení"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:159
+#: main/src/ui/conversation_content_view/message_widget.vala:194
 msgid "Message too long"
+msgstr "Zpráva je příliš dlouhá"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:222
+msgid "edited"
+msgstr "upraveno"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:231
+msgid "pending…"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/message_widget.vala:187
-msgid "edited"
+#: main/src/ui/conversation_content_view/message_widget.vala:244
+msgid "delivery failed"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr ""
+msgstr "%s, %s a %i dalších píše …"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s a %s se píší…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:114
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s a %s píší…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:116
 #, c-format
 msgid "%s is typing…"
+msgstr "%s píše…"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:98
+msgid "Call started"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:164
+#: main/src/ui/conversation_content_view/call_widget.vala:100
+#, c-format
+msgid "Started %s ago"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:113
+msgid "You handled this call on another device"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:118
+msgid "Call ended"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:121
+#, c-format
+msgid "Ended at %s"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:123
+#, c-format
+msgid "Lasted %s"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:127
+msgid "Call missed"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:129
+msgid "You missed this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:132
+#, c-format
+msgid "%s missed this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:137
+msgid "Call declined"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:139
+msgid "You declined this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:142
+#, c-format
+msgid "%s declined this call"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:147
+msgid "Call failed"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:169
+#, c-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:176
+#, c-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:183
+msgid "a few seconds"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:189
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr ""
+msgstr "Nešifrované"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:200
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:235
 msgid "Unable to send message"
-msgstr ""
+msgstr "Zprávu nelze odeslat"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:259
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:294
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr ""
+msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:295
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr ""
+msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:298
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr ""
+msgstr "%d. %b, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:264
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:299
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr ""
+msgstr "%d. %b, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:302
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr ""
+msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:268
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:303
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr ""
+msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr ""
+msgstr "Tento kontakt by si vás rád přidal do svého seznamu kontaktů"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:40
+#, c-format
+msgid "Downloading %s…"
+msgstr "Stahování %s…"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:46
 #, c-format
-msgid "Downloading %s…"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/file_default_widget.vala:52
-#, c-format
 msgid "%s offered: %s"
-msgstr ""
+msgstr "%s ke stažení: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#: main/src/ui/conversation_content_view/file_default_widget.vala:48
 #, c-format
 msgid "File offered: %s"
-msgstr ""
+msgstr "Soubor ke stažení: %s"
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:50
+msgid "File offered"
+msgstr "Soubor ke stažení"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:56
-msgid "File offered"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/file_default_widget.vala:62
 msgid "File transfer failed"
-msgstr ""
+msgstr "Přenos souboru se nezdařil"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:111
 msgid "Today"
@@ -723,60 +866,60 @@ msgstr "Dnes"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:124
 msgid "%a, %b %d"
-msgstr ""
+msgstr "%a, %d. %b"
 
 #: main/data/chat_input.ui:22 main/data/file_send_overlay.ui:28
 #: main/data/shortcuts.ui:44
 msgid "Send a file"
-msgstr ""
+msgstr "Odeslat soubor"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
-msgstr ""
+msgstr "Aktualizovat zprávu"
 
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
-msgstr ""
+msgstr "Kliknutím sem zahájíte konverzaci nebo se připojíte ke kanálu."
 
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
-msgstr ""
+msgstr "Nemáte žádné otevřené chaty"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
 msgid "Account"
-msgstr ""
+msgstr "Účet"
 
 #: main/data/add_conversation/conference_details_fragment.ui:123
 #: main/data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
-msgstr ""
+msgstr "Přezdívka"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:175
 #: main/data/add_conversation/add_contact_dialog.ui:102
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr ""
+msgstr "Přidat kontakt"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
-msgstr ""
+msgstr "Upozornit, jakmile přijde nová zpráva"
 
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
-msgstr ""
+msgstr "Převádět smajlíky na emotikony"
 
 #: main/data/settings_dialog.ui:70
 msgid "Check spelling"
-msgstr ""
+msgstr "Kontrola pravopisu"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
-msgstr ""
+msgstr "Moderní XMPP klient"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -784,6 +927,9 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino je moderní open-source chatovací klient pro stolní počítače. Jeho cílem "
+"je poskytování čistého a spolehlivého prostředí Jabber/XMPP s důrazem na "
+"zachování vašeho soukromí."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -791,106 +937,111 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"Podporuje šifrování end-to-end pomocí OMEMO a OpenPGP a umožňuje "
+"konfigurovat funkce související se soukromím, jako jsou potvrzení o přečtení "
+"a oznámení o psaní."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"Dino načítá historii ze serveru a synchronizuje zprávy s ostatními "
+"zařízeními."
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "Žádné aktivní vyhledávání"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "Pro zahájení vyhledávání začněte psát"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "Žádné odpovídající zprávy"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Zkontrolujte pravopis nebo zkuste odstranit filtry"
 
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
-msgstr ""
+msgstr "Odeslat"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
-msgstr ""
+msgstr "Obecné"
 
 #: main/data/shortcuts.ui:32
 msgid "Conversation"
-msgstr ""
+msgstr "Konverzace"
 
 #: main/data/shortcuts.ui:52
 msgid "Navigation"
-msgstr ""
+msgstr "Navigace"
 
 #: main/data/shortcuts.ui:57
 msgid "Jump to next conversation"
-msgstr ""
+msgstr "Přejít na další konverzaci"
 
 #: main/data/shortcuts.ui:64
 msgid "Jump to previous conversation"
-msgstr ""
+msgstr "Přejít na předchozí konverzaci"
 
 #: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:9
 msgid "Accounts"
-msgstr ""
+msgstr "Účty"
 
 #: main/data/manage_accounts/dialog.ui:200
 msgid "Local alias"
-msgstr ""
+msgstr "Místní alias"
 
 #: main/data/manage_accounts/dialog.ui:255
 msgid "No accounts configured"
-msgstr ""
+msgstr "Nejsou nakonfigurovány žádné účty"
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
-msgstr ""
+msgstr "Přidat účet"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "Přihlásit se"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:328
 msgid "Create account"
-msgstr ""
+msgstr "Vytvořit účet"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "Nepodařilo se navázat zabezpečené připojení"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
-msgstr ""
+msgstr "Připojit"
 
 #: main/data/manage_accounts/add_account_dialog.ui:340
 msgid "Choose a public server"
-msgstr ""
+msgstr "Vyberte veřejný server"
 
 #: main/data/manage_accounts/add_account_dialog.ui:369
 msgid "Or specify a server address"
-msgstr ""
+msgstr "Nebo zadejte adresu serveru"
 
 #: main/data/manage_accounts/add_account_dialog.ui:389
 msgid "Sign in instead"
-msgstr ""
+msgstr "Místo toho se přihlásit"
 
 #: main/data/manage_accounts/add_account_dialog.ui:470
 msgid "Pick another server"
-msgstr ""
+msgstr "Vybrat jiný server"
 
 #: main/data/manage_accounts/add_account_dialog.ui:542
 msgid "All set up!"
-msgstr ""
+msgstr "Vše připraveno!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:578
 msgid "Finish"
-msgstr ""
+msgstr "Dokončit"

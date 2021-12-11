@@ -11,7 +11,6 @@ public class FileImageWidget : EventBox {
     private ScalingImage image;
     FileDefaultWidget file_default_widget;
     FileDefaultWidgetController file_default_widget_controller;
-    private bool pointer_inside = false;
 
     public FileImageWidget() {
         this.halign = Align.START;
@@ -60,24 +59,16 @@ public class FileImageWidget : EventBox {
         overlay.add(image);
         overlay.add_overlay(file_default_widget);
 
-        this.enter_notify_event.connect(() => {
+        this.enter_notify_event.connect((event) => {
+            if (event.detail == Gdk.NotifyType.INFERIOR) return false;
             file_default_widget.visible = true;
             return false;
         });
-        this.leave_notify_event.connect(() => {
-            pointer_inside = false;
-            Timeout.add(20, () => {
-                if (!pointer_inside) {
-                    file_default_widget.visible = false;
-                }
-                return false;
-            });
-
+        this.leave_notify_event.connect((event) => {
+            if (event.detail == Gdk.NotifyType.INFERIOR) return false;
+            file_default_widget.visible = false;
             return false;
         });
-
-        file_default_widget.enter_notify_event.connect(() => { pointer_inside = true; return false; });
-        file_default_widget.leave_notify_event.connect(() => { pointer_inside = true; return false; });
 
         this.add(overlay);
     }

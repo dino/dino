@@ -15,8 +15,8 @@ public class Module : XmppStreamModule, Iq.Handler {
         return stream.get_flag(Flag.IDENTITY).blocklist.contains(jid);
     }
 
-    public bool block(XmppStream stream, Gee.List<string> jids) {
-        if (jids.size == 0) return false; // This would otherwise be a bad-request error.
+    public bool block(XmppStream stream, string[] jids) {
+        if (jids.length == 0) return false; // This would otherwise be a bad-request error.
 
         StanzaNode block_node = new StanzaNode.build("block", NS_URI).add_self_xmlns();
         fill_node_with_items(block_node, jids);
@@ -25,8 +25,8 @@ public class Module : XmppStreamModule, Iq.Handler {
         return true;
     }
 
-    public bool unblock(XmppStream stream, Gee.List<string> jids) {
-        if (jids.size == 0)  return false; // This would otherwise unblock all blocked JIDs.
+    public bool unblock(XmppStream stream, string[] jids) {
+        if (jids.length == 0)  return false; // This would otherwise unblock all blocked JIDs.
 
         StanzaNode unblock_node = new StanzaNode.build("unblock", NS_URI).add_self_xmlns();
         fill_node_with_items(unblock_node, jids);
@@ -112,7 +112,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         return jids;
     }
 
-    private void fill_node_with_items(StanzaNode node, Gee.List<string> jids) {
+    private void fill_node_with_items(StanzaNode node, string[] jids) {
         foreach (string jid in jids) {
             StanzaNode item_node = new StanzaNode.build("item", NS_URI).add_self_xmlns();
             item_node.set_attribute("jid", jid, NS_URI);

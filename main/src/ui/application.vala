@@ -5,6 +5,51 @@ using Dino.Ui;
 using Xmpp;
 
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
+    private const string[] KEY_COMBINATION_QUIT = {"<Ctrl>Q", null};
+    private const string[] KEY_COMBINATION_ADD_CHAT = {"<Ctrl>T", null};
+    private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
+    private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
+    private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
+
+    private Gtk.Menu menuSystem;
+    public bool mactive = false;
+    private void menuSystem_popup(uint button, uint time) {
+        mactive = window.is_active;
+        menuSystem.popup(null, null, null, button, time);
+    }
+
+    private void tray_clicked_left() {
+        tray_clicked(false);
+    }
+    private void tray_clicked_menu() {
+        tray_clicked(true);
+    }
+
+    private void tray_clicked(bool from_menu) {
+        if (window == null) {
+            controller = new MainWindowController(this, stream_interactor, db);
+            config = new Config(db);
+            window = new MainWindow(this, stream_interactor, db, config);
+            controller.set_window(window);
+            window.present();
+        }
+        window.delete_event.connect((event) => {
+            window.hide();
+            return true;
+        });
+        if(from_menu==false) mactive = window.is_active;
+        if(window.visible==false) {
+            window.show();
+        } else {
+            if(mactive==false) {
+                window.present();
+            } else {
+                window.hide();
+            }
+        }
+    }
+
+
     private MainWindow window;
     public MainWindowController controller;
 
@@ -14,45 +59,8 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     public StreamInteractor stream_interactor { get; set; }
     public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
     public SearchPathGenerator? search_path_generator { get; set; }
-    private Gtk.Menu menuSystem;
-    public bool mactive = false;
+
     internal static bool print_version = false;
-
-    private void menuSystem_popup(uint button, uint time) {
-	mactive = window.is_active;
-        menuSystem.popup(null, null, null, button, time);
-    }
-
-    private void tray_clicked_left() {
-	tray_clicked(false);
-    }
-    private void tray_clicked_menu() {
-	tray_clicked(true);
-    }
-    private void tray_clicked(bool from_menu) {
-         if (window == null) {
-                controller = new MainWindowController(this, stream_interactor, db);
-                config = new Config(db);
-                window = new MainWindow(this, stream_interactor, db, config);
-                controller.set_window(window);
-	        window.present();
-        }
-	window.delete_event.connect((event) => {
-		window.hide();
-		return true;
-	});
-	if(from_menu==false) mactive = window.is_active;
-	if(window.visible==false) {
-		window.show();
-	} else {
-		if(mactive==false) {
-			window.present();
-		} else {
-			window.hide();
-		}
-	}
-    }
-
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref print_version, "Display version number", null },
         { null }
@@ -70,57 +78,55 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         create_actions();
         add_main_option_entries(options);
+        if(settings.trayicon) {
+            trayicon = new StatusIcon.from_icon_name("im.dino.Dino");
+            trayicon.set_tooltip_text ("Dino");
+            trayicon.set_visible(true);
+            trayicon.activate.connect(tray_clicked_left);
 
-	if(settings.trayicon) {
-	        trayicon = new StatusIcon.from_icon_name("im.dino.Dino");
-		trayicon.set_tooltip_text ("Dino");
-	        trayicon.set_visible(true);
-	        trayicon.activate.connect(tray_clicked_left);
+            menuSystem = new Gtk.Menu();
 
-		menuSystem = new Gtk.Menu();
+            var box = new Box (Orientation.HORIZONTAL, 6);
+            var label = new Label ("Show/Hide Dino");
+            var menuItem = new Gtk.MenuItem();
+            box.add (label);
+            menuItem.add (box);
+            menuItem.activate.connect(tray_clicked_menu);
+            menuSystem.append(menuItem);
 
-	        var box = new Box (Orientation.HORIZONTAL, 6);
-	        var label = new Label ("Show/Hide Dino");
-	        var menuItem = new Gtk.MenuItem();
-	        box.add (label);
-	        menuItem.add (box);
-	        menuItem.activate.connect(tray_clicked_menu);
-	        menuSystem.append(menuItem);
+            box = new Box (Orientation.HORIZONTAL, 6);
+            label = new Label ("Accounts");
+            menuItem = new Gtk.MenuItem();
+            box.add (label);
+            menuItem.add (box);
+            menuItem.activate.connect(show_accounts_window);
+            menuSystem.append(menuItem);
+            box = new Box (Orientation.HORIZONTAL, 6);
+            label = new Label ("Settings");
+            menuItem = new Gtk.MenuItem();
+            box.add (label);
+            menuItem.add (box);
+            menuItem.activate.connect(show_settings_window);
+            menuSystem.append(menuItem);
 
-	        box = new Box (Orientation.HORIZONTAL, 6);
-	        label = new Label ("Accounts");
-	        menuItem = new Gtk.MenuItem();
-	        box.add (label);
-	        menuItem.add (box);
-	        menuItem.activate.connect(show_accounts_window);
-	        menuSystem.append(menuItem);
+            box = new Box (Orientation.HORIZONTAL, 6);
+            label = new Label ("About");
+            menuItem = new Gtk.MenuItem();
+            box.add (label);
+            menuItem.add (box);
+            menuItem.activate.connect(show_about_window);
+            menuSystem.append(menuItem);
 
-	        box = new Box (Orientation.HORIZONTAL, 6);
-	        label = new Label ("Settings");
-	        menuItem = new Gtk.MenuItem();
-	        box.add (label);
-	        menuItem.add (box);
-	        menuItem.activate.connect(show_settings_window);
-	        menuSystem.append(menuItem);
-
-	        box = new Box (Orientation.HORIZONTAL, 6);
-	        label = new Label ("About");
-	        menuItem = new Gtk.MenuItem();
-	        box.add (label);
-	        menuItem.add (box);
-	        menuItem.activate.connect(show_about_window);
-	        menuSystem.append(menuItem);
-	
-	        box = new Box (Orientation.HORIZONTAL, 6);
-	        label = new Label ("Quit");
-	        menuItem = new Gtk.MenuItem();
-	        box.add (label);
-	        menuItem.add (box);
-	        menuItem.activate.connect(quit);
-	        menuSystem.append(menuItem);
-	        menuSystem.show_all();
-	        trayicon.popup_menu.connect(menuSystem_popup);
-	}
+            box = new Box (Orientation.HORIZONTAL, 6);
+            label = new Label ("Quit");
+            menuItem = new Gtk.MenuItem();
+            box.add (label);
+            menuItem.add (box);
+            menuItem.activate.connect(quit);
+            menuSystem.append(menuItem);
+            menuSystem.show_all();
+            trayicon.popup_menu.connect(menuSystem_popup);
+        }
 
         startup.connect(() => {
             if (print_version) {
@@ -135,7 +141,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 notification_events.register_notification_provider(free_desktop_notifier);
             }
             notification_events.notify_content_item.connect((content_item, conversation) => {
-		trayicon.set_from_icon_name("dino-emoticon-symbolic");
+                trayicon.set_from_icon_name("dino-emoticon-symbolic");
                 // Set urgency hint also if (normal) notifications are disabled
                 // Don't set urgency hint in GNOME, produces "Window is active" notification
                 var desktop_env = Environment.get_variable("XDG_CURRENT_DESKTOP");
@@ -154,9 +160,9 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 window = new MainWindow(this, stream_interactor, db, config);
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE || settings.trayicon) window.delete_event.connect((event) => {
-			window.hide();
-			return true;
-		});
+                    window.hide();
+                    return true;
+                });
             }
             window.present();
         });
@@ -208,7 +214,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction quit_action = new SimpleAction("quit", null);
         quit_action.activate.connect(quit);
         add_action(quit_action);
-        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
+        set_accels_for_action("app.quit", KEY_COMBINATION_QUIT);
 
         SimpleAction open_conversation_action = new SimpleAction("open-conversation", VariantType.INT32);
         open_conversation_action.activate.connect((variant) => {
@@ -234,7 +240,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             add_chat_dialog.present();
         });
         add_action(contacts_action);
-        set_accels_for_action("app.add_chat", new string[]{"<Ctrl>T"});
+        set_accels_for_action("app.add_chat", KEY_COMBINATION_ADD_CHAT);
 
         SimpleAction conference_action = new SimpleAction("add_conference", null);
         conference_action.activate.connect(() => {
@@ -243,7 +249,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             add_conference_dialog.present();
         });
         add_action(conference_action);
-        set_accels_for_action("app.add_conference", new string[]{"<Ctrl>G"});
+        set_accels_for_action("app.add_conference", KEY_COMBINATION_ADD_CONFERENCE);
 
         SimpleAction accept_muc_invite_action = new SimpleAction("open-muc-join", VariantType.INT32);
         accept_muc_invite_action.activate.connect((variant) => {
@@ -267,12 +273,12 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction loop_conversations_action = new SimpleAction("loop_conversations", null);
         loop_conversations_action.activate.connect(() => { window.loop_conversations(false); });
         add_action(loop_conversations_action);
-        set_accels_for_action("app.loop_conversations", new string[]{"<Ctrl>Tab"});
+        set_accels_for_action("app.loop_conversations", KEY_COMBINATION_LOOP_CONVERSATIONS);
 
         SimpleAction loop_conversations_bw_action = new SimpleAction("loop_conversations_bw", null);
         loop_conversations_bw_action.activate.connect(() => { window.loop_conversations(true); });
         add_action(loop_conversations_bw_action);
-        set_accels_for_action("app.loop_conversations_bw", new string[]{"<Ctrl><Shift>Tab"});
+        set_accels_for_action("app.loop_conversations_bw", KEY_COMBINATION_LOOP_CONVERSATIONS_REV);
 
         SimpleAction open_shortcuts_action = new SimpleAction("open_shortcuts", null);
         open_shortcuts_action.activate.connect((variant) => {
