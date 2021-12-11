@@ -88,18 +88,19 @@
                                 </child>
                             </object>
                         </child>
-			<child>
-				<object class="GtkMenuButton" id="file_menu">
-					<property name="visible">False</property>
-					<child>
-						<object class="GtkImage">
-		                                        <property name="visible">True</property>
-		                                        <property name="icon-name">open-menu-symbolic</property>
-		                                        <property name="icon-size">1</property>
-						</object>
-					</child>
-				</object>
-			</child>
+                        <child>
+                            <object class="GtkMenuButton" id="file_menu">
+                                <property name="visible">False</property>
+                                <property name="relief">none</property>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">open-menu-symbolic</property>
+                                        <property name="icon-size">1</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>

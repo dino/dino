@@ -70,13 +70,6 @@ public class FileImageWidget : EventBox {
             return false;
         });
 
-<<<<<<< HEAD
-        file_default_widget.enter_notify_event.connect(() => { pointer_inside = true; return false; });
-        file_default_widget.leave_notify_event.connect(() => { pointer_inside = true; return false; });
-        file_default_widget.file_menu.clicked.connect(() => { pointer_inside = true; });
-
-=======
->>>>>>> master
         this.add(overlay);
     }
 }

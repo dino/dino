@@ -12,7 +12,6 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
-	last_file_uri_ = col_to_string_or_default("last_file_uri", "");
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -20,22 +19,6 @@ public class Settings : Object {
         return val != null ? bool.parse(val) : def;
     }
 
-    private string col_to_string_or_default(string key, string def) {
-        string? val = db.settings.select({db.settings.value}).with(db.settings.key, "=", key)[db.settings.value];
-        return val != null ? val : def;
-    }
-
-    private string last_file_uri_ = "";
-    public string last_file_uri {
-        get { return last_file_uri_; }
-        set {
-            db.settings.upsert()
-                    .value(db.settings.key, "last_file_uri", true)
-                    .value(db.settings.value, value)
-                    .perform();
-            last_file_uri_ = value;
-        }
-    }
     private bool send_typing_;
     public bool send_typing {
         get { return send_typing_; }

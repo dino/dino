@@ -9,28 +9,24 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/file_default_widget.ui")]
 public class FileDefaultWidget : EventBox {
 
-<<<<<<< HEAD
-    [GtkChild] public Stack image_stack;
-    [GtkChild] public Label name_label;
-    [GtkChild] public Label mime_label;
-    [GtkChild] public Image content_type_image;
-    [GtkChild] public Spinner spinner;
-    [GtkChild] public EventBox stack_event_box;
-    [GtkChild] public MenuButton file_menu;
-=======
     [GtkChild] public unowned Stack image_stack;
     [GtkChild] public unowned Label name_label;
     [GtkChild] public unowned Label mime_label;
     [GtkChild] public unowned Image content_type_image;
     [GtkChild] public unowned Spinner spinner;
     [GtkChild] public unowned EventBox stack_event_box;
->>>>>>> master
+    [GtkChild] public MenuButton file_menu;
+
+    public ModelButton file_open_button;
+    public ModelButton file_save_button;
 
     private FileTransfer.State state;
 
     public FileDefaultWidget() {
         this.enter_notify_event.connect(on_pointer_entered);
         this.leave_notify_event.connect(on_pointer_left);
+        file_open_button = new ModelButton() { text=_("Open"), visible=true };
+        file_save_button = new ModelButton() { text=_("Save as..."), visible=true };
     }
 
     public void update_file_info(string? mime_type, FileTransfer.State state, long size) {
@@ -45,7 +41,15 @@ public class FileDefaultWidget : EventBox {
             case FileTransfer.State.COMPLETE:
                 mime_label.label = mime_description;
                 image_stack.set_visible_child_name("content_type_image");
-		file_menu.visible = true;
+                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu();
+                Box file_menu_box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
+                file_menu_box.add(file_open_button);
+                file_menu_box.add(file_save_button);
+                popover_menu.add(file_menu_box);
+                file_menu.popover = popover_menu;
+                file_menu.clicked.connect(() => {
+                    popover_menu.visible = true;
+                });
                 break;
             case FileTransfer.State.IN_PROGRESS:
                 mime_label.label = _("Downloading %s…").printf(get_size_string(size));
@@ -71,19 +75,6 @@ public class FileDefaultWidget : EventBox {
     }
 
     private bool on_pointer_entered(Gdk.EventCrossing event) {
-<<<<<<< HEAD
-        pointer_inside = true;
-        Timeout.add(20, () => {
-            if (pointer_inside) {
-		event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
-                content_type_image.opacity = 0.7;
-                if (state == FileTransfer.State.NOT_STARTED) {
-                    image_stack.set_visible_child_name("download_image");
-                }
-            }
-            return false;
-        });
-=======
         if (event.detail == Gdk.NotifyType.INFERIOR) return false;
 
         event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
@@ -91,31 +82,22 @@ public class FileDefaultWidget : EventBox {
         if (state == FileTransfer.State.NOT_STARTED) {
             image_stack.set_visible_child_name("download_image");
         }
->>>>>>> master
+        if (state == FileTransfer.State.COMPLETE) {
+            file_menu.visible = true;
+        }
         return false;
     }
 
     private bool on_pointer_left(Gdk.EventCrossing event) {
-<<<<<<< HEAD
-        pointer_inside = false;
-        Timeout.add(20, () => {
-            if (!pointer_inside) {
-                content_type_image.opacity = 0.5;
-                if (state == FileTransfer.State.NOT_STARTED) {
-                    image_stack.set_visible_child_name("content_type_image");
-                }
-            }
-            return false;
-        });
-=======
         if (event.detail == Gdk.NotifyType.INFERIOR) return false;
+        if (file_menu.popover.visible == true) return false;
 
         event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.XTERM));
         content_type_image.opacity = 0.5;
         if (state == FileTransfer.State.NOT_STARTED) {
             image_stack.set_visible_child_name("content_type_image");
         }
->>>>>>> master
+        file_menu.visible = false;
         return false;
     }
 
