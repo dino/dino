@@ -20,7 +20,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
         string pipeline_desc = @"$(media)testsrc is-live=true ! $element_desc ! appsink name=output";
         try {
             var pipeline = Gst.parse_launch(pipeline_desc);
-            var output = (pipeline as Gst.Bin).get_by_name("output") as Gst.App.Sink;
+            var output = ((Gst.Bin) pipeline).get_by_name("output") as Gst.App.Sink;
             SourceFunc callback = pipeline_works.callback;
             var finished = false;
             output.emit_signals = true;

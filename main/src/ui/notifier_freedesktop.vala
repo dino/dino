@@ -200,6 +200,8 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
             case ConnectionManager.ConnectionError.Source.TLS:
                 body = _("Invalid TLS certificate");
                 break;
+            default:
+                break;
         }
 
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);

@@ -9,13 +9,13 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/add_conversation/add_groupchat_dialog.ui")]
 protected class AddGroupchatDialog : Gtk.Dialog {
 
-    [GtkChild] private Stack accounts_stack;
-    [GtkChild] private AccountComboBox account_combobox;
-    [GtkChild] private Button ok_button;
-    [GtkChild] private Button cancel_button;
-    [GtkChild] private Entry jid_entry;
-    [GtkChild] private Entry alias_entry;
-    [GtkChild] private Entry nick_entry;
+    [GtkChild] private unowned Stack accounts_stack;
+    [GtkChild] private unowned AccountComboBox account_combobox;
+    [GtkChild] private unowned Button ok_button;
+    [GtkChild] private unowned Button cancel_button;
+    [GtkChild] private unowned Entry jid_entry;
+    [GtkChild] private unowned Entry alias_entry;
+    [GtkChild] private unowned Entry nick_entry;
 
     private StreamInteractor stream_interactor;
     private bool alias_entry_changed = false;

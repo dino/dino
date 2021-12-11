@@ -8,8 +8,8 @@ namespace Dino.Ui.OccupantMenu {
 [GtkTemplate (ui = "/im/dino/Dino/occupant_list_item.ui")]
 public class ListRow : ListBoxRow {
 
-    [GtkChild] private AvatarImage image;
-    [GtkChild] public Label name_label;
+    [GtkChild] private unowned AvatarImage image;
+    [GtkChild] public unowned Label name_label;
 
     public Conversation? conversation;
     public Jid? jid;

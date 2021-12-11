@@ -271,11 +271,11 @@ public class MessageItemEditMode : Box {
     public signal void cancelled();
     public signal void send();
 
-    [GtkChild] public MenuButton emoji_button;
-    [GtkChild] public ChatTextView chat_text_view;
-    [GtkChild] public Button cancel_button;
-    [GtkChild] public Button send_button;
-    [GtkChild] public Frame frame;
+    [GtkChild] public unowned MenuButton emoji_button;
+    [GtkChild] public unowned ChatTextView chat_text_view;
+    [GtkChild] public unowned Button cancel_button;
+    [GtkChild] public unowned Button send_button;
+    [GtkChild] public unowned Frame frame;
 
     construct {
         Util.force_css(frame, "* { border-radius: 3px; }");

@@ -124,11 +124,15 @@ namespace Dino {
             XmppStream? stream = stream_interactor.get_stream(account);
             if (stream == null) return;
 
-            Xep.Jingle.Session session = yield stream.get_module(Xep.JingleRtp.Module.IDENTITY).start_call(stream, full_jid, video, sid);
-            sessions[call] = session;
-            sid_by_call[call.account][call] = session.sid;
+            try {
+                Xep.Jingle.Session session = yield stream.get_module(Xep.JingleRtp.Module.IDENTITY).start_call(stream, full_jid, video, sid);
+                sessions[call] = session;
+                sid_by_call[call.account][call] = session.sid;
 
-            connect_session_signals(call, session);
+                connect_session_signals(call, session);
+            } catch (Error e) {
+                warning("Failed to start call: %s", e.message);
+            }
         }
 
         public void end_call(Conversation conversation, Call call) {

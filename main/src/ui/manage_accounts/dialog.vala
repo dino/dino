@@ -14,19 +14,19 @@ public class Dialog : Gtk.Dialog {
     public signal void account_enabled(Account account);
     public signal void account_disabled(Account account);
 
-    [GtkChild] public Stack main_stack;
-    [GtkChild] public ListBox account_list;
-    [GtkChild] public Button no_accounts_add;
-    [GtkChild] public ToolButton add_account_button;
-    [GtkChild] public ToolButton remove_account_button;
-    [GtkChild] public AvatarImage image;
-    [GtkChild] public Button image_button;
-    [GtkChild] public Label jid_label;
-    [GtkChild] public Label state_label;
-    [GtkChild] public Switch active_switch;
-    [GtkChild] public Util.EntryLabelHybrid password_hybrid;
-    [GtkChild] public Util.EntryLabelHybrid alias_hybrid;
-    [GtkChild] public Grid settings_list;
+    [GtkChild] public unowned Stack main_stack;
+    [GtkChild] public unowned ListBox account_list;
+    [GtkChild] public unowned Button no_accounts_add;
+    [GtkChild] public unowned ToolButton add_account_button;
+    [GtkChild] public unowned ToolButton remove_account_button;
+    [GtkChild] public unowned AvatarImage image;
+    [GtkChild] public unowned Button image_button;
+    [GtkChild] public unowned Label jid_label;
+    [GtkChild] public unowned Label state_label;
+    [GtkChild] public unowned Switch active_switch;
+    [GtkChild] public unowned Util.EntryLabelHybrid password_hybrid;
+    [GtkChild] public unowned Util.EntryLabelHybrid alias_hybrid;
+    [GtkChild] public unowned Grid settings_list;
 
     private ArrayList<Plugins.AccountSettingsWidget> plugin_widgets = new ArrayList<Plugins.AccountSettingsWidget>();
 

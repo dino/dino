@@ -5,6 +5,12 @@ using Dino.Ui;
 using Xmpp;
 
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
+    private const string[] KEY_COMBINATION_QUIT = {"<Ctrl>Q", null};
+    private const string[] KEY_COMBINATION_ADD_CHAT = {"<Ctrl>T", null};
+    private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
+    private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
+    private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
+
     private MainWindow window;
     public MainWindowController controller;
 
@@ -116,7 +122,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction quit_action = new SimpleAction("quit", null);
         quit_action.activate.connect(quit);
         add_action(quit_action);
-        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
+        set_accels_for_action("app.quit", KEY_COMBINATION_QUIT);
 
         SimpleAction open_conversation_action = new SimpleAction("open-conversation", VariantType.INT32);
         open_conversation_action.activate.connect((variant) => {
@@ -142,7 +148,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             add_chat_dialog.present();
         });
         add_action(contacts_action);
-        set_accels_for_action("app.add_chat", new string[]{"<Ctrl>T"});
+        set_accels_for_action("app.add_chat", KEY_COMBINATION_ADD_CHAT);
 
         SimpleAction conference_action = new SimpleAction("add_conference", null);
         conference_action.activate.connect(() => {
@@ -151,7 +157,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             add_conference_dialog.present();
         });
         add_action(conference_action);
-        set_accels_for_action("app.add_conference", new string[]{"<Ctrl>G"});
+        set_accels_for_action("app.add_conference", KEY_COMBINATION_ADD_CONFERENCE);
 
         SimpleAction accept_muc_invite_action = new SimpleAction("open-muc-join", VariantType.INT32);
         accept_muc_invite_action.activate.connect((variant) => {
@@ -175,12 +181,12 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction loop_conversations_action = new SimpleAction("loop_conversations", null);
         loop_conversations_action.activate.connect(() => { window.loop_conversations(false); });
         add_action(loop_conversations_action);
-        set_accels_for_action("app.loop_conversations", new string[]{"<Ctrl>Tab"});
+        set_accels_for_action("app.loop_conversations", KEY_COMBINATION_LOOP_CONVERSATIONS);
 
         SimpleAction loop_conversations_bw_action = new SimpleAction("loop_conversations_bw", null);
         loop_conversations_bw_action.activate.connect(() => { window.loop_conversations(true); });
         add_action(loop_conversations_bw_action);
-        set_accels_for_action("app.loop_conversations_bw", new string[]{"<Ctrl><Shift>Tab"});
+        set_accels_for_action("app.loop_conversations_bw", KEY_COMBINATION_LOOP_CONVERSATIONS_REV);
 
         SimpleAction open_shortcuts_action = new SimpleAction("open_shortcuts", null);
         open_shortcuts_action.activate.connect((variant) => {

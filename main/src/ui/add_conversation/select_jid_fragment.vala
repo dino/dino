@@ -16,10 +16,10 @@ public class SelectJidFragment : Gtk.Box {
         private set {}
     }
 
-    [GtkChild] private Entry entry;
-    [GtkChild] private Box box;
-    [GtkChild] private Button add_button;
-    [GtkChild] private Button remove_button;
+    [GtkChild] private unowned Entry entry;
+    [GtkChild] private unowned Box box;
+    [GtkChild] private unowned Button add_button;
+    [GtkChild] private unowned Button remove_button;
 
     private StreamInteractor stream_interactor;
     private FilterableList filterable_list;

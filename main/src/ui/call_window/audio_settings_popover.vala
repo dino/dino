@@ -26,7 +26,7 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
         Gee.List<Plugins.MediaDevice> devices = call_plugin.get_devices("audio", false);
 
         Box micro_box = new Box(Orientation.VERTICAL, 10) { visible=true };
-        micro_box.add(new Label("<b>" + _("Microphones") + "</b>") { use_markup=true, xalign=0, visible=true, can_focus=true /* grab initial focus*/ });
+        micro_box.add(new Label("<b>" + "Microphones" + "</b>") { use_markup=true, xalign=0, visible=true, can_focus=true /* grab initial focus*/ });
 
         if (devices.size == 0) {
             micro_box.add(new Label("No microphones found."));
@@ -73,7 +73,7 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
         Gee.List<Plugins.MediaDevice> devices = call_plugin.get_devices("audio", true);
 
         Box speaker_box = new Box(Orientation.VERTICAL, 10) { visible=true };
-        speaker_box.add(new Label("<b>" + _("Speakers") +"</b>") { use_markup=true, xalign=0, visible=true });
+        speaker_box.add(new Label("<b>" + "Speakers" +"</b>") { use_markup=true, xalign=0, visible=true });
 
         if (devices.size == 0) {
             speaker_box.add(new Label("No speakers found."));

@@ -19,12 +19,12 @@ public class View : Box {
     private Conversation? conversation;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
 
-    [GtkChild] public Frame frame;
-    [GtkChild] public ChatTextView chat_text_view;
-    [GtkChild] public Box outer_box;
-    [GtkChild] public Button file_button;
-    [GtkChild] public Separator file_separator;
-    [GtkChild] public Label chat_input_status;
+    [GtkChild] public unowned Frame frame;
+    [GtkChild] public unowned ChatTextView chat_text_view;
+    [GtkChild] public unowned Box outer_box;
+    [GtkChild] public unowned Button file_button;
+    [GtkChild] public unowned Separator file_separator;
+    [GtkChild] public unowned Label chat_input_status;
 
     public EncryptionButton encryption_widget;
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-11 15:56+0200\n"
+"POT-Creation-Date: 2021-10-13 20:03+0200\n"
 "PO-Revision-Date: 2020-11-16 22:33+0000\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/es/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.4-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#: plugins/omemo/src/ui/bad_messages_populator.vala:157
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
@@ -27,11 +27,11 @@ msgstr ""
 "%s ha estado usando un dispositivo poco fiable. No verá mensajes de "
 "dispositivos en los que no confíe."
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:156
+#: plugins/omemo/src/ui/bad_messages_populator.vala:158
 msgid "Manage devices"
 msgstr "Gestionar dispositivos"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#: plugins/omemo/src/ui/bad_messages_populator.vala:160
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."

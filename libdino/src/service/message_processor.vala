@@ -60,7 +60,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
     }
 
     public Entities.Message send_message(Entities.Message message, Conversation conversation) {
-        stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
         stream_interactor.get_module(ContentItemStore.IDENTITY).insert_message(message, conversation);
         send_xmpp_message(message, conversation);
         message_sent(message, conversation);
@@ -575,7 +574,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     private class StoreContentItemListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT", "FILTER_EMPTY", "STORE", "CORRECTION" };
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT", "FILTER_EMPTY", "STORE", "CORRECTION", "MESSAGE_REINTERPRETING" };
         public override string action_group { get { return "STORE_CONTENT_ITEM"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
@@ -634,6 +633,9 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
         message.marked = Entities.Message.Marked.UNSENT;
         message.encryption = conversation.encryption;
+
+        stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
+
         return message;
     }
 

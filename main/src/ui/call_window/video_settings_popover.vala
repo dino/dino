@@ -22,7 +22,7 @@ public class Dino.Ui.VideoSettingsPopover : Gtk.Popover {
         Gee.List<Plugins.MediaDevice> devices = call_plugin.get_devices("video", false);
 
         Box camera_box = new Box(Orientation.VERTICAL, 10) { visible=true };
-        camera_box.add(new Label("<b>" + _("Cameras") + "</b>") { use_markup=true, xalign=0, visible=true, can_focus=true /* grab initial focus*/ });
+        camera_box.add(new Label("<b>" + "Cameras" + "</b>") { use_markup=true, xalign=0, visible=true, can_focus=true /* grab initial focus*/ });
 
         if (devices.size == 0) {
             camera_box.add(new Label("No cameras found.") { visible=true });

@@ -12,8 +12,8 @@ public class List : Box {
     public signal void conversation_selected(Conversation? conversation);
     private StreamInteractor stream_interactor;
 
-    [GtkChild] public ListBox list_box;
-    [GtkChild] private SearchEntry search_entry;
+    [GtkChild] public unowned ListBox list_box;
+    [GtkChild] private unowned SearchEntry search_entry;
 
     private Conversation conversation;
     private string[]? filter_values;
