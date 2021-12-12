@@ -677,8 +677,8 @@ namespace Dino {
                 if (!call_by_sid[account].has_key(sid)) return;
                 Call call = call_by_sid[account][sid];
 
-                bool outgoing_retract = call.direction == Call.DIRECTION_OUTGOING && from.equals_bare(call.counterpart);
-                bool incoming_retract = call.direction == Call.DIRECTION_INCOMING && from.equals_bare(account.bare_jid);
+                bool outgoing_retract = call.direction == Call.DIRECTION_OUTGOING && from.equals_bare(account.bare_jid);
+                bool incoming_retract = call.direction == Call.DIRECTION_INCOMING && from.equals_bare(call.counterpart);
                 if (!(outgoing_retract || incoming_retract)) return;
 
                 call.state = Call.State.MISSED;
