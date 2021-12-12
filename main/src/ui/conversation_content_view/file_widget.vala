@@ -185,7 +185,7 @@ public class FileDefaultWidgetController : Object {
             default:
             break;
         }
-        dialog.destroy ();
+        dialog.destroy();
     }
 
     private void save_file() {
@@ -207,6 +207,9 @@ public class FileDefaultWidgetController : Object {
             case FileTransfer.State.COMPLETE:
                 if (event_button.button == 1 && this.widget.file_menu.popover.visible == false) {
                     open_file();
+                }
+                if (event_button.button == 3 && this.widget.file_menu.popover.visible == false) {
+                    save_file();
                 }
                 break;
             case FileTransfer.State.NOT_STARTED:
