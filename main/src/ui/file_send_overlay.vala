@@ -104,7 +104,7 @@ public class FileSendOverlay : Gtk.EventBox {
 
         public bool is_ok = true;
         public File file;
-        FileInfo file_info;
+        public FileInfo file_info;
         FileSendOverlay overlay;
 
 
@@ -142,6 +142,8 @@ public class FileSendOverlay : Gtk.EventBox {
                 set_error(_("Directories cannot be uploaded."));
             }else {
                 var size = yield overlay.file_size_limit.future.wait_async();
+                if (size < 0)
+                    set_error(_("You can't send files with this server"));
                 if (file_info.get_size() > size)
                     set_error(_("The file exceeds the server's maximum upload size of %s.").printf(format_size(size)));               
             }
@@ -201,7 +203,16 @@ public class FileSendOverlay : Gtk.EventBox {
         }
         var box = new FileWidget(this,file,file_info);
         yield box.load_file();
-        files_widget.add(box);
+        var index =  0;
+        foreach(var widget in files_widget.get_children()){
+            var fw = widget as FileWidget;
+            if ( fw.file_info.get_name().collate(file_info.get_name())<0)
+                index++;
+            if ( fw.file.get_path() == file.get_path())
+                return;
+        }
+        files_widget.pack_start(box,expand=false); 
+        files_widget.reorder_child(box, index);
         update_send_label();
     }
 }
