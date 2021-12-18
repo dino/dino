@@ -16,6 +16,10 @@ if(GstRtp_VERSION VERSION_GREATER "1.16")
     set(RTP_DEFINITIONS GST_1_16)
 endif()
 
+if(Vala_VERSION VERSION_GREATER "0.50")
+    set(RTP_DEFINITIONS VALA_0_50)
+endif()
+
 if(WebRTCAudioProcessing_VERSION GREATER "0.4")
     message(STATUS "Ignoring WebRTCAudioProcessing, only versions < 0.4 supported so far")
     unset(WebRTCAudioProcessing_FOUND)

@@ -343,36 +343,57 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
         Gst.Sample sample = sink.pull_sample();
         Gst.Buffer buffer = sample.get_buffer();
-        uint8[] data;
-        buffer.extract_dup(0, buffer.get_size(), out data);
-        prepare_local_crypto();
         if (sink == send_rtp) {
+            uint buffer_ssrc = 0, buffer_seq = 0;
             Gst.RTP.Buffer rtp_buffer;
             if (Gst.RTP.Buffer.map(buffer, Gst.MapFlags.READ, out rtp_buffer)) {
-                if (our_ssrc != rtp_buffer.get_ssrc()) {
-                    warning("Sending buffer with SSRC %u when our ssrc is %u", rtp_buffer.get_ssrc(), our_ssrc);
-                }
+                buffer_ssrc = rtp_buffer.get_ssrc();
+                buffer_seq = rtp_buffer.get_seq();
                 next_seqnum_offset = rtp_buffer.get_seq() + 1;
+                next_timestamp_offset_base = rtp_buffer.get_timestamp();
+                next_timestamp_offset_stamp = get_monotonic_time();
                 rtp_buffer.unmap();
             }
-            if (crypto_session.has_encrypt) {
-                data = crypto_session.encrypt_rtp(data);
+            if (our_ssrc != buffer_ssrc) {
+                warning("Sending RTP %s buffer seq %u with SSRC %u when our ssrc is %u", media, buffer_seq, buffer_ssrc, our_ssrc);
+            } else {
+                debug("Sending RTP %s buffer seq %u with SSRC %u", media, buffer_seq, buffer_ssrc);
             }
-            on_send_rtp_data(new Bytes.take((owned) data));
+        }
+
+        prepare_local_crypto();
+
+        uint8[] data;
+        buffer.extract_dup(0, buffer.get_size(), out data);
+        if (sink == send_rtp) {
+            encrypt_and_send_rtp((owned) data);
         } else if (sink == send_rtcp) {
             encrypt_and_send_rtcp((owned) data);
         }
         return Gst.FlowReturn.OK;
     }
 
-    private void encrypt_and_send_rtcp(owned uint8[] data) {
+    private void encrypt_and_send_rtp(owned uint8[] data) {
+        Bytes bytes;
         if (crypto_session.has_encrypt) {
-            data = crypto_session.encrypt_rtcp(data);
+            bytes = new Bytes.take(crypto_session.encrypt_rtp(data));
+        } else {
+            bytes = new Bytes.take(data);
+        }
+        on_send_rtp_data(bytes);
+    }
+
+    private void encrypt_and_send_rtcp(owned uint8[] data) {
+        Bytes bytes;
+        if (crypto_session.has_encrypt) {
+            bytes = new Bytes.take(crypto_session.encrypt_rtcp(data));
+        } else {
+            bytes = new Bytes.take(data);
         }
         if (rtcp_mux) {
-            on_send_rtp_data(new Bytes.take((owned) data));
+            on_send_rtp_data(bytes);
         } else {
-            on_send_rtcp_data(new Bytes.take((owned) data));
+            on_send_rtcp_data(bytes);
         }
     }
 
@@ -514,17 +535,38 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             on_recv_rtcp_data(bytes);
             return;
         }
-        prepare_remote_crypto();
-        uint8[] data = bytes.get_data();
-        if (crypto_session.has_decrypt) {
-            try {
-                data = crypto_session.decrypt_rtp(data);
-            } catch (Error e) {
-                warning("%s (%d)", e.message, e.code);
+#if GST_1_16
+        {
+            Gst.Buffer buffer = new Gst.Buffer.wrapped_bytes(bytes);
+            Gst.RTP.Buffer rtp_buffer;
+            uint buffer_ssrc = 0, buffer_seq = 0;
+            if (Gst.RTP.Buffer.map(buffer, Gst.MapFlags.READ, out rtp_buffer)) {
+                buffer_ssrc = rtp_buffer.get_ssrc();
+                buffer_seq = rtp_buffer.get_seq();
+                rtp_buffer.unmap();
             }
+            debug("Received RTP %s buffer seq %u with SSRC %u", media, buffer_seq, buffer_ssrc);
         }
+#endif
         if (push_recv_data) {
-            Gst.Buffer buffer = new Gst.Buffer.wrapped((owned) data);
+            prepare_remote_crypto();
+
+            Gst.Buffer buffer;
+            if (crypto_session.has_decrypt) {
+                try {
+                    buffer = new Gst.Buffer.wrapped(crypto_session.decrypt_rtp(bytes.get_data()));
+                } catch (Error e) {
+                    warning("%s (%d)", e.message, e.code);
+                    return;
+                }
+            } else {
+#if GST_1_16
+                buffer = new Gst.Buffer.wrapped_bytes(bytes);
+#else
+                buffer = new Gst.Buffer.wrapped(bytes.get_data());
+#endif
+            }
+
             Gst.RTP.Buffer rtp_buffer;
             if (Gst.RTP.Buffer.map(buffer, Gst.MapFlags.READ, out rtp_buffer)) {
                 if (rtp_buffer.get_extension()) {
@@ -552,11 +594,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 rtp_buffer.unmap();
             }
 
-            // FIXME: VAPI file in Vala < 0.49.1 has a bug that results in broken ownership of buffer in push_buffer()
-            // We workaround by using the plain signal. The signal unfortunately will cause an unnecessary copy of
-            // the underlying buffer, so and some point we should move over to the new version (once we require
-            // Vala >= 0.50)
-#if FIXED_APPSRC_PUSH_BUFFER_IN_VAPI
+#if VALA_0_50
             recv_rtp.push_buffer((owned) buffer);
 #else
             Gst.FlowReturn ret;
@@ -566,19 +604,26 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     }
 
     public override void on_recv_rtcp_data(Bytes bytes) {
-        prepare_remote_crypto();
-        uint8[] data = bytes.get_data();
-        if (crypto_session.has_decrypt) {
-            try {
-                data = crypto_session.decrypt_rtcp(data);
-            } catch (Error e) {
-                warning("%s (%d)", e.message, e.code);
-            }
-        }
         if (push_recv_data) {
-            Gst.Buffer buffer = new Gst.Buffer.wrapped((owned) data);
-            // See above
-#if FIXED_APPSRC_PUSH_BUFFER_IN_VAPI
+            prepare_remote_crypto();
+
+            Gst.Buffer buffer;
+            if (crypto_session.has_decrypt) {
+                try {
+                    buffer = new Gst.Buffer.wrapped(crypto_session.decrypt_rtcp(bytes.get_data()));
+                } catch (Error e) {
+                    warning("%s (%d)", e.message, e.code);
+                    return;
+                }
+            } else {
+#if GST_1_16
+                buffer = new Gst.Buffer.wrapped_bytes(bytes);
+#else
+                buffer = new Gst.Buffer.wrapped(bytes.get_data());
+#endif
+            }
+
+#if VALA_0_50
             recv_rtcp.push_buffer((owned) buffer);
 #else
             Gst.FlowReturn ret;

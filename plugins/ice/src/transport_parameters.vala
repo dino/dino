@@ -273,6 +273,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
                 if (decrypt_data == null) return;
             } catch (Crypto.Error e) {
                 warning("%s while on_recv stream %u component %u", e.message, stream_id, component_id);
+                return;
             }
         }
         may_consider_ready(stream_id, component_id);
