@@ -29,7 +29,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     public Device input_device { get { return _input_device; } set {
         if (!paused) {
             var input = this.input;
-            set_input(value != null ? value.link_source(payload_type, our_ssrc, next_seqnum_offset) : null);
+            set_input(value != null ? value.link_source(payload_type, our_ssrc, next_seqnum_offset, next_timestamp_offset) : null);
             if (this._input_device != null) this._input_device.unlink(input);
         }
         this._input_device = value;
@@ -46,6 +46,13 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     private bool push_recv_data = false;
     private uint our_ssrc = Random.next_int();
     private int next_seqnum_offset = -1;
+    private uint32 next_timestamp_offset_base = 0;
+    private int64 next_timestamp_offset_stamp = 0;
+    private uint32 next_timestamp_offset { get {
+        if (next_timestamp_offset_base == 0) return 0;
+        int64 monotonic_diff = get_monotonic_time() - next_timestamp_offset_stamp;
+        return next_timestamp_offset_base + (uint32)((double)monotonic_diff / 1000000.0 * payload_type.clockrate);
+    } }
     private uint32 participant_ssrc = 0;
 
     private Gst.Pad recv_rtcp_sink_pad;
@@ -657,7 +664,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 
     public void unpause() {
         if (!paused) return;
-        set_input_and_pause(input_device != null ? input_device.link_source(payload_type, our_ssrc, next_seqnum_offset) : null, false);
+        set_input_and_pause(input_device != null ? input_device.link_source(payload_type, our_ssrc, next_seqnum_offset, next_timestamp_offset) : null, false);
     }
 
     public uint get_participant_ssrc(Xmpp.Jid participant) {

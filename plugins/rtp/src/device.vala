@@ -96,7 +96,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         return element;
     }
 
-    public Gst.Element? link_source(PayloadType? payload_type = null, uint ssrc = Random.next_int(), int seqnum_offset = -1) {
+    public Gst.Element? link_source(PayloadType? payload_type = null, uint ssrc = Random.next_int(), int seqnum_offset = -1, uint32 timestamp_offset = 0) {
         if (!is_source) return null;
         if (element == null) create();
         links++;
@@ -122,8 +122,12 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                 var payload = (Gst.RTP.BasePayload) ((Gst.Bin) payloaders[payload_type][ssrc]).get_by_name(@"$(id)_$(codec)_$(ssrc)_rtp_pay");
                 payload.ssrc = ssrc;
                 payload.seqnum_offset = seqnum_offset;
+                if (timestamp_offset != 0) {
+                    payload.timestamp_offset = timestamp_offset;
+                }
                 pipe.add(payloaders[payload_type][ssrc]);
                 codec_tees[payload_type].link(payloaders[payload_type][ssrc]);
+                debug("Payload for %s with %s using ssrc %u, seqnum_offset %u, timestamp_offset %u", media, codec, ssrc, seqnum_offset, timestamp_offset);
             }
             if (!payloader_tees.has_key(payload_type)) {
                 payloader_tees[payload_type] = new HashMap<uint, Gst.Element>();
