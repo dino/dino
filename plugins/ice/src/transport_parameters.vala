@@ -10,6 +10,8 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     private bool remote_credentials_set;
     private Map<uint8, DatagramConnection> connections = new HashMap<uint8, DatagramConnection>();
     private DtlsSrtp.Handler? dtls_srtp_handler;
+    private MainContext thread_context;
+    private MainLoop thread_loop;
 
     private class DatagramConnection : Jingle.DatagramConnection {
         private Nice.Agent agent;
@@ -85,6 +87,14 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
         agent.controlling_mode = !incoming;
         stream_id = agent.add_stream(components);
+        thread_context = new MainContext();
+        new Thread<void*>(@"ice-thread-$stream_id", () => {
+            thread_context.push_thread_default();
+            thread_loop = new MainLoop(thread_context, false);
+            thread_loop.run();
+            thread_context.pop_thread_default();
+            return null;
+        });
 
         if (turn_ip != null) {
             for (uint8 component_id = 1; component_id <= components; component_id++) {
@@ -99,7 +109,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
         for (uint8 component_id = 1; component_id <= components; component_id++) {
             // We don't properly get local candidates before this call
-            agent.attach_recv(stream_id, component_id, MainContext.@default(), on_recv);
+            agent.attach_recv(stream_id, component_id, thread_context, on_recv);
         }
 
         agent.gather_candidates(stream_id);
@@ -337,5 +347,8 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         agent = null;
         dtls_srtp_handler = null;
         connections.clear();
+        if (thread_loop != null) {
+            thread_loop.quit();
+        }
     }
 }
