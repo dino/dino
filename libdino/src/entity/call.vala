@@ -39,11 +39,6 @@ namespace Dino.Entities {
             id = row[db.call.id];
             account = db.get_account_by_id(row[db.call.account_id]);
 
-            counterpart = db.get_jid_by_id(row[db.call.counterpart_id]);
-            string counterpart_resource = row[db.call.counterpart_resource];
-            if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
-            counterparts.add(counterpart);
-
             string our_resource = row[db.call.our_resource];
             if (our_resource != null) {
                 ourpart = account.bare_jid.with_resource(our_resource);
@@ -64,6 +59,14 @@ namespace Dino.Entities {
                     counterparts.add(peer);
                 }
                 if (counterpart == null) counterpart = peer;
+            }
+
+            counterpart = db.get_jid_by_id(row[db.call.counterpart_id]);
+            string counterpart_resource = row[db.call.counterpart_resource];
+            if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
+            if (counterparts.is_empty) {
+                counterparts.add(counterpart);
+                counterpart = counterpart;
             }
 
             notify.connect(on_update);
