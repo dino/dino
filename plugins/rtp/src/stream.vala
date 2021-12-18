@@ -81,45 +81,6 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
     }
 
-    private static Gst.PadProbeReturn log_probe(Gst.Pad pad, Gst.PadProbeInfo info) {
-        if ((info.type & Gst.PadProbeType.EVENT_DOWNSTREAM) > 0) {
-            debug("%s.%s probed downstream event %s", pad.get_parent_element().name, pad.name, info.get_event().type.get_name());
-        }
-        if ((info.type & Gst.PadProbeType.EVENT_UPSTREAM) > 0) {
-            var event = info.get_event();
-            if (event.type == Gst.EventType.RECONFIGURE) return Gst.PadProbeReturn.DROP;
-            if (event.type == Gst.EventType.QOS) {
-                Gst.QOSType qos_type;
-                double proportion;
-                Gst.ClockTimeDiff diff;
-                Gst.ClockTime timestamp;
-                event.parse_qos(out qos_type, out proportion, out diff, out timestamp);
-                debug("%s.%s probed qos event: type: %s, proportion: %f, diff: %lli, timestamp: %llu", pad.get_parent_element().name, pad.name, @"$qos_type", proportion, diff, timestamp);
-            } else {
-                debug("%s.%s probed upstream event %s", pad.get_parent_element().name, pad.name, event.type.get_name());
-            }
-        }
-        if ((info.type & Gst.PadProbeType.QUERY_DOWNSTREAM) > 0) {
-            debug("%s.%s probed downstream query %s", pad.get_parent_element().name, pad.name, info.get_query().type.get_name());
-        }
-        if ((info.type & Gst.PadProbeType.QUERY_UPSTREAM) > 0) {
-            debug("%s.%s probed upstream query %s", pad.get_parent_element().name, pad.name, info.get_query().type.get_name());
-        }
-        if ((info.type & Gst.PadProbeType.BUFFER) > 0) {
-            uint id = pad.steal_data("no_buffer_probe_timeout");
-            if (id != 0) {
-                Source.remove(id);
-            }
-            string name = @"$(pad.get_parent_element().name).$(pad.name)";
-            id = Timeout.add_seconds(1, () => {
-                debug("%s probed no buffer for 1 second", name);
-                return Source.REMOVE;
-            });
-            pad.set_data("no_buffer_probe_timeout", id);
-        } 
-        return Gst.PadProbeReturn.PASS;
-    }
-
     public override void create() {
         plugin.pause();
 
@@ -160,7 +121,6 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         recv_rtp.do_timestamp = true;
         recv_rtp.format = Gst.Format.TIME;
         recv_rtp.is_live = true;
-        recv_rtp.get_static_pad("src").add_probe(Gst.PadProbeType.BLOCK, log_probe);
         pipe.add(recv_rtp);
 
         recv_rtcp = Gst.ElementFactory.make("appsrc", @"rtcp_src_$rtpid") as Gst.App.Src;

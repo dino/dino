@@ -155,14 +155,6 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 break;
             case Gst.MessageType.STATE_CHANGED:
                 // Ignore
-            {
-                unowned Gst.Structure struc = message.get_structure();
-                if (struc != null && message.src is Gst.Element) {
-                    Gst.State oldState, newState, pendingState;
-                    message.parse_state_changed(out oldState, out newState, out pendingState);
-                    debug("State of %s changed. Old: %s, New: %s, Pending; %s", ((Gst.Element)message.src).name, @"$oldState", @"$newState", @"$pendingState");
-                }
-            }
                 break;
             case Gst.MessageType.STREAM_STATUS:
                 Gst.StreamStatusType status;
