@@ -39,17 +39,23 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
         public override void send_datagram(Bytes datagram) {
             if (this.agent != null && is_component_ready(agent, stream_id, component_id)) {
-                uint8[] encrypted_data = null;
-                if (dtls_srtp_handler != null) {
-                    try {
-                        encrypted_data = dtls_srtp_handler.process_outgoing_data(component_id, datagram.get_data());
+                try {
+                    if (dtls_srtp_handler != null) {
+                        uint8[] encrypted_data = dtls_srtp_handler.process_outgoing_data(component_id, datagram.get_data());
                         if (encrypted_data == null) return;
-                    } catch (Crypto.Error e) {
-                        warning("%s while send_datagram stream %u component %u", e.message, stream_id, component_id);
+                        // TODO: Nonblocking might require certain libnice versions?
+                        GLib.OutputVector[] vectors = {{ encrypted_data, encrypted_data.length }};
+                        Nice.OutputMessage[] messages = {{ vectors }};
+                        agent.send_messages_nonblocking(stream_id, component_id, messages);
+                    } else {
+                        GLib.OutputVector[] vectors = {{ datagram.get_data(), datagram.get_size() }};
+                        Nice.OutputMessage[] messages = {{ vectors }};
+                        agent.send_messages_nonblocking(stream_id, component_id, messages);
                     }
+                    bytes_sent += datagram.length;
+                } catch (GLib.Error e) {
+                    warning("%s while send_datagram stream %u component %u", e.message, stream_id, component_id);
                 }
-                agent.send(stream_id, component_id, encrypted_data ?? datagram.get_data());
-                bytes_sent += datagram.length;
             }
         }
     }
