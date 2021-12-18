@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-13 20:03+0200\n"
-"PO-Revision-Date: 2021-08-31 23:44+0000\n"
+"POT-Creation-Date: 2021-12-18 23:35+0100\n"
+"PO-Revision-Date: 2021-11-28 18:52+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
 "Language: ar\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.8.1-dev\n"
+"X-Generator: Weblate 4.10-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -58,7 +58,7 @@ msgstr "اُستلم الملف"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Outgoing call"
-msgstr ""
+msgstr "مكالمة صادرة"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -66,7 +66,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Incoming call"
-msgstr ""
+msgstr "مكالمة واردة"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
@@ -186,15 +186,15 @@ msgstr "طلب الإذن"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:19
 msgid "Start call"
-msgstr ""
+msgstr "ابدأ مكالمة"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:37
 msgid "Audio call"
-msgstr ""
+msgstr "مكالمة صوتية"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:38
 msgid "Video call"
-msgstr ""
+msgstr "مكالمة مرئية"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
@@ -208,11 +208,11 @@ msgstr "الأعضاء"
 #: main/src/ui/call_window/call_window.vala:161
 #: main/src/ui/conversation_content_view/call_widget.vala:91
 msgid "Calling…"
-msgstr ""
+msgstr "يتصل…"
 
 #: main/src/ui/call_window/call_window.vala:164
 msgid "Ringing…"
-msgstr ""
+msgstr "يرِن…"
 
 #: main/src/ui/call_window/call_window.vala:167
 #: main/src/ui/manage_accounts/dialog.vala:219
@@ -222,7 +222,7 @@ msgstr "الإتصال جارٍ …"
 #: main/src/ui/call_window/call_window.vala:181
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "أنهى %s المكالمة"
 
 #: main/src/ui/call_window/call_window.vala:183
 #, c-format
@@ -569,7 +569,7 @@ msgstr "إدارة الحسابات"
 #: main/src/ui/notifier_freedesktop.vala:127
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 msgid "Incoming video call"
-msgstr ""
+msgstr "مكالمة مرئية واردة"
 
 #: main/src/ui/notifier_freedesktop.vala:134
 #: main/src/ui/notifier_freedesktop.vala:229 main/data/call_widget.ui:84
@@ -703,7 +703,7 @@ msgstr ""
 
 #: main/src/ui/conversation_content_view/message_widget.vala:244
 msgid "delivery failed"
-msgstr ""
+msgstr "فشل التسليم"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
@@ -727,43 +727,43 @@ msgstr "%s يكتب حاليا…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:98
 msgid "Call started"
-msgstr ""
+msgstr "بدأتْ المكالمة"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:100
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "بدأتْ منذ %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:113
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "ردَدْتَ على هذه المكالمة من جهاز آخر"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:118
 msgid "Call ended"
-msgstr ""
+msgstr "انتهت المكالمة"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:121
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "انتهت على %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:123
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "دامتْ %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:127
 msgid "Call missed"
-msgstr ""
+msgstr "مكالمة فائتة"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:129
 msgid "You missed this call"
-msgstr ""
+msgstr "فاتتك هذه الممالمة"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:132
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "فاتت %s هذه المكالمة"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Call declined"

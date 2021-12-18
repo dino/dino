@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-13 20:03+0200\n"
-"PO-Revision-Date: 2021-06-08 21:34+0000\n"
+"POT-Creation-Date: 2021-12-18 23:35+0100\n"
+"PO-Revision-Date: 2021-12-17 13:53+0000\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
 "Language: it\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.10\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -57,7 +57,7 @@ msgstr "File ricevuto"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Outgoing call"
-msgstr ""
+msgstr "Chiamata in uscita"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -65,7 +65,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Incoming call"
-msgstr ""
+msgstr "Chiamata in arrivo"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
@@ -181,15 +181,15 @@ msgstr "Richiesta di autorizzazione"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:19
 msgid "Start call"
-msgstr ""
+msgstr "Chiama"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:37
 msgid "Audio call"
-msgstr ""
+msgstr "Chiamata audio"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:38
 msgid "Video call"
-msgstr ""
+msgstr "Videochiamata"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
@@ -203,11 +203,11 @@ msgstr "Partecipanti"
 #: main/src/ui/call_window/call_window.vala:161
 #: main/src/ui/conversation_content_view/call_widget.vala:91
 msgid "Calling…"
-msgstr ""
+msgstr "Chiamando…"
 
 #: main/src/ui/call_window/call_window.vala:164
 msgid "Ringing…"
-msgstr ""
+msgstr "Sta squillando…"
 
 #: main/src/ui/call_window/call_window.vala:167
 #: main/src/ui/manage_accounts/dialog.vala:219
@@ -217,12 +217,12 @@ msgstr "Connessione…"
 #: main/src/ui/call_window/call_window.vala:181
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "%s ha terminato la chiamata"
 
 #: main/src/ui/call_window/call_window.vala:183
 #, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s ha rifiutato la chiamata"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
@@ -562,7 +562,7 @@ msgstr "Gestisci account"
 #: main/src/ui/notifier_freedesktop.vala:127
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 msgid "Incoming video call"
-msgstr ""
+msgstr "Videochiamata in arrivo"
 
 #: main/src/ui/notifier_freedesktop.vala:134
 #: main/src/ui/notifier_freedesktop.vala:229 main/data/call_widget.ui:84
@@ -692,11 +692,11 @@ msgstr "modificato"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:231
 msgid "pending…"
-msgstr ""
+msgstr "in attesa…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:244
 msgid "delivery failed"
-msgstr ""
+msgstr "invio fallito"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
@@ -720,78 +720,78 @@ msgstr "%s sta scrivendo…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:98
 msgid "Call started"
-msgstr ""
+msgstr "Chiamata iniziata"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:100
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "Iniziata %s fa"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:113
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "Hai gestito questa chiamata su un altro dispositivo"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:118
 msgid "Call ended"
-msgstr ""
+msgstr "Chiamata terminata"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:121
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "Terminata alle %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:123
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "Durata %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:127
 msgid "Call missed"
-msgstr ""
+msgstr "Chiamata persa"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:129
 msgid "You missed this call"
-msgstr ""
+msgstr "Hai perso questa chiamata"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:132
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s ha perso questa chiamata"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Call declined"
-msgstr ""
+msgstr "Chiamata rifiutata"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "You declined this call"
-msgstr ""
+msgstr "Hai rifiutato questa chiamata"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:142
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s ha rifiutato questa chiamata"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:147
 msgid "Call failed"
-msgstr ""
+msgstr "Chiamata non riuscita"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i ora"
+msgstr[1] "%i ore"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:176
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i minuto"
+msgstr[1] "%i minuti"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "a few seconds"
-msgstr ""
+msgstr "qualche secondo"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:189
 #: main/data/menu_encryption.ui:14

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-13 20:03+0200\n"
-"PO-Revision-Date: 2021-03-22 13:29+0000\n"
+"POT-Creation-Date: 2021-12-18 23:35+0100\n"
+"PO-Revision-Date: 2021-11-11 13:51+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.5.2-dev\n"
+"X-Generator: Weblate 4.9.1-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -57,7 +57,7 @@ msgstr "文件已接收"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Outgoing call"
-msgstr ""
+msgstr "呼出通话"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -65,7 +65,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Incoming call"
-msgstr ""
+msgstr "呼入通话"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
@@ -180,15 +180,15 @@ msgstr "请求权限"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:19
 msgid "Start call"
-msgstr ""
+msgstr "开始通话"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:37
 msgid "Audio call"
-msgstr ""
+msgstr "音频通话"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:38
 msgid "Video call"
-msgstr ""
+msgstr "视频通话"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
@@ -202,11 +202,11 @@ msgstr "成员"
 #: main/src/ui/call_window/call_window.vala:161
 #: main/src/ui/conversation_content_view/call_widget.vala:91
 msgid "Calling…"
-msgstr ""
+msgstr "正在呼叫…"
 
 #: main/src/ui/call_window/call_window.vala:164
 msgid "Ringing…"
-msgstr ""
+msgstr "对方已响铃…"
 
 #: main/src/ui/call_window/call_window.vala:167
 #: main/src/ui/manage_accounts/dialog.vala:219
@@ -216,12 +216,12 @@ msgstr "连接中…"
 #: main/src/ui/call_window/call_window.vala:181
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "%s 结束了通话"
 
 #: main/src/ui/call_window/call_window.vala:183
 #, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s 拒绝了通话"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
@@ -306,7 +306,7 @@ msgstr "无法连接到 %s"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
 #: main/src/ui/manage_accounts/add_account_dialog.vala:397
 msgid "Invalid address"
-msgstr "无效地址"
+msgstr "地址无效"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:24
@@ -558,7 +558,7 @@ msgstr "管理帐号"
 #: main/src/ui/notifier_freedesktop.vala:127
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 msgid "Incoming video call"
-msgstr ""
+msgstr "传入视频通话"
 
 #: main/src/ui/notifier_freedesktop.vala:134
 #: main/src/ui/notifier_freedesktop.vala:229 main/data/call_widget.ui:84
@@ -650,7 +650,7 @@ msgstr "错误的用户名或密码"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:284
 msgid "Something went wrong"
-msgstr "出现了一些问题"
+msgstr "出错了"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:327
 msgid "No response from server"
@@ -688,11 +688,11 @@ msgstr "已編辑"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:231
 msgid "pending…"
-msgstr ""
+msgstr "发送中…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:244
 msgid "delivery failed"
-msgstr ""
+msgstr "发送失败"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
@@ -716,76 +716,76 @@ msgstr "%s 正在输入…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:98
 msgid "Call started"
-msgstr ""
+msgstr "通话已开始"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:100
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "开始于%s前"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:113
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "您在另一个设备上处理了该通话"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:118
 msgid "Call ended"
-msgstr ""
+msgstr "通话已结束"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:121
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "结束于%s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:123
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "持续了%s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:127
 msgid "Call missed"
-msgstr ""
+msgstr "通话已错过"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:129
 msgid "You missed this call"
-msgstr ""
+msgstr "您错过了此通话"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:132
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s错过了此通话"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Call declined"
-msgstr ""
+msgstr "通话已拒绝"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "You declined this call"
-msgstr ""
+msgstr "您拒绝了此通话"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:142
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s错过了此通话"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:147
 msgid "Call failed"
-msgstr ""
+msgstr "通话失败"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
+msgstr[0] "%i小时"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:176
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
+msgstr[0] "%i分钟"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "a few seconds"
-msgstr ""
+msgstr "几秒"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:189
 #: main/data/menu_encryption.ui:14

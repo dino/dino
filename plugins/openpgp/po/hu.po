@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-13 20:03+0200\n"
-"PO-Revision-Date: 2018-08-31 08:38+0000\n"
+"POT-Creation-Date: 2021-12-18 23:35+0100\n"
+"PO-Revision-Date: 2021-12-05 01:51+0000\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/hu/>\n"
 "Language: hu\n"
@@ -16,13 +16,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 4.10-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr "A kulcs publikálása kikapcsolva"
+msgstr "Kulcsközzététel letiltva"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
@@ -30,11 +30,11 @@ msgstr "Hiba a GnuPG-ben"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "Nincs elérhető kulcs. Generálj egyet!"
+msgstr "Nincsenek elérhető kulcsok. Állítson elő egyet!"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "Válassz kulcsot"
+msgstr "Kulcs kiválasztása"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
