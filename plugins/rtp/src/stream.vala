@@ -169,7 +169,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             Timeout.add(1000, () => remb_adjust());
         }
         if (input_device != null && media == "video") {
-            input_device.update_bitrate(payload_type, 256);
+            input_device.update_bitrate(payload_type, target_send_bitrate);
         }
     }
 
@@ -214,16 +214,18 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 if (packets_received < last_packets_received) new_received = 0;
                 uint64 new_octets = octets_received - last_octets_received;
                 if (octets_received < last_octets_received) octets_received = 0;
+                if (new_received == 0) continue;
                 last_packets_lost = packets_lost;
                 last_packets_received = packets_received;
                 last_octets_received = octets_received;
-                if (new_received == 0) continue;
                 double loss_rate = (double)new_lost / (double)(new_lost + new_received);
-                uint new_target_receive_bitrate = 256;
+                uint new_target_receive_bitrate;
                 if (new_lost <= 0 || loss_rate < 0.02) {
                     new_target_receive_bitrate = (uint)(1.08 * (double)target_receive_bitrate);
                 } else if (loss_rate > 0.1) {
                     new_target_receive_bitrate = (uint)((1.0 - 0.5 * loss_rate) * (double)target_receive_bitrate);
+                } else {
+                    new_target_receive_bitrate = target_receive_bitrate;
                 }
                 if (last_remb_time == 0) {
                     last_remb_time = get_monotonic_time();
@@ -670,6 +672,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     public void unpause() {
         if (!paused) return;
         set_input_and_pause(input_device != null ? input_device.link_source(payload_type, our_ssrc, next_seqnum_offset, next_timestamp_offset) : null, false);
+        input_device.update_bitrate(payload_type, target_send_bitrate);
     }
 
     public uint get_participant_ssrc(Xmpp.Jid participant) {

@@ -2,24 +2,19 @@ using Xmpp.Xep.JingleRtp;
 using Gee;
 
 public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
+    private const int[] common_widths = {320, 360, 400, 480, 640, 960, 1280, 1920, 2560, 3840};
+
     public Plugin plugin { get; private set; }
     public CodecUtil codec_util { get { return plugin.codec_util; } }
     public Gst.Device device { get; private set; }
 
-    private string device_name;
-    public string id { get {
-        return device_name;
-    }}
-    private string device_display_name;
-    public string display_name { get {
-        return device_display_name;
-    }}
+    public string id { get { return device_name; }}
+    public string display_name { get { return device_display_name; }}
     public string detail_name { get {
         return device.properties.get_string("alsa.card_name") ?? device.properties.get_string("alsa.id") ?? id;
     }}
-    public Gst.Pipeline pipe { get {
-        return plugin.pipe;
-    }}
+
+    public Gst.Pipeline pipe { get { return plugin.pipe; }}
     public string? media { get {
         if (device.has_classes("Audio")) {
             return "audio";
@@ -29,12 +24,11 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             return null;
         }
     }}
-    public bool is_source { get {
-        return device.has_classes("Source");
-    }}
-    public bool is_sink { get {
-        return device.has_classes("Sink");
-    }}
+    public bool is_source { get { return device.has_classes("Source"); }}
+    public bool is_sink { get { return device.has_classes("Sink"); }}
+
+    private string device_name;
+    private string device_display_name;
 
     private Gst.Caps device_caps;
     private Gst.Element element;
@@ -96,11 +90,11 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         return element;
     }
 
-    public Gst.Element? link_source(PayloadType? payload_type = null, uint ssrc = Random.next_int(), int seqnum_offset = -1, uint32 timestamp_offset = 0) {
+    public Gst.Element? link_source(PayloadType? payload_type = null, uint ssrc = 0, int seqnum_offset = -1, uint32 timestamp_offset = 0) {
         if (!is_source) return null;
         if (element == null) create();
         links++;
-        if (payload_type != null && tee != null) {
+        if (payload_type != null && ssrc != 0 && tee != null) {
             bool new_codec = false;
             string? codec = CodecUtil.get_codec_from_payload(media, payload_type);
             if (!codecs.has_key(payload_type)) {
@@ -172,16 +166,17 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         return br;
     }
 
-    private const int[] common_widths = {320, 480, 640, 960, 1280, 1920, 2560, 3840};
     private Gst.Caps get_active_caps(PayloadType payload_type) {
         return codec_util.get_rescale_caps(codecs[payload_type]) ?? device_caps;
     }
+
     private void apply_caps(PayloadType payload_type, Gst.Caps caps) {
         plugin.pause();
         debug("Set scaled caps to %s", caps.to_string());
         codec_util.update_rescale_caps(codecs[payload_type], caps);
         plugin.unpause();
     }
+
     private void apply_width(PayloadType payload_type, int new_width, uint bitrate) {
         int device_caps_width, device_caps_height, active_caps_width, device_caps_framerate_num, device_caps_framerate_den;
         device_caps.get_structure(0).get_int("width", out device_caps_width);
@@ -197,9 +192,11 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         int new_height = device_caps_height * new_width / device_caps_width;
         Gst.Caps new_caps = new Gst.Caps.simple("video/x-raw", "width", typeof(int), new_width, "height", typeof(int), new_height, "framerate", typeof(Gst.Fraction), device_caps_framerate_num, device_caps_framerate_den, null);
         double required_bitrate = get_target_bitrate(new_caps);
-        if (bitrate < required_bitrate) return;
+        debug("Changing resolution width from %d to %d (requires bitrate %f, current target is %u)", active_caps_width, new_width, required_bitrate, bitrate);
+        if (bitrate < required_bitrate && new_width > active_caps_width) return;
         apply_caps(payload_type, new_caps);
     }
+
     public void update_bitrate(PayloadType payload_type, uint bitrate) {
         if (codecs.has_key(payload_type)) {
             lock(codec_bitrates);
@@ -233,12 +230,17 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                 if (bitrate < 0.75 * current_target_bitrate && active_caps_width > common_widths[0]) {
                     // Lower video resolution
                     int i = 1;
-                    for(; i < common_widths.length && common_widths[i] < active_caps_width; i++);
+                    for(; i < common_widths.length && common_widths[i] < active_caps_width; i++);if (common_widths[i] != active_caps_width) {
+                        debug("Decrease resolution to ensure target bitrate (%u) is in reach (current resolution target bitrate is %f)", bitrate, current_target_bitrate);
+                    }
                     apply_width(payload_type, common_widths[i-1], bitrate);
                 } else if (bitrate > 2 * current_target_bitrate && active_caps_width < device_caps_width) {
                     // Higher video resolution
                     int i = 0;
                     for(; i < common_widths.length && common_widths[i] <= active_caps_width; i++);
+                    if (common_widths[i] != active_caps_width) {
+                        debug("Increase resolution to make use of available bandwidth of target bitrate (%u) (current resolution target bitrate is %f)", bitrate, current_target_bitrate);
+                    }
                     if (common_widths[i] > device_caps_width) {
                         // We never scale up, so just stick with what the device gives
                         apply_width(payload_type, device_caps_width, bitrate);
