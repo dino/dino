@@ -112,6 +112,19 @@ public class Handler {
     }
 
     public async Xmpp.Xep.Jingle.ContentEncryption? setup_dtls_connection() {
+        MainContext context = MainContext.current_source().get_context();
+        var thread = new Thread<Xmpp.Xep.Jingle.ContentEncryption>("dtls-connection", () => {
+            var res = setup_dtls_connection_thread();
+            Source source = new IdleSource();
+            source.set_callback(setup_dtls_connection.callback);
+            source.attach(context);
+            return res;
+        });
+        yield;
+        return thread.join();
+    }
+
+    private Xmpp.Xep.Jingle.ContentEncryption? setup_dtls_connection_thread() {
         buffer_mutex.lock();
         if (stop) {
             restart = true;
@@ -146,28 +159,23 @@ public class Handler {
         session.set_push_function(push_function);
         session.set_verify_function(verify_function);
 
-        Thread<int> thread = new Thread<int> (null, () => {
-            DateTime maximum_time = new DateTime.now_utc().add_seconds(20);
-            do {
-                err = session.handshake();
+        DateTime maximum_time = new DateTime.now_utc().add_seconds(20);
+        do {
+            err = session.handshake();
 
-                DateTime current_time = new DateTime.now_utc();
-                if (maximum_time.compare(current_time) < 0) {
-                    warning("DTLS handshake timeouted");
-                    err = ErrorCode.APPLICATION_ERROR_MIN + 1;
-                    break;
-                }
-                if (stop) {
-                    debug("DTLS handshake stopped");
-                    err = ErrorCode.APPLICATION_ERROR_MIN + 2;
-                    break;
-                }
-            } while (err < 0 && !((ErrorCode)err).is_fatal());
-            Idle.add(setup_dtls_connection.callback);
-            return err;
-        });
-        yield;
-        err = thread.join();
+            DateTime current_time = new DateTime.now_utc();
+            if (maximum_time.compare(current_time) < 0) {
+                warning("DTLS handshake timeouted");
+                err = ErrorCode.APPLICATION_ERROR_MIN + 1;
+                break;
+            }
+            if (stop) {
+                debug("DTLS handshake stopped");
+                err = ErrorCode.APPLICATION_ERROR_MIN + 2;
+                break;
+            }
+        } while (err < 0 && !((ErrorCode)err).is_fatal());
+
         buffer_mutex.lock();
         if (stop) {
             stop = false;
@@ -176,7 +184,7 @@ public class Handler {
             buffer_mutex.unlock();
             if (restart) {
                 debug("Restarting DTLS handshake");
-                return yield setup_dtls_connection();
+                return setup_dtls_connection_thread();
             }
             return null;
         }
