@@ -264,6 +264,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public string? get_decode_element_name(string media, string? codec) {
+        if (codec == "vp9") return null; // Temporary unsupport VP9
         if (get_depay_element_name(media, codec) == null) return null;
         foreach (string candidate in get_decode_candidates(media, codec)) {
             if (is_element_supported(candidate)) return candidate;
