@@ -86,7 +86,7 @@ namespace Dino.Ui {
 
         private void update_counterparts() {
             if (call.state != Call.State.IN_PROGRESS && call.state != Call.State.ENDED) return;
-            if (call.counterparts.size <= 1) return;
+            if (call.counterparts.size <= 1 && conversation.type_ == Conversation.Type.CHAT) return;
 
             multiparty_peer_box.foreach((widget) => { multiparty_peer_box.remove(widget); });
 

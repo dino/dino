@@ -20,7 +20,7 @@ namespace Dino.Ui {
         public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200, visible=true };
         public Box own_video_box = new Box(Orientation.HORIZONTAL, 0) { halign=Align.END, valign=Align.END, visible=true };
         public Revealer invite_button_revealer = new Revealer() { margin_top=50, margin_right=30, halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200 };
-        public Button invite_button = new Button.from_icon_name("dino-account-plus") { relief=ReliefStyle.NONE };
+        public Button invite_button = new Button.from_icon_name("dino-account-plus") { relief=ReliefStyle.NONE, visible=false };
         private Widget? own_video = null;
         private HashMap<string, ParticipantWidget> participant_widgets = new HashMap<string, ParticipantWidget>();
         private ArrayList<string> participants = new ArrayList<string>();

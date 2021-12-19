@@ -20,9 +20,12 @@ namespace Dino.Entities {
 
         public int id { get; set; default=-1; }
         public Account account { get; set; }
-        public Jid counterpart { get; set; } // For backwards compatibility with db version 21. Not to be used anymore.
+        public Jid counterpart { get; set; }
         public Gee.List<Jid> counterparts = new Gee.ArrayList<Jid>(Jid.equals_bare_func);
         public Jid ourpart { get; set; }
+        public Jid proposer {
+            get { return direction == DIRECTION_OUTGOING ? ourpart : counterpart; }
+        }
         public bool direction { get; set; }
         public DateTime time { get; set; }
         public DateTime local_time { get; set; }
@@ -58,7 +61,6 @@ namespace Dino.Entities {
                 if (!counterparts.contains(peer)) { // Legacy: The first peer is also in the `call` table. Don't add twice.
                     counterparts.add(peer);
                 }
-                if (counterpart == null) counterpart = peer;
             }
 
             counterpart = db.get_jid_by_id(row[db.call.counterpart_id]);
@@ -66,7 +68,6 @@ namespace Dino.Entities {
             if (counterpart_resource != null) counterpart = counterpart.with_resource(counterpart_resource);
             if (counterparts.is_empty) {
                 counterparts.add(counterpart);
-                counterpart = counterpart;
             }
 
             notify.connect(on_update);
@@ -107,8 +108,6 @@ namespace Dino.Entities {
         }
 
         public void add_peer(Jid peer) {
-            if (counterpart == null) counterpart = peer;
-
             if (counterparts.contains(peer)) return;
 
             counterparts.add(peer);

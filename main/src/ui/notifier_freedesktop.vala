@@ -141,10 +141,12 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
                 GLib.Application.get_default().activate_action("open-conversation", new Variant.int32(conversation.id));
             });
             add_action_listener(notification_id, "reject", () => {
-                GLib.Application.get_default().activate_action("reject-call", new Variant.int32(call.id));
+                var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.int32(call.id)});
+                GLib.Application.get_default().activate_action("reject-call", variant);
             });
             add_action_listener(notification_id, "accept", () => {
-                GLib.Application.get_default().activate_action("accept-call", new Variant.int32(call.id));
+                var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.int32(call.id)});
+                GLib.Application.get_default().activate_action("accept-call", variant);
             });
         } catch (Error e) {
             warning("Failed showing subscription request notification: %s", e.message);

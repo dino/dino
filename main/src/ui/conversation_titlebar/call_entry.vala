@@ -115,13 +115,17 @@ namespace Dino.Ui {
                 return;
             }
 
-            Conversation conv_bak = conversation;
-            bool audio_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_audio_calls_async(conversation);
-            bool video_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_video_calls_async(conversation);
-            if (conv_bak != conversation) return;
+            if (conversation.type_ == Conversation.Type.CHAT) {
+                Conversation conv_bak = conversation;
+                bool audio_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_audio_calls_async(conversation);
+                bool video_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_video_calls_async(conversation);
+                if (conv_bak != conversation) return;
 
-            visible = audio_works;
-            video_button.visible = video_works;
+                visible = audio_works;
+                video_button.visible = video_works;
+            } else {
+                visible = false;
+            }
         }
 
         public new void unset_conversation() { }

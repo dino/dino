@@ -69,7 +69,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
                     }
                     break;
                 case 3:
-                    Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(foreign_id);
+                    Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(foreign_id, conversation);
                     if (call != null) {
                         var call_item = new CallItem(call, conversation, row[db.content_item.id]);
                         items.add(call_item);
@@ -321,7 +321,7 @@ public class CallItem : ContentItem {
     public Conversation conversation;
 
     public CallItem(Call call, Conversation conversation, int id) {
-        base(id, TYPE, call.direction == Call.DIRECTION_OUTGOING ? conversation.account.bare_jid : conversation.counterpart, call.time, call.encryption, Message.Marked.NONE);
+        base(id, TYPE, call.proposer, call.time, call.encryption, Message.Marked.NONE);
 
         this.call = call;
         this.conversation = conversation;

@@ -39,9 +39,8 @@ namespace Dino {
             Call call = new Call();
             call.direction = Call.DIRECTION_OUTGOING;
             call.account = conversation.account;
-            // TODO we should only do that for Conversation.Type.CHAT, but the database currently requires a counterpart from the start
             call.counterpart = conversation.counterpart;
-            call.ourpart = conversation.account.full_jid;
+            call.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.full_jid;
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
             call.state = Call.State.RINGING;
 
@@ -57,7 +56,7 @@ namespace Dino {
                 PeerState peer_state = call_state.set_first_peer(conversation.counterpart);
                 yield peer_state.initiate_call(conversation.counterpart);
             } else {
-                call_state.initiate_groupchat_call(conversation.counterpart);
+                call_state.initiate_groupchat_call.begin(conversation.counterpart);
             }
 
             conversation.last_active = call.time;
@@ -213,24 +212,23 @@ namespace Dino {
 
         private PeerState create_received_call(Account account, Jid from, Jid to, bool video_requested) {
             Call call = new Call();
-            Jid counterpart = null;
             if (from.equals_bare(account.bare_jid)) {
                 // Call requested by another of our devices
                 call.direction = Call.DIRECTION_OUTGOING;
                 call.ourpart = from;
                 call.state = Call.State.OTHER_DEVICE;
-                counterpart = to;
+                call.counterpart = to;
             } else {
                 call.direction = Call.DIRECTION_INCOMING;
                 call.ourpart = account.full_jid;
                 call.state = Call.State.RINGING;
-                counterpart = from;
+                call.counterpart = from;
             }
-            call.add_peer(counterpart);
+            call.add_peer(call.counterpart);
             call.account = account;
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
 
-            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(counterpart.bare_jid, account, Conversation.Type.CHAT);
+            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(call.counterpart.bare_jid, account, Conversation.Type.CHAT);
 
             stream_interactor.get_module(CallStore.IDENTITY).add_call(call, conversation);
 
@@ -238,7 +236,7 @@ namespace Dino {
 
             var call_state = new CallState(call, stream_interactor);
             connect_call_state_signals(call_state);
-            PeerState peer_state = call_state.set_first_peer(counterpart);
+            PeerState peer_state = call_state.set_first_peer(call.counterpart);
             call_state.we_should_send_video = video_requested;
             call_state.we_should_send_audio = true;
 
@@ -283,7 +281,7 @@ namespace Dino {
             Call call = new Call();
             call.direction = Call.DIRECTION_INCOMING;
             call.ourpart = account.full_jid;
-            call.add_peer(inviter_jid); // not rly
+            call.counterpart = inviter_jid;
             call.account = account;
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
             call.state = Call.State.RINGING;
@@ -361,13 +359,14 @@ namespace Dino {
                     if (from.equals(account.full_jid)) return;
 
                     Call call = current_jmi_request_peer[account].call;
+                    call.ourpart = from;
                     call.state = Call.State.OTHER_DEVICE;
                     remove_call_from_datastructures(call);
                 } else if (from.equals_bare(current_jmi_request_peer[account].jid) && to.equals(account.full_jid)) { // Message from our peer
                     // We proposed the call
                     // We know the full jid of our peer now
                     current_jmi_request_call[account].rename_peer(current_jmi_request_peer[account].jid, from);
-                    current_jmi_request_peer[account].call_resource(from);
+                    current_jmi_request_peer[account].call_resource.begin(from);
                 }
             });
             mi_module.session_rejected.connect((from, to, sid) => {
@@ -377,6 +376,9 @@ namespace Dino {
                 bool outgoing_reject = call.direction == Call.DIRECTION_OUTGOING && from.equals_bare(call.counterparts[0]);
                 bool incoming_reject = call.direction == Call.DIRECTION_INCOMING && from.equals_bare(account.bare_jid);
                 if (!outgoing_reject && !incoming_reject) return;
+
+                // We don't care if a single person in a group call rejected the call
+                if (incoming_reject && call_states[call].group_call != null) return;
 
                 call.state = Call.State.DECLINED;
                 call_states[call].terminated(from, Xep.Jingle.ReasonElement.DECLINE, "JMI reject");

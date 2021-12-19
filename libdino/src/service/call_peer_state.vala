@@ -127,8 +127,6 @@ public class Dino.PeerState : Object {
     }
 
     public void reject() {
-        call.state = Call.State.DECLINED;
-
         if (session != null) {
             foreach (Xep.Jingle.Content content in session.contents) {
                 content.reject();
@@ -299,7 +297,12 @@ public class Dino.PeerState : Object {
 
         debug(@"[%s] %s connecting content signals %s", call.account.bare_jid.to_string(), jid.to_string(), rtp_content_parameter.media);
         rtp_content_parameter.stream_created.connect((stream) => on_stream_created(rtp_content_parameter.media, stream));
-        rtp_content_parameter.connection_ready.connect((status) => on_connection_ready(content, rtp_content_parameter.media));
+        rtp_content_parameter.connection_ready.connect((status) => {
+            Idle.add(() => {
+                on_connection_ready(content, rtp_content_parameter.media);
+                return false;
+            });
+        });
 
         content.senders_modify_incoming.connect((content, proposed_senders) => {
             if (content.session.senders_include_us(content.senders) != content.session.senders_include_us(proposed_senders)) {
@@ -342,7 +345,10 @@ public class Dino.PeerState : Object {
         if (media == "video" && stream.receiving) {
             counterpart_sends_video = true;
             video_content_parameter.connection_ready.connect((status) => {
-                counterpart_sends_video_updated(false);
+                Idle.add(() => {
+                    counterpart_sends_video_updated(false);
+                    return false;
+                });
             });
         }
 

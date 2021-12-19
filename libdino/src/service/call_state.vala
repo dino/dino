@@ -126,7 +126,7 @@ public class Dino.CallState : Object {
             foreach (PeerState peer in peers_cpy) {
                 peer.end(Xep.Jingle.ReasonElement.CANCEL);
             }
-            if (parent_muc != null) {
+            if (parent_muc != null && group_call != null) {
                 XmppStream stream = stream_interactor.get_stream(call.account);
                 if (stream == null) return;
                 stream.get_module(Xep.MujiMeta.Module.IDENTITY).send_invite_retract_to_peer(stream, parent_muc, group_call.muc_jid, message_type);
@@ -242,7 +242,12 @@ public class Dino.CallState : Object {
         XmppStream stream = stream_interactor.get_stream(call.account);
         if (stream == null) return;
 
-        Jid muc_jid = stream_interactor.get_module(MucManager.IDENTITY).default_muc_server[call.account] ?? new Jid("chat.jabberfr.org");
+        Jid? muc_jid = null;
+        if (muc_jid == null) {
+            warning("Failed to initiate group call: MUC server not known.");
+            return;
+        }
+
         muc_jid = new Jid("%08x@".printf(Random.next_int()) + muc_jid.to_string()); // TODO longer?
 
         debug("[%s] Converting call to groupcall %s", call.account.bare_jid.to_string(), muc_jid.to_string());

@@ -424,7 +424,7 @@ public class MucManager : StreamInteractionModule, Object {
                 foreach (Xep.ServiceDiscovery.Identity identity in identities) {
                     if (identity.category == Xep.ServiceDiscovery.Identity.CATEGORY_CONFERENCE) {
                         default_muc_server[account] = item.jid;
-                        print(@"$(account.bare_jid) Default MUC: $(item.jid)\n");
+                        debug("[%s] Default MUC: %s", account.bare_jid.to_string(), item.jid.to_string());
                         return;
                     }
                 }

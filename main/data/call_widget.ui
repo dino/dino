@@ -98,7 +98,7 @@
                                         <child>
                                             <object class="GtkBox" id="multiparty_peer_box">
                                                 <property name="margin">10</property>
-                                                <property name="spacing">5</property>
+                                                <property name="spacing">7</property>
                                                 <property name="hexpand">True</property>
                                             </object>
                                         </child>
