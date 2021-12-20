@@ -19,8 +19,9 @@ namespace Xmpp.Xep.Muji {
             if (result == null || result.nick == null) return null;
             debug(@"[%s] MUJI joining as %s done", stream.get_flag(Bind.Flag.IDENTITY).my_jid.to_string(), group_call.our_nick);
 
+            // Determine all participants that have finished preparation. Those are the ones we have to initiate the call with.
             Gee.List<Presence.Stanza> other_presences = yield wait_for_preparing_peers(stream, muc_jid);
-            var other_resources = new ArrayList<Jid>();
+            var finished_real_jids = new ArrayList<Jid>(Jid.equals_func);
             foreach (Presence.Stanza presence in other_presences) {
                 if (presence.stanza.get_deep_subnode(NS_URI + ":muji", NS_URI + ":preparing") != null) continue;
                 Jid? real_jid = stream.get_flag(Muc.Flag.IDENTITY).get_real_jid(presence.from);
@@ -28,10 +29,11 @@ namespace Xmpp.Xep.Muji {
                     warning("Don't know the real jid for %s", presence.from.to_string());
                     continue;
                 }
-                other_resources.add(real_jid);
+                finished_real_jids.add(real_jid);
             }
-            group_call.peers_to_connect_to.add_all(other_resources);
+            group_call.peers_to_connect_to.add_all(finished_real_jids);
 
+            // Build+send our own MUJI presence
             StanzaNode muji_node = new StanzaNode.build("muji", NS_URI).add_self_xmlns();
 
             foreach (string media in video ? new string[] { "audio", "video" } : new string[] { "audio" }) {
@@ -64,12 +66,12 @@ namespace Xmpp.Xep.Muji {
         private async Gee.List<Presence.Stanza> wait_for_preparing_peers(XmppStream stream, Jid muc_jid) {
             var promise = new Promise<Gee.List<Presence.Stanza>>();
 
-            ArrayList<Jid> preparing_peers = new ArrayList<Jid>();
+            ArrayList<Jid> preparing_peers = new ArrayList<Jid>(Jid.equals_func);
 
             Gee.List<Presence.Stanza> presences = get_other_presences(stream, muc_jid);
 
             foreach (Presence.Stanza presence in presences) {
-                StanzaNode? preparing_node = presence.stanza.get_deep_subnode(NS_URI + "muji", NS_URI + ":preparing");
+                StanzaNode? preparing_node = presence.stanza.get_deep_subnode(NS_URI + ":muji", NS_URI + ":preparing");
                 if (preparing_node != null) {
                     preparing_peers.add(presence.from);
                 }
@@ -80,8 +82,6 @@ namespace Xmpp.Xep.Muji {
             if (preparing_peers.is_empty) {
                 return presences;
             }
-
-
 
             GroupCall group_call = stream.get_flag(Flag.IDENTITY).calls[muc_jid];
             group_call.waiting_for_finish_prepares[promise] = preparing_peers;
@@ -201,10 +201,13 @@ namespace Xmpp.Xep.Muji {
         }
 
         private void on_jid_finished_preparing(XmppStream stream, Jid jid, GroupCall group_call) {
+            debug("Muji peer finished preparing %s", jid.to_string());
             foreach (Promise<Gee.List<Presence.Stanza>> promise in group_call.waiting_for_finish_prepares.keys) {
+                debug("Waiting for finish prepares %i", group_call.waiting_for_finish_prepares[promise].size);
                 Gee.List<Jid> outstanding_prepares = group_call.waiting_for_finish_prepares[promise];
                 if (outstanding_prepares.contains(jid)) {
                     outstanding_prepares.remove(jid);
+                    debug("Waiting for finish prepares %i", group_call.waiting_for_finish_prepares[promise].size);
 
                     if (outstanding_prepares.is_empty) {
                         Gee.List<Presence.Stanza> presences = get_other_presences(stream, jid.bare_jid);
@@ -252,7 +255,7 @@ namespace Xmpp.Xep.Muji {
     public class GroupCall {
         public string our_nick;
         public Jid muc_jid;
-        public ArrayList<Jid> peers_to_connect_to = new ArrayList<Jid>();
+        public ArrayList<Jid> peers_to_connect_to = new ArrayList<Jid>(Jid.equals_func);
         public ArrayList<Jid> peers = new ArrayList<Jid>(Jid.equals_func);
         public HashMap<Jid, Jid> real_jids = new HashMap<Jid, Jid>(Jid.hash_func, Jid.equals_func);
         public HashMap<Promise, Gee.List<Jid>> waiting_for_finish_prepares = new HashMap<Promise, Gee.List<Jid>>();
