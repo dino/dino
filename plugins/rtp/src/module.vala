@@ -63,7 +63,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
         return supported;
     }
 
-    private async bool is_payload_supported(string media, JingleRtp.PayloadType payload_type) {
+    public override async bool is_payload_supported(string media, JingleRtp.PayloadType payload_type) {
         string? codec = CodecUtil.get_codec_from_payload(media, payload_type);
         if (codec == null) return false;
         if (unsupported_codecs.contains(codec)) return false;
@@ -131,7 +131,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
     public override async Gee.List<JingleRtp.PayloadType> get_supported_payloads(string media) {
         Gee.List<JingleRtp.PayloadType> list = new ArrayList<JingleRtp.PayloadType>(JingleRtp.PayloadType.equals_func);
         if (media == "audio") {
-            var opus = new JingleRtp.PayloadType() { channels = 2, clockrate = 48000, name = "opus", id = 99 };
+            var opus = new JingleRtp.PayloadType() { channels = 1, clockrate = 48000, name = "opus", id = 99 };
             opus.parameters["useinbandfec"] = "1";
             var speex32 = new JingleRtp.PayloadType() { channels = 1, clockrate = 32000, name = "speex", id = 100 };
             var speex16 = new JingleRtp.PayloadType() { channels = 1, clockrate = 16000, name = "speex", id = 101 };

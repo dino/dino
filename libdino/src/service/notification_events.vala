@@ -106,7 +106,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
         notifier.notify_subscription_request.begin(conversation);
     }
 
-    private void on_call_incoming(Call call, Conversation conversation, bool video) {
+    private void on_call_incoming(Call call, CallState call_state, Conversation conversation, bool video) {
         string conversation_display_name = get_conversation_display_name(stream_interactor, conversation, null);
 
         notifier.notify_call.begin(call, conversation, video, conversation_display_name);

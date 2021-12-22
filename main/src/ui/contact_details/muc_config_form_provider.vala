@@ -33,7 +33,7 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
                 contact_details.save.connect(() => {
                     // Only send the config form if something was changed
                     if (config_backup != data_form.stanza_node.to_string()) {
-                        stream_interactor.get_module(MucManager.IDENTITY).set_config_form(conversation.account, conversation.counterpart, data_form);
+                        stream_interactor.get_module(MucManager.IDENTITY).set_config_form.begin(conversation.account, conversation.counterpart, data_form);
                     }
                 });
             });

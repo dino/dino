@@ -228,6 +228,8 @@ public class ConnectionManager : Object {
         stream.attached_modules.connect((stream) => {
             stream_attached_modules(account, stream);
             change_connection_state(account, ConnectionState.CONNECTED);
+
+//            stream.get_module(Xep.Muji.Module.IDENTITY).join_call(stream, new Jid("test@muc.poez.io"), true);
         });
         stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, null));

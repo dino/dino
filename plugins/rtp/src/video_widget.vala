@@ -12,8 +12,9 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
 
     private bool attached;
     private Device? connected_device;
+    private Gst.Element? connected_device_element;
     private Stream? connected_stream;
-    private Gst.Element convert;
+    private Gst.Element prepare;
 
     public VideoWidget(Plugin plugin) {
         this.plugin = plugin;
@@ -24,26 +25,38 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
             Gtk.Widget widget;
             element.@get("widget", out widget);
             element.@set("async", false);
-            element.@set("sync", false);
+            element.@set("sync", true);
             this.widget = widget;
             add(widget);
             widget.visible = true;
-
-            // Listen for resolution changes
-            element.get_static_pad("sink").notify["caps"].connect(() => {
-                if (element.get_static_pad("sink").caps == null) return;
-
-                int width, height;
-                element.get_static_pad("sink").caps.get_structure(0).get_int("width", out width);
-                element.get_static_pad("sink").caps.get_structure(0).get_int("height", out height);
-                resolution_changed(width, height);
-            });
         } else {
             warning("Could not create GTK video sink. Won't display videos.");
         }
+        size_allocate.connect_after(after_size_allocate);
     }
 
-    public void display_stream(Xmpp.Xep.JingleRtp.Stream stream) {
+    public void input_caps_changed(GLib.Object pad, ParamSpec spec) {
+        Gst.Caps? caps = (pad as Gst.Pad).caps;
+        if (caps == null) return;
+
+        int width, height;
+        caps.get_structure(0).get_int("width", out width);
+        caps.get_structure(0).get_int("height", out height);
+        resolution_changed(width, height);
+    }
+
+    public void after_size_allocate(Gtk.Allocation allocation) {
+        if (prepare != null) {
+            Gst.Element crop = ((Gst.Bin)prepare).get_by_name(@"video_widget_$(id)_crop");
+            if (crop != null) {
+                Value ratio = new Value(typeof(Gst.Fraction));
+                Gst.Value.set_fraction(ref ratio, allocation.width, allocation.height);
+                crop.set_property("aspect-ratio", ratio);
+            }
+        }
+    }
+
+    public void display_stream(Xmpp.Xep.JingleRtp.Stream stream, Xmpp.Jid jid) {
         if (element == null) return;
         detach();
         if (stream.media != "video") return;
@@ -51,11 +64,12 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         if (connected_stream == null) return;
         plugin.pause();
         pipe.add(element);
-        convert = Gst.parse_bin_from_description(@"videoconvert name=video_widget_$(id)_convert", true);
-        convert.name = @"video_widget_$(id)_prepare";
-        pipe.add(convert);
-        convert.link(element);
-        connected_stream.add_output(convert);
+        prepare = Gst.parse_bin_from_description(@"aspectratiocrop aspect-ratio=4/3 name=video_widget_$(id)_crop ! videoconvert name=video_widget_$(id)_convert", true);
+        prepare.name = @"video_widget_$(id)_prepare";
+        prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
+        pipe.add(prepare);
+        connected_stream.add_output(prepare);
+        prepare.link(element);
         element.set_locked_state(false);
         plugin.unpause();
         attached = true;
@@ -68,11 +82,13 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         if (connected_device == null) return;
         plugin.pause();
         pipe.add(element);
-        convert = Gst.parse_bin_from_description(@"videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
-        convert.name = @"video_widget_$(id)_prepare";
-        pipe.add(convert);
-        convert.link(element);
-        connected_device.link_source().link(convert);
+        prepare = Gst.parse_bin_from_description(@"aspectratiocrop aspect-ratio=4/3 name=video_widget_$(id)_crop ! videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
+        prepare.name = @"video_widget_$(id)_prepare";
+        prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
+        pipe.add(prepare);
+        connected_device_element = connected_device.link_source();
+        connected_device_element.link(prepare);
+        prepare.link(element);
         element.set_locked_state(false);
         plugin.unpause();
         attached = true;
@@ -82,19 +98,19 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         if (element == null) return;
         if (attached) {
             if (connected_stream != null) {
-                connected_stream.remove_output(convert);
+                connected_stream.remove_output(prepare);
                 connected_stream = null;
             }
             if (connected_device != null) {
-                connected_device.link_source().unlink(element);
-                connected_device.unlink(); // We get a new ref to recover the element, so unlink twice
+                connected_device_element.unlink(element);
+                connected_device_element = null;
                 connected_device.unlink();
                 connected_device = null;
             }
-            convert.set_locked_state(true);
-            convert.set_state(Gst.State.NULL);
-            pipe.remove(convert);
-            convert = null;
+            prepare.set_locked_state(true);
+            prepare.set_state(Gst.State.NULL);
+            pipe.remove(prepare);
+            prepare = null;
             element.set_locked_state(true);
             element.set_state(Gst.State.NULL);
             pipe.remove(element);
