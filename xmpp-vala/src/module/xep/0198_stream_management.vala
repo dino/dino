@@ -152,6 +152,11 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
                     ((IoXmppStream)stream).write_obj = this;
                 } else if (node.name == "failed") {
                     session_id = null;
+                    string? h_acked = node.get_attribute("h", NS_URI);
+                    if (h_acked != null) {
+                        h_outbound = int.parse(h_acked);
+                        handle_incoming_h(stream, h_outbound);
+                    }
                     foreach (var id in in_flight_stanzas.keys) {
                         in_flight_stanzas[id].promise.set_exception(new IOStreamError.WRITE("Stanza not acked and session not resumed"));
                     }
