@@ -151,13 +151,13 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
                     check_queue(stream);
                     ((IoXmppStream)stream).write_obj = this;
                 } else if (node.name == "failed") {
-                    stream.received_features_node(stream);
                     session_id = null;
                     foreach (var id in in_flight_stanzas.keys) {
                         in_flight_stanzas[id].promise.set_exception(new IOStreamError.WRITE("Stanza not acked and session not resumed"));
                     }
                     in_flight_stanzas.clear();
                     check_queue(stream);
+                    stream.received_features_node(stream);
                 }
             }
         }
