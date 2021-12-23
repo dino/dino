@@ -45,11 +45,13 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
                         if (encrypted_data == null) return;
                         // TODO: Nonblocking might require certain libnice versions?
                         GLib.OutputVector[] vectors = {{ encrypted_data, encrypted_data.length }};
-                        Nice.OutputMessage[] messages = {{ vectors }};
+                        Nice.OutputMessage message = { vectors };
+                        Nice.OutputMessage[] messages = { message };
                         agent.send_messages_nonblocking(stream_id, component_id, messages);
                     } else {
                         GLib.OutputVector[] vectors = {{ datagram.get_data(), datagram.get_size() }};
-                        Nice.OutputMessage[] messages = {{ vectors }};
+                        Nice.OutputMessage message = { vectors };
+                        Nice.OutputMessage[] messages = { message };
                         agent.send_messages_nonblocking(stream_id, component_id, messages);
                     }
                     bytes_sent += datagram.length;

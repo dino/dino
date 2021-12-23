@@ -1,3 +1,8 @@
+#if !VALA_0_52
+[CCode (cheader_filename = "gst/gst.h")]
+private static extern void gst_value_set_fraction(ref GLib.Value value, int numerator, int denominator);
+#endif
+
 public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidget {
     private static uint last_id = 0;
 
@@ -50,7 +55,11 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
             Gst.Element crop = ((Gst.Bin)prepare).get_by_name(@"video_widget_$(id)_crop");
             if (crop != null) {
                 Value ratio = new Value(typeof(Gst.Fraction));
+#if VALA_0_52
                 Gst.Value.set_fraction(ref ratio, allocation.width, allocation.height);
+#else
+                gst_value_set_fraction(ref ratio, allocation.width, allocation.height);
+#endif
                 crop.set_property("aspect-ratio", ratio);
             }
         }
