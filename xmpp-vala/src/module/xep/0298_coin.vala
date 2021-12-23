@@ -8,7 +8,7 @@ namespace Xmpp.Xep.Coin {
 
         public signal void coin_info_received(Jid jid, ConferenceInfo info);
 
-        public async override void on_iq_set(XmppStream stream, Iq.Stanza iq) {
+        public async void on_iq_set(XmppStream stream, Iq.Stanza iq) {
             ConferenceInfo? info = parse_node(iq.stanza.get_subnode("conference-info", NS_RFC), null);
             if (info == null) return;
 
