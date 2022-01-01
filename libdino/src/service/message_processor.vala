@@ -144,9 +144,13 @@ public class MessageProcessor : StreamInteractionModule, Object {
             }
         });
         stream_interactor.module_manager.get_module(account, Xmpp.MessageModule.IDENTITY).received_error.connect((stream, message_stanza, error_stanza) => {
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message_stanza.from.bare_jid, account);
-            if (conversation == null) return;
-            Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(message_stanza.id, conversation);
+            Message? message = null;
+
+            Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversations(message_stanza.from, account);
+            foreach (Conversation conversation in conversations) {
+                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(message_stanza.id, conversation);
+                if (message != null) break;
+            }
             if (message == null) return;
             // We don't care about delivery errors if our counterpart already ACKed the message.
             if (message.marked in Message.MARKED_RECEIVED) return;
