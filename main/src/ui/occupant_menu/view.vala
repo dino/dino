@@ -66,9 +66,9 @@ public class View : Popover {
         selected_jid = jid;
         stack.transition_type = StackTransitionType.SLIDE_LEFT;
 
-        string name = name_;
+        string name = Markup.escape_text(name_);
         Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
-        if (real_jid != null) name += @"\n<span font=\'8\'>$(real_jid.bare_jid)</span>";
+        if (real_jid != null) name += "\n<span font=\'8\'>%s</span>".printf(Markup.escape_text(real_jid.bare_jid.to_string()));
 
         Box header_box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
         header_box.add(new Image.from_icon_name("pan-start-symbolic", IconSize.SMALL_TOOLBAR) { visible=true });
