@@ -216,10 +216,8 @@ public class MessageItemWidget : SizeRequestBin {
             markup_text = @"<span size=\'$size_str\'>" + markup_text + "</span>";
         }
 
-        string gray_color = Util.rgba_to_hex(Util.get_label_pango_class_color(label, "dim-label"));
-
         if (message.edit_to != null) {
-            markup_text += "  <span size='small' color='%s'>(%s)</span>".printf(gray_color, _("edited"));
+            markup_text += "  <span size='small' alpha='70%'>(%s)</span>".printf(_("edited"));
             theme_dependent = true;
         }
 
@@ -228,7 +226,7 @@ public class MessageItemWidget : SizeRequestBin {
         if (message.direction == Message.DIRECTION_SENT && (message.marked == Message.Marked.SENDING || message.marked == Message.Marked.UNSENT)) {
             // Append "pending..." iff message has not been sent yet
             if (message.time.compare(new DateTime.now_utc().add_seconds(-10)) < 0) {
-                markup_text += "  <span size='small' color='%s'>%s</span>".printf(gray_color, _("pending…"));
+                markup_text += "  <span size='small' alpha='70%'>%s</span>".printf(_("pending…"));
                 theme_dependent = true;
                 additional_info = AdditionalInfo.PENDING;
             } else {
