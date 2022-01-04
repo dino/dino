@@ -42,6 +42,7 @@ namespace Dino {
             call.counterpart = conversation.counterpart;
             call.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.full_jid;
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
+            call.encryption = Encryption.UNKNOWN;
             call.state = Call.State.RINGING;
 
             stream_interactor.get_module(CallStore.IDENTITY).add_call(call, conversation);
@@ -227,6 +228,7 @@ namespace Dino {
             call.add_peer(call.counterpart);
             call.account = account;
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
+            call.encryption = Encryption.UNKNOWN;
 
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(call.counterpart.bare_jid, account, Conversation.Type.CHAT);
 
@@ -284,6 +286,7 @@ namespace Dino {
             call.counterpart = inviter_jid;
             call.account = account;
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
+            call.encryption = Encryption.UNKNOWN;
             call.state = Call.State.RINGING;
 
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(inviter_jid.bare_jid, account);

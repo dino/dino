@@ -161,7 +161,7 @@ public class ItemMetaDataHeader : Box {
         Application app = GLib.Application.get_default() as Application;
 
         ContentMetaItem ci = item as ContentMetaItem;
-        if (item.encryption != Encryption.NONE && ci != null) {
+        if (item.encryption != Encryption.NONE && item.encryption != Encryption.UNKNOWN && ci != null) {
             Widget? widget = null;
             foreach(var e in app.plugin_registry.encryption_list_entries) {
                 if (e.encryption == item.encryption) {

@@ -6,6 +6,7 @@ public enum Encryption {
         OMEMO,
         DTLS_SRTP,
         SRTP,
+        UNKNOWN,
 }
 
 }
