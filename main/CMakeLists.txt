@@ -5,8 +5,6 @@ gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TAR
 
 find_packages(MAIN_PACKAGES REQUIRED
     Gee
-    Gst
-    GstVideo
     GLib
     GModule
     GObject

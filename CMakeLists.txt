@@ -127,6 +127,7 @@ endif ()
 if (NOT ("all" IN_LIST VALA_WARN OR "qualifier" IN_LIST VALA_WARN))
     AddCFlagIfSupported(VALA_CFLAGS -Wno-discarded-qualifiers)
     AddCFlagIfSupported(VALA_CFLAGS -Wno-discarded-array-qualifiers)
+    AddCFlagIfSupported(VALA_CFLAGS -Wno-incompatible-pointer-types-discards-qualifiers)
 endif ()
 
 if (NOT ("all" IN_LIST VALA_WARN OR "deprecated" IN_LIST VALA_WARN))

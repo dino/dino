@@ -320,31 +320,6 @@ public class Dino.Ui.CallWindowController : Object {
         });*/
     }
 
-    public void add_test_video() {
-        var pipeline = new Gst.Pipeline(null);
-        var src = Gst.ElementFactory.make("videotestsrc", null);
-        pipeline.add(src);
-        Gst.Video.Sink sink = (Gst.Video.Sink) Gst.ElementFactory.make("gtksink", null);
-        Gtk.Widget widget;
-        sink.get("widget", out widget);
-        widget.unparent();
-        pipeline.add(sink);
-        src.link(sink);
-        widget.visible = true;
-
-        pipeline.set_state(Gst.State.PLAYING);
-
-        sink.get_static_pad("sink").notify["caps"].connect(() => {
-            int width, height;
-            sink.get_static_pad("sink").caps.get_structure(0).get_int("width", out width);
-            sink.get_static_pad("sink").caps.get_structure(0).get_int("height", out height);
-            widget.width_request = width;
-            widget.height_request = height;
-        });
-
-//        call_window.set_participant_video(Xmpp.random_uuid(), widget);
-    }
-
     /*private void update_current_video_device(VideoSettingsPopover video_settings_popover) {
         Xmpp.Xep.JingleRtp.Stream stream = calls.get_video_stream(call);
         if (stream != null) {
