@@ -64,12 +64,27 @@ public class Xmpp.Xep.JingleRtp.PayloadType {
     }
 
     public static bool equals_func(PayloadType a, PayloadType b) {
-        return a.id == b.id &&
+        bool simple = a.id == b.id &&
                 a.name == b.name &&
                 a.channels == b.channels &&
                 a.clockrate == b.clockrate &&
                 a.maxptime == b.maxptime &&
-                a.ptime == b.ptime;
+                a.ptime == b.ptime &&
+                a.parameters.size == b.parameters.size &&
+                a.rtcp_fbs.size == b.rtcp_fbs.size;
+        if (!simple) return false;
+        foreach (string key in a.parameters.keys) {
+            if (!b.parameters.has_key(key)) return false;
+            if (a.parameters[key] != b.parameters[key]) return false;
+        }
+        foreach (RtcpFeedback fb in a.rtcp_fbs) {
+            if (!b.rtcp_fbs.any_match((it) => it.type_ == fb.type_ && it.subtype == fb.subtype)) return false;
+        }
+        return true;
+    }
+
+    public static uint hash_func(PayloadType payload_type) {
+        return payload_type.to_xml().to_string().hash();
     }
 }
 

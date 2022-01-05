@@ -8,7 +8,7 @@ namespace Xmpp.Xep.JingleMessageInitiation {
 
         public signal void session_proposed(Jid from, Jid to, string sid, Gee.List<StanzaNode> descriptions);
         public signal void session_retracted(Jid from, Jid to, string sid);
-        public signal void session_accepted(Jid from, string sid);
+        public signal void session_accepted(Jid from, Jid to, string sid);
         public signal void session_rejected(Jid from, Jid to, string sid);
 
         public void send_session_propose_to_peer(XmppStream stream, Jid to, string sid, Gee.List<StanzaNode> descriptions) {
@@ -65,7 +65,7 @@ namespace Xmpp.Xep.JingleMessageInitiation {
             switch (mi_node.name) {
                 case "accept":
                 case "proceed":
-                    session_accepted(message.from, mi_node.get_attribute("id"));
+                    session_accepted(message.from, message.to, mi_node.get_attribute("id"));
                     break;
                 case "propose":
                     ArrayList<StanzaNode> descriptions = new ArrayList<StanzaNode>();

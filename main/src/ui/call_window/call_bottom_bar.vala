@@ -25,16 +25,11 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
     private MenuButton video_settings_button = new MenuButton() { halign=Align.END, valign=Align.END };
     public VideoSettingsPopover? video_settings_popover;
 
-    public CallEntryptionButton encryption_button = new CallEntryptionButton() { relief=ReliefStyle.NONE, height_request=30, width_request=30, margin_start=20, margin_bottom=25, halign=Align.START, valign=Align.END };
-
     private Label label = new Label("") { margin=20, halign=Align.CENTER, valign=Align.CENTER, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
     private Stack stack = new Stack() { visible=true };
 
     public CallBottomBar() {
         Object(orientation:Orientation.HORIZONTAL, spacing:0);
-
-        Overlay default_control = new Overlay() { visible=true };
-        default_control.add_overlay(encryption_button);
 
         Box main_buttons = new Box(Orientation.HORIZONTAL, 20) { margin_start=40, margin_end=40, margin=20, halign=Align.CENTER, hexpand=true, visible=true };
 
@@ -66,11 +61,9 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
         button_hang.clicked.connect(() => hang_up());
         main_buttons.add(button_hang);
 
-        default_control.add(main_buttons);
-
         label.get_style_context().add_class("text-no-controls");
 
-        stack.add_named(default_control, "control-buttons");
+        stack.add_named(main_buttons, "control-buttons");
         stack.add_named(label, "label");
         this.add(stack);
 
@@ -159,6 +152,6 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
     }
 
     public bool is_menu_active() {
-        return video_settings_button.active || audio_settings_button.active || encryption_button.active;
+        return video_settings_button.active || audio_settings_button.active;
     }
 }

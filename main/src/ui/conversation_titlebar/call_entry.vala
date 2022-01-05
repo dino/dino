@@ -47,16 +47,16 @@ namespace Dino.Ui {
             Box box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
             audio_button.clicked.connect(() => {
                 stream_interactor.get_module(Calls.IDENTITY).initiate_call.begin(conversation, false, (_, res) => {
-                    Call call = stream_interactor.get_module(Calls.IDENTITY).initiate_call.end(res);
-                    open_call_window(call);
+                    CallState call_state = stream_interactor.get_module(Calls.IDENTITY).initiate_call.end(res);
+                    open_call_window(call_state);
                 });
             });
             box.add(audio_button);
 
             video_button.clicked.connect(() => {
                 stream_interactor.get_module(Calls.IDENTITY).initiate_call.begin(conversation, true, (_, res) => {
-                    Call call = stream_interactor.get_module(Calls.IDENTITY).initiate_call.end(res);
-                    open_call_window(call);
+                    CallState call_state = stream_interactor.get_module(Calls.IDENTITY).initiate_call.end(res);
+                    open_call_window(call_state);
                 });
             });
             box.add(video_button);
@@ -68,7 +68,7 @@ namespace Dino.Ui {
                 popover_menu.visible = true;
             });
 
-            stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect((call, conversation) => {
+            stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect((call, state,conversation) => {
                 update_button_state();
             });
 
@@ -76,6 +76,7 @@ namespace Dino.Ui {
                 update_button_state();
             });
             stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((jid, account) => {
+                if (this.conversation == null) return;
                 if (this.conversation.counterpart.equals_bare(jid) && this.conversation.account.equals(account)) {
                     update_visibility.begin();
                 }
@@ -83,11 +84,14 @@ namespace Dino.Ui {
             stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
                 update_visibility.begin();
             });
+            Dino.Application.get_default().plugin_registry.video_call_plugin.devices_changed.connect((media, incoming) => {
+                update_visibility.begin();
+            });
         }
 
-        private void open_call_window(Call call) {
+        private void open_call_window(CallState call_state) {
             var call_window = new CallWindow();
-            var call_controller = new CallWindowController(call_window, call, stream_interactor);
+            var call_controller = new CallWindowController(call_window, call_state, stream_interactor);
             call_window.controller = call_controller;
             call_window.present();
 
@@ -102,17 +106,15 @@ namespace Dino.Ui {
         }
 
         private void update_button_state() {
-            Jid? call_counterpart = stream_interactor.get_module(Calls.IDENTITY).is_call_in_progress();
-            this.sensitive = call_counterpart == null;
-
-            if (call_counterpart != null && call_counterpart.equals_bare(conversation.counterpart)) {
-                this.set_image(new Gtk.Image.from_icon_name("dino-phone-in-talk-symbolic", Gtk.IconSize.MENU) { visible=true });
-            } else {
-                this.set_image(new Gtk.Image.from_icon_name("dino-phone-symbolic", Gtk.IconSize.MENU) { visible=true });
-            }
+            this.sensitive = !stream_interactor.get_module(Calls.IDENTITY).is_call_in_progress();
         }
 
         private async void update_visibility() {
+            if (conversation == null) {
+                visible = false;
+                return;
+            }
+
             if (conversation.type_ == Conversation.Type.CHAT) {
                 Conversation conv_bak = conversation;
                 bool audio_works = yield stream_interactor.get_module(Calls.IDENTITY).can_do_audio_calls_async(conversation);

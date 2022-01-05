@@ -28,6 +28,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
     private bool connection_created = false;
 
     protected weak Jingle.Content? content = null;
+    protected bool use_raw = false;
 
     protected IceUdpTransportParameters(uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode? node = null) {
         this.components_ = components;
@@ -80,10 +81,16 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
             node.put_node(fingerprint_node);
         }
 
-        foreach (Candidate candidate in unsent_local_candidates) {
+        if (action_type != "transport-info") {
+            foreach (Candidate candidate in unsent_local_candidates) {
+                node.put_node(candidate.to_xml());
+            }
+            unsent_local_candidates.clear();
+        } else if (!unsent_local_candidates.is_empty) {
+            Candidate candidate = unsent_local_candidates.first();
             node.put_node(candidate.to_xml());
+            unsent_local_candidates.remove(candidate);
         }
-        unsent_local_candidates.clear();
         return node;
     }
 
@@ -128,15 +135,15 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         local_candidates.add(candidate);
 
         if (this.content != null && (this.connection_created || !this.incoming)) {
-            Timeout.add(50, () => {
+            Idle.add( () => {
                 check_send_transport_info();
-                return false;
+                return Source.REMOVE;
             });
         }
     }
 
     private void check_send_transport_info() {
-        if (this.content != null && unsent_local_candidates.size > 0) {
+        if (this.content != null && !unsent_local_candidates.is_empty) {
             content.send_transport_info(to_transport_stanza_node("transport-info"));
         }
     }

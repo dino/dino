@@ -2,6 +2,8 @@ namespace Xmpp.Xep.Jingle {
 
     public abstract class ComponentConnection : Object {
         public uint8 component_id { get; set; default = 0; }
+        public ulong bytes_sent { get; protected set; default=0; }
+        public ulong bytes_received { get; protected set; default=0; }
         public abstract async void terminate(bool we_terminated, string? reason_name = null, string? reason_text = null);
         public signal void connection_closed();
         public signal void connection_error(IOError e);

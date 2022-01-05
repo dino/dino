@@ -161,13 +161,6 @@ public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
     return color_rgba;
 }
 
-public static Gdk.RGBA get_label_pango_class_color(Label label, string css_class) {
-    label.get_style_context().add_class(css_class);
-    Gdk.RGBA color_rgba = label.get_style_context().get_color(StateFlags.NORMAL);
-    label.get_style_context().remove_class(css_class);
-    return color_rgba;
-}
-
 public static string rgba_to_hex(Gdk.RGBA rgba) {
     return "#%02x%02x%02x%02x".printf(
             (uint)(Math.round(rgba.red*255)),
@@ -340,6 +333,19 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
             } catch (RegexError e) {
                 assert_not_reached();
             }
+        }
+
+        Regex regex = new Regex("((?<=\n)&gt;.*(\n|$))|(^&gt;.*(\n|$))");
+        MatchInfo match_info;
+        regex.match(s.down(), 0, out match_info);
+
+        if (match_info.matches()) {
+            int start, end;
+
+            match_info.fetch_pos(0, out start, out end);
+            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                "<span fgalpha='70%'>" + s[start:end] + "</span>" +
+                parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
         }
     }
 

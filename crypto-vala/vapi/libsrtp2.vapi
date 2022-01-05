@@ -42,9 +42,11 @@ public struct Policy {
     public uint8[] key;
     public ulong num_master_keys;
     public ulong window_size;
-    public int allow_repeat_tx;
+    [CCode (ctype = "int")]
+    public bool allow_repeat_tx;
     [CCode (array_length_cname = "enc_xtn_hdr_count")]
     public int[] enc_xtn_hdr;
+    public Policy* next;
 }
 
 [CCode (cname = "srtp_crypto_policy_t")]

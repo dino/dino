@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-13 20:03+0200\n"
-"PO-Revision-Date: 2021-03-06 02:54+0000\n"
+"POT-Creation-Date: 2021-12-18 23:35+0100\n"
+"PO-Revision-Date: 2021-12-09 19:53+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
 "eu/>\n"
 "Language: eu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.5.1\n"
+"X-Generator: Weblate 4.10-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -58,7 +58,7 @@ msgstr "Fitxategia jaso da"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Outgoing call"
-msgstr ""
+msgstr "Irteten ari den deia"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -66,7 +66,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/call_widget.vala:86
 #: main/src/ui/conversation_content_view/call_widget.vala:112
 msgid "Incoming call"
-msgstr ""
+msgstr "Sarrerako deia"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
@@ -182,15 +182,15 @@ msgstr "Baimena eskatu"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:19
 msgid "Start call"
-msgstr ""
+msgstr "Hasi deia"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:37
 msgid "Audio call"
-msgstr ""
+msgstr "Audio-deia"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:38
 msgid "Video call"
-msgstr ""
+msgstr "Bideo-deia"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
@@ -204,11 +204,11 @@ msgstr "Kideak"
 #: main/src/ui/call_window/call_window.vala:161
 #: main/src/ui/conversation_content_view/call_widget.vala:91
 msgid "Calling…"
-msgstr ""
+msgstr "Deika…"
 
 #: main/src/ui/call_window/call_window.vala:164
 msgid "Ringing…"
-msgstr ""
+msgstr "Soinua jotzen…"
 
 #: main/src/ui/call_window/call_window.vala:167
 #: main/src/ui/manage_accounts/dialog.vala:219
@@ -218,12 +218,12 @@ msgstr "Konektatzen…"
 #: main/src/ui/call_window/call_window.vala:181
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "%s(e)k deia amaitu zuen"
 
 #: main/src/ui/call_window/call_window.vala:183
 #, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s(e)k uko egin dio deiari"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
@@ -561,8 +561,9 @@ msgstr "Kontuak kudeatu"
 
 #: main/src/ui/notifier_freedesktop.vala:127
 #: main/src/ui/conversation_content_view/call_widget.vala:86
+#, fuzzy
 msgid "Incoming video call"
-msgstr ""
+msgstr "Sarrerako bideo-deia"
 
 #: main/src/ui/notifier_freedesktop.vala:134
 #: main/src/ui/notifier_freedesktop.vala:229 main/data/call_widget.ui:84
@@ -692,11 +693,11 @@ msgstr "editatuta"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:231
 msgid "pending…"
-msgstr ""
+msgstr "bidaltzeko zain…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:244
 msgid "delivery failed"
-msgstr ""
+msgstr "entregak huts egin du"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
@@ -720,78 +721,78 @@ msgstr "%s idazten ari da…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:98
 msgid "Call started"
-msgstr ""
+msgstr "Deia hasi da"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:100
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "Duela %s hasi zen"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:113
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "Deia hau beste gailu batean kudeatu duzu"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:118
 msgid "Call ended"
-msgstr ""
+msgstr "Deia amaitu da"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:121
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "%s-tan amaituta"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:123
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "%s iraun zuen"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:127
 msgid "Call missed"
-msgstr ""
+msgstr "Dei galdua"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:129
 msgid "You missed this call"
-msgstr ""
+msgstr "Dei hau galdu duzu"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:132
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s(e)k dei hau galdu du"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Call declined"
-msgstr ""
+msgstr "Deia atzera bota da"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "You declined this call"
-msgstr ""
+msgstr "Dei horri uko egin diozu"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:142
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s(e)k uko egin dio dei horri"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:147
 msgid "Call failed"
-msgstr ""
+msgstr "Deia huts egin da"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ordu %i"
+msgstr[1] "%i ordu"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:176
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "minutu %i"
+msgstr[1] "%i minutu"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "a few seconds"
-msgstr ""
+msgstr "duela segundo batzuk"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:189
 #: main/data/menu_encryption.ui:14

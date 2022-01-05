@@ -13,11 +13,25 @@ public class Flag : XmppStreamFlag {
     }
 
     public Gee.List<Jid>? get_resources(Jid jid) {
+        if (!resources.has_key(jid)) return null;
+        ArrayList<Jid> ret = new ArrayList<Jid>();
+        ret.add_all(resources[jid]);
         return resources[jid];
     }
 
     public Presence.Stanza? get_presence(Jid full_jid) {
         return presences[full_jid];
+    }
+
+    public Gee.List<Presence.Stanza> get_presences(Jid jid) {
+        Gee.List<Presence.Stanza> ret = new ArrayList<Presence.Stanza>();
+        Gee.List<Jid>? jid_res = resources[jid];
+        if (jid_res == null) return ret;
+
+        foreach (Jid full_jid in jid_res) {
+            ret.add(presences[full_jid]);
+        }
+        return ret;
     }
 
     public void add_presence(Presence.Stanza presence) {
