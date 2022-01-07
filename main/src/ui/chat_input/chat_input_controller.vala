@@ -122,9 +122,11 @@ public class ChatInputController : Object {
                     return;
                 case "/affiliate":
                     if (token.length > 1) {
-                        string[] user_role = token[1].split(" ", 2);
-                        if (user_role.length == 2) {
-                            stream_interactor.get_module(MucManager.IDENTITY).change_affiliation(conversation.account, conversation.counterpart, user_role[0].strip(), user_role[1].strip());
+                        string[] user_role = token[1].split(" ");
+                        if (user_role.length >= 2) {
+                            string nick = string.joinv(" ", user_role[0:user_role.length - 1]).strip();
+                            string role = user_role[user_role.length - 1].strip();
+                            stream_interactor.get_module(MucManager.IDENTITY).change_affiliation(conversation.account, conversation.counterpart, nick, role);
                         }
                     }
                     return;
