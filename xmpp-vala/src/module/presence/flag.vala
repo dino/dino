@@ -14,9 +14,9 @@ public class Flag : XmppStreamFlag {
 
     public Gee.List<Jid>? get_resources(Jid jid) {
         if (!resources.has_key(jid)) return null;
-        ArrayList<Jid> ret = new ArrayList<Jid>();
+        ArrayList<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
         ret.add_all(resources[jid]);
-        return resources[jid];
+        return ret;
     }
 
     public Presence.Stanza? get_presence(Jid full_jid) {
