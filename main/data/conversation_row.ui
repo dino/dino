@@ -136,12 +136,14 @@
                                         <property name="visible">True</property>
                                         <child>
                                             <object class="GtkButton" id="x_button">
+                                                <property name="width-request">27</property>
+                                                <property name="height-request">27</property>
                                                 <property name="vexpand">False</property>
                                                 <property name="visible">True</property>
                                                 <property name="margin-start">5</property>
                                                 <style>
                                                     <class name="conversation_list_row_xbutton"/>
-                                                    <class name="circular"/>
+                                                    <class name="circular-button"/>
                                                     <class name="flat"/>
                                                 </style>
                                                 <child>

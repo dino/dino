@@ -78,6 +78,11 @@ window.dino-main .dino-sidebar > frame {
     transition: background .05s ease;
 }
 
+window.dino-main .circular-button {
+    padding: 0;
+    border-radius: 1000px;
+}
+
 window.dino-main .dino-conversation .message-box.edit-mode {
     background: alpha(@theme_selected_bg_color, 0.1);
 }
