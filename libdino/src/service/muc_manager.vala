@@ -54,7 +54,8 @@ public class MucManager : StreamInteractionModule, Object {
         });
     }
 
-    public async Muc.JoinResult? join(Account account, Jid jid, string? nick, string? password) {
+    // already_autojoin: Without this flag we'd be retrieving bookmarks (to check for autojoin) from the sender on every join
+    public async Muc.JoinResult? join(Account account, Jid jid, string? nick, string? password, bool already_autojoin = false) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return null;
 
@@ -84,7 +85,7 @@ public class MucManager : StreamInteractionModule, Object {
         if (res.nick != null) {
             // Join completed
             enter_errors.unset(jid);
-            set_autojoin(account, stream, jid, nick, password);
+            if (!already_autojoin) set_autojoin(account, stream, jid, nick, password);
             stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_muc_messages(account, jid);
 
             Conversation joined_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
@@ -487,7 +488,7 @@ public class MucManager : StreamInteractionModule, Object {
                 }
             }
             if (!is_active || !is_joined(conference.jid, account)) {
-                join.begin(account, conference.jid, conference.nick, conference.password);
+                join.begin(account, conference.jid, conference.nick, conference.password, true);
             }
         }
 
@@ -560,7 +561,7 @@ public class MucManager : StreamInteractionModule, Object {
             Timeout.add_seconds(10, () => {
                 if (joined || !mucs_todo.has_key(account) || stream_interactor.get_stream(account) != stream) return false;
 
-                join.begin(account, jid.bare_jid, jid.resourcepart, null);
+                join.begin(account, jid.bare_jid, jid.resourcepart, null, true);
                 return false;
             });
         }

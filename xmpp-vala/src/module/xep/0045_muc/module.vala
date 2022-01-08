@@ -342,11 +342,6 @@ public class Module : XmppStreamModule {
                 if (status_codes.contains(StatusCode.SELF_PRESENCE)) {
                     Jid bare_jid = presence.from.bare_jid;
                     if (flag.get_enter_id(bare_jid) != null) {
-
-                        query_affiliation.begin(stream, bare_jid, "member");
-                        query_affiliation.begin(stream, bare_jid, "admin");
-                        query_affiliation.begin(stream, bare_jid, "owner");
-
                         flag.finish_muc_enter(bare_jid);
                         var join_result = new JoinResult() { nick=presence.from.resourcepart, newly_created=status_codes.contains(StatusCode.NEW_ROOM_CREATED) };
                         flag.enter_futures[bare_jid].set_value(join_result);
@@ -457,7 +452,6 @@ public class Module : XmppStreamModule {
                 .put_node(new StanzaNode.build("item", NS_URI_ADMIN)
                     .put_attribute("affiliation", affiliation))
         ) { to=jid };
-
 
         Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
         if (iq_result.is_error()) return null;
