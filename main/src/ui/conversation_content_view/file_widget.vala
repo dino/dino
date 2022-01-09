@@ -123,6 +123,7 @@ public class FileDefaultWidgetController : Object {
 
     private StreamInteractor? stream_interactor;
     private string file_uri;
+    private string file_name;
     private FileTransfer.State state;
 
     public FileDefaultWidgetController(FileDefaultWidget widget) {
@@ -136,7 +137,7 @@ public class FileDefaultWidgetController : Object {
         this.file_transfer = file_transfer;
         this.stream_interactor = stream_interactor;
 
-        widget.name_label.label = file_transfer.file_name;
+        widget.name_label.label = file_name = file_transfer.file_name;
 
         file_transfer.bind_property("path", this, "file-transfer-path");
         file_transfer.bind_property("state", this, "file-transfer-state");
@@ -152,7 +153,7 @@ public class FileDefaultWidgetController : Object {
     public void set_file(File file, string file_name, string? mime_type) {
         file_uri = file.get_uri();
         state = FileTransfer.State.COMPLETE;
-        widget.name_label.label = file_name;
+        widget.name_label.label = this.file_name = file_name;
         widget.update_file_info(mime_type, state, -1);
     }
 
@@ -170,46 +171,26 @@ public class FileDefaultWidgetController : Object {
         }
     }
 
-    private void save_as(Gtk.Dialog dialog, int response_id) {
-        var save_dialog = dialog as Gtk.FileChooserDialog;
-        File file_src;
-        switch (response_id) {
-            case Gtk.ResponseType.ACCEPT:
-                file_src = GLib.File.new_for_uri(file_uri);
-                try{
-                    file_src.copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);
-                } catch (Error err) {
-                    warning("Failed copy file %s - %s", file_uri, err.message);
-                }
-            break;
-            default:
-            break;
-        }
-        dialog.destroy();
-    }
-
     private void save_file() {
-        var save_dialog = new Gtk.FileChooserDialog("Save as...", this as Gtk.Window, Gtk.FileChooserAction.SAVE, Gtk.Stock.CANCEL, Gtk.ResponseType.CANCEL, Gtk.Stock.SAVE, Gtk.ResponseType.ACCEPT);
+        var save_dialog = new FileChooserNative(_("Save as…"), widget.get_toplevel() as Gtk.Window, FileChooserAction.SAVE, null, null);
         save_dialog.set_do_overwrite_confirmation(true);
         save_dialog.set_modal(true);
-        try {
-            (save_dialog as Gtk.FileChooser).set_current_name(GLib.Uri.escape_string(GLib.Path.get_basename(file_uri)));
-            (save_dialog as Gtk.FileChooser).set_uri(GLib.Uri.escape_string(GLib.Path.get_basename(GLib.Uri.unescape_string(file_uri))));
-        } catch (GLib.Error error) {
-            warning("Faild to open save dialog: %s\n", error.message);
+        save_dialog.set_current_name(file_name);
+
+        if (save_dialog.run() == Gtk.ResponseType.ACCEPT) {
+            try{
+                GLib.File.new_for_uri(file_uri).copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);
+            } catch (Error err) {
+                warning("Failed copy file %s - %s", file_uri, err.message);
+            }
         }
-        save_dialog.response.connect(save_as);
-        save_dialog.show();
     }
 
     private bool on_clicked(EventButton event_button) {
         switch (state) {
             case FileTransfer.State.COMPLETE:
-                if (event_button.button == 1 && this.widget.file_menu.popover.visible == false) {
+                if (event_button.button == 1) {
                     open_file();
-                }
-                if (event_button.button == 3 && this.widget.file_menu.popover.visible == false) {
-                    save_file();
                 }
                 break;
             case FileTransfer.State.NOT_STARTED:
