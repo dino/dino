@@ -16,8 +16,9 @@ namespace Xmpp.Xep.Pubsub {
 
         private HashMap<string, ItemListenerDelegate> item_listeners = new HashMap<string, ItemListenerDelegate>();
         private HashMap<string, RetractListenerDelegate> retract_listeners = new HashMap<string, RetractListenerDelegate>();
+        private ArrayList<string> pep_subset_listeners = new ArrayList<string>();
 
-        public void add_filtered_notification(XmppStream stream, string node,
+        public void add_filtered_notification(XmppStream stream, string node, bool pep_subset,
                 owned ItemListenerDelegate.ResultFunc? item_listener,
                 owned RetractListenerDelegate.ResultFunc? retract_listener) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature_notify(stream, node);
@@ -26,6 +27,9 @@ namespace Xmpp.Xep.Pubsub {
             }
             if (retract_listener != null) {
                 retract_listeners[node] = new RetractListenerDelegate((owned)retract_listener);
+            }
+            if (pep_subset) {
+                pep_subset_listeners.add(node);
             }
         }
 
@@ -165,6 +169,11 @@ namespace Xmpp.Xep.Pubsub {
             StanzaNode items_node = event_node.get_subnode("items", NS_URI_EVENT);
             if (items_node == null) return;
             string node = items_node.get_attribute("node", NS_URI_EVENT);
+
+            if (!message.from.is_bare() && pep_subset_listeners.contains(node)) {
+                warning("Got a PEP message from a full JID (%s), ignoring:\n%s", message.from.to_string(), message.stanza.to_string());
+                return;
+            }
 
             StanzaNode? item_node = items_node.get_subnode("item", NS_URI_EVENT);
             if (item_node != null) {

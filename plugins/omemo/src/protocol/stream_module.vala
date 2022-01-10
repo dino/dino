@@ -30,7 +30,8 @@ public class StreamModule : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, (stream, jid, id, node) => parse_device_list(stream, jid, id, node), null);
+        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NODE_DEVICELIST, true,
+                (stream, jid, id, node) => parse_device_list(stream, jid, id, node), null);
     }
 
     public override void detach(XmppStream stream) {
