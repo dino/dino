@@ -386,21 +386,6 @@ public class MucManager : StreamInteractionModule, Object {
                 private_room_occupant_updated(account, room, occupant);
             }
         });
-
-        bookmarks_provider[account] = stream_interactor.module_manager.get_module(account, Xep.Bookmarks.Module.IDENTITY);
-
-        bookmarks_provider[account].received_conferences.connect( (stream, conferences) => {
-            sync_autojoin_active(account, conferences);
-            bookmarks_updated(account, conferences);
-        });
-        bookmarks_provider[account].conference_added.connect( (stream, conference) => {
-            // TODO join (for Bookmarks2)
-            conference_added(account, conference);
-        });
-        bookmarks_provider[account].conference_removed.connect( (stream, jid) => {
-            // TODO part (for Bookmarks2)
-            conference_removed(account, jid);
-        });
     }
 
     private async void search_default_muc_server(Account account) {
@@ -434,7 +419,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private async void on_stream_negotiated(Account account, XmppStream stream) {
-        if (bookmarks_provider[account] == null) return;
+        yield initialize_bookmarks_provider(account);
 
         Set<Conference>? conferences = yield bookmarks_provider[account].get_conferences(stream);
 
@@ -447,6 +432,31 @@ public class MucManager : StreamInteractionModule, Object {
         if (!default_muc_server.has_key(account)) {
             search_default_muc_server.begin(account);
         }
+    }
+
+    private async void initialize_bookmarks_provider(Account account) {
+        if (bookmarks_provider.has_key(account)) return;
+
+        // Use PEP native bookmarks (urn:xmpp:bookmarks:1) if conversion is available, legacy bookmarks (storage:bookmarks) otherwise.
+        bool has_feature = yield stream_interactor.get_module(EntityInfo.IDENTITY).has_feature(account, account.bare_jid, Xep.Bookmarks2.NS_URI_COMPAT);
+        if (has_feature) {
+            debug("[%s] Using PEP native bookmarks (urn:xmpp:bookmarks:1)", account.bare_jid.to_string());
+            bookmarks_provider[account] = stream_interactor.module_manager.get_module(account, Xep.Bookmarks2.Module.IDENTITY);
+        } else {
+            debug("[%s] Using legacy bookmarks (storage:bookmarks)", account.bare_jid.to_string());
+            bookmarks_provider[account] = stream_interactor.module_manager.get_module(account, Xep.Bookmarks.Module.IDENTITY);
+        }
+
+        bookmarks_provider[account].received_conferences.connect( (stream, conferences) => {
+            sync_autojoin_active(account, conferences);
+            bookmarks_updated(account, conferences);
+        });
+        bookmarks_provider[account].conference_added.connect( (stream, conference) => {
+            on_conference_added(account, conference);
+        });
+        bookmarks_provider[account].conference_removed.connect( (stream, jid) => {
+            on_conference_removed(account, jid);
+        });
     }
 
     private void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
@@ -542,6 +552,29 @@ public class MucManager : StreamInteractionModule, Object {
                 }
             }
         });
+    }
+
+    private void on_conference_added(Account account, Xmpp.Conference conference) {
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(conference.jid, account, Conversation.Type.GROUPCHAT);
+        if (conversation != null) {
+            if (!conversation.active && conference.autojoin) {
+                join.begin(account, conference.jid, conference.nick, conference.password);
+            } else if (conversation.active && !conference.autojoin) {
+                part(account, conference.jid);
+            }
+        }
+        if (conference.autojoin) {
+            join.begin(account, conference.jid, conference.nick, conference.password);
+        }
+        conference_added(account, conference);
+    }
+
+    private void on_conference_removed(Account account, Jid jid) {
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account, Conversation.Type.GROUPCHAT);
+        if (conversation != null && conversation.active) {
+            part(account, jid);
+        }
+        conference_removed(account, jid);
     }
 
     private void self_ping(Account account) {

@@ -4,6 +4,7 @@ namespace Xmpp.Xep.Pubsub {
     public const string NS_URI = "http://jabber.org/protocol/pubsub";
     private const string NS_URI_EVENT = NS_URI + "#event";
     private const string NS_URI_OWNER = NS_URI + "#owner";
+    public const string NS_URI_ERROR = NS_URI + "#errors";
 
     public const string ACCESS_MODEL_AUTHORIZE = "authorize";
     public const string ACCESS_MODEL_OPEN = "open";
@@ -66,7 +67,11 @@ namespace Xmpp.Xep.Pubsub {
             });
         }
 
-        public async bool publish(XmppStream stream, Jid? jid, string node_id, string? item_id, StanzaNode content, string? access_model=null) {
+        public async bool publish(
+                XmppStream stream, Jid? jid, string node_id, string? item_id, StanzaNode content,
+                PublishOptions? publish_options = null,
+                bool try_reconfiguring = true
+        ) {
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI).add_self_xmlns();
             StanzaNode publish_node = new StanzaNode.build("publish", NS_URI).put_attribute("node", node_id);
             pubsub_node.put_node(publish_node);
@@ -75,7 +80,8 @@ namespace Xmpp.Xep.Pubsub {
             items_node.put_node(content);
             publish_node.put_node(items_node);
 
-            if (access_model != null) {
+            // Send along our requirements for the node
+            if (publish_options != null) {
                 StanzaNode publish_options_node = new StanzaNode.build("publish-options", NS_URI);
                 pubsub_node.put_node(publish_options_node);
 
@@ -83,23 +89,30 @@ namespace Xmpp.Xep.Pubsub {
                 DataForms.DataForm.HiddenField form_type_field = new DataForms.DataForm.HiddenField() { var="FORM_TYPE" };
                 form_type_field.set_value_string(NS_URI + "#publish-options");
                 data_form.add_field(form_type_field);
-                if (access_model != null) {
-                    DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="pubsub#access_model" };
-                    field.set_value_string(access_model);
+
+                foreach (string field_name in publish_options.settings.keys) {
+                    DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var=field_name };
+                    field.set_value_string(publish_options.settings[field_name]);
                     data_form.add_field(field);
                 }
                 publish_options_node.put_node(data_form.get_submit_node());
             }
 
             Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
-            bool ok = true;
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, (stream, result_iq) => {
-                ok = !result_iq.is_error();
-                Idle.add(publish.callback);
-            });
-            yield;
 
-            return ok;
+            // If the node was configured differently before, reconfigure it to meet our requirements and try again
+            Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+            if (iq_result.is_error()) {
+                if (publish_options == null || !try_reconfiguring) return false;
+                bool precondition_not_met = iq_result.get_error().error_node.get_subnode("precondition-not-met", NS_URI_ERROR) != null;
+                if (precondition_not_met) {
+                    bool success = yield change_node_config(stream, jid, node_id, publish_options);
+                    if (!success) return false;
+                    return yield publish(stream, jid, node_id, item_id, content, publish_options, false);
+                }
+            }
+
+            return true;
         }
 
         public async bool retract_item(XmppStream stream, Jid? jid, string node_id, string item_id) {
@@ -139,7 +152,7 @@ namespace Xmpp.Xep.Pubsub {
             return DataForms.DataForm.create_from_node(data_form_node);
         }
 
-        public async void submit_node_config(XmppStream stream, DataForms.DataForm data_form, string node_id) {
+        public async bool submit_node_config(XmppStream stream, DataForms.DataForm data_form, string node_id) {
             StanzaNode submit_node = data_form.get_submit_node();
 
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", Pubsub.NS_URI_OWNER).add_self_xmlns();
@@ -149,7 +162,9 @@ namespace Xmpp.Xep.Pubsub {
 
 
             Iq.Stanza iq = new Iq.Stanza.set(pubsub_node);
-            yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+            Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+
+            return !iq_result.is_error();
         }
 
         public override void attach(XmppStream stream) {
@@ -192,7 +207,42 @@ namespace Xmpp.Xep.Pubsub {
                     retract_listeners[node].on_result(stream, message.from, id);
                 }
             }
+        }
 
+        private async bool change_node_config(XmppStream stream, Jid jid, string node, PublishOptions publish_options) {
+            DataForms.DataForm? data_form = yield stream.get_module(Pubsub.Module.IDENTITY).request_node_config(stream, null, node);
+            if (data_form == null) return false;
+
+            foreach (DataForms.DataForm.Field field in data_form.fields) {
+                if (publish_options.settings.has_key(field.var) && publish_options.settings[field.var] != field.get_value_string()) {
+                    field.set_value_string(publish_options.settings[field.var]);
+                }
+            }
+            return yield stream.get_module(Pubsub.Module.IDENTITY).submit_node_config(stream, data_form, node);
+        }
+    }
+
+    public class PublishOptions {
+        public HashMap<string, string> settings = new HashMap<string, string>();
+
+        public PublishOptions set_persist_items(bool persist) {
+            settings["pubsub#persist_items"] = persist.to_string();
+            return this;
+        }
+
+        public PublishOptions set_max_items(string max) {
+            settings["pubsub#max_items"] = max;
+            return this;
+        }
+
+        public PublishOptions set_send_last_published_item(string send) {
+            settings["pubsub#send_last_published_item"] = send.to_string();
+            return this;
+        }
+
+        public PublishOptions set_access_model(string model) {
+            settings["pubsub#access_model"] = model;
+            return this;
         }
     }
 
