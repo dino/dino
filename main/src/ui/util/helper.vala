@@ -312,6 +312,18 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     }
 
     if (parse_text_markup) {
+        Regex quote_regex = new Regex("((?<=\n)&gt;.*(\n|$))|(^&gt;.*(\n|$))");
+        MatchInfo quote_match_info;
+        quote_regex.match(s.down(), 0, out quote_match_info);
+        if (quote_match_info.matches()) {
+            int start, end;
+
+            quote_match_info.fetch_pos(0, out start, out end);
+            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                    "<span fgalpha='70%'>" + s[start:end] + "</span>" +
+                    parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+        }
+
         string[] markup_string = new string[]{"`", "_", "*", "~"};
         string[] convenience_tag = new string[]{"tt", "i", "b", "s"};
 
@@ -333,19 +345,6 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
             } catch (RegexError e) {
                 assert_not_reached();
             }
-        }
-
-        Regex regex = new Regex("((?<=\n)&gt;.*(\n|$))|(^&gt;.*(\n|$))");
-        MatchInfo match_info;
-        regex.match(s.down(), 0, out match_info);
-
-        if (match_info.matches()) {
-            int start, end;
-
-            match_info.fetch_pos(0, out start, out end);
-            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                "<span fgalpha='70%'>" + s[start:end] + "</span>" +
-                parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
         }
     }
 
