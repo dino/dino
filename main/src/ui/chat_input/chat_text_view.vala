@@ -35,7 +35,9 @@ public class ChatTextView : ScrolledWindow {
     public signal void send_text();
     public signal void cancel_input();
 
-    public TextView text_view = new TextView() { can_focus=true, hexpand=true, margin=8, wrap_mode=Gtk.WrapMode.WORD_CHAR, valign=Align.CENTER, visible=true };
+    public TextView text_view = new TextView() { can_focus=true, hexpand=true, wrap_mode=Gtk.WrapMode.WORD_CHAR, valign=Align.CENTER, visible=true };
+    // Hack to prevent the ChatTextView from increasing in height after text was entered
+    private Label zero_width_label_hack = new Label("​") { hexpand=false, valign=Align.CENTER, opacity=0, visible=true };
     private int vscrollbar_min_height;
     private SmileyConverter smiley_converter;
     public EditHistory edit_history;
@@ -44,7 +46,10 @@ public class ChatTextView : ScrolledWindow {
     construct {
         max_content_height = 300;
         propagate_natural_height = true;
-        this.add(text_view);
+        Box box = new Box(Orientation.HORIZONTAL, 0) { hexpand=true, margin=8, valign=Align.CENTER, visible=true };
+        box.add(text_view);
+        box.add(zero_width_label_hack);
+        this.add(box);
 
         smiley_converter = new SmileyConverter(text_view);
         edit_history = new EditHistory(text_view);
