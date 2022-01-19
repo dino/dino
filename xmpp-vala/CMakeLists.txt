@@ -132,12 +132,12 @@ SOURCES
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/0334_message_processing_hints.vala"
     "src/module/xep/0353_jingle_message_initiation.vala"
+    "src/module/xep/0353_call_invite_message.vala"
     "src/module/xep/0359_unique_stable_stanza_ids.vala"
     "src/module/xep/0363_http_file_upload.vala"
     "src/module/xep/0380_explicit_encryption.vala"
     "src/module/xep/0391_jingle_encrypted_transports.vala"
     "src/module/xep/0410_muc_self_ping.vala"
-    "src/module/xep/muji_meta.vala"
     "src/module/xep/pixbuf_storage.vala"
 
     "src/util.vala"

@@ -15,6 +15,7 @@ public class Dino.CallState : Object {
     public Jid? parent_muc { get; set; }
     public Jid? invited_to_group_call = null;
     public Jid? group_call_inviter = null;
+    public string? invite_id = null;
     public bool accepted { get; private set; default=false; }
 
     public bool we_should_send_audio { get; set; default=false; }
@@ -61,7 +62,7 @@ public class Dino.CallState : Object {
             yield stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation(stream, group_call.muc_jid, real_jid.bare_jid, null, "owner");
         }
 
-        stream.get_module(Xep.MujiMeta.Module.IDENTITY).send_invite(stream, muc, group_call.muc_jid, we_should_send_video, message_type);
+        stream.get_module(Xep.CallInvites.Module.IDENTITY).send_invite(stream, muc, group_call.muc_jid, we_should_send_video, message_type);
     }
 
     internal PeerState set_first_peer(Jid peer) {
@@ -84,7 +85,7 @@ public class Dino.CallState : Object {
         if (invited_to_group_call != null) {
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-            stream.get_module(Xep.MujiMeta.Module.IDENTITY).send_invite_accept_to_peer(stream, group_call_inviter, invited_to_group_call, message_type);
+            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_accept(stream, group_call_inviter, invite_id, message_type);
             join_group_call.begin(invited_to_group_call);
         } else {
             foreach (PeerState peer in peers.values) {
@@ -99,8 +100,7 @@ public class Dino.CallState : Object {
         if (invited_to_group_call != null) {
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-            stream.get_module(Xep.MujiMeta.Module.IDENTITY).send_invite_reject_to_self(stream, invited_to_group_call);
-            stream.get_module(Xep.MujiMeta.Module.IDENTITY).send_invite_reject_to_peer(stream, group_call_inviter, invited_to_group_call, message_type);
+            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_reject(stream, invited_to_group_call, invite_id, message_type);
         }
         var peers_cpy = new ArrayList<PeerState>();
         peers_cpy.add_all(peers.values);
@@ -133,7 +133,7 @@ public class Dino.CallState : Object {
             if (parent_muc != null && group_call != null) {
                 XmppStream stream = stream_interactor.get_stream(call.account);
                 if (stream == null) return;
-                stream.get_module(Xep.MujiMeta.Module.IDENTITY).send_invite_retract_to_peer(stream, parent_muc, group_call.muc_jid, message_type);
+                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_retract(stream, parent_muc, invite_id, message_type);
             }
             call.state = Call.State.MISSED;
         } else {
@@ -172,9 +172,10 @@ public class Dino.CallState : Object {
 
         debug("[%s] Inviting to muji call %s", call.account.bare_jid.to_string(), invitee.to_string());
         yield stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation(stream, group_call.muc_jid, invitee, null, "owner");
-        stream.get_module(Xep.MujiMeta.Module.IDENTITY).send_invite(stream, invitee, group_call.muc_jid, we_should_send_video, message_type);
+        stream.get_module(Xep.CallInvites.Module.IDENTITY).send_invite(stream, invitee, group_call.muc_jid, we_should_send_video, "chat");
 
         // If the peer hasn't accepted within a minute, retract the invite
+        // TODO this should be unset when we retract the invite. otherwise a second invite attempt might break due to this
         Timeout.add_seconds(60, () => {
             if (this == null) return false;
 
@@ -187,7 +188,7 @@ public class Dino.CallState : Object {
 
             if (!contains_peer) {
                 debug("[%s] Retracting invite to %s from %s", call.account.bare_jid.to_string(), group_call.muc_jid.to_string(), invitee.to_string());
-                stream.get_module(Xep.MujiMeta.Module.IDENTITY).send_invite_retract_to_peer(stream, invitee, group_call.muc_jid, message_type);
+//                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_retract(stream, invitee, invite_id);
                 stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation.begin(stream, group_call.muc_jid, invitee, null, "none");
             }
             return false;

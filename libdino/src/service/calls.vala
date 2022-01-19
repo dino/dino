@@ -79,7 +79,10 @@ namespace Dino {
                 return (yield get_call_resources(conversation.account, conversation.counterpart)).size > 0 || has_jmi_resources(conversation.counterpart);
             } else {
                 bool is_private = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
-                return is_private && can_initiate_groupcall(conversation.account);
+                EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
+                bool supports_ussid = yield entity_info.has_feature(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI);
+                bool supports_mam = yield entity_info.has_feature(conversation.account, conversation.counterpart.bare_jid, Xep.MessageArchiveManagement.NS_URI_2);
+                return is_private && (supports_ussid || supports_mam) && can_initiate_groupcall(conversation.account);
             }
         }
 
@@ -235,34 +238,42 @@ namespace Dino {
             return peer_state;
         }
 
-        private CallState? get_call_state_for_groupcall(Account account, Jid muc_jid) {
+        private CallState? get_call_state_by_invite_id(Account account, Jid peer_jid, string invite_id) {
             foreach (CallState call_state in call_states.values) {
                 if (!call_state.call.account.equals(account)) continue;
 
-                if (call_state.group_call != null && call_state.group_call.muc_jid.equals(muc_jid)) return call_state;
-                if (call_state.invited_to_group_call != null && call_state.invited_to_group_call.equals(muc_jid)) return call_state;
+                if (call_state.group_call != null && call_state.invite_id == invite_id) {
+                    foreach (Jid jid in call_state.peers.keys) {
+                        if (jid.equals(peer_jid)) {
+                            return call_state;
+                        }
+                    }
+                }
+                if (call_state.invited_to_group_call != null && call_state.invited_to_group_call.equals(peer_jid)) return call_state;
             }
             return null;
         }
 
-        private async void on_muji_call_received(Account account, Jid inviter_jid, Jid muc_jid, Gee.List<StanzaNode> descriptions, string message_type) {
+        private async void on_muji_call_received(Account account, Jid inviter_jid, Jid muc_jid, string invite_id, bool video, string message_type) {
             debug("[%s] Muji call received from %s for MUC %s, type %s", account.bare_jid.to_string(), inviter_jid.to_string(), muc_jid.to_string(), message_type);
 
             foreach (Call call in call_states.keys) {
                 if (!call.account.equals(account)) return;
 
-                // We already know the call; this is a reflection of our own invite
-                if (call_states[call].parent_muc != null && call_states[call].parent_muc.equals_bare(inviter_jid)) return;
+                CallState call_state = call_states[call];
 
-                if (call.counterparts.contains(inviter_jid) && call_states[call].accepted) {
+                // If this is a MUC reflection of our own invite, store the sid assigned by the MUC
+                if (call_state.parent_muc != null && call_state.parent_muc.equals_bare(inviter_jid)) {
+                    call_state.invite_id = invite_id;
+                    return;
+                }
+
+                if (call.counterparts.contains(inviter_jid) && call_state.accepted) {
                     // A call is converted into a group call.
-                    yield call_states[call].join_group_call(muc_jid);
+                    yield call_state.join_group_call(muc_jid);
                     return;
                 }
             }
-
-            bool audio_requested = descriptions.any_match((description) => description.ns_uri == Xep.JingleRtp.NS_URI && description.get_attribute("media") == "audio");
-            bool video_requested = descriptions.any_match((description) => description.ns_uri == Xep.JingleRtp.NS_URI && description.get_attribute("media") == "video");
 
             Call call = new Call();
             call.direction = Call.DIRECTION_INCOMING;
@@ -280,12 +291,13 @@ namespace Dino {
             CallState call_state = new CallState(call, stream_interactor);
             connect_call_state_signals(call_state);
             call_state.we_should_send_audio = true;
-            call_state.we_should_send_video = video_requested;
+            call_state.we_should_send_video = video;
             call_state.invited_to_group_call = muc_jid;
             call_state.group_call_inviter = inviter_jid;
+            call_state.invite_id = invite_id;
 
             debug("[%s] on_muji_call_received accepting", account.bare_jid.to_string());
-            call_incoming(call_state.call, call_state, conversation, video_requested);
+            call_incoming(call_state.call, call_state, conversation, video);
         }
 
         private void remove_call_from_datastructures(Call call) {
@@ -379,26 +391,43 @@ namespace Dino {
                 remove_call_from_datastructures(call);
             });
 
-            Xep.MujiMeta.Module muji_meta_module = stream_interactor.module_manager.get_module(account, Xep.MujiMeta.Module.IDENTITY);
-            muji_meta_module.call_proposed.connect((inviter_jid, to, muc_jid, descriptions, message_type) => {
-                if (inviter_jid.equals_bare(account.bare_jid)) return;
-                on_muji_call_received.begin(account, inviter_jid, muc_jid, descriptions, message_type);
+            Xep.CallInvites.Module call_invites_module = stream_interactor.module_manager.get_module(account, Xep.CallInvites.Module.IDENTITY);
+            call_invites_module.call_proposed.connect((from_jid, to_jid, video, join_methods, message_stanza) => {
+                if (from_jid.equals_bare(account.bare_jid)) return;
+                foreach (StanzaNode join_method_node in join_methods) {
+                    if (join_method_node.ns_uri == Xep.Muji.NS_URI) {
+                        string? room_jid_str = join_method_node.get_attribute("room");
+                        if (room_jid_str == null) return;
+                        Jid room_jid = new Jid(room_jid_str);
+                        string? invite_id = null;
+                        if (message_stanza.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
+                            invite_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message_stanza, from_jid.bare_jid);
+                        } else {
+                            invite_id = message_stanza.id;
+                        }
+                        if (invite_id == null) {
+                            warning("Got call invite without ID");
+                            return;
+                        }
+                        on_muji_call_received.begin(account, from_jid, room_jid, id, video, message_stanza.type_);
+                    }
+                }
             });
-            muji_meta_module.call_accepted.connect((from_jid, muc_jid, message_type) => {
+            call_invites_module.call_accepted.connect((from_jid, invite_id, message_type) => {
                 if (!from_jid.equals_bare(account.bare_jid)) return;
 
                 // We accepted the call from another device
-                CallState? call_state = get_call_state_for_groupcall(account, muc_jid);
+                CallState? call_state = get_call_state_by_invite_id(account, from_jid, invite_id);
                 if (call_state == null) return;
 
                 call_state.call.state = Call.State.OTHER_DEVICE;
                 remove_call_from_datastructures(call_state.call);
             });
-            muji_meta_module.call_retracted.connect((from_jid, to_jid, muc_jid, message_type) => {
+            call_invites_module.call_retracted.connect((from_jid, to_jid, invite_id, message_type) => {
                 if (from_jid.equals_bare(account.bare_jid)) return;
 
                 // The call was retracted by the counterpart
-                CallState? call_state = get_call_state_for_groupcall(account, muc_jid);
+                CallState? call_state = get_call_state_by_invite_id(account, from_jid, invite_id);
                 if (call_state == null) return;
 
                 if (call_state.call.state != Call.State.RINGING) {
@@ -411,7 +440,7 @@ namespace Dino {
                 call_state.call.state = Call.State.MISSED;
                 remove_call_from_datastructures(call_state.call);
             });
-            muji_meta_module.call_rejected.connect((from_jid, to_jid, muc_jid, message_type) => {
+            call_invites_module.call_rejected.connect((from_jid, to_jid, muc_jid, message_type) => {
                 if (from_jid.equals_bare(account.bare_jid)) return;
                 debug(@"[%s] %s rejected our MUJI invite to %s", account.bare_jid.to_string(), from_jid.to_string(), muc_jid.to_string());
             });

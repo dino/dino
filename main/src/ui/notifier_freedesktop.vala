@@ -267,7 +267,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         if (content_notifications != null) {
             foreach (uint32 id in content_notifications.values) {
                 try {
-                    yield dbus_notifications.close_notification(id);
+                    dbus_notifications.close_notification.begin(id);
                 } catch (Error e) { }
             }
             content_notifications.clear();
@@ -277,7 +277,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
     public async void retract_conversation_notifications(Conversation conversation) {
         if (content_notifications.has_key(conversation)) {
             try {
-                yield dbus_notifications.close_notification(content_notifications[conversation]);
+                dbus_notifications.close_notification.begin(content_notifications[conversation]);
             } catch (Error e) { }
         }
         content_notifications.unset(conversation);
