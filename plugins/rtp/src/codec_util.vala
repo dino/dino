@@ -132,8 +132,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public static string? get_encode_prefix(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
-        if (encode == "msdkh264enc") return "video/x-raw,format=NV12 ! ";
-        if (encode == "vaapih264enc") return "video/x-raw,format=NV12 ! ";
+        if (encode == "msdkh264enc") return "capsfilter caps=video/x-raw,format=NV12 ! ";
+        if (encode == "vaapih264enc") return "capsfilter caps=video/x-raw,format=NV12 ! ";
         return null;
     }
 
@@ -228,7 +228,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public static string? get_depay_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
-#if GST_1_16
+#if GST_1_18
         if (codec == "vp8") return " wait-for-keyframe=true";
 #endif
         return null;
