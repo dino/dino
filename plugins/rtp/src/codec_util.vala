@@ -140,7 +140,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     public static string? get_encode_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         // H264
         if (encode == "msdkh264enc") return @" rate-control=vbr";
-        if (encode == "vaapih264enc") return @" rate-control=vbr tune=low-power";
+        if (encode == "vaapih264enc") return @" rate-control=vbr";
         if (encode == "x264enc") return @" byte-stream=1 speed-preset=ultrafast tune=zerolatency bframes=0 cabac=false dct8x8=false";
 
         // VP8
