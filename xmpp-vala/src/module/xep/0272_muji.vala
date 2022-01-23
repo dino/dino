@@ -197,7 +197,7 @@ namespace Xmpp.Xep.Muji {
             if (group_call.real_jids.has_key(presence.from)) {
                 group_call.peer_left(group_call.real_jids[presence.from]);
             }
-            group_call.real_jids.remove(presence.from);
+            group_call.real_jids.unset(presence.from);
         }
 
         private void on_jid_finished_preparing(XmppStream stream, Jid jid, GroupCall group_call) {

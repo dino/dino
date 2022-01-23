@@ -16,6 +16,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
             hm = flag.conferences;
         } else {
             Gee.List<StanzaNode>? items = yield stream.get_module(Pubsub.Module.IDENTITY).request_all(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI);
+            if (items == null) return null;
 
             hm = new HashMap<Jid, Conference>(Jid.hash_func, Jid.equals_func);
             foreach (StanzaNode item_node in items) {

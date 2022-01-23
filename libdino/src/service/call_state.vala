@@ -191,7 +191,7 @@ public class Dino.CallState : Object {
     }
 
     internal void rename_peer(Jid from_jid, Jid to_jid) {
-        debug("[%s] Renaming %s to %s exists %b", call.account.bare_jid.to_string(), from_jid.to_string(), to_jid.to_string(), peers.has_key(from_jid));
+        debug("[%s] Renaming %s to %s exists %s", call.account.bare_jid.to_string(), from_jid.to_string(), to_jid.to_string(), peers.has_key(from_jid).to_string());
         PeerState? peer_state = peers[from_jid];
         if (peer_state == null) return;
 

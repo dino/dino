@@ -102,7 +102,7 @@ public class GlobalSearch : Overlay {
                     avatar.set_conversation(stream_interactor, suggestion.conversation);
                 }
                 if (display_name != suggestion.jid.to_string()) {
-                    label.set_markup("%s <span font_weight='light' fgalpha='80%'>%s</span>".printf(Markup.escape_text(display_name), Markup.escape_text(suggestion.jid.to_string())));
+                    label.set_markup("%s <span font_weight='light' fgalpha='80%%'>%s</span>".printf(Markup.escape_text(display_name), Markup.escape_text(suggestion.jid.to_string())));
                 } else {
                     label.label = display_name;
                 }

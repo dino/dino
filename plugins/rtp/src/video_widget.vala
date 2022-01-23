@@ -41,7 +41,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
     }
 
     public void input_caps_changed(GLib.Object pad, ParamSpec spec) {
-        Gst.Caps? caps = (pad as Gst.Pad).caps;
+        Gst.Caps? caps = ((Gst.Pad)pad).caps;
         if (caps == null) return;
 
         int width, height;
@@ -54,7 +54,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         if (prepare != null) {
             Gst.Element crop = ((Gst.Bin)prepare).get_by_name(@"video_widget_$(id)_crop");
             if (crop != null) {
-                Value ratio = new Value(typeof(Gst.Fraction));
+                Value ratio = Value(typeof(Gst.Fraction));
 #if VALA_0_52
                 Gst.Value.set_fraction(ref ratio, allocation.width, allocation.height);
 #else

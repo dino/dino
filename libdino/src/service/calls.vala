@@ -172,7 +172,7 @@ namespace Dino {
                     if (call_state.group_call != null && call_state.group_call.muc_jid.equals(muji_muc)) {
                         if (call_state.peers.keys.contains(session.peer_full_jid)) {
                             PeerState peer_state = call_state.peers[session.peer_full_jid];
-                            debug("[%s] Incoming call, we know the peer. Expected %b", account.bare_jid.to_string(), peer_state.waiting_for_inbound_muji_connection);
+                            debug("[%s] Incoming call, we know the peer. Expected %s", account.bare_jid.to_string(), peer_state.waiting_for_inbound_muji_connection.to_string());
                             if (!peer_state.waiting_for_inbound_muji_connection) return;
 
                             peer_state.set_session(session);
@@ -434,7 +434,7 @@ namespace Dino {
             });
             muji_meta_module.call_rejected.connect((from_jid, to_jid, muc_jid, message_type) => {
                 if (from_jid.equals_bare(account.bare_jid)) return;
-                debug(@"[%s] rejected our MUJI invite to %s", account.bare_jid.to_string(), from_jid.to_string(), muc_jid.to_string());
+                debug(@"[%s] %s rejected our MUJI invite to %s", account.bare_jid.to_string(), from_jid.to_string(), muc_jid.to_string());
             });
 
             stream_interactor.module_manager.get_module(account, Xep.Coin.Module.IDENTITY).coin_info_received.connect((jid, info) => {

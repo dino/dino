@@ -85,8 +85,8 @@ public class JingleFileProvider : FileProvider, Object {
     public Encryption get_encryption(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) {
         Xmpp.Xep.JingleFileTransfer.FileTransfer? jingle_file_transfer = file_transfers[file_transfer.info];
         if (jingle_file_transfer == null) {
-            return Encryption.NONE;
             warning("Could not determine jingle encryption - transfer data not available anymore");
+            return Encryption.NONE;
         }
         foreach (JingleFileEncryptionHelper helper in JingleFileHelperRegistry.instance.encryption_helpers.values) {
             var encryption = helper.get_encryption(jingle_file_transfer);
