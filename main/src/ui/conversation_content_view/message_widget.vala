@@ -198,9 +198,9 @@ public class MessageItemWidget : SizeRequestBin {
         }
 
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            markup_text = Util.parse_add_markup(markup_text, conversation.nickname, true, true);
+            markup_text = Util.parse_add_markup_theme(markup_text, conversation.nickname, true, true, Util.is_dark_theme(this), ref theme_dependent);
         } else {
-            markup_text = Util.parse_add_markup(markup_text, null, true, true);
+            markup_text = Util.parse_add_markup_theme(markup_text, null, true, true, Util.is_dark_theme(this), ref theme_dependent);
         }
 
         if (message.body.has_prefix("/me ")) {
@@ -216,8 +216,10 @@ public class MessageItemWidget : SizeRequestBin {
             markup_text = @"<span size=\'$size_str\'>" + markup_text + "</span>";
         }
 
+        string dim_color = Util.is_dark_theme(this) ? "#BDBDBD" : "#707070";
+
         if (message.edit_to != null) {
-            markup_text += "  <span size='small' alpha='70%'>(%s)</span>".printf(_("edited"));
+            markup_text += @"  <span size='small' color='$dim_color'>(%s)</span>".printf(_("edited"));
             theme_dependent = true;
         }
 
@@ -226,7 +228,7 @@ public class MessageItemWidget : SizeRequestBin {
         if (message.direction == Message.DIRECTION_SENT && (message.marked == Message.Marked.SENDING || message.marked == Message.Marked.UNSENT)) {
             // Append "pending..." iff message has not been sent yet
             if (message.time.compare(new DateTime.now_utc().add_seconds(-10)) < 0) {
-                markup_text += "  <span size='small' alpha='70%'>%s</span>".printf(_("pending…"));
+                markup_text += @"  <span size='small' color='$dim_color'>%s</span>".printf(_("pending…"));
                 theme_dependent = true;
                 additional_info = AdditionalInfo.PENDING;
             } else {
