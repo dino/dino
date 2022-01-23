@@ -261,7 +261,7 @@ public class GlobalSearch : Overlay {
         grid.attach(image, 0, 0, 1, 2);
 
         string display_name = Util.get_participant_display_name(stream_interactor, item.conversation, item.jid);
-        Label name_label = new Label(display_name) { ellipsize=EllipsizeMode.END, use_markup=true, xalign=0, visible=true };
+        Label name_label = new Label(display_name) { ellipsize=EllipsizeMode.END, xalign=0, visible=true };
         name_label.attributes = new AttrList();
         name_label.attributes.insert(attr_weight_new(Weight.BOLD));
         grid.attach(name_label, 1, 0, 1, 1);

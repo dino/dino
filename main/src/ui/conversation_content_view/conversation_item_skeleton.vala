@@ -216,7 +216,7 @@ public class ItemMetaDataHeader : Box {
     }
 
     private void update_name_label() {
-        name_label.label = Markup.escape_text(Util.get_participant_display_name(stream_interactor, conversation, item.jid));
+        name_label.label = Util.get_participant_display_name(stream_interactor, conversation, item.jid);
     }
 
     private void update_received_mark() {

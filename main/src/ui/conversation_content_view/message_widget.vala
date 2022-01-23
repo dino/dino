@@ -205,9 +205,7 @@ public class MessageItemWidget : SizeRequestBin {
 
         if (message.body.has_prefix("/me ")) {
             string display_name = Util.get_participant_display_name(stream_interactor, conversation, message.from);
-            string color = Util.get_name_hex_color(stream_interactor, conversation.account, message.real_jid ?? message.from, Util.is_dark_theme(label));
-            markup_text = @"<span color=\"#$(color)\">$(Markup.escape_text(display_name))</span> " + markup_text;
-            theme_dependent = true;
+            markup_text = @"<i><b>$(Markup.escape_text(display_name))</b> " + markup_text + "</i>";
         }
 
         int only_emoji_count = Util.get_only_emoji_count(markup_text);
