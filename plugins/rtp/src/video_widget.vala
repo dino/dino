@@ -4,6 +4,7 @@ private static extern void gst_value_set_fraction(ref GLib.Value value, int nume
 #endif
 
 public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidget {
+    private const int RECAPS_AFTER_CHANGE = 5;
     private static uint last_id = 0;
 
     public uint id { get; private set; }
@@ -22,6 +23,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
     private Gst.Element prepare;
     private Gst.Caps last_input_caps;
     private Gst.Caps last_caps;
+    private int recaps_since_change;
 
     public VideoWidget(Plugin plugin) {
         this.plugin = plugin;
@@ -35,7 +37,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
             sink.@set("sync", true);
             sink.@set("ignore-alpha", false);
             this.widget = widget;
-            this.widget.draw.connect(fix_caps_issues);
+            this.widget.draw.connect_after(fix_caps_issues);
             add(widget);
             widget.visible = true;
         } else {
@@ -47,7 +49,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
     public void input_caps_changed(GLib.Object pad, ParamSpec spec) {
         Gst.Caps? caps = ((Gst.Pad)pad).caps;
         if (caps == null) {
-            warning("Input: No caps");
+            debug("Input: No caps");
             return;
         }
 
@@ -60,9 +62,9 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
     }
 
     public void processed_input_caps_changed(GLib.Object pad, ParamSpec spec) {
-        Gst.Caps? caps = (pad as Gst.Pad).caps;
+        Gst.Caps? caps = ((Gst.Pad)pad).caps;
         if (caps == null) {
-            warning("Processed input: No caps");
+            debug("Processed input: No caps");
             return;
         }
 
@@ -72,6 +74,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         debug("Processed resolution changed: %ix%i", width, height);
         sink.set_caps(caps);
         last_caps = caps;
+        recaps_since_change = 0;
     }
 
     public void after_size_allocate(Gtk.Allocation allocation) {
@@ -118,7 +121,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
 
     public bool fix_caps_issues() {
         // FIXME: Detect if draw would fail and do something better
-        if (last_caps != null) {
+        if (last_caps != null && recaps_since_change++ < RECAPS_AFTER_CHANGE) {
             Gst.Caps? temp = last_caps.copy();
             temp.set_simple("width", typeof(int), 1, "height", typeof(int), 1, null);
             sink.set_caps(temp);
