@@ -278,7 +278,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         dialog.comments = "Dino. Communicating happiness.";
         dialog.website = "https://dino.im/";
         dialog.website_label = "dino.im";
-        dialog.copyright = "Copyright © 2016-2021 - Dino Team";
+        dialog.copyright = "Copyright © 2016-2022 - Dino Team";
         dialog.license_type = License.GPL_3_0;
 
         dialog.response.connect((response_id) => {
