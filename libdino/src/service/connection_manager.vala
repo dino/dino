@@ -104,10 +104,14 @@ public class ConnectionManager : Object {
             network_monitor.network_changed.connect(on_network_changed);
             network_monitor.notify["connectivity"].connect(on_network_changed);
         }
-        login1 = get_login1();
-        if (login1 != null) {
-            login1.PrepareForSleep.connect(on_prepare_for_sleep);
-        }
+
+        get_login1.begin((_, res) => {
+            login1 = get_login1.end(res);
+            if (login1 != null) {
+                login1.PrepareForSleep.connect(on_prepare_for_sleep);
+            }
+        });
+
         Timeout.add_seconds(60, () => {
             foreach (Account account in connections.keys) {
                 if (connections[account].last_activity != null &&

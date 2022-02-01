@@ -47,11 +47,21 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             }
 
             NotificationEvents notification_events = stream_interactor.get_module(NotificationEvents.IDENTITY);
-            notification_events.register_notification_provider(new GNotificationsNotifier(stream_interactor));
-            FreeDesktopNotifier? free_desktop_notifier = FreeDesktopNotifier.try_create(stream_interactor);
-            if (free_desktop_notifier != null) {
-                notification_events.register_notification_provider(free_desktop_notifier);
-            }
+            get_notifications_dbus.begin((_, res) => {
+                // It might take a bit to get the interface. NotificationEvents will queue any notifications in the meantime.
+                try {
+                    DBusNotifications? dbus_notifications = get_notifications_dbus.end(res);
+                    if (dbus_notifications != null) {
+                        FreeDesktopNotifier free_desktop_notifier = new FreeDesktopNotifier(stream_interactor, dbus_notifications);
+                        notification_events.register_notification_provider.begin(free_desktop_notifier);
+                    } else {
+                        notification_events.register_notification_provider.begin(new GNotificationsNotifier(stream_interactor));
+                    }
+                } catch (Error e) {
+                    debug("Failed accessing fdo notification server: %s", e.message);
+                }
+            });
+
             notification_events.notify_content_item.connect((content_item, conversation) => {
                 // Set urgency hint also if (normal) notifications are disabled
                 // Don't set urgency hint in GNOME, produces "Window is active" notification
