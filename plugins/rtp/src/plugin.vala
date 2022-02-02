@@ -285,7 +285,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         Gst.deinit();
     }
 
-    public bool supports(string media) {
+    public bool supports(string? media) {
         if (!codec_util.is_element_supported("rtpbin")) return false;
 
         if (media == "audio") {
@@ -310,6 +310,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     }
 
     public Gee.List<MediaDevice> get_devices(string media, bool incoming) {
+
         if (media == "video" && !incoming) {
             return get_video_sources();
         }

@@ -111,17 +111,30 @@ namespace Dino.Ui {
             incoming_call_revealer.get_style_context().remove_class("incoming");
             outer_additional_box.get_style_context().remove_class("incoming-call-box");
 
-            switch (call.state) {
+            // It doesn't make sense to display MUC calls as missed or declined by the whole MUC. Just display as ended.
+            // TODO: maybe not let them be missed/declined in first place.
+            Call.State relevant_state = call.state;
+            if (conversation.type_ == Conversation.Type.GROUPCHAT && call.direction == Call.DIRECTION_OUTGOING &&
+                    (relevant_state == Call.State.MISSED || relevant_state == Call.State.DECLINED)) {
+                relevant_state = Call.State.ENDED;
+            }
+
+            switch (relevant_state) {
                 case Call.State.RINGING:
                     image.set_from_icon_name("dino-phone-ring-symbolic", IconSize.LARGE_TOOLBAR);
                     if (call.direction == Call.DIRECTION_INCOMING) {
                         bool video = call_manager.should_we_send_video();
                         title_label.label = video ? _("Incoming video call") : _("Incoming call");
-                        subtitle_label.label = "Ring ring…!";
-                        incoming_call_box.visible = true;
-                        incoming_call_revealer.reveal_child = true;
-                        incoming_call_revealer.get_style_context().add_class("incoming");
-                        outer_additional_box.get_style_context().add_class("incoming-call-box");
+
+                        if (stream_interactor.get_module(Calls.IDENTITY).can_we_do_calls(call.account)) {
+                            subtitle_label.label = "Ring ring…!";
+                            incoming_call_box.visible = true;
+                            incoming_call_revealer.reveal_child = true;
+                            incoming_call_revealer.get_style_context().add_class("incoming");
+                            outer_additional_box.get_style_context().add_class("incoming-call-box");
+                        } else {
+                            subtitle_label.label = "Dependencies for call support not met";
+                        }
                     } else {
                         title_label.label = _("Calling…");
                         subtitle_label.label = "Ring ring…?";

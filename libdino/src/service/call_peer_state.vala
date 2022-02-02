@@ -3,6 +3,7 @@ using Gee;
 using Xmpp;
 
 public class Dino.PeerState : Object {
+    public signal void stream_created(string media);
     public signal void counterpart_sends_video_updated(bool mute);
     public signal void info_received(Xep.JingleRtp.CallSessionInfo session_info);
 
@@ -214,14 +215,14 @@ public class Dino.PeerState : Object {
         // If video_content_parameter == null && !mute we're trying to mute a non-existant feed. It will be muted as soon as it is created.
     }
 
-    public Xep.JingleRtp.Stream? get_video_stream(Call call) {
+    public Xep.JingleRtp.Stream? get_video_stream() {
         if (video_content_parameter != null) {
             return video_content_parameter.stream;
         }
         return null;
     }
 
-    public Xep.JingleRtp.Stream? get_audio_stream(Call call) {
+    public Xep.JingleRtp.Stream? get_audio_stream() {
         if (audio_content_parameter != null) {
             return audio_content_parameter.stream;
         }
@@ -235,8 +236,8 @@ public class Dino.PeerState : Object {
         session.terminated.connect((stream, we_terminated, reason_name, reason_text) =>
             session_terminated(we_terminated, reason_name, reason_text)
         );
-        session.additional_content_add_incoming.connect((session,stream, content) =>
-            on_incoming_content_add(stream, session, content)
+        session.additional_content_add_incoming.connect((stream, content) =>
+            on_incoming_content_add(stream, content.session, content)
         );
 
         foreach (Xep.Jingle.Content content in session.contents) {
@@ -358,6 +359,8 @@ public class Dino.PeerState : Object {
         } else if (media == "audio" && !we_should_send_audio) {
             mute_own_audio(true);
         }
+
+        stream_created(media);
     }
 
     private void on_counterpart_mute_update(bool mute, string? media) {

@@ -96,7 +96,7 @@ public abstract interface ConversationAdditionPopulator : ConversationItemPopula
 
 public abstract interface VideoCallPlugin : Object {
 
-    public abstract bool supports(string media);
+    public abstract bool supports(string? media);
     // Video widget
     public abstract VideoCallWidget? create_widget(WidgetType type);
 

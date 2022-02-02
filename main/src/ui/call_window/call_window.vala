@@ -20,7 +20,7 @@ namespace Dino.Ui {
         public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200, visible=true };
         public Box own_video_box = new Box(Orientation.HORIZONTAL, 0) { halign=Align.END, valign=Align.END, visible=true };
         public Revealer invite_button_revealer = new Revealer() { margin_top=50, margin_right=30, halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200 };
-        public Button invite_button = new Button.from_icon_name("dino-account-plus") { relief=ReliefStyle.NONE, visible=false };
+        public Button invite_button = new Button.from_icon_name("dino-account-plus") { relief=ReliefStyle.NONE, visible=true };
         private Widget? own_video = null;
         private HashMap<string, ParticipantWidget> participant_widgets = new HashMap<string, ParticipantWidget>();
         private ArrayList<string> participants = new ArrayList<string>();
@@ -191,7 +191,11 @@ namespace Dino.Ui {
             } else if (reason_name == Xmpp.Xep.Jingle.ReasonElement.DECLINE || reason_name == Xmpp.Xep.Jingle.ReasonElement.BUSY) {
                 text = _("%s declined the call").printf(who_terminated);
             } else {
-                text = "The call has been terminated: " + (reason_name ?? "") + " " + (reason_text ?? "");
+                if (reason_text == null) {
+                    text = "The call has been terminated" + " " + (reason_name ?? "");
+                } else {
+                    text = reason_text + " " + (reason_name ?? "");
+                }
             }
 
             bottom_bar.show_counterpart_ended(text);

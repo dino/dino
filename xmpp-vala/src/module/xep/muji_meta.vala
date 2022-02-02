@@ -11,7 +11,7 @@ namespace Xmpp.Xep.MujiMeta {
         public signal void call_accepted(Jid from, Jid muc_jid, string message_type);
         public signal void call_rejected(Jid from, Jid to, Jid muc_jid, string message_type);
 
-        public void send_invite(XmppStream stream, Jid invitee, Jid muc_jid, bool video, string? message_type = null) {
+        public void send_invite(XmppStream stream, Jid invitee, Jid muc_jid, bool video, string message_type) {
             var invite_node = new StanzaNode.build("propose", NS_URI).put_attribute("muc", muc_jid.to_string());
             invite_node.put_node(new StanzaNode.build("description", Xep.JingleRtp.NS_URI).add_self_xmlns().put_attribute("media", "audio"));
             if (video) {
@@ -23,27 +23,27 @@ namespace Xmpp.Xep.MujiMeta {
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, invite_message);
         }
 
-        public void send_invite_retract_to_peer(XmppStream stream, Jid invitee, Jid muc_jid, string? message_type = null) {
+        public void send_invite_retract_to_peer(XmppStream stream, Jid invitee, Jid muc_jid, string message_type) {
             send_jmi_message(stream, "retract", invitee, muc_jid, message_type);
         }
 
-        public void send_invite_accept_to_peer(XmppStream stream, Jid invitor, Jid muc_jid, string? message_type = null) {
+        public void send_invite_accept_to_peer(XmppStream stream, Jid invitor, Jid muc_jid, string message_type) {
             send_jmi_message(stream, "accept", invitor, muc_jid, message_type);
         }
 
         public void send_invite_accept_to_self(XmppStream stream, Jid muc_jid) {
-            send_jmi_message(stream, "accept", Bind.Flag.get_my_jid(stream).bare_jid, muc_jid);
+            send_jmi_message(stream, "accept", Bind.Flag.get_my_jid(stream).bare_jid, muc_jid, MessageStanza.TYPE_CHAT);
         }
 
-        public void send_invite_reject_to_peer(XmppStream stream, Jid invitor, Jid muc_jid, string? message_type = null) {
+        public void send_invite_reject_to_peer(XmppStream stream, Jid invitor, Jid muc_jid, string message_type) {
             send_jmi_message(stream, "reject", invitor, muc_jid, message_type);
         }
 
         public void send_invite_reject_to_self(XmppStream stream, Jid muc_jid) {
-            send_jmi_message(stream, "reject", Bind.Flag.get_my_jid(stream).bare_jid, muc_jid);
+            send_jmi_message(stream, "reject", Bind.Flag.get_my_jid(stream).bare_jid, muc_jid, MessageStanza.TYPE_CHAT);
         }
 
-        private void send_jmi_message(XmppStream stream, string name, Jid to, Jid muc, string? message_type = null) {
+        private void send_jmi_message(XmppStream stream, string name, Jid to, Jid muc, string message_type) {
             var jmi_node = new StanzaNode.build(name, NS_URI).add_self_xmlns().put_attribute("muc", muc.to_string());
             var muji_node = new StanzaNode.build("muji", NS_URI).add_self_xmlns().put_node(jmi_node);
 

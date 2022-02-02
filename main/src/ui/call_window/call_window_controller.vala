@@ -134,16 +134,23 @@ public class Dino.Ui.CallWindowController : Object {
         Jid peer_jid = peer_state.jid;
         peer_states[peer_id] = peer_state;
 
+        peer_state.stream_created.connect((media) => {
+            if (media == "audio") {
+                update_audio_device_choices();
+            } else if (media == "video") {
+                update_video_device_choices();
+            }
+        });
         peer_state.connection_ready.connect(() => {
             call_window.set_status(peer_state.internal_id, "");
             if (participant_widgets.size == 1) {
                 // This is the first peer.
                 // If it can do MUJI, show invite button.
-                call_window.invite_button_revealer.visible = true;
-//                stream_interactor.get_module(EntityInfo.IDENTITY).has_feature.begin(call.account, peer_state.jid, Xep.Muji.NS_URI, (_, res) => {
-//                    bool has_feature = stream_interactor.get_module(EntityInfo.IDENTITY).has_feature.end(res);
-//                    call_window.invite_button_revealer.visible = has_feature;
-//                });
+
+                call_state.can_convert_into_groupcall.begin((_, res) => {
+                    bool can_convert = call_state.can_convert_into_groupcall.end(res);
+                    call_window.invite_button_revealer.visible = can_convert;
+                });
 
                 call_plugin.devices_changed.connect((media, incoming) => {
                     if (media == "audio") update_audio_device_choices();
@@ -165,7 +172,7 @@ public class Dino.Ui.CallWindowController : Object {
                 if (!(participant_videos[peer_id] is Widget)) return;
                 Widget widget = (Widget) participant_videos[peer_id];
                 call_window.set_video(peer_id, widget);
-                participant_videos[peer_id].display_stream(peer_state.get_video_stream(call), peer_jid);
+                participant_videos[peer_id].display_stream(peer_state.get_video_stream(), peer_jid);
             }
         });
         peer_state.info_received.connect((session_info) => {
@@ -264,7 +271,7 @@ public class Dino.Ui.CallWindowController : Object {
     private void update_audio_device_choices() {
         if (call_plugin.get_devices("audio", true).size == 0 || call_plugin.get_devices("audio", false).size == 0) {
             call_window.bottom_bar.show_audio_device_error();
-        } /*else if (call_plugin.get_devices("audio", true).size == 1 && call_plugin.get_devices("audio", false).size == 1) {
+        } else if (call_plugin.get_devices("audio", true).size == 1 && call_plugin.get_devices("audio", false).size == 1) {
             call_window.bottom_bar.show_audio_device_choices(false);
             return;
         }
@@ -273,34 +280,31 @@ public class Dino.Ui.CallWindowController : Object {
         update_current_audio_device(audio_settings_popover);
 
         audio_settings_popover.microphone_selected.connect((device) => {
-            call_plugin.set_device(calls.get_audio_stream(call), device);
+            call_state.set_audio_device(device);
             update_current_audio_device(audio_settings_popover);
         });
         audio_settings_popover.speaker_selected.connect((device) => {
-            call_plugin.set_device(calls.get_audio_stream(call), device);
+            call_state.set_audio_device(device);
             update_current_audio_device(audio_settings_popover);
         });
-        calls.stream_created.connect((call, media) => {
-            if (media == "audio") {
-                update_current_audio_device(audio_settings_popover);
-            }
-        });*/
+//        calls.stream_created.connect((call, media) => {
+//            if (media == "audio") {
+//                update_current_audio_device(audio_settings_popover);
+//            }
+//        });
     }
 
-    /*private void update_current_audio_device(AudioSettingsPopover audio_settings_popover) {
-        Xmpp.Xep.JingleRtp.Stream stream = calls.get_audio_stream(call);
-        if (stream != null) {
-            audio_settings_popover.current_microphone_device = call_plugin.get_device(stream, false);
-            audio_settings_popover.current_speaker_device = call_plugin.get_device(stream, true);
-        }
-    }*/
+    private void update_current_audio_device(AudioSettingsPopover audio_settings_popover) {
+        audio_settings_popover.current_microphone_device = call_state.get_microphone_device();
+        audio_settings_popover.current_speaker_device = call_state.get_speaker_device();
+    }
 
     private void update_video_device_choices() {
         int device_count = call_plugin.get_devices("video", false).size;
 
         if (device_count == 0) {
             call_window.bottom_bar.show_video_device_error();
-        } /*else if (device_count == 1 || calls.get_video_stream(call) == null) {
+        } else if (device_count == 1 || call_state.get_video_device() == null) {
             call_window.bottom_bar.show_video_device_choices(false);
             return;
         }
@@ -309,23 +313,20 @@ public class Dino.Ui.CallWindowController : Object {
         update_current_video_device(video_settings_popover);
 
         video_settings_popover.camera_selected.connect((device) => {
-            call_plugin.set_device(calls.get_video_stream(call), device);
+            call_state.set_video_device(device);
             update_current_video_device(video_settings_popover);
             own_video.display_device(device);
         });
-        calls.stream_created.connect((call, media) => {
-            if (media == "video") {
-                update_current_video_device(video_settings_popover);
-            }
-        });*/
+//        call_state.stream_created.connect((call, media) => {
+//            if (media == "video") {
+//                update_current_video_device(video_settings_popover);
+//            }
+//        });
     }
 
-    /*private void update_current_video_device(VideoSettingsPopover video_settings_popover) {
-        Xmpp.Xep.JingleRtp.Stream stream = calls.get_video_stream(call);
-        if (stream != null) {
-            video_settings_popover.current_device = call_plugin.get_device(stream, false);
-        }
-    }*/
+    private void update_current_video_device(VideoSettingsPopover video_settings_popover) {
+        video_settings_popover.current_device = call_state.get_video_device();
+    }
 
     private void update_own_video() {
         if (this.call_window.bottom_bar.video_enabled) {

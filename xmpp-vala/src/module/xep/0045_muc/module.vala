@@ -218,7 +218,10 @@ public class Module : XmppStreamModule {
     public async void change_affiliation(XmppStream stream, Jid muc_jid, Jid? user_jid, string? nick, string new_affiliation) {
         StanzaNode item_node = new StanzaNode.build("item", NS_URI_ADMIN)
                 .put_attribute("affiliation", new_affiliation, NS_URI_ADMIN);
-        if (user_jid != null) item_node.put_attribute("jid", user_jid.to_string(), NS_URI_ADMIN);
+        if (user_jid != null) {
+            // Some servers don't allow full JIDs and reply error:modify - jid-malformed - "Bare JID expected, got full JID". Make them bare JIDs.
+            item_node.put_attribute("jid", user_jid.bare_jid.to_string(), NS_URI_ADMIN);
+        }
         if (nick != null) item_node.put_attribute("nick", nick, NS_URI_ADMIN);
 
         StanzaNode query = new StanzaNode.build("query", NS_URI_ADMIN).add_self_xmlns().put_node(item_node);

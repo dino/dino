@@ -118,6 +118,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
     }
 
     private async void on_call_incoming(Call call, CallState call_state, Conversation conversation, bool video) {
+        if (!stream_interactor.get_module(Calls.IDENTITY).can_we_do_calls(call.account)) return;
         string conversation_display_name = get_conversation_display_name(stream_interactor, conversation, null);
 
         NotificationProvider notifier = yield notifier.wait_async();

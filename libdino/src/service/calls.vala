@@ -67,38 +67,24 @@ namespace Dino {
             return call_state;
         }
 
-        public async bool can_do_audio_calls_async(Conversation conversation) {
-            if (!can_do_audio_calls()) return false;
-
-            if (conversation.type_ == Conversation.Type.CHAT) {
-                return (yield get_call_resources(conversation.account, conversation.counterpart)).size > 0 || has_jmi_resources(conversation.counterpart);
-            } else {
-                return stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
-            }
-        }
-
-        private bool can_do_audio_calls() {
+        public bool can_we_do_calls(Account account) {
             Plugins.VideoCallPlugin? plugin = Application.get_default().plugin_registry.video_call_plugin;
             if (plugin == null) return false;
 
-            return plugin.supports("audio");
+            return plugin.supports(null);
         }
 
-        public async bool can_do_video_calls_async(Conversation conversation) {
-            if (!can_do_video_calls()) return false;
-
+        public async bool can_conversation_do_calls(Conversation conversation) {
             if (conversation.type_ == Conversation.Type.CHAT) {
                 return (yield get_call_resources(conversation.account, conversation.counterpart)).size > 0 || has_jmi_resources(conversation.counterpart);
             } else {
-                return stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
+                bool is_private = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
+                return is_private && can_initiate_groupcall(conversation.account);
             }
         }
 
-        private bool can_do_video_calls() {
-            Plugins.VideoCallPlugin? plugin = Application.get_default().plugin_registry.video_call_plugin;
-            if (plugin == null) return false;
-
-            return plugin.supports("video");
+        public bool can_initiate_groupcall(Account account) {
+            return stream_interactor.get_module(MucManager.IDENTITY).default_muc_server[account] != null;
         }
 
         public async Gee.List<Jid> get_call_resources(Account account, Jid counterpart) {
@@ -107,7 +93,10 @@ namespace Dino {
             XmppStream? stream = stream_interactor.get_stream(account);
             if (stream == null) return ret;
 
-            Gee.List<Jid>? full_jids = stream.get_flag(Presence.Flag.IDENTITY).get_resources(counterpart);
+            Presence.Flag? presence_flag = stream.get_flag(Presence.Flag.IDENTITY);
+            if (presence_flag == null) return ret;
+
+            Gee.List<Jid>? full_jids = presence_flag.get_resources(counterpart);
             if (full_jids == null) return ret;
 
             foreach (Jid full_jid in full_jids) {
@@ -148,11 +137,6 @@ namespace Dino {
         }
 
         private void on_incoming_call(Account account, Xep.Jingle.Session session) {
-            if (!can_do_audio_calls()) {
-                warning("Incoming call but no call support detected. Ignoring.");
-                return;
-            }
-
             Jid? muji_muc = null;
             bool counterpart_wants_video = false;
             foreach (Xep.Jingle.Content content in session.contents) {
@@ -268,7 +252,7 @@ namespace Dino {
                 if (!call.account.equals(account)) return;
 
                 // We already know the call; this is a reflection of our own invite
-                if (call_states[call].parent_muc.equals_bare(inviter_jid)) return;
+                if (call_states[call].parent_muc != null && call_states[call].parent_muc.equals_bare(inviter_jid)) return;
 
                 if (call.counterparts.contains(inviter_jid) && call_states[call].accepted) {
                     // A call is converted into a group call.
@@ -337,11 +321,6 @@ namespace Dino {
 
             Xep.JingleMessageInitiation.Module mi_module = stream_interactor.module_manager.get_module(account, Xep.JingleMessageInitiation.Module.IDENTITY);
             mi_module.session_proposed.connect((from, to, sid, descriptions) => {
-                if (!can_do_audio_calls()) {
-                    warning("Incoming call but no call support detected. Ignoring.");
-                    return;
-                }
-
                 bool audio_requested = descriptions.any_match((description) => description.ns_uri == Xep.JingleRtp.NS_URI && description.get_attribute("media") == "audio");
                 bool video_requested = descriptions.any_match((description) => description.ns_uri == Xep.JingleRtp.NS_URI && description.get_attribute("media") == "video");
                 if (!audio_requested && !video_requested) return;

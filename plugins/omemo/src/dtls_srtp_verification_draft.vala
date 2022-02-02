@@ -101,11 +101,18 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
                 if (fingerprint_node == null) continue;
                 string fingerprint = fingerprint_node.get_deep_string_content();
 
-                Xep.Omemo.OmemoEncryptor encryptor = stream.get_module(Xep.Omemo.OmemoEncryptor.IDENTITY);
-                Xep.Omemo.EncryptionData enc_data = encryptor.encrypt_plaintext(fingerprint);
-                encryptor.encrypt_key(enc_data, iq.to.bare_jid, device_id_by_jingle_sid[sid]);
+                StanzaNode? encrypted_node = null;
+                try {
+                    Xep.Omemo.OmemoEncryptor encryptor = stream.get_module(Xep.Omemo.OmemoEncryptor.IDENTITY);
+                    Xep.Omemo.EncryptionData enc_data = encryptor.encrypt_plaintext(fingerprint);
+                    encryptor.encrypt_key(enc_data, iq.to.bare_jid, device_id_by_jingle_sid[sid]);
+                    encrypted_node = enc_data.get_encrypted_node();
+                } catch (Error e) {
+                    warning("Error while OMEMO-encrypting call keys: %s", e.message);
+                    return;
+                }
 
-                StanzaNode new_fingerprint_node = new StanzaNode.build("fingerprint", NS_URI).add_self_xmlns().put_node(enc_data.get_encrypted_node());
+                StanzaNode new_fingerprint_node = new StanzaNode.build("fingerprint", NS_URI).add_self_xmlns().put_node(encrypted_node);
                 string? hash_attr = fingerprint_node.get_attribute("hash", Xep.JingleIceUdp.DTLS_NS_URI);
                 string? setup_attr = fingerprint_node.get_attribute("setup", Xep.JingleIceUdp.DTLS_NS_URI);
                 if (hash_attr != null) new_fingerprint_node.put_attribute("hash", hash_attr);

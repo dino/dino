@@ -237,11 +237,14 @@ namespace Xmpp.Xep.Muji {
 
         public override void attach(XmppStream stream) {
             stream.add_flag(new Flag());
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
             stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
             stream.get_module(Presence.Module.IDENTITY).received_unavailable.connect(on_received_unavailable);
         }
 
-        public override void detach(XmppStream stream) { }
+        public override void detach(XmppStream stream) {
+            stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
+        }
 
         public override string get_ns() {
             return NS_URI;
