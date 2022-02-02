@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-18 23:35+0100\n"
+"POT-Creation-Date: 2022-02-02 12:49+0100\n"
 "PO-Revision-Date: 2021-10-15 07:40+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
 "translations/ro/>\n"
@@ -33,38 +33,38 @@ msgstr "Eu"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
-#: main/src/ui/notifier_freedesktop.vala:86
+#: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
 msgstr "Imagine trimisă"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
-#: main/src/ui/notifier_freedesktop.vala:86
+#: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
 msgstr "Fișier trimis"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
-#: main/src/ui/notifier_freedesktop.vala:88
+#: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
 msgstr "Imagine primitä"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
-#: main/src/ui/notifier_freedesktop.vala:88
+#: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
 msgstr "Fișier primit"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
-#: main/src/ui/conversation_content_view/call_widget.vala:112
+#: main/src/ui/conversation_content_view/call_widget.vala:149
 msgid "Outgoing call"
 msgstr "Apel efectuat"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
-#: main/src/ui/notifier_freedesktop.vala:127
-#: main/src/ui/conversation_content_view/call_widget.vala:86
-#: main/src/ui/conversation_content_view/call_widget.vala:112
+#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/conversation_content_view/call_widget.vala:119
+#: main/src/ui/conversation_content_view/call_widget.vala:149
 msgid "Incoming call"
 msgstr "Apel primit"
 
@@ -80,21 +80,21 @@ msgid "Yesterday"
 msgstr "Ieri"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:349
-#: main/src/ui/conversation_content_view/call_widget.vala:119
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:306
+#: main/src/ui/conversation_content_view/call_widget.vala:156
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:303
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:350
-#: main/src/ui/conversation_content_view/call_widget.vala:119
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:307
+#: main/src/ui/conversation_content_view/call_widget.vala:156
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:304
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:353
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:311
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:308
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -103,7 +103,7 @@ msgstr[1] "Acum %i minute"
 msgstr[2] "Acum %i de minute"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:355
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:313
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:310
 msgid "Just now"
 msgstr "Chiar acum"
 
@@ -125,6 +125,7 @@ msgstr "Utilizator"
 
 #: main/src/ui/occupant_menu/view.vala:28
 #: main/src/ui/occupant_menu/view.vala:146
+#: main/src/ui/call_window/call_window_controller.vala:102
 msgid "Invite"
 msgstr "Invită"
 
@@ -161,7 +162,7 @@ msgstr "Selectare"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:281 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:307 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -173,11 +174,11 @@ msgstr "Anulare"
 msgid "%s from %s"
 msgstr "%s de la %s"
 
-#: main/src/ui/chat_input/chat_input_controller.vala:177
+#: main/src/ui/chat_input/chat_input_controller.vala:179
 msgid "This conference does not allow you to send messages."
 msgstr "Această conferință nu vă permite să trimiteți mesaje."
 
-#: main/src/ui/chat_input/chat_input_controller.vala:177
+#: main/src/ui/chat_input/chat_input_controller.vala:179
 msgid "Request permission"
 msgstr "Solicitare permisiune"
 
@@ -202,29 +203,33 @@ msgstr "Caută mesaje"
 msgid "Members"
 msgstr "Membri"
 
-#: main/src/ui/call_window/call_window.vala:161
-#: main/src/ui/conversation_content_view/call_widget.vala:91
+#: main/src/ui/call_window/participant_widget.vala:104
+#: main/src/ui/conversation_content_view/call_widget.vala:126
 msgid "Calling…"
 msgstr "Se apelează…"
 
-#: main/src/ui/call_window/call_window.vala:164
+#: main/src/ui/call_window/participant_widget.vala:106
 msgid "Ringing…"
 msgstr "Sună…"
 
-#: main/src/ui/call_window/call_window.vala:167
+#: main/src/ui/call_window/participant_widget.vala:108
 #: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
 msgstr "Conectare…"
 
-#: main/src/ui/call_window/call_window.vala:181
+#: main/src/ui/call_window/call_window.vala:190
 #, c-format
 msgid "%s ended the call"
 msgstr "%s a încheiat apelul"
 
-#: main/src/ui/call_window/call_window.vala:183
+#: main/src/ui/call_window/call_window.vala:192
 #, c-format
 msgid "%s declined the call"
 msgstr "%s a refuzat apelul"
+
+#: main/src/ui/call_window/call_window_controller.vala:101
+msgid "Invite to Call"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
@@ -237,7 +242,7 @@ msgid "Start"
 msgstr "Pornire"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:281 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:307 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Alăturați-vă canalului"
@@ -253,7 +258,7 @@ msgstr "Următorul"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:281
+#: main/src/ui/application.vala:307
 msgid "Join"
 msgstr "Alăturați-vă"
 
@@ -297,7 +302,7 @@ msgstr "Discuția are prea mulți membrii"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
 #: main/src/ui/notifier_gnotifications.vala:101
-#: main/src/ui/notifier_freedesktop.vala:194
+#: main/src/ui/notifier_freedesktop.vala:182
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
@@ -316,11 +321,11 @@ msgstr "Adresă invalidă"
 msgid "Add"
 msgstr "Adaugă"
 
-#: main/src/ui/application.vala:203 main/data/menu_app.ui:17
+#: main/src/ui/application.vala:213 main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
 msgstr "Scurtături de tastatură"
 
-#: main/src/ui/application.vala:257 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:283 main/data/menu_app.ui:21
 msgid "About Dino"
 msgstr "Despre Dino"
 
@@ -343,52 +348,57 @@ msgid "With %s"
 msgstr "Cu %s"
 
 #: main/src/ui/notifier_gnotifications.vala:77
-#: main/src/ui/notifier_gnotifications.vala:95
-#: main/src/ui/notifier_gnotifications.vala:127
-#: main/src/ui/notifier_gnotifications.vala:143
-#: main/src/ui/notifier_freedesktop.vala:170
-#: main/src/ui/notifier_freedesktop.vala:262
-#: main/src/ui/conversation_content_view/subscription_notification.vala:38
-msgid "Deny"
-msgstr "Refuză"
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:217 main/data/call_widget.ui:80
+msgid "Reject"
+msgstr "Respinge"
 
 #: main/src/ui/notifier_gnotifications.vala:78
 #: main/src/ui/notifier_gnotifications.vala:94
 #: main/src/ui/notifier_gnotifications.vala:128
 #: main/src/ui/notifier_gnotifications.vala:144
-#: main/src/ui/notifier_freedesktop.vala:134
-#: main/src/ui/notifier_freedesktop.vala:170
-#: main/src/ui/notifier_freedesktop.vala:229
-#: main/src/ui/notifier_freedesktop.vala:262
+#: main/src/ui/notifier_freedesktop.vala:120
+#: main/src/ui/notifier_freedesktop.vala:158
+#: main/src/ui/notifier_freedesktop.vala:217
+#: main/src/ui/notifier_freedesktop.vala:250
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
-#: main/data/call_widget.ui:93
+#: main/data/call_widget.ui:89
 msgid "Accept"
 msgstr "Acceptă"
 
 #: main/src/ui/notifier_gnotifications.vala:88
-#: main/src/ui/notifier_freedesktop.vala:164
+#: main/src/ui/notifier_freedesktop.vala:152
 msgid "Subscription request"
 msgstr "Cerere de abonare"
 
+#: main/src/ui/notifier_gnotifications.vala:95
+#: main/src/ui/notifier_gnotifications.vala:127
+#: main/src/ui/notifier_gnotifications.vala:143
+#: main/src/ui/notifier_freedesktop.vala:158
+#: main/src/ui/notifier_freedesktop.vala:250
+#: main/src/ui/conversation_content_view/subscription_notification.vala:38
+msgid "Deny"
+msgstr "Refuză"
+
 #: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:220
+#: main/src/ui/notifier_freedesktop.vala:208
 #, c-format
 msgid "Invitation to %s"
 msgstr "Invitaţie la %s"
 
 #: main/src/ui/notifier_gnotifications.vala:118
-#: main/src/ui/notifier_freedesktop.vala:221
+#: main/src/ui/notifier_freedesktop.vala:209
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s v-a invitat la %s"
 
 #: main/src/ui/notifier_gnotifications.vala:135
-#: main/src/ui/notifier_freedesktop.vala:253
+#: main/src/ui/notifier_freedesktop.vala:241
 msgid "Permission request"
 msgstr "Solicitare de permisiune"
 
 #: main/src/ui/notifier_gnotifications.vala:136
-#: main/src/ui/notifier_freedesktop.vala:254
+#: main/src/ui/notifier_freedesktop.vala:242
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%s solicită permisiunea de a scrie în %s"
@@ -560,22 +570,17 @@ msgstr "Nici un cont activ"
 msgid "Manage accounts"
 msgstr "Administrare conturi"
 
-#: main/src/ui/notifier_freedesktop.vala:127
-#: main/src/ui/conversation_content_view/call_widget.vala:86
+#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/conversation_content_view/call_widget.vala:119
 msgid "Incoming video call"
 msgstr "Apel video primit"
 
-#: main/src/ui/notifier_freedesktop.vala:134
-#: main/src/ui/notifier_freedesktop.vala:229 main/data/call_widget.ui:84
-msgid "Reject"
-msgstr "Respinge"
-
-#: main/src/ui/notifier_freedesktop.vala:198
+#: main/src/ui/notifier_freedesktop.vala:186
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "Parolă greșită"
 
-#: main/src/ui/notifier_freedesktop.vala:201
+#: main/src/ui/notifier_freedesktop.vala:189
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr "Certificat TLS invalid"
@@ -689,15 +694,15 @@ msgstr "Aflați pe %s informații despre cum se face înregistrarea"
 msgid "Message too long"
 msgstr "Mesaj prea lung"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:222
+#: main/src/ui/conversation_content_view/message_widget.vala:220
 msgid "edited"
 msgstr "editat"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:231
+#: main/src/ui/conversation_content_view/message_widget.vala:229
 msgid "pending…"
 msgstr "în așteptare…"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:244
+#: main/src/ui/conversation_content_view/message_widget.vala:242
 msgid "delivery failed"
 msgstr "livrare eșuată"
 
@@ -721,64 +726,64 @@ msgstr "%s și %s tastează…"
 msgid "%s is typing…"
 msgstr "%s tastează…"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:98
+#: main/src/ui/conversation_content_view/call_widget.vala:133
 msgid "Call started"
 msgstr "Apelul a început"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:100
+#: main/src/ui/conversation_content_view/call_widget.vala:135
 #, c-format
 msgid "Started %s ago"
 msgstr "A început acum %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:113
+#: main/src/ui/conversation_content_view/call_widget.vala:150
 msgid "You handled this call on another device"
 msgstr "Ați recepționat acest apel pe un alt dispozitiv"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:118
+#: main/src/ui/conversation_content_view/call_widget.vala:155
 msgid "Call ended"
 msgstr "Apel încheiat"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:121
+#: main/src/ui/conversation_content_view/call_widget.vala:158
 #, c-format
 msgid "Ended at %s"
 msgstr "S-a încheiat la %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:123
+#: main/src/ui/conversation_content_view/call_widget.vala:160
 #, c-format
 msgid "Lasted %s"
 msgstr "A durat %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:127
+#: main/src/ui/conversation_content_view/call_widget.vala:164
 msgid "Call missed"
 msgstr "Apel ratat"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:129
+#: main/src/ui/conversation_content_view/call_widget.vala:166
 msgid "You missed this call"
 msgstr "Ați pierdut acest apel"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:132
+#: main/src/ui/conversation_content_view/call_widget.vala:169
 #, c-format
 msgid "%s missed this call"
 msgstr "%s a pierdut acest apel"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:137
+#: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call declined"
 msgstr "Apel refuzat"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:139
+#: main/src/ui/conversation_content_view/call_widget.vala:176
 msgid "You declined this call"
 msgstr "Ați refuzat acest apel"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:142
+#: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
 msgid "%s declined this call"
 msgstr "%s a refuzat acest apel"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:147
+#: main/src/ui/conversation_content_view/call_widget.vala:184
 msgid "Call failed"
 msgstr "Apelul a eșuat"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:169
+#: main/src/ui/conversation_content_view/call_widget.vala:208
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
@@ -786,7 +791,7 @@ msgstr[0] "%i oră"
 msgstr[1] "%i ore"
 msgstr[2] "%i de ore"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:176
+#: main/src/ui/conversation_content_view/call_widget.vala:215
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
@@ -794,73 +799,82 @@ msgstr[0] "%i minut"
 msgstr[1] "%i minute"
 msgstr[2] "%i de minut"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:183
+#: main/src/ui/conversation_content_view/call_widget.vala:222
 msgid "a few seconds"
 msgstr "câteva secunde"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:189
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:188
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Necriptat"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:235
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:232
 msgid "Unable to send message"
 msgstr "Nu se poate transmite mesajul"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:294
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:291
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:295
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:292
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:298
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:295
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:299
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:296
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:302
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:299
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:303
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:300
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/file_widget.vala:175
+#: main/src/ui/conversation_content_view/file_default_widget.vala:29
+msgid "Save as…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
 msgstr "Acest contact dorește să vă adauge la lista ei/lui de contacte"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:40
+#: main/src/ui/conversation_content_view/file_default_widget.vala:28
+msgid "Open"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:59
 #, c-format
 msgid "Downloading %s…"
 msgstr "Se descarcă %s…"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#: main/src/ui/conversation_content_view/file_default_widget.vala:65
 #, c-format
 msgid "%s offered: %s"
 msgstr "%s a oferit: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:48
+#: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "File offered: %s"
 msgstr "Fișier oferit: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:50
+#: main/src/ui/conversation_content_view/file_default_widget.vala:69
 msgid "File offered"
 msgstr "Fișier oferit"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+#: main/src/ui/conversation_content_view/file_default_widget.vala:75
 msgid "File transfer failed"
 msgstr "Transferul fișierului a eșuat"
 
