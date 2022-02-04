@@ -246,6 +246,24 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
     string s = s_;
     bool already_escaped = already_escaped_;
 
+    if (parse_text_markup) {
+        string gt = already_escaped ? "&gt;" : ">";
+        Regex quote_regex = new Regex("((?<=\n)" + gt + ".*(\n|$))|(^" + gt + ".*(\n|$))");
+        MatchInfo quote_match_info;
+        quote_regex.match(s.down(), 0, out quote_match_info);
+        if (quote_match_info.matches()) {
+            int start, end;
+
+            string dim_color = dark_theme ? "#BDBDBD": "#707070";
+
+            theme_dependent = true;
+            quote_match_info.fetch_pos(0, out start, out end);
+            return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, dark_theme, ref theme_dependent, already_escaped) +
+                    @"<span color='$dim_color'>$gt " + parse_add_markup_theme(s[start + gt.length + 1:end], highlight_word, parse_links, parse_text_markup, dark_theme, ref theme_dependent, already_escaped) + "</span>" +
+                    parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, dark_theme, ref theme_dependent, already_escaped);
+        }
+    }
+
     if (parse_links && !already_escaped) {
         MatchInfo match_info;
         get_url_regex().match(s.down(), 0, out match_info);
@@ -319,21 +337,6 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
     }
 
     if (parse_text_markup) {
-        Regex quote_regex = new Regex("((?<=\n)&gt;.*(\n|$))|(^&gt;.*(\n|$))");
-        MatchInfo quote_match_info;
-        quote_regex.match(s.down(), 0, out quote_match_info);
-        if (quote_match_info.matches()) {
-            int start, end;
-
-            string dim_color = dark_theme ? "#BDBDBD": "#707070";
-
-            theme_dependent = true;
-            quote_match_info.fetch_pos(0, out start, out end);
-            return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, dark_theme, ref theme_dependent, already_escaped) +
-                    @"<span color='$dim_color'>&gt; " + parse_add_markup_theme(s[start + "&gt; ".len():end], highlight_word, parse_links, parse_text_markup, dark_theme, ref theme_dependent, already_escaped) + "</span>" +
-                    parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, dark_theme, ref theme_dependent, already_escaped);
-        }
-
         string[] markup_string = new string[]{"`", "_", "*", "~"};
         string[] convenience_tag = new string[]{"tt", "i", "b", "s"};
 
