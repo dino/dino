@@ -131,17 +131,19 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
     public override async Gee.List<JingleRtp.PayloadType> get_supported_payloads(string media) {
         Gee.List<JingleRtp.PayloadType> list = new ArrayList<JingleRtp.PayloadType>(JingleRtp.PayloadType.equals_func);
         if (media == "audio") {
-            var opus = new JingleRtp.PayloadType() { channels = 1, clockrate = 48000, name = "opus", id = 99 };
+            var opus = new JingleRtp.PayloadType() { channels = 1, clockrate = 48000, name = "opus", id = 111 };
             opus.parameters["useinbandfec"] = "1";
-            var speex32 = new JingleRtp.PayloadType() { channels = 1, clockrate = 32000, name = "speex", id = 100 };
-            var speex16 = new JingleRtp.PayloadType() { channels = 1, clockrate = 16000, name = "speex", id = 101 };
-            var speex8 = new JingleRtp.PayloadType() { channels = 1, clockrate = 8000, name = "speex", id = 102 };
+            var speex32 = new JingleRtp.PayloadType() { channels = 1, clockrate = 32000, name = "speex", id = 112 };
+            var speex16 = new JingleRtp.PayloadType() { channels = 1, clockrate = 16000, name = "speex", id = 113 };
+            var speex8 = new JingleRtp.PayloadType() { channels = 1, clockrate = 8000, name = "speex", id = 114 };
+            var g722 = new JingleRtp.PayloadType() { channels = 1, clockrate = 8000, name = "G722", id = 9 };
             var pcmu = new JingleRtp.PayloadType() { channels = 1, clockrate = 8000, name = "PCMU", id = 0 };
             var pcma = new JingleRtp.PayloadType() { channels = 1, clockrate = 8000, name = "PCMA", id = 8 };
             yield add_if_supported(list, media, opus);
             yield add_if_supported(list, media, speex32);
             yield add_if_supported(list, media, speex16);
             yield add_if_supported(list, media, speex8);
+            yield add_if_supported(list, media, g722);
             yield add_if_supported(list, media, pcmu);
             yield add_if_supported(list, media, pcma);
         } else if (media == "video") {

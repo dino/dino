@@ -91,6 +91,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
                     return new string[] {"alawenc"};
                 case "pcmu":
                     return new string[] {"mulawenc"};
+                case "g722":
+                    return new string[] {"avenc_g722"};
             }
         } else if (media == "video") {
             switch (codec) {
@@ -117,6 +119,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
                     return new string[] {"alawdec"};
                 case "pcmu":
                     return new string[] {"mulawdec"};
+                case "g722":
+                    return new string[] {"avdec_g722"};
             }
         } else if (media == "video") {
             switch (codec) {
