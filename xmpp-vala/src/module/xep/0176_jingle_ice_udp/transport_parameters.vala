@@ -151,7 +151,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
     private string format_fingerprint(uint8[] fingerprint) {
         var sb = new StringBuilder();
         for (int i = 0; i < fingerprint.length; i++) {
-            sb.append("%02x".printf(fingerprint[i]));
+            sb.append("%02X".printf(fingerprint[i]));
             if (i < fingerprint.length - 1) {
                 sb.append(":");
             }
