@@ -12,6 +12,7 @@ public class Dino.PeerState : Object {
     public signal void encryption_updated(Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption, bool same);
 
     public StreamInteractor stream_interactor;
+    CallState call_state;
     public Calls calls;
     public Call call;
     public Jid jid;
@@ -30,7 +31,6 @@ public class Dino.PeerState : Object {
     public HashMap<string, Xep.Jingle.ContentEncryption>? audio_encryptions = null;
 
     public bool first_peer = false;
-    public bool accepted_jmi = false;
     public bool waiting_for_inbound_muji_connection = false;
     public Xep.Muji.GroupCall? group_call { get; set; }
 
@@ -38,9 +38,10 @@ public class Dino.PeerState : Object {
     public bool we_should_send_audio { get; set; default=false; }
     public bool we_should_send_video { get; set; default=false; }
 
-    public PeerState(Jid jid, Call call, StreamInteractor stream_interactor) {
+    public PeerState(Jid jid, Call call, CallState call_state, StreamInteractor stream_interactor) {
         this.jid = jid;
         this.call = call;
+        this.call_state = call_state;
         this.stream_interactor = stream_interactor;
         this.calls = stream_interactor.get_module(Calls.IDENTITY);
 
@@ -82,9 +83,6 @@ public class Dino.PeerState : Object {
         if (do_jmi) {
             XmppStream? stream = stream_interactor.get_stream(call.account);
 
-            calls.current_jmi_request_call[call.account] = calls.call_states[call];
-            calls.current_jmi_request_peer[call.account] = this;
-
             var descriptions = new ArrayList<StanzaNode>();
             descriptions.add(new StanzaNode.build("description", Xep.JingleRtp.NS_URI).add_self_xmlns().put_attribute("media", "audio"));
             if (we_should_send_video) {
@@ -92,6 +90,7 @@ public class Dino.PeerState : Object {
             }
 
             stream.get_module(Xmpp.Xep.JingleMessageInitiation.Module.IDENTITY).send_session_propose_to_peer(stream, jid, sid, descriptions);
+//            call_state.cim_invite_id = stream.get_module(Xmpp.Xep.CallInvites.Module.IDENTITY).send_jingle_propose(stream, jid, sid, we_should_send_video);
         } else if (jid_for_direct != null) {
             yield call_resource(jid_for_direct);
         }
@@ -116,11 +115,6 @@ public class Dino.PeerState : Object {
             // Only a JMI so far
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-
-            accepted_jmi = true;
-
-            calls.current_jmi_request_call[call.account] = calls.call_states[call];
-            calls.current_jmi_request_peer[call.account] = this;
 
             stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_accept_to_self(stream, sid);
             stream.get_module(Xep.JingleMessageInitiation.Module.IDENTITY).send_session_proceed_to_peer(stream, jid, sid);

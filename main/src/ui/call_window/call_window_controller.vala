@@ -271,8 +271,11 @@ public class Dino.Ui.CallWindowController : Object {
     private void update_audio_device_choices() {
         if (call_plugin.get_devices("audio", true).size == 0 || call_plugin.get_devices("audio", false).size == 0) {
             call_window.bottom_bar.show_audio_device_error();
-        } else if (call_plugin.get_devices("audio", true).size == 1 && call_plugin.get_devices("audio", false).size == 1) {
+        } /*else if (call_plugin.get_devices("audio", true).size == 1 && call_plugin.get_devices("audio", false).size == 1) {
             call_window.bottom_bar.show_audio_device_choices(false);
+            return;
+        }*/ else {
+            call_window.bottom_bar.show_video_device_choices(false);
             return;
         }
 
@@ -304,7 +307,10 @@ public class Dino.Ui.CallWindowController : Object {
 
         if (device_count == 0) {
             call_window.bottom_bar.show_video_device_error();
-        } else if (device_count == 1 || call_state.get_video_device() == null) {
+        } /*else if (device_count == 1 || call_state.get_video_device() == null) {
+            call_window.bottom_bar.show_video_device_choices(false);
+            return;
+        }*/ else {
             call_window.bottom_bar.show_video_device_choices(false);
             return;
         }

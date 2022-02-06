@@ -1,25 +1,38 @@
 using Gee;
 namespace Xmpp.Xep.CallInvites {
 
-    public const string NS_URI = "urn:xmpp:call-invites:0";
+    public const string NS_URI = "urn:xmpp:call-message:1";
 
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "call_invites");
 
         public signal void call_proposed(Jid from, Jid to, bool video, Gee.List<StanzaNode> join_methods, MessageStanza message);
         public signal void call_retracted(Jid from, Jid to, string invite_id, string message_type);
-        public signal void call_accepted(Jid from, string invite_id, string message_type);
+        public signal void call_accepted(Jid from, Jid to, string invite_id, string message_type);
         public signal void call_rejected(Jid from, Jid to, string invite_id, string message_type);
 
-        public void send_invite(XmppStream stream, Jid invitee, Jid muc_jid, bool video, string message_type) {
-            StanzaNode muji_node = new StanzaNode.build("muji", Muji.NS_URI).add_self_xmlns().put_attribute("room", muc_jid.to_string());
+        public string send_jingle_propose(XmppStream stream, Jid invitee, string sid, bool video) {
+            StanzaNode jingle_node = new StanzaNode.build("jingle", CallInvites.NS_URI)
+                    .put_attribute("sid", sid);
+            return send_propose(stream, invitee, jingle_node, video, false, MessageStanza.TYPE_CHAT);
+        }
+
+        public void send_muji_propose(XmppStream stream, Jid invitee, Jid muc_jid, bool video, string message_type) {
+            StanzaNode muji_node = new StanzaNode.build("muji", Muji.NS_URI).add_self_xmlns()
+                    .put_attribute("room", muc_jid.to_string());
+            send_propose(stream, invitee, muji_node, video, true, message_type);
+        }
+
+        private string send_propose(XmppStream stream, Jid invitee, StanzaNode inner_node, bool video, bool multiparty, string message_type) {
             StanzaNode invite_node = new StanzaNode.build("propose", NS_URI).add_self_xmlns()
                     .put_attribute("video", video.to_string())
-                    .put_node(muji_node);
+                    .put_attribute("multi", multiparty.to_string())
+                    .put_node(inner_node);
             MessageStanza invite_message = new MessageStanza() { to=invitee, type_=message_type };
             MessageProcessingHints.set_message_hint(invite_message, MessageProcessingHints.HINT_STORE);
             invite_message.stanza.put_node(invite_node);
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, invite_message);
+            return invite_message.id;
         }
 
         public void send_retract(XmppStream stream, Jid to, string invite_id, string message_type) {
@@ -68,7 +81,7 @@ namespace Xmpp.Xep.CallInvites {
 
             switch (relevant_node.name) {
                 case "accept":
-                    call_accepted(message.from, invite_id, message.type_);
+                    call_accepted(message.from, message.to, invite_id, message.type_);
                     break;
                 case "retract":
                     call_retracted(message.from, message.to, invite_id, message.type_);
