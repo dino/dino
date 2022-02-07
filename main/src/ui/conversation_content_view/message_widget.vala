@@ -198,9 +198,9 @@ public class MessageItemWidget : SizeRequestBin {
         }
 
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            markup_text = Util.parse_add_markup_theme(markup_text, conversation.nickname, true, true, Util.is_dark_theme(this), ref theme_dependent);
+            markup_text = Util.parse_add_markup_theme(markup_text, conversation.nickname, true, true, true, Util.is_dark_theme(this), ref theme_dependent);
         } else {
-            markup_text = Util.parse_add_markup_theme(markup_text, null, true, true, Util.is_dark_theme(this), ref theme_dependent);
+            markup_text = Util.parse_add_markup_theme(markup_text, null, true, true, true, Util.is_dark_theme(this), ref theme_dependent);
         }
 
         if (message.body.has_prefix("/me ")) {
