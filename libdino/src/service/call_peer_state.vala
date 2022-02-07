@@ -90,7 +90,7 @@ public class Dino.PeerState : Object {
             }
 
             stream.get_module(Xmpp.Xep.JingleMessageInitiation.Module.IDENTITY).send_session_propose_to_peer(stream, jid, sid, descriptions);
-//            call_state.cim_invite_id = stream.get_module(Xmpp.Xep.CallInvites.Module.IDENTITY).send_jingle_propose(stream, jid, sid, we_should_send_video);
+//            call_state.cim_call_id = stream.get_module(Xmpp.Xep.CallInvites.Module.IDENTITY).send_jingle_propose(stream, jid, sid, we_should_send_video);
         } else if (jid_for_direct != null) {
             yield call_resource(jid_for_direct);
         }

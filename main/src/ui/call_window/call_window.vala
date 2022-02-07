@@ -13,7 +13,6 @@ namespace Dino.Ui {
 
         public Overlay overlay = new Overlay() { visible=true };
         public Grid grid = new Grid() { visible=true };
-        public EventBox event_box = new EventBox() { visible=true };
         public CallBottomBar bottom_bar = new CallBottomBar() { visible=true };
         public Revealer bottom_bar_revealer = new Revealer() { valign=Align.END, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200, visible=true };
         public HeaderBar header_bar = new HeaderBar() { valign=Align.START, halign=Align.END, show_close_button=true, visible=true };
@@ -50,8 +49,7 @@ namespace Dino.Ui {
             overlay.add_overlay(invite_button_revealer);
             overlay.get_child_position.connect(on_get_child_position);
 
-            event_box.add(overlay);
-            add(event_box);
+            add(overlay);
         }
 
         public CallWindow() {
@@ -59,9 +57,9 @@ namespace Dino.Ui {
             this.bind_property("controls-active", header_bar_revealer, "reveal-child", BindingFlags.SYNC_CREATE);
             this.bind_property("controls-active", invite_button_revealer, "reveal-child", BindingFlags.SYNC_CREATE);
 
-            event_box.motion_notify_event.connect(reveal_control_elements);
-            event_box.enter_notify_event.connect(reveal_control_elements);
-            event_box.leave_notify_event.connect(reveal_control_elements);
+            this.motion_notify_event.connect(reveal_control_elements);
+            this.enter_notify_event.connect(reveal_control_elements);
+            this.leave_notify_event.connect(reveal_control_elements);
             this.configure_event.connect(reveal_control_elements); // upon resizing
 
             this.configure_event.connect(reposition_participant_widgets);

@@ -347,6 +347,12 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public bool is_own_muc_jid(Jid full_jid, Account account) {
+        if (!is_groupchat(full_jid.bare_jid, account)) return false;
+        Jid? own_jid = get_own_jid(full_jid, account);
+        return own_jid != null && own_jid.equals(full_jid);
+    }
+
     private Xep.Muc.Flag? get_muc_flag(Account account) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream != null) {

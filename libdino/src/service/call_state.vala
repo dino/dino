@@ -16,7 +16,7 @@ public class Dino.CallState : Object {
     public bool accepted { get; private set; default=false; }
 
     public bool use_cim = false;
-    public string? cim_invite_id = null;
+    public string? cim_call_id = null;
     public Jid? cim_counterpart = null;
     public string cim_message_type { get; set; default=Xmpp.MessageStanza.TYPE_CHAT; }
 
@@ -46,6 +46,7 @@ public class Dino.CallState : Object {
 
     internal async void initiate_groupchat_call(Jid muc) {
         parent_muc = muc;
+        cim_message_type = MessageStanza.TYPE_GROUPCHAT;
 
         if (this.group_call == null) yield convert_into_group_call();
         if (this.group_call == null) return;
@@ -63,7 +64,7 @@ public class Dino.CallState : Object {
             yield stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation(stream, group_call.muc_jid, real_jid.bare_jid, null, "owner");
         }
 
-        stream.get_module(Xep.CallInvites.Module.IDENTITY).send_muji_propose(stream, muc, group_call.muc_jid, we_should_send_video, cim_message_type);
+        stream.get_module(Xep.CallInvites.Module.IDENTITY).send_muji_propose(stream, cim_call_id, muc, group_call.muc_jid, we_should_send_video, cim_message_type);
     }
 
     internal PeerState set_first_peer(Jid peer) {
@@ -86,7 +87,7 @@ public class Dino.CallState : Object {
         if (use_cim) {
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_accept(stream, cim_counterpart, cim_invite_id, cim_message_type);
+            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_accept(stream, cim_counterpart, cim_call_id, cim_message_type);
         } else {
             foreach (PeerState peer in peers.values) {
                 peer.accept();
@@ -104,7 +105,7 @@ public class Dino.CallState : Object {
         if (use_cim) {
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_reject(stream, cim_counterpart, cim_invite_id, cim_message_type);
+            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_reject(stream, cim_counterpart, cim_call_id, cim_message_type);
         }
         var peers_cpy = new ArrayList<PeerState>();
         peers_cpy.add_all(peers.values);
@@ -137,7 +138,7 @@ public class Dino.CallState : Object {
             if (call.direction == Call.DIRECTION_OUTGOING && use_cim) {
                 XmppStream stream = stream_interactor.get_stream(call.account);
                 if (stream == null) return;
-                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_retract(stream, cim_counterpart, cim_invite_id, cim_message_type);
+                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_retract(stream, cim_counterpart, cim_call_id, cim_message_type);
             }
             call.state = Call.State.MISSED;
         } else {
@@ -176,7 +177,7 @@ public class Dino.CallState : Object {
 
         debug("[%s] Inviting to muji call %s", call.account.bare_jid.to_string(), invitee.to_string());
         yield stream.get_module(Xep.Muc.Module.IDENTITY).change_affiliation(stream, group_call.muc_jid, invitee, null, "owner");
-        stream.get_module(Xep.CallInvites.Module.IDENTITY).send_muji_propose(stream, invitee, group_call.muc_jid, we_should_send_video, "chat");
+        stream.get_module(Xep.CallInvites.Module.IDENTITY).send_muji_propose(stream, cim_call_id, invitee, group_call.muc_jid, we_should_send_video, "chat");
 
         // If the peer hasn't accepted within a minute, retract the invite
         // TODO this should be unset when we retract the invite. otherwise a second invite attempt might break due to this
@@ -288,6 +289,7 @@ public class Dino.CallState : Object {
             return;
         }
 
+        if (cim_call_id == null) cim_call_id = Xmpp.random_uuid();
         muc_jid = new Jid("%08x@".printf(Random.next_int()) + muc_jid.to_string()); // TODO longer?
 
         debug("[%s] Converting call to groupcall %s", call.account.bare_jid.to_string(), muc_jid.to_string());

@@ -6,25 +6,26 @@ namespace Xmpp.Xep.CallInvites {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "call_invites");
 
-        public signal void call_proposed(Jid from, Jid to, bool video, Gee.List<StanzaNode> join_methods, MessageStanza message);
-        public signal void call_retracted(Jid from, Jid to, string invite_id, string message_type);
-        public signal void call_accepted(Jid from, Jid to, string invite_id, string message_type);
-        public signal void call_rejected(Jid from, Jid to, string invite_id, string message_type);
+        public signal void call_proposed(Jid from, Jid to, string call_id, bool video, Gee.List<StanzaNode> join_methods, MessageStanza message);
+        public signal void call_retracted(Jid from, Jid to, string call_id, string message_type);
+        public signal void call_accepted(Jid from, Jid to, string call_id, string message_type);
+        public signal void call_rejected(Jid from, Jid to, string call_id, string message_type);
 
         public string send_jingle_propose(XmppStream stream, Jid invitee, string sid, bool video) {
             StanzaNode jingle_node = new StanzaNode.build("jingle", CallInvites.NS_URI)
                     .put_attribute("sid", sid);
-            return send_propose(stream, invitee, jingle_node, video, false, MessageStanza.TYPE_CHAT);
+            return send_propose(stream, sid, invitee, jingle_node, video, false, MessageStanza.TYPE_CHAT);
         }
 
-        public void send_muji_propose(XmppStream stream, Jid invitee, Jid muc_jid, bool video, string message_type) {
+        public void send_muji_propose(XmppStream stream, string call_id, Jid invitee, Jid muc_jid, bool video, string message_type) {
             StanzaNode muji_node = new StanzaNode.build("muji", Muji.NS_URI).add_self_xmlns()
                     .put_attribute("room", muc_jid.to_string());
-            send_propose(stream, invitee, muji_node, video, true, message_type);
+            send_propose(stream, call_id, invitee, muji_node, video, true, message_type);
         }
 
-        private string send_propose(XmppStream stream, Jid invitee, StanzaNode inner_node, bool video, bool multiparty, string message_type) {
+        private string send_propose(XmppStream stream, string call_id, Jid invitee, StanzaNode inner_node, bool video, bool multiparty, string message_type) {
             StanzaNode invite_node = new StanzaNode.build("propose", NS_URI).add_self_xmlns()
+                    .put_attribute("id", call_id)
                     .put_attribute("video", video.to_string())
                     .put_attribute("multi", multiparty.to_string())
                     .put_node(inner_node);
@@ -35,20 +36,20 @@ namespace Xmpp.Xep.CallInvites {
             return invite_message.id;
         }
 
-        public void send_retract(XmppStream stream, Jid to, string invite_id, string message_type) {
-            send_message(stream, "retract", to, invite_id, message_type);
+        public void send_retract(XmppStream stream, Jid to, string call_id, string message_type) {
+            send_message(stream, "retract", to, call_id, message_type);
         }
 
-        public void send_accept(XmppStream stream, Jid to, string invite_id, string message_type) {
-            send_message(stream, "accept", to, invite_id, message_type);
+        public void send_accept(XmppStream stream, Jid to, string call_id, string message_type) {
+            send_message(stream, "accept", to, call_id, message_type);
         }
 
-        public void send_reject(XmppStream stream, Jid to, string invite_id, string message_type) {
-            send_message(stream, "reject", to, invite_id, message_type);
+        public void send_reject(XmppStream stream, Jid to, string call_id, string message_type) {
+            send_message(stream, "reject", to, call_id, message_type);
         }
 
-        private void send_message(XmppStream stream, string action, Jid to, string invite_id, string message_type) {
-            StanzaNode inner_node = new StanzaNode.build(action, NS_URI).add_self_xmlns().put_attribute("id", invite_id);
+        private void send_message(XmppStream stream, string action, Jid to, string call_id, string message_type) {
+            StanzaNode inner_node = new StanzaNode.build(action, NS_URI).add_self_xmlns().put_attribute("id", call_id);
             MessageStanza message = new MessageStanza() { to=to, type_=message_type };
             message.stanza.put_node(inner_node);
             MessageProcessingHints.set_message_hint(message, MessageProcessingHints.HINT_STORE);
@@ -69,25 +70,25 @@ namespace Xmpp.Xep.CallInvites {
             }
             if (relevant_node == null) return;
 
+            string? call_id = relevant_node.get_attribute("id");
+            if (call_id == null) return;
+
             if (relevant_node.name == "propose") {
                 if (relevant_node.sub_nodes.is_empty) return;
                 bool video = relevant_node.get_attribute_bool("video", false);
-                call_proposed(message.from, message.to, video, relevant_node.sub_nodes, message);
+                call_proposed(message.from, message.to, call_id, video, relevant_node.sub_nodes, message);
                 return;
             }
 
-            string? invite_id = relevant_node.get_attribute("id");
-            if (invite_id == null) return;
-
             switch (relevant_node.name) {
                 case "accept":
-                    call_accepted(message.from, message.to, invite_id, message.type_);
+                    call_accepted(message.from, message.to, call_id, message.type_);
                     break;
                 case "retract":
-                    call_retracted(message.from, message.to, invite_id, message.type_);
+                    call_retracted(message.from, message.to, call_id, message.type_);
                     break;
                 case "reject":
-                    call_rejected(message.from, message.to, invite_id, message.type_);
+                    call_rejected(message.from, message.to, call_id, message.type_);
                     break;
             }
         }
