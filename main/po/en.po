@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-08 17:37+0100\n"
+"POT-Creation-Date: 2022-02-08 22:15+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -213,6 +213,30 @@ msgstr ""
 #: main/src/ui/call_window/call_window.vala:190
 #, c-format
 msgid "%s declined the call"
+msgstr ""
+
+#: main/src/ui/call_window/video_settings_popover.vala:25
+msgid "Cameras"
+msgstr ""
+
+#: main/src/ui/call_window/video_settings_popover.vala:28
+msgid "No cameras found."
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:29
+msgid "Microphones"
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:32
+msgid "No microphones found."
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:83
+msgid "Speakers"
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:86
+msgid "No speakers found."
 msgstr ""
 
 #: main/src/ui/call_window/call_window_controller.vala:101

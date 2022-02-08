@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-08 17:37+0100\n"
+"POT-Creation-Date: 2022-02-08 22:15+0100\n"
 "PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
 "translations/fi/>\n"
@@ -223,6 +223,30 @@ msgstr ""
 #: main/src/ui/call_window/call_window.vala:190
 #, c-format
 msgid "%s declined the call"
+msgstr ""
+
+#: main/src/ui/call_window/video_settings_popover.vala:25
+msgid "Cameras"
+msgstr ""
+
+#: main/src/ui/call_window/video_settings_popover.vala:28
+msgid "No cameras found."
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:29
+msgid "Microphones"
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:32
+msgid "No microphones found."
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:83
+msgid "Speakers"
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:86
+msgid "No speakers found."
 msgstr ""
 
 #: main/src/ui/call_window/call_window_controller.vala:101

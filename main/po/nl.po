@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-08 17:37+0100\n"
-"PO-Revision-Date: 2022-02-04 09:55+0000\n"
+"POT-Creation-Date: 2022-02-08 22:15+0100\n"
+"PO-Revision-Date: 2022-02-08 21:14+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/translations/"
 "nl/>\n"
 "Language: nl\n"
@@ -225,6 +225,30 @@ msgstr "%s heeft de oproep beëindigd"
 msgid "%s declined the call"
 msgstr "%s hebt/heeft de oproep geweigerd"
 
+#: main/src/ui/call_window/video_settings_popover.vala:25
+msgid "Cameras"
+msgstr ""
+
+#: main/src/ui/call_window/video_settings_popover.vala:28
+msgid "No cameras found."
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:29
+msgid "Microphones"
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:32
+msgid "No microphones found."
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:83
+msgid "Speakers"
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:86
+msgid "No speakers found."
+msgstr ""
+
 #: main/src/ui/call_window/call_window_controller.vala:101
 msgid "Invite to Call"
 msgstr "Uitnodigen voor gesprek"
@@ -354,13 +378,13 @@ msgstr "Inkomende video-oproep"
 #: main/src/ui/notifier_freedesktop.vala:115
 #: main/src/ui/conversation_content_view/call_widget.vala:130
 msgid "Incoming video group call"
-msgstr ""
+msgstr "Inkomend videogroepsgesprek"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:115
 #: main/src/ui/conversation_content_view/call_widget.vala:130
 msgid "Incoming group call"
-msgstr ""
+msgstr "Inkomend groepsgesprek"
 
 #: main/src/ui/notifier_gnotifications.vala:80
 #: main/src/ui/notifier_freedesktop.vala:123
