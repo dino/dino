@@ -29,7 +29,7 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
         micro_box.add(new Label("<b>" + _("Microphones") + "</b>") { use_markup=true, xalign=0, visible=true, can_focus=true /* grab initial focus*/ });
 
         if (devices.size == 0) {
-            micro_box.add(new Label(_("No microphones found.")));
+            micro_box.add(new Label(_("No microphone found.")));
         } else {
             ListBox micro_list_box = new ListBox() { activate_on_single_click=true, selection_mode=SelectionMode.SINGLE, visible=true };
             micro_list_box.set_header_func(listbox_header_func);
@@ -83,7 +83,7 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
         speaker_box.add(new Label("<b>" + _("Speakers") +"</b>") { use_markup=true, xalign=0, visible=true });
 
         if (devices.size == 0) {
-            speaker_box.add(new Label(_("No speakers found.")));
+            speaker_box.add(new Label(_("No speaker found.")));
         } else {
             ListBox speaker_list_box = new ListBox() { activate_on_single_click=true, selection_mode=SelectionMode.SINGLE, visible=true };
             speaker_list_box.set_header_func(listbox_header_func);

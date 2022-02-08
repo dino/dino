@@ -25,7 +25,7 @@ public class Dino.Ui.VideoSettingsPopover : Gtk.Popover {
         camera_box.add(new Label("<b>" + _("Cameras") + "</b>") { use_markup=true, xalign=0, visible=true, can_focus=true /* grab initial focus*/ });
 
         if (devices.size == 0) {
-            camera_box.add(new Label(_("No cameras found.")) { visible=true });
+            camera_box.add(new Label(_("No camera found.")) { visible=true });
         } else {
             ListBox list_box = new ListBox() { activate_on_single_click=true, selection_mode=SelectionMode.SINGLE, visible=true };
             list_box.set_header_func(listbox_header_func);

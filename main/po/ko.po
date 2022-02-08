@@ -228,7 +228,7 @@ msgid "Cameras"
 msgstr ""
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
-msgid "No cameras found."
+msgid "No camera found."
 msgstr ""
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
@@ -236,7 +236,7 @@ msgid "Microphones"
 msgstr ""
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
-msgid "No microphones found."
+msgid "No microphone found."
 msgstr ""
 
 #: main/src/ui/call_window/audio_settings_popover.vala:83
@@ -244,7 +244,7 @@ msgid "Speakers"
 msgstr ""
 
 #: main/src/ui/call_window/audio_settings_popover.vala:86
-msgid "No speakers found."
+msgid "No speaker found."
 msgstr ""
 
 #: main/src/ui/call_window/call_window_controller.vala:101
