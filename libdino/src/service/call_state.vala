@@ -130,6 +130,11 @@ public class Dino.CallState : Object {
             foreach (PeerState peer in peers_cpy) {
                 peer.end(Xep.Jingle.ReasonElement.SUCCESS, reason_text);
             }
+            if (use_cim) {
+                XmppStream stream = stream_interactor.get_stream(call.account);
+                if (stream == null) return;
+                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_finish(stream, cim_counterpart, cim_call_id, cim_message_type);
+            }
             call.state = Call.State.ENDED;
         } else if (call.state == Call.State.RINGING) {
             foreach (PeerState peer in peers_cpy) {

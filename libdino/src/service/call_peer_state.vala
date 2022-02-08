@@ -97,6 +97,10 @@ public class Dino.PeerState : Object {
     }
 
     public async void call_resource(Jid full_jid) {
+        if (!call_state.accepted) {
+            warning("Tried to call resource in an unaccepted call?!");
+            return;
+        }
         XmppStream? stream = stream_interactor.get_stream(call.account);
         if (stream == null) return;
 

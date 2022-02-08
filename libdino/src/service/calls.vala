@@ -83,9 +83,7 @@ namespace Dino {
             } else {
                 bool is_private = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
                 EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
-                bool supports_ussid = yield entity_info.has_feature(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI);
-                bool supports_mam = yield entity_info.has_feature(conversation.account, conversation.counterpart.bare_jid, Xep.MessageArchiveManagement.NS_URI_2);
-                return is_private && (supports_ussid || supports_mam) && can_initiate_groupcall(conversation.account);
+                return is_private && can_initiate_groupcall(conversation.account);
             }
         }
 
@@ -261,7 +259,6 @@ namespace Dino {
                         }
                     }
                 }
-                if (call_state.invited_to_group_call != null && call_state.invited_to_group_call.equals(relevant_jid)) return call_state;
             }
             return null;
         }
@@ -369,15 +366,20 @@ namespace Dino {
                 if (peer_state == null) return;
                 Call call = peer_state.call;
 
-                if (from.equals_bare(account.bare_jid)) { // Carboned message from our account
+                // Carboned message from our account
+                if (from.equals_bare(account.bare_jid)) {
                     // Ignore carbon from ourselves
                     if (from.equals(account.full_jid)) return;
 
                     call.ourpart = from;
                     call.state = Call.State.OTHER_DEVICE;
                     remove_call_from_datastructures(call);
-                } else if (from.equals_bare(peer_state.jid) && to.equals(account.full_jid)) { // Message from our peer
-                    // We proposed the call
+                    return;
+                }
+
+                // We proposed the call. This is a message from our peer.
+                if (call.direction == Call.DIRECTION_OUTGOING &&
+                        from.equals_bare(peer_state.jid) && to.equals(account.full_jid)) {
                     // We know the full jid of our peer now
                     call_states[call].rename_peer(jmi_request_peer[call].jid, from);
                     jmi_request_peer[call].call_resource.begin(from);
@@ -477,7 +479,8 @@ namespace Dino {
                 if (call_state == null) return;
                 Call call = call_state.call;
 
-                if (from_jid.equals_bare(account.bare_jid)) { // Carboned message from our account
+                // Carboned message from our account
+                if (from_jid.equals_bare(account.bare_jid)) {
                     // Ignore carbon from ourselves
                     if (from_jid.equals(account.full_jid)) return;
 
@@ -485,10 +488,14 @@ namespace Dino {
                     call.ourpart = from_jid;
                     call.state = Call.State.OTHER_DEVICE;
                     remove_call_from_datastructures(call);
-                } else if (to_jid.equals(account.full_jid)) { // Message from our peer
-                    // We proposed the call
+                    return;
+                }
+
+                // We proposed the call. This is a message from our peer.
+                if (call.direction == Call.DIRECTION_OUTGOING &&
+                        to_jid.equals(account.full_jid)) {
                     // We know the full jid of our peer now
-                    call_states[call].rename_peer(jmi_request_peer[call].jid, from_jid);
+                    call_state.rename_peer(jmi_request_peer[call].jid, from_jid);
                     jmi_request_peer[call].call_resource.begin(from_jid);
                 }
             });
@@ -509,9 +516,9 @@ namespace Dino {
                 call_state.call.state = Call.State.MISSED;
                 remove_call_from_datastructures(call_state.call);
             });
-            call_invites_module.call_rejected.connect((from_jid, to_jid, muc_jid, message_type) => {
+            call_invites_module.call_rejected.connect((from_jid, to_jid, call_id, message_type) => {
                 if (from_jid.equals_bare(account.bare_jid)) return;
-                debug(@"[%s] %s rejected our MUJI invite to %s", account.bare_jid.to_string(), from_jid.to_string(), muc_jid.to_string());
+                debug(@"[%s] %s rejected our MUJI invite", account.bare_jid.to_string(), from_jid.to_string());
             });
 
             stream_interactor.module_manager.get_module(account, Xep.Coin.Module.IDENTITY).coin_info_received.connect((jid, info) => {

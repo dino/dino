@@ -10,6 +10,7 @@ namespace Xmpp.Xep.CallInvites {
         public signal void call_retracted(Jid from, Jid to, string call_id, string message_type);
         public signal void call_accepted(Jid from, Jid to, string call_id, string message_type);
         public signal void call_rejected(Jid from, Jid to, string call_id, string message_type);
+        public signal void call_left(Jid from, Jid to, string call_id, string message_type);
 
         public string send_jingle_propose(XmppStream stream, Jid invitee, string sid, bool video) {
             StanzaNode jingle_node = new StanzaNode.build("jingle", CallInvites.NS_URI)
@@ -37,19 +38,24 @@ namespace Xmpp.Xep.CallInvites {
         }
 
         public void send_retract(XmppStream stream, Jid to, string call_id, string message_type) {
-            send_message(stream, "retract", to, call_id, message_type);
+            send_message(stream, to, call_id, "retract", "cancel", message_type);
         }
 
         public void send_accept(XmppStream stream, Jid to, string call_id, string message_type) {
-            send_message(stream, "accept", to, call_id, message_type);
+            send_message(stream, to, call_id, "accept", null, message_type);
         }
 
         public void send_reject(XmppStream stream, Jid to, string call_id, string message_type) {
-            send_message(stream, "reject", to, call_id, message_type);
+            send_message(stream, to, call_id, "reject", "busy", message_type);
         }
 
-        private void send_message(XmppStream stream, string action, Jid to, string call_id, string message_type) {
+        public void send_finish(XmppStream stream, Jid to, string call_id, string message_type) {
+            send_message(stream, to, call_id, "finish", "success", message_type);
+        }
+
+        private void send_message(XmppStream stream, Jid to, string call_id, string action, string? reason, string message_type) {
             StanzaNode inner_node = new StanzaNode.build(action, NS_URI).add_self_xmlns().put_attribute("id", call_id);
+            if (reason != null) inner_node.put_node(new StanzaNode.build("reason", NS_URI).put_node(new StanzaNode.build(reason, NS_URI)));
             MessageStanza message = new MessageStanza() { to=to, type_=message_type };
             message.stanza.put_node(inner_node);
             MessageProcessingHints.set_message_hint(message, MessageProcessingHints.HINT_STORE);
@@ -89,6 +95,9 @@ namespace Xmpp.Xep.CallInvites {
                     break;
                 case "reject":
                     call_rejected(message.from, message.to, call_id, message.type_);
+                    break;
+                case "finish":
+                    call_left(message.from, message.to, call_id, message.type_);
                     break;
             }
         }
