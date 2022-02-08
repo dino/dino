@@ -18,16 +18,25 @@ namespace Xmpp.Xep.Omemo {
             ParsedData ret = new ParsedData();
 
             StanzaNode? header_node = encrypted_node.get_subnode("header");
-            if (header_node == null) return null;
+            if (header_node == null) {
+                warning("Can't parse OMEMO node: No header node");
+                return null;
+            }
 
             ret.sid = header_node.get_attribute_int("sid", -1);
-            if (ret.sid == -1) return null;
+            if (ret.sid == -1) {
+                warning("Can't parse OMEMO node: No sid");
+                return null;
+            }
 
             string? payload_str = encrypted_node.get_deep_string_content("payload");
             if (payload_str != null) ret.ciphertext = Base64.decode(payload_str);
 
             string? iv_str = header_node.get_deep_string_content("iv");
-            if (iv_str == null) return null;
+            if (iv_str == null) {
+                warning("Can't parse OMEMO node: No iv");
+                return null;
+            }
             ret.iv = Base64.decode(iv_str);
 
             foreach (StanzaNode key_node in header_node.get_subnodes("key")) {

@@ -19,6 +19,7 @@ public abstract class Module : XmppStreamModule {
     }
 
     public abstract async Gee.List<PayloadType> get_supported_payloads(string media);
+    public abstract async bool is_payload_supported(string media, JingleRtp.PayloadType payload_type);
     public abstract async PayloadType? pick_payload_type(string media, Gee.List<PayloadType> payloads);
     public abstract Crypto? generate_local_crypto();
     public abstract Crypto? pick_remote_crypto(Gee.List<Crypto> cryptos);
@@ -28,7 +29,7 @@ public abstract class Module : XmppStreamModule {
     public abstract Gee.List<HeaderExtension> get_suggested_header_extensions(string media);
     public abstract void close_stream(Stream stream);
 
-    public async Jingle.Session start_call(XmppStream stream, Jid receiver_full_jid, bool video, string? sid = null) throws Jingle.Error {
+    public async Jingle.Session start_call(XmppStream stream, Jid receiver_full_jid, bool video, string sid, Jid? muji_muc) throws Jingle.Error {
 
         Jingle.Module jingle_module = stream.get_module(Jingle.Module.IDENTITY);
 
@@ -40,7 +41,7 @@ public abstract class Module : XmppStreamModule {
         ArrayList<Jingle.Content> contents = new ArrayList<Jingle.Content>();
 
         // Create audio content
-        Parameters audio_content_parameters = new Parameters(this, "audio", yield get_supported_payloads("audio"));
+        Parameters audio_content_parameters = new Parameters(this, "audio", yield get_supported_payloads("audio"), muji_muc);
         audio_content_parameters.local_crypto = generate_local_crypto();
         audio_content_parameters.header_extensions.add_all(get_suggested_header_extensions("audio"));
         Jingle.Transport? audio_transport = yield jingle_module.select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());
@@ -48,7 +49,7 @@ public abstract class Module : XmppStreamModule {
             throw new Jingle.Error.NO_SHARED_PROTOCOLS("No suitable audio transports");
         }
         Jingle.TransportParameters audio_transport_params = audio_transport.create_transport_parameters(stream, content_type.required_components, my_jid, receiver_full_jid);
-        Jingle.Content audio_content = new Jingle.Content.initiate_sent("voice", Jingle.Senders.BOTH,
+        Jingle.Content audio_content = new Jingle.Content.initiate_sent("audio", Jingle.Senders.BOTH,
                 content_type, audio_content_parameters,
                 audio_transport, audio_transport_params,
                 null, null,
@@ -58,7 +59,7 @@ public abstract class Module : XmppStreamModule {
         Jingle.Content? video_content = null;
         if (video) {
             // Create video content
-            Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"));
+            Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"), muji_muc);
             video_content_parameters.local_crypto = generate_local_crypto();
             video_content_parameters.header_extensions.add_all(get_suggested_header_extensions("video"));
             Jingle.Transport? video_transport = yield stream.get_module(Jingle.Module.IDENTITY).select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());
@@ -66,7 +67,7 @@ public abstract class Module : XmppStreamModule {
                 throw new Jingle.Error.NO_SHARED_PROTOCOLS("No suitable video transports");
             }
             Jingle.TransportParameters video_transport_params = video_transport.create_transport_parameters(stream, content_type.required_components, my_jid, receiver_full_jid);
-            video_content = new Jingle.Content.initiate_sent("webcam", Jingle.Senders.BOTH,
+            video_content = new Jingle.Content.initiate_sent("video", Jingle.Senders.BOTH,
                     content_type, video_content_parameters,
                     video_transport, video_transport_params,
                     null, null,
@@ -83,7 +84,7 @@ public abstract class Module : XmppStreamModule {
         }
     }
 
-    public async Jingle.Content add_outgoing_video_content(XmppStream stream, Jingle.Session session) throws Jingle.Error {
+    public async Jingle.Content add_outgoing_video_content(XmppStream stream, Jingle.Session session, Jid? muji_muc) throws Jingle.Error {
         Jid my_jid = session.local_full_jid;
         Jid receiver_full_jid = session.peer_full_jid;
 
@@ -100,7 +101,7 @@ public abstract class Module : XmppStreamModule {
 
         if (content == null) {
             // Content for video does not yet exist -> create it
-            Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"));
+            Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"), muji_muc);
             video_content_parameters.local_crypto = generate_local_crypto();
             video_content_parameters.header_extensions.add_all(get_suggested_header_extensions("video"));
             Jingle.Transport? video_transport = yield stream.get_module(Jingle.Module.IDENTITY).select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());
@@ -108,7 +109,7 @@ public abstract class Module : XmppStreamModule {
                 throw new Jingle.Error.NO_SHARED_PROTOCOLS("No suitable video transports");
             }
             Jingle.TransportParameters video_transport_params = video_transport.create_transport_parameters(stream, content_type.required_components, my_jid, receiver_full_jid);
-            content = new Jingle.Content.initiate_sent("webcam",
+            content = new Jingle.Content.initiate_sent("video",
                     session.we_initiated ? Jingle.Senders.INITIATOR : Jingle.Senders.RESPONDER,
                     content_type, video_content_parameters,
                     video_transport, video_transport_params,

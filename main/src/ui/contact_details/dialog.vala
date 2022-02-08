@@ -10,12 +10,12 @@ namespace Dino.Ui.ContactDetails {
 [GtkTemplate (ui = "/im/dino/Dino/contact_details_dialog.ui")]
 public class Dialog : Gtk.Dialog {
 
-    [GtkChild] public AvatarImage avatar;
-    [GtkChild] public Util.EntryLabelHybrid name_hybrid;
-    [GtkChild] public Label name_label;
-    [GtkChild] public Label jid_label;
-    [GtkChild] public Label account_label;
-    [GtkChild] public Box main_box;
+    [GtkChild] public unowned AvatarImage avatar;
+    [GtkChild] public unowned Util.EntryLabelHybrid name_hybrid;
+    [GtkChild] public unowned Label name_label;
+    [GtkChild] public unowned Label jid_label;
+    [GtkChild] public unowned Label account_label;
+    [GtkChild] public unowned Box main_box;
 
     private StreamInteractor stream_interactor;
     private Conversation conversation;

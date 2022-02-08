@@ -9,6 +9,7 @@ public class AvatarImage : Misc {
     public int height { get; set; default = 35; }
     public int width { get; set; default = 35; }
     public bool allow_gray { get; set; default = true; }
+    public bool force_gray { get; set; default = false; }
     public StreamInteractor? stream_interactor { get; set; }
     public AvatarManager? avatar_manager { owned get { return stream_interactor == null ? null : stream_interactor.get_module(AvatarManager.IDENTITY); } }
     public MucManager? muc_manager { owned get { return stream_interactor == null ? null : stream_interactor.get_module(MucManager.IDENTITY); } }
@@ -78,14 +79,14 @@ public class AvatarImage : Misc {
                     string user_color = Util.get_avatar_hex_color(stream_interactor, account, conversation.counterpart, conversation);
                     if (avatar_manager.has_avatar_cached(account, conversation.counterpart)) {
                         drawer = new AvatarDrawer().tile(avatar_manager.get_cached_avatar(account, conversation.counterpart), "#", user_color);
-                        if (allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
+                        if (force_gray || allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
                     } else {
                         Gee.List<Jid>? occupants = muc_manager.get_other_offline_members(conversation.counterpart, account);
                         if (muc_manager.is_private_room(account, conversation.counterpart) && occupants != null && occupants.size > 0) {
                             jids = occupants.to_array();
                         } else {
                             drawer = new AvatarDrawer().tile(null, "#", user_color);
-                            if (allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
+                            if (force_gray || allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
                         }
                         try_load_avatar_async(conversation.counterpart);
                     }
@@ -116,7 +117,7 @@ public class AvatarImage : Misc {
             if (jids.length > 4) {
                 drawer.plus();
             }
-            if (allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
+            if (force_gray || allow_gray && (!is_self_online() || !is_counterpart_online())) drawer.grayscale();
         }
 
 
@@ -152,6 +153,7 @@ public class AvatarImage : Misc {
     private void disconnect_stream_interactor() {
         if (stream_interactor != null) {
             presence_manager.show_received.disconnect(on_show_received);
+            presence_manager.received_offline_presence.disconnect(on_show_received);
             avatar_manager.received_avatar.disconnect(on_received_avatar);
             stream_interactor.connection_manager.connection_state_changed.disconnect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.disconnect(on_roster_updated);
@@ -234,6 +236,7 @@ public class AvatarImage : Misc {
         if (this.stream_interactor != stream_interactor) {
             this.stream_interactor = stream_interactor;
             presence_manager.show_received.connect(on_show_received);
+            presence_manager.received_offline_presence.connect(on_show_received);
             stream_interactor.get_module(AvatarManager.IDENTITY).received_avatar.connect(on_received_avatar);
             stream_interactor.connection_manager.connection_state_changed.connect(on_connection_changed);
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);

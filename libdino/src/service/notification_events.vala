@@ -12,7 +12,9 @@ public class NotificationEvents : StreamInteractionModule, Object {
     public signal void notify_content_item(ContentItem content_item, Conversation conversation);
 
     private StreamInteractor stream_interactor;
-    private NotificationProvider? notifier;
+    private Future<NotificationProvider> notifier;
+    private Promise<NotificationProvider> notifier_promise;
+    private bool notifier_outstanding = true;
 
     public static void start(StreamInteractor stream_interactor) {
         NotificationEvents m = new NotificationEvents(stream_interactor);
@@ -22,31 +24,28 @@ public class NotificationEvents : StreamInteractionModule, Object {
     public NotificationEvents(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(on_content_item_received);
-        stream_interactor.get_module(PresenceManager.IDENTITY).received_subscription_request.connect(on_received_subscription_request);
+        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((item, conversation) => on_content_item_received.begin(item, conversation));
+        stream_interactor.get_module(PresenceManager.IDENTITY).received_subscription_request.connect((jid, account) => on_received_subscription_request.begin(jid, account));
 
-        stream_interactor.get_module(MucManager.IDENTITY).invite_received.connect(on_invite_received);
-        stream_interactor.get_module(MucManager.IDENTITY).voice_request_received.connect((account, room_jid, from_jid, nick) => {
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
-            if (conversation == null) return;
-            notifier.notify_voice_request.begin(conversation, from_jid);
-        });
+        stream_interactor.get_module(MucManager.IDENTITY).invite_received.connect((account, room_jid, from_jid, password, reason) => on_invite_received.begin(account, room_jid, from_jid, password, reason));
+        stream_interactor.get_module(MucManager.IDENTITY).voice_request_received.connect((account, room_jid, from_jid, nick) => on_voice_request_received.begin(account, room_jid, from_jid, nick));
 
-        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect(on_call_incoming);
-        stream_interactor.connection_manager.connection_error.connect((account, error) => notifier.notify_connection_error.begin(account, error));
-        stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((conversation) => {
-            notifier.retract_content_item_notifications.begin();
-            notifier.retract_conversation_notifications.begin(conversation);
-        });
+        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect((call, state, conversation, video) => on_call_incoming.begin(call, state, conversation, video));
+        stream_interactor.connection_manager.connection_error.connect((account, error) => on_connection_error(account, error));
+        stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((conversation) => on_focused_in.begin(conversation));
+
+        notifier_promise = new Promise<NotificationProvider>();
+        notifier = notifier_promise.future;
     }
 
-    public void register_notification_provider(NotificationProvider notification_provider) {
-        if (notifier == null || notifier.get_priority() < notification_provider.get_priority()) {
-            notifier = notification_provider;
+    public async void register_notification_provider(NotificationProvider notification_provider) {
+        if (notifier_outstanding || (yield notifier.wait_async()).get_priority() < notification_provider.get_priority()) {
+            notifier_outstanding = false;
+            notifier_promise.set_value(notification_provider);
         }
     }
 
-    private void on_content_item_received(ContentItem item, Conversation conversation) {
+    private async void on_content_item_received(ContentItem item, Conversation conversation) {
         ContentItem last_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
         if (item.id != last_item.id) return;
@@ -78,7 +77,8 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
                 notify_content_item(item, conversation);
                 if (notify != Conversation.NotifySetting.OFF) {
-                    notifier.notify_message.begin(message, conversation, conversation_display_name, participant_display_name);
+                    NotificationProvider notifier = yield notifier.wait_async();
+                    yield notifier.notify_message(message, conversation, conversation_display_name, participant_display_name);
                 }
                 break;
             case FileItem.TYPE:
@@ -91,7 +91,8 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
                 notify_content_item(item, conversation);
                 if (notify != Conversation.NotifySetting.OFF) {
-                    notifier.notify_file.begin(file_transfer, conversation, is_image, conversation_display_name, participant_display_name);
+                    NotificationProvider notifier = yield notifier.wait_async();
+                    yield notifier.notify_file(file_transfer, conversation, is_image, conversation_display_name, participant_display_name);
                 }
                 break;
             case CallItem.TYPE:
@@ -100,17 +101,28 @@ public class NotificationEvents : StreamInteractionModule, Object {
         }
     }
 
-    private void on_received_subscription_request(Jid jid, Account account) {
+    private async void on_voice_request_received(Account account, Jid room_jid, Jid from_jid, string nick) {
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
+        if (conversation == null) return;
+
+        NotificationProvider notifier = yield notifier.wait_async();
+        yield notifier.notify_voice_request(conversation, from_jid);
+    }
+
+    private async void on_received_subscription_request(Jid jid, Account account) {
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
         if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus(conversation)) return;
 
-        notifier.notify_subscription_request.begin(conversation);
+        NotificationProvider notifier = yield notifier.wait_async();
+        yield notifier.notify_subscription_request(conversation);
     }
 
-    private void on_call_incoming(Call call, Conversation conversation, bool video) {
+    private async void on_call_incoming(Call call, CallState call_state, Conversation conversation, bool video) {
+        if (!stream_interactor.get_module(Calls.IDENTITY).can_we_do_calls(call.account)) return;
         string conversation_display_name = get_conversation_display_name(stream_interactor, conversation, null);
 
-        notifier.notify_call.begin(call, conversation, video, conversation_display_name);
+        NotificationProvider notifier = yield notifier.wait_async();
+        yield notifier.notify_call(call, conversation, video, conversation_display_name);
         call.notify["state"].connect(() => {
             if (call.state != Call.State.RINGING) {
                 notifier.retract_call_notification.begin(call, conversation);
@@ -118,7 +130,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
         });
     }
 
-    private void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
+    private async void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
         string inviter_display_name;
         if (room_jid.equals_bare(from_jid)) {
             Conversation conversation = new Conversation(room_jid, account, Conversation.Type.GROUPCHAT);
@@ -127,7 +139,19 @@ public class NotificationEvents : StreamInteractionModule, Object {
             Conversation direct_conversation = new Conversation(from_jid, account, Conversation.Type.CHAT);
             inviter_display_name = get_participant_display_name(stream_interactor, direct_conversation, from_jid);
         }
-        notifier.notify_muc_invite.begin(account, room_jid, from_jid, inviter_display_name);
+        NotificationProvider notifier = yield notifier.wait_async();
+        yield notifier.notify_muc_invite(account, room_jid, from_jid, inviter_display_name);
+    }
+
+    private async void on_connection_error(Account account, ConnectionManager.ConnectionError error) {
+        NotificationProvider notifier = yield notifier.wait_async();
+        yield notifier.notify_connection_error(account, error);
+    }
+
+    private async void on_focused_in(Conversation conversation) {
+        NotificationProvider notifier = yield notifier.wait_async();
+        yield notifier.retract_content_item_notifications();
+        yield notifier.retract_conversation_notifications(conversation);
     }
 }
 

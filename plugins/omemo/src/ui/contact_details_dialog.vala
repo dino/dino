@@ -20,26 +20,26 @@ public class ContactDetailsDialog : Gtk.Dialog {
     private Signal.Store store;
     private Set<uint32> displayed_ids = new HashSet<uint32>();
 
-    [GtkChild] private Label automatically_accept_new_label;
-    [GtkChild] private Label automatically_accept_new_descr;
-    [GtkChild] private Label own_key_label;
-    [GtkChild] private Label new_keys_label;
-    [GtkChild] private Label associated_keys_label;
-    [GtkChild] private Label inactive_expander_label;
+    [GtkChild] private unowned Label automatically_accept_new_label;
+    [GtkChild] private unowned Label automatically_accept_new_descr;
+    [GtkChild] private unowned Label own_key_label;
+    [GtkChild] private unowned Label new_keys_label;
+    [GtkChild] private unowned Label associated_keys_label;
+    [GtkChild] private unowned Label inactive_expander_label;
 
-    [GtkChild] private Box own_fingerprint_container;
-    [GtkChild] private Label own_fingerprint_label;
-    [GtkChild] private Box new_keys_container;
-    [GtkChild] private ListBox new_keys_listbox;
-    [GtkChild] private Box keys_container;
-    [GtkChild] private ListBox keys_listbox;
-    [GtkChild] private Expander inactive_keys_expander;
-    [GtkChild] private ListBox inactive_keys_listbox;
-    [GtkChild] private Switch auto_accept_switch;
-    [GtkChild] private Button copy_button;
-    [GtkChild] private Button show_qrcode_button;
-    [GtkChild] private Image qrcode_image;
-    [GtkChild] private Popover qrcode_popover;
+    [GtkChild] private unowned Box own_fingerprint_container;
+    [GtkChild] private unowned Label own_fingerprint_label;
+    [GtkChild] private unowned Box new_keys_container;
+    [GtkChild] private unowned ListBox new_keys_listbox;
+    [GtkChild] private unowned Box keys_container;
+    [GtkChild] private unowned ListBox keys_listbox;
+    [GtkChild] private unowned Expander inactive_keys_expander;
+    [GtkChild] private unowned ListBox inactive_keys_listbox;
+    [GtkChild] private unowned Switch auto_accept_switch;
+    [GtkChild] private unowned Button copy_button;
+    [GtkChild] private unowned Button show_qrcode_button;
+    [GtkChild] private unowned Image qrcode_image;
+    [GtkChild] private unowned Popover qrcode_popover;
 
     construct {
         // If we set the strings in the .ui file, they don't get translated

@@ -109,6 +109,8 @@ SOURCES
     "src/module/xep/0176_jingle_ice_udp/jingle_ice_udp_module.vala"
     "src/module/xep/0176_jingle_ice_udp/transport_parameters.vala"
 
+    "src/module/xep/0177_jingle_raw_udp.vala"
+
     "src/module/xep/0384_omemo/omemo_encryptor.vala"
     "src/module/xep/0384_omemo/omemo_decryptor.vala"
 
@@ -122,12 +124,15 @@ SOURCES
     "src/module/xep/0249_direct_muc_invitations.vala"
     "src/module/xep/0260_jingle_socks5_bytestreams.vala"
     "src/module/xep/0261_jingle_in_band_bytestreams.vala"
+    "src/module/xep/0272_muji.vala"
     "src/module/xep/0280_message_carbons.vala"
+    "src/module/xep/0298_coin.vala"
     "src/module/xep/0308_last_message_correction.vala"
     "src/module/xep/0313_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/0334_message_processing_hints.vala"
     "src/module/xep/0353_jingle_message_initiation.vala"
+    "src/module/xep/0353_call_invite_message.vala"
     "src/module/xep/0359_unique_stable_stanza_ids.vala"
     "src/module/xep/0363_http_file_upload.vala"
     "src/module/xep/0380_explicit_encryption.vala"

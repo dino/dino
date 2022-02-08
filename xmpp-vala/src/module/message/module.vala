@@ -12,6 +12,7 @@ namespace Xmpp {
         public StanzaListenerHolder<MessageStanza> send_pipeline = new StanzaListenerHolder<MessageStanza>();
 
         public signal void received_message(XmppStream stream, MessageStanza message);
+        public signal void received_error(XmppStream stream, MessageStanza message, ErrorStanza error);
         public signal void received_message_unprocessed(XmppStream stream, MessageStanza message);
 
         public async void send_message(XmppStream stream, MessageStanza message) throws IOStreamError {
@@ -24,7 +25,11 @@ namespace Xmpp {
 
             received_message_unprocessed(stream, message);
 
-            if (!message.is_error()) {
+            if (message.is_error()) {
+                ErrorStanza? error_stanza = message.get_error();
+                if (error_stanza == null) return;
+                received_error(stream, message, error_stanza);
+            } else {
                 bool abort = yield received_pipeline.run(stream, message);
                 if (abort) return;
 

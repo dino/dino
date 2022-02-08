@@ -30,8 +30,9 @@ public class Util {
                 return Entities.Message.Type.GROUPCHAT;
             case Conversation.Type.GROUPCHAT_PM:
                 return Entities.Message.Type.GROUPCHAT_PM;
+            default:
+                assert_not_reached();
         }
-        assert_not_reached();
     }
 
     public static Conversation.Type get_conversation_type_for_message(Message message) {
@@ -42,8 +43,9 @@ public class Util {
                 return Conversation.Type.GROUPCHAT;
             case Entities.Message.Type.GROUPCHAT_PM:
                 return Conversation.Type.GROUPCHAT_PM;
+            default:
+                assert_not_reached();
         }
-        assert_not_reached();
     }
 
     public static void launch_default_for_uri(string file_uri)

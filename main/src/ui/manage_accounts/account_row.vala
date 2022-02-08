@@ -7,9 +7,9 @@ namespace Dino.Ui.ManageAccounts {
 [GtkTemplate (ui = "/im/dino/Dino/manage_accounts/account_row.ui")]
 public class AccountRow :  Gtk.ListBoxRow {
 
-    [GtkChild] public AvatarImage image;
-    [GtkChild] public Label jid_label;
-    [GtkChild] public Image icon;
+    [GtkChild] public unowned AvatarImage image;
+    [GtkChild] public unowned Label jid_label;
+    [GtkChild] public unowned Image icon;
 
     public Account account;
     private StreamInteractor stream_interactor;

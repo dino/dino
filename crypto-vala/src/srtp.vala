@@ -34,9 +34,8 @@ public class Session {
         if (res != ErrorStatus.ok) {
             throw new Error.UNKNOWN(@"SRTP encrypt failed: $res");
         }
-        uint8[] ret = new uint8[buf_use];
-        GLib.Memory.copy(ret, buf, buf_use);
-        return ret;
+        buf.length = buf_use;
+        return buf;
     }
 
     public uint8[] decrypt_rtp(uint8[] data) throws Error {
@@ -65,9 +64,8 @@ public class Session {
         if (res != ErrorStatus.ok) {
             throw new Error.UNKNOWN(@"SRTCP encrypt failed: $res");
         }
-        uint8[] ret = new uint8[buf_use];
-        GLib.Memory.copy(ret, buf, buf_use);
-        return ret;
+        buf.length = buf_use;
+        return buf;
     }
 
     public uint8[] decrypt_rtcp(uint8[] data) throws Error {
@@ -81,7 +79,7 @@ public class Session {
             case ErrorStatus.ok:
                 break;
             default:
-                throw new Error.UNKNOWN(@"SRTP decrypt failed: $res");
+                throw new Error.UNKNOWN(@"SRTCP decrypt failed: $res");
         }
         uint8[] ret = new uint8[buf_use];
         GLib.Memory.copy(ret, buf, buf_use);
@@ -105,6 +103,7 @@ public class Session {
         policy.key = new uint8[key.length + salt.length];
         Memory.copy(policy.key, key, key.length);
         Memory.copy(((uint8*)policy.key) + key.length, salt, salt.length);
+        policy.next = null;
         encrypt_context.add_stream(ref policy);
         has_encrypt = true;
     }
@@ -115,6 +114,7 @@ public class Session {
         policy.key = new uint8[key.length + salt.length];
         Memory.copy(policy.key, key, key.length);
         Memory.copy(((uint8*)policy.key) + key.length, salt, salt.length);
+        policy.next = null;
         decrypt_context.add_stream(ref policy);
         has_decrypt = true;
     }

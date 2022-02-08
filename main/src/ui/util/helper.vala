@@ -154,10 +154,26 @@ public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, 
     image.set_from_surface(surface);
 }
 
+public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
+    Gtk.CssProvider provider = force_color(label, css_color);
+    Gdk.RGBA color_rgba = label.get_style_context().get_color(StateFlags.NORMAL);
+    label.get_style_context().remove_provider(provider);
+    return color_rgba;
+}
+
+public static string rgba_to_hex(Gdk.RGBA rgba) {
+    return "#%02x%02x%02x%02x".printf(
+            (uint)(Math.round(rgba.red*255)),
+            (uint)(Math.round(rgba.green*255)),
+            (uint)(Math.round(rgba.blue*255)),
+            (uint)(Math.round(rgba.alpha*255)))
+            .up();
+}
+
 private const string force_background_css = "%s { background-color: %s; }";
 private const string force_color_css = "%s { color: %s; }";
 
-public static void force_css(Gtk.Widget widget, string css) {
+public static Gtk.CssProvider force_css(Gtk.Widget widget, string css) {
     var p = new Gtk.CssProvider();
     try {
         p.load_from_data(css);
@@ -165,14 +181,15 @@ public static void force_css(Gtk.Widget widget, string css) {
     } catch (GLib.Error err) {
         // handle err
     }
+    return p;
 }
 
 public static void force_background(Gtk.Widget widget, string color, string selector = "*") {
     force_css(widget, force_background_css.printf(selector, color));
 }
 
-public static void force_color(Gtk.Widget widget, string color, string selector = "*") {
-    force_css(widget, force_color_css.printf(selector, color));
+public static Gtk.CssProvider force_color(Gtk.Widget widget, string color, string selector = "*") {
+    return force_css(widget, force_color_css.printf(selector, color));
 }
 
 public static void force_error_color(Gtk.Widget widget, string selector = "*") {
@@ -220,9 +237,32 @@ public static Map<unichar, unichar> get_matching_chars() {
     return MATCHING_CHARS;
 }
 
-public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup, bool already_escaped_ = false) {
+public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup) {
+    bool ignore_out_var = false;
+    return parse_add_markup_theme(s_, highlight_word, parse_links, parse_text_markup, parse_text_markup, false, ref ignore_out_var);
+}
+
+public static string parse_add_markup_theme(string s_, string? highlight_word, bool parse_links, bool parse_text_markup, bool parse_quotes, bool dark_theme, ref bool theme_dependent, bool already_escaped_ = false) {
     string s = s_;
     bool already_escaped = already_escaped_;
+
+    if (parse_quotes) {
+        string gt = already_escaped ? "&gt;" : ">";
+        Regex quote_regex = new Regex("((?<=\n)" + gt + ".*(\n|$))|(^" + gt + ".*(\n|$))");
+        MatchInfo quote_match_info;
+        quote_regex.match(s.down(), 0, out quote_match_info);
+        if (quote_match_info.matches()) {
+            int start, end;
+
+            string dim_color = dark_theme ? "#BDBDBD": "#707070";
+
+            theme_dependent = true;
+            quote_match_info.fetch_pos(0, out start, out end);
+            return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, parse_quotes, dark_theme, ref theme_dependent, already_escaped) +
+                    @"<span color='$dim_color'>$gt " + parse_add_markup_theme(s[start + gt.length + 1:end], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) + "</span>" +
+                    parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, parse_quotes, dark_theme, ref theme_dependent, already_escaped);
+        }
+    }
 
     if (parse_links && !already_escaped) {
         MatchInfo match_info;
@@ -264,9 +304,11 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
                     }
                 }
 
-                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                        "<a href=\"" + Markup.escape_text(link) + "\">" + parse_add_markup(link, highlight_word, false, false, already_escaped) + "</a>" +
-                        parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+                return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) +
+                        "<a href=\"" + Markup.escape_text(link) + "\">" +
+                        parse_add_markup_theme(link, highlight_word, false, false, false, dark_theme, ref theme_dependent, already_escaped) +
+                        "</a>" +
+                        parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped);
             }
             match_info.next();
         }
@@ -285,9 +327,9 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
             if (match_info.matches()) {
                 int start, end;
                 match_info.fetch_pos(0, out start, out end);
-                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) +
                     "<b>" + s[start:end] + "</b>" +
-                    parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+                    parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped);
             }
         } catch (RegexError e) {
             assert_not_reached();
@@ -307,11 +349,11 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
                 if (match_info.matches()) {
                     int start, end;
                     match_info.fetch_pos(2, out start, out end);
-                    return parse_add_markup(s[0:start-1], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                        "<span color='#999'>" +  s[start-1:start] + "</span>" +
+                    return parse_add_markup_theme(s[0:start-1], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) +
+                        "<span color='#9E9E9E'>" +  s[start-1:start] + "</span>" +
                         @"<$(convenience_tag[i])>" + s[start:end] + @"</$(convenience_tag[i])>" +
-                        "<span color='#999'>" + s[end:end+1] + "</span>" +
-                        parse_add_markup(s[end+1:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+                        "<span color='#9E9E9E'>" + s[end:end+1] + "</span>" +
+                        parse_add_markup_theme(s[end+1:s.length], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped);
                 }
             } catch (RegexError e) {
                 assert_not_reached();

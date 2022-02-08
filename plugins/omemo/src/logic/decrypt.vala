@@ -129,13 +129,13 @@ namespace Dino.Plugins.Omemo {
                 string identity_key = Base64.encode(msg.identity_key.serialize());
 
                 bool ok = update_db_for_prekey(identity_id, identity_key, from_jid, sid);
-                if (!ok) return null;
+                if (!ok) throw new GLib.Error(-1, 0, "Failed updating db for prekey");
 
                 debug("Starting new session for decryption with device from %s/%d", from_jid.to_string(), sid);
                 SessionCipher cipher = store.create_session_cipher(address);
                 key = cipher.decrypt_pre_key_signal_message(msg);
                 // TODO: Finish session
-                } else {
+            } else {
                 debug("Continuing session for decryption with device from %s/%d", from_jid.to_string(), sid);
                 SignalMessage msg = Plugin.get_context().deserialize_signal_message(encrypted_key);
                 SessionCipher cipher = store.create_session_cipher(address);

@@ -9,24 +9,24 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/file_default_widget.ui")]
 public class FileDefaultWidget : EventBox {
 
-    [GtkChild] public Stack image_stack;
-    [GtkChild] public Label name_label;
-    [GtkChild] public Label mime_label;
-    [GtkChild] public Image content_type_image;
-    [GtkChild] public Spinner spinner;
-    [GtkChild] public EventBox stack_event_box;
+    [GtkChild] public unowned Stack image_stack;
+    [GtkChild] public unowned Label name_label;
+    [GtkChild] public unowned Label mime_label;
+    [GtkChild] public unowned Image content_type_image;
+    [GtkChild] public unowned Spinner spinner;
+    [GtkChild] public unowned EventBox stack_event_box;
+    [GtkChild] public unowned MenuButton file_menu;
+
+    public ModelButton file_open_button;
+    public ModelButton file_save_button;
 
     private FileTransfer.State state;
-    private bool pointer_inside = false;
 
     public FileDefaultWidget() {
-        this.enter_notify_event.connect(on_pointer_entered);
-        this.leave_notify_event.connect(on_pointer_left);
-
-        stack_event_box.enter_notify_event.connect((event) => { pointer_inside = true; return false; });
-        mime_label.enter_notify_event.connect((event) => { pointer_inside = true; return false; });
-        stack_event_box.leave_notify_event.connect((event) => { pointer_inside = true; return false; });
-        mime_label.leave_notify_event.connect((event) => { pointer_inside = true; return false; });
+        this.enter_notify_event.connect(on_pointer_entered_event);
+        this.leave_notify_event.connect(on_pointer_left_event);
+        file_open_button = new ModelButton() { text=_("Open"), visible=true };
+        file_save_button = new ModelButton() { text=_("Save as…"), visible=true };
     }
 
     public void update_file_info(string? mime_type, FileTransfer.State state, long size) {
@@ -41,6 +41,19 @@ public class FileDefaultWidget : EventBox {
             case FileTransfer.State.COMPLETE:
                 mime_label.label = mime_description;
                 image_stack.set_visible_child_name("content_type_image");
+
+                // Create a menu
+                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu();
+                Box file_menu_box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
+                file_menu_box.add(file_open_button);
+                file_menu_box.add(file_save_button);
+                popover_menu.add(file_menu_box);
+                file_menu.popover = popover_menu;
+                file_menu.button_release_event.connect(() => {
+                    popover_menu.visible = true;
+                    return true;
+                });
+                popover_menu.closed.connect(on_pointer_left);
                 break;
             case FileTransfer.State.IN_PROGRESS:
                 mime_label.label = _("Downloading %s…").printf(get_size_string(size));
@@ -65,34 +78,33 @@ public class FileDefaultWidget : EventBox {
         }
     }
 
-    private bool on_pointer_entered(Gdk.EventCrossing event) {
-        pointer_inside = true;
-        Timeout.add(20, () => {
-            if (pointer_inside) {
-                event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
-                content_type_image.opacity = 0.7;
-                if (state == FileTransfer.State.NOT_STARTED) {
-                    image_stack.set_visible_child_name("download_image");
-                }
-            }
-            return false;
-        });
+    private bool on_pointer_entered_event(Gdk.EventCrossing event) {
+        event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
+        content_type_image.opacity = 0.7;
+        if (state == FileTransfer.State.NOT_STARTED) {
+            image_stack.set_visible_child_name("download_image");
+        }
+        if (state == FileTransfer.State.COMPLETE) {
+            file_menu.visible = true;
+        }
         return false;
     }
 
-    private bool on_pointer_left(Gdk.EventCrossing event) {
-        pointer_inside = false;
-        Timeout.add(20, () => {
-            if (!pointer_inside) {
-                event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.XTERM));
-                content_type_image.opacity = 0.5;
-                if (state == FileTransfer.State.NOT_STARTED) {
-                    image_stack.set_visible_child_name("content_type_image");
-                }
-            }
-            return false;
-        });
+    private bool on_pointer_left_event(Gdk.EventCrossing event) {
+        if (event.detail == Gdk.NotifyType.INFERIOR) return false;
+        if (file_menu.popover != null && file_menu.popover.visible) return false;
+
+        event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.XTERM));
+        on_pointer_left();
         return false;
+    }
+
+    private void on_pointer_left() {
+        content_type_image.opacity = 0.5;
+        if (state == FileTransfer.State.NOT_STARTED) {
+            image_stack.set_visible_child_name("content_type_image");
+        }
+        file_menu.visible = false;
     }
 
     private static string get_file_icon_name(string? mime_type) {

@@ -30,7 +30,7 @@ namespace Dino {
             cache_call(call);
         }
 
-        public Call? get_call_by_id(int id) {
+        public Call? get_call_by_id(int id, Conversation conversation) {
             Call? call = calls_by_db_id[id];
             if (call != null) {
                 return call;
@@ -38,14 +38,17 @@ namespace Dino {
 
             RowOption row_option = db.call.select().with(db.call.id, "=", id).row();
 
-            return create_call_from_row_opt(row_option);
+            return create_call_from_row_opt(row_option, conversation);
         }
 
-        private Call? create_call_from_row_opt(RowOption row_opt) {
+        private Call? create_call_from_row_opt(RowOption row_opt, Conversation conversation) {
             if (!row_opt.is_present()) return null;
 
             try {
                 Call call = new Call.from_row(db, row_opt.inner);
+                if (conversation.type_.is_muc_semantic()) {
+                    call.ourpart = conversation.counterpart.with_resource(call.ourpart.resourcepart);
+                }
                 cache_call(call);
                 return call;
             } catch (InvalidJidError e) {

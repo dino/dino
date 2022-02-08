@@ -96,7 +96,7 @@ public abstract interface ConversationAdditionPopulator : ConversationItemPopula
 
 public abstract interface VideoCallPlugin : Object {
 
-    public abstract bool supports(string media);
+    public abstract bool supports(string? media);
     // Video widget
     public abstract VideoCallWidget? create_widget(WidgetType type);
 
@@ -106,11 +106,13 @@ public abstract interface VideoCallPlugin : Object {
     public abstract MediaDevice? get_device(Xmpp.Xep.JingleRtp.Stream stream, bool incoming);
     public abstract void set_pause(Xmpp.Xep.JingleRtp.Stream stream, bool pause);
     public abstract void set_device(Xmpp.Xep.JingleRtp.Stream stream, MediaDevice? device);
+
+    public abstract void dump_dot();
 }
 
 public abstract interface VideoCallWidget : Object {
     public signal void resolution_changed(uint width, uint height);
-    public abstract void display_stream(Xmpp.Xep.JingleRtp.Stream stream); // TODO: Multi participant
+    public abstract void display_stream(Xmpp.Xep.JingleRtp.Stream stream, Jid jid);
     public abstract void display_device(MediaDevice device);
     public abstract void detach();
 }

@@ -27,12 +27,12 @@ public class BlockingManager : StreamInteractionModule, Object {
 
     public void block(Account account, Jid jid) {
         XmppStream stream = stream_interactor.get_stream(account);
-        stream.get_module(Xmpp.Xep.BlockingCommand.Module.IDENTITY).block(stream, new ArrayList<string>.wrap(new string[] {jid.to_string()}));
+        stream.get_module(Xmpp.Xep.BlockingCommand.Module.IDENTITY).block(stream, { jid.to_string() });
     }
 
     public void unblock(Account account, Jid jid) {
         XmppStream stream = stream_interactor.get_stream(account);
-        stream.get_module(Xmpp.Xep.BlockingCommand.Module.IDENTITY).unblock(stream, new ArrayList<string>.wrap(new string[] {jid.to_string()}));
+        stream.get_module(Xmpp.Xep.BlockingCommand.Module.IDENTITY).unblock(stream, { jid.to_string() });
     }
 
     public bool is_supported(Account account) {

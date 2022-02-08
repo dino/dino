@@ -17,8 +17,6 @@ public class Plugin : RootInterface, Object {
 
         app.stream_interactor.get_module(FileManager.IDENTITY).add_provider(file_provider);
         app.stream_interactor.get_module(FileManager.IDENTITY).add_sender(file_sender);
-
-        app.stream_interactor.get_module(ContentItemStore.IDENTITY).add_filter(new FileMessageFilter(app.db));
     }
 
     public void shutdown() {
@@ -28,8 +26,7 @@ public class Plugin : RootInterface, Object {
 
 private bool message_is_file(Database db, Entities.Message message) {
     Qlite.QueryBuilder builder = db.file_transfer.select({db.file_transfer.id}).with(db.file_transfer.info, "=", message.id.to_string());
-    Qlite.QueryBuilder builder2 = db.file_transfer.select({db.file_transfer.id}).with(db.file_transfer.info, "=", message.body);
-    return builder.count() > 0 || builder2.count() > 0;
+    return builder.count() > 0;
 }
 
 }

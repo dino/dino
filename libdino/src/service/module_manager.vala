@@ -80,6 +80,10 @@ public class ModuleManager {
             module_map[account].add(new Xep.LastMessageCorrection.Module());
             module_map[account].add(new Xep.DirectMucInvitations.Module());
             module_map[account].add(new Xep.JingleMessageInitiation.Module());
+            module_map[account].add(new Xep.JingleRawUdp.Module());
+            module_map[account].add(new Xep.Muji.Module());
+            module_map[account].add(new Xep.CallInvites.Module());
+            module_map[account].add(new Xep.Coin.Module());
             initialize_account_modules(account, module_map[account]);
         }
     }

@@ -27,12 +27,14 @@
                                 <property name="margin-bottom">30</property>
                                 <child>
                                     <object class="GtkButton" id="goto_end_button">
+                                        <property name="width-request">30</property>
+                                        <property name="height-request">30</property>
                                         <property name="vexpand">False</property>
                                         <property name="halign">end</property>
                                         <property name="valign">end</property>
                                         <property name="visible">True</property>
                                         <style>
-                                            <class name="circular"/>
+                                            <class name="circular-button"/>
                                         </style>
                                         <child>
                                             <object class="GtkImage">

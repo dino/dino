@@ -10,16 +10,14 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     private bool remote_credentials_set;
     private Map<uint8, DatagramConnection> connections = new HashMap<uint8, DatagramConnection>();
     private DtlsSrtp.Handler? dtls_srtp_handler;
+    private MainContext thread_context;
+    private MainLoop thread_loop;
 
     private class DatagramConnection : Jingle.DatagramConnection {
         private Nice.Agent agent;
         private DtlsSrtp.Handler? dtls_srtp_handler;
         private uint stream_id;
         private string? error;
-        private ulong sent;
-        private ulong sent_reported;
-        private ulong recv;
-        private ulong recv_reported;
         private ulong datagram_received_id;
 
         public DatagramConnection(Nice.Agent agent, DtlsSrtp.Handler? dtls_srtp_handler, uint stream_id, uint8 component_id) {
@@ -28,11 +26,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
             this.stream_id = stream_id;
             this.component_id = component_id;
             this.datagram_received_id = this.datagram_received.connect((datagram) => {
-                recv += datagram.length;
-                if (recv > recv_reported + 100000) {
-                    debug("Received %lu bytes via stream %u component %u", recv, stream_id, component_id);
-                    recv_reported = recv;
-                }
+                bytes_received += datagram.length;
             });
         }
 
@@ -45,16 +39,25 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
         public override void send_datagram(Bytes datagram) {
             if (this.agent != null && is_component_ready(agent, stream_id, component_id)) {
-                uint8[] encrypted_data = null;
-                if (dtls_srtp_handler != null) {
-                    encrypted_data = dtls_srtp_handler.process_outgoing_data(component_id, datagram.get_data());
-                    if (encrypted_data == null) return;
-                }
-                agent.send(stream_id, component_id, encrypted_data ?? datagram.get_data());
-                sent += datagram.length;
-                if (sent > sent_reported + 100000) {
-                    debug("Sent %lu bytes via stream %u component %u", sent, stream_id, component_id);
-                    sent_reported = sent;
+                try {
+                    if (dtls_srtp_handler != null) {
+                        uint8[] encrypted_data = dtls_srtp_handler.process_outgoing_data(component_id, datagram.get_data());
+                        if (encrypted_data == null) return;
+                        GLib.OutputVector vector = { encrypted_data, encrypted_data.length };
+                        GLib.OutputVector[] vectors = { vector };
+                        Nice.OutputMessage message = { vectors };
+                        Nice.OutputMessage[] messages = { message };
+                        agent.send_messages_nonblocking(stream_id, component_id, messages);
+                    } else {
+                        GLib.OutputVector vector = { datagram.get_data(), datagram.get_size() };
+                        GLib.OutputVector[] vectors = { vector };
+                        Nice.OutputMessage message = { vectors };
+                        Nice.OutputMessage[] messages = { message };
+                        agent.send_messages_nonblocking(stream_id, component_id, messages);
+                    }
+                    bytes_sent += datagram.length;
+                } catch (GLib.Error e) {
+                    warning("%s while send_datagram stream %u component %u", e.message, stream_id, component_id);
                 }
             }
         }
@@ -93,6 +96,14 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
         agent.controlling_mode = !incoming;
         stream_id = agent.add_stream(components);
+        thread_context = new MainContext();
+        new Thread<void*>(@"ice-thread-$stream_id", () => {
+            thread_context.push_thread_default();
+            thread_loop = new MainLoop(thread_context, false);
+            thread_loop.run();
+            thread_context.pop_thread_default();
+            return null;
+        });
 
         if (turn_ip != null) {
             for (uint8 component_id = 1; component_id <= components; component_id++) {
@@ -107,7 +118,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
 
         for (uint8 component_id = 1; component_id <= components; component_id++) {
             // We don't properly get local candidates before this call
-            agent.attach_recv(stream_id, component_id, MainContext.@default(), on_recv);
+            agent.attach_recv(stream_id, component_id, thread_context, on_recv);
         }
 
         agent.gather_candidates(stream_id);
@@ -260,8 +271,13 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         if (stream_id != this.stream_id) return;
         uint8[] decrypt_data = null;
         if (dtls_srtp_handler != null) {
-            decrypt_data = dtls_srtp_handler.process_incoming_data(component_id, data);
-            if (decrypt_data == null) return;
+            try {
+                decrypt_data = dtls_srtp_handler.process_incoming_data(component_id, data);
+                if (decrypt_data == null) return;
+            } catch (Crypto.Error e) {
+                warning("%s while on_recv stream %u component %u", e.message, stream_id, component_id);
+                return;
+            }
         }
         may_consider_ready(stream_id, component_id);
         if (connections.has_key((uint8) component_id)) {
@@ -341,5 +357,8 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         agent = null;
         dtls_srtp_handler = null;
         connections.clear();
+        if (thread_loop != null) {
+            thread_loop.quit();
+        }
     }
 }

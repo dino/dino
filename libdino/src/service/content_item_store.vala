@@ -14,7 +14,6 @@ public class ContentItemStore : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private Gee.List<ContentFilter> filters = new ArrayList<ContentFilter>();
     private HashMap<Conversation, ContentItemCollection> collection_conversations = new HashMap<Conversation, ContentItemCollection>(Conversation.hash_func, Conversation.equals_func);
 
     public static void start(StreamInteractor stream_interactor, Database db) {
@@ -53,6 +52,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
                     Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
                     if (message != null) {
                         var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
+                        message_item.time = time; // In case of message corrections, the original time should be used
                         items.add(message_item);
                     }
                     break;
@@ -68,7 +68,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
                     }
                     break;
                 case 3:
-                    Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(foreign_id);
+                    Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(foreign_id, conversation);
                     if (call != null) {
                         var call_item = new CallItem(call, conversation, row[db.content_item.id]);
                         items.add(call_item);
@@ -148,10 +148,6 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return get_items_from_query(select, conversation);
     }
 
-    public void add_filter(ContentFilter content_filter) {
-        filters.add(content_filter);
-    }
-
     public void insert_message(Message message, Conversation conversation, bool hide = false) {
         MessageItem item = new MessageItem(message, conversation, -1);
         item.id = db.add_content_item(conversation, message.time, message.local_time, 1, message.id, hide);
@@ -164,12 +160,10 @@ public class ContentItemStore : StreamInteractionModule, Object {
         select.with(db.content_item.hide, "=", false);
         foreach (Row row in select) {
             MessageItem item = new MessageItem(message, conversation, row[db.content_item.id]);
-            if (!discard(item)) {
-                if (collection_conversations.has_key(conversation)) {
-                    collection_conversations.get(conversation).insert_item(item);
-                }
-                new_item(item, conversation);
+            if (collection_conversations.has_key(conversation)) {
+                collection_conversations.get(conversation).insert_item(item);
             }
+            new_item(item, conversation);
             break;
         }
     }
@@ -177,15 +171,13 @@ public class ContentItemStore : StreamInteractionModule, Object {
     private void insert_file_transfer(FileTransfer file_transfer, Conversation conversation) {
         FileItem item = new FileItem(file_transfer, conversation, -1);
         item.id = db.add_content_item(conversation, file_transfer.time, file_transfer.local_time, 2, file_transfer.id, false);
-        if (!discard(item)) {
-            if (collection_conversations.has_key(conversation)) {
-                collection_conversations.get(conversation).insert_item(item);
-            }
-            new_item(item, conversation);
+        if (collection_conversations.has_key(conversation)) {
+            collection_conversations.get(conversation).insert_item(item);
         }
+        new_item(item, conversation);
     }
 
-    private void insert_call(Call call, Conversation conversation) {
+    private void insert_call(Call call, CallState call_state, Conversation conversation) {
         CallItem item = new CallItem(call, conversation, -1);
         item.id = db.add_content_item(conversation, call.time, call.local_time, 3, call.id, false);
         if (collection_conversations.has_key(conversation)) {
@@ -204,24 +196,11 @@ public class ContentItemStore : StreamInteractionModule, Object {
             .set(db.content_item.hide, hide)
             .perform();
     }
-
-    private bool discard(ContentItem content_item) {
-        foreach (ContentFilter filter in filters) {
-            if (filter.discard(content_item)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
 
 public interface ContentItemCollection : Object {
     public abstract void insert_item(ContentItem item);
     public abstract void remove_item(ContentItem item);
-}
-
-public interface ContentFilter : Object {
-    public abstract bool discard(ContentItem content_item);
 }
 
 public abstract class ContentItem : Object {
@@ -320,7 +299,7 @@ public class CallItem : ContentItem {
     public Conversation conversation;
 
     public CallItem(Call call, Conversation conversation, int id) {
-        base(id, TYPE, call.from, call.time, call.encryption, Message.Marked.NONE);
+        base(id, TYPE, call.proposer, call.time, call.encryption, Message.Marked.NONE);
 
         this.call = call;
         this.conversation = conversation;

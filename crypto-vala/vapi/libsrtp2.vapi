@@ -42,9 +42,11 @@ public struct Policy {
     public uint8[] key;
     public ulong num_master_keys;
     public ulong window_size;
-    public int allow_repeat_tx;
+    [CCode (ctype = "int")]
+    public bool allow_repeat_tx;
     [CCode (array_length_cname = "enc_xtn_hdr_count")]
     public int[] enc_xtn_hdr;
+    public Policy* next;
 }
 
 [CCode (cname = "srtp_crypto_policy_t")]
@@ -99,7 +101,36 @@ public enum SecurityServices {
 
 [CCode (cname = "srtp_err_status_t", cprefix = "srtp_err_status_", has_type_id = false)]
 public enum ErrorStatus {
-    ok, fail, bad_param, alloc_fail, dealloc_fail, init_fail, terminus, auth_fail, cipher_fail, replay_fail, algo_fail, no_such_op, no_ctx, cant_check, key_expired, socket_err, signal_err, nonce_bad, encode_err, semaphore_err, pfkey_err, bad_mki, pkt_idx_old, pkt_idx_adv
+    ok,
+    fail,
+    bad_param,
+    alloc_fail,
+    dealloc_fail,
+    init_fail,
+    terminus,
+    auth_fail,
+    cipher_fail,
+    replay_fail,
+    replay_old,
+
+    algo_fail,
+    no_such_op,
+    no_ctx,
+    cant_check,
+    key_expired,
+    socket_err,
+    signal_err,
+    nonce_bad,
+    read_fail,
+    write_fail,
+
+    parse_err,
+    encode_err,
+    semaphore_err,
+    pfkey_err,
+    bad_mki,
+    pkt_idx_old,
+    pkt_idx_adv
 }
 
 [CCode (cname = "srtp_log_level_t", cprefix = "srtp_log_level_", has_type_id = false)]
