@@ -8,46 +8,45 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-08 17:37+0100\n"
-"PO-Revision-Date: 2018-11-19 08:07+0000\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/dino/plugin-"
-"openpgp/es/>\n"
-"Language: es\n"
+"PO-Revision-Date: 2022-02-04 09:55+0000\n"
+"Language-Team: none\n"
+"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 #: plugins/openpgp/src/account_settings_widget.vala:64
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Key publishing disabled"
-msgstr "Publicación de claves desactivada"
+msgstr "Η δημοσίευση του κλειδιού είναι απενεργοποιημένη"
 
 #: plugins/openpgp/src/account_settings_widget.vala:60
 msgid "Error in GnuPG"
-msgstr "Error en GnuPG"
+msgstr "Σφάλμα στο GnuPG"
 
 #: plugins/openpgp/src/account_settings_widget.vala:64
 msgid "No keys available. Generate one!"
-msgstr "No hay claves disponibles. ¡Genera una!"
+msgstr "Δεν υπάρχουν διαθέσιμα κλειδιά. Δημιουργήστε ένα!"
 
 #: plugins/openpgp/src/account_settings_widget.vala:93
 msgid "Select key"
-msgstr "Seleccionar clave"
+msgstr "Επιλέξτε κλειδί"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Loading…"
-msgstr "Cargando…"
+msgstr "Φόρτωση…"
 
 #: plugins/openpgp/src/account_settings_widget.vala:106
 msgid "Querying GnuPG"
-msgstr "Consultando GnuPG"
+msgstr "Αναζήτηση στο GnuPG"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "La clave no está en la cadena de claves"
+msgstr "Το κλειδί δεν είναι στο keychain"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "Cifrado"
+msgstr "Κρυπτογράφηση"

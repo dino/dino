@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-02 12:49+0100\n"
-"PO-Revision-Date: 2021-05-02 07:32+0000\n"
+"POT-Creation-Date: 2022-02-08 17:37+0100\n"
+"PO-Revision-Date: 2022-02-04 09:55+0000\n"
 "Language-Team: none\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
@@ -27,7 +27,7 @@ msgstr "Το αρχείο υπερβαίνει το μέγιστο μέγεθο�
 #: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
 #: main/src/ui/util/helper.vala:134
 msgid "Me"
-msgstr "Μου"
+msgstr "Εγώ"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
@@ -54,42 +54,42 @@ msgid "File received"
 msgstr "Το αρχείο ελήφθη"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
-#: main/src/ui/conversation_content_view/call_widget.vala:149
+#: main/src/ui/conversation_content_view/call_widget.vala:166
 msgid "Outgoing call"
-msgstr ""
+msgstr "Εξερχόμενη κλήση"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:113
-#: main/src/ui/conversation_content_view/call_widget.vala:119
-#: main/src/ui/conversation_content_view/call_widget.vala:149
+#: main/src/ui/conversation_content_view/call_widget.vala:128
+#: main/src/ui/conversation_content_view/call_widget.vala:166
 msgid "Incoming call"
-msgstr ""
+msgstr "Εισερχόμενη κλήση"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
 #, no-c-format
 msgid "%b %d"
-msgstr ""
+msgstr "%d %b"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:346
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:117
 msgid "Yesterday"
-msgstr "Χθες"
+msgstr "Εχθές"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:349
-#: main/src/ui/conversation_content_view/call_widget.vala:156
+#: main/src/ui/conversation_content_view/call_widget.vala:173
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:303
 #, no-c-format
 msgid "%H∶%M"
-msgstr ""
+msgstr "%H∶%M"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:350
-#: main/src/ui/conversation_content_view/call_widget.vala:156
+#: main/src/ui/conversation_content_view/call_widget.vala:173
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:304
 #, no-c-format
 msgid "%l∶%M %p"
-msgstr ""
+msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:353
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:308
@@ -132,7 +132,7 @@ msgstr "Ξεκινήστε ιδιωτική συνομιλία"
 
 #: main/src/ui/occupant_menu/view.vala:91
 msgid "Kick"
-msgstr ""
+msgstr "Αποβολή"
 
 #: main/src/ui/occupant_menu/view.vala:97
 msgid "Grant write permission"
@@ -144,7 +144,7 @@ msgstr "Ανάκληση άδειας εγγραφής"
 
 #: main/src/ui/occupant_menu/view.vala:145
 msgid "Invite to Conference"
-msgstr ""
+msgstr "Πρόσκληση σε Συνεδρία"
 
 #: main/src/ui/conversation_view_controller.vala:219
 msgid "Select file"
@@ -153,7 +153,7 @@ msgstr "Επιλέξτε αρχείο"
 #: main/src/ui/conversation_view_controller.vala:219
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
-msgstr ""
+msgstr "Επιλογή"
 
 #: main/src/ui/conversation_view_controller.vala:219
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
@@ -169,11 +169,11 @@ msgstr "Ακύρωση"
 #: main/src/ui/util/helper.vala:118
 #, c-format
 msgid "%s from %s"
-msgstr ""
+msgstr "%s από %s"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:179
 msgid "This conference does not allow you to send messages."
-msgstr "Αυτό το συνέδριο δεν σας επιτρέπει να στέλνετε μηνύματα."
+msgstr "Αυτή η συνεδρία δεν σας επιτρέπει να στέλνετε μηνύματα."
 
 #: main/src/ui/chat_input/chat_input_controller.vala:179
 msgid "Request permission"
@@ -181,15 +181,15 @@ msgstr "Ζητήστε άδεια"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:19
 msgid "Start call"
-msgstr ""
+msgstr "Έναρξη κλήσης"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:37
 msgid "Audio call"
-msgstr ""
+msgstr "Ηχητική κλήση"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:38
 msgid "Video call"
-msgstr ""
+msgstr "Βίντεο κλήση"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
@@ -201,48 +201,48 @@ msgid "Members"
 msgstr "Μέλη"
 
 #: main/src/ui/call_window/participant_widget.vala:104
-#: main/src/ui/conversation_content_view/call_widget.vala:126
+#: main/src/ui/conversation_content_view/call_widget.vala:143
 msgid "Calling…"
-msgstr ""
+msgstr "Κλήση…"
 
 #: main/src/ui/call_window/participant_widget.vala:106
 msgid "Ringing…"
-msgstr ""
+msgstr "Κουδούνισμα…"
 
 #: main/src/ui/call_window/participant_widget.vala:108
 #: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
-msgstr ""
+msgstr "Σύνδεση…"
+
+#: main/src/ui/call_window/call_window.vala:188
+#, c-format
+msgid "%s ended the call"
+msgstr "%s τερμάτισε την κλήση"
 
 #: main/src/ui/call_window/call_window.vala:190
 #, c-format
-msgid "%s ended the call"
-msgstr ""
-
-#: main/src/ui/call_window/call_window.vala:192
-#, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s απέρριψε την κλήση"
 
 #: main/src/ui/call_window/call_window_controller.vala:101
 msgid "Invite to Call"
-msgstr ""
+msgstr "Πρόσκληση σε Κλήση"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
 #: main/data/shortcuts.ui:17 main/data/conversation_list_titlebar.ui:16
 msgid "Start Conversation"
-msgstr ""
+msgstr "Έναρξη Συνομιλίας"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
-msgstr ""
+msgstr "Έναρξη"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
 #: main/src/ui/application.vala:307 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
-msgstr ""
+msgstr "Συμμετοχή σε Ομαδική συνομιλία"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:118
@@ -250,60 +250,60 @@ msgstr ""
 #: main/data/manage_accounts/add_account_dialog.ui:410
 #: main/data/manage_accounts/add_account_dialog.ui:490
 msgid "Next"
-msgstr ""
+msgstr "Επόμενο"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
 #: main/src/ui/application.vala:307
 msgid "Join"
-msgstr ""
+msgstr "Συμμετοχή"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:147
 #: main/data/manage_accounts/add_account_dialog.ui:175
 #: main/data/manage_accounts/add_account_dialog.ui:267
 msgid "Back"
-msgstr ""
+msgstr "Πίσω"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Joining…"
-msgstr ""
+msgstr "Είσοδος…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:170
 msgid "Password required to enter room"
-msgstr ""
+msgstr "Απαιτείται κωδικός πρόσβασης για την είσοδο στο δωμάτιο συνομιλίας"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Banned from joining or creating conference"
-msgstr ""
+msgstr "Απαγορεύεται η συμμετοχή ή η δημιουργία συνεδρίου"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:177
 msgid "Room does not exist"
-msgstr ""
+msgstr "Το δωμάτιο συζήτησης δεν υπάρχει"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:179
 msgid "Not allowed to create room"
-msgstr ""
+msgstr "Δεν επιτρέπεται η δημιουργία δωματίου συνομιλίας"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:181
 msgid "Members-only room"
-msgstr ""
+msgstr "Είσοδος μόνο για Μέλη"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:184
 msgid "Choose a different nick"
-msgstr ""
+msgstr "Επιλέξτε ένα διαφορετικό ψευδώνυμο"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Too many occupants in room"
-msgstr ""
+msgstr "Πάρα πολλοί χρήστες στο δωμάτιο συνομιλίας"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
-#: main/src/ui/notifier_gnotifications.vala:101
-#: main/src/ui/notifier_freedesktop.vala:182
+#: main/src/ui/notifier_gnotifications.vala:104
+#: main/src/ui/notifier_freedesktop.vala:185
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Δεν ήταν δυνατή η σύνδεση στο %s"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:192
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
@@ -311,200 +311,220 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
 #: main/src/ui/manage_accounts/add_account_dialog.vala:397
 msgid "Invalid address"
-msgstr ""
+msgstr "Μη έγκυρη διεύθυνση"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
-msgstr ""
+msgstr "Προσθήκη"
 
 #: main/src/ui/application.vala:213 main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Συντομεύσεις πληκτρολογίου"
 
 #: main/src/ui/application.vala:283 main/data/menu_app.ui:21
 msgid "About Dino"
-msgstr ""
+msgstr "Σχετικά με το Dino"
 
 #: main/src/ui/global_search.vala:147
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i αποτέλεσμα αναζήτησης"
+msgstr[1] "%i αποτελέσματα αναζήτησης"
 
 #: main/src/ui/global_search.vala:174
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "Στο %s"
 
 #: main/src/ui/global_search.vala:174
 #, c-format
 msgid "With %s"
+msgstr "Με %s"
+
+#: main/src/ui/notifier_gnotifications.vala:70
+#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/conversation_content_view/call_widget.vala:128
+msgid "Incoming video call"
+msgstr "Εισερχόμενη βιντεοκλήση"
+
+#: main/src/ui/notifier_gnotifications.vala:72
+#: main/src/ui/notifier_freedesktop.vala:115
+#: main/src/ui/conversation_content_view/call_widget.vala:130
+msgid "Incoming video group call"
 msgstr ""
 
-#: main/src/ui/notifier_gnotifications.vala:77
-#: main/src/ui/notifier_freedesktop.vala:120
-#: main/src/ui/notifier_freedesktop.vala:217 main/data/call_widget.ui:80
+#: main/src/ui/notifier_gnotifications.vala:72
+#: main/src/ui/notifier_freedesktop.vala:115
+#: main/src/ui/conversation_content_view/call_widget.vala:130
+msgid "Incoming group call"
+msgstr ""
+
+#: main/src/ui/notifier_gnotifications.vala:80
+#: main/src/ui/notifier_freedesktop.vala:123
+#: main/src/ui/notifier_freedesktop.vala:220 main/data/call_widget.ui:80
 msgid "Reject"
-msgstr ""
+msgstr "Απόρριψη"
 
-#: main/src/ui/notifier_gnotifications.vala:78
-#: main/src/ui/notifier_gnotifications.vala:94
-#: main/src/ui/notifier_gnotifications.vala:128
-#: main/src/ui/notifier_gnotifications.vala:144
-#: main/src/ui/notifier_freedesktop.vala:120
-#: main/src/ui/notifier_freedesktop.vala:158
-#: main/src/ui/notifier_freedesktop.vala:217
-#: main/src/ui/notifier_freedesktop.vala:250
+#: main/src/ui/notifier_gnotifications.vala:81
+#: main/src/ui/notifier_gnotifications.vala:97
+#: main/src/ui/notifier_gnotifications.vala:131
+#: main/src/ui/notifier_gnotifications.vala:147
+#: main/src/ui/notifier_freedesktop.vala:123
+#: main/src/ui/notifier_freedesktop.vala:161
+#: main/src/ui/notifier_freedesktop.vala:220
+#: main/src/ui/notifier_freedesktop.vala:253
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/data/call_widget.ui:89
 msgid "Accept"
-msgstr ""
+msgstr "Αποδοχή"
 
-#: main/src/ui/notifier_gnotifications.vala:88
-#: main/src/ui/notifier_freedesktop.vala:152
+#: main/src/ui/notifier_gnotifications.vala:91
+#: main/src/ui/notifier_freedesktop.vala:155
 msgid "Subscription request"
-msgstr ""
+msgstr "Αίτημα συνδρομής"
 
-#: main/src/ui/notifier_gnotifications.vala:95
-#: main/src/ui/notifier_gnotifications.vala:127
-#: main/src/ui/notifier_gnotifications.vala:143
-#: main/src/ui/notifier_freedesktop.vala:158
-#: main/src/ui/notifier_freedesktop.vala:250
+#: main/src/ui/notifier_gnotifications.vala:98
+#: main/src/ui/notifier_gnotifications.vala:130
+#: main/src/ui/notifier_gnotifications.vala:146
+#: main/src/ui/notifier_freedesktop.vala:161
+#: main/src/ui/notifier_freedesktop.vala:253
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
-msgstr ""
+msgstr "Απόρριψη"
 
-#: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:208
+#: main/src/ui/notifier_gnotifications.vala:120
+#: main/src/ui/notifier_freedesktop.vala:211
 #, c-format
 msgid "Invitation to %s"
-msgstr ""
+msgstr "Πρόσκληση σε %s"
 
-#: main/src/ui/notifier_gnotifications.vala:118
-#: main/src/ui/notifier_freedesktop.vala:209
+#: main/src/ui/notifier_gnotifications.vala:121
+#: main/src/ui/notifier_freedesktop.vala:212
 #, c-format
 msgid "%s invited you to %s"
-msgstr ""
+msgstr "%s σας προσκάλεσε στο %s"
 
-#: main/src/ui/notifier_gnotifications.vala:135
-#: main/src/ui/notifier_freedesktop.vala:241
+#: main/src/ui/notifier_gnotifications.vala:138
+#: main/src/ui/notifier_freedesktop.vala:244
 msgid "Permission request"
-msgstr ""
+msgstr "Αίτημα άδειας"
 
-#: main/src/ui/notifier_gnotifications.vala:136
-#: main/src/ui/notifier_freedesktop.vala:242
+#: main/src/ui/notifier_gnotifications.vala:139
+#: main/src/ui/notifier_freedesktop.vala:245
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "%s ζητά την άδεια να γράψει σε %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:12
 #: main/src/ui/contact_details/blocking_provider.vala:31
 #: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
 msgid "Settings"
-msgstr ""
+msgstr "Ρυθμίσεις"
 
 #: main/src/ui/contact_details/settings_provider.vala:13
 msgid "Local Settings"
-msgstr ""
+msgstr "Τοπικές Ρυθμίσεις"
 
 #: main/src/ui/contact_details/settings_provider.vala:28
 #: main/data/settings_dialog.ui:22
 msgid "Send typing notifications"
-msgstr ""
+msgstr "Αποστολή ειδοποιήσεων πληκτρολόγησης"
 
 #: main/src/ui/contact_details/settings_provider.vala:33
 #: main/data/settings_dialog.ui:34
 msgid "Send read receipts"
-msgstr ""
+msgstr "Αποστολή αποδείξεων ανάγνωσης"
 
 #: main/src/ui/contact_details/settings_provider.vala:38
 #: main/src/ui/contact_details/settings_provider.vala:47
 msgid "Notifications"
-msgstr ""
+msgstr "Ειδοποιήσεις"
 
 #: main/src/ui/contact_details/settings_provider.vala:83
 #: main/src/ui/contact_details/settings_provider.vala:123
 #: main/src/ui/contact_details/settings_provider.vala:125
 msgid "On"
-msgstr ""
+msgstr "Ενεργό"
 
 #: main/src/ui/contact_details/settings_provider.vala:85
 #: main/src/ui/contact_details/settings_provider.vala:123
 #: main/src/ui/contact_details/settings_provider.vala:126
 msgid "Off"
-msgstr ""
+msgstr "Ανενεργό"
 
 #: main/src/ui/contact_details/settings_provider.vala:87
 msgid "Only when mentioned"
-msgstr ""
+msgstr "Μόνο όταν υπάρξει αναφορά σε εμένα"
 
 #: main/src/ui/contact_details/settings_provider.vala:89
 #: main/src/ui/contact_details/settings_provider.vala:124
 #, c-format
 msgid "Default: %s"
-msgstr ""
+msgstr "Προεπιλογή: %s"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request"
-msgstr ""
+msgstr "Αίτηση"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Permissions"
-msgstr ""
+msgstr "Άδειες"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "Ζητήστε άδεια για αποστολή μηνυμάτων"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
-msgstr ""
+msgstr "Λεπτομέρειες Συνεδρίου"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr ""
+msgstr "Στοιχεία Επικοινωνίας"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr ""
+msgstr "Αποκλεισμός"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
 msgstr ""
+"Η επικοινωνία και οι ενημερώσεις κατάστασης προς οποιαδήποτε κατεύθυνση "
+"είναι αποκλεισμένες"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
-msgstr ""
+msgstr "Όνομα του δωματίου συνομιλίας"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:53
 msgid "Description of the room"
-msgstr ""
+msgstr "Περιγραφή του δωματίου συνομιλίας"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Persistent"
-msgstr ""
+msgstr "Διηνεκές"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:57
 msgid "The room will persist after the last occupant leaves"
-msgstr ""
+msgstr "Το δωμάτιο θα παραμείνει μετά την αποχώρηση του τελευταίου χρήστη"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:60
 msgid "Publicly searchable"
-msgstr ""
+msgstr "Δημόσια αναζητήσιμο"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:63
 msgid "Occupants may change the subject"
-msgstr ""
+msgstr "Οι χρήστες έχουν τη δυνατότητα να αλλάξουν θέμα"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:66
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "Άδεια θέασης JIDs"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:67
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "Ποιος επιτρέπεται να δει τα JIDs των χρηστών;"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
 #: main/data/add_conversation/conference_details_fragment.ui:175
@@ -512,424 +532,425 @@ msgstr ""
 #: main/data/manage_accounts/dialog.ui:170
 #: main/data/manage_accounts/add_account_dialog.ui:211
 msgid "Password"
-msgstr ""
+msgstr "Κωδικός πρόσβασης"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:71
 msgid "A password to restrict access to the room"
 msgstr ""
+"Ένας κωδικός πρόσβασης για τον περιορισμό της πρόσβασης στο δωμάτιο "
+"συνομιλίας"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:74
 msgid "Moderated"
-msgstr ""
+msgstr "Εποπτευόμενο"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:75
 msgid "Only occupants with voice may send messages"
-msgstr ""
+msgstr "Μόνο οι χρήστες με \"φωνή\" μπορούν να στέλνουν μηνύματα"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:78
 msgid "Members only"
-msgstr ""
+msgstr "Μόνο για μέλη"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:79
 msgid "Only members may enter the room"
-msgstr ""
+msgstr "Μόνο μέλη μπορούν να εισέλθουν στην δωμάτιο συνομιλίας"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:82
 msgid "Message history"
-msgstr ""
+msgstr "Ιστορικό μηνυμάτων"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:83
 msgid "Maximum amount of backlog issued by the room"
-msgstr ""
+msgstr "Μέγιστο ιστορικό που εκδίδεται από το δωμάτιο συνομιλίας"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:89
 msgid "Room Configuration"
-msgstr ""
+msgstr "Διαμόρφωση δωματίου συνομιλίας"
 
 #: main/src/ui/main_window.vala:198
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "Καλώς ήρθατε στο Dino!"
 
 #: main/src/ui/main_window.vala:199
 msgid "Sign in or create an account to get started."
-msgstr ""
+msgstr "Συνδεθείτε ή δημιουργήστε έναν λογαριασμό για να ξεκινήσετε."
 
 #: main/src/ui/main_window.vala:200
 msgid "Set up account"
-msgstr ""
+msgstr "Ρύθμιση λογαριασμού"
 
 #: main/src/ui/main_window.vala:208
 msgid "No active accounts"
-msgstr ""
+msgstr "Δεν υπάρχουν ενεργοί λογαριασμοί"
 
 #: main/src/ui/main_window.vala:209
 msgid "Manage accounts"
-msgstr ""
-
-#: main/src/ui/notifier_freedesktop.vala:113
-#: main/src/ui/conversation_content_view/call_widget.vala:119
-msgid "Incoming video call"
-msgstr ""
-
-#: main/src/ui/notifier_freedesktop.vala:186
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr ""
+msgstr "Διαχείριση λογαριασμών"
 
 #: main/src/ui/notifier_freedesktop.vala:189
+#: main/src/ui/manage_accounts/dialog.vala:232
+msgid "Wrong password"
+msgstr "Λάθος κωδικός"
+
+#: main/src/ui/notifier_freedesktop.vala:192
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
-msgstr ""
+msgstr "Μη έγκυρο πιστοποιητικό TLS"
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
 msgid "Remove account %s?"
-msgstr ""
+msgstr "Αφαίρεση λογαριασμού %s;"
 
 #: main/src/ui/manage_accounts/dialog.vala:128
 msgid "Remove"
-msgstr ""
+msgstr "Αφαίρεση"
 
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select avatar"
-msgstr ""
+msgstr "Επιλογή avatar"
 
 #: main/src/ui/manage_accounts/dialog.vala:159
 msgid "Images"
-msgstr ""
+msgstr "Εικόνες"
 
 #: main/src/ui/manage_accounts/dialog.vala:163
 msgid "All files"
-msgstr ""
+msgstr "Όλα τα αρχεία"
 
 #: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connected"
-msgstr ""
+msgstr "Συνδεδεμένο"
 
 #: main/src/ui/manage_accounts/dialog.vala:223
 msgid "Disconnected"
-msgstr ""
+msgstr "Ασύνδετο"
 
 #: main/src/ui/manage_accounts/dialog.vala:237
 #: main/src/ui/manage_accounts/dialog.vala:239
 msgid "Error"
-msgstr ""
+msgstr "Λάθος"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
 msgid "Add Account"
-msgstr ""
+msgstr "Προσθήκη Λογαριασμού"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr ""
+msgstr "Ο διακομιστής δεν μπόρεσε να αποδείξει ότι είναι %s."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:155
 msgid "Its security certificate is not trusted by your operating system."
 msgstr ""
+"Το πιστοποιητικό ασφαλείας του δεν είναι αξιόπιστο από το λειτουργικό σας "
+"σύστημα."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:157
 msgid "Its security certificate is issued to another domain."
-msgstr ""
+msgstr "Το πιστοποιητικό ασφαλείας του έχει εκδοθεί για διαφορετικό domain."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:159
 msgid "Its security certificate will only become valid in the future."
-msgstr ""
+msgstr "Το πιστοποιητικό ασφαλείας του θα είναι έγκυρο μόνο στο μέλλον."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:161
 msgid "Its security certificate is expired."
-msgstr ""
+msgstr "Το πιστοποιητικό ασφαλείας του έχει λήξει."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "Συνδεθείτε στο %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:224
 #, c-format
 msgid "You can now use the account %s."
-msgstr ""
+msgstr "Τώρα μπορείτε να χρησιμοποιήσετε τον λογαριασμό %s."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Wrong username or password"
-msgstr ""
+msgstr "Λάθος όνομα χρήστη ή κωδικός"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:284
 msgid "Something went wrong"
-msgstr ""
+msgstr "Κάτι πήγε στραβά"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:327
 msgid "No response from server"
-msgstr ""
+msgstr "Καμία απάντηση από τον διακομιστή"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:333
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "Εγγραφή στο %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:336
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "Ο διακομιστής απαιτεί την εγγραφή μέσω ενός ιστότοπου"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:338
 msgid "Open website"
-msgstr ""
+msgstr "Άνοιγμα ιστότοπου"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:359
 msgid "Register"
-msgstr ""
+msgstr "Εγγραφή"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:361
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "Ελέγξτε %s για πληροφορίες σχετικά με τον τρόπο εγγραφής"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:194
 msgid "Message too long"
-msgstr ""
+msgstr "Το μήνυμα είναι πολύ μεγάλο"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:220
 msgid "edited"
-msgstr ""
+msgstr "διόρθωση"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:229
 msgid "pending…"
-msgstr ""
+msgstr "εκκρεμεί…"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:242
 msgid "delivery failed"
-msgstr ""
+msgstr "αποτυχία παράδοσης"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr ""
+msgstr "%s, %s και %i άλλοι πληκτρολογούν…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:112
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s και %s πληκτρολογούν…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:114
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s και %s πληκτρολογούν…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:116
 #, c-format
 msgid "%s is typing…"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:133
-msgid "Call started"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:135
-#, c-format
-msgid "Started %s ago"
-msgstr ""
+msgstr "%s πληκτρολογεί…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:150
+msgid "Call started"
+msgstr "Η κλήση ξεκίνησε"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:152
+#, c-format
+msgid "Started %s ago"
+msgstr "Ξεκίνησε πριν από %s"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:167
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "Διαχειριστήκατε αυτήν την κλήση σε άλλη συσκευή"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:155
+#: main/src/ui/conversation_content_view/call_widget.vala:172
 msgid "Call ended"
-msgstr ""
+msgstr "Τέλος κλήσης"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:158
+#: main/src/ui/conversation_content_view/call_widget.vala:175
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "Τερματισμός στις %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:160
+#: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "Διήρκεσε %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:164
+#: main/src/ui/conversation_content_view/call_widget.vala:181
 msgid "Call missed"
-msgstr ""
+msgstr "Αναπάντητη κλήση"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:166
+#: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "You missed this call"
-msgstr ""
+msgstr "Χάσατε αυτήν την κλήση"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:169
+#: main/src/ui/conversation_content_view/call_widget.vala:186
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s έχασε αυτήν την κλήση"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:174
+#: main/src/ui/conversation_content_view/call_widget.vala:191
 msgid "Call declined"
-msgstr ""
+msgstr "Η κλήση απορρίφθηκε"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:176
+#: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "You declined this call"
-msgstr ""
+msgstr "Απορρίψατε αυτήν την κλήση"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:179
+#: main/src/ui/conversation_content_view/call_widget.vala:196
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s απέρριψε αυτήν την κλήση"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:184
+#: main/src/ui/conversation_content_view/call_widget.vala:201
 msgid "Call failed"
-msgstr ""
+msgstr "Αποτυχία κλήσης"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:208
+#: main/src/ui/conversation_content_view/call_widget.vala:225
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i ώρα"
+msgstr[1] "%i ώρες"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:215
+#: main/src/ui/conversation_content_view/call_widget.vala:232
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i λεπτό"
+msgstr[1] "%i λεπτά"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:222
+#: main/src/ui/conversation_content_view/call_widget.vala:239
 msgid "a few seconds"
-msgstr ""
+msgstr "μερικά δευτερόλεπτα"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:188
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr ""
+msgstr "Μη κρυπτογραφημένο"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:232
 msgid "Unable to send message"
-msgstr ""
+msgstr "Δεν είναι δυνατή η αποστολή μηνύματος"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:291
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr ""
+msgstr "%x, %H∶%M"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:292
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr ""
+msgstr "%x, %l∶%M %p"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:295
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr ""
+msgstr "%d %b, %H∶%M"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:296
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr ""
+msgstr "%d %b, %l∶%M %p"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:299
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr ""
+msgstr "%a, %H∶%M"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:300
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr ""
+msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/conversation_content_view/file_widget.vala:175
 #: main/src/ui/conversation_content_view/file_default_widget.vala:29
 msgid "Save as…"
-msgstr ""
+msgstr "Αποθήκευση ως…"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr ""
+msgstr "Αυτή η επαφή θα ήθελε να σας προσθέσει στη λίστα επαφών της"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:28
 msgid "Open"
-msgstr ""
+msgstr "Άνοιγμα"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:59
 #, c-format
 msgid "Downloading %s…"
-msgstr ""
+msgstr "Λήψη %s…"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:65
 #, c-format
 msgid "%s offered: %s"
-msgstr ""
+msgstr "%s για μεταφόρτωση: %s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "File offered: %s"
-msgstr ""
+msgstr "Αρχείο για μεταφόρτωση: %s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:69
 msgid "File offered"
-msgstr ""
+msgstr "Αρχείο για μεταφόρτωση"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 msgid "File transfer failed"
-msgstr ""
+msgstr "Η μεταφορά αρχείων απέτυχε"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:111
 msgid "Today"
-msgstr ""
+msgstr "Σήμερα"
 
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:124
 msgid "%a, %b %d"
-msgstr ""
+msgstr "%a, %d %b"
 
 #: main/data/chat_input.ui:22 main/data/file_send_overlay.ui:28
 #: main/data/shortcuts.ui:44
 msgid "Send a file"
-msgstr ""
+msgstr "Αποστολή αρχείου"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
-msgstr ""
+msgstr "Ενημέρωση μηνύματος"
 
 #: main/data/unified_main_content.ui:48
 msgid "Click here to start a conversation or join a channel."
 msgstr ""
+"Κάντε κλικ εδώ για να ξεκινήσετε μια συνομιλία ή να εισέλθετε σε ένα δωμάτιο "
+"ομαδικής συνομιλίας."
 
 #: main/data/unified_main_content.ui:100
 msgid "You have no open chats"
-msgstr ""
+msgstr "Δεν έχετε ανοιχτές συνομιλίες"
 
 #: main/data/add_conversation/conference_details_fragment.ui:19
 #: main/data/add_conversation/add_groupchat_dialog.ui:49
 #: main/data/add_conversation/add_contact_dialog.ui:49
 msgid "Account"
-msgstr ""
+msgstr "Λογαριασμός"
 
 #: main/data/add_conversation/conference_details_fragment.ui:123
 #: main/data/add_conversation/add_groupchat_dialog.ui:120
 msgid "Nick"
-msgstr ""
+msgstr "Υποκοριστικό (nickname)"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:175
 #: main/data/add_conversation/add_contact_dialog.ui:102
 msgid "Alias"
-msgstr ""
+msgstr "Ψευδώνυμο"
 
 #: main/data/add_conversation/add_contact_dialog.ui:8
 msgid "Add Contact"
-msgstr ""
+msgstr "Προσθήκη Επαφής"
 
 #: main/data/settings_dialog.ui:46
 msgid "Notify when a new message arrives"
-msgstr ""
+msgstr "Ειδοποίηση όταν έρχεται νέο μήνυμα"
 
 #: main/data/settings_dialog.ui:58
 msgid "Convert smileys to emojis"
-msgstr ""
+msgstr "Μετατροπή smileys σε emojis"
 
 #: main/data/settings_dialog.ui:70
 msgid "Check spelling"
-msgstr ""
+msgstr "Ορθογραφικός έλεγχος"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
-msgstr ""
+msgstr "Σύγχρονος XMPP Chat Client"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -937,6 +958,10 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Το Dino είναι ένας σύγχρονος πελάτης συνομιλίας ανοιχτού κώδικα για desktop "
+"υπολογιστές. Επικεντρώνεται στην παροχή μιας καθαρής και αξιόπιστης "
+"εμπειρίας Jabber/XMPP έχοντας παράλληλα υπόψη την προστασία των προσωπικών "
+"δεδομένων σας."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -944,106 +969,111 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"Υποστηρίζει κρυπτογράφηση από άκρο σε άκρο με OMEMO και OpenPGP και "
+"επιτρέπει την ρύθμιση λειτουργιών που σχετίζονται με το απόρρητο, όπως "
+"αποδείξεις ανάγνωσης και ειδοποιήσεις πληκτρολόγησης."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"Το Dino ανακτά το ιστορικό από τον διακομιστή και συγχρονίζει τα μηνύματα με "
+"άλλες συσκευές."
 
 #: main/data/global_search.ui:37
 msgid "No active search"
-msgstr ""
+msgstr "Δεν υπάρχει ενεργή αναζήτηση"
 
 #: main/data/global_search.ui:52
 msgid "Type to start a search"
-msgstr ""
+msgstr "Πληκτρολογήστε για να ξεκινήσει μια αναζήτηση"
 
 #: main/data/global_search.ui:85
 msgid "No matching messages"
-msgstr ""
+msgstr "Δεν βρέθηκαν ανάλογα μηνύματα"
 
 #: main/data/global_search.ui:100
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Ελέγξτε την ορθογραφία ή προσπαθήστε να αφαιρέσετε φίλτρα"
 
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
-msgstr ""
+msgstr "Αποστολή"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
-msgstr ""
+msgstr "Γενικά"
 
 #: main/data/shortcuts.ui:32
 msgid "Conversation"
-msgstr ""
+msgstr "Συνομιλία"
 
 #: main/data/shortcuts.ui:52
 msgid "Navigation"
-msgstr ""
+msgstr "Πλοήγηση"
 
 #: main/data/shortcuts.ui:57
 msgid "Jump to next conversation"
-msgstr ""
+msgstr "Μετάβαση στην επόμενη συνομιλία"
 
 #: main/data/shortcuts.ui:64
 msgid "Jump to previous conversation"
-msgstr ""
+msgstr "Μετάβαση στην προηγούμενη συνομιλία"
 
 #: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:9
 msgid "Accounts"
-msgstr ""
+msgstr "Λογαριασμοί"
 
 #: main/data/manage_accounts/dialog.ui:200
 msgid "Local alias"
-msgstr ""
+msgstr "Τοπικό ψευδώνυμο"
 
 #: main/data/manage_accounts/dialog.ui:255
 msgid "No accounts configured"
-msgstr ""
+msgstr "Δεν έχουν διαμορφωθεί λογαριασμοί"
 
 #: main/data/manage_accounts/dialog.ui:266
 msgid "Add an account"
-msgstr ""
+msgstr "Προσθήκη λογαριασμού"
 
 #: main/data/manage_accounts/add_account_dialog.ui:31
 msgid "Sign in"
-msgstr ""
+msgstr "Σύνδεση"
 
 #: main/data/manage_accounts/add_account_dialog.ui:78
 #: main/data/manage_accounts/add_account_dialog.ui:328
 msgid "Create account"
-msgstr ""
+msgstr "Δημιουργία λογαριασμού"
 
 #: main/data/manage_accounts/add_account_dialog.ui:153
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "Δεν ήταν δυνατή η δημιουργία ασφαλούς σύνδεσης"
 
 #: main/data/manage_accounts/add_account_dialog.ui:288
 msgid "Connect"
-msgstr ""
+msgstr "Σύνδεση"
 
 #: main/data/manage_accounts/add_account_dialog.ui:340
 msgid "Choose a public server"
-msgstr ""
+msgstr "Επιλέξτε έναν δημόσιο διακομιστή"
 
 #: main/data/manage_accounts/add_account_dialog.ui:369
 msgid "Or specify a server address"
-msgstr ""
+msgstr "Ή καθορίστε μια διεύθυνση διακομιστή"
 
 #: main/data/manage_accounts/add_account_dialog.ui:389
 msgid "Sign in instead"
-msgstr ""
+msgstr "Αντ' αυτού, συνδεθείτε"
 
 #: main/data/manage_accounts/add_account_dialog.ui:470
 msgid "Pick another server"
-msgstr ""
+msgstr "Επιλέξτε άλλο διακομιστή"
 
 #: main/data/manage_accounts/add_account_dialog.ui:542
 msgid "All set up!"
-msgstr ""
+msgstr "Όλα έτοιμα!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:578
 msgid "Finish"
-msgstr ""
+msgstr "Ολοκλήρωση"
