@@ -318,8 +318,6 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             }
             if (our_ssrc != buffer_ssrc) {
                 warning("Sending RTP %s buffer seq %u with SSRC %u when our ssrc is %u", media, buffer_seq, buffer_ssrc, our_ssrc);
-            } else {
-                debug("Sending RTP %s buffer seq %u with SSRC %u", media, buffer_seq, buffer_ssrc);
             }
         }
 

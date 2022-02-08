@@ -1,6 +1,14 @@
 using Xmpp.Xep.JingleRtp;
 using Gee;
 
+public enum Dino.Plugins.Rtp.DeviceProtocol {
+    OTHER,
+    PIPEWIRE,
+    V4L2,
+    PULSEAUDIO,
+    ALSA
+}
+
 public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     private const int[] common_widths = {320, 360, 400, 480, 640, 960, 1280, 1920, 2560, 3840};
 
@@ -8,10 +16,10 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     public CodecUtil codec_util { get { return plugin.codec_util; } }
     public Gst.Device device { get; private set; }
 
-    public string id { get { return device_name; }}
-    public string display_name { get { return device_display_name; }}
-    public string detail_name { get {
-        return device.properties.get_string("alsa.card_name") ?? device.properties.get_string("alsa.id") ?? id;
+    public string id { owned get { return device_name; }}
+    public string display_name { owned get { return device_display_name; }}
+    public string detail_name { owned get {
+        return device.properties.get_string("alsa.card_name") ?? device.properties.get_string("alsa.name") ?? device.properties.get_string("alsa.id") ?? device.properties.get_string("api.v4l2.cap.card") ?? id;
     }}
 
     public Gst.Pipeline pipe { get { return plugin.pipe; }}
@@ -26,6 +34,18 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     }}
     public bool is_source { get { return device.has_classes("Source"); }}
     public bool is_sink { get { return device.has_classes("Sink"); }}
+    public bool is_monitor { get { return device.properties.get_string("device.class") == "monitor" || (protocol == DeviceProtocol.PIPEWIRE && device.has_classes("Stream")); } }
+    public bool is_default { get {
+        bool ret;
+        device.properties.get_boolean("is-default", out ret);
+        return ret;
+    }}
+    public DeviceProtocol protocol { get {
+        if (device.properties.has_name("pulse-proplist")) return DeviceProtocol.PULSEAUDIO;
+        if (device.properties.has_name("pipewire-proplist")) return DeviceProtocol.PIPEWIRE;
+        if (device.properties.has_name("v4l2deviceprovider")) return DeviceProtocol.V4L2;
+        return DeviceProtocol.OTHER;
+    }}
 
     private string device_name;
     private string device_display_name;
