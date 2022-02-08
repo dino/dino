@@ -107,10 +107,13 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         }
     }
 
-    public async void notify_call(Call call, Conversation conversation, bool video, string conversation_display_name) {
+    public async void notify_call(Call call, Conversation conversation, bool video, bool multiparty, string conversation_display_name) {
         debug("[%s] Call notification", call.account.bare_jid.to_string());
         string summary = Markup.escape_text(conversation_display_name);
         string body =  video ? _("Incoming video call") : _("Incoming call");
+        if (multiparty) {
+            body = video ? _("Incoming video group call") : _("Incoming group call");
+        }
 
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-path"] = "call-start-symbolic";

@@ -7,7 +7,7 @@ namespace Dino {
 
     public class Calls : StreamInteractionModule, Object {
 
-        public signal void call_incoming(Call call, CallState state, Conversation conversation, bool video);
+        public signal void call_incoming(Call call, CallState state, Conversation conversation, bool video, bool multiparty);
         public signal void call_outgoing(Call call, CallState state, Conversation conversation);
 
         public signal void call_terminated(Call call, string? reason_name, string? reason_text);
@@ -76,6 +76,8 @@ namespace Dino {
         }
 
         public async bool can_conversation_do_calls(Conversation conversation) {
+            if (!can_we_do_calls(conversation.account)) return false;
+
             if (conversation.type_ == Conversation.Type.CHAT) {
                 return (yield get_call_resources(conversation.account, conversation.counterpart)).size > 0 || has_jmi_resources(conversation.counterpart);
             } else {
@@ -104,7 +106,9 @@ namespace Dino {
             if (full_jids == null) return ret;
 
             foreach (Jid full_jid in full_jids) {
-                bool supports_rtc = yield stream.get_module(Xep.JingleRtp.Module.IDENTITY).is_available(stream, full_jid);
+                var module = stream.get_module(Xep.JingleRtp.Module.IDENTITY);
+                if (module == null) return ret;
+                bool supports_rtc = yield module.is_available(stream, full_jid);
                 if (!supports_rtc) continue;
                 ret.add(full_jid);
             }
@@ -236,7 +240,7 @@ namespace Dino {
             call_state.we_should_send_audio = true;
 
             if (call.direction == Call.DIRECTION_INCOMING) {
-                call_incoming(call, call_state, conversation, video_requested);
+                call_incoming(call, call_state, conversation, video_requested, false);
             } else {
                 call_outgoing(call, call_state, conversation);
             }
@@ -414,6 +418,7 @@ namespace Dino {
                 if (from_jid.equals_bare(account.bare_jid)) return;
                 if (stream_interactor.get_module(MucManager.IDENTITY).is_own_muc_jid(from_jid, account)) return;
 
+                bool multiparty = false;
                 CallState? call_state = null;
 
                 foreach (StanzaNode join_method_node in join_methods) {
@@ -428,6 +433,8 @@ namespace Dino {
                         if (room_jid_str == null) return;
                         Jid room_jid = new Jid(room_jid_str);
                         call_state = create_recv_muji_call(account, from_jid, room_jid, message_stanza.type_);
+
+                        multiparty = true;
                         break;
 
                     } else if (join_method_node.name == "jingle" && join_method_node.ns_uri == Xep.CallInvites.NS_URI) {
@@ -463,7 +470,7 @@ namespace Dino {
                 conversation.last_active = call_state.call.time;
                 if (conversation == null) return;
 
-                call_incoming(call_state.call, call_state, conversation, video_requested);
+                call_incoming(call_state.call, call_state, conversation, video_requested, multiparty);
             });
             call_invites_module.call_accepted.connect((from_jid, to_jid, call_id, message_type) => {
                 CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid, to_jid);
