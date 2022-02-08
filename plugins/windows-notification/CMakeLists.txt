@@ -77,7 +77,7 @@ if(NOT ntdll_LIBRARY)
 endif(NOT ntdll_LIBRARY)
 
 target_link_libraries(windows-notification libdino ${shlwapi_LIBRARY} ${ntdll_LIBRARY} ${WINDOWS_NOTIFICATION_PACKAGES})
-target_compile_features(windows-notification PRIVATE cxx_std_20)
+target_compile_features(windows-notification PRIVATE cxx_std_17)
 target_compile_definitions(windows-notification PRIVATE WINRT_GLIB_H_INSIDE)
 target_compile_options(windows-notification PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-iquote ${PROJECT_SOURCE_DIR}/yolort/include/winrt/yolort_impl>)
 add_dependencies(windows-notification yolort)
