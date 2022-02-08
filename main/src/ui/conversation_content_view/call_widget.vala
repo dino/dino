@@ -124,7 +124,11 @@ namespace Dino.Ui {
                     image.set_from_icon_name("dino-phone-ring-symbolic", IconSize.LARGE_TOOLBAR);
                     if (call.direction == Call.DIRECTION_INCOMING) {
                         bool video = call_manager.should_we_send_video();
+
                         title_label.label = video ? _("Incoming video call") : _("Incoming call");
+                        if (call_manager.invited_to_group_call != null) {
+                            title_label.label = video ? _("Incoming video group call") : _("Incoming group call");
+                        }
 
                         if (stream_interactor.get_module(Calls.IDENTITY).can_we_do_calls(call.account)) {
                             subtitle_label.label = "Ring ring…!";

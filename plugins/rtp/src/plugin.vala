@@ -205,10 +205,6 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         switch (message.type) {
             case Gst.MessageType.DEVICE_ADDED:
                 message.parse_device_added(out gst_device);
-                if (gst_device.properties == null) return Source.CONTINUE;
-                if (gst_device.properties.get_string("device.api") == "wasapi") return Source.CONTINUE;
-                if (gst_device.properties.has_name("pipewire-proplist") && gst_device.has_classes("Audio")) return Source.CONTINUE;
-                if (gst_device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
                 if (devices.any_match((it) => it.matches(gst_device))) return Source.CONTINUE;
                 device = new Device(this, gst_device);
                 devices.add(device);
@@ -216,20 +212,12 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 #if GST_1_16
             case Gst.MessageType.DEVICE_CHANGED:
                 message.parse_device_changed(out gst_device, out old_gst_device);
-                if (gst_device.properties == null) return Source.CONTINUE;
-                if (gst_device.properties.get_string("device.api") == "wasapi") return Source.CONTINUE;
-                if (gst_device.properties.has_name("pipewire-proplist") && gst_device.has_classes("Audio")) return Source.CONTINUE;
-                if (gst_device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
                 device = devices.first_match((it) => it.matches(old_gst_device));
                 if (device != null) device.update(gst_device);
                 break;
 #endif
             case Gst.MessageType.DEVICE_REMOVED:
                 message.parse_device_removed(out gst_device);
-                if (gst_device.properties == null) return Source.CONTINUE;
-                if (gst_device.properties.get_string("device.api") == "wasapi") return Source.CONTINUE;
-                if (gst_device.properties.has_name("pipewire-proplist") && gst_device.has_classes("Audio")) return Source.CONTINUE;
-                if (gst_device.properties.get_string("device.class") == "monitor") return Source.CONTINUE;
                 device = devices.first_match((it) => it.matches(gst_device));
                 if (device != null) devices.remove(device);
                 break;
@@ -318,54 +306,42 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     }
 
     public Gee.List<MediaDevice> get_devices(string media, bool incoming) {
-
+        Gee.List<MediaDevice> devices;
         if (media == "video" && !incoming) {
-            return get_video_sources();
+            devices = get_video_sources();
+        } else if (media == "audio") {
+            devices = get_audio_devices(incoming);
+        } else {
+            devices = new ArrayList<MediaDevice>();
+            devices.add_all_iterator(this.devices.filter(it => it.media == media && (incoming && it.is_sink || !incoming && it.is_source) && !it.is_monitor));
         }
+        devices.sort((media_left, media_right) => {
+            return strcmp(media_left.id, media_right.id);
+        });
 
-        ArrayList<MediaDevice> result = new ArrayList<MediaDevice>();
+        return devices;
+    }
+
+    public Gee.List<MediaDevice> get_audio_devices(bool incoming) {
+        ArrayList<MediaDevice> pulse_devices = new ArrayList<MediaDevice>();
+        ArrayList<MediaDevice> other_devices = new ArrayList<MediaDevice>();
+
         foreach (Device device in devices) {
-            if (device.media == media && (incoming && device.is_sink || !incoming && device.is_source)) {
-                result.add(device);
+            if (device.media != "audio") continue;
+            if (incoming && !device.is_sink || !incoming && !device.is_source) continue;
+
+            // Skip monitors
+            if (device.is_monitor) continue;
+
+            if (device.protocol == DeviceProtocol.PULSEAUDIO) {
+                pulse_devices.add(device);
+            } else {
+                other_devices.add(device);
             }
         }
-        if (media == "audio") {
-            // Reorder sources
-            result.sort((media_left, media_right) => {
-                Device left = media_left as Device;
-                Device right = media_right as Device;
-                if (left == null) return 1;
-                if (right == null) return -1;
 
-                bool left_is_pipewire = left.device.properties.has_name("pipewire-proplist");
-                bool right_is_pipewire = right.device.properties.has_name("pipewire-proplist");
-
-                bool left_is_default = false;
-                left.device.properties.get_boolean("is-default", out left_is_default);
-                bool right_is_default = false;
-                right.device.properties.get_boolean("is-default", out right_is_default);
-
-                // default DirectSound device on Windows has (NULL) as guid
-                if (left.device.properties.get_string("device.guid") == "(NULL)") {
-                    left_is_default = true;
-                }
-                if (right.device.properties.get_string("device.guid") == "(NULL)") {
-                    right_is_default = true;
-                }
-
-                // Prefer pipewire
-                if (left_is_pipewire && !right_is_pipewire) return -1;
-                if (right_is_pipewire && !left_is_pipewire) return 1;
-
-                // Prefer pulse audio default device
-                if (left_is_default && !right_is_default) return -1;
-                if (right_is_default && !left_is_default) return 1;
-
-
-                return 0;
-            });
-        }
-        return result;
+        // If we have any pulseaudio devices, present only those. Don't want duplicated devices from pipewire and pulseaudio.
+        return pulse_devices.size > 0 ? pulse_devices : other_devices;
     }
 
     public Gee.List<MediaDevice> get_video_sources() {
@@ -387,7 +363,10 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
             // Don't allow grey-scale devices
             if (!is_color) continue;
 
-            if (device.device.properties.has_name("pipewire-proplist")) {
+            // Skip monitors
+            if (device.is_monitor) continue;
+
+            if (device.protocol == DeviceProtocol.PIPEWIRE) {
                 pipewire_devices.add(device);
             } else {
                 other_devices.add(device);
@@ -395,46 +374,56 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         }
 
         // If we have any pipewire devices, present only those. Don't want duplicated devices from pipewire and video for linux.
-        ArrayList<MediaDevice> devices = pipewire_devices.size > 0 ? pipewire_devices : other_devices;
+        return pipewire_devices.size > 0 ? pipewire_devices : other_devices;
+    }
 
-        // Reorder sources
-        devices.sort((media_left, media_right) => {
-            Device left = media_left as Device;
-            Device right = media_right as Device;
-            if (left == null) return 1;
-            if (right == null) return -1;
-
-            int left_fps = 0;
-            for (int i = 0; i < left.device.caps.get_size(); i++) {
-                unowned Gst.Structure structure = left.device.caps.get_structure(i);
-                int num = 0, den = 0;
-                if (structure.has_field("framerate") && structure.get_fraction("framerate", out num, out den)) left_fps = int.max(left_fps, num / den);
-            }
-
-            int right_fps = 0;
-            for (int i = 0; i < left.device.caps.get_size(); i++) {
-                unowned Gst.Structure structure = left.device.caps.get_structure(i);
-                int num = 0, den = 0;
-                if (structure.has_field("framerate") && structure.get_fraction("framerate", out num, out den)) right_fps = int.max(right_fps, num / den);
-            }
-
-            // More FPS is better
-            if (left_fps > right_fps) return -1;
-            if (right_fps > left_fps) return 1;
-
-            return 0;
-        });
-
-        return devices;
+    private int get_max_fps(Device device) {
+        int fps = 0;
+        for (int i = 0; i < device.device.caps.get_size(); i++) {
+            unowned Gst.Structure structure = device.device.caps.get_structure(i);
+            int num = 0, den = 0;
+            if (structure.has_field("framerate") && structure.get_fraction("framerate", out num, out den)) fps = int.max(fps, num / den);
+        }
+        return fps;
     }
 
     public Device? get_preferred_device(string media, bool incoming) {
+        Gee.List<Device> devices = new ArrayList<Device>();
         foreach (MediaDevice media_device in get_devices(media, incoming)) {
-            Device? device = media_device as Device;
-            if (device != null) return device;
+            if (media_device is Device) devices.add((Device)media_device);
         }
-        warning("No preferred device for %s %s. Media will not be processed.", incoming ? "incoming" : "outgoing", media);
-        return null;
+        if (devices.is_empty) {
+            warning("No preferred device for %s %s. Media will not be processed.", incoming ? "incoming" : "outgoing", media);
+            return null;
+        }
+
+        // Take default if present
+        foreach (Device device in devices) {
+            if (device.is_default) {
+                debug("Using %s for %s %s as it's default", device.display_name, incoming ? "incoming" : "outgoing", media);
+                return device;
+            }
+        }
+
+        if (media == "video") {
+            // Pick best FPS
+            int max_fps = 0;
+            Device? max_fps_device = null;
+            foreach (Device device in devices) {
+                int fps = get_max_fps(device);
+                if (fps > max_fps) {
+                    max_fps = fps;
+                    max_fps_device = device;
+                }
+            }
+            debug("Using %s for %s %s as it has max FPS (%d)", max_fps_device.display_name, incoming ? "incoming" : "outgoing", media, max_fps);
+            return max_fps_device;
+        } else {
+            // Pick any
+            Device? device = devices.first();
+            debug("Using %s for %s %s as it's first pick", device.display_name, incoming ? "incoming" : "outgoing", media);
+            return device;
+        }
     }
 
     public MediaDevice? get_device(Xmpp.Xep.JingleRtp.Stream stream, bool incoming) {

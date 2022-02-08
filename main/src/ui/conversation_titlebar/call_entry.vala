@@ -84,9 +84,6 @@ namespace Dino.Ui {
             stream_interactor.connection_manager.connection_state_changed.connect((account, state) => {
                 update_visibility.begin();
             });
-            Dino.Application.get_default().plugin_registry.video_call_plugin.devices_changed.connect((media, incoming) => {
-                update_visibility.begin();
-            });
         }
 
         private void open_call_window(CallState call_state) {

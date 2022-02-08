@@ -65,9 +65,12 @@ namespace Dino.Ui {
             }
         }
 
-        public async void notify_call(Call call, Conversation conversation, bool video, string conversation_display_name) {
+        public async void notify_call(Call call, Conversation conversation, bool video, bool multiparty, string conversation_display_name) {
             Notification notification = new Notification(conversation_display_name);
-            string body = _("Incoming call");
+            string body =  video ? _("Incoming video call") : _("Incoming call");
+            if (multiparty) {
+                body = video ? _("Incoming video group call") : _("Incoming group call");
+            }
             notification.set_body(body);
             notification.set_urgent(true);
 

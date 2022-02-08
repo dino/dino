@@ -118,9 +118,9 @@ public abstract interface VideoCallWidget : Object {
 }
 
 public abstract interface MediaDevice : Object {
-    public abstract string id { get; }
-    public abstract string display_name { get; }
-    public abstract string detail_name { get; }
+    public abstract string id { owned get; }
+    public abstract string display_name { owned get; }
+    public abstract string detail_name { owned get; }
 }
 
 public abstract interface NotificationPopulator : Object {

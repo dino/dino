@@ -30,8 +30,8 @@ public class NotificationEvents : StreamInteractionModule, Object {
         stream_interactor.get_module(MucManager.IDENTITY).invite_received.connect((account, room_jid, from_jid, password, reason) => on_invite_received.begin(account, room_jid, from_jid, password, reason));
         stream_interactor.get_module(MucManager.IDENTITY).voice_request_received.connect((account, room_jid, from_jid, nick) => on_voice_request_received.begin(account, room_jid, from_jid, nick));
 
-        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect((call, state, conversation, video) => on_call_incoming.begin(call, state, conversation, video));
-        stream_interactor.connection_manager.connection_error.connect((account, error) => on_connection_error(account, error));
+        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect((call, state, conversation, video, multiparty) => on_call_incoming.begin(call, state, conversation, video, multiparty));
+        stream_interactor.connection_manager.connection_error.connect((account, error) => on_connection_error.begin(account, error));
         stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((conversation) => on_focused_in.begin(conversation));
 
         notifier_promise = new Promise<NotificationProvider>();
@@ -117,12 +117,12 @@ public class NotificationEvents : StreamInteractionModule, Object {
         yield notifier.notify_subscription_request(conversation);
     }
 
-    private async void on_call_incoming(Call call, CallState call_state, Conversation conversation, bool video) {
+    private async void on_call_incoming(Call call, CallState call_state, Conversation conversation, bool video, bool multiparty) {
         if (!stream_interactor.get_module(Calls.IDENTITY).can_we_do_calls(call.account)) return;
         string conversation_display_name = get_conversation_display_name(stream_interactor, conversation, null);
 
         NotificationProvider notifier = yield notifier.wait_async();
-        yield notifier.notify_call(call, conversation, video, conversation_display_name);
+        yield notifier.notify_call(call, conversation, video, multiparty, conversation_display_name);
         call.notify["state"].connect(() => {
             if (call.state != Call.State.RINGING) {
                 notifier.retract_call_notification.begin(call, conversation);
@@ -160,7 +160,7 @@ public interface NotificationProvider : Object {
 
     public abstract async void notify_message(Message message, Conversation conversation, string conversation_display_name, string? participant_display_name);
     public abstract async void notify_file(FileTransfer file_transfer, Conversation conversation, bool is_image, string conversation_display_name, string? participant_display_name);
-    public abstract async void notify_call(Call call, Conversation conversation, bool video, string conversation_display_name);
+    public abstract async void notify_call(Call call, Conversation conversation, bool video, bool multiparty, string conversation_display_name);
     public abstract async void retract_call_notification(Call call, Conversation conversation);
     public abstract async void notify_subscription_request(Conversation conversation);
     public abstract async void notify_connection_error(Account account, ConnectionManager.ConnectionError error);

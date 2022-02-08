@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-08 22:15+0100\n"
-"PO-Revision-Date: 2020-10-22 03:26+0000\n"
+"PO-Revision-Date: 2022-02-04 09:55+0000\n"
 "Language-Team: none\n"
-"Language: pt_BR\n"
+"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.3.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:157
 #, c-format
@@ -23,54 +23,54 @@ msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
-"%s tem usado um dispositivo não confiável. Você não verá mensagens de "
-"dispositivos que você não confia."
+"%s χρησιμοποιεί μια μη αξιόπιστη συσκευή. Δεν θα βλέπετε μηνύματα από "
+"συσκευές που δεν εμπιστεύεστε."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:158
 msgid "Manage devices"
-msgstr "Gerenciar dispositivos"
+msgstr "Διαχείριση συσκευών"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:160
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""
-"%s não confia nesse dispositivo. Isso significa que você pode estar perdendo "
-"algumas mensagens."
+"%s δεν εμπιστεύεται αυτήν τη συσκευή. Αυτό σημαίνει ότι μπορεί να χάσετε "
+"μηνύματα."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
-msgstr "Gerenciar Chave"
+msgstr "Διαχείριση Κλειδιού"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
 msgstr ""
-"Compare a impressão digital, caractere a caractere, com aquela mostrada no "
-"dispositivo de seu contato."
+"Συγκρίνετε το δακτυλικό αποτύπωμα (fingerprint), χαρακτήρα προς χαρακτήρα, "
+"με αυτό που εμφανίζεται στη συσκευή της επαφής σας."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints differ"
-msgstr "As impressões digitais não correspondem uma a outra"
+msgstr "Τα δακτυλικά αποτυπώματα (fingerprints) διαφέρουν"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 msgid "Fingerprints match"
-msgstr "As impressões digitais correspondem uma a outra"
+msgstr "Τα δακτυλικά αποτυπώματα (fingerprints) ταιριάζουν"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
 #: plugins/omemo/src/ui/manage_key_dialog.vala:88
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "Ακύρωση"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:40
 msgid "Confirm"
-msgstr "Confirmar"
+msgstr "Επιβεβαίωση"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 msgid "Verify key"
-msgstr "Verificar chave"
+msgstr "Επαλήθευση κλειδιού"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
@@ -78,12 +78,12 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Mensagens futuras enviadas por %s do dispositivo que usa essa chave serão "
-"destacadas no janela de bate papo."
+"Μελλοντικά μηνύματα που αποστέλλονται από %s από τη συσκευή που χρησιμοποιεί "
+"αυτό το κλειδί θα επισημαίνονται ανάλογα στο παράθυρο συνομιλίας."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
-msgstr "Impressões digitais não correspondem"
+msgstr "Τα δακτυλικά αποτυπώματα (fingerprints) δεν ταιριάζουν"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:72
 #, c-format
@@ -92,81 +92,81 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Por favor verifique se você está comparando as impressões digitais corretas. "
-"Caso elas não correspondam, a conta do %s pode estar comprometida e você "
-"deve considerar rejeitar essa chave."
+"Επαληθεύστε ότι συγκρίνετε το σωστό δακτυλικό αποτύπωμα (fingerprint). Εάν "
+"τα δακτυλικά αποτυπώματα (fingerprints) δεν ταιριάζουν, ο λογαριασμός του %s "
+"μπορεί να παραβιαστεί και θα πρέπει να σκεφτείτε να απορρίψετε αυτό το "
+"κλειδί."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid "Verify key fingerprint"
-msgstr "Verificar impressão digital da chave"
+msgstr "Επαλήθευση δακτυλικού αποτυπώματος (fingerprint) κλειδιού"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:124
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
-"Compare a impressão digital dessa chave com a impressão digital exibida no "
-"dispositivo do contato."
+"Συγκρίνετε το δακτυλικό αποτύπωμα (fingerprint) αυτού του κλειδιού με το "
+"δακτυλικό αποτύπωμα που εμφανίζεται στη συσκευή της επαφής."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #: plugins/omemo/src/ui/contact_details_dialog.vala:256
 msgid "Reject key"
-msgstr "Rejeitar chave"
+msgstr "Απόρριψη κλειδιού"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:126
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Bloqueie comunicação criptografada com o dispositivo do contato que usa essa "
-"chave."
+"Αποκλεισμός κρυπτογραφημένης επικοινωνίας με τη συσκευή της επαφής που "
+"χρησιμοποιεί αυτό το κλειδί."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #: plugins/omemo/src/ui/contact_details_dialog.vala:251
 msgid "Accept key"
-msgstr "Aceitar chave"
+msgstr "Αποδοχή κλειδιού"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:128
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Permita comunicação criptografada com o dispositivo do contato que usa essa "
-"chave."
+"Να επιτρέπεται η κρυπτογραφημένη επικοινωνία με τη συσκευή της επαφής που "
+"χρησιμοποιεί αυτό το κλειδί."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid "This key is currently %s."
-msgstr "Essa chave está atualmente %s."
+msgstr "Αυτό το κλειδί είναι αυτή τη στιγμή %s."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 msgid "accepted"
-msgstr "aceita"
+msgstr "δεκτό"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 #, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
-"Isso significa que ela pode ser usada por %s para enviar e receber mensagens "
-"criptografadas."
+"Αυτό σημαίνει ότι μπορεί να χρησιμοποιηθεί από το %s για λήψη και αποστολή "
+"κρυπτογραφημένων μηνυμάτων."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid "verified"
-msgstr "verificada"
+msgstr "επαληθευμένο"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:137
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
-"Além disso, verificou-se que ela corresponde com a chave no dispositivo do "
-"contato."
+"Επιπλέον, έχει επαληθευτεί ότι ταιριάζει με το κλειδί στη συσκευή της επαφής."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 msgid "rejected"
-msgstr "rejeitada"
+msgstr "απορριφθέν"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
@@ -174,8 +174,9 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
-"Isso significa que ela não pode ser usada por %s para decifrar suas "
-"mensagens, e você não irá visualizar mensagens criptografadas com ela."
+"Αυτό σημαίνει ότι δεν μπορεί να χρησιμοποιηθεί από %s για την "
+"αποκρυπτογράφηση των μηνυμάτων σας και δεν θα βλέπετε μηνύματα "
+"κρυπτογραφημένα με αυτό."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:153
 #, c-format
@@ -183,9 +184,9 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Você não irá visualizar mensagens criptografas pelo dispositivo de %s que "
-"usa essa chave. Além disso, esse dispositivo não será mais capaz de decifrar "
-"suas mensagens."
+"Δεν θα βλέπετε κρυπτογραφημένα μηνύματα από τη συσκευή των %s που "
+"χρησιμοποιούν αυτό το κλειδί. Αντίθετα, αυτή η συσκευή δεν θα μπορεί πλέον "
+"να αποκρυπτογραφήσει τα μηνύματά σας."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
@@ -193,156 +194,98 @@ msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
-"Você poderá trocar mensagem criptografadas com o dispositivo de %s que usa "
-"essa chave."
+"Θα μπορείτε να ανταλλάσσετε κρυπτογραφημένα μηνύματα με τη συσκευή των %s "
+"που χρησιμοποιούν αυτό το κλειδί."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:167
 msgid "Back"
-msgstr "Voltar"
+msgstr "Πίσω"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
-msgstr "Gerenciar"
+msgstr "Διαχείρηση"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
-msgstr "Esse contato possui novos dispositivos"
+msgstr "Αυτή η επαφή έχει νέες συσκευές"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 #: plugins/omemo/src/ui/account_settings_widget.vala:45
 msgid "Own fingerprint"
-msgstr "Impressão digital própria"
+msgstr "Το δακτυλικό μου αποτύπωμα (fingerprint)"
 
 #: plugins/omemo/src/ui/account_settings_widget.vala:42
 msgid "Will be generated on first connection"
-msgstr "Será gerada na primeira conexão"
+msgstr "Θα δημιουργηθεί με την πρώτη σύνδεση"
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr "Decisão de confiança OMEMO necessária"
+msgstr "Απαιτείται απόφαση εμπιστοσύνης OMEMO"
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Você adicionou um novo dispositivo para a conta %s?"
+msgstr "Προσθέσατε νέα συσκευή για τον λογαριασμό %s;"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 msgid "Encryption"
-msgstr "Criptografia"
+msgstr "Κρυπτογράφηση"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
-msgstr[0] "%d dispositivo OMEMO"
-msgstr[1] "%d dispositivos OMEMO"
+msgstr[0] "%d OMEMO συσκευή"
+msgstr[1] "%d OMEMO συσκευές"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:46
 msgid "OMEMO Key Management"
-msgstr "Gerenciamento de Chave OMEMO"
+msgstr "Διαχείριση κλειδιών OMEMO"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:47
 msgid "Automatically accept new keys"
-msgstr "Aceitar novas chaves automaticamente"
+msgstr "Αυτόματη αποδοχή νέων κλειδιών"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
-"Novas chaves de criptografia desse contato serão aceitas automaticamente."
+"Τα νέα κλειδιά κρυπτογράφησης από αυτήν την επαφή θα γίνονται δεκτά αυτόματα."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Own key"
-msgstr "Chave própria"
+msgstr "Το κλειδί μου"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New keys"
-msgstr "Chaves novas"
+msgstr "Νέα κλειδιά"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Associated keys"
-msgstr "Chaves associadas"
+msgstr "Συσχετισμένα κλειδιά"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "Inactive keys"
-msgstr "Chaves inativas"
+msgstr "Ανενεργά κλειδιά"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:84
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Novas chaves de criptografia de seus outros dispositivos serão aceitas "
-"automaticamente."
+"Τα νέα κλειδιά κρυπτογράφησης από τις άλλες συσκευές σας θα γίνονται δεκτά "
+"αυτόματα."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:319
 msgid "Accepted"
-msgstr "Aceita"
+msgstr "Αποδεκτά"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:324
 msgid "Rejected"
-msgstr "Rejeitada"
+msgstr "Απορριφθέντα"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:329
 msgid "Verified"
-msgstr "Verificada"
+msgstr "Επαληθευμένα"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:336
 msgid "Unused"
-msgstr "Não usada"
-
-#~ msgid "Your contact"
-#~ msgstr "Seu contato"
-
-#~ msgid "Not matching"
-#~ msgstr "Não correspondem"
-
-#~ msgid "Matching"
-#~ msgstr "Correspondem"
-
-#~ msgid ""
-#~ "Once confirmed, any future messages sent by %s using this key will be "
-#~ "highlighted accordingly in the chat window."
-#~ msgstr ""
-#~ "Uma vez confirmada, toda mensagem enviada por %s no futuro será destacada "
-#~ "na janela da conversa."
-
-#~ msgid ""
-#~ "Stop accepting this key during communication with its associated contact."
-#~ msgstr "Pare de aceitar essa chave ao se comunicar com o contato associado."
-
-#~ msgid ""
-#~ "Start accepting this key during communication with its associated contact"
-#~ msgstr "Aceite essa chave ao se comunicar com o contato associado"
-
-#~ msgid ""
-#~ "This means it cannot be used by %s to receive messages, and any messages "
-#~ "sent by it will be ignored."
-#~ msgstr ""
-#~ "Isso significa que ela não pode ser usada por %s para receber mensagens e "
-#~ "qualquer mensagem enviada com ela será ignorada."
-
-#~ msgid ""
-#~ "Once confirmed, any future messages sent by %s using this key will be "
-#~ "ignored and none of your messages will be readable using this key."
-#~ msgstr ""
-#~ "Uma vez confirmada, toda mensagem enviada por %s usando essa chave será "
-#~ "ignorada e nenhuma de suas mensagens com ela serão legíveis."
-
-#~ msgid ""
-#~ "Once confirmed this key will be usable by %s to receive and send messages."
-#~ msgstr ""
-#~ "Uma vez confirmada, essa chave poderá ser usada por %s para receber e "
-#~ "enviar mensagens."
-
-#~ msgid ""
-#~ "When this contact adds new encryption keys to their account, "
-#~ "automatically accept them."
-#~ msgstr ""
-#~ "Quando esse contato adicionar novas chaves de criptografia à conta, "
-#~ "aceite-as automaticamente."
-
-#~ msgid ""
-#~ "When you add new encryption keys to your account, automatically accept "
-#~ "them."
-#~ msgstr ""
-#~ "Quando você adicionar novas chaves de criptografia para sua conta, aceite-"
-#~ "as automaticamente."
+msgstr "Αχρησιμοποίητα"

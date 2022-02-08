@@ -271,11 +271,8 @@ public class Dino.Ui.CallWindowController : Object {
     private void update_audio_device_choices() {
         if (call_plugin.get_devices("audio", true).size == 0 || call_plugin.get_devices("audio", false).size == 0) {
             call_window.bottom_bar.show_audio_device_error();
-        } /*else if (call_plugin.get_devices("audio", true).size == 1 && call_plugin.get_devices("audio", false).size == 1) {
+        } else if (call_plugin.get_devices("audio", true).size == 1 && call_plugin.get_devices("audio", false).size == 1) {
             call_window.bottom_bar.show_audio_device_choices(false);
-            return;
-        }*/ else {
-            call_window.bottom_bar.show_video_device_choices(false);
             return;
         }
 
@@ -290,11 +287,6 @@ public class Dino.Ui.CallWindowController : Object {
             call_state.set_audio_device(device);
             update_current_audio_device(audio_settings_popover);
         });
-//        calls.stream_created.connect((call, media) => {
-//            if (media == "audio") {
-//                update_current_audio_device(audio_settings_popover);
-//            }
-//        });
     }
 
     private void update_current_audio_device(AudioSettingsPopover audio_settings_popover) {
@@ -307,10 +299,7 @@ public class Dino.Ui.CallWindowController : Object {
 
         if (device_count == 0) {
             call_window.bottom_bar.show_video_device_error();
-        } /*else if (device_count == 1 || call_state.get_video_device() == null) {
-            call_window.bottom_bar.show_video_device_choices(false);
-            return;
-        }*/ else {
+        } else if (device_count == 1 || call_state.get_video_device() == null) {
             call_window.bottom_bar.show_video_device_choices(false);
             return;
         }
@@ -323,11 +312,6 @@ public class Dino.Ui.CallWindowController : Object {
             update_current_video_device(video_settings_popover);
             own_video.display_device(device);
         });
-//        call_state.stream_created.connect((call, media) => {
-//            if (media == "video") {
-//                update_current_video_device(video_settings_popover);
-//            }
-//        });
     }
 
     private void update_current_video_device(VideoSettingsPopover video_settings_popover) {
