@@ -160,13 +160,25 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         }
     }
 
+    private bool bytes_equal(uint8[] a1, uint8[] a2) {
+        return a1.length == a2.length && Memory.cmp(a1, a2, a1.length) == 0;
+    }
+
     public override void handle_transport_accept(StanzaNode transport) throws Jingle.IqError {
         debug("on_transport_accept from %s", peer_full_jid.to_string());
         base.handle_transport_accept(transport);
 
         if (dtls_srtp_handler != null && peer_fingerprint != null) {
-            dtls_srtp_handler.peer_fingerprint = peer_fingerprint;
-            dtls_srtp_handler.peer_fp_algo = peer_fp_algo;
+            if (dtls_srtp_handler.peer_fingerprint != null) {
+                if (!bytes_equal(dtls_srtp_handler.peer_fingerprint, peer_fingerprint)) {
+                    warning("Tried to replace certificate fingerprint mid use. We don't allow that.");
+                    peer_fingerprint = dtls_srtp_handler.peer_fingerprint;
+                    peer_fp_algo = dtls_srtp_handler.peer_fp_algo;
+                }
+            } else {
+                dtls_srtp_handler.peer_fingerprint = peer_fingerprint;
+                dtls_srtp_handler.peer_fp_algo = peer_fp_algo;
+            }
             if (peer_setup == "passive") {
                 dtls_srtp_handler.mode = DtlsSrtp.Mode.CLIENT;
                 dtls_srtp_handler.stop_dtls_connection();
@@ -185,6 +197,19 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     public override void handle_transport_info(StanzaNode transport) throws Jingle.IqError {
         debug("on_transport_info from %s", peer_full_jid.to_string());
         base.handle_transport_info(transport);
+
+        if (dtls_srtp_handler != null && peer_fingerprint != null) {
+            if (dtls_srtp_handler.peer_fingerprint != null) {
+                if (!bytes_equal(dtls_srtp_handler.peer_fingerprint, peer_fingerprint)) {
+                    warning("Tried to replace certificate fingerprint mid use. We don't allow that.");
+                    peer_fingerprint = dtls_srtp_handler.peer_fingerprint;
+                    peer_fp_algo = dtls_srtp_handler.peer_fp_algo;
+                }
+            } else {
+                dtls_srtp_handler.peer_fingerprint = peer_fingerprint;
+                dtls_srtp_handler.peer_fp_algo = peer_fp_algo;
+            }
+        }
 
         if (!we_want_connection) return;
 
