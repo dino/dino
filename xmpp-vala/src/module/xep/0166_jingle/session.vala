@@ -105,9 +105,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
             Content content = contents_map[content_node.name];
 
-            if (content_node.creator != content.content_creator) {
-                throw new IqError.BAD_REQUEST("unknown content; creator");
-            }
+            if (content_node.creator != content.content_creator) warning("Received transport-* with unexpected content creator from %s", peer_full_jid.to_string());
 
             switch (action) {
                 case "transport-accept":
@@ -135,9 +133,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
             Content content = contents_map[content_node.name];
 
-            if (content_node.creator != content.content_creator) {
-                throw new IqError.BAD_REQUEST("unknown content; creator");
-            }
+            if (content_node.creator != content.content_creator) warning("Received description-info with unexpected content creator from %s", peer_full_jid.to_string());
 
             content.on_description_info(stream, content_node.description, jingle, iq);
         } else if (action == "security-info") {

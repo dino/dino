@@ -1,7 +1,7 @@
 using Gee;
 namespace Xmpp.Xep.Muji {
 
-    public const string NS_URI = "http://telepathy.freedesktop.org/muji";
+    public const string NS_URI = "urn:xmpp:jingle:muji:0";
 
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0272_muji");

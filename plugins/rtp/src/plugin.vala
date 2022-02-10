@@ -350,19 +350,22 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
             if (device.media != "video") continue;
             if (device.is_sink) continue;
 
+            // Skip monitors
+            if (device.is_monitor) continue;
+
             bool is_color = false;
             for (int i = 0; i < device.device.caps.get_size(); i++) {
                 unowned Gst.Structure structure = device.device.caps.get_structure(i);
-                if (structure.has_field("format") && !structure.get_string("format").has_prefix("GRAY")) {
+                if (!structure.has_field("format")) continue;
+                // "format" might be an array and get_string() will then return null. We just assume arrays to be fine.
+                string? format = structure.get_string("format");
+                if (format == null || !format.has_prefix("GRAY")) {
                     is_color = true;
                 }
             }
 
             // Don't allow grey-scale devices
             if (!is_color) continue;
-
-            // Skip monitors
-            if (device.is_monitor) continue;
 
             if (device.protocol == DeviceProtocol.PIPEWIRE) {
                 pipewire_devices.add(device);

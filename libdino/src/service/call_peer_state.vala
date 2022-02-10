@@ -12,7 +12,7 @@ public class Dino.PeerState : Object {
     public signal void encryption_updated(Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption, bool same);
 
     public StreamInteractor stream_interactor;
-    CallState call_state;
+    public CallState call_state;
     public Calls calls;
     public Call call;
     public Jid jid;
