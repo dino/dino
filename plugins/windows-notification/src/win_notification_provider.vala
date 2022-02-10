@@ -266,7 +266,7 @@ namespace Dino.Plugins.WindowsNotification {
                 .SetBody(body)
                 .SetAppLogo(image_path)
                 .AddButton(_("Accept"), "accept-call")
-                .AddButton(_("Deny"), "deny-call", null, ActivationType.Background)
+                .AddButton(_("Deny"), "reject-call", null, ActivationType.Background)
                 .SetScenario(Scenario.IncomingCall)
                 .Build();
 
@@ -274,7 +274,7 @@ namespace Dino.Plugins.WindowsNotification {
             notification.Activated((argument, user_input) => {
                 run_on_ui(() => {
                     if (argument != null) {
-                        app.activate_action(argument, call.id);
+                        app.activate_action(argument, new Variant.tuple(new Variant[] { new Variant.int32(conversation.id), new Variant.int32(call.id) }));
                     } else {
                         app.activate_action("open-conversation", conversation.id);
                     }
