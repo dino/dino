@@ -316,9 +316,11 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 next_timestamp_offset_stamp = get_monotonic_time();
                 rtp_buffer.unmap();
             }
+#if GLIB_2_64
             if (our_ssrc != buffer_ssrc) {
                 warning_once("Sending RTP %s buffer seq %u with SSRC %u when our ssrc is %u", media, buffer_seq, buffer_ssrc, our_ssrc);
             }
+#endif
         }
 
         prepare_local_crypto();

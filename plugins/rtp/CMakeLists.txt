@@ -1,4 +1,5 @@
 find_package(GstRtp REQUIRED)
+find_package(GLib ${GLib_GLOBAL_VERSION} REQUIRED)
 find_package(WebRTCAudioProcessing 0.2)
 find_packages(RTP_PACKAGES REQUIRED
     Gee
@@ -20,6 +21,10 @@ endif()
 
 if(GstRtp_VERSION VERSION_GREATER "1.18")
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GST_1_18)
+endif()
+
+if(GLib_VERSION VERSION_GREATER "2.64")
+    set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GLIB_2_64)
 endif()
 
 set(RTP_ENABLE_VP9 "no" CACHE BOOL "Enable VP9 support")
