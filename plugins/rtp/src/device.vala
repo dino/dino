@@ -438,7 +438,6 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         if (is_sink && media == "audio") {
             mixer = (Gst.Base.Aggregator) Gst.ElementFactory.make("audiomixer", @"mixer_$id");
             pipe.add(mixer);
-            mixer.link(pipe);
             if (plugin.echoprobe != null && !plugin.echoprobe.get_static_pad("src").is_linked()) {
                 mixer.link(plugin.echoprobe);
                 plugin.echoprobe.link(element);

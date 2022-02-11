@@ -505,7 +505,6 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 buffer_seq = rtp_buffer.get_seq();
                 rtp_buffer.unmap();
             }
-            debug("Received RTP %s buffer seq %u with SSRC %u", media, buffer_seq, buffer_ssrc);
         }
 #endif
         if (push_recv_data) {

@@ -97,11 +97,35 @@ public class Dino.Plugins.Rtp.CodecUtil {
         } else if (media == "video") {
             switch (codec) {
                 case "h264":
-                    return new string[] {/*"msdkh264enc", */"vaapih264enc", "x264enc"};
+                    return new string[] {
+#if ENABLE_MSDK
+                        "msdkh264enc",
+#endif
+#if ENABLE_VAAPI
+                        "vaapih264enc",
+#endif
+                        "x264enc"
+                    };
                 case "vp9":
-                    return new string[] {/*"msdkvp9enc", */"vaapivp9enc", "vp9enc"};
+                    return new string[] {
+#if ENABLE_MSDK
+                        "msdkvp9enc",
+#endif
+#if ENABLE_VAAPI
+                        "vaapivp9enc",
+#endif
+                        "vp9enc"
+                    };
                 case "vp8":
-                    return new string[] {/*"msdkvp8enc", */"vaapivp8enc", "vp8enc"};
+                    return new string[] {
+#if ENABLE_MSDK
+                        "msdkvp8enc",
+#endif
+#if ENABLE_VAAPI
+                        "vaapivp8enc",
+#endif
+                        "vp8enc"
+                    };
             }
         }
         return new string[0];
@@ -125,11 +149,35 @@ public class Dino.Plugins.Rtp.CodecUtil {
         } else if (media == "video") {
             switch (codec) {
                 case "h264":
-                    return new string[] {/*"msdkh264dec", */"vaapih264dec"};
+                    return new string[] {
+#if ENABLE_MSDK
+                        "msdkh264dec",
+#endif
+#if ENABLE_VAAPI
+                        "vaapih264dec",
+#endif
+                        null
+                    };
                 case "vp9":
-                    return new string[] {/*"msdkvp9dec", */"vaapivp9dec", "vp9dec"};
+                    return new string[] {
+#if ENABLE_MSDK
+                        "msdkvp9dec",
+#endif
+#if ENABLE_VAAPI
+                        "vaapivp9dec",
+#endif
+                        "vp9dec"
+                    };
                 case "vp8":
-                    return new string[] {/*"msdkvp8dec", */"vaapivp8dec", "vp8dec"};
+                    return new string[] {
+#if ENABLE_MSDK
+                        "msdkvp8dec",
+#endif
+#if ENABLE_VAAPI
+                        "vaapivp8dec",
+#endif
+                        "vp8dec"
+                    };
             }
         }
         return new string[0];
@@ -268,7 +316,6 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public string? get_decode_element_name(string media, string? codec) {
-        if (codec == "vp9") return null; // Temporary unsupport VP9
         if (get_depay_element_name(media, codec) == null) return null;
         foreach (string candidate in get_decode_candidates(media, codec)) {
             if (is_element_supported(candidate)) return candidate;
