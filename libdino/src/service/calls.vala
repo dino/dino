@@ -143,23 +143,22 @@ namespace Dino {
         }
 
         private void on_incoming_call(Account account, Xep.Jingle.Session session) {
-            Jid? muji_muc = null;
+            Jid? muji_room = session.muji_room;
             bool counterpart_wants_video = false;
             foreach (Xep.Jingle.Content content in session.contents) {
                 Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
                 if (rtp_content_parameter == null) continue;
-                muji_muc = rtp_content_parameter.muji_muc;
                 if (rtp_content_parameter.media == "video" && session.senders_include_us(content.senders)) {
                     counterpart_wants_video = true;
                 }
             }
 
             // Check if this comes from a MUJI MUC => accept
-            if (muji_muc != null) {
-                debug("[%s] Incoming call from %s from MUJI muc %s", account.bare_jid.to_string(), session.peer_full_jid.to_string(), muji_muc.to_string());
+            if (muji_room != null) {
+                debug("[%s] Incoming call from %s from MUJI muc %s", account.bare_jid.to_string(), session.peer_full_jid.to_string(), muji_room.to_string());
 
                 foreach (CallState call_state in call_states.values) {
-                    if (call_state.call.account.equals(account) && call_state.group_call != null && call_state.group_call.muc_jid.equals(muji_muc)) {
+                    if (call_state.call.account.equals(account) && call_state.group_call != null && call_state.group_call.muc_jid.equals(muji_room)) {
                         if (call_state.peers.keys.contains(session.peer_full_jid)) {
                             PeerState peer_state = call_state.peers[session.peer_full_jid];
                             debug("[%s] Incoming call, we know the peer. Expected %s", account.bare_jid.to_string(), peer_state.waiting_for_inbound_muji_connection.to_string());
@@ -271,7 +270,7 @@ namespace Dino {
             debug("[%s] Muji call received from %s for MUC %s, type %s", account.bare_jid.to_string(), inviter_jid.to_string(), muc_jid.to_string(), message_type);
 
             foreach (Call call in call_states.keys) {
-                if (!call.account.equals(account)) return null;
+                if (!call.account.equals(account)) continue;
 
                 CallState call_state = call_states[call];
 

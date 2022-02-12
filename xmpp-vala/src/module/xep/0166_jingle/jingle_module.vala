@@ -102,7 +102,7 @@ namespace Xmpp.Xep.Jingle {
             return (yield is_jingle_available(stream, full_jid)) && (yield select_transport(stream, type, components, full_jid, Set.empty())) != null;
         }
 
-        public async Session create_session(XmppStream stream, Gee.List<Content> contents, Jid receiver_full_jid, string? sid = null) throws Error {
+        public async Session create_session(XmppStream stream, Gee.List<Content> contents, Jid receiver_full_jid, string? sid = null, Jid? muji_room = null) throws Error {
             if (!yield is_jingle_available(stream, receiver_full_jid)) {
                 throw new Error.NO_SHARED_PROTOCOLS("No Jingle support");
             }
@@ -138,6 +138,10 @@ namespace Xmpp.Xep.Jingle {
                 initiate_jingle_iq.put_node(content_node);
             }
 
+            if (muji_room != null) {
+                initiate_jingle_iq.put_node(new StanzaNode.build("muji", Xep.Muji.NS_URI).add_self_xmlns().put_attribute("room", muji_room.to_string()));
+            }
+
             Iq.Stanza iq = new Iq.Stanza.set(initiate_jingle_iq) { to=receiver_full_jid };
 
             stream.get_flag(Flag.IDENTITY).add_session(session);
@@ -157,6 +161,15 @@ namespace Xmpp.Xep.Jingle {
 
             Session session = new Session.initiate_received(stream, sid, my_jid, iq.from);
             session.terminated.connect((stream) => { stream.get_flag(Flag.IDENTITY).remove_session(sid); });
+
+            string? muji_room_str = iq.stanza.get_deep_attribute(NS_URI + ":jingle", Xep.Muji.NS_URI + ":muji", "room");
+            if (muji_room_str != null) {
+                try {
+                    session.muji_room = new Jid(muji_room_str);
+                } catch (InvalidJidError e) {
+                    // Ignore
+                }
+            }
 
             stream.get_flag(Flag.IDENTITY).pre_add_session(session.sid);
 

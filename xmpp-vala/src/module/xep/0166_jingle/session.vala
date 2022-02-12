@@ -29,6 +29,8 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
     public SecurityParameters? security { get { return contents.to_array()[0].security_params; } }
 
+    public Jid muji_room { get; set; }
+
     public Session.initiate_sent(XmppStream stream, string sid, Jid local_full_jid, Jid peer_full_jid) {
         this.stream = stream;
         this.sid = sid;
