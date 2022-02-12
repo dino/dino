@@ -115,6 +115,9 @@ public class Dino.Ui.CallWindowController : Object {
         call_window.menu_dump_dot.connect(() => { call_plugin.dump_dot(); });
 
         update_own_video();
+
+        update_audio_device_choices();
+        update_video_device_choices();
     }
 
     private void invite_button_clicked() {
@@ -135,13 +138,6 @@ public class Dino.Ui.CallWindowController : Object {
         Jid peer_jid = peer_state.jid;
         peer_states[peer_id] = peer_state;
 
-        peer_state.stream_created.connect((media) => {
-            if (media == "audio") {
-                update_audio_device_choices();
-            } else if (media == "video") {
-                update_video_device_choices();
-            }
-        });
         peer_state.connection_ready.connect(() => {
             call_window.set_status(peer_state.internal_id, "");
             if (participant_widgets.size == 1) {
@@ -331,7 +327,7 @@ public class Dino.Ui.CallWindowController : Object {
             } else {
                 Widget widget = (Widget) own_video;
                 call_window.set_own_video(widget);
-                own_video.display_device(devices.first());
+                own_video.display_device(call_state.get_video_device());
             }
         } else {
             own_video.detach();

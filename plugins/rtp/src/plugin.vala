@@ -388,7 +388,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         return fps;
     }
 
-    public Device? get_preferred_device(string media, bool incoming) {
+    public MediaDevice? get_preferred_device(string media, bool incoming) {
         Gee.List<Device> devices = new ArrayList<Device>();
         foreach (MediaDevice media_device in get_devices(media, incoming)) {
             if (media_device is Device) devices.add((Device)media_device);
@@ -427,14 +427,11 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         }
     }
 
-    public MediaDevice? get_device(Xmpp.Xep.JingleRtp.Stream stream, bool incoming) {
-        Stream plugin_stream = stream as Stream;
+    public MediaDevice? get_device(Xmpp.Xep.JingleRtp.Stream? stream, bool incoming) {
+        Stream? plugin_stream = stream as Stream?;
         if (plugin_stream == null) return null;
-        if (incoming) {
-            return plugin_stream.output_device ?? get_preferred_device(stream.media, incoming);
-        } else {
-            return plugin_stream.input_device ?? get_preferred_device(stream.media, incoming);
-        }
+        MediaDevice? device = incoming ? plugin_stream.output_device : plugin_stream.input_device;
+        return device ?? get_preferred_device(stream.media, incoming);
     }
 
     public void dump_dot() {
@@ -444,8 +441,8 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         print(@"Stored pipe details as $name\n");
     }
 
-    public void set_pause(Xmpp.Xep.JingleRtp.Stream stream, bool pause) {
-        Stream plugin_stream = stream as Stream;
+    public void set_pause(Xmpp.Xep.JingleRtp.Stream? stream, bool pause) {
+        Stream? plugin_stream = stream as Stream?;
         if (plugin_stream == null) return;
         if (pause) {
             plugin_stream.pause();
@@ -454,9 +451,9 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         }
     }
 
-    public void set_device(Xmpp.Xep.JingleRtp.Stream stream, MediaDevice? device) {
-        Device real_device = device as Device;
-        Stream plugin_stream = stream as Stream;
+    public void set_device(Xmpp.Xep.JingleRtp.Stream? stream, MediaDevice? device) {
+        Device? real_device = device as Device?;
+        Stream? plugin_stream = stream as Stream?;
         if (real_device == null || plugin_stream == null) return;
         if (real_device.is_source) {
             plugin_stream.input_device = real_device;
