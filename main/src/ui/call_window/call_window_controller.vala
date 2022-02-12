@@ -139,14 +139,14 @@ public class Dino.Ui.CallWindowController : Object {
         peer_states[peer_id] = peer_state;
 
         peer_state.connection_ready.connect(() => {
-            call_window.set_status(peer_state.internal_id, "");
+            call_window.set_status(peer_id, "");
             if (participant_widgets.size == 1) {
                 // This is the first peer.
                 // If it can do MUJI, show invite button.
 
                 call_state.can_convert_into_groupcall.begin((_, res) => {
                     bool can_convert = call_state.can_convert_into_groupcall.end(res);
-                    participant_widgets.values.@foreach((widget) => widget.may_show_invite_button = true);
+                    participant_widgets[peer_id].may_show_invite_button = can_convert;
                 });
 
                 call_plugin.devices_changed.connect((media, incoming) => {
@@ -174,7 +174,7 @@ public class Dino.Ui.CallWindowController : Object {
         });
         peer_state.info_received.connect((session_info) => {
             if (session_info == Xmpp.Xep.JingleRtp.CallSessionInfo.RINGING) {
-                call_window.set_status(peer_state.internal_id, "ringing");
+                call_window.set_status(peer_id, "ringing");
             }
         });
         peer_state.encryption_updated.connect((audio_encryption, video_encryption, same) => {
