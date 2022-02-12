@@ -373,7 +373,7 @@ public class Dino.CallState : Object {
             handle_peer_left(peer_state, false, Xep.Jingle.ReasonElement.CANCEL, "Peer left the MUJI MUC");
         });
 
-        if (group_call.peers_to_connect_to.size > 3) {
+        if (group_call.peers_to_connect_to.size > 4) {
             end("Call too full - P2p calls don't work well with many participants");
             return;
         }

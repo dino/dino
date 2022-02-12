@@ -159,7 +159,7 @@ namespace Dino {
                 debug("[%s] Incoming call from %s from MUJI muc %s", account.bare_jid.to_string(), session.peer_full_jid.to_string(), muji_muc.to_string());
 
                 foreach (CallState call_state in call_states.values) {
-                    if (call_state.group_call != null && call_state.group_call.muc_jid.equals(muji_muc)) {
+                    if (call_state.call.account.equals(account) && call_state.group_call != null && call_state.group_call.muc_jid.equals(muji_muc)) {
                         if (call_state.peers.keys.contains(session.peer_full_jid)) {
                             PeerState peer_state = call_state.peers[session.peer_full_jid];
                             debug("[%s] Incoming call, we know the peer. Expected %s", account.bare_jid.to_string(), peer_state.waiting_for_inbound_muji_connection.to_string());
@@ -182,28 +182,19 @@ namespace Dino {
 
             debug(@"[%s] Incoming call from %s", account.bare_jid.to_string(), session.peer_full_jid.to_string());
 
-            // Check if we already accepted this call via Jingle Message Initiation => accept
-            Call? call = null;
-            foreach (PeerState peer_state in jmi_request_peer.values) {
-                CallState call_state = call_states[peer_state.call];
-                if (peer_state.sid == session.sid &&
-                        call_state.call.account.equals(account) &&
-                        peer_state.jid.equals_bare(session.peer_full_jid) &&
-                        call_state.we_should_send_video == counterpart_wants_video &&
-                        call_state.accepted) {
-                    call = peer_state.call;
-                    break;
-                }
-            }
-            if (call != null) {
-                jmi_request_peer[call].set_session(session);
-                jmi_request_peer[call].accept();
-                jmi_request_peer.unset(call);
+            // Check if we already got this call via Jingle Message Initiation => accept
+            // PeerState.accept() checks if the call was accepted and ensures that we don't accidentally send video
+            PeerState? peer_state = get_peer_by_sid(account, session.sid, session.peer_full_jid);
+            if (peer_state != null) {
+                jmi_request_peer[peer_state.call].set_session(session);
+                jmi_request_peer[peer_state.call].accept();
+                jmi_request_peer.unset(peer_state.call);
                 return;
             }
 
             // This is a direct call without prior JMI. Ask user.
-            PeerState peer_state = create_received_call(account, session.peer_full_jid, account.full_jid, counterpart_wants_video);
+            if (stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(session.peer_full_jid.bare_jid, account)) return;
+            peer_state = create_received_call(account, session.peer_full_jid, account.full_jid, counterpart_wants_video);
             peer_state.set_session(session);
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(peer_state.call.counterpart.bare_jid, account, Conversation.Type.CHAT);
             call_incoming(peer_state.call, peer_state.call_state, conversation, counterpart_wants_video, false);
@@ -260,8 +251,8 @@ namespace Dino {
             return null;
         }
 
-        private PeerState? get_peer_by_sid(Account account, string sid, Jid jid1, Jid jid2) {
-            Jid relevant_jid = jid1.equals_bare(account.bare_jid) ? jid2 : jid1;
+        private PeerState? get_peer_by_sid(Account account, string sid, Jid jid1, Jid? jid2 = null) {
+            Jid relevant_jid = jid1.equals_bare(account.bare_jid) && jid2 != null ? jid2 : jid1;
 
             foreach (CallState call_state in call_states.values) {
                 if (!call_state.call.account.equals(account)) continue;
@@ -284,7 +275,7 @@ namespace Dino {
 
                 CallState call_state = call_states[call];
 
-                if (call.counterparts.contains(inviter_jid) && call_state.accepted) {
+                if (call.counterparts.size == 1 && call.counterparts.contains(inviter_jid) && call_state.accepted) {
                     // A call is converted into a group call.
                     call_state.join_group_call.begin(muc_jid);
                     return null;
