@@ -156,7 +156,7 @@ public class Dino.Ui.CallWindowController : Object {
 
                 update_audio_device_choices();
                 update_video_device_choices();
-            } else if (participant_widgets.size >= 1) {
+            } else if (participant_widgets.size > 1) {
                 participant_widgets.values.@foreach((widget) => widget.may_show_invite_button = true);
             }
         });

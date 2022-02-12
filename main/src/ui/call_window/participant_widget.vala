@@ -19,6 +19,7 @@ namespace Dino.Ui {
         public string? participant_name;
 
         bool is_highest_row = false;
+        bool is_start_row = false;
         public bool controls_active { get; set; }
         public bool may_show_invite_button { get; set; }
 
@@ -44,12 +45,14 @@ namespace Dino.Ui {
             this.add_overlay(header_bar);
 
             this.notify["controls-active"].connect(reveal_or_hide_controls);
+            this.notify["may-show-invite-button"].connect(reveal_or_hide_controls);
         }
 
         public void on_row_changed(bool is_highest, bool is_lowest, bool is_start, bool is_end) {
-            is_highest_row = is_highest;
+            this.is_highest_row = is_highest;
+            this.is_start_row = is_start;
+
             header_bar.show_close_button = is_highest_row;
-            invite_button.visible = may_show_invite_button && is_highest_row && is_start;
             if (is_highest_row) {
                 header_bar.get_style_context().add_class("call-header-background");
                 Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
@@ -105,6 +108,7 @@ namespace Dino.Ui {
 
         private void reveal_or_hide_controls() {
             header_bar.opacity = controls_active ? 1.0 : 0.0;
+            invite_button.visible = may_show_invite_button && is_highest_row && is_start_row;
         }
     }
 }
