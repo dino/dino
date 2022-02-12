@@ -16,12 +16,12 @@ public class Dino.Ui.CallWindowController : Object {
     private HashMap<string, Plugins.VideoCallWidget> participant_videos = new HashMap<string, Plugins.VideoCallWidget>();
     private HashMap<string, ParticipantWidget> participant_widgets = new HashMap<string, ParticipantWidget>();
     private HashMap<string, PeerState> peer_states = new HashMap<string, PeerState>();
+    private HashMap<string, ulong> invite_handler_ids = new HashMap<string, ulong>();
     private int window_height = -1;
     private int window_width = -1;
     private bool window_size_changed = false;
     private ulong[] call_window_handler_ids = new ulong[0];
     private ulong[] bottom_bar_handler_ids = new ulong[0];
-    private ulong[] invite_handler_ids = new ulong[0];
 
     public CallWindowController(CallWindow call_window, CallState call_state, StreamInteractor stream_interactor) {
         this.call_window = call_window;
@@ -93,18 +93,6 @@ public class Dino.Ui.CallWindowController : Object {
         call_window_handler_ids += call_window.realize.connect(() => {
             capture_window_size();
         });
-        invite_handler_ids += call_window.invite_button.clicked.connect(() => {
-            Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
-            acc_list.add(call.account);
-            SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
-            add_chat_dialog.set_transient_for((Window) call_window.get_toplevel());
-            add_chat_dialog.title = _("Invite to Call");
-            add_chat_dialog.ok_button.label = _("Invite");
-            add_chat_dialog.selected.connect((account, jid) => {
-                call_state.invite_to_call.begin(jid);
-            });
-            add_chat_dialog.present();
-        });
 
         calls.conference_info_received.connect((call, conference_info) => {
             if (!this.call.equals(call)) return;
@@ -129,6 +117,19 @@ public class Dino.Ui.CallWindowController : Object {
         update_own_video();
     }
 
+    private void invite_button_clicked() {
+        Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
+        acc_list.add(call.account);
+        SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
+        add_chat_dialog.set_transient_for((Window) call_window.get_toplevel());
+        add_chat_dialog.title = _("Invite to Call");
+        add_chat_dialog.ok_button.label = _("Invite");
+        add_chat_dialog.selected.connect((account, jid) => {
+            call_state.invite_to_call.begin(jid);
+        });
+        add_chat_dialog.present();
+    }
+
     private void connect_peer_signals(PeerState peer_state) {
         string peer_id = peer_state.internal_id;
         Jid peer_jid = peer_state.jid;
@@ -149,7 +150,7 @@ public class Dino.Ui.CallWindowController : Object {
 
                 call_state.can_convert_into_groupcall.begin((_, res) => {
                     bool can_convert = call_state.can_convert_into_groupcall.end(res);
-                    call_window.invite_button_revealer.visible = can_convert;
+                    participant_widgets.values.@foreach((widget) => widget.may_show_invite_button = true);
                 });
 
                 call_plugin.devices_changed.connect((media, incoming) => {
@@ -160,7 +161,7 @@ public class Dino.Ui.CallWindowController : Object {
                 update_audio_device_choices();
                 update_video_device_choices();
             } else if (participant_widgets.size >= 1) {
-                call_window.invite_button_revealer.visible = true;
+                participant_widgets.values.@foreach((widget) => widget.may_show_invite_button = true);
             }
         });
         peer_state.counterpart_sends_video_updated.connect((mute) => {
@@ -215,7 +216,8 @@ public class Dino.Ui.CallWindowController : Object {
         string participant_name = conversation != null ? Util.get_conversation_display_name(stream_interactor, conversation) : jid.bare_jid.to_string();
 
         ParticipantWidget participant_widget = new ParticipantWidget(participant_name);
-        participant_widget.menu_button.clicked.connect((event) => {
+        participant_widget.may_show_invite_button = !participant_widgets.is_empty;
+        participant_widget.debug_information_clicked.connect(() => {
             var conn_details_window = new CallConnectionDetailsWindow() { title=participant_name, visible=true };
             conn_details_window.update_content(peer_states[participant_id].get_info());
             uint timeout_handle_id = Timeout.add_seconds(1, () => {
@@ -227,6 +229,7 @@ public class Dino.Ui.CallWindowController : Object {
             conn_details_window.present();
             this.call_window.destroy.connect(() => conn_details_window.close() );
         });
+        invite_handler_ids[participant_id] += participant_widget.invite_button_clicked.connect(() => invite_button_clicked());
         participant_widgets[participant_id] = participant_widget;
 
         call_window.add_participant(participant_id, participant_widget);
@@ -256,7 +259,9 @@ public class Dino.Ui.CallWindowController : Object {
         if (peer_states.has_key(participant_id)) debug(@"[%s] Call window controller | Remove participant: %s", call.account.bare_jid.to_string(), peer_states[participant_id].jid.to_string());
 
         participant_videos.unset(participant_id);
+        participant_widgets[participant_id].disconnect(invite_handler_ids[participant_id]);
         participant_widgets.unset(participant_id);
+        invite_handler_ids.unset(participant_id);
         peer_states.unset(participant_id);
         call_window.remove_participant(participant_id);
     }
@@ -337,9 +342,9 @@ public class Dino.Ui.CallWindowController : Object {
     public override void dispose() {
         foreach (ulong handler_id in call_window_handler_ids) call_window.disconnect(handler_id);
         foreach (ulong handler_id in bottom_bar_handler_ids) call_window.bottom_bar.disconnect(handler_id);
-        foreach (ulong handler_id in invite_handler_ids) call_window.invite_button.disconnect(handler_id);
+        participant_widgets.keys.@foreach((peer_id) => { remove_participant(peer_id); return true; });
 
-        call_window_handler_ids = bottom_bar_handler_ids = invite_handler_ids = new ulong[0];
+        call_window_handler_ids = bottom_bar_handler_ids = new ulong[0];
 
         base.dispose();
     }

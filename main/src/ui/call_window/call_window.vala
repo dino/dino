@@ -15,11 +15,9 @@ namespace Dino.Ui {
         public Grid grid = new Grid() { visible=true };
         public CallBottomBar bottom_bar = new CallBottomBar() { visible=true };
         public Revealer bottom_bar_revealer = new Revealer() { valign=Align.END, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200, visible=true };
-        public HeaderBar header_bar = new HeaderBar() { valign=Align.START, halign=Align.END, show_close_button=true, visible=true };
-        public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200, visible=true };
+        public HeaderBar header_bar = new HeaderBar() { valign=Align.START, halign=Align.END, show_close_button=true, visible=true, opacity=0.0 };
+        public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.SLIDE_LEFT, transition_duration=200, visible=true, reveal_child=false };
         public Box own_video_box = new Box(Orientation.HORIZONTAL, 0) { halign=Align.END, valign=Align.END, visible=true };
-        public Revealer invite_button_revealer = new Revealer() { margin_top=50, margin_right=30, halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200 };
-        public Button invite_button = new Button.from_icon_name("dino-account-plus") { relief=ReliefStyle.NONE, visible=true };
         private Widget? own_video = null;
         private HashMap<string, ParticipantWidget> participant_widgets = new HashMap<string, ParticipantWidget>();
         private ArrayList<string> participants = new ArrayList<string>();
@@ -32,12 +30,11 @@ namespace Dino.Ui {
         public bool controls_active { get; set; default=true; }
 
         construct {
-            Util.force_css(header_bar, "* { background: none; border: 0; border-radius: 0; }");
             header_bar.get_style_context().add_class("call-header-bar");
+            header_bar.custom_title = new Box(Orientation.VERTICAL, 0);
+            header_bar.spacing = 0;
             header_bar_revealer.add(header_bar);
             bottom_bar_revealer.add(bottom_bar);
-            invite_button.get_style_context().add_class("black-element");
-            invite_button_revealer.add(invite_button);
             own_video_box.get_style_context().add_class("own-video");
 
             this.get_style_context().add_class("dino-call-window");
@@ -46,7 +43,6 @@ namespace Dino.Ui {
             overlay.add_overlay(own_video_box);
             overlay.add_overlay(bottom_bar_revealer);
             overlay.add_overlay(header_bar_revealer);
-            overlay.add_overlay(invite_button_revealer);
             overlay.get_child_position.connect(on_get_child_position);
 
             add(overlay);
@@ -54,8 +50,6 @@ namespace Dino.Ui {
 
         public CallWindow() {
             this.bind_property("controls-active", bottom_bar_revealer, "reveal-child", BindingFlags.SYNC_CREATE);
-            this.bind_property("controls-active", header_bar_revealer, "reveal-child", BindingFlags.SYNC_CREATE);
-            this.bind_property("controls-active", invite_button_revealer, "reveal-child", BindingFlags.SYNC_CREATE);
 
             this.motion_notify_event.connect(reveal_control_elements);
             this.enter_notify_event.connect(reveal_control_elements);
@@ -125,8 +119,7 @@ namespace Dino.Ui {
                 participant_widgets[participants[0]].margin_bottom = margin_bottom;
                 participant_widgets[participants[0]].margin_start = margin_left;
 
-                participant_widgets[participants[0]].on_lowest_row_changed(margin_bottom == 0);
-                participant_widgets[participants[0]].on_highest_row_changed(margin_top == 0);
+                participant_widgets[participants[0]].on_row_changed(margin_top == 0, margin_bottom == 0, margin_left == 0, margin_right == 0);
                 return;
             }
 
