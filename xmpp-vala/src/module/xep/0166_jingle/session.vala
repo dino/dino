@@ -426,7 +426,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                 reason_node.put_node(new StanzaNode.build(reason_name, NS_URI));
             }
             if (reason_text != null) {
-                reason_node.put_node(new StanzaNode.text(reason_text));
+                reason_node.put_node(new StanzaNode.build("text", NS_URI).put_node(new StanzaNode.text(reason_text)));
             }
             terminate_iq.put_node(reason_node);
         }

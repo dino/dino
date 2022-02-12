@@ -40,8 +40,14 @@ namespace Xmpp.Xep.CallInvites {
             send_message(stream, to, call_id, "retract", "cancel", message_type);
         }
 
-        public void send_accept(XmppStream stream, Jid to, string call_id, string message_type) {
-            send_message(stream, to, call_id, "accept", null, message_type);
+        public void send_accept(XmppStream stream, Jid inviter, string call_id, StanzaNode? inner_node, string message_type) {
+            StanzaNode accept_node = new StanzaNode.build("accept", NS_URI).add_self_xmlns()
+                    .put_attribute("id", call_id);
+            if (inner_node != null) accept_node.put_node(inner_node);
+            MessageStanza invite_message = new MessageStanza() { to=inviter, type_=message_type };
+            MessageProcessingHints.set_message_hint(invite_message, MessageProcessingHints.HINT_STORE);
+            invite_message.stanza.put_node(accept_node);
+            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, invite_message);
         }
 
         public void send_reject(XmppStream stream, Jid to, string call_id, string message_type) {

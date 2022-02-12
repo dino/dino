@@ -100,7 +100,17 @@ public class Dino.CallState : Object {
         if (use_cim) {
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_accept(stream, cim_counterpart, cim_call_id, cim_message_type);
+            StanzaNode? inner_node = null;
+            if (group_call != null) {
+                inner_node = new StanzaNode.build("muji", Xep.Muji.NS_URI).add_self_xmlns()
+                        .put_attribute("room", group_call.muc_jid.to_string());
+            } else if (peers.size == 1) {
+                foreach (PeerState peer in peers.values) {
+                    inner_node = new StanzaNode.build("jingle", Xep.CallInvites.NS_URI)
+                            .put_attribute("sid", peer.sid);
+                }
+            }
+            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_accept(stream, cim_counterpart, cim_call_id, inner_node, cim_message_type);
         } else {
             foreach (PeerState peer in peers.values) {
                 peer.accept();
