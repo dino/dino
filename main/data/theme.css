@@ -309,30 +309,6 @@ box.dino-input-error label.input-status-highlight-once {
     margin: 0;
 }
 
-.dino-call-window .black-element {
-    color: rgba(255,255,255,0.7);
-    border-radius: 5px;
-    background: rgba(0,0,0,0.5);
-    border: none;
-    box-shadow: none;
-}
-
-.dino-call-window label.black-element {
-    padding: 5px;
-}
-
-.dino-call-window button.black-element {
-    padding: 0;
-}
-
-.dino-call-window button.black-element.unencrypted {
-    color: @error_color;
-}
-
-.dino-call-window .black-element:hover {
-    background: rgba(20,20,20,0.5);
-}
-
 .dino-call-window .participant-header-bar {
     background: none;
     border: none;
@@ -364,6 +340,10 @@ box.dino-input-error label.input-status-highlight-once {
 
 .dino-call-window .participant-header-bar button:hover image {
     color: white;
+}
+
+.dino-call-window .participant-header-bar button.unencrypted image {
+    color: @error_color;
 }
 
 .dino-call-window .call-bottom-bar {

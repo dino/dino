@@ -13,7 +13,7 @@ namespace Dino.Ui {
         public Box inner_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=5, margin_top=5, hexpand=true, visible=true };
         public Box title_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true, visible=true };
         public CallEncryptionButton encryption_button = new CallEncryptionButton() { opacity=0, relief=ReliefStyle.NONE, height_request=30, width_request=30, margin_end=5, visible=true };
-        public MenuButton menu_button = new MenuButton() { relief=ReliefStyle.NONE, visible=true, image=new Image.from_icon_name("open-menu-symbolic", IconSize.MENU) };
+        public MenuButton menu_button = new MenuButton() { relief=ReliefStyle.NONE, visible=true };
         public Button invite_button = new Button.from_icon_name("dino-account-plus") { relief=ReliefStyle.NONE, visible=true };
         public bool shows_video = false;
         public string? participant_name;
@@ -34,7 +34,8 @@ namespace Dino.Ui {
             header_bar.pack_start(encryption_button);
             header_bar.pack_end(menu_button);
 
-            menu_button.popover = create_menu();
+            menu_button.image = new Image.from_icon_name("open-menu-symbolic", IconSize.MENU);
+            menu_button.set_popover(create_menu());
             invite_button.clicked.connect(() => invite_button_clicked());
 
             this.add_overlay(header_bar);
