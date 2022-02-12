@@ -33,13 +33,8 @@ namespace Dino.Ui {
             header_bar.pack_start(invite_button);
             header_bar.pack_start(encryption_button);
             header_bar.pack_end(menu_button);
-            PopoverMenu menu = new PopoverMenu();
-            Box box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
-            ModelButton debug_information_button = new ModelButton() { text=_("Debug information"), visible=true };
-            debug_information_button.clicked.connect(() => debug_information_clicked());
-            box.add(debug_information_button);
-            menu.add(box);
-            menu_button.popover = menu;
+
+            menu_button.popover = create_menu();
             invite_button.clicked.connect(() => invite_button_clicked());
 
             this.add_overlay(header_bar);
@@ -92,6 +87,16 @@ namespace Dino.Ui {
             if (main_widget != null) this.remove(main_widget);
             main_widget = widget;
             this.add(main_widget);
+        }
+
+        private PopoverMenu create_menu() {
+            PopoverMenu menu = new PopoverMenu();
+            Box box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
+            ModelButton debug_information_button = new ModelButton() { text=_("Debug information"), visible=true };
+            debug_information_button.clicked.connect(() => debug_information_clicked());
+            box.add(debug_information_button);
+            menu.add(box);
+            return menu;
         }
 
         public void set_status(string state) {
