@@ -233,15 +233,15 @@ namespace Dino {
             return peer_state;
         }
 
-        private CallState? get_call_state_by_call_id(Account account, string call_id, Jid jid1, Jid jid2) {
-            Jid relevant_jid = jid1.equals_bare(account.bare_jid) ? jid2 : jid1;
-
+        private CallState? get_call_state_by_call_id(Account account, string call_id, Jid? counterpart_jid = null) {
             foreach (CallState call_state in call_states.values) {
                 if (!call_state.call.account.equals(account)) continue;
 
                 if (call_state.cim_call_id == call_id) {
+                    if (counterpart_jid == null) return call_state;
+
                     foreach (Jid jid in call_state.peers.keys) {
-                        if (jid.equals_bare(relevant_jid)) {
+                        if (jid.equals_bare(counterpart_jid)) {
                             return call_state;
                         }
                     }
@@ -266,7 +266,7 @@ namespace Dino {
             return null;
         }
 
-        private CallState? create_recv_muji_call(Account account, Jid inviter_jid, Jid muc_jid, string message_type) {
+        private CallState? create_recv_muji_call(Account account, string call_id, Jid inviter_jid, Jid muc_jid, string message_type) {
             debug("[%s] Muji call received from %s for MUC %s, type %s", account.bare_jid.to_string(), inviter_jid.to_string(), muc_jid.to_string(), message_type);
 
             foreach (Call call in call_states.keys) {
@@ -276,6 +276,7 @@ namespace Dino {
 
                 if (call.counterparts.size == 1 && call.counterparts.contains(inviter_jid) && call_state.accepted) {
                     // A call is converted into a group call.
+                    call_state.cim_call_id = call_id;
                     call_state.join_group_call.begin(muc_jid);
                     return null;
                 }
@@ -429,7 +430,7 @@ namespace Dino {
                         string? room_jid_str = join_method_node.get_attribute("room");
                         if (room_jid_str == null) return;
                         Jid room_jid = new Jid(room_jid_str);
-                        call_state = create_recv_muji_call(account, from_jid, room_jid, message_stanza.type_);
+                        call_state = create_recv_muji_call(account, call_id, from_jid, room_jid, message_stanza.type_);
 
                         multiparty = true;
                         break;
@@ -474,12 +475,13 @@ namespace Dino {
                 }
             });
             call_invites_module.call_accepted.connect((from_jid, to_jid, call_id, message_type) => {
-                CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid, to_jid);
-                if (call_state == null) return;
-                Call call = call_state.call;
-
                 // Carboned message from our account
                 if (from_jid.equals_bare(account.bare_jid)) {
+
+                    CallState? call_state = get_call_state_by_call_id(account, call_id);
+                    if (call_state == null) return;
+                    Call call = call_state.call;
+
                     // Ignore carbon from ourselves
                     if (from_jid.equals(account.full_jid)) return;
 
@@ -489,6 +491,10 @@ namespace Dino {
                     remove_call_from_datastructures(call);
                     return;
                 }
+
+                CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid);
+                if (call_state == null) return;
+                Call call = call_state.call;
 
                 // We proposed the call. This is a message from our peer.
                 if (call.direction == Call.DIRECTION_OUTGOING &&
@@ -502,7 +508,7 @@ namespace Dino {
                 if (from_jid.equals_bare(account.bare_jid)) return;
 
                 // The call was retracted by the counterpart
-                CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid, to_jid);
+                CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid);
                 if (call_state == null) return;
 
                 if (call_state.call.state != Call.State.RINGING) {
@@ -516,6 +522,14 @@ namespace Dino {
                 remove_call_from_datastructures(call_state.call);
             });
             call_invites_module.call_rejected.connect((from_jid, to_jid, call_id, message_type) => {
+                // We rejected an invite from another device
+                if (from_jid.equals_bare(account.bare_jid)) {
+                    CallState? call_state = get_call_state_by_call_id(account, call_id);
+                    if (call_state == null) return;
+                    Call call = call_state.call;
+                    call.state = Call.State.DECLINED;
+                }
+
                 if (from_jid.equals_bare(account.bare_jid)) return;
                 debug(@"[%s] %s rejected our MUJI invite", account.bare_jid.to_string(), from_jid.to_string());
             });
