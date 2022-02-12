@@ -274,6 +274,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         if (version != null && !version.contains("git")) {
             switch (version.substring(0, 3)) {
                 case "0.2": version = @"$version - <span font_style='italic'>Mexican Caribbean Coral Reefs</span>"; break;
+                case "0.3": version = @"$version - <span font_style='italic'>Theikenmeer</span>"; break;
             }
         }
         Gtk.AboutDialog dialog = new Gtk.AboutDialog();

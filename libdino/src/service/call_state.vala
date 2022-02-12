@@ -34,7 +34,7 @@ public class Dino.CallState : Object {
         this.call = call;
         this.stream_interactor = stream_interactor;
 
-        if (call.direction == Call.DIRECTION_OUTGOING && call.state != Call.State.OTHER_DEVICE && call.ourpart.equals(call.account.full_jid)) {
+        if (call.direction == Call.DIRECTION_OUTGOING && call.state != Call.State.OTHER_DEVICE) {
             accepted = true;
 
             Timeout.add_seconds(30, () => {
