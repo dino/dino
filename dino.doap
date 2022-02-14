@@ -272,8 +272,19 @@
     </implements>
     <implements>
       <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0059.html"/>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0060.html"/>
         <xmpp:status>partial</xmpp:status>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0065.html"/>
+        <xmpp:note>For use with XEP-0260</xmpp:note>
       </xmpp:SupportedXep>
     </implements>
     <implements>
@@ -380,6 +391,11 @@
     </implements>
     <implements>
       <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0223.html"/>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0234.html"/>
       </xmpp:SupportedXep>
     </implements>
@@ -420,6 +436,11 @@
     <implements>
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0294.html"/>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0297.html"/>
       </xmpp:SupportedXep>
     </implements>
     <implements>
@@ -494,13 +515,34 @@
     </implements>
     <implements>
       <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0393.html"/>
+        <xmpp:status>partial</xmpp:status>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0396.html"/>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0398.html"/>
         <xmpp:status>complete</xmpp:status>
       </xmpp:SupportedXep>
     </implements>
     <implements>
       <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0402.html"/>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0410.html"/>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0454.html"/>
       </xmpp:SupportedXep>
     </implements>
   </Project>
