@@ -15,7 +15,7 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
     }
 
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, WidgetType type) {
-        if (conversation.type_ == Conversation.Type.CHAT && type == WidgetType.GTK) {
+        if (conversation.type_ == Conversation.Type.CHAT && type == WidgetType.GTK4) {
 
             int identity_id = plugin.db.identity.get_id(conversation.account.id);
             if (identity_id < 0) return;
@@ -28,11 +28,11 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
             }
 
             if (i > 0) {
-                Button btn = new Button.from_icon_name("view-list-symbolic") { visible = true, valign = Align.CENTER, relief = ReliefStyle.NONE };
+                Button btn = new Button.from_icon_name("view-list-symbolic") { visible = true, valign = Align.CENTER, has_frame = false };
                 btn.clicked.connect(() => {
                     btn.activate();
                     ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, conversation.counterpart);
-                    dialog.set_transient_for((Window) btn.get_toplevel());
+                    dialog.set_transient_for((Window) btn.get_root());
                     dialog.response.connect((response_type) => {
                         plugin.device_notification_populator.should_hide();
                     });

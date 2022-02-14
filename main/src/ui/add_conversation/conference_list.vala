@@ -7,20 +7,22 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-protected class ConferenceList : FilterableList {
+protected class ConferenceList {
 
     public signal void conversation_selected(Conversation? conversation);
 
     private StreamInteractor stream_interactor;
+
+    private ListBox list_box = new ListBox();
     private HashMap<Account, Set<Conference>> lists = new HashMap<Account, Set<Conference>>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashMap<Jid, Widget>> widgets = new HashMap<Account, HashMap<Jid, Widget>>(Account.hash_func, Account.equals_func);
 
     public ConferenceList(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        set_filter_func(filter);
-        set_header_func(header);
-        set_sort_func(sort);
+//        list_box.set_filter_func(filter);
+        list_box.set_header_func(header);
+//        list_box.set_sort_func(sort);
 
         stream_interactor.get_module(MucManager.IDENTITY).bookmarks_updated.connect((account, conferences) => {
             lists[account] = conferences;
@@ -44,18 +46,18 @@ protected class ConferenceList : FilterableList {
         }
         var widget = new ConferenceListRow(stream_interactor, conference, account);
         widgets[account][conference.jid] = widget;
-        add(widget);
+        list_box.append(widget);
     }
 
     private void remove_conference(Account account, Jid jid) {
         if (widgets.has_key(account) && widgets[account].has_key(jid)) {
-            remove(widgets[account][jid]);
+            list_box.remove(widgets[account][jid]);
             widgets[account].unset(jid);
         }
     }
 
     public void refresh_conferences() {
-        @foreach((widget) => { remove(widget); });
+//        @foreach((widget) => { remove(widget); });
         foreach (Account account in lists.keys) {
             foreach (Conference conference in lists[account]) {
                 add_conference(account, conference);
@@ -78,25 +80,8 @@ protected class ConferenceList : FilterableList {
         }
     }
 
-    private bool filter(ListBoxRow r) {
-        if (r.get_type().is_a(typeof(ListRow))) {
-            ListRow row = r as ListRow;
-            if (filter_values != null) {
-                foreach (string filter in filter_values) {
-                    if (!(row.name_label.label.down().contains(filter.down()) ||
-                            row.jid.to_string().down().contains(filter.down()))) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public override int sort(ListBoxRow row1, ListBoxRow row2) {
-        ListRow c1 = (row1 as ListRow);
-        ListRow c2 = (row2 as ListRow);
-        return c1.name_label.label.collate(c2.name_label.label);
+    public ListBox get_list_box() {
+        return list_box;
     }
 }
 

@@ -5,7 +5,8 @@ find_packages(ICE_PACKAGES REQUIRED
     GLib
     GModule
     GObject
-    GTK3
+    GIO
+    GDKPixbuf2
 )
 
 vala_precompile(ICE_VALA_C

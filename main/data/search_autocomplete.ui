@@ -5,18 +5,17 @@
         <property name="visible">True</property>
         <child>
             <object class="DinoUiAvatarImage" id="image">
-                <property name="margin">4</property>
+                <property name="margin-top">4</property>
+                <property name="margin-bottom">4</property>
                 <property name="margin-start">6</property>
                 <property name="margin-end">6</property>
                 <property name="height">24</property>
                 <property name="width">24</property>
-                <property name="visible">True</property>
                 <property name="allow_gray">False</property>
             </object>
         </child>
         <child>
             <object class="GtkLabel" id="label">
-                <property name="visible">True</property>
                 <property name="ellipsize">end</property>
             </object>
         </child>

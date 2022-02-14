@@ -35,7 +35,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         CssProvider provider = new CssProvider();
         provider.load_from_resource("/im/dino/Dino/theme.css");
-        StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
+        StyleContext.add_provider_for_display(Gdk.Display.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
 
         create_actions();
         add_main_option_entries(options);
@@ -68,7 +68,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 var desktop_env = Environment.get_variable("XDG_CURRENT_DESKTOP");
                 if (desktop_env == null || !desktop_env.down().contains("gnome")) {
                     if (this.active_window != null) {
-                        this.active_window.urgency_hint = true;
+//                        this.active_window.urgency_hint = true;
                     }
                 }
             });
@@ -80,7 +80,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 config = new Config(db);
                 window = new MainWindow(this, stream_interactor, db, config);
                 controller.set_window(window);
-                if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.delete_event.connect(window.hide_on_delete);
+                if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.hide_on_close = true;
             }
             window.present();
         });
@@ -205,9 +205,9 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             if (!use_csd()) {
                 // Hack to prevent CRITICAL in Gtk when trying to destroy non-existant headerbar
                 Widget shortcuts_hack = dialog.get_titlebar();
-                dialog.destroy.connect_after(() => {
-                    shortcuts_hack = null;
-                });
+//                dialog.destroy.connect_after(() => {
+//                    shortcuts_hack = null;
+//                });
                 dialog.set_titlebar(null);
             }
             dialog.title = _("Keyboard Shortcuts");
@@ -292,11 +292,11 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         dialog.copyright = "Copyright © 2016-2022 - Dino Team";
         dialog.license_type = License.GPL_3_0;
 
-        dialog.response.connect((response_id) => {
-            if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT) {
-                dialog.destroy();
-            }
-        });
+//        dialog.response.connect((response_id) => {
+//            if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT) {
+//                dialog.destroy();
+//            }
+//        });
 
         if (!use_csd()) {
             dialog.set_titlebar(null);
@@ -315,7 +315,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             conference_fragment.account = account;
         }
         Box content_area = dialog.get_content_area();
-        content_area.add(conference_fragment);
+        content_area.append(conference_fragment);
         conference_fragment.joined.connect(() => {
             dialog.destroy();
         });

@@ -34,9 +34,12 @@ public class ChatInputController : Object {
 
         reset_input_field_status();
 
-        chat_input.chat_text_view.text_view.buffer.changed.connect(on_text_input_changed);
-        chat_input.chat_text_view.text_view.key_press_event.connect(on_text_input_key_press);
+        var text_input_key_events = new EventControllerKey();
+        text_input_key_events.key_pressed.connect(on_text_input_key_press);
+        chat_input.chat_text_view.text_view.add_controller(text_input_key_events);
+
         chat_input.chat_text_view.text_view.paste_clipboard.connect(() => clipboard_pasted());
+        chat_input.chat_text_view.text_view.buffer.changed.connect(on_text_input_changed);
 
         chat_text_view_controller.send_text.connect(send_text);
 
@@ -50,7 +53,7 @@ public class ChatInputController : Object {
         status_description_label.activate_link.connect((uri) => {
             if (uri == OPEN_CONVERSATION_DETAILS_URI){
                 ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
-                contact_details_dialog.set_transient_for((Gtk.Window) chat_input.get_toplevel());
+                contact_details_dialog.set_transient_for((Gtk.Window) chat_input.get_root());
                 contact_details_dialog.present();
             }
             return true;
@@ -136,7 +139,7 @@ public class ChatInputController : Object {
                 case "/ping":
                     Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
                     try {
-                        stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping.begin(stream, conversation.counterpart.with_resource(token[1]), null);
+                        stream.get_module(Xmpp.Xep.Ping.Module.IDENTITY).send_ping.begin(stream, conversation.counterpart.with_resource(token[1]));
                     } catch (Xmpp.InvalidJidError e) {
                         warning("Could not ping invalid Jid: %s", e.message);
                     }
@@ -184,8 +187,8 @@ public class ChatInputController : Object {
         }
     }
 
-    private bool on_text_input_key_press(EventKey event) {
-        if (event.keyval == Gdk.Key.Up && chat_input.chat_text_view.text_view.buffer.text == "") {
+    private bool on_text_input_key_press(uint keyval, uint keycode, Gdk.ModifierType state) {
+        if (keyval == Gdk.Key.Up && chat_input.chat_text_view.text_view.buffer.text == "") {
             activate_last_message_correction();
             return true;
         } else {

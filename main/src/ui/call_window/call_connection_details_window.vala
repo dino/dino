@@ -4,16 +4,16 @@ namespace Dino.Ui {
 
     public class CallConnectionDetailsWindow : Gtk.Window {
 
-        public Box box = new Box(Orientation.VERTICAL, 15) { margin=10, halign=Align.CENTER, valign=Align.CENTER, visible=true };
+        public Box box = new Box(Orientation.VERTICAL, 15) { halign=Align.CENTER, valign=Align.CENTER, visible=true };
 
         private bool video_added = false;
         private CallContentDetails audio_details = new CallContentDetails("Audio") { visible=true };
         private CallContentDetails video_details = new CallContentDetails("Video");
 
         public CallConnectionDetailsWindow() {
-            box.add(audio_details);
-            box.add(video_details);
-            add(box);
+            box.append(audio_details);
+            box.append(video_details);
+            set_child(box);
         }
 
         public void update_content(PeerInfo peer_info) {

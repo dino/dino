@@ -16,7 +16,7 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
         this.stream_interactor = stream_interactor;
     }
 
-    public override Object? get_widget(Plugins.WidgetType type) {
+    public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
         FileItem file_item = content_item as FileItem;
         FileTransfer transfer = file_item.file_transfer;
         return new FileWidget(stream_interactor, transfer) { visible=true };
@@ -51,11 +51,11 @@ public class FileWidget : SizeRequestBox {
         this.file_transfer = file_transfer;
 
         update_widget.begin();
-        size_allocate.connect((allocation) => {
-            if (allocation.height > parent.get_allocated_height()) {
-                Idle.add(() => { parent.queue_resize(); return false; });
-            }
-        });
+//        size_allocate.connect((allocation) => {
+//            if (allocation.height > parent.get_allocated_height()) {
+//                Idle.add(() => { parent.queue_resize(); return false; });
+//            }
+//        });
 
         file_transfer.bind_property("state", this, "file-transfer-state");
         file_transfer.bind_property("mime-type", this, "file-transfer-mime-type");
@@ -79,7 +79,7 @@ public class FileWidget : SizeRequestBox {
                 if (content != null) this.remove(content);
                 content = file_image_widget;
                 state = State.IMAGE;
-                this.add(content);
+                this.append(content);
                 return;
             } catch (Error e) { }
         }
@@ -91,7 +91,7 @@ public class FileWidget : SizeRequestBox {
             default_widget_controller.set_file_transfer(file_transfer, stream_interactor);
             content = default_file_widget;
             this.state = State.DEFAULT;
-            this.add(content);
+            this.append(content);
         }
     }
 
@@ -128,10 +128,15 @@ public class FileDefaultWidgetController : Object {
 
     public FileDefaultWidgetController(FileDefaultWidget widget) {
         this.widget = widget;
-        widget.button_release_event.connect(on_clicked);
-        widget.file_open_button.clicked.connect(open_file);
-        widget.file_save_button.clicked.connect(save_file);
-        widget.cancel_button.clicked.connect(cancel_download);
+
+        widget.open_file.connect(open_file);
+        widget.save_file_as.connect(save_file);
+        widget.cancel_download.connect(cancel_download);
+
+        var gesture_controller = new GestureClick();
+        gesture_controller.set_button(1); // listen for left clicks
+        gesture_controller.released.connect(on_clicked);
+        widget.add_controller(gesture_controller);
     }
 
     public void set_file_transfer(FileTransfer file_transfer, StreamInteractor stream_interactor) {
@@ -173,30 +178,29 @@ public class FileDefaultWidgetController : Object {
     }
 
     private void save_file() {
-        var save_dialog = new FileChooserNative(_("Save as…"), widget.get_toplevel() as Gtk.Window, FileChooserAction.SAVE, null, null);
-        save_dialog.set_do_overwrite_confirmation(true);
+        var save_dialog = new FileChooserNative(_("Save as…"), widget.get_root() as Gtk.Window, FileChooserAction.SAVE, null, null);
         save_dialog.set_modal(true);
         save_dialog.set_current_name(file_name);
 
-        if (save_dialog.run() == Gtk.ResponseType.ACCEPT) {
+        save_dialog.response.connect(() => {
             try{
                 GLib.File.new_for_uri(file_uri).copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);
             } catch (Error err) {
                 warning("Failed copy file %s - %s", file_uri, err.message);
             }
-        }
+        });
+
+        save_dialog.show();
     }
 
     private void cancel_download() {
         file_transfer.cancellable.cancel();
     }
 
-    private bool on_clicked(EventButton event_button) {
+    private void on_clicked() {
         switch (state) {
             case FileTransfer.State.COMPLETE:
-                if (event_button.button == 1) {
-                    open_file();
-                }
+                open_file();
                 break;
             case FileTransfer.State.NOT_STARTED:
                 assert(stream_interactor != null && file_transfer != null);
@@ -206,7 +210,6 @@ public class FileDefaultWidgetController : Object {
                 // Clicking doesn't do anything in FAILED and IN_PROGRESS states
                 break;
         }
-        return false;
     }
 }
 

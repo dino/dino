@@ -31,7 +31,7 @@ public class Dino.Ui.CallWindowController : Object {
         this.stream_interactor = stream_interactor;
 
         this.calls = stream_interactor.get_module(Calls.IDENTITY);
-        this.own_video = call_plugin.create_widget(Plugins.WidgetType.GTK);
+        this.own_video = call_plugin.create_widget(Plugins.WidgetType.GTK4);
 
         call_window.set_default_size(704, 528); // 640x480 * 1.1
 
@@ -70,9 +70,10 @@ public class Dino.Ui.CallWindowController : Object {
             call_window.destroy();
             this.dispose();
         });
-        call_window_handler_ids += call_window.destroy.connect(() => {
+        call_window_handler_ids += call_window.close_request.connect(() => {
             call_state.end();
             this.dispose();
+            return false;
         });
         bottom_bar_handler_ids += call_window.bottom_bar.notify["audio-enabled"].connect(() => {
             call_state.mute_own_audio(!call_window.bottom_bar.audio_enabled);
@@ -81,17 +82,23 @@ public class Dino.Ui.CallWindowController : Object {
             call_state.mute_own_video(!call_window.bottom_bar.video_enabled);
             update_own_video();
         });
-        call_window_handler_ids += call_window.configure_event.connect((event) => {
-            if (window_width == -1 || window_height == -1) return false;
-            int current_height = this.call_window.get_allocated_height();
+        call_window_handler_ids += call_window.notify["default-width"].connect((event) => {
+            if (call_window.default_width == -1) return;
             int current_width = this.call_window.get_allocated_width();
-            if (window_width != current_width || window_height != current_height) {
-                debug("Call window size changed by user. Disabling auto window-to-video size adaptation. %i->%i x %i->%i", window_width, current_width, window_height, current_height);
+            if (window_width != current_width) {
+                debug("Call window size changed by user. Disabling auto window-to-video size adaptation. Width %i->%i", window_width, current_width);
                 window_size_changed = true;
             }
-            return false;
         });
-        call_window_handler_ids += call_window.realize.connect(() => {
+        call_window_handler_ids += call_window.notify["default-height"].connect((event) => {
+            if (call_window.default_height == -1) return;
+            int current_height = this.call_window.get_allocated_height();
+            if (window_height != current_height) {
+                debug("Call window size changed by user. Disabling auto window-to-video size adaptation. Height %i->%i", window_height, current_height);
+                window_size_changed = true;
+            }
+        });
+        call_window_handler_ids += ((Widget)call_window).realize.connect(() => {
             capture_window_size();
         });
 
@@ -138,7 +145,7 @@ public class Dino.Ui.CallWindowController : Object {
         Gee.List<Account> acc_list = new ArrayList<Account>(Account.equals_func);
         acc_list.add(call.account);
         SelectContactDialog add_chat_dialog = new SelectContactDialog(stream_interactor, acc_list);
-        add_chat_dialog.set_transient_for((Window) call_window.get_toplevel());
+        add_chat_dialog.set_transient_for((Window) call_window.get_root());
         add_chat_dialog.title = _("Invite to Call");
         add_chat_dialog.ok_button.label = _("Invite");
         add_chat_dialog.selected.connect((account, jid) => {
@@ -192,11 +199,11 @@ public class Dino.Ui.CallWindowController : Object {
             }
         });
         peer_state.encryption_updated.connect((audio_encryption, video_encryption, same) => {
-            update_encryption_indicator(participant_widgets[peer_id].encryption_button, audio_encryption, video_encryption, same);
+            update_encryption_indicator(participant_widgets[peer_id].encryption_button_controller, audio_encryption, video_encryption, same);
         });
     }
 
-    private void update_encryption_indicator(CallEncryptionButton encryption_button, Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption, bool same) {
+    private void update_encryption_indicator(CallEncryptionButtonController encryption_button, Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption, bool same) {
         string? title = null;
         string? icon_name = null;
         bool show_keys = true;
@@ -235,24 +242,26 @@ public class Dino.Ui.CallWindowController : Object {
                 return true;
             });
             conn_details_window.set_transient_for(call_window);
-            conn_details_window.destroy.connect(() => Source.remove(timeout_handle_id));
+            conn_details_window.close_request.connect(() => { Source.remove(timeout_handle_id); return false; });
             conn_details_window.present();
-            this.call_window.destroy.connect(() => conn_details_window.close() );
+            this.call_window.close_request.connect(() => { conn_details_window.close(); return false; });
         });
         invite_handler_ids[participant_id] += participant_widget.invite_button_clicked.connect(() => invite_button_clicked());
         participant_widgets[participant_id] = participant_widget;
 
         call_window.add_participant(participant_id, participant_widget);
 
-        participant_videos[participant_id] = call_plugin.create_widget(Plugins.WidgetType.GTK);
+        participant_videos[participant_id] = call_plugin.create_widget(Plugins.WidgetType.GTK4);
 
         participant_videos[participant_id].resolution_changed.connect((width, height) => {
             if (window_size_changed || participant_widgets.size > 1) return;
             if (width == 0 || height == 0) return;
             if (width > height) {
-                call_window.resize(704, (int) (height * 704 / width));
+                call_window.default_width = 704;
+                call_window.default_height = (int) (height * 704 / width);
             } else {
-                call_window.resize((int) (width * 704 / height), 704);
+                call_window.default_width = (int) (width * 704 / height);
+                call_window.default_height = 704;
             }
             capture_window_size();
         });

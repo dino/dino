@@ -114,12 +114,12 @@ protected class ConferenceDetailsFragment : Box {
 
         account_combobox.changed.connect(() => { accounts_label.label = account_combobox.selected.bare_jid.to_string(); });
         accounts_label.label = account_combobox.selected.bare_jid.to_string();
-        jid_entry.key_release_event.connect(on_jid_key_release_event);
-        nick_entry.key_release_event.connect(on_nick_key_release_event);
-        password_entry.key_release_event.connect(on_password_key_release_event);
+//        jid_entry.key_release_event.connect(on_jid_key_release_event);
+//        nick_entry.key_release_event.connect(on_nick_key_release_event);
+//        password_entry.key_release_event.connect(on_password_key_release_event);
 
-        jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
-        nick_entry.key_release_event.connect(() => { done = true; return false; });
+//        jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
+//        nick_entry.key_release_event.connect(() => { done = true; return false; });
 
         notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
 
@@ -195,25 +195,25 @@ protected class ConferenceDetailsFragment : Box {
         notification_revealer.set_reveal_child(true);
     }
 
-    private bool on_jid_key_release_event(EventKey event) {
-        jid_label.label = jid_entry.text;
-        if (event.keyval == Key.Return) jid_stack.set_visible_child_name("label");
-        return false;
-    }
-
-    private bool on_nick_key_release_event(EventKey event) {
-        nick_label.label = nick_entry.text;
-        if (event.keyval == Key.Return) nick_stack.set_visible_child_name("label");
-        return false;
-    }
-
-    private bool on_password_key_release_event(EventKey event) {
-        string filler = "";
-        for (int i = 0; i < password_entry.text.length; i++) filler += password_entry.get_invisible_char().to_string();
-        password_label.label = filler;
-        if (event.keyval == Key.Return) password_stack.set_visible_child_name("label");
-        return false;
-    }
+//    private bool on_jid_key_release_event(EventKey event) {
+//        jid_label.label = jid_entry.text;
+//        if (event.keyval == Key.Return) jid_stack.set_visible_child_name("label");
+//        return false;
+//    }
+//
+//    private bool on_nick_key_release_event(EventKey event) {
+//        nick_label.label = nick_entry.text;
+//        if (event.keyval == Key.Return) nick_stack.set_visible_child_name("label");
+//        return false;
+//    }
+//
+//    private bool on_password_key_release_event(EventKey event) {
+//        string filler = "";
+//        for (int i = 0; i < password_entry.text.length; i++) filler += password_entry.get_invisible_char().to_string();
+//        password_label.label = filler;
+//        if (event.keyval == Key.Return) password_stack.set_visible_child_name("label");
+//        return false;
+//    }
 
     private void set_active_stack(Stack stack) {
         stack.set_visible_child_name("entry");

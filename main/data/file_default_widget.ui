@@ -1,110 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiFileDefaultWidget" parent="GtkEventBox">
-        <property name="halign">start</property>
-        <style>
-            <class name="file-box-outer"/>
-        </style>
+  <requires lib="gtk" version="4.0"/>
+  <template class="DinoUiFileDefaultWidget">
+    <property name="halign">start</property>
+    <style>
+      <class name="file-box-outer"/>
+    </style>
+    <child>
+      <object class="DinoUiSizingBin">
+        <property name="target-width">500</property>
+        <property name="max-width">500</property>
+        <property name="hexpand">True</property>
         <child>
-            <object class="DinoUiSizingBin">
-                <property name="target-width">500</property>
-                <property name="max-width">500</property>
-                <property name="hexpand">True</property>
-                <property name="visible">True</property>
+          <object class="GtkBox">
+            <property name="hexpand">1</property>
+            <property name="spacing">10</property>
+            <style>
+              <class name="file-box"/>
+            </style>
+            <child>
+              <object class="GtkStack" id="image_stack">
+                <property name="transition-type">crossfade</property>
+                <property name="transition-duration">50</property>
+                <property name="valign">center</property>
                 <child>
-                    <object class="GtkBox">
-                        <property name="orientation">horizontal</property>
-                        <property name="halign">fill</property>
-                        <property name="hexpand">true</property>
-                        <property name="spacing">10</property>
-                        <property name="visible">True</property>
-                        <style>
-                            <class name="file-box"/>
-                        </style>
-                        <child>
-                            <object class="GtkEventBox" id="stack_event_box">
-                                <property name="visible">True</property>
-                                <child>
-                                    <object class="GtkStack" id="image_stack">
-                                        <property name="transition-type">crossfade</property>
-                                        <property name="transition-duration">50</property>
-                                        <property name="valign">center</property>
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <object class="GtkImage">
-                                                <property name="icon-name">dino-file-download-symbolic</property>
-                                                <property name="icon-size">5</property>
-                                                <property name="opacity">0.7</property>
-                                                <property name="visible">True</property>
-                                            </object>
-                                            <packing>
-                                                <property name="name">download_image</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <object class="GtkImage" id="content_type_image">
-                                                <property name="icon-size">5</property>
-                                                <property name="opacity">0.7</property>
-                                                <property name="visible">True</property>
-                                            </object>
-                                            <packing>
-                                                <property name="name">content_type_image</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <object class="GtkSpinner" id="spinner">
-                                                <property name="visible">True</property>
-                                            </object>
-                                            <packing>
-                                                <property name="name">spinner</property>
-                                            </packing>
-                                        </child>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkBox">
-                                <property name="orientation">vertical</property>
-                                <property name="hexpand">True</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <object class="GtkLabel" id="name_label">
-                                        <property name="ellipsize">middle</property>
-                                        <property name="xalign">0</property>
-                                        <property name="yalign">0</property>
-                                        <property name="visible">True</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel" id="mime_label">
-                                        <property name="xalign">0</property>
-                                        <property name="yalign">1</property>
-                                        <property name="visible">True</property>
-                                        <attributes>
-                                            <attribute name="scale" value="0.8"/>
-                                        </attributes>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkMenuButton" id="file_menu">
-                                <property name="visible">True</property>
-                                <property name="opacity">0</property>
-                                <property name="relief">none</property>
-                                <child>
-                                    <object class="GtkImage">
-                                        <property name="visible">True</property>
-                                        <property name="icon-name">open-menu-symbolic</property>
-                                        <property name="icon-size">1</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                    </object>
+                  <object class="GtkStackPage">
+                    <property name="name">download_image</property>
+                    <property name="child">
+                      <object class="GtkImage">
+                        <property name="icon-name">dino-file-download-symbolic</property>
+                        <property name="pixel-size">30</property>
+                        <property name="opacity">0.7</property>
+                      </object>
+                    </property>
+                  </object>
                 </child>
-            </object>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">content_type_image</property>
+                    <property name="child">
+                      <object class="GtkImage" id="content_type_image">
+                        <property name="pixel-size">30</property>
+                        <property name="opacity">0.7</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">spinner</property>
+                    <property name="child">
+                      <object class="GtkSpinner" id="spinner"/>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="hexpand">1</property>
+                <child>
+                  <object class="GtkLabel" id="name_label">
+                    <property name="ellipsize">middle</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="mime_label">
+                    <property name="xalign">0</property>
+                    <property name="yalign">1</property>
+                    <attributes>
+                      <attribute name="scale" value="0.8"></attribute>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="file_menu">
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="opacity">0</property>
+                <property name="has_frame">False</property>
+              </object>
+            </child>
+          </object>
         </child>
-    </template>
+      </object>
+    </child>
+  </template>
 </interface>

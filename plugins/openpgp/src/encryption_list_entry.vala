@@ -24,9 +24,11 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
         return "OpenPGP";
     }}
 
-    public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON3", 17, 12);
-
     public Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item) {
+        return null;
+    }
+
+    public string? get_encryption_icon_name(Entities.Conversation conversation, ContentItem content_item) {
         return null;
     }
 

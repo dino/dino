@@ -297,7 +297,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 
     public VideoCallWidget? create_widget(WidgetType type) {
         init_call_pipe();
-        if (type == WidgetType.GTK) {
+        if (type == WidgetType.GTK4) {
             return new VideoWidget(this);
         }
         return null;

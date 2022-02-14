@@ -13,21 +13,19 @@ public class MainWindow : Gtk.Window {
     public new string? title { get; set; }
     public string? subtitle { get; set; }
 
-    public WelcomePlaceholder welcome_placeholder = new WelcomePlaceholder() { visible=true };
-    public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder() { visible=true };
+    public WelcomePlaceholder welcome_placeholder = new WelcomePlaceholder();
+    public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder();
     public ConversationView conversation_view;
     public ConversationSelector conversation_selector;
     public ConversationTitlebar conversation_titlebar;
-    public ConversationTitlebarCsd conversation_titlebar_csd;
-    public ConversationListTitlebarCsd conversation_list_titlebar_csd;
-    public HeaderBar placeholder_headerbar = new HeaderBar() { title="Dino", show_close_button=true, visible=true };
-    public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL, visible=true };
-    public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { visible=true };
+    public Widget conversation_list_titlebar;
+    public HeaderBar placeholder_headerbar = new HeaderBar() { show_title_buttons=true };
+    public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL };
+    public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { resize_start_child=false, shrink_start_child=false, shrink_end_child=false };
     public Paned paned;
     public Revealer search_revealer;
-    public SearchEntry search_entry;
-    public GlobalSearch search_box;
-    private Stack stack = new Stack() { visible=true };
+    public GlobalSearch global_search;
+    private Stack stack = new Stack();
     private Stack left_stack;
     private Stack right_stack;
 
@@ -35,18 +33,29 @@ public class MainWindow : Gtk.Window {
     private Database db;
     private Config config;
 
+    class construct {
+        var shortcut = new Shortcut(new KeyvalTrigger(Key.F, ModifierType.CONTROL_MASK), new CallbackAction((widget, args) => {
+            ((MainWindow) widget).search_revealer.reveal_child = true;
+            return false;
+        }));
+        add_shortcut(shortcut);
+    }
+
     public MainWindow(Application application, StreamInteractor stream_interactor, Database db, Config config) {
         Object(application : application);
         this.stream_interactor = stream_interactor;
         this.db = db;
         this.config = config;
 
-        restore_window_size();
+        this.title = "Dino";
 
         this.get_style_context().add_class("dino-main");
-        setup_headerbar();
+
         Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
-        this.realize.connect(set_window_buttons);
+        ((Widget)this).realize.connect(set_window_buttons);
+        ((Widget)this).realize.connect(restore_window_size);
+
+        setup_headerbar();
         setup_unified();
         setup_stack();
 
@@ -56,35 +65,32 @@ public class MainWindow : Gtk.Window {
     private void setup_unified() {
         Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
         paned = (Paned) builder.get_object("paned");
-        box.add(paned);
+        box.append(paned);
         left_stack = (Stack) builder.get_object("left_stack");
         right_stack = (Stack) builder.get_object("right_stack");
         conversation_view = (ConversationView) builder.get_object("conversation_view");
-        conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
-        search_box = ((GlobalSearch) builder.get_object("search_box")).init(stream_interactor);
         search_revealer = (Revealer) builder.get_object("search_revealer");
-        search_entry = (SearchEntry) builder.get_object("search_entry");
+        conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
+
+        Frame search_frame = (Frame) builder.get_object("search_frame");
+        global_search = new GlobalSearch(stream_interactor);
+        search_frame.set_child(global_search.get_widget());
+
         Image conversation_list_placeholder_image = (Image) builder.get_object("conversation_list_placeholder_image");
         conversation_list_placeholder_image.set_from_pixbuf(new Pixbuf.from_resource("/im/dino/Dino/icons/dino-conversation-list-placeholder-arrow.svg"));
     }
 
     private void setup_headerbar() {
         if (Util.use_csd()) {
-            conversation_list_titlebar_csd = new ConversationListTitlebarCsd() { visible=true };
-            headerbar_paned.pack1(conversation_list_titlebar_csd, false, false);
-
-            conversation_titlebar_csd = new ConversationTitlebarCsd() { visible=true };
-            conversation_titlebar = conversation_titlebar_csd;
-            headerbar_paned.pack2(conversation_titlebar_csd, true, false);
+            conversation_list_titlebar = get_conversation_list_titlebar_csd();
+            conversation_titlebar = new ConversationTitlebarCsd();
         } else {
-            ConversationListTitlebar conversation_list_titlebar = new ConversationListTitlebar() { visible=true };
-            headerbar_paned.pack1(conversation_list_titlebar, false, false);
-
-            conversation_titlebar = new ConversationTitlebarNoCsd() { visible=true };
-            headerbar_paned.pack2(conversation_titlebar, true, false);
-
-            box.add(headerbar_paned);
+            conversation_list_titlebar = new ConversationListTitlebar();
+            conversation_titlebar = new ConversationTitlebarNoCsd();
+            box.append(headerbar_paned);
         }
+        headerbar_paned.set_start_child(conversation_list_titlebar);
+        headerbar_paned.set_end_child(conversation_titlebar.get_widget());
     }
 
     private void set_window_buttons() {
@@ -93,15 +99,17 @@ public class MainWindow : Gtk.Window {
         if (gtk_settings == null) return;
 
         string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
-        this.conversation_list_titlebar_csd.decoration_layout = buttons[0] + ":";
-        this.conversation_titlebar_csd.decoration_layout = ((buttons.length == 2) ? ":" + buttons[1] : "");
+        HeaderBar conversation_headerbar = this.conversation_titlebar.get_widget() as HeaderBar;
+        conversation_headerbar.decoration_layout = ((buttons.length == 2) ? ":" + buttons[1] : "");
+        HeaderBar conversation_list_headerbar = this.conversation_list_titlebar as HeaderBar;
+        conversation_list_headerbar.decoration_layout = buttons[0] + ":";
     }
 
     private void setup_stack() {
         stack.add_named(box, "main");
         stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
-        add(stack);
+        set_child(stack);
     }
 
     public enum StackState {
@@ -146,10 +154,8 @@ public class MainWindow : Gtk.Window {
     public void restore_window_size() {
         Gdk.Display? display = Gdk.Display.get_default();
         if (display != null) {
-            Gdk.Monitor? monitor = display.get_primary_monitor();
-            if (monitor == null) {
-                monitor = display.get_monitor_at_point(1, 1);
-            }
+            Gdk.Surface? surface = get_surface();
+            Gdk.Monitor? monitor = display.get_monitor_at_surface(surface);
 
             if (monitor != null &&
                     config.window_width <= monitor.geometry.width &&
@@ -157,37 +163,30 @@ public class MainWindow : Gtk.Window {
                 set_default_size(config.window_width, config.window_height);
             }
         }
-        this.window_position = Gtk.WindowPosition.CENTER;
         if (config.window_maximize) {
             maximize();
         }
 
-        this.delete_event.connect(() => {
+        ((Widget)this).unrealize.connect(() => {
             save_window_size();
-            config.window_maximize = this.is_maximized;
-            return false;
+            config.window_maximize = this.maximized;
         });
     }
 
     public void save_window_size() {
-        if (this.is_maximized) return;
+        if (this.maximized) return;
 
         Gdk.Display? display = get_display();
-        Gdk.Window? window = get_window();
-        if (display != null && window != null) {
-            Gdk.Monitor monitor = display.get_monitor_at_window(window);
-
-            int width = 0;
-            int height = 0;
-            get_size(out width, out height);
-
+        Gdk.Surface? surface = get_surface();
+        if (display != null && surface != null) {
+            Gdk.Monitor monitor = display.get_monitor_at_surface(surface);
 
             // Only store if the values have changed and are reasonable-looking.
-            if (config.window_width != width && width > 0 && width <= monitor.geometry.width) {
-                config.window_width = width;
+            if (config.window_width != default_width && default_width > 0 && default_width <= monitor.geometry.width) {
+                config.window_width = default_width;
             }
-            if (config.window_height != height && height > 0 && height <= monitor.geometry.height) {
-                config.window_height = height;
+            if (config.window_height != default_height && default_height > 0 && default_height <= monitor.geometry.height) {
+                config.window_height = default_height;
             }
         }
     }

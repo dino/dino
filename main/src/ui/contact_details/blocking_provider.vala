@@ -14,7 +14,7 @@ public class BlockingProvider : Plugins.ContactDetailsProvider, Object {
     }
 
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, Plugins.WidgetType type) {
-        if (type != Plugins.WidgetType.GTK) return;
+        if (type != Plugins.WidgetType.GTK4) return;
         if (conversation.type_ != Conversation.Type.CHAT) return;
 
         if (stream_interactor.get_module(BlockingManager.IDENTITY).is_supported(conversation.account)) {

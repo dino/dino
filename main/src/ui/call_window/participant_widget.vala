@@ -6,15 +6,19 @@ using Gtk;
 
 namespace Dino.Ui {
 
-    public class ParticipantWidget : Gtk.Overlay {
+    public class ParticipantWidget : Box {
 
+        public Overlay overlay = new Overlay();
         public Widget main_widget;
         public HeaderBar header_bar = new HeaderBar() { valign=Align.START, visible=true };
+        public Label title_label = new Label("");
+        public Label subtitle_label = new Label("");
         public Box inner_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=5, margin_top=5, hexpand=true, visible=true };
         public Box title_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true, visible=true };
-        public CallEncryptionButton encryption_button = new CallEncryptionButton() { opacity=0, relief=ReliefStyle.NONE, height_request=30, width_request=30, margin_end=5, visible=true };
-        public MenuButton menu_button = new MenuButton() { relief=ReliefStyle.NONE, visible=true };
-        public Button invite_button = new Button.from_icon_name("dino-account-plus") { relief=ReliefStyle.NONE, visible=true };
+        public MenuButton encryption_button = new MenuButton() { opacity=0, has_frame=false, height_request=30, width_request=30, margin_end=5, visible=true };
+        public CallEncryptionButtonController encryption_button_controller;
+        public MenuButton menu_button = new MenuButton() { icon_name="open-menu-symbolic", has_frame=false, visible=true };
+        public Button invite_button = new Button.from_icon_name("dino-account-plus") { has_frame=false, visible=true };
         public bool shows_video = false;
         public string? participant_name;
 
@@ -26,19 +30,38 @@ namespace Dino.Ui {
         public signal void debug_information_clicked();
         public signal void invite_button_clicked();
 
+        class construct {
+            install_action("menu.debuginfo", null, (widget, action_name) => { ((ParticipantWidget) widget).debug_information_clicked(); });
+        }
+
         public ParticipantWidget(string participant_name) {
+            encryption_button_controller = new CallEncryptionButtonController(encryption_button);
+
             this.participant_name = participant_name;
-            header_bar.title = participant_name;
+
+            Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER };
+            title_label.attributes = new AttrList();
+            title_label.attributes.insert(Pango.attr_weight_new(Weight.BOLD));
+            titles_box.append(title_label);
+            subtitle_label.attributes = new AttrList();
+            subtitle_label.attributes.insert(Pango.attr_scale_new(Pango.Scale.SMALL));
+            subtitle_label.get_style_context().add_class("dim-label");
+            titles_box.append(subtitle_label);
+
+            header_bar.set_title_widget(titles_box);
+            title_label.label = participant_name;
+
             header_bar.get_style_context().add_class("participant-header-bar");
             header_bar.pack_start(invite_button);
             header_bar.pack_start(encryption_button);
             header_bar.pack_end(menu_button);
 
-            menu_button.image = new Image.from_icon_name("open-menu-symbolic", IconSize.MENU);
-            menu_button.set_popover(create_menu());
+            create_menu();
+
             invite_button.clicked.connect(() => invite_button_clicked());
 
-            this.add_overlay(header_bar);
+            this.append(overlay);
+            overlay.add_overlay(header_bar);
 
             this.notify["controls-active"].connect(reveal_or_hide_controls);
             this.notify["may-show-invite-button"].connect(reveal_or_hide_controls);
@@ -48,7 +71,7 @@ namespace Dino.Ui {
             this.is_highest_row = is_highest;
             this.is_start_row = is_start;
 
-            header_bar.show_close_button = is_highest_row;
+            header_bar.show_title_buttons = is_highest_row;
             if (is_highest_row) {
                 header_bar.get_style_context().add_class("call-header-background");
                 Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
@@ -78,37 +101,35 @@ namespace Dino.Ui {
             } else {
                 avatar.set_text("?", false);
             }
-            box.add(avatar);
+            box.append(avatar);
 
             set_participant_widget(box);
         }
 
         private void set_participant_widget(Widget widget) {
-            widget.expand = true;
-            if (main_widget != null) this.remove(main_widget);
+            widget.hexpand = widget.vexpand = true;
             main_widget = widget;
-            this.add(main_widget);
+            overlay.set_child(main_widget);
         }
 
-        private PopoverMenu create_menu() {
-            PopoverMenu menu = new PopoverMenu();
-            Box box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
-            ModelButton debug_information_button = new ModelButton() { text=_("Debug information"), visible=true };
-            debug_information_button.clicked.connect(() => debug_information_clicked());
-            box.add(debug_information_button);
-            menu.add(box);
-            return menu;
+        private void create_menu() {
+            Menu menu_model = new Menu();
+            menu_model.append(_("Debug information"), "menu.debuginfo");
+            Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
+            menu_button.popover = popover_menu;
         }
 
         public void set_status(string state) {
+            subtitle_label.visible = true;
+
             if (state == "requested") {
-                header_bar.subtitle =  _("Calling…");
+                subtitle_label.label =  _("Calling…");
             } else if (state == "ringing") {
-                header_bar.subtitle = _("Ringing…");
+                subtitle_label.label = _("Ringing…");
             } else if (state == "establishing") {
-                header_bar.subtitle = _("Connecting…");
+                subtitle_label.label = _("Connecting…");
             } else {
-                header_bar.subtitle = "";
+                subtitle_label.visible = false;
             }
         }
 

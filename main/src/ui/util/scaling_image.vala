@@ -2,7 +2,7 @@ using Gdk;
 using Gtk;
 
 namespace Dino.Ui {
-class ScalingImage : Misc {
+class ScalingImage : Widget {
     public int min_width { get; set; default = -1; }
     public int target_width { get; set; default = -1; }
     public int max_width { get; set; default = -1; }
@@ -65,23 +65,28 @@ class ScalingImage : Misc {
         if (exact_height < min_height) exact_height = min_height;
     }
 
-    public override void size_allocate(Allocation allocation) {
-        if (max_width != -1) allocation.width = int.min(allocation.width, max_width);
-        if (max_height != -1) allocation.height = int.min(allocation.height, max_height);
-        allocation.height = int.max(allocation.height, min_height);
-        allocation.width = int.max(allocation.width, min_width);
-        double exact_width = allocation.width, exact_height = allocation.height;
+    public override void size_allocate(int width, int height, int baseline) {
+        if (max_width != -1) width = int.min(width, max_width);
+        if (max_height != -1) height = int.min(height, max_height);
+        height = int.max(height, min_height);
+        width = int.max(width, min_width);
+        double exact_width = width, exact_height = height;
         calculate_size(ref exact_width, ref exact_height);
-        base.size_allocate(allocation);
-        if (last_allocation_height != allocation.height || last_allocation_width != allocation.width || last_scale_factor != scale_factor) {
-            last_allocation_height = allocation.height;
-            last_allocation_width = allocation.width;
+        base.size_allocate(width, height, baseline);
+        if (last_allocation_height != height || last_allocation_width != width || last_scale_factor != scale_factor) {
+            last_allocation_height = height;
+            last_allocation_width = width;
             last_scale_factor = scale_factor;
             cached_surface = null;
         }
     }
 
-    public override bool draw(Cairo.Context ctx_in) {
+    public override void snapshot(Gtk.Snapshot snapshot) {
+        Cairo.Context context = snapshot.append_cairo(Graphene.Rect.alloc().init(0, 0, get_allocated_width(), get_allocated_height()));
+        draw(context);
+    }
+
+    public bool draw(Cairo.Context ctx_in) {
         if (image == null) return false;
         Cairo.Context ctx = ctx_in;
         int width = this.get_allocated_width(), height = this.get_allocated_height(), base_factor = 1;
@@ -148,33 +153,43 @@ class ScalingImage : Misc {
         return buffer;
     }
 
-    public override void get_preferred_width(out int minimum_width, out int natural_width) {
-        minimum_width = int.max(0, min_width);
-        double exact_width = -1, exact_height = -1;
-        calculate_size(ref exact_width, ref exact_height);
-        natural_width = (int) Math.ceil(exact_width);
+    public override void measure(Orientation orientation, int for_size, out int minimum, out int natural, out int minimum_baseline, out int natural_baseline) {
+        double natural_width = -1, natural_height = -1;
+        calculate_size(ref natural_width, ref natural_height);
+        if (orientation == Orientation.HORIZONTAL) {
+            natural = (int) Math.ceil(natural_width);
+        } else {
+            natural = (int) Math.ceil(natural_height);
+        }
+        if (for_size == -1) {
+            minimum = 0;
+        } else {
+            if (orientation == Orientation.HORIZONTAL) {
+                double exact_width = -1, exact_height = for_size;
+                calculate_size(ref exact_width, ref exact_height);
+                minimum = int.max((int)Math.floor(exact_width), min_width);
+            } else {
+                double exact_width = for_size, exact_height = -1;
+                calculate_size(ref exact_width, ref exact_height);
+                minimum = int.max((int)Math.floor(exact_height), min_height);
+            }
+        }
+        minimum_baseline = natural_baseline = -1;
     }
 
-    public override void get_preferred_height(out int minimum_height, out int natural_height) {
-        minimum_height = int.max(0, min_height);
-        double exact_width = -1, exact_height = -1;
-        calculate_size(ref exact_width, ref exact_height);
-        natural_height = (int) Math.ceil(exact_height);
-    }
-
-    public override void get_preferred_height_for_width(int width, out int minimum_height, out int natural_height) {
-        double exact_width = width, exact_height = -1;
-        calculate_size(ref exact_width, ref exact_height);
-        natural_height = (int) Math.ceil(exact_height);
-        minimum_height = natural_height;
-    }
-
-    public override void get_preferred_width_for_height(int height, out int minimum_width, out int natural_width) {
-        double exact_width = -1, exact_height = height;
-        calculate_size(ref exact_width, ref exact_height);
-        natural_width = (int) Math.ceil(exact_width);
-        minimum_width = natural_width;
-    }
+//    public override void get_preferred_height_for_width(int width, out int minimum_height, out int natural_height) {
+//        double exact_width = width, exact_height = -1;
+//        calculate_size(ref exact_width, ref exact_height);
+//        natural_height = (int) Math.ceil(exact_height);
+//        minimum_height = natural_height;
+//    }
+//
+//    public override void get_preferred_width_for_height(int height, out int minimum_width, out int natural_width) {
+//        double exact_width = -1, exact_height = height;
+//        calculate_size(ref exact_width, ref exact_height);
+//        natural_width = (int) Math.ceil(exact_width);
+//        minimum_width = natural_width;
+//    }
 
     public override SizeRequestMode get_request_mode() {
         return SizeRequestMode.HEIGHT_FOR_WIDTH;

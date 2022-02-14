@@ -4,7 +4,7 @@ using Gtk;
 using Dino.Entities;
 using Xmpp;
 
-namespace Dino.Ui.OccupantMenu{
+namespace Dino.Ui.OccupantMenu {
 
 [GtkTemplate (ui = "/im/dino/Dino/occupant_list.ui")]
 public class List : Box {
@@ -17,7 +17,8 @@ public class List : Box {
 
     private Conversation conversation;
     private string[]? filter_values;
-    private HashMap<Jid, ListRow> rows = new HashMap<Jid, ListRow>(Jid.hash_func, Jid.equals_func);
+    private HashMap<Jid, Widget> rows = new HashMap<Jid, Widget>(Jid.hash_func, Jid.equals_func);
+    public HashMap<Widget, ListRow> row_wrappers = new HashMap<Widget, ListRow>();
 
     public List(StreamInteractor stream_interactor, Conversation conversation) {
         this.stream_interactor = stream_interactor;
@@ -53,8 +54,12 @@ public class List : Box {
     }
 
     public void add_occupant(Jid jid) {
-        rows[jid] = new ListRow(stream_interactor, conversation, jid);
-        list_box.add(rows[jid]);
+        var row_wrapper = new ListRow(stream_interactor, conversation, jid);
+        var widget = row_wrapper.get_widget();
+
+        row_wrappers[widget] = row_wrapper;
+        rows[jid] = widget;
+        list_box.append(widget);
     }
 
     public void remove_occupant(Jid jid) {
@@ -81,13 +86,13 @@ public class List : Box {
     }
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {
-        ListRow c1 = row as ListRow;
-        Xmpp.Xep.Muc.Affiliation? a1 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c1.jid, c1.conversation.account);
+        ListRow row_wrapper1 = row_wrappers[row.get_child()];
+        Xmpp.Xep.Muc.Affiliation? a1 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, row_wrapper1.jid, row_wrapper1.conversation.account);
         if (a1 == null) return;
 
         if (before_row != null) {
-            ListRow c2 = (ListRow) before_row;
-            Xmpp.Xep.Muc.Affiliation? a2 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c2.jid, c2.conversation.account);
+            ListRow row_wrapper2 = row_wrappers[before_row.get_child()];
+            Xmpp.Xep.Muc.Affiliation? a2 = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, row_wrapper2.jid, row_wrapper2.conversation.account);
             if (a1 != a2) {
                 row.set_header(generate_header_widget(a1, false));
             } else if (row.get_header() != null){
@@ -112,7 +117,7 @@ public class List : Box {
         }
 
         int count = 0;
-        foreach (ListRow row in rows.values) {
+        foreach (ListRow row in row_wrappers.values) {
             Xmpp.Xep.Muc.Affiliation aff = stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, row.jid, conversation.account);
             if (aff == affiliation) count++;
         }
@@ -120,36 +125,34 @@ public class List : Box {
         Label title_label = new Label("") { margin_start=10, xalign=0, visible=true };
         title_label.set_markup(@"<b>$(Markup.escape_text(aff_str))</b>");
 
-        Label count_label = new Label(@"$count") { xalign=0, margin_end=7, expand=true, visible=true };
+        Label count_label = new Label(@"$count") { xalign=0, margin_end=7, hexpand=true, visible=true };
         count_label.get_style_context().add_class("dim-label");
 
         Grid grid = new Grid() { margin_top=top?5:15, column_spacing=5, hexpand=true, visible=true };
         grid.attach(title_label, 0, 0, 1, 1);
         grid.attach(count_label, 1, 0, 1, 1);
-        grid.attach(new Separator(Orientation.HORIZONTAL) { expand=true, visible=true }, 0, 1, 2, 1);
+        grid.attach(new Separator(Orientation.HORIZONTAL) { hexpand=true, vexpand=true, visible=true }, 0, 1, 2, 1);
         return grid;
     }
 
     private bool filter(ListBoxRow r) {
-        if (r.get_type().is_a(typeof(ListRow))) {
-            ListRow row = r as ListRow;
-            foreach (string filter in filter_values) {
-                return row.name_label.label.down().contains(filter.down());
-            }
+        ListRow row_wrapper = row_wrappers[r.get_child()];
+        foreach (string filter in filter_values) {
+            return row_wrapper.name_label.label.down().contains(filter.down());
         }
         return true;
     }
 
     private int sort(ListBoxRow row1, ListBoxRow row2) {
-        if (row1.get_type().is_a(typeof(ListRow)) && row2.get_type().is_a(typeof(ListRow))) {
-            ListRow c1 = row1 as ListRow;
-            ListRow c2 = row2 as ListRow;
-            int affiliation1 = get_affiliation_ranking(stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c1.jid, c1.conversation.account) ?? Xmpp.Xep.Muc.Affiliation.NONE);
-            int affiliation2 = get_affiliation_ranking(stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, c2.jid, c2.conversation.account) ?? Xmpp.Xep.Muc.Affiliation.NONE);
-            if (affiliation1 < affiliation2) return -1;
-            else if (affiliation1 > affiliation2) return 1;
-            else return c1.name_label.label.collate(c2.name_label.label);
-        }
+        ListRow row_wrapper1 = row_wrappers[row1.get_child()];
+        ListRow row_wrapper2 = row_wrappers[row2.get_child()];
+
+        int affiliation1 = get_affiliation_ranking(stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, row_wrapper1.jid, row_wrapper1.conversation.account) ?? Xmpp.Xep.Muc.Affiliation.NONE);
+        int affiliation2 = get_affiliation_ranking(stream_interactor.get_module(MucManager.IDENTITY).get_affiliation(conversation.counterpart, row_wrapper2.jid, row_wrapper2.conversation.account) ?? Xmpp.Xep.Muc.Affiliation.NONE);
+
+        if (affiliation1 < affiliation2) return -1;
+        else if (affiliation1 > affiliation2) return 1;
+        else return row_wrapper1.name_label.label.collate(row_wrapper2.name_label.label);
         return 0;
     }
 

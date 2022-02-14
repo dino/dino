@@ -123,7 +123,7 @@ public class BadMessageItem : Plugins.MetaConversationItem {
         this.badness_type = badness_type;
     }
 
-    public override Object? get_widget(Plugins.WidgetType widget_type) {
+    public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType widget_type) {
         return new BadMessagesWidget(plugin, conversation, problem_jid, badness_type);
     }
 
@@ -161,12 +161,12 @@ public class BadMessagesWidget : Box {
         }
         Label label = new Label(warning_text) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
         label.get_style_context().add_class("dim-label");
-        this.add(label);
+        this.append(label);
 
         label.activate_link.connect(() => {
             if (badness_type == BadnessType.UNTRUSTED) {
                 ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, jid);
-                dialog.set_transient_for((Window) get_toplevel());
+                dialog.set_transient_for((Window) get_root());
                 dialog.present();
             }
 

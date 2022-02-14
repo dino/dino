@@ -264,7 +264,7 @@ public class ConversationSelectorRow : ListBoxRow {
     private static Regex dino_resource_regex = /^dino\.[a-f0-9]{8}$/;
 
     private Widget generate_tooltip() {
-        Grid grid = new Grid() { row_spacing=5, column_homogeneous=false, column_spacing=2, margin_start=5, margin_end=5, margin_top=2, margin_bottom=2, visible=true };
+        Grid grid = new Grid() { row_spacing=5, column_homogeneous=false, column_spacing=5, margin_start=7, margin_end=7, margin_top=7, margin_bottom=7 };
 
         Label label = new Label(conversation.counterpart.to_string()) { valign=Align.START, xalign=0, visible=true };
         label.attributes = new AttrList();
@@ -286,9 +286,9 @@ public class ConversationSelectorRow : ListBoxRow {
 
                 Image image = new Image() { hexpand=false, valign=Align.CENTER, visible=true };
                 if (identity != null && (identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_PHONE || identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_TABLET)) {
-                    image.set_from_icon_name("dino-device-phone-symbolic", IconSize.SMALL_TOOLBAR);
+                    image.set_from_icon_name("dino-device-phone-symbolic");
                 } else {
-                    image.set_from_icon_name("dino-device-desktop-symbolic", IconSize.SMALL_TOOLBAR);
+                    image.set_from_icon_name("dino-device-desktop-symbolic");
                 }
 
                 if (show == Presence.Stanza.SHOW_AWAY) {

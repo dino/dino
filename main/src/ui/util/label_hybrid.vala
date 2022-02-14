@@ -3,15 +3,18 @@ using Gtk;
 
 namespace Dino.Ui.Util {
 
-public class LabelHybrid : Stack {
+public class LabelHybrid : Widget {
 
+    public Stack stack = new Stack();
     public Label label = new Label("") { visible=true, max_width_chars=1, ellipsize=Pango.EllipsizeMode.END };
-    protected Button button = new Button() { relief=ReliefStyle.NONE, visible=true };
+    protected Button button = new Button() { has_frame=false, visible=true };
 
     internal virtual void init(Widget widget) {
-        button.add(label);
-        add_named(button, "label");
-        add_named(widget, "widget");
+        this.layout_manager = new BinLayout();
+        stack.insert_after(this, null);
+        button.child = label;
+        stack.add_named(button, "label");
+        stack.add_named(widget, "widget");
 
         button.clicked.connect(() => {
             show_widget();
@@ -19,12 +22,12 @@ public class LabelHybrid : Stack {
     }
 
     public void show_widget() {
-        visible_child_name = "widget";
-        get_child_by_name("widget").grab_focus();
+        stack.visible_child_name = "widget";
+        stack.get_child_by_name("widget").grab_focus();
     }
 
     public void show_label() {
-        visible_child_name = "label";
+        stack.visible_child_name = "label";
     }
 }
 
@@ -73,18 +76,25 @@ public class EntryLabelHybrid : LabelHybrid {
         base.init(entry);
         update_label();
 
-        entry.key_release_event.connect((event) => {
-            if (event.keyval == Gdk.Key.Return) {
-                show_label();
-            } else {
-                set_label_label(entry.text);
-            }
-            return false;
-        });
-        entry.focus_out_event.connect(() => {
+        var key_events = new EventControllerKey();
+        key_events.key_released.connect(on_key_released);
+        entry.add_controller(key_events);
+
+        var focus_events = new EventControllerFocus();
+        focus_events.leave.connect(on_focus_leave);
+        entry.add_controller(focus_events);
+    }
+
+    private void on_key_released(uint keyval) {
+        if (keyval == Gdk.Key.Return) {
             show_label();
-            return false;
-        });
+        } else {
+            set_label_label(entry.text);
+        }
+    }
+
+    private void on_focus_leave() {
+        show_label();
     }
 
     private void set_label_label(string value) {
@@ -143,14 +153,18 @@ public class ComboBoxTextLabelHybrid : LabelHybrid {
             update_label();
             show_label();
         });
-        combobox.focus_out_event.connect(() => {
-            update_label();
-            show_label();
-            return false;
-        });
         button.clicked.connect(() => {
             combobox.popup();
         });
+
+        var focus_events = new EventControllerFocus();
+        focus_events.leave.connect(on_focus_leave);
+        combobox.add_controller(focus_events);
+    }
+
+    private void on_focus_leave() {
+            update_label();
+            show_label();
     }
 
     private void update_label() {
@@ -166,10 +180,10 @@ public class LabelHybridGroup {
         hybrids.add(hybrid);
 
         hybrid.notify["visible-child-name"].connect(() => {
-            if (hybrid.visible_child_name == "label") return;
+            if (hybrid.stack.visible_child_name == "label") return;
             foreach (LabelHybrid h in hybrids) {
                 if (h != hybrid) {
-                    h.set_visible_child_name("label");
+                    h.stack.set_visible_child_name("label");
                 }
             }
         });

@@ -37,9 +37,11 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private unowned ListBox inactive_keys_listbox;
     [GtkChild] private unowned Switch auto_accept_switch;
     [GtkChild] private unowned Button copy_button;
-    [GtkChild] private unowned Button show_qrcode_button;
+    [GtkChild] private unowned MenuButton show_qrcode_button;
     [GtkChild] private unowned Image qrcode_image;
     [GtkChild] private unowned Popover qrcode_popover;
+
+    private ArrayList<Widget> new_keys_listbox_children = new ArrayList<Widget>();
 
     construct {
         // If we set the strings in the .ui file, they don't get translated
@@ -59,7 +61,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
         this.jid = jid;
 
         if (Environment.get_variable("GTK_CSD") != "0") {
-            ((HeaderBar) get_header_bar()).set_subtitle(jid.bare_jid.to_string());
+//            ((HeaderBar) get_header_bar()).set_subtitle(jid.bare_jid.to_string());
         }
 
         keys_listbox.row_activated.connect(on_key_entry_clicked);
@@ -89,7 +91,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             string fingerprint = fingerprint_from_base64(own_b64);
             own_fingerprint_label.set_markup(fingerprint_markup(fingerprint));
 
-            copy_button.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
+            copy_button.clicked.connect(() => { copy_button.get_clipboard().set_text(fingerprint); });
 
             int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
             var iri_query = @"omemo-sid-$(sid)=$(fingerprint)";
@@ -104,12 +106,12 @@ public class ContactDetailsDialog : Gtk.Dialog {
             const int MODULE_SIZE_PX = 4;  // arbitrary
             var qr_pixbuf = new QRcode(iri, 2)
                 .to_pixbuf(MODULE_SIZE_PX * qrcode_image.scale_factor);
-            qrcode_image.set_from_surface(
-                Gdk.cairo_surface_create_from_pixbuf(qr_pixbuf,0,get_window()));
-            qrcode_image.margin = QUIET_ZONE_MODULES*MODULE_SIZE_PX;
+            qrcode_image.set_from_pixbuf(qr_pixbuf);
+            qrcode_image.margin_top = qrcode_image.margin_end =
+                    qrcode_image.margin_bottom = qrcode_image.margin_start = QUIET_ZONE_MODULES*MODULE_SIZE_PX;
             qrcode_popover.get_style_context().add_class("qrcode-container");
 
-            show_qrcode_button.clicked.connect(qrcode_popover.popup);
+            show_qrcode_button.popover = qrcode_popover;
         }
 
         new_keys_listbox.set_header_func(header_function);
@@ -196,10 +198,10 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         if (device[plugin.db.identity_meta.now_active]) {
             keys_container.visible = true;
-            keys_listbox.add(fingerprint_row);
+            keys_listbox.append(fingerprint_row);
         } else {
             inactive_keys_expander.visible=true;
-            inactive_keys_listbox.add(fingerprint_row);
+            inactive_keys_listbox.append(fingerprint_row);
         }
         displayed_ids.add(device[plugin.db.identity_meta.device_id]);
     }
@@ -210,7 +212,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         Row updated_device = plugin.db.identity_meta.get_device(fingerprint_row.row[plugin.db.identity_meta.identity_id], fingerprint_row.row[plugin.db.identity_meta.address_name], fingerprint_row.row[plugin.db.identity_meta.device_id]);
         ManageKeyDialog manage_dialog = new ManageKeyDialog(updated_device, plugin.db);
-        manage_dialog.set_transient_for((Gtk.Window) get_toplevel());
+        manage_dialog.set_transient_for((Gtk.Window) get_root());
         manage_dialog.present();
         manage_dialog.response.connect((response) => {
             fingerprint_row.update_trust_state(response, fingerprint_row.row[plugin.db.identity_meta.now_active]);
@@ -257,12 +259,12 @@ public class ContactDetailsDialog : Gtk.Dialog {
         Box box = new Box(Gtk.Orientation.HORIZONTAL, 40) { visible = true, margin_start = 20, margin_end = 20, margin_top = 14, margin_bottom = 14, hexpand = true };
 
         Button accept_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        accept_button.add(new Image.from_icon_name("emblem-ok-symbolic", IconSize.BUTTON) { visible=true }); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
+        accept_button.set_icon_name("emblem-ok-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
         accept_button.get_style_context().add_class("suggested-action");
         accept_button.tooltip_text = _("Accept key");
 
         Button reject_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        reject_button.add(new Image.from_icon_name("action-unavailable-symbolic", IconSize.BUTTON) { visible=true });
+        reject_button.set_icon_name("action-unavailable-symbolic");
         reject_button.get_style_context().add_class("destructive-action");
         reject_button.tooltip_text = _("Reject key");
 
@@ -270,35 +272,38 @@ public class ContactDetailsDialog : Gtk.Dialog {
             plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.TRUSTED);
             add_fingerprint(device, TrustLevel.TRUSTED);
             new_keys_listbox.remove(lbr);
-            if (new_keys_listbox.get_children().length() < 1) new_keys_container.visible = false;
+            new_keys_listbox_children.remove(lbr);
+            if (new_keys_listbox_children.size < 1) new_keys_container.visible = false;
         });
 
         reject_button.clicked.connect(() => {
             plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.UNTRUSTED);
             add_fingerprint(device, TrustLevel.UNTRUSTED);
             new_keys_listbox.remove(lbr);
-            if (new_keys_listbox.get_children().length() < 1) new_keys_container.visible = false;
+            new_keys_listbox_children.remove(lbr);
+            if (new_keys_listbox_children.size < 1) new_keys_container.visible = false;
         });
 
         string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
         Label fingerprint_label = new Label(res) { use_markup=true, justify=Justification.RIGHT, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false };
-        box.add(fingerprint_label);
+        box.append(fingerprint_label);
 
         Box control_box = new Box(Gtk.Orientation.HORIZONTAL, 0) { visible = true, hexpand = true };
-        control_box.add(accept_button);
-        control_box.add(reject_button);
+        control_box.append(accept_button);
+        control_box.append(reject_button);
         control_box.get_style_context().add_class("linked"); // .linked: Visually link the accept / reject buttons
-        box.add(control_box);
+        box.append(control_box);
 
-        lbr.add(box);
-        new_keys_listbox.add(lbr);
+        lbr.set_child(box);
+        new_keys_listbox.append(lbr);
+        new_keys_listbox_children.add(lbr);
         displayed_ids.add(device[plugin.db.identity_meta.device_id]);
     }
 }
 
 public class FingerprintRow : ListBoxRow {
 
-    private Image trust_image = new Image() { visible = true, halign = Align.END, icon_size = IconSize.BUTTON };
+    private Image trust_image = new Image() { visible = true, halign = Align.END };
     private Label fingerprint_label = new Label("") { use_markup=true, justify=Justification.RIGHT, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false };
     private Label trust_label = new Label(null) { visible = true, hexpand = true, xalign = 0 };
 
@@ -308,13 +313,13 @@ public class FingerprintRow : ListBoxRow {
         Box box = new Box(Gtk.Orientation.HORIZONTAL, 40) { visible = true, margin_start = 20, margin_end = 20, margin_top = 14, margin_bottom = 14, hexpand = true };
         Box status_box = new Box(Gtk.Orientation.HORIZONTAL, 5) { visible = true, hexpand = true };
 
-        box.add(fingerprint_label);
-        box.add(status_box);
+        box.append(fingerprint_label);
+        box.append(status_box);
 
-        status_box.add(trust_label);
-        status_box.add(trust_image);
+        status_box.append(trust_label);
+        status_box.append(trust_image);
 
-        this.add(box);
+        this.set_child(box);
     }
 
     public FingerprintRow(Row row, string key_base64, int trust, bool now_active) {

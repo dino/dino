@@ -17,7 +17,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
     }
 
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, Plugins.WidgetType type) {
-        if (type != Plugins.WidgetType.GTK) return;
+        if (type != Plugins.WidgetType.GTK4) return;
 
         if (!stream_interactor.get<MucManager>().is_public_room(conversation.account, conversation.counterpart)) {
             string details_headline = conversation.type_ == Conversation.Type.GROUPCHAT ? DETAILS_HEADLINE_ROOM : DETAILS_HEADLINE_CHAT;

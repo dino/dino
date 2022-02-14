@@ -6,24 +6,37 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/Dino/global_search.ui")]
-public class GlobalSearch : Overlay {
+public class GlobalSearch {
     public signal void selected_item(MessageItem item);
     private StreamInteractor stream_interactor;
     private string search = "";
     private int loaded_results = -1;
     private Mutex reloading_mutex = Mutex();
 
-    [GtkChild] public unowned SearchEntry search_entry;
-    [GtkChild] public unowned Label entry_number_label;
-    [GtkChild] public unowned ScrolledWindow results_scrolled;
-    [GtkChild] public unowned Box results_box;
-    [GtkChild] public unowned Stack results_empty_stack;
-    [GtkChild] public unowned Frame auto_complete_overlay;
-    [GtkChild] public unowned ListBox auto_complete_list;
+    public Overlay overlay;
+    public SearchEntry search_entry;
+    public Label entry_number_label;
+    public ScrolledWindow results_scrolled;
+    public Box results_box;
+    public Stack results_empty_stack;
+    public Frame auto_complete_overlay;
+    public ListBox auto_complete_list;
 
-    public GlobalSearch init(StreamInteractor stream_interactor) {
+    private ArrayList<Widget> auto_complete_children = new ArrayList<Widget>();
+    private ArrayList<Widget> results_box_children = new ArrayList<Widget>();
+
+    public GlobalSearch(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
+
+        Builder builder = new Builder.from_resource("/im/dino/Dino/global_search.ui");
+        overlay = (Overlay) builder.get_object("overlay");
+        search_entry = (SearchEntry) builder.get_object("search_entry");
+        entry_number_label = (Label) builder.get_object("entry_number_label");
+        results_scrolled = (ScrolledWindow) builder.get_object("results_scrolled");
+        results_box = (Box) builder.get_object("results_box");
+        results_empty_stack = (Stack) builder.get_object("results_empty_stack");
+        auto_complete_overlay = (Frame) builder.get_object("auto_complete_overlay");
+        auto_complete_list = (ListBox) builder.get_object("auto_complete_list");
 
         search_entry.search_changed.connect(() => {
             set_search(search_entry.text);
@@ -34,9 +47,10 @@ public class GlobalSearch : Overlay {
         results_scrolled.vadjustment.notify["value"].connect(on_scrolled_window_vadjustment_value);
         results_scrolled.vadjustment.notify["upper"].connect_after(on_scrolled_window_vadjustment_upper);
 
-        event.connect(on_event);
-
-        return this;
+        var overlay_key_events = new EventControllerKey();
+        overlay_key_events.key_pressed.connect(on_key_pressed);
+        overlay_key_events.key_released.connect(on_key_released);
+        overlay.add_controller(overlay_key_events);
     }
 
     private void on_scrolled_window_vadjustment_value() {
@@ -57,38 +71,49 @@ public class GlobalSearch : Overlay {
         reloading_mutex.unlock();
     }
 
-    private bool on_event(Gdk.Event event) {
-        if (auto_complete_overlay.visible) {
-            if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Up) {
-                var row = auto_complete_list.get_selected_row();
-                var index = row == null ? -1 : row.get_index() - 1;
-                if (index == -1) index = (int)auto_complete_list.get_children().length() - 1;
-                auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
-                return true;
-            }
-            if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Down) {
-                var row = auto_complete_list.get_selected_row();
-                var index = row == null ? 0 : row.get_index() + 1;
-                if (index == auto_complete_list.get_children().length()) index = 0;
-                auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
-                return true;
-            }
-            if (event.type == Gdk.EventType.KEY_PRESS && event.key.keyval == Gdk.Key.Tab ||
-                    event.type == Gdk.EventType.KEY_RELEASE && event.key.keyval == Gdk.Key.Return) {
-                auto_complete_list.get_selected_row().activate();
-                return true;
-            }
+    private bool on_key_pressed(uint keyval, uint keycode, Gdk.ModifierType state) {
+        if (!auto_complete_overlay.visible) return false;
+
+        if (keyval == Gdk.Key.Up) {
+            var row = auto_complete_list.get_selected_row();
+            var index = row == null ? -1 : row.get_index() - 1;
+            if (index == -1) index = (int)auto_complete_children.size - 1;
+            auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
+            return true;
+        }
+        if (keyval == Gdk.Key.Down) {
+            var row = auto_complete_list.get_selected_row();
+            var index = row == null ? 0 : row.get_index() + 1;
+            if (index == auto_complete_children.size) index = 0;
+            auto_complete_list.select_row(auto_complete_list.get_row_at_index(index));
+            return true;
+        }
+        if (keyval == Gdk.Key.Tab) {
+            auto_complete_list.get_selected_row().activate();
+            return true;
         }
         // TODO: Handle cursor movement in results
         // TODO: Direct all keystrokes to text input
         return false;
     }
 
+    private void on_key_released(uint keyval, uint keycode, Gdk.ModifierType state) {
+        if (keyval == Gdk.Key.Return) {
+            auto_complete_list.get_selected_row().activate();
+        }
+    }
+
     private void update_auto_complete() {
         Gee.List<SearchSuggestion> suggestions = stream_interactor.get_module(SearchProcessor.IDENTITY).suggest_auto_complete(search_entry.text, search_entry.cursor_position);
         auto_complete_overlay.visible = suggestions.size > 0;
         if (suggestions.size > 0) {
-            auto_complete_list.@foreach((widget) => auto_complete_list.remove(widget));
+            // Remove current suggestions
+            foreach (Widget widget in auto_complete_children) {
+                auto_complete_list.remove(widget);
+            }
+            auto_complete_children.clear();
+
+            // Populate new suggestions
             foreach(SearchSuggestion suggestion in suggestions) {
                 Builder builder = new Builder.from_resource("/im/dino/Dino/search_autocomplete.ui");
                 AvatarImage avatar = (AvatarImage)builder.get_object("image");
@@ -107,24 +132,29 @@ public class GlobalSearch : Overlay {
                     label.label = display_name;
                 }
                 ListBoxRow row = new ListBoxRow() { visible = true, can_focus = false };
-                row.add((Widget)builder.get_object("root"));
+                row.set_child((Widget)builder.get_object("root"));
                 row.activate.connect(() => {
                     handle_suggestion(suggestion);
                 });
-                auto_complete_list.add(row);
+                auto_complete_list.append(row);
+                auto_complete_children.add(row);
             }
             auto_complete_list.select_row(auto_complete_list.get_row_at_index(0));
         }
     }
 
     private void handle_suggestion(SearchSuggestion suggestion) {
-        search_entry.move_cursor(MovementStep.LOGICAL_POSITIONS, suggestion.start_index - search_entry.cursor_position, false);
-        search_entry.delete_from_cursor(DeleteType.CHARS, suggestion.end_index - suggestion.start_index);
-        search_entry.insert_at_cursor(suggestion.completion + " ");
+        search_entry.delete_text(suggestion.start_index, suggestion.end_index);
+        int position = search_entry.cursor_position;
+        search_entry.insert_text(suggestion.completion + " ", suggestion.completion.length + 1, ref position);
+        search_entry.set_position(-1);
     }
 
     private void clear_search() {
-        results_box.@foreach((widget) => { results_box.remove(widget); });
+        foreach (Widget widget in results_box_children) {
+            results_box.remove(widget);
+        }
+        results_box_children.clear();
         loaded_results = 0;
     }
 
@@ -157,30 +187,32 @@ public class GlobalSearch : Overlay {
 
             Box context_box = new Box(Orientation.VERTICAL, 5) { visible=true };
             if (before_message != null && before_message.size > 0) {
-                context_box.add(get_context_message_widget(before_message.first()));
+                context_box.append(get_context_message_widget(before_message.first()));
             }
 
             Widget match_widget = get_match_message_widget(item);
-            context_box.add(match_widget);
+            context_box.append(match_widget);
 
             if (after_message != null && after_message.size > 0) {
-                context_box.add(get_context_message_widget(after_message.first()));
+                context_box.append(get_context_message_widget(after_message.first()));
             }
 
-            Label date_label = new Label(ConversationSummary.ItemMetaDataHeader.get_relative_time(item.time.to_local())) { xalign=0, visible=true };
+            Label date_label = new Label(ConversationSummary.ConversationItemSkeleton.get_relative_time(item.time.to_local())) { xalign=0, visible=true };
             date_label.get_style_context().add_class("dim-label");
 
             string display_name = Util.get_conversation_display_name(stream_interactor, item.conversation);
             string title = item.message.type_ == Message.Type.GROUPCHAT ? _("In %s").printf(display_name) : _("With %s").printf(display_name);
             Box header_box = new Box(Orientation.HORIZONTAL, 10) { margin_start=7, visible=true };
-            header_box.add(new Label(@"<b>$(Markup.escape_text(title))</b>") { ellipsize=EllipsizeMode.END, xalign=0, use_markup=true, visible=true });
-            header_box.add(date_label);
+            header_box.append(new Label(@"<b>$(Markup.escape_text(title))</b>") { ellipsize=EllipsizeMode.END, xalign=0, use_markup=true, visible=true });
+            header_box.append(date_label);
 
             Box result_box = new Box(Orientation.VERTICAL, 7) { visible=true };
-            result_box.add(header_box);
-            result_box.add(context_box);
+            result_box.append(header_box);
+            result_box.append(context_box);
 
-            results_box.add(result_box);
+            results_box.append(result_box);
+            results_box_children.add(result_box);
+
         }
     }
 
@@ -237,11 +269,11 @@ public class GlobalSearch : Overlay {
         label.label = markup_text;
         grid.attach(label, 1, 1, 1, 1);
 
-        Button button = new Button() { relief=ReliefStyle.NONE, visible=true };
+        Button button = new Button() { has_frame=false, visible=true };
         button.clicked.connect(() => {
             selected_item(item);
         });
-        button.add(grid);
+        button.child = grid;
         return button;
     }
 
@@ -277,6 +309,10 @@ public class GlobalSearch : Overlay {
             }
         }
         return ret;
+    }
+
+    public Widget get_widget() {
+        return overlay;
     }
 }
 

@@ -70,18 +70,18 @@ private class ConversationNotification : MetaConversationNotification {
         this.account = account;
 
         Box box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
-        Button manage_button = new Button() { label=_("Manage"), visible=true };
+        Button manage_button = new Button.with_label(_("Manage")) { visible=true };
         manage_button.clicked.connect(() => {
             manage_button.activate();
             ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, account, jid);
-            dialog.set_transient_for((Window) manage_button.get_toplevel());
+            dialog.set_transient_for((Window) manage_button.get_root());
             dialog.response.connect((response_type) => {
                 should_hide();
             });
             dialog.present();
         });
-        box.add(new Label(_("This contact has new devices")) { margin_end=10, visible=true });
-        box.add(manage_button);
+        box.append(new Label(_("This contact has new devices")) { margin_end=10, visible=true });
+        box.append(manage_button);
         widget = box;
     }
 

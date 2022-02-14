@@ -1,12 +1,16 @@
 namespace Dino.Entities {
 
-public enum Encryption {
+    public enum Encryption {
         NONE,
         PGP,
         OMEMO,
         DTLS_SRTP,
         SRTP,
-        UNKNOWN,
-}
+        UNKNOWN;
+
+        public bool is_some() {
+            return this != NONE;
+        }
+    }
 
 }

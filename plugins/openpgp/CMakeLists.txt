@@ -9,7 +9,7 @@ find_packages(OPENPGP_PACKAGES REQUIRED
     GLib
     GModule
     GObject
-    GTK3
+    GTK4
 )
 
 set(RESOURCE_LIST
@@ -32,7 +32,6 @@ SOURCES
     src/file_transfer/file_encryptor.vala
 
     src/account_settings_entry.vala
-    src/account_settings_widget.vala
     src/contact_details_provider.vala
     src/database.vala
     src/encryption_list_entry.vala

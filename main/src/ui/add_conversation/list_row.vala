@@ -6,15 +6,26 @@ using Xmpp;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/Dino/add_conversation/list_row.ui")]
-public class ListRow : ListBoxRow {
+public class ListRow : Widget {
 
-    [GtkChild] public unowned AvatarImage image;
-    [GtkChild] public unowned Label name_label;
-    [GtkChild] public unowned Label via_label;
+    public Grid outer_grid;
+    public AvatarImage image;
+    public Label name_label;
+    public Label via_label;
 
     public Jid? jid;
     public Account? account;
+
+    construct {
+        Builder builder = new Builder.from_resource("/im/dino/Dino/add_conversation/list_row.ui");
+        outer_grid = (Grid) builder.get_object("outer_grid");
+        image = (AvatarImage) builder.get_object("image");
+        name_label = (Label) builder.get_object("name_label");
+        via_label = (Label) builder.get_object("via_label");
+
+        this.layout_manager = new BinLayout();
+        outer_grid.insert_after(this, null);
+    }
 
     public ListRow() {}
 

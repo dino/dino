@@ -36,18 +36,20 @@ public static Widget? get_data_form_field_widget(DataForms.DataForm.Field field)
         case DataForms.DataForm.Type.TEXT_PRIVATE:
             DataForms.DataForm.TextPrivateField text_private_field = field as DataForms.DataForm.TextPrivateField;
             Entry entry = new Entry() { text=text_private_field.value ?? "", valign=Align.CENTER, visible=true, visibility=false };
-            entry.key_release_event.connect(() => {
+            var entry_key_events = new EventControllerKey();
+            entry_key_events.key_released.connect(() => {
                 text_private_field.value = entry.text;
-                return false;
             });
+            entry.add_controller(entry_key_events);
             return entry;
         case DataForms.DataForm.Type.TEXT_SINGLE:
             DataForms.DataForm.TextSingleField text_single_field = field as DataForms.DataForm.TextSingleField;
             Entry entry = new Entry() { text=text_single_field.value ?? "", valign=Align.CENTER, visible=true };
-            entry.key_release_event.connect(() => {
+            var entry_key_events = new EventControllerKey();
+            entry_key_events.key_released.connect(() => {
                 text_single_field.value = entry.text;
-                return false;
             });
+            entry.add_controller(entry_key_events);
             return entry;
         default:
             return null;

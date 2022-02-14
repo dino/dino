@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class FileImageWidget : EventBox {
+public class FileImageWidget : Box {
 
     private ScalingImage image;
     FileDefaultWidget file_default_widget;
@@ -14,7 +14,6 @@ public class FileImageWidget : EventBox {
 
     public FileImageWidget() {
         this.halign = Align.START;
-        this.events = EventMask.POINTER_MOTION_MASK;
 
         this.get_style_context().add_class("file-image-widget");
     }
@@ -36,6 +35,7 @@ public class FileImageWidget : EventBox {
             pixbuf = pixbuf.apply_embedded_orientation();
 
             image.load(pixbuf);
+            Picture picture = new Picture.for_pixbuf(pixbuf) { can_shrink=true, keep_aspect_ratio=true, halign=Align.START };
 
             Idle.add(load_from_file.callback);
             return image;
@@ -47,28 +47,29 @@ public class FileImageWidget : EventBox {
         FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
         string? mime_type = file_info.get_content_type();
 
-        file_default_widget = new FileDefaultWidget() { valign=Align.END, vexpand=false };
-        file_default_widget.stack_event_box.visible = false;
+        file_default_widget = new FileDefaultWidget() { valign=Align.END, vexpand=false, visible=false };
+        file_default_widget.image_stack.visible = false;
         file_default_widget_controller = new FileDefaultWidgetController(file_default_widget);
         file_default_widget_controller.set_file(file, file_name, mime_type);
 
         Overlay overlay = new Overlay() { visible=true };
-        overlay.add(image);
+        overlay.set_child(image);
         overlay.add_overlay(file_default_widget);
+        overlay.set_measure_overlay(image, true);
+        overlay.set_clip_overlay(file_default_widget, true);
 
-        this.enter_notify_event.connect((event) => {
+        EventControllerMotion this_motion_events = new EventControllerMotion();
+        this.add_controller(this_motion_events);
+        this_motion_events.enter.connect(() => {
             file_default_widget.visible = true;
-            return false;
         });
-        this.leave_notify_event.connect((event) => {
-            if (event.detail == Gdk.NotifyType.INFERIOR) return false;
-            if (file_default_widget.file_menu.popover != null && file_default_widget.file_menu.popover.visible) return false;
+        this_motion_events.leave.connect(() => {
+            if (file_default_widget.file_menu.popover != null && file_default_widget.file_menu.popover.visible) return;
 
             file_default_widget.visible = false;
-            return false;
         });
 
-        this.add(overlay);
+        this.append(overlay);
     }
 }
 

@@ -154,7 +154,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
             conversation.read_up_to = message;
 
             // TODO: This only marks messages as read, not http file transfers.
-            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_foreign(conversation, 1, message.id);
             if (content_item == null) return;
             ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
             if (read_up_to_item != null && read_up_to_item.compare(content_item) > 0) return;

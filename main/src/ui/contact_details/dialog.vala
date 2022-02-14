@@ -37,7 +37,7 @@ public class Dialog : Gtk.Dialog {
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
         if (Util.use_csd()) {
             // TODO get_header_bar directly returns a HeaderBar in vala > 0.48
-            ((HeaderBar) get_header_bar()).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+//            ((HeaderBar) get_header_bar()).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
         }
         setup_top();
 
@@ -50,23 +50,24 @@ public class Dialog : Gtk.Dialog {
         app.plugin_registry.register_contact_details_entry(new PermissionsProvider(stream_interactor));
 
         foreach (Plugins.ContactDetailsProvider provider in app.plugin_registry.contact_details_entries) {
-            provider.populate(conversation, contact_details, Plugins.WidgetType.GTK);
+            provider.populate(conversation, contact_details, Plugins.WidgetType.GTK4);
         }
 
-        destroy.connect(() => {
-            contact_details.save();
-        });
+//        destroy.connect(() => {
+//            contact_details.save();
+//        });
     }
 
     private void setup_top() {
         if (conversation.type_ == Conversation.Type.CHAT) {
             name_label.visible = false;
-            jid_label.margin_start = new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1;
+            jid_label.margin_start = new Button().get_style_context().get_padding().left + 1;
             name_hybrid.text = Util.get_conversation_display_name(stream_interactor, conversation);
-            destroy.connect(() => {
+            close_request.connect(() => {
                 if (name_hybrid.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
                     stream_interactor.get_module(RosterManager.IDENTITY).set_jid_handle(conversation.account, conversation.counterpart, name_hybrid.text);
                 }
+                return false;
             });
         } else {
             name_hybrid.visible = false;
@@ -84,18 +85,18 @@ public class Dialog : Gtk.Dialog {
 
         ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
         Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3, visible=true };
-        list_row.add(row);
+        list_row.set_child(row);
         Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, visible=true };
         if (description != null && description != "") {
             Box box = new Box(Orientation.VERTICAL, 0) { visible=true };
-            box.add(label_label);
+            box.append(label_label);
             Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true, visible=true };
             desc_label.set_markup("<span size='small'>%s</span>".printf(Markup.escape_text(description)));
             desc_label.get_style_context().add_class("dim-label");
-            box.add(desc_label);
-            row.add(box);
+            box.append(desc_label);
+            row.append(box);
         } else {
-            row.add(label_label);
+            row.append(label_label);
         }
 
         Widget widget = w;
@@ -112,13 +113,13 @@ public class Dialog : Gtk.Dialog {
         widget.margin_top = 5;
 
 
-        row.add(widget);
-        categories[category].add(list_row);
+        row.append(widget);
+        categories[category].append(list_row);
 
         int pref_height, pref_width;
-        get_content_area().get_preferred_height(null, out pref_height);
-        get_preferred_width(out pref_width, null);
-        resize(pref_width, int.min(500, pref_height));
+//        get_content_area().get_preferred_height(null, out pref_height);
+//        get_preferred_width(out pref_width, null);
+//        resize(pref_width, int.min(500, pref_height));
     }
 
     private void add_category(string category) {
@@ -133,11 +134,11 @@ public class Dialog : Gtk.Dialog {
             Box box = new Box(Orientation.VERTICAL, 5) { margin_top=12, margin_bottom=12, visible=true };
             Label category_label = new Label("") { xalign=0, visible=true };
             category_label.set_markup(@"<b>$(Markup.escape_text(category))</b>");
-            box.add(category_label);
+            box.append(category_label);
             Frame frame = new Frame(null) { visible=true };
-            frame.add(list_box);
-            box.add(frame);
-            main_box.add(box);
+            frame.set_child(list_box);
+            box.append(frame);
+            main_box.append(box);
         }
     }
 }

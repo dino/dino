@@ -27,7 +27,6 @@
                                 </style>
                                 <child>
                                     <object class="GtkImage" id="image">
-                                        <property name="icon-size">5</property>
                                         <property name="opacity">0.7</property>
                                         <property name="visible">True</property>
                                     </object>
@@ -73,7 +72,10 @@
                                                 <property name="halign">end</property>
                                                 <property name="orientation">horizontal</property>
                                                 <property name="spacing">5</property>
-                                                <property name="margin">10</property>
+                                                <property name="margin_top">10</property>
+                                                <property name="margin_bottom">10</property>
+                                                <property name="margin_start">10</property>
+                                                <property name="margin_end">10</property>
                                                 <property name="hexpand">True</property>
                                                 <child>
                                                     <object class="GtkButton" id="reject_call_button">
@@ -97,7 +99,10 @@
                                         </child>
                                         <child>
                                             <object class="GtkBox" id="multiparty_peer_box">
-                                                <property name="margin">10</property>
+                                                <property name="margin_top">10</property>
+                                                <property name="margin_bottom">10</property>
+                                                <property name="margin_start">10</property>
+                                                <property name="margin_end">10</property>
                                                 <property name="spacing">7</property>
                                                 <property name="hexpand">True</property>
                                             </object>

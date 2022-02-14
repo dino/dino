@@ -44,37 +44,11 @@ public class ContentItemStore : StreamInteractionModule, Object {
         Gee.TreeSet<ContentItem> items = new Gee.TreeSet<ContentItem>(ContentItem.compare_func);
 
         foreach (var row in select) {
-            int provider = row[db.content_item.content_type];
+            int id = row[db.content_item.id];
+            int content_type = row[db.content_item.content_type];
             int foreign_id = row[db.content_item.foreign_id];
             DateTime time = new DateTime.from_unix_utc(row[db.content_item.time]);
-            switch (provider) {
-                case 1:
-                    Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
-                    if (message != null) {
-                        var message_item = new MessageItem(message, conversation, row[db.content_item.id]);
-                        message_item.time = time; // In case of message corrections, the original time should be used
-                        items.add(message_item);
-                    }
-                    break;
-                case 2:
-                    FileTransfer? file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_id(foreign_id, conversation);
-                    if (file_transfer != null) {
-                        Message? message = null;
-                        if (file_transfer.provider == 0 && file_transfer.info != null) {
-                            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
-                        }
-                        var file_item = new FileItem(file_transfer, conversation, row[db.content_item.id], message);
-                        items.add(file_item);
-                    }
-                    break;
-                case 3:
-                    Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(foreign_id, conversation);
-                    if (call != null) {
-                        var call_item = new CallItem(call, conversation, row[db.content_item.id]);
-                        items.add(call_item);
-                    }
-                    break;
-            }
+            items.add(get_item(conversation, id, content_type, foreign_id, time));
         }
 
         Gee.List<ContentItem> ret = new ArrayList<ContentItem>();
@@ -84,7 +58,42 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return ret;
     }
 
-    public ContentItem? get_item(Conversation conversation, int type, int foreign_id) {
+    public ContentItem get_item(Conversation conversation, int id, int content_type, int foreign_id, DateTime time) throws Error {
+        switch (content_type) {
+            case 1:
+                Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
+                if (message != null) {
+                    var message_item = new MessageItem(message, conversation, id);
+                    message_item.time = time; // In case of message corrections, the original time should be used
+                    return message_item;
+                }
+                break;
+            case 2:
+                FileTransfer? file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_id(foreign_id, conversation);
+                if (file_transfer != null) {
+                    Message? message = null;
+                    if (file_transfer.provider == 0 && file_transfer.info != null) {
+                        message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
+                    }
+                    var file_item = new FileItem(file_transfer, conversation, id, message);
+                    return file_item;
+                }
+                break;
+            case 3:
+                Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(foreign_id, conversation);
+                if (call != null) {
+                    var call_item = new CallItem(call, conversation, id);
+                    return call_item;
+                }
+                break;
+            default:
+                warning("Unknown content item type: %i", content_type);
+                break;
+        }
+        throw new Error(-1, 0, "Bad content type %i or non existing content item %i", content_type, foreign_id);
+    }
+
+    public ContentItem? get_item_by_foreign(Conversation conversation, int type, int foreign_id) {
         QueryBuilder select = db.content_item.select()
             .with(db.content_item.content_type, "=", type)
             .with(db.content_item.foreign_id, "=", foreign_id);
@@ -121,6 +130,26 @@ public class ContentItemStore : StreamInteractionModule, Object {
 
         return get_items_from_query(select, conversation);
     }
+
+//    public Gee.List<ContentItemMeta> get_latest_meta(Conversation conversation, int count) {
+//        QueryBuilder select = db.content_item.select()
+//                .with(db.content_item.conversation_id, "=", conversation.id)
+//                .with(db.content_item.hide, "=", false)
+//                .order_by(db.content_item.time, "DESC")
+//                .order_by(db.content_item.id, "DESC")
+//                .limit(count);
+//
+//        var ret = new ArrayList<ContentItemMeta>();
+//        foreach (var row in select) {
+//            var item_meta = new ContentItemMeta() {
+//                id = row[db.content_item.id],
+//                content_type = row[db.content_item.content_type],
+//                foreign_id = row[db.content_item.foreign_id],
+//                time = new DateTime.from_unix_utc(row[db.content_item.time])
+//            };
+//        }
+//        return ret;
+//    }
 
     public Gee.List<ContentItem> get_before(Conversation conversation, ContentItem item, int count) {
         long time = (long) item.time.to_unix();

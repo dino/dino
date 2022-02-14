@@ -3,7 +3,7 @@
 private static extern void gst_value_set_fraction(ref GLib.Value value, int numerator, int denominator);
 #endif
 
-public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidget {
+public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWidget {
     private const int RECAPS_AFTER_CHANGE = 5;
     private static uint last_id = 0;
 
@@ -29,7 +29,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         this.plugin = plugin;
 
         id = last_id++;
-        sink = Gst.ElementFactory.make("gtksink", @"video_widget_$id") as Gst.Base.Sink;
+//        sink = Gst.ElementFactory.make("gtksink", @"video_widget_$id") as Gst.Base.Sink;
         if (sink != null) {
             Gtk.Widget widget;
             sink.@get("widget", out widget);
@@ -37,13 +37,13 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
             sink.@set("sync", true);
             sink.@set("ignore-alpha", false);
             this.widget = widget;
-            this.widget.draw.connect_after(fix_caps_issues);
-            add(widget);
-            widget.visible = true;
+//            this.widget.draw.connect_after(fix_caps_issues);
+            this.widget.insert_after(this, null);
+            this.widget.visible = true;
         } else {
             warning("Could not create GTK video sink. Won't display videos.");
         }
-        size_allocate.connect_after(after_size_allocate);
+//        size_allocate.connect_after(after_size_allocate);
     }
 
     public void input_caps_changed(GLib.Object pad, ParamSpec spec) {

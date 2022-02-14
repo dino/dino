@@ -15,18 +15,12 @@ public class ConversationListTitlebar : Gtk.Box {
     }
 }
 
-[GtkTemplate (ui = "/im/dino/Dino/conversation_list_titlebar_csd.ui")]
-public class ConversationListTitlebarCsd : Gtk.HeaderBar {
-
-    [GtkChild] private unowned MenuButton add_button;
-    [GtkChild] private unowned MenuButton menu_button;
-
-    public ConversationListTitlebarCsd() {
-        custom_title = new Label("Dino") { visible = true, hexpand = true, xalign = 0 };
-        custom_title.get_style_context().add_class("title");
-
-        create_add_menu(add_button, menu_button);
-    }
+public static HeaderBar get_conversation_list_titlebar_csd() {
+    Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_list_titlebar_csd.ui");
+    MenuButton add_button = (MenuButton) builder.get_object("add_button");
+    MenuButton menu_button = (MenuButton) builder.get_object("menu_button");
+    create_add_menu(add_button, menu_button);
+    return (HeaderBar) builder.get_object("header_bar");
 }
 
 private static void create_add_menu(MenuButton add_button, MenuButton menu_button) {

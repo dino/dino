@@ -27,16 +27,18 @@ public class OccupantsTabCompletor {
         this.stream_interactor = stream_interactor;
         this.text_input = text_input;
 
-        text_input.key_press_event.connect(on_text_input_key_press);
+        var text_input_key_events = new EventControllerKey();
+        text_input_key_events.key_pressed.connect(on_text_input_key_press);
+        text_input.add_controller(text_input_key_events);
     }
 
     public void initialize_for_conversation(Conversation conversation) {
         this.conversation = conversation;
     }
 
-    public bool on_text_input_key_press(EventKey event) {
+    public bool on_text_input_key_press(uint keyval, uint keycode, Gdk.ModifierType state) {
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            if (event.keyval == Key.Tab || event.keyval == Key.ISO_Left_Tab) {
+            if (keyval == Key.Tab || keyval == Key.ISO_Left_Tab) {
                 string text = text_input.buffer.text;
                 int start_index = int.max(text.last_index_of(" "), text.last_index_of("\n")) + 1;
                 string word = text.substring(start_index);
@@ -51,11 +53,11 @@ public class OccupantsTabCompletor {
                         index = -1;
                     }
                 }
-                if (event.keyval != Key.ISO_Group_Shift && active) {
-                    text_input.buffer.text = next_completion(event.keyval == Key.ISO_Left_Tab);
+                if (keyval != Key.ISO_Group_Shift && active) {
+                    text_input.buffer.text = next_completion(keyval == Key.ISO_Left_Tab);
                     return true;
                 }
-            } else if (event.keyval != Key.Shift_L && active) {
+            } else if (keyval != Key.Shift_L && active) {
                 active = false;
             }
         }

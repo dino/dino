@@ -33,11 +33,13 @@ class SmileyConverter {
     public SmileyConverter(TextView text_input) {
         this.text_input = text_input;
 
-        text_input.key_press_event.connect(on_text_input_key_press);
+        var text_input_key_events = new EventControllerKey();
+        text_input_key_events.key_pressed.connect(on_text_input_key_press);
+        text_input.add_controller(text_input_key_events);
     }
 
-    public bool on_text_input_key_press(EventKey event) {
-        if (event.keyval == Key.space || event.keyval == Key.Return) {
+    public bool on_text_input_key_press(uint keyval, uint keycode, Gdk.ModifierType state) {
+        if (keyval == Key.space || keyval == Key.Return) {
             check_convert();
         }
         return false;

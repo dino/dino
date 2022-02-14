@@ -7,7 +7,7 @@ find_packages(RTP_PACKAGES REQUIRED
     GModule
     GnuTLS
     GObject
-    GTK3
+    GTK4
     Gst
     GstApp
     GstAudio

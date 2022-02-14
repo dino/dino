@@ -1,31 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoPluginsOpenPgpAccountSettingsWidget">
-        <property name="visible">True</property>
+    <requires lib="gtk" version="4.0"/>
+    <object class="GtkStack" id="stack">
         <child>
-            <object class="GtkButton" id="button">
-                <property name="relief">none</property>
-                <property name="sensitive">False</property>
-                <property name="visible">True</property>
-                <child>
-                    <object class="GtkLabel" id="label">
-                        <property name="xalign">0</property>
-                        <property name="visible">True</property>
-                    </object>
-                </child>
-            </object>
-            <packing>
+            <object class="GtkStackPage">
                 <property name="name">label</property>
-            </packing>
+                <property name="child">
+                    <object class="GtkButton" id="button">
+                        <property name="has-frame">0</property>
+                        <property name="sensitive">0</property>
+                        <child>
+                            <object class="GtkLabel" id="label">
+                                <property name="xalign">0</property>
+                            </object>
+                        </child>
+                    </object>
+                </property>
+            </object>
         </child>
         <child>
-            <object class="GtkComboBox" id="combobox">
-                <property name="hexpand">True</property>
-                <property name="visible">True</property>
-            </object>
-            <packing>
+            <object class="GtkStackPage">
                 <property name="name">entry</property>
-            </packing>
+                <property name="child">
+                    <object class="GtkComboBox" id="combobox">
+                        <property name="hexpand">1</property>
+                    </object>
+                </property>
+            </object>
         </child>
-    </template>
+    </object>
 </interface>

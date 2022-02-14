@@ -11,7 +11,7 @@ find_packages(HTTP_FILES_PACKAGES REQUIRED
     GLib
     GModule
     GObject
-    GTK3
+    GTK4
     ${Soup}
 )
 

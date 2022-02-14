@@ -22,9 +22,11 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
         return "OMEMO";
     }}
 
-    public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON2", 17, 12);
-
     public Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item) {
+        return null;
+    }
+
+    public string? get_encryption_icon_name(Entities.Conversation conversation, ContentItem content_item) {
         if (content_item.encryption != encryption) return null;
 
         RowOption row = db.content_item_meta.select( { db.identity_meta.trust_level } ).with(db.content_item_meta.content_item_id, "=", content_item.id)
@@ -33,7 +35,7 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
 
 
         if (row.is_present() && (TrustLevel) row[db.identity_meta.trust_level] == TrustLevel.VERIFIED) {
-            return new Image.from_icon_name("dino-security-high-symbolic", ICON_SIZE_HEADER) { opacity=0.4, visible = true };
+            return "dino-security-high-symbolic";
         }
         return null;
     }

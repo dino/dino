@@ -14,11 +14,11 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
     private HashMap<ListBoxRow, Plugins.MediaDevice> row_speaker_device = new HashMap<ListBoxRow, Plugins.MediaDevice>();
 
     public AudioSettingsPopover() {
-        Box box = new Box(Orientation.VERTICAL, 15) { margin=18, visible=true };
-        box.add(create_microphone_box());
-        box.add(create_speaker_box());
+        Box box = new Box(Orientation.VERTICAL, 15) { visible=true };
+        box.append(create_microphone_box());
+        box.append(create_speaker_box());
 
-        this.add(box);
+        this.set_child(box);
     }
 
     private Widget create_microphone_box() {
@@ -26,18 +26,18 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
         Gee.List<Plugins.MediaDevice> devices = call_plugin.get_devices("audio", false);
 
         Box micro_box = new Box(Orientation.VERTICAL, 10) { visible=true };
-        micro_box.add(new Label("<b>" + _("Microphones") + "</b>") { use_markup=true, xalign=0, visible=true, can_focus=true /* grab initial focus*/ });
+        micro_box.append(new Label("<b>" + _("Microphones") + "</b>") { use_markup=true, xalign=0, visible=true, can_focus=true /* grab initial focus*/ });
 
         if (devices.size == 0) {
-            micro_box.add(new Label(_("No microphone found.")));
+            micro_box.append(new Label(_("No microphone found.")));
         } else {
             ListBox micro_list_box = new ListBox() { activate_on_single_click=true, selection_mode=SelectionMode.SINGLE, visible=true };
             micro_list_box.set_header_func(listbox_header_func);
             Frame micro_frame = new Frame(null) { visible=true };
-            micro_frame.add(micro_list_box);
+            micro_frame.set_child(micro_list_box);
             foreach (Plugins.MediaDevice device in devices) {
                 Label display_name_label = new Label(device.display_name) { xalign=0, visible=true };
-                Image image = new Image.from_icon_name("object-select-symbolic", IconSize.BUTTON) { visible=true };
+                Image image = new Image.from_icon_name("object-select-symbolic") { visible=true };
                 if (current_microphone_device == null || current_microphone_device.id != device.id) {
                     image.opacity = 0;
                 }
@@ -48,21 +48,21 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
                         image.opacity = 1;
                     }
                 });
-                Box device_box = new Box(Orientation.HORIZONTAL, 0) { spacing=7, margin=7, visible=true };
-                device_box.add(image);
+                Box device_box = new Box(Orientation.HORIZONTAL, 0) { spacing=7, visible=true };
+                device_box.append(image);
                 Box label_box = new Box(Orientation.VERTICAL, 0) { visible = true };
-                label_box.add(display_name_label);
+                label_box.append(display_name_label);
                 if (device.detail_name != null) {
                     Label detail_name_label = new Label(device.detail_name) { xalign=0, visible=true };
                     detail_name_label.get_style_context().add_class("dim-label");
                     detail_name_label.attributes = new Pango.AttrList();
                     detail_name_label.attributes.insert(Pango.attr_scale_new(0.8));
-                    label_box.add(detail_name_label);
+                    label_box.append(detail_name_label);
                 }
-                device_box.add(label_box);
+                device_box.append(label_box);
                 ListBoxRow list_box_row = new ListBoxRow() { visible=true };
-                list_box_row.add(device_box);
-                micro_list_box.add(list_box_row);
+                list_box_row.set_child(device_box);
+                micro_list_box.append(list_box_row);
 
                 row_microphone_device[list_box_row] = device;
             }
@@ -71,7 +71,7 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
                 microphone_selected(row_microphone_device[row]);
                 micro_list_box.unselect_row(row);
             });
-            micro_box.add(micro_frame);
+            micro_box.append(micro_frame);
         }
 
         return micro_box;
@@ -82,10 +82,10 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
         Gee.List<Plugins.MediaDevice> devices = call_plugin.get_devices("audio", true);
 
         Box speaker_box = new Box(Orientation.VERTICAL, 10) { visible=true };
-        speaker_box.add(new Label("<b>" + _("Speakers") +"</b>") { use_markup=true, xalign=0, visible=true });
+        speaker_box.append(new Label("<b>" + _("Speakers") +"</b>") { use_markup=true, xalign=0, visible=true });
 
         if (devices.size == 0) {
-            speaker_box.add(new Label(_("No speaker found.")));
+            speaker_box.append(new Label(_("No speaker found.")));
         } else {
             ListBox speaker_list_box = new ListBox() { activate_on_single_click=true, selection_mode=SelectionMode.SINGLE, visible=true };
             speaker_list_box.set_header_func(listbox_header_func);
@@ -93,10 +93,10 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
 
             });
             Frame speaker_frame = new Frame(null) { visible=true };
-            speaker_frame.add(speaker_list_box);
+            speaker_frame.set_child(speaker_list_box);
             foreach (Plugins.MediaDevice device in devices) {
                 Label display_name_label = new Label(device.display_name) { xalign=0, visible=true };
-                Image image = new Image.from_icon_name("object-select-symbolic", IconSize.BUTTON) { visible=true };
+                Image image = new Image.from_icon_name("object-select-symbolic") { visible=true };
                 if (current_speaker_device == null || current_speaker_device.id != device.id) {
                     image.opacity = 0;
                 }
@@ -107,21 +107,21 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
                         image.opacity = 1;
                     }
                 });
-                Box device_box = new Box(Orientation.HORIZONTAL, 0) { spacing=7, margin=7, visible=true };
-                device_box.add(image);
+                Box device_box = new Box(Orientation.HORIZONTAL, 0) { spacing=7, visible=true };
+                device_box.append(image);
                 Box label_box = new Box(Orientation.VERTICAL, 0) { visible = true };
-                label_box.add(display_name_label);
+                label_box.append(display_name_label);
                 if (device.detail_name != null) {
                     Label detail_name_label = new Label(device.detail_name) { xalign=0, visible=true };
                     detail_name_label.get_style_context().add_class("dim-label");
                     detail_name_label.attributes = new Pango.AttrList();
                     detail_name_label.attributes.insert(Pango.attr_scale_new(0.8));
-                    label_box.add(detail_name_label);
+                    label_box.append(detail_name_label);
                 }
-                device_box.add(label_box);
+                device_box.append(label_box);
                 ListBoxRow list_box_row = new ListBoxRow() { visible=true };
-                list_box_row.add(device_box);
-                speaker_list_box.add(list_box_row);
+                list_box_row.set_child(device_box);
+                speaker_list_box.append(list_box_row);
 
                 row_speaker_device[list_box_row] = device;
             }
@@ -130,7 +130,7 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
                 speaker_selected(row_speaker_device[row]);
                 speaker_list_box.unselect_row(row);
             });
-            speaker_box.add(speaker_frame);
+            speaker_box.append(speaker_frame);
         }
 
         return speaker_box;

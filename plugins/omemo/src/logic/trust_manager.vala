@@ -109,7 +109,7 @@ public class TrustManager {
 
             // TODO: Handling of files
 
-            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_foreign(conversation, 1, message.id);
 
             if (content_item != null && device_id != 0) {
                 Jid jid = content_item.jid;

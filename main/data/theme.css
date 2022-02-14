@@ -27,8 +27,8 @@ window.dino-main .dino-conversation viewport /* Some themes set this */ {
 }
 
 @keyframes highlight {
-    from { background: alpha(@warning_color, 0.5) }
-    to { background: transparent }
+    from { background: alpha(@warning_color, 0.5); }
+    to { background: transparent; }
 }
 
 window.dino-main .dino-conversation .highlight-once {
@@ -38,8 +38,21 @@ window.dino-main .dino-conversation .highlight-once {
     animation-name: highlight;
 }
 
-window.dino-main .dino-conversation .message-box:hover {
+window.dino-main .dino-conversation .message-box.highlight {
     background: alpha(@theme_fg_color, 0.04);
+}
+
+window.dino-main .dino-conversation .message-box {
+    padding: 4px 15px 4px 15px;
+}
+
+window.dino-main .dino-conversation .message-box:not(.has-skeleton) {
+    padding-left: 58px;
+}
+
+window.dino-main .dino-conversation .message-box.has-skeleton.last-group-item {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 window.dino-main .unread-count-notify {
@@ -142,7 +155,7 @@ window.dino-main .incoming-call-box {
 
 window.dino-main .multiparty-participants {
     border-top: 1px solid alpha(@theme_fg_color, 0.05);
-    background: alpha(@theme_fg_color, 0.04)
+    background: alpha(@theme_fg_color, 0.04);
 }
 
 window.dino-main .dino-sidebar > frame.collapsed {
@@ -171,34 +184,40 @@ window.dino-main .dino-chatinput frame box {
     background: transparent;
 }
 
-window.dino-main button.dino-attach-button {
-    min-width: 24px; /* Make button the same with as avatars */
+window.dino-main .dino-attach-button {
+    min-width: 24px; /* Make button the same width as avatars */
 }
 
-window.dino-main button.dino-chatinput-button {
+window.dino-main .dino-attach-button,
+window.dino-main .dino-chatinput-button button {
     border: none;
     background: transparent;
     box-shadow: none;
     min-height: 0;
     padding: 7px 5px;
-    color: alpha(@theme_fg_color, 0.6);
+    color: alpha(@theme_fg_color, 0.7);
     outline: none;
 }
 
-window.dino-main button.dino-chatinput-button:hover {
+window.dino-main .dino-attach-button:hover,
+window.dino-main .dino-chatinput-button button:hover {
     color: @theme_selected_bg_color;
 }
 
-window.dino-main button.dino-chatinput-button:backdrop {
+window.dino-main .dino-attach-button:backdrop,
+window.dino-main .dino-chatinput-button button:backdrop {
     color: alpha(@theme_unfocused_fg_color, 0.6);
 }
 
-window.dino-main button.dino-chatinput-button:active,
-window.dino-main button.dino-chatinput-button:checked {
+window.dino-main .dino-attach-button:active,
+window.dino-main .dino-attach-button:checked,
+window.dino-main .dino-chatinput-button button:active,
+window.dino-main .dino-chatinput-button button:checked {
     color: alpha(@theme_selected_bg_color, 0.8);
 }
 
-window.dino-main button.dino-chatinput-button:checked:backdrop {
+window.dino-main .dino-attach-button:backdrop,
+window.dino-main .dino-chatinput-button button:checked:backdrop {
     color: alpha(@theme_unfocused_selected_bg_color, 0.8);
 }
 
@@ -357,7 +376,7 @@ box.dino-input-error label.input-status-highlight-once {
 
 .dino-call-window .participant-name {
     color: white;
-    text-shadow: black;
+    text-shadow: 1px 1px 2px black;
 }
 
 .dino-call-window .text-no-controls {

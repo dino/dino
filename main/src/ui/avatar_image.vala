@@ -5,7 +5,7 @@ using Xmpp.Util;
 
 namespace Dino.Ui {
 
-public class AvatarImage : Misc {
+public class AvatarImage : Widget {
     public int height { get; set; default = 35; }
     public int width { get; set; default = 35; }
     public bool allow_gray { get; set; default = true; }
@@ -34,17 +34,24 @@ public class AvatarImage : Misc {
         disconnect_stream_interactor();
     }
 
-    public override void get_preferred_width(out int minimum_width, out int natural_width) {
-        minimum_width = width;
-        natural_width = width;
+    public override void measure(Orientation orientation, int for_size, out int minimum, out int natural, out int minimum_baseline, out int natural_baseline) {
+        if (orientation == Orientation.HORIZONTAL) {
+            minimum = width;
+            natural = width;
+        } else {
+            minimum = height;
+            natural = height;
+        }
+        minimum_baseline = natural_baseline = -1;
     }
 
-    public override void get_preferred_height(out int minimum_height, out int natural_height) {
-        minimum_height = height;
-        natural_height = height;
+    public override void snapshot(Snapshot snapshot) {
+        Cairo.Context context = snapshot.append_cairo(Graphene.Rect.alloc().init(0, 0, width, height));
+        draw(context);
     }
 
-    public override bool draw(Cairo.Context ctx_in) {
+    public bool draw(Cairo.Context ctx_in) {
+        if (conversation == null || jids == null) return false;
         Cairo.Context ctx = ctx_in;
         int width = this.width, height = this.height, base_factor = 1;
         if (use_image_surface == -1) {

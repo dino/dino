@@ -14,6 +14,7 @@ public class SelectContactDialog : Gtk.Dialog {
     public Button ok_button;
 
     private RosterList roster_list;
+    private ListBox roster_list_box;
     private SelectJidFragment select_jid_fragment;
     private StreamInteractor stream_interactor;
     private Gee.List<Account> accounts;
@@ -45,7 +46,7 @@ public class SelectContactDialog : Gtk.Dialog {
 
         if (Util.use_csd()) {
             HeaderBar header_bar = get_header_bar() as HeaderBar;
-            header_bar.show_close_button = false;
+            header_bar.show_title_buttons = false;
 
             header_bar.pack_start(cancel_button);
             header_bar.pack_end(ok_button);
@@ -54,15 +55,15 @@ public class SelectContactDialog : Gtk.Dialog {
 
             cancel_button.halign = Align.START;
             ok_button.halign = Align.END;
-            box.add(cancel_button);
-            box.add(ok_button);
+            box.append(cancel_button);
+            box.append(ok_button);
 
-            get_content_area().add(box);
+            get_content_area().append(box);
         }
 
         cancel_button.clicked.connect(() => { close(); });
         ok_button.clicked.connect(() => {
-            ListRow? selected_row = roster_list.get_selected_row() as ListRow;
+            ListRow? selected_row = roster_list_box.get_selected_row() != null ? roster_list_box.get_selected_row().get_child() as ListRow : null;
             if (selected_row != null) selected(selected_row.account, selected_row.jid);
             close();
         });
@@ -70,21 +71,22 @@ public class SelectContactDialog : Gtk.Dialog {
 
     private void setup_view() {
         roster_list = new RosterList(stream_interactor, accounts);
-        roster_list.row_activated.connect(() => { ok_button.clicked(); });
-        select_jid_fragment = new SelectJidFragment(stream_interactor, roster_list, accounts);
+        roster_list_box = roster_list.get_list_box();
+        roster_list_box.row_activated.connect(() => { ok_button.clicked(); });
+        select_jid_fragment = new SelectJidFragment(stream_interactor, roster_list_box, accounts);
         select_jid_fragment.add_jid.connect((row) => {
             AddContactDialog add_contact_dialog = new AddContactDialog(stream_interactor);
             add_contact_dialog.set_transient_for(this);
             add_contact_dialog.present();
         });
         select_jid_fragment.remove_jid.connect((row) => {
-            ListRow list_row = roster_list.get_selected_row() as ListRow;
+            ListRow list_row = roster_list_box.get_selected_row() as ListRow;
             stream_interactor.get_module(RosterManager.IDENTITY).remove_jid(list_row.account, list_row.jid);
         });
         select_jid_fragment.notify["done"].connect(() => {
             ok_button.sensitive = select_jid_fragment.done;
         });
-        get_content_area().add(select_jid_fragment);
+        get_content_area().append(select_jid_fragment);
     }
 }
 

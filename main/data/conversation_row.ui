@@ -6,12 +6,13 @@
             <object class="GtkRevealer" id="main_revealer">
                 <property name="transition-type">slide-down</property>
                 <property name="transition-duration">200</property>
-                <property name="reveal-child">False</property>
+                <property name="reveal-child">True</property>
                 <property name="visible">True</property>
                 <child>
                     <object class="GtkBox">
                         <property name="orientation">horizontal</property>
-                        <property name="margin">10</property>
+                        <property name="margin-top">10</property>
+                        <property name="margin-bottom">10</property>
                         <property name="margin-start">7</property>
                         <property name="margin-end">14</property>
                         <property name="visible">True</property>
@@ -25,7 +26,7 @@
                         </child>
                         <child>
                             <object class="GtkBox">
-                                <property name="margin-left">10</property>
+                                <property name="margin-start">10</property>
                                 <property name="orientation">vertical</property>
                                 <property name="visible">True</property>
                                 <child>
@@ -37,8 +38,8 @@
                                             <object class="GtkLabel" id="name_label">
                                                 <property name="max_width_chars">1</property>
                                                 <property name="ellipsize">end</property>
-                                                <property name="expand">True</property>
-                                                <property name="margin-right">7</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="margin-end">7</property>
                                                 <property name="xalign">0</property>
                                                 <property name="visible">True</property>
                                             </object>
@@ -86,7 +87,8 @@
                                             <object class="GtkLabel" id="message_label">
                                                 <property name="max_width_chars">1</property>
                                                 <property name="ellipsize">end</property>
-                                                <property name="expand">True</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="vexpand">True</property>
                                                 <property name="valign">end</property>
                                                 <property name="xalign">0</property>
                                                 <attributes>

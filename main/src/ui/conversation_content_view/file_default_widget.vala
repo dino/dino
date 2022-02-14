@@ -7,34 +7,49 @@ using Dino.Entities;
 namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/Dino/file_default_widget.ui")]
-public class FileDefaultWidget : EventBox {
+public class FileDefaultWidget : Box {
+
+    public signal void open_file();
+    public signal void save_file_as();
+    public signal void cancel_download();
 
     [GtkChild] public unowned Stack image_stack;
     [GtkChild] public unowned Label name_label;
     [GtkChild] public unowned Label mime_label;
     [GtkChild] public unowned Image content_type_image;
     [GtkChild] public unowned Spinner spinner;
-    [GtkChild] public unowned EventBox stack_event_box;
     [GtkChild] public unowned MenuButton file_menu;
-
-    public ModelButton file_open_button;
-    public ModelButton file_save_button;
-    public ModelButton cancel_button;
 
     private FileTransfer.State state;
 
+    class construct {
+        install_action("file.open", null, (widget, action_name) => { ((FileDefaultWidget) widget).open_file(); });
+        install_action("file.save_as", null, (widget, action_name) => { ((FileDefaultWidget) widget).save_file_as(); });
+        install_action("file.cancel", null, (widget, action_name) => { ((FileDefaultWidget) widget).cancel_download(); });
+    }
+
     public FileDefaultWidget() {
-        this.enter_notify_event.connect(on_pointer_entered_event);
-        this.leave_notify_event.connect(on_pointer_left_event);
-        file_open_button = new ModelButton() { text=_("Open"), visible=true };
-        file_save_button = new ModelButton() { text=_("Save as…"), visible=true };
-        cancel_button = new ModelButton() { text=_("Cancel"), visible=true };
+        EventControllerMotion this_motion_events = new EventControllerMotion();
+        this.add_controller(this_motion_events);
+        this_motion_events.enter.connect(on_pointer_entered_event);
+        this_motion_events.leave.connect(on_pointer_left_event);
+
+        GestureClick gesture_click_controller = new GestureClick();
+        this.add_controller(gesture_click_controller);
+        gesture_click_controller.pressed.connect((n_press, x, y) => {
+            // Check whether the click was inside the file menu. Otherwise, open the file.
+            double x_button, y_button;
+            this.translate_coordinates(file_menu, x, y, out x_button, out y_button);
+            if (file_menu.contains(x_button, y_button)) return;
+
+            this.open_file();
+        });
     }
 
     public void update_file_info(string? mime_type, FileTransfer.State state, long size) {
         this.state = state;
 
-        spinner.active = false; // A hidden spinning spinner still uses CPU. Deactivate asap
+        spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
 
         content_type_image.icon_name = get_file_icon_name(mime_type);
         string? mime_description = mime_type != null ? ContentType.get_description(mime_type) : null;
@@ -45,33 +60,23 @@ public class FileDefaultWidget : EventBox {
                 image_stack.set_visible_child_name("content_type_image");
 
                 // Create a menu
-                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu();
-                Box file_menu_box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
-                file_menu_box.add(file_open_button);
-                file_menu_box.add(file_save_button);
-                popover_menu.add(file_menu_box);
+                Menu menu_model = new Menu();
+                menu_model.append(_("Open"), "file.open");
+                menu_model.append(_("Save as…"), "file.save_as");
+                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
                 file_menu.popover = popover_menu;
-                file_menu.button_release_event.connect(() => {
-                    popover_menu.visible = true;
-                    return true;
-                });
                 popover_menu.closed.connect(on_pointer_left);
                 break;
             case FileTransfer.State.IN_PROGRESS:
                 mime_label.label = _("Downloading %s…").printf(get_size_string(size));
-                spinner.active = true;
+                spinner.start();
                 image_stack.set_visible_child_name("spinner");
 
                 // Create a menu
-                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu();
-                Box file_menu_box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
-                file_menu_box.add(cancel_button);
-                popover_menu.add(file_menu_box);
+                Menu menu_model = new Menu();
+                menu_model.append(_("Cancel"), "file.cancel_download");
+                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
                 file_menu.popover = popover_menu;
-                file_menu.button_release_event.connect(() => {
-                    popover_menu.visible = true;
-                    return true;
-                });
                 popover_menu.closed.connect(on_pointer_left);
                 break;
             case FileTransfer.State.NOT_STARTED:
@@ -92,8 +97,8 @@ public class FileDefaultWidget : EventBox {
         }
     }
 
-    private bool on_pointer_entered_event(Gdk.EventCrossing event) {
-        event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
+    private void on_pointer_entered_event() {
+        this.set_cursor_from_name("pointer");
         content_type_image.opacity = 0.7;
         if (state == FileTransfer.State.NOT_STARTED) {
             image_stack.set_visible_child_name("download_image");
@@ -101,16 +106,13 @@ public class FileDefaultWidget : EventBox {
         if (state == FileTransfer.State.COMPLETE || state == FileTransfer.State.IN_PROGRESS) {
             file_menu.opacity = 1;
         }
-        return false;
     }
 
-    private bool on_pointer_left_event(Gdk.EventCrossing event) {
-        if (event.detail == Gdk.NotifyType.INFERIOR) return false;
-        if (file_menu.popover != null && file_menu.popover.visible) return false;
+    private void on_pointer_left_event() {
+        if (file_menu.popover != null && file_menu.popover.visible) return;
 
-        event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.XTERM));
+        this.set_cursor(null);
         on_pointer_left();
-        return false;
     }
 
     private void on_pointer_left() {

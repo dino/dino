@@ -6,33 +6,41 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/Dino/file_send_overlay.ui")]
-public class FileSendOverlay : Gtk.EventBox {
+public class FileSendOverlay {
 
     public signal void close();
     public signal void send_file();
 
-    [GtkChild] public unowned Button close_button;
-    [GtkChild] public unowned Button send_button;
-    [GtkChild] public unowned SizingBin file_widget_insert;
-    [GtkChild] public unowned Label info_label;
+    public Box main_box;
+    public Button close_button;
+    public Button send_button;
+    public SizingBin file_widget_insert;
+    public Label info_label;
 
     private bool can_send = true;
 
     public FileSendOverlay(File file, FileInfo file_info) {
+        Builder builder = new Builder.from_resource("/im/dino/Dino/file_send_overlay.ui");
+        main_box = (Box) builder.get_object("main_box");
+        close_button = (Button) builder.get_object("close_button");
+        send_button = (Button) builder.get_object("send_button");
+        file_widget_insert = (SizingBin) builder.get_object("file_widget_insert");
+        info_label = (Label) builder.get_object("info_label");
+
         close_button.clicked.connect(() => {
-            this.close();
-            this.destroy();
+            main_box.unparent();
+            main_box.destroy();
         });
         send_button.clicked.connect(() => {
             send_file();
             this.close();
-            this.destroy();
+            main_box.unparent();
+            main_box.destroy();
         });
 
         load_file_widget.begin(file, file_info);
 
-        this.realize.connect(() => {
+        main_box.realize.connect(() => {
             if (can_send) {
                 send_button.grab_focus();
             } else {
@@ -40,12 +48,12 @@ public class FileSendOverlay : Gtk.EventBox {
             }
         });
 
-        this.key_release_event.connect((event) => {
-            if (event.keyval == Gdk.Key.Escape) {
-                this.destroy();
-            }
-            return false;
-        });
+//        this.key_release_event.connect((event) => {
+//            if (event.keyval == Gdk.Key.Escape) {
+//                this.destroy();
+//            }
+//            return false;
+//        });
     }
 
     private async void load_file_widget(File file, FileInfo file_info) {
@@ -78,7 +86,7 @@ public class FileSendOverlay : Gtk.EventBox {
             widget = default_widget;
         }
 
-        file_widget_insert.add(widget);
+        widget.set_parent(file_widget_insert);
     }
 
     public void set_file_too_large() {
@@ -86,6 +94,10 @@ public class FileSendOverlay : Gtk.EventBox {
         Util.force_error_color(info_label);
         send_button.sensitive = false;
         can_send = false;
+    }
+
+    public Widget get_widget() {
+        return main_box;
     }
 }
 

@@ -23,6 +23,8 @@ public class View : Box {
     [GtkChild] public unowned ChatTextView chat_text_view;
     [GtkChild] public unowned Box outer_box;
     [GtkChild] public unowned Button file_button;
+    [GtkChild] public unowned MenuButton emoji_button;
+    [GtkChild] public unowned MenuButton encryption_button;
     [GtkChild] public unowned Separator file_separator;
     [GtkChild] public unowned Label chat_input_status;
 
@@ -31,29 +33,13 @@ public class View : Box {
     public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
+        encryption_widget = new EncryptionButton(stream_interactor, encryption_button);
 
-        file_button.get_style_context().add_class("dino-attach-button");
-
-        encryption_widget.get_style_context().add_class("dino-chatinput-button");
-
-        // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
-        if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
-            MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
-            emoji_button.get_style_context().add_class("flat");
-            emoji_button.get_style_context().add_class("dino-chatinput-button");
-            emoji_button.image = new Image.from_icon_name("dino-emoticon-symbolic", IconSize.BUTTON) { visible=true };
-
-            EmojiChooser chooser = new EmojiChooser();
-            chooser.emoji_picked.connect((emoji) => {
-                chat_text_view.text_view.buffer.insert_at_cursor(emoji, emoji.data.length);
-            });
-            emoji_button.set_popover(chooser);
-
-            outer_box.add(emoji_button);
-        }
-
-        outer_box.add(encryption_widget);
+        EmojiChooser chooser = new EmojiChooser();
+        chooser.emoji_picked.connect((emoji) => {
+            chat_text_view.text_view.buffer.insert_at_cursor(emoji, emoji.data.length);
+        });
+        emoji_button.set_popover(chooser);
 
         Util.force_css(frame, "* { border-radius: 3px; }");
 
