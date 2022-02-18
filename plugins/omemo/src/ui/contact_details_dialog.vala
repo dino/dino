@@ -92,20 +92,14 @@ public class ContactDetailsDialog : Gtk.Dialog {
             copy_button.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
 
             int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
-            Pixbuf qr_pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2).to_pixbuf();
-            qr_pixbuf = qr_pixbuf.scale_simple(150, 150, InterpType.NEAREST);
 
-            Pixbuf pixbuf = new Pixbuf(
-                qr_pixbuf.colorspace,
-                qr_pixbuf.has_alpha,
-                qr_pixbuf.bits_per_sample,
-                170,
-                170
-            );
-            pixbuf.fill(uint32.MAX);
-            qr_pixbuf.copy_area(0, 0, 150, 150, pixbuf, 10, 10);
+            const int QUIET_ZONE_MODULES = 4;  // MUST be at least 4
+            const int MODULE_SIZE_PX = 4;  // arbitrary
+            Pixbuf qr_pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2).to_pixbuf(MODULE_SIZE_PX);
+            qrcode_image.set_from_pixbuf(qr_pixbuf);
+            qrcode_image.margin = QUIET_ZONE_MODULES*MODULE_SIZE_PX;
+            qrcode_popover.get_style_context().add_class("qrcode-container");
 
-            qrcode_image.set_from_pixbuf(pixbuf);
             show_qrcode_button.clicked.connect(qrcode_popover.popup);
         }
 

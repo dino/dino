@@ -36,15 +36,28 @@ namespace Qrencode {
         [CCode (cname = "QRcode_encodeString")]
         public QRcode (string str, int version = 0, ECLevel level = ECLevel.L, EncodeMode hint = EncodeMode.EIGHT_BIT, bool casesensitive = true);
 
-        public Pixbuf to_pixbuf() {
-            uint8[] bitmap = new uint8[3*width*width];
-            for (int i = 0; i < width*width; i++) {
-                uint8 color = (data[i] & 1) == 1 ? 0 : 255;
-                bitmap[i*3] = color;
-                bitmap[i*3+1] = color;
-                bitmap[i*3+2] = color;
+        public Pixbuf to_pixbuf(int module_size) {
+            GLib.assert(module_size > 0);
+            var src_w = width;
+            var src   = data[0:width*width];
+            var dst_w = src_w*module_size;
+            var dst   = new uint8[dst_w*dst_w*3];
+            for (int src_y = 0; src_y < src_w; src_y++) {
+                for (int repeat_y = 0; repeat_y < module_size; repeat_y++) {
+                    var dst_y = src_y*module_size + repeat_y;
+                    for (int src_x = 0; src_x < src_w; src_x++) {
+                        uint8 color = (src[src_y*src_w + src_x] & 1) == 1 ? 0 : 255;
+                        for (int repeat_x = 0; repeat_x < module_size; repeat_x++) {
+                            var dst_x = src_x*module_size + repeat_x;
+                            var px_idx = dst_y*dst_w + dst_x;
+                            dst[px_idx*3+0] = color;
+                            dst[px_idx*3+1] = color;
+                            dst[px_idx*3+2] = color;
+                        }
+                    }
+                }
             }
-            return new Pixbuf.from_data(bitmap, Colorspace.RGB, false, 8, width, width, width*3);
+            return new Pixbuf.from_data(dst, Colorspace.RGB, false, 8, dst_w, dst_w, dst_w*3);
         }
     }
 }
