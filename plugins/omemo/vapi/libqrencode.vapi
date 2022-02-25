@@ -38,26 +38,45 @@ namespace Qrencode {
 
         public Pixbuf to_pixbuf(int module_size) {
             GLib.assert(module_size > 0);
-            var src_w = width;
-            var src   = data[0:width*width];
-            var dst_w = src_w*module_size;
-            var dst   = new uint8[dst_w*dst_w*3];
-            for (int src_y = 0; src_y < src_w; src_y++) {
-                for (int repeat_y = 0; repeat_y < module_size; repeat_y++) {
-                    var dst_y = src_y*module_size + repeat_y;
-                    for (int src_x = 0; src_x < src_w; src_x++) {
-                        uint8 color = (src[src_y*src_w + src_x] & 1) == 1 ? 0 : 255;
-                        for (int repeat_x = 0; repeat_x < module_size; repeat_x++) {
-                            var dst_x = src_x*module_size + repeat_x;
-                            var px_idx = dst_y*dst_w + dst_x;
-                            dst[px_idx*3+0] = color;
-                            dst[px_idx*3+1] = color;
-                            dst[px_idx*3+2] = color;
+            var dst_width = width*module_size;
+            var dst_data  = new uint8[dst_width*dst_width*3];
+            expand_and_upsample(data,width,width, dst_data,dst_width,dst_width);
+            return new Pixbuf.from_data(dst_data,
+                Colorspace.RGB, false, 8, dst_width, dst_width, dst_width*3);
+        }
+
+        /**  Does 2D nearest-neighbor upsampling of an array of single-byte
+         * samples, while expanding the least significant bit of each sample
+         * to three 0-or-255 bytes.
+         */
+        private void expand_and_upsample(
+            uint8[] src, uint src_w, uint src_h,
+            uint8[] dst, uint dst_w, uint dst_h) {
+            GLib.assert(dst_w % src_w == 0);
+            GLib.assert(dst_h % src_h == 0);
+            var scale_x = dst_w/src_w,
+                scale_y = dst_h/src_h;
+            /*   Doing the iteration in the order of destination samples for
+             * improved cache-friendliness (dst is 48 times larger than src in
+             * the typical case of scaling by 4x4).
+             *   The choice of multiple nested loops over a single one is for
+             * avoiding a ton of divisions by non-constants.
+             */
+            for (uint src_y = 0; src_y < src_h; ++src_y) {
+                for (uint repeat_y = 0; repeat_y < scale_y; ++repeat_y) {
+                    var dst_y = src_y*scale_y + repeat_y;
+                    for (uint src_x = 0; src_x < src_w; ++src_x) {
+                        uint8 value = (src[src_y*src_w + src_x] & 1)==1 ? 0:255;
+                        for (uint repeat_x = 0; repeat_x < scale_x; ++repeat_x){
+                            var dst_x = src_x*scale_x + repeat_x;
+                            var dst_idx = dst_y*dst_w + dst_x;
+                            dst[dst_idx*3+0] = value;
+                            dst[dst_idx*3+1] = value;
+                            dst[dst_idx*3+2] = value;
                         }
                     }
                 }
             }
-            return new Pixbuf.from_data(dst, Colorspace.RGB, false, 8, dst_w, dst_w, dst_w*3);
         }
     }
 }
