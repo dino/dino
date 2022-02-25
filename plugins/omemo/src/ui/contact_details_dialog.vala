@@ -95,8 +95,10 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
             const int QUIET_ZONE_MODULES = 4;  // MUST be at least 4
             const int MODULE_SIZE_PX = 4;  // arbitrary
-            Pixbuf qr_pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2).to_pixbuf(MODULE_SIZE_PX);
-            qrcode_image.set_from_pixbuf(qr_pixbuf);
+            var qr_pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2)
+                .to_pixbuf(MODULE_SIZE_PX * qrcode_image.scale_factor);
+            qrcode_image.set_from_surface(
+                Gdk.cairo_surface_create_from_pixbuf(qr_pixbuf,0,get_window()));
             qrcode_image.margin = QUIET_ZONE_MODULES*MODULE_SIZE_PX;
             qrcode_popover.get_style_context().add_class("qrcode-container");
 
