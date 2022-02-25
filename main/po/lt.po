@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-08 22:15+0100\n"
+"POT-Creation-Date: 2022-02-12 22:06+0100\n"
 "PO-Revision-Date: 2021-09-29 07:37+0000\n"
 "Language-Team: none\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
-"%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 4.9-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
@@ -124,7 +124,7 @@ msgstr "Naudotojas"
 
 #: main/src/ui/occupant_menu/view.vala:28
 #: main/src/ui/occupant_menu/view.vala:146
-#: main/src/ui/call_window/call_window_controller.vala:102
+#: main/src/ui/call_window/call_window_controller.vala:129
 msgid "Invite"
 msgstr "Pakviesti"
 
@@ -161,7 +161,7 @@ msgstr "Pasirinkti"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:307 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:308 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -202,26 +202,30 @@ msgstr "Ieškoti žinučių"
 msgid "Members"
 msgstr "Nariai"
 
-#: main/src/ui/call_window/participant_widget.vala:104
+#: main/src/ui/call_window/participant_widget.vala:96
+msgid "Debug information"
+msgstr ""
+
+#: main/src/ui/call_window/participant_widget.vala:105
 #: main/src/ui/conversation_content_view/call_widget.vala:143
 msgid "Calling…"
 msgstr "Skambinama…"
 
-#: main/src/ui/call_window/participant_widget.vala:106
+#: main/src/ui/call_window/participant_widget.vala:107
 msgid "Ringing…"
 msgstr "Skamba…"
 
-#: main/src/ui/call_window/participant_widget.vala:108
+#: main/src/ui/call_window/participant_widget.vala:109
 #: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
 msgstr "Jungiamasi…"
 
-#: main/src/ui/call_window/call_window.vala:188
+#: main/src/ui/call_window/call_window.vala:181
 #, c-format
 msgid "%s ended the call"
 msgstr "%s baigė pokalbį"
 
-#: main/src/ui/call_window/call_window.vala:190
+#: main/src/ui/call_window/call_window.vala:183
 #, c-format
 msgid "%s declined the call"
 msgstr "%s atmetė skambutį"
@@ -242,15 +246,15 @@ msgstr ""
 msgid "No microphone found."
 msgstr ""
 
-#: main/src/ui/call_window/audio_settings_popover.vala:83
+#: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
 msgstr ""
 
-#: main/src/ui/call_window/audio_settings_popover.vala:86
+#: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
 msgstr ""
 
-#: main/src/ui/call_window/call_window_controller.vala:101
+#: main/src/ui/call_window/call_window_controller.vala:128
 msgid "Invite to Call"
 msgstr ""
 
@@ -265,7 +269,7 @@ msgid "Start"
 msgstr "Pradėti"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:307 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:308 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Prisijungti prie kanalo"
@@ -281,7 +285,7 @@ msgstr "Kitas"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:307
+#: main/src/ui/application.vala:308
 msgid "Join"
 msgstr "Prisijungti"
 
@@ -348,7 +352,7 @@ msgstr "Pridėti"
 msgid "Keyboard Shortcuts"
 msgstr "Trumpiniai"
 
-#: main/src/ui/application.vala:283 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:284 main/data/menu_app.ui:21
 msgid "About Dino"
 msgstr "Apie Dino"
 

@@ -147,19 +147,23 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
             yield add_if_supported(list, media, pcmu);
             yield add_if_supported(list, media, pcma);
         } else if (media == "video") {
-            var h264 = new JingleRtp.PayloadType() { clockrate = 90000, name = "H264", id = 96 };
-            var vp9 = new JingleRtp.PayloadType() { clockrate = 90000, name = "VP9", id = 97 };
-            var vp8 = new JingleRtp.PayloadType() { clockrate = 90000, name = "VP8", id = 98 };
             var rtcp_fbs = new ArrayList<JingleRtp.RtcpFeedback>();
             rtcp_fbs.add(new JingleRtp.RtcpFeedback("goog-remb"));
             rtcp_fbs.add(new JingleRtp.RtcpFeedback("ccm", "fir"));
             rtcp_fbs.add(new JingleRtp.RtcpFeedback("nack"));
             rtcp_fbs.add(new JingleRtp.RtcpFeedback("nack", "pli"));
-            h264.rtcp_fbs.add_all(rtcp_fbs);
-            vp9.rtcp_fbs.add_all(rtcp_fbs);
-            vp8.rtcp_fbs.add_all(rtcp_fbs);
+#if ENABLE_H264
+            var h264 = new JingleRtp.PayloadType() { clockrate = 90000, name = "H264", id = 96 };
             yield add_if_supported(list, media, h264);
+            h264.rtcp_fbs.add_all(rtcp_fbs);
+#endif
+#if ENABLE_VP9
+            var vp9 = new JingleRtp.PayloadType() { clockrate = 90000, name = "VP9", id = 97 };
+            vp9.rtcp_fbs.add_all(rtcp_fbs);
             yield add_if_supported(list, media, vp9);
+#endif
+            var vp8 = new JingleRtp.PayloadType() { clockrate = 90000, name = "VP8", id = 98 };
+            vp8.rtcp_fbs.add_all(rtcp_fbs);
             yield add_if_supported(list, media, vp8);
         } else {
             warning("Unsupported media type: %s", media);
@@ -168,15 +172,7 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
     }
 
     public override async JingleRtp.PayloadType? pick_payload_type(string media, Gee.List<JingleRtp.PayloadType> payloads) {
-        if (media == "audio") {
-            foreach (JingleRtp.PayloadType type in payloads) {
-                if (yield is_payload_supported(media, type)) return adjust_payload_type(media, type.clone());
-            }
-        } else if (media == "video") {
-            // We prefer H.264 (best support for hardware acceleration and good overall codec quality)
-            JingleRtp.PayloadType? h264 = payloads.first_match((it) => it.name.up() == "H264");
-            if (h264 != null && yield is_payload_supported(media, h264)) return adjust_payload_type(media, h264.clone());
-            // Take first of the list that we do support otherwise
+        if (media == "audio" || media == "video") {
             foreach (JingleRtp.PayloadType type in payloads) {
                 if (yield is_payload_supported(media, type)) return adjust_payload_type(media, type.clone());
             }

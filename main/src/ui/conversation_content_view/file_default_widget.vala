@@ -85,7 +85,7 @@ public class FileDefaultWidget : EventBox {
             image_stack.set_visible_child_name("download_image");
         }
         if (state == FileTransfer.State.COMPLETE) {
-            file_menu.visible = true;
+            file_menu.opacity = 1;
         }
         return false;
     }
@@ -104,7 +104,7 @@ public class FileDefaultWidget : EventBox {
         if (state == FileTransfer.State.NOT_STARTED) {
             image_stack.set_visible_child_name("content_type_image");
         }
-        file_menu.visible = false;
+        file_menu.opacity = 0;
     }
 
     private static string get_file_icon_name(string? mime_type) {

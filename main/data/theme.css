@@ -256,17 +256,15 @@ box.dino-input-error label.input-status-highlight-once {
 
 /* Call window */
 
+.dino-call-window decoration {
+    border-radius: 0;
+}
+
 .dino-call-window .titlebar {
     min-height: 0;
 }
 
 .dino-call-window headerbar, .call-button {
-    box-shadow: none;
-}
-
-.dino-call-window .titlebutton.close:hover {
-    background: rgba(255,255,255,0.15);
-    border-color: rgba(255,255,255,0);
     box-shadow: none;
 }
 
@@ -311,53 +309,41 @@ box.dino-input-error label.input-status-highlight-once {
     margin: 0;
 }
 
-.dino-call-window .black-element {
-    color: rgba(255,255,255,0.7);
-    border-radius: 5px;
-    background: rgba(0,0,0,0.5);
+.dino-call-window .participant-header-bar {
+    background: none;
     border: none;
-    box-shadow: none;
+    border-radius: 0;
+    color: #ededec;
+    text-shadow: 0 0 2px black;
 }
 
-.dino-call-window label.black-element {
-    padding: 5px;
-}
-
-.dino-call-window button.black-element {
-    padding: 0;
-}
-
-.dino-call-window button.black-element.unencrypted {
-    color: @error_color;
-}
-
-.dino-call-window .black-element:hover {
-    background: rgba(20,20,20,0.5);
-}
-
-.dino-call-window .call-header-bar {
+.dino-call-window .call-header-background {
     background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0));
     border: 0;
     border-radius: 0;
 }
 
-.dino-call-window .call-header-bar {
-    color: #ededec;
+.dino-call-window .participant-header-bar button {
+    background: none;
 }
 
-.dino-call-window .call-header-bar button image {
+.dino-call-window .participant-header-bar button:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0);
+    box-shadow: none;
+}
+
+.dino-call-window .participant-header-bar button image {
     color: alpha(white, 0.7);
+    -gtk-icon-shadow: none;
 }
 
-.dino-call-window .call-header-bar button:hover image {
+.dino-call-window .participant-header-bar button:hover image {
     color: white;
 }
 
-.dino-call-window .participant-title-button {
-    background: none;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
+.dino-call-window .participant-header-bar button.unencrypted image {
+    color: @error_color;
 }
 
 .dino-call-window .call-bottom-bar {

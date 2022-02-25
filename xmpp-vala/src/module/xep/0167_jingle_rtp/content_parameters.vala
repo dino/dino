@@ -21,7 +21,6 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
     public Gee.List<Crypto> remote_cryptos = new ArrayList<Crypto>();
     public Crypto? local_crypto = null;
     public Crypto? remote_crypto = null;
-    public Jid? muji_muc = null;
 
     public bool rtp_ready { get; private set; default=false; }
     public bool rtcp_ready { get; private set; default=false; }
@@ -32,7 +31,6 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
 
     public Parameters(Module parent,
                       string media, Gee.List<PayloadType> payload_types,
-                      Jid? muji_muc,
                       string? ssrc = null, bool rtcp_mux = false,
                       string? bandwidth = null, string? bandwidth_type = null,
                       bool encryption_required = false, Crypto? local_crypto = null
@@ -46,7 +44,6 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         this.encryption_required = encryption_required;
         this.payload_types = payload_types;
         this.local_crypto = local_crypto;
-        this.muji_muc = muji_muc;
     }
 
     public Parameters.from_node(Module parent, StanzaNode node) throws Jingle.IqError {
@@ -66,10 +63,6 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         }
         foreach (StanzaNode subnode in node.get_subnodes(HeaderExtension.NAME, HeaderExtension.NS_URI)) {
             this.header_extensions.add(HeaderExtension.parse(subnode));
-        }
-        string? muji_muc_str = node.get_deep_attribute(Xep.Muji.NS_URI + ":muji", "muc");
-        if (muji_muc_str != null) {
-            muji_muc = new Jid(muji_muc_str);
         }
     }
 
@@ -215,9 +208,6 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         }
         if (rtcp_mux) {
             ret.put_node(new StanzaNode.build("rtcp-mux", NS_URI));
-        }
-        if (muji_muc != null) {
-            ret.put_node(new StanzaNode.build("muji", Xep.Muji.NS_URI).add_self_xmlns().put_attribute("muc", muji_muc.to_string()));
         }
         return ret;
     }

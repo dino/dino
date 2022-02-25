@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-08 22:15+0100\n"
-"PO-Revision-Date: 2022-02-08 21:14+0000\n"
+"POT-Creation-Date: 2022-02-12 22:06+0100\n"
+"PO-Revision-Date: 2022-02-11 18:58+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/translations/"
 "nl/>\n"
 "Language: nl\n"
@@ -123,7 +123,7 @@ msgstr "Gebruiker"
 
 #: main/src/ui/occupant_menu/view.vala:28
 #: main/src/ui/occupant_menu/view.vala:146
-#: main/src/ui/call_window/call_window_controller.vala:102
+#: main/src/ui/call_window/call_window_controller.vala:129
 msgid "Invite"
 msgstr "Uitnodigen"
 
@@ -160,7 +160,7 @@ msgstr "Kiezen"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:307 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:308 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
@@ -201,55 +201,59 @@ msgstr "Zoeken naar berichten"
 msgid "Members"
 msgstr "Deelnemers"
 
-#: main/src/ui/call_window/participant_widget.vala:104
+#: main/src/ui/call_window/participant_widget.vala:96
+msgid "Debug information"
+msgstr ""
+
+#: main/src/ui/call_window/participant_widget.vala:105
 #: main/src/ui/conversation_content_view/call_widget.vala:143
 msgid "Calling…"
 msgstr "Bezig met bellen…"
 
-#: main/src/ui/call_window/participant_widget.vala:106
+#: main/src/ui/call_window/participant_widget.vala:107
 msgid "Ringing…"
 msgstr "Bezig met overgaan…"
 
-#: main/src/ui/call_window/participant_widget.vala:108
+#: main/src/ui/call_window/participant_widget.vala:109
 #: main/src/ui/manage_accounts/dialog.vala:219
 msgid "Connecting…"
 msgstr "Bezig met verbinden…"
 
-#: main/src/ui/call_window/call_window.vala:188
+#: main/src/ui/call_window/call_window.vala:181
 #, c-format
 msgid "%s ended the call"
 msgstr "%s heeft de oproep beëindigd"
 
-#: main/src/ui/call_window/call_window.vala:190
+#: main/src/ui/call_window/call_window.vala:183
 #, c-format
 msgid "%s declined the call"
 msgstr "%s hebt/heeft de oproep geweigerd"
 
 #: main/src/ui/call_window/video_settings_popover.vala:25
 msgid "Cameras"
-msgstr ""
+msgstr "Camera's"
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
 msgid "No camera found."
-msgstr ""
+msgstr "Geen camera aangetroffen."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
-msgstr ""
+msgstr "Microfoons"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
-msgstr ""
+msgstr "Geen microfoon aangetroffen."
 
-#: main/src/ui/call_window/audio_settings_popover.vala:83
+#: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
-msgstr ""
+msgstr "Luidsprekers"
 
-#: main/src/ui/call_window/audio_settings_popover.vala:86
+#: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr ""
+msgstr "Geen luidspreker aangetroffen."
 
-#: main/src/ui/call_window/call_window_controller.vala:101
+#: main/src/ui/call_window/call_window_controller.vala:128
 msgid "Invite to Call"
 msgstr "Uitnodigen voor gesprek"
 
@@ -264,7 +268,7 @@ msgid "Start"
 msgstr "Starten"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:307 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:308 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
 msgstr "Deelnemen aan kanaal"
@@ -280,7 +284,7 @@ msgstr "Volgende"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:307
+#: main/src/ui/application.vala:308
 msgid "Join"
 msgstr "Deelnemen"
 
@@ -347,7 +351,7 @@ msgstr "Toevoegen"
 msgid "Keyboard Shortcuts"
 msgstr "Sneltoetsen"
 
-#: main/src/ui/application.vala:283 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:284 main/data/menu_app.ui:21
 msgid "About Dino"
 msgstr "Over Dino"
 

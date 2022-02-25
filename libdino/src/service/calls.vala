@@ -48,9 +48,9 @@ namespace Dino {
             stream_interactor.get_module(CallStore.IDENTITY).add_call(call, conversation);
 
             var call_state = new CallState(call, stream_interactor);
+            connect_call_state_signals(call_state);
             call_state.we_should_send_video = video;
             call_state.we_should_send_audio = true;
-            connect_call_state_signals(call_state);
 
             if (conversation.type_ == Conversation.Type.CHAT) {
                 call.add_peer(conversation.counterpart);
@@ -143,23 +143,22 @@ namespace Dino {
         }
 
         private void on_incoming_call(Account account, Xep.Jingle.Session session) {
-            Jid? muji_muc = null;
+            Jid? muji_room = session.muji_room;
             bool counterpart_wants_video = false;
             foreach (Xep.Jingle.Content content in session.contents) {
                 Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
                 if (rtp_content_parameter == null) continue;
-                muji_muc = rtp_content_parameter.muji_muc;
                 if (rtp_content_parameter.media == "video" && session.senders_include_us(content.senders)) {
                     counterpart_wants_video = true;
                 }
             }
 
             // Check if this comes from a MUJI MUC => accept
-            if (muji_muc != null) {
-                debug("[%s] Incoming call from %s from MUJI muc %s", account.bare_jid.to_string(), session.peer_full_jid.to_string(), muji_muc.to_string());
+            if (muji_room != null) {
+                debug("[%s] Incoming call from %s from MUJI muc %s", account.bare_jid.to_string(), session.peer_full_jid.to_string(), muji_room.to_string());
 
                 foreach (CallState call_state in call_states.values) {
-                    if (call_state.group_call != null && call_state.group_call.muc_jid.equals(muji_muc)) {
+                    if (call_state.call.account.equals(account) && call_state.group_call != null && call_state.group_call.muc_jid.equals(muji_room)) {
                         if (call_state.peers.keys.contains(session.peer_full_jid)) {
                             PeerState peer_state = call_state.peers[session.peer_full_jid];
                             debug("[%s] Incoming call, we know the peer. Expected %s", account.bare_jid.to_string(), peer_state.waiting_for_inbound_muji_connection.to_string());
@@ -182,29 +181,23 @@ namespace Dino {
 
             debug(@"[%s] Incoming call from %s", account.bare_jid.to_string(), session.peer_full_jid.to_string());
 
-            // Check if we already accepted this call via Jingle Message Initiation => accept
-            Call? call = null;
-            foreach (PeerState peer_state in jmi_request_peer.values) {
-                CallState call_state = call_states[peer_state.call];
-                if (peer_state.sid == session.sid &&
-                        call_state.call.account.equals(account) &&
-                        peer_state.jid.equals_bare(session.peer_full_jid) &&
-                        call_state.we_should_send_video == counterpart_wants_video &&
-                        call_state.accepted) {
-                    call = peer_state.call;
-                    break;
-                }
-            }
-            if (call != null) {
-                jmi_request_peer[call].set_session(session);
-                jmi_request_peer[call].accept();
-                jmi_request_peer.unset(call);
+            // Check if we already got this call via Jingle Message Initiation => accept
+            // PeerState.accept() checks if the call was accepted and ensures that we don't accidentally send video
+            PeerState? peer_state = get_peer_by_sid(account, session.sid, session.peer_full_jid);
+            if (peer_state != null) {
+                jmi_request_peer[peer_state.call].set_session(session);
+                jmi_request_peer[peer_state.call].accept();
+                jmi_request_peer.unset(peer_state.call);
                 return;
             }
 
             // This is a direct call without prior JMI. Ask user.
-            PeerState peer_state = create_received_call(account, session.peer_full_jid, account.full_jid, counterpart_wants_video);
+            if (stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(session.peer_full_jid.bare_jid, account)) return;
+            peer_state = create_received_call(account, session.peer_full_jid, account.full_jid, counterpart_wants_video);
             peer_state.set_session(session);
+            Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(peer_state.call.counterpart.bare_jid, account, Conversation.Type.CHAT);
+            call_incoming(peer_state.call, peer_state.call_state, conversation, counterpart_wants_video, false);
+
             stream_interactor.module_manager.get_module(account, Xep.JingleRtp.Module.IDENTITY).session_info_type.send_ringing(session);
         }
 
@@ -237,24 +230,18 @@ namespace Dino {
             call_state.we_should_send_video = video_requested;
             call_state.we_should_send_audio = true;
 
-            if (call.direction == Call.DIRECTION_INCOMING) {
-                call_incoming(call, call_state, conversation, video_requested, false);
-            } else {
-                call_outgoing(call, call_state, conversation);
-            }
-
             return peer_state;
         }
 
-        private CallState? get_call_state_by_call_id(Account account, string call_id, Jid jid1, Jid jid2) {
-            Jid relevant_jid = jid1.equals_bare(account.bare_jid) ? jid2 : jid1;
-
+        private CallState? get_call_state_by_call_id(Account account, string call_id, Jid? counterpart_jid = null) {
             foreach (CallState call_state in call_states.values) {
                 if (!call_state.call.account.equals(account)) continue;
 
                 if (call_state.cim_call_id == call_id) {
+                    if (counterpart_jid == null) return call_state;
+
                     foreach (Jid jid in call_state.peers.keys) {
-                        if (jid.equals_bare(relevant_jid)) {
+                        if (jid.equals_bare(counterpart_jid)) {
                             return call_state;
                         }
                     }
@@ -263,8 +250,8 @@ namespace Dino {
             return null;
         }
 
-        private PeerState? get_peer_by_sid(Account account, string sid, Jid jid1, Jid jid2) {
-            Jid relevant_jid = jid1.equals_bare(account.bare_jid) ? jid2 : jid1;
+        private PeerState? get_peer_by_sid(Account account, string sid, Jid jid1, Jid? jid2 = null) {
+            Jid relevant_jid = jid1.equals_bare(account.bare_jid) && jid2 != null ? jid2 : jid1;
 
             foreach (CallState call_state in call_states.values) {
                 if (!call_state.call.account.equals(account)) continue;
@@ -279,16 +266,17 @@ namespace Dino {
             return null;
         }
 
-        private CallState? create_recv_muji_call(Account account, Jid inviter_jid, Jid muc_jid, string message_type) {
+        private CallState? create_recv_muji_call(Account account, string call_id, Jid inviter_jid, Jid muc_jid, string message_type) {
             debug("[%s] Muji call received from %s for MUC %s, type %s", account.bare_jid.to_string(), inviter_jid.to_string(), muc_jid.to_string(), message_type);
 
             foreach (Call call in call_states.keys) {
-                if (!call.account.equals(account)) return null;
+                if (!call.account.equals(account)) continue;
 
                 CallState call_state = call_states[call];
 
-                if (call.counterparts.contains(inviter_jid) && call_state.accepted) {
+                if (call.counterparts.size == 1 && call.counterparts.contains(inviter_jid) && call_state.accepted) {
                     // A call is converted into a group call.
+                    call_state.cim_call_id = call_id;
                     call_state.join_group_call.begin(muc_jid);
                     return null;
                 }
@@ -305,6 +293,7 @@ namespace Dino {
 
             // TODO create conv
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(inviter_jid.bare_jid, account);
+            if (conversation == null) return null;
             stream_interactor.get_module(CallStore.IDENTITY).add_call(call, conversation);
             conversation.last_active = call.time;
 
@@ -348,18 +337,25 @@ namespace Dino {
 
             Xep.JingleMessageInitiation.Module mi_module = stream_interactor.module_manager.get_module(account, Xep.JingleMessageInitiation.Module.IDENTITY);
             mi_module.session_proposed.connect((from, to, sid, descriptions) => {
+
+                if (stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(from.bare_jid, account)) return;
+
                 bool audio_requested = descriptions.any_match((description) => description.ns_uri == Xep.JingleRtp.NS_URI && description.get_attribute("media") == "audio");
                 bool video_requested = descriptions.any_match((description) => description.ns_uri == Xep.JingleRtp.NS_URI && description.get_attribute("media") == "video");
                 if (!audio_requested && !video_requested) return;
 
                 PeerState peer_state = create_received_call(account, from, to, video_requested);
                 peer_state.sid = sid;
-
                 CallState call_state = call_states[peer_state.call];
-                call_state.we_should_send_audio = true;
-                call_state.we_should_send_video = video_requested;
 
-                jmi_request_peer[call_state.call] = peer_state;
+                jmi_request_peer[peer_state.call] = peer_state;
+
+                Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(call_state.call.counterpart.bare_jid, account, Conversation.Type.CHAT);
+                if (call_state.call.direction == Call.DIRECTION_INCOMING) {
+                    call_incoming(call_state.call, call_state, conversation, video_requested, false);
+                } else {
+                    call_outgoing(call_state.call, call_state, conversation);
+                }
             });
             mi_module.session_accepted.connect((from, to, sid) => {
                 PeerState? peer_state = get_peer_by_sid(account, sid, from, to);
@@ -434,7 +430,7 @@ namespace Dino {
                         string? room_jid_str = join_method_node.get_attribute("room");
                         if (room_jid_str == null) return;
                         Jid room_jid = new Jid(room_jid_str);
-                        call_state = create_recv_muji_call(account, from_jid, room_jid, message_stanza.type_);
+                        call_state = create_recv_muji_call(account, call_id, from_jid, room_jid, message_stanza.type_);
 
                         multiparty = true;
                         break;
@@ -442,7 +438,7 @@ namespace Dino {
                     } else if (join_method_node.name == "jingle" && join_method_node.ns_uri == Xep.CallInvites.NS_URI) {
                         // This is an invite for a direct Jingle session
 
-                        if (message_stanza.type_ != Xmpp.MessageStanza.TYPE_CHAT) return;
+                        if (stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(from_jid.bare_jid, account)) return;
 
                         string? sid = join_method_node.get_attribute("sid");
                         if (sid == null) return;
@@ -472,15 +468,20 @@ namespace Dino {
                 conversation.last_active = call_state.call.time;
                 if (conversation == null) return;
 
-                call_incoming(call_state.call, call_state, conversation, video_requested, multiparty);
+                if (call_state.call.direction == Call.DIRECTION_INCOMING) {
+                    call_incoming(call_state.call, call_state, conversation, video_requested, multiparty);
+                } else {
+                    call_outgoing(call_state.call, call_state, conversation);
+                }
             });
             call_invites_module.call_accepted.connect((from_jid, to_jid, call_id, message_type) => {
-                CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid, to_jid);
-                if (call_state == null) return;
-                Call call = call_state.call;
-
                 // Carboned message from our account
                 if (from_jid.equals_bare(account.bare_jid)) {
+
+                    CallState? call_state = get_call_state_by_call_id(account, call_id);
+                    if (call_state == null) return;
+                    Call call = call_state.call;
+
                     // Ignore carbon from ourselves
                     if (from_jid.equals(account.full_jid)) return;
 
@@ -490,6 +491,10 @@ namespace Dino {
                     remove_call_from_datastructures(call);
                     return;
                 }
+
+                CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid);
+                if (call_state == null) return;
+                Call call = call_state.call;
 
                 // We proposed the call. This is a message from our peer.
                 if (call.direction == Call.DIRECTION_OUTGOING &&
@@ -503,7 +508,7 @@ namespace Dino {
                 if (from_jid.equals_bare(account.bare_jid)) return;
 
                 // The call was retracted by the counterpart
-                CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid, to_jid);
+                CallState? call_state = get_call_state_by_call_id(account, call_id, from_jid);
                 if (call_state == null) return;
 
                 if (call_state.call.state != Call.State.RINGING) {
@@ -517,6 +522,14 @@ namespace Dino {
                 remove_call_from_datastructures(call_state.call);
             });
             call_invites_module.call_rejected.connect((from_jid, to_jid, call_id, message_type) => {
+                // We rejected an invite from another device
+                if (from_jid.equals_bare(account.bare_jid)) {
+                    CallState? call_state = get_call_state_by_call_id(account, call_id);
+                    if (call_state == null) return;
+                    Call call = call_state.call;
+                    call.state = Call.State.DECLINED;
+                }
+
                 if (from_jid.equals_bare(account.bare_jid)) return;
                 debug(@"[%s] %s rejected our MUJI invite", account.bare_jid.to_string(), from_jid.to_string());
             });

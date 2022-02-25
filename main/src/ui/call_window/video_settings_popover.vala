@@ -33,10 +33,6 @@ public class Dino.Ui.VideoSettingsPopover : Gtk.Popover {
             frame.add(list_box);
             foreach (Plugins.MediaDevice device in devices) {
                 Label display_name_label = new Label(device.display_name) { xalign=0, visible=true };
-                Label detail_name_label = new Label(device.detail_name) { xalign=0, visible=true };
-                detail_name_label.get_style_context().add_class("dim-label");
-                detail_name_label.attributes = new Pango.AttrList();
-                detail_name_label.attributes.insert(Pango.attr_scale_new(0.8));
                 Image image = new Image.from_icon_name("object-select-symbolic", IconSize.BUTTON) { visible=true };
                 if (current_device == null || current_device.id != device.id) {
                     image.opacity = 0;
@@ -52,7 +48,13 @@ public class Dino.Ui.VideoSettingsPopover : Gtk.Popover {
                 device_box.add(image);
                 Box label_box = new Box(Orientation.VERTICAL, 0) { visible = true };
                 label_box.add(display_name_label);
-                label_box.add(detail_name_label);
+                if (device.detail_name != null) {
+                    Label detail_name_label = new Label(device.detail_name) { xalign=0, visible=true };
+                    detail_name_label.get_style_context().add_class("dim-label");
+                    detail_name_label.attributes = new Pango.AttrList();
+                    detail_name_label.attributes.insert(Pango.attr_scale_new(0.8));
+                    label_box.add(detail_name_label);
+                }
                 device_box.add(label_box);
                 ListBoxRow list_box_row = new ListBoxRow() { visible=true };
                 list_box_row.add(device_box);

@@ -12,7 +12,7 @@ public class Dino.PeerState : Object {
     public signal void encryption_updated(Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption, bool same);
 
     public StreamInteractor stream_interactor;
-    CallState call_state;
+    public CallState call_state;
     public Calls calls;
     public Call call;
     public Jid jid;
@@ -90,7 +90,10 @@ public class Dino.PeerState : Object {
             }
 
             stream.get_module(Xmpp.Xep.JingleMessageInitiation.Module.IDENTITY).send_session_propose_to_peer(stream, jid, sid, descriptions);
-//            call_state.cim_call_id = stream.get_module(Xmpp.Xep.CallInvites.Module.IDENTITY).send_jingle_propose(stream, jid, sid, we_should_send_video);
+
+//            Uncomment this use CIM instead of JMI
+//            call_state.cim_call_id = sid;
+//            stream.get_module(Xmpp.Xep.CallInvites.Module.IDENTITY).send_jingle_propose(stream, call_state.cim_call_id, jid, sid, we_should_send_video);
         } else if (jid_for_direct != null) {
             yield call_resource(jid_for_direct);
         }
@@ -111,8 +114,27 @@ public class Dino.PeerState : Object {
     }
 
     public void accept() {
+        if (!call_state.accepted) {
+            critical("Tried to accept peer in unaccepted call?! Something's fishy. Abort.");
+            return;
+        }
+
         if (session != null) {
             foreach (Xep.Jingle.Content content in session.contents) {
+                Xep.JingleRtp.Parameters? rtp_content_parameter = content.content_params as Xep.JingleRtp.Parameters;
+                if (rtp_content_parameter != null && rtp_content_parameter.media == "video") {
+                    // We didn't accept video but our peer wants to negotiate that content
+                    if (!we_should_send_video && session.senders_include_us(content.senders)) {
+                        if (session.senders_include_counterpart(content.senders)) {
+                            // If our peer wants to send, let them
+                            content.modify(session.we_initiated ? Xep.Jingle.Senders.RESPONDER : Xep.Jingle.Senders.INITIATOR);
+                        } else {
+                            // If only we're supposed to send, reject
+                            content.reject();
+                            continue;
+                        }
+                    }
+                }
                 content.accept();
             }
         } else {

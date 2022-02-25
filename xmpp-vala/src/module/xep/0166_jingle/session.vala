@@ -29,6 +29,8 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
     public SecurityParameters? security { get { return contents.to_array()[0].security_params; } }
 
+    public Jid muji_room { get; set; }
+
     public Session.initiate_sent(XmppStream stream, string sid, Jid local_full_jid, Jid peer_full_jid) {
         this.stream = stream;
         this.sid = sid;
@@ -105,9 +107,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
             Content content = contents_map[content_node.name];
 
-            if (content_node.creator != content.content_creator) {
-                throw new IqError.BAD_REQUEST("unknown content; creator");
-            }
+            if (content_node.creator != content.content_creator) warning("Received transport-* with unexpected content creator from %s", peer_full_jid.to_string());
 
             switch (action) {
                 case "transport-accept":
@@ -135,9 +135,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
 
             Content content = contents_map[content_node.name];
 
-            if (content_node.creator != content.content_creator) {
-                throw new IqError.BAD_REQUEST("unknown content; creator");
-            }
+            if (content_node.creator != content.content_creator) warning("Received description-info with unexpected content creator from %s", peer_full_jid.to_string());
 
             content.on_description_info(stream, content_node.description, jingle, iq);
         } else if (action == "security-info") {
@@ -428,7 +426,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
                 reason_node.put_node(new StanzaNode.build(reason_name, NS_URI));
             }
             if (reason_text != null) {
-                reason_node.put_node(new StanzaNode.text(reason_text));
+                reason_node.put_node(new StanzaNode.build("text", NS_URI).put_node(new StanzaNode.text(reason_text)));
             }
             terminate_iq.put_node(reason_node);
         }

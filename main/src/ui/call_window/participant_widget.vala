@@ -9,63 +9,56 @@ namespace Dino.Ui {
     public class ParticipantWidget : Gtk.Overlay {
 
         public Widget main_widget;
-        public Box outer_box = new Box(Orientation.HORIZONTAL, 0) { valign=Align.START, visible=true };
+        public HeaderBar header_bar = new HeaderBar() { valign=Align.START, visible=true };
         public Box inner_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=5, margin_top=5, hexpand=true, visible=true };
         public Box title_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true, visible=true };
         public CallEncryptionButton encryption_button = new CallEncryptionButton() { opacity=0, relief=ReliefStyle.NONE, height_request=30, width_request=30, margin_end=5, visible=true };
-        public Label status_label = new Label("") { ellipsize=EllipsizeMode.MIDDLE };
-        public Label name_label = new Label("") { ellipsize=EllipsizeMode.MIDDLE, visible=true };
-        public Button menu_button = new Button.from_icon_name("view-more-horizontal-symbolic") { relief=ReliefStyle.NONE, visible=true };
+        public MenuButton menu_button = new MenuButton() { relief=ReliefStyle.NONE, visible=true };
+        public Button invite_button = new Button.from_icon_name("dino-account-plus") { relief=ReliefStyle.NONE, visible=true };
         public bool shows_video = false;
         public string? participant_name;
 
         bool is_highest_row = false;
-        bool is_lowest_row = false;
+        bool is_start_row = false;
         public bool controls_active { get; set; }
+        public bool may_show_invite_button { get; set; }
+
+        public signal void debug_information_clicked();
+        public signal void invite_button_clicked();
 
         public ParticipantWidget(string participant_name) {
             this.participant_name = participant_name;
-            name_label.label = participant_name;
+            header_bar.title = participant_name;
+            header_bar.get_style_context().add_class("participant-header-bar");
+            header_bar.pack_start(invite_button);
+            header_bar.pack_start(encryption_button);
+            header_bar.pack_end(menu_button);
 
-            name_label.attributes = new AttrList();
-            name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+            menu_button.image = new Image.from_icon_name("open-menu-symbolic", IconSize.MENU);
+            menu_button.set_popover(create_menu());
+            invite_button.clicked.connect(() => invite_button_clicked());
 
-            name_label.attributes = new AttrList();
-            name_label.attributes.filter((attr) => attr.equal(attr_scale_new(0.9)));
-            status_label.get_style_context().add_class("dim-label");
-
-            Util.force_css(outer_box, "* { color: white; text-shadow: 1px 1px black; }");
-            menu_button.get_style_context().add_class("participant-title-button");
-            encryption_button.get_style_context().add_class("participant-title-button");
-
-            title_box.add(name_label);
-            title_box.add(status_label);
-
-            outer_box.add(inner_box);
-
-            inner_box.add(menu_button);
-            inner_box.add(encryption_button);
-            inner_box.add(title_box);
-            inner_box.add(new Button.from_icon_name("go-up-symbolic") { opacity=0, visible=true });
-            inner_box.add(new Button.from_icon_name("go-up-symbolic") { opacity=0, visible=true });
-
-            this.add_overlay(outer_box);
+            this.add_overlay(header_bar);
 
             this.notify["controls-active"].connect(reveal_or_hide_controls);
+            this.notify["may-show-invite-button"].connect(reveal_or_hide_controls);
         }
 
-        public void on_show_names_changed(bool show) {
-            name_label.visible = show;
-            reveal_or_hide_controls();
-        }
+        public void on_row_changed(bool is_highest, bool is_lowest, bool is_start, bool is_end) {
+            this.is_highest_row = is_highest;
+            this.is_start_row = is_start;
 
-        public void on_highest_row_changed(bool is_highest) {
-            is_highest_row = is_highest;
-            reveal_or_hide_controls();
-        }
-
-        public void on_lowest_row_changed(bool is_lowest) {
-            is_lowest_row = is_lowest;
+            header_bar.show_close_button = is_highest_row;
+            if (is_highest_row) {
+                header_bar.get_style_context().add_class("call-header-background");
+                Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
+                if (gtk_settings != null) {
+                    string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
+                    header_bar.decoration_layout = (is_start ? buttons[0] : "") + ":" + (is_end && buttons.length == 2 ? buttons[1] : "");
+                }
+            } else {
+                header_bar.get_style_context().remove_class("call-header-background");
+            }
             reveal_or_hide_controls();
         }
 
@@ -97,33 +90,31 @@ namespace Dino.Ui {
             this.add(main_widget);
         }
 
-        public void set_status(string state) {
-            status_label.visible = true;
+        private PopoverMenu create_menu() {
+            PopoverMenu menu = new PopoverMenu();
+            Box box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
+            ModelButton debug_information_button = new ModelButton() { text=_("Debug information"), visible=true };
+            debug_information_button.clicked.connect(() => debug_information_clicked());
+            box.add(debug_information_button);
+            menu.add(box);
+            return menu;
+        }
 
+        public void set_status(string state) {
             if (state == "requested") {
-                status_label.label =  _("Calling…");
+                header_bar.subtitle =  _("Calling…");
             } else if (state == "ringing") {
-                status_label.label = _("Ringing…");
+                header_bar.subtitle = _("Ringing…");
             } else if (state == "establishing") {
-                status_label.label = _("Connecting…");
+                header_bar.subtitle = _("Connecting…");
             } else {
-                status_label.visible = false;
+                header_bar.subtitle = "";
             }
         }
 
         private void reveal_or_hide_controls() {
-            if (controls_active && name_label.visible) {
-                title_box.opacity = 1;
-                menu_button.opacity = 1;
-            } else {
-                title_box.opacity = 0;
-                menu_button.opacity = 0;
-            }
-            if (is_highest_row && controls_active) {
-                outer_box.get_style_context().add_class("call-header-bar");
-            } else {
-                outer_box.get_style_context().remove_class("call-header-bar");
-            }
+            header_bar.opacity = controls_active ? 1.0 : 0.0;
+            invite_button.visible = may_show_invite_button && is_highest_row && is_start_row;
         }
     }
 }

@@ -29,7 +29,7 @@ public abstract class Module : XmppStreamModule {
     public abstract Gee.List<HeaderExtension> get_suggested_header_extensions(string media);
     public abstract void close_stream(Stream stream);
 
-    public async Jingle.Session start_call(XmppStream stream, Jid receiver_full_jid, bool video, string sid, Jid? muji_muc) throws Jingle.Error {
+    public async Jingle.Session start_call(XmppStream stream, Jid receiver_full_jid, bool video, string sid, Jid? muji_room) throws Jingle.Error {
 
         Jingle.Module jingle_module = stream.get_module(Jingle.Module.IDENTITY);
 
@@ -41,7 +41,7 @@ public abstract class Module : XmppStreamModule {
         ArrayList<Jingle.Content> contents = new ArrayList<Jingle.Content>();
 
         // Create audio content
-        Parameters audio_content_parameters = new Parameters(this, "audio", yield get_supported_payloads("audio"), muji_muc);
+        Parameters audio_content_parameters = new Parameters(this, "audio", yield get_supported_payloads("audio"));
         audio_content_parameters.local_crypto = generate_local_crypto();
         audio_content_parameters.header_extensions.add_all(get_suggested_header_extensions("audio"));
         Jingle.Transport? audio_transport = yield jingle_module.select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());
@@ -59,7 +59,7 @@ public abstract class Module : XmppStreamModule {
         Jingle.Content? video_content = null;
         if (video) {
             // Create video content
-            Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"), muji_muc);
+            Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"));
             video_content_parameters.local_crypto = generate_local_crypto();
             video_content_parameters.header_extensions.add_all(get_suggested_header_extensions("video"));
             Jingle.Transport? video_transport = yield stream.get_module(Jingle.Module.IDENTITY).select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());
@@ -77,7 +77,7 @@ public abstract class Module : XmppStreamModule {
 
         // Create session
         try {
-            Jingle.Session session = yield jingle_module.create_session(stream, contents, receiver_full_jid, sid);
+            Jingle.Session session = yield jingle_module.create_session(stream, contents, receiver_full_jid, sid, muji_room);
             return session;
         } catch (Jingle.Error e) {
             throw new Jingle.Error.GENERAL(@"Couldn't create Jingle session: $(e.message)");
@@ -101,7 +101,7 @@ public abstract class Module : XmppStreamModule {
 
         if (content == null) {
             // Content for video does not yet exist -> create it
-            Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"), muji_muc);
+            Parameters video_content_parameters = new Parameters(this, "video", yield get_supported_payloads("video"));
             video_content_parameters.local_crypto = generate_local_crypto();
             video_content_parameters.header_extensions.add_all(get_suggested_header_extensions("video"));
             Jingle.Transport? video_transport = yield stream.get_module(Jingle.Module.IDENTITY).select_transport(stream, content_type.required_transport_type, content_type.required_components, receiver_full_jid, Set.empty());

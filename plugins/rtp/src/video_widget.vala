@@ -130,11 +130,11 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         return false;
     }
 
-    public void display_stream(Xmpp.Xep.JingleRtp.Stream stream, Xmpp.Jid jid) {
+    public void display_stream(Xmpp.Xep.JingleRtp.Stream? stream, Xmpp.Jid jid) {
         if (sink == null) return;
         detach();
         if (stream.media != "video") return;
-        connected_stream = stream as Stream;
+        connected_stream = stream as Stream?;
         if (connected_stream == null) return;
         plugin.pause();
         pipe.add(sink);

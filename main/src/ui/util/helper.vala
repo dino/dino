@@ -259,7 +259,7 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
             theme_dependent = true;
             quote_match_info.fetch_pos(0, out start, out end);
             return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, parse_quotes, dark_theme, ref theme_dependent, already_escaped) +
-                    @"<span color='$dim_color'>$gt " + parse_add_markup_theme(s[start + gt.length + 1:end], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) + "</span>" +
+                    @"<span color='$dim_color'>$gt" + parse_add_markup_theme(s[start + gt.length:end], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) + "</span>" +
                     parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, parse_quotes, dark_theme, ref theme_dependent, already_escaped);
         }
     }

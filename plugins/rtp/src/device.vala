@@ -18,12 +18,14 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
 
     public string id { owned get { return device_name; }}
     public string display_name { owned get { return device_display_name; }}
-    public string detail_name { owned get {
-        return device.properties.get_string("alsa.card_name") ?? device.properties.get_string("alsa.name") ?? device.properties.get_string("alsa.id") ?? device.properties.get_string("api.v4l2.cap.card") ?? id;
+    public string? detail_name { owned get {
+        if (device.properties.has_field("alsa.card_name")) return device.properties.get_string("alsa.card_name");
+        if (device.properties.has_field("alsa.name")) return device.properties.get_string("alsa.name");
+        if (device.properties.has_field("alsa.id")) return device.properties.get_string("alsa.id");
+        if (device.properties.has_field("api.v4l2.cap.card")) return device.properties.get_string("api.v4l2.cap.card");
+        return null;
     }}
-
-    public Gst.Pipeline pipe { get { return plugin.pipe; }}
-    public string? media { get {
+    public string? media { owned get {
         if (device.has_classes("Audio")) {
             return "audio";
         } else if (device.has_classes("Video")) {
@@ -32,6 +34,9 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             return null;
         }
     }}
+    public bool incoming { get { return is_sink; } }
+
+    public Gst.Pipeline pipe { get { return plugin.pipe; }}
     public bool is_source { get { return device.has_classes("Source"); }}
     public bool is_sink { get { return device.has_classes("Sink"); }}
     public bool is_monitor { get { return device.properties.get_string("device.class") == "monitor" || (protocol == DeviceProtocol.PIPEWIRE && device.has_classes("Stream")); } }
@@ -438,7 +443,6 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         if (is_sink && media == "audio") {
             mixer = (Gst.Base.Aggregator) Gst.ElementFactory.make("audiomixer", @"mixer_$id");
             pipe.add(mixer);
-            mixer.link(pipe);
             if (plugin.echoprobe != null && !plugin.echoprobe.get_static_pad("src").is_linked()) {
                 mixer.link(plugin.echoprobe);
                 plugin.echoprobe.link(element);

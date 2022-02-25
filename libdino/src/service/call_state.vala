@@ -26,11 +26,15 @@ public class Dino.CallState : Object {
 
     public HashMap<Jid, PeerState> peers = new HashMap<Jid, PeerState>(Jid.hash_func, Jid.equals_func);
 
+    private Plugins.MediaDevice selected_microphone_device;
+    private Plugins.MediaDevice selected_speaker_device;
+    private Plugins.MediaDevice selected_video_device;
+
     public CallState(Call call, StreamInteractor stream_interactor) {
         this.call = call;
         this.stream_interactor = stream_interactor;
 
-        if (call.direction == Call.DIRECTION_OUTGOING) {
+        if (call.direction == Call.DIRECTION_OUTGOING && call.state != Call.State.OTHER_DEVICE) {
             accepted = true;
 
             Timeout.add_seconds(30, () => {
@@ -80,6 +84,15 @@ public class Dino.CallState : Object {
         peer_joined(peer.jid, peer);
     }
 
+    internal void on_peer_stream_created(PeerState peer, string media) {
+        if (media == "audio") {
+            call_plugin.set_device(peer.get_audio_stream(), get_microphone_device());
+            call_plugin.set_device(peer.get_audio_stream(), get_speaker_device());
+        } else if (media == "video") {
+            call_plugin.set_device(peer.get_video_stream(), get_video_device());
+        }
+    }
+
     public void accept() {
         accepted = true;
         call.state = Call.State.ESTABLISHING;
@@ -87,7 +100,17 @@ public class Dino.CallState : Object {
         if (use_cim) {
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_accept(stream, cim_counterpart, cim_call_id, cim_message_type);
+            StanzaNode? inner_node = null;
+            if (group_call != null) {
+                inner_node = new StanzaNode.build("muji", Xep.Muji.NS_URI).add_self_xmlns()
+                        .put_attribute("room", group_call.muc_jid.to_string());
+            } else if (peers.size == 1) {
+                foreach (PeerState peer in peers.values) {
+                    inner_node = new StanzaNode.build("jingle", Xep.CallInvites.NS_URI)
+                            .put_attribute("sid", peer.sid);
+                }
+            }
+            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_accept(stream, cim_counterpart, cim_call_id, inner_node, cim_message_type);
         } else {
             foreach (PeerState peer in peers.values) {
                 peer.accept();
@@ -206,30 +229,57 @@ public class Dino.CallState : Object {
     }
 
     public Plugins.MediaDevice? get_microphone_device() {
-        if (peers.is_empty) return null;
-        var audio_stream = peers.values.to_array()[0].get_audio_stream();
-        return call_plugin.get_device(audio_stream, false);
+        if (selected_microphone_device == null) {
+            if (!peers.is_empty) {
+                var audio_stream = peers.values.to_array()[0].get_audio_stream();
+                selected_microphone_device = call_plugin.get_device(audio_stream, false);
+            }
+            if (selected_microphone_device == null) {
+                selected_microphone_device = call_plugin.get_preferred_device("audio", false);
+            }
+        }
+        return selected_microphone_device;
     }
 
     public Plugins.MediaDevice? get_speaker_device() {
-        if (peers.is_empty) return null;
-        var audio_stream = peers.values.to_array()[0].get_audio_stream();
-        return call_plugin.get_device(audio_stream, true);
+        if (selected_speaker_device == null) {
+            if (!peers.is_empty) {
+                var audio_stream = peers.values.to_array()[0].get_audio_stream();
+                selected_speaker_device = call_plugin.get_device(audio_stream, true);
+            }
+            if (selected_speaker_device == null) {
+                selected_speaker_device = call_plugin.get_preferred_device("audio", true);
+            }
+        }
+        return selected_speaker_device;
     }
 
     public Plugins.MediaDevice? get_video_device() {
-        if (peers.is_empty) return null;
-        var video_stream = peers.values.to_array()[0].get_video_stream();
-        return call_plugin.get_device(video_stream, false);
+        if (selected_video_device == null) {
+            if (!peers.is_empty) {
+                var video_stream = peers.values.to_array()[0].get_video_stream();
+                selected_video_device = call_plugin.get_device(video_stream, false);
+            }
+            if (selected_video_device == null) {
+                selected_video_device = call_plugin.get_preferred_device("video", false);
+            }
+        }
+        return selected_video_device;
     }
 
     public void set_audio_device(Plugins.MediaDevice? device) {
+        if (device.incoming) {
+            selected_speaker_device = device;
+        } else {
+            selected_microphone_device = device;
+        }
         foreach (PeerState peer_state in peers.values) {
             call_plugin.set_device(peer_state.get_audio_stream(), device);
         }
     }
 
     public void set_video_device(Plugins.MediaDevice? device) {
+        selected_video_device = device;
         foreach (PeerState peer_state in peers.values) {
             call_plugin.set_device(peer_state.get_video_stream(), device);
         }
@@ -270,6 +320,7 @@ public class Dino.CallState : Object {
         this.bind_property("we-should-send-video", peer_state, "we-should-send-video", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         this.bind_property("group-call", peer_state, "group-call", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
+        peer_state.stream_created.connect((peer, media) => { on_peer_stream_created(peer, media); });
         peer_state.session_terminated.connect((we_terminated, reason_name, reason_text) => {
             debug("[%s] Peer left %s: %s %s (%i peers remaining)", call.account.bare_jid.to_string(), reason_text ?? "", reason_name ?? "", peer_state.jid.to_string(), peers.size);
             handle_peer_left(peer_state, we_terminated, reason_name, reason_text);
@@ -373,7 +424,7 @@ public class Dino.CallState : Object {
             handle_peer_left(peer_state, false, Xep.Jingle.ReasonElement.CANCEL, "Peer left the MUJI MUC");
         });
 
-        if (group_call.peers_to_connect_to.size > 3) {
+        if (group_call.peers_to_connect_to.size > 4) {
             end("Call too full - P2p calls don't work well with many participants");
             return;
         }

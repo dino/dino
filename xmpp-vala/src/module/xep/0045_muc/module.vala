@@ -345,6 +345,12 @@ public class Module : XmppStreamModule {
                 if (status_codes.contains(StatusCode.SELF_PRESENCE)) {
                     Jid bare_jid = presence.from.bare_jid;
                     if (flag.get_enter_id(bare_jid) != null) {
+
+                        // TODO only query that if we actually have the rights to
+                        query_affiliation.begin(stream, bare_jid, "member");
+                        query_affiliation.begin(stream, bare_jid, "admin");
+                        query_affiliation.begin(stream, bare_jid, "owner");
+
                         flag.finish_muc_enter(bare_jid);
                         var join_result = new JoinResult() { nick=presence.from.resourcepart, newly_created=status_codes.contains(StatusCode.NEW_ROOM_CREATED) };
                         flag.enter_futures[bare_jid].set_value(join_result);

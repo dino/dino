@@ -119,6 +119,13 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         foreach (StanzaNode candidateNode in node.get_subnodes("candidate")) {
             remote_candidates.add(Candidate.parse(candidateNode));
         }
+
+        StanzaNode? fingerprint_node = node.get_subnode("fingerprint", DTLS_NS_URI);
+        if (fingerprint_node != null) {
+            peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_string_content());
+            peer_fp_algo = fingerprint_node.get_attribute("hash");
+            peer_setup = fingerprint_node.get_attribute("setup");
+        }
     }
 
     public virtual void create_transport_connection(XmppStream stream, Jingle.Content content) {

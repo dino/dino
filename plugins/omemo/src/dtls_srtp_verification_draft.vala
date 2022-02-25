@@ -11,6 +11,7 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
 
         private VerificationSendListener send_listener = new VerificationSendListener();
         private HashMap<string, int> device_id_by_jingle_sid = new HashMap<string, int>();
+        private HashMap<string, int> device_id_by_muji_member = new HashMap<string, int>();
         private HashMap<string, Gee.List<string>> content_names_by_jingle_sid = new HashMap<string, Gee.List<string>>();
 
         private void on_preprocess_incoming_iq_set_get(XmppStream stream, Xmpp.Iq.Stanza iq) {
@@ -88,8 +89,26 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
             StanzaNode? jingle_node = iq.stanza.get_subnode("jingle", Xep.Jingle.NS_URI);
             if (jingle_node == null) return;
 
+            int device_id = -1;
             string? sid = jingle_node.get_attribute("sid", Xep.Jingle.NS_URI);
-            if (sid == null || !device_id_by_jingle_sid.has_key(sid)) return;
+            if (sid != null && device_id_by_jingle_sid.has_key(sid)) {
+                device_id = device_id_by_jingle_sid[sid];
+            }
+
+            StanzaNode? muji_node = jingle_node.get_subnode("muji", Xep.Muji.NS_URI);
+            if (muji_node != null) {
+                string muji_room = muji_node.get_attribute("room");
+                try {
+                    Jid muji_jid = new Jid(muji_room);
+                    if (device_id_by_muji_member.has_key(@"$(muji_jid.bare_jid)/$(iq.to)")) {
+                        device_id = device_id_by_muji_member[@"$(muji_jid.bare_jid)/$(iq.to)"];
+                    }
+                } catch (InvalidJidError e) {
+                    // Ignore
+                }
+            }
+
+            if (device_id == -1) return;
 
             Gee.List<StanzaNode> content_nodes = jingle_node.get_subnodes("content", Xep.Jingle.NS_URI);
             if (content_nodes.size == 0) return;
@@ -105,7 +124,7 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
                 try {
                     Xep.Omemo.OmemoEncryptor encryptor = stream.get_module(Xep.Omemo.OmemoEncryptor.IDENTITY);
                     Xep.Omemo.EncryptionData enc_data = encryptor.encrypt_plaintext(fingerprint);
-                    encryptor.encrypt_key(enc_data, iq.to.bare_jid, device_id_by_jingle_sid[sid]);
+                    encryptor.encrypt_key(enc_data, iq.to.bare_jid, device_id);
                     encrypted_node = enc_data.get_encrypted_node();
                 } catch (Error e) {
                     warning("Error while OMEMO-encrypting call keys: %s", e.message);
@@ -155,12 +174,52 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
             }
         }
 
+        private void on_pre_send_presence_stanza(XmppStream stream, Presence.Stanza presence) {
+            StanzaNode? muji_node = presence.stanza.get_subnode("muji", Xep.Muji.NS_URI);
+            if (muji_node == null) return;
+
+            StanzaNode device_node = new StanzaNode.build("device", NS_URI).add_self_xmlns()
+                    .put_attribute("id", stream.get_module(Omemo.StreamModule.IDENTITY).store.local_registration_id.to_string());
+            muji_node.put_node(device_node);
+        }
+
+        private void on_received_available(XmppStream stream, Presence.Stanza presence) {
+            StanzaNode? muji_node = presence.stanza.get_subnode("muji", Xep.Muji.NS_URI);
+            if (muji_node == null) return;
+
+            StanzaNode? device_node = muji_node.get_subnode("device", NS_URI);
+            if (device_node == null) return;
+
+            int device_id = device_node.get_attribute_int("id", -1);
+            if (device_id == -1) return;
+
+            StanzaNode? muc_x_node = presence.stanza.get_subnode("x", "http://jabber.org/protocol/muc#user");
+            if (muc_x_node == null) return;
+
+            StanzaNode? item_node = muc_x_node.get_subnode("item");
+            if (item_node == null) return;
+
+            Jid? real_jid = null;
+            try {
+                string jid_attribute = item_node.get_attribute("jid");
+                if (jid_attribute == null) return;
+                real_jid = new Jid(jid_attribute);
+            } catch (InvalidJidError e) {
+                // Ignore
+                return;
+            }
+
+            device_id_by_muji_member[@"$(presence.from.bare_jid)/$(real_jid)"] = device_id;
+        }
+
         public override void attach(XmppStream stream) {
             stream.get_module(Xmpp.MessageModule.IDENTITY).received_message.connect(on_message_received);
             stream.get_module(Xmpp.MessageModule.IDENTITY).send_pipeline.connect(send_listener);
             stream.get_module(Xmpp.Iq.Module.IDENTITY).preprocess_incoming_iq_set_get.connect(on_preprocess_incoming_iq_set_get);
             stream.get_module(Xmpp.Iq.Module.IDENTITY).preprocess_outgoing_iq_set_get.connect(on_preprocess_outgoing_iq_set_get);
             stream.get_module(Xep.Jingle.Module.IDENTITY).session_initiate_received.connect(on_session_initiate_received);
+            stream.get_module(Xmpp.Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
+            stream.get_module(Xmpp.Presence.Module.IDENTITY).received_available.connect(on_received_available);
         }
 
         public override void detach(XmppStream stream) {
@@ -169,6 +228,7 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
             stream.get_module(Xmpp.Iq.Module.IDENTITY).preprocess_incoming_iq_set_get.disconnect(on_preprocess_incoming_iq_set_get);
             stream.get_module(Xmpp.Iq.Module.IDENTITY).preprocess_outgoing_iq_set_get.disconnect(on_preprocess_outgoing_iq_set_get);
             stream.get_module(Xep.Jingle.Module.IDENTITY).session_initiate_received.disconnect(on_session_initiate_received);
+            stream.get_module(Xmpp.Presence.Module.IDENTITY).received_available.disconnect(on_received_available);
         }
 
         public override string get_ns() { return NS_URI; }

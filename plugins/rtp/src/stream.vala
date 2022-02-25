@@ -27,7 +27,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 
     private Device _input_device;
     public Device input_device { get { return _input_device; } set {
-        if (!paused) {
+        if (sending && !paused) {
             var input = this.input;
             set_input(value != null ? value.link_source(payload_type, our_ssrc, next_seqnum_offset, next_timestamp_offset) : null);
             if (this._input_device != null) this._input_device.unlink(input);
@@ -37,7 +37,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     private Device _output_device;
     public Device output_device { get { return _output_device; } set {
         if (output != null) remove_output(output);
-        if (value != null) add_output(value.link_sink());
+        if (value != null && receiving) add_output(value.link_sink());
         this._output_device = value;
     }}
 
@@ -74,10 +74,10 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 
     public void on_senders_changed() {
         if (sending && input == null) {
-            input_device = plugin.get_preferred_device(media, false);
+            input_device = input_device;
         }
         if (receiving && output == null) {
-            output_device = plugin.get_preferred_device(media, true);
+            output_device = output_device;
         }
     }
 
@@ -86,11 +86,11 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 
         // Create i/o if needed
 
-        if (input == null && input_device == null && sending) {
-            input_device = plugin.get_preferred_device(media, false);
+        if (input == null && sending) {
+            input_device = input_device;
         }
-        if (output == null && output_device == null && receiving && media == "audio") {
-            output_device = plugin.get_preferred_device(media, true);
+        if (output == null && receiving && media == "audio") {
+            output_device = output_device;
         }
 
         // Create app elements
@@ -316,9 +316,11 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 next_timestamp_offset_stamp = get_monotonic_time();
                 rtp_buffer.unmap();
             }
+#if GLIB_2_64
             if (our_ssrc != buffer_ssrc) {
-                warning("Sending RTP %s buffer seq %u with SSRC %u when our ssrc is %u", media, buffer_seq, buffer_ssrc, our_ssrc);
+                warning_once("Sending RTP %s buffer seq %u with SSRC %u when our ssrc is %u", media, buffer_seq, buffer_ssrc, our_ssrc);
             }
+#endif
         }
 
         prepare_local_crypto();
@@ -505,7 +507,6 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 buffer_seq = rtp_buffer.get_seq();
                 rtp_buffer.unmap();
             }
-            debug("Received RTP %s buffer seq %u with SSRC %u", media, buffer_seq, buffer_ssrc);
         }
 #endif
         if (push_recv_data) {
