@@ -24,6 +24,7 @@ class SmileyConverter {
         smiley_translations[";P"] = "😜";
         smiley_translations[":("] = "🙁";
         smiley_translations[":'("] = "😢";
+        smiley_translations[":')"] = "🥲";
         smiley_translations[":/"] = "😕";
         smiley_translations["<3"] = "❤️";
         smiley_translations[":*"] = "😘️";
