@@ -93,13 +93,13 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
             int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
             var iri_query = @"omemo-sid-$(sid)=$(fingerprint)";
-        #if 0
+#if GLIB_2_66
             // glib >=2.66 only; never compiled
-            string iri = GLib.Uri.join("xmpp", null, null, 0, jid, iri_query);
-        #else
+            string iri = GLib.Uri.join(UriFlags.NONE, "xmpp", null, null, 0, jid.to_string(), iri_query, null);
+#else
             var iri_path_seg = escape_for_iri_path_segment(jid.to_string());
             var iri = @"xmpp:$(iri_path_seg)?$(iri_query)";
-        #endif
+#endif
 
             const int QUIET_ZONE_MODULES = 4;  // MUST be at least 4
             const int MODULE_SIZE_PX = 4;  // arbitrary
@@ -136,9 +136,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
     private static string escape_for_iri_path_segment(string s) {
         // from RFC 3986, 2.2. Reserved Characters:
-        /*const*/ string SUB_DELIMS = "!$&'()*+,;=";
+        string SUB_DELIMS = "!$&'()*+,;=";
         // from RFC 3986, 3.3. Path (pchar without unreserved and pct-encoded):
-        /*const*/ string ALLOWED_RESERVED_CHARS = SUB_DELIMS + ":@";
+        string ALLOWED_RESERVED_CHARS = SUB_DELIMS + ":@";
         return GLib.Uri.escape_string(s, ALLOWED_RESERVED_CHARS, true);
     }
 

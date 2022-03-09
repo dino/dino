@@ -198,7 +198,8 @@ include(${VALA_USE_FILE})
 include(MultiFind)
 include(GlibCompileResourcesSupport)
 
-set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} --target-glib=${GLib_GLOBAL_VERSION}")
+find_package(GLib ${GLib_GLOBAL_VERSION} REQUIRED)
+set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} --target-glib=${GLib_VERSION}")
 
 add_subdirectory(qlite)
 add_subdirectory(xmpp-vala)
