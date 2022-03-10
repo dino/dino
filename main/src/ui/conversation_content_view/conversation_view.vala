@@ -73,6 +73,8 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         // the pointer motion events as long as the pointer is above the message menu.
         // This ensures that the currently highlighted item remains unchanged when the pointer
         // reaches the overlapping part of a button.
+        main_wrap_event_box.events = EventMask.TOUCH_MASK;
+        main_wrap_event_box.touch_event.connect(on_touch_event);
         main_event_box.events = EventMask.POINTER_MOTION_MASK;
         main_event_box.motion_notify_event.connect(on_motion_notify_event);
 
@@ -100,6 +102,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             }
             iter.previous();
         }
+    }
+
+    private bool on_touch_event(Gdk.Event event) {
+        update_highlight((int)event.touch.x_root, (int)event.touch.y_root);
+        return false;
     }
 
     private bool on_enter_notify_event(Gdk.EventCrossing event) {
