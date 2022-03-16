@@ -199,7 +199,10 @@ include(MultiFind)
 include(GlibCompileResourcesSupport)
 
 find_package(GLib ${GLib_GLOBAL_VERSION} REQUIRED)
-set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} --target-glib=${GLib_VERSION}")
+string(REGEX REPLACE "^([0-9]+)\\.[0-9]+(\\.[0-9]+)?" "\\1" GLib_MAJOR_VERSION "${GLib_VERSION}")
+string(REGEX REPLACE "^[0-9]+\\.([0-9]+)(\\.[0-9]+)?" "\\1" GLib_MINOR_VERSION "${GLib_VERSION}")
+math(EXPR GLib_LAST_RELEASE_MINOR_VERSION "${GLib_MINOR_VERSION} / 2 * 2")
+set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} --target-glib=${GLib_MAJOR_VERSION}.${GLib_LAST_RELEASE_MINOR_VERSION}")
 
 add_subdirectory(qlite)
 add_subdirectory(xmpp-vala)

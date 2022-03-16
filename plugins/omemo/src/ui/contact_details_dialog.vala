@@ -93,8 +93,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
             int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
             var iri_query = @"omemo-sid-$(sid)=$(fingerprint)";
-#if GLIB_2_66
-            // glib >=2.66 only; never compiled
+#if GLIB_2_66 && VALA_0_50
             string iri = GLib.Uri.join(UriFlags.NONE, "xmpp", null, null, 0, jid.to_string(), iri_query, null);
 #else
             var iri_path_seg = escape_for_iri_path_segment(jid.to_string());
