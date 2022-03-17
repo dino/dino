@@ -203,25 +203,24 @@ private class DBusMenu : Object {
         }
     }
 
-    [DBus (name = "Event")]
-    public void event(int32 id, string event_id, Variant data, uint32 timestamp) {
+    private bool resolve_event(int32 id, string event_id, Variant data, uint32 timestamp) {
         if (event_id == "clicked") {
-            if (id == 0) return;
+            if (id == 0) return false;
             MenuModel local_model = item.menu_model;
             int32 local_id = id;
             if (local_id > 0xff) {
                 var sub_id = local_id % 0xff - 1;
                 HashTable<string,MenuModel> links;
-                if (local_model.get_n_items() <= sub_id) return;
+                if (local_model.get_n_items() <= sub_id) return false;
                 local_model.get_item_links(sub_id, out links);
-                if (links == null || links.size() == 0) return;
+                if (links == null || links.size() == 0) return false;
                 local_model = links.get_values().first().data;
                 local_id = local_id >> 8;
             }
             var sub_id = local_id - 1;
-            if (local_model.get_n_items() <= sub_id) return;
+            if (local_model.get_n_items() <= sub_id) return false;
             Variant? action_variant = local_model.get_item_attribute_value(sub_id, "action", VariantType.STRING);
-            if (action_variant == null) return;
+            if (action_variant == null) return false;
             size_t action_length;
             unowned string actionu = action_variant.get_string(out action_length);
             string detailed_action = actionu.substring(0, (long) action_length);
@@ -232,8 +231,41 @@ private class DBusMenu : Object {
                 GLib.Application.get_default().activate_action(action.substring(4), parameter);
             } else {
                 warning("Unknown action: %s", action);
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    [DBus (name = "Event")]
+    public void event(int32 id, string event_id, Variant data, uint32 timestamp) {
+        resolve_event(id, event_id, data, timestamp);
+    }
+
+    [DBus (name = "EventGroup")]
+    public int[] event_group(DBusMenuEventStruct[] events) throws DBusError
+    {
+        var ret = new Gee.ArrayList<int>();
+        foreach(var ev in events) {
+            if (!resolve_event(ev.id, ev.event_id, ev.data, ev.timestamp)) {
+                ret.add(ev.id);
             }
         }
+
+        if (ret.size == events.length) {
+            throw new DBusError.INVALID_ARGS("None of the events were valid.");
+        }
+
+        return ret.to_array();
+    }
+
+    public struct DBusMenuEventStruct {
+        public int id;
+        public string event_id;
+        public GLib.Variant data;
+        public uint timestamp;
     }
 
     [DBus (name = "AboutToShow")]
