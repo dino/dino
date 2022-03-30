@@ -19,6 +19,7 @@ public class FileDefaultWidget : EventBox {
 
     public ModelButton file_open_button;
     public ModelButton file_save_button;
+    public ModelButton cancel_button;
 
     private FileTransfer.State state;
 
@@ -27,6 +28,7 @@ public class FileDefaultWidget : EventBox {
         this.leave_notify_event.connect(on_pointer_left_event);
         file_open_button = new ModelButton() { text=_("Open"), visible=true };
         file_save_button = new ModelButton() { text=_("Save as…"), visible=true };
+        cancel_button = new ModelButton() { text=_("Cancel"), visible=true };
     }
 
     public void update_file_info(string? mime_type, FileTransfer.State state, long size) {
@@ -59,6 +61,18 @@ public class FileDefaultWidget : EventBox {
                 mime_label.label = _("Downloading %s…").printf(get_size_string(size));
                 spinner.active = true;
                 image_stack.set_visible_child_name("spinner");
+
+                // Create a menu
+                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu();
+                Box file_menu_box = new Box(Orientation.VERTICAL, 0) { margin=10, visible=true };
+                file_menu_box.add(cancel_button);
+                popover_menu.add(file_menu_box);
+                file_menu.popover = popover_menu;
+                file_menu.button_release_event.connect(() => {
+                    popover_menu.visible = true;
+                    return true;
+                });
+                popover_menu.closed.connect(on_pointer_left);
                 break;
             case FileTransfer.State.NOT_STARTED:
                 if (mime_description != null) {
@@ -84,7 +98,7 @@ public class FileDefaultWidget : EventBox {
         if (state == FileTransfer.State.NOT_STARTED) {
             image_stack.set_visible_child_name("download_image");
         }
-        if (state == FileTransfer.State.COMPLETE) {
+        if (state == FileTransfer.State.COMPLETE || state == FileTransfer.State.IN_PROGRESS) {
             file_menu.opacity = 1;
         }
         return false;
