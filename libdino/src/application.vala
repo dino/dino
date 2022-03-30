@@ -1,7 +1,13 @@
 using Dino.Entities;
 
 namespace Dino {
+
 extern const string VERSION;
+public string get_version() { return VERSION; }
+public string get_short_version() {
+    if (!VERSION.contains("~")) return VERSION;
+    return VERSION.split("~")[0] + "+";
+}
 
 public interface Application : GLib.Application {
 
