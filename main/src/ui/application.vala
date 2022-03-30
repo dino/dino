@@ -42,7 +42,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         startup.connect(() => {
             if (print_version) {
-                print(@"Dino $(Dino.VERSION)\n");
+                print(@"Dino $(Dino.get_version())\n");
                 Process.exit(0);
             }
 
@@ -270,7 +270,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     }
 
     private void show_about_window() {
-        string? version = Dino.VERSION.strip().length == 0 ? null : Dino.VERSION;
+        string? version = Dino.get_version().strip().length == 0 ? null : Dino.get_version();
         if (version != null && !version.contains("git")) {
             switch (version.substring(0, 3)) {
                 case "0.2": version = @"$version - <span font_style='italic'>Mexican Caribbean Coral Reefs</span>"; break;
