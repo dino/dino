@@ -70,6 +70,7 @@ public class FileTransfer : Object {
     public State state { get; set; default=State.NOT_STARTED; }
     public int provider { get; set; }
     public string info { get; set; }
+    public Cancellable cancellable { get; default=new Cancellable(); }
 
     private Database? db;
     private string storage_dir;

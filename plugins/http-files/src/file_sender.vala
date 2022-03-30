@@ -98,8 +98,9 @@ public class HttpFileSender : FileSender, Object {
         message.wrote_headers.connect(() => transfer_more_bytes(file_transfer.input_stream, message.request_body));
         message.wrote_chunk.connect(() => transfer_more_bytes(file_transfer.input_stream, message.request_body));
         Soup.Session session = new Soup.Session();
+        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
         try {
-            yield session.send_async(message);
+            yield session.send_async(message, file_transfer.cancellable);
             if (message.status_code < 200 || message.status_code >= 300) {
                 throw new FileSendError.UPLOAD_FAILED("HTTP status code %s".printf(message.status_code.to_string()));
             }
