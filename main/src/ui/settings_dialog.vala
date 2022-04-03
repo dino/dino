@@ -11,6 +11,7 @@ class SettingsDialog : Dialog {
     [GtkChild] private unowned CheckButton emoji_checkbutton;
     [GtkChild] private unowned CheckButton check_spelling_checkbutton;
     [GtkChild] private unowned CheckButton systray_checkbutton;
+    [GtkChild] private unowned CheckButton start_minimized_checkbutton;
 
     Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
@@ -23,6 +24,7 @@ class SettingsDialog : Dialog {
         emoji_checkbutton.active = settings.convert_utf8_smileys;
         check_spelling_checkbutton.active = settings.check_spelling;
         systray_checkbutton.active = settings.systray;
+        start_minimized_checkbutton.active = settings.start_minimized;
 
         typing_checkbutton.toggled.connect(() => { settings.send_typing = typing_checkbutton.active; } );
         marker_checkbutton.toggled.connect(() => { settings.send_marker = marker_checkbutton.active; } );
@@ -30,6 +32,7 @@ class SettingsDialog : Dialog {
         emoji_checkbutton.toggled.connect(() => { settings.convert_utf8_smileys = emoji_checkbutton.active; });
         check_spelling_checkbutton.toggled.connect(() => { settings.check_spelling = check_spelling_checkbutton.active; });
         systray_checkbutton.toggled.connect(() => { settings.systray = systray_checkbutton.active; });
+        start_minimized_checkbutton.toggled.connect(() => { settings.start_minimized = start_minimized_checkbutton.active; });
     }
 }
 
