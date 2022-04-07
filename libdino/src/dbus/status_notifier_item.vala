@@ -346,6 +346,13 @@ public class StatusNotifierItem : Object {
 
     private void on_name_acquired (DBusConnection dbus_connection) {
         DBusStatusNotifierWatcher watcher = Bus.get_proxy_sync(BusType.SESSION, "org.kde.StatusNotifierWatcher", "/StatusNotifierWatcher");
+
+        watcher.host_registered.connect(() => {
+            if (!(name in watcher.registered_items)) {
+                watcher.register_item(name);
+            }
+        });
+
         watcher.register_item(name);
     }
 
