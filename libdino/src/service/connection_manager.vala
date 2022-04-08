@@ -11,6 +11,7 @@ public class ConnectionManager : Object {
     public signal void stream_attached_modules(Account account, XmppStream stream);
     public signal void connection_state_changed(Account account, ConnectionState state);
     public signal void connection_error(Account account, ConnectionError error);
+    public signal void session_locked_hint(bool locked);
 
     public enum ConnectionState {
         CONNECTED,
@@ -26,6 +27,7 @@ public class ConnectionManager : Object {
 
     private NetworkMonitor? network_monitor;
     private Login1Manager? login1;
+    private Login1Session? login1_session;
     private ModuleManager module_manager;
     public string? log_options;
 
@@ -76,6 +78,14 @@ public class ConnectionManager : Object {
             uuid = Xmpp.random_uuid();
         }
 
+        public void change_show(string show) {
+            Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
+            presence.show = show;
+            if (stream != null) {
+                stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
+            }
+        }
+
         public void make_offline() {
             Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
             presence.type_ = Xmpp.Presence.Stanza.TYPE_UNAVAILABLE;
@@ -109,6 +119,19 @@ public class ConnectionManager : Object {
             login1 = get_login1.end(res);
             if (login1 != null) {
                 login1.PrepareForSleep.connect(on_prepare_for_sleep);
+
+                string session = login1.get_session("auto");
+
+                get_login1_session.begin(session, (_, res) => {
+                    login1_session = get_login1_session.end(res);
+                    if (login1_session != null) {
+                        ((DBusProxy) login1_session).g_properties_changed.connect((self, changed, invalidated) => {
+                            foreach (var v in changed) { if (v.get_child_value(0).get_string() == "LockedHint")
+                                session_locked_hint(login1_session.locked_hint);
+                            }
+                        });
+                    }
+                });
             }
         });
 
@@ -169,6 +192,16 @@ public class ConnectionManager : Object {
     private void make_offline(Account account) {
         connections[account].make_offline();
         change_connection_state(account, ConnectionState.DISCONNECTED);
+    }
+
+    public void change_show_all(string show) {
+        foreach (Account account in connections.keys) {
+            change_show(account, show);
+        }
+    }
+
+    public void change_show(Account account, string show) {
+        connections[account].change_show(show);
     }
 
     public async void disconnect_account(Account account) {
