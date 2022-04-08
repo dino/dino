@@ -98,24 +98,26 @@ public class FileProvider : Dino.FileProvider, Object {
         var session = new Soup.Session();
         session.user_agent = @"Dino/$(Dino.get_short_version()) ";
         var head_message = new Soup.Message("HEAD", http_receive_data.url);
+        head_message.request_headers.append("Accept-Encoding", "identity");
 
-        if (head_message != null) {
-            head_message.request_headers.append("Accept-Encoding", "identity");
-            try {
-                yield session.send_async(head_message, null);
-            } catch (Error e) {
-                throw new FileReceiveError.GET_METADATA_FAILED("HEAD request failed");
-            }
+        try {
+#if SOUP_3
+            yield session.send_async(head_message, GLib.Priority.LOW, null);
+#else
+            yield session.send_async(head_message, null);
+#endif
+        } catch (Error e) {
+            throw new FileReceiveError.GET_METADATA_FAILED("HEAD request failed");
+        }
 
-            string? content_type = null, content_length = null;
-            head_message.response_headers.foreach((name, val) => {
-                if (name.down() == "content-type") content_type = val;
-                if (name.down() == "content-length") content_length = val;
-            });
-            file_meta.mime_type = content_type;
-            if (content_length != null) {
-                file_meta.size = int64.parse(content_length);
-            }
+        string? content_type = null, content_length = null;
+        head_message.response_headers.foreach((name, val) => {
+            if (name.down() == "content-type") content_type = val;
+            if (name.down() == "content-length") content_length = val;
+        });
+        file_meta.mime_type = content_type;
+        if (content_length != null) {
+            file_meta.size = int64.parse(content_length);
         }
 
         return file_meta;
@@ -129,11 +131,16 @@ public class FileProvider : Dino.FileProvider, Object {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) assert(false);
 
+        var session = new Soup.Session();
+        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
+        var get_message = new Soup.Message("GET", http_receive_data.url);
+
         try {
-            var session = new Soup.Session();
-            session.user_agent = @"Dino/$(Dino.get_short_version()) ";
-            Soup.Request request = session.request(http_receive_data.url);
-            InputStream stream = yield request.send_async(file_transfer.cancellable);
+#if SOUP_3
+            InputStream stream = yield session.send_async(get_message, GLib.Priority.LOW, file_transfer.cancellable);
+#else
+            InputStream stream = yield session.send_async(get_message, file_transfer.cancellable);
+#endif
             if (file_meta.size != -1) {
                 return new LimitInputStream(stream, file_meta.size);
             } else {
