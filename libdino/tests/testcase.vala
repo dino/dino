@@ -48,7 +48,7 @@ public abstract class Gee.TestCase : Object {
     }
 
     public GLib.TestSuite get_suite () {
-        return this.suite;
+        return (owned) this.suite;
     }
 
     private class Adaptor {
