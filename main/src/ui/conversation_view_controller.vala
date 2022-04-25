@@ -7,12 +7,29 @@ using Dino.Entities;
 namespace Dino.Ui {
 
 enum Target {
+    URL,
     URI_LIST,
-    STRING
+    HTML,
+    UTF8_STRING,
+    COMPOUND_TEXT,
+    STRING,
+    TEXT
 }
 
 const TargetEntry[] target_list = {
-    { "text/uri-list", 0, Target.URI_LIST }
+    { "text/uri-list", 0, Target.URI_LIST },
+    { "_NETSCAPE_URL", 0, Target.URL },
+    { "text/html", 0, Target.HTML },
+    { "x-url/ftp", 0, Target.URL },
+    { "x-url/http", 0, Target.URL },
+    { "UTF8_STRING", 0, Target.UTF8_STRING },
+    { "COMPOUND_TEXT", 0, Target.COMPOUND_TEXT },
+
+    // Plain text types should be last in the list
+    { "STRING",     0, Target.STRING },
+    { "text/plain", 0, Target.TEXT },
+    { "TEXT", 0, Target.TEXT },
+
 };
 
 public class ConversationViewController : Object {
@@ -195,6 +212,7 @@ public class ConversationViewController : Object {
     }
 
     private void on_drag_data_received(Widget widget, Gdk.DragContext context, int x, int y, SelectionData selection_data, uint target_type, uint time) {
+        bool drag_success = true;
         if ((selection_data != null) && (selection_data.get_length() >= 0)) {
             switch (target_type) {
                 case Target.URI_LIST:
@@ -209,10 +227,20 @@ public class ConversationViewController : Object {
                         }
                     }
                     break;
+                case Target.URL:
+                    unowned var data = selection_data.get_data();
+                    view.chat_input.text += ((string)data).replace("\r", "").replace("\n", " | ");
+                    break;
+                case Target.STRING, Target.TEXT, Target.UTF8_STRING:
+                    view.chat_input.text += selection_data.get_text();
+                    break;
                 default:
                     break;
             }
+        } else {
+            drag_success = false;
         }
+        Gtk.drag_finish(context, drag_success, false, time);
     }
 
     private void open_file_picker() {
