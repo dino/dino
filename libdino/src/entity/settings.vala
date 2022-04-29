@@ -12,6 +12,7 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
+        send_button = col_to_bool_or_default("send_button", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -76,6 +77,20 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
+        }
+    }
+
+    public signal void send_button_update();
+    private bool send_button_;
+    public bool send_button {
+        get { return send_button_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "send_button", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            send_button_ = value;
+            send_button_update();
         }
     }
 }

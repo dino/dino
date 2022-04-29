@@ -76,7 +76,9 @@ public class ChatTextView : ScrolledWindow {
 
     private bool on_text_input_key_press(EventKey event) {
         if (event.keyval in new uint[]{Key.Return, Key.KP_Enter}) {
-            if ((event.state & ModifierType.SHIFT_MASK) > 0) {
+            Dino.Entities.Settings settings = Dino.Application.get_default().settings;
+
+            if ((event.state & ModifierType.SHIFT_MASK) > 0 || settings.send_button) {
                 text_view.buffer.insert_at_cursor("\n", 1);
             } else if (text_view.buffer.text.strip() != "") {
                 send_text();

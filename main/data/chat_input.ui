@@ -23,7 +23,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="margin-top">3</property>
                                 <property name="relief">none</property>
-                                <property name="valign">start</property>
+                                <property name="valign">center</property>
                                 <property name="visible">True</property>
                                 <style>
                                     <class name="flat"/>

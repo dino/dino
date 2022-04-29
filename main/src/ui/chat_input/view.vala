@@ -31,7 +31,7 @@ public class View : Box {
     public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
+        encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.CENTER, visible=true };
 
         file_button.get_style_context().add_class("dino-attach-button");
 
@@ -39,7 +39,7 @@ public class View : Box {
 
         // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
         if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
-            MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
+            MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.CENTER, visible=true };
             emoji_button.get_style_context().add_class("flat");
             emoji_button.get_style_context().add_class("dino-chatinput-button");
             emoji_button.image = new Image.from_icon_name("dino-emoticon-symbolic", IconSize.BUTTON) { visible=true };
@@ -54,6 +54,44 @@ public class View : Box {
         }
 
         outer_box.add(encryption_widget);
+
+        Dino.Entities.Settings settings = Dino.Application.get_default().settings;
+
+        MenuButton send_button = new MenuButton() {
+            tooltip_text="Send message",
+            relief=ReliefStyle.NONE,
+            margin_top=3,
+            valign=Align.CENTER,
+            visible=settings.send_button,
+            sensitive=false
+        };
+
+        settings.send_button_update.connect(() => {
+            send_button.visible = settings.send_button;
+        });
+
+        send_button.get_style_context().add_class("flat");
+        send_button.get_style_context().add_class("dino-chatinput-button");
+        send_button.image = new Image.from_icon_name("document-send", IconSize.BUTTON) {
+            visible=true,
+            icon_size=3
+        };
+
+        chat_text_view.text_view.buffer.changed.connect(() => {
+            if (chat_text_view.text_view.buffer.text != "") {
+                send_button.sensitive = true;
+            }
+            else {
+                send_button.sensitive = false;
+            }
+        });
+
+        send_button.button_release_event.connect(() => {
+            chat_text_view.send_text();
+            return true;
+        });
+
+        outer_box.add(send_button);
 
         Util.force_css(frame, "* { border-radius: 3px; }");
 
