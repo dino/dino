@@ -149,7 +149,7 @@ namespace Dino.Ui {
         }
 
         public void set_own_video(Widget? widget_) {
-//            own_video_box.foreach((widget) => { own_video_box.remove(widget); });
+            unset_own_video();
 
             own_video = widget_;
             if (own_video == null) {
@@ -170,7 +170,11 @@ namespace Dino.Ui {
         }
 
         public void unset_own_video() {
-//            own_video_box.foreach((widget) => { own_video_box.remove(widget); });
+            Widget to_remove = own_video_box.get_first_child();
+            while (to_remove != null) {
+                own_video_box.remove(to_remove);
+                to_remove = own_video_box.get_first_child();
+            }
         }
 
         public void set_status(string participant_id, string state) {

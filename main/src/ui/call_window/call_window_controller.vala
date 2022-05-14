@@ -364,7 +364,7 @@ public class Dino.Ui.CallWindowController : Object {
         participant_widgets.keys.@foreach((peer_id) => { remove_participant(peer_id); return true; });
 
         call_window_handler_ids = bottom_bar_handler_ids = new ulong[0];
-
+        own_video.detach();
         base.dispose();
     }
 }

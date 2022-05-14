@@ -11,6 +11,7 @@ find_packages(RTP_PACKAGES REQUIRED
     Gst
     GstApp
     GstAudio
+    GstVideo
 )
 
 set(RTP_DEFINITIONS)
@@ -23,8 +24,8 @@ if(GstRtp_VERSION VERSION_GREATER "1.18")
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GST_1_18)
 endif()
 
-if(GLib_VERSION VERSION_GREATER "2.64")
-    set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GLIB_2_64)
+if(GstRtp_VERSION VERSION_GREATER "1.20")
+    set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GST_1_20)
 endif()
 
 set(RTP_ENABLE_VP9 "no" CACHE BOOL "Enable VP9 support")
@@ -84,7 +85,7 @@ DEFINITIONS
 )
 
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="rtp" -I${CMAKE_CURRENT_SOURCE_DIR}/src)
-add_library(rtp SHARED ${RTP_VALA_C} ${RTP_VOICE_PROCESSOR_CXX})
+add_library(rtp SHARED ${RTP_VALA_C} ${RTP_VOICE_PROCESSOR_CXX} src/gst_fixes.c)
 target_link_libraries(rtp libdino crypto-vala ${RTP_PACKAGES} gstreamer-rtp-1.0 ${RTP_VOICE_PROCESSOR_LIB})
 set_target_properties(rtp PROPERTIES PREFIX "")
 set_target_properties(rtp PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
