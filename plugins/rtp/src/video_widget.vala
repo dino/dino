@@ -41,6 +41,14 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
             add(widget);
             widget.visible = true;
         } else {
+            var dialog = new Gtk.MessageDialog(null, MODAL, WARNING, OK, null);
+
+            dialog.text = "Could not create GTK video sink";
+            dialog.secondary_text = "Please install package gstreamer1.0-gtk3 or equivalent.";
+            dialog.response.connect((response_id) => {
+                dialog.close();
+            });
+            dialog.run();
             warning("Could not create GTK video sink. Won't display videos.");
         }
         size_allocate.connect_after(after_size_allocate);
