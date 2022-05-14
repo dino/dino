@@ -11,52 +11,54 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
 
     public string counterpart_display_name { get; set; }
 
-    private Button audio_button = new Button() { height_request=45, width_request=45, halign=Align.START, valign=Align.START, visible=true };
-    private Overlay audio_button_overlay = new Overlay() { visible=true };
+    private Button audio_button = new Button() { height_request=45, width_request=45, halign=Align.START, valign=Align.START };
+    private Overlay audio_button_overlay = new Overlay();
     private Image audio_image = new Image() { pixel_size=22 };
-    private MenuButton audio_settings_button = new MenuButton() { icon_name="go-up-symbolic", halign=Align.END, valign=Align.END };
+    private MenuButton audio_settings_button = new MenuButton() { halign=Align.END, valign=Align.END };
     public AudioSettingsPopover? audio_settings_popover;
 
-    private Button video_button = new Button() { height_request=45, width_request=45, halign=Align.START, valign=Align.START, visible=true };
-    private Overlay video_button_overlay = new Overlay() { visible=true };
+    private Button video_button = new Button() { height_request=45, width_request=45, halign=Align.START, valign=Align.START };
+    private Overlay video_button_overlay = new Overlay();
     private Image video_image = new Image() { pixel_size=22 };
-    private MenuButton video_settings_button = new MenuButton() { icon_name="go-up-symbolic", halign=Align.END, valign=Align.END };
+    private MenuButton video_settings_button = new MenuButton() { halign=Align.END, valign=Align.END };
     public VideoSettingsPopover? video_settings_popover;
 
-    private Label label = new Label("") { halign=Align.CENTER, valign=Align.CENTER, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
-    private Stack stack = new Stack() { visible=true };
+    private Label label = new Label("") { halign=Align.CENTER, valign=Align.CENTER, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true };
+    private Stack stack = new Stack();
 
     public CallBottomBar() {
         Object(orientation:Orientation.HORIZONTAL, spacing:0);
 
-        Box main_buttons = new Box(Orientation.HORIZONTAL, 20) { margin_start=40, margin_end=40, margin_bottom=20, margin_top=20, halign=Align.CENTER, hexpand=true, visible=true };
+        Box main_buttons = new Box(Orientation.HORIZONTAL, 20) { margin_start=40, margin_end=40, margin_bottom=20, margin_top=20, halign=Align.CENTER, hexpand=true };
 
         audio_button.set_child(audio_image);
-        audio_button.get_style_context().add_class("call-button");
+        audio_button.add_css_class("call-button");
         audio_button.clicked.connect(() => { audio_enabled = !audio_enabled; });
         audio_button.margin_end = audio_button.margin_bottom = 5; // space for the small settings button
         audio_button_overlay.set_child(audio_button);
         audio_button_overlay.add_overlay(audio_settings_button);
-        audio_settings_button.get_style_context().add_class("call-mediadevice-settings-button");
+        audio_settings_button.set_child(new Image.from_icon_name("go-up-symbolic") { pixel_size=10 });
+        audio_settings_button.add_css_class("call-mediadevice-settings-button");
         main_buttons.append(audio_button_overlay);
 
         video_button.set_child(video_image);
-        video_button.get_style_context().add_class("call-button");
+        video_button.add_css_class("call-button");
         video_button.clicked.connect(() => { video_enabled = !video_enabled; });
         video_button.margin_end = video_button.margin_bottom = 5;
         video_button_overlay.set_child(video_button);
         video_button_overlay.add_overlay(video_settings_button);
-        video_settings_button.get_style_context().add_class("call-mediadevice-settings-button");
+        video_settings_button.set_child(new Image.from_icon_name("go-up-symbolic") { pixel_size=10 });
+        video_settings_button.add_css_class("call-mediadevice-settings-button");
         main_buttons.append(video_button_overlay);
 
-        Button button_hang = new Button() { height_request=45, width_request=45, halign=Align.START, valign=Align.START, visible=true };
+        Button button_hang = new Button() { height_request=45, width_request=45, halign=Align.START, valign=Align.START };
         button_hang.set_child(new Image() { icon_name="dino-phone-hangup-symbolic", pixel_size=22 });
-        button_hang.get_style_context().add_class("call-button");
-        button_hang.get_style_context().add_class("destructive-action");
+        button_hang.add_css_class("call-button");
+        button_hang.add_css_class("destructive-action");
         button_hang.clicked.connect(() => hang_up());
         main_buttons.append(button_hang);
 
-        label.get_style_context().add_class("text-no-controls");
+        label.add_css_class("text-no-controls");
 
         stack.add_named(main_buttons, "control-buttons");
         stack.add_named(label, "label");
@@ -71,7 +73,7 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
         on_audio_enabled_changed();
         on_video_enabled_changed();
 
-        this.get_style_context().add_class("call-bottom-bar");
+        this.add_css_class("call-bottom-bar");
     }
 
     public AudioSettingsPopover? show_audio_device_choices(bool show) {
@@ -112,25 +114,25 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
     public void on_audio_enabled_changed() {
         if (audio_enabled) {
             audio_image.icon_name = "dino-microphone-symbolic";
-            audio_button.get_style_context().add_class("white-button");
-            audio_button.get_style_context().remove_class("transparent-white-button");
+            audio_button.add_css_class("white-button");
+            audio_button.remove_css_class("transparent-white-button");
         } else {
             audio_image.icon_name = "dino-microphone-off-symbolic";
-            audio_button.get_style_context().remove_class("white-button");
-            audio_button.get_style_context().add_class("transparent-white-button");
+            audio_button.remove_css_class("white-button");
+            audio_button.add_css_class("transparent-white-button");
         }
     }
 
     public void on_video_enabled_changed() {
         if (video_enabled) {
             video_image.icon_name = "dino-video-symbolic";
-            video_button.get_style_context().add_class("white-button");
-            video_button.get_style_context().remove_class("transparent-white-button");
+            video_button.add_css_class("white-button");
+            video_button.remove_css_class("transparent-white-button");
 
         } else {
             video_image.icon_name = "dino-video-off-symbolic";
-            video_button.get_style_context().remove_class("white-button");
-            video_button.get_style_context().add_class("transparent-white-button");
+            video_button.remove_css_class("white-button");
+            video_button.add_css_class("transparent-white-button");
         }
     }
 
@@ -140,6 +142,7 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
     }
 
     public bool is_menu_active() {
-        return video_settings_button.popover.visible || audio_settings_button.popover.visible; // TODO gtk4 does this work? check for null?
+        return (video_settings_button.popover != null && video_settings_button.popover.visible) ||
+                (audio_settings_button.popover != null && audio_settings_button.popover.visible);
     }
 }

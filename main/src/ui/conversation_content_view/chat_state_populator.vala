@@ -77,11 +77,11 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
     }
 
     public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType widget_type) {
-        label = new Label("") { xalign=0, vexpand=true, visible=true };
-        label.get_style_context().add_class("dim-label");
-        image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true };
+        label = new Label("") { xalign=0, vexpand=true };
+        label.add_css_class("dim-label");
+        image = new AvatarImage() { margin_top=2, valign=Align.START };
 
-        Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
+        Box image_content_box = new Box(Orientation.HORIZONTAL, 8);
         image_content_box.append(image);
         image_content_box.append(label);
 

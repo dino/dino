@@ -49,7 +49,6 @@
                             <object class="DinoUiAccountComboBox" id="account_combobox">
                                 <property name="hexpand">True</property>
                                 <property name="width_request">200</property>
-                                <property name="visible">True</property>
                                 <layout>
                                     <property name="column">1</property>
                                     <property name="row">0</property>

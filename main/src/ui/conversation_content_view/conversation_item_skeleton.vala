@@ -18,7 +18,12 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
     public Widget? content_widget = null;
 
-    public bool show_skeleton { get; set; default=false; }
+    private bool show_skeleton_ = false;
+    public bool show_skeleton {
+        get { return show_skeleton_; }
+        set {
+            show_skeleton_ = value && content_meta_item != null && content_meta_item.requires_header && content_meta_item.requires_avatar; }
+    }
     public bool last_group_item { get; set; default=true; }
 
     public StreamInteractor stream_interactor;
@@ -26,7 +31,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     public Plugins.MetaConversationItem item;
     public bool item_in_edit_mode { get; set; }
     public Entities.Message.Marked item_mark { get; set; }
-    public ContentMetaItem? content_meta_item = null;
+    public ContentMetaItem content_meta_item = null;
     public Widget? widget = null;
 
     private uint time_update_timeout = 0;
@@ -40,7 +45,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
         Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_item_widget.ui");
         main_grid = (Grid) builder.get_object("main_grid");
-        main_grid.get_style_context().add_class("message-box");
+        main_grid.add_css_class("message-box");
         name_label = (Label) builder.get_object("name_label");
         time_label = (Label) builder.get_object("time_label");
         avatar_image = (AvatarImage) builder.get_object("avatar_image");
@@ -65,7 +70,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     }
 
     private void set_header() {
-        if (!show_skeleton || !item.requires_header) return;
+        if (!show_skeleton) return;
 
         update_name_label();
 //            name_label.style_updated.connect(update_name_label);
@@ -102,34 +107,32 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         encryption_image.visible = show_skeleton;
         received_image.visible = show_skeleton;
 
-        if (show_skeleton) {
-            main_grid.get_style_context().add_class("has-skeleton");
+        if (show_skeleton || content_meta_item == null) {
+            main_grid.add_css_class("has-skeleton");
         }
 
         if (last_group_item) {
-            main_grid.get_style_context().add_class("last-group-item");
+            main_grid.add_css_class("last-group-item");
         }
     }
 
     private void update_edit_mode() {
         if (item.in_edit_mode) {
-            main_grid.get_style_context().add_class("edit-mode");
+            main_grid.add_css_class("edit-mode");
         } else {
-            main_grid.get_style_context().remove_class("edit-mode");
+            main_grid.remove_css_class("edit-mode");
         }
     }
 
     private void update_error_mode() {
         if (item_mark == Message.Marked.ERROR) {
-            main_grid.get_style_context().add_class("error");
+            main_grid.add_css_class("error");
         } else {
-            main_grid.get_style_context().remove_class("error");
+            main_grid.remove_css_class("error");
         }
     }
 
     private void update_encryption_icon() {
-        encryption_image.visible = true;
-
         Application app = GLib.Application.get_default() as Application;
 
         ContentMetaItem ci = item as ContentMetaItem;
@@ -141,7 +144,8 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
                     break;
                 }
             }
-            encryption_image.icon_name = icon_name ?? "dino-changes-prevent-symbolic";
+            encryption_image.icon_name = icon_name ?? "changes-prevent-symbolic";
+            encryption_image.visible = true;
         }
 
         if (item.encryption == Encryption.NONE) {
@@ -149,6 +153,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
                 encryption_image.icon_name = "dino-changes-allowed-symbolic";
                 encryption_image.tooltip_text = _("Unencrypted");
                 Util.force_error_color(encryption_image);
+                encryption_image.visible = true;
             } else if (conversation.encryption == Encryption.NONE) {
                 encryption_image.icon_name = null;
                 encryption_image.visible = false;
@@ -176,8 +181,11 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             case Message.Marked.READ: received_image.icon_name = "dino-double-tick-symbolic"; break;
             case Message.Marked.WONTSEND:
                 received_image.icon_name = "dialog-warning-symbolic";
-                received_image.icon_name = _("Unable to send message");
-                // TODO error color on marked icon and time
+                Util.force_error_color(received_image);
+                Util.force_error_color(time_label);
+                string error_text = _("Unable to send message");
+                received_image.tooltip_text = error_text;
+                time_label.tooltip_text = error_text;
                 break;
             default: received_image.icon_name = null; break;
         }

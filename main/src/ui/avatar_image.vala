@@ -24,7 +24,7 @@ public class AvatarImage : Widget {
 
     public AvatarImage() {
         can_focus = false;
-        get_style_context().add_class("avatar");
+        add_css_class("avatar");
     }
 
     public override void dispose() {
@@ -51,7 +51,6 @@ public class AvatarImage : Widget {
     }
 
     public bool draw(Cairo.Context ctx_in) {
-        if (conversation == null || jids == null) return false;
         Cairo.Context ctx = ctx_in;
         int width = this.width, height = this.height, base_factor = 1;
         if (use_image_surface == -1) {

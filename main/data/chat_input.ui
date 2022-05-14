@@ -4,7 +4,6 @@
     <template class="DinoUiChatInputView">
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
-        <property name="visible">True</property>
         <style>
             <class name="dino-chatinput"/>
         </style>

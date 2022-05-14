@@ -24,7 +24,7 @@ public class ListRow : Widget {
         via_label = (Label) builder.get_object("via_label");
 
         this.layout_manager = new BinLayout();
-        outer_grid.insert_after(this, null);
+        outer_grid.set_parent(this);
     }
 
     public ListRow() {}
@@ -46,6 +46,10 @@ public class ListRow : Widget {
         }
         name_label.label = display_name;
         image.set_conversation(stream_interactor, conv);
+    }
+
+    public override void dispose() {
+        outer_grid.unparent();
     }
 }
 

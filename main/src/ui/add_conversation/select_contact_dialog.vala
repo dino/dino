@@ -40,7 +40,7 @@ public class SelectContactDialog : Gtk.Dialog {
         cancel_button.visible = true;
 
         ok_button = new Button();
-        ok_button.get_style_context().add_class("suggested-action");
+        ok_button.add_css_class("suggested-action");
         ok_button.sensitive = false;
         ok_button.visible = true;
 
@@ -51,7 +51,7 @@ public class SelectContactDialog : Gtk.Dialog {
             header_bar.pack_start(cancel_button);
             header_bar.pack_end(ok_button);
         } else {
-            Box box = new Box(Orientation.HORIZONTAL, 5) { halign=Align.END, margin_bottom=15, margin_start=80, margin_end=80, visible=true };
+            Box box = new Box(Orientation.HORIZONTAL, 5) { halign=Align.END, margin_bottom=15, margin_start=80, margin_end=80 };
 
             cancel_button.halign = Align.START;
             ok_button.halign = Align.END;

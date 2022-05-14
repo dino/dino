@@ -13,15 +13,13 @@ find_packages(MAIN_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
-    icons/dino-account-plus-symbolic.svg
-    icons/dino-conversation-list-placeholder-arrow.svg
-    icons/dino-qr-code-symbolic.svg
-    icons/dino-party-popper-symbolic.svg
     icons/dino-status-away.svg
     icons/dino-status-chat.svg
     icons/dino-status-dnd.svg
     icons/dino-status-online.svg
     icons/im.dino.Dino.svg
+
+    icons/scalable/actions/dino-account-plus-symbolic.svg
 
     icons/scalable/apps/im.dino.Dino-symbolic.svg
 
@@ -43,8 +41,6 @@ set(RESOURCE_LIST
     icons/scalable/mimetypes/dino-file-table-symbolic.svg
     icons/scalable/mimetypes/dino-file-video-symbolic.svg
 
-    icons/scalable/status/dino-changes-allowed-symbolic.svg
-    icons/scalable/status/dino-changes-prevent-symbolic.svg
     icons/scalable/status/dino-double-tick-symbolic.svg
     icons/scalable/status/dino-microphone-off-symbolic.svg
     icons/scalable/status/dino-microphone-symbolic.svg
@@ -52,6 +48,10 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-tick-symbolic.svg
     icons/scalable/status/dino-video-off-symbolic.svg
     icons/scalable/status/dino-video-symbolic.svg
+
+    icons/scalable/ui/dino-conversation-list-placeholder-arrow.svg
+    icons/scalable/ui/dino-qr-code-symbolic.svg
+    icons/scalable/ui/dino-party-popper-symbolic.svg
 
     add_conversation/add_contact_dialog.ui
     add_conversation/add_groupchat_dialog.ui
@@ -103,11 +103,6 @@ compile_gresources(
 
 unset(MAIN_EXTRA_OPTIONS)
 unset(MAIN_EXTRA_PACKAGES)
-# find_package(GDK3)
-# if(GDK3_WITH_X11)
-#     set(MAIN_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} -D GDK3_WITH_X11)
-#     set(MAIN_EXTRA_PACKAGES ${MAIN_EXTRA_PACKAGES} gdk-x11-3.0)
-# endif(GDK3_WITH_X11)
 set(MAIN_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi)
 
 vala_precompile(MAIN_VALA_C
@@ -226,16 +221,3 @@ install(FILES data/im.dino.Dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
 install(FILES data/icons/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
 install(FILES data/icons/im.dino.Dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
-install(FILES
-    data/icons/dino-status-away.svg
-    data/icons/dino-status-chat.svg
-    data/icons/dino-status-dnd.svg
-    data/icons/dino-status-online.svg
-
-    data/icons/dino-changes-prevent-symbolic.svg
-    data/icons/dino-double-tick-symbolic.svg
-    data/icons/dino-qr-code-symbolic.svg
-    data/icons/dino-tick-symbolic.svg
-DESTINATION
-    ${ICON_INSTALL_DIR}/hicolor/scalable/status
-)

@@ -134,10 +134,11 @@ public class Dino.Ui.CallWindowController : Object {
             warning("suspend inhibit request failed or unsupported");
         }
 
-        call_window.destroy.connect(() => {
+        call_window.close_request.connect(() => {
             if (inhibit_cookie != 0) {
                 app.uninhibit(inhibit_cookie);
             }
+            return false;
         });
     }
 
@@ -235,7 +236,7 @@ public class Dino.Ui.CallWindowController : Object {
         ParticipantWidget participant_widget = new ParticipantWidget(participant_name);
         participant_widget.may_show_invite_button = !participant_widgets.is_empty;
         participant_widget.debug_information_clicked.connect(() => {
-            var conn_details_window = new CallConnectionDetailsWindow() { title=participant_name, visible=true };
+            var conn_details_window = new CallConnectionDetailsWindow() { title=participant_name };
             conn_details_window.update_content(peer_states[participant_id].get_info());
             uint timeout_handle_id = Timeout.add_seconds(1, () => {
                 conn_details_window.update_content(peer_states[participant_id].get_info());
@@ -361,7 +362,9 @@ public class Dino.Ui.CallWindowController : Object {
     public override void dispose() {
         foreach (ulong handler_id in call_window_handler_ids) call_window.disconnect(handler_id);
         foreach (ulong handler_id in bottom_bar_handler_ids) call_window.bottom_bar.disconnect(handler_id);
-        participant_widgets.keys.@foreach((peer_id) => { remove_participant(peer_id); return true; });
+        foreach (string peer_id in participant_widgets.keys) {
+            remove_participant(peer_id);
+        }
 
         call_window_handler_ids = bottom_bar_handler_ids = new ulong[0];
         own_video.detach();

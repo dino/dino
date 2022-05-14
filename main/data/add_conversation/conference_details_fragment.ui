@@ -2,7 +2,6 @@
 <interface>
     <requires lib="gtk" version="4.0"/>
     <template class="DinoUiConferenceDetailsFragment">
-        <property name="visible">True</property>
         <child>
             <object class="GtkOverlay">
                 <property name="child">
@@ -53,7 +52,6 @@
                                             <object class="DinoUiAccountComboBox" id="account_combobox">
                                                 <property name="hexpand">True</property>
                                                 <property name="width_request">200</property>
-                                                <property name="visible">True</property>
                                             </object>
                                         </property>
                                     </object>

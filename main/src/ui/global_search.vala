@@ -185,7 +185,7 @@ public class GlobalSearch {
             Gee.List<MessageItem> before_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_before_message(item.conversation, item.message.time, item.message.id, 1);
             Gee.List<MessageItem> after_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages_after_message(item.conversation, item.message.time, item.message.id, 1);
 
-            Box context_box = new Box(Orientation.VERTICAL, 5) { visible=true };
+            Box context_box = new Box(Orientation.VERTICAL, 5);
             if (before_message != null && before_message.size > 0) {
                 context_box.append(get_context_message_widget(before_message.first()));
             }
@@ -197,16 +197,16 @@ public class GlobalSearch {
                 context_box.append(get_context_message_widget(after_message.first()));
             }
 
-            Label date_label = new Label(ConversationSummary.ConversationItemSkeleton.get_relative_time(item.time.to_local())) { xalign=0, visible=true };
-            date_label.get_style_context().add_class("dim-label");
+            Label date_label = new Label(ConversationSummary.ConversationItemSkeleton.get_relative_time(item.time.to_local())) { xalign=0 };
+            date_label.add_css_class("dim-label");
 
             string display_name = Util.get_conversation_display_name(stream_interactor, item.conversation);
             string title = item.message.type_ == Message.Type.GROUPCHAT ? _("In %s").printf(display_name) : _("With %s").printf(display_name);
-            Box header_box = new Box(Orientation.HORIZONTAL, 10) { margin_start=7, visible=true };
-            header_box.append(new Label(@"<b>$(Markup.escape_text(title))</b>") { ellipsize=EllipsizeMode.END, xalign=0, use_markup=true, visible=true });
+            Box header_box = new Box(Orientation.HORIZONTAL, 10) { margin_start=7 };
+            header_box.append(new Label(@"<b>$(Markup.escape_text(title))</b>") { ellipsize=EllipsizeMode.END, xalign=0, use_markup=true });
             header_box.append(date_label);
 
-            Box result_box = new Box(Orientation.VERTICAL, 7) { visible=true };
+            Box result_box = new Box(Orientation.VERTICAL, 7);
             result_box.append(header_box);
             result_box.append(context_box);
 
@@ -232,7 +232,7 @@ public class GlobalSearch {
                 text = text.substring(0, 25) + " … " + text.substring(index - 50, 50) + text.substring(index, 100) + " … " + text.substring(text.length - 25, 25);
             }
         }
-        Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, vexpand=true, visible=true };
+        Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, vexpand=true };
 
         // Build regex containing all keywords
         string regex_str = "(";
@@ -269,7 +269,7 @@ public class GlobalSearch {
         label.label = markup_text;
         grid.attach(label, 1, 1, 1, 1);
 
-        Button button = new Button() { has_frame=false, visible=true };
+        Button button = new Button() { has_frame=false };
         button.clicked.connect(() => {
             selected_item(item);
         });
@@ -280,20 +280,20 @@ public class GlobalSearch {
     private Grid get_context_message_widget(MessageItem item) {
         Grid grid = get_skeleton(item);
         grid.margin_start = 7;
-        Label label = new Label(item.message.body.replace("\n", "").replace("\r", "")) { ellipsize=EllipsizeMode.MIDDLE, xalign=0, visible=true };
+        Label label = new Label(item.message.body.replace("\n", "").replace("\r", "")) { ellipsize=EllipsizeMode.MIDDLE, xalign=0 };
         grid.attach(label, 1, 1, 1, 1);
         grid.opacity = 0.55;
         return grid;
     }
 
     private Grid get_skeleton(MessageItem item) {
-        AvatarImage image = new AvatarImage() { height=32, width=32, margin_end=7, valign=Align.START, visible=true, allow_gray = false };
+        AvatarImage image = new AvatarImage() { height=32, width=32, margin_end=7, valign=Align.START, allow_gray = false };
         image.set_conversation_participant(stream_interactor, item.conversation, item.jid);
-        Grid grid = new Grid() { row_homogeneous=false, visible=true };
+        Grid grid = new Grid() { row_homogeneous=false };
         grid.attach(image, 0, 0, 1, 2);
 
         string display_name = Util.get_participant_display_name(stream_interactor, item.conversation, item.jid);
-        Label name_label = new Label(display_name) { ellipsize=EllipsizeMode.END, xalign=0, visible=true };
+        Label name_label = new Label(display_name) { ellipsize=EllipsizeMode.END, xalign=0 };
         name_label.attributes = new AttrList();
         name_label.attributes.insert(attr_weight_new(Weight.BOLD));
         grid.attach(name_label, 1, 0, 1, 1);

@@ -20,10 +20,6 @@ protected class ConferenceList {
     public ConferenceList(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-//        list_box.set_filter_func(filter);
-        list_box.set_header_func(header);
-//        list_box.set_sort_func(sort);
-
         stream_interactor.get_module(MucManager.IDENTITY).bookmarks_updated.connect((account, conferences) => {
             lists[account] = conferences;
             refresh_conferences();
@@ -57,7 +53,12 @@ protected class ConferenceList {
     }
 
     public void refresh_conferences() {
-//        @foreach((widget) => { remove(widget); });
+        foreach (Account account in widgets.keys) {
+            foreach (Jid jid in widgets[account].keys) {
+                remove_conference(account, jid);
+            }
+        }
+
         foreach (Account account in lists.keys) {
             foreach (Conference conference in lists[account]) {
                 add_conference(account, conference);
@@ -72,12 +73,6 @@ protected class ConferenceList {
             lists[account] = conferences;
         }
         refresh_conferences();
-    }
-
-    private void header(ListBoxRow row, ListBoxRow? before_row) {
-        if (row.get_header() == null && before_row != null) {
-            row.set_header(new Separator(Orientation.HORIZONTAL));
-        }
     }
 
     public ListBox get_list_box() {

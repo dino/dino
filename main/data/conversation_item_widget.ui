@@ -50,7 +50,8 @@
     <child>
       <object class="GtkImage" id="encrypted_image">
         <property name="opacity">0.4</property>
-        <property name="pixel-size">14</property>
+        <property name="pixel-size">12</property>
+        <property name="margin-top">2</property>
         <layout>
           <property name="column">3</property>
           <property name="row">0</property>
@@ -60,7 +61,8 @@
     <child>
       <object class="GtkImage" id="marked_image">
         <property name="opacity">0.4</property>
-        <property name="pixel-size">14</property>
+        <property name="pixel-size">13</property>
+        <property name="margin-top">2</property>
         <property name="halign">start</property>
         <property name="hexpand">True</property>
         <layout>

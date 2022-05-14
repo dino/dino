@@ -34,7 +34,7 @@ public class ConversationView : Widget {
     }
 
     public void add_overlay_dialog(Widget widget) {
-        Revealer revealer = new Revealer() { transition_type=RevealerTransitionType.CROSSFADE , transition_duration= 100, visible=true };
+        Revealer revealer = new Revealer() { transition_type=RevealerTransitionType.CROSSFADE , transition_duration= 100 };
         revealer.set_child(widget);
 
         overlay.add_overlay(revealer);
@@ -43,7 +43,7 @@ public class ConversationView : Widget {
         white_revealer.visible = true;
         white_revealer.reveal_child = true;
         widget.destroy.connect(() => {
-            revealer.destroy(); // GTK4: this.remove_overlay(revealer);
+            overlay.remove_overlay(revealer);
             white_revealer.reveal_child = false;
             chat_input.do_focus();
         });

@@ -2,7 +2,6 @@
 <interface>
     <requires lib="gtk" version="4.0"/>
     <template class="DinoUiManageAccountsAccountRow">
-        <property name="visible">True</property>
         <child>
             <object class="GtkGrid">
                 <property name="margin-start">6</property>

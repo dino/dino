@@ -15,16 +15,39 @@ public class EncryptionButton {
     private Map<CheckButton, Plugins.EncryptionListEntry> encryption_radios = new HashMap<CheckButton, Plugins.EncryptionListEntry>();
     private string? current_icon;
     private StreamInteractor stream_interactor;
+    private SimpleAction action;
 
     public EncryptionButton(StreamInteractor stream_interactor, MenuButton menu_button) {
         this.stream_interactor = stream_interactor;
         this.menu_button = menu_button;
 
-        Builder builder = new Builder.from_resource("/im/dino/Dino/menu_encryption.ui");
-        menu_button.popover = builder.get_object("menu_encryption") as PopoverMenu;
-        Box encryption_box = builder.get_object("encryption_box") as Box;
-        button_unencrypted = builder.get_object("button_unencrypted") as CheckButton;
-        button_unencrypted.toggled.connect(encryption_button_toggled);
+        // Build menu model including "Unencrypted" and all registered encryption entries
+        Menu menu_model = new Menu();
+
+        MenuItem unencrypted_item = new MenuItem(_("Unencrypted"), "enc.encryption");
+        unencrypted_item.set_action_and_target_value("enc.encryption", new Variant.int32(Encryption.NONE));
+        menu_model.append_item(unencrypted_item);
+
+        Application app = GLib.Application.get_default() as Application;
+        foreach (var e in app.plugin_registry.encryption_list_entries) {
+            MenuItem item = new MenuItem(e.name, "enc.encryption");
+            item.set_action_and_target_value("enc.encryption", new Variant.int32(e.encryption));
+            menu_model.append_item(item);
+        }
+
+        // Create action to act on menu selections (stateful => radio buttons)
+        SimpleActionGroup action_group = new SimpleActionGroup();
+        action = new SimpleAction.stateful("encryption", VariantType.INT32, new Variant.int32(Encryption.NONE));
+        action.activate.connect((parameter) => {
+            action.set_state(parameter);
+            this.conversation.encryption = (Encryption) parameter.get_int32();
+        });
+        action_group.insert(action);
+        menu_button.insert_action_group("enc", action_group);
+
+        // Create and set popover menu
+        Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
+        menu_button.popover = popover_menu;
 
         stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, muc_jid) => {
             if (conversation != null && conversation.account.equals(account) && conversation.counterpart.equals(muc_jid)) {
@@ -32,15 +55,6 @@ public class EncryptionButton {
             }
         });
 
-        Application app = GLib.Application.get_default() as Application;
-        foreach (var e in app.plugin_registry.encryption_list_entries) {
-            CheckButton btn = new CheckButton.with_label(e.name);
-            btn.set_group(button_unencrypted);
-            encryption_radios[btn] = e;
-            btn.toggled.connect(encryption_button_toggled);
-            btn.visible = true;
-            encryption_box.prepend(btn);
-        }
         menu_button.activate.connect(update_encryption_menu_state);
     }
 
@@ -61,16 +75,8 @@ public class EncryptionButton {
     }
 
     private void update_encryption_menu_state() {
-        foreach (CheckButton e in encryption_radios.keys) {
-            if (conversation.encryption == encryption_radios[e].encryption) {
-                e.set_active(true);
-                encryption_changed(encryption_radios[e]);
-            }
-        }
-        if (conversation.encryption == Encryption.NONE) {
-            button_unencrypted.set_active(true);
-            encryption_changed(null);
-        }
+        action.set_state(new Variant.int32(conversation.encryption));
+        action.change_state(new Variant.int32(conversation.encryption));
     }
 
     private void set_icon(string icon) {

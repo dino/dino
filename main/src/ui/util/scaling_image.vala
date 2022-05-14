@@ -177,20 +177,6 @@ class ScalingImage : Widget {
         minimum_baseline = natural_baseline = -1;
     }
 
-//    public override void get_preferred_height_for_width(int width, out int minimum_height, out int natural_height) {
-//        double exact_width = width, exact_height = -1;
-//        calculate_size(ref exact_width, ref exact_height);
-//        natural_height = (int) Math.ceil(exact_height);
-//        minimum_height = natural_height;
-//    }
-//
-//    public override void get_preferred_width_for_height(int height, out int minimum_width, out int natural_width) {
-//        double exact_width = -1, exact_height = height;
-//        calculate_size(ref exact_width, ref exact_height);
-//        natural_width = (int) Math.ceil(exact_width);
-//        minimum_width = natural_width;
-//    }
-
     public override SizeRequestMode get_request_mode() {
         return SizeRequestMode.HEIGHT_FOR_WIDTH;
     }

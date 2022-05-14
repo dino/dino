@@ -20,7 +20,7 @@ namespace Dino.Ui {
         public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
             CallItem call_item = content_item as CallItem;
             CallState? call_state = stream_interactor.get_module(Calls.IDENTITY).call_states[call_item.call];
-            return new CallWidget(stream_interactor, call_item.call, call_state, call_item.conversation) { visible=true };
+            return new CallWidget(stream_interactor, call_item.call, call_state, call_item.conversation);
         }
 
         public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
@@ -94,17 +94,17 @@ namespace Dino.Ui {
             }
 
             foreach (Jid counterpart in call.counterparts) {
-                AvatarImage image = new AvatarImage() { force_gray=true, margin_top=2, visible=true };
+                AvatarImage image = new AvatarImage() { force_gray=true, margin_top=2 };
                 image.set_conversation_participant(stream_interactor, conversation, counterpart.bare_jid);
                 multiparty_peer_box.append(image);
                 multiparty_peer_widgets.add(image);
             }
-            AvatarImage image2 = new AvatarImage() { force_gray=true, margin_top=2, visible=true };
+            AvatarImage image2 = new AvatarImage() { force_gray=true, margin_top=2 };
             image2.set_conversation_participant(stream_interactor, conversation, call.account.bare_jid);
             multiparty_peer_box.append(image2);
             multiparty_peer_widgets.add(image2);
 
-            outer_additional_box.get_style_context().add_class("multiparty-participants");
+            outer_additional_box.add_css_class("multiparty-participants");
 
             multiparty_peer_box.visible = true;
             incoming_call_box.visible = false;
@@ -113,8 +113,8 @@ namespace Dino.Ui {
 
         private void update_call_state() {
             incoming_call_revealer.reveal_child = false;
-            incoming_call_revealer.get_style_context().remove_class("incoming");
-            outer_additional_box.get_style_context().remove_class("incoming-call-box");
+            incoming_call_revealer.remove_css_class("incoming");
+            outer_additional_box.remove_css_class("incoming-call-box");
 
             // It doesn't make sense to display MUC calls as missed or declined by the whole MUC. Just display as ended.
             // TODO: maybe not let them be missed/declined in first place.
@@ -139,8 +139,8 @@ namespace Dino.Ui {
                             subtitle_label.label = "Ring ring…!";
                             incoming_call_box.visible = true;
                             incoming_call_revealer.reveal_child = true;
-                            incoming_call_revealer.get_style_context().add_class("incoming");
-                            outer_additional_box.get_style_context().add_class("incoming-call-box");
+                            incoming_call_revealer.add_css_class("incoming");
+                            outer_additional_box.add_css_class("incoming-call-box");
                         } else {
                             subtitle_label.label = "Dependencies for call support not met";
                         }

@@ -23,7 +23,7 @@ public class SelectJidFragment : Gtk.Box {
 
     private StreamInteractor stream_interactor;
     private Gee.List<Account> accounts;
-    private ArrayList<AddListRow> added_rows = new ArrayList<AddListRow>();
+    private ArrayList<Widget> added_rows = new ArrayList<Widget>();
 
     private ListBox list;
     private string[]? filter_values;
@@ -39,6 +39,7 @@ public class SelectJidFragment : Gtk.Box {
 
         list.set_sort_func(sort);
         list.set_filter_func(filter);
+        list.set_header_func(header);
         list.row_selected.connect(check_buttons_active);
         list.row_selected.connect(() => { done = true; }); // just for notifying
         entry.changed.connect(() => { set_filter(entry.text); });
@@ -49,7 +50,7 @@ public class SelectJidFragment : Gtk.Box {
     public void set_filter(string str) {
         if (entry.text != str) entry.text = str;
 
-        foreach (AddListRow row in added_rows) list.remove(row);
+        foreach (Widget row in added_rows) list.remove(row);
         added_rows.clear();
 
         filter_values = str == "" ? null : str.split(" ");
@@ -59,9 +60,10 @@ public class SelectJidFragment : Gtk.Box {
             Jid parsed_jid = new Jid(str);
             if (parsed_jid != null && parsed_jid.localpart != null) {
                 foreach (Account account in accounts) {
-                    AddListRow row = new AddListRow(stream_interactor, parsed_jid, account);
-                    list.append(row);
-                    added_rows.add(row);
+                    var list_row = new Gtk.ListBoxRow();
+                    list_row.set_child(new AddListRow(stream_interactor, parsed_jid, account));
+                    list.append(list_row);
+                    added_rows.add(list_row);
                 }
             }
         } catch (InvalidJidError ignored) {
@@ -106,6 +108,12 @@ public class SelectJidFragment : Gtk.Box {
             }
         }
         return true;
+    }
+
+    private void header(ListBoxRow row, ListBoxRow? before_row) {
+        if (row.get_header() == null && before_row != null) {
+            row.set_header(new Separator(Orientation.HORIZONTAL));
+        }
     }
 
     private class AddListRow : ListRow {

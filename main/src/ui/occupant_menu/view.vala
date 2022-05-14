@@ -10,10 +10,10 @@ public class View : Popover {
     private StreamInteractor stream_interactor;
     private Conversation conversation;
 
-    private Stack stack = new Stack() { vhomogeneous=false, visible=true };
-    private Box list_box = new Box(Orientation.VERTICAL, 1) { visible=true };
+    private Stack stack = new Stack() { vhomogeneous=false };
+    private Box list_box = new Box(Orientation.VERTICAL, 1);
     private List? list = null;
-    private ListBox invite_list = new ListBox() { visible=true };
+    private ListBox invite_list = new ListBox();
     private Box? jid_menu = null;
 
     private Jid? selected_jid;
@@ -25,6 +25,7 @@ public class View : Popover {
         this.show.connect(initialize_list);
 
         invite_list.append(new ListRow.label("+", _("Invite")).get_widget());
+        invite_list.can_focus = false;
         list_box.append(invite_list);
         invite_list.row_activated.connect(on_invite_clicked);
 
@@ -44,7 +45,7 @@ public class View : Popover {
 
     private void initialize_list() {
         if (list == null) {
-            list = new List(stream_interactor, conversation) { visible=true };
+            list = new List(stream_interactor, conversation);
             list_box.prepend(list);
 
             list.list_box.row_activated.connect((row) => {
@@ -68,17 +69,17 @@ public class View : Popover {
         Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(jid, conversation.account);
         if (real_jid != null) name += "\n<span font=\'8\'>%s</span>".printf(Markup.escape_text(real_jid.bare_jid.to_string()));
 
-        Box header_box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
-        header_box.append(new Image.from_icon_name("pan-start-symbolic") { visible=true });
-        header_box.append(new Label(name) { xalign=0, use_markup=true, hexpand=true, visible=true });
-        Button header_button = new Button() { has_frame=false, visible=true };
+        Box header_box = new Box(Orientation.HORIZONTAL, 5);
+        header_box.append(new Image.from_icon_name("pan-start-symbolic"));
+        header_box.append(new Label(name) { xalign=0, use_markup=true, hexpand=true });
+        Button header_button = new Button() { has_frame=false };
         header_button.child = header_box;
 
-        Box outer_box = new Box(Orientation.VERTICAL, 5) { visible=true };
+        Box outer_box = new Box(Orientation.VERTICAL, 5);
         outer_box.append(header_button);
         header_button.clicked.connect(show_list);
 
-        Button private_button = new Button.with_label(_("Start private conversation"))  { visible=true };
+        Button private_button = new Button.with_label(_("Start private conversation")) ;
         outer_box.append(private_button);
         private_button.clicked.connect(private_conversation_button_clicked);
 
@@ -86,19 +87,19 @@ public class View : Popover {
         Xmpp.Xep.Muc.Role? role = stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account);
 
         if (role ==  Xmpp.Xep.Muc.Role.MODERATOR && stream_interactor.get_module(MucManager.IDENTITY).kick_possible(conversation.account, jid)) {
-            Button kick_button = new Button.with_label(_("Kick"))  { visible=true };
+            Button kick_button = new Button.with_label(_("Kick")) ;
             outer_box.append(kick_button);
             kick_button.clicked.connect(kick_button_clicked);
         }
         if (stream_interactor.get_module(MucManager.IDENTITY).is_moderated_room(conversation.account, conversation.counterpart) && role ==  Xmpp.Xep.Muc.Role.MODERATOR){
             if (stream_interactor.get_module(MucManager.IDENTITY).get_role(selected_jid, conversation.account) ==  Xmpp.Xep.Muc.Role.VISITOR) {
-                Button voice_button = new Button.with_label(_("Grant write permission"))  { visible=true };
+                Button voice_button = new Button.with_label(_("Grant write permission")) ;
                 outer_box.append(voice_button);
                 voice_button.clicked.connect(() => 
                     voice_button_clicked("participant"));
             } 
             else if (stream_interactor.get_module(MucManager.IDENTITY).get_role(selected_jid, conversation.account) ==  Xmpp.Xep.Muc.Role.PARTICIPANT){
-                Button voice_button = new Button.with_label(_("Revoke write permission"))  { visible=true };
+                Button voice_button = new Button.with_label(_("Revoke write permission")) ;
                 outer_box.append(voice_button);
                 voice_button.clicked.connect(() => 
                     voice_button_clicked("visitor"));

@@ -83,12 +83,12 @@ public class DateSeparatorWidget : Box {
         visible = true;
         this.date = date;
 
-        label = new Label("") { use_markup=true, halign=Align.CENTER, hexpand=false, visible=true };
-        label.get_style_context().add_class("dim-label");
+        label = new Label("") { use_markup=true, halign=Align.CENTER, hexpand=false };
+        label.add_css_class("dim-label");
 
-        this.append(new Separator(Orientation.HORIZONTAL) { valign=Align.CENTER, hexpand=true, visible=true });
+        this.append(new Separator(Orientation.HORIZONTAL) { valign=Align.CENTER, hexpand=true });
         this.append(label);
-        this.append(new Separator(Orientation.HORIZONTAL) { valign=Align.CENTER, hexpand=true, visible=true });
+        this.append(new Separator(Orientation.HORIZONTAL) { valign=Align.CENTER, hexpand=true });
 
         update_time();
     }

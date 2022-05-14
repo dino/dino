@@ -15,7 +15,7 @@ public class FileImageWidget : Box {
     public FileImageWidget() {
         this.halign = Align.START;
 
-        this.get_style_context().add_class("file-image-widget");
+        this.add_css_class("file-image-widget");
     }
 
     public async void load_from_file(File file, string file_name, int MAX_WIDTH=600, int MAX_HEIGHT=300) throws GLib.Error {
@@ -52,7 +52,7 @@ public class FileImageWidget : Box {
         file_default_widget_controller = new FileDefaultWidgetController(file_default_widget);
         file_default_widget_controller.set_file(file, file_name, mime_type);
 
-        Overlay overlay = new Overlay() { visible=true };
+        Overlay overlay = new Overlay();
         overlay.set_child(image);
         overlay.add_overlay(file_default_widget);
         overlay.set_measure_overlay(image, true);

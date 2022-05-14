@@ -24,7 +24,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         Object(use_header_bar : 1);
         this.stream_interactor = stream_interactor;
         ok_button.label = _("Add");
-        ok_button.get_style_context().add_class("suggested-action"); // TODO why doesn't it work in XML
+        ok_button.add_css_class("suggested-action"); // TODO why doesn't it work in XML
         accounts_stack.set_visible_child_name("combobox");
         account_combobox.initialize(stream_interactor);
 

@@ -108,7 +108,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
     private void on_leave_notify_event() {
         if (currently_highlighted != null) {
-            currently_highlighted.get_style_context().remove_class("highlight");
+            currently_highlighted.remove_css_class("highlight");
             currently_highlighted = null;
         }
         message_menu_box.visible = false;
@@ -134,7 +134,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             }
         };
 
-        if (currently_highlighted != null) currently_highlighted.get_style_context().remove_class("highlight");
+        if (currently_highlighted != null) currently_highlighted.remove_css_class("highlight");
 
         currently_highlighted = null;
         current_meta_item = null;
@@ -160,7 +160,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         if (current_meta_item != null) {
             // Highlight widget
             currently_highlighted = w;
-            currently_highlighted.get_style_context().add_class("highlight");
+            currently_highlighted.add_css_class("highlight");
 
             // Move message menu
             message_menu_box.margin_top = (int)(widget_y - 10);
@@ -233,7 +233,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
                 i++;
             }
             scrolled.vadjustment.value = h - scrolled.vadjustment.page_size * 1/3;
-            w.get_style_context().add_class("highlight-once");
+            w.add_css_class("highlight-once");
             reload_messages = true;
             stack.set_visible_child_name("main");
             return false;
@@ -414,6 +414,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
                 });
             }
         } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1) {
+            print("move!\n");
             scrolled.vadjustment.value = scrolled.vadjustment.upper - was_upper + scrolled.vadjustment.value; // stay at same content
         }
         was_upper = scrolled.vadjustment.upper;

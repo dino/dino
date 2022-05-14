@@ -66,28 +66,28 @@ public class View : Box {
     public void set_input_state(Plugins.InputFieldStatus.MessageType message_type) {
         switch (message_type) {
             case Plugins.InputFieldStatus.MessageType.NONE:
-                this.get_style_context().remove_class("dino-input-warning");
-                this.get_style_context().remove_class("dino-input-error");
+                this.remove_css_class("dino-input-warning");
+                this.remove_css_class("dino-input-error");
                 break;
             case Plugins.InputFieldStatus.MessageType.INFO:
-                this.get_style_context().remove_class("dino-input-warning");
-                this.get_style_context().remove_class("dino-input-error");
+                this.remove_css_class("dino-input-warning");
+                this.remove_css_class("dino-input-error");
                 break;
             case Plugins.InputFieldStatus.MessageType.WARNING:
-                this.get_style_context().add_class("dino-input-warning");
-                this.get_style_context().remove_class("dino-input-error");
+                this.add_css_class("dino-input-warning");
+                this.remove_css_class("dino-input-error");
                 break;
             case Plugins.InputFieldStatus.MessageType.ERROR:
-                this.get_style_context().remove_class("dino-input-warning");
-                this.get_style_context().add_class("dino-input-error");
+                this.remove_css_class("dino-input-warning");
+                this.add_css_class("dino-input-error");
                 break;
         }
     }
 
     public void highlight_state_description() {
-        chat_input_status.get_style_context().add_class("input-status-highlight-once");
+        chat_input_status.add_css_class("input-status-highlight-once");
         Timeout.add_seconds(1, () => {
-            chat_input_status.get_style_context().remove_class("input-status-highlight-once");
+            chat_input_status.remove_css_class("input-status-highlight-once");
             return false;
         });
     }

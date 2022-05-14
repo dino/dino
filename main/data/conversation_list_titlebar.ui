@@ -1,48 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+    <requires lib="gtk" version="4.0"/>
     <template class="DinoUiConversationListTitlebar" parent="GtkBox">
-        <property name="hexpand">False</property>
-        <property name="visible">True</property>
+        <property name="hexpand">0</property>
         <style>
             <class name="dino-header-left"/>
         </style>
         <child>
             <object class="GtkBox">
-                <property name="margin">5</property>
-                <property name="hexpand">True</property>
-                <property name="visible">True</property>
+                <property name="margin-start">5</property>
+                <property name="margin-end">5</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
+                <property name="hexpand">1</property>
                 <child>
                     <object class="GtkMenuButton" id="add_button">
-                        <property name="tooltip_text" translatable="yes">Start Conversation</property>
-                        <property name="relief">none</property>
-                        <property name="visible">True</property>
+                        <property name="tooltip_text" translatable="1">Start Conversation</property>
+                        <property name="has-frame">False</property>
                         <child>
                             <object class="GtkImage">
-                                <property name="visible">True</property>
                                 <property name="icon-name">list-add-symbolic</property>
-                                <property name="icon-size">1</property>
+                                <property name="icon-size">normal</property>
                             </object>
                         </child>
                     </object>
-                    <packing>
-                        <property name="pack_type">start</property>
-                    </packing>
                 </child>
                 <child>
                     <object class="GtkMenuButton" id="menu_button">
-                        <property name="relief">none</property>
-                        <property name="visible">True</property>
+                        <property name="halign">end</property>
+                        <property name="hexpand">True</property>
+                        <property name="has-frame">False</property>
                         <child>
                             <object class="GtkImage">
-                                <property name="visible">True</property>
                                 <property name="icon-name">open-menu-symbolic</property>
-                                <property name="icon-size">1</property>
+                                <property name="icon-size">normal</property>
                             </object>
                         </child>
                     </object>
-                    <packing>
-                        <property name="pack_type">end</property>
-                    </packing>
                 </child>
             </object>
         </child>

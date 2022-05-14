@@ -122,16 +122,16 @@ public class List : Box {
             if (aff == affiliation) count++;
         }
 
-        Label title_label = new Label("") { margin_start=10, xalign=0, visible=true };
+        Label title_label = new Label("") { margin_start=10, xalign=0 };
         title_label.set_markup(@"<b>$(Markup.escape_text(aff_str))</b>");
 
-        Label count_label = new Label(@"$count") { xalign=0, margin_end=7, hexpand=true, visible=true };
-        count_label.get_style_context().add_class("dim-label");
+        Label count_label = new Label(@"$count") { xalign=0, margin_end=7, hexpand=true };
+        count_label.add_css_class("dim-label");
 
-        Grid grid = new Grid() { margin_top=top?5:15, column_spacing=5, hexpand=true, visible=true };
+        Grid grid = new Grid() { margin_top=top?5:15, column_spacing=5, hexpand=true };
         grid.attach(title_label, 0, 0, 1, 1);
         grid.attach(count_label, 1, 0, 1, 1);
-        grid.attach(new Separator(Orientation.HORIZONTAL) { hexpand=true, vexpand=true, visible=true }, 0, 1, 2, 1);
+        grid.attach(new Separator(Orientation.HORIZONTAL) { hexpand=true, vexpand=true }, 0, 1, 2, 1);
         return grid;
     }
 

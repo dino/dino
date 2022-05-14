@@ -109,7 +109,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             qrcode_image.set_from_pixbuf(qr_pixbuf);
             qrcode_image.margin_top = qrcode_image.margin_end =
                     qrcode_image.margin_bottom = qrcode_image.margin_start = QUIET_ZONE_MODULES*MODULE_SIZE_PX;
-            qrcode_popover.get_style_context().add_class("qrcode-container");
+            qrcode_popover.add_css_class("qrcode-container");
 
             show_qrcode_button.popover = qrcode_popover;
         }
@@ -260,12 +260,12 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         Button accept_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
         accept_button.set_icon_name("emblem-ok-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
-        accept_button.get_style_context().add_class("suggested-action");
+        accept_button.add_css_class("suggested-action");
         accept_button.tooltip_text = _("Accept key");
 
         Button reject_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
         reject_button.set_icon_name("action-unavailable-symbolic");
-        reject_button.get_style_context().add_class("destructive-action");
+        reject_button.add_css_class("destructive-action");
         reject_button.tooltip_text = _("Reject key");
 
         accept_button.clicked.connect(() => {
@@ -285,13 +285,13 @@ public class ContactDetailsDialog : Gtk.Dialog {
         });
 
         string res = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
-        Label fingerprint_label = new Label(res) { use_markup=true, justify=Justification.RIGHT, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false };
+        Label fingerprint_label = new Label(res) { use_markup=true, justify=Justification.RIGHT, halign = Align.START, valign = Align.CENTER, hexpand = false };
         box.append(fingerprint_label);
 
         Box control_box = new Box(Gtk.Orientation.HORIZONTAL, 0) { visible = true, hexpand = true };
         control_box.append(accept_button);
         control_box.append(reject_button);
-        control_box.get_style_context().add_class("linked"); // .linked: Visually link the accept / reject buttons
+        control_box.add_css_class("linked"); // .linked: Visually link the accept / reject buttons
         box.append(control_box);
 
         lbr.set_child(box);
@@ -304,7 +304,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
 public class FingerprintRow : ListBoxRow {
 
     private Image trust_image = new Image() { visible = true, halign = Align.END };
-    private Label fingerprint_label = new Label("") { use_markup=true, justify=Justification.RIGHT, visible=true, halign = Align.START, valign = Align.CENTER, hexpand = false };
+    private Label fingerprint_label = new Label("") { use_markup=true, justify=Justification.RIGHT, halign = Align.START, valign = Align.CENTER, hexpand = false };
     private Label trust_label = new Label(null) { visible = true, hexpand = true, xalign = 0 };
 
     public Row row;
@@ -333,17 +333,17 @@ public class FingerprintRow : ListBoxRow {
             case TrustLevel.TRUSTED:
                 trust_image.icon_name = "emblem-ok-symbolic";
                 trust_label.set_markup("<span color='#1A63D9'>%s</span>".printf(_("Accepted")));
-                fingerprint_label.get_style_context().remove_class("dim-label");
+                fingerprint_label.remove_css_class("dim-label");
                 break;
             case TrustLevel.UNTRUSTED:
                 trust_image.icon_name = "action-unavailable-symbolic";
                 trust_label.set_markup("<span color='#D91900'>%s</span>".printf(_("Rejected")));
-                fingerprint_label.get_style_context().add_class("dim-label");
+                fingerprint_label.add_css_class("dim-label");
                 break;
             case TrustLevel.VERIFIED:
                 trust_image.icon_name = "security-high-symbolic";
                 trust_label.set_markup("<span color='#1A63D9'>%s</span>".printf(_("Verified")));
-                fingerprint_label.get_style_context().remove_class("dim-label");
+                fingerprint_label.remove_css_class("dim-label");
                 break;
         }
 

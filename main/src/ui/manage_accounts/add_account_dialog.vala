@@ -109,8 +109,8 @@ public class AddAccountDialog : Gtk.Dialog {
         login_button.clicked.connect(show_sign_in_jid);
 
         foreach (string server in server_list) {
-            ListBoxRow list_box_row = new ListBoxRow() { visible=true };
-            list_box_row.set_child(new Label(server) { xalign=0, margin_start=7, margin_end=7, visible=true });
+            ListBoxRow list_box_row = new ListBoxRow();
+            list_box_row.set_child(new Label(server) { xalign=0, margin_start=7, margin_end=7 });
             list_box_jids[list_box_row] = server;
             server_list_box.append(list_box_row);
         }
@@ -338,8 +338,8 @@ public class AddAccountDialog : Gtk.Dialog {
         register_title.label = _("Register on %s").printf(server.to_string());
 
         if (form.oob != null) {
-            form_box.append(new Label(_("The server requires to sign up through a website")){ visible=true } );
-            form_box.append(new Label(@"<a href=\"$(form.oob)\">$(form.oob)</a>") { use_markup=true, visible=true });
+            form_box.append(new Label(_("The server requires to sign up through a website")));
+            form_box.append(new Label(@"<a href=\"$(form.oob)\">$(form.oob)</a>") { use_markup=true });
             register_form_continue_label.label = _("Open website");
             register_form_continue.visible = true;
             register_form_continue.grab_focus();
@@ -347,23 +347,23 @@ public class AddAccountDialog : Gtk.Dialog {
             if (form.instructions != null && form.instructions != "") {
                 string markup_instructions = Util.parse_add_markup(form.instructions, null, true, false);
                 form_box.append(new Label(markup_instructions) { use_markup=true, halign=Align.CENTER, xalign=0, margin_top=7,
-                    wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, visible=true });
+                    wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR });
             }
             foreach (Xep.DataForms.DataForm.Field field in form.fields) {
                 Widget? field_widget = Util.get_data_form_field_widget(field);
                 if (field.label != null && field.label != "" && field_widget != null) {
-                    form_box.append(new Label(field.label) { xalign=0, margin_top=7, visible=true });
+                    form_box.append(new Label(field.label) { xalign=0, margin_top=7 });
                     form_box.append(field_widget);
                 } else if (field.type_ == Xep.DataForms.DataForm.Type.FIXED && field.get_value_string() != "") {
                     string markup_fixed_field = Util.parse_add_markup(field.get_value_string(), null, true, false);
                     form_box.append(new Label(markup_fixed_field) { use_markup=true, xalign=0, margin_top=7,
-                        wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, visible=true });
+                        wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR });
                 }
             }
             register_form_continue.visible = true;
             register_form_continue_label.label = _("Register");
         } else {
-            form_box.append(new Label(_("Check %s for information on how to sign up").printf(@"<a href=\"http://$(server)\">$(server)</a>")) { use_markup=true, visible=true });
+            form_box.append(new Label(_("Check %s for information on how to sign up").printf(@"<a href=\"http://$(server)\">$(server)</a>")) { use_markup=true });
             register_form_continue.visible = false;
         }
     }
@@ -423,21 +423,19 @@ public class AddAccountDialog : Gtk.Dialog {
     }
 
     private void animate_window_resize(Widget widget) { // TODO code duplication
-//        int def_height, curr_width, curr_height;
-//        get_size(out curr_width, out curr_height);
-//        widget.get_preferred_height(null, out def_height);
-//        def_height += 5;
-//        int difference = def_height - curr_height;
-//        Timer timer = new Timer();
-//        Timeout.add((int) (stack.transition_duration / 30),
-//            () => {
-//                ulong microsec;
-//                timer.elapsed(out microsec);
-//                ulong millisec = microsec / 1000;
-//                double partial = double.min(1, (double) millisec / stack.transition_duration);
-//                resize(curr_width, (int) (curr_height + difference * partial));
-//                return millisec < stack.transition_duration;
-//            });
+        int curr_height = widget.get_size(Orientation.VERTICAL);
+        var natural_size = Requisition();
+        stack.get_preferred_size(null, out natural_size);
+        int difference = natural_size.height + 5 - curr_height;
+        Timer timer = new Timer();
+        Timeout.add((int) (stack.transition_duration / 30), () => {
+            ulong microsec;
+            timer.elapsed(out microsec);
+            ulong millisec = microsec / 1000;
+            double partial = double.min(1, (double) millisec / stack.transition_duration);
+            default_height = (int) (curr_height + difference * partial);
+            return millisec < stack.transition_duration;
+        });
     }
 }
 

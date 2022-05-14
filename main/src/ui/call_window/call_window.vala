@@ -11,13 +11,13 @@ namespace Dino.Ui {
 
         public CallWindowController controller;
 
-        public Overlay overlay = new Overlay() { visible=true };
-        public Grid grid = new Grid() { visible=true };
-        public CallBottomBar bottom_bar = new CallBottomBar() { visible=true };
-        public Revealer bottom_bar_revealer = new Revealer() { valign=Align.END, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200, visible=true };
-        public HeaderBar header_bar = new HeaderBar() { valign=Align.START, halign=Align.END, show_title_buttons=true, visible=true, opacity=0.0 };
-        public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.SLIDE_LEFT, transition_duration=200, visible=true, reveal_child=false };
-        public Box own_video_box = new Box(Orientation.HORIZONTAL, 0) { halign=Align.END, valign=Align.END, visible=true };
+        public Overlay overlay = new Overlay();
+        public Grid grid = new Grid();
+        public CallBottomBar bottom_bar = new CallBottomBar();
+        public Revealer bottom_bar_revealer = new Revealer() { valign=Align.END, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200 };
+        public HeaderBar header_bar = new HeaderBar() { valign=Align.START, halign=Align.END, show_title_buttons=true, opacity=0.0 };
+        public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.SLIDE_LEFT, transition_duration=200, reveal_child=false };
+        public Box own_video_box = new Box(Orientation.HORIZONTAL, 0) { halign=Align.END, valign=Align.END };
         private Widget? own_video = null;
         private HashMap<string, ParticipantWidget> participant_widgets = new HashMap<string, ParticipantWidget>();
         private ArrayList<string> participants = new ArrayList<string>();
@@ -32,14 +32,14 @@ namespace Dino.Ui {
         public bool controls_active { get; set; default=true; }
 
         construct {
-            header_bar.get_style_context().add_class("call-header-bar");
+            header_bar.add_css_class("call-header-bar");
             header_bar.title_widget = new Box(Orientation.VERTICAL, 0);
 //            header_bar.spacing = 0;
             header_bar_revealer.set_child(header_bar);
             bottom_bar_revealer.set_child(bottom_bar);
-            own_video_box.get_style_context().add_class("own-video");
+            own_video_box.add_css_class("own-video");
 
-            this.get_style_context().add_class("dino-call-window");
+            this.add_css_class("dino-call-window");
 
             overlay.set_child(grid);
             overlay.add_overlay(own_video_box);
@@ -64,7 +64,7 @@ namespace Dino.Ui {
             this.notify["default-width"].connect(reposition_participant_widgets);
             this.notify["default-height"].connect(reposition_participant_widgets);
 
-            this.set_titlebar(new OutsideHeaderBar(this.header_bar) { visible=true });
+            this.set_titlebar(new OutsideHeaderBar(this.header_bar));
 
             reveal_control_elements();
         }
@@ -72,7 +72,7 @@ namespace Dino.Ui {
         public void add_participant(string participant, ParticipantWidget participant_widget) {
             participant_widget.visible = true;
             this.bind_property("controls-active", participant_widget, "controls-active", BindingFlags.SYNC_CREATE);
-            this.bind_property("controls-active", participant_widget.encryption_button, "controls-active", BindingFlags.SYNC_CREATE);
+            this.bind_property("controls-active", participant_widget.encryption_button_controller, "controls-active", BindingFlags.SYNC_CREATE);
 
             participants.add(participant);
             participant_widgets[participant] = participant_widget;
@@ -153,8 +153,9 @@ namespace Dino.Ui {
 
             own_video = widget_;
             if (own_video == null) {
-                own_video = new Box(Orientation.HORIZONTAL, 0) { hexpand=true, vexpand=true };
+                own_video = new Box(Orientation.HORIZONTAL, 0);
             }
+            own_video.hexpand = own_video.vexpand = true;
             own_video.visible = true;
             own_video_box.append(own_video);
         }

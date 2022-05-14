@@ -20,7 +20,7 @@ public class PermissionsProvider : Plugins.ContactDetailsProvider, Object {
         if (own_jid == null) return;
 
         if (stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account) == Xmpp.Xep.Muc.Role.VISITOR){
-            Button voice_request = new Button.with_label(_("Request")) { visible=true };
+            Button voice_request = new Button.with_label(_("Request"));
             voice_request.clicked.connect(()=>stream_interactor.get_module(MucManager.IDENTITY).request_voice(conversation.account, conversation.counterpart));
             contact_details.add(_("Permissions"), _("Request permission to send messages"), "", voice_request);
         }

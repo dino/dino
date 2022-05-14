@@ -73,7 +73,6 @@ namespace Dino.Ui {
         }
 
         public new void set_conversation(Conversation conversation) {
-            print(@"set_conversation $(conversation.counterpart)\n");
             this.conversation = conversation;
 
             update_visibility.begin();

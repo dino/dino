@@ -6,12 +6,12 @@ namespace Dino.Ui.Util {
 public class LabelHybrid : Widget {
 
     public Stack stack = new Stack();
-    public Label label = new Label("") { visible=true, max_width_chars=1, ellipsize=Pango.EllipsizeMode.END };
-    protected Button button = new Button() { has_frame=false, visible=true };
+    public Label label = new Label("") { max_width_chars=1, ellipsize=Pango.EllipsizeMode.END };
+    protected Button button = new Button() { has_frame=false };
 
     internal virtual void init(Widget widget) {
         this.layout_manager = new BinLayout();
-        stack.insert_after(this, null);
+        stack.set_parent(this);
         button.child = label;
         stack.add_named(button, "label");
         stack.add_named(widget, "widget");
@@ -28,6 +28,10 @@ public class LabelHybrid : Widget {
 
     public void show_label() {
         stack.visible_child_name = "label";
+    }
+
+    public override void dispose() {
+        stack.unparent();
     }
 }
 
@@ -58,7 +62,7 @@ public class EntryLabelHybrid : LabelHybrid {
     public Entry entry {
         get {
             if (entry_ == null) {
-                entry_ = new Entry() { visible=true };
+                entry_ = new Entry();
                 init(entry_);
             }
             return entry_;
@@ -71,10 +75,11 @@ public class EntryLabelHybrid : LabelHybrid {
     }
 
     internal override void init(Widget widget) {
-        Entry? e = widget as Entry; if (e == null) return;
+        Entry? e = widget as Entry;
+        if (e == null) return;
         entry = e;
         base.init(entry);
-        update_label();
+        set_label_label(entry.text);
 
         var key_events = new EventControllerKey();
         key_events.key_released.connect(on_key_released);
@@ -106,10 +111,6 @@ public class EntryLabelHybrid : LabelHybrid {
             label.label = filler;
         }
     }
-
-    private void update_label() {
-        text = text;
-    }
 }
 
 public class ComboBoxTextLabelHybrid : LabelHybrid {
@@ -128,7 +129,7 @@ public class ComboBoxTextLabelHybrid : LabelHybrid {
     public ComboBoxText combobox {
         get {
             if (combobox_ == null) {
-                combobox_ = new ComboBoxText() { visible=true };
+                combobox_ = new ComboBoxText();
                 init(combobox_);
             }
             return combobox_;

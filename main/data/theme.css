@@ -60,7 +60,7 @@ window.dino-main .unread-count-notify {
     color: @theme_base_color;
     font-family: monospace;
     border-radius: 999em;
-    padding: .2em .41em;
+    padding: 0 .35em;
 }
 
 window.dino-main .unread-count-notify:backdrop {
@@ -310,7 +310,7 @@ box.dino-input-error label.input-status-highlight-once {
     background: rgba(255,255,255,0.25);
 }
 
-.dino-call-window button.call-mediadevice-settings-button {
+.dino-call-window menubutton.call-mediadevice-settings-button button.toggle {
     border-radius: 1000px;
     min-height: 0;
     min-width: 0;
@@ -319,8 +319,8 @@ box.dino-input-error label.input-status-highlight-once {
     transition-duration: 0;
 }
 
-.dino-call-window button.call-mediadevice-settings-button:hover,
-.dino-call-window button.call-mediadevice-settings-button:checked { /* Effect that makes the button slightly larger on hover :) */
+.dino-call-window menubutton.call-mediadevice-settings-button button.toggle:hover,
+.dino-call-window menubutton.call-mediadevice-settings-button button.toggle:checked { /* Effect that makes the button slightly larger on hover :) */
     border-radius: 1000px;
     min-height: 0;
     min-width: 0;
@@ -328,7 +328,7 @@ box.dino-input-error label.input-status-highlight-once {
     margin: 0;
 }
 
-.dino-call-window .participant-header-bar {
+.dino-call-window .participant-header-bar .titles {
     background: none;
     border: none;
     border-radius: 0;

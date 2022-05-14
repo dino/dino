@@ -203,11 +203,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             Builder builder = new Builder.from_resource("/im/dino/Dino/shortcuts.ui");
             ShortcutsWindow dialog = (ShortcutsWindow) builder.get_object("shortcuts-window");
             if (!use_csd()) {
-                // Hack to prevent CRITICAL in Gtk when trying to destroy non-existant headerbar
-                Widget shortcuts_hack = dialog.get_titlebar();
-//                dialog.destroy.connect_after(() => {
-//                    shortcuts_hack = null;
-//                });
                 dialog.set_titlebar(null);
             }
             dialog.title = _("Keyboard Shortcuts");
@@ -292,12 +287,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         dialog.copyright = "Copyright © 2016-2022 - Dino Team";
         dialog.license_type = License.GPL_3_0;
 
-//        dialog.response.connect((response_id) => {
-//            if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT) {
-//                dialog.destroy();
-//            }
-//        });
-
         if (!use_csd()) {
             dialog.set_titlebar(null);
         }
@@ -308,7 +297,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         Dialog dialog = new Dialog.with_buttons(_("Join Channel"), window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.USE_HEADER_BAR, _("Join"), ResponseType.OK, _("Cancel"), ResponseType.CANCEL);
         dialog.modal = true;
         Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
-        ok_button.get_style_context().add_class("suggested-action");
+        ok_button.add_css_class("suggested-action");
         ConferenceDetailsFragment conference_fragment = new ConferenceDetailsFragment(stream_interactor) { ok_button=ok_button };
         conference_fragment.jid = jid;
         if (account != null)  {

@@ -26,7 +26,6 @@ public class ChatTextViewController : Object {
 
     public void initialize_for_conversation(Conversation conversation) {
         occupants_tab_completor.initialize_for_conversation(conversation);
-        widget.initialize_for_conversation(conversation);
     }
 }
 
@@ -39,40 +38,31 @@ public class ChatTextView : Box {
     public TextView text_view = new TextView() { hexpand=true, wrap_mode=Gtk.WrapMode.WORD_CHAR, valign=Align.CENTER, margin_top=7, margin_bottom=7 };
     private int vscrollbar_min_height;
     private SmileyConverter smiley_converter;
-//    private SpellChecker spell_checker;
 
     construct {
         scrolled_window.set_child(text_view);
         this.append(scrolled_window);
 
-        smiley_converter = new SmileyConverter(text_view);
-
-//        scrolled_window.get_vscrollbar().get_preferred_size(out vscrollbar_min_size, null);
-        scrolled_window.vadjustment.notify["upper"].connect(on_upper_notify);
-
         var text_input_key_events = new EventControllerKey();
         text_input_key_events.key_pressed.connect(on_text_input_key_press);
         text_view.add_controller(text_input_key_events);
+
+        smiley_converter = new SmileyConverter(text_view);
+
+        scrolled_window.vadjustment.changed.connect(on_upper_notify);
 
         text_view.realize.connect(() => {
             var minimum_size = new Requisition();
             scrolled_window.get_preferred_size(out minimum_size, null);
             vscrollbar_min_height = minimum_size.height;
         });
-//        Gtk.drag_dest_unset(text_view);
     }
-
-    public void initialize_for_conversation(Conversation conversation) {
-//        spell_checker.initialize_for_conversation(conversation);
-    }
-
-//    public override void get_preferred_size(out Gtk.Requisition minimum_size, out Gtk.Requisition natural_size) {
-//        base.get_preferred_height(out min_height, out nat_height);
-//        min_height = nat_height;
-//    }
 
     private void on_upper_notify() {
-        scrolled_window.vadjustment.value = scrolled_window.vadjustment.upper - scrolled_window.vadjustment.page_size;
+        // hack. otherwise the textview would only show the last row(s) when entering a new row on some systems.
+        if (text_view.get_height() < scrolled_window.max_content_height - 20) {
+            scrolled_window.vadjustment.page_size = scrolled_window.vadjustment.upper;
+        }
 
         // hack for vscrollbar not requiring space and making textview higher //TODO doesn't resize immediately
         scrolled_window.get_vscrollbar().visible = (scrolled_window.vadjustment.upper > scrolled_window.max_content_height - 2 * this.vscrollbar_min_height);

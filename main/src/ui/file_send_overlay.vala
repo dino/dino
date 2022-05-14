@@ -28,14 +28,11 @@ public class FileSendOverlay {
         info_label = (Label) builder.get_object("info_label");
 
         close_button.clicked.connect(() => {
-            main_box.unparent();
-            main_box.destroy();
+            do_close();
         });
         send_button.clicked.connect(() => {
             send_file();
-            this.close();
-            main_box.unparent();
-            main_box.destroy();
+            do_close();
         });
 
         load_file_widget.begin(file, file_info);
@@ -48,12 +45,14 @@ public class FileSendOverlay {
             }
         });
 
-//        this.key_release_event.connect((event) => {
-//            if (event.keyval == Gdk.Key.Escape) {
-//                this.destroy();
-//            }
-//            return false;
-//        });
+        var key_events = new EventControllerKey();
+        key_events.key_pressed.connect((keyval) => {
+            if (keyval == Gdk.Key.Escape) {
+                do_close();
+            }
+            return false;
+        });
+        this.main_box.add_controller(key_events);
     }
 
     private async void load_file_widget(File file, FileInfo file_info) {
@@ -72,7 +71,7 @@ public class FileSendOverlay {
 
         Widget? widget = null;
         if (is_image) {
-            FileImageWidget image_widget = new FileImageWidget() { visible=true };
+            FileImageWidget image_widget = new FileImageWidget();
             try {
                 yield image_widget.load_from_file(file, file_name);
                 widget = image_widget;
@@ -80,7 +79,7 @@ public class FileSendOverlay {
         }
 
         if (widget == null) {
-            FileDefaultWidget default_widget = new FileDefaultWidget() { visible=true };
+            FileDefaultWidget default_widget = new FileDefaultWidget();
             default_widget.name_label.label = file_name;
             default_widget.update_file_info(mime_type, FileTransfer.State.COMPLETE, (long)file_info.get_size());
             widget = default_widget;
@@ -94,6 +93,12 @@ public class FileSendOverlay {
         Util.force_error_color(info_label);
         send_button.sensitive = false;
         can_send = false;
+    }
+
+    private void do_close() {
+        this.close();
+        main_box.unparent();
+        main_box.destroy();
     }
 
     public Widget get_widget() {

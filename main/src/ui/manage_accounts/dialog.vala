@@ -58,8 +58,8 @@ public class Dialog : Gtk.Dialog {
             Widget? widget = e.get_widget(Plugins.WidgetType.GTK4) as Widget;
             if (widget == null) continue;
 
-            Label label = new Label(e.name) { xalign=1, yalign=0, visible=true };
-            label.get_style_context().add_class("dim-label");
+            Label label = new Label(e.name) { xalign=1, yalign=0 };
+            label.add_css_class("dim-label");
             label.margin_top = e.label_top_padding == -1 ? default_top_padding : e.label_top_padding;
             settings_list.attach(label, 0, row_index);
 
@@ -117,18 +117,21 @@ public class Dialog : Gtk.Dialog {
         msg.secondary_text = "You won't be able to access your conversation history anymore."; // TODO remove history!
         Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
         ok_button.label = _("Remove");
-        ok_button.get_style_context().add_class("destructive-action");
-        if (/*msg.run() == Gtk.ResponseType.OK*/ true) {
-            account_list.remove(account_item);
-            if (account_item.account.enabled) account_disabled(account_item.account);
-            account_item.account.remove();
-            if (account_list.get_row_at_index(0) != null) {
-                account_list.select_row(account_list.get_row_at_index(0));
-            } else {
-                main_stack.set_visible_child_name("no_accounts");
+        ok_button.add_css_class("destructive-action");
+        msg.response.connect((response) => {
+            if (response == ResponseType.OK) {
+                account_list.remove(account_item);
+                if (account_item.account.enabled) account_disabled(account_item.account);
+                account_item.account.remove();
+                if (account_list.get_row_at_index(0) != null) {
+                    account_list.select_row(account_list.get_row_at_index(0));
+                } else {
+                    main_stack.set_visible_child_name("no_accounts");
+                }
             }
-        }
-        msg.close();
+            msg.close();
+        });
+        msg.present();
     }
 
     private void on_account_list_row_selected(ListBoxRow? row) {
@@ -205,7 +208,7 @@ public class Dialog : Gtk.Dialog {
         ConnectionManager.ConnectionError? error = stream_interactor.connection_manager.get_error(account);
         if (error != null) {
             state_label.label = get_connection_error_description(error);
-            state_label.get_style_context().add_class("is_error");
+            state_label.add_css_class("is_error");
         } else {
             ConnectionManager.ConnectionState state = stream_interactor.connection_manager.get_state(account);
             switch (state) {
@@ -216,7 +219,7 @@ public class Dialog : Gtk.Dialog {
                 case ConnectionManager.ConnectionState.DISCONNECTED:
                     state_label.label = _("Disconnected"); break;
             }
-            state_label.get_style_context().remove_class("is_error");
+            state_label.remove_css_class("is_error");
         }
     }
 

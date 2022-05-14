@@ -19,7 +19,7 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
     public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
         FileItem file_item = content_item as FileItem;
         FileTransfer transfer = file_item.file_transfer;
-        return new FileWidget(stream_interactor, transfer) { visible=true };
+        return new FileWidget(stream_interactor, transfer);
     }
 
     public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
@@ -70,7 +70,7 @@ public class FileWidget : SizeRequestBox {
 
             FileImageWidget file_image_widget = null;
             try {
-                file_image_widget = new FileImageWidget() { visible=true };
+                file_image_widget = new FileImageWidget();
                 yield file_image_widget.load_from_file(file_transfer.get_file(), file_transfer.file_name);
 
                 // If the widget changed in the meanwhile, stop
@@ -86,7 +86,7 @@ public class FileWidget : SizeRequestBox {
 
         if (state != State.DEFAULT) {
             if (content != null) this.remove(content);
-            FileDefaultWidget default_file_widget = new FileDefaultWidget() { visible=true };
+            FileDefaultWidget default_file_widget = new FileDefaultWidget();
             default_widget_controller = new FileDefaultWidgetController(default_file_widget);
             default_widget_controller.set_file_transfer(file_transfer, stream_interactor);
             content = default_file_widget;
@@ -129,14 +129,10 @@ public class FileDefaultWidgetController : Object {
     public FileDefaultWidgetController(FileDefaultWidget widget) {
         this.widget = widget;
 
+        widget.clicked.connect(on_clicked);
         widget.open_file.connect(open_file);
         widget.save_file_as.connect(save_file);
         widget.cancel_download.connect(cancel_download);
-
-        var gesture_controller = new GestureClick();
-        gesture_controller.set_button(1); // listen for left clicks
-        gesture_controller.released.connect(on_clicked);
-        widget.add_controller(gesture_controller);
     }
 
     public void set_file_transfer(FileTransfer file_transfer, StreamInteractor stream_interactor) {

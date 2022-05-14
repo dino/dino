@@ -9,6 +9,7 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/file_default_widget.ui")]
 public class FileDefaultWidget : Box {
 
+    public signal void clicked();
     public signal void open_file();
     public signal void save_file_as();
     public signal void cancel_download();
@@ -35,6 +36,7 @@ public class FileDefaultWidget : Box {
         this_motion_events.leave.connect(on_pointer_left_event);
 
         GestureClick gesture_click_controller = new GestureClick();
+        gesture_click_controller.set_button(1); // listen for left clicks
         this.add_controller(gesture_click_controller);
         gesture_click_controller.pressed.connect((n_press, x, y) => {
             // Check whether the click was inside the file menu. Otherwise, open the file.
@@ -42,7 +44,7 @@ public class FileDefaultWidget : Box {
             this.translate_coordinates(file_menu, x, y, out x_button, out y_button);
             if (file_menu.contains(x_button, y_button)) return;
 
-            this.open_file();
+            this.clicked();
         });
     }
 

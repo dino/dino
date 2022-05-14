@@ -45,7 +45,7 @@ public class Dino.Plugins.Rtp.Paintable : Gdk.Paintable, Object {
                 image.get_intrinsic_height() != paintable.get_intrinsic_height() ||
                 image.get_intrinsic_aspect_ratio() != paintable.get_intrinsic_aspect_ratio();
 
-        this.image.dispose();
+        if (image != null) this.image.dispose();
         this.image = paintable;
         this.pixel_aspect_ratio = pixel_aspect_ratio;
 

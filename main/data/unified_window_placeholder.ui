@@ -3,7 +3,6 @@
     <requires lib="gtk" version="4.0"/>
     <template class="DinoUiMainWindowPlaceholder">
         <property name="valign">center</property>
-        <property name="visible">True</property>
         <child>
             <object class="GtkBox" id="box">
                 <property name="orientation">vertical</property>

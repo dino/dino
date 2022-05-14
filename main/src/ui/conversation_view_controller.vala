@@ -6,15 +6,6 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-enum Target {
-    URI_LIST,
-    STRING
-}
-
-//const TargetEntry[] target_list = {
-//    { "text/uri-list", 0, Target.URI_LIST }
-//};
-
 public class ConversationViewController : Object {
 
     public new string? conversation_display_name { get; set; }
@@ -26,6 +17,7 @@ public class ConversationViewController : Object {
     private ConversationTitlebar titlebar;
     public SearchMenuEntry search_menu_entry = new SearchMenuEntry();
     public ListView list_view = new ListView(null, null);
+    private DropTarget drop_event_controller = new DropTarget(typeof(File), DragAction.COPY );
 
     private ChatInputController chat_input_controller;
     private StreamInteractor stream_interactor;
@@ -38,21 +30,29 @@ public class ConversationViewController : Object {
         this.app = GLib.Application.get_default() as Application;
 
         this.chat_input_controller = new ChatInputController(view.chat_input, stream_interactor);
-//        chat_input_controller.activate_last_message_correction.connect(view.conversation_frame.activate_last_message_correction);
+        chat_input_controller.activate_last_message_correction.connect(view.conversation_frame.activate_last_message_correction);
         chat_input_controller.file_picker_selected.connect(open_file_picker);
         chat_input_controller.clipboard_pasted.connect(on_clipboard_paste);
 
         view.conversation_frame.init(stream_interactor);
 
         // drag 'n drop file upload
-//        view.drag_data_received.connect(this.on_drag_data_received);
+        drop_event_controller.on_drop.connect(this.on_drag_data_received);
 
         // forward key presses
-//        view.chat_input.key_press_event.connect(forward_key_press_to_chat_input);
-//        view.conversation_frame.key_press_event.connect(forward_key_press_to_chat_input);
-//        titlebar.key_press_event.connect(forward_key_press_to_chat_input);
+        var key_controller = new EventControllerKey();
+        key_controller.key_pressed.connect((v, c, s) => forward_key_press_to_chat_input(key_controller, v, c, s));
+        view.conversation_frame.add_controller(key_controller);
 
-//         goto-end floating button
+        var key_controller2 = new EventControllerKey();
+        key_controller2.key_pressed.connect((v, c, s) => forward_key_press_to_chat_input(key_controller2, v, c, s));
+        view.chat_input.add_controller(key_controller2);
+
+        var key_controller3 = new EventControllerKey();
+        key_controller3.key_pressed.connect((v, c, s) => forward_key_press_to_chat_input(key_controller3, v, c, s));
+        titlebar.get_widget().add_controller(key_controller3);
+
+//      goto-end floating button
         var vadjustment = view.conversation_frame.scrolled.vadjustment;
         vadjustment.notify["value"].connect(() => {
             bool button_active = vadjustment.value <  vadjustment.upper - vadjustment.page_size;
@@ -102,17 +102,16 @@ public class ConversationViewController : Object {
             titlebar.insert_button(button);
         }
 
-//        AccelGroup accel_group = new AccelGroup();
-//        accel_group.connect(Gdk.Key.U, ModifierType.CONTROL_MASK, AccelFlags.VISIBLE, () => {
-//            if (conversation == null) return false;
-//            stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.begin(conversation, (_, res) => {
-//                if (stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.end(res)) {
-//                    open_file_picker();
-//                }
-//            });
-//            return false;
-//        });
-//        ((Gtk.Window)view.get_toplevel()).add_accel_group(accel_group);
+        Shortcut shortcut = new Shortcut(new KeyvalTrigger(Key.U, ModifierType.CONTROL_MASK), new CallbackAction(() => {
+            if (conversation == null) return false;
+            stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.begin(conversation, (_, res) => {
+                if (stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.end(res)) {
+                    open_file_picker();
+                }
+            });
+            return false;
+        }));
+        ((Gtk.Window)view.get_root()).add_shortcut(shortcut);
     }
 
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {
@@ -159,10 +158,14 @@ public class ConversationViewController : Object {
         stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.begin(conversation, (_, res) => {
             bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.end(res);
             chat_input_controller.set_file_upload_active(upload_available);
-            if (upload_available && overlay_dialog == null) {
-//                Gtk.drag_dest_set(view, DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
+            if (conversation.account.bare_jid.to_string().has_prefix("f")) {
+                if (drop_event_controller.widget == null) {
+                    view.add_controller(drop_event_controller);
+                }
             } else {
-//                Gtk.drag_dest_unset(view);
+                if (drop_event_controller.widget != null) {
+                    view.remove_controller(drop_event_controller);
+                }
             }
         });
     }
@@ -186,48 +189,28 @@ public class ConversationViewController : Object {
         }
     }
 
-    private void on_clipboard_paste() {
+    private async void on_clipboard_paste() {
         Clipboard clipboard = view.get_clipboard();
-//        if (clipboard.wait_is_image_available()) {
-//            clipboard.request_image((_, pixbuf) => {
-//                File file = File.new_for_path(Path.build_filename(FileManager.get_storage_dir(), Xmpp.random_uuid() + ".png"));
-//                try {
-//                    FileOutputStream fos = file.create(FileCreateFlags.REPLACE_DESTINATION);
-//                    pixbuf.save_to_stream_async.begin(fos, "png", null, () => {
-//                        open_send_file_overlay(file);
-//                    });
-//                } catch (Error e) {
-//                    warning("Could not create file to store pasted image in %s, %s", file.get_path(), e.message);
-//                }
-//            });
-//        }
+        Gdk.Texture? texture = yield clipboard.read_texture_async(null); // TODO critical
+        var file_name = Path.build_filename(FileManager.get_storage_dir(), Xmpp.random_uuid() + ".png");
+        texture.save_to_png(file_name);
+        open_send_file_overlay(File.new_for_path(file_name));
     }
 
-//    private void on_drag_data_received(Widget widget, Gdk.DragContext context, int x, int y, SelectionData selection_data, uint target_type, uint time) {
-//        if ((selection_data != null) && (selection_data.get_length() >= 0)) {
-//            switch (target_type) {
-//                case Target.URI_LIST:
-//                    string[] uris = selection_data.get_uris();
-//                    // For now we only process the first dragged file
-//                    if (uris.length >= 1) {
-//                        try  {
-//                            string file_path = Filename.from_uri(uris[0]);
-//                            open_send_file_overlay(File.new_for_path(file_path));
-//                        } catch (ConvertError e) {
-//                            warning("Could not handle dragged file %s, %s", uris[0], e.message);
-//                        }
-//                    }
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    }
+    private bool on_drag_data_received(DropTarget target, Value val, double x, double y) {
+        if (val.type() == typeof(File)) {
+            open_send_file_overlay((File)val);
+            return true;
+        }
+        return false;
+    }
 
     private void open_file_picker() {
         FileChooserNative chooser = new FileChooserNative(_("Select file"), view.get_root() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"));
-        chooser.response.connect(() => {
-            open_send_file_overlay(File.new_for_path(chooser.get_file().get_path()));
+        chooser.response.connect((response) => {
+            if (response == ResponseType.ACCEPT) {
+                open_send_file_overlay(File.new_for_path(chooser.get_file().get_path()));
+            }
         });
         chooser.show();
     }
@@ -272,24 +255,22 @@ public class ConversationViewController : Object {
         stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(file, conversation);
     }
 
-//    private bool forward_key_press_to_chat_input(EventKey event) {
-//        if (((Gtk.Window)view.get_toplevel()).get_focus() is TextView) {
-//            return false;
-//        }
-//
-//        // Don't forward / change focus on Control / Alt
-//        if (event.keyval == Gdk.Key.Control_L || event.keyval == Gdk.Key.Control_R ||
-//                event.keyval == Gdk.Key.Alt_L || event.keyval == Gdk.Key.Alt_R) {
-//            return false;
-//        }
-//        // Don't forward / change focus on Control + ...
-//        if ((event.state & ModifierType.CONTROL_MASK) > 0) {
-//            return false;
-//        }
-//        if (view.chat_input.chat_text_view.text_view.key_press_event(event)) {
-//            return true;
-//        }
-//        return false;
-//    }
+    private bool forward_key_press_to_chat_input(EventControllerKey key_controller, uint keyval, uint keycode, Gdk.ModifierType state) {
+        if (view.get_root().get_focus() is TextView) {
+            return false;
+        }
+
+        // Don't forward / change focus on Control / Alt
+        if (keyval == Gdk.Key.Control_L || keyval == Gdk.Key.Control_R ||
+                keyval == Gdk.Key.Alt_L || keyval == Gdk.Key.Alt_R) {
+            return false;
+        }
+        // Don't forward / change focus on Control + ...
+        if ((state & ModifierType.CONTROL_MASK) > 0) {
+            return false;
+        }
+
+        return key_controller.forward(view.chat_input.chat_text_view.text_view);
+    }
 }
 }

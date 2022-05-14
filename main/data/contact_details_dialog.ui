@@ -33,7 +33,6 @@
                                             <object class="DinoUiAvatarImage" id="avatar">
                                                 <property name="height">50</property>
                                                 <property name="width">50</property>
-                                                <property name="visible">True</property>
                                                 <property name="allow_gray">False</property>
                                                 <layout>
                                                     <property name="column">0</property>
@@ -46,7 +45,6 @@
                                             <object class="DinoUiUtilEntryLabelHybrid" id="name_hybrid">
                                                 <property name="xalign">0</property>
                                                 <property name="hexpand">True</property>
-                                                <property name="visible">True</property>
                                                 <layout>
                                                     <property name="column">1</property>
                                                     <property name="row">0</property>

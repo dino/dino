@@ -33,5 +33,10 @@ public class SizingBin : Widget {
             natural = int.max(natural, minimum);
         }
     }
+
+    public override void dispose() {
+        var child = this.get_first_child();
+        if (child != null) child.unparent();
+    }
 }
 }

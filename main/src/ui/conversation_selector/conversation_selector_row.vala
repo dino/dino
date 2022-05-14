@@ -229,11 +229,11 @@ public class ConversationSelectorRow : ListBoxRow {
             unread_count_label.visible = true;
 
             if (conversation.get_notification_setting(stream_interactor) == Conversation.NotifySetting.ON) {
-                unread_count_label.get_style_context().add_class("unread-count-notify");
-                unread_count_label.get_style_context().remove_class("unread-count");
+                unread_count_label.add_css_class("unread-count-notify");
+                unread_count_label.remove_css_class("unread-count");
             } else {
-                unread_count_label.get_style_context().add_class("unread-count");
-                unread_count_label.get_style_context().remove_class("unread-count-notify");
+                unread_count_label.add_css_class("unread-count");
+                unread_count_label.remove_css_class("unread-count-notify");
             }
 
             name_label.attributes.insert(attr_weight_new(Weight.BOLD));
@@ -266,7 +266,7 @@ public class ConversationSelectorRow : ListBoxRow {
     private Widget generate_tooltip() {
         Grid grid = new Grid() { row_spacing=5, column_homogeneous=false, column_spacing=5, margin_start=7, margin_end=7, margin_top=7, margin_bottom=7 };
 
-        Label label = new Label(conversation.counterpart.to_string()) { valign=Align.START, xalign=0, visible=true };
+        Label label = new Label(conversation.counterpart.to_string()) { valign=Align.START, xalign=0 };
         label.attributes = new AttrList();
         label.attributes.insert(attr_weight_new(Weight.BOLD));
 
@@ -284,7 +284,7 @@ public class ConversationSelectorRow : ListBoxRow {
             stream_interactor.get_module(EntityInfo.IDENTITY).get_identity.begin(conversation.account, full_jid, (_, res) => {
                 Xep.ServiceDiscovery.Identity? identity = stream_interactor.get_module(EntityInfo.IDENTITY).get_identity.end(res);
 
-                Image image = new Image() { hexpand=false, valign=Align.CENTER, visible=true };
+                Image image = new Image() { hexpand=false, valign=Align.CENTER };
                 if (identity != null && (identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_PHONE || identity.type_ == Xep.ServiceDiscovery.Identity.TYPE_TABLET)) {
                     image.set_from_icon_name("dino-device-phone-symbolic");
                 } else {
@@ -322,7 +322,7 @@ public class ConversationSelectorRow : ListBoxRow {
                     sb.append(" <i>(").append(status).append(")</i>");
                 }
 
-                Label resource = new Label(sb.str) { use_markup=true, hexpand=true, xalign=0, visible=true };
+                Label resource = new Label(sb.str) { use_markup=true, hexpand=true, xalign=0 };
 
                 grid.attach(image, 0, i_cache + 1, 1, 1);
                 grid.attach(resource, 1, i_cache + 1, 1, 1);

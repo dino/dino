@@ -10,15 +10,15 @@ namespace Dino.Ui {
 
         public Overlay overlay = new Overlay();
         public Widget main_widget;
-        public HeaderBar header_bar = new HeaderBar() { valign=Align.START, visible=true };
+        public HeaderBar header_bar = new HeaderBar() { valign=Align.START };
         public Label title_label = new Label("");
         public Label subtitle_label = new Label("");
-        public Box inner_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=5, margin_top=5, hexpand=true, visible=true };
-        public Box title_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true, visible=true };
-        public MenuButton encryption_button = new MenuButton() { opacity=0, has_frame=false, height_request=30, width_request=30, margin_end=5, visible=true };
+        public Box inner_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=5, margin_top=5, hexpand=true };
+        public Box title_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true };
+        public MenuButton encryption_button = new MenuButton() { opacity=0, has_frame=false, height_request=30, width_request=30, margin_end=5 };
         public CallEncryptionButtonController encryption_button_controller;
-        public MenuButton menu_button = new MenuButton() { icon_name="open-menu-symbolic", has_frame=false, visible=true };
-        public Button invite_button = new Button.from_icon_name("dino-account-plus") { has_frame=false, visible=true };
+        public MenuButton menu_button = new MenuButton() { icon_name="open-menu-symbolic", has_frame=false };
+        public Button invite_button = new Button.from_icon_name("dino-account-plus") { has_frame=false };
         public bool shows_video = false;
         public string? participant_name;
 
@@ -40,18 +40,19 @@ namespace Dino.Ui {
             this.participant_name = participant_name;
 
             Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER };
+            titles_box.add_css_class("titles");
             title_label.attributes = new AttrList();
             title_label.attributes.insert(Pango.attr_weight_new(Weight.BOLD));
             titles_box.append(title_label);
             subtitle_label.attributes = new AttrList();
             subtitle_label.attributes.insert(Pango.attr_scale_new(Pango.Scale.SMALL));
-            subtitle_label.get_style_context().add_class("dim-label");
+            subtitle_label.add_css_class("dim-label");
             titles_box.append(subtitle_label);
 
             header_bar.set_title_widget(titles_box);
             title_label.label = participant_name;
 
-            header_bar.get_style_context().add_class("participant-header-bar");
+            header_bar.add_css_class("participant-header-bar");
             header_bar.pack_start(invite_button);
             header_bar.pack_start(encryption_button);
             header_bar.pack_end(menu_button);
@@ -73,14 +74,14 @@ namespace Dino.Ui {
 
             header_bar.show_title_buttons = is_highest_row;
             if (is_highest_row) {
-                header_bar.get_style_context().add_class("call-header-background");
+                header_bar.add_css_class("call-header-background");
                 Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
                 if (gtk_settings != null) {
                     string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
                     header_bar.decoration_layout = (is_start ? buttons[0] : "") + ":" + (is_end && buttons.length == 2 ? buttons[1] : "");
                 }
             } else {
-                header_bar.get_style_context().remove_class("call-header-background");
+                header_bar.remove_css_class("call-header-background");
             }
             reveal_or_hide_controls();
         }
@@ -93,9 +94,9 @@ namespace Dino.Ui {
 
         public void set_placeholder(Conversation? conversation, StreamInteractor stream_interactor) {
             shows_video = false;
-            Box box = new Box(Orientation.HORIZONTAL, 0) { visible=true };
-            box.get_style_context().add_class("video-placeholder-box");
-            AvatarImage avatar = new AvatarImage() { allow_gray=false, hexpand=true, vexpand=true, halign=Align.CENTER, valign=Align.CENTER, height=100, width=100, visible=true };
+            Box box = new Box(Orientation.HORIZONTAL, 0);
+            box.add_css_class("video-placeholder-box");
+            AvatarImage avatar = new AvatarImage() { allow_gray=false, hexpand=true, vexpand=true, halign=Align.CENTER, valign=Align.CENTER, height=100, width=100 };
             if (conversation != null) {
                 avatar.set_conversation(stream_interactor, conversation);
             } else {
@@ -131,6 +132,10 @@ namespace Dino.Ui {
             } else {
                 subtitle_label.visible = false;
             }
+        }
+
+        public bool is_menu_active() {
+            return false;
         }
 
         private void reveal_or_hide_controls() {

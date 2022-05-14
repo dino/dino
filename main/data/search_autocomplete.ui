@@ -2,7 +2,6 @@
 <interface>
     <object class="GtkBox" id="root">
         <property name="orientation">horizontal</property>
-        <property name="visible">True</property>
         <child>
             <object class="DinoUiAvatarImage" id="image">
                 <property name="margin-top">4</property>

@@ -31,27 +31,27 @@ public class ConversationTitlebarNoCsd : ConversationTitlebar, Object {
         }
     }
 
-    private Box widgets_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=15, valign=Align.END, visible=true };
-    private Label title_label = new Label("") { ellipsize=EllipsizeMode.END, visible=true };
+    private Box widgets_box = new Box(Orientation.HORIZONTAL, 7) { margin_start=15, valign=Align.END };
+    private Label title_label = new Label("") { ellipsize=EllipsizeMode.END };
     private Label subtitle_label = new Label("") { use_markup=true, ellipsize=EllipsizeMode.END, visible=false };
 
     construct {
-        Box content_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=15, margin_end=10, hexpand=true, visible=true };
+        Box content_box = new Box(Orientation.HORIZONTAL, 0) { margin_start=15, margin_end=10, hexpand=true };
         main.append(content_box);
 
-        Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true, visible=true };
+        Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true };
         content_box.append(titles_box);
 
         titles_box.append(title_label);
         subtitle_label.attributes = new AttrList();
-        subtitle_label.get_style_context().add_class("dim-label");
+        subtitle_label.add_css_class("dim-label");
         titles_box.append(subtitle_label);
 
         content_box.append(widgets_box);
     }
 
     public ConversationTitlebarNoCsd() {
-        main.get_style_context().add_class("dino-header-right");
+        main.add_css_class("dino-header-right");
     }
 
     public void insert_button(Widget button) {
@@ -79,7 +79,7 @@ public class ConversationTitlebarCsd : ConversationTitlebar, Object {
         titles_box.append(title_label);
         subtitle_label.attributes = new AttrList();
         subtitle_label.attributes.insert(Pango.attr_scale_new(Pango.Scale.SMALL));
-        subtitle_label.get_style_context().add_class("dim-label");
+        subtitle_label.add_css_class("dim-label");
         titles_box.append(subtitle_label);
 
         header_bar.set_title_widget(titles_box);

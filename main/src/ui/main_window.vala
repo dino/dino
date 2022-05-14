@@ -49,7 +49,7 @@ public class MainWindow : Gtk.Window {
 
         this.title = "Dino";
 
-        this.get_style_context().add_class("dino-main");
+        this.add_css_class("dino-main");
 
         Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
         ((Widget)this).realize.connect(set_window_buttons);
@@ -77,7 +77,7 @@ public class MainWindow : Gtk.Window {
         search_frame.set_child(global_search.get_widget());
 
         Image conversation_list_placeholder_image = (Image) builder.get_object("conversation_list_placeholder_image");
-        conversation_list_placeholder_image.set_from_pixbuf(new Pixbuf.from_resource("/im/dino/Dino/icons/dino-conversation-list-placeholder-arrow.svg"));
+        conversation_list_placeholder_image.set_from_pixbuf(new Pixbuf.from_resource("/im/dino/Dino/icons/scalable/ui/dino-conversation-list-placeholder-arrow.svg"));
     }
 
     private void setup_headerbar() {

@@ -105,7 +105,7 @@ public class ManageKeyDialog : Gtk.Dialog {
         Pango.AttrList desc_attrs = new Pango.AttrList();
         desc_attrs.insert(Pango.attr_scale_new(0.8));
         lbl_desc.attributes = desc_attrs;
-        lbl_desc.get_style_context().add_class("dim-label");
+        lbl_desc.add_css_class("dim-label");
 
         box.append(lbl_title);
         box.append(lbl_desc);

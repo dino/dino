@@ -20,10 +20,6 @@ protected class RosterList {
         this.stream_interactor = stream_interactor;
         this.accounts = accounts;
 
-//        set_filter_func(filter);
-        list_box.set_header_func(header);
-//        set_sort_func(sort);
-
         handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).removed_roster_item.connect( (account, jid, roster_item) => {
             if (accounts.contains(account)) {
                 on_removed_roster_item(account, jid, roster_item);
@@ -61,12 +57,6 @@ protected class RosterList {
         rows[account] = new HashMap<Jid, ListRow>(Jid.hash_func, Jid.equals_func);
         foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
             on_updated_roster_item(account, roster_item.jid, roster_item);
-        }
-    }
-
-    private void header(ListBoxRow row, ListBoxRow? before_row) {
-        if (row.get_header() == null && before_row != null) {
-            row.set_header(new Separator(Orientation.HORIZONTAL));
         }
     }
 

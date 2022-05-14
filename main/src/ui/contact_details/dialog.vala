@@ -37,7 +37,18 @@ public class Dialog : Gtk.Dialog {
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
         if (Util.use_csd()) {
             // TODO get_header_bar directly returns a HeaderBar in vala > 0.48
-//            ((HeaderBar) get_header_bar()).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+            Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER };
+            var title_label = new Label(title);
+            title_label.attributes = new AttrList();
+            title_label.attributes.insert(Pango.attr_weight_new(Weight.BOLD));
+            titles_box.append(title_label);
+            var subtitle_label = new Label(Util.get_conversation_display_name(stream_interactor, conversation));
+            subtitle_label.attributes = new AttrList();
+            subtitle_label.attributes.insert(Pango.attr_scale_new(Pango.Scale.SMALL));
+            subtitle_label.add_css_class("dim-label");
+            titles_box.append(subtitle_label);
+
+            get_header_bar().set_title_widget(titles_box);
         }
         setup_top();
 
@@ -53,9 +64,10 @@ public class Dialog : Gtk.Dialog {
             provider.populate(conversation, contact_details, Plugins.WidgetType.GTK4);
         }
 
-//        destroy.connect(() => {
-//            contact_details.save();
-//        });
+        close_request.connect(() => {
+            contact_details.save();
+            return false;
+        });
     }
 
     private void setup_top() {
@@ -83,16 +95,16 @@ public class Dialog : Gtk.Dialog {
         Widget w = (Widget) wo;
         add_category(category);
 
-        ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
-        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3, visible=true };
+        ListBoxRow list_row = new ListBoxRow() { activatable=false };
+        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3 };
         list_row.set_child(row);
-        Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, visible=true };
+        Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true };
         if (description != null && description != "") {
-            Box box = new Box(Orientation.VERTICAL, 0) { visible=true };
+            Box box = new Box(Orientation.VERTICAL, 0);
             box.append(label_label);
-            Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true, visible=true };
+            Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true };
             desc_label.set_markup("<span size='small'>%s</span>".printf(Markup.escape_text(description)));
-            desc_label.get_style_context().add_class("dim-label");
+            desc_label.add_css_class("dim-label");
             box.append(desc_label);
             row.append(box);
         } else {
@@ -101,11 +113,11 @@ public class Dialog : Gtk.Dialog {
 
         Widget widget = w;
         if (widget.get_type().is_a(typeof(Entry))) {
-            Util.EntryLabelHybrid hybrid = new Util.EntryLabelHybrid.wrap(widget as Entry) { xalign=1, visible=true };
+            Util.EntryLabelHybrid hybrid = new Util.EntryLabelHybrid.wrap(widget as Entry) { xalign=1 };
             hybrid_group.add(hybrid);
             widget = hybrid;
         } else if (widget.get_type().is_a(typeof(ComboBoxText))) {
-            Util.ComboBoxTextLabelHybrid hybrid = new Util.ComboBoxTextLabelHybrid.wrap(widget as ComboBoxText) { xalign=1, visible=true };
+            Util.ComboBoxTextLabelHybrid hybrid = new Util.ComboBoxTextLabelHybrid.wrap(widget as ComboBoxText) { xalign=1 };
             hybrid_group.add(hybrid);
             widget = hybrid;
         }
@@ -116,26 +128,26 @@ public class Dialog : Gtk.Dialog {
         row.append(widget);
         categories[category].append(list_row);
 
+        int width = get_content_area().get_width();
         int pref_height, pref_width;
-//        get_content_area().get_preferred_height(null, out pref_height);
-//        get_preferred_width(out pref_width, null);
-//        resize(pref_width, int.min(500, pref_height));
+        get_content_area().measure(Orientation.VERTICAL, width, null, out pref_height, null, null);
+        default_height = pref_height;
     }
 
     private void add_category(string category) {
         if (!categories.has_key(category)) {
-            ListBox list_box = new ListBox() { selection_mode=SelectionMode.NONE, visible=true };
+            ListBox list_box = new ListBox() { selection_mode=SelectionMode.NONE };
             categories[category] = list_box;
             list_box.set_header_func((row, before_row) => {
                 if (row.get_header() == null && before_row != null) {
                     row.set_header(new Separator(Orientation.HORIZONTAL));
                 }
             });
-            Box box = new Box(Orientation.VERTICAL, 5) { margin_top=12, margin_bottom=12, visible=true };
-            Label category_label = new Label("") { xalign=0, visible=true };
+            Box box = new Box(Orientation.VERTICAL, 5) { margin_top=12, margin_bottom=12 };
+            Label category_label = new Label("") { xalign=0 };
             category_label.set_markup(@"<b>$(Markup.escape_text(category))</b>");
             box.append(category_label);
-            Frame frame = new Frame(null) { visible=true };
+            Frame frame = new Frame(null);
             frame.set_child(list_box);
             box.append(frame);
             main_box.append(box);

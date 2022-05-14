@@ -159,8 +159,8 @@ public class BadMessagesWidget : Box {
         } else {
             warning_text += _("%s does not trust this device. That means, you might be missing messages.").printf(who);
         }
-        Label label = new Label(warning_text) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
-        label.get_style_context().add_class("dim-label");
+        Label label = new Label(warning_text) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true };
+        label.add_css_class("dim-label");
         this.append(label);
 
         label.activate_link.connect(() => {

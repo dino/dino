@@ -69,8 +69,8 @@ private class ConversationNotification : MetaConversationNotification {
         this.jid = jid;
         this.account = account;
 
-        Box box = new Box(Orientation.HORIZONTAL, 5) { visible=true };
-        Button manage_button = new Button.with_label(_("Manage")) { visible=true };
+        Box box = new Box(Orientation.HORIZONTAL, 5);
+        Button manage_button = new Button.with_label(_("Manage"));
         manage_button.clicked.connect(() => {
             manage_button.activate();
             ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, account, jid);
@@ -80,7 +80,7 @@ private class ConversationNotification : MetaConversationNotification {
             });
             dialog.present();
         });
-        box.append(new Label(_("This contact has new devices")) { margin_end=10, visible=true });
+        box.append(new Label(_("This contact has new devices")) { margin_end=10 });
         box.append(manage_button);
         widget = box;
     }
