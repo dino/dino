@@ -110,6 +110,67 @@ public class ConversationViewController : Object {
         ((Gtk.Window)view.get_toplevel()).add_accel_group(accel_group);
     }
 
+    private void update_conversation_encryption(Conversation? conversation) {
+        if (conversation == null) {
+            return;
+        }
+
+        bool visible = false;
+
+        // FIXME duplicate logic from encryption_button.vala
+        switch (conversation.type_) {
+            case Conversation.Type.CHAT:
+                visible = true;
+                break;
+            case Conversation.Type.GROUPCHAT_PM:
+                visible = false;
+                break;
+            case Conversation.Type.GROUPCHAT:
+                visible = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
+                break;
+        }
+
+        if (visible && conversation.encryption == UNKNOWN) {
+            Dino.Entities.Settings settings = Dino.Application.get_default().settings;
+
+            if (settings.default_encryption == UNKNOWN) {
+                var selection_dialog_builder = new Builder.from_resource("/im/dino/Dino/default_encryption_dialog.ui");
+                var selection_dialog = selection_dialog_builder.get_object("dialog") as Dialog;
+                var omemo_radio = selection_dialog_builder.get_object("omemo") as RadioButton;
+                var openpgp_radio = selection_dialog_builder.get_object("openpgp") as RadioButton;
+                var none_radio = selection_dialog_builder.get_object("none") as RadioButton;
+                var accept_button = selection_dialog_builder.get_object("accept_button") as Button;
+                Encryption selected_default = UNKNOWN;
+
+                accept_button.clicked.connect(() => {
+                    if (omemo_radio.active) {selected_default = OMEMO;}
+                    else if (openpgp_radio.active) {selected_default = PGP;}
+                    else if (none_radio.active) {selected_default = NONE;}
+
+                    selection_dialog.response(selected_default);
+                    selection_dialog.close();
+                });
+
+                selection_dialog.run();
+                conversation.encryption = selected_default;
+
+                if (selected_default != NONE) {
+                    settings.default_encryption = selected_default;
+                }
+                else {
+                    // Set conversation as unencrypted, but keep
+                    // default encryption setting as undecided.
+                }
+            }
+            else {
+                conversation.encryption = settings.default_encryption;
+            }
+        }
+        else if (!visible) {
+            conversation.encryption = Encryption.NONE;
+        }
+    }
+
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {
         if (this.conversation != null) {
             conversation.notify["encryption"].disconnect(update_file_upload_status);
@@ -119,6 +180,8 @@ public class ConversationViewController : Object {
         }
 
         this.conversation = conversation;
+
+        update_conversation_encryption(conversation);
 
         conversation.notify["encryption"].connect(update_file_upload_status);
 

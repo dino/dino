@@ -64,6 +64,7 @@ set(RESOURCE_LIST
     conversation_list_titlebar_csd.ui
     conversation_row.ui
     conversation_view.ui
+    default_encryption_dialog.ui
     file_default_widget.ui
     file_send_overlay.ui
     emojichooser.ui
