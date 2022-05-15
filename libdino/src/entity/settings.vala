@@ -12,11 +12,18 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
+        default_encryption = col_to_encryption_or_default("default_encryption", Encryption.UNKNOWN);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
         string? val = db.settings.select({db.settings.value}).with(db.settings.key, "=", key)[db.settings.value];
         return val != null ? bool.parse(val) : def;
+    }
+
+    private Encryption col_to_encryption_or_default(string key, Encryption def) {
+        var sval = db.settings.value;
+        string? val = db.settings.select({sval}).with(db.settings.key, "=", key)[sval];
+        return val != null ? Encryption.parse(val) : def;
     }
 
     private bool send_typing_;
@@ -76,6 +83,19 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
+        }
+    }
+
+    private Encryption default_encryption_;
+    public Encryption default_encryption {
+        get { return default_encryption_; }
+        set {
+            string valstr = value.to_string();
+            db.settings.upsert()
+                .value(db.settings.key, "default_encryption", true)
+                .value(db.settings.value, valstr)
+                .perform();
+            default_encryption_ = value;
         }
     }
 }
