@@ -278,7 +278,6 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
             device_monitor.stop();
         }
         destroy_call_pipe();
-        Gst.deinit();
     }
 
     public bool supports(string? media) {
