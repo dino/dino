@@ -5,31 +5,34 @@ namespace Dino.Plugins.PhoneRinger {
 
 public class Plugin : RootInterface, NotificationProvider, Object {
 
+    private const int GAP = 1;
+    private const int RINGER_ID = 0;
+    private const int DIALER_ID = 1;
     private Canberra.Context sound_context;
-    private const int ringer_id = 0;
-    private const int dialer_id = 1;
     private Canberra.Proplist ringer_props;
     private Canberra.Proplist dialer_props;
+    private bool ringing = false;
+    private bool dialing = false;
 
     private void loop_ringer() {
-        sound_context.play_full(ringer_id, ringer_props, (c, id, code) => {
-            if (code != Canberra.Error.CANCELED) {
-                Idle.add(() => {
-                    loop_ringer();
-                    return Source.REMOVE;
-                });
-            }
+        sound_context.play_full(RINGER_ID, ringer_props, (c, id, code) => {
+            if (code == Canberra.Error.CANCELED) return;
+            Timeout.add_seconds(GAP, () => {
+                if (!ringing) return Source.REMOVE;
+                loop_ringer();
+                return Source.REMOVE;
+            });
         });
     }
 
     private void loop_dialer() {
-        sound_context.play_full(dialer_id, dialer_props, (c, id, code) => {
-            if (code != Canberra.Error.CANCELED) {
-                Idle.add(() => {
-                    loop_dialer();
-                    return Source.REMOVE;
-                });
-            }
+        sound_context.play_full(DIALER_ID, dialer_props, (c, id, code) => {
+            if (code == Canberra.Error.CANCELED) return;
+            Timeout.add_seconds(GAP, () => {
+                if (!dialing) return Source.REMOVE;
+                loop_dialer();
+                return Source.REMOVE;
+            });
         });
     }
 
@@ -50,19 +53,23 @@ public class Plugin : RootInterface, NotificationProvider, Object {
     public void shutdown() { }
 
     public async void notify_call(Call call, Conversation conversation, bool video, bool multiparty, string conversation_display_name){
+        ringing = true;
         loop_ringer();
     }
 
     public async void retract_call_notification(Call call, Conversation conversation){
-        sound_context.cancel(ringer_id);
+        ringing = false;
+        sound_context.cancel(RINGER_ID);
     }
 
     public async void notify_dialing(){
+        dialing = true;
         loop_dialer();
     }
 
     public async void retract_dialing(){
-        sound_context.cancel(dialer_id);
+        dialing = false;
+        sound_context.cancel(DIALER_ID);
     }
 
     public double get_priority(){
