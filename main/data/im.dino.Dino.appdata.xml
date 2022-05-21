@@ -140,13 +140,13 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image height="952" width="1601">https://dino.im/img/appdata/2022-02_screenshot-main.png</image>
+      <image>https://dino.im/img/appdata/2022-02_screenshot-main.png</image>
     </screenshot>
     <screenshot>
-      <image height="753" width="1199">https://dino.im/img/appdata/2022-02_screenshot-call.png</image>
+      <image>https://dino.im/img/appdata/2022-02_screenshot-call.png</image>
     </screenshot>
     <screenshot>
-      <image height="942" width="1600">https://dino.im/img/appdata/start_chat.png</image>
+      <image>https://dino.im/img/appdata/start_chat.png</image>
     </screenshot>
   </screenshots>
   <translation type="gettext">dino</translation>
@@ -159,17 +159,14 @@
   <url type="help">http://dino.im/help/</url>
   -->
   <update_contact>appstream@dino.im</update_contact>
-  <!-- TODO: Write this when Dino is released
   <releases>
-    <release date="XXXX-XX-XX" version="X.X">
+    <release date="2022-02-13" version="3.0">
       <description>
         <p>
-          This is our first release. It comes with a clean UI, notifications,
-          end-to-end encryption support (OMEMO and GnuPG), multi-user chats,
-          and more!
+          The 0.3 release is all about calls. Dino now supports calls between two or more people!
         </p>
       </description>
     </release>
   </releases>
-  -->
+  <content_rating type="oars-1.1"/>
 </component>
