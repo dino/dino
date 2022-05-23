@@ -66,6 +66,7 @@ set(RESOURCE_LIST
     conversation_view.ui
     file_default_widget.ui
     file_send_overlay.ui
+    file_send_overlay_file_widget.ui
     emojichooser.ui
     global_search.ui
     conversation_content_view/item_metadata_header.ui

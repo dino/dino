@@ -9,28 +9,46 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/file_send_overlay.ui")]
 public class FileSendOverlay : Gtk.EventBox {
 
-    public signal void close();
-    public signal void send_file();
+    public signal void send_file(File file);
+    public Promise<long> file_size_limit = new Promise<long>();
 
     [GtkChild] public unowned Button close_button;
     [GtkChild] public unowned Button send_button;
-    [GtkChild] public unowned SizingBin file_widget_insert;
-    [GtkChild] public unowned Label info_label;
+    [GtkChild] public unowned Button add_more;    
+    [GtkChild] public unowned Box files_widget;
 
     private bool can_send = true;
 
-    public FileSendOverlay(File file, FileInfo file_info) {
+    public FileSendOverlay() {
+
         close_button.clicked.connect(() => {
-            this.close();
             this.destroy();
         });
         send_button.clicked.connect(() => {
-            send_file();
-            this.close();
+            var file_count = get_files_count();
+            if(file_count > 10){
+                Gtk.MessageDialog msg = new Gtk.MessageDialog (
+                    new Gtk.Window(),  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
+                    Gtk.MessageType.WARNING, Gtk.ButtonsType.OK_CANCEL,
+                    "Warning");
+                msg.secondary_text = _("You are about to send %i files.").printf(file_count); 
+                Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
+                ok_button.label = _("Send anyway");
+                if (msg.run() != Gtk.ResponseType.OK) {
+                    msg.close();
+                    return ;
+                }                                  
+                msg.close();
+            }
+
+            foreach( var child in files_widget.get_children()){
+                var files_widget = (FileWidget) child;
+                if(files_widget.is_ok)
+                    send_file(files_widget.file);
+            }
             this.destroy();
         });
-
-        load_file_widget.begin(file, file_info);
+       
 
         this.realize.connect(() => {
             if (can_send) {
@@ -46,47 +64,156 @@ public class FileSendOverlay : Gtk.EventBox {
             }
             return false;
         });
+        add_more.clicked.connect(()=>{
+            PreviewFileChooserNative chooser = new PreviewFileChooserNative(_("Select file"), get_toplevel() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"),true);
+            if (chooser.run() == Gtk.ResponseType.ACCEPT) {
+                add_files(chooser.get_files());
+            }
+        });
+        update_send_label();
+    }
+    public void add_files(SList<File> files) {
+        foreach( var file in files){
+            //TODO filter exisitng files or sort
+            load_file_widget.begin(file);       
+        }        
+    }
+    private int get_files_count(){
+        var ammount = 0;
+        foreach( var child in files_widget.get_children()){
+            var files_widget = (FileWidget) child;
+            if(files_widget.is_ok)
+            ammount++;
+        }
+        return ammount;
+    }
+    
+    private void update_send_label() {
+        var remaining_size = get_files_count();        
+        send_button.label = n("Send %i file","Send %i files",remaining_size).printf(remaining_size);        
+        can_send = remaining_size != 0;
+        send_button.sensitive = can_send;
+        
     }
 
-    private async void load_file_widget(File file, FileInfo file_info) {
-        string file_name = file_info.get_display_name();
-        string mime_type = file_info.get_content_type();
+    [GtkTemplate (ui = "/im/dino/Dino/file_send_overlay_file_widget.ui")]
+    public class FileWidget:Gtk.Box {
+        [GtkChild] public unowned Button remove_button;
+        [GtkChild] public unowned Label error_label;
+        [GtkChild] public unowned Container box_for_widget;
 
-        bool is_image = false;
+        public bool is_ok = true;
+        public File file;
+        public FileInfo file_info;
+        FileSendOverlay overlay;
 
-        foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
-            foreach (string supported_mime_type in pixbuf_format.get_mime_types()) {
-                if (supported_mime_type == mime_type) {
-                    is_image = true;
+
+
+        public FileWidget(FileSendOverlay fileSendOverlay, File file,FileInfo file_info) {
+            this.file = file;
+            this.file_info = file_info;
+            this.overlay = fileSendOverlay;
+
+            remove_button.clicked.connect(()=>{                
+                this.destroy();
+                fileSendOverlay.update_send_label();
+            });
+        }
+        private bool open_file(EventButton event_button){
+            if (event_button.button != 1)
+            return false;
+            var file_uri = file.get_uri();
+            try{
+                AppInfo.launch_default_for_uri(file_uri, null);
+            } catch (Error err) {
+                warning("Failed to open %s - %s", file_uri, err.message);
+            }
+            return false;
+        }
+
+        public async void load_file() {
+            Widget? widget = yield try_to_create_image_widget();
+            if (widget == null) {
+               widget= yield create_default_widget();
+            }
+            box_for_widget.add(widget);
+
+            if (file_info.get_file_type() == GLib.FileType.DIRECTORY){
+                set_error(_("Directories cannot be uploaded."));
+            }else {
+                var size = yield overlay.file_size_limit.future.wait_async();
+                if (size < 0)
+                    set_error(_("You can't send files with this server"));
+                if (file_info.get_size() > size)
+                    set_error(_("The file exceeds the server's maximum upload size of %s.").printf(format_size(size)));               
+            }
+        }
+        private void set_error(string message){
+            Util.force_error_color(error_label);
+            error_label.label = message;
+            error_label.visible=true;
+            is_ok = false;
+            overlay.update_send_label();
+        }
+
+
+        private async Widget? try_to_create_image_widget() {
+            
+            string file_name = file_info.get_display_name();
+            string mime_type = file_info.get_content_type();
+            
+            bool is_image = false;
+            foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
+                foreach (string supported_mime_type in pixbuf_format.get_mime_types()) {
+                    if (supported_mime_type == mime_type) {
+                        is_image = true;
+                    }
                 }
+            }
+            if (!is_image)
+                return null;
+            FileImageWidget image_widget = new FileImageWidget() { visible=true };
+            try {
+                yield image_widget.load_from_file(file, file_name,500,200);
+                return image_widget;
+            } catch (Error e) {   
+                warning("Failed to generate preview %s - %s", file.get_path(), e.message);
+                return null;
             }
         }
 
-        Widget? widget = null;
-        if (is_image) {
-            FileImageWidget image_widget = new FileImageWidget() { visible=true };
-            try {
-                yield image_widget.load_from_file(file, file_name);
-                widget = image_widget;
-            } catch (Error e) { }
-        }
-
-        if (widget == null) {
+        private async Widget create_default_widget() {
+            string file_name = file_info.get_display_name();
+            string mime_type = file_info.get_content_type();
             FileDefaultWidget default_widget = new FileDefaultWidget() { visible=true };
             default_widget.name_label.label = file_name;
             default_widget.update_file_info(mime_type, FileTransfer.State.COMPLETE, (long)file_info.get_size());
-            widget = default_widget;
+            default_widget.button_release_event.connect(open_file);
+            return default_widget;
         }
-
-        file_widget_insert.add(widget);
     }
 
-    public void set_file_too_large() {
-        info_label.label= _("The file exceeds the server's maximum upload size.");
-        Util.force_error_color(info_label);
-        send_button.sensitive = false;
-        can_send = false;
+    private async void load_file_widget(File file) {
+        FileInfo file_info;
+        try {
+            file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+        } catch (Error e) { 
+            warning("Failed to get file info %s - %s", file.get_path(), e.message);
+            return ;
+        }
+        var box = new FileWidget(this,file,file_info);
+        yield box.load_file();
+        var index =  0;
+        foreach(var widget in files_widget.get_children()){
+            var fw = widget as FileWidget;
+            if ( fw.file_info.get_name().collate(file_info.get_name())<0)
+                index++;
+            if ( fw.file.get_path() == file.get_path())
+                return;
+        }
+        files_widget.pack_start(box,expand=false); 
+        files_widget.reorder_child(box, index);
+        update_send_label();
     }
 }
-
 }

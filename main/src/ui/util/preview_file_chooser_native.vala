@@ -12,9 +12,9 @@ public class PreviewFileChooserNative : Object {
     private Gtk.FileChooserNative? chooser = null;
     private Image preview_image = new Image();
 
-    public PreviewFileChooserNative(string? title, Gtk.Window? parent, FileChooserAction action, string? accept_label, string? cancel_label) {
+    public PreviewFileChooserNative(string? title, Gtk.Window? parent, FileChooserAction action, string? accept_label, string? cancel_label,bool multiple=false) {
         chooser = new FileChooserNative(title, parent, action, accept_label, cancel_label);
-
+        chooser.select_multiple = multiple;
         chooser.set_preview_widget(this.preview_image);
         chooser.use_preview_label = false;
         chooser.preview_widget_active = false;

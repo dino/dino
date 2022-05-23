@@ -60,8 +60,19 @@
                     </object>
                 </child>
                 <child>
-                    <object class="DinoUiSizingBin" id="file_widget_insert">
+                    <object class="GtkScrolledWindow">
+                        <property name="shadow-type">in</property>
+                        <property name="expand">True</property>
                         <property name="visible">True</property>
+                        <property name="min-content-width">600</property>
+                        <property name="min-content-height">600</property>
+                        <child>
+                            <object class="GtkBox" id="files_widget">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">5</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
                 <child>
@@ -71,13 +82,7 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <object class="GtkLabel" id="info_label">
-                                <property name="visible">True</property>
-                            </object>
-                        </child>
-                        <child>
                             <object class="GtkButton" id="send_button">
-                                <property name="label" translatable="yes">Send</property>
                                 <property name="can_default">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="visible">True</property>
@@ -87,6 +92,17 @@
                             </object>
                             <packing>
                                 <property name="pack_type">end</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="add_more">
+                                <property name="label" translatable="yes">Add files</property>
+                                <property name="can_default">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="visible">True</property>
+                            </object>
+                            <packing>
+                                <property name="pack_type">start</property>
                             </packing>
                         </child>
                     </object>
