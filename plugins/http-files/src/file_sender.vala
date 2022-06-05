@@ -73,6 +73,7 @@ public class HttpFileSender : FileSender, Object {
         }
     }
 
+#if !SOUP_3
     private static void transfer_more_bytes(InputStream stream, Soup.MessageBody body) {
         uint8[] bytes = new uint8[4096];
         ssize_t read = stream.read(bytes);
@@ -83,25 +84,35 @@ public class HttpFileSender : FileSender, Object {
         bytes.length = (int)read;
         body.append_buffer(new Soup.Buffer.take(bytes));
     }
+#endif
 
     private async void upload(FileTransfer file_transfer, HttpFileSendData file_send_data, FileMeta file_meta) throws FileSendError {
         Xmpp.XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         if (stream == null) return;
 
-        Soup.Message message = new Soup.Message("PUT", file_send_data.url_up);
-        message.request_headers.set_content_type(file_meta.mime_type, null);
-        message.request_headers.set_content_length(file_meta.size);
+        var session = new Soup.Session();
+        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
+        var put_message = new Soup.Message("PUT", file_send_data.url_up);
+#if SOUP_3
+        put_message.set_request_body(file_meta.mime_type, file_transfer.input_stream, (ssize_t) file_meta.size);
+#else
+        put_message.request_headers.set_content_type(file_meta.mime_type, null);
+        put_message.request_headers.set_content_length(file_meta.size);
+        put_message.request_body.set_accumulate(false);
+        put_message.wrote_headers.connect(() => transfer_more_bytes(file_transfer.input_stream, put_message.request_body));
+        put_message.wrote_chunk.connect(() => transfer_more_bytes(file_transfer.input_stream, put_message.request_body));
+#endif
         foreach (var entry in file_send_data.headers.entries) {
-            message.request_headers.append(entry.key, entry.value);
+            put_message.request_headers.append(entry.key, entry.value);
         }
-        message.request_body.set_accumulate(false);
-        message.wrote_headers.connect(() => transfer_more_bytes(file_transfer.input_stream, message.request_body));
-        message.wrote_chunk.connect(() => transfer_more_bytes(file_transfer.input_stream, message.request_body));
-        Soup.Session session = new Soup.Session();
         try {
-            yield session.send_async(message);
-            if (message.status_code < 200 || message.status_code >= 300) {
-                throw new FileSendError.UPLOAD_FAILED("HTTP status code %s".printf(message.status_code.to_string()));
+#if SOUP_3
+            yield session.send_async(put_message, GLib.Priority.LOW, file_transfer.cancellable);
+#else
+            yield session.send_async(put_message, file_transfer.cancellable);
+#endif
+            if (put_message.status_code < 200 || put_message.status_code >= 300) {
+                throw new FileSendError.UPLOAD_FAILED("HTTP status code %s".printf(put_message.status_code.to_string()));
             }
         } catch (Error e) {
             throw new FileSendError.UPLOAD_FAILED("HTTP upload error: %s".printf(e.message));

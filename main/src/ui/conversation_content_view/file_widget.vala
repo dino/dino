@@ -131,6 +131,7 @@ public class FileDefaultWidgetController : Object {
         widget.button_release_event.connect(on_clicked);
         widget.file_open_button.clicked.connect(open_file);
         widget.file_save_button.clicked.connect(save_file);
+        widget.cancel_button.clicked.connect(cancel_download);
     }
 
     public void set_file_transfer(FileTransfer file_transfer, StreamInteractor stream_interactor) {
@@ -184,6 +185,10 @@ public class FileDefaultWidgetController : Object {
                 warning("Failed copy file %s - %s", file_uri, err.message);
             }
         }
+    }
+
+    private void cancel_download() {
+        file_transfer.cancellable.cancel();
     }
 
     private bool on_clicked(EventButton event_button) {

@@ -246,7 +246,7 @@ public class FileManager : StreamInteractionModule, Object {
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
 
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            yield os.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE|OutputStreamSpliceFlags.CLOSE_TARGET);
+            yield os.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE | OutputStreamSpliceFlags.CLOSE_TARGET, Priority.LOW, file_transfer.cancellable);
             file_transfer.path = file.get_basename();
             file_transfer.input_stream = yield file.read_async();
 
@@ -299,13 +299,14 @@ public class FileManager : StreamInteractionModule, Object {
         if (is_sender_trustworthy(file_transfer, conversation)) {
             try {
                 yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
-
-                if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
-                    yield download_file_internal(file_provider, file_transfer, conversation);
-                }
             } catch (Error e) {
                 warning("Error downloading file: %s", e.message);
                 file_transfer.state = FileTransfer.State.FAILED;
+            }
+            if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
+                download_file_internal.begin(file_provider, file_transfer, conversation, (_, res) => {
+                    download_file_internal.end(res);
+                });
             }
         }
 

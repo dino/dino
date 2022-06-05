@@ -384,9 +384,27 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         int fps = 0;
         for (int i = 0; i < device.device.caps.get_size(); i++) {
             unowned Gst.Structure structure = device.device.caps.get_structure(i);
-            int num = 0, den = 0;
-            if (structure.has_field("framerate") && structure.get_fraction("framerate", out num, out den)) fps = int.max(fps, num / den);
+
+            if (structure.has_field("framerate")) {
+                Value framerate = structure.get_value("framerate");
+                if (framerate.type() == typeof(Gst.Fraction)) {
+                    int num = Gst.Value.get_fraction_numerator(framerate);
+                    int den = Gst.Value.get_fraction_denominator(framerate);
+                    fps = int.max(fps, num / den);
+                } else if (framerate.type() == typeof(Gst.ValueList)) {
+                    for(uint j = 0; j < Gst.ValueList.get_size(framerate); j++) {
+                        Value fraction = Gst.ValueList.get_value(framerate, j);
+                        int num = Gst.Value.get_fraction_numerator(fraction);
+                        int den = Gst.Value.get_fraction_denominator(fraction);
+                        fps = int.max(fps, num / den);
+                    }
+                } else {
+                    debug("Unknown type for framerate %s on device %s", framerate.type_name(), device.display_name);
+                }
+            }
         }
+
+        debug("Max framerate for device %s: %d", device.display_name, fps);
         return fps;
     }
 

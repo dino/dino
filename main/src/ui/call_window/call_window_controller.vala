@@ -22,6 +22,7 @@ public class Dino.Ui.CallWindowController : Object {
     private bool window_size_changed = false;
     private ulong[] call_window_handler_ids = new ulong[0];
     private ulong[] bottom_bar_handler_ids = new ulong[0];
+    private uint inhibit_cookie;
 
     public CallWindowController(CallWindow call_window, CallState call_state, StreamInteractor stream_interactor) {
         this.call_window = call_window;
@@ -118,6 +119,19 @@ public class Dino.Ui.CallWindowController : Object {
 
         update_audio_device_choices();
         update_video_device_choices();
+
+        var app = GLib.Application.get_default() as Application;
+        inhibit_cookie = app.inhibit(call_window, IDLE | SUSPEND, "Ongoing call");
+
+        if (inhibit_cookie == 0) {
+            warning("suspend inhibit request failed or unsupported");
+        }
+
+        call_window.destroy.connect(() => {
+            if (inhibit_cookie != 0) {
+                app.uninhibit(inhibit_cookie);
+            }
+        });
     }
 
     private void invite_button_clicked() {

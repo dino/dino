@@ -354,6 +354,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             int best_height = 0;
             for (int i = 0; i < device.caps.get_size(); i++) {
                 unowned Gst.Structure? that = device.caps.get_structure(i);
+                Value? best_fraction_now = null;
                 if (!that.has_name("video/x-raw")) continue;
                 int num = 0, den = 0, width = 0, height = 0;
                 if (!that.has_field("framerate")) continue;
@@ -369,7 +370,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                         int fps = den > 0 ? (num/den) : 0;
                         int in_fps = in_den > 0 ? (in_num/in_den) : 0;
                         if (in_fps > fps) {
-                            best_fraction = fraction;
+                            best_fraction_now = fraction;
                             num = in_num;
                             den = in_den;
                         }
@@ -386,6 +387,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                     best_width = width;
                     best_height = height;
                     best_index = i;
+                    best_fraction = best_fraction_now;
                 }
             }
             Gst.Caps res = caps_copy_nth(device.caps, best_index);

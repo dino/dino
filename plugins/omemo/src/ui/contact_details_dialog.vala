@@ -92,20 +92,23 @@ public class ContactDetailsDialog : Gtk.Dialog {
             copy_button.clicked.connect(() => {Clipboard.get_default(get_display()).set_text(fingerprint, fingerprint.length);});
 
             int sid = plugin.db.identity.row_with(plugin.db.identity.account_id, account.id)[plugin.db.identity.device_id];
-            Pixbuf qr_pixbuf = new QRcode(@"xmpp:$(account.bare_jid)?omemo-sid-$(sid)=$(fingerprint)", 2).to_pixbuf();
-            qr_pixbuf = qr_pixbuf.scale_simple(150, 150, InterpType.NEAREST);
+            var iri_query = @"omemo-sid-$(sid)=$(fingerprint)";
+#if GLIB_2_66 && VALA_0_50
+            string iri = GLib.Uri.join(UriFlags.NONE, "xmpp", null, null, 0, jid.to_string(), iri_query, null);
+#else
+            var iri_path_seg = escape_for_iri_path_segment(jid.to_string());
+            var iri = @"xmpp:$(iri_path_seg)?$(iri_query)";
+#endif
 
-            Pixbuf pixbuf = new Pixbuf(
-                qr_pixbuf.colorspace,
-                qr_pixbuf.has_alpha,
-                qr_pixbuf.bits_per_sample,
-                170,
-                170
-            );
-            pixbuf.fill(uint32.MAX);
-            qr_pixbuf.copy_area(0, 0, 150, 150, pixbuf, 10, 10);
+            const int QUIET_ZONE_MODULES = 4;  // MUST be at least 4
+            const int MODULE_SIZE_PX = 4;  // arbitrary
+            var qr_pixbuf = new QRcode(iri, 2)
+                .to_pixbuf(MODULE_SIZE_PX * qrcode_image.scale_factor);
+            qrcode_image.set_from_surface(
+                Gdk.cairo_surface_create_from_pixbuf(qr_pixbuf,0,get_window()));
+            qrcode_image.margin = QUIET_ZONE_MODULES*MODULE_SIZE_PX;
+            qrcode_popover.get_style_context().add_class("qrcode-container");
 
-            qrcode_image.set_from_pixbuf(pixbuf);
             show_qrcode_button.clicked.connect(qrcode_popover.popup);
         }
 
@@ -128,6 +131,14 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
         // Check for unknown devices
         fetch_unknown_bundles();
+    }
+
+    private static string escape_for_iri_path_segment(string s) {
+        // from RFC 3986, 2.2. Reserved Characters:
+        string SUB_DELIMS = "!$&'()*+,;=";
+        // from RFC 3986, 3.3. Path (pchar without unreserved and pct-encoded):
+        string ALLOWED_RESERVED_CHARS = SUB_DELIMS + ":@";
+        return GLib.Uri.escape_string(s, ALLOWED_RESERVED_CHARS, true);
     }
 
     private void fetch_unknown_bundles() {
