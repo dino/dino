@@ -8,6 +8,10 @@ public class LabelHybrid : Stack {
     public Label label = new Label("") { visible=true, max_width_chars=1, ellipsize=Pango.EllipsizeMode.END };
     protected Button button = new Button() { relief=ReliefStyle.NONE, visible=true };
 
+    public signal void switched_to_label();
+    public signal void switched_to_widget();
+    private bool shows_widget = false;
+
     internal virtual void init(Widget widget) {
         button.add(label);
         add_named(button, "label");
@@ -21,10 +25,18 @@ public class LabelHybrid : Stack {
     public void show_widget() {
         visible_child_name = "widget";
         get_child_by_name("widget").grab_focus();
+        if (!shows_widget) {
+            switched_to_widget();
+            shows_widget = true;
+        }
     }
 
     public void show_label() {
         visible_child_name = "label";
+        if (shows_widget) {
+            switched_to_label();
+            shows_widget = false;
+        }
     }
 }
 

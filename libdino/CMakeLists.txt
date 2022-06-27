@@ -4,7 +4,14 @@ find_packages(LIBDINO_PACKAGES REQUIRED
     GLib
     GModule
     GObject
+    OPTIONAL
+    Secret
 )
+
+if (Secret_FOUND)
+    message(STATUS "libsecret found")
+    set(LIBDINO_EXTRA_OPTIONS ${LIBDINO_EXTRA_OPTIONS} -D WITH_SECRET)
+endif()
 
 vala_precompile(LIBDINO_VALA_C
 SOURCES
@@ -52,6 +59,7 @@ SOURCES
     src/service/presence_manager.vala
     src/service/registration.vala
     src/service/roster_manager.vala
+    src/service/secret_manager.vala
     src/service/search_processor.vala
     src/service/stream_interactor.vala
     src/service/util.vala
@@ -71,6 +79,8 @@ GENERATE_VAPI
     dino
 GENERATE_HEADER
     dino
+OPTIONS
+    ${LIBDINO_EXTRA_OPTIONS}
 )
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/dino_i18n.h"

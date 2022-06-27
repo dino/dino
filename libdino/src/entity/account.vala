@@ -3,7 +3,7 @@ using Xmpp;
 
 namespace Dino.Entities {
 
-public class Account : Object {
+public class Account : Object, Sasl.PasswordProvider {
 
     public int id { get; set; }
     public string localpart { get { return full_jid.localpart; } }
@@ -11,7 +11,6 @@ public class Account : Object {
     public string resourcepart { get { return full_jid.resourcepart;} }
     public Jid bare_jid { owned get { return full_jid.bare_jid; } }
     public Jid full_jid { get; private set; }
-    public string? password { get; set; }
     public string display_name {
         owned get { return alias ?? bare_jid.to_string(); }
     }
@@ -21,6 +20,10 @@ public class Account : Object {
     public DateTime mam_earliest_synced { get; set; default=new DateTime.from_unix_utc(0); }
 
     private Database? db;
+    private string password; // stores the password loaded from the config, if any
+#if WITH_SECRET
+    private SecretManager secret_manager;
+#endif
 
     public Account(Jid bare_jid, string? resourcepart, string? password, string? alias) {
         this.id = -1;
@@ -40,6 +43,10 @@ public class Account : Object {
         }
         this.password = password;
         this.alias = alias;
+
+#if WITH_SECRET
+        this.secret_manager = new SecretManager(bare_jid);
+#endif
     }
 
     public Account.from_row(Database db, Qlite.Row row) throws InvalidJidError {
@@ -51,6 +58,10 @@ public class Account : Object {
         enabled = row[db.account.enabled];
         roster_version = row[db.account.roster_version];
         mam_earliest_synced = new DateTime.from_unix_utc(row[db.account.mam_earliest_synced]);
+
+#if WITH_SECRET
+        secret_manager = new SecretManager(bare_jid);
+#endif
 
         notify.connect(on_update);
     }
@@ -70,6 +81,37 @@ public class Account : Object {
                 .perform();
 
         notify.connect(on_update);
+    }
+
+    public async string? get_password() {
+#if WITH_SECRET
+        if (password == "") {
+            // We have to look it up in the secret service
+            return yield secret_manager.get_password();
+        }
+
+        // We have a clear-text password.  Try to put it into the keyring.
+        var cleartext_password = password;
+        if (yield secret_manager.set_password(password)) {
+            // Success.  Clear the clear-text PW from this entity.
+            this.password = "";
+        }
+        // Either way, return the password.
+        return cleartext_password;
+#else
+        return this.password;
+#endif
+    }
+
+    public async void set_password(string password) {
+#if WITH_SECRET
+        if (yield secret_manager.set_password(password)) {
+            // Success.  Don't keep anything locally.
+            this.password = "";
+            return;
+        }
+#endif
+        this.password = password;
     }
 
     public void remove() {
