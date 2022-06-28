@@ -74,7 +74,7 @@ public class JingleFileProvider : FileProvider, Object {
         return file_meta;
     }
 
-    public FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
+    public async FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
         return new FileReceiveData();
     }
 

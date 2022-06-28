@@ -185,6 +185,7 @@ SOURCES
     src/ui/conversation_content_view/date_separator_populator.vala
     src/ui/conversation_content_view/file_default_widget.vala
     src/ui/conversation_content_view/file_image_widget.vala
+    src/ui/conversation_content_view/file_preview_widget.vala
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/item_actions.vala
     src/ui/conversation_content_view/message_widget.vala
@@ -221,6 +222,7 @@ SOURCES
     src/ui/util/accounts_combo_box.vala
     src/ui/util/config.vala
     src/ui/util/data_forms.vala
+    src/ui/util/file_metadata_providers.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
     src/ui/util/preference_group.vala

@@ -38,6 +38,9 @@ public class FileProvider : Dino.FileProvider, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (Xep.StatelessFileSharing.MessageFlag.get_flag(stanza) != null) {
+                return true;
+            }
             string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(stanza);
             bool normal_file = oob_url != null && oob_url == message.body && FileProvider.http_url_regex.match(message.body);
             bool omemo_file = FileProvider.omemo_url_regex.match(message.body);
@@ -180,6 +183,16 @@ public class FileProvider : Dino.FileProvider, Object {
     }
 
     public FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError {
+        // TODO: replace '2' with constant?
+        if (file_transfer.provider == 2) {
+            var file_meta = new HttpFileMeta();
+            file_meta.size = file_transfer.size;
+            file_meta.mime_type = file_transfer.mime_type;
+            file_meta.file_name = file_transfer.file_name;
+            file_meta.message = null;
+            return file_meta;
+        }
+
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) throw new FileReceiveError.GET_METADATA_FAILED("No conversation");
 
@@ -197,7 +210,26 @@ public class FileProvider : Dino.FileProvider, Object {
         return file_meta;
     }
 
-    public FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
+    public async FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
+        // TODO: replace '2' with constant?
+        if (file_transfer.provider == 2) {
+            Xep.StatelessFileSharing.HttpSource http_source = null;
+            for(int i = 0; i < file_transfer.sfs_sources.get_n_items(); i++) {
+                Object source_object = file_transfer.sfs_sources.get_item(i);
+                FileTransfer.SerializedSfsSource source = source_object as FileTransfer.SerializedSfsSource;
+                if (source.type == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE) {
+                    http_source = yield Xep.StatelessFileSharing.HttpSource.deserialize(source.data);
+                    assert(source != null);
+                }
+            }
+            if (http_source == null) {
+                printerr("Sfs file transfer has no http sources attached!");
+                return null;
+            }
+            var receive_data = new HttpFileReceiveData();
+            receive_data.url = http_source.url;
+            return receive_data;
+        }
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) return null;
 

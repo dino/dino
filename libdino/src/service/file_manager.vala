@@ -2,6 +2,7 @@ using Gdk;
 using Gee;
 
 using Xmpp;
+using Xmpp.Xep;
 using Dino.Entities;
 
 namespace Dino {
@@ -19,6 +20,7 @@ public class FileManager : StreamInteractionModule, Object {
     private Gee.List<FileEncryptor> file_encryptors = new ArrayList<FileEncryptor>();
     private Gee.List<FileDecryptor> file_decryptors = new ArrayList<FileDecryptor>();
     private Gee.List<FileProvider> file_providers = new ArrayList<FileProvider>();
+    private Gee.List<FileMetadataProvider> file_metadata_providers = new ArrayList<FileMetadataProvider>();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
         FileManager m = new FileManager(stream_interactor, db);
@@ -36,9 +38,121 @@ public class FileManager : StreamInteractionModule, Object {
 
         this.add_provider(new JingleFileProvider(stream_interactor));
         this.add_sender(new JingleFileSender(stream_interactor));
+        this.add_metadata_provider(new GenericFileMetadataProvider());
+        this.add_metadata_provider(new ImageFileMetadataProvider());
+        this.stream_interactor.account_added.connect((account) => {
+            on_account_added(account);
+        });
     }
 
-    public async HashMap<int, long> get_file_size_limits(Conversation conversation) {
+    public const int HTTP_PROVIDER_ID = 0;
+    public const int SFS_PROVIDER_ID = 2;
+
+    private FileProvider? select_file_provider(FileTransfer file_transfer) {
+        bool http_usable = file_transfer.provider == SFS_PROVIDER_ID;
+        foreach (FileProvider file_provider in this.file_providers) {
+            if (file_transfer.provider == file_provider.get_id()) {
+                return file_provider;
+            }
+            if (http_usable && file_provider.get_id() == HTTP_PROVIDER_ID) {
+                return file_provider;
+            }
+        }
+        return null;
+    }
+
+    // For receiving out of band data as sfs
+    private async void on_backwards_compatible_sfs(FileProvider file_provider, Jid from, DateTime time, DateTime local_time, Conversation conversation, FileReceiveData receive_data, FileMeta file_meta) {
+        Xep.StatelessFileSharing.SfsElement sfs_element = new Xep.StatelessFileSharing.SfsElement();
+
+        Xep.StatelessFileSharing.HttpSource source = new Xep.StatelessFileSharing.HttpSource();
+        HttpFileReceiveData http_receive_data = receive_data as HttpFileReceiveData;
+        source.url = http_receive_data.url;
+        sfs_element.sources.add(source);
+
+        FileTransfer file_transfer = new FileTransfer();
+
+        if (is_jid_trustworthy(from, conversation)) {
+            try {
+                file_meta = yield file_provider.get_meta_info(file_transfer, http_receive_data, file_meta);
+            } catch (Error e) {
+                warning("Can't accept oob data as stateless file sharing due to failed http request\n");
+            }
+        }
+
+        sfs_element.metadata.size = file_meta.size;
+        sfs_element.metadata.name = file_meta.file_name;
+        sfs_element.metadata.mime_type = file_meta.mime_type;
+        // Encryption unused in http file transfers
+
+        yield on_receive_sfs(from, conversation, sfs_element, null);
+    }
+
+    private async void on_receive_sfs(Jid from, Conversation conversation, Xep.StatelessFileSharing.SfsElement sfs_element, string? id) {
+        FileTransfer file_transfer = new FileTransfer();
+        file_transfer.account = conversation.account;
+        file_transfer.counterpart = file_transfer.direction == FileTransfer.DIRECTION_RECEIVED ? from : conversation.counterpart;
+        if (conversation.type_.is_muc_semantic()) {
+            file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
+            file_transfer.direction = from.equals(file_transfer.ourpart) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
+        } else {
+            file_transfer.ourpart = conversation.account.full_jid;
+            file_transfer.direction = from.equals_bare(file_transfer.ourpart) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
+        }
+        file_transfer.time = new DateTime.now_utc();
+        // TODO: get time from message
+        file_transfer.local_time = new DateTime.now_utc();
+        file_transfer.provider = SFS_PROVIDER_ID;
+        file_transfer.with_metadata_element(sfs_element.metadata);
+        foreach (Xep.StatelessFileSharing.SfsSource source in sfs_element.sources) {
+            file_transfer.sfs_sources.append(new FileTransfer.SerializedSfsSource.from_sfs_source(source) as Object);
+        }
+        // FileTransfer.info stores the id of the MessageStanza for future SfsSourceAttachments
+        // Prior to sfs, info stored the id of the Message entity for oob
+        file_transfer.info = id;
+
+        stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
+
+        if (is_sender_trustworthy(file_transfer, conversation)) {
+            if (file_transfer.size >= 0 && file_transfer.size < 500) {
+                FileProvider? file_provider = this.select_file_provider(file_transfer);
+                download_file_internal.begin(file_provider, file_transfer, conversation, (_, res) => {
+                    download_file_internal.end(res);
+                });
+            }
+        }
+
+        conversation.last_active = file_transfer.time;
+        received_file(file_transfer, conversation);
+    }
+
+    private void on_receive_sfs_attachment(Jid from, Conversation conversation, Xep.StatelessFileSharing.SfsSourceAttachment attachment) {
+        foreach (Qlite.Row file_transfer_row in this.db.file_transfer.select()
+                .with(db.file_transfer.info, "=", attachment.sfs_id)) {
+            FileTransfer file_transfer = new FileTransfer.from_row(this.db, file_transfer_row, FileManager.get_storage_dir());
+            if (file_transfer.hashes.supported_hashes().is_empty) {
+                return;
+            }
+            foreach (StatelessFileSharing.SfsSource source in attachment.sources) {
+                file_transfer.sfs_sources.append(new FileTransfer.SerializedSfsSource.from_sfs_source(source) as Object);
+            }
+        }
+
+    }
+
+    private void on_account_added(Account account) {
+        Xep.StatelessFileSharing.Module fsf_module = stream_interactor.module_manager.get_module(account, Xep.StatelessFileSharing.Module.IDENTITY);
+        fsf_module.received_sfs.connect((from, to, sfs_element, message) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from, to, account, message.type_);
+            on_receive_sfs(from, conversation, sfs_element, message.id);
+        });
+        fsf_module.received_sfs_attachment.connect((from, to, sfs_attachment, message) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from, to, account, message.type_);
+            on_receive_sfs_attachment(from, conversation, sfs_attachment);
+        });
+    }
+
+        public async HashMap<int, long> get_file_size_limits(Conversation conversation) {
         HashMap<int, long> ret = new HashMap<int, long>();
         foreach (FileSender sender in file_senders) {
             ret[sender.get_id()] = yield sender.get_file_size_limit(conversation);
@@ -60,11 +174,15 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.local_time = new DateTime.now_utc();
         file_transfer.encryption = conversation.encryption;
 
+        Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
+        foreach (FileMetadataProvider file_metadata_provider in this.file_metadata_providers) {
+            if (file_metadata_provider.supports_file(file)) {
+                yield file_metadata_provider.fill_metadata(file, metadata);
+            }
+        }
+        file_transfer.with_metadata_element(metadata);
+
         try {
-            FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-            file_transfer.file_name = file_info.get_display_name();
-            file_transfer.mime_type = file_info.get_content_type();
-            file_transfer.size = (int)file_info.get_size();
             file_transfer.input_stream = yield file.read_async();
 
             yield save_file(file_transfer);
@@ -130,12 +248,7 @@ public class FileManager : StreamInteractionModule, Object {
     public async void download_file(FileTransfer file_transfer) {
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
 
-        FileProvider? file_provider = null;
-        foreach (FileProvider fp in file_providers) {
-            if (file_transfer.provider == fp.get_id()) {
-                file_provider = fp;
-            }
-        }
+        FileProvider? file_provider = this.select_file_provider(file_transfer);
 
         yield download_file_internal(file_provider, file_transfer, conversation);
     }
@@ -152,7 +265,12 @@ public class FileManager : StreamInteractionModule, Object {
     public void add_provider(FileProvider file_provider) {
         file_providers.add(file_provider);
         file_provider.file_incoming.connect((info, from, time, local_time, conversation, receive_data, file_meta) => {
-            handle_incoming_file.begin(file_provider, info, from, time, local_time, conversation, receive_data, file_meta);
+            if (receive_data is HttpFileReceiveData) {
+                printerr("Handling oob data as stateless file sharing");
+                this.on_backwards_compatible_sfs.begin(file_provider, from, time, local_time, conversation, receive_data, file_meta);
+            } else {
+                handle_incoming_file.begin(file_provider, info, from, time, local_time, conversation, receive_data, file_meta);
+            }
         });
     }
 
@@ -174,17 +292,25 @@ public class FileManager : StreamInteractionModule, Object {
         file_decryptors.add(decryptor);
     }
 
-    public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
-        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return true;
+    public void add_metadata_provider(FileMetadataProvider file_metadata_provider) {
+        file_metadata_providers.add(file_metadata_provider);
+    }
 
+    private bool is_jid_trustworthy(Jid from, Conversation conversation) {
         Jid relevant_jid = conversation.counterpart;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account);
+            relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(from, conversation.account);
         }
         if (relevant_jid == null) return false;
 
         bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
         return in_roster;
+    }
+
+    public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
+        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return true;
+
+        return is_jid_trustworthy(file_transfer.from, conversation);
     }
 
     private async FileMeta get_file_meta(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation, FileReceiveData receive_data_) throws FileReceiveError {
@@ -211,7 +337,7 @@ public class FileManager : StreamInteractionModule, Object {
     private async void download_file_internal(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
         try {
             // Get meta info
-            FileReceiveData receive_data = file_provider.get_file_receive_data(file_transfer);
+            FileReceiveData receive_data = yield file_provider.get_file_receive_data(file_transfer);
             FileDecryptor? file_decryptor = null;
             foreach (FileDecryptor decryptor in file_decryptors) {
                 if (decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
@@ -379,7 +505,7 @@ public interface FileProvider : Object {
 
     public abstract Encryption get_encryption(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta);
     public abstract FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError;
-    public abstract FileReceiveData? get_file_receive_data(FileTransfer file_transfer);
+    public abstract async FileReceiveData? get_file_receive_data(FileTransfer file_transfer);
 
     public abstract async FileMeta get_meta_info(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError;
     public abstract async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError;
@@ -413,6 +539,109 @@ public interface FileDecryptor : Object {
     public abstract FileMeta prepare_download_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta);
     public abstract bool can_decrypt_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data);
     public abstract async InputStream decrypt_file(InputStream encrypted_stream, Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) throws FileReceiveError;
+}
+
+public interface FileMetadataProvider : Object {
+    public abstract bool supports_file(File file);
+
+    public abstract async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata);
+}
+
+class GenericFileMetadataProvider: Dino.FileMetadataProvider, Object {
+    public bool supports_file(File file) {
+        return true;
+    }
+
+    public async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata) {
+        FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
+
+        metadata.name = info.get_display_name();
+        metadata.mime_type = info.get_content_type();
+        metadata.size = info.get_size();
+        metadata.date = info.get_modification_date_time();
+
+        Bytes file_data = file.load_bytes();
+        metadata.hashes.hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, file_data.get_data()));
+        metadata.hashes.hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, file_data.get_data()));
+    }
+}
+
+public class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
+    public bool supports_file(File file) {
+        return file.query_info("*", FileQueryInfoFlags.NONE).get_content_type().has_prefix("image");
+    }
+
+    private const int[] THUMBNAIL_DIMS = { 1, 2, 3, 4, 8 };
+    private const string IMAGE_TYPE = "png";
+    private const string MIME_TYPE = "image/png";
+
+    public async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata) {
+        Pixbuf pixbuf = new Pixbuf.from_stream(yield file.read_async());
+        metadata.width = pixbuf.get_width();
+        metadata.height = pixbuf.get_height();
+        float ratio = (float)metadata.width / (float) metadata.height;
+
+        int thumbnail_width = -1;
+        int thumbnail_height = -1;
+        float diff = float.INFINITY;
+        for (int i = 0; i < THUMBNAIL_DIMS.length; i++) {
+            int test_width = THUMBNAIL_DIMS[i];
+            int test_height = THUMBNAIL_DIMS[THUMBNAIL_DIMS.length - 1 - i];
+            float test_ratio = (float)test_width / (float)test_height;
+            float test_diff = (test_ratio - ratio).abs();
+            if (test_diff < diff) {
+                thumbnail_width = test_width;
+                thumbnail_height = test_height;
+                diff = test_diff;
+            }
+        }
+
+        Pixbuf thumbnail_pixbuf = pixbuf.scale_simple(thumbnail_width, thumbnail_height, InterpType.BILINEAR);
+        uint8[] buffer;
+        thumbnail_pixbuf.save_to_buffer(out buffer, IMAGE_TYPE);
+        string base_64 = GLib.Base64.encode(buffer);
+        string uri = @"data:$MIME_TYPE;base64,$base_64";
+        Xep.JingleContentThumbnails.Thumbnail thumbnail = new Xep.JingleContentThumbnails.Thumbnail();
+        thumbnail.uri = uri;
+        thumbnail.media_type = MIME_TYPE;
+        thumbnail.width = thumbnail_width;
+        thumbnail.height = thumbnail_height;
+        metadata.thumbnails.add(thumbnail);
+    }
+
+    public static Pixbuf? parse_thumbnail(Xep.JingleContentThumbnails.Thumbnail thumbnail) {
+        string[] splits = thumbnail.uri.split(":", 2);
+        if (splits.length != 2) {
+            printerr("Thumbnail parsing error: ':' not found");
+            return null;
+        }
+        if (splits[0] != "data") {
+            printerr("Unsupported thumbnail: unimplemented uri type\n");
+            return null;
+        }
+        splits = splits[1].split(";", 2);
+        if (splits.length != 2) {
+            printerr("Thumbnail parsing error: ';' not found");
+            return null;
+        }
+        if (splits[0] != MIME_TYPE) {
+            printerr("Unsupported thumbnail: unsupported mime-type\n");
+            return null;
+        }
+        splits = splits[1].split(",", 2);
+        if (splits.length != 2) {
+            printerr("Thumbnail parsing error: ',' not found");
+            return null;
+        }
+        if (splits[0] != "base64") {
+            printerr("Unsupported thumbnail: data is not base64 encoded\n");
+            return null;
+        }
+        uint8[] data = Base64.decode(splits[1]);
+        MemoryInputStream input_stream = new MemoryInputStream.from_data(data);
+        Pixbuf pixbuf = new Pixbuf.from_stream(input_stream);
+        return pixbuf;
+    }
 }
 
 }

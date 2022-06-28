@@ -45,11 +45,38 @@ public class HttpFileSender : FileSender, Object {
 
         yield upload(file_transfer, send_data, file_meta);
 
-        Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(send_data.url_down, conversation);
-        file_transfer.info = message.id.to_string();
+        if (send_data.encrypt_message && conversation.encryption != Encryption.NONE) {
+            Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(send_data.url_down, conversation);
+            file_transfer.info = message.id.to_string();
 
-        message.encryption = send_data.encrypt_message ? conversation.encryption : Encryption.NONE;
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(message, conversation);
+            message.encryption = conversation.encryption;
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(message, conversation);
+        } else {
+            // Use stateless file sharing for unencrypted file sharing
+            Xep.StatelessFileSharing.HttpSource source = new Xep.StatelessFileSharing.HttpSource();
+            source.url = send_data.url_down;
+            file_transfer.sfs_sources.append(new FileTransfer.SerializedSfsSource.from_sfs_source(source) as Object);
+            this.db.sfs_sources.insert()
+                    .value(db.sfs_sources.id, file_transfer.id)
+                    .value(db.sfs_sources.type, source.type())
+                    .value(db.sfs_sources.data, source.serialize())
+                    .perform();
+            XmppStream stream = stream_interactor.get_stream(conversation.account);
+            Xep.StatelessFileSharing.Module sfs_module = stream.get_module(Xep.StatelessFileSharing.Module.IDENTITY);
+            string message_type;
+            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                message_type = MessageStanza.TYPE_GROUPCHAT;
+            } else {
+                message_type = MessageStanza.TYPE_CHAT;
+            }
+            MessageStanza sfs_message = new MessageStanza() { to=conversation.counterpart, type_=message_type };
+            // TODO: is this the correct way of adding out-of-band-data?
+        sfs_message.body = source.url;
+            Xep.OutOfBandData.add_url_to_message(sfs_message, source.url);
+            // TODO: message hint correct?
+        Xep.MessageProcessingHints.set_message_hint(sfs_message, Xep.MessageProcessingHints.HINT_STORE);
+            sfs_module.send_stateless_file_transfer(stream, sfs_message, yield file_transfer.to_sfs_element());
+        }
     }
 
     public async bool can_send(Conversation conversation, FileTransfer file_transfer) {
