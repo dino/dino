@@ -22,6 +22,23 @@ namespace Xmpp.Xep.FileMetadataElement {
             this.date = info.get_modification_date_time();
         }
 
+        public void debug_print() {
+            printerr("File: '%s'\n", this.name);
+            if (this.desc != null) {
+                printerr("  Description: '%s'\n", this.desc);
+            }
+            printerr("  Mime type: %s\n", this.mime_type);
+            printerr("  Size: %s bytes\n", this.size.to_string());
+            printerr("  Last change: %s\n", this.date.to_string());
+            if (this.width != -1 && this.height != -1) {
+                printerr("  Image width: %s\n", this.width.to_string());
+                printerr("  Image height: %s\n", this.height.to_string());
+            }
+            if (this.length != -1) {
+                printerr("  Video length: %s\n", this.mime_type);
+            }
+        }
+
         public void add_to_message(MessageStanza message) {
             StanzaNode node = new StanzaNode.build("file", NS_URI).add_self_xmlns()
                     .put_attribute("date", this.date.to_string())
@@ -47,11 +64,11 @@ namespace Xmpp.Xep.FileMetadataElement {
             if (node == null) {
                 return null;
             }
-            metadata.date = new DateTime.from_iso8601(node.get_attribute("date"), null);
-            metadata.mime_type = node.get_attribute("media_type");
             metadata.name = node.get_attribute("name");
-            metadata.size = node.get_attribute_uint("size");
             metadata.desc = node.get_attribute("desc");
+            metadata.mime_type = node.get_attribute("media_type");
+            metadata.size = node.get_attribute_uint("size");
+            metadata.date = new DateTime.from_iso8601(node.get_attribute("date"), null);
             metadata.width = node.get_attribute_int("width", -1);
             metadata.height = node.get_attribute_int("height", -1);
             metadata.length = node.get_attribute_int("length", -1);

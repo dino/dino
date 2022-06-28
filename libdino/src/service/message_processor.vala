@@ -425,6 +425,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.file_metadata = Xep.FileMetadataElement.FileMetadata.from_message(message);
         if (new_message.file_metadata != null) {
             print("Received SFS metadata!\n");
+            new_message.file_metadata.debug_print();
         }
 
         return new_message;
@@ -687,7 +688,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
         if (message.file_metadata != null) {
             message.file_metadata.add_to_message(new_message);
             if (message.file_metadata != null) {
-                print("Attached FSF metadata!\n");
+                print("Attached SFS metadata!\n");
+                message.file_metadata.debug_print();
             }
         }
 
