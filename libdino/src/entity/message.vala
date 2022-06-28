@@ -1,5 +1,6 @@
 using Gee;
 using Xmpp;
+using Xmpp.Xep;
 
 namespace Dino.Entities {
 
@@ -67,6 +68,7 @@ public class Message : Object {
         }
     }
     public string? edit_to = null;
+    public Xep.FileMetadataElement.FileMetadata? file_metadata = null;
 
     private Database? db;
 

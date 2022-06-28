@@ -43,6 +43,7 @@ public class HttpFileSender : FileSender, Object {
         yield upload(file_transfer, send_data, file_meta);
 
         Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(send_data.url_down, conversation);
+        message.file_metadata = file_meta.sfs_metadata;
         file_transfer.info = message.id.to_string();
 
         message.encryption = send_data.encrypt_message ? conversation.encryption : Encryption.NONE;

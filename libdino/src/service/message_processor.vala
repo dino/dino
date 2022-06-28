@@ -422,6 +422,11 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         new_message.type_ = yield determine_message_type(account, message, new_message);
 
+        new_message.file_metadata = Xep.FileMetadataElement.FileMetadata.from_message(message);
+        if (new_message.file_metadata != null) {
+            print("Received SFS metadata!\n");
+        }
+
         return new_message;
     }
 
@@ -676,6 +681,13 @@ public class MessageProcessor : StreamInteractionModule, Object {
             }
             if(!flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.STABLE_ID)) {
                 UniqueStableStanzaIDs.set_origin_id(new_message, message.stanza_id);
+            }
+        }
+        // Add stateless file sharing (XEP-0446) metadata to message
+        if (message.file_metadata != null) {
+            message.file_metadata.add_to_message(new_message);
+            if (message.file_metadata != null) {
+                print("Attached FSF metadata!\n");
             }
         }
 

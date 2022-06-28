@@ -2,6 +2,7 @@ using Gdk;
 using Gee;
 
 using Xmpp;
+using Xmpp.Xep;
 using Dino.Entities;
 
 namespace Dino {
@@ -82,6 +83,7 @@ public class FileManager : StreamInteractionModule, Object {
             var file_meta = new FileMeta();
             file_meta.size = file_transfer.size;
             file_meta.mime_type = file_transfer.mime_type;
+            file_meta.sfs_metadata = new Xep.FileMetadataElement.FileMetadata.file(file);
 
             FileSender file_sender = null;
             FileEncryptor file_encryptor = null;
@@ -339,6 +341,7 @@ public class FileMeta {
     public string? mime_type = null;
     public string? file_name = null;
     public Encryption encryption = Encryption.NONE;
+    public Xep.FileMetadataElement.FileMetadata? sfs_metadata = null;
 }
 
 public class HttpFileMeta : FileMeta {
