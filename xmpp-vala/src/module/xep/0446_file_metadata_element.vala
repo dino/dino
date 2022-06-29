@@ -41,19 +41,19 @@ namespace Xmpp.Xep.FileMetadataElement {
 
         public void add_to_message(MessageStanza message) {
             StanzaNode node = new StanzaNode.build("file", NS_URI).add_self_xmlns()
-                    .put_attribute("date", this.date.to_string())
-                    .put_attribute("media_type", this.mime_type)
-                    .put_attribute("name", this.name)
-                    .put_attribute("size", this.size.to_string());
+                    .put_node(new StanzaNode.build("name", NS_URI).put_node(new StanzaNode.text(this.name)))
+                    .put_node(new StanzaNode.build("media_type", NS_URI).put_node(new StanzaNode.text(this.mime_type)))
+                    .put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(this.size.to_string())))
+                    .put_node(new StanzaNode.build("date", NS_URI).put_node(new StanzaNode.text(this.date.to_string())));
             if (this.desc != null) {
-                node.put_attribute("desc", this.desc);
+                node.put_node(new StanzaNode.build("desc", NS_URI).put_node(new StanzaNode.text(this.desc)));
             }
-            if (this.width != -1) { // Checks if file is a image
-            node.put_attribute("width", this.width.to_string());
-                node.put_attribute("height", this.height.to_string());
+            if (this.width != -1 && this.height != -1) {
+                node.put_node(new StanzaNode.build("width", NS_URI).put_node(new StanzaNode.text(this.width.to_string())));
+                node.put_node(new StanzaNode.build("height", NS_URI).put_node(new StanzaNode.text(this.height.to_string())));
             }
-            if (this.length != -1) { // Checks if file is a video
-            node.put_attribute("length", this.length.to_string());
+            if (this.length != -1) {
+                node.put_node(new StanzaNode.build("length", NS_URI).put_node(new StanzaNode.text(this.length.to_string())));
             }
             message.stanza.put_node(node);
         }
@@ -64,14 +64,24 @@ namespace Xmpp.Xep.FileMetadataElement {
             if (node == null) {
                 return null;
             }
-            metadata.name = node.get_attribute("name");
-            metadata.desc = node.get_attribute("desc");
-            metadata.mime_type = node.get_attribute("media_type");
-            metadata.size = node.get_attribute_uint("size");
-            metadata.date = new DateTime.from_iso8601(node.get_attribute("date"), null);
-            metadata.width = node.get_attribute_int("width", -1);
-            metadata.height = node.get_attribute_int("height", -1);
-            metadata.length = node.get_attribute_int("length", -1);
+            // TODO: null checks, on the subnodes as well as on the final values
+            metadata.name = node.get_subnode("name", NS_URI).get_string_content();
+            metadata.desc = node.get_subnode("desc", NS_URI).get_string_content();
+            metadata.mime_type = node.get_subnode("media_type", NS_URI).get_string_content();
+            metadata.size = int64.parse(node.get_subnode("size", NS_URI).get_string_content());
+            metadata.date = new DateTime.from_iso8601(node.get_subnode("date", NS_URI).get_string_content(), null);
+            StanzaNode? width_node = node.get_subnode("width", NS_URI);
+            if (width_node != null) {
+                metadata.width = int.parse(width_node.get_string_content());
+            }
+            StanzaNode? height_node = node.get_subnode("height", NS_URI);
+            if (height_node != null) {
+                metadata.height = int.parse(height_node.get_string_content());
+            }
+            StanzaNode? length_node = node.get_subnode("length", NS_URI);
+            if (length_node != null) {
+                metadata.length = int.parse(length_node.get_string_content());
+            }
             return metadata;
         }
     }
