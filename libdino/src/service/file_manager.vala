@@ -83,7 +83,9 @@ public class FileManager : StreamInteractionModule, Object {
             var file_meta = new FileMeta();
             file_meta.size = file_transfer.size;
             file_meta.mime_type = file_transfer.mime_type;
-            file_meta.sfs_metadata = new Xep.FileMetadataElement.FileMetadata.file(file);
+
+            Bytes file_data = file.load_bytes();
+            file_meta.sfs_metadata = new Xep.FileMetadataElement.FileMetadata.file(file, file_data);
 
             FileSender file_sender = null;
             FileEncryptor file_encryptor = null;

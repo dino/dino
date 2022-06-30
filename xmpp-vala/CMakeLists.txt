@@ -127,6 +127,7 @@ SOURCES
     "src/module/xep/0272_muji.vala"
     "src/module/xep/0280_message_carbons.vala"
     "src/module/xep/0298_coin.vala"
+    "src/module/xep/0300_cryptographic_hashes.vala"
     "src/module/xep/0308_last_message_correction.vala"
     "src/module/xep/0313_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"

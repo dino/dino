@@ -1,3 +1,5 @@
+using Xmpp.Xep.CryptographicHashes;
+
 namespace Xmpp.Xep.FileMetadataElement {
     public const string NS_URI = "urn:xmpp:file:metadata:0";
 
@@ -9,17 +11,21 @@ namespace Xmpp.Xep.FileMetadataElement {
         public DateTime? date = null;
         public int width = -1; // Width of image in pixels
 	    public int height = -1; // Height of image in pixels
-	    // public hash;
+	    public CryptographicHashes.Hashes hashes = new CryptographicHashes.Hashes.empty();
 	    public int length = -1; // Length of audio/video in milliseconds
 	    // public thumbnail;
 
-        public FileMetadata.file(File file) {
+        public FileMetadata.file(File file, Bytes data) {
             FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
             this.name = info.get_name();
             this.desc = null; //
             this.mime_type = info.get_content_type();
             this.size = info.get_size();
             this.date = info.get_modification_date_time();
+            Gee.List<Hash> hashes = new Gee.ArrayList<Hash>();
+            hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, data.get_data()));
+            hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, data.get_data()));
+            this.hashes = new CryptographicHashes.Hashes(hashes);
         }
 
         public void debug_print() {
@@ -55,6 +61,8 @@ namespace Xmpp.Xep.FileMetadataElement {
             if (this.length != -1) {
                 node.put_node(new StanzaNode.build("length", NS_URI).put_node(new StanzaNode.text(this.length.to_string())));
             }
+            node.sub_nodes.add_all(this.hashes.to_stanza_nodes());
+            printerr("%s\n", node.to_xml());
             message.stanza.put_node(node);
         }
 
@@ -64,6 +72,7 @@ namespace Xmpp.Xep.FileMetadataElement {
             if (node == null) {
                 return null;
             }
+            printerr("%s\n", node.to_xml());
             // TODO: null checks, on the subnodes as well as on the final values
             metadata.name = node.get_subnode("name", NS_URI).get_string_content();
             metadata.desc = node.get_subnode("desc", NS_URI).get_string_content();
@@ -82,6 +91,7 @@ namespace Xmpp.Xep.FileMetadataElement {
             if (length_node != null) {
                 metadata.length = int.parse(length_node.get_string_content());
             }
+            metadata.hashes = new CryptographicHashes.Hashes.from_stanza_subnodes(node);
             return metadata;
         }
     }
