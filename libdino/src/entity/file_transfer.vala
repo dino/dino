@@ -45,17 +45,10 @@ public class FileTransfer : Object {
         }
     }
 
-    private string file_name_;
+    private Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
     public string file_name {
-        get { return file_name_; }
-        set {
-            file_name_ = Path.get_basename(value);
-            if (file_name_ == Path.DIR_SEPARATOR_S || file_name_ == ".") {
-                file_name_ = "unknown filename";
-            } else if (file_name_.has_prefix(".")) {
-                file_name_ = "_" + file_name_;
-            }
-        }
+        get { return metadata.name; }
+        set { metadata.name = value; }
     }
     private string? server_file_name_ = null;
     public string server_file_name {
@@ -63,9 +56,15 @@ public class FileTransfer : Object {
         set { server_file_name_ = value; }
     }
     public string path { get; set; }
-    public string? mime_type { get; set; }
+    public string? mime_type {
+        get { return metadata.mime_type; }
+        set { metadata.mime_type = value; }
+    }
     // TODO(hrxi): expand to 64 bit
-    public int size { get; set; default=-1; }
+    public int size {
+        get { return metadata.size; }
+        set { metadata.size = value; }
+    }
 
     public State state { get; set; default=State.NOT_STARTED; }
     public int provider { get; set; }

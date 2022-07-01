@@ -4,15 +4,27 @@ namespace Xmpp.Xep.FileMetadataElement {
     public const string NS_URI = "urn:xmpp:file:metadata:0";
 
     public class FileMetadata {
-        public string? name = null;
-        public string? desc = null;
-        public string? mime_type = null;
-        public int64 size = -1;
-        public DateTime? date = null;
-        public int width = -1; // Width of image in pixels
-	    public int height = -1; // Height of image in pixels
+        private string name_;
+        public string name {
+            get { return name_; }
+            set {
+                name_ = Path.get_basename(value);
+                if (name_ == Path.DIR_SEPARATOR_S || name_ == ".") {
+                    name_ = "unknown filename";
+                } else if (name_.has_prefix(".")) {
+                    name_ = "_" + name_;
+                }
+            }
+        }
+        public string? mime_type { get; set; }
+        // TODO(hrxi): expand to 64 bit
+        public int size { get; set; default=-1; }
+        public string? desc { get; set; }
+        public DateTime? date { get; set; }
+        public int width { get; set; default=-1; } // Width of image in pixels
+	    public int height { get; set; default=-1; } // Height of image in pixels
 	    public CryptographicHashes.Hashes hashes = new CryptographicHashes.Hashes.empty();
-	    public int length = -1; // Length of audio/video in milliseconds
+	    public int length { get; set; default=-1; } // Length of audio/video in milliseconds
 	    // public thumbnail;
 
         public FileMetadata.file(File file, Bytes data) {
@@ -20,7 +32,7 @@ namespace Xmpp.Xep.FileMetadataElement {
             this.name = info.get_name();
             this.desc = null; //
             this.mime_type = info.get_content_type();
-            this.size = info.get_size();
+            this.size = (int)info.get_size();
             this.date = info.get_modification_date_time();
             Gee.List<Hash> hashes = new Gee.ArrayList<Hash>();
             hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, data.get_data()));
@@ -77,7 +89,7 @@ namespace Xmpp.Xep.FileMetadataElement {
             metadata.name = node.get_subnode("name", NS_URI).get_string_content();
             metadata.desc = node.get_subnode("desc", NS_URI).get_string_content();
             metadata.mime_type = node.get_subnode("media_type", NS_URI).get_string_content();
-            metadata.size = int64.parse(node.get_subnode("size", NS_URI).get_string_content());
+            metadata.size = int.parse(node.get_subnode("size", NS_URI).get_string_content());
             metadata.date = new DateTime.from_iso8601(node.get_subnode("date", NS_URI).get_string_content(), null);
             StanzaNode? width_node = node.get_subnode("width", NS_URI);
             if (width_node != null) {
