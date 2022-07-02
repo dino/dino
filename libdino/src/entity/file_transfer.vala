@@ -45,7 +45,7 @@ public class FileTransfer : Object {
         }
     }
 
-    private Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
+    public Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
     public string file_name {
         get { return metadata.name; }
         set { metadata.name = value; }

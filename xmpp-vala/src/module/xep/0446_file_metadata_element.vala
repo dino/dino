@@ -29,7 +29,7 @@ namespace Xmpp.Xep.FileMetadataElement {
 
         public FileMetadata.file(File file, Bytes data) {
             FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
-            this.name = info.get_name();
+            this.name = info.get_display_name();
             this.desc = null; //
             this.mime_type = info.get_content_type();
             this.size = (int)info.get_size();

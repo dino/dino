@@ -62,10 +62,8 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.encryption = conversation.encryption;
 
         try {
-            FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-            file_transfer.file_name = file_info.get_display_name();
-            file_transfer.mime_type = file_info.get_content_type();
-            file_transfer.size = (int)file_info.get_size();
+            Bytes file_data = file.load_bytes();
+            file_transfer.metadata = new Xep.FileMetadataElement.FileMetadata.file(file, file_data);
             file_transfer.input_stream = yield file.read_async();
 
             yield save_file(file_transfer);
@@ -83,9 +81,6 @@ public class FileManager : StreamInteractionModule, Object {
             var file_meta = new FileMeta();
             file_meta.size = file_transfer.size;
             file_meta.mime_type = file_transfer.mime_type;
-
-            Bytes file_data = file.load_bytes();
-            file_meta.sfs_metadata = new Xep.FileMetadataElement.FileMetadata.file(file, file_data);
 
             FileSender file_sender = null;
             FileEncryptor file_encryptor = null;
@@ -343,7 +338,6 @@ public class FileMeta {
     public string? mime_type = null;
     public string? file_name = null;
     public Encryption encryption = Encryption.NONE;
-    public Xep.FileMetadataElement.FileMetadata? sfs_metadata = null;
 }
 
 public class HttpFileMeta : FileMeta {
