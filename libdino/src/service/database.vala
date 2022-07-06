@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 22;
+    private const int VERSION = 23;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -143,15 +143,20 @@ public class Database : Qlite.Database {
         public Column<string> file_name = new Column.Text("file_name");
         public Column<string> path = new Column.Text("path");
         public Column<string> mime_type = new Column.Text("mime_type");
-        public Column<int> size = new Column.Integer("size");
+        public Column<long> size = new Column.Long("size");
         public Column<int> state = new Column.Integer("state");
         public Column<int> provider = new Column.Integer("provider");
         public Column<string> info = new Column.Text("info");
+        public Column<long> modification_date = new Column.Long("modification_date") { default = "-1", min_version=23 };
+        public Column<int> width = new Column.Integer("width") { default = "-1", min_version=23 };
+        public Column<int> height = new Column.Integer("height") { default = "-1", min_version=23 };
+        public Column<int> length = new Column.Integer("length") { default = "-1", min_version=23 };
 
         internal FileTransferTable(Database db) {
             base(db, "file_transfer");
             init({id, account_id, counterpart_id, counterpart_resource, our_resource, direction, time, local_time,
-                    encryption, file_name, path, mime_type, size, state, provider, info});
+                    encryption, file_name, path, mime_type, size, state, provider, info, modification_date, width, height,
+                    length});
         }
     }
 

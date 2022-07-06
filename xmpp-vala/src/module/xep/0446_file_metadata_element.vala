@@ -4,21 +4,9 @@ namespace Xmpp.Xep.FileMetadataElement {
     public const string NS_URI = "urn:xmpp:file:metadata:0";
 
     public class FileMetadata {
-        private string name_;
-        public string name {
-            get { return name_; }
-            set {
-                name_ = Path.get_basename(value);
-                if (name_ == Path.DIR_SEPARATOR_S || name_ == ".") {
-                    name_ = "unknown filename";
-                } else if (name_.has_prefix(".")) {
-                    name_ = "_" + name_;
-                }
-            }
-        }
+        public string name { get; set; }
         public string? mime_type { get; set; }
-        // TODO(hrxi): expand to 64 bit
-        public int size { get; set; default=-1; }
+        public int64 size { get; set; default=-1; }
         public string? desc { get; set; }
         public DateTime? date { get; set; }
         public int width { get; set; default=-1; } // Width of image in pixels
@@ -26,19 +14,6 @@ namespace Xmpp.Xep.FileMetadataElement {
 	    public CryptographicHashes.Hashes hashes = new CryptographicHashes.Hashes.empty();
 	    public int length { get; set; default=-1; } // Length of audio/video in milliseconds
 	    // public thumbnail;
-
-        public FileMetadata.file(File file, Bytes data) {
-            FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
-            this.name = info.get_display_name();
-            this.desc = null; //
-            this.mime_type = info.get_content_type();
-            this.size = (int)info.get_size();
-            this.date = info.get_modification_date_time();
-            Gee.List<Hash> hashes = new Gee.ArrayList<Hash>();
-            hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, data.get_data()));
-            hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, data.get_data()));
-            this.hashes = new CryptographicHashes.Hashes(hashes);
-        }
 
         public void debug_print() {
             printerr("File: '%s'\n", this.name);

@@ -162,7 +162,7 @@ public class FileDefaultWidgetController : Object {
     private void update_file_info() {
         file_uri = file_transfer.get_file().get_uri();
         state = file_transfer.state;
-        widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.size);
+        widget.update_file_info(file_transfer.mime_type, file_transfer.state, (long) file_transfer.size);
     }
 
     private void open_file() {

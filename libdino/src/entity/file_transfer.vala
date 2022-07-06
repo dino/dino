@@ -45,10 +45,17 @@ public class FileTransfer : Object {
         }
     }
 
-    public Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
+    private string file_name_;
     public string file_name {
-        get { return metadata.name; }
-        set { metadata.name = value; }
+        get { return file_name_; }
+        set {
+            file_name_ = Path.get_basename(value);
+            if (file_name_ == Path.DIR_SEPARATOR_S || file_name_ == ".") {
+                file_name_ = "unknown filename";
+            } else if (file_name_.has_prefix(".")) {
+                file_name_ = "_" + file_name_;
+            }
+        }
     }
     private string? server_file_name_ = null;
     public string server_file_name {
@@ -56,20 +63,18 @@ public class FileTransfer : Object {
         set { server_file_name_ = value; }
     }
     public string path { get; set; }
-    public string? mime_type {
-        get { return metadata.mime_type; }
-        set { metadata.mime_type = value; }
-    }
-    // TODO(hrxi): expand to 64 bit
-    public int size {
-        get { return metadata.size; }
-        set { metadata.size = value; }
-    }
-
+    public string? mime_type { get; set; }
+    public int64 size { get; set; }
     public State state { get; set; default=State.NOT_STARTED; }
     public int provider { get; set; }
     public string info { get; set; }
     public Cancellable cancellable { get; default=new Cancellable(); }
+    public string? desc { get; set; }
+    public DateTime? modification_date { get; set; }
+    public int width { get; set; default=-1; }
+    public int height { get; set; default=-1; }
+    public int length { get; set; default=-1; }
+    public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes.empty();}
 
     private Database? db;
     private string storage_dir;
@@ -98,10 +103,14 @@ public class FileTransfer : Object {
         file_name = row[db.file_transfer.file_name];
         path = row[db.file_transfer.path];
         mime_type = row[db.file_transfer.mime_type];
-        size = row[db.file_transfer.size];
+        size = (int64) row[db.file_transfer.size];
         state = (State) row[db.file_transfer.state];
         provider = row[db.file_transfer.provider];
         info = row[db.file_transfer.info];
+        modification_date = new DateTime.from_unix_utc(row[db.file_transfer.modification_date]);
+        width = row[db.file_transfer.width];
+        height = row[db.file_transfer.height];
+        length = row[db.file_transfer.length];
 
         notify.connect(on_update);
     }
@@ -120,14 +129,18 @@ public class FileTransfer : Object {
             .value(db.file_transfer.local_time, (long) local_time.to_unix())
             .value(db.file_transfer.encryption, encryption)
             .value(db.file_transfer.file_name, file_name)
-            .value(db.file_transfer.size, size)
+            .value(db.file_transfer.size, (long) size)
             .value(db.file_transfer.state, state)
             .value(db.file_transfer.provider, provider)
             .value(db.file_transfer.info, info);
 
-        if (file_name != null) builder.value(db.file_transfer.file_name, file_name);
         if (path != null) builder.value(db.file_transfer.path, path);
         if (mime_type != null) builder.value(db.file_transfer.mime_type, mime_type);
+        if (path != null) builder.value(db.file_transfer.path, path);
+        if (modification_date != null) builder.value(db.file_transfer.modification_date, (long) modification_date.to_unix());
+        if (width != -1) builder.value(db.file_transfer.width, width);
+        if (height != -1) builder.value(db.file_transfer.height, height);
+        if (length != -1) builder.value(db.file_transfer.length, length);
 
         id = (int) builder.perform();
         notify.connect(on_update);
@@ -160,7 +173,7 @@ public class FileTransfer : Object {
             case "mime-type":
                 update_builder.set(db.file_transfer.mime_type, mime_type); break;
             case "size":
-                update_builder.set(db.file_transfer.size, size); break;
+                update_builder.set(db.file_transfer.size, (long) size); break;
             case "state":
                 if (state == State.IN_PROGRESS) return;
                 update_builder.set(db.file_transfer.state, state); break;
@@ -168,8 +181,30 @@ public class FileTransfer : Object {
                 update_builder.set(db.file_transfer.provider, provider); break;
             case "info":
                 update_builder.set(db.file_transfer.info, info); break;
+            case "modification-date":
+                update_builder.set(db.file_transfer.modification_date, (long) modification_date.to_unix()); break;
+            case "width":
+                update_builder.set(db.file_transfer.width, width); break;
+            case "height":
+                update_builder.set(db.file_transfer.height, height); break;
+            case "length":
+                update_builder.set(db.file_transfer.length, length); break;
         }
         update_builder.perform();
+    }
+
+    public Xep.FileMetadataElement.FileMetadata to_metadata_element() {
+        Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
+        metadata.name = this.file_name;
+        metadata.mime_type = this.mime_type;
+        metadata.size = this.size;
+        metadata.desc = this.desc;
+        metadata.date = this.modification_date;
+        metadata.width = this.width;
+        metadata.height = this.height;
+        metadata.length = this.length;
+        metadata.hashes = this.hashes;
+        return metadata;
     }
 }
 

@@ -62,8 +62,17 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.encryption = conversation.encryption;
 
         try {
+            FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
+            file_transfer.file_name = info.get_display_name();
+            file_transfer.desc = null; //
+            file_transfer.mime_type = info.get_content_type();
+            file_transfer.size = info.get_size();
+            file_transfer.modification_date = info.get_modification_date_time();
             Bytes file_data = file.load_bytes();
-            file_transfer.metadata = new Xep.FileMetadataElement.FileMetadata.file(file, file_data);
+            Gee.List<Xep.CryptographicHashes.Hash> hashes = new Gee.ArrayList<Xep.CryptographicHashes.Hash>();
+            hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, file_data.get_data()));
+            hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, file_data.get_data()));
+            file_transfer.hashes = new CryptographicHashes.Hashes(hashes);
             file_transfer.input_stream = yield file.read_async();
 
             yield save_file(file_transfer);
