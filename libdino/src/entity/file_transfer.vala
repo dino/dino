@@ -112,6 +112,19 @@ public class FileTransfer : Object {
         height = row[db.file_transfer.height];
         length = row[db.file_transfer.length];
 
+        Gee.List<Xep.CryptographicHashes.Hash> hash_list = new Gee.ArrayList<Xep.CryptographicHashes.Hash>();
+        foreach(var hash_row in db.file_hashes.select().with(db.file_hashes.id, "=", id)) {
+            Xep.CryptographicHashes.Hash hash = new Xep.CryptographicHashes.Hash();
+            hash.algo = hash_row[db.file_hashes.algo];
+            hash.val = hash_row[db.file_hashes.value];
+            hash_list.add(hash);
+        }
+        hashes = new Xep.CryptographicHashes.Hashes(hash_list);
+
+        if (!hashes.hashes.is_empty) {
+            this.to_metadata_element().debug_print();
+        }
+
         notify.connect(on_update);
     }
 
@@ -143,6 +156,15 @@ public class FileTransfer : Object {
         if (length != -1) builder.value(db.file_transfer.length, length);
 
         id = (int) builder.perform();
+
+        foreach (var hash in hashes.hashes) {
+            db.file_hashes.insert()
+                    .value(db.file_hashes.id, id)
+                    .value(db.file_hashes.algo, hash.algo)
+                    .value(db.file_hashes.value, hash.val)
+                    .perform();
+        }
+
         notify.connect(on_update);
     }
 

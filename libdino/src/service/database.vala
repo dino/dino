@@ -160,6 +160,19 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class FileHashesTable : Table {
+        public Column<int> id = new Column.Integer("id");
+        public Column<string> algo = new Column.Text("algo") { not_null = true };
+        public Column<string> value = new Column.Text("value") { not_null = true };
+
+        internal FileHashesTable(Database db) {
+            base(db, "file_hashes");
+            init({id, algo, value});
+            unique({id, algo}, "REPLACE");
+            index("file_id_algo", { id, algo }, true);
+        }
+    }
+
     public class CallTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
@@ -312,6 +325,7 @@ public class Database : Qlite.Database {
     public MessageCorrectionTable message_correction { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
+    public FileHashesTable file_hashes { get; private set; }
     public CallTable call { get; private set; }
     public CallCounterpartTable call_counterpart { get; private set; }
     public ConversationTable conversation { get; private set; }
@@ -337,6 +351,7 @@ public class Database : Qlite.Database {
         message_correction = new MessageCorrectionTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
+        file_hashes = new FileHashesTable(this);
         call = new CallTable(this);
         call_counterpart = new CallCounterpartTable(this);
         conversation = new ConversationTable(this);
