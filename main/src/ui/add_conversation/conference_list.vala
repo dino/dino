@@ -23,6 +23,7 @@ protected class ConferenceList {
         this.stream_interactor = stream_interactor;
 
         bookmarks_updated_handler_id = stream_interactor.get_module(MucManager.IDENTITY).bookmarks_updated.connect((account, conferences) => {
+            print(@"$(this == null) $(lists == null)\n");
             lists[account] = conferences;
             refresh_conferences();
         });
@@ -69,7 +70,7 @@ protected class ConferenceList {
             account_widgets_cpy.set_all(widgets[account]);
 
             foreach (Jid jid in account_widgets_cpy.keys) {
-                remove_conference(account, jid);
+                list_box.remove(widgets[account][jid]);
             }
         }
 

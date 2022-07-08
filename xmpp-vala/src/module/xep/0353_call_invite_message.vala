@@ -68,7 +68,7 @@ namespace Xmpp.Xep.CallInvites {
         }
 
         private void on_received_message(XmppStream stream, MessageStanza message) {
-            Xep.MessageArchiveManagement.MessageFlag? mam_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
+            Xmpp.MessageArchiveManagement.MessageFlag? mam_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
             if (mam_flag != null) return;
 
             StanzaNode? relevant_node = null;

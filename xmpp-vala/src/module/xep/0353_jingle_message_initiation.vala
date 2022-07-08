@@ -53,7 +53,7 @@ namespace Xmpp.Xep.JingleMessageInitiation {
         private void on_received_message(XmppStream stream, MessageStanza message) {
             if (message.type_ == MessageStanza.TYPE_GROUPCHAT) return;
 
-            Xep.MessageArchiveManagement.MessageFlag? mam_flag = Xep.MessageArchiveManagement.MessageFlag.get_flag(message);
+            Xmpp.MessageArchiveManagement.MessageFlag? mam_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
             if (mam_flag != null) return;
 
             StanzaNode? mi_node = null;

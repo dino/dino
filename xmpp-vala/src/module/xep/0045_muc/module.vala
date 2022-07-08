@@ -81,7 +81,7 @@ public class Module : XmppStreamModule {
         received_pipeline_listener = new ReceivedPipelineListener(this);
     }
 
-    public async JoinResult? enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since, StanzaNode? additional_node) {
+    public async JoinResult? enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since, bool receive_history, StanzaNode? additional_node) {
         try {
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = bare_jid.with_resource(nick);
@@ -90,10 +90,15 @@ public class Module : XmppStreamModule {
             if (password != null) {
                 x_node.put_node(new StanzaNode.build("password", NS_URI).put_node(new StanzaNode.text(password)));
             }
-            if (history_since != null) {
+            if (history_since != null || !receive_history) {
                 StanzaNode history_node = new StanzaNode.build("history", NS_URI);
-                history_node.set_attribute("since", DateTimeProfiles.to_datetime(history_since));
                 x_node.put_node(history_node);
+
+                if (history_since != null) {
+                    history_node.set_attribute("since", DateTimeProfiles.to_datetime(history_since));
+                } else if (!receive_history) {
+                    history_node.set_attribute("maxchars", "0");
+                }
             }
             presence.stanza.put_node(x_node);
 
@@ -561,7 +566,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                         StanzaNode? reason_node = invite_node.get_subnode("reason", NS_URI_USER);
                         string? reason = null;
                         if (reason_node != null) reason = reason_node.get_string_content();
-                        bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message) != null; // TODO
+                        bool is_mam_message = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message) != null; // TODO
                         if (!is_mam_message) outer.invite_received(stream, message.from, from_jid, password, reason);
                         return true;
                     }

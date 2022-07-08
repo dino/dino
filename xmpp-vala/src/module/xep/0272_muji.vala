@@ -15,7 +15,7 @@ namespace Xmpp.Xep.Muji {
 
             group_call.our_nick = "%08x".printf(Random.next_int());
             debug(@"[%s] MUJI joining as %s", stream.get_flag(Bind.Flag.IDENTITY).my_jid.to_string(), group_call.our_nick);
-            Xep.Muc.JoinResult? result = yield stream.get_module(Muc.Module.IDENTITY).enter(stream, muc_jid, group_call.our_nick, null, null, initial_muji_node);
+            Xep.Muc.JoinResult? result = yield stream.get_module(Muc.Module.IDENTITY).enter(stream, muc_jid, group_call.our_nick, null, null, false, initial_muji_node);
             if (result == null || result.nick == null) return null;
             debug(@"[%s] MUJI joining as %s done", stream.get_flag(Bind.Flag.IDENTITY).my_jid.to_string(), group_call.our_nick);
 

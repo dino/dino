@@ -176,7 +176,7 @@ public class ConversationManager : StreamInteractionModule, Object {
             conversation.last_active = message.time;
 
             if (stanza != null) {
-                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
+                bool is_mam_message = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
                 bool is_recent = message.time.compare(new DateTime.now_utc().add_days(-3)) > 0;
                 if (is_mam_message && !is_recent) return false;
             }
