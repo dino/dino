@@ -12,10 +12,10 @@ public class FileSendOverlay : Gtk.EventBox {
     public signal void close();
     public signal void send_file();
 
-    [GtkChild] public Button close_button;
-    [GtkChild] public Button send_button;
-    [GtkChild] public SizingBin file_widget_insert;
-    [GtkChild] public Label info_label;
+    [GtkChild] public unowned Button close_button;
+    [GtkChild] public unowned Button send_button;
+    [GtkChild] public unowned SizingBin file_widget_insert;
+    [GtkChild] public unowned Label info_label;
 
     private bool can_send = true;
 

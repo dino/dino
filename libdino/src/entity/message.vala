@@ -16,8 +16,11 @@ public class Message : Object {
         UNSENT,
         WONTSEND,
         SENDING,
-        SENT
+        SENT,
+        ERROR
     }
+
+    public static Marked[] MARKED_RECEIVED = new Marked[] { Marked.READ, Marked.RECEIVED, Marked.ACKNOWLEDGED };
 
     public enum Type {
         ERROR,
@@ -44,7 +47,11 @@ public class Message : Object {
     public bool direction { get; set; }
     public Jid? real_jid { get; set; }
     public Type type_ { get; set; default = Type.UNKNOWN; }
-    public string? body { get; set; }
+    private string? body_;
+    public string? body {
+        get { return body_; }
+        set { body_ = value != null ? value.make_valid() : null; }
+    }
     public string? stanza_id { get; set; }
     public string? server_id { get; set; }
     public DateTime? time { get; set; }

@@ -13,13 +13,13 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image height="900" width="1600">https://dino.im/img/appdata/main.png</image>
+      <image height="952" width="1601">https://dino.im/img/appdata/2022-02_screenshot-main.png</image>
     </screenshot>
     <screenshot>
-      <image height="900" width="1600">https://dino.im/img/appdata/start_chat.png</image>
+      <image height="753" width="1199">https://dino.im/img/appdata/2022-02_screenshot-call.png</image>
     </screenshot>
     <screenshot>
-      <image height="900" width="1600">https://dino.im/img/appdata/contact_details.png</image>
+      <image height="942" width="1600">https://dino.im/img/appdata/start_chat.png</image>
     </screenshot>
   </screenshots>
   <translation type="gettext">dino</translation>

@@ -104,10 +104,14 @@ public class ConnectionManager : Object {
             network_monitor.network_changed.connect(on_network_changed);
             network_monitor.notify["connectivity"].connect(on_network_changed);
         }
-        login1 = get_login1();
-        if (login1 != null) {
-            login1.PrepareForSleep.connect(on_prepare_for_sleep);
-        }
+
+        get_login1.begin((_, res) => {
+            login1 = get_login1.end(res);
+            if (login1 != null) {
+                login1.PrepareForSleep.connect(on_prepare_for_sleep);
+            }
+        });
+
         Timeout.add_seconds(60, () => {
             foreach (Account account in connections.keys) {
                 if (connections[account].last_activity != null &&
@@ -228,6 +232,8 @@ public class ConnectionManager : Object {
         stream.attached_modules.connect((stream) => {
             stream_attached_modules(account, stream);
             change_connection_state(account, ConnectionState.CONNECTED);
+
+//            stream.get_module(Xep.Muji.Module.IDENTITY).join_call(stream, new Jid("test@muc.poez.io"), true);
         });
         stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
             set_connection_error(account, new ConnectionError(ConnectionError.Source.SASL, null));

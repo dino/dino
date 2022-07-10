@@ -1,5 +1,4 @@
 public abstract class Xmpp.Xep.JingleRtp.Stream : Object {
-
     public Jingle.Content content { get; protected set; }
 
     public string name { get {
@@ -53,6 +52,13 @@ public abstract class Xmpp.Xep.JingleRtp.Stream : Object {
         }
         return false;
     }}
+
+    // Receiver Estimated Maximum Bitrate
+    public bool remb_enabled { get {
+        return payload_type != null ? payload_type.rtcp_fbs.any_match((it) => it.type_ == "goog-remb") : false;
+    }}
+    public uint target_receive_bitrate { get; set; default=256; }
+    public uint target_send_bitrate { get; set; default=256; }
 
     protected Stream(Jingle.Content content) {
         this.content = content;

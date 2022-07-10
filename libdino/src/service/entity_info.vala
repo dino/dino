@@ -32,12 +32,13 @@ public class EntityInfo : StreamInteractionModule, Object {
         this.entity_capabilities_storage = new EntityCapabilitiesStorage(db);
 
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.stream_negotiated.connect((account, stream) => {
-            var cache = new CapsCacheImpl(account, this);
-            stream.get_module(ServiceDiscovery.Module.IDENTITY).cache = cache;
-
-            string? hash = EntityCapabilities.get_server_caps_hash(stream);
-            entity_caps_hashes[account.bare_jid.domain_jid] = hash;
+        stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
+            stream.received_features_node.connect(() => {
+                string? hash = EntityCapabilities.get_server_caps_hash(stream);
+                if (hash != null) {
+                    entity_caps_hashes[account.bare_jid.domain_jid] = hash;
+                }
+            });
         });
         stream_interactor.module_manager.initialize_account_modules.connect(initialize_modules);
 
@@ -169,14 +170,14 @@ public class EntityInfo : StreamInteractionModule, Object {
             return identities;
         }
 
+        identities = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
         var qry = db.entity_identity.select().with(db.entity_identity.entity, "=", entity);
         foreach (Row row in qry) {
-            if (identities == null) identities = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
             var identity = new Identity(row[db.entity_identity.category], row[db.entity_identity.type], row[db.entity_identity.entity_name]);
             identities.add(identity);
         }
 
-        if (entity_identity.size == 0) {
+        if (identities.size == 0) {
             return null;
         }
         entity_identity[entity] = identities;
@@ -202,6 +203,9 @@ public class EntityInfo : StreamInteractionModule, Object {
     }
 
     private void on_account_added(Account account) {
+        var cache = new CapsCacheImpl(account, this);
+        stream_interactor.module_manager.get_module(account, ServiceDiscovery.Module.IDENTITY).cache = cache;
+
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_available.connect((stream, presence) => on_received_available_presence(account, presence));
     }
 

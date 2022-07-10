@@ -36,15 +36,47 @@ namespace Qrencode {
         [CCode (cname = "QRcode_encodeString")]
         public QRcode (string str, int version = 0, ECLevel level = ECLevel.L, EncodeMode hint = EncodeMode.EIGHT_BIT, bool casesensitive = true);
 
-        public Pixbuf to_pixbuf() {
-            uint8[] bitmap = new uint8[3*width*width];
-            for (int i = 0; i < width*width; i++) {
-                uint8 color = (data[i] & 1) == 1 ? 0 : 255;
-                bitmap[i*3] = color;
-                bitmap[i*3+1] = color;
-                bitmap[i*3+2] = color;
+        public Pixbuf to_pixbuf(int module_size) {
+            GLib.assert(module_size > 0);
+            var dst_width = width*module_size;
+            var dst_data  = new uint8[dst_width*dst_width*3];
+            expand_and_upsample(data,width,width, dst_data,dst_width,dst_width);
+            return new Pixbuf.from_data(dst_data,
+                Colorspace.RGB, false, 8, dst_width, dst_width, dst_width*3);
+        }
+
+        /**  Does 2D nearest-neighbor upsampling of an array of single-byte
+         * samples, while expanding the least significant bit of each sample
+         * to three 0-or-255 bytes.
+         */
+        private void expand_and_upsample(
+            uint8[] src, uint src_w, uint src_h,
+            uint8[] dst, uint dst_w, uint dst_h) {
+            GLib.assert(dst_w % src_w == 0);
+            GLib.assert(dst_h % src_h == 0);
+            var scale_x = dst_w/src_w,
+                scale_y = dst_h/src_h;
+            /*   Doing the iteration in the order of destination samples for
+             * improved cache-friendliness (dst is 48 times larger than src in
+             * the typical case of scaling by 4x4).
+             *   The choice of multiple nested loops over a single one is for
+             * avoiding a ton of divisions by non-constants.
+             */
+            for (uint src_y = 0; src_y < src_h; ++src_y) {
+                for (uint repeat_y = 0; repeat_y < scale_y; ++repeat_y) {
+                    var dst_y = src_y*scale_y + repeat_y;
+                    for (uint src_x = 0; src_x < src_w; ++src_x) {
+                        uint8 value = (src[src_y*src_w + src_x] & 1)==1 ? 0:255;
+                        for (uint repeat_x = 0; repeat_x < scale_x; ++repeat_x){
+                            var dst_x = src_x*scale_x + repeat_x;
+                            var dst_idx = dst_y*dst_w + dst_x;
+                            dst[dst_idx*3+0] = value;
+                            dst[dst_idx*3+1] = value;
+                            dst[dst_idx*3+2] = value;
+                        }
+                    }
+                }
             }
-            return new Pixbuf.from_data(bitmap, Colorspace.RGB, false, 8, width, width, width*3);
         }
     }
 }

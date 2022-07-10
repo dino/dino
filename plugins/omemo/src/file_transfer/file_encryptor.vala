@@ -38,7 +38,7 @@ public class OmemoFileEncryptor : Dino.FileEncryptor, Object {
             omemo_http_file_meta.iv = iv;
             omemo_http_file_meta.key = key;
             omemo_http_file_meta.size = file_transfer.size + 16;
-            omemo_http_file_meta.mime_type = "omemo";
+            omemo_http_file_meta.mime_type = "application/octet-stream";
             file_transfer.input_stream = new ConverterInputStream(file_transfer.input_stream, new SymmetricCipherEncrypter((owned) cipher, 16));
         } catch (Crypto.Error error) {
             throw new FileSendError.ENCRYPTION_FAILED("OMEMO file encryption error: %s".printf(error.message));

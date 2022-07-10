@@ -23,7 +23,7 @@ public class FileProvider : Dino.FileProvider, Object {
     private class ReceivedMessageListener : MessageListener {
 
         public string[] after_actions_const = new string[]{ "STORE" };
-        public override string action_group { get { return ""; } }
+        public override string action_group { get { return "MESSAGE_REINTERPRETING"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
         private FileProvider outer;
@@ -39,19 +39,46 @@ public class FileProvider : Dino.FileProvider, Object {
             bool normal_file = oob_url != null && oob_url == message.body && FileProvider.http_url_regex.match(message.body);
             bool omemo_file = FileProvider.omemo_url_regex.match(message.body);
             if (normal_file || omemo_file) {
-                yield outer.on_file_message(message, conversation);
+                outer.on_file_message(message, conversation);
+                return true;
             }
             return false;
         }
     }
 
-    private async void on_file_message(Entities.Message message, Conversation conversation) {
-        // Hide message
-        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
-        if (content_item != null) {
-            stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
+    private class LimitInputStream : InputStream {
+        InputStream inner;
+        int64 remaining_size;
+
+        public LimitInputStream(InputStream inner, int64 max_size) {
+            this.inner = inner;
+            this.remaining_size = max_size;
         }
 
+        private ssize_t check_limit(ssize_t read) throws IOError {
+            this.remaining_size -= read;
+            if (remaining_size < 0) throw new IOError.FAILED("Stream length exceeded limit");
+            return read;
+        }
+
+        public override ssize_t read(uint8[] buffer, Cancellable? cancellable = null) throws IOError {
+            return check_limit(inner.read(buffer, cancellable));
+        }
+
+        public override async ssize_t read_async(uint8[]? buffer, int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
+            return check_limit(yield inner.read_async(buffer, io_priority, cancellable));
+        }
+
+        public override bool close(Cancellable? cancellable = null) throws IOError {
+            return inner.close(cancellable);
+        }
+
+        public override async bool close_async(int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
+            return yield inner.close_async(io_priority, cancellable);
+        }
+    }
+
+    private void on_file_message(Entities.Message message, Conversation conversation) {
         var additional_info = message.id.to_string();
 
         var receive_data = new HttpFileReceiveData();
@@ -69,24 +96,28 @@ public class FileProvider : Dino.FileProvider, Object {
         if (http_receive_data == null) return file_meta;
 
         var session = new Soup.Session();
+        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
         var head_message = new Soup.Message("HEAD", http_receive_data.url);
+        head_message.request_headers.append("Accept-Encoding", "identity");
 
-        if (head_message != null) {
-            try {
-                yield session.send_async(head_message, null);
-            } catch (Error e) {
-                throw new FileReceiveError.GET_METADATA_FAILED("HEAD request failed");
-            }
+        try {
+#if SOUP_3
+            yield session.send_async(head_message, GLib.Priority.LOW, null);
+#else
+            yield session.send_async(head_message, null);
+#endif
+        } catch (Error e) {
+            throw new FileReceiveError.GET_METADATA_FAILED("HEAD request failed");
+        }
 
-            string? content_type = null, content_length = null;
-            head_message.response_headers.foreach((name, val) => {
-                if (name == "Content-Type") content_type = val;
-                if (name == "Content-Length") content_length = val;
-            });
-            file_meta.mime_type = content_type;
-            if (content_length != null) {
-                file_meta.size = int.parse(content_length);
-            }
+        string? content_type = null, content_length = null;
+        head_message.response_headers.foreach((name, val) => {
+            if (name.down() == "content-type") content_type = val;
+            if (name.down() == "content-length") content_length = val;
+        });
+        file_meta.mime_type = content_type;
+        if (content_length != null) {
+            file_meta.size = int64.parse(content_length);
         }
 
         return file_meta;
@@ -100,11 +131,21 @@ public class FileProvider : Dino.FileProvider, Object {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) assert(false);
 
-        try {
-            var session = new Soup.Session();
-            Soup.Request request = session.request(http_receive_data.url);
+        var session = new Soup.Session();
+        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
+        var get_message = new Soup.Message("GET", http_receive_data.url);
 
-            return yield request.send_async(null);
+        try {
+#if SOUP_3
+            InputStream stream = yield session.send_async(get_message, GLib.Priority.LOW, file_transfer.cancellable);
+#else
+            InputStream stream = yield session.send_async(get_message, file_transfer.cancellable);
+#endif
+            if (file_meta.size != -1) {
+                return new LimitInputStream(stream, file_meta.size);
+            } else {
+                return stream;
+            }
         } catch (Error e) {
             throw new FileReceiveError.DOWNLOAD_FAILED("Downloading file error: %s".printf(e.message));
         }

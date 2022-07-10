@@ -5,6 +5,12 @@ using Dino.Ui;
 using Xmpp;
 
 public class Dino.Ui.Application : Gtk.Application, Dino.Application {
+    private const string[] KEY_COMBINATION_QUIT = {"<Ctrl>Q", null};
+    private const string[] KEY_COMBINATION_ADD_CHAT = {"<Ctrl>T", null};
+    private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
+    private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
+    private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
+
     private MainWindow window;
     public MainWindowController controller;
 
@@ -36,16 +42,26 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
         startup.connect(() => {
             if (print_version) {
-                print(@"Dino $(Dino.VERSION)\n");
+                print(@"Dino $(Dino.get_version())\n");
                 Process.exit(0);
             }
 
             NotificationEvents notification_events = stream_interactor.get_module(NotificationEvents.IDENTITY);
-            notification_events.register_notification_provider(new GNotificationsNotifier(stream_interactor));
-            FreeDesktopNotifier? free_desktop_notifier = FreeDesktopNotifier.try_create(stream_interactor);
-            if (free_desktop_notifier != null) {
-                notification_events.register_notification_provider(free_desktop_notifier);
-            }
+            get_notifications_dbus.begin((_, res) => {
+                // It might take a bit to get the interface. NotificationEvents will queue any notifications in the meantime.
+                try {
+                    DBusNotifications? dbus_notifications = get_notifications_dbus.end(res);
+                    if (dbus_notifications != null) {
+                        FreeDesktopNotifier free_desktop_notifier = new FreeDesktopNotifier(stream_interactor, dbus_notifications);
+                        notification_events.register_notification_provider.begin(free_desktop_notifier);
+                    } else {
+                        notification_events.register_notification_provider.begin(new GNotificationsNotifier(stream_interactor));
+                    }
+                } catch (Error e) {
+                    debug("Failed accessing fdo notification server: %s", e.message);
+                }
+            });
+
             notification_events.notify_content_item.connect((content_item, conversation) => {
                 // Set urgency hint also if (normal) notifications are disabled
                 // Don't set urgency hint in GNOME, produces "Window is active" notification
@@ -116,7 +132,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction quit_action = new SimpleAction("quit", null);
         quit_action.activate.connect(quit);
         add_action(quit_action);
-        set_accels_for_action("app.quit", new string[]{"<Ctrl>Q"});
+        set_accels_for_action("app.quit", KEY_COMBINATION_QUIT);
 
         SimpleAction open_conversation_action = new SimpleAction("open-conversation", VariantType.INT32);
         open_conversation_action.activate.connect((variant) => {
@@ -142,7 +158,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             add_chat_dialog.present();
         });
         add_action(contacts_action);
-        set_accels_for_action("app.add_chat", new string[]{"<Ctrl>T"});
+        set_accels_for_action("app.add_chat", KEY_COMBINATION_ADD_CHAT);
 
         SimpleAction conference_action = new SimpleAction("add_conference", null);
         conference_action.activate.connect(() => {
@@ -151,7 +167,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             add_conference_dialog.present();
         });
         add_action(conference_action);
-        set_accels_for_action("app.add_conference", new string[]{"<Ctrl>G"});
+        set_accels_for_action("app.add_conference", KEY_COMBINATION_ADD_CONFERENCE);
 
         SimpleAction accept_muc_invite_action = new SimpleAction("open-muc-join", VariantType.INT32);
         accept_muc_invite_action.activate.connect((variant) => {
@@ -175,12 +191,12 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         SimpleAction loop_conversations_action = new SimpleAction("loop_conversations", null);
         loop_conversations_action.activate.connect(() => { window.loop_conversations(false); });
         add_action(loop_conversations_action);
-        set_accels_for_action("app.loop_conversations", new string[]{"<Ctrl>Tab"});
+        set_accels_for_action("app.loop_conversations", KEY_COMBINATION_LOOP_CONVERSATIONS);
 
         SimpleAction loop_conversations_bw_action = new SimpleAction("loop_conversations_bw", null);
         loop_conversations_bw_action.activate.connect(() => { window.loop_conversations(true); });
         add_action(loop_conversations_bw_action);
-        set_accels_for_action("app.loop_conversations_bw", new string[]{"<Ctrl><Shift>Tab"});
+        set_accels_for_action("app.loop_conversations_bw", KEY_COMBINATION_LOOP_CONVERSATIONS_REV);
 
         SimpleAction open_shortcuts_action = new SimpleAction("open_shortcuts", null);
         open_shortcuts_action.activate.connect((variant) => {
@@ -200,21 +216,37 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         });
         add_action(open_shortcuts_action);
 
-        SimpleAction accept_call_action = new SimpleAction("accept-call", VariantType.INT32);
+        SimpleAction accept_call_action = new SimpleAction("accept-call", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
         accept_call_action.activate.connect((variant) => {
-            Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(variant.get_int32());
-            stream_interactor.get_module(Calls.IDENTITY).accept_call(call);
+            int conversation_id = variant.get_child_value(0).get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null) return;
+
+            int call_id = variant.get_child_value(1).get_int32();
+            Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(call_id, conversation);
+            CallState? call_state = stream_interactor.get_module(Calls.IDENTITY).call_states[call];
+            if (call_state == null) return;
+
+            call_state.accept();
 
             var call_window = new CallWindow();
-            call_window.controller = new CallWindowController(call_window, call, stream_interactor);
+            call_window.controller = new CallWindowController(call_window, call_state, stream_interactor);
             call_window.present();
         });
         add_action(accept_call_action);
 
-        SimpleAction deny_call_action = new SimpleAction("deny-call", VariantType.INT32);
+        SimpleAction deny_call_action = new SimpleAction("reject-call", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
         deny_call_action.activate.connect((variant) => {
-            Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(variant.get_int32());
-            stream_interactor.get_module(Calls.IDENTITY).reject_call(call);
+            int conversation_id = variant.get_child_value(0).get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null) return;
+
+            int call_id = variant.get_child_value(1).get_int32();
+            Call? call = stream_interactor.get_module(CallStore.IDENTITY).get_call_by_id(call_id, conversation);
+            CallState? call_state = stream_interactor.get_module(Calls.IDENTITY).call_states[call];
+            if (call_state == null) return;
+
+            call_state.reject();
         });
         add_action(deny_call_action);
     }
@@ -238,10 +270,11 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
     }
 
     private void show_about_window() {
-        string? version = Dino.VERSION.strip().length == 0 ? null : Dino.VERSION;
+        string? version = Dino.get_version().strip().length == 0 ? null : Dino.get_version();
         if (version != null && !version.contains("git")) {
             switch (version.substring(0, 3)) {
                 case "0.2": version = @"$version - <span font_style='italic'>Mexican Caribbean Coral Reefs</span>"; break;
+                case "0.3": version = @"$version - <span font_style='italic'>Theikenmeer</span>"; break;
             }
         }
         Gtk.AboutDialog dialog = new Gtk.AboutDialog();
@@ -256,7 +289,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         dialog.comments = "Dino. Communicating happiness.";
         dialog.website = "https://dino.im/";
         dialog.website_label = "dino.im";
-        dialog.copyright = "Copyright © 2016-2021 - Dino Team";
+        dialog.copyright = "Copyright © 2016-2022 - Dino Team";
         dialog.license_type = License.GPL_3_0;
 
         dialog.response.connect((response_id) => {

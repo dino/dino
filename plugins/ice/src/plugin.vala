@@ -15,7 +15,12 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
             list.add(new Module());
         });
         app.stream_interactor.stream_attached_modules.connect((account, stream) => {
-            stream.get_module(Socks5Bytestreams.Module.IDENTITY).set_local_ip_address_handler(get_local_ip_addresses);
+            if (stream.get_module(Socks5Bytestreams.Module.IDENTITY) != null) {
+                stream.get_module(Socks5Bytestreams.Module.IDENTITY).set_local_ip_address_handler(get_local_ip_addresses);
+            }
+            if (stream.get_module(JingleRawUdp.Module.IDENTITY) != null) {
+                stream.get_module(JingleRawUdp.Module.IDENTITY).set_local_ip_address_handler(get_local_ip_addresses);
+            }
         });
         app.stream_interactor.stream_negotiated.connect(on_stream_negotiated);
     }
@@ -41,13 +46,13 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
             }
         }
         if (ice_udp_module.stun_ip == null) {
-            InetAddress ip = yield lookup_ipv4_addess("stun.l.google.com");
+            InetAddress ip = yield lookup_ipv4_addess("stun.dino.im");
             if (ip == null) return;
 
-            debug("Using fallback STUN server: stun.l.google.com:19302, resolved to %s", ip.to_string());
+            debug("Using fallback STUN server: stun.dino.im:7886, resolved to %s", ip.to_string());
 
             ice_udp_module.stun_ip = ip.to_string();
-            ice_udp_module.stun_port = 19302;
+            ice_udp_module.stun_port = 7886;
         }
     }
 

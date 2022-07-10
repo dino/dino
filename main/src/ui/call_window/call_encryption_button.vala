@@ -2,19 +2,21 @@ using Dino.Entities;
 using Gtk;
 using Pango;
 
-public class Dino.Ui.CallEntryptionButton : MenuButton {
+public class Dino.Ui.CallEncryptionButton : MenuButton {
 
-    private Image encryption_image = new Image.from_icon_name("changes-allow-symbolic", IconSize.BUTTON) { visible=true };
+    private Image encryption_image = new Image.from_icon_name("", IconSize.BUTTON) { visible=true };
+    private bool has_been_set = false;
+    public bool controls_active { get; set; default=false; }
 
-    construct {
+    public CallEncryptionButton() {
+        this.opacity = 0;
         add(encryption_image);
-        get_style_context().add_class("encryption-box");
         this.set_popover(popover);
+
+        this.notify["controls-active"].connect(update_opacity);
     }
 
     public void set_icon(bool encrypted, string? icon_name) {
-        this.visible = true;
-
         if (encrypted) {
             encryption_image.set_from_icon_name(icon_name ?? "changes-prevent-symbolic", IconSize.BUTTON);
             get_style_context().remove_class("unencrypted");
@@ -22,6 +24,8 @@ public class Dino.Ui.CallEntryptionButton : MenuButton {
             encryption_image.set_from_icon_name(icon_name ?? "changes-allow-symbolic", IconSize.BUTTON);
             get_style_context().add_class("unencrypted");
         }
+        has_been_set = true;
+        update_opacity();
     }
 
     public void set_info(string? title, bool show_keys, Xmpp.Xep.Jingle.ContentEncryption? audio_encryption, Xmpp.Xep.Jingle.ContentEncryption? video_encryption) {
@@ -49,6 +53,10 @@ public class Dino.Ui.CallEntryptionButton : MenuButton {
             box.add(create_media_encryption_grid(video_encryption));
         }
         popover.add(box);
+    }
+
+    public void update_opacity() {
+        this.opacity = controls_active && has_been_set ? 1 : 0;
     }
 
     private Grid create_media_encryption_grid(Xmpp.Xep.Jingle.ContentEncryption? encryption) {

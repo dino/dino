@@ -43,7 +43,7 @@ namespace Xmpp.Xep.UserAvatars {
         public signal void received_avatar_hash(XmppStream stream, Jid jid, string id);
 
         public override void attach(XmppStream stream) {
-            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_event, null);
+            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, true, on_pupsub_event, null);
         }
 
         public override void detach(XmppStream stream) {

@@ -96,29 +96,35 @@ public abstract interface ConversationAdditionPopulator : ConversationItemPopula
 
 public abstract interface VideoCallPlugin : Object {
 
-    public abstract bool supports(string media);
+    public abstract bool supports(string? media);
     // Video widget
     public abstract VideoCallWidget? create_widget(WidgetType type);
 
     // Devices
     public signal void devices_changed(string media, bool incoming);
     public abstract Gee.List<MediaDevice> get_devices(string media, bool incoming);
-    public abstract MediaDevice? get_device(Xmpp.Xep.JingleRtp.Stream stream, bool incoming);
-    public abstract void set_pause(Xmpp.Xep.JingleRtp.Stream stream, bool pause);
-    public abstract void set_device(Xmpp.Xep.JingleRtp.Stream stream, MediaDevice? device);
+    public abstract MediaDevice? get_preferred_device(string media, bool incoming);
+    public abstract MediaDevice? get_device(Xmpp.Xep.JingleRtp.Stream? stream, bool incoming);
+    public abstract void set_pause(Xmpp.Xep.JingleRtp.Stream? stream, bool pause);
+    public abstract void set_device(Xmpp.Xep.JingleRtp.Stream? stream, MediaDevice? device);
+
+    public abstract void dump_dot();
 }
 
 public abstract interface VideoCallWidget : Object {
     public signal void resolution_changed(uint width, uint height);
-    public abstract void display_stream(Xmpp.Xep.JingleRtp.Stream stream); // TODO: Multi participant
+    public abstract void display_stream(Xmpp.Xep.JingleRtp.Stream? stream, Jid jid);
     public abstract void display_device(MediaDevice device);
     public abstract void detach();
 }
 
 public abstract interface MediaDevice : Object {
-    public abstract string id { get; }
-    public abstract string display_name { get; }
-    public abstract string detail_name { get; }
+    public abstract string id { owned get; }
+    public abstract string display_name { owned get; }
+    public abstract string? detail_name { owned get; }
+
+    public abstract string? media { owned get; }
+    public abstract bool incoming { get; }
 }
 
 public abstract interface NotificationPopulator : Object {

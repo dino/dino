@@ -6,23 +6,23 @@ namespace Dino.Plugins.Omemo {
 [GtkTemplate (ui = "/im/dino/Dino/omemo/manage_key_dialog.ui")]
 public class ManageKeyDialog : Gtk.Dialog {
 
-    [GtkChild] private HeaderBar headerbar;
-    [GtkChild] private Stack manage_stack;
+    [GtkChild] private unowned HeaderBar headerbar;
+    [GtkChild] private unowned Stack manage_stack;
 
-    [GtkChild] private Button cancel_button;
-    [GtkChild] private Button ok_button;
+    [GtkChild] private unowned Button cancel_button;
+    [GtkChild] private unowned Button ok_button;
 
-    [GtkChild] private Label main_desc_label;
-    [GtkChild] private ListBox main_action_list;
+    [GtkChild] private unowned Label main_desc_label;
+    [GtkChild] private unowned ListBox main_action_list;
 
-    [GtkChild] private Image confirm_image;
-    [GtkChild] private Label confirm_title_label;
-    [GtkChild] private Label confirm_desc_label;
+    [GtkChild] private unowned Image confirm_image;
+    [GtkChild] private unowned Label confirm_title_label;
+    [GtkChild] private unowned Label confirm_desc_label;
 
-    [GtkChild] private Label verify_label;
-    [GtkChild] private Label compare_fingerprint_label;
-    [GtkChild] private Button verify_yes_button;
-    [GtkChild] private Button verify_no_button;
+    [GtkChild] private unowned Label verify_label;
+    [GtkChild] private unowned Label compare_fingerprint_label;
+    [GtkChild] private unowned Button verify_yes_button;
+    [GtkChild] private unowned Button verify_no_button;
 
     private Row device;
     private Database db;

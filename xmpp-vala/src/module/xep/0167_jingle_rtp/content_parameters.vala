@@ -22,6 +22,9 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
     public Crypto? local_crypto = null;
     public Crypto? remote_crypto = null;
 
+    public bool rtp_ready { get; private set; default=false; }
+    public bool rtcp_ready { get; private set; default=false; }
+
     public weak Stream? stream { get; private set; }
 
     private Module parent;
@@ -95,6 +98,7 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         ulong rtcp_ready_handler_id = 0;
         rtcp_ready_handler_id = rtcp_datagram.notify["ready"].connect((rtcp_datagram, _) => {
             this.stream.on_rtcp_ready();
+            this.rtcp_ready = true;
 
             ((Jingle.DatagramConnection)rtcp_datagram).disconnect(rtcp_ready_handler_id);
             rtcp_ready_handler_id = 0;
@@ -103,8 +107,10 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
         ulong rtp_ready_handler_id = 0;
         rtp_ready_handler_id = rtp_datagram.notify["ready"].connect((rtp_datagram, _) => {
             this.stream.on_rtp_ready();
+            this.rtp_ready = true;
             if (rtcp_mux) {
                 this.stream.on_rtcp_ready();
+                this.rtcp_ready = true;
             }
             connection_ready();
 
@@ -133,11 +139,12 @@ public class Xmpp.Xep.JingleRtp.Parameters : Jingle.ContentParameters, Object {
             local_crypto = null;
         }
         if (remote_crypto != null && local_crypto != null) {
-            var content_encryption = new Xmpp.Xep.Jingle.ContentEncryption() { encryption_ns = "", encryption_name = "SRTP", our_key=local_crypto.key, peer_key=remote_crypto.key };
+            var content_encryption = new Xmpp.Xep.Jingle.ContentEncryption("", "SRTP", local_crypto.key, remote_crypto.key);
             content.encryptions[content_encryption.encryption_name] = content_encryption;
         }
 
         this.stream = parent.create_stream(content);
+        this.stream.weak_ref(() => this.stream = null);
         rtp_datagram.datagram_received.connect(this.stream.on_recv_rtp_data);
         rtcp_datagram.datagram_received.connect(this.stream.on_recv_rtcp_data);
         this.stream.on_send_rtp_data.connect(rtp_datagram.send_datagram);

@@ -9,11 +9,11 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_view.ui")]
 public class ConversationView : Gtk.Overlay {
 
-    [GtkChild] public Revealer goto_end_revealer;
-    [GtkChild] public Button goto_end_button;
-    [GtkChild] public ChatInput.View chat_input;
-    [GtkChild] public ConversationSummary.ConversationView conversation_frame;
-    [GtkChild] public Revealer white_revealer;
+    [GtkChild] public unowned Revealer goto_end_revealer;
+    [GtkChild] public unowned Button goto_end_button;
+    [GtkChild] public unowned ChatInput.View chat_input;
+    [GtkChild] public unowned ConversationSummary.ConversationView conversation_frame;
+    [GtkChild] public unowned Revealer white_revealer;
 
     construct {
         white_revealer.notify["child-revealed"].connect_after(on_child_revealed_changed);

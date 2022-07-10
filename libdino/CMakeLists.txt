@@ -29,6 +29,8 @@ SOURCES
     src/service/avatar_manager.vala
     src/service/blocking_manager.vala
     src/service/call_store.vala
+    src/service/call_state.vala
+    src/service/call_peer_state.vala
     src/service/calls.vala
     src/service/chat_interaction.vala
     src/service/connection_manager.vala
@@ -87,7 +89,7 @@ DEPENDS
     ${CMAKE_BINARY_DIR}/exports/dino_i18n.h
 )
 
-add_definitions(${VALA_CFLAGS} -DDINO_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}" -DG_LOG_DOMAIN="libdino")
+add_definitions(${VALA_CFLAGS} -DDINO_SYSTEM_PLUGIN_DIR="${PLUGIN_INSTALL_DIR}" -DDINO_SYSTEM_LIBDIR_NAME="${LIBDIR_NAME}" -DG_LOG_DOMAIN="libdino" -DDINO_VERSION=\"${PROJECT_VERSION}\")
 add_library(libdino SHARED ${LIBDINO_VALA_C} ${CMAKE_BINARY_DIR}/exports/dino_i18n.h)
 add_dependencies(libdino dino-vapi)
 target_link_libraries(libdino xmpp-vala qlite ${LIBDINO_PACKAGES} m)

@@ -28,6 +28,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
     private bool connection_created = false;
 
     protected weak Jingle.Content? content = null;
+    protected bool use_raw = false;
 
     protected IceUdpTransportParameters(uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode? node = null) {
         this.components_ = components;
@@ -80,10 +81,16 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
             node.put_node(fingerprint_node);
         }
 
-        foreach (Candidate candidate in unsent_local_candidates) {
+        if (action_type != "transport-info") {
+            foreach (Candidate candidate in unsent_local_candidates) {
+                node.put_node(candidate.to_xml());
+            }
+            unsent_local_candidates.clear();
+        } else if (!unsent_local_candidates.is_empty) {
+            Candidate candidate = unsent_local_candidates.first();
             node.put_node(candidate.to_xml());
+            unsent_local_candidates.remove(candidate);
         }
-        unsent_local_candidates.clear();
         return node;
     }
 
@@ -112,6 +119,13 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         foreach (StanzaNode candidateNode in node.get_subnodes("candidate")) {
             remote_candidates.add(Candidate.parse(candidateNode));
         }
+
+        StanzaNode? fingerprint_node = node.get_subnode("fingerprint", DTLS_NS_URI);
+        if (fingerprint_node != null) {
+            peer_fingerprint = fingerprint_to_bytes(fingerprint_node.get_string_content());
+            peer_fp_algo = fingerprint_node.get_attribute("hash");
+            peer_setup = fingerprint_node.get_attribute("setup");
+        }
     }
 
     public virtual void create_transport_connection(XmppStream stream, Jingle.Content content) {
@@ -128,15 +142,15 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
         local_candidates.add(candidate);
 
         if (this.content != null && (this.connection_created || !this.incoming)) {
-            Timeout.add(50, () => {
+            Idle.add( () => {
                 check_send_transport_info();
-                return false;
+                return Source.REMOVE;
             });
         }
     }
 
     private void check_send_transport_info() {
-        if (this.content != null && unsent_local_candidates.size > 0) {
+        if (this.content != null && !unsent_local_candidates.is_empty) {
             content.send_transport_info(to_transport_stanza_node("transport-info"));
         }
     }
@@ -144,7 +158,7 @@ public abstract class Xmpp.Xep.JingleIceUdp.IceUdpTransportParameters : Jingle.T
     private string format_fingerprint(uint8[] fingerprint) {
         var sb = new StringBuilder();
         for (int i = 0; i < fingerprint.length; i++) {
-            sb.append("%02x".printf(fingerprint[i]));
+            sb.append("%02X".printf(fingerprint[i]));
             if (i < fingerprint.length - 1) {
                 sb.append(":");
             }

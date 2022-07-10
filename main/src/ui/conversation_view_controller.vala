@@ -37,8 +37,8 @@ public class ConversationViewController : Object {
         this.app = GLib.Application.get_default() as Application;
 
         this.chat_input_controller = new ChatInputController(view.chat_input, stream_interactor);
-        chat_input_controller.activate_last_message_correction.connect(() => view.conversation_frame.activate_last_message_correction());
-        chat_input_controller.file_picker_selected.connect(() => open_file_picker());
+        chat_input_controller.activate_last_message_correction.connect(view.conversation_frame.activate_last_message_correction);
+        chat_input_controller.file_picker_selected.connect(open_file_picker);
         chat_input_controller.clipboard_pasted.connect(on_clipboard_paste);
 
         view.conversation_frame.init(stream_interactor);
@@ -78,6 +78,11 @@ public class ConversationViewController : Object {
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                 update_conversation_topic(subject);
+            }
+        });
+        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
+            if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
+                update_conversation_display_name();
             }
         });
 

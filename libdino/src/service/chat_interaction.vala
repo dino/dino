@@ -33,17 +33,21 @@ public class ChatInteraction : StreamInteractionModule, Object {
     }
 
     public int get_num_unread(Conversation conversation) {
-        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
-        if (read_up_to_item == null) return 0;
-
         Database db = Dino.Application.get_default().db;
-        string time = read_up_to_item.time.to_unix().to_string();
-        string id = read_up_to_item.id.to_string();
-        return (int)db.content_item.select()
-                .where(@"time > ? OR (time = ? AND id > ?)", { time, time, id })
+
+        Qlite.QueryBuilder query = db.content_item.select()
                 .with(db.content_item.conversation_id, "=", conversation.id)
-                .with(db.content_item.hide, "=", false)
-                .count();
+                .with(db.content_item.hide, "=", false);
+
+        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+        if (read_up_to_item != null) {
+            string time = read_up_to_item.time.to_unix().to_string();
+            string id = read_up_to_item.id.to_string();
+            query.where(@"time > ? OR (time = ? AND id > ?)", { time, time, id });
+        }
+        // If it's a new conversation with read_up_to_item == null, all items are new.
+
+        return (int) query.count();
     }
 
     public bool is_active_focus(Conversation? conversation = null) {

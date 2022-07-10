@@ -2,6 +2,7 @@ using Gee;
 using Gdk;
 using Gtk;
 using Pango;
+using Xmpp;
 
 using Dino.Entities;
 
@@ -18,7 +19,8 @@ namespace Dino.Ui {
 
         public override Object? get_widget(Plugins.WidgetType type) {
             CallItem call_item = content_item as CallItem;
-            return new CallWidget(stream_interactor, call_item.call, call_item.conversation) { visible=true };
+            CallState? call_state = stream_interactor.get_module(Calls.IDENTITY).call_states[call_item.call];
+            return new CallWidget(stream_interactor, call_item.call, call_state, call_item.conversation) { visible=true };
         }
 
         public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
@@ -27,14 +29,18 @@ namespace Dino.Ui {
     [GtkTemplate (ui = "/im/dino/Dino/call_widget.ui")]
     public class CallWidget : SizeRequestBox {
 
-        [GtkChild] public Image image;
-        [GtkChild] public Label title_label;
-        [GtkChild] public Label subtitle_label;
-        [GtkChild] public Revealer incoming_call_revealer;
-        [GtkChild] public Button accept_call_button;
-        [GtkChild] public Button reject_call_button;
+        [GtkChild] public unowned Image image;
+        [GtkChild] public unowned Label title_label;
+        [GtkChild] public unowned Label subtitle_label;
+        [GtkChild] public unowned Revealer incoming_call_revealer;
+        [GtkChild] public unowned Box outer_additional_box;
+        [GtkChild] public unowned Box incoming_call_box;
+        [GtkChild] public unowned Box multiparty_peer_box;
+        [GtkChild] public unowned Button accept_call_button;
+        [GtkChild] public unowned Button reject_call_button;
 
         private StreamInteractor stream_interactor;
+        private CallState call_manager;
         private Call call;
         private Conversation conversation;
         public Call.State call_state { get; set; } // needs to be public for binding
@@ -45,8 +51,10 @@ namespace Dino.Ui {
             size_request_mode = SizeRequestMode.HEIGHT_FOR_WIDTH;
         }
 
-        public CallWidget(StreamInteractor stream_interactor, Call call, Conversation conversation) {
+        /** @param call_state Null if it's an old call and we can't interact with it anymore */
+        public CallWidget(StreamInteractor stream_interactor, Call call, CallState? call_state, Conversation conversation) {
             this.stream_interactor = stream_interactor;
+            this.call_manager = call_state;
             this.call = call;
             this.conversation = conversation;
 
@@ -57,64 +65,103 @@ namespace Dino.Ui {
             });
 
             call.bind_property("state", this, "call-state");
-            this.notify["call-state"].connect(update_widget);
+            this.notify["call-state"].connect(update_call_state);
+
+            if (call_manager != null && (call.state == Call.State.ESTABLISHING || call.state == Call.State.IN_PROGRESS)) {
+                call_manager.peer_joined.connect(update_counterparts);
+            }
 
             accept_call_button.clicked.connect(() => {
-                stream_interactor.get_module(Calls.IDENTITY).accept_call(call);
+                call_manager.accept();
 
                 var call_window = new CallWindow();
-                call_window.controller = new CallWindowController(call_window, call, stream_interactor);
+                call_window.controller = new CallWindowController(call_window, call_state, stream_interactor);
                 call_window.present();
             });
 
-            reject_call_button.clicked.connect(() => {
-                stream_interactor.get_module(Calls.IDENTITY).reject_call(call);
-            });
+            reject_call_button.clicked.connect(call_manager.reject);
 
-            update_widget();
+            update_call_state();
         }
 
-        private void update_widget() {
+        private void update_counterparts() {
+            if (call.state != Call.State.IN_PROGRESS && call.state != Call.State.ENDED) return;
+            if (call.counterparts.size <= 1 && conversation.type_ == Conversation.Type.CHAT) return;
+
+            multiparty_peer_box.foreach((widget) => { multiparty_peer_box.remove(widget); });
+
+            foreach (Jid counterpart in call.counterparts) {
+                AvatarImage image = new AvatarImage() { force_gray=true, margin_top=2, visible=true };
+                image.set_conversation_participant(stream_interactor, conversation, counterpart.bare_jid);
+                multiparty_peer_box.add(image);
+            }
+            AvatarImage image2 = new AvatarImage() { force_gray=true, margin_top=2, visible=true };
+            image2.set_conversation_participant(stream_interactor, conversation, call.account.bare_jid);
+            multiparty_peer_box.add(image2);
+
+            outer_additional_box.get_style_context().add_class("multiparty-participants");
+
+            multiparty_peer_box.visible = true;
+            incoming_call_box.visible = false;
+            incoming_call_revealer.reveal_child = true;
+        }
+
+        private void update_call_state() {
             incoming_call_revealer.reveal_child = false;
             incoming_call_revealer.get_style_context().remove_class("incoming");
+            outer_additional_box.get_style_context().remove_class("incoming-call-box");
 
-            switch (call.state) {
+            // It doesn't make sense to display MUC calls as missed or declined by the whole MUC. Just display as ended.
+            // TODO: maybe not let them be missed/declined in first place.
+            Call.State relevant_state = call.state;
+            if (conversation.type_ == Conversation.Type.GROUPCHAT && call.direction == Call.DIRECTION_OUTGOING &&
+                    (relevant_state == Call.State.MISSED || relevant_state == Call.State.DECLINED)) {
+                relevant_state = Call.State.ENDED;
+            }
+
+            switch (relevant_state) {
                 case Call.State.RINGING:
                     image.set_from_icon_name("dino-phone-ring-symbolic", IconSize.LARGE_TOOLBAR);
                     if (call.direction == Call.DIRECTION_INCOMING) {
-                        bool video = stream_interactor.get_module(Calls.IDENTITY).should_we_send_video(call);
-                        title_label.label = video ? _("Video call incoming") : _("Call incoming");
-                        subtitle_label.label = "Ring ring…!";
-                        incoming_call_revealer.reveal_child = true;
-                        incoming_call_revealer.get_style_context().add_class("incoming");
+                        bool video = call_manager.should_we_send_video();
+
+                        title_label.label = video ? _("Incoming video call") : _("Incoming call");
+                        if (call_manager.invited_to_group_call != null) {
+                            title_label.label = video ? _("Incoming video group call") : _("Incoming group call");
+                        }
+
+                        if (stream_interactor.get_module(Calls.IDENTITY).can_we_do_calls(call.account)) {
+                            subtitle_label.label = "Ring ring…!";
+                            incoming_call_box.visible = true;
+                            incoming_call_revealer.reveal_child = true;
+                            incoming_call_revealer.get_style_context().add_class("incoming");
+                            outer_additional_box.get_style_context().add_class("incoming-call-box");
+                        } else {
+                            subtitle_label.label = "Dependencies for call support not met";
+                        }
                     } else {
-                        title_label.label = _("Establishing call");
+                        title_label.label = _("Calling…");
                         subtitle_label.label = "Ring ring…?";
                     }
                     break;
                 case Call.State.ESTABLISHING:
-                    image.set_from_icon_name("dino-phone-ring-symbolic", IconSize.LARGE_TOOLBAR);
-                    if (call.direction == Call.DIRECTION_INCOMING) {
-                        bool video = stream_interactor.get_module(Calls.IDENTITY).should_we_send_video(call);
-                        title_label.label = video ? _("Video call establishing") : _("Call establishing");
-                        subtitle_label.label = "Connecting…";
-                    }
-                    break;
                 case Call.State.IN_PROGRESS:
                     image.set_from_icon_name("dino-phone-in-talk-symbolic", IconSize.LARGE_TOOLBAR);
-                    title_label.label = _("Call in progress…");
+                    title_label.label = _("Call started");
                     string duration = get_duration_string((new DateTime.now_utc()).difference(call.local_time));
                     subtitle_label.label = _("Started %s ago").printf(duration);
 
                     time_update_handler_id = Timeout.add_seconds(get_next_time_change() + 1, () => {
-                        Source.remove(time_update_handler_id);
-                        time_update_handler_id = 0;
-                        update_widget();
+                        if (time_update_handler_id != 0) {
+                            Source.remove(time_update_handler_id);
+                            time_update_handler_id = 0;
+                            update_call_state();
+                        }
                         return true;
                     });
 
                     break;
-                case Call.State.OTHER_DEVICE_ACCEPTED:
+                case Call.State.OTHER_DEVICE:
                     image.set_from_icon_name("dino-phone-hangup-symbolic", IconSize.LARGE_TOOLBAR);
                     title_label.label = call.direction == Call.DIRECTION_INCOMING ? _("Incoming call") : _("Outgoing call");
                     subtitle_label.label = _("You handled this call on another device");
@@ -127,29 +174,27 @@ namespace Dino.Ui {
                     string duration = get_duration_string(call.end_time.difference(call.local_time));
                     subtitle_label.label = _("Ended at %s").printf(formated_end) +
                             " · " +
-                            _("Lasted for %s").printf(duration);
+                            _("Lasted %s").printf(duration);
                     break;
                 case Call.State.MISSED:
                     image.set_from_icon_name("dino-phone-missed-symbolic", IconSize.LARGE_TOOLBAR);
                     title_label.label = _("Call missed");
-                    string who = null;
                     if (call.direction == Call.DIRECTION_INCOMING) {
-                        who = "You";
+                        subtitle_label.label = _("You missed this call");
                     } else {
-                        who = Util.get_participant_display_name(stream_interactor, conversation, call.to);
+                        string who = Util.get_conversation_display_name(stream_interactor, conversation);
+                        subtitle_label.label = _("%s missed this call").printf(who);
                     }
-                    subtitle_label.label = "%s missed this call".printf(who);
                     break;
                 case Call.State.DECLINED:
                     image.set_from_icon_name("dino-phone-hangup-symbolic", IconSize.LARGE_TOOLBAR);
                     title_label.label = _("Call declined");
-                    string who = null;
                     if (call.direction == Call.DIRECTION_INCOMING) {
-                        who = "You";
+                        subtitle_label.label = _("You declined this call");
                     } else {
-                        who = Util.get_participant_display_name(stream_interactor, conversation, call.to);
+                        string who = Util.get_conversation_display_name(stream_interactor, conversation);
+                        subtitle_label.label = _("%s declined this call").printf(who);
                     }
-                    subtitle_label.label = "%s declined this call".printf(who);
                     break;
                 case Call.State.FAILED:
                     image.set_from_icon_name("dino-phone-hangup-symbolic", IconSize.LARGE_TOOLBAR);
@@ -157,6 +202,8 @@ namespace Dino.Ui {
                     subtitle_label.label = "Call failed to establish";
                     break;
             }
+
+            update_counterparts();
         }
 
         private string get_duration_string(TimeSpan duration) {
@@ -189,7 +236,7 @@ namespace Dino.Ui {
                 return ret;
             }
 
-            return _("seconds");
+            return _("a few seconds");
         }
 
         private int get_next_time_change() {
@@ -209,6 +256,9 @@ namespace Dino.Ui {
             if (time_update_handler_id != 0) {
                 Source.remove(time_update_handler_id);
                 time_update_handler_id = 0;
+            }
+            if (call_manager != null) {
+                call_manager.peer_joined.disconnect(update_counterparts);
             }
         }
     }

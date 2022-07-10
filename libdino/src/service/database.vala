@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 21;
+    private const int VERSION = 22;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -174,6 +174,19 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class CallCounterpartTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> call_id = new Column.Integer("call_id") { not_null = true };
+        public Column<int> jid_id = new Column.Integer("jid_id") { not_null = true };
+        public Column<string> resource = new Column.Text("resource");
+
+        internal CallCounterpartTable(Database db) {
+            base(db, "call_counterpart");
+            init({call_id, jid_id, resource});
+            index("call_counterpart_call_jid_idx", {call_id});
+        }
+    }
+
     public class ConversationTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
@@ -295,6 +308,7 @@ public class Database : Qlite.Database {
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public CallTable call { get; private set; }
+    public CallCounterpartTable call_counterpart { get; private set; }
     public ConversationTable conversation { get; private set; }
     public AvatarTable avatar { get; private set; }
     public EntityIdentityTable entity_identity { get; private set; }
@@ -319,6 +333,7 @@ public class Database : Qlite.Database {
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         call = new CallTable(this);
+        call_counterpart = new CallCounterpartTable(this);
         conversation = new ConversationTable(this);
         avatar = new AvatarTable(this);
         entity_identity = new EntityIdentityTable(this);
@@ -327,7 +342,7 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, call, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
@@ -445,6 +460,19 @@ public class Database : Qlite.Database {
             } catch (Error e) {
                 error("Failed to upgrade to database version 18: %s", e.message);
             }
+        }
+        if (oldVersion < 22) {
+            try {
+                exec("INSERT INTO call_counterpart (call_id, jid_id, resource) SELECT id, counterpart_id, counterpart_resource FROM call");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 22: %s", e.message);
+            }
+//                exec("ALTER TABLE call RENAME TO call2");
+//                call.create_table_at_version(VERSION);
+//                exec("INSERT INTO call (id, account_id, our_resource, direction, time, local_time, end_time, encryption, state)
+//                            SELECT id, account_id, our_resource, direction, time, local_time, end_time, encryption, state
+//                            FROM call2");
+//                exec("DROP TABLE call2");
         }
     }
 

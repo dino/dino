@@ -123,18 +123,22 @@ public class FileDefaultWidgetController : Object {
 
     private StreamInteractor? stream_interactor;
     private string file_uri;
+    private string file_name;
     private FileTransfer.State state;
 
     public FileDefaultWidgetController(FileDefaultWidget widget) {
         this.widget = widget;
         widget.button_release_event.connect(on_clicked);
+        widget.file_open_button.clicked.connect(open_file);
+        widget.file_save_button.clicked.connect(save_file);
+        widget.cancel_button.clicked.connect(cancel_download);
     }
 
     public void set_file_transfer(FileTransfer file_transfer, StreamInteractor stream_interactor) {
         this.file_transfer = file_transfer;
         this.stream_interactor = stream_interactor;
 
-        widget.name_label.label = file_transfer.file_name;
+        widget.name_label.label = file_name = file_transfer.file_name;
 
         file_transfer.bind_property("path", this, "file-transfer-path");
         file_transfer.bind_property("state", this, "file-transfer-state");
@@ -150,7 +154,7 @@ public class FileDefaultWidgetController : Object {
     public void set_file(File file, string file_name, string? mime_type) {
         file_uri = file.get_uri();
         state = FileTransfer.State.COMPLETE;
-        widget.name_label.label = file_name;
+        widget.name_label.label = this.file_name = file_name;
         widget.update_file_info(mime_type, state, -1);
     }
 
@@ -160,20 +164,46 @@ public class FileDefaultWidgetController : Object {
         widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.size);
     }
 
+    private void open_file() {
+        try{
+            AppInfo.launch_default_for_uri(file_uri, null);
+        } catch (Error err) {
+            warning("Failed to open %s - %s", file_uri, err.message);
+        }
+    }
+
+    private void save_file() {
+        var save_dialog = new FileChooserNative(_("Save as…"), widget.get_toplevel() as Gtk.Window, FileChooserAction.SAVE, null, null);
+        save_dialog.set_do_overwrite_confirmation(true);
+        save_dialog.set_modal(true);
+        save_dialog.set_current_name(file_name);
+
+        if (save_dialog.run() == Gtk.ResponseType.ACCEPT) {
+            try{
+                GLib.File.new_for_uri(file_uri).copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);
+            } catch (Error err) {
+                warning("Failed copy file %s - %s", file_uri, err.message);
+            }
+        }
+    }
+
+    private void cancel_download() {
+        file_transfer.cancellable.cancel();
+    }
+
     private bool on_clicked(EventButton event_button) {
         switch (state) {
             case FileTransfer.State.COMPLETE:
                 if (event_button.button == 1) {
-                    try{
-                        AppInfo.launch_default_for_uri(file_uri, null);
-                    } catch (Error err) {
-                        warning("Failed to open %s - %s", file_uri, err.message);
-                    }
+                    open_file();
                 }
                 break;
             case FileTransfer.State.NOT_STARTED:
                 assert(stream_interactor != null && file_transfer != null);
                 stream_interactor.get_module(FileManager.IDENTITY).download_file.begin(file_transfer);
+                break;
+            default:
+                // Clicking doesn't do anything in FAILED and IN_PROGRESS states
                 break;
         }
         return false;

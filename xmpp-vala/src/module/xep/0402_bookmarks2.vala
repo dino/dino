@@ -2,7 +2,8 @@ using Gee;
 
 namespace Xmpp.Xep.Bookmarks2 {
 
-private const string NS_URI = "urn:xmpp:bookmarks:0";
+public const string NS_URI = "urn:xmpp:bookmarks:1";
+public const string NS_URI_COMPAT = NS_URI + "#compat";
 
 public class Module : BookmarksProvider, XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0402_bookmarks2");
@@ -15,6 +16,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
             hm = flag.conferences;
         } else {
             Gee.List<StanzaNode>? items = yield stream.get_module(Pubsub.Module.IDENTITY).request_all(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI);
+            if (items == null) return null;
 
             hm = new HashMap<Jid, Conference>(Jid.hash_func, Jid.equals_func);
             foreach (StanzaNode item_node in items) {
@@ -35,14 +37,23 @@ public class Module : BookmarksProvider, XmppStreamModule {
 
     public async void add_conference(XmppStream stream, Conference conference) {
         StanzaNode conference_node = new StanzaNode.build("conference", NS_URI).add_self_xmlns()
-            .put_attribute("autojoin", conference.autojoin ? "true" : "false");
+            .put_attribute("autojoin", conference.autojoin.to_string());
         if (conference.name != null) {
             conference_node.put_attribute("name", conference.name);
         }
         if (conference.nick != null) {
             conference_node.put_node((new StanzaNode.build("nick", NS_URI)).put_node(new StanzaNode.text(conference.nick)));
         }
-        yield stream.get_module(Pubsub.Module.IDENTITY).publish(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI, conference.jid.to_string(), conference_node, Xmpp.Xep.Pubsub.ACCESS_MODEL_WHITELIST);
+        if (conference.password != null) {
+            conference_node.put_node((new StanzaNode.build("password", NS_URI)).put_node(new StanzaNode.text(conference.password)));
+        }
+        var publish_options = new Pubsub.PublishOptions()
+                .set_persist_items(true)
+                .set_max_items("max")
+                .set_send_last_published_item("never")
+                .set_access_model("whitelist");
+
+        yield stream.get_module(Pubsub.Module.IDENTITY).publish(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI, conference.jid.to_string(), conference_node, publish_options);
     }
 
     public async void replace_conference(XmppStream stream, Jid muc_jid, Conference modified_conference) {
@@ -92,13 +103,13 @@ public class Module : BookmarksProvider, XmppStreamModule {
         if (conference_node.name != "conference" || conference_node.ns_uri != NS_URI) return null;
 
         conference.name = conference_node.get_attribute("name", NS_URI);
-        conference.autojoin = conference_node.get_attribute("autojoin", NS_URI) == "true";
+        conference.autojoin = conference_node.get_attribute_bool("autojoin", false, NS_URI);
         conference.nick = conference_node.get_deep_string_content("nick");
         return conference;
     }
 
     public override void attach(XmppStream stream) {
-        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI, on_pupsub_item, on_pupsub_retract);
+        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI, true, on_pupsub_item, on_pupsub_retract);
     }
 
     public override void detach(XmppStream stream) {

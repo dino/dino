@@ -37,40 +37,30 @@ public class Handler {
         this.own_fingerprint = creds.own_fingerprint;
     }
 
-    public uint8[]? process_incoming_data(uint component_id, uint8[] data) {
+    public uint8[]? process_incoming_data(uint component_id, uint8[] data) throws Crypto.Error {
         if (srtp_session.has_decrypt) {
-            try {
-                if (component_id == 1) {
-                    if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
-                        return srtp_session.decrypt_rtcp(data);
-                    }
-                    return srtp_session.decrypt_rtp(data);
+            if (component_id == 1) {
+                if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
+                    return srtp_session.decrypt_rtcp(data);
                 }
-                if (component_id == 2) return srtp_session.decrypt_rtcp(data);
-            } catch (Error e) {
-                warning("%s (%d)", e.message, e.code);
-                return null;
+                return srtp_session.decrypt_rtp(data);
             }
+            if (component_id == 2) return srtp_session.decrypt_rtcp(data);
         } else if (component_id == 1) {
             on_data_rec(data);
         }
         return null;
     }
 
-    public uint8[]? process_outgoing_data(uint component_id, uint8[] data) {
+    public uint8[]? process_outgoing_data(uint component_id, uint8[] data) throws Crypto.Error {
         if (srtp_session.has_encrypt) {
-            try {
-                if (component_id == 1) {
-                    if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
-                        return srtp_session.encrypt_rtcp(data);
-                    }
-                    return srtp_session.encrypt_rtp(data);
+            if (component_id == 1) {
+                if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
+                    return srtp_session.encrypt_rtcp(data);
                 }
-                if (component_id == 2) return srtp_session.encrypt_rtcp(data);
-            } catch (Error e) {
-                warning("%s (%d)", e.message, e.code);
-                return null;
+                return srtp_session.encrypt_rtp(data);
             }
+            if (component_id == 2) return srtp_session.encrypt_rtcp(data);
         }
         return null;
     }
@@ -122,6 +112,19 @@ public class Handler {
     }
 
     public async Xmpp.Xep.Jingle.ContentEncryption? setup_dtls_connection() {
+        MainContext context = MainContext.current_source().get_context();
+        var thread = new Thread<Xmpp.Xep.Jingle.ContentEncryption>("dtls-connection", () => {
+            var res = setup_dtls_connection_thread();
+            Source source = new IdleSource();
+            source.set_callback(setup_dtls_connection.callback);
+            source.attach(context);
+            return res;
+        });
+        yield;
+        return thread.join();
+    }
+
+    private Xmpp.Xep.Jingle.ContentEncryption? setup_dtls_connection_thread() {
         buffer_mutex.lock();
         if (stop) {
             restart = true;
@@ -156,28 +159,23 @@ public class Handler {
         session.set_push_function(push_function);
         session.set_verify_function(verify_function);
 
-        Thread<int> thread = new Thread<int> (null, () => {
-            DateTime maximum_time = new DateTime.now_utc().add_seconds(20);
-            do {
-                err = session.handshake();
+        DateTime maximum_time = new DateTime.now_utc().add_seconds(20);
+        do {
+            err = session.handshake();
 
-                DateTime current_time = new DateTime.now_utc();
-                if (maximum_time.compare(current_time) < 0) {
-                    warning("DTLS handshake timeouted");
-                    err = ErrorCode.APPLICATION_ERROR_MIN + 1;
-                    break;
-                }
-                if (stop) {
-                    debug("DTLS handshake stopped");
-                    err = ErrorCode.APPLICATION_ERROR_MIN + 2;
-                    break;
-                }
-            } while (err < 0 && !((ErrorCode)err).is_fatal());
-            Idle.add(setup_dtls_connection.callback);
-            return err;
-        });
-        yield;
-        err = thread.join();
+            DateTime current_time = new DateTime.now_utc();
+            if (maximum_time.compare(current_time) < 0) {
+                warning("DTLS handshake timeouted");
+                err = ErrorCode.APPLICATION_ERROR_MIN + 1;
+                break;
+            }
+            if (stop) {
+                debug("DTLS handshake stopped");
+                err = ErrorCode.APPLICATION_ERROR_MIN + 2;
+                break;
+            }
+        } while (err < 0 && !((ErrorCode)err).is_fatal());
+
         buffer_mutex.lock();
         if (stop) {
             stop = false;
@@ -186,7 +184,7 @@ public class Handler {
             buffer_mutex.unlock();
             if (restart) {
                 debug("Restarting DTLS handshake");
-                return yield setup_dtls_connection();
+                return setup_dtls_connection_thread();
             }
             return null;
         }
@@ -211,7 +209,7 @@ public class Handler {
             srtp_session.set_encryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, client_key.extract(), client_salt.extract());
             srtp_session.set_decryption_key(Crypto.Srtp.AES_CM_128_HMAC_SHA1_80, server_key.extract(), server_salt.extract());
         }
-        return new Xmpp.Xep.Jingle.ContentEncryption() { encryption_ns=Xmpp.Xep.JingleIceUdp.DTLS_NS_URI, encryption_name = "DTLS-SRTP", our_key=credentials.own_fingerprint, peer_key=peer_fingerprint };
+        return new Xmpp.Xep.Jingle.ContentEncryption(Xmpp.Xep.JingleIceUdp.DTLS_NS_URI, "DTLS-SRTP", credentials.own_fingerprint, peer_fingerprint);
     }
 
     private static ssize_t pull_function(void* transport_ptr, uint8[] buffer) {
@@ -340,7 +338,7 @@ private uint8[] get_fingerprint(X509.Certificate certificate, DigestAlgorithm di
 private string format_fingerprint(uint8[] fingerprint) {
     var sb = new StringBuilder();
     for (int i = 0; i < fingerprint.length; i++) {
-        sb.append("%02x".printf(fingerprint[i]));
+        sb.append("%02X".printf(fingerprint[i]));
         if (i < fingerprint.length - 1) {
             sb.append(":");
         }

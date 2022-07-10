@@ -9,9 +9,9 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/add_conversation/list_row.ui")]
 public class ListRow : ListBoxRow {
 
-    [GtkChild] public AvatarImage image;
-    [GtkChild] public Label name_label;
-    [GtkChild] public Label via_label;
+    [GtkChild] public unowned AvatarImage image;
+    [GtkChild] public unowned Label name_label;
+    [GtkChild] public unowned Label via_label;
 
     public Jid? jid;
     public Account? account;

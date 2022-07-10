@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-11 15:56+0200\n"
-"PO-Revision-Date: 2020-10-18 13:26+0000\n"
+"POT-Creation-Date: 2022-02-12 22:06+0100\n"
+"PO-Revision-Date: 2022-02-06 17:57+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
 "Language: ar\n"
@@ -17,14 +17,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.3.1-dev\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: main/src/ui/file_send_overlay.vala:85
 msgid "The file exceeds the server's maximum upload size."
-msgstr ""
+msgstr "حجم الملف يتجاوز الحد الذي يسمح به الخادم."
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:165
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:190
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
 #: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
 #: main/src/ui/util/helper.vala:134
 msgid "Me"
@@ -32,65 +33,80 @@ msgstr "أنا"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
-#: main/src/ui/notifier_freedesktop.vala:74
+#: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
-msgstr "تم إرسال الصورة"
+msgstr "أُرسلت الصورة"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
-#: main/src/ui/notifier_freedesktop.vala:74
+#: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
-msgstr "تم إرسال الملف"
+msgstr "أُرسل الملف"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
-#: main/src/ui/notifier_freedesktop.vala:76
+#: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
-msgstr "تم استلام الصورة"
+msgstr "استلمت الصورة"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
-#: main/src/ui/notifier_freedesktop.vala:76
+#: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
-msgstr "تم استلام الملف"
+msgstr "اُستلم الملف"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
+#: main/src/ui/conversation_content_view/call_widget.vala:166
+msgid "Outgoing call"
+msgstr "مكالمة صادرة"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
+#: main/src/ui/notifier_gnotifications.vala:70
+#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/conversation_content_view/call_widget.vala:128
+#: main/src/ui/conversation_content_view/call_widget.vala:166
+msgid "Incoming call"
+msgstr "مكالمة واردة"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:126
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:346
 #: main/src/ui/conversation_content_view/date_separator_populator.vala:117
 msgid "Yesterday"
 msgstr "البارحة"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:349
+#: main/src/ui/conversation_content_view/call_widget.vala:173
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:303
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:272
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:350
+#: main/src/ui/conversation_content_view/call_widget.vala:173
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:304
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:345
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:276
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:308
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] "منذ دقيقة"
-msgstr[1] "منذ %i د"
+msgstr[0] "في هذه اللحظة"
+msgstr[1] "منذ دقيقة واحدة"
 msgstr[2] "منذ دقيقتين"
-msgstr[3] "منذ %i د"
-msgstr[4] "منذ %i دقائق"
+msgstr[3] "منذ %i دقائق"
+msgstr[4] "منذ %i دقيقة"
 msgstr[5] "منذ %i دقيقة"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:278
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:355
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:310
 msgid "Just now"
 msgstr "الآن"
 
@@ -110,88 +126,157 @@ msgstr "عضو"
 msgid "User"
 msgstr "مستخدِم"
 
-#: main/src/ui/occupant_menu/view.vala:40
-#: main/src/ui/occupant_menu/view.vala:49
+#: main/src/ui/occupant_menu/view.vala:28
+#: main/src/ui/occupant_menu/view.vala:146
+#: main/src/ui/call_window/call_window_controller.vala:129
 msgid "Invite"
-msgstr "دعوة"
+msgstr "ادعو"
 
-#: main/src/ui/occupant_menu/view.vala:48
-msgid "Invite to Conference"
-msgstr "دعوة إلى فريق محادثة"
-
-#: main/src/ui/occupant_menu/view.vala:94
+#: main/src/ui/occupant_menu/view.vala:83
 msgid "Start private conversation"
-msgstr "الشروع في محادثة خاصة"
+msgstr "ابدأ محادثة خاصة"
 
-#: main/src/ui/occupant_menu/view.vala:102
+#: main/src/ui/occupant_menu/view.vala:91
 msgid "Kick"
-msgstr "طرد"
+msgstr "اطرده"
 
-#: main/src/ui/occupant_menu/view.vala:108
+#: main/src/ui/occupant_menu/view.vala:97
 msgid "Grant write permission"
-msgstr ""
+msgstr "منح تصريح الكتابة"
 
-#: main/src/ui/occupant_menu/view.vala:114
+#: main/src/ui/occupant_menu/view.vala:103
 msgid "Revoke write permission"
-msgstr ""
+msgstr "إبطال تصريح الكتابة"
 
-#: main/src/ui/conversation_view_controller.vala:213
+#: main/src/ui/occupant_menu/view.vala:145
+msgid "Invite to Conference"
+msgstr "دعوة إلى فريق المحادثة"
+
+#: main/src/ui/conversation_view_controller.vala:219
 msgid "Select file"
 msgstr "اختر ملفا"
 
-#: main/src/ui/conversation_view_controller.vala:213
+#: main/src/ui/conversation_view_controller.vala:219
 #: main/src/ui/manage_accounts/dialog.vala:152
 msgid "Select"
-msgstr "اختيار"
+msgstr "اختر"
 
-#: main/src/ui/conversation_view_controller.vala:213
+#: main/src/ui/conversation_view_controller.vala:219
 #: main/src/ui/add_conversation/select_contact_dialog.vala:38
 #: main/src/ui/add_conversation/add_conference_dialog.vala:15
 #: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:257 main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/application.vala:308 main/src/ui/manage_accounts/dialog.vala:152
 #: main/data/message_item_widget_edit_mode.ui:54
 #: main/data/add_conversation/add_groupchat_dialog.ui:11
 #: main/data/add_conversation/add_contact_dialog.ui:12
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "ألغاء"
 
 #: main/src/ui/util/helper.vala:118
 #, c-format
 msgid "%s from %s"
 msgstr "%s مِن %s"
 
-#: main/src/ui/chat_input/chat_input_controller.vala:177
+#: main/src/ui/chat_input/chat_input_controller.vala:179
 msgid "This conference does not allow you to send messages."
-msgstr ""
+msgstr "هذا المؤتمر لا يسمح لك بإرسال الرسائل."
 
-#: main/src/ui/chat_input/chat_input_controller.vala:177
+#: main/src/ui/chat_input/chat_input_controller.vala:179
 msgid "Request permission"
-msgstr ""
+msgstr "طلب الإذن"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:19
+msgid "Start call"
+msgstr "ابدأ مكالمة"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:37
+msgid "Audio call"
+msgstr "مكالمة صوتية"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:38
+msgid "Video call"
+msgstr "مكالمة مرئية"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:11
 #: main/data/shortcuts.ui:37
 msgid "Search messages"
-msgstr "البحث عن رسائل"
+msgstr "ابحث في الرسائل"
 
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:37
 msgid "Members"
 msgstr "الأعضاء"
 
+#: main/src/ui/call_window/participant_widget.vala:96
+msgid "Debug information"
+msgstr ""
+
+#: main/src/ui/call_window/participant_widget.vala:105
+#: main/src/ui/conversation_content_view/call_widget.vala:143
+msgid "Calling…"
+msgstr "يتصل…"
+
+#: main/src/ui/call_window/participant_widget.vala:107
+msgid "Ringing…"
+msgstr "يرِن…"
+
+#: main/src/ui/call_window/participant_widget.vala:109
+#: main/src/ui/manage_accounts/dialog.vala:219
+msgid "Connecting…"
+msgstr "الإتصال جارٍ …"
+
+#: main/src/ui/call_window/call_window.vala:181
+#, c-format
+msgid "%s ended the call"
+msgstr "أنهى %s المكالمة"
+
+#: main/src/ui/call_window/call_window.vala:183
+#, c-format
+msgid "%s declined the call"
+msgstr "رفض %s المكالمة"
+
+#: main/src/ui/call_window/video_settings_popover.vala:25
+msgid "Cameras"
+msgstr ""
+
+#: main/src/ui/call_window/video_settings_popover.vala:28
+msgid "No camera found."
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:29
+msgid "Microphones"
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:32
+msgid "No microphone found."
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:85
+msgid "Speakers"
+msgstr ""
+
+#: main/src/ui/call_window/audio_settings_popover.vala:88
+msgid "No speaker found."
+msgstr ""
+
+#: main/src/ui/call_window/call_window_controller.vala:128
+msgid "Invite to Call"
+msgstr ""
+
 #: main/src/ui/add_conversation/select_contact_dialog.vala:97
 #: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
 #: main/data/shortcuts.ui:17 main/data/conversation_list_titlebar.ui:16
 msgid "Start Conversation"
-msgstr "الشروع في محادثة"
+msgstr "ابدأ محادثة"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:98
 msgid "Start"
 msgstr "إبدأ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:257 main/data/menu_add.ui:13
+#: main/src/ui/application.vala:308 main/data/menu_add.ui:13
 #: main/data/shortcuts.ui:24
 msgid "Join Channel"
-msgstr "الإلتحاق بقناة"
+msgstr "انضم للقناة"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:118
@@ -204,9 +289,9 @@ msgstr "التالي"
 #: main/src/ui/add_conversation/add_conference_dialog.vala:66
 #: main/src/ui/add_conversation/add_conference_dialog.vala:142
 #: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:257
+#: main/src/ui/application.vala:308
 msgid "Join"
-msgstr "إنضمّ"
+msgstr "انضمّ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:147
 #: main/data/manage_accounts/add_account_dialog.ui:175
@@ -216,7 +301,7 @@ msgstr "العودة"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:149
 msgid "Joining…"
-msgstr "في طريق الإلتحاق …"
+msgstr "ينضم…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:170
 msgid "Password required to enter room"
@@ -228,31 +313,31 @@ msgstr "محظور مِن الإنضمام أو إنشاء فِرَق محادث
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:177
 msgid "Room does not exist"
-msgstr "غرفة المحادثة غير موجودة"
+msgstr "الغرفة غير موجودة"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:179
 msgid "Not allowed to create room"
-msgstr "ليس لديك تسريح لإنشاء غرفة محادثة"
+msgstr "لا تملك تصريحًا لإنشاء غرفة"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:181
 msgid "Members-only room"
-msgstr "الغرفة خاصة بأعضائها فقط"
+msgstr "غرفة خاصة لذوي العضوية"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:184
 msgid "Choose a different nick"
-msgstr "إختر إسما مستعارا آخر"
+msgstr "اختر لقبًا آخر"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Too many occupants in room"
-msgstr "غرفة المحادثة مكتضة"
+msgstr "الغرفة مكتضة"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:189
-#: main/src/ui/notifier_gnotifications.vala:82
-#: main/src/ui/notifier_freedesktop.vala:144
+#: main/src/ui/notifier_gnotifications.vala:104
+#: main/src/ui/notifier_freedesktop.vala:185
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
-msgstr "لا يمكن الاتصال بـ %s"
+msgstr "تعذر الاتصال مع %s"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:192
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
@@ -265,83 +350,110 @@ msgstr "العنوان غير صالح"
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:24
 msgid "Add"
-msgstr "إضافة"
+msgstr "اضف"
 
-#: main/src/ui/application.vala:197 main/data/menu_app.ui:17
+#: main/src/ui/application.vala:213 main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
 msgstr "ختصارات لوحة المفاتيح"
 
-#: main/src/ui/application.vala:233 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:284 main/data/menu_app.ui:21
 msgid "About Dino"
 msgstr "عن Dino"
 
-#: main/src/ui/global_search.vala:141
+#: main/src/ui/global_search.vala:147
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] "%i نتيجة بحث"
-msgstr[1] "%i نتيجة بحث"
-msgstr[2] "%i نتيجة بحث"
-msgstr[3] "%i نتائج بحث"
-msgstr[4] "%i نتائج بحث"
-msgstr[5] "%i نتائج بحث"
+msgstr[0] "لا نتائج"
+msgstr[1] "نتيجة واحدة"
+msgstr[2] "نتيجتان"
+msgstr[3] "%i نتائج"
+msgstr[4] "%i نتيجة"
+msgstr[5] "%i نتيجة"
 
-#: main/src/ui/global_search.vala:168
+#: main/src/ui/global_search.vala:174
 #, c-format
 msgid "In %s"
 msgstr "في %s"
 
-#: main/src/ui/global_search.vala:168
+#: main/src/ui/global_search.vala:174
 #, c-format
 msgid "With %s"
 msgstr "مع %s"
 
-#: main/src/ui/notifier_gnotifications.vala:69
-#: main/src/ui/notifier_freedesktop.vala:114
-msgid "Subscription request"
-msgstr "طلب اشتراك"
+#: main/src/ui/notifier_gnotifications.vala:70
+#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/conversation_content_view/call_widget.vala:128
+msgid "Incoming video call"
+msgstr "مكالمة مرئية واردة"
 
-#: main/src/ui/notifier_gnotifications.vala:75
-#: main/src/ui/notifier_gnotifications.vala:109
-#: main/src/ui/notifier_gnotifications.vala:125
-#: main/src/ui/notifier_freedesktop.vala:120
-#: main/src/ui/notifier_freedesktop.vala:177
-#: main/src/ui/notifier_freedesktop.vala:210
+#: main/src/ui/notifier_gnotifications.vala:72
+#: main/src/ui/notifier_freedesktop.vala:115
+#: main/src/ui/conversation_content_view/call_widget.vala:130
+msgid "Incoming video group call"
+msgstr ""
+
+#: main/src/ui/notifier_gnotifications.vala:72
+#: main/src/ui/notifier_freedesktop.vala:115
+#: main/src/ui/conversation_content_view/call_widget.vala:130
+msgid "Incoming group call"
+msgstr ""
+
+#: main/src/ui/notifier_gnotifications.vala:80
+#: main/src/ui/notifier_freedesktop.vala:123
+#: main/src/ui/notifier_freedesktop.vala:220 main/data/call_widget.ui:80
+msgid "Reject"
+msgstr "رفض"
+
+#: main/src/ui/notifier_gnotifications.vala:81
+#: main/src/ui/notifier_gnotifications.vala:97
+#: main/src/ui/notifier_gnotifications.vala:131
+#: main/src/ui/notifier_gnotifications.vala:147
+#: main/src/ui/notifier_freedesktop.vala:123
+#: main/src/ui/notifier_freedesktop.vala:161
+#: main/src/ui/notifier_freedesktop.vala:220
+#: main/src/ui/notifier_freedesktop.vala:253
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
+#: main/data/call_widget.ui:89
 msgid "Accept"
 msgstr "قبول"
 
-#: main/src/ui/notifier_gnotifications.vala:76
-#: main/src/ui/notifier_gnotifications.vala:108
-#: main/src/ui/notifier_gnotifications.vala:124
-#: main/src/ui/notifier_freedesktop.vala:120
-#: main/src/ui/notifier_freedesktop.vala:210
+#: main/src/ui/notifier_gnotifications.vala:91
+#: main/src/ui/notifier_freedesktop.vala:155
+msgid "Subscription request"
+msgstr "طلب اشتراك"
+
+#: main/src/ui/notifier_gnotifications.vala:98
+#: main/src/ui/notifier_gnotifications.vala:130
+#: main/src/ui/notifier_gnotifications.vala:146
+#: main/src/ui/notifier_freedesktop.vala:161
+#: main/src/ui/notifier_freedesktop.vala:253
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "رفض"
 
-#: main/src/ui/notifier_gnotifications.vala:98
-#: main/src/ui/notifier_freedesktop.vala:168
+#: main/src/ui/notifier_gnotifications.vala:120
+#: main/src/ui/notifier_freedesktop.vala:211
 #, c-format
 msgid "Invitation to %s"
 msgstr "دعوة إلى %s"
 
-#: main/src/ui/notifier_gnotifications.vala:99
-#: main/src/ui/notifier_freedesktop.vala:169
+#: main/src/ui/notifier_gnotifications.vala:121
+#: main/src/ui/notifier_freedesktop.vala:212
 #, c-format
 msgid "%s invited you to %s"
 msgstr "دعاك %s إلى %s"
 
-#: main/src/ui/notifier_gnotifications.vala:116
-#: main/src/ui/notifier_freedesktop.vala:201
+#: main/src/ui/notifier_gnotifications.vala:138
+#: main/src/ui/notifier_freedesktop.vala:244
 msgid "Permission request"
 msgstr "طلب إذن"
 
-#: main/src/ui/notifier_gnotifications.vala:117
-#: main/src/ui/notifier_freedesktop.vala:202
+#: main/src/ui/notifier_gnotifications.vala:139
+#: main/src/ui/notifier_freedesktop.vala:245
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "طلب %s الاذن بالكتابة في %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:12
 #: main/src/ui/contact_details/blocking_provider.vala:31
@@ -382,25 +494,25 @@ msgstr "معطّل"
 
 #: main/src/ui/contact_details/settings_provider.vala:87
 msgid "Only when mentioned"
-msgstr "فقط عندما يُشار إليّ"
+msgstr "فقط عندما أُذكر"
 
 #: main/src/ui/contact_details/settings_provider.vala:89
 #: main/src/ui/contact_details/settings_provider.vala:124
 #, c-format
 msgid "Default: %s"
-msgstr "إفتراضي: %s"
+msgstr "الافتراضي: %s"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request"
-msgstr ""
+msgstr "اطلب"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Permissions"
-msgstr ""
+msgstr "التصريحات"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "اطلب تصريحًا لكتابة الرسائل"
 
 #: main/src/ui/contact_details/dialog.vala:37
 msgid "Conference Details"
@@ -408,23 +520,23 @@ msgstr "تفاصيل فريق المحادثة"
 
 #: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr "تفاصيل عن المُراسل"
+msgstr "تفاصيل عن المُتراسل"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Block"
-msgstr "حظر"
+msgstr "احجبه"
 
 #: main/src/ui/contact_details/blocking_provider.vala:31
 msgid "Communication and status updates in either direction are blocked"
-msgstr "تم حظر الإتصال وتحديثات الحالة في كلا الإتجاهين"
+msgstr "حجب الإتصال وتحديثات الحالة في كلا الإتجاهين"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:50
 msgid "Name of the room"
-msgstr "إسم غرفة المحادثة"
+msgstr "اسم الغرفة"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:53
 msgid "Description of the room"
-msgstr "وصف غرفة المحادثة"
+msgstr "وصف الغرفة"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:56
 msgid "Persistent"
@@ -510,19 +622,15 @@ msgstr "ليس هناك أية حسابات نشطة"
 msgid "Manage accounts"
 msgstr "إدارة الحسابات"
 
-#: main/src/ui/notifier_freedesktop.vala:148
+#: main/src/ui/notifier_freedesktop.vala:189
 #: main/src/ui/manage_accounts/dialog.vala:232
 msgid "Wrong password"
 msgstr "كلمة المرور خاطئة"
 
-#: main/src/ui/notifier_freedesktop.vala:151
+#: main/src/ui/notifier_freedesktop.vala:192
 #: main/src/ui/manage_accounts/dialog.vala:234
 msgid "Invalid TLS certificate"
 msgstr "شهادة TLS غير صالحة"
-
-#: main/src/ui/notifier_freedesktop.vala:177
-msgid "Reject"
-msgstr ""
 
 #: main/src/ui/manage_accounts/dialog.vala:125
 #, c-format
@@ -545,10 +653,6 @@ msgstr "الصور"
 msgid "All files"
 msgstr "كافة الملفات"
 
-#: main/src/ui/manage_accounts/dialog.vala:219
-msgid "Connecting…"
-msgstr "الإتصال جارٍ …"
-
 #: main/src/ui/manage_accounts/dialog.vala:221
 msgid "Connected"
 msgstr "متصل"
@@ -569,28 +673,28 @@ msgstr "إضافة حساب"
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr ""
+msgstr "لم يتمكن الخادم من إثبات أنه %s."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:155
 msgid "Its security certificate is not trusted by your operating system."
-msgstr ""
+msgstr "شهادة الأمان الخاصة به غير موثوق فيها من قبل نظامك للشغيل."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:157
 msgid "Its security certificate is issued to another domain."
-msgstr ""
+msgstr "أصدرت شهادة الأمان الخاصة به إلى مجال آخر."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:159
 msgid "Its security certificate will only become valid in the future."
-msgstr ""
+msgstr "ستصبح شهادة الأمان الخاصة به صالحة فقط في المستقبل."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:161
 msgid "Its security certificate is expired."
-msgstr ""
+msgstr "انتهت صلاحية شهادة الأمان الخاصة به."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 #, c-format
 msgid "Sign in to %s"
-msgstr "الاتصال بـ %s"
+msgstr "تسجيل الدخول إلى %s"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:224
 #, c-format
@@ -631,13 +735,21 @@ msgstr "إنشاء حساب"
 msgid "Check %s for information on how to sign up"
 msgstr "إطّلع على %s للمزيد من المعلومات حول التسجيل"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:159
+#: main/src/ui/conversation_content_view/message_widget.vala:194
 msgid "Message too long"
 msgstr "الرسالة طويلة جدًا"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:187
+#: main/src/ui/conversation_content_view/message_widget.vala:220
 msgid "edited"
 msgstr "تم تعديله"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:229
+msgid "pending…"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/message_widget.vala:242
+msgid "delivery failed"
+msgstr "فشل التسليم"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
@@ -659,69 +771,161 @@ msgstr "%s و %s يكتبان…"
 msgid "%s is typing…"
 msgstr "%s يكتب حاليا…"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:164
+#: main/src/ui/conversation_content_view/call_widget.vala:150
+msgid "Call started"
+msgstr "بدأتْ المكالمة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:152
+#, c-format
+msgid "Started %s ago"
+msgstr "بدأتْ منذ %s"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:167
+msgid "You handled this call on another device"
+msgstr "ردَدْتَ على هذه المكالمة من جهاز آخر"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:172
+msgid "Call ended"
+msgstr "انتهت المكالمة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:175
+#, c-format
+msgid "Ended at %s"
+msgstr "انتهت على %s"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:177
+#, c-format
+msgid "Lasted %s"
+msgstr "دامتْ %s"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:181
+msgid "Call missed"
+msgstr "مكالمة فائتة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:183
+msgid "You missed this call"
+msgstr "فاتتك هذه المكالمة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:186
+#, c-format
+msgid "%s missed this call"
+msgstr "فاتت %s هذه المكالمة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:191
+msgid "Call declined"
+msgstr "تم رفض المكالمة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:193
+msgid "You declined this call"
+msgstr "لقد رفضت هذه المكالمة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:196
+#, c-format
+msgid "%s declined this call"
+msgstr "رفض %s هذه المكالمة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:201
+msgid "Call failed"
+msgstr "فشلتْ المكالمة"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:225
+#, c-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:232
+#, c-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: main/src/ui/conversation_content_view/call_widget.vala:239
+msgid "a few seconds"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:188
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "غير مشفّرة"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:200
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:232
 msgid "Unable to send message"
 msgstr "تعذر إرسال الرسالة"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:259
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:291
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:292
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:295
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%b %d, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:264
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:296
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%b %d, %l∶%M %p"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:299
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:268
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:300
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
+
+#: main/src/ui/conversation_content_view/file_widget.vala:175
+#: main/src/ui/conversation_content_view/file_default_widget.vala:29
+msgid "Save as…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
 msgstr "يريد هذا المراسل إضافتك إلى قائمة مراسليه"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#: main/src/ui/conversation_content_view/file_default_widget.vala:28
+msgid "Open"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/file_default_widget.vala:59
 #, c-format
 msgid "Downloading %s…"
 msgstr "جارٍ تنزيل %s…"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#: main/src/ui/conversation_content_view/file_default_widget.vala:65
 #, c-format
 msgid "%s offered: %s"
 msgstr "عرض عليك %s: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "File offered: %s"
 msgstr "الملف المقدّم: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:56
+#: main/src/ui/conversation_content_view/file_default_widget.vala:69
 msgid "File offered"
 msgstr "تم تقديم الملف"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:62
+#: main/src/ui/conversation_content_view/file_default_widget.vala:75
 msgid "File transfer failed"
 msgstr "فشل نقل الملف"
 
@@ -736,7 +940,7 @@ msgstr "%a, %b %d"
 #: main/data/chat_input.ui:22 main/data/file_send_overlay.ui:28
 #: main/data/shortcuts.ui:44
 msgid "Send a file"
-msgstr ""
+msgstr "إرسال ملف"
 
 #: main/data/message_item_widget_edit_mode.ui:60
 msgid "Update message"
@@ -780,7 +984,7 @@ msgstr "تحويل الوجوه المبتسمة إلى إيموجي"
 
 #: main/data/settings_dialog.ui:70
 msgid "Check spelling"
-msgstr ""
+msgstr "التدقيق الإملائي"
 
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP Chat Client"
@@ -828,7 +1032,7 @@ msgstr "تحقق مِن التدقيق الإملائي أو حاول إزالة
 
 #: main/data/file_send_overlay.ui:80
 msgid "Send"
-msgstr ""
+msgstr "أرسل"
 
 #: main/data/shortcuts.ui:12
 msgid "General"
@@ -836,7 +1040,7 @@ msgstr "عام"
 
 #: main/data/shortcuts.ui:32
 msgid "Conversation"
-msgstr ""
+msgstr "محادثة"
 
 #: main/data/shortcuts.ui:52
 msgid "Navigation"

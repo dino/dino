@@ -95,16 +95,27 @@ public class Xmpp.Xep.Jingle.Content : Object {
     }
 
     public void accept() {
+        if (state != State.PENDING) {
+            warning("accepting a non-pending content");
+            return;
+        }
         state = State.WANTS_TO_BE_ACCEPTED;
-
         session.accept_content(this);
     }
 
     public void reject() {
+        if (state != State.PENDING) {
+            warning("rejecting a non-pending content");
+            return;
+        }
         session.reject_content(this);
     }
 
     public void terminate(bool we_terminated, string? reason_name, string? reason_text) {
+        if (state == State.PENDING) {
+            warning("terminating a pending call");
+            return;
+        }
         content_params.terminate(we_terminated, reason_name, reason_text);
         transport_params.dispose();
 
@@ -137,7 +148,7 @@ public class Xmpp.Xep.Jingle.Content : Object {
         this.content_params.handle_accept(stream, this.session, this, content_node.description);
     }
 
-    private async void select_new_transport() {
+    public async void select_new_transport() {
         XmppStream stream = session.stream;
         Transport? new_transport = yield stream.get_module(Module.IDENTITY).select_transport(stream, transport.type_, transport_params.components, peer_full_jid, tried_transport_methods);
         if (new_transport == null) {
@@ -238,8 +249,15 @@ public class Xmpp.Xep.Jingle.Content : Object {
 }
 
 public class Xmpp.Xep.Jingle.ContentEncryption : Object {
-    public string encryption_ns { get; set; }
-    public string encryption_name { get; set; }
-    public uint8[] our_key { get; set; }
-    public uint8[] peer_key { get; set; }
+    public string encryption_ns;
+    public string encryption_name;
+    public uint8[] our_key;
+    public uint8[] peer_key;
+
+    public class ContentEncryption(string encryption_ns, string encryption_name, uint8[] our_key = new uint8[]{}, uint8[] peer_key = new uint8[]{}) {
+        this.encryption_ns = encryption_ns;
+        this.encryption_name = encryption_name;
+        this.our_key = our_key;
+        this.peer_key = peer_key;
+    }
 }

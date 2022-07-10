@@ -12,55 +12,55 @@ public class AddAccountDialog : Gtk.Dialog {
 
     public signal void added(Account account);
 
-    [GtkChild] private Stack stack;
+    [GtkChild] private unowned Stack stack;
 
-    [GtkChild] private Revealer notification_revealer;
-    [GtkChild] private Label notification_label;
+    [GtkChild] private unowned Revealer notification_revealer;
+    [GtkChild] private unowned Label notification_label;
 
     // Sign in - JID
-    [GtkChild] private Box sign_in_jid_box;
-    [GtkChild] private Label sign_in_jid_error_label;
-    [GtkChild] private Entry jid_entry;
-    [GtkChild] private Stack sign_in_jid_continue_stack;
-    [GtkChild] private Button sign_in_jid_continue_button;
-    [GtkChild] private Button sign_in_jid_serverlist_button;
+    [GtkChild] private unowned Box sign_in_jid_box;
+    [GtkChild] private unowned Label sign_in_jid_error_label;
+    [GtkChild] private unowned Entry jid_entry;
+    [GtkChild] private unowned Stack sign_in_jid_continue_stack;
+    [GtkChild] private unowned Button sign_in_jid_continue_button;
+    [GtkChild] private unowned Button sign_in_jid_serverlist_button;
 
     // Sign in - TLS error
-    [GtkChild] private Box sign_in_tls_box;
-    [GtkChild] private Label sign_in_tls_label;
-    [GtkChild] private Stack sign_in_password_continue_stack;
-    [GtkChild] private Button sign_in_tls_back_button;
+    [GtkChild] private unowned Box sign_in_tls_box;
+    [GtkChild] private unowned Label sign_in_tls_label;
+    [GtkChild] private unowned Stack sign_in_password_continue_stack;
+    [GtkChild] private unowned Button sign_in_tls_back_button;
 
     // Sign in - Password
-    [GtkChild] private Box sign_in_password_box;
-    [GtkChild] private Label sign_in_password_title;
-    [GtkChild] private Label sign_in_password_error_label;
+    [GtkChild] private unowned Box sign_in_password_box;
+    [GtkChild] private unowned Label sign_in_password_title;
+    [GtkChild] private unowned Label sign_in_password_error_label;
 
-    [GtkChild] private Entry password_entry;
-    [GtkChild] private Button sign_in_password_continue_button;
-    [GtkChild] private Button sign_in_password_back_button;
+    [GtkChild] private unowned Entry password_entry;
+    [GtkChild] private unowned Button sign_in_password_continue_button;
+    [GtkChild] private unowned Button sign_in_password_back_button;
 
     // Select Server
-    [GtkChild] private Box create_account_box;
-    [GtkChild] private Button login_button;
-    [GtkChild] private Stack select_server_continue_stack;
-    [GtkChild] private Button select_server_continue;
-    [GtkChild] private Label register_form_continue_label;
-    [GtkChild] private ListBox server_list_box;
-    [GtkChild] private Entry server_entry;
+    [GtkChild] private unowned Box create_account_box;
+    [GtkChild] private unowned Button login_button;
+    [GtkChild] private unowned Stack select_server_continue_stack;
+    [GtkChild] private unowned Button select_server_continue;
+    [GtkChild] private unowned Label register_form_continue_label;
+    [GtkChild] private unowned ListBox server_list_box;
+    [GtkChild] private unowned Entry server_entry;
 
     // Register Form
-    [GtkChild] private Box register_box;
-    [GtkChild] private Label register_title;
-    [GtkChild] private Box form_box;
-    [GtkChild] private Button register_form_back;
-    [GtkChild] private Stack register_form_continue_stack;
-    [GtkChild] private Button register_form_continue;
+    [GtkChild] private unowned Box register_box;
+    [GtkChild] private unowned Label register_title;
+    [GtkChild] private unowned Box form_box;
+    [GtkChild] private unowned Button register_form_back;
+    [GtkChild] private unowned Stack register_form_continue_stack;
+    [GtkChild] private unowned Button register_form_continue;
 
     // Success
-    [GtkChild] private Box success_box;
-    [GtkChild] private Label success_description;
-    [GtkChild] private Button success_continue_button;
+    [GtkChild] private unowned Box success_box;
+    [GtkChild] private unowned Label success_description;
+    [GtkChild] private unowned Button success_continue_button;
 
     private static string[] server_list = new string[]{
         "5222.de",

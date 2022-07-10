@@ -176,7 +176,13 @@ public class FileManager : StreamInteractionModule, Object {
 
     public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
         if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return true;
-        Jid relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account) ?? conversation.counterpart;
+
+        Jid relevant_jid = conversation.counterpart;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account);
+        }
+        if (relevant_jid == null) return false;
+
         bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
         return in_roster;
     }
@@ -240,7 +246,7 @@ public class FileManager : StreamInteractionModule, Object {
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
 
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            yield os.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE|OutputStreamSpliceFlags.CLOSE_TARGET);
+            yield os.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE | OutputStreamSpliceFlags.CLOSE_TARGET, Priority.LOW, file_transfer.cancellable);
             file_transfer.path = file.get_basename();
             file_transfer.input_stream = yield file.read_async();
 
@@ -286,13 +292,14 @@ public class FileManager : StreamInteractionModule, Object {
         if (is_sender_trustworthy(file_transfer, conversation)) {
             try {
                 yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
-
-                if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
-                    yield download_file_internal(file_provider, file_transfer, conversation);
-                }
             } catch (Error e) {
                 warning("Error downloading file: %s", e.message);
                 file_transfer.state = FileTransfer.State.FAILED;
+            }
+            if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
+                download_file_internal.begin(file_provider, file_transfer, conversation, (_, res) => {
+                    download_file_internal.end(res);
+                });
             }
         }
 

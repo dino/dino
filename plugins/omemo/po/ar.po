@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-11 15:56+0200\n"
-"PO-Revision-Date: 2020-05-12 12:41+0000\n"
+"POT-Creation-Date: 2022-02-12 22:06+0100\n"
+"PO-Revision-Date: 2021-08-31 23:44+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "ar/>\n"
 "Language: ar\n"
@@ -17,24 +17,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.8.1-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:155
+#: plugins/omemo/src/ui/bad_messages_populator.vala:157
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
-msgstr ""
-
-#: plugins/omemo/src/ui/bad_messages_populator.vala:156
-msgid "Manage devices"
-msgstr ""
+msgstr "يستخدم %s جهازًا غير موثوق به. لن ترى رسائل من أجهزة لا تثق بها."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:158
+msgid "Manage devices"
+msgstr "إدارة الأجهزة"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:160
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
-msgstr ""
+msgstr "%s لا يثق بهذا الجهاز. هذا يعني أنك قد تفقد بعض الرسائل."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid "Manage Key"
@@ -58,7 +58,7 @@ msgstr "البصمات متطابقة"
 #: plugins/omemo/src/ui/manage_key_dialog.vala:82
 #: plugins/omemo/src/ui/manage_key_dialog.vala:88
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "ألغاء"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:40
 msgid "Confirm"
@@ -74,6 +74,8 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"سيتم تمييز الرسائل القادمة المرسلة بواسطة %s من الجهاز الذي يستخدم هذا "
+"المفتاح وفقًا لذلك في نافذة الدردشة."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 msgid "Fingerprints do not match"
@@ -127,7 +129,7 @@ msgstr "السماح بالاتصال المشفر بجهاز المراسل ا�
 #: plugins/omemo/src/ui/manage_key_dialog.vala:141
 #, c-format
 msgid "This key is currently %s."
-msgstr "المفتاح الآن  %s."
+msgstr "المفتاح الآن %s."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:132
 msgid "accepted"
@@ -167,6 +169,8 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
+"لن ترى الرسائل المشفرة من جهاز %s الذي يستخدم هذا المفتاح. على العكس من "
+"ذلك ، لن يتمكن هذا الجهاز من فك تشفير رسائلك بعد الآن."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:161
 #, c-format
@@ -199,7 +203,7 @@ msgstr "سيتم توليدها عند أول اتصال"
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr "قرار الثقة بـ OMEMO مطلوب"
+msgstr "مطلوب قرار ثقة مع OMEMO"
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
@@ -216,7 +220,7 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d لا يوجد جهاز OMEMO"
 msgstr[1] "%d جهاز OMEMO"
-msgstr[2] "جهازين لـ OMEMO"
+msgstr[2] "جهازين ل OMEMO"
 msgstr[3] "%d أجهزة OMEMO"
 msgstr[4] "%d جهاز OMEMO"
 msgstr[5] "%d أجهزة OMEMO"

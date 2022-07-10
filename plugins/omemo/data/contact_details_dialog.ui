@@ -278,7 +278,6 @@
         <child>
             <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="margin">10</property>
                 <child>
                     <object class="GtkImage" id="qrcode_image">
                         <property name="visible">True</property>
