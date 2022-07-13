@@ -61,21 +61,38 @@ namespace Xmpp.Xep.FileMetadataElement {
             }
             printerr("%s\n", node.to_xml());
             // TODO: null checks, on the subnodes as well as on the final values
-            metadata.name = node.get_subnode("name", NS_URI).get_string_content();
-            metadata.desc = node.get_subnode("desc", NS_URI).get_string_content();
-            metadata.mime_type = node.get_subnode("media_type", NS_URI).get_string_content();
-            metadata.size = int.parse(node.get_subnode("size", NS_URI).get_string_content());
-            metadata.date = new DateTime.from_iso8601(node.get_subnode("date", NS_URI).get_string_content(), null);
+            StanzaNode? name_node = node.get_subnode("name", NS_URI);
+            if (name_node == null || name_node.get_string_content() == null) {
+                return null;
+            } else {
+                metadata.name = name_node.get_string_content();
+            }
+            StanzaNode? desc_node = node.get_subnode("desc", NS_URI);
+            if (desc_node != null && desc_node.get_string_content() != null) {
+                metadata.desc = desc_node.get_string_content();
+            }
+            StanzaNode? mime_node = node.get_subnode("media_type", NS_URI);
+            if (mime_node != null && mime_node.get_string_content() != null) {
+                metadata.mime_type = mime_node.get_string_content();
+            }
+            StanzaNode? size_node = node.get_subnode("size", NS_URI);
+            if (size_node != null && size_node.get_string_content() != null) {
+                metadata.size = int64.parse(size_node.get_string_content());
+            }
+            StanzaNode? date_node = node.get_subnode("date", NS_URI);
+            if (date_node != null && date_node.get_string_content() != null) {
+                metadata.date = new DateTime.from_iso8601(date_node.get_string_content(), null);
+            }
             StanzaNode? width_node = node.get_subnode("width", NS_URI);
-            if (width_node != null) {
+            if (width_node != null && width_node.get_string_content() != null) {
                 metadata.width = int.parse(width_node.get_string_content());
             }
             StanzaNode? height_node = node.get_subnode("height", NS_URI);
-            if (height_node != null) {
+            if (height_node != null && height_node.get_string_content() != null) {
                 metadata.height = int.parse(height_node.get_string_content());
             }
             StanzaNode? length_node = node.get_subnode("length", NS_URI);
-            if (length_node != null) {
+            if (length_node != null && length_node.get_string_content() != null) {
                 metadata.length = int.parse(length_node.get_string_content());
             }
             metadata.hashes = new CryptographicHashes.Hashes.from_stanza_subnodes(node);

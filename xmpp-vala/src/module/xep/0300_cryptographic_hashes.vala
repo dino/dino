@@ -28,7 +28,7 @@ namespace Xmpp.Xep.CryptographicHashes {
                 case ChecksumType.SHA512:
                     return "sha-512";
             }
-            return null;
+            return "(null)";
         }
 
         public Hash.from_data(GLib.ChecksumType type, uint8[] data) {
@@ -85,6 +85,8 @@ namespace Xmpp.Xep.CryptographicHashes {
                             return HashCmp.Mismatch;
                         case HashCmp.Match:
                             cmp = HashCmp.Match;
+                            break;
+                        case HashCmp.None:
                             break;
                     }
                 }

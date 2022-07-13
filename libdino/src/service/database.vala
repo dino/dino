@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 23;
+    private const int VERSION = 24;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -362,7 +362,7 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, file_hashes, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
