@@ -423,10 +423,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.type_ = yield determine_message_type(account, message, new_message);
 
         new_message.file_metadata = Xep.FileMetadataElement.FileMetadata.from_message(message);
-        if (new_message.file_metadata != null) {
-            print("Received SFS metadata!\n");
-            new_message.file_metadata.debug_print();
-        }
 
         return new_message;
     }
@@ -687,10 +683,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         // Add stateless file sharing (XEP-0446) metadata to message
         if (message.file_metadata != null) {
             message.file_metadata.add_to_message(new_message);
-            if (message.file_metadata != null) {
-                print("Attached SFS metadata!\n");
-                message.file_metadata.debug_print();
-            }
         }
 
         stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, new_message, (_, res) => {

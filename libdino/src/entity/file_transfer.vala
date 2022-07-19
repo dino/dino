@@ -122,7 +122,8 @@ public class FileTransfer : Object {
         hashes = new Xep.CryptographicHashes.Hashes(hash_list);
 
         if (!hashes.hashes.is_empty) {
-            this.to_metadata_element().debug_print();
+            printerr("Loaded fsf metadata element from database:\n");
+            printerr("%s\n", this.to_metadata_element().serialize().to_ansi_string(true));
         }
 
         notify.connect(on_update);

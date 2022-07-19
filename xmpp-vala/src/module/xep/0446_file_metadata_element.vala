@@ -15,88 +15,97 @@ namespace Xmpp.Xep.FileMetadataElement {
 	    public int length { get; set; default=-1; } // Length of audio/video in milliseconds
 	    // public thumbnail;
 
-        public void debug_print() {
-            printerr("File: '%s'\n", this.name);
-            if (this.desc != null) {
-                printerr("  Description: '%s'\n", this.desc);
-            }
-            printerr("  Mime type: %s\n", this.mime_type);
-            printerr("  Size: %s bytes\n", this.size.to_string());
-            printerr("  Last change: %s\n", this.date.to_string());
-            if (this.width != -1 && this.height != -1) {
-                printerr("  Image width: %s\n", this.width.to_string());
-                printerr("  Image height: %s\n", this.height.to_string());
-            }
-            if (this.length != -1) {
-                printerr("  Video length: %s\n", this.mime_type);
-            }
-        }
-
-        public void add_to_message(MessageStanza message) {
+        public StanzaNode serialize() {
             StanzaNode node = new StanzaNode.build("file", NS_URI).add_self_xmlns()
-                    .put_node(new StanzaNode.build("name", NS_URI).put_node(new StanzaNode.text(this.name)))
-                    .put_node(new StanzaNode.build("media_type", NS_URI).put_node(new StanzaNode.text(this.mime_type)))
-                    .put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(this.size.to_string())))
-                    .put_node(new StanzaNode.build("date", NS_URI).put_node(new StanzaNode.text(this.date.to_string())));
+                    .put_node(new StanzaNode.build("name", NS_URI).put_node(new StanzaNode.text(this.name)));
+            if (this.mime_type != null) {
+                node.put_node(new StanzaNode.build("media_type", NS_URI).put_node(new StanzaNode.text(this.mime_type)));
+            }
+            if (this.size != -1) {
+                node.put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(this.size.to_string())));
+            }
+            if (this.date != null) {
+                node.put_node(new StanzaNode.build("date", NS_URI).put_node(new StanzaNode.text(this.date.to_string())));
+            }
             if (this.desc != null) {
                 node.put_node(new StanzaNode.build("desc", NS_URI).put_node(new StanzaNode.text(this.desc)));
             }
-            if (this.width != -1 && this.height != -1) {
+            if (this.width != -1) {
                 node.put_node(new StanzaNode.build("width", NS_URI).put_node(new StanzaNode.text(this.width.to_string())));
-                node.put_node(new StanzaNode.build("height", NS_URI).put_node(new StanzaNode.text(this.height.to_string())));
+            }
+            if (this.height != -1) {
+                node.put_node(new StanzaNode.build("width", NS_URI).put_node(new StanzaNode.text(this.width.to_string())));
             }
             if (this.length != -1) {
                 node.put_node(new StanzaNode.build("length", NS_URI).put_node(new StanzaNode.text(this.length.to_string())));
             }
             node.sub_nodes.add_all(this.hashes.to_stanza_nodes());
-            printerr("%s\n", node.to_xml());
+            return node;
+        }
+
+        public void add_to_message(MessageStanza message) {
+            StanzaNode node = this.serialize();
+            printerr("Attaching file metadata:\n");
+            printerr("%s\n", node.to_ansi_string(true));
             message.stanza.put_node(node);
         }
 
-        public static FileMetadata? from_message(MessageStanza message) {
-            StanzaNode? node = message.stanza.get_subnode("file", NS_URI);
+        public static FileMetadata? parse(StanzaNode node) {
             FileMetadata metadata = new FileMetadata();
-            if (node == null) {
-                return null;
-            }
-            printerr("%s\n", node.to_xml());
-            // TODO: null checks, on the subnodes as well as on the final values
-            StanzaNode? name_node = node.get_subnode("name", NS_URI);
+            // TODO: null checks on final values
+            StanzaNode? name_node = node.get_subnode("name");
             if (name_node == null || name_node.get_string_content() == null) {
                 return null;
             } else {
                 metadata.name = name_node.get_string_content();
             }
-            StanzaNode? desc_node = node.get_subnode("desc", NS_URI);
+            StanzaNode? desc_node = node.get_subnode("desc");
             if (desc_node != null && desc_node.get_string_content() != null) {
                 metadata.desc = desc_node.get_string_content();
             }
-            StanzaNode? mime_node = node.get_subnode("media_type", NS_URI);
+            StanzaNode? mime_node = node.get_subnode("media_type");
             if (mime_node != null && mime_node.get_string_content() != null) {
                 metadata.mime_type = mime_node.get_string_content();
             }
-            StanzaNode? size_node = node.get_subnode("size", NS_URI);
+            StanzaNode? size_node = node.get_subnode("size");
             if (size_node != null && size_node.get_string_content() != null) {
                 metadata.size = int64.parse(size_node.get_string_content());
             }
-            StanzaNode? date_node = node.get_subnode("date", NS_URI);
+            StanzaNode? date_node = node.get_subnode("date");
             if (date_node != null && date_node.get_string_content() != null) {
                 metadata.date = new DateTime.from_iso8601(date_node.get_string_content(), null);
             }
-            StanzaNode? width_node = node.get_subnode("width", NS_URI);
+            StanzaNode? width_node = node.get_subnode("width");
             if (width_node != null && width_node.get_string_content() != null) {
                 metadata.width = int.parse(width_node.get_string_content());
             }
-            StanzaNode? height_node = node.get_subnode("height", NS_URI);
+            StanzaNode? height_node = node.get_subnode("height");
             if (height_node != null && height_node.get_string_content() != null) {
                 metadata.height = int.parse(height_node.get_string_content());
             }
-            StanzaNode? length_node = node.get_subnode("length", NS_URI);
+            StanzaNode? length_node = node.get_subnode("length");
             if (length_node != null && length_node.get_string_content() != null) {
                 metadata.length = int.parse(length_node.get_string_content());
             }
             metadata.hashes = new CryptographicHashes.Hashes.from_stanza_subnodes(node);
             return metadata;
+        }
+
+        public static FileMetadata? from_message(MessageStanza message) {
+            StanzaNode? node = message.stanza.get_subnode("file", NS_URI);
+            if (node == null) {
+                return null;
+            }
+            printerr("Parsing metadata from message:\n");
+            printerr("%s\n", node.to_xml());
+            FileMetadata metadata = FileMetadata.parse(node);
+            if (metadata != null) {
+                printerr("Parsed metadata:\n");
+                printerr("%s\n", metadata.serialize().to_ansi_string(true));
+            } else {
+                printerr("Failed to parse metadata!\n");
+            }
+            return FileMetadata.parse(node);
         }
     }
 }
