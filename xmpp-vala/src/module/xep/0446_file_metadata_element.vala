@@ -15,7 +15,7 @@ namespace Xmpp.Xep.FileMetadataElement {
 	    public int length { get; set; default=-1; } // Length of audio/video in milliseconds
 	    // public thumbnail;
 
-        public StanzaNode serialize() {
+        public StanzaNode to_stanza_node() {
             StanzaNode node = new StanzaNode.build("file", NS_URI).add_self_xmlns()
                     .put_node(new StanzaNode.build("name", NS_URI).put_node(new StanzaNode.text(this.name)));
             if (this.mime_type != null) {
@@ -44,13 +44,13 @@ namespace Xmpp.Xep.FileMetadataElement {
         }
 
         public void add_to_message(MessageStanza message) {
-            StanzaNode node = this.serialize();
+            StanzaNode node = this.to_stanza_node();
             printerr("Attaching file metadata:\n");
             printerr("%s\n", node.to_ansi_string(true));
             message.stanza.put_node(node);
         }
 
-        public static FileMetadata? parse(StanzaNode node) {
+        public static FileMetadata? from_stanza_node(StanzaNode node) {
             FileMetadata metadata = new FileMetadata();
             // TODO: null checks on final values
             StanzaNode? name_node = node.get_subnode("name");
@@ -98,14 +98,14 @@ namespace Xmpp.Xep.FileMetadataElement {
             }
             printerr("Parsing metadata from message:\n");
             printerr("%s\n", node.to_xml());
-            FileMetadata metadata = FileMetadata.parse(node);
+            FileMetadata metadata = FileMetadata.from_stanza_node(node);
             if (metadata != null) {
                 printerr("Parsed metadata:\n");
-                printerr("%s\n", metadata.serialize().to_ansi_string(true));
+                printerr("%s\n", metadata.to_stanza_node().to_ansi_string(true));
             } else {
                 printerr("Failed to parse metadata!\n");
             }
-            return FileMetadata.parse(node);
+            return FileMetadata.from_stanza_node(node);
         }
     }
 }

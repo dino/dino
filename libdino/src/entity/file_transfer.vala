@@ -123,7 +123,7 @@ public class FileTransfer : Object {
 
         if (!hashes.hashes.is_empty) {
             printerr("Loaded fsf metadata element from database:\n");
-            printerr("%s\n", this.to_metadata_element().serialize().to_ansi_string(true));
+            printerr("%s\n", this.to_metadata_element().to_stanza_node().to_ansi_string(true));
         }
 
         notify.connect(on_update);
