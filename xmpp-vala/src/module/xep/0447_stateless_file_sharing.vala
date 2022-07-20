@@ -1,8 +1,9 @@
 namespace Xmpp.Xep.StatelessFileSharing {
 
     public const string NS_URI = "jabber:x:sfs";
+    public const string STANZA_NAME = "file-transfer";
 
-
+    // to add more sources, this should be exchanged with a interface
     public class HttpSource {
         public string url;
 
@@ -77,5 +78,42 @@ namespace Xmpp.Xep.StatelessFileSharing {
             node.put_node(sources_node);
             return node;
         }
+    }
+
+    public class Module : XmppStreamModule {
+        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "stateless_file_sharing");
+
+        public signal void sfs_received(Jid from, Jid to, SfsElement sfs_element, string message_type);
+
+        private void send_propose(XmppStream stream, SfsElement sfs_element, Jid dst, string message_type) {
+            StanzaNode sfs_node = sfs_element.to_stanza_node();
+            MessageStanza sfs_message = new MessageStanza() { to=dst, type_=message_type };
+            MessageProcessingHints.set_message_hint(sfs_message, MessageProcessingHints.HINT_STORE);
+            sfs_message.stanza.put_node(sfs_node);
+            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, sfs_message);
+        }
+
+        private void on_received_message(XmppStream stream, MessageStanza message) {
+            StanzaNode? sfs_node = message.stanza.get_subnode(STANZA_NAME, NS_URI);
+            if (sfs_node == null) {
+                return;
+            }
+            SfsElement? sfs_element = SfsElement.from_stanza_node(sfs_node);
+            if (sfs_element == null) {
+                return;
+            }
+            sfs_received(message.from, message.to, sfs_element, message.type_);
+        }
+
+        public override void attach(XmppStream stream) {
+            stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
+        }
+
+        public override void detach(XmppStream stream) {
+            stream.get_module(MessageModule.IDENTITY).received_message.disconnect(on_received_message);
+        }
+
+        public override string get_ns() { return NS_URI; }
+        public override string get_id() { return IDENTITY.id; }
     }
 }
