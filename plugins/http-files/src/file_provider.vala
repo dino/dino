@@ -152,6 +152,16 @@ public class FileProvider : Dino.FileProvider, Object {
     }
 
     public FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError {
+        // TODO: replace '2' with constant?
+        if (file_transfer.provider == 2) {
+            var file_meta = new HttpFileMeta();
+            file_meta.size = file_transfer.size;
+            file_meta.mime_type = file_transfer.mime_type;
+            file_meta.file_name = file_transfer.file_name;
+            file_meta.message = null;
+            return file_meta;
+        }
+
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) throw new FileReceiveError.GET_METADATA_FAILED("No conversation");
 
@@ -170,6 +180,12 @@ public class FileProvider : Dino.FileProvider, Object {
     }
 
     public FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
+        // TODO: replace '2' with constant?
+        if (file_transfer.provider == 2) {
+            var receive_data = new HttpFileReceiveData();
+            receive_data.url = file_transfer.sfs_sources.get(0).url;
+            return receive_data;
+        }
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) return null;
 

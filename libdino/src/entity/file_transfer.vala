@@ -75,6 +75,7 @@ public class FileTransfer : Object {
     public int height { get; set; default=-1; }
     public int length { get; set; default=-1; }
     public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes.empty();}
+    public Gee.List<Xep.StatelessFileSharing.HttpSource> sfs_sources { get; set; default=new Gee.ArrayList<Xep.StatelessFileSharing.HttpSource>(); }
 
     private Database? db;
     private string storage_dir;
@@ -121,6 +122,12 @@ public class FileTransfer : Object {
         }
         hashes = new Xep.CryptographicHashes.Hashes(hash_list);
 
+        foreach(var http_source_row in db.sfs_http_sources.select().with(db.sfs_http_sources.id, "=", id)) {
+            Xep.StatelessFileSharing.HttpSource http_source = new Xep.StatelessFileSharing.HttpSource();
+            http_source.url = http_source_row[db.sfs_http_sources.url];
+            sfs_sources.add(http_source);
+        }
+
         if (!hashes.hashes.is_empty) {
             printerr("Loaded fsf metadata element from database:\n");
             printerr("%s\n", this.to_metadata_element().to_stanza_node().to_ansi_string(true));
@@ -163,6 +170,12 @@ public class FileTransfer : Object {
                     .value(db.file_hashes.id, id)
                     .value(db.file_hashes.algo, hash.algo)
                     .value(db.file_hashes.value, hash.val)
+                    .perform();
+        }
+        foreach (var source in sfs_sources) {
+            db.sfs_http_sources.insert()
+                    .value(db.sfs_http_sources.id, id)
+                    .value(db.sfs_http_sources.url, source.url)
                     .perform();
         }
 
@@ -228,6 +241,18 @@ public class FileTransfer : Object {
         metadata.length = this.length;
         metadata.hashes = this.hashes;
         return metadata;
+    }
+
+    public void with_metadata_element(Xep.FileMetadataElement.FileMetadata metadata) {
+        this.file_name = metadata.name;
+        this.mime_type = metadata.mime_type;
+        this.size = metadata.size;
+        this.desc = metadata.desc;
+        this.modification_date = metadata.date;
+        this.width = metadata.width;
+        this.height = metadata.height;
+        this.length = metadata.length;
+        this.hashes = metadata.hashes;
     }
 }
 

@@ -39,6 +39,58 @@ public class FileManager : StreamInteractionModule, Object {
         this.add_sender(new JingleFileSender(stream_interactor));
     }
 
+    public const int HTTP_PROVIDER_ID = 0;
+    public const int SFS_PROVIDER_ID = 2;
+
+    private FileProvider? select_file_provider(FileTransfer file_transfer) {
+        bool http_usable = !(file_transfer.provider == SFS_PROVIDER_ID);
+
+        foreach (FileProvider file_provider in this.file_providers) {
+            if (file_transfer.provider == file_provider.get_id()) {
+                return file_provider;
+            }
+            if (http_usable && file_provider.get_id() == HTTP_PROVIDER_ID) {
+                return file_provider;
+            }
+        }
+        return null;
+    }
+
+    private async void on_receive_sfs(Jid from, Jid to, Xep.StatelessFileSharing.SfsElement sfs_element, MessageStanza message, Account account) {
+        FileTransfer file_transfer = new FileTransfer();
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from, to, account, message.type_);
+        file_transfer.account = conversation.account;
+        file_transfer.counterpart = file_transfer.direction == FileTransfer.DIRECTION_RECEIVED ? from : conversation.counterpart;
+        if (conversation.type_.is_muc_semantic()) {
+            file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
+            file_transfer.direction = from.equals(file_transfer.ourpart) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
+        } else {
+            file_transfer.ourpart = conversation.account.full_jid;
+            file_transfer.direction = from.equals_bare(file_transfer.ourpart) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
+        }
+        file_transfer.time = new DateTime.now_utc();
+        // TODO: get time from message
+        file_transfer.local_time = new DateTime.now_utc();
+        file_transfer.provider = SFS_PROVIDER_ID;
+        file_transfer.with_metadata_element(sfs_element.metadata);
+        // TODO: is this the proper info? in the http-plugin this is the id of the Entity.Message
+        file_transfer.info = message.id.to_string();
+
+        stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
+
+        if (is_sender_trustworthy(file_transfer, conversation)) {
+            if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
+                FileProvider? file_provider = this.select_file_provider(file_transfer);
+                download_file_internal.begin(file_provider, file_transfer, conversation, (_, res) => {
+                    download_file_internal.end(res);
+                });
+            }
+        }
+
+        conversation.last_active = file_transfer.time;
+        received_file(file_transfer, conversation);
+    }
+
     public async HashMap<int, long> get_file_size_limits(Conversation conversation) {
         HashMap<int, long> ret = new HashMap<int, long>();
         foreach (FileSender sender in file_senders) {
@@ -138,12 +190,7 @@ public class FileManager : StreamInteractionModule, Object {
     public async void download_file(FileTransfer file_transfer) {
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
 
-        FileProvider? file_provider = null;
-        foreach (FileProvider fp in file_providers) {
-            if (file_transfer.provider == fp.get_id()) {
-                file_provider = fp;
-            }
-        }
+        FileProvider? file_provider = this.select_file_provider(file_transfer);
 
         yield download_file_internal(file_provider, file_transfer, conversation);
     }

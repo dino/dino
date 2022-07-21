@@ -67,7 +67,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
         }
 
         public StanzaNode to_stanza_node() {
-            StanzaNode node = new StanzaNode.build("file-sharing", NS_URI);
+            StanzaNode node = new StanzaNode.build(STANZA_NAME, NS_URI);
             node.put_node(this.metadata.to_stanza_node());
             StanzaNode sources_node = new StanzaNode.build("sources");
             Gee.List<StanzaNode> sources = new Gee.ArrayList<StanzaNode>();
@@ -83,9 +83,10 @@ namespace Xmpp.Xep.StatelessFileSharing {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "stateless_file_sharing");
 
-        public signal void sfs_received(Jid from, Jid to, SfsElement sfs_element, string message_type);
+        public signal void received_sfs(Jid from, Jid to, SfsElement sfs_element, MessageStanza message);
 
-        private void send_propose(XmppStream stream, SfsElement sfs_element, Jid dst, string message_type) {
+        private void send_stateless_file_transfer(XmppStream stream, SfsElement sfs_element, Jid dst, string message_type) {
+            // TODO: add fallback body
             StanzaNode sfs_node = sfs_element.to_stanza_node();
             MessageStanza sfs_message = new MessageStanza() { to=dst, type_=message_type };
             MessageProcessingHints.set_message_hint(sfs_message, MessageProcessingHints.HINT_STORE);
@@ -94,15 +95,19 @@ namespace Xmpp.Xep.StatelessFileSharing {
         }
 
         private void on_received_message(XmppStream stream, MessageStanza message) {
+            printerr("on_received_message called (stateless file sharing)");
             StanzaNode? sfs_node = message.stanza.get_subnode(STANZA_NAME, NS_URI);
             if (sfs_node == null) {
                 return;
             }
+            printerr("identified stateless file sharing message");
             SfsElement? sfs_element = SfsElement.from_stanza_node(sfs_node);
             if (sfs_element == null) {
                 return;
             }
-            sfs_received(message.from, message.to, sfs_element, message.type_);
+            // TODO: add message flag
+            printerr("signalling successfully parsed sfs message");
+            received_sfs(message.from, message.to, sfs_element, message);
         }
 
         public override void attach(XmppStream stream) {
