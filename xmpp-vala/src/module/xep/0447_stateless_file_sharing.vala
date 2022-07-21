@@ -85,7 +85,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
 
         public signal void received_sfs(Jid from, Jid to, SfsElement sfs_element, MessageStanza message);
 
-        private void send_stateless_file_transfer(XmppStream stream, SfsElement sfs_element, Jid dst, string message_type) {
+        public void send_stateless_file_transfer(XmppStream stream, SfsElement sfs_element, Jid dst, string message_type) {
             // TODO: add fallback body
             StanzaNode sfs_node = sfs_element.to_stanza_node();
             MessageStanza sfs_message = new MessageStanza() { to=dst, type_=message_type };

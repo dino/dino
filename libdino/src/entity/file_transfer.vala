@@ -243,6 +243,14 @@ public class FileTransfer : Object {
         return metadata;
     }
 
+    public Xep.StatelessFileSharing.SfsElement to_sfs_element() {
+        Xep.StatelessFileSharing.SfsElement sfs_element = new Xep.StatelessFileSharing.SfsElement();
+        sfs_element.metadata = this.to_metadata_element();
+        sfs_element.sources = this.sfs_sources;
+
+        return sfs_element;
+    }
+
     public void with_metadata_element(Xep.FileMetadataElement.FileMetadata metadata) {
         this.file_name = metadata.name;
         this.mime_type = metadata.mime_type;

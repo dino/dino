@@ -42,12 +42,23 @@ public class HttpFileSender : FileSender, Object {
 
         yield upload(file_transfer, send_data, file_meta);
 
-        Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(send_data.url_down, conversation);
-        message.file_metadata = file_transfer.to_metadata_element();
-        file_transfer.info = message.id.to_string();
-
-        message.encryption = send_data.encrypt_message ? conversation.encryption : Encryption.NONE;
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(message, conversation);
+        Xep.StatelessFileSharing.HttpSource source = new Xep.StatelessFileSharing.HttpSource();
+        source.url = send_data.url_down;
+        file_transfer.sfs_sources.add(source);
+        this.db.sfs_http_sources.insert()
+            .value(db.sfs_http_sources.id, file_transfer.id)
+            .value(db.sfs_http_sources.url, send_data.url_down)
+            .perform();
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
+        Xep.StatelessFileSharing.Module sfs_module = stream.get_module(Xep.StatelessFileSharing.Module.IDENTITY);
+        string message_type;
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            message_type = MessageStanza.TYPE_GROUPCHAT;
+        } else {
+            message_type = MessageStanza.TYPE_CHAT;
+        }
+        sfs_module.send_stateless_file_transfer(stream, file_transfer.to_sfs_element(), conversation.counterpart, message_type);
+        // TODO: also file_transfer.info isn't set here anymore (?)
     }
 
     public async bool can_send(Conversation conversation, FileTransfer file_transfer) {
