@@ -37,6 +37,9 @@ public class FileManager : StreamInteractionModule, Object {
 
         this.add_provider(new JingleFileProvider(stream_interactor));
         this.add_sender(new JingleFileSender(stream_interactor));
+        this.stream_interactor.account_added.connect((account) => {
+            on_account_added(account);
+        });
     }
 
     public const int HTTP_PROVIDER_ID = 0;
@@ -91,7 +94,14 @@ public class FileManager : StreamInteractionModule, Object {
         received_file(file_transfer, conversation);
     }
 
-    public async HashMap<int, long> get_file_size_limits(Conversation conversation) {
+    private void on_account_added(Account account) {
+        Xep.StatelessFileSharing.Module fsf_module = stream_interactor.module_manager.get_module(account, Xep.StatelessFileSharing.Module.IDENTITY);
+        fsf_module.received_sfs.connect((from, to, sfs_element, message) => {
+            on_receive_sfs(from, to, sfs_element, message, account);
+        });
+    }
+
+        public async HashMap<int, long> get_file_size_limits(Conversation conversation) {
         HashMap<int, long> ret = new HashMap<int, long>();
         foreach (FileSender sender in file_senders) {
             ret[sender.get_id()] = yield sender.get_file_size_limit(conversation);
