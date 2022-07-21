@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 24;
+    private const int VERSION = 25;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -173,6 +173,18 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class SfsHttpSourcesTable : Table {
+        public Column<int> id = new Column.Integer("id");
+        public Column<string> url = new Column.Text("algo") { not_null = true };
+
+        internal SfsHttpSourcesTable(Database db) {
+            base(db, "sfs_http_sources");
+            init({id, url});
+            unique({id, url}, "REPLACE");
+            index("source_id_url", { id, url }, true);
+        }
+    }
+
     public class CallTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
@@ -326,6 +338,7 @@ public class Database : Qlite.Database {
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public FileHashesTable file_hashes { get; private set; }
+    public SfsHttpSourcesTable sfs_http_sources { get; private set; }
     public CallTable call { get; private set; }
     public CallCounterpartTable call_counterpart { get; private set; }
     public ConversationTable conversation { get; private set; }
@@ -352,6 +365,7 @@ public class Database : Qlite.Database {
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         file_hashes = new FileHashesTable(this);
+        sfs_http_sources = new SfsHttpSourcesTable(this);
         call = new CallTable(this);
         call_counterpart = new CallCounterpartTable(this);
         conversation = new ConversationTable(this);
@@ -362,7 +376,7 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, file_hashes, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, file_hashes, sfs_http_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
