@@ -46,8 +46,7 @@ public class FileManager : StreamInteractionModule, Object {
     public const int SFS_PROVIDER_ID = 2;
 
     private FileProvider? select_file_provider(FileTransfer file_transfer) {
-        bool http_usable = !(file_transfer.provider == SFS_PROVIDER_ID);
-
+        bool http_usable = file_transfer.provider == SFS_PROVIDER_ID;
         foreach (FileProvider file_provider in this.file_providers) {
             if (file_transfer.provider == file_provider.get_id()) {
                 return file_provider;
@@ -76,6 +75,7 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.local_time = new DateTime.now_utc();
         file_transfer.provider = SFS_PROVIDER_ID;
         file_transfer.with_metadata_element(sfs_element.metadata);
+        file_transfer.sfs_sources = sfs_element.sources;
         // TODO: is this the proper info? in the http-plugin this is the id of the Entity.Message
         file_transfer.info = message.id.to_string();
 

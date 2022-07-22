@@ -9,10 +9,10 @@ namespace Xmpp.Xep.StatelessFileSharing {
 
         public const string HTTP_NS_URI = "http://jabber.org/protocol/url-data";
         public const string HTTP_STANZA_NAME = "url-data";
-        public const string HTTP_URL_ATTRIBUTE = "url-data";
+        public const string HTTP_URL_ATTRIBUTE = "target";
 
         public StanzaNode to_stanza_node() {
-            StanzaNode node = new StanzaNode.build(HTTP_STANZA_NAME, HTTP_NS_URI);
+            StanzaNode node = new StanzaNode.build(HTTP_STANZA_NAME, HTTP_NS_URI).add_self_xmlns();
             node.put_attribute(HTTP_URL_ATTRIBUTE, this.url);
             return node;
         }
@@ -67,9 +67,9 @@ namespace Xmpp.Xep.StatelessFileSharing {
         }
 
         public StanzaNode to_stanza_node() {
-            StanzaNode node = new StanzaNode.build(STANZA_NAME, NS_URI);
+            StanzaNode node = new StanzaNode.build(STANZA_NAME, NS_URI).add_self_xmlns();
             node.put_node(this.metadata.to_stanza_node());
-            StanzaNode sources_node = new StanzaNode.build("sources");
+            StanzaNode sources_node = new StanzaNode.build("sources", NS_URI);
             Gee.List<StanzaNode> sources = new Gee.ArrayList<StanzaNode>();
             foreach (HttpSource source in this.sources) {
                 sources.add(source.to_stanza_node());
@@ -95,18 +95,15 @@ namespace Xmpp.Xep.StatelessFileSharing {
         }
 
         private void on_received_message(XmppStream stream, MessageStanza message) {
-            printerr("on_received_message called (stateless file sharing)");
             StanzaNode? sfs_node = message.stanza.get_subnode(STANZA_NAME, NS_URI);
             if (sfs_node == null) {
                 return;
             }
-            printerr("identified stateless file sharing message");
             SfsElement? sfs_element = SfsElement.from_stanza_node(sfs_node);
             if (sfs_element == null) {
                 return;
             }
             // TODO: add message flag
-            printerr("signalling successfully parsed sfs message");
             received_sfs(message.from, message.to, sfs_element, message);
         }
 

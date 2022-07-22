@@ -37,6 +37,7 @@ public class HttpFileSender : FileSender, Object {
     }
 
     public async void send_file(Conversation conversation, FileTransfer file_transfer, FileSendData file_send_data, FileMeta file_meta) throws FileSendError {
+        printerr("Called send_file in http sender\n");
         HttpFileSendData? send_data = file_send_data as HttpFileSendData;
         if (send_data == null) return;
 
@@ -57,6 +58,7 @@ public class HttpFileSender : FileSender, Object {
         } else {
             message_type = MessageStanza.TYPE_CHAT;
         }
+        printerr("Http module propagates sending to the xep sfs module\n");
         sfs_module.send_stateless_file_transfer(stream, file_transfer.to_sfs_element(), conversation.counterpart, message_type);
         // TODO: also file_transfer.info isn't set here anymore (?)
     }

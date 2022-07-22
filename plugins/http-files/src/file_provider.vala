@@ -182,6 +182,10 @@ public class FileProvider : Dino.FileProvider, Object {
     public FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
         // TODO: replace '2' with constant?
         if (file_transfer.provider == 2) {
+            if (file_transfer.sfs_sources.is_empty) {
+                printerr("Sfs file transfer has no sources attached!");
+                return null;
+            }
             var receive_data = new HttpFileReceiveData();
             receive_data.url = file_transfer.sfs_sources.get(0).url;
             return receive_data;
