@@ -24,7 +24,6 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         set {
             show_skeleton_ = value && content_meta_item != null && content_meta_item.requires_header && content_meta_item.requires_avatar; }
     }
-    public bool last_group_item { get; set; default=true; }
 
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
@@ -63,7 +62,6 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         }
 
         this.notify["show-skeleton"].connect(update_margin);
-        this.notify["last-group-item"].connect(update_margin);
         this.notify["show-skeleton"].connect(set_header);
 
         update_margin();
@@ -109,10 +107,6 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
         if (show_skeleton || content_meta_item == null) {
             main_grid.add_css_class("has-skeleton");
-        }
-
-        if (last_group_item) {
-            main_grid.add_css_class("last-group-item");
         }
     }
 

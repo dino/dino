@@ -186,7 +186,7 @@ namespace Xmpp.Xep.Pubsub {
             string node = items_node.get_attribute("node", NS_URI_EVENT);
 
             if (!message.from.is_bare() && pep_subset_listeners.contains(node)) {
-                warning("Got a PEP message from a full JID (%s), ignoring:\n%s", message.from.to_string(), message.stanza.to_string());
+                warning("Got a PEP message from a full JID (%s), ignoring.", message.from.to_string());
                 return;
             }
 

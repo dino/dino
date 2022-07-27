@@ -34,7 +34,7 @@ public class ChatInputController : Object {
 
         reset_input_field_status();
 
-        var text_input_key_events = new EventControllerKey();
+        var text_input_key_events = new EventControllerKey() { name = "dino-text-input-controller-key-events" };
         text_input_key_events.key_pressed.connect(on_text_input_key_press);
         chat_input.chat_text_view.text_view.add_controller(text_input_key_events);
 
@@ -192,7 +192,7 @@ public class ChatInputController : Object {
             activate_last_message_correction();
             return true;
         } else {
-            chat_input.chat_text_view.text_view.grab_focus();
+            chat_input.do_focus();
         }
         return false;
     }

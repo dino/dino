@@ -33,7 +33,7 @@ class SmileyConverter {
     public SmileyConverter(TextView text_input) {
         this.text_input = text_input;
 
-        var text_input_key_events = new EventControllerKey();
+        var text_input_key_events = new EventControllerKey() { name = "dino-smiley-converter-key-events" };
         text_input_key_events.key_pressed.connect(on_text_input_key_press);
         text_input.add_controller(text_input_key_events);
     }

@@ -97,7 +97,14 @@ public class Dino.Plugins.Rtp.Sink : Gst.Video.Sink {
         }
     }
 
+#if VALA_0_56_1
     public override Gst.Caps get_caps(Gst.Caps? filter) {
+#if 0
+    }
+#endif
+#else
+    public override Gst.Caps get_caps(Gst.Caps filter) {
+#endif
         Gst.Caps caps = Gst.Caps.from_string("video/x-raw, format={ BGRA, ARGB, RGBA, ABGR, RGB, BGR }");
 
         if (filter != null) {

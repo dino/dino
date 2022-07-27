@@ -40,16 +40,16 @@ public class ConversationViewController : Object {
         drop_event_controller.on_drop.connect(this.on_drag_data_received);
 
         // forward key presses
-        var key_controller = new EventControllerKey();
-        key_controller.key_pressed.connect((v, c, s) => forward_key_press_to_chat_input(key_controller, v, c, s));
+        var key_controller = new EventControllerKey() { name = "dino-forward-to-input-key-events-1" };
+        key_controller.key_pressed.connect(forward_key_press_to_chat_input);
         view.conversation_frame.add_controller(key_controller);
 
-        var key_controller2 = new EventControllerKey();
-        key_controller2.key_pressed.connect((v, c, s) => forward_key_press_to_chat_input(key_controller2, v, c, s));
+        var key_controller2 = new EventControllerKey() { name = "dino-forward-to-input-key-events-2" };
+        key_controller2.key_pressed.connect(forward_key_press_to_chat_input);
         view.chat_input.add_controller(key_controller2);
 
-        var key_controller3 = new EventControllerKey();
-        key_controller3.key_pressed.connect((v, c, s) => forward_key_press_to_chat_input(key_controller3, v, c, s));
+        var key_controller3 = new EventControllerKey() { name = "dino-forward-to-input-key-events-3" };
+        key_controller3.key_pressed.connect(forward_key_press_to_chat_input);
         titlebar.get_widget().add_controller(key_controller3);
 
 //      goto-end floating button
@@ -190,11 +190,15 @@ public class ConversationViewController : Object {
     }
 
     private async void on_clipboard_paste() {
-        Clipboard clipboard = view.get_clipboard();
-        Gdk.Texture? texture = yield clipboard.read_texture_async(null); // TODO critical
-        var file_name = Path.build_filename(FileManager.get_storage_dir(), Xmpp.random_uuid() + ".png");
-        texture.save_to_png(file_name);
-        open_send_file_overlay(File.new_for_path(file_name));
+        try {
+            Clipboard clipboard = view.get_clipboard();
+            Gdk.Texture? texture = yield clipboard.read_texture_async(null); // TODO critical
+            var file_name = Path.build_filename(FileManager.get_storage_dir(), Xmpp.random_uuid() + ".png");
+            texture.save_to_png(file_name);
+            open_send_file_overlay(File.new_for_path(file_name));
+        } catch (IOError.NOT_SUPPORTED e) {
+            // Format not supported, ignore
+        }
     }
 
     private bool on_drag_data_received(DropTarget target, Value val, double x, double y) {

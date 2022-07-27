@@ -51,6 +51,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     public ConversationView init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
+        scrolled.vadjustment.notify["page-size"].connect(on_upper_notify);
         scrolled.vadjustment.notify["value"].connect(on_value_notify);
 
         content_populator = new ContentProvider(stream_interactor);
@@ -363,7 +364,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             if (can_merge(item, lower_item)) {
                 ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
                 item_skeleton.show_skeleton = false;
-                lower_skeleton.last_group_item = false;
             } else {
                 item_skeleton.show_skeleton = true;
             }
@@ -414,7 +414,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
                 });
             }
         } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1) {
-            print("move!\n");
             scrolled.vadjustment.value = scrolled.vadjustment.upper - was_upper + scrolled.vadjustment.value; // stay at same content
         }
         was_upper = scrolled.vadjustment.upper;

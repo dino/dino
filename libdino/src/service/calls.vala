@@ -465,8 +465,8 @@ namespace Dino {
                 call_state.cim_message_type = message_stanza.type_;
 
                 Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from_jid, to_jid, account, message_stanza.type_);
-                conversation.last_active = call_state.call.time;
                 if (conversation == null) return;
+                conversation.last_active = call_state.call.time;
 
                 if (call_state.call.direction == Call.DIRECTION_INCOMING) {
                     call_incoming(call_state.call, call_state, conversation, video_requested, multiparty);

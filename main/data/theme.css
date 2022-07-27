@@ -43,16 +43,11 @@ window.dino-main .dino-conversation .message-box.highlight {
 }
 
 window.dino-main .dino-conversation .message-box {
-    padding: 4px 15px 4px 15px;
+    padding: 6px 15px 6px 15px;
 }
 
 window.dino-main .dino-conversation .message-box:not(.has-skeleton) {
     padding-left: 58px;
-}
-
-window.dino-main .dino-conversation .message-box.has-skeleton.last-group-item {
-    padding-top: 8px;
-    padding-bottom: 8px;
 }
 
 window.dino-main .unread-count-notify {

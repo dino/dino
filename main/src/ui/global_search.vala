@@ -47,7 +47,7 @@ public class GlobalSearch {
         results_scrolled.vadjustment.notify["value"].connect(on_scrolled_window_vadjustment_value);
         results_scrolled.vadjustment.notify["upper"].connect_after(on_scrolled_window_vadjustment_upper);
 
-        var overlay_key_events = new EventControllerKey();
+        var overlay_key_events = new EventControllerKey() { name = "dino-search-overlay-key-events" };
         overlay_key_events.key_pressed.connect(on_key_pressed);
         overlay_key_events.key_released.connect(on_key_released);
         overlay.add_controller(overlay_key_events);

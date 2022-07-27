@@ -131,7 +131,7 @@ public class Dialog : Gtk.Dialog {
         int width = get_content_area().get_width();
         int pref_height, pref_width;
         get_content_area().measure(Orientation.VERTICAL, width, null, out pref_height, null, null);
-        default_height = pref_height;
+        default_height = pref_height + 48;
     }
 
     private void add_category(string category) {

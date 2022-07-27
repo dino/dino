@@ -163,7 +163,6 @@ public class MessageMetaItem : ContentMetaItem {
                 edit_mode.cancelled.connect(() => {
                     in_edit_mode = false;
                     outer.set_widget(label, Plugins.WidgetType.GTK4);
-                    label.grab_focus();
                 });
                 edit_mode.send.connect(() => {
                     if (((MessageItem) content_item).message.body != edit_mode.chat_text_view.text_view.buffer.text) {
@@ -173,7 +172,6 @@ public class MessageMetaItem : ContentMetaItem {
                     }
                     in_edit_mode = false;
                     outer.set_widget(label, Plugins.WidgetType.GTK4);
-                    label.grab_focus();
                 });
 
                 edit_mode.chat_text_view.text_view.buffer.text = message.body;
@@ -239,7 +237,7 @@ public class MessageItemEditMode : Box {
     [GtkChild] public unowned Frame frame;
 
     construct {
-        Util.force_css(frame, "* { border-radius: 3px; padding: 5px 7px; }");
+        Util.force_css(frame, "* { border-radius: 3px; padding: 0px 7px; }");
 
         EmojiChooser chooser = new EmojiChooser();
         chooser.emoji_picked.connect((emoji) => {
