@@ -70,15 +70,15 @@ public class ConversationSelectorRow : ListBoxRow {
         // Set tooltip
         switch (conversation.type_) {
             case Conversation.Type.CHAT:
-                has_tooltip = true;
+                has_tooltip = Util.use_tooltips();
                 query_tooltip.connect ((x, y, keyboard_tooltip, tooltip) => {
-                    tooltip.set_custom(generate_tooltip());
+                    tooltip.set_custom(Util.widget_if_tooltips_active(generate_tooltip()));
                     return true;
                 });
                 break;
             case Conversation.Type.GROUPCHAT:
-                has_tooltip = true;
-                set_tooltip_text(conversation.counterpart.bare_jid.to_string());
+                has_tooltip = Util.use_tooltips();
+                set_tooltip_text(Util.string_if_tooltips_active(conversation.counterpart.bare_jid.to_string()));
                 break;
             case Conversation.Type.GROUPCHAT_PM:
                 break;

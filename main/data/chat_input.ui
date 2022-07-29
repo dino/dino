@@ -16,7 +16,6 @@
                         <child>
                             <object class="GtkButton" id="file_button">
                                 <property name="icon-name">mail-attachment-symbolic</property>
-                                <property name="tooltip-text" translatable="1">Send a file</property>
                                 <property name="margin-top">2</property>
                                 <property name="valign">start</property>
                                 <style>

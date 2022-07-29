@@ -41,6 +41,8 @@ public class View : Box {
         });
         emoji_button.set_popover(chooser);
 
+        file_button.tooltip_text = Util.string_if_tooltips_active(_("Send a file"));
+
         Util.force_css(frame, "* { border-radius: 3px; }");
 
         return this;

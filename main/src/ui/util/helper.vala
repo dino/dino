@@ -440,4 +440,16 @@ public bool use_csd() {
     return ((Application) GLib.Application.get_default()).use_csd();
 }
 
+public Widget? widget_if_tooltips_active(Widget w) {
+    return use_tooltips() ? w : null;
+}
+
+public string? string_if_tooltips_active(string s) {
+    return use_tooltips() ? s : null;
+}
+
+public bool use_tooltips() {
+    return Gtk.MINOR_VERSION != 6 || (Gtk.MICRO_VERSION < 4 || Gtk.MICRO_VERSION > 6);
+}
+
 }

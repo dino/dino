@@ -15,7 +15,6 @@
                 <property name="hexpand">1</property>
                 <child>
                     <object class="GtkMenuButton" id="add_button">
-                        <property name="tooltip_text" translatable="1">Start Conversation</property>
                         <property name="has-frame">False</property>
                         <child>
                             <object class="GtkImage">
