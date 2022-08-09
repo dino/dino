@@ -75,7 +75,7 @@ public class FileTransfer : Object {
     public int height { get; set; default=-1; }
     public int length { get; set; default=-1; }
     public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes.empty();}
-    public Gee.List<Xep.StatelessFileSharing.HttpSource> sfs_sources { get; set; default=new Gee.ArrayList<Xep.StatelessFileSharing.HttpSource>(); }
+    public Gee.List<Xep.StatelessFileSharing.SfsSource> sfs_sources { get; set; default=new Gee.ArrayList<Xep.StatelessFileSharing.SfsSource>(); }
 
     private Database? db;
     private string storage_dir;
@@ -122,9 +122,9 @@ public class FileTransfer : Object {
         }
         hashes = new Xep.CryptographicHashes.Hashes(hash_list);
 
-        foreach(var http_source_row in db.sfs_http_sources.select().with(db.sfs_http_sources.id, "=", id)) {
-            Xep.StatelessFileSharing.HttpSource http_source = new Xep.StatelessFileSharing.HttpSource();
-            http_source.url = http_source_row[db.sfs_http_sources.url];
+        foreach(var source_row in db.sfs_sources.select().with(db.sfs_sources.id, "=", id)) {
+            assert(source_row[db.sfs_sources.type] == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE);
+            Xep.StatelessFileSharing.HttpSource http_source = Xep.StatelessFileSharing.HttpSource.deserialize(source_row[db.sfs_sources.data]);
             sfs_sources.add(http_source);
         }
 
@@ -165,17 +165,18 @@ public class FileTransfer : Object {
 
         id = (int) builder.perform();
 
-        foreach (var hash in hashes.hashes) {
+        foreach (Xep.CryptographicHashes.Hash hash in hashes.hashes) {
             db.file_hashes.insert()
                     .value(db.file_hashes.id, id)
                     .value(db.file_hashes.algo, hash.algo)
                     .value(db.file_hashes.value, hash.val)
                     .perform();
         }
-        foreach (var source in sfs_sources) {
-            db.sfs_http_sources.insert()
-                    .value(db.sfs_http_sources.id, id)
-                    .value(db.sfs_http_sources.url, source.url)
+        foreach (Xep.StatelessFileSharing.SfsSource source in sfs_sources) {
+            db.sfs_sources.insert()
+                    .value(db.sfs_sources.id, id)
+                    .value(db.sfs_sources.type, source.type())
+                    .value(db.sfs_sources.data, source.serialize())
                     .perform();
         }
 

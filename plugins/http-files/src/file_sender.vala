@@ -46,9 +46,10 @@ public class HttpFileSender : FileSender, Object {
         Xep.StatelessFileSharing.HttpSource source = new Xep.StatelessFileSharing.HttpSource();
         source.url = send_data.url_down;
         file_transfer.sfs_sources.add(source);
-        this.db.sfs_http_sources.insert()
-            .value(db.sfs_http_sources.id, file_transfer.id)
-            .value(db.sfs_http_sources.url, send_data.url_down)
+        this.db.sfs_sources.insert()
+            .value(db.sfs_sources.id, file_transfer.id)
+            .value(db.sfs_sources.type, source.type())
+            .value(db.sfs_sources.data, source.serialize())
             .perform();
         XmppStream stream = stream_interactor.get_stream(conversation.account);
         Xep.StatelessFileSharing.Module sfs_module = stream.get_module(Xep.StatelessFileSharing.Module.IDENTITY);

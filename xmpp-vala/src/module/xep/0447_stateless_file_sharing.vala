@@ -3,18 +3,43 @@ namespace Xmpp.Xep.StatelessFileSharing {
     public const string NS_URI = "jabber:x:sfs";
     public const string STANZA_NAME = "file-transfer";
 
+    public interface SfsSource: Object {
+        public abstract string type();
+        public abstract string serialize();
+
+        public abstract StanzaNode to_stanza_node();
+    }
+
     // to add more sources, this should be exchanged with a interface
-    public class HttpSource {
+    public class HttpSource: Object, SfsSource {
         public string url;
 
         public const string HTTP_NS_URI = "http://jabber.org/protocol/url-data";
         public const string HTTP_STANZA_NAME = "url-data";
         public const string HTTP_URL_ATTRIBUTE = "target";
+        public const string SOURCE_TYPE = "http";
+
+        public string type() {
+            return SOURCE_TYPE;
+        }
+
+        public string serialize() {
+            return this.to_stanza_node().to_xml();
+        }
 
         public StanzaNode to_stanza_node() {
             StanzaNode node = new StanzaNode.build(HTTP_STANZA_NAME, HTTP_NS_URI).add_self_xmlns();
             node.put_attribute(HTTP_URL_ATTRIBUTE, this.url);
             return node;
+        }
+
+        public static HttpSource deserialize(string data) {
+            StanzaReader reader = new StanzaReader.for_string(data);
+            StanzaNode node = new StanzaNode();
+            reader.read_stanza_node.begin ((obj, res) => {
+                node = reader.read_stanza_node.end (res);
+            });
+            return HttpSource.from_stanza_node(node);
         }
 
         public static HttpSource? from_stanza_node(StanzaNode node) {
@@ -41,7 +66,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
 
     public class SfsElement {
         public Xep.FileMetadataElement.FileMetadata metadata;
-        public Gee.List<HttpSource> sources;
+        public Gee.List<SfsSource> sources;
 
         public static SfsElement? from_stanza_node(StanzaNode node) {
             SfsElement element = new SfsElement();
@@ -71,7 +96,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
             node.put_node(this.metadata.to_stanza_node());
             StanzaNode sources_node = new StanzaNode.build("sources", NS_URI);
             Gee.List<StanzaNode> sources = new Gee.ArrayList<StanzaNode>();
-            foreach (HttpSource source in this.sources) {
+            foreach (var source in this.sources) {
                 sources.add(source.to_stanza_node());
             }
             sources_node.sub_nodes = sources;

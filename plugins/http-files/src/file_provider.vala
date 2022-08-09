@@ -182,12 +182,19 @@ public class FileProvider : Dino.FileProvider, Object {
     public FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
         // TODO: replace '2' with constant?
         if (file_transfer.provider == 2) {
-            if (file_transfer.sfs_sources.is_empty) {
-                printerr("Sfs file transfer has no sources attached!");
+            Xep.StatelessFileSharing.HttpSource http_source = null;
+            foreach (Xep.StatelessFileSharing.SfsSource source in file_transfer.sfs_sources) {
+                if (source.type() == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE) {
+                    http_source = source as Xep.StatelessFileSharing.HttpSource;
+                    assert(source != null);
+                }
+            }
+            if (http_source == null) {
+                printerr("Sfs file transfer has no http sources attached!");
                 return null;
             }
             var receive_data = new HttpFileReceiveData();
-            receive_data.url = file_transfer.sfs_sources.get(0).url;
+            receive_data.url = http_source.url;
             return receive_data;
         }
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
