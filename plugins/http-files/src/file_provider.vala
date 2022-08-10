@@ -179,13 +179,13 @@ public class FileProvider : Dino.FileProvider, Object {
         return file_meta;
     }
 
-    public FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
+    public async FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
         // TODO: replace '2' with constant?
         if (file_transfer.provider == 2) {
             Xep.StatelessFileSharing.HttpSource http_source = null;
-            foreach (Xep.StatelessFileSharing.SfsSource source in file_transfer.sfs_sources) {
-                if (source.type() == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE) {
-                    http_source = source as Xep.StatelessFileSharing.HttpSource;
+            foreach (FileTransfer.SerializedSfsSource source in file_transfer.sfs_sources) {
+                if (source.type == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE) {
+                    http_source = Xep.StatelessFileSharing.HttpSource.deserialize(source.data);
                     assert(source != null);
                 }
             }

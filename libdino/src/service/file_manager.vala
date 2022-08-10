@@ -75,7 +75,9 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.local_time = new DateTime.now_utc();
         file_transfer.provider = SFS_PROVIDER_ID;
         file_transfer.with_metadata_element(sfs_element.metadata);
-        file_transfer.sfs_sources = sfs_element.sources;
+        foreach (Xep.StatelessFileSharing.SfsSource source in sfs_element.sources) {
+            file_transfer.sfs_sources.add(new FileTransfer.SerializedSfsSource.from_sfs_source(source));
+        }
         // FileTransfer.info is left null, since we don't have a message entity
 
         stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
@@ -275,7 +277,7 @@ public class FileManager : StreamInteractionModule, Object {
     private async void download_file_internal(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
         try {
             // Get meta info
-            FileReceiveData receive_data = file_provider.get_file_receive_data(file_transfer);
+            FileReceiveData receive_data = yield file_provider.get_file_receive_data(file_transfer);
             FileDecryptor? file_decryptor = null;
             foreach (FileDecryptor decryptor in file_decryptors) {
                 if (decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
@@ -430,7 +432,7 @@ public interface FileProvider : Object {
 
     public abstract Encryption get_encryption(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta);
     public abstract FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError;
-    public abstract FileReceiveData? get_file_receive_data(FileTransfer file_transfer);
+    public abstract async FileReceiveData? get_file_receive_data(FileTransfer file_transfer);
 
     public abstract async FileMeta get_meta_info(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError;
     public abstract async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError;

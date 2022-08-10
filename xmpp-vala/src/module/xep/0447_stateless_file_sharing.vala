@@ -74,7 +74,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
 
     public class SfsElement {
         public Xep.FileMetadataElement.FileMetadata metadata;
-        public Gee.List<SfsSource> sources;
+        public Gee.List<SfsSource> sources = new Gee.ArrayList<SfsSource>();
 
         public static SfsElement? from_stanza_node(StanzaNode node) {
             SfsElement element = new SfsElement();

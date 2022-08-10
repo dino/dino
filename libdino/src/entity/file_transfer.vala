@@ -14,6 +14,22 @@ public class FileTransfer : Object {
         FAILED
     }
 
+    public class SerializedSfsSource {
+        public string type;
+        public string data;
+
+        public SerializedSfsSource.from_sfs_source(Xep.StatelessFileSharing.SfsSource source) {
+            this.type = source.type();
+            this.data = source.serialize();
+        }
+
+        public async Xep.StatelessFileSharing.SfsSource to_sfs_source() {
+            assert(this.type == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE);
+            Xep.StatelessFileSharing.HttpSource http_source = Xep.StatelessFileSharing.HttpSource.deserialize(this.data);
+            return http_source;
+        }
+    }
+
     public int id { get; set; default=-1; }
     public Account account { get; set; }
     public Jid counterpart { get; set; }
@@ -75,7 +91,7 @@ public class FileTransfer : Object {
     public int height { get; set; default=-1; }
     public int length { get; set; default=-1; }
     public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes.empty();}
-    public Gee.List<Xep.StatelessFileSharing.SfsSource> sfs_sources { get; set; default=new Gee.ArrayList<Xep.StatelessFileSharing.SfsSource>(); }
+    public Gee.List<SerializedSfsSource> sfs_sources { get; set; default=new Gee.ArrayList<SerializedSfsSource>(); }
 
     private Database? db;
     private string storage_dir;
@@ -123,14 +139,10 @@ public class FileTransfer : Object {
         hashes = new Xep.CryptographicHashes.Hashes(hash_list);
 
         foreach(var source_row in db.sfs_sources.select().with(db.sfs_sources.id, "=", id)) {
-            assert(source_row[db.sfs_sources.type] == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE);
-            Xep.StatelessFileSharing.HttpSource http_source = Xep.StatelessFileSharing.HttpSource.deserialize(source_row[db.sfs_sources.data]);
-            sfs_sources.add(http_source);
-        }
-
-        if (!sfs_sources.is_empty) {
-            printerr("Loaded complete fsf element from database:\n");
-            printerr(this.to_sfs_element().to_stanza_node().to_ansi_string(true));
+            SerializedSfsSource source = new SerializedSfsSource();
+            source.type = source_row[db.sfs_sources.type];
+            source.data = source_row[db.sfs_sources.data];
+            sfs_sources.add(source);
         }
 
         notify.connect(on_update);
@@ -172,11 +184,11 @@ public class FileTransfer : Object {
                     .value(db.file_hashes.value, hash.val)
                     .perform();
         }
-        foreach (Xep.StatelessFileSharing.SfsSource source in sfs_sources) {
+        foreach (SerializedSfsSource source in sfs_sources) {
             db.sfs_sources.insert()
                     .value(db.sfs_sources.id, id)
-                    .value(db.sfs_sources.type, source.type())
-                    .value(db.sfs_sources.data, source.serialize())
+                    .value(db.sfs_sources.type, source.type)
+                    .value(db.sfs_sources.data, source.data)
                     .perform();
         }
 
@@ -244,10 +256,12 @@ public class FileTransfer : Object {
         return metadata;
     }
 
-    public Xep.StatelessFileSharing.SfsElement to_sfs_element() {
+    public async Xep.StatelessFileSharing.SfsElement to_sfs_element() {
         Xep.StatelessFileSharing.SfsElement sfs_element = new Xep.StatelessFileSharing.SfsElement();
         sfs_element.metadata = this.to_metadata_element();
-        sfs_element.sources = this.sfs_sources;
+        foreach (SerializedSfsSource source in this.sfs_sources) {
+            sfs_element.sources.add(yield source.to_sfs_source());
+        }
 
         return sfs_element;
     }

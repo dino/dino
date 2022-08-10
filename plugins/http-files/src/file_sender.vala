@@ -45,7 +45,7 @@ public class HttpFileSender : FileSender, Object {
 
         Xep.StatelessFileSharing.HttpSource source = new Xep.StatelessFileSharing.HttpSource();
         source.url = send_data.url_down;
-        file_transfer.sfs_sources.add(source);
+        file_transfer.sfs_sources.add(new FileTransfer.SerializedSfsSource.from_sfs_source(source));
         this.db.sfs_sources.insert()
             .value(db.sfs_sources.id, file_transfer.id)
             .value(db.sfs_sources.type, source.type())
@@ -60,7 +60,7 @@ public class HttpFileSender : FileSender, Object {
             message_type = MessageStanza.TYPE_CHAT;
         }
         printerr("Http module propagates sending to the xep sfs module\n");
-        sfs_module.send_stateless_file_transfer(stream, file_transfer.to_sfs_element(), conversation.counterpart, message_type);
+        sfs_module.send_stateless_file_transfer(stream, yield file_transfer.to_sfs_element(), conversation.counterpart, message_type);
         // TODO: also file_transfer.info isn't set here anymore (?)
     }
 
