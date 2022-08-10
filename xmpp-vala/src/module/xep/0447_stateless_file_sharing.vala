@@ -34,12 +34,20 @@ namespace Xmpp.Xep.StatelessFileSharing {
         }
 
         public static HttpSource deserialize(string data) {
+            printerr(data);
             StanzaReader reader = new StanzaReader.for_string(data);
+            assert(reader != null);
             StanzaNode node = new StanzaNode();
+            printerr(node.to_ansi_string(true));
+            assert(node != null);
             reader.read_stanza_node.begin ((obj, res) => {
                 node = reader.read_stanza_node.end (res);
             });
-            return HttpSource.from_stanza_node(node);
+            assert(node != null);
+            printerr(node.to_ansi_string(true));
+            HttpSource source = HttpSource.from_stanza_node(node);
+            assert(source != null);
+            return source;
         }
 
         public static HttpSource? from_stanza_node(StanzaNode node) {
@@ -96,7 +104,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
             node.put_node(this.metadata.to_stanza_node());
             StanzaNode sources_node = new StanzaNode.build("sources", NS_URI);
             Gee.List<StanzaNode> sources = new Gee.ArrayList<StanzaNode>();
-            foreach (var source in this.sources) {
+            foreach (SfsSource source in this.sources) {
                 sources.add(source.to_stanza_node());
             }
             sources_node.sub_nodes = sources;
@@ -113,6 +121,8 @@ namespace Xmpp.Xep.StatelessFileSharing {
         public void send_stateless_file_transfer(XmppStream stream, SfsElement sfs_element, Jid dst, string message_type) {
             // TODO: add fallback body
             StanzaNode sfs_node = sfs_element.to_stanza_node();
+            printerr("Sending sfs node:");
+            printerr(sfs_node.to_ansi_string(true));
             MessageStanza sfs_message = new MessageStanza() { to=dst, type_=message_type };
             MessageProcessingHints.set_message_hint(sfs_message, MessageProcessingHints.HINT_STORE);
             sfs_message.stanza.put_node(sfs_node);

@@ -128,9 +128,9 @@ public class FileTransfer : Object {
             sfs_sources.add(http_source);
         }
 
-        if (!hashes.hashes.is_empty) {
-            printerr("Loaded fsf metadata element from database:\n");
-            printerr("%s\n", this.to_metadata_element().to_stanza_node().to_ansi_string(true));
+        if (!sfs_sources.is_empty) {
+            printerr("Loaded complete fsf element from database:\n");
+            printerr(this.to_sfs_element().to_stanza_node().to_ansi_string(true));
         }
 
         notify.connect(on_update);
