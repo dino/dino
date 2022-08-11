@@ -10,7 +10,6 @@ namespace Xmpp.Xep.StatelessFileSharing {
         public abstract StanzaNode to_stanza_node();
     }
 
-    // to add more sources, this should be exchanged with a interface
     public class HttpSource: Object, SfsSource {
         public string url;
 
