@@ -33,18 +33,8 @@ namespace Xmpp.Xep.StatelessFileSharing {
             return node;
         }
 
-        public static HttpSource deserialize(string data) {
-            printerr(data);
-            StanzaReader reader = new StanzaReader.for_string(data);
-            assert(reader != null);
-            StanzaNode node = new StanzaNode();
-            printerr(node.to_ansi_string(true));
-            assert(node != null);
-            reader.read_stanza_node.begin ((obj, res) => {
-                node = reader.read_stanza_node.end (res);
-            });
-            assert(node != null);
-            printerr(node.to_ansi_string(true));
+        public static async HttpSource deserialize(string data) {
+            StanzaNode node = yield new StanzaReader.for_string(data).read_stanza_node();
             HttpSource source = HttpSource.from_stanza_node(node);
             assert(source != null);
             return source;

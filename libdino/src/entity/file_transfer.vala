@@ -25,7 +25,7 @@ public class FileTransfer : Object {
 
         public async Xep.StatelessFileSharing.SfsSource to_sfs_source() {
             assert(this.type == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE);
-            Xep.StatelessFileSharing.HttpSource http_source = Xep.StatelessFileSharing.HttpSource.deserialize(this.data);
+            Xep.StatelessFileSharing.HttpSource http_source = yield Xep.StatelessFileSharing.HttpSource.deserialize(this.data);
             return http_source;
         }
     }
