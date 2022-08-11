@@ -102,6 +102,22 @@ namespace Xmpp.Xep.StatelessFileSharing {
         }
     }
 
+    public class MessageFlag : Xmpp.MessageFlag {
+        public const string ID = "stateless_file_sharing";
+
+        public static MessageFlag? get_flag(MessageStanza message) {
+            return (MessageFlag) message.get_flag(NS_URI, ID);
+        }
+
+        public override string get_ns() {
+            return NS_URI;
+        }
+
+        public override string get_id() {
+            return ID;
+        }
+    }
+
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "stateless_file_sharing");
 
@@ -126,7 +142,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
             if (sfs_element == null) {
                 return;
             }
-            // TODO: add message flag
+            message.add_flag(new MessageFlag());
             received_sfs(message.from, message.to, sfs_element, message);
         }
 

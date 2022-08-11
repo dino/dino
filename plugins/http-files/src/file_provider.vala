@@ -35,6 +35,9 @@ public class FileProvider : Dino.FileProvider, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (Xep.StatelessFileSharing.MessageFlag.get_flag(stanza) != null) {
+                return true;
+            }
             string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(stanza);
             bool normal_file = oob_url != null && oob_url == message.body && FileProvider.http_url_regex.match(message.body);
             bool omemo_file = FileProvider.omemo_url_regex.match(message.body);
