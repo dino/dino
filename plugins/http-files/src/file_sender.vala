@@ -59,9 +59,13 @@ public class HttpFileSender : FileSender, Object {
         } else {
             message_type = MessageStanza.TYPE_CHAT;
         }
-        printerr("Http module propagates sending to the xep sfs module\n");
-        sfs_module.send_stateless_file_transfer(stream, yield file_transfer.to_sfs_element(), conversation.counterpart, message_type);
-        // TODO: also file_transfer.info isn't set here anymore (?)
+        MessageStanza sfs_message = new MessageStanza() { to=conversation.counterpart, type_=message_type };
+        // TODO: is this the correct way of adding out-of-band-data?
+        sfs_message.body = source.url;
+        Xep.OutOfBandData.add_url_to_message(sfs_message, source.url);
+        // TODO: message hint correct?
+        Xep.MessageProcessingHints.set_message_hint(sfs_message, Xep.MessageProcessingHints.HINT_STORE);
+        sfs_module.send_stateless_file_transfer(stream, sfs_message, yield file_transfer.to_sfs_element());
     }
 
     public async bool can_send(Conversation conversation, FileTransfer file_transfer) {
