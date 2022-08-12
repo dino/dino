@@ -58,9 +58,28 @@ public class FileManager : StreamInteractionModule, Object {
         return null;
     }
 
-    private async void on_receive_sfs(Jid from, Jid to, Xep.StatelessFileSharing.SfsElement sfs_element, MessageStanza message, Account account) {
+    // For receiving out of band data as sfs
+    private async void on_backwards_compatible_sfs(FileProvider file_provider, Jid from, DateTime time, DateTime local_time, Conversation conversation, FileReceiveData receive_data, FileMeta file_meta) {
+        Xep.StatelessFileSharing.SfsElement sfs_element = new Xep.StatelessFileSharing.SfsElement();
+
+        Xep.StatelessFileSharing.HttpSource source = new Xep.StatelessFileSharing.HttpSource();
+        HttpFileReceiveData http_receive_data = receive_data as HttpFileReceiveData;
+        source.url = http_receive_data.url;
+        sfs_element.sources.add(source);
+
         FileTransfer file_transfer = new FileTransfer();
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from, to, account, message.type_);
+        file_meta = yield file_provider.get_meta_info(file_transfer, http_receive_data, file_meta);
+
+        sfs_element.metadata.size = file_meta.size;
+        sfs_element.metadata.name = file_meta.file_name;
+        sfs_element.metadata.mime_type = file_meta.mime_type;
+        // Encryption unused in http file transfers
+
+        this.on_receive_sfs.begin(from, conversation, sfs_element);
+    }
+
+    private async void on_receive_sfs(Jid from, Conversation conversation, Xep.StatelessFileSharing.SfsElement sfs_element) {
+        FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
         file_transfer.counterpart = file_transfer.direction == FileTransfer.DIRECTION_RECEIVED ? from : conversation.counterpart;
         if (conversation.type_.is_muc_semantic()) {
@@ -98,7 +117,8 @@ public class FileManager : StreamInteractionModule, Object {
     private void on_account_added(Account account) {
         Xep.StatelessFileSharing.Module fsf_module = stream_interactor.module_manager.get_module(account, Xep.StatelessFileSharing.Module.IDENTITY);
         fsf_module.received_sfs.connect((from, to, sfs_element, message) => {
-            on_receive_sfs(from, to, sfs_element, message, account);
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from, to, account, message.type_);
+            on_receive_sfs(from, conversation, sfs_element);
         });
     }
 
@@ -218,6 +238,10 @@ public class FileManager : StreamInteractionModule, Object {
     public void add_provider(FileProvider file_provider) {
         file_providers.add(file_provider);
         file_provider.file_incoming.connect((info, from, time, local_time, conversation, receive_data, file_meta) => {
+            if (receive_data is HttpFileReceiveData) {
+                printerr("Handling oob data as stateless file sharing");
+                this.on_backwards_compatible_sfs.begin(file_provider, from, time, local_time, conversation, receive_data, file_meta);
+            }
             handle_incoming_file.begin(file_provider, info, from, time, local_time, conversation, receive_data, file_meta);
         });
     }
