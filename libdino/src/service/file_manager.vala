@@ -20,6 +20,7 @@ public class FileManager : StreamInteractionModule, Object {
     private Gee.List<FileEncryptor> file_encryptors = new ArrayList<FileEncryptor>();
     private Gee.List<FileDecryptor> file_decryptors = new ArrayList<FileDecryptor>();
     private Gee.List<FileProvider> file_providers = new ArrayList<FileProvider>();
+    private Gee.List<FileMetadataProvider> file_metadata_providers = new ArrayList<FileMetadataProvider>();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
         FileManager m = new FileManager(stream_interactor, db);
@@ -144,11 +145,22 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.local_time = new DateTime.now_utc();
         file_transfer.encryption = conversation.encryption;
 
+        Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
+        foreach (FileMetadataProvider file_metadata_provider in this.file_metadata_providers) {
+            if (file_metadata_provider.supports_file(file)) {
+                file_metadata_provider.fill_metadata(file, metadata);
+            }
+        }
+        file_transfer.with_metadata_element(metadata);
+
         try {
             FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
             file_transfer.file_name = info.get_display_name();
             file_transfer.desc = null; //
             file_transfer.mime_type = info.get_content_type();
+            if (file_transfer.mime_type.has_prefix("image")) {
+                //Image image = Image.from_file(file.get_path());
+            }
             file_transfer.size = info.get_size();
             file_transfer.modification_date = info.get_modification_date_time();
             Bytes file_data = file.load_bytes();
@@ -156,6 +168,7 @@ public class FileManager : StreamInteractionModule, Object {
             hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, file_data.get_data()));
             hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, file_data.get_data()));
             file_transfer.hashes = new CryptographicHashes.Hashes(hashes);
+
             file_transfer.input_stream = yield file.read_async();
 
             yield save_file(file_transfer);
@@ -262,6 +275,10 @@ public class FileManager : StreamInteractionModule, Object {
 
     public void add_file_decryptor(FileDecryptor decryptor) {
         file_decryptors.add(decryptor);
+    }
+
+    public void add_metadata_provider(FileMetadataProvider file_metadata_provider) {
+        file_metadata_providers.add(file_metadata_provider);
     }
 
     public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
@@ -490,6 +507,14 @@ public interface FileDecryptor : Object {
     public abstract FileMeta prepare_download_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta);
     public abstract bool can_decrypt_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data);
     public abstract async InputStream decrypt_file(InputStream encrypted_stream, Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) throws FileReceiveError;
+}
+
+public interface FileMetadataProvider : Object {
+    public abstract bool supports_file(File file);
+
+    public abstract void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata);
+
+    // Thumbnail[] getThumbnails(File file);
 }
 
 }
