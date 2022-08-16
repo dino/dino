@@ -512,7 +512,7 @@ public interface FileDecryptor : Object {
 public interface FileMetadataProvider : Object {
     public abstract bool supports_file(File file);
 
-    public abstract void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata);
+    public abstract async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata);
 
     // Thumbnail[] getThumbnails(File file);
 }
