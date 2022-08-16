@@ -38,6 +38,8 @@ public class FileManager : StreamInteractionModule, Object {
 
         this.add_provider(new JingleFileProvider(stream_interactor));
         this.add_sender(new JingleFileSender(stream_interactor));
+        this.add_metadata_provider(new GenericFileMetadataProvider());
+        this.add_metadata_provider(new ImageFileMetadataProvider());
         this.stream_interactor.account_added.connect((account) => {
             on_account_added(account);
         });
@@ -148,27 +150,14 @@ public class FileManager : StreamInteractionModule, Object {
         Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
         foreach (FileMetadataProvider file_metadata_provider in this.file_metadata_providers) {
             if (file_metadata_provider.supports_file(file)) {
-                file_metadata_provider.fill_metadata(file, metadata);
+                printerr("\nWidth is %d\n\n", file_transfer.width);
+                yield file_metadata_provider.fill_metadata(file, metadata);
+                printerr("\nWidth is %d\n\n", file_transfer.width);
             }
         }
         file_transfer.with_metadata_element(metadata);
 
         try {
-            FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
-            file_transfer.file_name = info.get_display_name();
-            file_transfer.desc = null; //
-            file_transfer.mime_type = info.get_content_type();
-            if (file_transfer.mime_type.has_prefix("image")) {
-                //Image image = Image.from_file(file.get_path());
-            }
-            file_transfer.size = info.get_size();
-            file_transfer.modification_date = info.get_modification_date_time();
-            Bytes file_data = file.load_bytes();
-            Gee.List<Xep.CryptographicHashes.Hash> hashes = new Gee.ArrayList<Xep.CryptographicHashes.Hash>();
-            hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, file_data.get_data()));
-            hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, file_data.get_data()));
-            file_transfer.hashes = new CryptographicHashes.Hashes(hashes);
-
             file_transfer.input_stream = yield file.read_async();
 
             yield save_file(file_transfer);
@@ -515,6 +504,40 @@ public interface FileMetadataProvider : Object {
     public abstract async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata);
 
     // Thumbnail[] getThumbnails(File file);
+}
+
+class GenericFileMetadataProvider: Dino.FileMetadataProvider, Object {
+    public bool supports_file(File file) {
+        return true;
+    }
+
+    public async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata) {
+        FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
+
+        metadata.name = info.get_display_name();
+        metadata.mime_type = info.get_content_type();
+        metadata.size = info.get_size();
+        metadata.date = info.get_modification_date_time();
+
+        Bytes file_data = file.load_bytes();
+        Gee.List<Xep.CryptographicHashes.Hash> hashes = new Gee.ArrayList<Xep.CryptographicHashes.Hash>();
+        hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, file_data.get_data()));
+        hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, file_data.get_data()));
+        metadata.hashes = new CryptographicHashes.Hashes(hashes);
+    }
+}
+
+class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
+    public bool supports_file(File file) {
+        return file.query_info("*", FileQueryInfoFlags.NONE).get_content_type().has_prefix("image");
+    }
+
+    public async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata) {
+        Pixbuf pixbuf = new Pixbuf.from_stream(yield file.read_async());
+        printerr("\n\nHEYYY!!\nwidth: %d, height: %d\n\n", pixbuf.get_width(), pixbuf.get_height());
+        metadata.width = pixbuf.get_width();
+        metadata.height = pixbuf.get_height();
+    }
 }
 
 }
