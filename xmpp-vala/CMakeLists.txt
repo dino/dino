@@ -124,6 +124,7 @@ SOURCES
     "src/module/xep/0249_direct_muc_invitations.vala"
     "src/module/xep/0260_jingle_socks5_bytestreams.vala"
     "src/module/xep/0261_jingle_in_band_bytestreams.vala"
+    "src/module/xep/0264_jingle_content_thumbnails.vala"
     "src/module/xep/0272_muji.vala"
     "src/module/xep/0280_message_carbons.vala"
     "src/module/xep/0298_coin.vala"

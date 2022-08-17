@@ -13,7 +13,7 @@ namespace Xmpp.Xep.FileMetadataElement {
 	    public int height { get; set; default=-1; } // Height of image in pixels
 	    public CryptographicHashes.Hashes hashes = new CryptographicHashes.Hashes.empty();
 	    public int length { get; set; default=-1; } // Length of audio/video in milliseconds
-	    // public thumbnail;
+	    public Gee.List<Xep.JingleContentThumbnails.Thumbnail> thumbnails = new Gee.ArrayList<Xep.JingleContentThumbnails.Thumbnail>();
 
         public StanzaNode to_stanza_node() {
             StanzaNode node = new StanzaNode.build("file", NS_URI).add_self_xmlns()
@@ -40,6 +40,9 @@ namespace Xmpp.Xep.FileMetadataElement {
                 node.put_node(new StanzaNode.build("length", NS_URI).put_node(new StanzaNode.text(this.length.to_string())));
             }
             node.sub_nodes.add_all(this.hashes.to_stanza_nodes());
+            foreach (Xep.JingleContentThumbnails.Thumbnail thumbnail in this.thumbnails) {
+                node.put_node(thumbnail.to_stanza_node());
+            }
             return node;
         }
 
@@ -86,6 +89,12 @@ namespace Xmpp.Xep.FileMetadataElement {
             StanzaNode? length_node = node.get_subnode("length");
             if (length_node != null && length_node.get_string_content() != null) {
                 metadata.length = int.parse(length_node.get_string_content());
+            }
+            foreach (StanzaNode thumbnail_node in node.get_subnodes(Xep.JingleContentThumbnails.STANZA_NAME, Xep.JingleContentThumbnails.NS_URI)) {
+                Xep.JingleContentThumbnails.Thumbnail? thumbnail = Xep.JingleContentThumbnails.Thumbnail.from_stanza_node(thumbnail_node);
+                if (thumbnail != null) {
+                    metadata.thumbnails.add(thumbnail);
+                }
             }
             metadata.hashes = new CryptographicHashes.Hashes.from_stanza_subnodes(node);
             return metadata;
