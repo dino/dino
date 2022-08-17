@@ -3,10 +3,10 @@ namespace Xmpp.Xep.JingleContentThumbnails {
     public const string STANZA_NAME = "thumbnail";
 
     public class Thumbnail {
-        string uri;
-        string? media_type;
-        int width;
-        int height;
+        public string uri;
+        public string? media_type;
+        public int width;
+        public int height;
 
         const string URI_ATTRIBUTE = "uri";
         const string MIME_ATTRIBUTE = "media-type";

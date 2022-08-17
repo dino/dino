@@ -172,6 +172,19 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class FileThumbnailsTable : Table {
+        public Column<int> id = new Column.Integer("id");
+        public Column<string> uri = new Column.Text("uri") { not_null = true };
+        public Column<string> mime_type = new Column.Text("mime_type");
+        public Column<int> width = new Column.Integer("width");
+        public Column<int> height = new Column.Integer("height");
+
+        internal FileThumbnailsTable(Database db) {
+            base(db, "file_thumbnails");
+            init({id, uri, mime_type, width, height});
+        }
+    }
+
     public class SfsSourcesTable : Table {
         public Column<int> id = new Column.Integer("id");
         public Column<string> type = new Column.Text("type") { not_null = true };
@@ -337,6 +350,7 @@ public class Database : Qlite.Database {
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public FileHashesTable file_hashes { get; private set; }
+    public FileThumbnailsTable file_thumbnails { get; private set; }
     public SfsSourcesTable sfs_sources { get; private set; }
     public CallTable call { get; private set; }
     public CallCounterpartTable call_counterpart { get; private set; }
@@ -364,6 +378,7 @@ public class Database : Qlite.Database {
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         file_hashes = new FileHashesTable(this);
+        file_thumbnails = new FileThumbnailsTable(this);
         sfs_sources = new SfsSourcesTable(this);
         call = new CallTable(this);
         call_counterpart = new CallCounterpartTable(this);
@@ -375,7 +390,7 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, file_hashes, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");

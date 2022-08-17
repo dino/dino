@@ -92,6 +92,7 @@ public class FileTransfer : Object {
     public int length { get; set; default=-1; }
     public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes.empty();}
     public Gee.List<SerializedSfsSource> sfs_sources { get; set; default=new Gee.ArrayList<SerializedSfsSource>(); }
+    public Gee.List<Xep.JingleContentThumbnails.Thumbnail> thumbnails = new Gee.ArrayList<Xep.JingleContentThumbnails.Thumbnail>();
 
     private Database? db;
     private string storage_dir;
@@ -184,6 +185,15 @@ public class FileTransfer : Object {
                     .value(db.file_hashes.value, hash.val)
                     .perform();
         }
+        foreach (Xep.JingleContentThumbnails.Thumbnail thumbnail in thumbnails) {
+            db.file_thumbnails.insert()
+                    .value(db.file_thumbnails.id, id)
+                    .value(db.file_thumbnails.uri, thumbnail.uri)
+                    .value(db.file_thumbnails.mime_type, thumbnail.media_type)
+                    .value(db.file_thumbnails.width, thumbnail.width)
+                    .value(db.file_thumbnails.height, thumbnail.height)
+                    .perform();
+        }
         foreach (SerializedSfsSource source in sfs_sources) {
             db.sfs_sources.insert()
                     .value(db.sfs_sources.id, id)
@@ -253,6 +263,7 @@ public class FileTransfer : Object {
         metadata.height = this.height;
         metadata.length = this.length;
         metadata.hashes = this.hashes;
+        metadata.thumbnails = this.thumbnails;
         return metadata;
     }
 
@@ -276,6 +287,7 @@ public class FileTransfer : Object {
         this.height = metadata.height;
         this.length = metadata.length;
         this.hashes = metadata.hashes;
+        this.thumbnails = metadata.thumbnails;
     }
 }
 
