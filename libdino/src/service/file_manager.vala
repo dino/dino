@@ -532,11 +532,76 @@ class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
         return file.query_info("*", FileQueryInfoFlags.NONE).get_content_type().has_prefix("image");
     }
 
+    private const int[] THUMBNAIL_DIMS = { 1, 2, 3, 4, 8 };
+    private const string IMAGE_TYPE = "png";
+    private const string MIME_TYPE = "image/png";
+
     public async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata) {
         Pixbuf pixbuf = new Pixbuf.from_stream(yield file.read_async());
-        printerr("\n\nHEYYY!!\nwidth: %d, height: %d\n\n", pixbuf.get_width(), pixbuf.get_height());
         metadata.width = pixbuf.get_width();
         metadata.height = pixbuf.get_height();
+        float ratio = (float)metadata.width / (float) metadata.height;
+
+        int thumbnail_width = -1;
+        int thumbnail_height = -1;
+        float diff = float.INFINITY;
+        for (int i = 0; i < THUMBNAIL_DIMS.length; i++) {
+            int test_width = THUMBNAIL_DIMS[i];
+            int test_height = THUMBNAIL_DIMS[THUMBNAIL_DIMS.length - 1 - i];
+            float test_ratio = (float)test_width / (float)test_height;
+            float test_diff = (test_ratio - ratio).abs();
+            if (test_diff < diff) {
+                thumbnail_width = test_width;
+                thumbnail_height = test_height;
+                diff = test_diff;
+            }
+        }
+
+        Pixbuf thumbnail_pixbuf = pixbuf.scale_simple(thumbnail_width, thumbnail_height, InterpType.BILINEAR);
+        uint8[] buffer;
+        thumbnail_pixbuf.save_to_buffer(out buffer, IMAGE_TYPE);
+        string base_64 = GLib.Base64.encode(buffer);
+        string uri = @"data:$MIME_TYPE;base64,$base_64";
+        Xep.JingleContentThumbnails.Thumbnail thumbnail = new Xep.JingleContentThumbnails.Thumbnail();
+        thumbnail.uri = uri;
+        thumbnail.media_type = MIME_TYPE;
+        thumbnail.width = thumbnail_width;
+        thumbnail.height = thumbnail_height;
+        metadata.thumbnails.add(thumbnail);
+    }
+
+    public static async Pixbuf? parse_thumbnail(Xep.JingleContentThumbnails.Thumbnail thumbnail) {
+        string[] splits = thumbnail.uri.split(":", 2);
+        if (splits.length != 2) {
+            printerr("Thumbnail parsing error: ':' not found");
+            return null;
+        }
+        if (splits[0] != "data") {
+            printerr("Unsupported thumbnail: unimplemented uri type\n");
+            return null;
+        }
+        splits = splits[1].split(";", 2);
+        if (splits.length != 2) {
+            printerr("Thumbnail parsing error: ';' not found");
+            return null;
+        }
+        if (splits[0] != MIME_TYPE) {
+            printerr("Unsupported thumbnail: unsupported mime-type\n");
+            return null;
+        }
+        splits = splits[1].split(",", 2);
+        if (splits.length != 2) {
+            printerr("Thumbnail parsing error: ',' not found");
+            return null;
+        }
+        if (splits[0] != "base64") {
+            printerr("Unsupported thumbnail: data is not base64 encoded\n");
+            return null;
+        }
+        uint8[] data = Base64.decode(splits[1]);
+        MemoryInputStream input_stream = new MemoryInputStream.from_data(data);
+        Pixbuf pixbuf = yield new Pixbuf.from_stream_async(input_stream);
+        return pixbuf;
     }
 }
 

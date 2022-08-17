@@ -139,6 +139,15 @@ public class FileTransfer : Object {
         }
         hashes = new Xep.CryptographicHashes.Hashes(hash_list);
 
+        foreach(var thumbnail_row in db.file_thumbnails.select().with(db.file_hashes.id, "=", id)) {
+            Xep.JingleContentThumbnails.Thumbnail thumbnail = new Xep.JingleContentThumbnails.Thumbnail();
+            thumbnail.uri = thumbnail_row[db.file_thumbnails.uri];
+            thumbnail.media_type = thumbnail_row[db.file_thumbnails.mime_type];
+            thumbnail.width = thumbnail_row[db.file_thumbnails.width];
+            thumbnail.height = thumbnail_row[db.file_thumbnails.height];
+            thumbnails.add(thumbnail);
+        }
+
         foreach(var source_row in db.sfs_sources.select().with(db.sfs_sources.id, "=", id)) {
             SerializedSfsSource source = new SerializedSfsSource();
             source.type = source_row[db.sfs_sources.type];
