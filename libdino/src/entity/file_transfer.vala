@@ -139,7 +139,7 @@ public class FileTransfer : Object {
         }
         hashes = new Xep.CryptographicHashes.Hashes(hash_list);
 
-        foreach(var thumbnail_row in db.file_thumbnails.select().with(db.file_hashes.id, "=", id)) {
+        foreach(var thumbnail_row in db.file_thumbnails.select().with(db.file_thumbnails.id, "=", id)) {
             Xep.JingleContentThumbnails.Thumbnail thumbnail = new Xep.JingleContentThumbnails.Thumbnail();
             thumbnail.uri = thumbnail_row[db.file_thumbnails.uri];
             thumbnail.media_type = thumbnail_row[db.file_thumbnails.mime_type];
