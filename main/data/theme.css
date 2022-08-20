@@ -211,7 +211,7 @@ window.dino-main .dino-chatinput-button button:checked {
     color: alpha(@theme_selected_bg_color, 0.8);
 }
 
-window.dino-main .dino-attach-button:backdrop,
+window.dino-main .dino-attach-button:checked:backdrop,
 window.dino-main .dino-chatinput-button button:checked:backdrop {
     color: alpha(@theme_unfocused_selected_bg_color, 0.8);
 }
