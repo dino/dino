@@ -13,14 +13,9 @@ find_packages(MAIN_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
-    icons/dino-status-away.svg
-    icons/dino-status-chat.svg
-    icons/dino-status-dnd.svg
-    icons/dino-status-online.svg
-    icons/im.dino.Dino.svg
-
     icons/scalable/actions/dino-account-plus-symbolic.svg
 
+    icons/scalable/apps/im.dino.Dino.svg
     icons/scalable/apps/im.dino.Dino-symbolic.svg
 
     icons/scalable/devices/dino-device-desktop-symbolic.svg
@@ -45,6 +40,10 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-microphone-off-symbolic.svg
     icons/scalable/status/dino-microphone-symbolic.svg
     icons/scalable/status/dino-security-high-symbolic.svg
+    icons/scalable/status/dino-status-away.svg
+    icons/scalable/status/dino-status-chat.svg
+    icons/scalable/status/dino-status-dnd.svg
+    icons/scalable/status/dino-status-online.svg
     icons/scalable/status/dino-tick-symbolic.svg
     icons/scalable/status/dino-video-off-symbolic.svg
     icons/scalable/status/dino-video-symbolic.svg
@@ -219,5 +218,5 @@ install(TARGETS dino ${TARGET_INSTALL})
 install(FILES data/im.dino.Dino.appdata.xml DESTINATION ${APPDATA_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
-install(FILES data/icons/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
-install(FILES data/icons/im.dino.Dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
+install(FILES data/icons/scalable/apps/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
+install(FILES data/icons/scalable/apps/im.dino.Dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
