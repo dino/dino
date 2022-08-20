@@ -77,11 +77,13 @@ public class ChatInputController : Object {
         chat_input.set_file_upload_active(active);
     }
 
-    private void on_encryption_changed(Plugins.EncryptionListEntry? encryption_entry) {
+    private void on_encryption_changed(Encryption encryption) {
         reset_input_field_status();
 
-        if (encryption_entry == null) return;
+        if (encryption == Encryption.NONE) return;
 
+        Application app = GLib.Application.get_default() as Application;
+        var encryption_entry = app.plugin_registry.encryption_list_entries[encryption];
         encryption_entry.encryption_activated(conversation, set_input_field_status);
     }
 

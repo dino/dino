@@ -88,7 +88,7 @@ public class View : Box {
 
     public void highlight_state_description() {
         chat_input_status.add_css_class("input-status-highlight-once");
-        Timeout.add_seconds(1, () => {
+        Timeout.add(500, () => {
             chat_input_status.remove_css_class("input-status-highlight-once");
             return false;
         });

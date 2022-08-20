@@ -3,7 +3,7 @@ using Gee;
 namespace Dino.Plugins {
 
 public class Registry {
-    internal ArrayList<EncryptionListEntry> encryption_list_entries = new ArrayList<EncryptionListEntry>();
+    internal HashMap<Entities.Encryption, EncryptionListEntry> encryption_list_entries = new HashMap<Entities.Encryption, EncryptionListEntry>();
     internal HashMap<string, CallEncryptionEntry> call_encryption_entries = new HashMap<string, CallEncryptionEntry>();
     internal ArrayList<AccountSettingsEntry> account_settings_entries = new ArrayList<AccountSettingsEntry>();
     internal ArrayList<ContactDetailsProvider> contact_details_entries = new ArrayList<ContactDetailsProvider>();
@@ -17,11 +17,9 @@ public class Registry {
 
     public bool register_encryption_list_entry(EncryptionListEntry entry) {
         lock(encryption_list_entries) {
-            foreach(var e in encryption_list_entries) {
-                if (e.encryption == entry.encryption) return false;
-            }
-            encryption_list_entries.add(entry);
-            encryption_list_entries.sort((a,b) => b.name.collate(a.name));
+            if (encryption_list_entries.has_key(entry.encryption)) return false;
+
+            encryption_list_entries[entry.encryption] = entry;
             return true;
         }
     }
