@@ -44,7 +44,11 @@ public class SelectJidFragment : Gtk.Box {
         list.row_selected.connect(() => { done = true; }); // just for notifying
         entry.changed.connect(() => { set_filter(entry.text); });
         add_button.clicked.connect(() => { add_jid(); });
-        remove_button.clicked.connect(() => { remove_jid(list.get_selected_row() as ListRow); });
+        remove_button.clicked.connect(() => {
+            var list_row = list.get_selected_row();
+            if (list_row == null) return;
+            remove_jid(list_row.child as ListRow);
+        });
     }
 
     public void set_filter(string str) {
