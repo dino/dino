@@ -110,7 +110,7 @@ public class FileManager : StreamInteractionModule, Object {
         stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
 
         if (is_sender_trustworthy(file_transfer, conversation)) {
-            if (file_transfer.size >= 0 && file_transfer.size < 5000000) {
+            if (file_transfer.size >= 0 && file_transfer.size < 500) {
                 FileProvider? file_provider = this.select_file_provider(file_transfer);
                 download_file_internal.begin(file_provider, file_transfer, conversation, (_, res) => {
                     download_file_internal.end(res);
@@ -533,7 +533,7 @@ class GenericFileMetadataProvider: Dino.FileMetadataProvider, Object {
     }
 }
 
-class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
+public class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
     public bool supports_file(File file) {
         return file.query_info("*", FileQueryInfoFlags.NONE).get_content_type().has_prefix("image");
     }
@@ -576,7 +576,7 @@ class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
         metadata.thumbnails.add(thumbnail);
     }
 
-    public static async Pixbuf? parse_thumbnail(Xep.JingleContentThumbnails.Thumbnail thumbnail) {
+    public static Pixbuf? parse_thumbnail(Xep.JingleContentThumbnails.Thumbnail thumbnail) {
         string[] splits = thumbnail.uri.split(":", 2);
         if (splits.length != 2) {
             printerr("Thumbnail parsing error: ':' not found");
@@ -606,7 +606,7 @@ class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
         }
         uint8[] data = Base64.decode(splits[1]);
         MemoryInputStream input_stream = new MemoryInputStream.from_data(data);
-        Pixbuf pixbuf = yield new Pixbuf.from_stream_async(input_stream);
+        Pixbuf pixbuf = new Pixbuf.from_stream(input_stream);
         return pixbuf;
     }
 }

@@ -29,6 +29,7 @@ public class FileWidget : SizeRequestBox {
 
     enum State {
         IMAGE,
+        IMAGE_PREVIEW,
         DEFAULT
     }
 
@@ -82,6 +83,23 @@ public class FileWidget : SizeRequestBox {
                 this.append(content);
                 return;
             } catch (Error e) { }
+        } else if (show_preview() && state != State.IMAGE_PREVIEW) {
+            var content_bak = content;
+
+            FilePreviewWidget file_preview_widget = null;
+            try {
+                file_preview_widget = new FilePreviewWidget() { visible=true };
+                yield file_preview_widget.load_from_thumbnail(file_transfer);
+
+                // If the widget changed in the meanwhile, stop
+                if (content != content_bak) return;
+
+                if (content != null) this.remove(content);
+                content = file_preview_widget;
+                state = State.IMAGE_PREVIEW;
+                this.append(content);
+                return;
+            } catch (Error e) { }
         }
 
         if (state != State.DEFAULT) {
@@ -110,6 +128,10 @@ public class FileWidget : SizeRequestBox {
             }
         }
         return false;
+    }
+
+    private bool show_preview() {
+        return !this.file_transfer.thumbnails.is_empty;
     }
 }
 
