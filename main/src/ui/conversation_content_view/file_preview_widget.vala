@@ -19,7 +19,7 @@ namespace Dino.Ui {
             this.add_css_class("file-preview-widget");
         }
 
-        public async void load_from_thumbnail(FileTransfer file_transfer, int MAX_WIDTH=600, int MAX_HEIGHT=300) throws GLib.Error {
+        public async void load_from_thumbnail(FileTransfer file_transfer, StreamInteractor stream_interactor, int MAX_WIDTH=600, int MAX_HEIGHT=300) throws GLib.Error {
             Thread<ScalingImage?> thread = new Thread<ScalingImage?> (null, () => {
                 ScalingImage image = new ScalingImage() { halign=Align.START, visible = true, max_width = MAX_WIDTH, max_height = MAX_HEIGHT };
                 Gdk.Pixbuf? pixbuf = null;
@@ -58,7 +58,7 @@ namespace Dino.Ui {
             file_default_widget = new FileDefaultWidget() { valign=Align.END, vexpand=false, visible=false };
             file_default_widget.image_stack.visible = false;
             file_default_widget_controller = new FileDefaultWidgetController(file_default_widget);
-            // file_default_widget_controller.set_file(file, file_name, mime_type);
+            file_default_widget_controller.set_file_transfer(file_transfer, stream_interactor);
 
             Overlay overlay = new Overlay();
             overlay.set_child(image);
