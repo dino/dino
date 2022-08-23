@@ -71,14 +71,19 @@ public class FileManager : StreamInteractionModule, Object {
         sfs_element.sources.add(source);
 
         FileTransfer file_transfer = new FileTransfer();
-        file_meta = yield file_provider.get_meta_info(file_transfer, http_receive_data, file_meta);
+
+        try {
+            file_meta = yield file_provider.get_meta_info(file_transfer, http_receive_data, file_meta);
+        } catch (Error e) {
+            warning("Can't accept oob data as stateless file sharing due to failed http request\n");
+        }
 
         sfs_element.metadata.size = file_meta.size;
         sfs_element.metadata.name = file_meta.file_name;
         sfs_element.metadata.mime_type = file_meta.mime_type;
         // Encryption unused in http file transfers
 
-        this.on_receive_sfs.begin(from, conversation, sfs_element);
+        yield on_receive_sfs(from, conversation, sfs_element);
     }
 
     private async void on_receive_sfs(Jid from, Conversation conversation, Xep.StatelessFileSharing.SfsElement sfs_element) {
@@ -243,8 +248,9 @@ public class FileManager : StreamInteractionModule, Object {
             if (receive_data is HttpFileReceiveData) {
                 printerr("Handling oob data as stateless file sharing");
                 this.on_backwards_compatible_sfs.begin(file_provider, from, time, local_time, conversation, receive_data, file_meta);
+            } else {
+                handle_incoming_file.begin(file_provider, info, from, time, local_time, conversation, receive_data, file_meta);
             }
-            handle_incoming_file.begin(file_provider, info, from, time, local_time, conversation, receive_data, file_meta);
         });
     }
 
