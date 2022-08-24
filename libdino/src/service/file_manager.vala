@@ -526,10 +526,8 @@ class GenericFileMetadataProvider: Dino.FileMetadataProvider, Object {
         metadata.date = info.get_modification_date_time();
 
         Bytes file_data = file.load_bytes();
-        Gee.List<Xep.CryptographicHashes.Hash> hashes = new Gee.ArrayList<Xep.CryptographicHashes.Hash>();
-        hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, file_data.get_data()));
-        hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, file_data.get_data()));
-        metadata.hashes = new CryptographicHashes.Hashes(hashes);
+        metadata.hashes.hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA256, file_data.get_data()));
+        metadata.hashes.hashes.add(new CryptographicHashes.Hash.from_data(GLib.ChecksumType.SHA512, file_data.get_data()));
     }
 }
 

@@ -31,6 +31,16 @@ namespace Xmpp.Xep.CryptographicHashes {
             return "(null)";
         }
 
+        public static ChecksumType? supported_hash(string hash) {
+            switch (hash) {
+                case "sha-256":
+                    return ChecksumType.SHA256;
+                case "sha-512":
+                    return ChecksumType.SHA512;
+            }
+            return null;
+        }
+
         public Hash.from_data(GLib.ChecksumType type, uint8[] data) {
             GLib.Checksum checksum = new GLib.Checksum(type);
             checksum.update(data, data.length);
@@ -66,20 +76,29 @@ namespace Xmpp.Xep.CryptographicHashes {
     }
 
     public class Hashes {
-        public Gee.List<Hash> hashes;
+        public Gee.List<Hash> hashes = new ArrayList<Hash>();
 
-        public Hashes(Gee.List<Hash> hashes) {
-            this.hashes = hashes;
+        public Gee.List<ChecksumType> supported_hashes() {
+            Gee.List<ChecksumType> supported = new ArrayList<ChecksumType>();
+            foreach (Hash hash in this.hashes) {
+                ChecksumType? hash_type = Hash.supported_hash(hash.algo);
+                if (hash_type != null) {
+                    supported.add(hash_type);
+                }
+            }
+            return supported;
         }
 
-        public Hashes.empty() {
-            this.hashes = new ArrayList<Hash>();
+        public Hashes.from_data(Gee.List<ChecksumType> types, uint8[] data) {
+            foreach (ChecksumType type in types) {
+                this.hashes.add(new Hash.from_data(type, data));
+            }
         }
 
         public HashCmp compare(Hashes other) {
             HashCmp cmp = HashCmp.None;
-            foreach (var this_hash in this.hashes) {
-                foreach (var other_hash in other.hashes) {
+            foreach (Hash this_hash in this.hashes) {
+                foreach (Hash other_hash in other.hashes) {
                     switch (this_hash.compare(other_hash)) {
                         case HashCmp.Mismatch:
                             return HashCmp.Mismatch;
@@ -87,7 +106,7 @@ namespace Xmpp.Xep.CryptographicHashes {
                             cmp = HashCmp.Match;
                             break;
                         case HashCmp.None:
-                            break;
+                            continue;
                     }
                 }
             }
@@ -96,7 +115,7 @@ namespace Xmpp.Xep.CryptographicHashes {
 
         public Gee.List<StanzaNode> to_stanza_nodes() {
             Gee.List<StanzaNode> nodes = new ArrayList<StanzaNode>();
-            foreach (var hash in this.hashes) {
+            foreach (Hash hash in this.hashes) {
                 nodes.add(hash.to_stanza_node());
             }
             return nodes;
@@ -105,7 +124,7 @@ namespace Xmpp.Xep.CryptographicHashes {
         public Hashes.from_stanza_subnodes(StanzaNode node) {
             Gee.List<StanzaNode> subnodes = node.get_subnodes("hash", NS_URI);
             this.hashes = new ArrayList<Hash>();
-            foreach (var subnode in subnodes) {
+            foreach (StanzaNode subnode in subnodes) {
                 this.hashes.add(new Hash.from_stanza_node(subnode));
             }
         }

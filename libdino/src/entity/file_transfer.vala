@@ -90,7 +90,7 @@ public class FileTransfer : Object {
     public int width { get; set; default=-1; }
     public int height { get; set; default=-1; }
     public int length { get; set; default=-1; }
-    public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes.empty();}
+    public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes();}
     public Gee.List<SerializedSfsSource> sfs_sources { get; set; default=new Gee.ArrayList<SerializedSfsSource>(); }
     public Gee.List<Xep.JingleContentThumbnails.Thumbnail> thumbnails = new Gee.ArrayList<Xep.JingleContentThumbnails.Thumbnail>();
 
@@ -130,14 +130,12 @@ public class FileTransfer : Object {
         height = row[db.file_transfer.height];
         length = row[db.file_transfer.length];
 
-        Gee.List<Xep.CryptographicHashes.Hash> hash_list = new Gee.ArrayList<Xep.CryptographicHashes.Hash>();
         foreach(var hash_row in db.file_hashes.select().with(db.file_hashes.id, "=", id)) {
             Xep.CryptographicHashes.Hash hash = new Xep.CryptographicHashes.Hash();
             hash.algo = hash_row[db.file_hashes.algo];
             hash.val = hash_row[db.file_hashes.value];
-            hash_list.add(hash);
+            hashes.hashes.add(hash);
         }
-        hashes = new Xep.CryptographicHashes.Hashes(hash_list);
 
         foreach(var thumbnail_row in db.file_thumbnails.select().with(db.file_thumbnails.id, "=", id)) {
             Xep.JingleContentThumbnails.Thumbnail thumbnail = new Xep.JingleContentThumbnails.Thumbnail();

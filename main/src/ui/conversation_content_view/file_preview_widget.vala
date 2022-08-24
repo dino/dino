@@ -38,10 +38,9 @@ namespace Dino.Ui {
                 pixbuf = pixbuf.apply_embedded_orientation();
 
                 if (file_transfer.width > 0 && file_transfer.height > 0) {
-                    printerr("Scaling image\n");
                     pixbuf = pixbuf.scale_simple(file_transfer.width, file_transfer.height, InterpType.BILINEAR);
                 } else {
-                    printerr("NOT SCALING IMAGE, width: %d, height: %d\n", file_transfer.width, file_transfer.height);
+                    warning("Preview: Not scaling image, width: %d, height: %d\n", file_transfer.width, file_transfer.height);
                 }
                 if (pixbuf == null) {
                     warning("Can't scale thumbnail %s", file_transfer.file_name);
