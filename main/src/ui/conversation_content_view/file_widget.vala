@@ -66,7 +66,6 @@ public class FileWidget : SizeRequestBox {
     }
 
     private async void update_widget() {
-        bool replaced = false;
         if (show_image() && state != State.IMAGE) {
             var content_bak = content;
 
@@ -82,12 +81,11 @@ public class FileWidget : SizeRequestBox {
                 content = file_image_widget;
                 state = State.IMAGE;
                 this.append(content);
-                replaced = true;
                 return;
             } catch (Error e) { }
         }
 
-        if (show_preview() && state != State.IMAGE_PREVIEW && !replaced) {
+        if (show_preview() && state != State.IMAGE_PREVIEW) {
             var content_bak = content;
 
             FilePreviewWidget file_preview_widget = null;
@@ -102,12 +100,11 @@ public class FileWidget : SizeRequestBox {
                 content = file_preview_widget;
                 state = State.IMAGE_PREVIEW;
                 this.append(content);
-                replaced = true;
                 return;
             } catch (Error e) { }
         }
 
-        if (state != State.DEFAULT && !replaced) {
+        if (state != State.DEFAULT && state != State.IMAGE_PREVIEW) {
             if (content != null) this.remove(content);
             FileDefaultWidget default_file_widget = new FileDefaultWidget();
             default_widget_controller = new FileDefaultWidgetController(default_file_widget);
@@ -115,7 +112,6 @@ public class FileWidget : SizeRequestBox {
             content = default_file_widget;
             this.state = State.DEFAULT;
             this.append(content);
-            replaced = true;
         }
     }
 
