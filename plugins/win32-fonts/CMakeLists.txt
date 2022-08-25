@@ -3,7 +3,7 @@ find_packages(WIN32_FONTS_PACKAGES REQUIRED
     GLib
     GModule
     GObject
-    GTK3
+    GTK4
 )
 
 set(RESOURCE_LIST

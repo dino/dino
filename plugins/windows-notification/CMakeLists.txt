@@ -10,7 +10,7 @@ find_packages(WINDOWS_NOTIFICATION_PACKAGES REQUIRED
     GLib
     GModule
     GObject
-    GTK3
+    GTK4
 )
 
 vala_precompile(WINDOWS_NOTIFICATION_VALA_C
