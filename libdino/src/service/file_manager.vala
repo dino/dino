@@ -72,10 +72,12 @@ public class FileManager : StreamInteractionModule, Object {
 
         FileTransfer file_transfer = new FileTransfer();
 
-        try {
-            file_meta = yield file_provider.get_meta_info(file_transfer, http_receive_data, file_meta);
-        } catch (Error e) {
-            warning("Can't accept oob data as stateless file sharing due to failed http request\n");
+        if (is_jid_trustworthy(from, conversation)) {
+            try {
+                file_meta = yield file_provider.get_meta_info(file_transfer, http_receive_data, file_meta);
+            } catch (Error e) {
+                warning("Can't accept oob data as stateless file sharing due to failed http request\n");
+            }
         }
 
         sfs_element.metadata.size = file_meta.size;
@@ -276,17 +278,21 @@ public class FileManager : StreamInteractionModule, Object {
         file_metadata_providers.add(file_metadata_provider);
     }
 
-    public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
-        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return true;
-
+    private bool is_jid_trustworthy(Jid from, Conversation conversation) {
         Jid relevant_jid = conversation.counterpart;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account);
+            relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(from, conversation.account);
         }
         if (relevant_jid == null) return false;
 
         bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
         return in_roster;
+    }
+
+    public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
+        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return true;
+
+        return is_jid_trustworthy(file_transfer.from, conversation);
     }
 
     private async FileMeta get_file_meta(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation, FileReceiveData receive_data_) throws FileReceiveError {
