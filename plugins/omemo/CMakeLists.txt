@@ -9,7 +9,7 @@ find_packages(OMEMO_PACKAGES REQUIRED
     GLib
     GModule
     GObject
-    GTK3
+    GTK4
 )
 
 set(RESOURCE_LIST
@@ -53,7 +53,6 @@ SOURCES
     src/protocol/stream_module.vala
 
     src/ui/account_settings_entry.vala
-    src/ui/account_settings_widget.vala
     src/ui/bad_messages_populator.vala
     src/ui/call_encryption_entry.vala
     src/ui/contact_details_provider.vala

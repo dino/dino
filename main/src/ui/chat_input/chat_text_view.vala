@@ -26,65 +26,84 @@ public class ChatTextViewController : Object {
 
     public void initialize_for_conversation(Conversation conversation) {
         occupants_tab_completor.initialize_for_conversation(conversation);
-        widget.initialize_for_conversation(conversation);
     }
 }
 
-public class ChatTextView : ScrolledWindow {
+public class ChatTextView : Box {
 
     public signal void send_text();
     public signal void cancel_input();
 
-    public TextView text_view = new TextView() { can_focus=true, hexpand=true, margin=8, wrap_mode=Gtk.WrapMode.WORD_CHAR, valign=Align.CENTER, visible=true };
+    public ScrolledWindow scrolled_window = new ScrolledWindow() { propagate_natural_height=true, max_content_height=300, hexpand=true };
+    public TextView text_view = new TextView() { hexpand=true, wrap_mode=Gtk.WrapMode.WORD_CHAR, valign=Align.CENTER, margin_top=7, margin_bottom=7 };
     private int vscrollbar_min_height;
+    private uint wait_queue_resize;
     private SmileyConverter smiley_converter;
-    public EditHistory edit_history;
-    private SpellChecker spell_checker;
 
     construct {
-        max_content_height = 300;
-        propagate_natural_height = true;
-        this.add(text_view);
+        valign = Align.CENTER;
+        scrolled_window.set_child(text_view);
+        this.append(scrolled_window);
+
+        var text_input_key_events = new EventControllerKey() { name = "dino-text-input-view-key-events" };
+        text_input_key_events.key_pressed.connect(on_text_input_key_press);
+        text_view.add_controller(text_input_key_events);
 
         smiley_converter = new SmileyConverter(text_view);
-        edit_history = new EditHistory(text_view);
-        spell_checker = new SpellChecker(text_view);
 
-        this.get_vscrollbar().get_preferred_height(out vscrollbar_min_height, null);
-        this.vadjustment.notify["upper"].connect_after(on_upper_notify);
-        text_view.key_press_event.connect(on_text_input_key_press);
+        scrolled_window.vadjustment.changed.connect(on_upper_notify);
 
-        Gtk.drag_dest_unset(text_view);
+        text_view.realize.connect(() => {
+            var minimum_size = Requisition();
+            scrolled_window.get_preferred_size(out minimum_size, null);
+            vscrollbar_min_height = minimum_size.height;
+        });
     }
 
-    public void initialize_for_conversation(Conversation conversation) {
-        edit_history.initialize_for_conversation(conversation);
-        spell_checker.initialize_for_conversation(conversation);
-    }
-
-    public override void get_preferred_height(out int min_height, out int nat_height) {
-        base.get_preferred_height(out min_height, out nat_height);
-        min_height = nat_height;
+    public override void dispose() {
+        base.dispose();
+        if (wait_queue_resize != 0) {
+            Source.remove(wait_queue_resize);
+            wait_queue_resize = 0;
+        }
     }
 
     private void on_upper_notify() {
-        this.vadjustment.value = this.vadjustment.upper - this.vadjustment.page_size;
+        // hack. otherwise the textview would only show the last row(s) when entering a new row on some systems.
+        scrolled_window.height_request = int.min(scrolled_window.max_content_height, (int) scrolled_window.vadjustment.upper + text_view.margin_top + text_view.margin_bottom);
+        scrolled_window.vadjustment.page_size = double.min(scrolled_window.height_request - (text_view.margin_top + text_view.margin_bottom), scrolled_window.vadjustment.upper);
 
         // hack for vscrollbar not requiring space and making textview higher //TODO doesn't resize immediately
-        this.get_vscrollbar().visible = (this.vadjustment.upper > this.max_content_height - 2 * this.vscrollbar_min_height);
+        scrolled_window.get_vscrollbar().visible = (scrolled_window.vadjustment.upper > scrolled_window.max_content_height - 2 * this.vscrollbar_min_height);
+        start_queue_resize_if_needed();
     }
 
-    private bool on_text_input_key_press(EventKey event) {
-        if (event.keyval in new uint[]{Key.Return, Key.KP_Enter}) {
-            if ((event.state & ModifierType.SHIFT_MASK) > 0) {
+    private void start_queue_resize_if_needed() {
+        if (wait_queue_resize == 0) {
+            wait_queue_resize = Timeout.add(100, queue_resize_if_needed);
+        }
+    }
+
+    private bool queue_resize_if_needed() {
+        if (scrolled_window.get_height() == scrolled_window.height_request) {
+            wait_queue_resize = 0;
+            return false;
+        } else {
+            queue_resize();
+            return true;
+        }
+    }
+
+    private bool on_text_input_key_press(uint keyval, uint keycode, Gdk.ModifierType state) {
+        if (keyval in new uint[]{ Key.Return, Key.KP_Enter }) {
+            if ((state & ModifierType.SHIFT_MASK) > 0) {
                 text_view.buffer.insert_at_cursor("\n", 1);
             } else if (text_view.buffer.text.strip() != "") {
                 send_text();
-                edit_history.reset_history();
             }
             return true;
         }
-        if (event.keyval == Key.Escape) {
+        if (keyval == Key.Escape) {
             cancel_input();
         }
         return false;

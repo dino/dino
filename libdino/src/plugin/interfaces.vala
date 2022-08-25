@@ -12,7 +12,8 @@ public enum Priority {
 }
 
 public enum WidgetType {
-    GTK
+    GTK3,
+    GTK4
 }
 
 public interface RootInterface : Object {
@@ -27,6 +28,8 @@ public interface EncryptionListEntry : Object {
 
     public abstract void encryption_activated(Entities.Conversation conversation, Plugins.SetInputFieldStatus callback);
     public abstract Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item);
+    public abstract string? get_encryption_icon_name(Entities.Conversation conversation, ContentItem content_item);
+
 }
 
 public interface CallEncryptionEntry : Object {
@@ -45,15 +48,11 @@ public abstract class AccountSettingsEntry : Object {
     public abstract string name { get; }
     public virtual int16 label_top_padding { get { return -1; } }
 
-    public abstract AccountSettingsWidget? get_widget(WidgetType type);
-}
-
-public interface AccountSettingsWidget : Object {
-    public abstract void set_account(Account account);
-
     public abstract signal void activated();
-
     public abstract void deactivate();
+
+    public abstract void set_account(Account account);
+    public abstract Object? get_widget(WidgetType type);
 }
 
 public interface ContactDetailsProvider : Object {
@@ -76,10 +75,8 @@ public interface TextCommand : Object {
 public interface ConversationTitlebarEntry : Object {
     public abstract string id { get; }
     public abstract double order { get; }
-    public abstract ConversationTitlebarWidget? get_widget(WidgetType type);
-}
+    public abstract Object? get_widget(WidgetType type);
 
-public interface ConversationTitlebarWidget : Object {
     public abstract void set_conversation(Conversation conversation);
     public abstract void unset_conversation();
 }
@@ -146,8 +143,12 @@ public abstract class MetaConversationItem : Object {
     public bool requires_header { get; set; default=false; }
     public bool in_edit_mode { get; set; default=false; }
 
-    public abstract Object? get_widget(WidgetType type);
+    public abstract Object? get_widget(ConversationItemWidgetInterface outer, WidgetType type);
     public abstract Gee.List<MessageAction>? get_item_actions(WidgetType type);
+}
+
+public interface ConversationItemWidgetInterface: Object {
+    public abstract void set_widget(Object object, WidgetType type);
 }
 
 public delegate void MessageActionEvoked(Object button, Plugins.MetaConversationItem evoked_on, Object widget);

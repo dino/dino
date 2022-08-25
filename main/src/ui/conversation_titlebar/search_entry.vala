@@ -7,25 +7,21 @@ namespace Dino.Ui {
 
 public class SearchMenuEntry : Plugins.ConversationTitlebarEntry, Object {
     public string id { get { return "search"; } }
+    public double order { get { return 1; } }
 
-    public GlobalSearchButton search_button = new GlobalSearchButton() { tooltip_text=_("Search messages"), visible = true };
+    public ToggleButton button = new ToggleButton() { tooltip_text=Util.string_if_tooltips_active(_("Search messages")) };
 
     public SearchMenuEntry() {
-        search_button.set_image(new Gtk.Image.from_icon_name("system-search-symbolic", Gtk.IconSize.MENU) { visible = true });
+        button.set_icon_name("system-search-symbolic");
     }
 
-    public double order { get { return 1; } }
-    public Plugins.ConversationTitlebarWidget? get_widget(Plugins.WidgetType type) {
-        if (type == Plugins.WidgetType.GTK) {
-            return search_button;
-        }
-        return null;
-    }
-}
-
-public class GlobalSearchButton : Plugins.ConversationTitlebarWidget, Gtk.ToggleButton {
     public new void set_conversation(Conversation conversation) { }
     public new void unset_conversation() { }
+
+    public Object? get_widget(Plugins.WidgetType type) {
+        if (type != Plugins.WidgetType.GTK4) return null;
+        return button;
+    }
 }
 
 }

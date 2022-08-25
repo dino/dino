@@ -1,42 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiConversationListTitlebarCsd" parent="GtkHeaderBar">
+    <requires lib="gtk" version="4.0"/>
+    <object class="GtkHeaderBar" id="header_bar">
         <property name="hexpand">False</property>
-        <property name="show_close_button">True</property>
-        <property name="visible">True</property>
         <style>
             <class name="dino-left"/>
         </style>
         <child>
             <object class="GtkMenuButton" id="add_button">
-                <property name="tooltip_text" translatable="yes">Start Conversation</property>
-                <property name="visible">True</property>
                 <child>
                     <object class="GtkImage">
-                        <property name="visible">True</property>
                         <property name="icon-name">list-add-symbolic</property>
-                        <property name="icon-size">1</property>
+                        <property name="icon-size">normal</property>
                     </object>
                 </child>
             </object>
-            <packing>
-                <property name="pack_type">start</property>
-            </packing>
         </child>
-        <child>
+        <child type="end">
             <object class="GtkMenuButton" id="menu_button">
-                <property name="visible">True</property>
                 <child>
                     <object class="GtkImage">
-                        <property name="visible">True</property>
                         <property name="icon-name">open-menu-symbolic</property>
-                        <property name="icon-size">1</property>
+                        <property name="icon-size">normal</property>
                     </object>
                 </child>
             </object>
-            <packing>
-                <property name="pack_type">end</property>
-            </packing>
         </child>
-    </template>
+    </object>
 </interface>

@@ -4,7 +4,7 @@ find_pkg_config_with_fallback(Gspell
     LIB_NAMES gspell-1
     INCLUDE_NAMES gspell.h
     INCLUDE_DIR_SUFFIXES gspell-1 gspell-1/gspell
-    DEPENDS Gtk
+    DEPENDS GTK3
 )
 
 include(FindPackageHandleStandardArgs)

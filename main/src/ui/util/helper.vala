@@ -134,29 +134,30 @@ public static string get_occupant_display_name(StreamInteractor stream_interacto
     return Dino.get_occupant_display_name(stream_interactor, conversation, jid, me_is_me ? _("Me") : null);
 }
 
-public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0, int width = 0, int height = 0) {
-    if (scale == 0) scale = image.scale_factor;
-    Cairo.Surface surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window());
-    if (height == 0 && width != 0) {
-        height = (int) ((double) width / pixbuf.width * pixbuf.height);
-    } else if (height != 0 && width == 0) {
-        width = (int) ((double) height / pixbuf.height * pixbuf.width);
-    }
-    if (width != 0) {
-        Cairo.Surface surface_new = new Cairo.Surface.similar_image(surface, Cairo.Format.ARGB32, width, height);
-        Cairo.Context context = new Cairo.Context(surface_new);
-        context.scale((double) width * scale / pixbuf.width, (double) height * scale / pixbuf.height);
-        context.set_source_surface(surface, 0, 0);
-        context.get_source().set_filter(Cairo.Filter.BEST);
-        context.paint();
-        surface = surface_new;
-    }
-    image.set_from_surface(surface);
-}
+// TODO this has no usages?
+//public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0, int width = 0, int height = 0) {
+//    if (scale == 0) scale = image.scale_factor;
+//    Cairo.Surface surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window());
+//    if (height == 0 && width != 0) {
+//        height = (int) ((double) width / pixbuf.width * pixbuf.height);
+//    } else if (height != 0 && width == 0) {
+//        width = (int) ((double) height / pixbuf.height * pixbuf.width);
+//    }
+//    if (width != 0) {
+//        Cairo.Surface surface_new = new Cairo.Surface.similar_image(surface, Cairo.Format.ARGB32, width, height);
+//        Cairo.Context context = new Cairo.Context(surface_new);
+//        context.scale((double) width * scale / pixbuf.width, (double) height * scale / pixbuf.height);
+//        context.set_source_surface(surface, 0, 0);
+//        context.get_source().set_filter(Cairo.Filter.BEST);
+//        context.paint();
+//        surface = surface_new;
+//    }
+//    image.set_from_surface(surface);
+//}
 
 public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
     Gtk.CssProvider provider = force_color(label, css_color);
-    Gdk.RGBA color_rgba = label.get_style_context().get_color(StateFlags.NORMAL);
+    Gdk.RGBA color_rgba = label.get_style_context().get_color();
     label.get_style_context().remove_provider(provider);
     return color_rgba;
 }
@@ -176,7 +177,7 @@ private const string force_color_css = "%s { color: %s; }";
 public static Gtk.CssProvider force_css(Gtk.Widget widget, string css) {
     var p = new Gtk.CssProvider();
     try {
-        p.load_from_data(css);
+        p.load_from_data(css.data);
         widget.get_style_context().add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     } catch (GLib.Error err) {
         // handle err
@@ -197,7 +198,7 @@ public static void force_error_color(Gtk.Widget widget, string selector = "*") {
 }
 
 public static bool is_dark_theme(Gtk.Widget widget) {
-    Gdk.RGBA bg = widget.get_style_context().get_color(StateFlags.NORMAL);
+    Gdk.RGBA bg = widget.get_style_context().get_color();
     return (bg.red > 0.5 && bg.green > 0.5 && bg.blue > 0.5);
 }
 
@@ -437,6 +438,18 @@ public void present_window(Window window) {
 
 public bool use_csd() {
     return ((Application) GLib.Application.get_default()).use_csd();
+}
+
+public Widget? widget_if_tooltips_active(Widget w) {
+    return use_tooltips() ? w : null;
+}
+
+public string? string_if_tooltips_active(string s) {
+    return use_tooltips() ? s : null;
+}
+
+public bool use_tooltips() {
+    return Gtk.MINOR_VERSION != 6 || (Gtk.MICRO_VERSION < 4 || Gtk.MICRO_VERSION > 6);
 }
 
 }

@@ -14,10 +14,10 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
     }
 
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, WidgetType type) {
-        if (conversation.type_ == Conversation.Type.CHAT && type == WidgetType.GTK) {
+        if (conversation.type_ == Conversation.Type.CHAT && type == WidgetType.GTK4) {
             string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart);
             if (key_id != null) {
-                Label label = new Label("") { use_markup=true, justify=Justification.RIGHT, selectable=true, visible=true };
+                Label label = new Label("") { use_markup=true, justify=Justification.RIGHT, selectable=true };
                 Gee.List<GPG.Key>? keys = null;
                 try {
                     keys = GPGHelper.get_keylist(key_id);

@@ -24,17 +24,18 @@ protected class AddGroupchatDialog : Gtk.Dialog {
         Object(use_header_bar : 1);
         this.stream_interactor = stream_interactor;
         ok_button.label = _("Add");
-        ok_button.get_style_context().add_class("suggested-action"); // TODO why doesn't it work in XML
+        ok_button.add_css_class("suggested-action"); // TODO why doesn't it work in XML
         accounts_stack.set_visible_child_name("combobox");
         account_combobox.initialize(stream_interactor);
 
         cancel_button.clicked.connect(() => { close(); });
         ok_button.clicked.connect(on_ok_button_clicked);
-        jid_entry.key_release_event.connect(on_jid_key_release);
-        nick_entry.key_release_event.connect(check_ok);
+
+        jid_entry.changed.connect(on_jid_key_release);
+        nick_entry.changed.connect(check_ok);
     }
 
-    private bool on_jid_key_release() {
+    private void on_jid_key_release() {
         check_ok();
         if (!alias_entry_changed) {
             try {
@@ -44,17 +45,15 @@ protected class AddGroupchatDialog : Gtk.Dialog {
                 alias_entry.text = jid_entry.text;
             }
         }
-        return false;
     }
 
-    private bool check_ok() {
+    private void check_ok() {
         try {
             Jid parsed_jid = new Jid(jid_entry.text);
             ok_button.sensitive = parsed_jid != null && parsed_jid.localpart != null && parsed_jid.resourcepart == null;
         } catch (InvalidJidError e) {
             ok_button.sensitive = false;
         }
-        return false;
     }
 
     private void on_ok_button_clicked() {

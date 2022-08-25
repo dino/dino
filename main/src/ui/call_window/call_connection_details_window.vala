@@ -4,16 +4,16 @@ namespace Dino.Ui {
 
     public class CallConnectionDetailsWindow : Gtk.Window {
 
-        public Box box = new Box(Orientation.VERTICAL, 15) { margin=10, halign=Align.CENTER, valign=Align.CENTER, visible=true };
+        public Box box = new Box(Orientation.VERTICAL, 15) { halign=Align.CENTER, valign=Align.CENTER };
 
         private bool video_added = false;
-        private CallContentDetails audio_details = new CallContentDetails("Audio") { visible=true };
+        private CallContentDetails audio_details = new CallContentDetails("Audio");
         private CallContentDetails video_details = new CallContentDetails("Video");
 
         public CallConnectionDetailsWindow() {
-            box.add(audio_details);
-            box.add(video_details);
-            add(box);
+            box.append(audio_details);
+            box.append(video_details);
+            set_child(box);
         }
 
         public void update_content(PeerInfo peer_info) {
@@ -36,24 +36,24 @@ namespace Dino.Ui {
 
     public class CallContentDetails : Gtk.Grid {
 
-        public Label rtp_title = new Label("RTP") { xalign=0, visible=true };
-        public Label rtcp_title = new Label("RTCP") { xalign=0, visible=true };
-        public Label target_recv_title = new Label("Target receive bitrate") { xalign=0, visible=true };
-        public Label target_send_title = new Label("Target send bitrate") { xalign=0, visible=true };
+        public Label rtp_title = new Label("RTP") { xalign=0 };
+        public Label rtcp_title = new Label("RTCP") { xalign=0 };
+        public Label target_recv_title = new Label("Target receive bitrate") { xalign=0 };
+        public Label target_send_title = new Label("Target send bitrate") { xalign=0 };
 
-        public Label rtp_ready = new Label("?") { xalign=0, visible=true };
-        public Label rtcp_ready = new Label("?") { xalign=0, visible=true };
-        public Label sent_bps = new Label("?") { use_markup=true, xalign=0, visible=true };
-        public Label recv_bps = new Label("?") { use_markup=true, xalign=0, visible=true };
-        public Label codec = new Label("?") { xalign=0, visible=true };
-        public Label target_receive_bitrate = new Label("n/a") { use_markup=true, xalign=0, visible=true };
-        public Label target_send_bitrate = new Label("n/a") { use_markup=true, xalign=0, visible=true };
+        public Label rtp_ready = new Label("?") { xalign=0 };
+        public Label rtcp_ready = new Label("?") { xalign=0 };
+        public Label sent_bps = new Label("?") { use_markup=true, xalign=0 };
+        public Label recv_bps = new Label("?") { use_markup=true, xalign=0 };
+        public Label codec = new Label("?") { xalign=0 };
+        public Label target_receive_bitrate = new Label("n/a") { use_markup=true, xalign=0 };
+        public Label target_send_bitrate = new Label("n/a") { use_markup=true, xalign=0 };
 
         private PeerContentInfo? prev_info = null;
         private int row_at = 0;
 
         public CallContentDetails(string headline) {
-            attach(new Label("<b>%s</b>".printf(headline)) { use_markup=true, xalign=0, visible=true }, 0, row_at++, 1, 1);
+            attach(new Label("<b>%s</b>".printf(headline)) { use_markup=true, xalign=0 }, 0, row_at++, 1, 1);
             attach(rtp_title, 0, row_at, 1, 1);
             attach(rtp_ready, 1, row_at++, 1, 1);
             attach(rtcp_title, 0, row_at, 1, 1);
@@ -104,7 +104,7 @@ namespace Dino.Ui {
         }
 
         private void put_row(string label) {
-            attach(new Label(label) { xalign=0, visible=true }, 0, row_at, 1, 1);
+            attach(new Label(label) { xalign=0 }, 0, row_at, 1, 1);
         }
     }
 }

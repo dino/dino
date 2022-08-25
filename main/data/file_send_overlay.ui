@@ -1,67 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiFileSendOverlay">
-        <property name="hexpand">False</property>
-        <property name="vexpand">False</property>
+    <requires lib="gtk" version="4.0"/>
+    <object class="GtkBox" id="main_box">
+        <property name="hexpand">0</property>
+        <property name="vexpand">0</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
-        <property name="visible">True</property>
         <style>
             <class name="background"/>
             <class name="dino-file-overlay"/>
         </style>
         <child>
-            <object class="DinoUiSizeRequestBox">
-                <property name="size-request-mode">height-for-width</property>
+            <object class="GtkBox">
                 <property name="orientation">vertical</property>
-                <property name="margin-right">20</property>
-                <property name="margin-left">20</property>
-                <property name="visible">True</property>
+                <property name="margin-end">20</property>
+                <property name="margin-start">20</property>
                 <child>
                     <object class="GtkBox">
                         <property name="margin-top">10</property>
                         <property name="margin-bottom">10</property>
-                        <property name="orientation">horizontal</property>
-                        <property name="visible">True</property>
                         <child>
                             <object class="GtkLabel">
-                                <property name="label" translatable="yes">Send a file</property>
-                                <property name="hexpand">True</property>
-                                <property name="visible">True</property>
+                                <property name="label" translatable="1">Send a file</property>
+                                <property name="hexpand">1</property>
                                 <attributes>
-                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
                                 </attributes>
                             </object>
-                            <packing>
-                                <property name="pack_type">start</property>
-                            </packing>
                         </child>
                         <child>
                             <object class="GtkButton" id="close_button">
-                                <property name="can_default">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="visible">True</property>
+                                <property name="focusable">1</property>
                                 <style>
                                     <class name="titlebutton"/>
                                     <class name="close"/>
                                 </style>
                                 <child>
                                     <object class="GtkImage">
-                                        <property name="visible">True</property>
                                         <property name="icon-name">window-close-symbolic</property>
-                                        <property name="icon-size">1</property>
                                     </object>
                                 </child>
                             </object>
-                            <packing>
-                                <property name="pack_type">end</property>
-                            </packing>
                         </child>
                     </object>
                 </child>
                 <child>
                     <object class="DinoUiSizingBin" id="file_widget_insert">
-                        <property name="visible">True</property>
                     </object>
                 </child>
                 <child>
@@ -69,29 +53,21 @@
                         <property name="margin-top">15</property>
                         <property name="margin-bottom">15</property>
                         <property name="spacing">5</property>
-                        <property name="visible">True</property>
                         <child>
-                            <object class="GtkLabel" id="info_label">
-                                <property name="visible">True</property>
-                            </object>
+                            <object class="GtkLabel" id="info_label"/>
                         </child>
                         <child>
                             <object class="GtkButton" id="send_button">
-                                <property name="label" translatable="yes">Send</property>
-                                <property name="can_default">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="visible">True</property>
+                                <property name="label" translatable="1">Send</property>
+                                <property name="focusable">1</property>
                                 <style>
                                     <class name="suggested-action"/>
                                 </style>
                             </object>
-                            <packing>
-                                <property name="pack_type">end</property>
-                            </packing>
                         </child>
                     </object>
                 </child>
             </object>
         </child>
-    </template>
+    </object>
 </interface>

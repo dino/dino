@@ -8,7 +8,7 @@ using Dino.Entities;
 namespace Dino.Ui.ConversationSummary {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/view.ui")]
-public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins.NotificationCollection {
+public class ConversationView : Widget, Plugins.ConversationItemCollection, Plugins.NotificationCollection {
 
     public Conversation? conversation { get; private set; }
 
@@ -19,8 +19,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     [GtkChild] private unowned Image button1_icon;
     [GtkChild] private unowned Box notifications;
     [GtkChild] private unowned Box main;
-    [GtkChild] private unowned EventBox main_event_box;
-    [GtkChild] private unowned EventBox main_wrap_event_box;
+    [GtkChild] private unowned Box main_wrap_box;
     [GtkChild] private unowned Stack stack;
 
     private StreamInteractor stream_interactor;
@@ -41,13 +40,18 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private bool firstLoad = true;
     private bool at_current_content = true;
     private bool reload_messages = true;
-    ConversationItemSkeleton currently_highlighted = null;
+    Widget currently_highlighted = null;
     ContentMetaItem? current_meta_item = null;
-    int last_y_root = -1;
+    double last_y = -1;
+
+    construct {
+        this.layout_manager = new BinLayout();
+    }
 
     public ConversationView init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
+        scrolled.vadjustment.notify["page-size"].connect(on_upper_notify);
         scrolled.vadjustment.notify["value"].connect(on_value_notify);
 
         content_populator = new ContentProvider(stream_interactor);
@@ -64,20 +68,21 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         // we connect to the parent event box that also wraps the overlaying message_menu_box.
         // This eliminates the unwanted leave events emitted on the main_event_box when hovering
         // the overlaying menu buttons.
-        main_wrap_event_box.events = EventMask.ENTER_NOTIFY_MASK;
-        main_wrap_event_box.events = EventMask.LEAVE_NOTIFY_MASK;
-        main_wrap_event_box.leave_notify_event.connect(on_leave_notify_event);
-        main_wrap_event_box.enter_notify_event.connect(on_enter_notify_event);
+        EventControllerMotion main_wrap_motion_events = new EventControllerMotion();
+        main_wrap_box.add_controller(main_wrap_motion_events);
+        main_wrap_motion_events.leave.connect(on_leave_notify_event);
+        main_wrap_motion_events.enter.connect(update_highlight);
         // The buttons of the overlaying message_menu_box may partially overlap the adjacent
         // conversation items. We connect to the main_event_box directly to avoid emitting
         // the pointer motion events as long as the pointer is above the message menu.
         // This ensures that the currently highlighted item remains unchanged when the pointer
         // reaches the overlapping part of a button.
-        main_event_box.events = EventMask.POINTER_MOTION_MASK;
-        main_event_box.motion_notify_event.connect(on_motion_notify_event);
+        EventControllerMotion main_motion_events = new EventControllerMotion();
+        main.add_controller(main_motion_events);
+        main_motion_events.motion.connect(update_highlight);
 
         button1.clicked.connect(() => {
-            current_meta_item.get_item_actions(Plugins.WidgetType.GTK)[0].callback(button1, current_meta_item, currently_highlighted.widget);
+            current_meta_item.get_item_actions(Plugins.WidgetType.GTK4)[0].callback(button1, current_meta_item, currently_highlighted);
             update_message_menu();
         });
 
@@ -102,66 +107,51 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         }
     }
 
-    private bool on_enter_notify_event(Gdk.EventCrossing event) {
-        update_highlight((int)event.x_root, (int)event.y_root);
-        return false;
-    }
-
-    private bool on_leave_notify_event(Gdk.EventCrossing event) {
+    private void on_leave_notify_event() {
         if (currently_highlighted != null) {
-            currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
+            currently_highlighted.remove_css_class("highlight");
             currently_highlighted = null;
         }
         message_menu_box.visible = false;
-        return false;
     }
 
-    private bool on_motion_notify_event(Gdk.EventMotion event) {
-        update_highlight((int)event.x_root, (int)event.y_root);
-        return false;
-    }
-
-    private void update_highlight(int x_root, int y_root) {
-        if (currently_highlighted != null && (last_y_root - y_root).abs() <= 2) {
+    private void update_highlight(double x, double y) {
+        if (currently_highlighted != null && (last_y - y).abs() <= 2) {
             return;
         }
 
-        last_y_root = y_root;
-
-        int toplevel_window_pos_x, toplevel_window_pos_y, dest_x, dest_y;
-        Widget toplevel_widget = this.get_toplevel();
-        // Obtain the position of the main application window relative to the root window
-        toplevel_widget.get_window().get_origin(out toplevel_window_pos_x, out toplevel_window_pos_y);
-        // Get the pointer location relative to the `main` box
-        toplevel_widget.translate_coordinates(main, x_root - toplevel_window_pos_x, y_root - toplevel_window_pos_y, out dest_x, out dest_y);
+        last_y = y;
 
         // Get widget under pointer
         int h = 0;
-        ConversationItemSkeleton? w = null;
-        foreach (Widget widget in main.get_children()) {
-            h += widget.get_allocated_height();
-            if (h >= dest_y) {
-                w = widget as ConversationItemSkeleton;
+        Widget? w = null;
+        Plugins.MetaConversationItem? meta_item = null;
+        foreach (Plugins.MetaConversationItem item in meta_items) {
+            Widget widget = widgets[item];
+            h += widget.get_allocated_height() + widget.margin_top + widget.margin_bottom;
+            if (h >= y) {
+                w = widget;
                 break;
             }
         };
 
-        if (currently_highlighted != null) currently_highlighted.unset_state_flags(StateFlags.PRELIGHT);
+        if (currently_highlighted != null) currently_highlighted.remove_css_class("highlight");
+
+        currently_highlighted = null;
+        current_meta_item = null;
 
         if (w == null) {
-            currently_highlighted = null;
-            current_meta_item = null;
             update_message_menu();
             return;
         }
 
         // Get widget coordinates in main
-        int widget_x, widget_y;
+        double widget_x, widget_y;
         w.translate_coordinates(main, 0, 0, out widget_x, out widget_y);
 
         // Get MessageItem
         foreach (Plugins.MetaConversationItem item in item_item_skeletons.keys) {
-            if (item_item_skeletons[item] == w) {
+            if (item_item_skeletons[item].get_widget() == w) {
                 current_meta_item = item as ContentMetaItem;
             }
         }
@@ -170,11 +160,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
         if (current_meta_item != null) {
             // Highlight widget
-            w.set_state_flags(StateFlags.PRELIGHT, true);
             currently_highlighted = w;
+            currently_highlighted.add_css_class("highlight");
 
             // Move message menu
-            message_menu_box.margin_top = widget_y - 10;
+            message_menu_box.margin_top = (int)(widget_y - 10);
         }
     }
 
@@ -184,11 +174,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
             return;
         }
 
-        var actions = current_meta_item.get_item_actions(Plugins.WidgetType.GTK);
+        var actions = current_meta_item.get_item_actions(Plugins.WidgetType.GTK4);
         message_menu_box.visible = actions != null && actions.size > 0;
         if (actions != null && actions.size == 1) {
             button1.visible = true;
-            button1_icon.set_from_icon_name(actions[0].icon_name, IconSize.SMALL_TOOLBAR);
+            button1_icon.set_from_icon_name(actions[0].icon_name);
         }
     }
 
@@ -235,17 +225,16 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         reload_messages = false;
         Timeout.add(700, () => {
             int h = 0, i = 0;
-            bool @break = false;
-            main.@foreach((widget) => {
-                if (widget == w || @break) {
-                    @break = true;
-                    return;
+            foreach (Plugins.MetaConversationItem item in meta_items) {
+                Widget widget = widgets[item];
+                if (widget == w) {
+                    break;
                 }
                 h += widget.get_allocated_height();
                 i++;
-            });
+            }
             scrolled.vadjustment.value = h - scrolled.vadjustment.page_size * 1/3;
-            w.get_style_context().add_class("highlight-once");
+            w.add_css_class("highlight-once");
             reload_messages = true;
             stack.set_visible_child_name("main");
             return false;
@@ -270,9 +259,9 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
 
         // Init for new conversation
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
-            populator.init(conversation, this, Plugins.WidgetType.GTK);
+            populator.init(conversation, this, Plugins.WidgetType.GTK4);
         }
-        content_populator.init(this, conversation, Plugins.WidgetType.GTK);
+        content_populator.init(this, conversation, Plugins.WidgetType.GTK4);
         subscription_notification.init(conversation, this);
 
         animate = false;
@@ -286,7 +275,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         }
         Application app = GLib.Application.get_default() as Application;
         foreach (Plugins.NotificationPopulator populator in app.plugin_registry.notification_populators) {
-            populator.init(conversation, this, Plugins.WidgetType.GTK);
+            populator.init(conversation, this, Plugins.WidgetType.GTK4);
         }
         Idle.add(() => { on_value_notify(); return false; });
     }
@@ -318,7 +307,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private void remove_item(Plugins.MetaConversationItem item) {
         ConversationItemSkeleton? skeleton = item_item_skeletons[item];
         if (skeleton != null) {
-            main.remove(skeleton);
+            main.remove(skeleton.get_widget());
             widgets.unset(item);
             item_skeletons.remove(skeleton);
             item_item_skeletons.unset(item);
@@ -331,21 +320,21 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     }
 
     public void on_add_meta_notification(Plugins.MetaConversationNotification notification) {
-        Widget? widget = (Widget) notification.get_widget(Plugins.WidgetType.GTK);
+        Widget? widget = (Widget) notification.get_widget(Plugins.WidgetType.GTK4);
         if (widget != null) {
             add_notification(widget);
         }
     }
 
     public void on_remove_meta_notification(Plugins.MetaConversationNotification notification){
-        Widget? widget = (Widget) notification.get_widget(Plugins.WidgetType.GTK);
+        Widget? widget = (Widget) notification.get_widget(Plugins.WidgetType.GTK4);
         if (widget != null) {
             remove_notification(widget);
         }
     }
 
     public void add_notification(Widget widget) {
-        notifications.add(widget);
+        notifications.append(widget);
         Timeout.add(20, () => {
             notification_revealer.transition_duration = 200;
             notification_revealer.reveal_child = true;
@@ -362,21 +351,19 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         Plugins.MetaConversationItem? lower_item = meta_items.lower(item);
 
         // Fill datastructure
-        ConversationItemSkeleton item_skeleton = new ConversationItemSkeleton(stream_interactor, conversation, item, !animate) { visible=true };
+        ConversationItemSkeleton item_skeleton = new ConversationItemSkeleton(stream_interactor, conversation, item, !animate);
         item_item_skeletons[item] = item_skeleton;
         int index = lower_item != null ? item_skeletons.index_of(item_item_skeletons[lower_item]) + 1 : 0;
         item_skeletons.insert(index, item_skeleton);
 
         // Insert widget
-        widgets[item] = item_skeleton;
-        main.add(item_skeleton);
-        main.reorder_child(item_skeleton, index);
+        widgets[item] = item_skeleton.get_widget();
+        widgets[item].insert_after(main, item_item_skeletons.has_key(lower_item) ? item_item_skeletons[lower_item].get_widget() : null);
 
         if (lower_item != null) {
             if (can_merge(item, lower_item)) {
                 ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
                 item_skeleton.show_skeleton = false;
-                lower_skeleton.last_group_item = false;
             } else {
                 item_skeleton.show_skeleton = true;
             }
@@ -405,7 +392,7 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
                 }
             }
         }
-        return item_skeleton;
+        return item_skeleton.get_widget();
     }
 
     private bool can_merge(Plugins.MetaConversationItem upper_item /*more recent, displayed below*/, Plugins.MetaConversationItem lower_item /*less recent, displayed above*/) {
@@ -420,7 +407,11 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
     private void on_upper_notify() {
         if (was_upper == null || scrolled.vadjustment.value >  was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
             if (at_current_content) {
-                scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size; // scroll down
+                Idle.add(() => {
+                    // If we do this directly without Idle.add, scrolling down doesn't work properly
+                    scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size; // scroll down
+                    return false;
+                });
             }
         } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1) {
             scrolled.vadjustment.value = scrolled.vadjustment.upper - was_upper + scrolled.vadjustment.value; // stay at same content
@@ -482,12 +473,14 @@ public class ConversationView : Box, Plugins.ConversationItemCollection, Plugins
         meta_items.clear();
         item_skeletons.clear();
         item_item_skeletons.clear();
+        foreach (Widget widget in widgets.values) {
+            main.remove(widget);
+        }
         widgets.clear();
-        main.@foreach((widget) => { main.remove(widget); });
     }
 
     private void clear_notifications() {
-        notifications.@foreach((widget) => { notifications.remove(widget); });
+//        notifications.@foreach((widget) => { notifications.remove(widget); });
         notification_revealer.transition_duration = 0;
         notification_revealer.set_reveal_child(false);
     }

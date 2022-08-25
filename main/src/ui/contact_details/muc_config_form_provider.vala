@@ -15,7 +15,7 @@ public class MucConfigFormProvider : Plugins.ContactDetailsProvider, Object {
     }
 
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, Plugins.WidgetType type) {
-        if (type != Plugins.WidgetType.GTK) return;
+        if (type != Plugins.WidgetType.GTK4) return;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             Xmpp.XmppStream? stream = stream_interactor.get_stream(conversation.account);
             if (stream == null) return;

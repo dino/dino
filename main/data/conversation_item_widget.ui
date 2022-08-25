@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkGrid" id="main_grid">
+    <property name="column-spacing">7</property>
+    <property name="row-spacing">2</property>
+    <child>
+      <object class="DinoUiAvatarImage" id="avatar_image">
+        <property name="height">35</property>
+        <property name="width">35</property>
+        <property name="valign">start</property>
+        <property name="margin-top">2</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">0</property>
+          <property name="row-span">2</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="GtkLabel" id="name_label">
+        <property name="ellipsize">end</property>
+        <property name="xalign">0</property>
+        <property name="valign">baseline</property>
+        <attributes>
+          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+        </attributes>
+        <layout>
+          <property name="column">1</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="GtkLabel" id="time_label">
+        <property name="xalign">0</property>
+        <property name="valign">baseline</property>
+        <attributes>
+          <attribute name="scale" value="0.8"/>
+        </attributes>
+        <style>
+          <class name="dim-label"/>
+        </style>
+        <layout>
+          <property name="column">2</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImage" id="encrypted_image">
+        <property name="opacity">0.4</property>
+        <property name="pixel-size">12</property>
+        <property name="margin-top">2</property>
+        <layout>
+          <property name="column">3</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImage" id="marked_image">
+        <property name="opacity">0.4</property>
+        <property name="pixel-size">13</property>
+        <property name="margin-top">2</property>
+        <property name="halign">start</property>
+        <property name="hexpand">True</property>
+        <layout>
+          <property name="column">4</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>

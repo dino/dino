@@ -1,78 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+    <requires lib="gtk" version="4.0"/>
     <template class="DinoUiManageAccountsDialog">
+        <property name="title" translatable="1">Accounts</property>
         <property name="width-request">700</property>
         <property name="height-request">400</property>
         <property name="modal">True</property>
         <child type="titlebar">
-            <object class="GtkHeaderBar">
-                <property name="title" translatable="yes">Accounts</property>
-                <property name="show_close_button">True</property>
-                <property name="visible">True</property>
-            </object>
+            <object class="GtkHeaderBar"/>
         </child>
-        <child internal-child="vbox">
-            <object class="GtkBox">
-                <property name="visible">True</property>
+        <child internal-child="content_area">
+        <object class="GtkBox">
+            <child>
+            <object class="GtkStack" id="main_stack">
                 <child>
-                    <object class="GtkStack" id="main_stack">
-                    <property name="visible">True</property>
-                        <child>
+                    <object class="GtkStackPage">
+                        <property name="name">accounts_exist</property>
+                        <property name="child">
                             <object class="GtkBox">
-                                <property name="can_focus">True</property>
-                                <property name="expand">True</property>
-                                <property name="visible">True</property>
+                                <property name="focusable">1</property>
+                                <property name="hexpand">True</property>
+                                <property name="vexpand">True</property>
                                 <child>
                                     <object class="GtkBox">
-                                        <property name="expand">True</property>
-                                        <property name="orientation">horizontal</property>
-                                        <property name="margin">15</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="margin-start">15</property>
+                                        <property name="margin-end">15</property>
+                                        <property name="margin-top">15</property>
+                                        <property name="margin-bottom">15</property>
                                         <property name="spacing">20</property>
-                                        <property name="visible">True</property>
                                         <child>
                                             <object class="GtkBox">
                                                 <property name="orientation">vertical</property>
                                                 <property name="width-request">250</property>
-                                                <property name="vexpand">True</property>
-                                                <property name="hexpand">False</property>
-                                                <property name="visible">True</property>
+                                                <property name="vexpand">1</property>
+                                                <property name="hexpand">0</property>
                                                 <child>
                                                     <object class="GtkScrolledWindow">
-                                                        <property name="shadow-type">in</property>
-                                                        <property name="expand">True</property>
-                                                        <property name="visible">True</property>
-                                                        <child>
+<!--                                                        <property name="shadow-type">in</property>-->
+                                                        <property name="hexpand">1</property>
+                                                        <property name="vexpand">1</property>
+                                                        <property name="child">
                                                             <object class="GtkBox">
                                                                 <property name="orientation">vertical</property>
-                                                                <property name="visible">True</property>
                                                                 <child>
                                                                     <object class="GtkListBox" id="account_list">
-                                                                        <property name="expand">True</property>
-                                                                        <property name="visible">True</property>
+                                                                        <property name="hexpand">1</property>
+                                                                        <property name="vexpand">1</property>
                                                                     </object>
                                                                 </child>
                                                             </object>
-                                                        </child>
+                                                        </property>
                                                     </object>
                                                 </child>
                                                 <child>
-                                                    <object class="GtkToolbar">
+                                                    <object class="GtkBox">
+                                                        <property name="css-classes">toolbar</property>
                                                         <style>
                                                             <class name="inline-toolbar"/>
                                                         </style>
-                                                        <property name="icon-size">menu</property>
-                                                        <property name="toolbar-style">icons</property>
-                                                        <property name="visible">True</property>
                                                         <child>
-                                                            <object class="GtkToolButton" id="add_account_button">
+                                                            <object class="GtkButton" id="add_account_button">
                                                                 <property name="icon-name">list-add-symbolic</property>
-                                                                <property name="visible">True</property>
                                                             </object>
                                                         </child>
                                                         <child>
-                                                            <object class="GtkToolButton" id="remove_account_button">
+                                                            <object class="GtkButton" id="remove_account_button">
                                                                 <property name="icon-name">list-remove-symbolic</property>
-                                                                <property name="visible">True</property>
                                                             </object>
                                                         </child>
                                                     </object>
@@ -81,23 +76,19 @@
                                         </child>
                                         <child>
                                             <object class="GtkGrid" id="settings_list">
-                                                <property name="expand">True</property>
+                                                <property name="hexpand">1</property>
+                                                <property name="vexpand">1</property>
                                                 <property name="column-spacing">10</property>
                                                 <property name="row-spacing">5</property>
-                                                <property name="visible">True</property>
                                                 <child>
                                                     <object class="GtkBox">
-                                                        <property name="visible">True</property>
                                                         <property name="halign">end</property>
                                                         <child>
-                                                            <object class="GtkBox">
-                                                                <property name="visible">True</property>
-                                                            </object>
+                                                            <object class="GtkBox"/>
                                                         </child>
                                                         <child>
                                                             <object class="GtkButton" id="image_button">
-                                                                <property name="relief">none</property>
-                                                                <property name="visible">True</property>
+                                                                <property name="has-frame">False</property>
                                                                 <style>
                                                                     <class name="image-button"/>
                                                                 </style>
@@ -105,145 +96,124 @@
                                                                     <object class="DinoUiAvatarImage" id="image">
                                                                         <property name="height">50</property>
                                                                         <property name="width">50</property>
-                                                                        <property name="xalign">1</property>
-                                                                        <property name="visible">True</property>
+<!--                                                                        <property name="xalign">1</property>-->
                                                                         <property name="allow_gray">False</property>
                                                                     </object>
                                                                 </child>
                                                             </object>
                                                         </child>
+                                                        <layout>
+                                                            <property name="column">0</property>
+                                                            <property name="row">0</property>
+                                                            <property name="row-span">2</property>
+                                                        </layout>
                                                     </object>
-                                                    <packing>
-                                                        <property name="left_attach">0</property>
-                                                        <property name="top_attach">0</property>
-                                                        <property name="width">1</property>
-                                                        <property name="height">2</property>
-                                                    </packing>
                                                 </child>
                                                 <child>
                                                     <object class="GtkLabel" id="jid_label">
                                                         <property name="xalign">0</property>
                                                         <property name="yalign">1</property>
-                                                        <property name="visible">True</property>
                                                         <attributes>
-                                                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
                                                         </attributes>
+                                                        <layout>
+                                                            <property name="column">1</property>
+                                                            <property name="row">0</property>
+                                                        </layout>
                                                     </object>
-                                                    <packing>
-                                                        <property name="left_attach">1</property>
-                                                        <property name="top_attach">0</property>
-                                                        <property name="width">1</property>
-                                                        <property name="height">1</property>
-                                                    </packing>
                                                 </child>
                                                 <child>
                                                     <object class="GtkLabel" id="state_label">
                                                         <property name="xalign">0</property>
                                                         <property name="yalign">0</property>
-                                                        <property name="visible">True</property>
                                                         <style>
                                                             <class name="dim-label"/>
                                                         </style>
+                                                        <layout>
+                                                            <property name="column">1</property>
+                                                            <property name="row">1</property>
+                                                        </layout>
                                                     </object>
-                                                    <packing>
-                                                        <property name="left_attach">1</property>
-                                                        <property name="top_attach">1</property>
-                                                        <property name="width">1</property>
-                                                        <property name="height">1</property>
-                                                    </packing>
                                                 </child>
                                                 <child>
                                                     <object class="GtkSwitch" id="active_switch">
-                                                        <property name="visible">True</property>
                                                         <property name="halign">end</property>
                                                         <property name="valign">center</property>
+                                                        <layout>
+                                                            <property name="column">2</property>
+                                                            <property name="row">0</property>
+                                                            <property name="row-span">2</property>
+                                                        </layout>
                                                     </object>
-                                                    <packing>
-                                                        <property name="left_attach">2</property>
-                                                        <property name="top_attach">0</property>
-                                                        <property name="width">1</property>
-                                                        <property name="height">2</property>
-                                                    </packing>
                                                 </child>
                                                 <child>
                                                     <object class="GtkLabel">
-                                                        <property name="label" translatable="yes">Password</property>
+                                                        <property name="label" translatable="1">Password</property>
                                                         <property name="xalign">1</property>
-                                                        <property name="visible">True</property>
                                                         <style>
                                                             <class name="dim-label"/>
                                                         </style>
+                                                        <layout>
+                                                            <property name="column">0</property>
+                                                            <property name="row">2</property>
+                                                        </layout>
                                                     </object>
-                                                    <packing>
-                                                        <property name="left_attach">0</property>
-                                                        <property name="top_attach">2</property>
-                                                        <property name="width">1</property>
-                                                        <property name="height">1</property>
-                                                    </packing>
                                                 </child>
                                                 <child>
                                                     <object class="DinoUiUtilEntryLabelHybrid" id="password_hybrid">
                                                         <property name="xalign">0</property>
                                                         <property name="width_request">200</property>
                                                         <property name="visibility">False</property>
-                                                        <property name="visible">True</property>
+                                                        <layout>
+                                                            <property name="column">1</property>
+                                                            <property name="row">2</property>
+                                                            <property name="column-span">2</property>
+                                                        </layout>
                                                     </object>
-                                                    <packing>
-                                                        <property name="left_attach">1</property>
-                                                        <property name="top_attach">2</property>
-                                                        <property name="width">2</property>
-                                                        <property name="height">1</property>
-                                                    </packing>
                                                 </child>
                                                 <child>
                                                     <object class="GtkLabel">
-                                                        <property name="label" translatable="yes">Local alias</property>
+                                                        <property name="label" translatable="1">Local alias</property>
                                                         <property name="xalign">1</property>
-                                                        <property name="visible">True</property>
                                                         <style>
                                                             <class name="dim-label"/>
                                                         </style>
+                                                        <layout>
+                                                            <property name="column">0</property>
+                                                            <property name="row">3</property>
+                                                        </layout>
                                                     </object>
-                                                    <packing>
-                                                        <property name="left_attach">0</property>
-                                                        <property name="top_attach">3</property>
-                                                        <property name="width">1</property>
-                                                        <property name="height">1</property>
-                                                    </packing>
                                                 </child>
                                                 <child>
                                                     <object class="DinoUiUtilEntryLabelHybrid" id="alias_hybrid">
                                                         <property name="xalign">0</property>
                                                         <property name="width_request">200</property>
-                                                        <property name="visible">True</property>
+`                                                       <layout>
+                                                            <property name="column">1</property>
+                                                            <property name="row">3</property>
+                                                            <property name="column-span">2</property>
+                                                        </layout>
                                                     </object>
-                                                    <packing>
-                                                        <property name="left_attach">1</property>
-                                                        <property name="top_attach">3</property>
-                                                        <property name="width">2</property>
-                                                        <property name="height">1</property>
-                                                    </packing>
                                                 </child>
                                             </object>
                                         </child>
                                     </object>
                                 </child>
                             </object>
-                            <packing>
-                                <property name="name">accounts_exist</property>
-                            </packing>
-                        </child>
-                        <child>
+                        </property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkStackPage">
+                        <property name="name">no_accounts</property>
+                        <property name="child">
                             <object class="GtkBox">
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">10</property>
                                 <property name="valign">center</property>
-                                <property name="visible">True</property>
                                 <child>
                                     <object class="GtkImage">
-                                        <property name="visible">True</property>
                                         <property name="icon-name">system-users-symbolic</property>
-                                        <property name="icon-size">4</property>
                                         <property name="pixel-size">72</property>
                                         <style>
                                             <class name="dim-label"/>
@@ -252,10 +222,7 @@
                                 </child>
                                 <child>
                                     <object class="GtkLabel">
-                                        <property name="label" translatable="yes">No accounts configured</property>
-                                        <property name="xalign">0.5</property>
-                                        <property name="yalign">0.5</property>
-                                        <property name="visible">True</property>
+                                        <property name="label" translatable="1">No accounts configured</property>
                                         <style>
                                             <class name="dim-label"/>
                                         </style>
@@ -263,9 +230,8 @@
                                 </child>
                                 <child>
                                     <object class="GtkButton" id="no_accounts_add">
-                                        <property name="label" translatable="yes">Add an account</property>
+                                        <property name="label" translatable="1">Add an account</property>
                                         <property name="halign">center</property>
-                                        <property name="visible">True</property>
                                         <style>
                                             <class name="text-button"/>
                                             <class name="suggested-action"/>
@@ -273,13 +239,12 @@
                                     </object>
                                 </child>
                             </object>
-                            <packing>
-                                <property name="name">no_accounts</property>
-                            </packing>
-                        </child>
+                        </property>
                     </object>
                 </child>
             </object>
+            </child>
+        </object>
         </child>
     </template>
 </interface>

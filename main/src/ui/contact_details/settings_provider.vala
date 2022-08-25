@@ -17,7 +17,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
     }
 
     public void populate(Conversation conversation, Plugins.ContactDetails contact_details, Plugins.WidgetType type) {
-        if (type != Plugins.WidgetType.GTK) return;
+        if (type != Plugins.WidgetType.GTK4) return;
 
         if (!stream_interactor.get<MucManager>().is_public_room(conversation.account, conversation.counterpart)) {
             string details_headline = conversation.type_ == Conversation.Type.GROUPCHAT ? DETAILS_HEADLINE_ROOM : DETAILS_HEADLINE_CHAT;
@@ -39,7 +39,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
             combobox_notifications.active_id = get_notify_setting_id(conversation.notify_setting);
             combobox_notifications.changed.connect(() => { conversation.notify_setting = get_notify_setting(combobox_notifications.active_id); } );
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            ComboBoxText combobox = new ComboBoxText() { visible=true };
+            ComboBoxText combobox = new ComboBoxText();
             combobox.append("default", get_notify_setting_string(Conversation.NotifySetting.DEFAULT, conversation.get_notification_default_setting(stream_interactor)));
             combobox.append("highlight", get_notify_setting_string(Conversation.NotifySetting.HIGHLIGHT));
             combobox.append("on", get_notify_setting_string(Conversation.NotifySetting.ON));
@@ -119,7 +119,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
 
     private ComboBoxText get_combobox(bool default_val) {
         ComboBoxText combobox = new ComboBoxText();
-        combobox = new ComboBoxText() { visible=true };
+        combobox = new ComboBoxText();
         string default_setting = default_val ? _("On") : _("Off");
         combobox.append("default", _("Default: %s").printf(default_setting) );
         combobox.append("on", _("On"));

@@ -1,128 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+    <requires lib="gtk" version="4.0"/>
     <template class="DinoUiAddContactDialog">
+        <property name="title" translatable="1">Add Contact</property>
         <property name="valign">center</property>
         <property name="modal">True</property>
         <child type="titlebar">
             <object class="GtkHeaderBar">
-                <property name="title" translatable="yes">Add Contact</property>
-                <property name="visible">True</property>
+                <property name="show-title-buttons">False</property>
                 <child>
                     <object class="GtkButton" id="cancel_button">
-                        <property name="label" translatable="yes">Cancel</property>
-                        <property name="sensitive">True</property>
-                        <property name="visible">True</property>
+                        <property name="label" translatable="1">Cancel</property>
                     </object>
-                    <packing>
-                        <property name="pack_type">start</property>
-                    </packing>
                 </child>
-                <child>
+                <child type="end">
                     <object class="GtkButton" id="ok_button">
-                        <property name="has_default">True</property>
-                        <property name="can_default">True</property>
-                        <property name="label" translatable="yes">Add</property>
-                        <property name="sensitive">False</property>
-                        <property name="visible">True</property>
+                        <property name="label" translatable="1">Add</property>
+                        <property name="sensitive">0</property>
                         <style>
                             <class name="suggested-action"/>
                         </style>
                     </object>
-                    <packing>
-                        <property name="pack_type">end</property>
-                    </packing>
                 </child>
             </object>
         </child>
-        <child internal-child="vbox">
+        <child internal-child="content_area">
             <object class="GtkBox">
-                <property name="visible">True</property>
                 <child>
                     <object class="GtkGrid" id="info_grid">
                         <property name="orientation">vertical</property>
-                        <property name="margin">20</property>
+                        <property name="margin-start">20</property>
+                        <property name="margin-end">20</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                         <property name="row-spacing">7</property>
                         <property name="column-spacing">10</property>
-                        <property name="visible">True</property>
                         <child>
                             <object class="GtkLabel">
-                                <property name="label" translatable="yes">Account</property>
+                                <property name="label" translatable="1">Account</property>
                                 <property name="xalign">1</property>
-                                <property name="visible">True</property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">0</property>
+                                </layout>
                             </object>
-                            <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                                <property name="width">1</property>
-                                <property name="height">1</property>
-                            </packing>
                         </child>
                         <child>
                             <object class="DinoUiAccountComboBox" id="account_combobox">
                                 <property name="hexpand">True</property>
                                 <property name="width_request">200</property>
-                                <property name="visible">True</property>
+                                <layout>
+                                    <property name="column">1</property>
+                                    <property name="row">0</property>
+                                </layout>
                             </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">0</property>
-                                <property name="width">1</property>
-                                <property name="height">1</property>
-                            </packing>
                         </child>
                         <child>
                             <object class="GtkLabel">
                                 <property name="label">JID</property>
                                 <property name="xalign">1</property>
-                                <property name="visible">True</property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">1</property>
+                                </layout>
                             </object>
-                            <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">1</property>
-                                <property name="width">1</property>
-                                <property name="height">1</property>
-                            </packing>
                         </child>
                         <child>
                             <object class="GtkEntry" id="jid_entry">
-                                <property name="activates_default">True</property>
-                                <property name="hexpand">True</property>
+                                <property name="activates_default">1</property>
+                                <property name="hexpand">1</property>
                                 <property name="width_request">200</property>
-                                <property name="visible">True</property>
+                                <layout>
+                                    <property name="column">1</property>
+                                    <property name="row">1</property>
+                                </layout>
                             </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">1</property>
-                                <property name="width">1</property>
-                                <property name="height">1</property>
-                            </packing>
                         </child>
                         <child>
                             <object class="GtkLabel">
-                                <property name="label" translatable="yes">Alias</property>
+                                <property name="label" translatable="1">Alias</property>
                                 <property name="xalign">1</property>
-                                <property name="visible">True</property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">2</property>
+                                </layout>
                             </object>
-                            <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">2</property>
-                                <property name="width">1</property>
-                                <property name="height">1</property>
-                            </packing>
                         </child>
                         <child>
                             <object class="GtkEntry" id="alias_entry">
-                                <property name="activates_default">True</property>
-                                <property name="hexpand">True</property>
+                                <property name="activates_default">1</property>
+                                <property name="hexpand">1</property>
                                 <property name="width_request">200</property>
-                                <property name="visible">True</property>
+                                <layout>
+                                    <property name="column">1</property>
+                                    <property name="row">2</property>
+                                </layout>
                             </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">2</property>
-                                <property name="width">1</property>
-                                <property name="height">1</property>
-                            </packing>
                         </child>
                     </object>
                 </child>

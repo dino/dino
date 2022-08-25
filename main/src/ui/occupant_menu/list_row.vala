@@ -5,14 +5,21 @@ using Xmpp;
 
 namespace Dino.Ui.OccupantMenu {
 
-[GtkTemplate (ui = "/im/dino/Dino/occupant_list_item.ui")]
-public class ListRow : ListBoxRow {
+public class ListRow : Object {
 
-    [GtkChild] private unowned AvatarImage image;
-    [GtkChild] public unowned Label name_label;
+    private Grid main_grid;
+    private AvatarImage image;
+    public Label name_label;
 
     public Conversation? conversation;
     public Jid? jid;
+
+    construct {
+        Builder builder = new Builder.from_resource("/im/dino/Dino/occupant_list_item.ui");
+        main_grid = (Grid) builder.get_object("main_grid");
+        image = (AvatarImage) builder.get_object("image");
+        name_label = (Label) builder.get_object("name_label");
+    }
 
     public ListRow(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
         this.conversation = conversation;
@@ -25,6 +32,10 @@ public class ListRow : ListBoxRow {
     public ListRow.label(string c, string text) {
         name_label.label = text;
         image.set_text(c);
+    }
+
+    public Widget get_widget() {
+        return main_grid;
     }
 }
 

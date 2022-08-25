@@ -17,8 +17,8 @@ public class Dialog : Gtk.Dialog {
     [GtkChild] public unowned Stack main_stack;
     [GtkChild] public unowned ListBox account_list;
     [GtkChild] public unowned Button no_accounts_add;
-    [GtkChild] public unowned ToolButton add_account_button;
-    [GtkChild] public unowned ToolButton remove_account_button;
+    [GtkChild] public unowned Button add_account_button;
+    [GtkChild] public unowned Button remove_account_button;
     [GtkChild] public unowned AvatarImage image;
     [GtkChild] public unowned Button image_button;
     [GtkChild] public unowned Label jid_label;
@@ -27,8 +27,6 @@ public class Dialog : Gtk.Dialog {
     [GtkChild] public unowned Util.EntryLabelHybrid password_hybrid;
     [GtkChild] public unowned Util.EntryLabelHybrid alias_hybrid;
     [GtkChild] public unowned Grid settings_list;
-
-    private ArrayList<Plugins.AccountSettingsWidget> plugin_widgets = new ArrayList<Plugins.AccountSettingsWidget>();
 
     private Database db;
     private StreamInteractor stream_interactor;
@@ -44,8 +42,8 @@ public class Dialog : Gtk.Dialog {
             if (selected_account != null) remove_account(account_row);
         });
         image_button.clicked.connect(show_select_avatar);
-        alias_hybrid.entry.key_release_event.connect(() => { selected_account.alias = alias_hybrid.text; return false; });
-        password_hybrid.entry.key_release_event.connect(() => { selected_account.password = password_hybrid.text; return false; });
+//        alias_hybrid.entry.key_release_event.connect(() => { selected_account.alias = alias_hybrid.text; return false; });
+//        password_hybrid.entry.key_release_event.connect(() => { selected_account.password = password_hybrid.text; return false; });
 
         Util.LabelHybridGroup label_hybrid_group = new Util.LabelHybridGroup();
         label_hybrid_group.add(alias_hybrid);
@@ -54,25 +52,18 @@ public class Dialog : Gtk.Dialog {
         main_stack.set_visible_child_name("no_accounts");
 
         int row_index = 4;
-        int16 default_top_padding = new Gtk.Button().get_style_context().get_padding(Gtk.StateFlags.NORMAL).top + 1;
+        int16 default_top_padding = new Gtk.Button().get_style_context().get_padding().top + 1;
         Application app = GLib.Application.get_default() as Application;
-        foreach (var e in app.plugin_registry.account_settings_entries) {
-            Plugins.AccountSettingsWidget widget = e.get_widget(Plugins.WidgetType.GTK);
-            plugin_widgets.add(widget);
+        foreach (Plugins.AccountSettingsEntry e in app.plugin_registry.account_settings_entries) {
+            Widget? widget = e.get_widget(Plugins.WidgetType.GTK4) as Widget;
+            if (widget == null) continue;
 
-            Label label = new Label(e.name) { xalign=1, yalign=0, visible=true };
-            label.get_style_context().add_class("dim-label");
+            Label label = new Label(e.name) { xalign=1, yalign=0 };
+            label.add_css_class("dim-label");
             label.margin_top = e.label_top_padding == -1 ? default_top_padding : e.label_top_padding;
-
             settings_list.attach(label, 0, row_index);
-            if (widget is Widget) {
-                Widget gtkw = (Widget) widget;
-                plugin_widgets.add(widget);
-                gtkw.visible = true;
-                settings_list.attach(gtkw, 1, row_index, 2);
-            } else {
-                // TODO
-            }
+
+            settings_list.attach(widget, 1, row_index, 2);
             row_index++;
         }
     }
@@ -102,7 +93,7 @@ public class Dialog : Gtk.Dialog {
 
     public AccountRow add_account(Account account) {
         AccountRow account_item = new AccountRow (stream_interactor, account);
-        account_list.add(account_item);
+        account_list.append(account_item);
         main_stack.set_visible_child_name("accounts_exist");
         return account_item;
     }
@@ -126,18 +117,21 @@ public class Dialog : Gtk.Dialog {
         msg.secondary_text = "You won't be able to access your conversation history anymore."; // TODO remove history!
         Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
         ok_button.label = _("Remove");
-        ok_button.get_style_context().add_class("destructive-action");
-        if (msg.run() == Gtk.ResponseType.OK) {
-            account_list.remove(account_item);
-            if (account_item.account.enabled) account_disabled(account_item.account);
-            account_item.account.remove();
-            if (account_list.get_row_at_index(0) != null) {
-                account_list.select_row(account_list.get_row_at_index(0));
-            } else {
-                main_stack.set_visible_child_name("no_accounts");
+        ok_button.add_css_class("destructive-action");
+        msg.response.connect((response) => {
+            if (response == ResponseType.OK) {
+                account_list.remove(account_item);
+                if (account_item.account.enabled) account_disabled(account_item.account);
+                account_item.account.remove();
+                if (account_list.get_row_at_index(0) != null) {
+                    account_list.select_row(account_list.get_row_at_index(0));
+                } else {
+                    main_stack.set_visible_child_name("no_accounts");
+                }
             }
-        }
-        msg.close();
+            msg.close();
+        });
+        msg.present();
     }
 
     private void on_account_list_row_selected(ListBoxRow? row) {
@@ -149,7 +143,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void show_select_avatar() {
-        PreviewFileChooserNative chooser = new PreviewFileChooserNative(_("Select avatar"), this, FileChooserAction.OPEN, _("Select"), _("Cancel"));
+        FileChooserNative chooser = new FileChooserNative(_("Select avatar"), this, FileChooserAction.OPEN, _("Select"), _("Cancel"));
         FileFilter filter = new FileFilter();
         foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
             foreach (string mime_type in pixbuf_format.get_mime_types()) {
@@ -164,10 +158,12 @@ public class Dialog : Gtk.Dialog {
         filter.add_pattern("*");
         chooser.add_filter(filter);
 
-        if (chooser.run() == Gtk.ResponseType.ACCEPT) {
-            string uri = chooser.get_filename();
+        chooser.response.connect(() => {
+            string uri = chooser.get_file().get_path();
             stream_interactor.get_module(AvatarManager.IDENTITY).publish(selected_account, uri);
-        }
+        });
+
+        chooser.show();
     }
 
     private bool change_account_state(bool state) {
@@ -201,8 +197,9 @@ public class Dialog : Gtk.Dialog {
 
         active_switch.state_set.connect(change_account_state);
 
-        foreach(Plugins.AccountSettingsWidget widget in plugin_widgets) {
-            widget.set_account(account);
+        Application app = GLib.Application.get_default() as Application;
+        foreach (Plugins.AccountSettingsEntry e in app.plugin_registry.account_settings_entries) {
+            e.set_account(account);
         }
     }
 
@@ -211,7 +208,7 @@ public class Dialog : Gtk.Dialog {
         ConnectionManager.ConnectionError? error = stream_interactor.connection_manager.get_error(account);
         if (error != null) {
             state_label.label = get_connection_error_description(error);
-            state_label.get_style_context().add_class("is_error");
+            state_label.add_css_class("is_error");
         } else {
             ConnectionManager.ConnectionState state = stream_interactor.connection_manager.get_state(account);
             switch (state) {
@@ -222,7 +219,7 @@ public class Dialog : Gtk.Dialog {
                 case ConnectionManager.ConnectionState.DISCONNECTED:
                     state_label.label = _("Disconnected"); break;
             }
-            state_label.get_style_context().remove_class("is_error");
+            state_label.remove_css_class("is_error");
         }
     }
 

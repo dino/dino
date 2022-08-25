@@ -11,16 +11,18 @@ namespace Dino.Ui {
 
         public CallWindowController controller;
 
-        public Overlay overlay = new Overlay() { visible=true };
-        public Grid grid = new Grid() { visible=true };
-        public CallBottomBar bottom_bar = new CallBottomBar() { visible=true };
-        public Revealer bottom_bar_revealer = new Revealer() { valign=Align.END, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200, visible=true };
-        public HeaderBar header_bar = new HeaderBar() { valign=Align.START, halign=Align.END, show_close_button=true, visible=true, opacity=0.0 };
-        public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.SLIDE_LEFT, transition_duration=200, visible=true, reveal_child=false };
-        public Box own_video_box = new Box(Orientation.HORIZONTAL, 0) { halign=Align.END, valign=Align.END, visible=true };
+        public Overlay overlay = new Overlay();
+        public Grid grid = new Grid();
+        public CallBottomBar bottom_bar = new CallBottomBar();
+        public Revealer bottom_bar_revealer = new Revealer() { valign=Align.END, transition_type=RevealerTransitionType.CROSSFADE, transition_duration=200 };
+        public HeaderBar header_bar = new HeaderBar() { valign=Align.START, halign=Align.END, show_title_buttons=true, opacity=0.0 };
+        public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.SLIDE_LEFT, transition_duration=200, reveal_child=false };
+        public Box own_video_box = new Box(Orientation.HORIZONTAL, 0) { halign=Align.END, valign=Align.END };
         private Widget? own_video = null;
         private HashMap<string, ParticipantWidget> participant_widgets = new HashMap<string, ParticipantWidget>();
         private ArrayList<string> participants = new ArrayList<string>();
+
+        private EventControllerMotion this_motion_events = new EventControllerMotion();
 
         private int own_video_width = 150;
         private int own_video_height = 100;
@@ -30,35 +32,39 @@ namespace Dino.Ui {
         public bool controls_active { get; set; default=true; }
 
         construct {
-            header_bar.get_style_context().add_class("call-header-bar");
-            header_bar.custom_title = new Box(Orientation.VERTICAL, 0);
-            header_bar.spacing = 0;
-            header_bar_revealer.add(header_bar);
-            bottom_bar_revealer.add(bottom_bar);
-            own_video_box.get_style_context().add_class("own-video");
+            header_bar.add_css_class("call-header-bar");
+            header_bar.title_widget = new Box(Orientation.VERTICAL, 0);
+//            header_bar.spacing = 0;
+            header_bar_revealer.set_child(header_bar);
+            bottom_bar_revealer.set_child(bottom_bar);
+            own_video_box.add_css_class("own-video");
 
-            this.get_style_context().add_class("dino-call-window");
+            this.add_css_class("dino-call-window");
 
-            overlay.add(grid);
+            overlay.set_child(grid);
             overlay.add_overlay(own_video_box);
             overlay.add_overlay(bottom_bar_revealer);
             overlay.add_overlay(header_bar_revealer);
             overlay.get_child_position.connect(on_get_child_position);
 
-            add(overlay);
+            set_child(overlay);
         }
 
         public CallWindow() {
             this.bind_property("controls-active", bottom_bar_revealer, "reveal-child", BindingFlags.SYNC_CREATE);
 
-            this.motion_notify_event.connect(reveal_control_elements);
-            this.enter_notify_event.connect(reveal_control_elements);
-            this.leave_notify_event.connect(reveal_control_elements);
-            this.configure_event.connect(reveal_control_elements); // upon resizing
+            ((Widget) this).add_controller(this_motion_events);
+            this_motion_events.motion.connect(reveal_control_elements);
+            this_motion_events.enter.connect(reveal_control_elements);
+            this_motion_events.leave.connect(reveal_control_elements);
 
-            this.configure_event.connect(reposition_participant_widgets);
+            this.notify["default-width"].connect(reveal_control_elements);
+            this.notify["default-height"].connect(reveal_control_elements);
 
-            this.set_titlebar(new OutsideHeaderBar(this.header_bar) { visible=true });
+            this.notify["default-width"].connect(reposition_participant_widgets);
+            this.notify["default-height"].connect(reposition_participant_widgets);
+
+            this.set_titlebar(new OutsideHeaderBar(this.header_bar));
 
             reveal_control_elements();
         }
@@ -66,7 +72,7 @@ namespace Dino.Ui {
         public void add_participant(string participant, ParticipantWidget participant_widget) {
             participant_widget.visible = true;
             this.bind_property("controls-active", participant_widget, "controls-active", BindingFlags.SYNC_CREATE);
-            this.bind_property("controls-active", participant_widget.encryption_button, "controls-active", BindingFlags.SYNC_CREATE);
+            this.bind_property("controls-active", participant_widget.encryption_button_controller, "controls-active", BindingFlags.SYNC_CREATE);
 
             participants.add(participant);
             participant_widgets[participant] = participant_widget;
@@ -103,11 +109,10 @@ namespace Dino.Ui {
             }
         }
 
-        private bool reposition_participant_widgets() {
-            int width, height;
-            this.get_size(out width,out height);
+        private void reposition_participant_widgets() {
+            int width = get_size(Orientation.HORIZONTAL);
+            int height = get_size(Orientation.VERTICAL);
             reposition_participant_widgets_rec(participants, width, height, 0, 0, 0, 0);
-            return false;
         }
 
         private void reposition_participant_widgets_rec(ArrayList<string> participants, int width, int height, int margin_top, int margin_right, int margin_bottom, int margin_left) {
@@ -144,14 +149,15 @@ namespace Dino.Ui {
         }
 
         public void set_own_video(Widget? widget_) {
-            own_video_box.foreach((widget) => { own_video_box.remove(widget); });
+            unset_own_video();
 
             own_video = widget_;
             if (own_video == null) {
-                own_video = new Box(Orientation.HORIZONTAL, 0) { expand=true };
+                own_video = new Box(Orientation.HORIZONTAL, 0);
             }
+            own_video.hexpand = own_video.vexpand = true;
             own_video.visible = true;
-            own_video_box.add(own_video);
+            own_video_box.append(own_video);
         }
 
         public void set_own_video_ratio(int width, int height) {
@@ -165,7 +171,11 @@ namespace Dino.Ui {
         }
 
         public void unset_own_video() {
-            own_video_box.foreach((widget) => { own_video_box.remove(widget); });
+            Widget to_remove = own_video_box.get_first_child();
+            while (to_remove != null) {
+                own_video_box.remove(to_remove);
+                to_remove = own_video_box.get_first_child();
+            }
         }
 
         public void set_status(string participant_id, string state) {
@@ -192,13 +202,12 @@ namespace Dino.Ui {
             bottom_bar.show_counterpart_ended(text);
         }
 
-        private bool reveal_control_elements() {
+        private void reveal_control_elements() {
             if (!bottom_bar_revealer.child_revealed) {
                 controls_active = true;
             }
 
             timeout_hide_control_elements();
-            return false;
         }
 
         private void timeout_hide_control_elements() {
@@ -229,8 +238,8 @@ namespace Dino.Ui {
 
         private bool on_get_child_position(Widget widget, out Gdk.Rectangle allocation) {
             if (widget == own_video_box) {
-                int width, height;
-                this.get_size(out width,out height);
+                int width = get_size(Orientation.HORIZONTAL);
+                int height = get_size(Orientation.VERTICAL);
 
                 allocation = Gdk.Rectangle();
                 allocation.width = own_video_width;
@@ -252,8 +261,8 @@ namespace Dino.Ui {
         public OutsideHeaderBar(HeaderBar header_bar) {
             this.header_bar = header_bar;
 
-            size_allocate.connect_after(on_header_bar_size_allocate);
-            header_bar.size_allocate.connect(on_header_bar_size_allocate);
+//            size_allocate.connect_after(on_header_bar_size_allocate);
+//            header_bar.size_allocate.connect(on_header_bar_size_allocate);
         }
 
         public void on_header_bar_size_allocate() {
@@ -263,7 +272,7 @@ namespace Dino.Ui {
             Allocation alloc;
             get_allocation(out alloc);
             alloc.height = header_bar_alloc.height;
-            set_allocation(alloc);
+//            set_allocation(alloc);
         }
     }
 }

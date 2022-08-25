@@ -37,7 +37,18 @@ public class Dialog : Gtk.Dialog {
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
         if (Util.use_csd()) {
             // TODO get_header_bar directly returns a HeaderBar in vala > 0.48
-            ((HeaderBar) get_header_bar()).set_subtitle(Util.get_conversation_display_name(stream_interactor, conversation));
+            Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER };
+            var title_label = new Label(title);
+            title_label.attributes = new AttrList();
+            title_label.attributes.insert(Pango.attr_weight_new(Weight.BOLD));
+            titles_box.append(title_label);
+            var subtitle_label = new Label(Util.get_conversation_display_name(stream_interactor, conversation));
+            subtitle_label.attributes = new AttrList();
+            subtitle_label.attributes.insert(Pango.attr_scale_new(Pango.Scale.SMALL));
+            subtitle_label.add_css_class("dim-label");
+            titles_box.append(subtitle_label);
+
+            get_header_bar().set_title_widget(titles_box);
         }
         setup_top();
 
@@ -50,23 +61,25 @@ public class Dialog : Gtk.Dialog {
         app.plugin_registry.register_contact_details_entry(new PermissionsProvider(stream_interactor));
 
         foreach (Plugins.ContactDetailsProvider provider in app.plugin_registry.contact_details_entries) {
-            provider.populate(conversation, contact_details, Plugins.WidgetType.GTK);
+            provider.populate(conversation, contact_details, Plugins.WidgetType.GTK4);
         }
 
-        destroy.connect(() => {
+        close_request.connect(() => {
             contact_details.save();
+            return false;
         });
     }
 
     private void setup_top() {
         if (conversation.type_ == Conversation.Type.CHAT) {
             name_label.visible = false;
-            jid_label.margin_start = new Button().get_style_context().get_padding(StateFlags.NORMAL).left + 1;
+            jid_label.margin_start = new Button().get_style_context().get_padding().left + 1;
             name_hybrid.text = Util.get_conversation_display_name(stream_interactor, conversation);
-            destroy.connect(() => {
+            close_request.connect(() => {
                 if (name_hybrid.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
                     stream_interactor.get_module(RosterManager.IDENTITY).set_jid_handle(conversation.account, conversation.counterpart, name_hybrid.text);
                 }
+                return false;
             });
         } else {
             name_hybrid.visible = false;
@@ -82,29 +95,29 @@ public class Dialog : Gtk.Dialog {
         Widget w = (Widget) wo;
         add_category(category);
 
-        ListBoxRow list_row = new ListBoxRow() { activatable=false, visible=true };
-        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3, visible=true };
-        list_row.add(row);
-        Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true, visible=true };
+        ListBoxRow list_row = new ListBoxRow() { activatable=false };
+        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3 };
+        list_row.set_child(row);
+        Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true };
         if (description != null && description != "") {
-            Box box = new Box(Orientation.VERTICAL, 0) { visible=true };
-            box.add(label_label);
-            Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true, visible=true };
+            Box box = new Box(Orientation.VERTICAL, 0);
+            box.append(label_label);
+            Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true };
             desc_label.set_markup("<span size='small'>%s</span>".printf(Markup.escape_text(description)));
-            desc_label.get_style_context().add_class("dim-label");
-            box.add(desc_label);
-            row.add(box);
+            desc_label.add_css_class("dim-label");
+            box.append(desc_label);
+            row.append(box);
         } else {
-            row.add(label_label);
+            row.append(label_label);
         }
 
         Widget widget = w;
         if (widget.get_type().is_a(typeof(Entry))) {
-            Util.EntryLabelHybrid hybrid = new Util.EntryLabelHybrid.wrap(widget as Entry) { xalign=1, visible=true };
+            Util.EntryLabelHybrid hybrid = new Util.EntryLabelHybrid.wrap(widget as Entry) { xalign=1 };
             hybrid_group.add(hybrid);
             widget = hybrid;
         } else if (widget.get_type().is_a(typeof(ComboBoxText))) {
-            Util.ComboBoxTextLabelHybrid hybrid = new Util.ComboBoxTextLabelHybrid.wrap(widget as ComboBoxText) { xalign=1, visible=true };
+            Util.ComboBoxTextLabelHybrid hybrid = new Util.ComboBoxTextLabelHybrid.wrap(widget as ComboBoxText) { xalign=1 };
             hybrid_group.add(hybrid);
             widget = hybrid;
         }
@@ -112,32 +125,32 @@ public class Dialog : Gtk.Dialog {
         widget.margin_top = 5;
 
 
-        row.add(widget);
-        categories[category].add(list_row);
+        row.append(widget);
+        categories[category].append(list_row);
 
+        int width = get_content_area().get_width();
         int pref_height, pref_width;
-        get_content_area().get_preferred_height(null, out pref_height);
-        get_preferred_width(out pref_width, null);
-        resize(pref_width, int.min(500, pref_height));
+        get_content_area().measure(Orientation.VERTICAL, width, null, out pref_height, null, null);
+        default_height = pref_height + 48;
     }
 
     private void add_category(string category) {
         if (!categories.has_key(category)) {
-            ListBox list_box = new ListBox() { selection_mode=SelectionMode.NONE, visible=true };
+            ListBox list_box = new ListBox() { selection_mode=SelectionMode.NONE };
             categories[category] = list_box;
             list_box.set_header_func((row, before_row) => {
                 if (row.get_header() == null && before_row != null) {
                     row.set_header(new Separator(Orientation.HORIZONTAL));
                 }
             });
-            Box box = new Box(Orientation.VERTICAL, 5) { margin_top=12, margin_bottom=12, visible=true };
-            Label category_label = new Label("") { xalign=0, visible=true };
+            Box box = new Box(Orientation.VERTICAL, 5) { margin_top=12, margin_bottom=12 };
+            Label category_label = new Label("") { xalign=0 };
             category_label.set_markup(@"<b>$(Markup.escape_text(category))</b>");
-            box.add(category_label);
-            Frame frame = new Frame(null) { visible=true };
-            frame.add(list_box);
-            box.add(frame);
-            main_box.add(box);
+            box.append(category_label);
+            Frame frame = new Frame(null);
+            frame.set_child(list_box);
+            box.append(frame);
+            main_box.append(box);
         }
     }
 }

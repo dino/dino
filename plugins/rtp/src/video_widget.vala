@@ -1,16 +1,164 @@
-#if !VALA_0_52
-[CCode (cheader_filename = "gst/gst.h")]
-private static extern void gst_value_set_fraction(ref GLib.Value value, int numerator, int denominator);
+private static extern unowned Gst.Video.Info gst_video_frame_get_video_info(Gst.Video.Frame frame);
+private static extern unowned uint8[] gst_video_frame_get_data(Gst.Video.Frame frame);
+
+public class Dino.Plugins.Rtp.Paintable : Gdk.Paintable, Object {
+    private Gdk.Paintable image;
+    private double pixel_aspect_ratio;
+
+    public override Gdk.PaintableFlags get_flags() {
+        return 0;
+    }
+
+    public void snapshot(Gdk.Snapshot snapshot, double width, double height) {
+        if (image != null) image.snapshot(snapshot, width, height);
+    }
+
+    public override Gdk.Paintable get_current_image() {
+        if (image != null) return image;
+        return Gdk.Paintable.new_empty(0, 0);
+    }
+
+    public override int get_intrinsic_width() {
+        if (image != null) return (int) (pixel_aspect_ratio * image.get_intrinsic_width());
+        return 0;
+    }
+
+    public override int get_intrinsic_height() {
+        if (image != null) return (int) (pixel_aspect_ratio * image.get_intrinsic_height());
+        return 0;
+    }
+
+    public override double get_intrinsic_aspect_ratio() {
+        if (image != null) return pixel_aspect_ratio * image.get_intrinsic_aspect_ratio();
+        return 0.0;
+    }
+
+    public override void dispose() {
+        image = null;
+        base.dispose();
+    }
+
+    private void set_paintable(Gdk.Paintable paintable, double pixel_aspect_ratio) {
+        if (paintable == image) return;
+        bool size_changed = image == null ||
+                this.pixel_aspect_ratio * image.get_intrinsic_width() != pixel_aspect_ratio * paintable.get_intrinsic_width() ||
+                image.get_intrinsic_height() != paintable.get_intrinsic_height() ||
+                image.get_intrinsic_aspect_ratio() != paintable.get_intrinsic_aspect_ratio();
+
+        if (image != null) this.image.dispose();
+        this.image = paintable;
+        this.pixel_aspect_ratio = pixel_aspect_ratio;
+
+        if (size_changed) invalidate_size();
+        invalidate_contents();
+    }
+
+    public void queue_set_texture(Gdk.Texture texture, double pixel_aspect_ratio) {
+        Idle.add(() => {
+            set_paintable(texture, pixel_aspect_ratio);
+            return Source.REMOVE;
+        }, Priority.DEFAULT);
+    }
+}
+
+public class Dino.Plugins.Rtp.Sink : Gst.Video.Sink {
+    internal Paintable paintable = new Paintable();
+    private Gst.Video.Info info = new Gst.Video.Info();
+
+    class construct {
+        set_metadata("Dino Gtk Video Sink", "Sink/Video", "The video sink used by Dino", "Dino Team <team@dino.im>");
+        add_pad_template(new Gst.PadTemplate("sink", Gst.PadDirection.SINK, Gst.PadPresence.ALWAYS, Gst.Caps.from_string(@"video/x-raw, format={ BGRA, ARGB, RGBA, ABGR, RGB, BGR }")));
+    }
+
+    construct {
+        set_drop_out_of_segment(false);
+    }
+
+#if GST_1_20
+    public override bool set_info(Gst.Caps caps, Gst.Video.Info info) {
+        this.info = info;
+        return true;
+    }
+#else
+    public override bool set_caps(Gst.Caps caps) {
+        base.set_caps(caps);
+        return info.from_caps(caps);
+    }
 #endif
 
-public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidget {
+    public override void get_times(Gst.Buffer buffer, out Gst.ClockTime start, out Gst.ClockTime end) {
+        if (buffer.pts != -1) {
+            start = buffer.pts;
+            if (buffer.duration != -1) {
+                end = start + buffer.duration;
+            } else if (info.fps_n > 0) {
+                end = start + Gst.Util.uint64_scale_int(Gst.SECOND, info.fps_d, info.fps_n);
+            }
+        }
+    }
+
+    public override Gst.Caps get_caps(Gst.Caps? filter) {
+        Gst.Caps caps = Gst.Caps.from_string("video/x-raw, format={ BGRA, ARGB, RGBA, ABGR, RGB, BGR }");
+
+        if (filter != null) {
+            return filter.intersect(caps, Gst.CapsIntersectMode.FIRST);
+        } else {
+            return caps;
+        }
+    }
+
+    private Gdk.MemoryFormat memory_format_from_video(Gst.Video.Format format) {
+        switch (format) {
+            case Gst.Video.Format.BGRA: return Gdk.MemoryFormat.B8G8R8A8;
+            case Gst.Video.Format.ARGB: return Gdk.MemoryFormat.A8R8G8B8;
+            case Gst.Video.Format.RGBA: return Gdk.MemoryFormat.R8G8B8A8;
+            case Gst.Video.Format.ABGR: return Gdk.MemoryFormat.A8B8G8R8;
+            case Gst.Video.Format.RGB: return Gdk.MemoryFormat.R8G8B8;
+            case Gst.Video.Format.BGR: return Gdk.MemoryFormat.B8G8R8;
+            default:
+                warning("Unsupported video format: %s", format.to_string());
+                return Gdk.MemoryFormat.A8R8G8B8;
+        }
+    }
+
+    private Gdk.Texture texture_from_buffer(Gst.Buffer buffer, out double pixel_aspect_ratio) {
+        Gst.Video.Frame frame = Gst.Video.Frame();
+        Gdk.Texture texture;
+
+        if (frame.map(info, buffer, Gst.MapFlags.READ)) {
+            unowned Gst.Video.Info info = gst_video_frame_get_video_info(frame);
+            Bytes bytes = new Bytes.take(gst_video_frame_get_data(frame));
+            texture = new Gdk.MemoryTexture(info.width, info.height, memory_format_from_video(info.finfo.format), bytes, info.stride[0]);
+            pixel_aspect_ratio = ((double) info.par_n) / ((double) info.par_d);
+            frame.unmap();
+        } else {
+            texture = null;
+        }
+        return texture;
+    }
+
+    private void queue_buffer(Gst.Buffer buf) {
+        double pixel_aspect_ratio;
+        Gdk.Texture texture = texture_from_buffer(buf, out pixel_aspect_ratio);
+        if (texture != null) {
+            paintable.queue_set_texture(texture, pixel_aspect_ratio);
+        }
+    }
+
+    public override Gst.FlowReturn show_frame(Gst.Buffer buf) {
+        @lock.lock();
+        queue_buffer(buf);
+        @lock.unlock();
+
+        return Gst.FlowReturn.OK;
+    }
+}
+
+public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWidget {
     private const int RECAPS_AFTER_CHANGE = 5;
     private static uint last_id = 0;
 
     public uint id { get; private set; }
-    public Gst.Base.Sink sink { get; private set; }
-    public Gtk.Widget widget { get; private set; }
-
     public Plugin plugin { get; private set; }
     public Gst.Pipeline pipe { get {
         return plugin.pipe;
@@ -24,26 +172,17 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
     private Gst.Caps last_input_caps;
     private Gst.Caps last_caps;
     private int recaps_since_change;
+    private Sink sink;
+    private Gtk.Picture widget;
 
     public VideoWidget(Plugin plugin) {
         this.plugin = plugin;
+        this.layout_manager = new Gtk.BinLayout();
 
         id = last_id++;
-        sink = Gst.ElementFactory.make("gtksink", @"video_widget_$id") as Gst.Base.Sink;
-        if (sink != null) {
-            Gtk.Widget widget;
-            sink.@get("widget", out widget);
-            sink.@set("async", false);
-            sink.@set("sync", true);
-            sink.@set("ignore-alpha", false);
-            this.widget = widget;
-            this.widget.draw.connect_after(fix_caps_issues);
-            add(widget);
-            widget.visible = true;
-        } else {
-            warning("Could not create GTK video sink. Won't display videos.");
-        }
-        size_allocate.connect_after(after_size_allocate);
+        sink = new Sink() { async = false, sync = true };
+        widget = new Gtk.Picture.for_paintable(sink.paintable);
+        widget.insert_after(this, null);
     }
 
     public void input_caps_changed(GLib.Object pad, ParamSpec spec) {
@@ -61,75 +200,6 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         last_input_caps = caps;
     }
 
-    public void processed_input_caps_changed(GLib.Object pad, ParamSpec spec) {
-        Gst.Caps? caps = ((Gst.Pad)pad).caps;
-        if (caps == null) {
-            debug("Processed input: No caps");
-            return;
-        }
-
-        int width, height;
-        caps.get_structure(0).get_int("width", out width);
-        caps.get_structure(0).get_int("height", out height);
-        debug("Processed resolution changed: %ix%i", width, height);
-        sink.set_caps(caps);
-        last_caps = caps;
-        recaps_since_change = 0;
-    }
-
-    public void after_size_allocate(Gtk.Allocation allocation) {
-        if (prepare != null) {
-            Gst.Element crop = ((Gst.Bin)prepare).get_by_name(@"video_widget_$(id)_crop");
-            if (crop != null) {
-                int output_width = allocation.width;
-                int output_height = allocation.height;
-                int target_num, target_den;
-                if (last_input_caps != null) {
-                    int input_width, input_height;
-                    last_input_caps.get_structure(0).get_int("width", out input_width);
-                    last_input_caps.get_structure(0).get_int("height", out input_height);
-                    double target_ratio = 3.0/2.0;
-                    double ratio = (double)(output_width*input_height)/(double)(input_width*output_height);
-                    if (ratio > target_ratio) {
-                        target_num = (int)((double)input_width * target_ratio);
-                        target_den = input_height;
-                        sink.@set("force-aspect-ratio", true);
-                    } else if (ratio < 1.0/target_ratio) {
-                        target_num = input_width;
-                        target_den = (int)((double)input_height * target_ratio);;
-                        sink.@set("force-aspect-ratio", true);
-                    } else {
-                        target_num = output_width;
-                        target_den = output_height;
-                        sink.@set("force-aspect-ratio", false);
-                    }
-                } else {
-                    target_num = output_width;
-                    target_den = output_height;
-                    sink.@set("force-aspect-ratio", false);
-                }
-                Value ratio = Value(typeof(Gst.Fraction));
-#if VALA_0_52
-                Gst.Value.set_fraction(ref ratio, target_num, target_den);
-#else
-                gst_value_set_fraction(ref ratio, target_num, target_den);
-#endif
-                crop.set_property("aspect-ratio", ratio);
-            }
-        }
-    }
-
-    public bool fix_caps_issues() {
-        // FIXME: Detect if draw would fail and do something better
-        if (last_caps != null && recaps_since_change++ < RECAPS_AFTER_CHANGE) {
-            Gst.Caps? temp = last_caps.copy();
-            temp.set_simple("width", typeof(int), 1, "height", typeof(int), 1, null);
-            sink.set_caps(temp);
-            sink.set_caps(last_caps);
-        }
-        return false;
-    }
-
     public void display_stream(Xmpp.Xep.JingleRtp.Stream? stream, Xmpp.Jid jid) {
         if (sink == null) return;
         detach();
@@ -138,10 +208,9 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         if (connected_stream == null) return;
         plugin.pause();
         pipe.add(sink);
-        prepare = Gst.parse_bin_from_description(@"aspectratiocrop aspect-ratio=4/3 name=video_widget_$(id)_crop ! videoconvert name=video_widget_$(id)_convert", true);
+        prepare = Gst.parse_bin_from_description(@"videoconvert name=video_widget_$(id)_convert", true);
         prepare.name = @"video_widget_$(id)_prepare";
         prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
-        prepare.get_static_pad("src").notify["caps"].connect(processed_input_caps_changed);
         pipe.add(prepare);
         connected_stream.add_output(prepare);
         prepare.link(sink);
@@ -157,7 +226,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
         if (connected_device == null) return;
         plugin.pause();
         pipe.add(sink);
-        prepare = Gst.parse_bin_from_description(@"aspectratiocrop aspect-ratio=4/3 name=video_widget_$(id)_crop ! videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
+        prepare = Gst.parse_bin_from_description(@"videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
         prepare.name = @"video_widget_$(id)_prepare";
         prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
         pipe.add(prepare);
@@ -172,6 +241,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
     public void detach() {
         if (sink == null) return;
         if (attached) {
+            debug("Detaching");
             if (connected_stream != null) {
                 connected_stream.remove_output(prepare);
                 connected_stream = null;
@@ -195,6 +265,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Bin, Dino.Plugins.VideoCallWidge
 
     public override void dispose() {
         detach();
+        if (widget != null) widget.unparent();
         widget = null;
         sink = null;
     }

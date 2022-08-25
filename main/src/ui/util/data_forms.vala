@@ -11,7 +11,7 @@ public static Widget? get_data_form_field_widget(DataForms.DataForm.Field field)
     switch (field.type_) {
         case DataForms.DataForm.Type.BOOLEAN:
             DataForms.DataForm.BooleanField boolean_field = field as DataForms.DataForm.BooleanField;
-            Switch sw = new Switch() { active=boolean_field.value, halign=Align.START, valign=Align.CENTER, visible=true };
+            Switch sw = new Switch() { active=boolean_field.value, halign=Align.START, valign=Align.CENTER };
             sw.state_set.connect((state) => {
                 boolean_field.value = state;
                 return false;
@@ -21,7 +21,7 @@ public static Widget? get_data_form_field_widget(DataForms.DataForm.Field field)
             return null;
         case DataForms.DataForm.Type.LIST_SINGLE:
             DataForms.DataForm.ListSingleField list_single_field = field as DataForms.DataForm.ListSingleField;
-            ComboBoxText combobox = new ComboBoxText() { valign=Align.CENTER, visible=true };
+            ComboBoxText combobox = new ComboBoxText() { valign=Align.CENTER };
             for (int i = 0; i < list_single_field.options.size; i++) {
                 DataForms.DataForm.Option option = list_single_field.options[i];
                 combobox.append(option.value, option.label);
@@ -35,19 +35,21 @@ public static Widget? get_data_form_field_widget(DataForms.DataForm.Field field)
             return null;
         case DataForms.DataForm.Type.TEXT_PRIVATE:
             DataForms.DataForm.TextPrivateField text_private_field = field as DataForms.DataForm.TextPrivateField;
-            Entry entry = new Entry() { text=text_private_field.value ?? "", valign=Align.CENTER, visible=true, visibility=false };
-            entry.key_release_event.connect(() => {
+            Entry entry = new Entry() { text=text_private_field.value ?? "", valign=Align.CENTER, visibility=false };
+            var entry_key_events = new EventControllerKey();
+            entry_key_events.key_released.connect(() => {
                 text_private_field.value = entry.text;
-                return false;
             });
+            entry.add_controller(entry_key_events);
             return entry;
         case DataForms.DataForm.Type.TEXT_SINGLE:
             DataForms.DataForm.TextSingleField text_single_field = field as DataForms.DataForm.TextSingleField;
-            Entry entry = new Entry() { text=text_single_field.value ?? "", valign=Align.CENTER, visible=true };
-            entry.key_release_event.connect(() => {
+            Entry entry = new Entry() { text=text_single_field.value ?? "", valign=Align.CENTER };
+            var entry_key_events = new EventControllerKey();
+            entry_key_events.key_released.connect(() => {
                 text_single_field.value = entry.text;
-                return false;
             });
+            entry.add_controller(entry_key_events);
             return entry;
         default:
             return null;
