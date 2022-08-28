@@ -33,8 +33,12 @@ namespace Xmpp.Xep.CryptographicHashes {
 
         public static ChecksumType? supported_hash(string hash) {
             switch (hash) {
+                case "sha-1":
+                    return ChecksumType.SHA1;
                 case "sha-256":
                     return ChecksumType.SHA256;
+                case "sha-384":
+                    return ChecksumType.SHA384;
                 case "sha-512":
                     return ChecksumType.SHA512;
             }

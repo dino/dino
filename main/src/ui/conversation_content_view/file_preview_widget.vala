@@ -75,6 +75,13 @@ namespace Dino.Ui {
 
                 file_default_widget.visible = false;
             });
+            GestureClick gesture_click_controller = new GestureClick();
+            gesture_click_controller.set_button(1); // listen for left clicks
+            this.add_controller(gesture_click_controller);
+            gesture_click_controller.pressed.connect((n_press, x, y) => {
+                // Check whether the click was inside the file menu. Otherwise, open the file.
+                this.file_default_widget.clicked();
+            });
 
             this.append(overlay);
         }
