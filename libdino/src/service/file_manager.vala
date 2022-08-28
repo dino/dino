@@ -157,9 +157,7 @@ public class FileManager : StreamInteractionModule, Object {
         Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
         foreach (FileMetadataProvider file_metadata_provider in this.file_metadata_providers) {
             if (file_metadata_provider.supports_file(file)) {
-                printerr("\nWidth is %d\n\n", file_transfer.width);
                 yield file_metadata_provider.fill_metadata(file, metadata);
-                printerr("\nWidth is %d\n\n", file_transfer.width);
             }
         }
         file_transfer.with_metadata_element(metadata);
@@ -514,8 +512,6 @@ public interface FileMetadataProvider : Object {
     public abstract bool supports_file(File file);
 
     public abstract async void fill_metadata(File file, Xep.FileMetadataElement.FileMetadata metadata);
-
-    // Thumbnail[] getThumbnails(File file);
 }
 
 class GenericFileMetadataProvider: Dino.FileMetadataProvider, Object {
