@@ -89,7 +89,7 @@ public class FileTransfer : Object {
     public DateTime? modification_date { get; set; }
     public int width { get; set; default=-1; }
     public int height { get; set; default=-1; }
-    public int length { get; set; default=-1; }
+    public int64 length { get; set; default=-1; }
     public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes();}
     public Gee.List<SerializedSfsSource> sfs_sources { get; set; default=new Gee.ArrayList<SerializedSfsSource>(); }
     public Gee.List<Xep.JingleContentThumbnails.Thumbnail> thumbnails = new Gee.ArrayList<Xep.JingleContentThumbnails.Thumbnail>();
@@ -128,7 +128,7 @@ public class FileTransfer : Object {
         modification_date = new DateTime.from_unix_utc(row[db.file_transfer.modification_date]);
         width = row[db.file_transfer.width];
         height = row[db.file_transfer.height];
-        length = row[db.file_transfer.length];
+        length = (int64) row[db.file_transfer.length];
 
         foreach(var hash_row in db.file_hashes.select().with(db.file_hashes.id, "=", id)) {
             Xep.CryptographicHashes.Hash hash = new Xep.CryptographicHashes.Hash();
@@ -181,7 +181,7 @@ public class FileTransfer : Object {
         if (modification_date != null) builder.value(db.file_transfer.modification_date, (long) modification_date.to_unix());
         if (width != -1) builder.value(db.file_transfer.width, width);
         if (height != -1) builder.value(db.file_transfer.height, height);
-        if (length != -1) builder.value(db.file_transfer.length, length);
+        if (length != -1) builder.value(db.file_transfer.length, (long) length);
 
         id = (int) builder.perform();
 
@@ -254,7 +254,7 @@ public class FileTransfer : Object {
             case "height":
                 update_builder.set(db.file_transfer.height, height); break;
             case "length":
-                update_builder.set(db.file_transfer.length, length); break;
+                update_builder.set(db.file_transfer.length, (long) length); break;
         }
         update_builder.perform();
     }

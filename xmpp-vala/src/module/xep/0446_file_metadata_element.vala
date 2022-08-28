@@ -12,7 +12,7 @@ namespace Xmpp.Xep.FileMetadataElement {
         public int width { get; set; default=-1; } // Width of image in pixels
 	    public int height { get; set; default=-1; } // Height of image in pixels
 	    public CryptographicHashes.Hashes hashes = new CryptographicHashes.Hashes();
-	    public int length { get; set; default=-1; } // Length of audio/video in milliseconds
+	    public int64 length { get; set; default=-1; } // Length of audio/video in milliseconds
 	    public Gee.List<Xep.JingleContentThumbnails.Thumbnail> thumbnails = new Gee.ArrayList<Xep.JingleContentThumbnails.Thumbnail>();
 
         public StanzaNode to_stanza_node() {

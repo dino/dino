@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 27;
+    private const int VERSION = 28;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -150,7 +150,7 @@ public class Database : Qlite.Database {
         public Column<long> modification_date = new Column.Long("modification_date") { default = "-1", min_version=23 };
         public Column<int> width = new Column.Integer("width") { default = "-1", min_version=23 };
         public Column<int> height = new Column.Integer("height") { default = "-1", min_version=23 };
-        public Column<int> length = new Column.Integer("length") { default = "-1", min_version=23 };
+        public Column<long> length = new Column.Integer("length") { default = "-1", min_version=23 };
 
         internal FileTransferTable(Database db) {
             base(db, "file_transfer");
