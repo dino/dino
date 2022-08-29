@@ -1,6 +1,8 @@
+using Xmpp;
+
 namespace Xmpp.Xep.StatelessFileSharing {
 
-    public const string NS_URI = "jabber:x:sfs";
+
     public const string STANZA_NAME = "file-transfer";
 
     public interface SfsSource: Object {
@@ -99,6 +101,56 @@ namespace Xmpp.Xep.StatelessFileSharing {
             sources_node.sub_nodes = sources;
             node.put_node(sources_node);
             return node;
+        }
+    }
+
+    public class SfsSourceAttachment {
+        public string sfs_id;
+        public Gee.List<SfsSource> sources = new Gee.ArrayList<SfsSource>();
+
+        public const string ATTACHMENT_NS_URI = "urn:xmpp:message-attaching:1";
+        public const string ATTACH_TO_STANZA_NAME = "attach-to";
+        public const string SOURCES_STANZA_NAME = "sources";
+        public const string ID_ATTRIBUTE_NAME = "id";
+
+
+        public static SfsSourceAttachment? from_message_stanza(MessageStanza stanza) {
+            StanzaNode? attach_to = stanza.stanza.get_subnode(ATTACH_TO_STANZA_NAME, ATTACHMENT_NS_URI);
+            StanzaNode? sources = stanza.stanza.get_subnode(SOURCES_STANZA_NAME, NS_URI);
+            if (attach_to == null || sources == null) {
+                return null;
+            }
+            string? id = attach_to.get_attribute(ID_ATTRIBUTE_NAME, ATTACHMENT_NS_URI);
+            if (id == null) {
+                return null;
+            }
+            SfsSourceAttachment attachment = new SfsSourceAttachment();
+            attachment.sfs_id = id;
+            Gee.List<HttpSource> http_sources = HttpSource.extract_sources(sources);
+            if (http_sources.is_empty) {
+                return null;
+            }
+            attachment.sources = http_sources;
+            return attachment;
+        }
+
+        public MessageStanza to_message_stanza(Jid to, string message_type) {
+            MessageStanza stanza = new MessageStanza() { to=to, type_=message_type };
+            Xep.MessageProcessingHints.set_message_hint(stanza, Xep.MessageProcessingHints.HINT_STORE);
+
+            StanzaNode attach_to = new StanzaNode.build(ATTACH_TO_STANZA_NAME, ATTACHMENT_NS_URI);
+            attach_to.add_attribute(new StanzaAttribute.build(ATTACHMENT_NS_URI, "id", this.sfs_id));
+            stanza.stanza.put_node(attach_to);
+
+            StanzaNode sources = new StanzaNode.build(SOURCES_STANZA_NAME, NS_URI);
+            Gee.List<StanzaNode> sources_nodes = new Gee.ArrayList<StanzaNode>();
+            foreach (SfsSource source in this.sources) {
+                sources_nodes.add(source.to_stanza_node());
+            }
+            sources.sub_nodes = sources_nodes;
+            stanza.stanza.put_node(sources);
+
+            return stanza;
         }
     }
 
