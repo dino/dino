@@ -186,6 +186,14 @@ namespace Xmpp.Xep.StatelessFileSharing {
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, sfs_message);
         }
 
+        public void send_stateless_file_transfer_attachment(XmppStream stream, Jid to, string message_type, SfsSourceAttachment attachment) {
+            MessageStanza message = attachment.to_message_stanza(to, message_type);
+
+            printerr("Sending message:\n");
+            printerr(message.stanza.to_ansi_string(true));
+            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
+        }
+
         private void on_received_message(XmppStream stream, MessageStanza message) {
             StanzaNode? sfs_node = message.stanza.get_subnode(STANZA_NAME, NS_URI);
             if (sfs_node != null) {
