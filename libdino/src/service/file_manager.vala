@@ -85,10 +85,10 @@ public class FileManager : StreamInteractionModule, Object {
         sfs_element.metadata.mime_type = file_meta.mime_type;
         // Encryption unused in http file transfers
 
-        yield on_receive_sfs(from, conversation, sfs_element);
+        yield on_receive_sfs(from, conversation, sfs_element, null);
     }
 
-    private async void on_receive_sfs(Jid from, Conversation conversation, Xep.StatelessFileSharing.SfsElement sfs_element) {
+    private async void on_receive_sfs(Jid from, Conversation conversation, Xep.StatelessFileSharing.SfsElement sfs_element, string? id) {
         FileTransfer file_transfer = new FileTransfer();
         file_transfer.account = conversation.account;
         file_transfer.counterpart = file_transfer.direction == FileTransfer.DIRECTION_RECEIVED ? from : conversation.counterpart;
@@ -107,7 +107,9 @@ public class FileManager : StreamInteractionModule, Object {
         foreach (Xep.StatelessFileSharing.SfsSource source in sfs_element.sources) {
             file_transfer.sfs_sources.add(new FileTransfer.SerializedSfsSource.from_sfs_source(source));
         }
-        // FileTransfer.info is left null, since we don't have a message entity
+        // FileTransfer.info stores the id of the MessageStanza for future SfsSourceAttachments
+        // Prior to sfs, info stored the id of the Message entity for oob
+        file_transfer.info = id;
 
         stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
 
@@ -124,11 +126,29 @@ public class FileManager : StreamInteractionModule, Object {
         received_file(file_transfer, conversation);
     }
 
+    private void on_receive_sfs_attachment(Jid from, Conversation conversation, Xep.StatelessFileSharing.SfsSourceAttachment attachment) {
+        foreach (Qlite.Row file_transfer_row in this.db.file_transfer.select()
+                .with(db.file_transfer.info, "=", attachment.sfs_id)) {
+            FileTransfer file_transfer = new FileTransfer.from_row(this.db, file_transfer_row, FileManager.get_storage_dir());
+            if (file_transfer.hashes.supported_hashes().is_empty) {
+                return;
+            }
+            foreach (StatelessFileSharing.SfsSource source in attachment.sources) {
+                file_transfer.sfs_sources.add(new FileTransfer.SerializedSfsSource.from_sfs_source(source));
+            }
+        }
+
+    }
+
     private void on_account_added(Account account) {
         Xep.StatelessFileSharing.Module fsf_module = stream_interactor.module_manager.get_module(account, Xep.StatelessFileSharing.Module.IDENTITY);
         fsf_module.received_sfs.connect((from, to, sfs_element, message) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from, to, account, message.type_);
-            on_receive_sfs(from, conversation, sfs_element);
+            on_receive_sfs(from, conversation, sfs_element, message.id);
+        });
+        fsf_module.received_sfs_attachment.connect((from, to, sfs_attachment, message) => {
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from, to, account, message.type_);
+            on_receive_sfs_attachment(from, conversation, sfs_attachment);
         });
     }
 

@@ -174,6 +174,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "stateless_file_sharing");
 
         public signal void received_sfs(Jid from, Jid to, SfsElement sfs_element, MessageStanza message);
+        public signal void received_sfs_attachment(Jid from, Jid to, SfsSourceAttachment attachment, MessageStanza message);
 
         public void send_stateless_file_transfer(XmppStream stream, MessageStanza sfs_message, SfsElement sfs_element) {
             StanzaNode sfs_node = sfs_element.to_stanza_node();
@@ -187,15 +188,19 @@ namespace Xmpp.Xep.StatelessFileSharing {
 
         private void on_received_message(XmppStream stream, MessageStanza message) {
             StanzaNode? sfs_node = message.stanza.get_subnode(STANZA_NAME, NS_URI);
-            if (sfs_node == null) {
-                return;
+            if (sfs_node != null) {
+                SfsElement? sfs_element = SfsElement.from_stanza_node(sfs_node);
+                if (sfs_element == null) {
+                    return;
+                }
+                message.add_flag(new MessageFlag());
+                received_sfs(message.from, message.to, sfs_element, message);
             }
-            SfsElement? sfs_element = SfsElement.from_stanza_node(sfs_node);
-            if (sfs_element == null) {
-                return;
+            SfsSourceAttachment? attachment = SfsSourceAttachment.from_message_stanza(message);
+            if (attachment != null) {
+                received_sfs_attachment(message.from, message.to, attachment, message);
             }
-            message.add_flag(new MessageFlag());
-            received_sfs(message.from, message.to, sfs_element, message);
+
         }
 
         public override void attach(XmppStream stream) {
