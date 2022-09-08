@@ -11,6 +11,7 @@ find_packages(MAIN_PACKAGES REQUIRED
     GObject
     GTK4
     ICU
+    Adwaita
 )
 
 set(RESOURCE_LIST
