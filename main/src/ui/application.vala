@@ -4,7 +4,7 @@ using Dino.Entities;
 using Dino.Ui;
 using Xmpp;
 
-public class Dino.Ui.Application : Gtk.Application, Dino.Application {
+public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_QUIT = {"<Ctrl>Q", null};
     private const string[] KEY_COMBINATION_ADD_CHAT = {"<Ctrl>T", null};
     private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
@@ -272,25 +272,24 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 case "0.3": version = @"$version - <span font_style='italic'>Theikenmeer</span>"; break;
             }
         }
-        Gtk.AboutDialog dialog = new Gtk.AboutDialog();
-        dialog.destroy_with_parent = true;
-        dialog.transient_for = window;
-        dialog.modal = true;
-        dialog.title = _("About Dino");
+        Adw.AboutWindow about = new Adw.AboutWindow();
+        about.destroy_with_parent = true;
+        about.transient_for = window;
+        about.modal = true;
+        about.title = _("About Dino");
 
-        dialog.logo_icon_name = "im.dino.Dino";
-        dialog.program_name = "Dino";
-        dialog.version = version;
-        dialog.comments = "Dino. Communicating happiness.";
-        dialog.website = "https://dino.im/";
-        dialog.website_label = "dino.im";
-        dialog.copyright = "Copyright © 2016-2022 - Dino Team";
-        dialog.license_type = License.GPL_3_0;
+        about.application_icon = "im.dino.Dino";
+        about.application_name = "Dino";
+        about.version = version;
+        about.comments = "Dino. Communicating happiness.";
+        about.website = "https://dino.im/";
+        about.copyright = "Copyright © 2016-2022 - Dino Team";
+        about.license_type = License.GPL_3_0;
 
         if (!use_csd()) {
-            dialog.set_titlebar(null);
+            about.set_titlebar(null);
         }
-        dialog.present();
+        about.present();
     }
 
     private void show_join_muc_dialog(Account? account, string jid) {
