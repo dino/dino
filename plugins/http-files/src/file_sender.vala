@@ -52,7 +52,7 @@ public class HttpFileSender : FileSender, Object {
             // Use stateless file sharing for unencrypted file sharing
             Xep.StatelessFileSharing.HttpSource source = new Xep.StatelessFileSharing.HttpSource();
             source.url = send_data.url_down;
-            file_transfer.sfs_sources.add(new FileTransfer.SerializedSfsSource.from_sfs_source(source));
+            file_transfer.sfs_sources.append(new FileTransfer.SerializedSfsSource.from_sfs_source(source) as Object);
             this.db.sfs_sources.insert()
                     .value(db.sfs_sources.id, file_transfer.id)
                     .value(db.sfs_sources.type, source.type())

@@ -105,7 +105,7 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.provider = SFS_PROVIDER_ID;
         file_transfer.with_metadata_element(sfs_element.metadata);
         foreach (Xep.StatelessFileSharing.SfsSource source in sfs_element.sources) {
-            file_transfer.sfs_sources.add(new FileTransfer.SerializedSfsSource.from_sfs_source(source));
+            file_transfer.sfs_sources.append(new FileTransfer.SerializedSfsSource.from_sfs_source(source) as Object);
         }
         // FileTransfer.info stores the id of the MessageStanza for future SfsSourceAttachments
         // Prior to sfs, info stored the id of the Message entity for oob
@@ -134,7 +134,7 @@ public class FileManager : StreamInteractionModule, Object {
                 return;
             }
             foreach (StatelessFileSharing.SfsSource source in attachment.sources) {
-                file_transfer.sfs_sources.add(new FileTransfer.SerializedSfsSource.from_sfs_source(source));
+                file_transfer.sfs_sources.append(new FileTransfer.SerializedSfsSource.from_sfs_source(source) as Object);
             }
         }
 

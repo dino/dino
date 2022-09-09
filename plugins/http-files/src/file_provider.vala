@@ -186,7 +186,9 @@ public class FileProvider : Dino.FileProvider, Object {
         // TODO: replace '2' with constant?
         if (file_transfer.provider == 2) {
             Xep.StatelessFileSharing.HttpSource http_source = null;
-            foreach (FileTransfer.SerializedSfsSource source in file_transfer.sfs_sources) {
+            for(int i = 0; i < file_transfer.sfs_sources.get_n_items(); i++) {
+                Object source_object = file_transfer.sfs_sources.get_item(i);
+                FileTransfer.SerializedSfsSource source = source_object as FileTransfer.SerializedSfsSource;
                 if (source.type == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE) {
                     http_source = yield Xep.StatelessFileSharing.HttpSource.deserialize(source.data);
                     assert(source != null);

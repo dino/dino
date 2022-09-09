@@ -14,7 +14,7 @@ public class FileTransfer : Object {
         FAILED
     }
 
-    public class SerializedSfsSource {
+    public class SerializedSfsSource: Object {
         public string type;
         public string data;
 
@@ -91,7 +91,7 @@ public class FileTransfer : Object {
     public int height { get; set; default=-1; }
     public int64 length { get; set; default=-1; }
     public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes();}
-    public Gee.List<SerializedSfsSource> sfs_sources { get; set; default=new Gee.ArrayList<SerializedSfsSource>(); }
+    public ListStore sfs_sources { get; set; default=new ListStore(typeof(SerializedSfsSource)); }
     public Gee.List<Xep.JingleContentThumbnails.Thumbnail> thumbnails = new Gee.ArrayList<Xep.JingleContentThumbnails.Thumbnail>();
 
     private Database? db;
@@ -146,11 +146,11 @@ public class FileTransfer : Object {
             thumbnails.add(thumbnail);
         }
 
-        foreach(var source_row in db.sfs_sources.select().with(db.sfs_sources.id, "=", id)) {
+        foreach(Qlite.Row source_row in db.sfs_sources.select().with(db.sfs_sources.id, "=", id)) {
             SerializedSfsSource source = new SerializedSfsSource();
             source.type = source_row[db.sfs_sources.type];
             source.data = source_row[db.sfs_sources.data];
-            sfs_sources.add(source);
+            sfs_sources.append(source as Object);
         }
 
         notify.connect(on_update);
@@ -201,7 +201,10 @@ public class FileTransfer : Object {
                     .value(db.file_thumbnails.height, thumbnail.height)
                     .perform();
         }
-        foreach (SerializedSfsSource source in sfs_sources) {
+
+        for(int i = 0; i < sfs_sources.get_n_items(); i++) {
+            Object source_object = sfs_sources.get_item(i);
+            SerializedSfsSource source = source_object as SerializedSfsSource;
             db.sfs_sources.insert()
                     .value(db.sfs_sources.id, id)
                     .value(db.sfs_sources.type, source.type)
@@ -210,6 +213,9 @@ public class FileTransfer : Object {
         }
 
         notify.connect(on_update);
+        sfs_sources.items_changed.connect((position, removed, added) => {
+            on_update_sources_items(this, position, removed, added);
+        });
     }
 
     public File get_file() {
@@ -259,6 +265,18 @@ public class FileTransfer : Object {
         update_builder.perform();
     }
 
+    private void on_update_sources_items(FileTransfer file_transfer, uint position, uint removed, uint added) {
+        for(uint i = position; i < position + added; i++) {
+            Object source_object = file_transfer.sfs_sources.get_item(i);
+            SerializedSfsSource source = source_object as SerializedSfsSource;
+            db.sfs_sources.insert()
+                    .value(db.sfs_sources.id, id)
+                    .value(db.sfs_sources.type, source.type)
+                    .value(db.sfs_sources.data, source.data)
+                    .perform();
+        }
+    }
+
     public Xep.FileMetadataElement.FileMetadata to_metadata_element() {
         Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
         metadata.name = this.file_name;
@@ -277,7 +295,9 @@ public class FileTransfer : Object {
     public async Xep.StatelessFileSharing.SfsElement to_sfs_element() {
         Xep.StatelessFileSharing.SfsElement sfs_element = new Xep.StatelessFileSharing.SfsElement();
         sfs_element.metadata = this.to_metadata_element();
-        foreach (SerializedSfsSource source in this.sfs_sources) {
+        for(int i = 0; i < sfs_sources.get_n_items(); i++) {
+            Object source_object = sfs_sources.get_item(i);
+            SerializedSfsSource source = source_object as SerializedSfsSource;
             sfs_element.sources.add(yield source.to_sfs_source());
         }
 
