@@ -97,14 +97,7 @@ public class Dino.Plugins.Rtp.Sink : Gst.Video.Sink {
         }
     }
 
-#if VALA_0_56_1
     public override Gst.Caps get_caps(Gst.Caps? filter) {
-#if 0
-    }
-#endif
-#else
-    public override Gst.Caps get_caps(Gst.Caps filter) {
-#endif
         Gst.Caps caps = Gst.Caps.from_string("video/x-raw, format={ BGRA, ARGB, RGBA, ABGR, RGB, BGR }");
 
         if (filter != null) {
@@ -129,10 +122,10 @@ public class Dino.Plugins.Rtp.Sink : Gst.Video.Sink {
     }
 
     private Gdk.Texture texture_from_buffer(Gst.Buffer buffer, out double pixel_aspect_ratio) {
-        Gst.Video.Frame frame;
+        Gst.Video.Frame frame = Gst.Video.Frame();
         Gdk.Texture texture;
 
-        if (Gst.Video.frame_map(out frame, info, buffer, Gst.MapFlags.READ)) {
+        if (frame.map(info, buffer, Gst.MapFlags.READ)) {
             unowned Gst.Video.Info info = gst_video_frame_get_video_info(frame);
             Bytes bytes = new Bytes.take(gst_video_frame_get_data(frame));
             texture = new Gdk.MemoryTexture(info.width, info.height, memory_format_from_video(info.finfo.format), bytes, info.stride[0]);

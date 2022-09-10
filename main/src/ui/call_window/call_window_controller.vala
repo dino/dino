@@ -362,8 +362,11 @@ public class Dino.Ui.CallWindowController : Object {
     public override void dispose() {
         foreach (ulong handler_id in call_window_handler_ids) call_window.disconnect(handler_id);
         foreach (ulong handler_id in bottom_bar_handler_ids) call_window.bottom_bar.disconnect(handler_id);
-        foreach (string peer_id in participant_widgets.keys) {
-            remove_participant(peer_id);
+
+        var participant_ids = new ArrayList<string>();
+        participant_ids.add_all(participant_widgets.keys);
+        foreach (string participant_id in participant_ids) {
+            remove_participant(participant_id);
         }
 
         call_window_handler_ids = bottom_bar_handler_ids = new ulong[0];

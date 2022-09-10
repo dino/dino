@@ -3,6 +3,7 @@ find_package(Gettext)
 include(${GETTEXT_USE_FILE})
 gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
 
+find_package(GTK4 REQUIRED)
 find_packages(MAIN_PACKAGES REQUIRED
     Gee
     GLib
@@ -13,14 +14,9 @@ find_packages(MAIN_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
-    icons/dino-status-away.svg
-    icons/dino-status-chat.svg
-    icons/dino-status-dnd.svg
-    icons/dino-status-online.svg
-    icons/im.dino.Dino.svg
-
     icons/scalable/actions/dino-account-plus-symbolic.svg
 
+    icons/scalable/apps/im.dino.Dino.svg
     icons/scalable/apps/im.dino.Dino-symbolic.svg
 
     icons/scalable/devices/dino-device-desktop-symbolic.svg
@@ -45,6 +41,10 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-microphone-off-symbolic.svg
     icons/scalable/status/dino-microphone-symbolic.svg
     icons/scalable/status/dino-security-high-symbolic.svg
+    icons/scalable/status/dino-status-away.svg
+    icons/scalable/status/dino-status-chat.svg
+    icons/scalable/status/dino-status-dnd.svg
+    icons/scalable/status/dino-status-online.svg
     icons/scalable/status/dino-tick-symbolic.svg
     icons/scalable/status/dino-video-off-symbolic.svg
     icons/scalable/status/dino-video-symbolic.svg
@@ -104,6 +104,11 @@ compile_gresources(
 unset(MAIN_EXTRA_OPTIONS)
 unset(MAIN_EXTRA_PACKAGES)
 set(MAIN_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi)
+
+set(MAIN_DEFINITIONS)
+if(GTK4_VERSION VERSION_GREATER_EQUAL "4.6")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} GTK_4_6)
+endif()
 
 vala_precompile(MAIN_VALA_C
 SOURCES
@@ -203,6 +208,8 @@ PACKAGES
     ${MAIN_EXTRA_PACKAGES}
 GRESOURCES
     ${MAIN_GRESOURCES_XML}
+DEFINITIONS
+    ${MAIN_DEFINITIONS}
 OPTIONS
     ${MAIN_EXTRA_OPTIONS}
 )
@@ -221,5 +228,5 @@ install(TARGETS dino ${TARGET_INSTALL})
 install(FILES data/im.dino.Dino.appdata.xml DESTINATION ${APPDATA_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.desktop DESTINATION ${DESKTOP_FILE_INSTALL_DIR})
 install(FILES data/im.dino.Dino.service DESTINATION ${SERVICE_FILE_INSTALL_DIR})
-install(FILES data/icons/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
-install(FILES data/icons/im.dino.Dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)
+install(FILES data/icons/scalable/apps/im.dino.Dino.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/scalable/apps)
+install(FILES data/icons/scalable/apps/im.dino.Dino-symbolic.svg DESTINATION ${ICON_INSTALL_DIR}/hicolor/symbolic/apps)

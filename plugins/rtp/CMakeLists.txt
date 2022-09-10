@@ -1,4 +1,3 @@
-find_package(GstRtp REQUIRED)
 find_package(GLib ${GLib_GLOBAL_VERSION} REQUIRED)
 find_package(WebRTCAudioProcessing 0.2)
 find_packages(RTP_PACKAGES REQUIRED
@@ -11,25 +10,27 @@ find_packages(RTP_PACKAGES REQUIRED
     Gst
     GstApp
     GstAudio
+    GstRtp
     GstVideo
 )
 
 set(RTP_DEFINITIONS)
+set(RTP_EXTRA_OPTIONS)
 
-if(GstRtp_VERSION VERSION_GREATER "1.16")
+if(GstRtp_VERSION VERSION_GREATER_EQUAL "1.16")
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GST_1_16)
 endif()
 
-if(GstRtp_VERSION VERSION_GREATER "1.18")
+if(GstRtp_VERSION VERSION_GREATER_EQUAL "1.18")
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GST_1_18)
 endif()
 
-if(GstRtp_VERSION VERSION_GREATER "1.20")
+if(GstRtp_VERSION VERSION_GREATER_EQUAL "1.20")
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GST_1_20)
 endif()
 
-if(VALA_VERSION VERSION_GREATER "0.56.1")
-    set(RTP_DEFINITIONS ${RTP_DEFINITIONS} VALA_0_56_1)
+if(NOT VALA_VERSION VERSION_GREATER_EQUAL "0.56.1")
+    set(RTP_EXTRA_OPTIONS ${RTP_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi)
 endif()
 
 set(RTP_ENABLE_VP9 "no" CACHE BOOL "Enable VP9 support")
@@ -81,11 +82,12 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
-    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/gstreamer-rtp-1.0.vapi
 PACKAGES
     ${RTP_PACKAGES}
 DEFINITIONS
     ${RTP_DEFINITIONS}
+OPTIONS
+    ${RTP_EXTRA_OPTIONS}
 )
 
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="rtp" -I${CMAKE_CURRENT_SOURCE_DIR}/src)

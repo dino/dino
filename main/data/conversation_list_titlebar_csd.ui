@@ -8,7 +8,6 @@
         </style>
         <child>
             <object class="GtkMenuButton" id="add_button">
-                <property name="tooltip_text" translatable="True">Start Conversation</property>
                 <child>
                     <object class="GtkImage">
                         <property name="icon-name">list-add-symbolic</property>

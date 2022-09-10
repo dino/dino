@@ -15,12 +15,14 @@ protected class ConferenceList {
 
     private ListBox list_box = new ListBox();
     private HashMap<Account, Set<Conference>> lists = new HashMap<Account, Set<Conference>>(Account.hash_func, Account.equals_func);
-    private HashMap<Account, HashMap<Jid, Widget>> widgets = new HashMap<Account, HashMap<Jid, Widget>>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, HashMap<Jid, ListBoxRow>> widgets = new HashMap<Account, HashMap<Jid, ListBoxRow>>(Account.hash_func, Account.equals_func);
+
+    ulong bookmarks_updated_handler_id = -1;
 
     public ConferenceList(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        stream_interactor.get_module(MucManager.IDENTITY).bookmarks_updated.connect((account, conferences) => {
+        bookmarks_updated_handler_id = stream_interactor.get_module(MucManager.IDENTITY).bookmarks_updated.connect((account, conferences) => {
             lists[account] = conferences;
             refresh_conferences();
         });
@@ -36,13 +38,21 @@ protected class ConferenceList {
         stream_interactor.get_module(MucManager.IDENTITY).conference_removed.connect(remove_conference);
     }
 
+    ~ConferenceList() {
+        stream_interactor.get_module(MucManager.IDENTITY).disconnect(bookmarks_updated_handler_id);
+        stream_interactor.get_module(MucManager.IDENTITY).conference_added.disconnect(add_conference);
+        stream_interactor.get_module(MucManager.IDENTITY).conference_removed.disconnect(remove_conference);
+    }
+
     private void add_conference(Account account, Conference conference) {
         if (!widgets.has_key(account)) {
-            widgets[account] = new HashMap<Jid, Widget>(Jid.hash_func, Jid.equals_func);
+            widgets[account] = new HashMap<Jid, ListBoxRow>(Jid.hash_func, Jid.equals_func);
         }
         var widget = new ConferenceListRow(stream_interactor, conference, account);
-        widgets[account][conference.jid] = widget;
-        list_box.append(widget);
+        var list_box_row = new ListBoxRow();
+        list_box_row.set_child(widget);
+        widgets[account][conference.jid] = list_box_row;
+        list_box.append(list_box_row);
     }
 
     private void remove_conference(Account account, Jid jid) {
@@ -54,7 +64,11 @@ protected class ConferenceList {
 
     public void refresh_conferences() {
         foreach (Account account in widgets.keys) {
-            foreach (Jid jid in widgets[account].keys) {
+
+            var account_widgets_cpy = new HashMap<Jid, ListBoxRow>();
+            account_widgets_cpy.set_all(widgets[account]);
+
+            foreach (Jid jid in account_widgets_cpy.keys) {
                 remove_conference(account, jid);
             }
         }

@@ -24,6 +24,8 @@ public static HeaderBar get_conversation_list_titlebar_csd() {
 }
 
 private static void create_add_menu(MenuButton add_button, MenuButton menu_button) {
+    add_button.tooltip_text = Util.string_if_tooltips_active(_("Start Conversation"));
+
     Builder add_builder = new Builder.from_resource("/im/dino/Dino/menu_add.ui");
     MenuModel add_menu_model = add_builder.get_object("menu_add") as MenuModel;
     add_button.set_menu_model(add_menu_model);

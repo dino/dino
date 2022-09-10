@@ -37,8 +37,8 @@ public class ListRow : Widget {
         string display_name = Util.get_conversation_display_name(stream_interactor, conv);
         if (show_account && stream_interactor.get_accounts().size > 1) {
             via_label.label = @"via $(account.bare_jid)";
-            this.has_tooltip = true;
-            set_tooltip_text(jid.to_string());
+            this.has_tooltip = Util.use_tooltips();
+            set_tooltip_text(Util.string_if_tooltips_active(jid.to_string()));
         } else if (display_name != jid.bare_jid.to_string()){
             via_label.label = jid.bare_jid.to_string();
         } else {

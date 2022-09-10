@@ -23,9 +23,9 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
         button.sensitive = true;
         this.conversation = conversation;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            button.tooltip_text = "Channel details";
+            button.tooltip_text = Util.string_if_tooltips_active("Channel details");
         } else {
-            button.tooltip_text = "Conversation details";
+            button.tooltip_text = Util.string_if_tooltips_active("Conversation details");
         }
     }
 

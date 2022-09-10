@@ -41,6 +41,8 @@ public class View : Box {
         });
         emoji_button.set_popover(chooser);
 
+        file_button.tooltip_text = Util.string_if_tooltips_active(_("Send a file"));
+
         Util.force_css(frame, "* { border-radius: 3px; }");
 
         return this;
@@ -86,7 +88,7 @@ public class View : Box {
 
     public void highlight_state_description() {
         chat_input_status.add_css_class("input-status-highlight-once");
-        Timeout.add_seconds(1, () => {
+        Timeout.add(500, () => {
             chat_input_status.remove_css_class("input-status-highlight-once");
             return false;
         });
