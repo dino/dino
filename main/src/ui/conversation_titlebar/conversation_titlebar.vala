@@ -68,7 +68,7 @@ public class ConversationTitlebarCsd : ConversationTitlebar, Object {
     public new string? title { get { return title_label.label; } set { title_label.label = value; } }
     public new string? subtitle { get { return subtitle_label.label; } set { subtitle_label.label = value; subtitle_label.visible = (value != null); } }
 
-    public HeaderBar header_bar = new HeaderBar();
+    public Adw.HeaderBar header_bar = new Adw.HeaderBar();
     private Label title_label = new Label("") { ellipsize=EllipsizeMode.END };
     private Label subtitle_label = new Label("") { ellipsize=EllipsizeMode.END, visible=false };
 

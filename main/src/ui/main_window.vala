@@ -84,6 +84,8 @@ public class MainWindow : Adw.Window {
         if (Util.use_csd()) {
             conversation_list_titlebar = get_conversation_list_titlebar_csd();
             conversation_titlebar = new ConversationTitlebarCsd();
+            paned.bind_property("folded", conversation_list_titlebar, "show-end-title-buttons", BindingFlags.SYNC_CREATE);
+            paned.bind_property("folded", conversation_titlebar.get_widget(), "show-start-title-buttons", BindingFlags.SYNC_CREATE);
         } else {
             Label title_label = new Label("Dino");
             HeaderBar titlebar = new HeaderBar() { title_widget=title_label, show_title_buttons=true };
