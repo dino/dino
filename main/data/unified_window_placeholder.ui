@@ -2,13 +2,19 @@
 <interface>
     <requires lib="gtk" version="4.0"/>
     <template class="DinoUiMainWindowPlaceholder">
-        <property name="valign">center</property>
+        <property name="valign">fill</property>
         <child>
             <object class="GtkBox" id="box">
                 <property name="orientation">vertical</property>
-                <property name="valign">center</property>
-                <property name="halign">center</property>
+                <property name="valign">fill</property>
+                <property name="halign">fill</property>
                 <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
+                <child>
+                    <object class="GtkHeaderBar">
+                        <property name="show-title-buttons">true</property>
+                    </object>
+                </child>
                 <child>
                     <object class="GtkImage">
                         <property name="icon-name">im.dino.Dino-symbolic</property>

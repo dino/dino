@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class MainWindow : Gtk.Window {
+public class MainWindow : Adw.Window {
 
     public signal void conversation_selected(Conversation conversation);
 
@@ -19,10 +19,10 @@ public class MainWindow : Gtk.Window {
     public ConversationSelector conversation_selector;
     public ConversationTitlebar conversation_titlebar;
     public Widget conversation_list_titlebar;
-    public HeaderBar placeholder_headerbar = new HeaderBar() { show_title_buttons=true };
     public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL };
-    public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { resize_start_child=false, shrink_start_child=false, shrink_end_child=false };
     public Paned paned;
+    public Box left_box;
+    public Box right_box;
     public Revealer search_revealer;
     public GlobalSearch global_search;
     private Stack stack = new Stack();
@@ -55,17 +55,17 @@ public class MainWindow : Gtk.Window {
         ((Widget)this).realize.connect(set_window_buttons);
         ((Widget)this).realize.connect(restore_window_size);
 
-        setup_headerbar();
         setup_unified();
+        setup_headerbar();
         setup_stack();
-
-        paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
     }
 
     private void setup_unified() {
         Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
         paned = (Paned) builder.get_object("paned");
         box.append(paned);
+        left_box = (Box) builder.get_object("left_box");
+        right_box = (Box) builder.get_object("right_box");
         left_stack = (Stack) builder.get_object("left_stack");
         right_stack = (Stack) builder.get_object("right_stack");
         conversation_view = (ConversationView) builder.get_object("conversation_view");
@@ -85,12 +85,15 @@ public class MainWindow : Gtk.Window {
             conversation_list_titlebar = get_conversation_list_titlebar_csd();
             conversation_titlebar = new ConversationTitlebarCsd();
         } else {
+            Label title_label = new Label("Dino");
+            HeaderBar titlebar = new HeaderBar() { title_widget=title_label, show_title_buttons=true };
+            box.prepend(titlebar);
+
             conversation_list_titlebar = new ConversationListTitlebar();
             conversation_titlebar = new ConversationTitlebarNoCsd();
-            box.append(headerbar_paned);
         }
-        headerbar_paned.set_start_child(conversation_list_titlebar);
-        headerbar_paned.set_end_child(conversation_titlebar.get_widget());
+        left_box.prepend(conversation_list_titlebar);
+        right_box.prepend(conversation_titlebar.get_widget());
     }
 
     private void set_window_buttons() {
@@ -109,7 +112,7 @@ public class MainWindow : Gtk.Window {
         stack.add_named(box, "main");
         stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
-        set_child(stack);
+        set_content(stack);
     }
 
     public enum StackState {
@@ -125,25 +128,16 @@ public class MainWindow : Gtk.Window {
             right_stack.set_visible_child_name("content");
 
             stack.set_visible_child_name("main");
-            if (Util.use_csd()) {
-                set_titlebar(headerbar_paned);
-            }
         } else if (stack_state == StackState.CLEAN_START || stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
             if (stack_state == StackState.CLEAN_START) {
                 stack.set_visible_child_name("welcome_placeholder");
             } else if (stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
                 stack.set_visible_child_name("accounts_placeholder");
             }
-            if (Util.use_csd()) {
-                set_titlebar(placeholder_headerbar);
-            }
         } else if (stack_state == StackState.NO_ACTIVE_CONVERSATIONS) {
             stack.set_visible_child_name("main");
             left_stack.set_visible_child_name("placeholder");
             right_stack.set_visible_child_name("placeholder");
-            if (Util.use_csd()) {
-                set_titlebar(headerbar_paned);
-            }
         }
     }
 
