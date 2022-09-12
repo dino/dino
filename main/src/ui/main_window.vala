@@ -51,8 +51,6 @@ public class MainWindow : Adw.Window {
 
         this.add_css_class("dino-main");
 
-        Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
-        ((Widget)this).realize.connect(set_window_buttons);
         ((Widget)this).realize.connect(restore_window_size);
 
         setup_unified();
@@ -96,18 +94,6 @@ public class MainWindow : Adw.Window {
         }
         left_box.prepend(conversation_list_titlebar);
         right_box.prepend(conversation_titlebar.get_widget());
-    }
-
-    private void set_window_buttons() {
-        if (!Util.use_csd()) return;
-        Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
-        if (gtk_settings == null) return;
-
-        string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
-        HeaderBar conversation_headerbar = this.conversation_titlebar.get_widget() as HeaderBar;
-        conversation_headerbar.decoration_layout = ((buttons.length == 2) ? ":" + buttons[1] : "");
-        HeaderBar conversation_list_headerbar = this.conversation_list_titlebar as HeaderBar;
-        conversation_list_headerbar.decoration_layout = buttons[0] + ":";
     }
 
     private void setup_stack() {
