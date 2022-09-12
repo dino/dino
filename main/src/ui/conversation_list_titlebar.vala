@@ -15,12 +15,12 @@ public class ConversationListTitlebar : Gtk.Box {
     }
 }
 
-public static HeaderBar get_conversation_list_titlebar_csd() {
+public static Adw.HeaderBar get_conversation_list_titlebar_csd() {
     Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_list_titlebar_csd.ui");
     MenuButton add_button = (MenuButton) builder.get_object("add_button");
     MenuButton menu_button = (MenuButton) builder.get_object("menu_button");
     create_add_menu(add_button, menu_button);
-    return (HeaderBar) builder.get_object("header_bar");
+    return (Adw.HeaderBar) builder.get_object("header_bar");
 }
 
 private static void create_add_menu(MenuButton add_button, MenuButton menu_button) {
