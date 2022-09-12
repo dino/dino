@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
     <requires lib="gtk" version="4.0"/>
-    <object class="GtkPaned" id="paned">
-        <property name="shrink-start-child">False</property>
-        <property name="shrink-end-child">False</property>
-        <property name="resize-start-child">False</property>
-        <property name="position">300</property>
+    <object class="AdwLeaflet" id="leaflet">
+        <property name="transition-type">slide</property>
+        <property name="can-navigate-back">true</property>
+        <property name="can-navigate-forward">true</property>
         <child>
             <object class="GtkBox" id="left_box">
                 <property name="orientation">vertical</property>
