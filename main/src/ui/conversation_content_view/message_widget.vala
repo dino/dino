@@ -28,7 +28,7 @@ public class MessageMetaItem : ContentMetaItem {
     ulong style_updated_id = -1;
     ulong marked_notify_handler_id = -1;
 
-    public Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, vexpand=true };
+    public Label label = new Label("") { use_markup=true, xalign=0, selectable=false, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, vexpand=true };
 
     public MessageMetaItem(ContentItem content_item, StreamInteractor stream_interactor) {
         base(content_item);
