@@ -4,7 +4,9 @@
  */
 
 window.dino-main .dino-header-right {
-    background: @theme_base_color;
+    background: @insensitive_bg_color;
+    margin-top: 6px;
+    margin-bottom: 6px;
 }
 
 window.dino-main .dino-header-left {
