@@ -386,6 +386,6 @@ box.dino-input-error .chat-input-status.input-status-highlight-once {
     box-shadow: 0 0 2px 0 rgba(0,0,0,0.5);
 }
 
-.qrcode-container {
+.qrcode-container > contents {
     background: white;  /* Color of the quiet zone. MUST have the same "reflectance" as light modules of the QR code. */
 }
