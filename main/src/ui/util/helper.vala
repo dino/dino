@@ -2,6 +2,7 @@ using Gee;
 using Gtk;
 
 using Dino.Entities;
+using Qlite;
 using Xmpp;
 
 namespace Dino.Ui.Util {
@@ -305,9 +306,21 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
                     }
                 }
 
+                string? text = link;
+                if (link[0:5] == "xmpp:" && true) {
+                    // lookup name for XMPP uri
+                    // SELECT name FROM roster WHERE jid = %s
+                    Database db = Dino.Application.get_default().db;
+                    RowOption row = db.roster.select({db.roster.handle}).with(db.roster.jid, "=", link[5:]).single().row();
+                    if (row.is_present()) {
+                        if(row[db.roster.handle] != null) {
+                            text = row[db.roster.handle];
+                        }
+                    }
+                }
                 return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) +
                         "<a href=\"" + Markup.escape_text(link) + "\">" +
-                        parse_add_markup_theme(link, highlight_word, false, false, false, dark_theme, ref theme_dependent, already_escaped) +
+                        parse_add_markup_theme(text, highlight_word, false, false, false, dark_theme, ref theme_dependent, already_escaped) +
                         "</a>" +
                         parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped);
             }
