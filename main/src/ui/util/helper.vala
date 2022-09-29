@@ -307,7 +307,8 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
                 }
 
                 string? text = link;
-                if (link[0:5] == "xmpp:" && true) {
+                Dino.Entities.Settings settings = Dino.Application.get_default().settings;
+                if (link[0:5] == "xmpp:" && settings.replace_xmpp_uris) {
                     // lookup name for XMPP uri
                     // SELECT name FROM roster WHERE jid = %s
                     Database db = Dino.Application.get_default().db;
