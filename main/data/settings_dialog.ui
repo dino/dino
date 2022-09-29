@@ -63,6 +63,15 @@
                                 </layout>
                             </object>
                         </child>
+                        <child>
+                            <object class="GtkCheckButton" id="replace_xmpp_uris_checkbutton">
+                                <property name="label" translatable="yes">Replace XMPP URIs with names</property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">5</property>
+                                </layout>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>
