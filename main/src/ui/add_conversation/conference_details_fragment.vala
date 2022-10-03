@@ -12,17 +12,7 @@ protected class ConferenceDetailsFragment : Box {
 
     public signal void joined();
 
-    public bool done {
-        get {
-            try {
-                Jid parsed_jid = new Jid(jid);
-                return parsed_jid.localpart != null && parsed_jid.resourcepart == null && nick != null;
-            } catch (InvalidJidError e) {
-                return false;
-            }
-        }
-        private set {}
-    }
+    public bool done { get; private set; }
 
     public Account account {
         owned get { return account_combobox.selected; }
@@ -118,8 +108,14 @@ protected class ConferenceDetailsFragment : Box {
 //        nick_entry.key_release_event.connect(on_nick_key_release_event);
 //        password_entry.key_release_event.connect(on_password_key_release_event);
 
-//        jid_entry.key_release_event.connect(() => { done = true; return false; }); // just for notifying
-//        nick_entry.key_release_event.connect(() => { done = true; return false; });
+        var jid_entry_controller = new EventControllerKey();
+        jid_entry_controller.key_released.connect(() => { check_if_done(); });
+        jid_entry.add_controller(jid_entry_controller);
+
+        var nick_entry_controller = new EventControllerKey();
+        nick_entry_controller.key_released.connect(() => { check_if_done(); });
+        nick_entry.add_controller(nick_entry_controller);
+
 
         notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
 
@@ -193,6 +189,15 @@ protected class ConferenceDetailsFragment : Box {
         }
         notification_label.label = label_text;
         notification_revealer.set_reveal_child(true);
+    }
+
+    private void check_if_done() {
+        try {
+            Jid parsed_jid = new Jid(jid);
+            done = parsed_jid.localpart != null && parsed_jid.resourcepart == null && nick != null;
+        } catch (InvalidJidError e) {
+            done = false;
+        }
     }
 
 //    private bool on_jid_key_release_event(EventKey event) {
