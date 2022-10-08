@@ -134,7 +134,7 @@ public class AddAccountDialog : Gtk.Dialog {
         create_account_box.visible = false;
         register_box.visible = false;
         success_box.visible = false;
-//        set_default(sign_in_jid_continue_button);
+        set_default_widget(sign_in_jid_continue_button);
 
         sign_in_jid_error_label.label = "";
         jid_entry.sensitive = true;
@@ -174,7 +174,7 @@ public class AddAccountDialog : Gtk.Dialog {
         create_account_box.visible = false;
         register_box.visible = false;
         success_box.visible = false;
-//        set_default(sign_in_password_continue_button);
+        set_default_widget(sign_in_password_continue_button);
 
         sign_in_password_error_label.label = "";
         sign_in_password_title.label = _("Sign in to %s").printf(login_jid.to_string());
@@ -184,7 +184,7 @@ public class AddAccountDialog : Gtk.Dialog {
     private void show_select_server() {
         server_entry.text = "";
         server_entry.grab_focus();
-//        set_default(select_server_continue);
+        set_default_widget(select_server_continue);
 
         server_list_box.row_activated.disconnect(on_server_list_row_activated);
         server_list_box.unselect_all();
@@ -209,7 +209,7 @@ public class AddAccountDialog : Gtk.Dialog {
         create_account_box.visible = false;
         success_box.visible = false;
 
-//        set_default(register_form_continue);
+        set_default_widget(register_form_continue);
         animate_window_resize(register_box);
     }
 
@@ -223,7 +223,7 @@ public class AddAccountDialog : Gtk.Dialog {
         register_box.visible = false;
         success_description.label = _("You can now use the account %s.").printf("<b>" + Markup.escape_text(account.bare_jid.to_string()) + "</b>");
 
-//        set_default(success_continue_button);
+        set_default_widget(success_continue_button);
     }
 
     private void on_jid_entry_changed() {
@@ -334,7 +334,7 @@ public class AddAccountDialog : Gtk.Dialog {
             form_box.remove(widget);
             widget = form_box.get_first_child();
         }
-//        form_box.foreach((widget) => { form_box.remove(widget); });
+
         register_title.label = _("Register on %s").printf(server.to_string());
 
         if (form.oob != null) {
