@@ -31,6 +31,7 @@ protected class ConferenceDetailsFragment : Box {
             jid_label.label = value;
             jid_entry.text = value;
             jid_stack.set_visible_child_name("label");
+            check_if_done();
         }
     }
     public string? nick {
@@ -39,6 +40,7 @@ protected class ConferenceDetailsFragment : Box {
             nick_label.label = value ?? "";
             nick_entry.text = value ?? "";
             nick_stack.set_visible_child_name("label");
+            check_if_done();
         }
     }
     public string? password {
@@ -116,6 +118,7 @@ protected class ConferenceDetailsFragment : Box {
         nick_entry_controller.key_released.connect(() => { check_if_done(); });
         nick_entry.add_controller(nick_entry_controller);
 
+        check_if_done();
 
         notification_button.clicked.connect(() => { notification_revealer.set_reveal_child(false); });
 
