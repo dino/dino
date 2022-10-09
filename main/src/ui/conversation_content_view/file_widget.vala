@@ -29,6 +29,7 @@ public class FileWidget : SizeRequestBox {
 
     enum State {
         IMAGE,
+        IMAGE_PREVIEW,
         DEFAULT
     }
 
@@ -84,7 +85,26 @@ public class FileWidget : SizeRequestBox {
             } catch (Error e) { }
         }
 
-        if (state != State.DEFAULT) {
+        if (show_preview() && state != State.IMAGE_PREVIEW) {
+            var content_bak = content;
+
+            FilePreviewWidget file_preview_widget = null;
+            try {
+                file_preview_widget = new FilePreviewWidget() { visible=true };
+                yield file_preview_widget.load_from_thumbnail(file_transfer, stream_interactor);
+
+                // If the widget changed in the meanwhile, stop
+                if (content != content_bak) return;
+
+                if (content != null) this.remove(content);
+                content = file_preview_widget;
+                state = State.IMAGE_PREVIEW;
+                this.append(content);
+                return;
+            } catch (Error e) { }
+        }
+
+        if (state != State.DEFAULT && state != State.IMAGE_PREVIEW) {
             if (content != null) this.remove(content);
             FileDefaultWidget default_file_widget = new FileDefaultWidget();
             default_widget_controller = new FileDefaultWidgetController(default_file_widget);
@@ -110,6 +130,10 @@ public class FileWidget : SizeRequestBox {
             }
         }
         return false;
+    }
+
+    private bool show_preview() {
+        return !this.file_transfer.thumbnails.is_empty;
     }
 }
 
@@ -162,7 +186,7 @@ public class FileDefaultWidgetController : Object {
     private void update_file_info() {
         file_uri = file_transfer.get_file().get_uri();
         state = file_transfer.state;
-        widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.size);
+        widget.update_file_info(file_transfer.mime_type, file_transfer.state, (long) file_transfer.size);
     }
 
     private void open_file() {

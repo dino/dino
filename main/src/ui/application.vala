@@ -72,6 +72,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                     }
                 }
             });
+            stream_interactor.get_module(FileManager.IDENTITY).add_metadata_provider(new Util.AudioVideoFileMetadataProvider());
         });
 
         activate.connect(() => {

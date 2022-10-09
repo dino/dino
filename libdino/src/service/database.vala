@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 22;
+    private const int VERSION = 28;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -143,15 +143,57 @@ public class Database : Qlite.Database {
         public Column<string> file_name = new Column.Text("file_name");
         public Column<string> path = new Column.Text("path");
         public Column<string> mime_type = new Column.Text("mime_type");
-        public Column<int> size = new Column.Integer("size");
+        public Column<long> size = new Column.Long("size");
         public Column<int> state = new Column.Integer("state");
         public Column<int> provider = new Column.Integer("provider");
         public Column<string> info = new Column.Text("info");
+        public Column<long> modification_date = new Column.Long("modification_date") { default = "-1", min_version=23 };
+        public Column<int> width = new Column.Integer("width") { default = "-1", min_version=23 };
+        public Column<int> height = new Column.Integer("height") { default = "-1", min_version=23 };
+        public Column<long> length = new Column.Integer("length") { default = "-1", min_version=23 };
 
         internal FileTransferTable(Database db) {
             base(db, "file_transfer");
             init({id, account_id, counterpart_id, counterpart_resource, our_resource, direction, time, local_time,
-                    encryption, file_name, path, mime_type, size, state, provider, info});
+                    encryption, file_name, path, mime_type, size, state, provider, info, modification_date, width, height,
+                    length});
+        }
+    }
+
+    public class FileHashesTable : Table {
+        public Column<int> id = new Column.Integer("id");
+        public Column<string> algo = new Column.Text("algo") { not_null = true };
+        public Column<string> value = new Column.Text("value") { not_null = true };
+
+        internal FileHashesTable(Database db) {
+            base(db, "file_hashes");
+            init({id, algo, value});
+            unique({id, algo}, "REPLACE");
+        }
+    }
+
+    public class FileThumbnailsTable : Table {
+        public Column<int> id = new Column.Integer("id");
+        public Column<string> uri = new Column.Text("uri") { not_null = true };
+        public Column<string> mime_type = new Column.Text("mime_type");
+        public Column<int> width = new Column.Integer("width");
+        public Column<int> height = new Column.Integer("height");
+
+        internal FileThumbnailsTable(Database db) {
+            base(db, "file_thumbnails");
+            init({id, uri, mime_type, width, height});
+        }
+    }
+
+    public class SfsSourcesTable : Table {
+        public Column<int> id = new Column.Integer("id");
+        public Column<string> type = new Column.Text("type") { not_null = true };
+        public Column<string> data = new Column.Text("data") { not_null = true };
+
+        internal SfsSourcesTable(Database db) {
+            base(db, "sfs_sources");
+            init({id, type, data});
+            unique({id, type, data}, "REPLACE");
         }
     }
 
@@ -307,6 +349,9 @@ public class Database : Qlite.Database {
     public MessageCorrectionTable message_correction { get; private set; }
     public RealJidTable real_jid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
+    public FileHashesTable file_hashes { get; private set; }
+    public FileThumbnailsTable file_thumbnails { get; private set; }
+    public SfsSourcesTable sfs_sources { get; private set; }
     public CallTable call { get; private set; }
     public CallCounterpartTable call_counterpart { get; private set; }
     public ConversationTable conversation { get; private set; }
@@ -332,6 +377,9 @@ public class Database : Qlite.Database {
         message_correction = new MessageCorrectionTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
+        file_hashes = new FileHashesTable(this);
+        file_thumbnails = new FileThumbnailsTable(this);
+        sfs_sources = new SfsSourcesTable(this);
         call = new CallTable(this);
         call_counterpart = new CallCounterpartTable(this);
         conversation = new ConversationTable(this);
@@ -342,7 +390,7 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         settings = new SettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");

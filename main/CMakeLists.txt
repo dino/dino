@@ -154,6 +154,7 @@ SOURCES
     src/ui/conversation_content_view/date_separator_populator.vala
     src/ui/conversation_content_view/file_default_widget.vala
     src/ui/conversation_content_view/file_image_widget.vala
+    src/ui/conversation_content_view/file_preview_widget.vala
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/message_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
@@ -196,6 +197,7 @@ SOURCES
     src/ui/util/sizing_bin.vala
     src/ui/util/size_request_box.vala
     src/ui/util/scaling_image.vala
+    src/ui/util/file_metadata_providers.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
