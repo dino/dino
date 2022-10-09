@@ -82,7 +82,7 @@ public class ConversationViewController : Object {
             }
         });
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
-            if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
+            if (conversation != null && conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
                 update_conversation_display_name();
             }
         });
