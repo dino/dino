@@ -49,7 +49,7 @@ public class ReactionsController : Object {
     }
 
     private void initialize_widget() {
-        widget = new ReactionsWidget() { visible=true };
+        widget = new ReactionsWidget();
         widget.emoji_picked.connect((emoji) => {
             stream_interactor.get_module(Reactions.IDENTITY).add_reaction(conversation, content_item, emoji);
         });
@@ -127,7 +127,7 @@ public class ReactionsWidget : Grid {
         this.row_spacing = this.column_spacing = 5;
         this.margin_top = 2;
 
-        add_button = new MenuButton() { tooltip_text= _("Add reaction"), visible=true };
+        add_button = new MenuButton() { tooltip_text= _("Add reaction") };
         add_button.get_style_context().add_class("reaction-box");
         Util.menu_button_set_icon_with_size(add_button, "dino-emoticon-add-symbolic", 14);
 
@@ -140,11 +140,11 @@ public class ReactionsWidget : Grid {
 
     public void update_reaction(string reaction, int count, bool own, Gee.List<string> names) {
         if (!reaction_buttons.has_key(reaction)) {
-            Label reaction_label = new Label("<span size='small'>" + reaction + "</span>") { use_markup=true, visible=true };
-            Label count_label = new Label("") { use_markup=true, visible=true };
-            Button button = new Button() { visible=true };
+            Label reaction_label = new Label("<span size='small'>" + reaction + "</span>") { use_markup=true };
+            Label count_label = new Label("") { use_markup=true };
+            Button button = new Button();
             button.get_style_context().add_class("reaction-box");
-            Box reaction_box = new Box(Orientation.HORIZONTAL, 4) { visible=true };
+            Box reaction_box = new Box(Orientation.HORIZONTAL, 4);
             reaction_box.append(reaction_label);
             reaction_box.append(count_label);
             button.set_child(reaction_box);
@@ -162,7 +162,7 @@ public class ReactionsWidget : Grid {
             });
         }
 
-        reaction_counts[reaction].label = "<span size='small'>" + count.to_string() + "</span>";
+        reaction_counts[reaction].label = "<span font_family='monospace' size='small'>" + count.to_string() + "</span>";
         if (own) {
             reaction_buttons[reaction].get_style_context().add_class("own-reaction");
         } else {

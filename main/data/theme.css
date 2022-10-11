@@ -174,12 +174,17 @@ window.dino-main .multiparty-participants {
 
 /* Reactions */
 
+window.dino-main menubutton.reaction-box image {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 window.dino-main button.reaction-box,
 window.dino-main menubutton.reaction-box > button {
     border: 1px solid transparent;
     padding: 3px 5px ;
     border-radius: 10px;
-    background-color: alpha(@theme_fg_color, 0.05);
+    background-color: alpha(@theme_fg_color, 0.07);
     background-image: none;
     box-shadow: none;
     min-height: 0;
