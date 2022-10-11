@@ -452,4 +452,19 @@ public bool use_tooltips() {
     return Gtk.MINOR_VERSION != 6 || (Gtk.MICRO_VERSION < 4 || Gtk.MICRO_VERSION > 6);
 }
 
+public static void menu_button_set_icon_with_size(MenuButton menu_button, string icon_name, int pixel_size) {
+#if GTK_4_6
+    menu_button.set_child(new Image.from_icon_name(icon_name) { pixel_size=pixel_size });
+#else
+    menu_button.set_icon_name(icon_name);
+    var button = menu_button.get_first_child() as Button;
+    if (button == null) return;
+    var box = button.child as Box;
+    if (box == null) return;
+    var image = box.get_first_child() as Image;
+    if (image == null) return;
+    image.pixel_size = pixel_size;
+#endif
+}
+
 }

@@ -129,8 +129,7 @@ public class ReactionsWidget : Grid {
 
         add_button = new MenuButton() { tooltip_text= _("Add reaction"), visible=true };
         add_button.get_style_context().add_class("reaction-box");
-        Image add_image = new Image.from_icon_name("dino-emoticon-add-symbolic") { margin_start=5, margin_end=5, visible=true };
-        add_button.set_child(add_image);
+        Util.menu_button_set_icon_with_size(add_button, "dino-emoticon-add-symbolic", 14);
 
         EmojiChooser chooser = new EmojiChooser();
         chooser.emoji_picked.connect((emoji) => {

@@ -37,7 +37,7 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
         audio_button.margin_end = audio_button.margin_bottom = 5; // space for the small settings button
         audio_button_overlay.set_child(audio_button);
         audio_button_overlay.add_overlay(audio_settings_button);
-        menu_button_set_icon_with_size(audio_settings_button, "go-up-symbolic", 10);
+        Util.menu_button_set_icon_with_size(audio_settings_button, "go-up-symbolic", 10);
         audio_settings_button.add_css_class("call-mediadevice-settings-button");
         main_buttons.append(audio_button_overlay);
 
@@ -47,7 +47,7 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
         video_button.margin_end = video_button.margin_bottom = 5;
         video_button_overlay.set_child(video_button);
         video_button_overlay.add_overlay(video_settings_button);
-        menu_button_set_icon_with_size(video_settings_button, "go-up-symbolic", 10);
+        Util.menu_button_set_icon_with_size(video_settings_button, "go-up-symbolic", 10);
         video_settings_button.add_css_class("call-mediadevice-settings-button");
         main_buttons.append(video_button_overlay);
 
@@ -74,21 +74,6 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
         on_video_enabled_changed();
 
         this.add_css_class("call-bottom-bar");
-    }
-
-    private static void menu_button_set_icon_with_size(MenuButton menu_button, string icon_name, int pixel_size) {
-#if GTK_4_6
-        menu_button.set_child(new Image.from_icon_name(icon_name) { pixel_size=pixel_size });
-#else
-        menu_button.set_icon_name(icon_name);
-        var button = menu_button.get_first_child() as Button;
-        if (button == null) return;
-        var box = button.child as Box;
-        if (box == null) return;
-        var image = box.get_first_child() as Image;
-        if (image == null) return;
-        image.pixel_size = pixel_size;
-#endif
     }
 
     public AudioSettingsPopover? show_audio_device_choices(bool show) {
