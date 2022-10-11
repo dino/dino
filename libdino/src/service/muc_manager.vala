@@ -28,6 +28,7 @@ public class MucManager : StreamInteractionModule, Object {
     private HashMap<Account, BookmarksProvider> bookmarks_provider = new HashMap<Account, BookmarksProvider>(Account.hash_func, Account.equals_func);
     private HashMap<Account, Gee.List<Jid>> invites = new HashMap<Account, Gee.List<Jid>>(Account.hash_func, Account.equals_func);
     public HashMap<Account, Jid> default_muc_server = new HashMap<Account, Jid>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, HashMap<Jid, string>> own_occupant_ids = new HashMap<Account, HashMap<Jid, string>>(Account.hash_func, Account.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         MucManager m = new MucManager(stream_interactor);
@@ -386,6 +387,13 @@ public class MucManager : StreamInteractionModule, Object {
         return get_own_jid(jid, account) != null;
     }
 
+    public string? get_own_occupant_id(Account account, Jid muc_jid) {
+        if (account in own_occupant_ids && muc_jid in own_occupant_ids[account]) {
+            return own_occupant_ids[account][muc_jid];
+        }
+        return null;
+    }
+
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).self_removed_from_room.connect( (stream, jid, code) => {
             left(account, jid);
@@ -412,6 +420,12 @@ public class MucManager : StreamInteractionModule, Object {
             if (is_private_room(account, room.bare_jid)) {
                 private_room_occupant_updated(account, room, occupant);
             }
+        });
+        stream_interactor.module_manager.get_module(account, Xep.OccupantIds.Module.IDENTITY).received_own_occupant_id.connect( (stream, jid, occupant_id) => {
+            if (!(account in own_occupant_ids)) {
+                own_occupant_ids[account] = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
+            }
+            own_occupant_ids[account][jid] = occupant_id;
         });
     }
 
@@ -655,6 +669,7 @@ public class MucManager : StreamInteractionModule, Object {
                 if (m != null) {
                     // For own messages from this device (msg is a duplicate)
                     m.marked = Message.Marked.RECEIVED;
+                    m.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(stanza, m.counterpart.bare_jid);
                 }
                 // For own messages from other devices (msg is not a duplicate msg)
                 message.marked = Message.Marked.RECEIVED;

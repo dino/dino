@@ -32,6 +32,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     public Entities.Message.Marked item_mark { get; set; }
     public ContentMetaItem content_meta_item = null;
     public Widget? widget = null;
+    private ReactionsController? reactions_controller = null;
 
     private uint time_update_timeout = 0;
     private ulong updated_roster_handler_id = 0;
@@ -63,6 +64,15 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
         this.notify["show-skeleton"].connect(update_margin);
         this.notify["show-skeleton"].connect(set_header);
+
+        ContentMetaItem? content_meta_item = item as ContentMetaItem;
+        if (content_meta_item != null) {
+            reactions_controller = new ReactionsController(conversation, content_meta_item.content_item, stream_interactor);
+            reactions_controller.box_activated.connect((widget) => {
+                main_grid.attach(widget, 1, 2, 4, 1);
+            });
+            reactions_controller.init();
+        }
 
         update_margin();
     }

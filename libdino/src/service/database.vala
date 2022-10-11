@@ -119,6 +119,20 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class OccupantIdTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<string> last_nick = new Column.Text("last_nick");
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<string> occupant_id = new Column.Text("occupant_id");
+
+        internal OccupantIdTable(Database db) {
+            base(db, "occupant_id");
+            init({id, account_id, last_nick, jid_id, occupant_id});
+            unique({account_id, jid_id, occupant_id}, "REPLACE");
+        }
+    }
+
     public class UndecryptedTable : Table {
         public Column<int> message_id = new Column.Integer("message_id");
         public Column<int> type_ = new Column.Integer("type");
@@ -277,6 +291,23 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class ReactionTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<int> occupant_id = new Column.Integer("occupant_id");
+        public Column<int> content_item_id = new Column.Integer("content_item_id") { not_null = true };
+        public Column<long> time = new Column.Long("time") { not_null = true };
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<string> emojis = new Column.Text("emojis");
+
+        internal ReactionTable(Database db) {
+            base(db, "reaction");
+            init({id, account_id, occupant_id, content_item_id, time, jid_id, emojis});
+            unique({account_id, content_item_id, jid_id}, "REPLACE");
+            unique({account_id, content_item_id, occupant_id}, "REPLACE");
+        }
+    }
+
     public class SettingsTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<string> key = new Column.Text("key") { unique = true, not_null = true };
@@ -308,6 +339,7 @@ public class Database : Qlite.Database {
     public MessageTable message { get; private set; }
     public MessageCorrectionTable message_correction { get; private set; }
     public RealJidTable real_jid { get; private set; }
+    public OccupantIdTable occupantid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public CallTable call { get; private set; }
     public CallCounterpartTable call_counterpart { get; private set; }
@@ -317,6 +349,7 @@ public class Database : Qlite.Database {
     public EntityFeatureTable entity_feature { get; private set; }
     public RosterTable roster { get; private set; }
     public MamCatchupTable mam_catchup { get; private set; }
+    public ReactionTable reaction { get; private set; }
     public SettingsTable settings { get; private set; }
     public ConversationSettingsTable conversation_settings { get; private set; }
 
@@ -332,6 +365,7 @@ public class Database : Qlite.Database {
         content_item = new ContentItemTable(this);
         message = new MessageTable(this);
         message_correction = new MessageCorrectionTable(this);
+        occupantid = new OccupantIdTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         call = new CallTable(this);
@@ -342,9 +376,10 @@ public class Database : Qlite.Database {
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
         mam_catchup = new MamCatchupTable(this);
+        reaction = new ReactionTable(this);
         settings = new SettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, occupantid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");

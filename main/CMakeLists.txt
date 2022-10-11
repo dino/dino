@@ -17,6 +17,7 @@ set(RESOURCE_LIST
     dino-conversation-list-placeholder-arrow.svg
 
     icons/scalable/actions/dino-account-plus-symbolic.svg
+    icons/scalable/actions/dino-emoticon-add-symbolic.svg
     icons/scalable/actions/dino-emoticon-symbolic.svg
     icons/scalable/actions/dino-qr-code-symbolic.svg
 
@@ -156,6 +157,7 @@ SOURCES
     src/ui/conversation_content_view/file_image_widget.vala
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/message_widget.vala
+    src/ui/conversation_content_view/reactions_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
 
     src/ui/chat_input/chat_input_controller.vala

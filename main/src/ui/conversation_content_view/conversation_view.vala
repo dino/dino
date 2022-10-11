@@ -15,19 +15,20 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     [GtkChild] public unowned ScrolledWindow scrolled;
     [GtkChild] private unowned Revealer notification_revealer;
     [GtkChild] private unowned Box message_menu_box;
-    [GtkChild] private unowned Button button1;
-    [GtkChild] private unowned Image button1_icon;
     [GtkChild] private unowned Box notifications;
     [GtkChild] private unowned Box main;
     [GtkChild] private unowned Box main_wrap_box;
     [GtkChild] private unowned Stack stack;
+
+    private ArrayList<Widget> action_buttons = new ArrayList<Widget>();
+    private Gee.List<Dino.Plugins.MessageAction>? message_actions = null;
 
     private StreamInteractor stream_interactor;
     private Gee.TreeSet<Plugins.MetaConversationItem> content_items = new Gee.TreeSet<Plugins.MetaConversationItem>(compare_meta_items);
     private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>(compare_meta_items);
     private Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton> item_item_skeletons = new Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton>();
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
-    private Gee.List<ConversationItemSkeleton> item_skeletons = new Gee.ArrayList<ConversationItemSkeleton>();
+    private Gee.List<Widget> widget_order = new Gee.ArrayList<Widget>();
     private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
 
@@ -81,11 +82,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         main.add_controller(main_motion_events);
         main_motion_events.motion.connect(update_highlight);
 
-        button1.clicked.connect(() => {
-            current_meta_item.get_item_actions(Plugins.WidgetType.GTK4)[0].callback(button1, current_meta_item, currently_highlighted);
-            update_message_menu();
-        });
-
         return this;
     }
 
@@ -107,7 +103,20 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
     }
 
+    private bool is_highlight_fixed() {
+        foreach (Widget widget in action_buttons) {
+            MenuButton? menu_button = widget as MenuButton;
+            if (menu_button != null && menu_button.popover.visible) return true;
+
+            ToggleButton? toggle_button = widget as ToggleButton;
+            if (toggle_button != null && toggle_button.active) return true;
+        }
+        return false;
+    }
+
     private void on_leave_notify_event() {
+        if (is_highlight_fixed()) return;
+
         if (currently_highlighted != null) {
             currently_highlighted.remove_css_class("highlight");
             currently_highlighted = null;
@@ -116,6 +125,8 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     private void update_highlight(double x, double y) {
+        if (is_highlight_fixed()) return;
+
         if (currently_highlighted != null && (last_y - y).abs() <= 2) {
             return;
         }
@@ -174,11 +185,42 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             return;
         }
 
-        var actions = current_meta_item.get_item_actions(Plugins.WidgetType.GTK4);
-        message_menu_box.visible = actions != null && actions.size > 0;
-        if (actions != null && actions.size == 1) {
-            button1.visible = true;
-            button1_icon.set_from_icon_name(actions[0].icon_name);
+        foreach (Widget widget in action_buttons) {
+            message_menu_box.remove(widget);
+        }
+        action_buttons.clear();
+
+        message_actions = current_meta_item.get_item_actions(Plugins.WidgetType.GTK4);
+
+        if (message_actions != null) {
+            message_menu_box.visible = true;
+
+            // Configure as many buttons as we need with the actions for the current meta item
+            for (int i = 0; i < message_actions.size; i++) {
+                if (message_actions[i].popover != null) {
+                    MenuButton button = new MenuButton();
+                    button.icon_name = message_actions[i].icon_name;
+                    button.set_popover(message_actions[i].popover as Popover);
+                    action_buttons.add(button);
+                }
+
+                if (message_actions[i].callback != null) {
+                    var message_action = message_actions[i];
+                    Button button = new Button();
+                    button.icon_name = message_action.icon_name;
+                    button.clicked.connect(() => {
+                        print(@"$(current_meta_item.jid) skdfj \n");
+                        message_action.callback(button, current_meta_item, currently_highlighted);
+                    });
+                    action_buttons.add(button);
+                }
+            }
+
+            foreach (Widget widget in action_buttons) {
+                message_menu_box.append(widget);
+            }
+        } else {
+            message_menu_box.visible = false;
         }
     }
 
@@ -309,7 +351,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         if (skeleton != null) {
             main.remove(skeleton.get_widget());
             widgets.unset(item);
-            item_skeletons.remove(skeleton);
+            widget_order.remove(skeleton.get_widget());
             item_item_skeletons.unset(item);
 
             content_items.remove(item);
@@ -353,8 +395,8 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         // Fill datastructure
         ConversationItemSkeleton item_skeleton = new ConversationItemSkeleton(stream_interactor, conversation, item, !animate);
         item_item_skeletons[item] = item_skeleton;
-        int index = lower_item != null ? item_skeletons.index_of(item_item_skeletons[lower_item]) + 1 : 0;
-        item_skeletons.insert(index, item_skeleton);
+        int index = lower_item != null ? widget_order.index_of(item_item_skeletons[lower_item].get_widget()) + 1 : 0;
+        widget_order.insert(index, item_skeleton.get_widget());
 
         // Insert widget
         widgets[item] = item_skeleton.get_widget();
@@ -382,7 +424,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         // If an item from the past was added, add everything between that item and the (post-)first present item
         if (index == 0) {
             Dino.Application app = Dino.Application.get_default();
-            if (item_skeletons.size == 1) {
+            if (widget_order.size == 1) {
                 foreach (Plugins.ConversationAdditionPopulator populator in app.plugin_registry.conversation_addition_populators) {
                     populator.populate_timespan(conversation, item.time, new DateTime.now_utc());
                 }
@@ -402,6 +444,15 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             upper_item.jid.equals(lower_item.jid) &&
             upper_item.encryption == lower_item.encryption &&
             (upper_item.mark == Message.Marked.WONTSEND) == (lower_item.mark == Message.Marked.WONTSEND);
+    }
+
+    private void on_action_button_clicked(ToggleButton button) {
+        int button_idx = action_buttons.index_of(button);
+        print(button_idx.to_string() + "\n");
+        Plugins.MessageAction message_action = message_actions[button_idx];
+        if (message_action.callback != null) {
+            message_action.callback(button, current_meta_item, currently_highlighted);
+        }
     }
 
     private void on_upper_notify() {
@@ -471,7 +522,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         was_page_size = null;
         content_items.clear();
         meta_items.clear();
-        item_skeletons.clear();
+        widget_order.clear();
         item_item_skeletons.clear();
         foreach (Widget widget in widgets.values) {
             main.remove(widget);

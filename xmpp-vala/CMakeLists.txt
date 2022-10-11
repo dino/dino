@@ -141,6 +141,8 @@ SOURCES
     "src/module/xep/0380_explicit_encryption.vala"
     "src/module/xep/0391_jingle_encrypted_transports.vala"
     "src/module/xep/0410_muc_self_ping.vala"
+    "src/module/xep/0421_occupant_ids.vala"
+    "src/module/xep/0444_reactions.vala"
     "src/module/xep/pixbuf_storage.vala"
 
     "src/util.vala"
