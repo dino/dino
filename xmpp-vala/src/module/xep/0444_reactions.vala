@@ -13,7 +13,7 @@ public class Module : XmppStreamModule {
 
     public void send_reaction(XmppStream stream, Jid jid, string stanza_type, string message_id, Gee.List<string> reactions) {
         StanzaNode reactions_node = new StanzaNode.build("reactions", NS_URI).add_self_xmlns();
-        reactions_node.put_attribute("to", message_id);
+        reactions_node.put_attribute("id", message_id);
         foreach (string reaction in reactions) {
             StanzaNode reaction_node = new StanzaNode.build("reaction", NS_URI);
             reaction_node.put_node(new StanzaNode.text(reaction));
@@ -53,8 +53,8 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
         StanzaNode? reactions_node = message.stanza.get_subnode("reactions", NS_URI);
         if (reactions_node == null) return false;
 
-        string? to_attribute = reactions_node.get_attribute("to");
-        if (to_attribute == null) return false;
+        string? id_attribute = reactions_node.get_attribute("id");
+        if (id_attribute == null) return false;
 
         Gee.List<string> reactions = new ArrayList<string>();
         foreach (StanzaNode reaction_node in reactions_node.get_subnodes("reaction", NS_URI)) {
@@ -65,7 +65,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 reactions.add(reaction);
             }
         }
-        stream.get_module(Module.IDENTITY).received_reactions(stream, message.from, to_attribute, reactions, message);
+        stream.get_module(Module.IDENTITY).received_reactions(stream, message.from, id_attribute, reactions, message);
 
         return false;
     }
